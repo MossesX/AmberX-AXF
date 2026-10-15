@@ -1,0 +1,26 @@
+name: Diagnose site
+
+# Checks xaf.amberxai.com from outside: DNS, HTTP and HTTPS. Results appear as annotations.
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      DOMAIN: xaf.amberxai.com
+    steps:
+      - name: Probe
+        run: |
+          note() { echo "::notice::$*"; }
+          for ns in 1.1.1.1 8.8.8.8; do
+            note "DNS A via $ns: $(dig +short A "$DOMAIN" @"$ns" | tr '\n' ' ')"
+          done
+          note "DNS AAAA: $(dig +short AAAA "$DOMAIN" @1.1.1.1 | tr '\n' ' ')"
+          note "DNS CNAME: $(dig +short CNAME "$DOMAIN" @1.1.1.1 | tr '\n' ' ')"
+          for url in "http://$DOMAIN/" "https://$DOMAIN/"; do
+            out=$(curl -sS -k -o body.txt -w '%{http_code} | %{remote_ip} | redirect=%{redirect_url}' --max-time 20 "$url" 2>&1) || true
+            note "$url -> $out | body: $(head -c 120 body.txt 2>/dev/null | tr '\n' ' ')"
+          done
+          cert=$(echo | timeout 15 openssl s_client -connect "$DOMAIN:443" -servername "$DOMAIN" 2>/dev/null | openssl x509 -noout -subject -issuer -enddate 2>/dev/null | tr '\n' ' ')
+          note "TLS certificate: ${cert:-none}"
