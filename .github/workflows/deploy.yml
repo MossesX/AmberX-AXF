@@ -82,8 +82,18 @@ jobs:
           CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
         run: |
           if [ -n "$VPS_SSH_KEY" ]; then SSH=(ssh -i ~/.ssh/deploy_key); else SSH=(sshpass -e ssh); fi
-          "${SSH[@]}" -p "${VPS_PORT:-22}" "${VPS_USER:-root}@$VPS_HOST" \
-            "bash -s -- '$DOMAIN' '$WEBROOT' '$CERTBOT_EMAIL'" < deploy/remote-setup.sh
+          set +e
+          "${SSH[@]}" -o ConnectTimeout=20 -p "${VPS_PORT:-22}" "${VPS_USER:-root}@$VPS_HOST" \
+            "bash -s -- '$DOMAIN' '$WEBROOT' '$CERTBOT_EMAIL'" < deploy/remote-setup.sh 2>&1 | tee setup.log
+          rc=${PIPESTATUS[0]}
+          case $rc in
+            0) exit 0 ;;
+            5) echo "::error::SSH login rejected for ${VPS_USER:-root}@$VPS_HOST — wrong password, or the server disallows password login for this user." ;;
+            6) echo "::error::Host key for $VPS_HOST could not be verified." ;;
+            255) echo "::error::Could not connect to $VPS_HOST:${VPS_PORT:-22} — check VPS_HOST (IP only, no root@) and that SSH is open in the VPS firewall." ;;
+            *) echo "::error::Server setup failed (exit $rc): $(grep -E 'ERROR|WARNING|error' setup.log | tail -3 | tr '\n' ' ')" ;;
+          esac
+          exit $rc
 
       - name: Upload site
         if: steps.secrets.outputs.ready == 'true'
