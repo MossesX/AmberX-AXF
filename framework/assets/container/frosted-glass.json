@@ -1,0 +1,17 @@
+{
+  "$frame": "asset@1",
+  "type": "container",
+  "id": "frosted-glass",
+  "name": "Frosted Glass",
+  "version": "1.0.0",
+  "description": "Translucent glass with an accent header marker.",
+  "author": "Frame",
+  "tags": [],
+  "data": {
+    "variant": "glass",
+    "header": "accent",
+    "padding": "lg",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$frame": "asset@1",
+  "type": "dialog",
+  "id": "side-drawer",
+  "name": "Side Drawer",
+  "version": "1.0.0",
+  "description": "Full-height drawer from the right over a blurred backdrop.",
+  "author": "Frame",
+  "tags": [],
+  "data": {
+    "variant": "drawer",
+    "width": 440,
+    "backdrop": "blur",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

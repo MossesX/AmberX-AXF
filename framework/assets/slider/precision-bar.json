@@ -1,0 +1,18 @@
+{
+  "$frame": "asset@1",
+  "type": "slider",
+  "id": "precision-bar",
+  "name": "Precision Bar",
+  "version": "1.0.0",
+  "description": "Hairline track, bar thumb and tick marks for exact values.",
+  "author": "Frame",
+  "tags": [],
+  "data": {
+    "track": 2,
+    "thumb": "bar",
+    "thumbSize": 20,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}

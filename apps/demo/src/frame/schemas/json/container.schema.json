@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "frame/container.schema.json",
+  "title": "Frame Container asset",
+  "type": "object",
+  "required": [
+    "$frame",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$frame": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "container"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "variant",
+        "header",
+        "padding",
+        "elevation",
+        "collapsible"
+      ],
+      "properties": {
+        "variant": {
+          "enum": [
+            "card",
+            "panel",
+            "glass",
+            "outline"
+          ]
+        },
+        "header": {
+          "enum": [
+            "plain",
+            "divided",
+            "accent"
+          ]
+        },
+        "padding": {
+          "enum": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "elevation": {},
+        "collapsible": {}
+      }
+    }
+  }
+}

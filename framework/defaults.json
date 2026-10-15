@@ -1,0 +1,15 @@
+{
+  "color-theme": "amber-ember",
+  "style-theme": "soft-studio",
+  "layout": "classic-ide",
+  "app-menu": "standard-desktop",
+  "toolbar": "standard-icons",
+  "nav-menu": "sidebar-list",
+  "context-menu": "compact-classic",
+  "dialog": "centered-modal",
+  "popup": "corner-solid",
+  "button": "rounded-solid",
+  "slider": "classic-round",
+  "container": "soft-card",
+  "uac-policy": "standard"
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "frame/button.schema.json",
+  "title": "Frame Button asset",
+  "type": "object",
+  "required": [
+    "$frame",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$frame": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "button"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "shape",
+        "fill",
+        "weight",
+        "uppercase",
+        "size",
+        "elevation"
+      ],
+      "properties": {
+        "shape": {
+          "enum": [
+            "rounded",
+            "pill",
+            "square"
+          ]
+        },
+        "fill": {
+          "enum": [
+            "solid",
+            "soft",
+            "outline",
+            "gradient"
+          ]
+        },
+        "weight": {},
+        "uppercase": {},
+        "size": {
+          "enum": [
+            "sm",
+            "md",
+            "lg"
+          ]
+        },
+        "elevation": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$id": "frame/app-structure",
+  "description": "The schema-based file structure every Frame app is initialized with. `frame validate` enforces the required entries.",
+  "entries": [
+    { "path": "frame.manifest.json", "kind": "file", "required": true, "purpose": "App identity, framework version and the default asset for every slot." },
+    { "path": "frame.lock.json", "kind": "file", "required": true, "purpose": "Hashes of the baked framework files, used for conformance checks." },
+    { "path": "src/frame", "kind": "dir", "required": true, "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine." },
+    { "path": "src/assets", "kind": "dir", "required": true, "purpose": "Hot-swappable assets, one folder per asset type." },
+    { "path": "src/views", "kind": "dir", "required": true, "purpose": "App views registered with the shell." },
+    { "path": "src/actions.ts", "kind": "file", "required": true, "purpose": "Handlers bound to the standard action vocabulary." },
+    { "path": "src/dialogs.tsx", "kind": "file", "required": true, "purpose": "App-specific dialogs opened through the dialog engine." },
+    { "path": "public", "kind": "dir", "required": false, "purpose": "Static files served as-is." }
+  ]
+}

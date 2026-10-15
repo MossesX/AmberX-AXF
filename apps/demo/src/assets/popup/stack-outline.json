@@ -1,0 +1,17 @@
+{
+  "$frame": "asset@1",
+  "type": "popup",
+  "id": "stack-outline",
+  "name": "Stack Outline",
+  "version": "1.0.0",
+  "description": "Outlined, color-coded toasts stacking up from the bottom-right.",
+  "author": "Frame",
+  "tags": [],
+  "data": {
+    "position": "bottom-right",
+    "variant": "outline",
+    "duration": 4500,
+    "showIcon": true,
+    "maxVisible": 5
+  }
+}

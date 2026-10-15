@@ -1,0 +1,125 @@
+{
+  "$frame": "asset@1",
+  "type": "context-menu",
+  "id": "glass-minimal",
+  "name": "Glass Minimal",
+  "version": "1.0.0",
+  "description": "Frosted, text-only menu focused on cycling component assets.",
+  "author": "Frame",
+  "tags": [],
+  "data": {
+    "variant": "glass",
+    "showIcons": false,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "next-color",
+          "label": "Next color theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C"
+        },
+        {
+          "id": "next-style",
+          "label": "Next style theme",
+          "icon": "type",
+          "action": "swap:style-theme:next",
+          "shortcut": "Alt+S"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L"
+        },
+        {
+          "id": "next-button",
+          "label": "Next button",
+          "icon": "zap",
+          "action": "swap:button:next"
+        },
+        {
+          "id": "next-container",
+          "label": "Next container",
+          "icon": "box",
+          "action": "swap:container:next"
+        },
+        {
+          "id": "next-ctx",
+          "label": "Next context menu",
+          "icon": "menu",
+          "action": "swap:context-menu:next"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "reset",
+          "label": "Reset to defaults",
+          "icon": "refresh",
+          "action": "assets.reset"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Activate",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L"
+        }
+      ]
+    }
+  }
+}
