@@ -72,19 +72,16 @@ no-code visual asset designer, and the HTTP/MCP drivers for the build engine.
 
 ## Deploying the demo (xaf.amberxai.com)
 
-`.github/workflows/deploy.yml` validates and builds `apps/demo` on every push to `main`, then copies `dist/`
-to the VPS over SSH. `deploy/remote-setup.sh` runs on the server first: it installs nginx/certbot if needed,
-creates `/var/www/xaf.amberxai.com`, writes an nginx site with SPA fallback, and issues a Let's Encrypt
-certificate once DNS points at the server. It refuses to install nginx if another web server holds port 80.
+`.github/workflows/deploy.yml` validates and builds `apps/demo` on every push to `main` and publishes `dist/`
+to the `site` branch. The VPS serves that branch with nginx and pulls it every 2 minutes, so GitHub never
+holds server credentials.
 
-Repository secrets (Settings → Secrets and variables → Actions):
+One-time server setup (as root on the VPS, e.g. from Hostinger's browser terminal):
 
-| Secret | Required | Value |
-| --- | --- | --- |
-| `VPS_HOST` | yes | VPS IP address |
-| `VPS_SSH_KEY` or `VPS_PASSWORD` | one of them | private key (preferred) or root password |
-| `VPS_USER` | no | defaults to `root` |
-| `VPS_PORT` | no | defaults to `22` |
-| `CERTBOT_EMAIL` | no | email for certificate expiry notices |
+```bash
+curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash
+```
 
-DNS: an `A` record for `xaf` on `amberxai.com` pointing at the VPS IP.
+It installs nginx/certbot/git if needed, clones the `site` branch into `/var/www/xaf.amberxai.com`, writes an
+nginx site with SPA fallback, adds the update cron job, and issues a Let's Encrypt certificate once the `xaf`
+A record points at the server. It stops without changes if another web server holds port 80. Safe to re-run.
