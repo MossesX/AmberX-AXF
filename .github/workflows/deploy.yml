@@ -1,0 +1,108 @@
+name: Deploy to xaf.amberxai.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-xaf
+  cancel-in-progress: true
+
+env:
+  DOMAIN: xaf.amberxai.com
+  WEBROOT: /var/www/xaf.amberxai.com
+  APP_DIR: apps/demo
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/demo/package-lock.json
+
+      - name: Validate Frame app
+        run: node framework/cli/frame.mjs validate "$APP_DIR"
+
+      - name: Install
+        working-directory: apps/demo
+        run: npm ci
+
+      - name: Build
+        working-directory: apps/demo
+        run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: apps/demo/dist
+
+      - name: Check deploy secrets
+        id: secrets
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_SSH_KEY" ] && [ -z "$VPS_PASSWORD" ]; }; then
+            echo "::notice::Build OK. Deploy skipped: add VPS_HOST and VPS_SSH_KEY (or VPS_PASSWORD) repository secrets, then re-run this workflow."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare SSH
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          if [ -n "$VPS_SSH_KEY" ]; then
+            printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          else
+            sudo apt-get install -y -qq sshpass
+          fi
+          ssh-keyscan -p "${VPS_PORT:-22}" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Configure server (nginx + HTTPS)
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+          CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+        run: |
+          if [ -n "$VPS_SSH_KEY" ]; then SSH=(ssh -i ~/.ssh/deploy_key); else SSH=(sshpass -e ssh); fi
+          "${SSH[@]}" -p "${VPS_PORT:-22}" "${VPS_USER:-root}@$VPS_HOST" \
+            "bash -s -- '$DOMAIN' '$WEBROOT' '$CERTBOT_EMAIL'" < deploy/remote-setup.sh
+
+      - name: Upload site
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          if [ -n "$VPS_SSH_KEY" ]; then RSH="ssh -i $HOME/.ssh/deploy_key -p ${VPS_PORT:-22}"; else RSH="sshpass -e ssh -p ${VPS_PORT:-22}"; fi
+          rsync -az --delete -e "$RSH" apps/demo/dist/ "${VPS_USER:-root}@$VPS_HOST:$WEBROOT/"
+
+      - name: Smoke test
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          for scheme in https http; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$scheme://$DOMAIN/" || true)
+            echo "$scheme://$DOMAIN -> $code"
+            [ "$code" = "200" ] && { echo "::notice::Live at $scheme://$DOMAIN"; exit 0; }
+          done
+          echo "::warning::Site uploaded, but $DOMAIN did not answer 200 yet (DNS may still be propagating)."

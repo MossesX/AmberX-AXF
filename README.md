@@ -69,3 +69,22 @@ Frame.dispatch('file.save'); Frame.toast('Hi', 'success')
 
 Desktop and Android packaging (`targets` is recorded in the manifest but only the web build exists), the
 no-code visual asset designer, and the HTTP/MCP drivers for the build engine.
+
+## Deploying the demo (xaf.amberxai.com)
+
+`.github/workflows/deploy.yml` validates and builds `apps/demo` on every push to `main`, then copies `dist/`
+to the VPS over SSH. `deploy/remote-setup.sh` runs on the server first: it installs nginx/certbot if needed,
+creates `/var/www/xaf.amberxai.com`, writes an nginx site with SPA fallback, and issues a Let's Encrypt
+certificate once DNS points at the server. It refuses to install nginx if another web server holds port 80.
+
+Repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret | Required | Value |
+| --- | --- | --- |
+| `VPS_HOST` | yes | VPS IP address |
+| `VPS_SSH_KEY` or `VPS_PASSWORD` | one of them | private key (preferred) or root password |
+| `VPS_USER` | no | defaults to `root` |
+| `VPS_PORT` | no | defaults to `22` |
+| `CERTBOT_EMAIL` | no | email for certificate expiry notices |
+
+DNS: an `A` record for `xaf` on `amberxai.com` pointing at the VPS IP.
