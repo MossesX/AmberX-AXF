@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "button",
   "id": "rounded-solid",
   "name": "Rounded Solid",
   "version": "1.0.0",
   "description": "Solid fills, rounded corners, flat — the dependable default.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "shape": "rounded",

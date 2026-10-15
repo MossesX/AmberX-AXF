@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "uac-policy",
   "id": "standard",
   "name": "Standard",
   "version": "1.0.0",
   "description": "Guest, User and Admin with inheritance; locked items stay visible.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "defaultRole": "user",

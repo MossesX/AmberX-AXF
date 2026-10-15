@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "nav-menu",
   "id": "sidebar-list",
   "name": "Sidebar List",
   "version": "1.0.0",
   "description": "Grouped vertical list with section labels and an accent marker.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "style": "list",

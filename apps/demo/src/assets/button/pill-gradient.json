@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "button",
   "id": "pill-gradient",
   "name": "Pill Gradient",
   "version": "1.0.0",
   "description": "Bold pills with an accent gradient and a lifted shadow.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "shape": "pill",

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, Icon, Slider, useAsset, useRuntime } from '../frame/react';
+import { Button, Chip, Container, Icon, Slider, useAsset, useRuntime } from '../axf/react';
 
 /** Gallery of every asset-driven component. Swap assets and watch them change. */
 export function Components() {

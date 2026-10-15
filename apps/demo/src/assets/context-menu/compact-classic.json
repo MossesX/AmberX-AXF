@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "context-menu",
   "id": "compact-classic",
   "name": "Compact Classic",
   "version": "1.0.0",
   "description": "Tight desktop context menu with icons and shortcut hints.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "compact",

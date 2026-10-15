@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "uac-policy",
   "id": "strict-enterprise",
   "name": "Strict Enterprise",
   "version": "1.0.0",
   "description": "Read-only by default; anything you cannot use is hidden.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "defaultRole": "viewer",

@@ -1,7 +1,7 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
-import { useAsset, useFrameState, useRuntime } from '../FrameProvider';
+import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { MenuList } from './MenuList';
 import type { ViewMap } from '../AppShell';
@@ -11,7 +11,7 @@ import type { ViewMap } from '../AppShell';
 export function MenuBar() {
   const rt = useRuntime();
   const menu = useAsset('app-menu');
-  const state = useFrameState();
+  const state = useAxfState();
   const [open, setOpen] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const policy = rt.asset('uac-policy').data;
@@ -66,7 +66,7 @@ export function MenuBar() {
 export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const tb = useAsset('toolbar');
-  useFrameState();
+  useAxfState();
   const [q, setQ] = useState('');
 
   // Search doubles as a mini command palette: jump to a view or hot-swap an asset by name.
@@ -131,7 +131,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const nav = useAsset('nav-menu');
   const layout = useAsset('layout');
-  const state = useFrameState();
+  const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
 
   return (
@@ -174,12 +174,12 @@ export function NavMenu({ views }: { views: ViewMap }) {
 
 export function StatusBar() {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
-      <span>Frame {FRAMEWORK_VERSION}</span>
+      <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
       <span title="Color theme">{name('color-theme')}</span>
       <span title="Style theme">{name('style-theme')}</span>

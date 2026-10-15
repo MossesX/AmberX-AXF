@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "app-menu",
   "id": "standard-desktop",
   "name": "Standard Desktop",
   "version": "1.0.0",
   "description": "Classic File / Edit / View / Help menus with desktop shortcuts.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [
     "desktop"
   ],

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useAsset, useFrameState } from './FrameProvider';
+import { useAsset, useAxfState } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { Inspector } from './studio/Inspector';
@@ -25,7 +25,7 @@ export interface AppShellProps {
  */
 export function AppShell({ views, dialogs = {}, inspector }: AppShellProps) {
   const layout = useAsset('layout').data;
-  const state = useFrameState();
+  const state = useAxfState();
   const view = views[state.view] ?? Object.values(views)[0];
 
   return (

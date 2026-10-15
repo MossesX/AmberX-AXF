@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Slider, useFrameState, useRuntime, type DialogMap } from './frame/react';
+import { Button, Slider, useAxfState, useRuntime, type DialogMap } from './axf/react';
 
 function NewFile({ close }: { close: () => void }) {
   const rt = useRuntime();
@@ -51,7 +51,7 @@ function ConfirmDelete({ close }: { close: () => void }) {
 
 function DevConsole() {
   const rt = useRuntime();
-  const s = useFrameState();
+  const s = useAxfState();
   const snapshot = {
     app: rt.manifest.app,
     role: s.role,
@@ -64,7 +64,7 @@ function DevConsole() {
   return (
     <div className="fx-stack">
       <p className="fx-muted" style={{ margin: 0 }}>
-        Live runtime state. The same object is exposed as <code>window.Frame</code> — try <code>Frame.swap('color-theme', 'next')</code> in devtools.
+        Live runtime state. The same object is exposed as <code>window.AXF</code> — try <code>AXF.swap('color-theme', 'next')</code> in devtools.
       </p>
       <pre className="fx-code">{JSON.stringify(snapshot, null, 2)}</pre>
     </div>

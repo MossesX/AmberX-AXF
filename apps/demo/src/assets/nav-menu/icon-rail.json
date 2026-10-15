@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "nav-menu",
   "id": "icon-rail",
   "name": "Icon Rail",
   "version": "1.0.0",
   "description": "Compact icon rail with tiny captions — pairs with slim layouts.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "style": "rail",

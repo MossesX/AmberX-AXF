@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, type AssetType } from '../../core';
-import { useFrameState, useRuntime } from '../FrameProvider';
+import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip } from '../components/Controls';
 import { Icon } from '../components/Icon';
 import { AssetPreview } from './AssetPreview';
@@ -10,7 +10,7 @@ const GROUPS = [...new Set(ASSET_TYPES.map((t) => assetTypeSpecs[t].group))];
 /** The hot-swap studio: every slot, every registered asset, one tap to swap. */
 export function AssetStudio() {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const [auto, setAuto] = useState(false);
   const [filter, setFilter] = useState<string>('all');
 

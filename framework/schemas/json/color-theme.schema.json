@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "frame/color-theme.schema.json",
-  "title": "Frame Color theme asset",
+  "$id": "axf/color-theme.schema.json",
+  "title": "AmberX AXF Color theme asset",
   "type": "object",
   "required": [
-    "$frame",
+    "$axf",
     "type",
     "id",
     "name",
@@ -12,7 +12,7 @@
     "data"
   ],
   "properties": {
-    "$frame": {
+    "$axf": {
       "const": "asset@1"
     },
     "type": {

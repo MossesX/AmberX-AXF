@@ -1,8 +1,8 @@
 /**
  * Component style engine — maps component assets (button, slider, container,
  * dialog, popup, context-menu) to CSS variables plus data-attributes on the
- * document root. frame.css keys off these, so every Button, Slider, etc. in
- * every Frame app restyles the instant an asset is swapped.
+ * document root. axf.css keys off these, so every Button, Slider, etc. in
+ * every AmberX AXF app restyles the instant an asset is swapped.
  */
 import type { ButtonData, ContainerData, ContextMenuData, DialogData, PopupData, SliderData } from '../types';
 import type { VarMap } from './theme';

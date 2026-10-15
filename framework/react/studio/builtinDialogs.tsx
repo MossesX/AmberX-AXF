@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { ASSET_TYPES, ActionBus, FRAMEWORK_VERSION, type AssetType } from '../../core';
-import { useRuntime, useShortcutMap } from '../FrameProvider';
+import { useRuntime, useShortcutMap } from '../AxfProvider';
 import { Button, Kbd } from '../components/Controls';
 import type { DialogMap } from '../components/Overlays';
 
@@ -81,7 +81,7 @@ function ImportAsset({ close }: { close: () => void }) {
         Paste one asset (or an array of assets) in the <code>asset@1</code> format, or pick a <code>.json</code> file. It's validated against
         the shared schema, registered, and hot-swapped in.
       </p>
-      <textarea className="fx-input fx-code" rows={10} value={text} onChange={(e) => setText(e.target.value)} placeholder='{ "$frame": "asset@1", "type": "color-theme", … }' />
+      <textarea className="fx-input fx-code" rows={10} value={text} onChange={(e) => setText(e.target.value)} placeholder='{ "$axf": "asset@1", "type": "color-theme", … }' />
       {errors.length > 0 && (
         <ul className="fx-errors">
           {errors.map((e, i) => (
@@ -114,7 +114,7 @@ function About() {
   const m = rt.manifest;
   const rows: [string, string][] = [
     ['App', `${m.app.name} (${m.app.id}) v${m.app.version}`],
-    ['Framework', `Frame ${FRAMEWORK_VERSION} · template ${m.framework.template}`],
+    ['Framework', `AmberX AXF ${FRAMEWORK_VERSION} · template ${m.framework.template}`],
     ['Initialized', m.initializedAt ? new Date(m.initializedAt).toLocaleString() : '—'],
     ['Targets', m.targets.join(', ')],
     ['Asset slots', String(ASSET_TYPES.length)],

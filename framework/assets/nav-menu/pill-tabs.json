@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "nav-menu",
   "id": "pill-tabs",
   "name": "Pill Tabs",
   "version": "1.0.0",
   "description": "Rounded pills with a filled active state. Great as top tabs.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "style": "pills",

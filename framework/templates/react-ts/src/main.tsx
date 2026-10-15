@@ -1,27 +1,27 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createFrame, type FrameManifest } from './frame/core';
-import { FrameProvider } from './frame/react';
-import manifest from '../frame.manifest.json';
+import { createAxf, type AxfManifest } from './axf/core';
+import { AxfProvider } from './axf/react';
+import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
-import './frame/ui/frame.css';
+import './axf/ui/axf.css';
 
 // Every JSON file under src/assets is registered as a hot-swappable asset.
 const assetModules = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
 
-const frame = createFrame({
-  manifest: manifest as FrameManifest,
+const axf = createAxf({
+  manifest: manifest as AxfManifest,
   assets: Object.values(assetModules),
 });
-registerActions(frame);
+registerActions(axf);
 
-if (frame.loadErrors.length) console.warn('[frame] assets skipped:', frame.loadErrors);
+if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FrameProvider runtime={frame}>
+    <AxfProvider runtime={axf}>
       <App />
-    </FrameProvider>
+    </AxfProvider>
   </StrictMode>,
 );

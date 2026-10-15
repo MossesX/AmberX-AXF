@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "color-theme",
   "id": "arctic-daylight",
   "name": "Arctic Daylight",
   "version": "1.0.0",
   "description": "Crisp light theme with cobalt accents for long daytime sessions.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [
     "light",
     "cool"

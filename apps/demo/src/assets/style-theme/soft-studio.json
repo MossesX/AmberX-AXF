@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "style-theme",
   "id": "soft-studio",
   "name": "Soft Studio",
   "version": "1.0.0",
   "description": "Friendly geometry: medium radii, airy spacing, gentle shadows.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "fontFamily": "'Inter', system-ui, sans-serif",

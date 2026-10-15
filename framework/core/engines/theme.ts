@@ -1,6 +1,6 @@
 /**
  * Theme engine — turns color-theme and style-theme assets into CSS custom
- * properties. Everything visual in Frame reads these variables, so swapping
+ * properties. Everything visual in AmberX AXF reads these variables, so swapping
  * a theme asset restyles the whole app without a re-render.
  */
 import type { ColorThemeData, StyleThemeData } from '../types';

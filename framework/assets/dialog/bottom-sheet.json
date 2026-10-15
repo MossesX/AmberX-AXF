@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "dialog",
   "id": "bottom-sheet",
   "name": "Bottom Sheet",
   "version": "1.0.0",
   "description": "Mobile-style sheet rising from the bottom with a filled header.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "sheet",

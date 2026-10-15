@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "style-theme",
   "id": "sharp-terminal",
   "name": "Sharp Terminal",
   "version": "1.0.0",
   "description": "Square corners, mono headings, dense rows and hard offset shadows.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "fontFamily": "'IBM Plex Sans', system-ui, sans-serif",

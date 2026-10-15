@@ -1,7 +1,7 @@
 /**
- * Frame core types — the cross-platform, cross-application contract.
+ * AmberX AXF core types — the cross-platform, cross-application contract.
  * Every UI component and schema-driven object is an *asset* wrapped in an
- * AssetEnvelope. Any app built on Frame can load any asset of a known type.
+ * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
 
 export const ASSET_TYPES = [
@@ -23,7 +23,7 @@ export const ASSET_TYPES = [
 export type AssetType = (typeof ASSET_TYPES)[number];
 
 export interface AssetEnvelope<T = unknown> {
-  $frame: 'asset@1';
+  $axf: 'asset@1';
   type: AssetType;
   id: string;
   name: string;
@@ -226,8 +226,8 @@ export interface AssetDataMap {
 export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 export type ActiveAssets = { [K in AssetType]: string };
 
-export interface FrameManifest {
-  $frame: 'manifest@1';
+export interface AxfManifest {
+  $axf: 'manifest@1';
   app: { id: string; name: string; version: string };
   framework: { version: string; template: string };
   initializedAt?: string;
@@ -244,7 +244,7 @@ export interface Toast {
   message: string;
 }
 
-export interface FrameState {
+export interface AxfState {
   active: ActiveAssets;
   role: string;
   view: string;

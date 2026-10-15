@@ -1,5 +1,5 @@
 import { useId, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
-import { useAsset, useGate } from '../FrameProvider';
+import { useAsset, useGate } from '../AxfProvider';
 import { Icon } from './Icon';
 
 /* ---------------- Button (styled by the active `button` asset) ---------------- */

@@ -28,7 +28,7 @@ const isObj = (v: unknown): v is Record<string, unknown> =>
 /**
  * Validates an asset against the shared type spec (schemas/asset-types.json).
  * The same spec drives the CLI build engine, so an asset that passes here
- * passes `frame validate` and vice versa.
+ * passes `axf validate` and vice versa.
  */
 export function validateAsset(raw: unknown): ValidationResult {
   const errors: string[] = [];
@@ -37,7 +37,7 @@ export function validateAsset(raw: unknown): ValidationResult {
   for (const k of spec.envelope.required) {
     if (!(k in raw)) errors.push(`Missing envelope field "${k}"`);
   }
-  if (raw.$frame !== spec.envelope.frame) errors.push(`"$frame" must be "${spec.envelope.frame}"`);
+  if (raw.$axf !== spec.envelope.frame) errors.push(`"$axf" must be "${spec.envelope.frame}"`);
   if (!isAssetType(raw.type)) {
     errors.push(`Unknown asset type "${String(raw.type)}"`);
     return { ok: false, errors };

@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "frame/popup.schema.json",
-  "title": "Frame Popup / toast asset",
+  "$id": "axf/popup.schema.json",
+  "title": "AmberX AXF Popup / toast asset",
   "type": "object",
   "required": [
-    "$frame",
+    "$axf",
     "type",
     "id",
     "name",
@@ -12,7 +12,7 @@
     "data"
   ],
   "properties": {
-    "$frame": {
+    "$axf": {
       "const": "asset@1"
     },
     "type": {

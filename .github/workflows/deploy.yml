@@ -28,8 +28,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/demo/package-lock.json
 
-      - name: Validate Frame app
-        run: node framework/cli/frame.mjs validate apps/demo
+      - name: Validate AmberX AXF app
+        run: node framework/cli/axf.mjs validate apps/demo
 
       - name: Install
         working-directory: apps/demo

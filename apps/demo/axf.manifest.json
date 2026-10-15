@@ -1,0 +1,68 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "axf-demo",
+    "name": "AmberX AXF Demo",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.1.0",
+    "template": "react-ts"
+  },
+  "initializedAt": "2026-10-15T21:37:01.805Z",
+  "targets": [
+    "web",
+    "desktop",
+    "android"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "amber-ember",
+    "style-theme": "soft-studio",
+    "layout": "classic-ide",
+    "app-menu": "standard-desktop",
+    "toolbar": "standard-icons",
+    "nav-menu": "sidebar-list",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "uac-policy": "standard"
+  },
+  "structure": [
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Hashes of the baked framework files, used for conformance checks."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "src/views",
+      "purpose": "App views registered with the shell."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Handlers bound to the standard action vocabulary."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "App-specific dialogs opened through the dialog engine."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files served as-is."
+    }
+  ]
+}

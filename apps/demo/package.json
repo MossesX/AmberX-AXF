@@ -1,9 +1,9 @@
 {
-  "name": "frame-demo",
+  "name": "axf-demo",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "frame": { "framework": "0.1.0", "template": "react-ts" },
+  "axf": { "framework": "0.1.0", "template": "react-ts" },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

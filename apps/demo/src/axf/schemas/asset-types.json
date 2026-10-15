@@ -1,0 +1,106 @@
+{
+  "$id": "axf/asset-types",
+  "frameworkVersion": "0.1.0",
+  "envelope": {
+    "frame": "asset@1",
+    "required": ["$axf", "type", "id", "name", "version", "data"],
+    "idPattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+  },
+  "types": {
+    "color-theme": {
+      "label": "Color theme",
+      "group": "Themes",
+      "icon": "palette",
+      "required": ["scheme", "tokens"],
+      "enums": { "scheme": ["light", "dark"] },
+      "nested": {
+        "tokens": ["bg", "surface", "surface2", "surface3", "text", "muted", "border", "accent", "accentText", "accentSoft", "danger", "success", "warning", "info", "focus", "shadow"]
+      }
+    },
+    "style-theme": {
+      "label": "Style theme",
+      "group": "Themes",
+      "icon": "type",
+      "required": ["fontFamily", "fontDisplay", "fontMono", "fontSize", "radius", "space", "borderWidth", "shadow", "density", "motion", "blur", "headingWeight", "tracking"],
+      "enums": { "density": ["compact", "comfortable", "spacious"] },
+      "nested": { "radius": ["sm", "md", "lg"], "shadow": ["sm", "md", "lg"] }
+    },
+    "layout": {
+      "label": "Layout",
+      "group": "Themes",
+      "icon": "layout",
+      "required": ["nav", "navWidth", "showMenubar", "showToolbar", "toolbarPosition", "showStatusbar", "inspector", "inspectorWidth", "contentMaxWidth"],
+      "enums": { "nav": ["left", "right", "top"], "toolbarPosition": ["top", "bottom"], "inspector": ["left", "right", "none"] }
+    },
+    "app-menu": {
+      "label": "Application menu",
+      "group": "Navigation",
+      "icon": "menu",
+      "required": ["menus"]
+    },
+    "toolbar": {
+      "label": "Toolbar",
+      "group": "Navigation",
+      "icon": "sliders",
+      "required": ["variant", "align", "groups", "showSearch"],
+      "enums": { "variant": ["icons", "icons-labels", "labels"], "align": ["start", "center", "spread"] }
+    },
+    "nav-menu": {
+      "label": "Navigation menu",
+      "group": "Navigation",
+      "icon": "grid",
+      "required": ["style", "sections"],
+      "enums": { "style": ["list", "pills", "rail"] }
+    },
+    "context-menu": {
+      "label": "Context menu",
+      "group": "Navigation",
+      "icon": "chevron-right",
+      "required": ["variant", "showIcons", "showShortcuts", "targets"],
+      "enums": { "variant": ["compact", "roomy", "glass"] },
+      "nested": { "targets": ["default"] }
+    },
+    "dialog": {
+      "label": "Dialog",
+      "group": "Overlays",
+      "icon": "box",
+      "required": ["variant", "width", "backdrop", "animation", "header", "closeOnBackdrop"],
+      "enums": { "variant": ["modal", "drawer", "sheet"], "backdrop": ["dim", "blur", "none"], "animation": ["scale", "slide", "fade"], "header": ["plain", "accent-bar", "filled"] }
+    },
+    "popup": {
+      "label": "Popup / toast",
+      "group": "Overlays",
+      "icon": "bell",
+      "required": ["position", "variant", "duration", "showIcon", "maxVisible"],
+      "enums": { "position": ["top-right", "bottom-right", "bottom-center", "top-center"], "variant": ["solid", "outline", "minimal"] }
+    },
+    "button": {
+      "label": "Button",
+      "group": "Controls",
+      "icon": "zap",
+      "required": ["shape", "fill", "weight", "uppercase", "size", "elevation"],
+      "enums": { "shape": ["rounded", "pill", "square"], "fill": ["solid", "soft", "outline", "gradient"], "size": ["sm", "md", "lg"] }
+    },
+    "slider": {
+      "label": "Slider",
+      "group": "Controls",
+      "icon": "sliders",
+      "required": ["track", "thumb", "thumbSize", "fill", "showValue", "ticks"],
+      "enums": { "thumb": ["circle", "square", "bar"], "fill": ["solid", "gradient", "none"], "showValue": ["always", "hover", "never"] }
+    },
+    "container": {
+      "label": "Container",
+      "group": "Controls",
+      "icon": "box",
+      "required": ["variant", "header", "padding", "elevation", "collapsible"],
+      "enums": { "variant": ["card", "panel", "glass", "outline"], "header": ["plain", "divided", "accent"], "padding": ["sm", "md", "lg"] }
+    },
+    "uac-policy": {
+      "label": "User account control",
+      "group": "System",
+      "icon": "shield",
+      "required": ["defaultRole", "gating", "roles", "permissions"],
+      "enums": { "gating": ["hide", "disable"] }
+    }
+  }
+}

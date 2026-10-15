@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "slider",
   "id": "precision-bar",
   "name": "Precision Bar",
   "version": "1.0.0",
   "description": "Hairline track, bar thumb and tick marks for exact values.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "track": 2,

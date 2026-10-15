@@ -1,9 +1,9 @@
 {
-  "$id": "frame/asset-types",
+  "$id": "axf/asset-types",
   "frameworkVersion": "0.1.0",
   "envelope": {
     "frame": "asset@1",
-    "required": ["$frame", "type", "id", "name", "version", "data"],
+    "required": ["$axf", "type", "id", "name", "version", "data"],
     "idPattern": "^[a-z0-9][a-z0-9-]{1,47}$"
   },
   "types": {

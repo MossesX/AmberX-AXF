@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "context-menu",
   "id": "roomy-touch",
   "name": "Roomy Touch",
   "version": "1.0.0",
   "description": "Large touch targets with nested pickers. No shortcut clutter.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "roomy",

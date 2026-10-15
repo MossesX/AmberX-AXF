@@ -1,13 +1,13 @@
 /**
  * Action engine — the cross-application command bus. Menus, toolbars,
  * context menus and shortcuts never call code directly; they reference an
- * action spec like "file.save" or "swap:color-theme:next". Any Frame app can
+ * action spec like "file.save" or "swap:color-theme:next". Any AmberX AXF app can
  * bind its own handler to a standard action id, so assets stay portable.
  */
-import type { FrameRuntime } from '../runtime';
+import type { AxfRuntime } from '../runtime';
 
 export interface ActionContext {
-  runtime: FrameRuntime;
+  runtime: AxfRuntime;
   /** optional payload, e.g. from a context-menu target */
   payload?: string;
 }
@@ -60,7 +60,7 @@ export class ActionBus {
 }
 
 /**
- * The standard action vocabulary shared by every Frame app. The framework
+ * The standard action vocabulary shared by every AmberX AXF app. The framework
  * registers stubs for these; apps override the ones they implement.
  */
 export const STANDARD_ACTIONS: Record<string, ActionMeta> = {

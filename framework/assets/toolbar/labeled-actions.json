@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "toolbar",
   "id": "labeled-actions",
   "name": "Labeled Actions",
   "version": "1.0.0",
   "description": "Icons with labels, spread across the bar: save, theme, build.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "icons-labels",

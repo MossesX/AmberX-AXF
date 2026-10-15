@@ -1,6 +1,6 @@
-# Frame Demo
+# AmberX AXF Demo
 
-Initialized by the **Frame 0.1.0** build engine (`react-ts` template).
+Initialized by the **AmberX AXF 0.1.0** build engine (`react-ts` template).
 
 ```bash
 npm install
@@ -13,9 +13,9 @@ npm run build:single # one self-contained index.html -> dist-single/
 
 | Path | Purpose |
 | --- | --- |
-| `frame.manifest.json` | App identity, framework version, default asset per slot |
-| `frame.lock.json` | Hashes of baked framework files (conformance) |
-| `src/frame/` | Baked framework runtime — engines, React layer, base CSS. Don't edit; re-bake instead |
+| `axf.manifest.json` | App identity, framework version, default asset per slot |
+| `axf.lock.json` | Hashes of baked framework files (conformance) |
+| `src/axf/` | Baked framework runtime — engines, React layer, base CSS. Don't edit; re-bake instead |
 | `src/assets/<type>/<id>.json` | Hot-swappable assets |
 | `src/views/` | Your views (register them in `src/App.tsx`) |
 | `src/actions.ts` | Handlers for the standard action vocabulary |
@@ -27,7 +27,7 @@ Every JSON file under `src/assets` is registered at startup. Swap from the **Ass
 menus, keyboard shortcuts (`Alt+C` / `Alt+S` / `Alt+L` / `Alt+R`), or programmatically:
 
 ```js
-Frame.swap('color-theme', 'neon-tide');
-Frame.swap('layout', 'next');
-Frame.importAsset({ $frame: 'asset@1', type: 'button', id: 'my-button', ... });
+AXF.swap('color-theme', 'neon-tide');
+AXF.swap('layout', 'next');
+AXF.importAsset({ $axf: 'asset@1', type: 'button', id: 'my-button', ... });
 ```

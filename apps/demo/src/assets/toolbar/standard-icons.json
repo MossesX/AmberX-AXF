@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "toolbar",
   "id": "standard-icons",
   "name": "Standard Icons",
   "version": "1.0.0",
   "description": "Icon-only file, edit and view groups with a search box.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "icons",

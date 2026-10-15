@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "context-menu",
   "id": "glass-minimal",
   "name": "Glass Minimal",
   "version": "1.0.0",
   "description": "Frosted, text-only menu focused on cycling component assets.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "glass",

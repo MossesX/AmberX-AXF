@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "container",
   "id": "soft-card",
   "name": "Soft Card",
   "version": "1.0.0",
   "description": "Raised card with a light shadow and plain header.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "variant": "card",

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { filterMenu, type MenuItem } from '../../core';
-import { useRuntime, useFrameState } from '../FrameProvider';
+import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
 
@@ -15,7 +15,7 @@ interface MenuListProps {
 /** Shared renderer for dropdown menus and context menus (UAC-aware, nested). */
 export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true }: MenuListProps) {
   const rt = useRuntime();
-  useFrameState();
+  useAxfState();
   const [openSub, setOpenSub] = useState<string | null>(null);
   const visible = filterMenu(items, (r) => rt.gate(r));
 

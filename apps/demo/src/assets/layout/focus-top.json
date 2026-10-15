@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "layout",
   "id": "focus-top",
   "name": "Focus Top",
   "version": "1.0.0",
   "description": "Navigation as top tabs, no side panels — a calm reading column.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "nav": "top",

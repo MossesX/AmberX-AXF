@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "color-theme",
   "id": "amber-ember",
   "name": "Amber Ember",
   "version": "1.0.0",
   "description": "Warm charcoal with an amber signal accent. The house default.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [
     "dark",
     "warm"

@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "layout",
   "id": "studio-dock",
   "name": "Studio Dock",
   "version": "1.0.0",
   "description": "Slim rail, docked inspector on the left, toolbar at the bottom, full-width canvas.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "nav": "left",

@@ -1,4 +1,4 @@
-export { FrameProvider, useRuntime, useFrameState, useAsset, useGate, useShortcutMap } from './FrameProvider';
+export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
 export { Button, Slider, Container, Chip, Kbd, type ButtonProps, type SliderProps, type ContainerProps } from './components/Controls';
 export { Icon, ICON_NAMES } from './components/Icon';

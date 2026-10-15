@@ -1,4 +1,4 @@
-import { AccountView, AppShell, AssetStudio, type ViewMap } from './frame/react';
+import { AccountView, AppShell, AssetStudio, type ViewMap } from './axf/react';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { Components } from './views/Components';

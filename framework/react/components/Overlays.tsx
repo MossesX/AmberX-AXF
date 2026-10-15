@@ -1,6 +1,6 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { useAsset, useFrameState, useRuntime } from '../FrameProvider';
+import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { MenuList } from './MenuList';
 
@@ -15,7 +15,7 @@ export type DialogMap = Record<string, DialogDef>;
 
 export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const d = useAsset('dialog').data;
   const panelRef = useRef<HTMLDivElement>(null);
   const def = state.dialog ? dialogs[state.dialog.id] : undefined;
@@ -55,7 +55,7 @@ const TOAST_ICON = { info: 'info', success: 'check-circle', warning: 'alert', da
 
 export function ToastHost() {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const p = useAsset('popup').data;
   return (
     <div className="fx-toasts" aria-live="polite">
@@ -79,7 +79,7 @@ export function ToastHost() {
 
 export function ContextMenuHost() {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const cm = useAsset('context-menu').data;
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);

@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "color-theme",
   "id": "neon-tide",
   "name": "Neon Tide",
   "version": "1.0.0",
   "description": "Deep indigo night with cyan and violet highlights.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [
     "dark",
     "vivid"

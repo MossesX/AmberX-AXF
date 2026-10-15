@@ -1,11 +1,11 @@
 import { ASSET_TYPES, assetTypeSpecs } from '../../core';
-import { useFrameState, useRuntime } from '../FrameProvider';
+import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 
 /** Compact hot-swap panel for the layout's inspector region. */
 export function Inspector() {
   const rt = useRuntime();
-  useFrameState();
+  useAxfState();
   return (
     <div className="fx-inspector">
       <div className="fx-inspector__head">

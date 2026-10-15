@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "style-theme",
   "id": "glass-orbit",
   "name": "Glass Orbit",
   "version": "1.0.0",
   "description": "Large radii, spacious rhythm, deep soft shadows and frosted blur.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [],
   "data": {
     "fontFamily": "'Manrope', system-ui, sans-serif",

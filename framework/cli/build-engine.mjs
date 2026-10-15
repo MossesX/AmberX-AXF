@@ -1,5 +1,5 @@
 /**
- * Frame build engine — programmatic API.
+ * AmberX AXF build engine — programmatic API.
  * The CLI (frame.mjs) is a thin wrapper; the same functions can be driven
  * from an HTTP API, a browser UI, an SSH session or an MCP server.
  */
@@ -29,7 +29,7 @@ export function validateAsset(raw) {
   const errors = [];
   if (!isObj(raw)) return { ok: false, errors: ['Asset must be a JSON object'] };
   for (const k of spec.envelope.required) if (!(k in raw)) errors.push(`Missing envelope field "${k}"`);
-  if (raw.$frame !== spec.envelope.frame) errors.push(`"$frame" must be "${spec.envelope.frame}"`);
+  if (raw.$axf !== spec.envelope.frame) errors.push(`"$axf" must be "${spec.envelope.frame}"`);
   const ts = spec.types[raw.type];
   if (!ts) return { ok: false, errors: [...errors, `Unknown asset type "${raw.type}"`] };
   if (typeof raw.id !== 'string' || !new RegExp(spec.envelope.idPattern).test(raw.id)) errors.push(`"id" must match ${spec.envelope.idPattern}`);
@@ -101,19 +101,19 @@ function copyTemplate(src, dest, tokens) {
   }
 }
 
-export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'frame-app';
+export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'axf-app';
 
 /* ------------------------------------------------------------------ */
 /* init                                                                */
 /* ------------------------------------------------------------------ */
 
 /**
- * Initialize a new Frame app: copy the template, bake the framework runtime
+ * Initialize a new AmberX AXF app: copy the template, bake the framework runtime
  * and every starter asset into it, write the manifest and lock file, then
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'Frame App', id, template = 'react-ts', targets = ['web'], log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets = ['web'], log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tplDir = join(FRAMEWORK_DIR, 'templates', template);
@@ -123,8 +123,8 @@ export function init({ dir, name = 'Frame App', id, template = 'react-ts', targe
   log(`• copying template "${template}"`);
   copyTemplate(tplDir, dest, { APP_NAME: name, APP_ID: appId, FRAMEWORK_VERSION });
 
-  log('• baking framework runtime into src/frame');
-  const frameDir = join(dest, 'src/frame');
+  log('• baking framework runtime into src/axf');
+  const frameDir = join(dest, 'src/axf');
   for (const part of BAKED) cpSync(join(FRAMEWORK_DIR, part), join(frameDir, part), { recursive: true });
 
   log('• baking starter assets into src/assets');
@@ -133,9 +133,9 @@ export function init({ dir, name = 'Frame App', id, template = 'react-ts', targe
   if (bad.length) throw new Error(`Framework assets failed validation:\n${bad.map((b) => `  ${b.file}: ${b.result.errors.join('; ')}`).join('\n')}`);
   cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, 'src/assets'), { recursive: true });
 
-  log('• writing frame.manifest.json');
+  log('• writing axf.manifest.json');
   const manifest = {
-    $frame: 'manifest@1',
+    $axf: 'manifest@1',
     app: { id: appId, name, version: '0.1.0' },
     framework: { version: FRAMEWORK_VERSION, template },
     initializedAt: new Date().toISOString(),
@@ -144,11 +144,11 @@ export function init({ dir, name = 'Frame App', id, template = 'react-ts', targe
     defaults,
     structure: structure.entries.map(({ path, purpose }) => ({ path, purpose })),
   };
-  writeFileSync(join(dest, 'frame.manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  writeFileSync(join(dest, 'axf.manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
-  log('• writing frame.lock.json');
+  log('• writing axf.lock.json');
   const files = Object.fromEntries(walk(frameDir).map((f) => [relative(dest, f), sha(f)]));
-  writeFileSync(join(dest, 'frame.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, files }, null, 2) + '\n');
+  writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, files }, null, 2) + '\n');
   mkdirSync(join(dest, 'public'), { recursive: true });
 
   const report = validateApp(dest);
@@ -174,7 +174,7 @@ export function validateApp(dir) {
   for (const a of assets) if (a.result.ok) (byType[a.raw.type] ??= new Set()).add(a.raw.id);
   for (const t of Object.keys(spec.types)) if (!byType[t]?.size) errors.push(`slot "${t}" has no assets`);
 
-  const mPath = join(root, 'frame.manifest.json');
+  const mPath = join(root, 'axf.manifest.json');
   if (existsSync(mPath)) {
     const m = readJson(mPath);
     for (const [t, id] of Object.entries(m.defaults ?? {})) {
@@ -182,7 +182,7 @@ export function validateApp(dir) {
     }
     if (m.framework?.version !== FRAMEWORK_VERSION) warnings.push(`app targets framework ${m.framework?.version}, engine is ${FRAMEWORK_VERSION}`);
   }
-  const lPath = join(root, 'frame.lock.json');
+  const lPath = join(root, 'axf.lock.json');
   if (existsSync(lPath)) {
     const lock = readJson(lPath);
     for (const [rel, hash] of Object.entries(lock.files)) {
@@ -221,12 +221,12 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     const props = Object.fromEntries(ts.required.map((k) => [k, ts.enums?.[k] ? { enum: ts.enums[k] } : ts.nested?.[k] ? { type: 'object', required: ts.nested[k] } : {}]));
     const schema = {
       $schema: 'https://json-schema.org/draft/2020-12/schema',
-      $id: `frame/${type}.schema.json`,
-      title: `Frame ${ts.label} asset`,
+      $id: `axf/${type}.schema.json`,
+      title: `AmberX AXF ${ts.label} asset`,
       type: 'object',
       required: spec.envelope.required,
       properties: {
-        $frame: { const: spec.envelope.frame },
+        $axf: { const: spec.envelope.frame },
         type: { const: type },
         id: { type: 'string', pattern: spec.envelope.idPattern },
         name: { type: 'string', minLength: 1 },

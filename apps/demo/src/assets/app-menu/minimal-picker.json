@@ -1,11 +1,11 @@
 {
-  "$frame": "asset@1",
+  "$axf": "asset@1",
   "type": "app-menu",
   "id": "minimal-picker",
   "name": "Minimal Picker",
   "version": "1.0.0",
   "description": "Two compact menus with direct theme, style and layout pickers.",
-  "author": "Frame",
+  "author": "AmberX AXF",
   "tags": [
     "minimal"
   ],

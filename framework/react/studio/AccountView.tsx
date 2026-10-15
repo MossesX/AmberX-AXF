@@ -1,12 +1,12 @@
 import { hasPermission, resolvePermissions } from '../../core';
-import { useAsset, useFrameState, useRuntime } from '../FrameProvider';
+import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip, Container } from '../components/Controls';
 import { Icon } from '../components/Icon';
 
 /** User account control: simulate roles and inspect the active policy. */
 export function AccountView() {
   const rt = useRuntime();
-  const state = useFrameState();
+  const state = useAxfState();
   const policy = useAsset('uac-policy');
   const p = policy.data;
   const perms = Object.keys(p.permissions);

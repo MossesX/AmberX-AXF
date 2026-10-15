@@ -1,5 +1,5 @@
 /**
- * FrameRuntime — the single source of truth for a Frame app.
+ * AxfRuntime — the single source of truth for a AmberX AXF app.
  * Holds the asset registry, the active asset per slot, UAC role, view,
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
@@ -15,15 +15,15 @@ import {
   type ActiveAssets,
   type Asset,
   type AssetType,
-  type FrameManifest,
-  type FrameState,
+  type AxfManifest,
+  type AxfState,
   type Gate,
   type Toast,
 } from './types';
 import { assetTypeSpecs, type ValidationResult } from './validate';
 
-export interface FrameRuntimeOptions {
-  manifest: FrameManifest;
+export interface AxfRuntimeOptions {
+  manifest: AxfManifest;
   assets: unknown[];
   /** localStorage key for persisting the user's hot-swap choices */
   storageKey?: string;
@@ -49,19 +49,19 @@ const safeStorage = {
   },
 };
 
-export class FrameRuntime {
+export class AxfRuntime {
   readonly registry = new AssetRegistry();
   readonly actions = new ActionBus();
-  readonly manifest: FrameManifest;
+  readonly manifest: AxfManifest;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
-  private state: FrameState;
+  private state: AxfState;
   private listeners = new Set<() => void>();
   private storageKey: string;
   private toastSeq = 0;
 
-  constructor(opts: FrameRuntimeOptions) {
+  constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
-    this.storageKey = opts.storageKey ?? `frame:${opts.manifest.app.id}`;
+    this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -71,7 +71,7 @@ export class FrameRuntime {
     for (const t of ASSET_TYPES) {
       const candidates = [saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
       const pick = candidates.find((id) => id && this.registry.has(t, id));
-      if (!pick) throw new Error(`Frame: no "${t}" asset is available — every slot needs at least one asset.`);
+      if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
       active[t] = pick;
     }
     const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
@@ -99,7 +99,7 @@ export class FrameRuntime {
 
   getState = () => this.state;
 
-  private set(patch: Partial<FrameState>, persist = false) {
+  private set(patch: Partial<AxfState>, persist = false) {
     this.state = { ...this.state, ...patch, rev: this.state.rev + 1 };
     if (persist) safeStorage.set(this.storageKey, { active: this.state.active, role: this.state.role });
     for (const l of this.listeners) l();
@@ -134,7 +134,7 @@ export class FrameRuntime {
     if (next === this.state.active[type]) return true;
 
     const active = { ...this.state.active, [type]: next };
-    const patch: Partial<FrameState> = { active, swaps: this.state.swaps + 1 };
+    const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
     if (type === 'uac-policy') {
       const policy = this.registry.get('uac-policy', next)!.data;
       if (!policy.roles.some((r) => r.id === this.state.role)) {
@@ -295,7 +295,7 @@ export class FrameRuntime {
     }, { label: 'Swap asset' });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate' });
     a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog' });
-    a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from Frame', kind as Toast['kind']), { label: 'Show toast' });
+    a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast' });
     a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role' });
     a.register('assets.random', () => this.randomize(), { label: 'Randomize assets', requires: 'assets.swap' });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
@@ -311,9 +311,9 @@ export class FrameRuntime {
   }
 }
 
-export function createFrame(opts: FrameRuntimeOptions): FrameRuntime {
-  const rt = new FrameRuntime(opts);
-  // Expose the runtime as a cross-application API (devtools, MCP bridges, other Frame apps in the page).
-  (globalThis as unknown as { Frame?: FrameRuntime }).Frame = rt;
+export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
+  const rt = new AxfRuntime(opts);
+  // Expose the runtime as a cross-application API (devtools, MCP bridges, other AmberX AXF apps in the page).
+  (globalThis as unknown as { AXF?: AxfRuntime }).AXF = rt;
   return rt;
 }

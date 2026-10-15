@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "frame": { "framework": "{{FRAMEWORK_VERSION}}", "template": "react-ts" },
+  "axf": { "framework": "{{FRAMEWORK_VERSION}}", "template": "react-ts" },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
