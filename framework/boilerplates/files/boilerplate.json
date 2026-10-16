@@ -1,0 +1,35 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "files",
+  "name": "File Manager",
+  "category": "utility",
+  "description": "Browse, preview, zip, share, transfer to the VPS",
+  "features": [
+    "c.files",
+    "c.transfer",
+    "c.share"
+  ],
+  "screens": [
+    {
+      "id": "browse",
+      "label": "Browse",
+      "kind": "list-detail"
+    },
+    {
+      "id": "transfers",
+      "label": "Transfers",
+      "kind": "list-detail"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.data"
+  ],
+  "defaults": {},
+  "status": "planned",
+  "source": "amberx"
+}

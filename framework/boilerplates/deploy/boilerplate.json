@@ -1,0 +1,44 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "deploy",
+  "name": "Deploy Console",
+  "category": "devops",
+  "description": "SSH terminal, deploy wizard, server monitoring (ShipX-style)",
+  "features": [
+    "c.terminal",
+    "c.deploy",
+    "c.servermon",
+    "c.github"
+  ],
+  "screens": [
+    {
+      "id": "servers",
+      "label": "Servers",
+      "kind": "dashboard"
+    },
+    {
+      "id": "terminal",
+      "label": "Terminal",
+      "kind": "custom"
+    },
+    {
+      "id": "deploy",
+      "label": "Deploy",
+      "kind": "wizard"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.vps"
+  ],
+  "defaults": {
+    "style-theme": "sharp-terminal",
+    "context-menu": "compact-classic"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

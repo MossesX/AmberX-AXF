@@ -148,7 +148,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -156,6 +156,8 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   const appId = id ?? slugify(name);
   targets ??= tpl.targets;
   const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
+  const bp = boilerplate ? loadBoilerplate(boilerplate) : null;
+  if (bp) modules = [...new Set([...modules, ...(bp.modules ?? [])])];
   const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
   log(`• copying template "${template}"`);
@@ -185,10 +187,11 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     framework: { version: FRAMEWORK_VERSION, template },
     initializedAt: new Date().toISOString(),
     targets,
-    startView: 'home',
-    defaults,
+    startView: bp?.screens?.[0]?.id ?? 'home',
+    defaults: { ...defaults, ...(bp?.defaults ?? {}) },
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
+  if (bp) manifest.boilerplate = { id: bp.id, name: bp.name, category: bp.category, screens: bp.screens, features: bp.features ?? [] };
   if (targets.includes('android')) manifest.android = { applicationId: pkg, scheme: 'axf', modules, minSdk: 26, targetSdk: 35 };
   const manifestText = JSON.stringify(manifest, null, 2) + '\n';
   writeFileSync(join(dest, 'axf.manifest.json'), manifestText);
@@ -198,6 +201,8 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     mkdirSync(dirname(inApk), { recursive: true });
     writeFileSync(inApk, manifestText);
   }
+
+  if (bp) applyBoilerplate(dest, tpl, bp, log);
 
   log('• writing axf.lock.json');
   writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, template, files }, null, 2) + '\n');
@@ -358,4 +363,59 @@ export function listModules() {
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
     return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
   });
+}
+
+/* ------------------------------------------------------------------ */
+/* boilerplates                                                        */
+/* ------------------------------------------------------------------ */
+
+export const BOILERPLATES_DIR = join(FRAMEWORK_DIR, 'boilerplates');
+
+export function listBoilerplates() {
+  const idx = join(BOILERPLATES_DIR, 'index.json');
+  return existsSync(idx) ? readJson(idx).items : [];
+}
+
+export function loadBoilerplate(id) {
+  const file = join(BOILERPLATES_DIR, id, 'boilerplate.json');
+  if (!existsSync(file)) throw new Error(`Unknown boilerplate "${id}". Available: ${listBoilerplates().map((b) => b.id).join(', ')}`);
+  return readJson(file);
+}
+
+/** Writes a nav-menu asset for the boilerplate's screens and a placeholder view per screen into a fresh app. */
+function applyBoilerplate(dest, tpl, bp, log) {
+  log(`• applying boilerplate "${bp.id}" (${(bp.screens ?? []).length} screens)`);
+  const nav = {
+    $axf: 'asset@1', type: 'nav-menu', id: `${bp.id}-nav`, name: `${bp.name} navigation`, version: '0.1.0',
+    description: `Generated from the ${bp.id} boilerplate.`, author: 'AmberX AXF build engine', tags: ['boilerplate'],
+    data: { style: 'list', header: bp.name, sections: [{ label: null, items: (bp.screens ?? []).map((s) => ({ id: s.id, label: s.label, icon: iconFor(s.kind), view: s.id })) }] },
+  };
+  const navDir = join(dest, tpl.assetsDir, 'nav-menu');
+  mkdirSync(navDir, { recursive: true });
+  writeFileSync(join(navDir, `${nav.id}.json`), JSON.stringify(nav, null, 2) + '\n');
+  const m = readJson(join(dest, 'axf.manifest.json'));
+  m.defaults['nav-menu'] = nav.id;
+  writeFileSync(join(dest, 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
+  if (tpl.kind === 'android-app') {
+    writeFileSync(join(dest, dirname(tpl.assetsDir), 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
+    const viewsDir = join(dest, 'app/src/main/kotlin/app/views');
+    mkdirSync(viewsDir, { recursive: true });
+    const pkg = m.android?.applicationId ?? 'app';
+    for (const s of bp.screens ?? []) {
+      const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View';
+      if (existsSync(join(viewsDir, `${cls}.kt`))) continue;
+      writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${s.label}", message = "Boilerplate screen (${s.kind}). Build it here.")\n}\n`);
+    }
+    const screens = (bp.screens ?? []).map((s) => { const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View'; return `"${s.id}" to { ${cls}() }`; });
+    const main = join(dest, 'app/src/main/kotlin/app/MainActivity.kt');
+    if (existsSync(main)) {
+      let text = readFileSync(main, 'utf8');
+      text = text.replace('AppShell(views = mapOf("home" to { HomeView() }))', `AppShell(views = mapOf(${screens.join(', ')}))`).replace(`import ${pkg}.views.HomeView`, `import ${pkg}.views.*`);
+      writeFileSync(main, text);
+    }
+  }
+}
+
+function iconFor(kind) {
+  return { 'list-detail': 'list', dashboard: 'grid', wizard: 'chevron-right', settings: 'settings', feed: 'layers', editor: 'edit', player: 'play', map: 'map', chat: 'users', profile: 'user', landing: 'home', custom: 'box' }[kind] ?? 'box';
 }

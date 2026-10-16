@@ -1,0 +1,31 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "sensors",
+  "name": "Sensor Dashboard",
+  "category": "utility",
+  "description": "Compass, level, pedometer, barometer with live charts",
+  "features": [
+    "c.sensors",
+    "c.charts"
+  ],
+  "screens": [
+    {
+      "id": "dashboard",
+      "label": "Dashboard",
+      "kind": "dashboard"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.platform"
+  ],
+  "defaults": {
+    "color-theme": "neon-tide"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

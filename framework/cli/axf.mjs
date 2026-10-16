@@ -2,7 +2,7 @@
 /**
  * axf — command-line driver for the AmberX AXF build engine.
  *
- *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts] [--targets web,desktop,android]
+ *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts] [--targets web,desktop,android] [--boilerplate notes]
  *   axf validate [dir]          validate an app (or the framework's own assets with --framework)
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
@@ -12,10 +12,11 @@
  *                               scaffold framework/android/lib-<name> (Android port)
  *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
  *   axf modules                 list Android framework modules
+ *   axf boilerplates            list boilerplates (framework/boilerplates)
  *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
  */
 import { relative } from 'node:path';
-import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
+import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 const flags = {};
@@ -48,6 +49,7 @@ try {
         targets: flags.targets ? String(flags.targets).split(',') : undefined,
         applicationId: flags['application-id'],
         modules: flags.modules ? String(flags.modules).split(',') : [],
+        boilerplate: flags.boilerplate,
         log: (m) => console.log(c.dim(m)),
       });
       console.log(c.ok(`\n✓ ${res.manifest.app.name} (${res.manifest.app.id}) created`));
@@ -88,6 +90,10 @@ try {
       const { startDevServer } = await import('./dev-server.mjs');
       startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), framework: !!flags.framework });
       await new Promise(() => {});
+      break;
+    }
+    case 'boilerplates': {
+      for (const b of listBoilerplates()) console.log(`${c.b(b.id.padEnd(14))} ${c.dim(b.category.padEnd(13))} ${b.name} — ${b.description}`);
       break;
     }
     case 'templates': {

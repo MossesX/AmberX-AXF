@@ -1,0 +1,49 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "showcase",
+  "name": "Framework Showcase",
+  "category": "starter",
+  "description": "Every studio view: assets, components, themes, layouts, roles, actions",
+  "features": [
+    "x.themes",
+    "x.layouts",
+    "x.components",
+    "x.designer",
+    "x.assets",
+    "x.uac",
+    "x.actions"
+  ],
+  "screens": [
+    {
+      "id": "home",
+      "label": "Home",
+      "kind": "landing"
+    },
+    {
+      "id": "assets",
+      "label": "Assets",
+      "kind": "custom"
+    },
+    {
+      "id": "components",
+      "label": "Components",
+      "kind": "custom"
+    },
+    {
+      "id": "designer",
+      "label": "Designer",
+      "kind": "custom"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.devtools"
+  ],
+  "defaults": {},
+  "status": "planned",
+  "source": "amberx"
+}

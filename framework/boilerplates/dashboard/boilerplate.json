@@ -1,0 +1,44 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "dashboard",
+  "name": "Admin Dashboard",
+  "category": "business",
+  "description": "KPIs, charts, tables, roles and audit",
+  "features": [
+    "c.charts",
+    "i.admin",
+    "i.accounts"
+  ],
+  "screens": [
+    {
+      "id": "overview",
+      "label": "Overview",
+      "kind": "dashboard"
+    },
+    {
+      "id": "users",
+      "label": "Users",
+      "kind": "list-detail"
+    },
+    {
+      "id": "admin",
+      "label": "Admin",
+      "kind": "settings"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.admin",
+    "ai.amberx.axf.accounts"
+  ],
+  "defaults": {
+    "layout": "classic-ide",
+    "nav-menu": "sidebar-list"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

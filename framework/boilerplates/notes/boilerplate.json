@@ -1,0 +1,45 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "notes",
+  "name": "Notes & Todo",
+  "category": "productivity",
+  "description": "Markdown notes, todo lists, tags, offline sync",
+  "features": [
+    "c.notes",
+    "c.texteditor",
+    "c.search",
+    "c.offline"
+  ],
+  "screens": [
+    {
+      "id": "home",
+      "label": "Notes",
+      "kind": "list-detail"
+    },
+    {
+      "id": "editor",
+      "label": "Editor",
+      "kind": "editor"
+    },
+    {
+      "id": "todos",
+      "label": "Todos",
+      "kind": "list-detail"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.data",
+    "ai.amberx.axf.settings"
+  ],
+  "defaults": {
+    "layout": "focus-top",
+    "nav-menu": "pill-tabs"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

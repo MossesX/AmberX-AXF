@@ -1,0 +1,42 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "subscription",
+  "name": "Subscription App",
+  "category": "business",
+  "description": "Accounts, profile, paywall and entitlement-gated features",
+  "features": [
+    "i.accounts",
+    "i.profile",
+    "i.subs"
+  ],
+  "screens": [
+    {
+      "id": "home",
+      "label": "Home",
+      "kind": "landing"
+    },
+    {
+      "id": "account",
+      "label": "Account",
+      "kind": "profile"
+    },
+    {
+      "id": "subscription",
+      "label": "Plans",
+      "kind": "custom"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.accounts",
+    "ai.amberx.axf.profile",
+    "ai.amberx.axf.billing"
+  ],
+  "defaults": {},
+  "status": "planned",
+  "source": "amberx"
+}

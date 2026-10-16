@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "console-nav",
+  "name": "Console Sidebar",
+  "version": "0.1.0",
+  "description": "Navigation for the AXF Dev Console: console workbench, framework studio, library interfaces.",
+  "author": "AmberX AXF",
+  "tags": ["console"],
+  "data": {
+    "style": "list",
+    "header": "Dev Console",
+    "sections": [
+      { "label": "Console", "items": [
+        { "id": "home", "label": "Home", "icon": "home", "view": "home" },
+        { "id": "tracker", "label": "Tracker", "icon": "list", "view": "tracker" },
+        { "id": "catalog", "label": "Features", "icon": "layers", "view": "catalog" },
+        { "id": "libraries", "label": "Libraries", "icon": "box", "view": "libraries" },
+        { "id": "demos", "label": "Demos", "icon": "play", "view": "demos" },
+        { "id": "modules", "label": "Modules", "icon": "grid", "view": "modules" },
+        { "id": "boilerplates", "label": "Boilerplates", "icon": "file", "view": "boilerplates" }
+      ] },
+      { "label": "Framework", "items": [
+        { "id": "assets", "label": "Assets", "icon": "palette", "view": "assets" },
+        { "id": "components", "label": "Components", "icon": "zap", "view": "components" },
+        { "id": "designer", "label": "Designer", "icon": "type", "view": "designer" },
+        { "id": "layouts", "label": "Layouts", "icon": "layout", "view": "layouts" },
+        { "id": "roles", "label": "Roles", "icon": "shield", "view": "roles" },
+        { "id": "actions", "label": "Actions", "icon": "terminal", "view": "actions" },
+        { "id": "devtools", "label": "Kernel", "icon": "bug", "view": "devtools", "requires": "dev.tools" }
+      ] },
+      { "label": "Interfaces", "items": [
+        { "id": "settings", "label": "Settings", "icon": "settings", "view": "settings" },
+        { "id": "logs", "label": "Logs", "icon": "terminal", "view": "logs", "requires": "dev.tools" },
+        { "id": "account", "label": "Account", "icon": "user", "view": "account" },
+        { "id": "profile", "label": "Profile", "icon": "user", "view": "profile" },
+        { "id": "subscription", "label": "Subscription", "icon": "star", "view": "subscription" },
+        { "id": "admin", "label": "Admin", "icon": "shield", "view": "admin", "requires": "uac.manage" }
+      ] }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "kanban",
+  "name": "Kanban Board",
+  "category": "productivity",
+  "description": "Boards, columns, cards with drag-reorder",
+  "features": [
+    "c.notes",
+    "c.search"
+  ],
+  "screens": [
+    {
+      "id": "boards",
+      "label": "Boards",
+      "kind": "dashboard"
+    },
+    {
+      "id": "board",
+      "label": "Board",
+      "kind": "custom"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.data"
+  ],
+  "defaults": {
+    "layout": "studio-dock"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

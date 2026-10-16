@@ -1,0 +1,36 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "apiclient",
+  "name": "API Client",
+  "category": "devops",
+  "description": "REST + WebSocket tester with collections",
+  "features": [
+    "c.rest",
+    "c.json"
+  ],
+  "screens": [
+    {
+      "id": "collections",
+      "label": "Collections",
+      "kind": "list-detail"
+    },
+    {
+      "id": "request",
+      "label": "Request",
+      "kind": "editor"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.network"
+  ],
+  "defaults": {
+    "style-theme": "sharp-terminal"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

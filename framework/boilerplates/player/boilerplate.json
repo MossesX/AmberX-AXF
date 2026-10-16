@@ -1,0 +1,38 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "player",
+  "name": "Media Player",
+  "category": "media",
+  "description": "Local + streaming video/audio with PiP and playlists",
+  "features": [
+    "c.video",
+    "c.music",
+    "c.vpsstream"
+  ],
+  "screens": [
+    {
+      "id": "library",
+      "label": "Library",
+      "kind": "feed"
+    },
+    {
+      "id": "player",
+      "label": "Now playing",
+      "kind": "player"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.media"
+  ],
+  "defaults": {
+    "color-theme": "neon-tide",
+    "layout": "focus-top"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

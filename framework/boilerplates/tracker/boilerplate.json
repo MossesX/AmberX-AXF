@@ -1,0 +1,43 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "tracker",
+  "name": "GPS Tracker",
+  "category": "location",
+  "description": "Live position, trail recording, stats, geofences",
+  "features": [
+    "c.gps",
+    "c.charts",
+    "c.offline"
+  ],
+  "screens": [
+    {
+      "id": "map",
+      "label": "Map",
+      "kind": "map"
+    },
+    {
+      "id": "trails",
+      "label": "Trails",
+      "kind": "list-detail"
+    },
+    {
+      "id": "stats",
+      "label": "Stats",
+      "kind": "dashboard"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.location"
+  ],
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "layout": "focus-top"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

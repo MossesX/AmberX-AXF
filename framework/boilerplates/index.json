@@ -1,0 +1,238 @@
+{
+  "$axf": "boilerplates@1",
+  "categories": [
+    {
+      "id": "productivity",
+      "label": "Productivity"
+    },
+    {
+      "id": "media",
+      "label": "Media"
+    },
+    {
+      "id": "location",
+      "label": "Location"
+    },
+    {
+      "id": "devops",
+      "label": "Dev & Ops"
+    },
+    {
+      "id": "business",
+      "label": "Business"
+    },
+    {
+      "id": "social",
+      "label": "Social"
+    },
+    {
+      "id": "assistant",
+      "label": "AI & voice"
+    },
+    {
+      "id": "utility",
+      "label": "Utilities"
+    },
+    {
+      "id": "starter",
+      "label": "Starters"
+    }
+  ],
+  "items": [
+    {
+      "id": "notes",
+      "name": "Notes & Todo",
+      "category": "productivity",
+      "description": "Markdown notes, todo lists, tags, offline sync",
+      "features": 4,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.data",
+        "ai.amberx.axf.settings"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "kanban",
+      "name": "Kanban Board",
+      "category": "productivity",
+      "description": "Boards, columns, cards with drag-reorder",
+      "features": 2,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.data"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "player",
+      "name": "Media Player",
+      "category": "media",
+      "description": "Local + streaming video/audio with PiP and playlists",
+      "features": 3,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.media"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "gallery",
+      "name": "Photo Gallery",
+      "category": "media",
+      "description": "Camera capture, albums, basic editing, share",
+      "features": 3,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.media"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "tracker",
+      "name": "GPS Tracker",
+      "category": "location",
+      "description": "Live position, trail recording, stats, geofences",
+      "features": 3,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.location"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "deploy",
+      "name": "Deploy Console",
+      "category": "devops",
+      "description": "SSH terminal, deploy wizard, server monitoring (ShipX-style)",
+      "features": 4,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.vps"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "apiclient",
+      "name": "API Client",
+      "category": "devops",
+      "description": "REST + WebSocket tester with collections",
+      "features": 2,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.network"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "dashboard",
+      "name": "Admin Dashboard",
+      "category": "business",
+      "description": "KPIs, charts, tables, roles and audit",
+      "features": 3,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.admin",
+        "ai.amberx.axf.accounts"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "subscription",
+      "name": "Subscription App",
+      "category": "business",
+      "description": "Accounts, profile, paywall and entitlement-gated features",
+      "features": 3,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.accounts",
+        "ai.amberx.axf.profile",
+        "ai.amberx.axf.billing"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "category": "social",
+      "description": "Realtime chat over the VPS with presence and media",
+      "features": 3,
+      "screens": 4,
+      "modules": [
+        "ai.amberx.axf.network",
+        "ai.amberx.axf.profile"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ai",
+      "name": "AI Assistant",
+      "category": "assistant",
+      "description": "Dockable chat with tools over Claude/OpenAI/Gemini",
+      "features": 2,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.ai"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "voice",
+      "name": "Voice Control",
+      "category": "assistant",
+      "description": "Hands-free control via voice + gestures (ActiveX-style)",
+      "features": 2,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.platform"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "files",
+      "name": "File Manager",
+      "category": "utility",
+      "description": "Browse, preview, zip, share, transfer to the VPS",
+      "features": 3,
+      "screens": 3,
+      "modules": [
+        "ai.amberx.axf.data"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "sensors",
+      "name": "Sensor Dashboard",
+      "category": "utility",
+      "description": "Compass, level, pedometer, barometer with live charts",
+      "features": 2,
+      "screens": 2,
+      "modules": [
+        "ai.amberx.axf.platform"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "blank",
+      "name": "Blank App",
+      "category": "starter",
+      "description": "Landing screen + settings, nothing else",
+      "features": 0,
+      "screens": 2,
+      "modules": [],
+      "status": "planned"
+    },
+    {
+      "id": "showcase",
+      "name": "Framework Showcase",
+      "category": "starter",
+      "description": "Every studio view: assets, components, themes, layouts, roles, actions",
+      "features": 7,
+      "screens": 5,
+      "modules": [
+        "ai.amberx.axf.devtools"
+      ],
+      "status": "planned"
+    }
+  ]
+}

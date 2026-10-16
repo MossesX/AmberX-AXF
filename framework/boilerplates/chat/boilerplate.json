@@ -1,0 +1,44 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "chat",
+  "name": "Chat",
+  "category": "social",
+  "description": "Realtime chat over the VPS with presence and media",
+  "features": [
+    "c.chat",
+    "c.push",
+    "c.camera"
+  ],
+  "screens": [
+    {
+      "id": "chats",
+      "label": "Chats",
+      "kind": "list-detail"
+    },
+    {
+      "id": "room",
+      "label": "Room",
+      "kind": "chat"
+    },
+    {
+      "id": "profile",
+      "label": "Profile",
+      "kind": "profile"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.network",
+    "ai.amberx.axf.profile"
+  ],
+  "defaults": {
+    "color-theme": "neon-tide",
+    "nav-menu": "icon-rail"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

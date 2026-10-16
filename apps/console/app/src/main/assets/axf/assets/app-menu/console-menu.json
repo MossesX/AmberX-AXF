@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "console-menu",
+  "name": "Console Menu",
+  "version": "0.1.0",
+  "description": "Application menu for the Dev Console.",
+  "author": "AmberX AXF",
+  "tags": ["console"],
+  "data": {
+    "menus": [
+      { "id": "console", "label": "Console", "items": [
+        { "id": "plan", "label": "Export build plan", "icon": "copy", "action": "console.exportPlan" },
+        { "id": "status", "label": "Export status.json", "icon": "copy", "action": "console.exportStatus" },
+        { "id": "sync", "label": "Sync tracker to GitHub", "icon": "github", "action": "console.syncGithub", "requires": "dev.deploy" },
+        { "id": "s1", "separator": true },
+        { "id": "settings", "label": "Settings", "icon": "settings", "action": "app.settings" },
+        { "id": "logs", "label": "Logs", "icon": "terminal", "action": "app.logs", "requires": "dev.tools" }
+      ] },
+      { "id": "assets", "label": "Assets", "items": [
+        { "id": "color", "label": "Next color theme", "icon": "palette", "action": "swap:color-theme:next", "shortcut": "Alt+C" },
+        { "id": "style", "label": "Next style theme", "icon": "type", "action": "swap:style-theme:next", "shortcut": "Alt+S" },
+        { "id": "layout", "label": "Next layout", "icon": "layout", "action": "swap:layout:next", "shortcut": "Alt+L" },
+        { "id": "kit", "label": "Next UI kit", "icon": "grid", "action": "swap:ui-kit:next" },
+        { "id": "s1", "separator": true },
+        { "id": "random", "label": "Randomize all", "icon": "shuffle", "action": "assets.random", "shortcut": "Alt+R" },
+        { "id": "reset", "label": "Reset to defaults", "icon": "refresh", "action": "assets.reset" },
+        { "id": "import", "label": "Import asset…", "icon": "upload", "action": "dialog:import-asset", "requires": "assets.import" }
+      ] },
+      { "id": "help", "label": "Help", "items": [
+        { "id": "about", "label": "About", "icon": "info", "action": "help.about" },
+        { "id": "docs", "label": "Documentation", "icon": "external", "action": "help.docs" },
+        { "id": "shortcuts", "label": "Shortcuts", "icon": "keyboard", "action": "dialog:shortcuts", "shortcut": "Alt+K" },
+        { "id": "kernel", "label": "Developer console", "icon": "bug", "action": "dev.console", "requires": "dev.tools" }
+      ] }
+    ]
+  }
+}

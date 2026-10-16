@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "console-tabs",
+  "name": "Console Phone Tabs",
+  "version": "0.1.0",
+  "description": "Five-tab phone navigation for the console; everything else is reachable from Home.",
+  "author": "AmberX AXF",
+  "tags": ["console", "phone"],
+  "data": {
+    "style": "pills",
+    "sections": [ { "items": [
+      { "id": "home", "label": "Home", "icon": "home", "view": "home" },
+      { "id": "tracker", "label": "Tracker", "icon": "list", "view": "tracker" },
+      { "id": "catalog", "label": "Features", "icon": "layers", "view": "catalog" },
+      { "id": "boilerplates", "label": "Boilerplates", "icon": "file", "view": "boilerplates" },
+      { "id": "settings", "label": "Settings", "icon": "settings", "view": "settings" }
+    ] } ]
+  }
+}

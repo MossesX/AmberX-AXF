@@ -1,0 +1,36 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "voice",
+  "name": "Voice Control",
+  "category": "assistant",
+  "description": "Hands-free control via voice + gestures (ActiveX-style)",
+  "features": [
+    "c.voice",
+    "c.pilot"
+  ],
+  "screens": [
+    {
+      "id": "home",
+      "label": "Home",
+      "kind": "landing"
+    },
+    {
+      "id": "commands",
+      "label": "Commands",
+      "kind": "list-detail"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.platform"
+  ],
+  "defaults": {
+    "style-theme": "glass-orbit"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

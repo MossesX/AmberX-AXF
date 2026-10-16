@@ -1,0 +1,24 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "blank",
+  "name": "Blank App",
+  "category": "starter",
+  "description": "Landing screen + settings, nothing else",
+  "features": [],
+  "screens": [
+    {
+      "id": "home",
+      "label": "Home",
+      "kind": "landing"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [],
+  "defaults": {},
+  "status": "planned",
+  "source": "amberx"
+}

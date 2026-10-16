@@ -1,0 +1,36 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "ai",
+  "name": "AI Assistant",
+  "category": "assistant",
+  "description": "Dockable chat with tools over Claude/OpenAI/Gemini",
+  "features": [
+    "c.ai",
+    "c.voice"
+  ],
+  "screens": [
+    {
+      "id": "chat",
+      "label": "Chat",
+      "kind": "chat"
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "kind": "list-detail"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.ai"
+  ],
+  "defaults": {
+    "layout": "studio-dock"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

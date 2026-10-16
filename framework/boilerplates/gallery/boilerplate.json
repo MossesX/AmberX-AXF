@@ -1,0 +1,37 @@
+{
+  "$axf": "boilerplate@1",
+  "id": "gallery",
+  "name": "Photo Gallery",
+  "category": "media",
+  "description": "Camera capture, albums, basic editing, share",
+  "features": [
+    "c.camera",
+    "c.gallery",
+    "c.share"
+  ],
+  "screens": [
+    {
+      "id": "albums",
+      "label": "Albums",
+      "kind": "feed"
+    },
+    {
+      "id": "photo",
+      "label": "Photo",
+      "kind": "custom"
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "kind": "settings"
+    }
+  ],
+  "modules": [
+    "ai.amberx.axf.media"
+  ],
+  "defaults": {
+    "layout": "focus-top"
+  },
+  "status": "planned",
+  "source": "amberx"
+}

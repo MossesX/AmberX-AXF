@@ -1,0 +1,85 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "axf-console",
+    "name": "AXF Dev Console",
+    "version": "0.2.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-compose"
+  },
+  "initializedAt": "2026-10-16T18:04:48.265Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "amber-ember",
+    "style-theme": "soft-studio",
+    "layout": "classic-ide",
+    "app-menu": "console-menu",
+    "toolbar": "standard-icons",
+    "nav-menu": "console-nav",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "uac-policy": "standard"
+  },
+  "structure": [
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Framework version + template the app was initialized from (Android apps depend on published framework modules, nothing is baked)."
+    },
+    {
+      "path": "settings.gradle.kts",
+      "purpose": "Includes the framework as a composite build (framework/android) and shares its version catalog."
+    },
+    {
+      "path": "app/src/main/assets/axf/axf.manifest.json",
+      "purpose": "Copy of the manifest shipped inside the APK; the kernel reads it at startup."
+    },
+    {
+      "path": "app/src/main/assets/axf/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type (same JSON as every other port)."
+    },
+    {
+      "path": "app/src/main/kotlin/app/App.kt",
+      "purpose": "Application class: builds the kernel from the manifest, assets and modules."
+    },
+    {
+      "path": "app/src/main/kotlin/app/MainActivity.kt",
+      "purpose": "The single activity: AxfRoot + AppShell + the app's views."
+    },
+    {
+      "path": "app/src/main/kotlin/app/AppModule.kt",
+      "purpose": "The app's own AxfModule: routes, actions, settings, dialogs."
+    },
+    {
+      "path": "app/src/main/kotlin/app/views",
+      "purpose": "Composable views registered with the shell."
+    }
+  ],
+  "android": {
+    "applicationId": "ai.amberx.axf.console",
+    "scheme": "axf",
+    "modules": [
+      "ai.amberx.axf.settings",
+      "ai.amberx.axf.logging",
+      "ai.amberx.axf.devtools",
+      "ai.amberx.axf.accounts",
+      "ai.amberx.axf.profile",
+      "ai.amberx.axf.billing",
+      "ai.amberx.axf.admin"
+    ],
+    "minSdk": 26,
+    "targetSdk": 35
+  }
+}
