@@ -7,9 +7,14 @@
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
+ *   axf templates               list app templates (react-ts, android-compose, …)
+ *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
+ *                               scaffold framework/android/lib-<name> (Android port)
+ *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
+ *   axf modules                 list Android framework modules
  */
 import { relative } from 'node:path';
-import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, loadAssets, newAsset, spec, validateApp, writeSchemas } from './build-engine.mjs';
+import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 const flags = {};
@@ -39,13 +44,15 @@ try {
         name: flags.name ?? 'AXF App',
         id: flags.id,
         template: flags.template ?? 'react-ts',
-        targets: String(flags.targets ?? 'web').split(','),
+        targets: flags.targets ? String(flags.targets).split(',') : undefined,
+        applicationId: flags['application-id'],
+        modules: flags.modules ? String(flags.modules).split(',') : [],
         log: (m) => console.log(c.dim(m)),
       });
       console.log(c.ok(`\n✓ ${res.manifest.app.name} (${res.manifest.app.id}) created`));
       console.log(`  ${res.assets} assets · ${res.bakedFiles} baked framework files`);
       printReport(res.report);
-      console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && npm install && npm run dev\n`);
+      console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && ${res.next || 'npm install && npm run dev'}\n`);
       break;
     }
     case 'validate': {
@@ -74,6 +81,27 @@ try {
       if (!type || !id) throw new Error('Usage: axf new-asset <type> <id> [--from <id>]');
       const f = newAsset({ dir: flags.dir ?? '.', type, id, from: flags.from, name: flags.name });
       console.log(c.ok(`✓ created ${relative(process.cwd(), f)}`));
+      break;
+    }
+    case 'templates': {
+      for (const t of listTemplates()) console.log(`${c.b(t.id.padEnd(18))} ${t.label ?? ''} ${c.dim(`[${(t.targets ?? []).join(', ')}]`)}`);
+      break;
+    }
+    case 'new-module': {
+      if (!args[0]) throw new Error('Usage: axf new-module <name> [--label "Name"] [--capabilities a,b]');
+      const r = newModule({ name: args[0], label: flags.label, capabilities: flags.capabilities ? String(flags.capabilities).split(',') : [], dependsOn: flags['depends-on'] ? String(flags['depends-on']).split(',') : [], compose: !flags['no-compose'], log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ created ${relative(process.cwd(), r.dir)} (${r.moduleId})`));
+      break;
+    }
+    case 'new-demo': {
+      if (!args[0]) throw new Error('Usage: axf new-demo <library> [--name "Name"] [--dir apps/demo-x]');
+      const res = newDemoApp({ library: args[0], name: flags.name, dir: flags.dir, log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ ${res.manifest.app.name} created at ${relative(process.cwd(), res.dir)}`));
+      printReport(res.report);
+      break;
+    }
+    case 'modules': {
+      for (const m of listModules()) console.log(`${c.b(m.name.padEnd(24))} ${c.dim(m.kind.padEnd(10))} ${m.description}`);
       break;
     }
     case 'schemas': {

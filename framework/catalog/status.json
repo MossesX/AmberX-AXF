@@ -1,0 +1,1962 @@
+{
+  "f.pure": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.layers": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.singleactivity": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.composeonly": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.state": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.coroutines": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.result": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.serialization": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.clock": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.di": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.minsdk": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.ids": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.apiversion": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.public": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.assetver": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.migrations": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.deprecate": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.manifest": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.featureflags": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.module": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.extpoints": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.stubs": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.ordering": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.registry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.eventbus": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.ports": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.tokens": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.tokenset": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.locals": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.regions": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.windowclass": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.actions": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.uacids": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.hotswap": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.icons": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.routes": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.results": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.fs": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.settingsschema": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.secure": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.permissions": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.logging": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.telemetry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.errors": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.gradle": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.packages": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.manifestmerge": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.publish": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.testseams": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.buildbridge": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.repo": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.dynfeatures": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.motion": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.a11y": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.i18n": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.offline": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.dbstrategy": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.backup": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "f.security": {
+    "status": "partial",
+    "wave": 1,
+    "module": "build-logic",
+    "notes": "Baseline in place (R8 keep rules, release signing config seam, lazy module init); cert pinning, baseline profiles and release channels are wave 2."
+  },
+  "f.signing": {
+    "status": "partial",
+    "wave": 1,
+    "module": "build-logic",
+    "notes": "Baseline in place (R8 keep rules, release signing config seam, lazy module init); cert pinning, baseline profiles and release channels are wave 2."
+  },
+  "f.perf": {
+    "status": "partial",
+    "wave": 1,
+    "module": "build-logic",
+    "notes": "Baseline in place (R8 keep rules, release signing config seam, lazy module init); cert pinning, baseline profiles and release channels are wave 2."
+  },
+  "k.assets": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.swap": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.theme": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.layout": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.comp": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.uac": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.ctx": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.actions": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.manifest": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.validate": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.newtypes": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.modules": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.ext": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.events": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.flags": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.di": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.migrate": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.compat": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.stubs": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.config": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.errors": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.ports": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "k.lifecycle": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "k.scheduler": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.undo": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.clipboard": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.search": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.shortcuts": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.scripting": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.nocode": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.plugins": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-kernel"
+  },
+  "k.test": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-testing"
+  },
+  "k.devconsole": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-devtools"
+  },
+  "k.hotreload": {
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-devtools",
+    "notes": "Client + flag exist; VPS endpoint is wave 2."
+  },
+  "k.buildbridge": {
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-devtools",
+    "notes": "Client + flag exist; VPS endpoint is wave 2."
+  },
+  "s.settings": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "s.prefs": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "s.scopes": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "s.secure": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "s.searchable": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "l.log": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-logging"
+  },
+  "l.viewer": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-logging"
+  },
+  "l.crash": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-logging"
+  },
+  "l.diag": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-logging"
+  },
+  "l.net": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-logging"
+  },
+  "l.perf": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-logging"
+  },
+  "l.remote": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-logging"
+  },
+  "l.analytics": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-logging"
+  },
+  "a.admin": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "a.audit": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "a.users": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "a.content": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "a.maint": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "a.devicemgmt": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-admin"
+  },
+  "u.accounts": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.auth": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.bio": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.sessions": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.recovery": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.roles": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.guest": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "u.gdpr": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-accounts"
+  },
+  "p.profile": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-profile"
+  },
+  "p.avatar": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-profile"
+  },
+  "p.sync": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-profile"
+  },
+  "p.public": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-profile"
+  },
+  "p.activity": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-profile"
+  },
+  "b.subs": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.billing": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.entitle": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.iap": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.promo": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.license": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.ads": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "b.stripe": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-billing"
+  },
+  "ui.tokens": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.type": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.shape": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.space": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.elev": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.motion": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.opacity": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.a11y": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.adaptive": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.controls": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.inputs": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.nav": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.menus": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.overlays": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.containers": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.lists": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.states": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.templates": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.icons": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.fonts": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.strings": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.forms": {
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
+  },
+  "ui.dyn": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.contrast": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.images": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.sounds": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.tables": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.charts": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.media": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.editor": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.onboard": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.gestures": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.widgets": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.livewallpaper": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.anim": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.canvas": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "n.routes": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "n.shortcuts": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "d.db": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "d.kv": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "d.files": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "d.jsonstore": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "w.http": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "w.realtime": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "n.tabs": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "d.search": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "d.sync": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "d.backup": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "d.crypto": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.download": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.upload": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.vps": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.github": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.hostinger": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.coolify": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.ota": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.webview": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.ai": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.mcp": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.push": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.email": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.p2p": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "w.cloud": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": null
+  },
+  "dv.perm": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.notif": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.clip": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.intents": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.locale": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.themeos": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-platform-android"
+  },
+  "dv.bg": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.loc": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.maps": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.camera": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.media": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.stream": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.audio": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.sensors": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.ble": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.nfc": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.usb": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.wifi": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.tel": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.contacts": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.print": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.a11yservice": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.pip": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.formfactors": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.admin": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.updates": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.security": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.ml": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.health": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.ar": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.screen": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.power": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.storagemon": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "dv.ir": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-platform-android"
+  },
+  "cx.tracker": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.kernelstatus": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.catalog": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.suggest": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.modules": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.packages": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.assets": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.settings": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.logs": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.landing": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.libpicker": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+  },
+  "cx.demos": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+  },
+  "cx.buildengine": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+  },
+  "cx.roadmap": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+  },
+  "cx.ai": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
+  },
+  "cx.github": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
+  },
+  "m.kernel": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.platform": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.ui": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.assets": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.nav": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.data": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.network": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.settings": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.logging": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.devtools": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.testing": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.buildlogic": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.template": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.app.console": {
+    "status": "built",
+    "wave": 1,
+    "module": null
+  },
+  "m.admin": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": null
+  },
+  "m.accounts": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": null
+  },
+  "m.profile": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": null
+  },
+  "m.billing": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": null
+  },
+  "m.app.demo": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": null
+  },
+  "m.media": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.location": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.ai": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.vps": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "cx.tracker.waves": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.tracker.history": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.tracker.owner": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.tracker.gh": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.tracker.export": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.tracker.coverage": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.kernelstatus.graph": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.kernelstatus.health": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.kernelstatus.stubs": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.roadmap.estimates": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.roadmap.deps": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.catalog.tags": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.catalog.custom": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.catalog.import": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.suggest.ai": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.suggest.rules": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.libpicker.template": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.libpicker.prompt": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.libpicker.run": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.libpicker.install": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.demos.screens": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.demos.launch": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.modules.toggle": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.modules.new": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.modules.publish": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.modules.diff": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.assets.editor": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.assets.validate": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.assets.push": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.buildengine.logs": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.buildengine.queue": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.ai.plan": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.ai.review": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.github.pr": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "cx.github.release": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.home": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.themes": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.styles": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.layouts": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.components": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.designer": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.assets": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.menus": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.uac": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.actions": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.modules": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.flags": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.wallpaper": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "x.a11ymode": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "i.settings": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings"
+  },
+  "i.logs": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-logging"
+  },
+  "i.admin": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "i.accounts": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "i.profile": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "i.subs": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.texteditor": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.gps": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.video": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.vpsstream": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.camera": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.gallery": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.audio": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.music": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.radio": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.screenrec": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.draw": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.pdf": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.ocr": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.3d": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.spreadsheet": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.slides": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.ai": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.aiimage": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.terminal": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.logtail": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.github": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.deploy": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.servermon": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.dns": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.cron": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.rest": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.json": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.dbbrowser": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.webview": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.mcp": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.buildengine": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.files": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.notes": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.calendar": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.timer": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.contacts": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.passwords": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.backup": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.transfer": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.offline": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.search": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.clipboard": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.calc": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.weather": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.rss": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.charts": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.sensors": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.ble": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.nfc": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.wifi": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.notifications": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.push": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.widgets": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.share": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.voice": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.pilot": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.flashlight": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.battery": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.multiwindow": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.a11y": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.chat": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.game": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  },
+  "c.about": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
+  }
+}

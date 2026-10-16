@@ -1,5 +1,5 @@
 {
-  "framework": "0.1.0",
+  "framework": "0.2.0",
   "files": {
     "src/axf/core/engines/actions.ts": "5492f24ab3a42a1b",
     "src/axf/core/engines/components.ts": "90f827417fde3ad5",
@@ -25,7 +25,7 @@
     "src/axf/react/studio/Inspector.tsx": "f91e3a9cd16d415b",
     "src/axf/react/studio/builtinDialogs.tsx": "d8916912ce3498ba",
     "src/axf/schemas/app-structure.json": "a47a39f06b6ed5dd",
-    "src/axf/schemas/asset-types.json": "27e73ab016790b03",
+    "src/axf/schemas/asset-types.json": "a5a69d41e76e97cc",
     "src/axf/schemas/json/app-menu.schema.json": "93777023ab30d82c",
     "src/axf/schemas/json/button.schema.json": "a5e2d5b5143b69d0",
     "src/axf/schemas/json/color-theme.schema.json": "261986185ffbbb81",

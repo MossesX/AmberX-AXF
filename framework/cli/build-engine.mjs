@@ -4,7 +4,7 @@
  * from an HTTP API, a browser UI, an SSH session or an MCP server.
  */
 import { createHash } from 'node:crypto';
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -12,11 +12,44 @@ export const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '.
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
 export const spec = readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json'));
+/** Port-specific asset types (android first) layered on the shared spec. They are optional slots: validation never requires them. */
+const ANDROID_SPEC = join(FRAMEWORK_DIR, 'schemas/asset-types.android.json');
+if (existsSync(ANDROID_SPEC)) {
+  for (const [id, t] of Object.entries(readJson(ANDROID_SPEC).types)) spec.types[id] ??= { ...t, optional: true };
+}
 export const structure = readJson(join(FRAMEWORK_DIR, 'schemas/app-structure.json'));
+
+/* ------------------------------------------------------------------ */
+/* templates — each template dir carries a template.json describing     */
+/* what to bake, where assets go and the app structure it produces      */
+/* ------------------------------------------------------------------ */
+
+export function listTemplates() {
+  const dir = join(FRAMEWORK_DIR, 'templates');
+  return readdirSync(dir).filter((d) => existsSync(join(dir, d, 'template.json'))).map((d) => ({ id: d, ...readJson(join(dir, d, 'template.json')) }));
+}
+
+export function templateInfo(id) {
+  const file = join(FRAMEWORK_DIR, 'templates', id, 'template.json');
+  if (!existsSync(file)) throw new Error(`Unknown template "${id}". Templates: ${listTemplates().map((t) => t.id).join(', ')}`);
+  const t = readJson(file);
+  return {
+    id,
+    label: t.label ?? id,
+    kind: t.kind ?? 'app',
+    targets: t.targets ?? ['web'],
+    bake: t.bake ?? [],
+    bakeInto: t.bakeInto ?? 'src/axf',
+    assetsDir: t.assetsDir ?? 'src/assets',
+    structure: t.structure ?? structure.entries,
+    tokens: t.tokens ?? {},
+    next: t.next ?? '',
+  };
+}
 export const defaults = readJson(join(FRAMEWORK_DIR, 'defaults.json'));
 export const FRAMEWORK_VERSION = spec.frameworkVersion;
 
-/** Directories of the framework that get baked into every new app. */
+/** Directories of the framework that the react-ts template bakes into every new app (template.json → bake). */
 const BAKED = ['core', 'react', 'ui', 'schemas'];
 
 /* ------------------------------------------------------------------ */
@@ -86,7 +119,7 @@ function walk(dir) {
 }
 
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
-const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore)$/;
+const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
 
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
@@ -113,25 +146,34 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets = ['web'], log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
+  const tpl = templateInfo(template);
   const tplDir = join(FRAMEWORK_DIR, 'templates', template);
-  if (!existsSync(tplDir)) throw new Error(`Unknown template "${template}"`);
   const appId = id ?? slugify(name);
+  targets ??= tpl.targets;
+  const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
+  const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
   log(`• copying template "${template}"`);
-  copyTemplate(tplDir, dest, { APP_NAME: name, APP_ID: appId, FRAMEWORK_VERSION });
+  copyTemplate(tplDir, dest, tokens);
+  const tplJson = join(dest, 'template.json');
+  if (existsSync(tplJson)) rmSync(tplJson);
 
-  log('• baking framework runtime into src/axf');
-  const frameDir = join(dest, 'src/axf');
-  for (const part of BAKED) cpSync(join(FRAMEWORK_DIR, part), join(frameDir, part), { recursive: true });
+  let files = {};
+  if (tpl.bake.length) {
+    log(`• baking framework runtime into ${tpl.bakeInto}`);
+    const frameDir = join(dest, tpl.bakeInto);
+    for (const part of tpl.bake) cpSync(join(FRAMEWORK_DIR, part), join(frameDir, part), { recursive: true });
+    files = Object.fromEntries(walk(frameDir).map((f) => [relative(dest, f), sha(f)]));
+  }
 
-  log('• baking starter assets into src/assets');
+  log(`• baking starter assets into ${tpl.assetsDir}`);
   const assets = loadAssets(join(FRAMEWORK_DIR, 'assets'));
   const bad = assets.filter((a) => !a.result.ok);
   if (bad.length) throw new Error(`Framework assets failed validation:\n${bad.map((b) => `  ${b.file}: ${b.result.errors.join('; ')}`).join('\n')}`);
-  cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, 'src/assets'), { recursive: true });
+  cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, tpl.assetsDir), { recursive: true });
 
   log('• writing axf.manifest.json');
   const manifest = {
@@ -142,37 +184,51 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     targets,
     startView: 'home',
     defaults,
-    structure: structure.entries.map(({ path, purpose }) => ({ path, purpose })),
+    structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
-  writeFileSync(join(dest, 'axf.manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  if (targets.includes('android')) manifest.android = { applicationId: pkg, scheme: 'axf', modules, minSdk: 26, targetSdk: 35 };
+  const manifestText = JSON.stringify(manifest, null, 2) + '\n';
+  writeFileSync(join(dest, 'axf.manifest.json'), manifestText);
+  // Android apps also carry the manifest inside the APK assets so the kernel can read it at runtime.
+  if (tpl.kind === 'android-app') {
+    const inApk = join(dest, dirname(tpl.assetsDir), 'axf.manifest.json');
+    mkdirSync(dirname(inApk), { recursive: true });
+    writeFileSync(inApk, manifestText);
+  }
 
   log('• writing axf.lock.json');
-  const files = Object.fromEntries(walk(frameDir).map((f) => [relative(dest, f), sha(f)]));
-  writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, files }, null, 2) + '\n');
-  mkdirSync(join(dest, 'public'), { recursive: true });
+  writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, template, files }, null, 2) + '\n');
+  if (tpl.kind !== 'android-app') mkdirSync(join(dest, 'public'), { recursive: true });
 
   const report = validateApp(dest);
   if (!report.ok) throw new Error(`Initialized app failed validation:\n${report.errors.join('\n')}`);
-  return { dir: dest, manifest, assets: assets.length, bakedFiles: Object.keys(files).length, report };
+  return { dir: dest, manifest, assets: assets.length, bakedFiles: Object.keys(files).length, report, next: tpl.next };
 }
 
 /* ------------------------------------------------------------------ */
 /* validate                                                            */
 /* ------------------------------------------------------------------ */
 
+export function appTemplate(root) {
+  const mPath = join(root, 'axf.manifest.json');
+  const id = existsSync(mPath) ? readJson(mPath).framework?.template : undefined;
+  try { return templateInfo(id ?? 'react-ts'); } catch { return templateInfo('react-ts'); }
+}
+
 export function validateApp(dir) {
   const root = resolve(dir);
   const errors = [];
   const warnings = [];
-  for (const e of structure.entries) {
+  const tpl = appTemplate(root);
+  for (const e of tpl.structure) {
     const p = join(root, e.path);
     if (!existsSync(p)) (e.required ? errors : warnings).push(`missing ${e.kind} ${e.path}`);
   }
-  const assets = loadAssets(join(root, 'src/assets'));
+  const assets = loadAssets(join(root, tpl.assetsDir));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
   const byType = {};
   for (const a of assets) if (a.result.ok) (byType[a.raw.type] ??= new Set()).add(a.raw.id);
-  for (const t of Object.keys(spec.types)) if (!byType[t]?.size) errors.push(`slot "${t}" has no assets`);
+  for (const [t, ts] of Object.entries(spec.types)) if (!ts.optional && !byType[t]?.size) errors.push(`slot "${t}" has no assets`);
 
   const mPath = join(root, 'axf.manifest.json');
   if (existsSync(mPath)) {
@@ -185,7 +241,7 @@ export function validateApp(dir) {
   const lPath = join(root, 'axf.lock.json');
   if (existsSync(lPath)) {
     const lock = readJson(lPath);
-    for (const [rel, hash] of Object.entries(lock.files)) {
+    for (const [rel, hash] of Object.entries(lock.files ?? {})) {
       const p = join(root, rel);
       if (!existsSync(p)) errors.push(`baked file removed: ${rel}`);
       else if (sha(p) !== hash) warnings.push(`baked file modified: ${rel}`);
@@ -200,7 +256,8 @@ export function validateApp(dir) {
 
 export function newAsset({ dir, type, id, from, name }) {
   if (!spec.types[type]) throw new Error(`Unknown type "${type}". Types: ${Object.keys(spec.types).join(', ')}`);
-  const assetsDir = join(resolve(dir), 'src/assets');
+  const root = resolve(dir);
+  const assetsDir = existsSync(join(root, 'axf.manifest.json')) ? join(root, appTemplate(root).assetsDir) : join(root, 'src/assets');
   const source = from ? join(assetsDir, type, `${from}.json`) : null;
   const base = source && existsSync(source) ? readJson(source) : loadAssets(assetsDir).find((a) => a.raw?.type === type)?.raw;
   if (!base) throw new Error(`No ${type} asset to start from.`);
@@ -240,4 +297,62 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     written.push(f);
   }
   return written;
+}
+
+/* ------------------------------------------------------------------ */
+/* Android modules & demo apps (driven by the Dev Console)              */
+/* ------------------------------------------------------------------ */
+
+export const ANDROID_DIR = join(FRAMEWORK_DIR, 'android');
+
+/**
+ * Scaffold a new framework library module `lib-<name>` in framework/android from the android-module
+ * template and register it in settings.gradle.kts. The module is a placeholder AxfModule until built out.
+ */
+export function newModule({ name, label, capabilities = [], dependsOn = [], compose = true, log = () => {} }) {
+  const slug = slugify(name);
+  const moduleName = slug.startsWith('lib-') || slug.startsWith('axf-') ? slug : `lib-${slug}`;
+  const pkgName = moduleName.replace(/^(lib|axf)-/, '').replace(/-/g, '.');
+  const dest = join(ANDROID_DIR, moduleName);
+  if (existsSync(dest)) throw new Error(`Module ${moduleName} already exists`);
+  const className = pkgName.split('.').map((p) => p.replace(/\b\w/g, (c) => c.toUpperCase())).join('') + 'Module';
+  const tokens = {
+    MODULE_NAME: moduleName, PACKAGE: `ai.amberx.axf.${pkgName}`, CLASS_NAME: className, LABEL: label ?? name,
+    MODULE_ID: `ai.amberx.axf.${pkgName}`, PLUGIN: compose ? 'axf.android.compose.library' : 'axf.android.library',
+    CAPABILITIES: capabilities.map((c) => `Capability("${c}")`).join(', '),
+    DEPENDS_ON: dependsOn.map((d) => `"${d}"`).join(', '),
+    FRAMEWORK_VERSION,
+  };
+  log(`• scaffolding ${moduleName}`);
+  copyTemplate(join(FRAMEWORK_DIR, 'templates/android-module'), dest, tokens);
+  rmSync(join(dest, 'template.json'), { force: true });
+  // Kotlin sources live under a package path: move the placeholder file.
+  const srcTpl = join(dest, 'src/main/kotlin/Module.kt');
+  if (existsSync(srcTpl)) {
+    const pkgDir = join(dest, 'src/main/kotlin', ...tokens.PACKAGE.split('.'));
+    mkdirSync(pkgDir, { recursive: true });
+    writeFileSync(join(pkgDir, `${className}.kt`), readFileSync(srcTpl, 'utf8'));
+    rmSync(srcTpl);
+  }
+  const settings = join(ANDROID_DIR, 'settings.gradle.kts');
+  const text = readFileSync(settings, 'utf8');
+  if (!text.includes(`":${moduleName}"`)) writeFileSync(settings, text.trimEnd() + `\ninclude(":${moduleName}")\n`);
+  return { dir: dest, moduleName, moduleId: tokens.MODULE_ID, className };
+}
+
+/** Create a demo app `apps/demo-<lib>` that showcases one library (what the Dev Console's library picker does). */
+export function newDemoApp({ library, name, dir, log = () => {} }) {
+  const slug = slugify(library).replace(/^lib-/, '');
+  const target = dir ?? join(FRAMEWORK_DIR, '..', 'apps', `demo-${slug}`);
+  const moduleId = library.startsWith('ai.amberx.') ? library : `ai.amberx.axf.${slug.replace(/-/g, '.')}`;
+  return init({ dir: target, name: name ?? `AXF Demo — ${slug}`, id: `demo-${slug}`, template: 'android-compose', targets: ['android'], modules: [moduleId], log });
+}
+
+export function listModules() {
+  const settings = readFileSync(join(ANDROID_DIR, 'settings.gradle.kts'), 'utf8');
+  return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
+    const readme = join(ANDROID_DIR, name, 'README.md');
+    const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
+    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
+  });
 }

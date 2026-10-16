@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- {{MODULE_NAME}}: declare only the permissions, services and receivers this library needs. -->
+</manifest>

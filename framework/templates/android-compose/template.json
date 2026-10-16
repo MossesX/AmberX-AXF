@@ -1,0 +1,19 @@
+{
+  "label": "Android app (Kotlin + Jetpack Compose) on the AXF Android port",
+  "kind": "android-app",
+  "targets": ["android"],
+  "bake": [],
+  "assetsDir": "app/src/main/assets/axf/assets",
+  "structure": [
+    { "path": "axf.manifest.json", "kind": "file", "required": true, "purpose": "App identity, framework version, targets and the default asset for every slot." },
+    { "path": "axf.lock.json", "kind": "file", "required": true, "purpose": "Framework version + template the app was initialized from (Android apps depend on published framework modules, nothing is baked)." },
+    { "path": "settings.gradle.kts", "kind": "file", "required": true, "purpose": "Includes the framework as a composite build (framework/android) and shares its version catalog." },
+    { "path": "app/src/main/assets/axf/axf.manifest.json", "kind": "file", "required": true, "purpose": "Copy of the manifest shipped inside the APK; the kernel reads it at startup." },
+    { "path": "app/src/main/assets/axf/assets", "kind": "dir", "required": true, "purpose": "Hot-swappable assets, one folder per asset type (same JSON as every other port)." },
+    { "path": "app/src/main/kotlin/app/App.kt", "kind": "file", "required": true, "purpose": "Application class: builds the kernel from the manifest, assets and modules." },
+    { "path": "app/src/main/kotlin/app/MainActivity.kt", "kind": "file", "required": true, "purpose": "The single activity: AxfRoot + AppShell + the app's views." },
+    { "path": "app/src/main/kotlin/app/AppModule.kt", "kind": "file", "required": true, "purpose": "The app's own AxfModule: routes, actions, settings, dialogs." },
+    { "path": "app/src/main/kotlin/app/views", "kind": "dir", "required": true, "purpose": "Composable views registered with the shell." }
+  ],
+  "next": "open this folder in Android Studio (or run: ./gradlew :app:assembleDebug)"
+}

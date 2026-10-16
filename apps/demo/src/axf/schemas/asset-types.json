@@ -1,6 +1,6 @@
 {
   "$id": "axf/asset-types",
-  "frameworkVersion": "0.1.0",
+  "frameworkVersion": "0.2.0",
   "envelope": {
     "frame": "asset@1",
     "required": ["$axf", "type", "id", "name", "version", "data"],

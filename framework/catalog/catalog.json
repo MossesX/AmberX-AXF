@@ -1,0 +1,3173 @@
+{
+  "$axf": "catalog@1",
+  "frameworkVersion": "0.2.0",
+  "generatedAt": "2026-10-16T17:07:31.887Z",
+  "tabs": [
+    {
+      "id": "foundations",
+      "label": "Foundations",
+      "groups": [
+        {
+          "id": "kernel-shape-decided-once-lived-with-forever",
+          "label": "Kernel shape (decided once, lived with forever)",
+          "items": [
+            {
+              "id": "f.pure",
+              "title": "Kernel is pure Kotlin with zero Android imports (Kotlin Multiplatform-ready)",
+              "note": "Lets the same kernel power desktop, iOS, JS/WASM ports later. Retrofitting KMP after Android types leak in is a rewrite.",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.layers",
+              "title": "Strict layering: kernel → platform adapters → UI → libraries → app; lower layers never import higher ones",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.singleactivity",
+              "title": "Single-activity architecture with a framework-owned root composable (AxfRoot)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.composeonly",
+              "title": "Compose-first UI with an explicit AndroidView interop seam (no XML layouts in the framework)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.state",
+              "title": "One state model: immutable state + reducers + serializable snapshots (process-death restore)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.coroutines",
+              "title": "Concurrency contract: structured coroutines, injected dispatchers, main-safe APIs, cancellation rules",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.result",
+              "title": "One Result/Failure type used by every kernel and library API",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.serialization",
+              "title": "One serializer (kotlinx.serialization) with unknown-field tolerance everywhere",
+              "note": "Old apps must load newer assets without crashing.",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.clock",
+              "title": "Clock, ID generator, random and locale injected (never called statically)",
+              "note": "Testability and deterministic replays.",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.di",
+              "title": "DI container boundary: framework-owned graph, Hilt-compatible, every module declares its bindings",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.minsdk",
+              "title": "Min SDK / target SDK / Kotlin / Compose BOM versions pinned in a version catalog",
+              "note": "Propose: minSdk 26, target 35.",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "identity-versioning-and-compatibility",
+          "label": "Identity, versioning and compatibility",
+          "items": [
+            {
+              "id": "f.ids",
+              "title": "Global ID + namespace scheme (ai.amberx.<port>.<module>.<thing>) for modules, assets, actions, permissions, routes, settings, events",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.apiversion",
+              "title": "Kernel API version + semver for every module; capability negotiation at load",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.public",
+              "title": "Explicit public vs internal API (explicit API mode, @AxfInternal annotation, binary-compat validator)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.assetver",
+              "title": "Asset envelope versioning path: asset@1 now, asset@2 migration hooks declared, unknown types tolerated",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.migrations",
+              "title": "Migration registry (assets, settings, databases, manifest) with ordered, idempotent steps",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.deprecate",
+              "title": "Deprecation policy and shims (nothing is ever removed without a shim + migration)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.manifest",
+              "title": "Manifest + lock conformance rules extended for Android (baked file hashes, module list, targets)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.featureflags",
+              "title": "Feature flags + kill switches wired into the kernel from day one",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "modules-extension-points-placeholders",
+          "label": "Modules, extension points, placeholders",
+          "items": [
+            {
+              "id": "f.module",
+              "title": "AxfModule contract: id, version, deps, provides/requires capabilities, lifecycle (register → init → start → stop)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.extpoints",
+              "title": "Extension point registry with typed slots (menus, routes, settings pages, actions, asset types, theme sources, log sinks, auth providers, billing providers…)",
+              "note": "Everything later plugs in here instead of editing the kernel.",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.stubs",
+              "title": "Typed placeholder/stub mechanism: every declared capability has a NotImplemented adapter that fails gracefully",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.dynfeatures",
+              "title": "Dynamic feature module support decided up front (base-module manifest + split install seam)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.ordering",
+              "title": "Deterministic module init order from the dependency graph + cycle detection",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.registry",
+              "title": "Asset type registry is open: new asset types can be registered by modules without a kernel change",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.eventbus",
+              "title": "Typed event bus with ordering + replay semantics defined now",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.ports",
+              "title": "Port registry placeholders: react/next, angular, python, desktop, iOS, wear, tv, auto, web-component",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "theme-layout-and-ui-contracts",
+          "label": "Theme, layout and UI contracts",
+          "items": [
+            {
+              "id": "f.tokens",
+              "title": "Tokens are the only way to style: no literal colors/sizes/fonts in any framework component",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.tokenset",
+              "title": "Complete token vocabulary fixed now (color, type, shape, space, elevation, motion, opacity, z-index, icon, breakpoints)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.locals",
+              "title": "Composition locals contract (LocalAxfTheme, LocalAxfRuntime, LocalAxfActions, LocalAxfLayout, LocalAxfUac)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.regions",
+              "title": "Layout region contract (menubar, toolbar, nav, main, inspector, status, fab, sheet, overlay) + how new regions are added",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.windowclass",
+              "title": "Adaptive window size classes (compact/medium/expanded) and posture (foldable) in the layout engine from the start",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.a11y",
+              "title": "Accessibility semantics required on every component (contentDescription, roles, min touch target, font scaling)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.i18n",
+              "title": "Every user-visible string goes through the string asset layer; RTL mirroring supported",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.actions",
+              "title": "Action id grammar (ns.verb, args with ':', {payload}) + shortcut/gesture mapping contract",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.uacids",
+              "title": "UAC permission id namespacing + wildcard grammar shared across ports",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.hotswap",
+              "title": "Hot-swap boundary: which assets swap live vs need recompose vs need restart, defined per asset type",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.motion",
+              "title": "Motion/animation contract (durations, easings, reduced-motion, shared element seam)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.icons",
+              "title": "Icon contract: icon names in assets resolve through a registry (never hard references)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "navigation-data-and-storage-contracts",
+          "label": "Navigation, data and storage contracts",
+          "items": [
+            {
+              "id": "f.routes",
+              "title": "Typed route + deep-link scheme (axf://<app>/<route>) owned by the kernel; modules register routes",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.results",
+              "title": "Screen result passing + back-stack ownership rules",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.fs",
+              "title": "Schema-driven filesystem layout per app and per module (namespaced dirs, cache vs data vs export)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.dbstrategy",
+              "title": "Database strategy: one Room DB per module, shared migration registry, export format",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.settingsschema",
+              "title": "Settings schema registry: typed keys, groups, scopes (app/user/device), defaults, migrations",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.secure",
+              "title": "Secure storage boundary (Keystore) + rule: secrets never live in assets or logs",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.permissions",
+              "title": "Permission engine abstraction (declare → rationale → request → fallback) used by every library",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.offline",
+              "title": "Offline-first data contract (local source of truth, outbox, sync hooks) in the repository base class",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.backup",
+              "title": "Backup + data-extraction rules and export/import envelope defined now",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "observability-security-build",
+          "label": "Observability, security, build",
+          "items": [
+            {
+              "id": "f.logging",
+              "title": "Structured logging API (tags, levels, fields, redaction) used by every module from the first line",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.telemetry",
+              "title": "Telemetry/analytics/crash hooks interface (vendor-free) in the kernel",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.errors",
+              "title": "Error reporting + user-facing error mapping in the kernel",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.security",
+              "title": "Security baseline: network security config, cert pinning seam, root/tamper hooks, R8 keep rules for reflection",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.gradle",
+              "title": "Gradle convention plugins + version catalog + module naming (axf-*, lib-*, app-*)",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.packages",
+              "title": "Package naming (ai.amberx.axf.*), applicationId scheme, flavors/suffixes",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.manifestmerge",
+              "title": "Manifest contribution strategy: each module contributes its own manifest pieces",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.publish",
+              "title": "Publishing: Maven local + GitHub Packages for framework artifacts so apps depend by version",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.signing",
+              "title": "Signing + release channel + in-app update seam",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.testseams",
+              "title": "Test seams: fake kernel, fake modules, fake clock/network, screenshot harness",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.perf",
+              "title": "Performance baseline: startup budget, baseline profiles, lazy module init, strict-mode in debug",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.buildbridge",
+              "title": "Build-engine bridge (HTTP + MCP) and `axf init --targets android` template",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.repo",
+              "title": "Repository layout: framework/android/* for the port, apps/* for apps, shared framework/assets JSON",
+              "note": "",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kernel",
+      "label": "Kernel",
+      "groups": [
+        {
+          "id": "kernel-core-already-defined-by-the-web-demo-ported-to-kotlin",
+          "label": "Kernel core (already defined by the web demo, ported to Kotlin)",
+          "items": [
+            {
+              "id": "k.assets",
+              "title": "Asset envelope + registry (asset@1 JSON, same files as the web demo)",
+              "note": "Every theme, layout, menu, dialog, button… loads from the identical JSON.",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.swap",
+              "title": "Hot-swap engine (swap / next / prev / random / reset, persisted per app)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.theme",
+              "title": "Theme engine → Compose tokens (color-theme + style-theme)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.layout",
+              "title": "Layout engine (desktop grid spec + phone/tablet/foldable variants)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.comp",
+              "title": "Component style engine (button, slider, container, dialog, popup, context-menu)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.uac",
+              "title": "User account control engine (roles, inheritance, wildcards, hide/disable gating)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.ctx",
+              "title": "Context-menu engine (targets, {payload} substitution, long-press)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.actions",
+              "title": "Action bus with the standard vocabulary (file.save, edit.undo, swap:…)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.manifest",
+              "title": "Manifest + lock conformance (axf.manifest.json / axf.lock.json)",
+              "note": "axf validate works on Android apps too.",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.validate",
+              "title": "Schema validation from asset-types.json (single source of truth)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.newtypes",
+              "title": "New asset types for Android: screen-template, icon-pack, string-pack, image-pack, font-pack, motion-pack, settings-schema, nav-graph, widget, notification-style",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "kernel-architecture-extension-safety",
+          "label": "Kernel architecture & extension safety",
+          "items": [
+            {
+              "id": "k.modules",
+              "title": "Module system: every library is an AxfModule with id, version, deps, lifecycle",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.ext",
+              "title": "Extension point registry (named slots any future app or port can fill)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.plugins",
+              "title": "Plugin loader (separate Gradle modules or dynamic feature modules)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.events",
+              "title": "Event bus (typed events, sticky events, scoped subscriptions)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.flags",
+              "title": "Feature flags + kill switches (local, remote, per-role)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.di",
+              "title": "Dependency injection container (Hilt-compatible, framework-owned)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.migrate",
+              "title": "Versioned migrations for assets, settings and databases",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.compat",
+              "title": "Compatibility layer: deprecation shims, API levels for the kernel itself",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.stubs",
+              "title": "Placeholder registry: declared-but-unbuilt capabilities answer with a typed 'not implemented'",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.config",
+              "title": "Config engine (layered: defaults → manifest → remote → user)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.lifecycle",
+              "title": "App/activity/process lifecycle + process-death state restore",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.errors",
+              "title": "Error model (typed failures, user-facing messages, retry policy)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.scheduler",
+              "title": "Task scheduler (debounce, throttle, retry/backoff, queues, priorities)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.undo",
+              "title": "Undo/redo engine (command pattern, history, grouping)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.clipboard",
+              "title": "Clipboard engine (typed payloads, history, cross-app share)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.search",
+              "title": "App-wide search/command palette engine",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.shortcuts",
+              "title": "Keyboard shortcut engine (hardware keyboard, tablets, Chromebook)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.test",
+              "title": "Test harness: fake kernel, fake modules, screenshot + Compose UI tests",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.devconsole",
+              "title": "Developer console / inspector (live asset JSON, action log, state tree, recompose counts)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.hotreload",
+              "title": "Hot-reload assets from a URL / VPS / QR while developing",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.buildbridge",
+              "title": "Build-engine bridge (HTTP + MCP) so Claude Code / Studio can drive init, validate, new-asset",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.nocode",
+              "title": "No-code designer bridge (asset editor payloads in/out)",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.scripting",
+              "title": "Scripting/automation hooks (run action sequences, macros, Tasker-style intents)",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.ports",
+              "title": "Port registry placeholders: react/next, angular, python, desktop, iOS, wear, tv, auto",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
+          "label": "Settings, logging, admin, accounts, profile, subscription (the six libraries)",
+          "items": [
+            {
+              "id": "s.settings",
+              "title": "Settings engine: schema-driven settings groups → auto-generated settings UI",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "s.prefs",
+              "title": "Preference store (DataStore) with typed keys, defaults, migrations, export/import",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "s.scopes",
+              "title": "Setting scopes: app, user, device, role, remote-locked",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "s.secure",
+              "title": "Secure storage (Keystore-backed) for tokens, API keys, SSH passwords",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "s.searchable",
+              "title": "Searchable settings + deep links to any setting",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "l.log",
+              "title": "Logging engine: levels, tags, structured fields, ring buffer, file sink, remote sink",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "l.viewer",
+              "title": "In-app log viewer with filter/search/share/export",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "l.crash",
+              "title": "Crash capture + breadcrumbs (uncaught handler, ANR watchdog)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "l.net",
+              "title": "Network inspector (requests, headers, bodies, timing)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "l.perf",
+              "title": "Performance tracing (startup, frames/jank, memory, battery)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "l.analytics",
+              "title": "Analytics/event tracking abstraction (no vendor baked in)",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "l.diag",
+              "title": "Diagnostics screen (device, build, modules, permissions, storage, network)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "l.remote",
+              "title": "Remote log shipping to the VPS + remote log tail",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.admin",
+              "title": "Administration interface: roles, policies, feature flags, remote config, module toggles",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.audit",
+              "title": "Audit trail (who changed what, exportable)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.users",
+              "title": "User management (list, invite, suspend, role assignment)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.content",
+              "title": "Content/asset moderation + publishing (push assets to users)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.maint",
+              "title": "Maintenance mode, announcements, forced-update banner",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "a.devicemgmt",
+              "title": "Device/fleet management placeholders (MDM hooks)",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "u.accounts",
+              "title": "User account interface: sign-up, sign-in, sign-out, sessions, multi-account switch",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.auth",
+              "title": "Auth providers: email/password, OAuth (Google/GitHub), magic link, API key, passkeys",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.bio",
+              "title": "Biometric + PIN/pattern lock, auto-lock timer",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.sessions",
+              "title": "Session management (devices list, revoke, token refresh)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.recovery",
+              "title": "Password reset, email/phone verification, 2FA (TOTP)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.roles",
+              "title": "Role binding: account ↔ UAC policy role",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.guest",
+              "title": "Guest mode + upgrade-to-account flow",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "u.gdpr",
+              "title": "Account deletion, data export, consent records (GDPR/CCPA)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "p.profile",
+              "title": "User profile interface: avatar, display name, bio, contact, preferences, privacy",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "p.avatar",
+              "title": "Avatar capture/crop/generate",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "p.sync",
+              "title": "Profile + settings sync to the VPS backend",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "p.public",
+              "title": "Public profile / share card / QR",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "p.activity",
+              "title": "Activity history + achievements placeholders",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "b.subs",
+              "title": "Subscription interface: plans, trials, paywall, restore, manage",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "b.billing",
+              "title": "Google Play Billing adapter + server-side verification placeholder",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "b.entitle",
+              "title": "Entitlements → feature gating (ties into UAC + feature flags)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "b.iap",
+              "title": "One-time in-app purchases + consumables",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "b.promo",
+              "title": "Promo codes, referrals, discounts",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "b.license",
+              "title": "License keys / offline licensing placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "b.ads",
+              "title": "Ads adapter placeholder (vendor-free)",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "b.stripe",
+              "title": "Web/Stripe billing adapter for non-Play distribution",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "ui-library-every-customization-token",
+          "label": "UI library — every customization token",
+          "items": [
+            {
+              "id": "ui.tokens",
+              "title": "Color tokens: full set (bg, surfaces, text, muted, border, accent, states, overlays, scrims, links, selection, elevation tints, chart series, semantic)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.dyn",
+              "title": "Dynamic color (Material You / wallpaper) as an optional color-theme source",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.contrast",
+              "title": "High-contrast + color-blind-safe variants generated from any theme",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.type",
+              "title": "Typography scale tokens (display/headline/title/body/label × sizes, weights, line-heights, tracking)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.fonts",
+              "title": "Font registry (bundled + downloadable Google Fonts, variable axes)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.shape",
+              "title": "Shape tokens (radius ladder, corner families, cutouts)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.space",
+              "title": "Spacing + density ladder, grid, gutters, safe areas, breakpoints",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.elev",
+              "title": "Elevation + shadow + blur + glass tokens",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.motion",
+              "title": "Motion tokens (durations, easings, spring presets, reduced-motion)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.opacity",
+              "title": "Opacity, z-index, border-width, stroke, icon-size, control-height ladders",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.icons",
+              "title": "Icon registry (Material Symbols + custom packs, swappable as an asset)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.images",
+              "title": "Image/asset packs (logos, illustrations, splash art) as swappable assets",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.strings",
+              "title": "String/localization packs as assets (i18n, plurals, RTL)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.sounds",
+              "title": "Sound + haptic packs as assets",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.a11y",
+              "title": "Accessibility tokens (min touch target, contrast checks, font scaling, TalkBack labels)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.controls",
+              "title": "Controls: buttons, icon buttons, FAB, toggles, checkboxes, radios, chips, sliders, steppers, segmented, rating",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.inputs",
+              "title": "Inputs: text fields, search, password, OTP, date/time pickers, color picker, file picker, tags, autocomplete",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.nav",
+              "title": "Navigation: top app bars, bottom bars, nav rail, drawer, tabs, breadcrumbs, pager, stepper",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.menus",
+              "title": "Menus: app menu, overflow, dropdown, context menu, command palette, radial menu",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.overlays",
+              "title": "Overlays: dialogs, bottom sheets, side sheets, popups, toasts, snackbars, tooltips, banners, coach marks",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.containers",
+              "title": "Containers: cards, panels, glass, expandable, splitters, resizable panes, dock/undock",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.lists",
+              "title": "Lists, grids, swipe actions, drag-reorder, sticky headers, pull-to-refresh, infinite scroll",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.tables",
+              "title": "Data tables / grids with sort, filter, pin, inline edit, virtualization",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.forms",
+              "title": "Forms engine (schema → form, validation, conditional fields, wizards)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.charts",
+              "title": "Charts (line, bar, area, pie, sparkline, gauge, heatmap) themed from tokens",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.media",
+              "title": "Media widgets (image, video, audio, avatar, gallery, carousel)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.editor",
+              "title": "Editor widgets (rich text, markdown, code with syntax highlight, diff)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.states",
+              "title": "State screens (empty, loading/skeleton, error, offline, permission, maintenance)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.onboard",
+              "title": "Onboarding + landing/loading screen + what's-new + tips",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.templates",
+              "title": "Screen templates (list-detail, dashboard, wizard, settings, feed, editor, player, map, chat, profile)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.adaptive",
+              "title": "Adaptive layouts: phone, tablet, foldable, Chromebook, landscape, multi-window",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.gestures",
+              "title": "Gesture engine (swipe, long-press, pinch, drag; hooks for voice/hand/face control)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.widgets",
+              "title": "Home-screen app widgets (Glance) themed from the same tokens",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.livewallpaper",
+              "title": "Live wallpaper / lock-screen surfaces placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "ui.anim",
+              "title": "Animation kit: shared element, Lottie/Rive placeholder, skeletons, confetti",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "ui.canvas",
+              "title": "Canvas/drawing kit (shapes, paths, gradients, shaders)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "navigation-data-network",
+          "label": "Navigation, data, network",
+          "items": [
+            {
+              "id": "n.routes",
+              "title": "Navigation engine: typed routes, deep links, app links, back-stack, result passing",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "n.shortcuts",
+              "title": "App shortcuts + share targets + intent filters",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "n.tabs",
+              "title": "Multi-tab / multi-document sessions",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "d.db",
+              "title": "Database engine (Room/SQLite) with migrations and export",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "d.kv",
+              "title": "Key-value + cache store (memory + disk, TTL)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "d.files",
+              "title": "File engine: scoped storage, SAF, MediaStore, downloads, zip",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "d.search",
+              "title": "Search/indexing (FTS)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "d.sync",
+              "title": "Offline-first sync engine + outbox queue + conflict rules",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "d.backup",
+              "title": "Auto Backup / export-import of app data",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "d.crypto",
+              "title": "Encrypted storage + encrypted DB",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "d.jsonstore",
+              "title": "Document store (JSON) for assets/user content",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.http",
+              "title": "Network engine (OkHttp/Ktor: retries, cache, auth interceptors, progress)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.realtime",
+              "title": "WebSocket / SSE / push channel",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.download",
+              "title": "Download manager (resumable, background, queue)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.upload",
+              "title": "Upload manager (chunked, resumable, background)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.vps",
+              "title": "VPS client: REST + SSH + SFTP to the Hostinger box",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.github",
+              "title": "GitHub client (repos, commits, actions, releases, issues)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.hostinger",
+              "title": "Hostinger API client (DNS, domains, VPS) placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.coolify",
+              "title": "Coolify/Docker status client placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.ota",
+              "title": "OTA asset packs + remote config from the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.webview",
+              "title": "WebView engine (bridged JS ↔ kernel, so web-port AXF apps can run inside)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.ai",
+              "title": "AI assistant engine: Claude / OpenAI / Gemini / Groq providers, streaming, tools, subscription vs API key",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.mcp",
+              "title": "MCP client/server bridge",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.push",
+              "title": "Push notifications (FCM) + self-hosted push (UnifiedPush/WebSocket) placeholder",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "w.email",
+              "title": "Email/SMS sending via backend placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.p2p",
+              "title": "Nearby/P2P (Wi-Fi Direct, Nearby Connections) placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "w.cloud",
+              "title": "Cloud storage adapters (Drive, Dropbox, S3) placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "device-platform-capabilities",
+          "label": "Device & platform capabilities",
+          "items": [
+            {
+              "id": "dv.perm",
+              "title": "Permission engine (rationale, request, settings fallback, per-feature)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.notif",
+              "title": "Notifications (channels, actions, progress, grouped, scheduled, bubbles)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.bg",
+              "title": "Background work (WorkManager), alarms, foreground services",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.loc",
+              "title": "Location/GPS (fused, background tracking, geofences, trails)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.maps",
+              "title": "Maps (OSM/Google) + offline tiles placeholder",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.camera",
+              "title": "Camera (CameraX: photo, video, QR/barcode scan, flash)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.media",
+              "title": "Media3/ExoPlayer: video + audio playback, PiP, background audio, media session, casting placeholder",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.stream",
+              "title": "Streaming: HLS/DASH/RTSP/WebRTC placeholders, live from the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.audio",
+              "title": "Audio recording, TTS, speech-to-text, voice commands, audio focus",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.sensors",
+              "title": "Sensors (accelerometer, gyro, compass, barometer, light, proximity, step)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.ble",
+              "title": "Bluetooth / BLE",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.nfc",
+              "title": "NFC read/write",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.usb",
+              "title": "USB host / serial",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.wifi",
+              "title": "Wi-Fi / network state / hotspot info",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.tel",
+              "title": "Telephony, SMS, calls",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.contacts",
+              "title": "Contacts + calendar",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.clip",
+              "title": "Clipboard, haptics, vibration patterns",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.print",
+              "title": "Print + PDF generation/viewing",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.a11yservice",
+              "title": "Accessibility service + overlay/draw-over-apps (for PilotX-style control)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.pip",
+              "title": "Picture-in-picture, multi-window, split screen",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.formfactors",
+              "title": "Wear OS, Android TV, Android Auto, Chromebook targets",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.admin",
+              "title": "Device admin / kiosk / lock task mode",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.updates",
+              "title": "In-app updates + app signing + release channels",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.security",
+              "title": "Crypto (AES/RSA, hashing), certificate pinning, root/tamper checks",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.ml",
+              "title": "On-device ML (ML Kit: OCR, barcode, face, translate; TFLite/LiteRT seam; on-device LLM placeholder)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.health",
+              "title": "Health Connect placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.ar",
+              "title": "ARCore / 3D viewer placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.screen",
+              "title": "Screen capture / recording / screenshot + annotate",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.power",
+              "title": "Battery/power + doze-aware scheduling",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.storagemon",
+              "title": "Storage usage, cache cleanup, large-file handling",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "dv.locale",
+              "title": "Locale, time zone, units, currency formatting",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.intents",
+              "title": "Intent helpers (open URL, dial, email, maps, share, settings pages)",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.themeos",
+              "title": "Follow system dark mode, wallpaper colors, font scale, display cutouts, edge-to-edge",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "dv.ir",
+              "title": "IR blaster / remote placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "console",
+      "label": "Console app",
+      "groups": [
+        {
+          "id": "tracker-what-s-built-what-s-not",
+          "label": "Tracker (what's built, what's not)",
+          "items": [
+            {
+              "id": "cx.tracker",
+              "title": "Build tracker: every module, library, engine, asset type and feature with status (planned / placeholder / built / verified)",
+              "note": "Reads axf.manifest.json + a tracker.json in the repo so the console and Claude Code agree.",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.tracker.waves",
+                  "title": "Waves / milestones grouping"
+                },
+                {
+                  "id": "cx.tracker.history",
+                  "title": "Change history per item"
+                },
+                {
+                  "id": "cx.tracker.owner",
+                  "title": "Owner + notes per item"
+                },
+                {
+                  "id": "cx.tracker.gh",
+                  "title": "Sync tracker.json to GitHub"
+                },
+                {
+                  "id": "cx.tracker.export",
+                  "title": "Export plan as Markdown for a Claude Code prompt"
+                },
+                {
+                  "id": "cx.tracker.coverage",
+                  "title": "Coverage %: built vs declared per module"
+                }
+              ]
+            },
+            {
+              "id": "cx.kernelstatus",
+              "title": "Kernel status screen: engines, extension points (filled / empty), registered asset types, version",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.kernelstatus.graph",
+                  "title": "Module dependency graph view"
+                },
+                {
+                  "id": "cx.kernelstatus.health",
+                  "title": "Startup timing + health checks"
+                },
+                {
+                  "id": "cx.kernelstatus.stubs",
+                  "title": "List of placeholders still returning NotImplemented"
+                }
+              ]
+            },
+            {
+              "id": "cx.roadmap",
+              "title": "Roadmap view: waves with drag-reorder of what gets built next",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.roadmap.estimates",
+                  "title": "Effort estimates per item"
+                },
+                {
+                  "id": "cx.roadmap.deps",
+                  "title": "Blocked-by links between items"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "feature-catalog-libraries",
+          "label": "Feature catalog → libraries",
+          "items": [
+            {
+              "id": "cx.catalog",
+              "title": "Feature catalog: this whole checklist inside the app, grouped, searchable, checkable",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.catalog.tags",
+                  "title": "Filter by tag (core / lib / placeholder)"
+                },
+                {
+                  "id": "cx.catalog.custom",
+                  "title": "Add your own feature entries"
+                },
+                {
+                  "id": "cx.catalog.import",
+                  "title": "Import/export the catalog as JSON"
+                }
+              ]
+            },
+            {
+              "id": "cx.suggest",
+              "title": "Suggestion dialog: checking a feature opens related features to bundle into one library",
+              "note": "Exactly what this page does on the Console tab.",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.suggest.ai",
+                  "title": "Ask the AI assistant for more suggestions"
+                },
+                {
+                  "id": "cx.suggest.rules",
+                  "title": "Suggestion rules editable as an asset"
+                }
+              ]
+            },
+            {
+              "id": "cx.libpicker",
+              "title": "Library picker: choose a library → scaffold its module + a small demo app that showcases it",
+              "note": "Runs the build engine (axf init + new-module) locally or on the VPS.",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.libpicker.template",
+                  "title": "Pick a demo-app template (list-detail, dashboard, player…)"
+                },
+                {
+                  "id": "cx.libpicker.prompt",
+                  "title": "Generate the Claude Code prompt/spec for the library"
+                },
+                {
+                  "id": "cx.libpicker.run",
+                  "title": "Trigger the build on the VPS and watch logs"
+                },
+                {
+                  "id": "cx.libpicker.install",
+                  "title": "Install the generated demo APK from the console"
+                }
+              ]
+            },
+            {
+              "id": "cx.demos",
+              "title": "Demo app registry: every generated demo app, its library, build status, APK link",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.demos.screens",
+                  "title": "Screenshot gallery per demo"
+                },
+                {
+                  "id": "cx.demos.launch",
+                  "title": "Launch demo via deep link"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "modules-packages",
+          "label": "Modules & packages",
+          "items": [
+            {
+              "id": "cx.modules",
+              "title": "Modules & packages tab: list every Gradle module and package, version, deps, status, size",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.modules.toggle",
+                  "title": "Enable/disable a module live"
+                },
+                {
+                  "id": "cx.modules.new",
+                  "title": "Create a new module from a template"
+                },
+                {
+                  "id": "cx.modules.publish",
+                  "title": "Publish a module version (Maven local / GitHub Packages)"
+                },
+                {
+                  "id": "cx.modules.diff",
+                  "title": "Diff module API against last published version"
+                }
+              ]
+            },
+            {
+              "id": "cx.packages",
+              "title": "Package explorer: ai.amberx.axf.* tree with what each package owns",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.assets",
+              "title": "Asset gallery: swap themes, style packs, layouts, menus live; import via QR/file",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.assets.editor",
+                  "title": "Token editor with live preview + export JSON"
+                },
+                {
+                  "id": "cx.assets.validate",
+                  "title": "Validate an asset against asset-types.json"
+                },
+                {
+                  "id": "cx.assets.push",
+                  "title": "Push an asset pack to the VPS"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "console-plumbing",
+          "label": "Console plumbing",
+          "items": [
+            {
+              "id": "cx.buildengine",
+              "title": "Build-engine client: run init / validate / new-asset / new-module locally or over HTTP/MCP on the VPS",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.buildengine.logs",
+                  "title": "Streaming build logs"
+                },
+                {
+                  "id": "cx.buildengine.queue",
+                  "title": "Build queue + history"
+                }
+              ]
+            },
+            {
+              "id": "cx.ai",
+              "title": "AI assistant panel (Claude subscription or API key) with tools for the tracker and build engine",
+              "note": "",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.ai.plan",
+                  "title": "Turn a checked set into a build plan"
+                },
+                {
+                  "id": "cx.ai.review",
+                  "title": "Review a module's API for breaking changes"
+                }
+              ]
+            },
+            {
+              "id": "cx.github",
+              "title": "GitHub: repo status, commits, Actions runs for the framework repo",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": [
+                {
+                  "id": "cx.github.pr",
+                  "title": "Open PRs for generated modules"
+                },
+                {
+                  "id": "cx.github.release",
+                  "title": "Tag releases"
+                }
+              ]
+            },
+            {
+              "id": "cx.settings",
+              "title": "Settings interface (schema-driven, generated by the settings library)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.logs",
+              "title": "Log viewer + diagnostics (generated by the logging library)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.landing",
+              "title": "Landing/loading screen + home dashboard",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modules",
+      "label": "Modules",
+      "groups": [
+        {
+          "id": "framework-modules-framework-android",
+          "label": "Framework modules (framework/android/*)",
+          "items": [
+            {
+              "id": "m.kernel",
+              "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+              "note": "ai.amberx.axf.kernel",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.platform",
+              "title": "axf-platform-android — Android adapters: storage, permissions, lifecycle, clock, logging sink, process-death",
+              "note": "ai.amberx.axf.platform",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.ui",
+              "title": "axf-ui — Compose theme (tokens), AppShell, layout regions, core controls, overlays, menus",
+              "note": "ai.amberx.axf.ui",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.assets",
+              "title": "axf-assets — the shared JSON assets packaged as resources + loader",
+              "note": "ai.amberx.axf.assets",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.nav",
+              "title": "axf-nav — typed routes, deep links, back-stack, results",
+              "note": "ai.amberx.axf.nav",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.data",
+              "title": "axf-data — DataStore/Room/KV/files base classes, migrations, offline-first repository",
+              "note": "ai.amberx.axf.data",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.network",
+              "title": "axf-network — HTTP client, interceptors, websocket, download/upload managers",
+              "note": "ai.amberx.axf.network",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.settings",
+              "title": "lib-settings — settings schema registry + generated settings UI",
+              "note": "ai.amberx.axf.settings",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.logging",
+              "title": "lib-logging — logging engine, sinks, viewer, crash capture, diagnostics",
+              "note": "ai.amberx.axf.logging",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.admin",
+              "title": "lib-admin — administration interface (placeholder module + contracts)",
+              "note": "ai.amberx.axf.admin",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.accounts",
+              "title": "lib-accounts — user account interface (placeholder module + contracts)",
+              "note": "ai.amberx.axf.accounts",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.profile",
+              "title": "lib-profile — user profile interface (placeholder module + contracts)",
+              "note": "ai.amberx.axf.profile",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.billing",
+              "title": "lib-billing — subscription interface (placeholder module + contracts, mock provider)",
+              "note": "ai.amberx.axf.billing",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.media",
+              "title": "lib-media — Media3 player, camera, audio (placeholder)",
+              "note": "ai.amberx.axf.media",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "m.location",
+              "title": "lib-location — GPS, geofence, maps (placeholder)",
+              "note": "ai.amberx.axf.location",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "m.ai",
+              "title": "lib-ai — AI providers, streaming, tools",
+              "note": "ai.amberx.axf.ai",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "m.vps",
+              "title": "lib-vps — SSH/SFTP/REST client for the VPS",
+              "note": "ai.amberx.axf.vps",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "m.devtools",
+              "title": "axf-devtools — inspector, action log, asset hot-reload, build-engine client",
+              "note": "ai.amberx.axf.devtools",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.testing",
+              "title": "axf-testing — fakes, screenshot harness, Compose test rules",
+              "note": "ai.amberx.axf.testing",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.buildlogic",
+              "title": "build-logic — Gradle convention plugins + version catalog",
+              "note": "(gradle)",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.template",
+              "title": "template-android-compose — boilerplate used by `axf init --targets android`",
+              "note": "(template)",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "apps-apps",
+          "label": "Apps (apps/*)",
+          "items": [
+            {
+              "id": "m.app.console",
+              "title": "app-console — AXF Dev Console, the first app",
+              "note": "ai.amberx.axf.console",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "m.app.demo",
+              "title": "app-demo-<library> — generated per library by the console",
+              "note": "ai.amberx.axf.demo.*",
+              "tag": "ph",
+              "recommended": true,
+              "suggests": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demos",
+      "label": "Demos later",
+      "groups": [
+        {
+          "id": "framework-showcase-proves-every-engine",
+          "label": "Framework showcase (proves every engine)",
+          "items": [
+            {
+              "id": "x.home",
+              "title": "Landing/loading screen + home dashboard that lists every showcase",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.themes",
+              "title": "Theme gallery: 10 light/dark theme pairs with live preview and one-tap swap",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.styles",
+              "title": "Style pack gallery: 10 packs (fonts, radii, density, motion, blur)",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.layouts",
+              "title": "Layout gallery: 10 screen layouts, each applied live to the running app",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.components",
+              "title": "Component gallery: every control in every variant, in every state",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.designer",
+              "title": "Live token designer: edit any color/style/layout token, see it applied, export as asset JSON",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.assets",
+              "title": "Asset browser: import/export via file, QR code, URL, clipboard",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.menus",
+              "title": "App menu, toolbar, navigation menu and context menu swapping",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.uac",
+              "title": "Role switcher (guest/user/admin) showing hide vs disable gating",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.actions",
+              "title": "Action console: dispatch any action, watch the bus",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.modules",
+              "title": "Module manager: enable/disable libraries live, see dependency graph",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.flags",
+              "title": "Feature-flag playground",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.wallpaper",
+              "title": "Theme from wallpaper (dynamic color) demo",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "x.a11ymode",
+              "title": "High-contrast / large-font / RTL toggles",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "the-six-interfaces",
+          "label": "The six interfaces",
+          "items": [
+            {
+              "id": "i.settings",
+              "title": "Settings interface (auto-generated from the settings schema, incl. every asset slot)",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "i.logs",
+              "title": "Logging interface: live log viewer, filters, export, crash test button, network inspector",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "i.admin",
+              "title": "Administration interface: roles, policies, flags, remote config, module toggles, audit trail",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "i.accounts",
+              "title": "User account interface: sign-up, sign-in, OAuth, passkeys, biometrics, multi-account",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "i.profile",
+              "title": "User profile interface: avatar/camera, details, privacy, sync status",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "i.subs",
+              "title": "Subscription interface: plans, paywall, trial, restore, entitlement-gated features",
+              "note": "",
+              "tag": "core",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "editors-media-location",
+          "label": "Editors, media, location",
+          "items": [
+            {
+              "id": "c.texteditor",
+              "title": "Text editor: rich text + markdown preview + code editor with syntax highlight",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.gps",
+              "title": "GPS tracker: live position, trail recording, stats, map view, geofence alerts",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.video",
+              "title": "Video player (local + URL) with PiP, speed, captions, background audio",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.vpsstream",
+              "title": "Video streaming from the VPS (HLS live + on-demand), upload from phone",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.camera",
+              "title": "Camera: photo/video capture, QR scanner (also imports assets)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.gallery",
+              "title": "Photo gallery + image editor basics (crop, rotate, filters)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.audio",
+              "title": "Audio recorder/player, voice notes, speech-to-text, TTS read-aloud",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.music",
+              "title": "Music player with media session, lock-screen controls, playlists",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.radio",
+              "title": "Internet radio / podcast stream",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.screenrec",
+              "title": "Screen recorder + screenshot annotate",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.draw",
+              "title": "Drawing canvas / whiteboard",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.pdf",
+              "title": "PDF viewer + generate PDF from the editor",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.ocr",
+              "title": "OCR + barcode + text translate (ML Kit)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.3d",
+              "title": "3D model viewer / AR preview placeholder",
+              "note": "",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.spreadsheet",
+              "title": "Mini spreadsheet / data grid demo",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.slides",
+              "title": "Markdown → slides presenter",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "dev-server-and-ai",
+          "label": "Dev, server and AI",
+          "items": [
+            {
+              "id": "c.ai",
+              "title": "AI assistant chat (Claude subscription or API key), dockable panel, tools",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.aiimage",
+              "title": "AI image generation via API",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.terminal",
+              "title": "SSH terminal / mosh-style console to the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.logtail",
+              "title": "Remote log tail from the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.github",
+              "title": "GitHub browser: repos, commits, actions status, trigger workflow",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.deploy",
+              "title": "Deploy wizard (ShipX-style) from phone to VPS subdomain",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.servermon",
+              "title": "Server monitoring dashboard (CPU/RAM/disk, Docker/Coolify, nginx)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.dns",
+              "title": "Domain/DNS manager (Hostinger API)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.cron",
+              "title": "Cron / scheduled task manager on the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.rest",
+              "title": "REST client (Postman-style) + WebSocket tester",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.json",
+              "title": "JSON/YAML editor + viewer",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.dbbrowser",
+              "title": "Database browser (local Room + remote)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.webview",
+              "title": "In-app browser / WebView running the web demo (xaf.amberxai.com)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.mcp",
+              "title": "MCP server/client demo (expose app actions to Claude Code)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.buildengine",
+              "title": "Build-engine remote: run axf init/validate on the VPS from the phone",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "data-files-productivity",
+          "label": "Data, files, productivity",
+          "items": [
+            {
+              "id": "c.files",
+              "title": "File manager with SAF, previews, zip, share",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.notes",
+              "title": "Notes/todo/kanban with offline sync to the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.calendar",
+              "title": "Calendar + reminders + alarms demo",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.timer",
+              "title": "Timer / stopwatch / pomodoro",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.contacts",
+              "title": "Contacts picker + vCard/QR share",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.passwords",
+              "title": "Password vault (Keystore) + TOTP 2FA generator",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.backup",
+              "title": "Backup/restore + export/import of all app data",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.transfer",
+              "title": "File transfer phone ↔ VPS (SFTP/HTTP), nearby share",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.offline",
+              "title": "Offline mode demo (airplane mode → queue → sync)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.search",
+              "title": "Global search + command palette demo",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.clipboard",
+              "title": "Clipboard manager",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.calc",
+              "title": "Calculator + unit converter (tiny app-in-app example)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.weather",
+              "title": "Weather + location-aware dashboard",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.rss",
+              "title": "RSS/news reader",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        },
+        {
+          "id": "device-sensors-connectivity",
+          "label": "Device, sensors, connectivity",
+          "items": [
+            {
+              "id": "c.charts",
+              "title": "Charts dashboard (live sensor + system stats)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.sensors",
+              "title": "Sensors dashboard (compass, level, pedometer, barometer, light)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.ble",
+              "title": "BLE scanner + device detail + simple remote",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.nfc",
+              "title": "NFC tag read/write",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.wifi",
+              "title": "Wi-Fi analyzer, speed test, ping/traceroute, port scan",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.notifications",
+              "title": "Notification playground (channels, actions, progress, scheduled, bubbles)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.push",
+              "title": "Push notification demo from the VPS",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.widgets",
+              "title": "Home-screen widget(s) themed from the active assets",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.share",
+              "title": "Share-in / share-out target (receive text, images, files)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.voice",
+              "title": "Voice commands + gesture hooks (ActiveX-style)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.pilot",
+              "title": "Screen-control demo (accessibility service + overlay, PilotX-style)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.flashlight",
+              "title": "Flashlight, QR generator, color picker from camera, measure/level",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.battery",
+              "title": "Battery/storage/device info panel",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.multiwindow",
+              "title": "Tablet/foldable/multi-window demo of the adaptive layouts",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.a11y",
+              "title": "Accessibility demo (TalkBack labels, font scaling, high contrast)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.chat",
+              "title": "Realtime chat over VPS WebSocket (presence, typing, media)",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.game",
+              "title": "Tiny game (sensor-controlled) to prove the canvas + game loop",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.about",
+              "title": "About/diagnostics/what's-new + in-app update check",
+              "note": "",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
