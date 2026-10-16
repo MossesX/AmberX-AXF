@@ -77,6 +77,5 @@ public fun SettingsGroupView(group: SettingsGroup, values: Map<String, JsonEleme
                 if (s.restartRequired) AxfText("Takes effect after restart.", muted = true)
             }
         }
-        if (compiled.rev < 0) AxfButton("", {})  // keeps `compiled` observed so asset-slot chips refresh on swap
     }
 }
