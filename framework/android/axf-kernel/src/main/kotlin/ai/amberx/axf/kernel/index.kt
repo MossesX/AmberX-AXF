@@ -11,7 +11,7 @@
  *   config/    layered Config                                                   (new)
  *   migrate/   Migration registry + ledger + Semver + Deprecations              (new)
  *   platform/  seams every port implements: clock, ids, dispatchers, kv, secure, logger, telemetry, permissions, files
- *   contract/  RouteSpec/Router, SettingsGroup/SettingSpec, Ports, Strings, IconResolver
+ *   contract/  RouteSpec/Router, SettingsGroup/SettingSpec, Ports, Strings, IconResolver, WorkScheduler/Worker, Session/Principal/AuditLog
  *   manifest/  AxfManifest
  *   AxfKernel  builder + lifecycle + status
  */

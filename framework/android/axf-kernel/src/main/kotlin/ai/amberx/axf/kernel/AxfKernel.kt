@@ -115,6 +115,11 @@ public class AxfKernel private constructor(
         services.register(KeyValueStore::class, platform.store, "axf.kv")
         platform.secure?.let { services.register(SecureStore::class, it, "axf.secure") }
         platform.files?.let { services.register(FileLayout::class, it, "axf.files") }
+        // Contracts with kernel defaults: anonymous session + in-memory audit; the scheduler stays a typed placeholder until a platform module registers one.
+        services.register(ai.amberx.axf.kernel.contract.SessionProvider::class, ai.amberx.axf.kernel.contract.AnonymousSession(platform.clock.nowMillis()), "axf.session")
+        services.register(ai.amberx.axf.kernel.contract.AuditLog::class, ai.amberx.axf.kernel.contract.MemoryAuditLog(), "axf.audit")
+        services.register(ai.amberx.axf.kernel.contract.WorkRegistry::class, ai.amberx.axf.kernel.contract.WorkRegistry(), "axf.workers")
+        services.declarePlaceholder("axf.work")
         for (p in ExtensionPoints.ALL) extensions.declare(p)
         for (flag in KernelFlags.ALL) flags.declare(flag)
         config.load(manifest.raw, ConfigLayer.MANIFEST, "manifest")
