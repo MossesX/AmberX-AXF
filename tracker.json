@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T18:12:26.249Z",
+  "generatedAt": "2026-10-16T18:25:13.021Z",
   "summary": {
     "foundations": {
       "built": 58,
@@ -12,20 +12,20 @@
       "coverage": 95
     },
     "kernel": {
-      "built": 69,
+      "built": 70,
       "partial": 3,
       "placeholder": 100,
       "planned": 0,
-      "total": 172,
+      "total": 173,
       "coverage": 40
     },
     "console": {
-      "built": 12,
-      "partial": 2,
+      "built": 13,
+      "partial": 1,
       "placeholder": 3,
       "planned": 0,
       "total": 17,
-      "coverage": 71
+      "coverage": 76
     },
     "modules": {
       "built": 14,
@@ -1938,6 +1938,65 @@
       "notes": ""
     },
     {
+      "id": "ui.windows",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Window / tab-group / docking engine: floating windows from undocked tab groups, drag-and-drop tabs across groups and windows, split (vertical / horizontal / four-way / custom grid) with even tab distribution, minimize to corner title bars (stacked or lined) or floating toolbar at cursor, window schema + toolbar attachment, window settings dialog",
+      "tag": "core",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "ui.windows.dividers",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "ui.windows",
+      "title": "Draggable split dividers (weights)",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "ui.windows.persist",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "ui.windows",
+      "title": "Persist window layouts per app",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "ui.windows.snap",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "ui.windows",
+      "title": "Snap/tile floating windows to screen edges",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "ui.windows.multiscreen",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "ui.windows",
+      "title": "Multi-display / freeform window support",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
       "id": "n.routes",
       "tab": "kernel",
       "group": "navigation-data-network",
@@ -2861,10 +2920,10 @@
       "group": "feature-catalog-libraries",
       "title": "Library picker: choose a library → scaffold its module + a small demo app that showcases it",
       "tag": "core",
-      "status": "partial",
+      "status": "built",
       "wave": 1,
       "module": "app-console",
-      "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
+      "notes": "Framework libraries + nested UI-libraries tab with compare in floating tab groups; engine runs remotely once the HTTP driver is deployed."
     },
     {
       "id": "cx.libpicker.template",

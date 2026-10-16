@@ -210,7 +210,16 @@ public class AxfRuntime(
 
     public fun openContext(x: Float, y: Float, target: String, payload: String? = null): Unit = set({ it.copy(context = ContextState(x, y, target, payload)) })
     public fun closeContext() { if (current.context != null) set({ it.copy(context = null) }) }
-    public fun contextItems(target: String, payload: String?): List<MenuItem> = ContextMenuEngine.itemsFor(_compiled.value.contextMenu, target, payload) { gate(it) }
+    /** Extra context-menu targets registered by modules (tab-group, window-title, …), merged ahead of the asset's items. */
+    public val contextExtras: MutableMap<String, List<MenuItem>> = LinkedHashMap()
+    public fun contextItems(target: String, payload: String?): List<MenuItem> {
+        val extra = contextExtras[target]
+        val base = ContextMenuEngine.itemsFor(_compiled.value.contextMenu, target, payload) { gate(it) }
+        if (extra == null) return base
+        val menu = _compiled.value.contextMenu.copy(targets = mapOf(target to extra))
+        val ex = ContextMenuEngine.itemsFor(menu, target, payload) { gate(it) }
+        return if (_compiled.value.contextMenu.targets.containsKey(target)) ex + MenuItem("x-sep", separator = true) + base else ex
+    }
     public fun filterMenu(items: List<MenuItem>): List<MenuItem> = UacEngine.filterMenu(items) { gate(it) }
 
     public fun setWindowWidth(dp: Int) { if (dp != current.windowWidthDp) set({ it.copy(windowWidthDp = dp) }) }

@@ -1221,10 +1221,10 @@
     "module": "app-console"
   },
   "cx.libpicker": {
-    "status": "partial",
+    "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
+    "notes": "Framework libraries + nested UI-libraries tab with compare in floating tab groups; engine runs remotely once the HTTP driver is deployed."
   },
   "cx.demos": {
     "status": "built",
@@ -2000,5 +2000,30 @@
     "status": "placeholder",
     "wave": 2,
     "module": "app-console"
+  },
+  "ui.windows": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
+  },
+  "ui.windows.dividers": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.windows.persist": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.windows.snap": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
+  },
+  "ui.windows.multiscreen": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "axf-ui"
   }
 }

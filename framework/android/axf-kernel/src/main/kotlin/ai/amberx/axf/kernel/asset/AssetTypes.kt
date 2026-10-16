@@ -31,10 +31,12 @@ public object AssetTypes {
     public const val NOTIFICATION_STYLE: String = "notification-style"
     /** Selects the active third-party UI kit (component implementation table). Optional: the port default applies when absent. */
     public const val UI_KIT: String = "ui-kit"
+    /** Window schema per kind (toolbars allowed/forced, minimize defaults). */
+    public const val WINDOW: String = "window"
 
     /** The 13 slots every app must fill (defaults.json). */
     public val CORE: List<String> = listOf(COLOR_THEME, STYLE_THEME, LAYOUT, APP_MENU, TOOLBAR, NAV_MENU, CONTEXT_MENU, DIALOG, POPUP, BUTTON, SLIDER, CONTAINER, UAC_POLICY)
-    public val ANDROID: List<String> = listOf(SCREEN_TEMPLATE, ICON_PACK, STRING_PACK, IMAGE_PACK, FONT_PACK, MOTION_PACK, SETTINGS_SCHEMA, NAV_GRAPH, WIDGET, NOTIFICATION_STYLE, UI_KIT)
+    public val ANDROID: List<String> = listOf(SCREEN_TEMPLATE, ICON_PACK, STRING_PACK, IMAGE_PACK, FONT_PACK, MOTION_PACK, SETTINGS_SCHEMA, NAV_GRAPH, WIDGET, NOTIFICATION_STYLE, UI_KIT, WINDOW)
 }
 
 /** Spec of one asset type, as read from asset-types*.json. Modules may register more at runtime. */

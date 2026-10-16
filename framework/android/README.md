@@ -52,6 +52,19 @@ override only the kinds you replace), expose it as an `AxfUiKit` with a `UiKitSp
 Kinds a kit does not cover fall back to Material 3. `UnstyledKit` (foundation only) is the worked example;
 swap `ui-kit` to `unstyled` in the component gallery to see it.
 
+## Windows, tab groups, docking
+
+`WindowManager` (kernel contract, service `axf.windows`) holds every window, tab group and nested pane layout;
+`axf-ui/windows` renders them: `DockArea` for the main window, `FloatingWindowsHost` (mounted by AxfRoot) for
+floating windows, minimized title bars per corner (stacked or lined up) and floating mini-toolbars at the cursor.
+Tab groups undock into DOCK windows (toolbar forced on, built-in toolbar: settings · redock · minimize to
+corner · minimize to toolbar · close, or a `toolbar` asset chosen in Window settings — the settings icon is
+always appended inside a floating window). Long-press-drag moves tabs between groups and windows. The
+`tab-group` context menu carries the Split submenu (vertical / horizontal / four-way / custom grid…); tabs
+are distributed evenly across the new groups. Apps register tab kinds through `TabRenderers`. The `window`
+asset (framework/android/assets/window) sets per-kind defaults; toolbars carry `data.window` naming the
+window they attach to.
+
 ## Building
 
 Requires Android Studio Ladybug+ / AGP 8.7, JDK 17, and network access to `maven.google.com`,

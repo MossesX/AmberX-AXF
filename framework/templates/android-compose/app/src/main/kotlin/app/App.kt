@@ -8,6 +8,7 @@ import ai.amberx.axf.nav.NavModule
 import ai.amberx.axf.network.NetworkModule
 import ai.amberx.axf.data.DataModule
 import ai.amberx.axf.settings.SettingsModule
+import ai.amberx.axf.ui.windows.WindowsModule
 
 /**
  * {{APP_NAME}} — builds the kernel from app/src/main/assets/axf (manifest + assets) and these modules.
@@ -16,7 +17,7 @@ import ai.amberx.axf.settings.SettingsModule
  */
 class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
-        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(),
+        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
         AppModule(),
     )
 }

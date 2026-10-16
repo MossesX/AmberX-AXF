@@ -25,7 +25,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 /** The console's own module: routes for every screen, actions, settings, the two dialogs, the repo service, the second UI kit. */
 class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Console") {
-    override val dependsOn: List<String> = listOf("ai.amberx.axf.data", "ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.devtools")
+    override val dependsOn: List<String> = listOf("ai.amberx.axf.data", "ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.devtools", ai.amberx.axf.ui.windows.WindowsModule.ID)
 
     override fun register(ctx: ModuleContext) {
         val repo = ConsoleRepo(context, ctx.service(JsonDocumentStore::class))
@@ -34,6 +34,11 @@ class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Cons
         val runtime = ctx.service(AxfRuntime::class)
         for (r in ROUTES) ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(r))
         ctx.extensions.contribute(ExtensionPoints.UI_KITS, id, UnstyledKit)
+        ctx.service(ai.amberx.axf.ui.windows.TabRenderers::class)?.let { tr ->
+            tr.register("kit-preview") { tab -> ai.amberx.axf.console.views.KitPreviewTab(tab.payload) }
+            tr.register("library-info") { tab -> ai.amberx.axf.console.views.LibraryInfoTab(tab.payload) }
+            tr.register("placeholder") { tab -> ai.amberx.axf.ui.components.PlaceholderScreen(tab.title) }
+        }
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("suggest", "Suggested features", "layers") { st -> SuggestionsDialog(st.props["item"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("libpicker", "Build a library", "box") { st -> LibraryPickerDialog(st.props["library"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About", module = id)) { _, _ -> runtime?.openDialog("about") })

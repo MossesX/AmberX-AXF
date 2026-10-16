@@ -1,7 +1,7 @@
 {
   "$axf": "catalog@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T18:12:26.200Z",
+  "generatedAt": "2026-10-16T18:25:12.972Z",
   "tabs": [
     {
       "id": "foundations",
@@ -1446,6 +1446,31 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "ui.windows",
+              "title": "Window / tab-group / docking engine: floating windows from undocked tab groups, drag-and-drop tabs across groups and windows, split (vertical / horizontal / four-way / custom grid) with even tab distribution, minimize to corner title bars (stacked or lined) or floating toolbar at cursor, window schema + toolbar attachment, window settings dialog",
+              "note": "kernel contract WindowManager + axf-ui windows/*; window asset type; toolbar.window field",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "ui.windows.dividers",
+                  "title": "Draggable split dividers (weights)"
+                },
+                {
+                  "id": "ui.windows.persist",
+                  "title": "Persist window layouts per app"
+                },
+                {
+                  "id": "ui.windows.snap",
+                  "title": "Snap/tile floating windows to screen edges"
+                },
+                {
+                  "id": "ui.windows.multiscreen",
+                  "title": "Multi-display / freeform window support"
+                }
+              ]
             }
           ]
         },

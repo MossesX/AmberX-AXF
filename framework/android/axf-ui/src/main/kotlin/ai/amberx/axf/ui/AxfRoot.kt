@@ -79,9 +79,16 @@ public fun AxfRoot(
                 LocalAxfActions provides actions,
                 LocalAxfStrings provides strings,
             ) {
-                CompositionLocalProvider(ai.amberx.axf.ui.kit.LocalAxfUiKits provides ai.amberx.axf.ui.kit.rememberAxfUiKits()) {
+                val wm = remember(kernel) { kernel?.services?.get<ai.amberx.axf.kernel.contract.WindowManager>() }
+                val tabRenderers = remember(kernel) { kernel?.services?.get<ai.amberx.axf.ui.windows.TabRenderers>() ?: ai.amberx.axf.ui.windows.TabRenderers() }
+                CompositionLocalProvider(
+                    ai.amberx.axf.ui.kit.LocalAxfUiKits provides ai.amberx.axf.ui.kit.rememberAxfUiKits(),
+                    ai.amberx.axf.ui.windows.LocalWindowManager provides wm,
+                    ai.amberx.axf.ui.windows.LocalTabRenderers provides tabRenderers,
+                ) {
                     Box(Modifier.fillMaxSize()) {
                         content()
+                        if (wm != null) ai.amberx.axf.ui.windows.FloatingWindowsHost(wm)
                         AxfToastHost()
                         AxfDialogHost(dialogs)
                         AxfContextMenuHost()
