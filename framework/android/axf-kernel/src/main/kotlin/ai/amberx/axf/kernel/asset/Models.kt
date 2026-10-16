@@ -126,7 +126,7 @@ public data class MobileLayout(
     val nav: MobileNav = MobileNav.BOTTOM_TABS,
     val appBar: AppBarStyle = AppBarStyle.SMALL,
     val showToolbar: Boolean = true,
-    val toolbarPosition: Side = Side.BOTTOM,
+    val toolbarPosition: Side = Side.TOP,
     val fab: Boolean = false,
     val edgeToEdge: Boolean = true,
     val inspectorAsSheet: Boolean = true,
@@ -137,7 +137,7 @@ public data class MobileLayout(
     public companion object {
         public fun fromJson(o: JsonObject?): MobileLayout = if (o == null) MobileLayout() else MobileLayout(
             nav = MobileNav.parse(o.strOrNull("nav")), appBar = AppBarStyle.parse(o.strOrNull("appBar")),
-            showToolbar = o.bool("showToolbar", true), toolbarPosition = Side.parse(o.strOrNull("toolbarPosition") ?: "bottom"),
+            showToolbar = o.bool("showToolbar", true), toolbarPosition = Side.parse(o.strOrNull("toolbarPosition")),
             fab = o.bool("fab"), edgeToEdge = o.bool("edgeToEdge", true), inspectorAsSheet = o.bool("inspectorAsSheet", true),
             expandedFrom = o.int("expandedFrom", 840), mediumFrom = o.int("mediumFrom", 600),
         )

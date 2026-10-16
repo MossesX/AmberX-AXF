@@ -1,0 +1,347 @@
+{
+  "developer": {
+    "guest": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "save"
+        ]
+      },
+      {
+        "id": "build",
+        "items": [
+          "build",
+          "deploy",
+          "s1",
+          "console"
+        ]
+      },
+      {
+        "id": "assets",
+        "items": [
+          "import",
+          "cycle",
+          "random",
+          "reset"
+        ]
+      },
+      {
+        "id": "window",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "shortcuts",
+          "about"
+        ]
+      }
+    ],
+    "user": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "save"
+        ]
+      },
+      {
+        "id": "build",
+        "items": [
+          "build",
+          "deploy",
+          "s1",
+          "console"
+        ]
+      },
+      {
+        "id": "assets",
+        "items": [
+          "import",
+          "cycle",
+          "random",
+          "reset"
+        ]
+      },
+      {
+        "id": "window",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "shortcuts",
+          "about"
+        ]
+      }
+    ],
+    "admin": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "save"
+        ]
+      },
+      {
+        "id": "build",
+        "items": [
+          "build",
+          "deploy",
+          "s1",
+          "console"
+        ]
+      },
+      {
+        "id": "assets",
+        "items": [
+          "import",
+          "cycle",
+          "random",
+          "reset"
+        ]
+      },
+      {
+        "id": "window",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "shortcuts",
+          "about"
+        ]
+      }
+    ]
+  },
+  "minimal-picker": {
+    "guest": [
+      {
+        "id": "app",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account",
+          "s1",
+          "shortcuts",
+          "about"
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          "colors",
+          "styles",
+          "layouts",
+          "s1",
+          "random",
+          "reset"
+        ]
+      }
+    ],
+    "user": [
+      {
+        "id": "app",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account",
+          "s1",
+          "shortcuts",
+          "about"
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          "colors",
+          "styles",
+          "layouts",
+          "s1",
+          "random",
+          "reset"
+        ]
+      }
+    ],
+    "admin": [
+      {
+        "id": "app",
+        "items": [
+          "go-home",
+          "go-components",
+          "go-assets",
+          "go-account",
+          "s1",
+          "shortcuts",
+          "about"
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          "colors",
+          "styles",
+          "layouts",
+          "s1",
+          "random",
+          "reset"
+        ]
+      }
+    ]
+  },
+  "standard-desktop": {
+    "guest": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ],
+    "user": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ],
+    "admin": [
+      {
+        "id": "file",
+        "items": [
+          "new",
+          "open",
+          "save",
+          "export",
+          "s1",
+          "import"
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          "undo",
+          "redo",
+          "s1",
+          "cut",
+          "copy",
+          "paste",
+          "s2",
+          "delete"
+        ]
+      },
+      {
+        "id": "view",
+        "items": [
+          "next-color",
+          "next-style",
+          "next-layout",
+          "random",
+          "reset",
+          "s1",
+          "shortcuts"
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          "docs",
+          "about"
+        ]
+      }
+    ]
+  }
+}

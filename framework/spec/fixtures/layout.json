@@ -1,0 +1,76 @@
+{
+  "classic-ide": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "inspector",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "columns": "224px minmax(0, 1fr) 260px",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical"
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "--fx-grid-cols": "224px minmax(0, 1fr) 260px",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "1080px"
+    }
+  },
+  "focus-top": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "nav"
+      ],
+      "areas": "\"menubar\" \"nav\" \"main\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr)",
+      "mobileAreas": "\"menubar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "horizontal"
+    },
+    "vars": {
+      "--fx-grid-areas": "\"menubar\" \"nav\" \"main\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"menubar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "920px"
+    }
+  },
+  "studio-dock": {
+    "compiled": {
+      "regions": [
+        "main",
+        "nav",
+        "inspector",
+        "toolbar",
+        "status"
+      ],
+      "areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "columns": "84px 250px minmax(0, 1fr)",
+      "rows": "minmax(0, 1fr) auto auto",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical"
+    },
+    "vars": {
+      "--fx-grid-areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
+      "--fx-grid-cols": "84px 250px minmax(0, 1fr)",
+      "--fx-grid-rows": "minmax(0, 1fr) auto auto",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  }
+}

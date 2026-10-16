@@ -1,0 +1,177 @@
+{
+  "open-dev": {
+    "roles": {
+      "developer": [
+        "*"
+      ],
+      "tester": [
+        "assets.*",
+        "dev.tools",
+        "files.write"
+      ]
+    },
+    "checks": [
+      {
+        "perm": "files.write",
+        "byRole": {
+          "developer": true,
+          "tester": true
+        }
+      },
+      {
+        "perm": "dev.deploy",
+        "byRole": {
+          "developer": true,
+          "tester": false
+        }
+      },
+      {
+        "perm": "assets.swap",
+        "byRole": {
+          "developer": true,
+          "tester": true
+        }
+      },
+      {
+        "perm": "uac.manage",
+        "byRole": {
+          "developer": true,
+          "tester": false
+        }
+      },
+      {
+        "perm": "anything.else",
+        "byRole": {
+          "developer": true,
+          "tester": false
+        }
+      }
+    ],
+    "gate": {
+      "developer": "allow",
+      "tester": "disable"
+    }
+  },
+  "standard": {
+    "roles": {
+      "guest": [
+        "assets.swap"
+      ],
+      "user": [
+        "assets.import",
+        "assets.swap",
+        "dev.tools",
+        "files.write"
+      ],
+      "admin": [
+        "*"
+      ]
+    },
+    "checks": [
+      {
+        "perm": "files.write",
+        "byRole": {
+          "guest": false,
+          "user": true,
+          "admin": true
+        }
+      },
+      {
+        "perm": "dev.deploy",
+        "byRole": {
+          "guest": false,
+          "user": false,
+          "admin": true
+        }
+      },
+      {
+        "perm": "assets.swap",
+        "byRole": {
+          "guest": true,
+          "user": true,
+          "admin": true
+        }
+      },
+      {
+        "perm": "uac.manage",
+        "byRole": {
+          "guest": false,
+          "user": false,
+          "admin": true
+        }
+      },
+      {
+        "perm": "anything.else",
+        "byRole": {
+          "guest": false,
+          "user": false,
+          "admin": true
+        }
+      }
+    ],
+    "gate": {
+      "guest": "disable",
+      "user": "disable",
+      "admin": "allow"
+    }
+  },
+  "strict-enterprise": {
+    "roles": {
+      "viewer": [],
+      "editor": [
+        "assets.swap",
+        "files.write"
+      ],
+      "owner": [
+        "*"
+      ]
+    },
+    "checks": [
+      {
+        "perm": "files.write",
+        "byRole": {
+          "viewer": false,
+          "editor": true,
+          "owner": true
+        }
+      },
+      {
+        "perm": "dev.deploy",
+        "byRole": {
+          "viewer": false,
+          "editor": false,
+          "owner": true
+        }
+      },
+      {
+        "perm": "assets.swap",
+        "byRole": {
+          "viewer": false,
+          "editor": true,
+          "owner": true
+        }
+      },
+      {
+        "perm": "uac.manage",
+        "byRole": {
+          "viewer": false,
+          "editor": false,
+          "owner": true
+        }
+      },
+      {
+        "perm": "anything.else",
+        "byRole": {
+          "viewer": false,
+          "editor": false,
+          "owner": true
+        }
+      }
+    ],
+    "gate": {
+      "viewer": "hide",
+      "editor": "hide",
+      "owner": "allow"
+    }
+  }
+}

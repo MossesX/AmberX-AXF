@@ -1,0 +1,114 @@
+[
+  {
+    "case": "missing-data",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "button",
+      "id": "x",
+      "name": "X",
+      "version": "1"
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "Missing envelope field \"data\"",
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "\"data\" must be an object"
+      ]
+    }
+  },
+  {
+    "case": "bad-id",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "button",
+      "id": "Bad_Id",
+      "name": "X",
+      "version": "1",
+      "data": {}
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.shape is required for button",
+        "data.fill is required for button",
+        "data.weight is required for button",
+        "data.uppercase is required for button",
+        "data.size is required for button",
+        "data.elevation is required for button"
+      ]
+    }
+  },
+  {
+    "case": "unknown-type",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "nope",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {}
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "Unknown asset type \"nope\""
+      ]
+    }
+  },
+  {
+    "case": "bad-enum",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "button",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "shape": "blob",
+        "fill": "solid",
+        "weight": 600,
+        "uppercase": false,
+        "size": "md",
+        "elevation": false
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.shape must be one of: rounded, pill, square"
+      ]
+    }
+  },
+  {
+    "case": "uac-default-role",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "uac-policy",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "defaultRole": "ghost",
+        "gating": "hide",
+        "roles": [
+          {
+            "id": "a",
+            "label": "A",
+            "permissions": []
+          }
+        ],
+        "permissions": {}
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.defaultRole must reference a role id"
+      ]
+    }
+  }
+]

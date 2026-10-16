@@ -1,0 +1,64 @@
+[
+  {
+    "spec": "file.save",
+    "parsed": {
+      "id": "file.save",
+      "args": []
+    }
+  },
+  {
+    "spec": "swap:color-theme:next",
+    "parsed": {
+      "id": "swap",
+      "args": [
+        "color-theme",
+        "next"
+      ]
+    }
+  },
+  {
+    "spec": "nav:home",
+    "parsed": {
+      "id": "nav",
+      "args": [
+        "home"
+      ]
+    }
+  },
+  {
+    "spec": "dialog:import-asset",
+    "parsed": {
+      "id": "dialog",
+      "args": [
+        "import-asset"
+      ]
+    }
+  },
+  {
+    "spec": "toast:success:Saved:ok",
+    "parsed": {
+      "id": "toast",
+      "args": [
+        "success",
+        "Saved",
+        "ok"
+      ]
+    }
+  },
+  {
+    "spec": "asset.json:{payload}",
+    "parsed": {
+      "id": "asset.json",
+      "args": [
+        "{payload}"
+      ]
+    }
+  },
+  {
+    "spec": "",
+    "parsed": {
+      "id": "",
+      "args": []
+    }
+  }
+]

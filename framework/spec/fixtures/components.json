@@ -1,0 +1,191 @@
+{
+  "button": {
+    "pill-gradient": {
+      "vars": {
+        "--fx-btn-radius": "999px",
+        "--fx-btn-weight": "700",
+        "--fx-btn-py": "calc(8px * var(--fx-density-k, 1))",
+        "--fx-btn-px": "14px",
+        "--fx-btn-shadow": "var(--fx-shadow-sm)",
+        "--fx-btn-case": "none",
+        "--fx-btn-tracking": "0"
+      },
+      "attrs": {
+        "data-fx-btn": "gradient"
+      }
+    },
+    "rounded-solid": {
+      "vars": {
+        "--fx-btn-radius": "var(--fx-radius-md)",
+        "--fx-btn-weight": "600",
+        "--fx-btn-py": "calc(8px * var(--fx-density-k, 1))",
+        "--fx-btn-px": "14px",
+        "--fx-btn-shadow": "none",
+        "--fx-btn-case": "none",
+        "--fx-btn-tracking": "0"
+      },
+      "attrs": {
+        "data-fx-btn": "solid"
+      }
+    },
+    "square-outline": {
+      "vars": {
+        "--fx-btn-radius": "2px",
+        "--fx-btn-weight": "600",
+        "--fx-btn-py": "calc(5px * var(--fx-density-k, 1))",
+        "--fx-btn-px": "10px",
+        "--fx-btn-shadow": "none",
+        "--fx-btn-case": "uppercase",
+        "--fx-btn-tracking": "0.06em"
+      },
+      "attrs": {
+        "data-fx-btn": "outline"
+      }
+    }
+  },
+  "slider": {
+    "chunky-gradient": {
+      "vars": {
+        "--fx-slider-track": "10px",
+        "--fx-slider-thumb": "24px",
+        "--fx-slider-thumb-w": "24px",
+        "--fx-slider-thumb-r": "50%"
+      },
+      "attrs": {
+        "data-fx-slider": "gradient"
+      }
+    },
+    "classic-round": {
+      "vars": {
+        "--fx-slider-track": "4px",
+        "--fx-slider-thumb": "16px",
+        "--fx-slider-thumb-w": "16px",
+        "--fx-slider-thumb-r": "50%"
+      },
+      "attrs": {
+        "data-fx-slider": "solid"
+      }
+    },
+    "precision-bar": {
+      "vars": {
+        "--fx-slider-track": "2px",
+        "--fx-slider-thumb": "20px",
+        "--fx-slider-thumb-w": "7px",
+        "--fx-slider-thumb-r": "3px"
+      },
+      "attrs": {
+        "data-fx-slider": "solid"
+      }
+    }
+  },
+  "container": {
+    "divided-panel": {
+      "vars": {
+        "--fx-card-pad": "calc(var(--fx-space) * 1.5)",
+        "--fx-card-shadow": "none"
+      },
+      "attrs": {
+        "data-fx-card": "panel",
+        "data-fx-card-header": "divided"
+      }
+    },
+    "frosted-glass": {
+      "vars": {
+        "--fx-card-pad": "calc(var(--fx-space) * 3)",
+        "--fx-card-shadow": "var(--fx-shadow-md)"
+      },
+      "attrs": {
+        "data-fx-card": "glass",
+        "data-fx-card-header": "accent"
+      }
+    },
+    "soft-card": {
+      "vars": {
+        "--fx-card-pad": "calc(var(--fx-space) * 2.2)",
+        "--fx-card-shadow": "var(--fx-shadow-sm)"
+      },
+      "attrs": {
+        "data-fx-card": "card",
+        "data-fx-card-header": "plain"
+      }
+    }
+  },
+  "dialog": {
+    "bottom-sheet": {
+      "vars": {
+        "--fx-dialog-w": "680px"
+      },
+      "attrs": {
+        "data-fx-dialog": "sheet",
+        "data-fx-backdrop": "dim",
+        "data-fx-dialog-anim": "slide",
+        "data-fx-dialog-header": "filled"
+      }
+    },
+    "centered-modal": {
+      "vars": {
+        "--fx-dialog-w": "520px"
+      },
+      "attrs": {
+        "data-fx-dialog": "modal",
+        "data-fx-backdrop": "dim",
+        "data-fx-dialog-anim": "scale",
+        "data-fx-dialog-header": "plain"
+      }
+    },
+    "side-drawer": {
+      "vars": {
+        "--fx-dialog-w": "440px"
+      },
+      "attrs": {
+        "data-fx-dialog": "drawer",
+        "data-fx-backdrop": "blur",
+        "data-fx-dialog-anim": "slide",
+        "data-fx-dialog-header": "accent-bar"
+      }
+    }
+  },
+  "popup": {
+    "center-minimal": {
+      "vars": {},
+      "attrs": {
+        "data-fx-toast-pos": "bottom-center",
+        "data-fx-toast": "minimal"
+      }
+    },
+    "corner-solid": {
+      "vars": {},
+      "attrs": {
+        "data-fx-toast-pos": "top-right",
+        "data-fx-toast": "solid"
+      }
+    },
+    "stack-outline": {
+      "vars": {},
+      "attrs": {
+        "data-fx-toast-pos": "bottom-right",
+        "data-fx-toast": "outline"
+      }
+    }
+  },
+  "context-menu": {
+    "compact-classic": {
+      "vars": {},
+      "attrs": {
+        "data-fx-ctx": "compact"
+      }
+    },
+    "glass-minimal": {
+      "vars": {},
+      "attrs": {
+        "data-fx-ctx": "glass"
+      }
+    },
+    "roomy-touch": {
+      "vars": {},
+      "attrs": {
+        "data-fx-ctx": "roomy"
+      }
+    }
+  }
+}
