@@ -73,7 +73,8 @@ public fun WindowSettingsDialog(windowId: String) {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for (c in Corner.entries) AxfChip(c.name.lowercase().replace('_', ' '), selected = s.corner == c, onClick = { s = s.copy(corner = c) }) }
         AxfText("Minimized title bars")
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { AxfChip("stacked", selected = s.mode == MinimizeMode.STACKED, onClick = { s = s.copy(mode = MinimizeMode.STACKED) }); AxfChip("lined up", selected = s.mode == MinimizeMode.LINED, onClick = { s = s.copy(mode = MinimizeMode.LINED) }) }
-        AxfText("Toolbar (toolbars ${if (w.toolbarsAllowed) "allowed; forced on while floating" else "not allowed by this window's schema"})")
+        AxfText("Toolbar (toolbars ${if (!w.toolbarsAllowed) "not allowed by this window's schema" else if (w.forcesToolbar) "allowed; forced on while floating" else "allowed; off by default for undocked elements"})")
+        if (w.toolbarsAllowed && !w.forcesToolbar) AxfSwitch(w.toolbarEnabled, { wm.setToolbar(windowId, it) }, label = "Show toolbar", description = "Element windows start without one")
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             AxfChip("default (built-in)", selected = s.toolbarAsset == null, onClick = { s = s.copy(toolbarAsset = null) })
             for (t in toolbars) AxfChip(t.name, selected = s.toolbarAsset == t.id, onClick = { s = s.copy(toolbarAsset = t.id) })

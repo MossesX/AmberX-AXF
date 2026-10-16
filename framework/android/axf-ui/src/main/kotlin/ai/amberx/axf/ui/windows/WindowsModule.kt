@@ -50,6 +50,8 @@ public class WindowsModule : BaseModule(ID, "Windows & tabs") {
         val wm = ctx.service(WindowManager::class) ?: return
         val runtime = ctx.service(AxfRuntime::class)
         ctx.services.register(TabRenderers::class, renderers, "axf.windows.tabs")
+        for (k in listOf("element", "element-category", "element-flags")) renderers.register(k) { tab -> ai.amberx.axf.ui.studio.UndockedElementTab(tab.kind, tab.payload) }
+        renderers.register("placeholder") { tab -> ai.amberx.axf.ui.components.PlaceholderScreen(tab.title) }
         runtime?.contextExtras?.put("tab-group", wm.groupMenu())
         runtime?.contextExtras?.put("window-title", wm.windowMenu())
         runtime?.asset(ai.amberx.axf.kernel.asset.AssetTypes.WINDOW)?.data?.let { d ->

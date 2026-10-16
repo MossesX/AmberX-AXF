@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T18:25:13.021Z",
+  "generatedAt": "2026-10-16T18:30:11.521Z",
   "summary": {
     "foundations": {
       "built": 58,
@@ -12,12 +12,12 @@
       "coverage": 95
     },
     "kernel": {
-      "built": 70,
+      "built": 71,
       "partial": 3,
       "placeholder": 100,
       "planned": 0,
-      "total": 173,
-      "coverage": 40
+      "total": 174,
+      "coverage": 41
     },
     "console": {
       "built": 13,
@@ -1993,6 +1993,17 @@
       "tag": "suggested",
       "status": "placeholder",
       "wave": 2,
+      "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "ui.explorer",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
+      "tag": "core",
+      "status": "built",
+      "wave": 1,
       "module": "axf-ui",
       "notes": ""
     },

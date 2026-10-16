@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.update
  * floating toolbar at the cursor.
  */
 
-public enum class WindowType { MAIN, DOCK, TOOL, DIALOG, PANEL, FLOATING }
+/** ELEMENT = an undocked element/tree node from the explorer: floating, toolbars allowed but OFF by default (its own switch turns one on). */
+public enum class WindowType { MAIN, DOCK, TOOL, DIALOG, PANEL, FLOATING, ELEMENT }
 public enum class MinimizeMode { STACKED, LINED }
 public enum class Corner { TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT; public fun next(): Corner = entries[(ordinal + 1) % entries.size] }
 public enum class MinimizeTarget { CORNER_TITLEBAR, FLOATING_TOOLBAR }
@@ -38,8 +39,10 @@ public data class WindowSpec(
     val closable: Boolean = true,
     val z: Int = 0,
 ) {
-    public val isFloating: Boolean get() = type == WindowType.FLOATING || type == WindowType.DOCK
-    public val effectiveToolbar: Boolean get() = toolbarsAllowed && (toolbarEnabled || isFloating)
+    public val isFloating: Boolean get() = type == WindowType.FLOATING || type == WindowType.DOCK || type == WindowType.ELEMENT
+    /** Floating windows force the toolbar on — except ELEMENT windows, which default to off and expose their own switch. */
+    public val forcesToolbar: Boolean get() = isFloating && type != WindowType.ELEMENT
+    public val effectiveToolbar: Boolean get() = toolbarsAllowed && (toolbarEnabled || forcesToolbar)
 }
 
 /** A tab: what it shows is up to the app (`kind` + `payload`), the engine only moves it around. */
@@ -98,10 +101,10 @@ public class WindowManager(public val mainWindowId: String = "main") {
     }
 
     /** Opens the tabs in a brand-new floating window (what Compare does). */
-    public fun openFloating(tabs: List<TabSpec>, title: String, type: WindowType = WindowType.FLOATING, width: Float = 380f, height: Float = 460f): String {
+    public fun openFloating(tabs: List<TabSpec>, title: String, type: WindowType = WindowType.FLOATING, width: Float = 380f, height: Float = 460f, x: Float? = null, y: Float? = null): String {
         val wid = nextId("win")
         val count = current.windows.count { it.isFloating }
-        _state.update { s -> s.copy(windows = s.windows + WindowSpec(wid, type, title, toolbarEnabled = true, settings = windowDefaults(type), x = 24f + 28f * count, y = 72f + 28f * count, width = width, height = height, z = (s.windows.maxOfOrNull { it.z } ?: 0) + 1), focused = wid) }
+        _state.update { s -> s.copy(windows = s.windows + WindowSpec(wid, type, title, toolbarEnabled = type != WindowType.ELEMENT, settings = windowDefaults(type), x = x ?: (24f + 28f * count), y = y ?: (72f + 28f * count), width = width, height = height, z = (s.windows.maxOfOrNull { it.z } ?: 0) + 1), focused = wid) }
         openGroup(tabs, wid)
         return wid
     }
@@ -214,7 +217,7 @@ public class WindowManager(public val mainWindowId: String = "main") {
     public fun move(windowId: String, dx: Float, dy: Float) { update(windowId) { it.copy(x = it.x + dx, y = it.y + dy) } }
     public fun resize(windowId: String, w: Float, h: Float) { update(windowId) { it.copy(width = w.coerceAtLeast(200f), height = h.coerceAtLeast(160f)) } }
     public fun setSettings(windowId: String, settings: WindowSettings) { update(windowId) { it.copy(settings = settings) } }
-    public fun setToolbar(windowId: String, enabled: Boolean) { update(windowId) { if (!it.toolbarsAllowed) it else it.copy(toolbarEnabled = enabled || it.isFloating) } }
+    public fun setToolbar(windowId: String, enabled: Boolean) { update(windowId) { if (!it.toolbarsAllowed) it else it.copy(toolbarEnabled = enabled || it.forcesToolbar) } }
 
     /* ---------- minimize ---------- */
 

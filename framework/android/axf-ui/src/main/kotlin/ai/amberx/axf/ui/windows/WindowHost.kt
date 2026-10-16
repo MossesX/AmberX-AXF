@@ -125,8 +125,9 @@ private fun TitleBar(wm: WindowManager, w: WindowSpec) {
             .padding(start = 10.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        AxfIcon(if (w.type == ai.amberx.axf.kernel.contract.WindowType.DOCK) "layers" else "box", size = 14.dp, tint = c.muted, contentDescription = null)
+        AxfIcon(when (w.type) { ai.amberx.axf.kernel.contract.WindowType.DOCK -> "layers"; ai.amberx.axf.kernel.contract.WindowType.ELEMENT -> "zap"; else -> "box" }, size = 14.dp, tint = c.muted, contentDescription = null)
         AxfText(w.title, Modifier.weight(1f), style = Axf.type.labelLarge, maxLines = 1)
+        if (w.toolbarsAllowed && !w.forcesToolbar) AxfIconButton("sliders", if (w.toolbarEnabled) "Hide toolbar" else "Show toolbar", { wm.setToolbar(w.id, !w.toolbarEnabled) }, size = 22.dp, iconSize = 12.dp, active = w.toolbarEnabled)
         AxfIconButton("minus", "Minimize", { wm.minimizeToNextCorner(w.id) }, size = 22.dp, iconSize = 12.dp)
         if (w.closable) AxfIconButton("x", "Close", { wm.close(w.id) }, size = 22.dp, iconSize = 12.dp)
     }

@@ -1,7 +1,7 @@
 {
   "$axf": "catalog@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T18:25:12.972Z",
+  "generatedAt": "2026-10-16T18:30:11.469Z",
   "tabs": [
     {
       "id": "foundations",
@@ -1471,6 +1471,14 @@
                   "title": "Multi-display / freeform window support"
                 }
               ]
+            },
+            {
+              "id": "ui.explorer",
+              "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
+              "note": "axf-ui studio/ElementExplorer.kt; used by the console UI-library compare tabs",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
             }
           ]
         },

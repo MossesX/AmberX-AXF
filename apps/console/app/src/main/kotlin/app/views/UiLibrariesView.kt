@@ -116,28 +116,9 @@ fun UiLibrariesTab() {
     }
 }
 
-/** Tab renderer for `kit-preview`: a component sampler rendered through the chosen kit (overriding the active one just for this tab). */
+/** Tab renderer for `kit-preview`: the element explorer (preview pane + categorized tree of elements, tokens, style parameters and flags) forced to that kit. */
 @Composable
-fun KitPreviewTab(kitId: String) {
-    val kits = LocalAxfUiKits.current
-    val forced = remember(kits, kitId) { AxfUiKits(kits.kits, kitId, emptyMap()) }
-    val kit = kits.kits.firstOrNull { it.spec.id == kitId }
-    var text by remember { mutableStateOf("Sample text") }
-    var on by remember { mutableStateOf(true) }
-    var slider by remember { mutableStateOf(40f) }
-    CompositionLocalProvider(LocalAxfUiKits provides forced) {
-        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(Axf.space.oneHalf), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            AxfText(kit?.spec?.label ?: kitId, style = Axf.type.titleMedium); AxfText("${kit?.spec?.library ?: "unknown"} · covers ${kit?.spec?.covers?.size ?: 0} kinds (uncovered fall back to Material 3)", muted = true)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { AxfButton("Primary", {}, tone = ButtonTone.PRIMARY, icon = "zap"); AxfButton("Neutral", {}); AxfButton("Danger", {}, tone = ButtonTone.DANGER) }
-            AxfTextField(text, { text = it }, Modifier.fillMaxWidth(), label = "Text field")
-            AxfSwitch(on, { on = it }, label = "Switch"); AxfCheckbox(!on, { on = !it }, label = "Checkbox")
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { AxfChip("Chip"); AxfChip("Selected", selected = true); AxfBadge("badge") }
-            AxfSlider("Slider", slider, { slider = it })
-            AxfCard(title = "Card") { AxfListItem("List item", subtitle = "Rendered by ${kits.kitFor(ComponentKind.LIST_ITEM).spec.label}", icon = "file") }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) { for (k in ComponentKind.entries) AxfChip(k.name.lowercase(), tone = if (kit?.spec?.covers(k) == true) "success" else null) }
-        }
-    }
-}
+fun KitPreviewTab(kitId: String) { ai.amberx.axf.ui.studio.ElementExplorer(kitId) }
 
 /** Tab renderer for `library-info`: a third-party library without a kit yet. */
 @Composable

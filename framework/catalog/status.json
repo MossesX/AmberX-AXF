@@ -2025,5 +2025,10 @@
     "status": "placeholder",
     "wave": 2,
     "module": "axf-ui"
+  },
+  "ui.explorer": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui"
   }
 }
