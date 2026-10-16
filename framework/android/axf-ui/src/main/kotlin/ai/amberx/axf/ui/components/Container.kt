@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
  * Also used as `AxfCard` (alias). `ctxTarget`/`ctxPayload` make it a long-press context-menu host.
  */
 @Composable
-public fun AxfContainer(
+public fun M3Container(
     modifier: Modifier = Modifier,
     title: String? = null,
     icon: String? = null,

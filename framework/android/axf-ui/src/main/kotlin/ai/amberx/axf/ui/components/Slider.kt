@@ -47,7 +47,7 @@ import kotlin.math.roundToInt
  * to the web's CSS (`--fx-slider-*`). `showValue=HOVER` shows the value while dragging on touch.
  */
 @Composable
-public fun AxfSlider(
+public fun M3Slider(
     label: String,
     value: Float,
     onChange: (Float) -> Unit,

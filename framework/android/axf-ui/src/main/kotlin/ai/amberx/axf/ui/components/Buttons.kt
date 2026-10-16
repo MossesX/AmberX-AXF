@@ -86,7 +86,7 @@ public fun buttonVisual(colors: AxfColors, fill: Fill, tone: ButtonTone, borderW
  * `style` lets galleries render a variant other than the active one.
  */
 @Composable
-public fun AxfButton(
+public fun M3Button(
     text: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -146,7 +146,7 @@ public fun AxfButton(
  * `size` is the visual square; `iconSize` the glyph.
  */
 @Composable
-public fun AxfIconButton(
+public fun M3IconButton(
     icon: String,
     contentDescription: String,
     onClick: () -> Unit,

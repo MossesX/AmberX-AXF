@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.em
 
 /** Web `.fx-input`: bg background, border, sm radius, accent border + soft ring on focus. */
 @Composable
-public fun AxfTextField(
+public fun M3TextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -107,7 +107,7 @@ public fun AxfTextField(
 
 /** Material switch recolored from the tokens; label row with optional description. */
 @Composable
-public fun AxfSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, label: String? = null, description: String? = null, enabled: Boolean = true) {
+public fun M3Switch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, label: String? = null, description: String? = null, enabled: Boolean = true) {
     val theme = Axf.theme
     val c = theme.colors
     Row(
@@ -132,7 +132,7 @@ public fun AxfSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modif
 }
 
 @Composable
-public fun AxfCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, label: String? = null, enabled: Boolean = true) {
+public fun M3Checkbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier, label: String? = null, enabled: Boolean = true) {
     val theme = Axf.theme
     val c = theme.colors
     Row(
@@ -146,7 +146,7 @@ public fun AxfCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, mod
 
 /** Web `.fx-chip` with tones accent/success/warning/danger (null = neutral). Clickable when `onClick` is set. */
 @Composable
-public fun AxfChip(text: String, modifier: Modifier = Modifier, tone: String? = null, icon: String? = null, selected: Boolean = false, onClick: (() -> Unit)? = null) {
+public fun M3Chip(text: String, modifier: Modifier = Modifier, tone: String? = null, icon: String? = null, selected: Boolean = false, onClick: (() -> Unit)? = null) {
     val theme = Axf.theme
     val c = theme.colors
     val bg = if (tone != null) c.toneSoft(tone) else if (selected) c.accentSoft else c.surface3
@@ -175,7 +175,7 @@ public fun AxfKbd(text: String, modifier: Modifier = Modifier) {
 
 /** Counter / status badge (`.fx-nav__badge`): pill, accent soft background, bold. */
 @Composable
-public fun AxfBadge(text: String, modifier: Modifier = Modifier, tone: String = "accent") {
+public fun M3Badge(text: String, modifier: Modifier = Modifier, tone: String = "accent") {
     val theme = Axf.theme
     val c = theme.colors
     Text(
@@ -210,7 +210,7 @@ public fun AxfSegmented(options: List<Pair<String, String>>, selected: String, o
 
 /** Standard list row: icon, title, subtitle, trailing. Min height = touch target. */
 @Composable
-public fun AxfListItem(
+public fun M3ListItem(
     title: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
@@ -241,7 +241,7 @@ public fun AxfListItem(
 
 /** Web `.fx-nav__label` / `.fx-eyebrow`: tiny uppercase tracked header. */
 @Composable
-public fun AxfSectionHeader(text: String, modifier: Modifier = Modifier, accent: Boolean = false) {
+public fun M3SectionHeader(text: String, modifier: Modifier = Modifier, accent: Boolean = false) {
     val theme = Axf.theme
     Text(
         text.uppercase(), style = theme.typography.eyebrow.copy(letterSpacing = if (accent) 0.14f.em else 0.1f.em, fontSize = theme.typography.bodyMedium.fontSize * (if (accent) 0.76f else 0.74f)),
@@ -265,7 +265,7 @@ public fun AxfPageHead(title: String, modifier: Modifier = Modifier, eyebrow: St
 
 /** Thin horizontal rule in the border color (`.fx-menu__sep`, `.fx-status__sep`). */
 @Composable
-public fun AxfDivider(modifier: Modifier = Modifier) {
+public fun M3Divider(modifier: Modifier = Modifier) {
     val theme = Axf.theme
     Box(modifier.fillMaxWidth().heightIn(min = theme.spacing.borderWidth).background(theme.colors.border))
 }

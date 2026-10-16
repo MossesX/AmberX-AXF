@@ -79,11 +79,13 @@ public fun AxfRoot(
                 LocalAxfActions provides actions,
                 LocalAxfStrings provides strings,
             ) {
-                Box(Modifier.fillMaxSize()) {
-                    content()
-                    AxfToastHost()
-                    AxfDialogHost(dialogs)
-                    AxfContextMenuHost()
+                CompositionLocalProvider(ai.amberx.axf.ui.kit.LocalAxfUiKits provides ai.amberx.axf.ui.kit.rememberAxfUiKits()) {
+                    Box(Modifier.fillMaxSize()) {
+                        content()
+                        AxfToastHost()
+                        AxfDialogHost(dialogs)
+                        AxfContextMenuHost()
+                    }
                 }
             }
         }
