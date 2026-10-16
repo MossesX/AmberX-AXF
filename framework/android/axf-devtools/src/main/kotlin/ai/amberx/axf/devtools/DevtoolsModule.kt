@@ -91,6 +91,12 @@ public interface BuildEngineClient {
     public suspend fun newModule(name: String, label: String, capabilities: List<String>): AxfResult<JsonObject>
     public suspend fun newDemo(library: String): AxfResult<JsonObject>
     public suspend fun listModules(): AxfResult<JsonObject>
+    /** `GET /libraries` — installable libraries (framework/android/<module>/library.json) with their wizard parameters. */
+    public suspend fun listLibraries(): AxfResult<JsonObject>
+    /** `POST /install` — run a library's install script against an app with the wizard's answers. */
+    public suspend fun install(appDir: String, library: String, params: JsonObject): AxfResult<JsonObject>
+    /** `POST /import-ui` — port a third-party UI library into a new AXF kit (clone → refactor to tokens → save → apply to `appDir`). */
+    public suspend fun importUi(body: JsonObject): AxfResult<JsonObject>
     public val available: Boolean
 }
 
@@ -102,6 +108,9 @@ public object NotImplementedBuildEngine : BuildEngineClient {
     override suspend fun newModule(name: String, label: String, capabilities: List<String>): AxfResult<JsonObject> = no()
     override suspend fun newDemo(library: String): AxfResult<JsonObject> = no()
     override suspend fun listModules(): AxfResult<JsonObject> = no()
+    override suspend fun listLibraries(): AxfResult<JsonObject> = no()
+    override suspend fun install(appDir: String, library: String, params: JsonObject): AxfResult<JsonObject> = no()
+    override suspend fun importUi(body: JsonObject): AxfResult<JsonObject> = no()
     override val available: Boolean = false
 }
 
@@ -118,6 +127,9 @@ public class HttpBuildEngineClient(private val http: AxfHttp, public var baseUrl
     override suspend fun newModule(name: String, label: String, capabilities: List<String>): AxfResult<JsonObject> = call("new-module", buildJsonObject { put("name", JsonPrimitive(name)); put("label", JsonPrimitive(label)); put("capabilities", kotlinx.serialization.json.JsonArray(capabilities.map { JsonPrimitive(it) })) })
     override suspend fun newDemo(library: String): AxfResult<JsonObject> = call("new-demo", buildJsonObject { put("library", JsonPrimitive(library)) })
     override suspend fun listModules(): AxfResult<JsonObject> = http.getJson("${baseUrl.trimEnd('/')}/modules")
+    override suspend fun listLibraries(): AxfResult<JsonObject> = http.getJson("${baseUrl.trimEnd('/')}/libraries")
+    override suspend fun importUi(body: JsonObject): AxfResult<JsonObject> = call("import-ui", body)
+    override suspend fun install(appDir: String, library: String, params: JsonObject): AxfResult<JsonObject> = call("install", buildJsonObject { put("dir", JsonPrimitive(appDir)); put("library", JsonPrimitive(library)); put("params", params) })
 }
 
 /** Polls `axf dev` (`/assets.json` once, then `/events?since=rev`) and re-registers changed assets live. */

@@ -32,6 +32,7 @@ include(":lib-admin")
 include(":lib-accounts")
 include(":lib-profile")
 include(":lib-billing")
+include(":lib-browser")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")

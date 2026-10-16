@@ -61,6 +61,7 @@ val LIBRARIES = listOf(
     LibraryDef("sensors", "ai.amberx.axf.sensors", "Sensors & connectivity", "Sensors, BLE, NFC, Wi-Fi tools", listOf("dv.sensors", "dv.ble", "dv.nfc", "dv.wifi", "c.sensors", "c.ble", "c.nfc", "c.wifi"), "lib-sensors"),
     LibraryDef("files", "ai.amberx.axf.files", "Files & sync", "File manager, transfer, backup, offline sync", listOf("d.files", "d.sync", "d.backup", "c.files", "c.transfer", "c.backup", "c.offline"), "lib-files"),
     LibraryDef("charts", "ai.amberx.axf.charts", "Charts & tables", "Charts, data grids, dashboards", listOf("ui.charts", "ui.tables", "c.charts"), "lib-charts"),
+    LibraryDef("browser", "ai.amberx.axf.browser", "Library browser", "Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard", listOf("lib.browser", "ui.windows", "ui.explorer"), "lib-browser"),
     LibraryDef("plugins", "ai.amberx.axf.plugins", "Plugins & add-ons", "Plugin loader, packs, OTA asset packs, designer bridge", listOf("k.plugins", "k.nocode", "w.ota"), "lib-plugins"),
 )
 
@@ -83,8 +84,15 @@ fun FrameworkLibrariesTab() {
     val repo = rememberRepo() ?: return AxfEmptyState("Console data missing")
     val runtime = LocalAxfRuntime.current
     val checked by repo.checked.collectAsState()
+    val installable by repo.installable.collectAsState()
+    val project by repo.project.collectAsState()
+    val ports by repo.ports.collectAsState()
+    val actions = ai.amberx.axf.ui.LocalAxfActions.current
     LazyColumn(Modifier.fillMaxWidth(), contentPadding = PaddingValues(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.one)) {
-        item { AxfPageHead("Libraries", eyebrow = "${LIBRARIES.size} libraries", description = "Each library bundles catalog features. Pick one to scaffold its module and a small demo app that showcases it.") }
+        item { AxfPageHead("Libraries", eyebrow = "${LIBRARIES.size} libraries · ${installable.size} installable · project: ${project.ifBlank { "none" }}", description = "Each library bundles catalog features. Pick one to scaffold its module and a small demo app, or Install one into the open project: the wizard asks for the library's parameters (from its library.json) and writes manifest, gradle, App.kt and typed setup code.", actions = {
+            AxfButton(if (project.isBlank()) "Open project" else project, { runtime.openDialog("project") }, icon = "folder")
+            AxfButton("Terminal", { actions.dispatch("terminal.open:install") }, icon = "terminal")
+        }) }
         for (lib in LIBRARIES) item(key = lib.id) {
             val built = lib.features.count { repo.status(it) == Status.BUILT }; val ph = lib.features.count { repo.status(it) == Status.PLACEHOLDER }; val sel = lib.features.count { it in checked }
             AxfCard(title = lib.label, icon = "box", actions = { AxfBadge("$built/${lib.features.size} built", tone = if (built == lib.features.size) "success" else if (built > 0 || ph > 0) "warning" else "accent") }) {
@@ -92,8 +100,14 @@ fun FrameworkLibrariesTab() {
                 AxfText("${lib.packageName} · ${lib.module} · $sel checked", mono = true, muted = true)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AxfButton("Build library", { runtime.openDialog("libpicker", mapOf("library" to lib.id)) }, tone = ButtonTone.PRIMARY, icon = "zap")
+                    if (installable.any { it.slug == lib.id || it.id == lib.module }) AxfButton("Install", { runtime.openDialog("install", mapOf("library" to lib.id)) }, icon = "download", requires = "dev.build")
                     AxfButton("Features", { runtime.navigate("catalog") }, icon = "layers")
                 }
+            }
+        }
+        if (ports.isNotEmpty()) item(key = "ports") {
+            AxfCard(title = "Installs & imports", icon = "download", actions = { AxfBadge("${ports.size}") }) {
+                for (p in ports.sortedByDescending { it.createdAt }) ai.amberx.axf.ui.components.AxfListItem(p.name, subtitle = "${p.kind} · ${p.source}${if (p.project.isNotBlank()) " → ${p.project}" else ""} · ${p.createdAt.take(16).replace('T', ' ')}", icon = if (p.kind == "ui-import") "grid" else "box", trailing = { AxfBadge(p.status, tone = when (p.status) { "installed", "ported" -> "success"; "recorded" -> "warning"; else -> "accent" }) })
             }
         }
     }

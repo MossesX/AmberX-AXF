@@ -77,9 +77,34 @@
       "ai.amberx.axf.accounts",
       "ai.amberx.axf.profile",
       "ai.amberx.axf.billing",
-      "ai.amberx.axf.admin"
+      "ai.amberx.axf.admin",
+      "ai.amberx.axf.ui.windows",
+      "ai.amberx.axf.browser"
     ],
     "minSdk": 26,
     "targetSdk": 35
+  },
+  "libraries": {
+    "browser": {
+      "tabGroups": [
+        "library-browser"
+      ],
+      "itemKinds": [
+        "kit-preview",
+        "library-info"
+      ],
+      "defaultWindowType": "floating",
+      "toolbarDefault": "forced",
+      "allowGridView": true,
+      "compareLimit": 6,
+      "panes": [
+        "Hot-swappable (AXF kits)",
+        "Third-party / existing"
+      ],
+      "minimizeCorner": "bottom-right"
+    },
+    "$installed": [
+      "ai.amberx.axf.browser"
+    ]
   }
 }

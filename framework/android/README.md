@@ -70,3 +70,9 @@ window they attach to.
 Requires Android Studio Ladybug+ / AGP 8.7, JDK 17, and network access to `maven.google.com`,
 `repo1.maven.org` and `dl.google.com`. `./gradlew :axf-kernel:test` runs the kernel + conformance tests;
 `./gradlew publishToMavenLocal` publishes every module as `ai.amberx.axf:<module>:<version>`.
+
+## Installable libraries, the install wizard and UI-library imports
+
+- Any module with a `library.json` (`library@1`: id, features, `manifestKey`, `params[]`, `install{gradle,module,import}`) is **installable**: `axf libraries` lists them, `axf install <lib> <appDir>` runs an interactive wizard for the parameters (or `--param k=v --yes`), writes `axf.manifest.json → <manifestKey>`, the gradle dependency, the `App.kt` module entry and a generated `<Name>Setup.kt` holding the answers as typed Kotlin. `axf init … --libraries browser` and a boilerplate's `libraries` field do the same at pre-build time; the Dev Console's **Install** button drives the same wizard through `POST /install`.
+- `lib-browser` is the first one: the floating library-browser tab groups (select → compare → undock / drag / split / minimize / tree-or-grid explorer) as a reusable library bound to the tab groups named in `libraries.browser.tabGroups`.
+- **Import** on a third-party UI library (`axf import-ui`, console wizard, `POST /import-ui`): clones the library (git/local) or records it (maven/npm), refactors the sources to AXF tokens (`Color(0x…)`, `MaterialTheme.colorScheme.*`, typography, radii → `Axf.*` via `AxfPorted`, mapping in `tokens.map.json`), saves `kit-<id>` (an `AxfUiKit` + module + `library.json`) and the `ui-kit` asset, and applies it to the open project as its default kit. The kit is a hot-swappable asset like any other; kinds it does not cover fall back to the default AmberX kit, noted on the **output terminal** (`terminal.open`).

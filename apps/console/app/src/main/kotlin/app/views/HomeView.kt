@@ -46,6 +46,8 @@ fun HomeView() {
         item { AxfPageHead("AXF Dev Console", eyebrow = "AmberX AXF ${ConsoleModule.VERSION} · android port · tracker ${tracker.generatedAt.take(10)}", description = "The first app on the Android port. It tracks what the framework has, assembles libraries from the feature catalog, generates demo apps and manages boilerplates.", actions = {
             AxfButton("Tracker", { runtime.navigate("tracker") }, tone = ButtonTone.PRIMARY, icon = "list")
             AxfButton("Export plan", { actions.dispatch("console.exportPlan") }, icon = "copy")
+            AxfButton("Project", { runtime.openDialog("project") }, icon = "folder")
+            AxfButton("Terminal", { actions.dispatch("terminal.open") }, icon = "terminal")
         }) }
         item { AxfCard(title = "Coverage", icon = "chart") { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             for (tab in listOf("foundations" to "Foundations", "kernel" to "Kernel", "console" to "Console", "modules" to "Modules", "demos" to "Demos")) {

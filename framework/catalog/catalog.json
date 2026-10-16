@@ -21,7 +21,7 @@
             },
             {
               "id": "f.layers",
-              "title": "Strict layering: kernel → platform adapters → UI → libraries → app; lower layers never import higher ones",
+              "title": "Strict layering: kernel \u2192 platform adapters \u2192 UI \u2192 libraries \u2192 app; lower layers never import higher ones",
               "note": "",
               "tag": "lock",
               "recommended": true,
@@ -177,7 +177,7 @@
           "items": [
             {
               "id": "f.module",
-              "title": "AxfModule contract: id, version, deps, provides/requires capabilities, lifecycle (register → init → start → stop)",
+              "title": "AxfModule contract: id, version, deps, provides/requires capabilities, lifecycle (register \u2192 init \u2192 start \u2192 stop)",
               "note": "",
               "tag": "lock",
               "recommended": true,
@@ -185,7 +185,7 @@
             },
             {
               "id": "f.extpoints",
-              "title": "Extension point registry with typed slots (menus, routes, settings pages, actions, asset types, theme sources, log sinks, auth providers, billing providers…)",
+              "title": "Extension point registry with typed slots (menus, routes, settings pages, actions, asset types, theme sources, log sinks, auth providers, billing providers\u2026)",
               "note": "Everything later plugs in here instead of editing the kernel.",
               "tag": "lock",
               "recommended": true,
@@ -397,7 +397,7 @@
             },
             {
               "id": "f.permissions",
-              "title": "Permission engine abstraction (declare → rationale → request → fallback) used by every library",
+              "title": "Permission engine abstraction (declare \u2192 rationale \u2192 request \u2192 fallback) used by every library",
               "note": "",
               "tag": "lock",
               "recommended": true,
@@ -544,7 +544,7 @@
             {
               "id": "k.assets",
               "title": "Asset envelope + registry (asset@1 JSON, same files as the web demo)",
-              "note": "Every theme, layout, menu, dialog, button… loads from the identical JSON.",
+              "note": "Every theme, layout, menu, dialog, button\u2026 loads from the identical JSON.",
               "tag": "core",
               "recommended": true,
               "suggests": []
@@ -559,7 +559,7 @@
             },
             {
               "id": "k.theme",
-              "title": "Theme engine → Compose tokens (color-theme + style-theme)",
+              "title": "Theme engine \u2192 Compose tokens (color-theme + style-theme)",
               "note": "",
               "tag": "core",
               "recommended": true,
@@ -599,7 +599,7 @@
             },
             {
               "id": "k.actions",
-              "title": "Action bus with the standard vocabulary (file.save, edit.undo, swap:…)",
+              "title": "Action bus with the standard vocabulary (file.save, edit.undo, swap:\u2026)",
               "note": "",
               "tag": "core",
               "recommended": true,
@@ -709,7 +709,7 @@
             },
             {
               "id": "k.config",
-              "title": "Config engine (layered: defaults → manifest → remote → user)",
+              "title": "Config engine (layered: defaults \u2192 manifest \u2192 remote \u2192 user)",
               "note": "",
               "tag": "core",
               "recommended": true,
@@ -835,7 +835,7 @@
           "items": [
             {
               "id": "s.settings",
-              "title": "Settings engine: schema-driven settings groups → auto-generated settings UI",
+              "title": "Settings engine: schema-driven settings groups \u2192 auto-generated settings UI",
               "note": "",
               "tag": "lib",
               "recommended": true,
@@ -1027,7 +1027,7 @@
             },
             {
               "id": "u.roles",
-              "title": "Role binding: account ↔ UAC policy role",
+              "title": "Role binding: account \u2194 UAC policy role",
               "note": "",
               "tag": "lib",
               "recommended": false,
@@ -1107,7 +1107,7 @@
             },
             {
               "id": "b.entitle",
-              "title": "Entitlements → feature gating (ties into UAC + feature flags)",
+              "title": "Entitlements \u2192 feature gating (ties into UAC + feature flags)",
               "note": "",
               "tag": "lib",
               "recommended": false,
@@ -1157,7 +1157,7 @@
         },
         {
           "id": "ui-library-every-customization-token",
-          "label": "UI library — every customization token",
+          "label": "UI library \u2014 every customization token",
           "items": [
             {
               "id": "ui.tokens",
@@ -1185,7 +1185,7 @@
             },
             {
               "id": "ui.type",
-              "title": "Typography scale tokens (display/headline/title/body/label × sizes, weights, line-heights, tracking)",
+              "title": "Typography scale tokens (display/headline/title/body/label \u00d7 sizes, weights, line-heights, tracking)",
               "note": "",
               "tag": "core",
               "recommended": true,
@@ -1345,7 +1345,7 @@
             },
             {
               "id": "ui.forms",
-              "title": "Forms engine (schema → form, validation, conditional fields, wizards)",
+              "title": "Forms engine (schema \u2192 form, validation, conditional fields, wizards)",
               "note": "",
               "tag": "lib",
               "recommended": true,
@@ -1469,6 +1469,31 @@
                 {
                   "id": "ui.windows.multiscreen",
                   "title": "Multi-display / freeform window support"
+                }
+              ]
+            },
+            {
+              "id": "lib.browser",
+              "title": "Library browser as an installable library: two-pane item lists, multi-select, Compare \u2192 floating tab groups with every window behavior; attaches to any tab group declared in the app manifest; installed via `axf install browser` / console wizard that asks the required parameters and generates reusable setup code",
+              "note": "framework/android/lib-browser + library.json; cli/libraries.mjs installer; console Install wizard",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.browser.persist",
+                  "title": "Remember selections and window layout per tab group"
+                },
+                {
+                  "id": "lib.browser.remote",
+                  "title": "Item providers fed from a remote catalog"
+                },
+                {
+                  "id": "lib.installer.uninstall",
+                  "title": "Uninstall / reconfigure installed libraries from the console"
+                },
+                {
+                  "id": "lib.installer.registry",
+                  "title": "Library registry (third-party library.json packages)"
                 }
               ]
             },
@@ -1648,7 +1673,7 @@
             },
             {
               "id": "w.webview",
-              "title": "WebView engine (bridged JS ↔ kernel, so web-port AXF apps can run inside)",
+              "title": "WebView engine (bridged JS \u2194 kernel, so web-port AXF apps can run inside)",
               "note": "",
               "tag": "lib",
               "recommended": false,
@@ -2067,7 +2092,7 @@
         },
         {
           "id": "feature-catalog-libraries",
-          "label": "Feature catalog → libraries",
+          "label": "Feature catalog \u2192 libraries",
           "items": [
             {
               "id": "cx.catalog",
@@ -2109,14 +2134,14 @@
             },
             {
               "id": "cx.libpicker",
-              "title": "Library picker: choose a library → scaffold its module + a small demo app that showcases it",
+              "title": "Library picker: choose a library \u2192 scaffold its module + a small demo app that showcases it",
               "note": "Runs the build engine (axf init + new-module) locally or on the VPS.",
               "tag": "core",
               "recommended": true,
               "suggests": [
                 {
                   "id": "cx.libpicker.template",
-                  "title": "Pick a demo-app template (list-detail, dashboard, player…)"
+                  "title": "Pick a demo-app template (list-detail, dashboard, player\u2026)"
                 },
                 {
                   "id": "cx.libpicker.prompt",
@@ -2329,7 +2354,7 @@
           "items": [
             {
               "id": "m.kernel",
-              "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+              "title": "axf-kernel \u2014 pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
               "note": "ai.amberx.axf.kernel",
               "tag": "lock",
               "recommended": true,
@@ -2337,7 +2362,7 @@
             },
             {
               "id": "m.platform",
-              "title": "axf-platform-android — Android adapters: storage, permissions, lifecycle, clock, logging sink, process-death",
+              "title": "axf-platform-android \u2014 Android adapters: storage, permissions, lifecycle, clock, logging sink, process-death",
               "note": "ai.amberx.axf.platform",
               "tag": "lock",
               "recommended": true,
@@ -2345,7 +2370,7 @@
             },
             {
               "id": "m.ui",
-              "title": "axf-ui — Compose theme (tokens), AppShell, layout regions, core controls, overlays, menus",
+              "title": "axf-ui \u2014 Compose theme (tokens), AppShell, layout regions, core controls, overlays, menus",
               "note": "ai.amberx.axf.ui",
               "tag": "lock",
               "recommended": true,
@@ -2353,7 +2378,7 @@
             },
             {
               "id": "m.assets",
-              "title": "axf-assets — the shared JSON assets packaged as resources + loader",
+              "title": "axf-assets \u2014 the shared JSON assets packaged as resources + loader",
               "note": "ai.amberx.axf.assets",
               "tag": "lock",
               "recommended": true,
@@ -2361,7 +2386,7 @@
             },
             {
               "id": "m.nav",
-              "title": "axf-nav — typed routes, deep links, back-stack, results",
+              "title": "axf-nav \u2014 typed routes, deep links, back-stack, results",
               "note": "ai.amberx.axf.nav",
               "tag": "lock",
               "recommended": true,
@@ -2369,7 +2394,7 @@
             },
             {
               "id": "m.data",
-              "title": "axf-data — DataStore/Room/KV/files base classes, migrations, offline-first repository",
+              "title": "axf-data \u2014 DataStore/Room/KV/files base classes, migrations, offline-first repository",
               "note": "ai.amberx.axf.data",
               "tag": "lock",
               "recommended": true,
@@ -2377,7 +2402,7 @@
             },
             {
               "id": "m.network",
-              "title": "axf-network — HTTP client, interceptors, websocket, download/upload managers",
+              "title": "axf-network \u2014 HTTP client, interceptors, websocket, download/upload managers",
               "note": "ai.amberx.axf.network",
               "tag": "core",
               "recommended": true,
@@ -2385,7 +2410,7 @@
             },
             {
               "id": "m.settings",
-              "title": "lib-settings — settings schema registry + generated settings UI",
+              "title": "lib-settings \u2014 settings schema registry + generated settings UI",
               "note": "ai.amberx.axf.settings",
               "tag": "core",
               "recommended": true,
@@ -2393,7 +2418,7 @@
             },
             {
               "id": "m.logging",
-              "title": "lib-logging — logging engine, sinks, viewer, crash capture, diagnostics",
+              "title": "lib-logging \u2014 logging engine, sinks, viewer, crash capture, diagnostics",
               "note": "ai.amberx.axf.logging",
               "tag": "core",
               "recommended": true,
@@ -2401,7 +2426,7 @@
             },
             {
               "id": "m.admin",
-              "title": "lib-admin — administration interface (placeholder module + contracts)",
+              "title": "lib-admin \u2014 administration interface (placeholder module + contracts)",
               "note": "ai.amberx.axf.admin",
               "tag": "ph",
               "recommended": true,
@@ -2409,7 +2434,7 @@
             },
             {
               "id": "m.accounts",
-              "title": "lib-accounts — user account interface (placeholder module + contracts)",
+              "title": "lib-accounts \u2014 user account interface (placeholder module + contracts)",
               "note": "ai.amberx.axf.accounts",
               "tag": "ph",
               "recommended": true,
@@ -2417,7 +2442,7 @@
             },
             {
               "id": "m.profile",
-              "title": "lib-profile — user profile interface (placeholder module + contracts)",
+              "title": "lib-profile \u2014 user profile interface (placeholder module + contracts)",
               "note": "ai.amberx.axf.profile",
               "tag": "ph",
               "recommended": true,
@@ -2425,7 +2450,7 @@
             },
             {
               "id": "m.billing",
-              "title": "lib-billing — subscription interface (placeholder module + contracts, mock provider)",
+              "title": "lib-billing \u2014 subscription interface (placeholder module + contracts, mock provider)",
               "note": "ai.amberx.axf.billing",
               "tag": "ph",
               "recommended": true,
@@ -2433,7 +2458,7 @@
             },
             {
               "id": "m.media",
-              "title": "lib-media — Media3 player, camera, audio (placeholder)",
+              "title": "lib-media \u2014 Media3 player, camera, audio (placeholder)",
               "note": "ai.amberx.axf.media",
               "tag": "ph",
               "recommended": false,
@@ -2441,7 +2466,7 @@
             },
             {
               "id": "m.location",
-              "title": "lib-location — GPS, geofence, maps (placeholder)",
+              "title": "lib-location \u2014 GPS, geofence, maps (placeholder)",
               "note": "ai.amberx.axf.location",
               "tag": "ph",
               "recommended": false,
@@ -2449,7 +2474,7 @@
             },
             {
               "id": "m.ai",
-              "title": "lib-ai — AI providers, streaming, tools",
+              "title": "lib-ai \u2014 AI providers, streaming, tools",
               "note": "ai.amberx.axf.ai",
               "tag": "ph",
               "recommended": false,
@@ -2457,7 +2482,7 @@
             },
             {
               "id": "m.vps",
-              "title": "lib-vps — SSH/SFTP/REST client for the VPS",
+              "title": "lib-vps \u2014 SSH/SFTP/REST client for the VPS",
               "note": "ai.amberx.axf.vps",
               "tag": "ph",
               "recommended": false,
@@ -2465,7 +2490,7 @@
             },
             {
               "id": "m.devtools",
-              "title": "axf-devtools — inspector, action log, asset hot-reload, build-engine client",
+              "title": "axf-devtools \u2014 inspector, action log, asset hot-reload, build-engine client",
               "note": "ai.amberx.axf.devtools",
               "tag": "core",
               "recommended": true,
@@ -2473,7 +2498,7 @@
             },
             {
               "id": "m.testing",
-              "title": "axf-testing — fakes, screenshot harness, Compose test rules",
+              "title": "axf-testing \u2014 fakes, screenshot harness, Compose test rules",
               "note": "ai.amberx.axf.testing",
               "tag": "core",
               "recommended": true,
@@ -2481,7 +2506,7 @@
             },
             {
               "id": "m.buildlogic",
-              "title": "build-logic — Gradle convention plugins + version catalog",
+              "title": "build-logic \u2014 Gradle convention plugins + version catalog",
               "note": "(gradle)",
               "tag": "lock",
               "recommended": true,
@@ -2489,7 +2514,7 @@
             },
             {
               "id": "m.template",
-              "title": "template-android-compose — boilerplate used by `axf init --targets android`",
+              "title": "template-android-compose \u2014 boilerplate used by `axf init --targets android`",
               "note": "(template)",
               "tag": "lock",
               "recommended": true,
@@ -2503,7 +2528,7 @@
           "items": [
             {
               "id": "m.app.console",
-              "title": "app-console — AXF Dev Console, the first app",
+              "title": "app-console \u2014 AXF Dev Console, the first app",
               "note": "ai.amberx.axf.console",
               "tag": "core",
               "recommended": true,
@@ -2511,7 +2536,7 @@
             },
             {
               "id": "m.app.demo",
-              "title": "app-demo-<library> — generated per library by the console",
+              "title": "app-demo-<library> \u2014 generated per library by the console",
               "note": "ai.amberx.axf.demo.*",
               "tag": "ph",
               "recommended": true,
@@ -2823,7 +2848,7 @@
             },
             {
               "id": "c.slides",
-              "title": "Markdown → slides presenter",
+              "title": "Markdown \u2192 slides presenter",
               "note": "",
               "tag": "lib",
               "recommended": false,
@@ -3019,7 +3044,7 @@
             },
             {
               "id": "c.transfer",
-              "title": "File transfer phone ↔ VPS (SFTP/HTTP), nearby share",
+              "title": "File transfer phone \u2194 VPS (SFTP/HTTP), nearby share",
               "note": "",
               "tag": "lib",
               "recommended": false,
@@ -3027,7 +3052,7 @@
             },
             {
               "id": "c.offline",
-              "title": "Offline mode demo (airplane mode → queue → sync)",
+              "title": "Offline mode demo (airplane mode \u2192 queue \u2192 sync)",
               "note": "",
               "tag": "lib",
               "recommended": false,

@@ -39,6 +39,7 @@ import ai.amberx.axf.kernel.platform.SecureStore
 import ai.amberx.axf.kernel.platform.SystemClock
 import ai.amberx.axf.kernel.platform.Telemetry
 import ai.amberx.axf.kernel.runtime.AxfRuntime
+import ai.amberx.axf.kernel.runtime.OutputTerminal
 import ai.amberx.axf.kernel.runtime.ToastKind
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -106,6 +107,7 @@ public class AxfKernel private constructor(
     init {
         services.register(AxfKernel::class, this, "axf.kernel")
         services.register(AxfRuntime::class, runtime, "axf.runtime")
+        services.register(OutputTerminal::class, runtime.terminal, "axf.terminal")
         services.register(EventBus::class, events, "axf.events")
         services.register(FeatureFlags::class, flags, "axf.flags")
         services.register(Config::class, config, "axf.config")

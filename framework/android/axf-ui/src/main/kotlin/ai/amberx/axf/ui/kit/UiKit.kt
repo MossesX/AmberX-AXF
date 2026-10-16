@@ -79,12 +79,21 @@ public object Material3Kit : AxfUiKit {
 }
 
 /** Resolved kit table for the current composition: active kit id + overrides from the `ui-kit` asset, kits from the extension point. */
-public class AxfUiKits(public val kits: List<AxfUiKit>, public val activeId: String?, public val overrides: Map<String, String>) {
+public class AxfUiKits(public val kits: List<AxfUiKit>, public val activeId: String?, public val overrides: Map<String, String>, private val onFallback: ((kind: ComponentKind, wanted: String, reason: String) -> Unit)? = null) {
     private val default = kits.firstOrNull { it.spec.isDefault } ?: Material3Kit
+    /**
+     * The kit that renders `kind`: the per-kind override, else the active kit — and when that kit is missing or does not
+     * cover the kind, the default AmberX kit, with a note on the output terminal so the fallback is visible.
+     */
     public fun kitFor(kind: ComponentKind): AxfUiKit {
         val id = overrides[kind.name] ?: overrides[kind.name.lowercase()] ?: activeId
+        if (id == null || id == default.spec.id) return default
         val k = kits.firstOrNull { it.spec.id == id }
-        return if (k != null && k.spec.covers(kind)) k else default
+        return when {
+            k == null -> { onFallback?.invoke(kind, id, "kit \"$id\" is not installed"); default }
+            !k.spec.covers(kind) -> { onFallback?.invoke(kind, id, "kit \"$id\" has no ${kind.name} component"); default }
+            else -> k
+        }
     }
     public fun components(kind: ComponentKind): AxfComponents = kitFor(kind).components
     public companion object { public val DEFAULT: AxfUiKits = AxfUiKits(listOf(Material3Kit), null, emptyMap()) }
@@ -102,7 +111,9 @@ public fun rememberAxfUiKits(): AxfUiKits {
         val contributed = kernel?.extensions?.get(ExtensionPoints.UI_KITS)?.filterIsInstance<AxfUiKit>() ?: emptyList()
         val kits = (listOf(Material3Kit) + contributed).distinctBy { it.spec.id }
         val asset = runtime.asset(AssetTypes.UI_KIT)
-        AxfUiKits(kits, asset?.data?.strOrNull("kit"), asset?.data?.strMap("overrides") ?: emptyMap())
+        AxfUiKits(kits, asset?.data?.strOrNull("kit"), asset?.data?.strMap("overrides") ?: emptyMap()) { kind, wanted, reason ->
+            runtime.terminal.once("kit:$wanted:${kind.name}", "hot-swap", "${kind.name}: $reason → falling back to the default AmberX kit (${(kits.firstOrNull { it.spec.isDefault } ?: Material3Kit).spec.id})")
+        }
     }
 }
 

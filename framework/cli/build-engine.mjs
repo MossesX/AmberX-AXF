@@ -3,6 +3,7 @@
  * The CLI (frame.mjs) is a thin wrapper; the same functions can be driven
  * from an HTTP API, a browser UI, an SSH session or an MCP server.
  */
+import { installLibrary } from './libraries.mjs';
 import { createHash } from 'node:crypto';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -125,7 +126,8 @@ const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|prope
 
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
-    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore');
+    // `src/main/kotlin/app/…` in a template lands at the app's real package path.
+    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
     const target = join(dest, rel);
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
@@ -148,7 +150,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -157,7 +159,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   targets ??= tpl.targets;
   const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
   const bp = boilerplate ? loadBoilerplate(boilerplate) : null;
-  if (bp) modules = [...new Set([...modules, ...(bp.modules ?? [])])];
+  if (bp) { modules = [...new Set([...modules, ...(bp.modules ?? [])])]; libraries = [...(bp.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)), ...libraries]; }
   const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
   log(`• copying template "${template}"`);
@@ -204,18 +206,32 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
 
   if (bp) applyBoilerplate(dest, tpl, bp, log);
 
+  // Pre-build configuration: libraries chosen in the console / boilerplate are installed with their parameters.
+  const installed = [];
+  for (const l of libraries) {
+    log(`• installing library ${l.library}`);
+    installed.push(installLibrary({ dir: dest, library: l.library, params: l.params ?? {}, log }));
+  }
+
   log('• writing axf.lock.json');
   writeFileSync(join(dest, 'axf.lock.json'), JSON.stringify({ framework: FRAMEWORK_VERSION, template, files }, null, 2) + '\n');
   if (tpl.kind !== 'android-app') mkdirSync(join(dest, 'public'), { recursive: true });
 
   const report = validateApp(dest);
   if (!report.ok) throw new Error(`Initialized app failed validation:\n${report.errors.join('\n')}`);
-  return { dir: dest, manifest, assets: assets.length, bakedFiles: Object.keys(files).length, report, next: tpl.next };
+  return { dir: dest, manifest: installed.length ? readJson(join(dest, 'axf.manifest.json')) : manifest, assets: assets.length, bakedFiles: Object.keys(files).length, libraries: installed.map((i) => ({ library: i.library, config: i.config })), report, next: tpl.next };
 }
 
 /* ------------------------------------------------------------------ */
 /* validate                                                            */
 /* ------------------------------------------------------------------ */
+
+/** `app/src/main/kotlin/app/…` placeholder paths → the app's real package path (Android apps). */
+export function pkgPath(root, p) {
+  const mPath = join(root, 'axf.manifest.json');
+  const pkg = existsSync(mPath) ? readJson(mPath).android?.applicationId : null;
+  return pkg ? p.replace(/^app\/src\/main\/kotlin\/app(\/|$)/, `app/src/main/kotlin/${pkg.replace(/\./g, '/')}$1`) : p;
+}
 
 export function appTemplate(root) {
   const mPath = join(root, 'axf.manifest.json');
@@ -229,8 +245,8 @@ export function validateApp(dir) {
   const warnings = [];
   const tpl = appTemplate(root);
   for (const e of tpl.structure) {
-    const p = join(root, e.path);
-    if (!existsSync(p)) (e.required ? errors : warnings).push(`missing ${e.kind} ${e.path}`);
+    const p = join(root, pkgPath(root, e.path));
+    if (!existsSync(p)) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
   }
   const assets = loadAssets(join(root, tpl.assetsDir));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
@@ -398,7 +414,7 @@ function applyBoilerplate(dest, tpl, bp, log) {
   writeFileSync(join(dest, 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
   if (tpl.kind === 'android-app') {
     writeFileSync(join(dest, dirname(tpl.assetsDir), 'axf.manifest.json'), JSON.stringify(m, null, 2) + '\n');
-    const viewsDir = join(dest, 'app/src/main/kotlin/app/views');
+    const viewsDir = join(dest, pkgPath(dest, 'app/src/main/kotlin/app/views'));
     mkdirSync(viewsDir, { recursive: true });
     const pkg = m.android?.applicationId ?? 'app';
     for (const s of bp.screens ?? []) {
@@ -407,7 +423,7 @@ function applyBoilerplate(dest, tpl, bp, log) {
       writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${s.label}", message = "Boilerplate screen (${s.kind}). Build it here.")\n}\n`);
     }
     const screens = (bp.screens ?? []).map((s) => { const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View'; return `"${s.id}" to { ${cls}() }`; });
-    const main = join(dest, 'app/src/main/kotlin/app/MainActivity.kt');
+    const main = join(dest, pkgPath(dest, 'app/src/main/kotlin/app/MainActivity.kt'));
     if (existsSync(main)) {
       let text = readFileSync(main, 'utf8');
       text = text.replace('AppShell(views = mapOf("home" to { HomeView() }))', `AppShell(views = mapOf(${screens.join(', ')}))`).replace(`import ${pkg}.views.HomeView`, `import ${pkg}.views.*`);

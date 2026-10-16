@@ -86,6 +86,8 @@ public class AxfRuntime(
     public val state: StateFlow<AxfState> get() = _state.asStateFlow()
     private val _compiled: MutableStateFlow<Compiled>
     public val compiled: StateFlow<Compiled> get() = _compiled.asStateFlow()
+    /** The output terminal every install / import / hot-swap writes to (see [OutputTerminal]). */
+    public val terminal: OutputTerminal = OutputTerminal()
     private var toastSeq = 0L
 
     init {
@@ -134,7 +136,7 @@ public class AxfRuntime(
             "random" -> list.filter { it.id != cur }.randomOrNull(random)?.id ?: list.firstOrNull()?.id
             else -> target
         }
-        if (next == null || !registry.has(type, next)) { toast("No $type asset with id \"$target\".", ToastKind.WARNING, "Swap failed"); return false }
+        if (next == null || !registry.has(type, next)) { terminal.error("hot-swap", "$type → \"$target\": no such asset"); toast("No $type asset with id \"$target\".", ToastKind.WARNING, "Swap failed"); return false }
         if (next == cur) return true
         var roleNote: String? = null
         set({ s ->
@@ -146,6 +148,8 @@ public class AxfRuntime(
             s.copy(active = s.active + (type to next), swaps = s.swaps + 1, role = role)
         }, persist = true, recompile = true)
         events.emit(KernelEvent.AssetSwapped(type, cur, next))
+        terminal.ok("hot-swap", "$type: ${cur ?: "(none)"} → $next")
+        if (type == AssetTypes.UI_KIT) terminal.forget("kit:")
         roleNote?.let { toast("This policy has no \"$cur\" role, so you're now $it.", ToastKind.INFO, "Role changed") }
         return true
     }

@@ -2,7 +2,7 @@
 /**
  * axf — command-line driver for the AmberX AXF build engine.
  *
- *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts] [--targets web,desktop,android] [--boilerplate notes]
+ *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser]
  *   axf validate [dir]          validate an app (or the framework's own assets with --framework)
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
@@ -15,8 +15,17 @@
  *   axf boilerplates            list boilerplates (framework/boilerplates)
  *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
  *   axf serve [--port 7080] [--token secret]    HTTP driver for the build engine (the Dev Console / VPS)
+ *   axf import-ui --name "Cupertino" --kit cupertino --source git --url https://github.com/x/y [--version 1.0] [--covers BUTTON,CHIP] [--apply apps/my-app]
+ *                               port a third-party UI library: clone → refactor to AXF tokens → save as kit-<id> → apply to a project
+ *   axf ported-kits             list kits produced by import-ui
+ *   axf libraries               list installable libraries (framework/android/<module>/library.json) and their parameters
+ *   axf install <library> [appDir] [--param key=value …] [--yes]
+ *                               add a library to an app: interactive wizard asks for the required parameters,
+ *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
  */
 import { relative } from 'node:path';
+import { importUiLibrary, listPortedKits } from './ui-port.mjs';
+import { installLibrary, installScript, libraryInfo, listLibraries, wizard } from './libraries.mjs';
 import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
@@ -25,7 +34,8 @@ const args = [];
 for (let i = 0; i < rest.length; i++) {
   if (rest[i].startsWith('--')) {
     const key = rest[i].slice(2);
-    flags[key] = rest[i + 1] && !rest[i + 1].startsWith('--') ? rest[++i] : true;
+    const val = rest[i + 1] && !rest[i + 1].startsWith('--') ? rest[++i] : true;
+    flags[key] = key in flags ? [].concat(flags[key], val) : val;
   } else args.push(rest[i]);
 }
 
@@ -51,10 +61,13 @@ try {
         applicationId: flags['application-id'],
         modules: flags.modules ? String(flags.modules).split(',') : [],
         boilerplate: flags.boilerplate,
+        // --libraries browser,other  (pre-build configuration; each library's defaults, or --param key=value for all)
+        libraries: flags.libraries ? String(flags.libraries).split(',').map((l) => ({ library: l.trim(), params: Object.fromEntries([].concat(flags.param ?? []).map((kv) => { const [k, ...v] = String(kv).split('='); return [k, v.join('=')]; })) })) : [],
         log: (m) => console.log(c.dim(m)),
       });
       console.log(c.ok(`\n✓ ${res.manifest.app.name} (${res.manifest.app.id}) created`));
       console.log(`  ${res.assets} assets · ${res.bakedFiles} baked framework files`);
+      if (res.libraries?.length) console.log(`  libraries: ${res.libraries.map((l) => l.library).join(', ')}`);
       printReport(res.report);
       console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && ${res.next || 'npm install && npm run dev'}\n`);
       break;
@@ -91,6 +104,36 @@ try {
       const { startDevServer } = await import('./dev-server.mjs');
       startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), framework: !!flags.framework });
       await new Promise(() => {});
+      break;
+    }
+    case 'import-ui': {
+      if (!flags.name || !flags.source) throw new Error('Usage: axf import-ui --name "Name" --source git|local|maven|npm (--url … | --path … | --coordinate …) [--kit id] [--covers A,B] [--apply appDir]');
+      const r = importUiLibrary({ name: flags.name, kitId: flags.kit, version: flags.version, source: { kind: flags.source, url: flags.url, path: flags.path, coordinate: flags.coordinate, ref: flags.ref }, covers: flags.covers ? String(flags.covers).split(',') : undefined, dir: flags.apply, overwrite: !!flags.overwrite, log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ ${flags.name} → framework/android/${r.module} (ui-kit asset "${r.kitId}")${flags.apply ? ` · applied to ${flags.apply}` : ''}`));
+      const ref = r.report.steps.find((s) => s.step === 'refactor');
+      if (ref) console.log(c.dim(`  refactored ${ref.filesChanged} file(s): ${Object.entries(ref.totals).map(([k, v]) => `${k} ×${v}`).join(', ') || 'no token-mappable code'}${ref.unmapped.length ? `\n  unmapped roles: ${ref.unmapped.join(', ')}` : ''}`));
+      break;
+    }
+    case 'ported-kits': {
+      for (const k of listPortedKits()) console.log(`${c.b(k.module.padEnd(22))} ${k.name} ${c.dim(`← ${k.port?.source?.kind} ${k.port?.source?.url ?? k.port?.source?.coordinate ?? k.port?.source?.path ?? ''}`)}`);
+      break;
+    }
+    case 'libraries': {
+      for (const l of listLibraries()) {
+        console.log(`${c.b(l.module.replace(/^lib-/, '').padEnd(14))} ${c.dim(l.id.padEnd(28))} ${l.name}`);
+        for (const p of l.params ?? []) console.log(c.dim(`    ${p.key.padEnd(18)} ${p.type.padEnd(7)} ${p.required ? 'required ' : ''}${p.default !== undefined ? `default ${JSON.stringify(p.default)}` : ''}`));
+      }
+      break;
+    }
+    case 'install': {
+      if (!args[0]) throw new Error('Usage: axf install <library> [appDir] [--param key=value …] [--yes]');
+      const lib = libraryInfo(args[0]);
+      const preset = {};
+      for (const kv of [].concat(flags.param ?? [])) { const [k, ...v] = String(kv).split('='); preset[k] = v.join('='); }
+      const answers = flags.yes || !process.stdin.isTTY ? preset : await wizard(lib, preset);
+      const r = installLibrary({ dir: args[1] ?? '.', library: lib.id, params: answers, log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ installed ${lib.name} into ${relative(process.cwd(), r.dir) || '.'} (${r.changed.length} files)`));
+      console.log(c.dim(installScript(lib, r.config)));
       break;
     }
     case 'boilerplates': {

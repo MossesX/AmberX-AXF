@@ -40,5 +40,19 @@
     "nav-menu": "sidebar-list"
   },
   "status": "planned",
-  "source": "amberx"
+  "source": "amberx",
+  "libraries": [
+    {
+      "library": "browser",
+      "params": {
+        "tabGroups": [
+          "widgets"
+        ],
+        "panes": [
+          "Built-in widgets",
+          "Imported widgets"
+        ]
+      }
+    }
+  ]
 }

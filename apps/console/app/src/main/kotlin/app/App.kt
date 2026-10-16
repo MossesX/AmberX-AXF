@@ -11,6 +11,7 @@ import ai.amberx.axf.nav.NavModule
 import ai.amberx.axf.network.NetworkModule
 import ai.amberx.axf.platform.AndroidPlatformModule
 import ai.amberx.axf.platform.AxfApplication
+import ai.amberx.axf.browser.BrowserModule
 import ai.amberx.axf.profile.ProfileModule
 import ai.amberx.axf.settings.SettingsModule
 import ai.amberx.axf.ui.windows.WindowsModule
@@ -19,7 +20,7 @@ import ai.amberx.axf.ui.windows.WindowsModule
 class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
-        AccountsModule(), ProfileModule(), BillingModule(), AdminModule(),
+        AccountsModule(), ProfileModule(), BillingModule(), AdminModule(), BrowserModule(),
         ConsoleModule(this),
     ) + AndroidPlatformModule.placeholders()
 }

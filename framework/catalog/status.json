@@ -793,7 +793,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-ui",
-    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
+    "notes": "Schema \u2192 form for settings kinds; conditional fields and wizards are wave 2."
   },
   "ui.dyn": {
     "status": "placeholder",
@@ -2030,5 +2030,11 @@
     "status": "built",
     "wave": 1,
     "module": "axf-ui"
+  },
+  "lib.browser": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-browser",
+    "notes": "library.json params; axf install browser; console wizard"
   }
 }

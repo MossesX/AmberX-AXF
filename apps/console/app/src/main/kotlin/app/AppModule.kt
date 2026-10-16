@@ -25,7 +25,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 /** The console's own module: routes for every screen, actions, settings, the two dialogs, the repo service, the second UI kit. */
 class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Console") {
-    override val dependsOn: List<String> = listOf("ai.amberx.axf.data", "ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.devtools", ai.amberx.axf.ui.windows.WindowsModule.ID)
+    override val dependsOn: List<String> = listOf(ai.amberx.axf.browser.BrowserModule.ID, "ai.amberx.axf.data", "ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.devtools", ai.amberx.axf.ui.windows.WindowsModule.ID)
 
     override fun register(ctx: ModuleContext) {
         val repo = ConsoleRepo(context, ctx.service(JsonDocumentStore::class))
@@ -41,6 +41,16 @@ class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Cons
         }
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("suggest", "Suggested features", "layers") { st -> SuggestionsDialog(st.props["item"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("libpicker", "Build a library", "box") { st -> LibraryPickerDialog(st.props["library"] ?: "") })
+        ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("install", "Install library", "download") { st -> ai.amberx.axf.console.views.InstallWizardDialog(st.props["library"] ?: "") })
+        ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("uiimport", "Import UI library", "download") { st -> ai.amberx.axf.console.views.UiImportWizardDialog(st.props["source"] ?: "") })
+        ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("project", "Open project", "folder") { _ -> ai.amberx.axf.console.views.OpenProjectDialog() })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.openProject", ActionMeta("Open project", module = id)) { _, _ -> runtime?.openDialog("project") })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.install", ActionMeta("Install library", module = id)) { a, _ -> runtime?.openDialog("install", mapOf("library" to a.getOrElse(0) { "" })) })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.importUi", ActionMeta("Import UI library", module = id)) { a, _ -> runtime?.openDialog("uiimport", mapOf("source" to a.getOrElse(0) { "" })) })
+        // The console itself ships the library browser (lib-browser) bound to the "library-browser" tab group in its manifest.
+        ctx.service(ai.amberx.axf.browser.BrowserModule::class)?.register("library-browser") {
+            ai.amberx.axf.console.views.THIRD_PARTY_UI.map { l -> ai.amberx.axf.browser.BrowserItem(l.id, l.name, if (l.kitId != null) 0 else 1, "${l.vendor} · ${l.stack}", l.status, if (l.kitId != null) "kit-preview" else "library-info", l.kitId ?: l.id, if (l.kitId != null) "grid" else "box") }
+        }
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About", module = id)) { _, _ -> runtime?.openDialog("about") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.docs", ActionMeta("Documentation", module = id)) { _, _ -> runtime?.toast("Docs: framework/android/README.md and framework/spec/PORTING.md in the repo.", ToastKind.INFO, "Documentation") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.exportPlan", ActionMeta("Export build plan", module = id)) { _, c -> (c.extras["clipboard"] as? (String) -> Unit)?.invoke(repo.exportPlan()); runtime?.toast("Build plan copied — paste it into Claude Code.", ToastKind.SUCCESS, "Exported") })

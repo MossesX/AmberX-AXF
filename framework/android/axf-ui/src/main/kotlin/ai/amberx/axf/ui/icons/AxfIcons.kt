@@ -129,7 +129,7 @@ public object AxfIcons : IconResolver {
         "undo" to Icons.AutoMirrored.Outlined.Undo, "redo" to Icons.AutoMirrored.Outlined.Redo, "check-circle" to Icons.Outlined.CheckCircle, "x-circle" to Icons.Outlined.Cancel,
         "monitor" to Icons.Outlined.Monitor, "smartphone" to Icons.Outlined.Smartphone, "branch" to Icons.Outlined.AccountTree, "logout" to Icons.AutoMirrored.Outlined.Logout,
         "sparkles" to Icons.Outlined.AutoAwesome, "package" to Icons.Outlined.Inventory, "rocket" to Icons.Outlined.RocketLaunch,
-        "arrow-left" to Icons.AutoMirrored.Outlined.ArrowBack, "arrow-right" to Icons.AutoMirrored.Outlined.ArrowForward, "send" to Icons.AutoMirrored.Outlined.Send,
+        "arrow-left" to Icons.AutoMirrored.Outlined.ArrowBack, "arrow-down" to Icons.Outlined.KeyboardArrowDown, "arrow-up" to Icons.Outlined.KeyboardArrowUp, "arrow-right" to Icons.AutoMirrored.Outlined.ArrowForward, "send" to Icons.AutoMirrored.Outlined.Send,
         "history" to Icons.Outlined.History, "database" to Icons.Outlined.Storage, "error" to Icons.Outlined.ErrorOutline,
     )
 

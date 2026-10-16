@@ -78,6 +78,7 @@ val THIRD_PARTY_UI = listOf(
 @Composable
 fun UiLibrariesTab() {
     val runtime = LocalAxfRuntime.current
+    val actions = ai.amberx.axf.ui.LocalAxfActions.current
     val kits = LocalAxfUiKits.current
     val wm = LocalWindowManager.current
     val state by runtime.state.collectAsState()
@@ -99,14 +100,16 @@ fun UiLibrariesTab() {
                     AxfCheckbox(lib.id in selected, { on -> selected = if (on) selected + lib.id else selected - lib.id })
                     Column(Modifier.weight(1f)) { AxfText(lib.name); AxfText("${lib.vendor} · ${lib.stack} · ${lib.note}", muted = true) }
                     AxfBadge(lib.status, tone = when (lib.status) { "active" -> "success"; "ready", "adapter" -> "info"; "planned" -> "warning"; else -> "accent" })
+                    if (lib.kitId == null || hotSwappable.none { it.id == lib.id }) AxfButton("Import", { runtime.openDialog("uiimport", mapOf("source" to lib.id)) }, icon = "download", requires = "dev.build")
                     if (lib.kitId != null && lib.status != "active" && hotSwappable.any { it.id == lib.id }) AxfButton("Swap", { runtime.swap(AssetTypes.UI_KIT, lib.kitId).let { ok -> if (!ok) runtime.toast("Add a ui-kit asset with kit \"${lib.kitId}\" to swap to it.", ToastKind.INFO) } }, icon = "zap", requires = "assets.swap")
                 }
             }
         }
     }
     LazyColumn(Modifier.fillMaxWidth(), contentPadding = PaddingValues(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.oneHalf)) {
-        item { AxfPageHead("UI libraries", eyebrow = "active kit: $activeKit · ${selected.size} selected", description = "Left: kits that hot-swap into any AXF app. Right: third-party / existing libraries and their adapter status. Select from either pane and compare them side by side in floating tabs.", actions = {
+        item { AxfPageHead("UI libraries", eyebrow = "active kit: $activeKit · ${selected.size} selected", description = "Left: kits that hot-swap into any AXF app. Right: third-party / existing libraries and their adapter status. Select from either pane and compare them side by side in floating tabs, or Import one: the wizard clones it, refactors it to AmberX tokens, saves it as a hot-swappable kit and applies it to the open project. Kinds a kit can't render fall back to the default AmberX kit — see the output terminal.", actions = {
             AxfButton("Compare", { compare() }, tone = ButtonTone.PRIMARY, icon = "layers", enabled = selected.isNotEmpty())
+            AxfButton("Terminal", { actions.dispatch("terminal.open:hot-swap") }, icon = "terminal")
             AxfButton("Clear", { selected = emptySet() }, icon = "x")
         }) }
         item { pane("Hot-swappable (AXF kits)", hotSwappable) }

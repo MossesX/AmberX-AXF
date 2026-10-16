@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T18:30:11.521Z",
+  "generatedAt": "2026-10-16T18:55:40.793Z",
   "summary": {
     "foundations": {
       "built": 58,
@@ -12,11 +12,11 @@
       "coverage": 95
     },
     "kernel": {
-      "built": 71,
+      "built": 72,
       "partial": 3,
       "placeholder": 100,
       "planned": 0,
-      "total": 174,
+      "total": 175,
       "coverage": 41
     },
     "console": {
@@ -1994,6 +1994,65 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-ui",
+      "notes": ""
+    },
+    {
+      "id": "lib.browser",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Library browser as an installable library: two-pane item lists, multi-select, Compare → floating tab groups with every window behavior; attaches to any tab group declared in the app manifest; installed via `axf install browser` / console wizard that asks the required parameters and generates reusable setup code",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-browser",
+      "notes": "library.json params; axf install browser; console wizard"
+    },
+    {
+      "id": "lib.browser.persist",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.browser",
+      "title": "Remember selections and window layout per tab group",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.browser.remote",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.browser",
+      "title": "Item providers fed from a remote catalog",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.installer.uninstall",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.browser",
+      "title": "Uninstall / reconfigure installed libraries from the console",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.installer.registry",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.browser",
+      "title": "Library registry (third-party library.json packages)",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
       "notes": ""
     },
     {

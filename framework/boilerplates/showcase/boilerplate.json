@@ -45,5 +45,19 @@
   ],
   "defaults": {},
   "status": "planned",
-  "source": "amberx"
+  "source": "amberx",
+  "libraries": [
+    {
+      "library": "browser",
+      "params": {
+        "tabGroups": [
+          "library-browser"
+        ],
+        "panes": [
+          "Hot-swappable",
+          "Third-party / existing"
+        ]
+      }
+    }
+  ]
 }

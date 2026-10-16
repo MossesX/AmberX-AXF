@@ -15,6 +15,7 @@ import ai.amberx.axf.kernel.asset.strOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -47,6 +48,38 @@ data class Boilerplate(val id: String, val name: String, val category: String, v
 }
 data class BoilerplateCategory(val id: String, val label: String)
 
+/** A library install or UI-library import the console ran (or recorded for Claude Code when no build engine is configured). kind: install | ui-import */
+data class PortRecord(val id: String, val kind: String, val name: String, val source: String, val project: String, val status: String, val createdAt: String, val log: String = "")
+
+/** One parameter a library's install wizard asks for (framework/android/<module>/library.json → params[]). */
+data class LibraryParam(val key: String, val label: String, val type: String, val required: Boolean, val default: JsonElement?, val help: String?, val choices: List<String>, val min: Double?, val max: Double?) {
+    val defaultText: String get() = when (val d = default) { null -> ""; is JsonPrimitive -> d.content; is kotlinx.serialization.json.JsonArray -> d.joinToString(",") { (it as? JsonPrimitive)?.content ?: it.toString() }; else -> d.toString() }
+    /** Wizard answer (text) → typed JSON the installer expects. */
+    fun toJson(text: String): JsonElement? = when (type) {
+        "bool" -> JsonPrimitive(text.trim().lowercase() in setOf("true", "yes", "y", "on", "1"))
+        "number" -> text.trim().toDoubleOrNull()?.let { if (it % 1.0 == 0.0) JsonPrimitive(it.toInt()) else JsonPrimitive(it) }
+        "list" -> kotlinx.serialization.json.JsonArray(text.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.map { JsonPrimitive(it) })
+        else -> text.takeIf { it.isNotBlank() }?.let { JsonPrimitive(it) }
+    }
+    fun validate(text: String): String? {
+        if (text.isBlank()) return if (required && default == null) "Required" else null
+        return when (type) {
+            "number" -> { val n = text.trim().toDoubleOrNull() ?: return "Must be a number"; if (min != null && n < min) "Must be ≥ ${min.toInt()}" else if (max != null && n > max) "Must be ≤ ${max.toInt()}" else null }
+            "choice" -> if (choices.isNotEmpty() && text !in choices) "One of ${choices.joinToString()}" else null
+            else -> null
+        }
+    }
+    companion object { fun fromJson(o: JsonObject) = LibraryParam(o.str("key"), o.str("label"), o.str("type", "text"), o.bool("required"), o["default"], o.strOrNull("help"), o.strList("choices"), o["min"]?.let { (it as? JsonPrimitive)?.content?.toDoubleOrNull() }, o["max"]?.let { (it as? JsonPrimitive)?.content?.toDoubleOrNull() }) }
+}
+
+/** An installable library (library@1): what `axf install <id>` / the console wizard configure. */
+data class InstallableLibrary(val id: String, val module: String, val name: String, val description: String, val features: List<String>, val dependsOn: List<String>, val manifestKey: String, val params: List<LibraryParam>, val gradle: String, val moduleCtor: String, val import: String) {
+    val slug: String get() = module.removePrefix("lib-")
+    companion object {
+        fun fromJson(o: JsonObject): InstallableLibrary { val i = o.obj("install"); return InstallableLibrary(o.str("id"), o.str("module"), o.str("name"), o.str("description"), o.strList("features"), o.strList("dependsOn"), o.str("manifestKey", "libraries.${o.str("module").removePrefix("lib-")}"), o.objList("params").map(LibraryParam::fromJson), i?.str("gradle") ?: "", i?.str("module") ?: "", i?.str("import") ?: "") }
+    }
+}
+
 /** Everything the console tracks, loaded from the APK (`assets/axf/console/**`) with local overrides in the document store. */
 class ConsoleRepo(private val context: Context, private val docs: JsonDocumentStore?) {
     private val module = "axf.console"
@@ -60,6 +93,16 @@ class ConsoleRepo(private val context: Context, private val docs: JsonDocumentSt
     private val _checked = MutableStateFlow<Set<String>>(emptySet())
     /** Catalog items (and suggestions) the user has checked in the console. */
     val checked: StateFlow<Set<String>> get() = _checked
+    /** The AXF project open in the console (path relative to the build engine's apps root, e.g. `apps/my-app`); installs and UI imports apply to it. */
+    private val _project = MutableStateFlow("")
+    val project: StateFlow<String> get() = _project
+    fun openProject(dir: String) { _project.value = dir.trim(); docs?.write(module, "state", "project", buildJsonObject { put("dir", JsonPrimitive(dir.trim())) }) }
+    /** Ported UI kits + installed libraries recorded by the wizards (mirrors what the build engine wrote). */
+    private val _ports = MutableStateFlow<List<PortRecord>>(emptyList())
+    val ports: StateFlow<List<PortRecord>> get() = _ports
+    fun addPort(r: PortRecord) { _ports.update { it.filterNot { x -> x.id == r.id } + r }; docs?.write(module, "ports", r.id, buildJsonObject { put("kind", JsonPrimitive(r.kind)); put("name", JsonPrimitive(r.name)); put("source", JsonPrimitive(r.source)); put("project", JsonPrimitive(r.project)); put("status", JsonPrimitive(r.status)); put("createdAt", JsonPrimitive(r.createdAt)); put("log", JsonPrimitive(r.log)) }) }
+    private val _installable = MutableStateFlow<List<InstallableLibrary>>(emptyList())
+    val installable: StateFlow<List<InstallableLibrary>> get() = _installable
     private val _boilerplates = MutableStateFlow<List<Boilerplate>>(emptyList())
     val boilerplates: StateFlow<List<Boilerplate>> get() = _boilerplates
     private val _categories = MutableStateFlow<List<BoilerplateCategory>>(emptyList())
@@ -74,6 +117,7 @@ class ConsoleRepo(private val context: Context, private val docs: JsonDocumentSt
             _catalog.value = Catalog(c.str("frameworkVersion", "0.2.0"), c.objList("tabs").map { t -> CatalogTab(t.str("id"), t.str("label"), t.objList("groups").map { g -> CatalogGroup(g.str("id"), g.str("label"), g.objList("items").map { i -> CatalogItem(i.str("id"), i.str("title"), i.str("note"), i.str("tag"), i.bool("recommended"), i.objList("suggests").map { s -> Suggestion(s.str("id"), s.str("title")) }, t.str("id"), g.str("id")) }) }) })
         }
         read("tracker.json")?.let { t -> _tracker.value = Tracker(t.str("generatedAt"), t.objList("items").map { i -> TrackerItem(i.str("id"), i.str("tab"), i.str("group"), i.strOrNull("parent"), i.str("title"), i.str("tag"), Status.parse(i.strOrNull("status")), int(i, "wave", 3), i.strOrNull("module"), i.str("notes")) }) }
+        read("catalog/libraries.json")?.let { l -> _installable.value = l.objList("items").map(InstallableLibrary::fromJson) }
         read("boilerplates/index.json")?.let { idx ->
             _categories.value = idx.objList("categories").map { BoilerplateCategory(it.str("id"), it.str("label")) } + BoilerplateCategory("custom", "My boilerplates")
             _boilerplates.value = idx.objList("items").mapNotNull { it.strOrNull("id") }.mapNotNull { id -> read("boilerplates/$id/boilerplate.json")?.let(Boilerplate::fromJson) }
@@ -82,6 +126,8 @@ class ConsoleRepo(private val context: Context, private val docs: JsonDocumentSt
             _overrides.value = d.list(module, "status").mapNotNull { id -> d.read(module, "status", id).getOrNull()?.strOrNull("status")?.let { id to Status.parse(it) } }.toMap()
             _checked.value = d.read(module, "state", "checked").getOrNull()?.strList("ids")?.toSet() ?: _catalog.value.items.filter { it.recommended }.map { it.id }.toSet()
             _boilerplates.update { it + d.list(module, "boilerplates").mapNotNull { id -> d.read(module, "boilerplates", id).getOrNull()?.let(Boilerplate::fromJson) } }
+            _project.value = d.read(module, "state", "project").getOrNull()?.str("dir") ?: ""
+            _ports.value = d.list(module, "ports").mapNotNull { id -> d.read(module, "ports", id).getOrNull()?.let { PortRecord(id, it.str("kind"), it.str("name"), it.str("source"), it.str("project"), it.str("status"), it.str("createdAt"), it.str("log")) } }
             _demos.value = d.list(module, "demos").mapNotNull { id -> d.read(module, "demos", id).getOrNull()?.let { DemoApp(id, it.str("library"), it.str("name"), it.str("template", "list-detail"), it.str("status", "planned"), it.str("createdAt")) } }
         }
     }

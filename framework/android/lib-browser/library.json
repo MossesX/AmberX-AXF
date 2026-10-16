@@ -1,0 +1,26 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.browser",
+  "module": "lib-browser",
+  "name": "Library browser (floating tab groups)",
+  "description": "Two-pane browser of any item set with multi-select and Compare: each selection opens as a tab in a floating group with undock, drag-and-drop, split (vertical/horizontal/four-way/grid), minimize to corners or a floating toolbar, tree/grid element explorer. Attaches to the tab groups an app declares in axf.manifest.json → libraries.browser.tabGroups.",
+  "features": ["ui.windows", "ui.explorer", "cx.libpicker"],
+  "dependsOn": ["ai.amberx.axf.ui.windows"],
+  "manifestKey": "libraries.browser",
+  "params": [
+    { "key": "tabGroups", "label": "Tab groups to attach to", "type": "list", "required": true, "default": ["library-browser"], "help": "Ids of the tab groups this browser binds to; each gets a route and a Compare command." },
+    { "key": "itemKinds", "label": "Item kinds", "type": "list", "required": true, "default": ["kit-preview", "library-info"], "help": "Tab kinds the browser may open; each kind needs a registered TabRenderer." },
+    { "key": "defaultWindowType", "label": "Window type for comparisons", "type": "choice", "choices": ["floating", "dock", "element"], "default": "floating", "required": true },
+    { "key": "toolbarDefault", "label": "Toolbar on new windows", "type": "choice", "choices": ["forced", "on", "off"], "default": "forced", "required": true, "help": "forced = window schema rules; element windows start off." },
+    { "key": "allowGridView", "label": "Allow grid view", "type": "bool", "default": true },
+    { "key": "compareLimit", "label": "Max items per compare", "type": "number", "default": 6, "min": 1, "max": 12 },
+    { "key": "panes", "label": "Pane titles", "type": "list", "default": ["Hot-swappable", "Third-party / existing"], "help": "Left / right pane headings." },
+    { "key": "minimizeCorner", "label": "Default minimize corner", "type": "choice", "choices": ["top-left", "top-right", "bottom-right", "bottom-left"], "default": "bottom-right" }
+  ],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-browser:$axf\")",
+    "module": "BrowserModule()",
+    "import": "ai.amberx.axf.browser.BrowserModule",
+    "routes": ["browser"]
+  }
+}

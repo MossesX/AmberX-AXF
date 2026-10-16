@@ -20,7 +20,10 @@ import ai.amberx.axf.kernel.module.ModuleContext
 import ai.amberx.axf.kernel.runtime.AxfRuntime
 import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.ui.DialogContribution
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 
@@ -52,6 +55,7 @@ public class WindowsModule : BaseModule(ID, "Windows & tabs") {
         ctx.services.register(TabRenderers::class, renderers, "axf.windows.tabs")
         for (k in listOf("element", "element-category", "element-flags")) renderers.register(k) { tab -> ai.amberx.axf.ui.studio.UndockedElementTab(tab.kind, tab.payload) }
         renderers.register("placeholder") { tab -> ai.amberx.axf.ui.components.PlaceholderScreen(tab.title) }
+        renderers.register("terminal") { tab -> ai.amberx.axf.ui.studio.OutputTerminalPane(channel = tab.payload.ifBlank { null }) }
         runtime?.contextExtras?.put("tab-group", wm.groupMenu())
         runtime?.contextExtras?.put("window-title", wm.windowMenu())
         runtime?.asset(ai.amberx.axf.kernel.asset.AssetTypes.WINDOW)?.data?.let { d ->
@@ -71,6 +75,10 @@ public class WindowsModule : BaseModule(ID, "Windows & tabs") {
         act("windows.restore", "Restore window") { a -> a.getOrNull(0)?.let { wm.restore(it) } }
         act("windows.focus", "Focus window") { a -> a.getOrNull(0)?.let { wm.focus(it) } }
         act("windows.openFloating", "Open floating window") { a -> wm.openFloating(listOf(TabSpec("tab-${System.nanoTime()}", a.getOrElse(1) { "Tab" }, a.getOrElse(0) { "placeholder" }, a.getOrElse(2) { "" })), a.getOrElse(1) { "Window" }) }
+        // `terminal.open [channel]` → floating output terminal window; `terminal.dialog` → the same pane as a dialog.
+        act("terminal.open", "Open output terminal") { a -> wm.openFloating(listOf(TabSpec("terminal-${System.nanoTime()}", "Output", "terminal", a.getOrElse(0) { "" }, "terminal")), "Output terminal", width = 420f, height = 300f) }
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("terminal.dialog", ActionMeta("Output terminal (dialog)", module = id)) { a, _ -> runtime?.openDialog("terminal", mapOf("channel" to a.getOrElse(0) { "" })) })
+        ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("terminal", "Output terminal", "terminal") { st -> androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.fillMaxWidth().height(360.dp)) { ai.amberx.axf.ui.studio.OutputTerminalPane(channel = st.props["channel"]?.ifBlank { null }) } })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("split-grid", "Custom grid", "grid") { st -> SplitGridDialog(st.props["arg"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("window-settings", "Window settings", "settings") { st -> WindowSettingsDialog(st.props["arg"] ?: "") })
     }
