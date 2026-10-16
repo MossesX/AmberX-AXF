@@ -38,6 +38,8 @@ public data class WindowSpec(
     val minimizedAtX: Float = 0f, val minimizedAtY: Float = 0f,
     val closable: Boolean = true,
     val z: Int = 0,
+    /** content view mode the window's toolbar can toggle (`tree` | `grid` | app-defined) */
+    val mode: String = "tree",
 ) {
     public val isFloating: Boolean get() = type == WindowType.FLOATING || type == WindowType.DOCK || type == WindowType.ELEMENT
     /** Floating windows force the toolbar on — except ELEMENT windows, which default to off and expose their own switch. */
@@ -217,6 +219,7 @@ public class WindowManager(public val mainWindowId: String = "main") {
     public fun move(windowId: String, dx: Float, dy: Float) { update(windowId) { it.copy(x = it.x + dx, y = it.y + dy) } }
     public fun resize(windowId: String, w: Float, h: Float) { update(windowId) { it.copy(width = w.coerceAtLeast(200f), height = h.coerceAtLeast(160f)) } }
     public fun setSettings(windowId: String, settings: WindowSettings) { update(windowId) { it.copy(settings = settings) } }
+    public fun setMode(windowId: String, mode: String) { update(windowId) { it.copy(mode = mode) } }
     public fun setToolbar(windowId: String, enabled: Boolean) { update(windowId) { if (!it.toolbarsAllowed) it else it.copy(toolbarEnabled = enabled || it.forcesToolbar) } }
 
     /* ---------- minimize ---------- */

@@ -61,6 +61,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
 
+/** The window a composable is rendered in (null in the main window). Tab renderers read `mode` from it. */
+public val LocalWindowSpec: androidx.compose.runtime.ProvidableCompositionLocal<WindowSpec?> = androidx.compose.runtime.compositionLocalOf { null }
+
 /* ------------------------------------------------------------------ */
 /* Dock area (main window) and floating window host (overlay)          */
 /* ------------------------------------------------------------------ */
@@ -109,7 +112,9 @@ private fun FloatingWindow(wm: WindowManager, w: WindowSpec, maxW: Float, maxH: 
     ) {
         TitleBar(wm, w)
         if (w.effectiveToolbar) WindowToolbar(wm, w)
-        Box(Modifier.weight(1f).fillMaxWidth()) { if (layout == null) PlaceholderScreen("Empty window") else PaneView(wm, w.id, layout) }
+        androidx.compose.runtime.CompositionLocalProvider(LocalWindowSpec provides w) {
+            Box(Modifier.weight(1f).fillMaxWidth()) { if (layout == null) PlaceholderScreen("Empty window") else PaneView(wm, w.id, layout) }
+        }
         // resize grip
         Box(Modifier.align(Alignment.End).size(20.dp).pointerInput(w.id) { detectDragGestures { change, drag -> change.consume(); val dw = with(density) { drag.x.toDp().value }; val dh = with(density) { drag.y.toDp().value }; wm.resize(w.id, w.width + dw, w.height + dh) } }, contentAlignment = Alignment.Center) { AxfIcon("chevron-right", size = 12.dp, tint = c.muted, contentDescription = "Resize") }
     }
@@ -148,6 +153,7 @@ private fun WindowToolbar(wm: WindowManager, w: WindowSpec) {
         val asset = w.settings.toolbarAsset?.let { runtime.registry.get(ai.amberx.axf.kernel.asset.AssetTypes.TOOLBAR, it) }?.let { ai.amberx.axf.kernel.asset.Toolbar.fromJson(it.data) }
         if (asset == null) {
             AxfIconButton("settings", "Window settings", { runtime.openDialog("window-settings", mapOf("arg" to w.id)) })
+            AxfIconButton(if (w.mode == "grid") "list" else "grid", if (w.mode == "grid") "View as tree" else "View as grid", { wm.setMode(w.id, if (w.mode == "grid") "tree" else "grid") }, active = w.mode == "grid")
             AxfIconButton("download", "Redock", { wm.redock(w.id) })
             AxfIconButton("minus", "Minimize to title bar (cycles corners)", { wm.minimizeToNextCorner(w.id) })
             AxfIconButton("sliders", "Minimize to floating toolbar at cursor", { wm.minimize(w.id, MinimizeTarget.FLOATING_TOOLBAR, WindowPointer.x, WindowPointer.y) })

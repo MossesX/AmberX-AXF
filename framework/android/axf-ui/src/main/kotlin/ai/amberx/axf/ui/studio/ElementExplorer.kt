@@ -42,6 +42,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -136,9 +137,11 @@ public fun AxfTooltip(text: String, modifier: Modifier = Modifier, content: @Com
     TooltipBox(positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(), tooltip = { PlainTooltip { androidx.compose.material3.Text(text) } }, state = rememberTooltipState(), modifier = modifier) { content() }
 }
 
-/** Preview + tree. `kitId` forces a kit for the preview (null = the active one). */
+/** Preview + tree, or the grid view when the hosting window's mode is `grid`. `kitId` forces a kit (null = active). */
 @Composable
 public fun ElementExplorer(kitId: String? = null, modifier: Modifier = Modifier) {
+    val mode = ai.amberx.axf.ui.windows.LocalWindowSpec.current?.mode ?: "tree"
+    if (mode == "grid") { ElementGrid(kitId, modifier); return }
     val kits = LocalAxfUiKits.current
     val forced = remember(kits, kitId) { if (kitId == null) kits else AxfUiKits(kits.kits, kitId, emptyMap()) }
     var selected by remember { mutableStateOf(ComponentKind.BUTTON) }
@@ -364,6 +367,81 @@ public fun UndockedElementTab(kind: String, payload: String) {
                 "element-category" -> for (e in ELEMENTS.filter { it.category == value }) { AxfSectionHeader(e.label, accent = true); Box(Modifier.fillMaxWidth().border(1.dp, Axf.colors.border, Axf.shapes.smShape).padding(6.dp)) { ElementPreview(e.kind) } }
                 "element-flags" -> for (e in ELEMENTS) for (fl in e.flags) FlagRow(fl, forced.kitFor(e.kind).spec.covers(e.kind) || kitId == null, prefix = e.label)
                 else -> AxfEmptyState("Nothing to show")
+            }
+        }
+    }
+}
+
+
+/* ---------- grid view ---------- */
+
+/**
+ * Grid view (toggled from the floating window's toolbar): one expandable row per category. An expanded row
+ * shows a horizontally scrolling, snapping strip of element previews and, under it, a sub-grid of the
+ * tokens, style parameters and flags of whichever element is currently in view — hot-rendered as you scroll.
+ */
+@OptIn(ExperimentalLayoutApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+public fun ElementGrid(kitId: String?, modifier: Modifier = Modifier) {
+    val kits = LocalAxfUiKits.current
+    val forced = remember(kits, kitId) { if (kitId == null) kits else AxfUiKits(kits.kits, kitId, emptyMap()) }
+    val target = kitId?.let { id -> kits.kits.firstOrNull { it.spec.id == id } } ?: kits.kitFor(ComponentKind.BUTTON)
+    var open by remember { mutableStateOf(setOf(ELEMENTS.first().category)) }
+    val c = Axf.colors
+    CompositionLocalProvider(LocalAxfUiKits provides forced) {
+        androidx.compose.foundation.lazy.LazyColumn(modifier.fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(Axf.space.one), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { AxfText("Elements grid · ${target.spec.label}", style = Axf.type.titleSmall); AxfBadge("${ELEMENTS.size}") } }
+            for ((cat, items) in ELEMENTS.groupBy { it.category }) {
+                val isOpen = cat in open
+                item(key = "row-$cat") {
+                    Row(Modifier.fillMaxWidth().background(c.surface2, Axf.shapes.smShape).clickable { open = if (isOpen) open - cat else open + cat }.padding(horizontal = 10.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        AxfIcon(if (isOpen) "minus" else "plus", size = 14.dp, tint = c.muted, contentDescription = null); AxfText(cat, Modifier.weight(1f), style = Axf.type.titleSmall)
+                        for (e in items.take(6)) Box(Modifier.size(8.dp).background(if (target.spec.covers(e.kind) || kitId == null) c.success else c.border, Axf.shapes.full))
+                        AxfBadge("${items.size}")
+                    }
+                }
+                if (isOpen) item(key = "body-$cat") { CategoryStrip(items, target, kitId) }
+            }
+        }
+    }
+}
+
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun CategoryStrip(items: List<ElementSpec>, target: ai.amberx.axf.ui.kit.AxfUiKit, kitId: String?) {
+    val c = Axf.colors
+    val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+    val fling = androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior(listState)
+    // the element "in view" = the item nearest the viewport start (snapping keeps one item per page)
+    val visibleIndex by remember { androidx.compose.runtime.derivedStateOf { val info = listState.layoutInfo; val center = (info.viewportStartOffset + info.viewportEndOffset) / 2; info.visibleItemsInfo.minByOrNull { kotlin.math.abs(it.offset + it.size / 2 - center) }?.index ?: listState.firstVisibleItemIndex } }
+    val e = items.getOrElse(visibleIndex) { items.first() }
+    val available = target.spec.covers(e.kind) || kitId == null
+    Column(Modifier.fillMaxWidth().padding(top = 4.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        BoxWithConstraintsStrip(listState, fling, items, target, kitId)
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) { AxfText(e.label, Modifier.weight(1f), style = Axf.type.titleSmall); AxfBadge("${visibleIndex + 1}/${items.size}"); if (!available) AxfBadge("unavailable", tone = "warning") }
+        // sub-grid: tokens · params · flags, hot-rendered for the element in view
+        androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp), maxItemsInEachRow = 2) {
+            for ((tok, what) in e.tokens) Box(Modifier.weight(1f).border(1.dp, c.border, Axf.shapes.smShape).padding(6.dp)) { TokenRow(tok, what, available) }
+            for (pr in e.params) Box(Modifier.weight(1f).border(1.dp, c.border, Axf.shapes.smShape).padding(6.dp)) { ParamRow(pr, available) }
+            for (fl in e.flags) Box(Modifier.weight(1f).border(1.dp, c.border, Axf.shapes.smShape).padding(6.dp)) { FlagRow(fl, available) }
+            if (e.tokens.isEmpty() && e.params.isEmpty() && e.flags.isEmpty()) AxfText("No editable tokens for this element.", muted = true)
+        }
+    }
+}
+
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun BoxWithConstraintsStrip(listState: androidx.compose.foundation.lazy.LazyListState, fling: androidx.compose.foundation.gestures.FlingBehavior, items: List<ElementSpec>, target: ai.amberx.axf.ui.kit.AxfUiKit, kitId: String?) {
+    val c = Axf.colors
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val pageWidth = maxWidth - 24.dp
+        androidx.compose.foundation.lazy.LazyRow(state = listState, flingBehavior = fling, horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)) {
+            items(items.size, key = { items[it].kind.name }) { i ->
+                val e = items[i]; val available = target.spec.covers(e.kind) || kitId == null
+                Column(Modifier.width(pageWidth).border(1.dp, c.border, Axf.shapes.mdShape).background(c.surface, Axf.shapes.mdShape).padding(8.dp).alpha(if (available) 1f else 0.45f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) { AxfText(e.label, Modifier.weight(1f), style = Axf.type.labelLarge); AxfText(e.category, muted = true); if (!available) AxfIcon("lock", size = 12.dp, tint = c.muted, contentDescription = "Unavailable") }
+                    Box(Modifier.fillMaxWidth().height(120.dp)) { ElementPreview(e.kind) }
+                }
             }
         }
     }
