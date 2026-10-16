@@ -4,49 +4,170 @@
   "frameworkVersion": "0.2.0",
   "types": {
     "screen-template": {
-      "label": "Screen template", "group": "Templates", "icon": "layout", "optional": true, "swapTier": "RECOMPOSE",
-      "required": ["kind", "regions"],
-      "enums": { "kind": ["list-detail", "dashboard", "wizard", "settings", "feed", "editor", "player", "map", "chat", "profile", "landing", "custom"] }
+      "label": "Screen template",
+      "group": "Templates",
+      "icon": "layout",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "kind",
+        "regions"
+      ],
+      "enums": {
+        "kind": [
+          "list-detail",
+          "dashboard",
+          "wizard",
+          "settings",
+          "feed",
+          "editor",
+          "player",
+          "map",
+          "chat",
+          "profile",
+          "landing",
+          "custom"
+        ]
+      }
     },
     "icon-pack": {
-      "label": "Icon pack", "group": "Packs", "icon": "star", "optional": true, "swapTier": "RECOMPOSE",
-      "required": ["style", "icons"],
-      "enums": { "style": ["outlined", "rounded", "sharp", "filled", "custom"] }
+      "label": "Icon pack",
+      "group": "Packs",
+      "icon": "star",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "style",
+        "icons"
+      ],
+      "enums": {
+        "style": [
+          "outlined",
+          "rounded",
+          "sharp",
+          "filled",
+          "custom"
+        ]
+      }
     },
     "string-pack": {
-      "label": "String pack", "group": "Packs", "icon": "type", "optional": true, "swapTier": "RESTART",
-      "required": ["locale", "strings"]
+      "label": "String pack",
+      "group": "Packs",
+      "icon": "type",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "locale",
+        "strings"
+      ]
     },
     "image-pack": {
-      "label": "Image pack", "group": "Packs", "icon": "image", "optional": true, "swapTier": "RECOMPOSE",
-      "required": ["images"]
+      "label": "Image pack",
+      "group": "Packs",
+      "icon": "image",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "images"
+      ]
     },
     "font-pack": {
-      "label": "Font pack", "group": "Packs", "icon": "type", "optional": true, "swapTier": "LIVE",
-      "required": ["fonts"]
+      "label": "Font pack",
+      "group": "Packs",
+      "icon": "type",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "fonts"
+      ]
     },
     "motion-pack": {
-      "label": "Motion pack", "group": "Packs", "icon": "zap", "optional": true, "swapTier": "LIVE",
-      "required": ["durations", "easings"],
-      "nested": { "durations": ["short", "medium", "long"] }
+      "label": "Motion pack",
+      "group": "Packs",
+      "icon": "zap",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "durations",
+        "easings"
+      ],
+      "nested": {
+        "durations": [
+          "short",
+          "medium",
+          "long"
+        ]
+      }
     },
     "settings-schema": {
-      "label": "Settings schema", "group": "System", "icon": "settings", "optional": true, "swapTier": "RECOMPOSE",
-      "required": ["groups"]
+      "label": "Settings schema",
+      "group": "System",
+      "icon": "settings",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "groups"
+      ]
     },
     "nav-graph": {
-      "label": "Navigation graph", "group": "Navigation", "icon": "grid", "optional": true, "swapTier": "RESTART",
-      "required": ["start", "routes"]
+      "label": "Navigation graph",
+      "group": "Navigation",
+      "icon": "grid",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "start",
+        "routes"
+      ]
     },
     "widget": {
-      "label": "Home-screen widget", "group": "Android", "icon": "box", "optional": true, "swapTier": "RESTART",
-      "required": ["size", "content"],
-      "enums": { "size": ["small", "medium", "large", "extra-large"] }
+      "label": "Home-screen widget",
+      "group": "Android",
+      "icon": "box",
+      "optional": true,
+      "swapTier": "RESTART",
+      "required": [
+        "size",
+        "content"
+      ],
+      "enums": {
+        "size": [
+          "small",
+          "medium",
+          "large",
+          "extra-large"
+        ]
+      }
     },
     "notification-style": {
-      "label": "Notification style", "group": "Android", "icon": "bell", "optional": true, "swapTier": "LIVE",
-      "required": ["channels", "importance"],
-      "enums": { "importance": ["min", "low", "default", "high"] }
+      "label": "Notification style",
+      "group": "Android",
+      "icon": "bell",
+      "optional": true,
+      "swapTier": "LIVE",
+      "required": [
+        "channels",
+        "importance"
+      ],
+      "enums": {
+        "importance": [
+          "min",
+          "low",
+          "default",
+          "high"
+        ]
+      }
+    },
+    "ui-kit": {
+      "label": "UI kit",
+      "group": "System",
+      "icon": "grid",
+      "optional": true,
+      "swapTier": "RECOMPOSE",
+      "required": [
+        "kit"
+      ],
+      "description": "Which registered UI kit renders the abstract components; `overrides` maps component kinds to other kits."
     }
   }
 }
