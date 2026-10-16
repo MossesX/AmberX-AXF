@@ -43,6 +43,8 @@ export function templateInfo(id) {
     assetsDir: t.assetsDir ?? 'src/assets',
     structure: t.structure ?? structure.entries,
     tokens: t.tokens ?? {},
+    /** extra asset folders (relative to framework/) merged on top of framework/assets — port-specific types live there */
+    extraAssets: t.extraAssets ?? [],
     next: t.next ?? '',
   };
 }
@@ -174,6 +176,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   const bad = assets.filter((a) => !a.result.ok);
   if (bad.length) throw new Error(`Framework assets failed validation:\n${bad.map((b) => `  ${b.file}: ${b.result.errors.join('; ')}`).join('\n')}`);
   cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, tpl.assetsDir), { recursive: true });
+  for (const extra of tpl.extraAssets) if (existsSync(join(FRAMEWORK_DIR, extra))) cpSync(join(FRAMEWORK_DIR, extra), join(dest, tpl.assetsDir), { recursive: true });
 
   log('• writing axf.manifest.json');
   const manifest = {

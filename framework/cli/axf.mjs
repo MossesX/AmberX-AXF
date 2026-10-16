@@ -58,7 +58,7 @@ try {
     }
     case 'validate': {
       if (flags.framework) {
-        const list = loadAssets(`${FRAMEWORK_DIR}/assets`);
+        const list = [...loadAssets(`${FRAMEWORK_DIR}/assets`), ...loadAssets(`${FRAMEWORK_DIR}/android/assets`)];
         const errors = list.filter((a) => !a.result.ok).map((a) => `${relative(FRAMEWORK_DIR, a.file)}: ${a.result.errors.join('; ')}`);
         printReport({ ok: !errors.length, errors, assets: list.length });
         process.exitCode = errors.length ? 1 : 0;
