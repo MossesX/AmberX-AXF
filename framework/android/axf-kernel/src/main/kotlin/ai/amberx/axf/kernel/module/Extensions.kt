@@ -80,7 +80,10 @@ public object ExtensionPoints {
     public val DIALOGS: ExtensionPoint<Any> = ExtensionPoint("axf.dialogs", Any::class, "App dialogs opened through the dialog engine")
     public val COMMANDS: ExtensionPoint<Any> = ExtensionPoint("axf.commands", Any::class, "Command palette / search entries")
     public val DEVTOOLS_PANELS: ExtensionPoint<Any> = ExtensionPoint("axf.devtools-panels", Any::class, "Inspector panels in the developer console")
-    public val ALL: List<ExtensionPoint<*>> = listOf(ACTIONS, ASSET_TYPES, ASSET_SOURCES, ROUTES, SETTINGS, MENU_ITEMS, LOG_SINKS, TELEMETRY, THEME_SOURCES, AUTH_PROVIDERS, BILLING_PROVIDERS, MIGRATIONS, SHELL_REGIONS, DIALOGS, COMMANDS, DEVTOOLS_PANELS)
+    public val MACROS: ExtensionPoint<ai.amberx.axf.kernel.contract.ActionMacro> = ExtensionPoint("axf.macros", ai.amberx.axf.kernel.contract.ActionMacro::class, "Action macros contributed by packs/plugins")
+    public val WORKERS: ExtensionPoint<Any> = ExtensionPoint("axf.workers", Any::class, "Background workers registered with the work scheduler")
+    public val PLUGIN_SOURCES: ExtensionPoint<Any> = ExtensionPoint("axf.plugin-sources", Any::class, "Where plugins are discovered (files, QR, URL, store)")
+    public val ALL: List<ExtensionPoint<*>> = listOf(ACTIONS, ASSET_TYPES, ASSET_SOURCES, ROUTES, SETTINGS, MENU_ITEMS, LOG_SINKS, TELEMETRY, THEME_SOURCES, AUTH_PROVIDERS, BILLING_PROVIDERS, MIGRATIONS, SHELL_REGIONS, DIALOGS, COMMANDS, DEVTOOLS_PANELS, MACROS, WORKERS, PLUGIN_SOURCES)
 }
 
 /* Contribution shapes for the standard points. Kept in the kernel so every port agrees on them. */
