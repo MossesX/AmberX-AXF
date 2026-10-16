@@ -1,7 +1,7 @@
 {
   "$axf": "catalog@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T17:07:31.887Z",
+  "generatedAt": "2026-10-16T18:12:26.200Z",
   "tabs": [
     {
       "id": "foundations",
@@ -2173,6 +2173,31 @@
                 {
                   "id": "cx.assets.push",
                   "title": "Push an asset pack to the VPS"
+                }
+              ]
+            },
+            {
+              "id": "cx.boilerplates",
+              "title": "Boilerplate manager: categorized boilerplates built on the framework, feature checklist that assembles one, live preview pane, import third-party boilerplates for porting",
+              "note": "framework/boilerplates/*.json + axf init --boilerplate",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "cx.boilerplates.preview",
+                  "title": "Live preview pane rendering each screen kind"
+                },
+                {
+                  "id": "cx.boilerplates.import",
+                  "title": "Import third-party boilerplates (zip/URL) and stage for porting"
+                },
+                {
+                  "id": "cx.boilerplates.port",
+                  "title": "AI-assisted port of an imported boilerplate to AXF"
+                },
+                {
+                  "id": "cx.boilerplates.publish",
+                  "title": "Publish a boilerplate to the repo / store"
                 }
               ]
             }

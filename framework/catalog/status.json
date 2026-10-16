@@ -1224,25 +1224,23 @@
     "status": "partial",
     "wave": 1,
     "module": "app-console",
-    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+    "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
   },
   "cx.demos": {
-    "status": "partial",
+    "status": "built",
     "wave": 1,
-    "module": "app-console",
-    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+    "module": "app-console"
   },
   "cx.buildengine": {
     "status": "partial",
     "wave": 1,
     "module": "app-console",
-    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+    "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
   },
   "cx.roadmap": {
-    "status": "partial",
-    "wave": 1,
-    "module": "app-console",
-    "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.ai": {
     "status": "placeholder",
@@ -1345,9 +1343,10 @@
     "module": null
   },
   "m.app.demo": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 1,
-    "module": null
+    "module": null,
+    "notes": "axf new-demo generates one; none committed yet."
   },
   "m.media": {
     "status": "planned",
@@ -1370,49 +1369,49 @@
     "module": null
   },
   "cx.tracker.waves": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.tracker.history": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.tracker.owner": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.tracker.gh": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.tracker.export": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.tracker.coverage": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.kernelstatus.graph": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.kernelstatus.health": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.kernelstatus.stubs": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.roadmap.estimates": {
     "status": "planned",
@@ -1425,184 +1424,198 @@
     "module": null
   },
   "cx.catalog.tags": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.catalog.custom": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.catalog.import": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.suggest.ai": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.suggest.rules": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.libpicker.template": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.libpicker.prompt": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.libpicker.run": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
   },
   "cx.libpicker.install": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.demos.screens": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.demos.launch": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.modules.toggle": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.modules.new": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.modules.publish": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.modules.diff": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.assets.editor": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.assets.validate": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   },
   "cx.assets.push": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.buildengine.logs": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
   },
   "cx.buildengine.queue": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.ai.plan": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.ai.review": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.github.pr": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "cx.github.release": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   },
   "x.home": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.themes": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.styles": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.layouts": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.components": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.designer": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.assets": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.menus": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.uac": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.actions": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.modules": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.flags": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
   },
   "x.wallpaper": {
     "status": "planned",
@@ -1625,24 +1638,28 @@
     "module": "lib-logging"
   },
   "i.admin": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": null,
+    "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
   },
   "i.accounts": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": null,
+    "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
   },
   "i.profile": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": null,
+    "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
   },
   "i.subs": {
-    "status": "planned",
-    "wave": 3,
-    "module": null
+    "status": "placeholder",
+    "wave": 2,
+    "module": null,
+    "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
   },
   "c.texteditor": {
     "status": "planned",
@@ -1958,5 +1975,30 @@
     "status": "planned",
     "wave": 3,
     "module": null
+  },
+  "cx.boilerplates": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.boilerplates.preview": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.boilerplates.import": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
+  },
+  "cx.boilerplates.port": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
+  },
+  "cx.boilerplates.publish": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "app-console"
   }
 }

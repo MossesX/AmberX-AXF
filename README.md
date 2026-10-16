@@ -85,3 +85,21 @@ curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/inst
 It installs nginx/certbot/git if needed, clones the `site` branch into `/var/www/xaf.amberxai.com`, writes an
 nginx site with SPA fallback, adds the update cron job, and issues a Let's Encrypt certificate once the `xaf`
 A record points at the server. It stops without changes if another web server holds port 80. Safe to re-run.
+
+## Android port (v0.2.0)
+
+`framework/android/` is the Kotlin + Jetpack Compose port: a pure-Kotlin kernel (`axf-kernel`), Android
+adapters, Compose UI with UI-kit switching, navigation, data, network, devtools, testing, and the libraries
+(`lib-settings`, `lib-logging` real; `lib-admin`, `lib-accounts`, `lib-profile`, `lib-billing` as placeholder
+modules with contracts and mock providers). `apps/console` is the **AXF Dev Console**, the first app on the
+port: it tracks what's built, assembles libraries from the feature catalog, generates demo apps and manages
+boilerplates. See `framework/android/README.md`, `framework/spec/PORTING.md`, `framework/boilerplates/README.md`.
+
+```bash
+node framework/cli/axf.mjs init apps/my-app --template android-compose --boilerplate notes --name "My Notes"
+node framework/cli/axf.mjs new-module media --label "Media" --capabilities android.media,android.camera
+node framework/cli/axf.mjs new-demo media
+node framework/cli/axf.mjs dev apps/console          # live-reload assets to the device
+node framework/cli/axf.mjs serve --token secret      # HTTP build engine for the Dev Console (VPS)
+node framework/cli/tracker.mjs                       # regenerate tracker.json from the catalog + status
+```

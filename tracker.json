@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-16T17:08:40.733Z",
+  "generatedAt": "2026-10-16T18:12:26.249Z",
   "summary": {
     "foundations": {
       "built": 58,
@@ -20,28 +20,28 @@
       "coverage": 40
     },
     "console": {
-      "built": 10,
-      "partial": 4,
-      "placeholder": 2,
+      "built": 12,
+      "partial": 2,
+      "placeholder": 3,
       "planned": 0,
-      "total": 16,
-      "coverage": 63
+      "total": 17,
+      "coverage": 71
     },
     "modules": {
       "built": 14,
-      "partial": 0,
-      "placeholder": 5,
+      "partial": 1,
+      "placeholder": 4,
       "planned": 4,
       "total": 23,
       "coverage": 61
     },
     "demos": {
-      "built": 2,
-      "partial": 0,
-      "placeholder": 0,
-      "planned": 81,
+      "built": 11,
+      "partial": 3,
+      "placeholder": 4,
+      "planned": 65,
       "total": 83,
-      "coverage": 2
+      "coverage": 13
     }
   },
   "items": [
@@ -2626,9 +2626,9 @@
       "parent": "cx.tracker",
       "title": "Waves / milestones grouping",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2638,9 +2638,9 @@
       "parent": "cx.tracker",
       "title": "Change history per item",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2650,9 +2650,9 @@
       "parent": "cx.tracker",
       "title": "Owner + notes per item",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2662,9 +2662,9 @@
       "parent": "cx.tracker",
       "title": "Sync tracker.json to GitHub",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2674,9 +2674,9 @@
       "parent": "cx.tracker",
       "title": "Export plan as Markdown for a Claude Code prompt",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2686,9 +2686,9 @@
       "parent": "cx.tracker",
       "title": "Coverage %: built vs declared per module",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2709,9 +2709,9 @@
       "parent": "cx.kernelstatus",
       "title": "Module dependency graph view",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2721,9 +2721,9 @@
       "parent": "cx.kernelstatus",
       "title": "Startup timing + health checks",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2733,9 +2733,9 @@
       "parent": "cx.kernelstatus",
       "title": "List of placeholders still returning NotImplemented",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2744,10 +2744,10 @@
       "group": "tracker-what-s-built-what-s-not",
       "title": "Roadmap view: waves with drag-reorder of what gets built next",
       "tag": "lib",
-      "status": "partial",
-      "wave": 1,
+      "status": "placeholder",
+      "wave": 2,
       "module": "app-console",
-      "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+      "notes": ""
     },
     {
       "id": "cx.roadmap.estimates",
@@ -2791,9 +2791,9 @@
       "parent": "cx.catalog",
       "title": "Filter by tag (core / lib / placeholder)",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2803,9 +2803,9 @@
       "parent": "cx.catalog",
       "title": "Add your own feature entries",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2815,9 +2815,9 @@
       "parent": "cx.catalog",
       "title": "Import/export the catalog as JSON",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2838,9 +2838,9 @@
       "parent": "cx.suggest",
       "title": "Ask the AI assistant for more suggestions",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2850,9 +2850,9 @@
       "parent": "cx.suggest",
       "title": "Suggestion rules editable as an asset",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2864,7 +2864,7 @@
       "status": "partial",
       "wave": 1,
       "module": "app-console",
-      "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+      "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
     },
     {
       "id": "cx.libpicker.template",
@@ -2873,9 +2873,9 @@
       "parent": "cx.libpicker",
       "title": "Pick a demo-app template (list-detail, dashboard, player…)",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2885,9 +2885,9 @@
       "parent": "cx.libpicker",
       "title": "Generate the Claude Code prompt/spec for the library",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2897,10 +2897,10 @@
       "parent": "cx.libpicker",
       "title": "Trigger the build on the VPS and watch logs",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "partial",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
     },
     {
       "id": "cx.libpicker.install",
@@ -2909,9 +2909,9 @@
       "parent": "cx.libpicker",
       "title": "Install the generated demo APK from the console",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2920,10 +2920,10 @@
       "group": "feature-catalog-libraries",
       "title": "Demo app registry: every generated demo app, its library, build status, APK link",
       "tag": "core",
-      "status": "partial",
+      "status": "built",
       "wave": 1,
       "module": "app-console",
-      "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+      "notes": ""
     },
     {
       "id": "cx.demos.screens",
@@ -2932,9 +2932,9 @@
       "parent": "cx.demos",
       "title": "Screenshot gallery per demo",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2944,9 +2944,9 @@
       "parent": "cx.demos",
       "title": "Launch demo via deep link",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2967,9 +2967,9 @@
       "parent": "cx.modules",
       "title": "Enable/disable a module live",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2979,9 +2979,9 @@
       "parent": "cx.modules",
       "title": "Create a new module from a template",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -2991,9 +2991,9 @@
       "parent": "cx.modules",
       "title": "Publish a module version (Maven local / GitHub Packages)",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3003,9 +3003,9 @@
       "parent": "cx.modules",
       "title": "Diff module API against last published version",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3037,9 +3037,9 @@
       "parent": "cx.assets",
       "title": "Token editor with live preview + export JSON",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3049,9 +3049,9 @@
       "parent": "cx.assets",
       "title": "Validate an asset against asset-types.json",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3061,9 +3061,68 @@
       "parent": "cx.assets",
       "title": "Push an asset pack to the VPS",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.boilerplates",
+      "tab": "console",
+      "group": "modules-packages",
+      "title": "Boilerplate manager: categorized boilerplates built on the framework, feature checklist that assembles one, live preview pane, import third-party boilerplates for porting",
+      "tag": "core",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.boilerplates.preview",
+      "tab": "console",
+      "group": "modules-packages",
+      "parent": "cx.boilerplates",
+      "title": "Live preview pane rendering each screen kind",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.boilerplates.import",
+      "tab": "console",
+      "group": "modules-packages",
+      "parent": "cx.boilerplates",
+      "title": "Import third-party boilerplates (zip/URL) and stage for porting",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.boilerplates.port",
+      "tab": "console",
+      "group": "modules-packages",
+      "parent": "cx.boilerplates",
+      "title": "AI-assisted port of an imported boilerplate to AXF",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.boilerplates.publish",
+      "tab": "console",
+      "group": "modules-packages",
+      "parent": "cx.boilerplates",
+      "title": "Publish a boilerplate to the repo / store",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3075,7 +3134,7 @@
       "status": "partial",
       "wave": 1,
       "module": "app-console",
-      "notes": "UI + local scaffolding via the build engine spec; running the engine from the phone needs the VPS endpoint (wave 2)."
+      "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
     },
     {
       "id": "cx.buildengine.logs",
@@ -3084,10 +3143,10 @@
       "parent": "cx.buildengine",
       "title": "Streaming build logs",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "partial",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "UI + build-engine client done; runs when the HTTP driver (framework/cli serve) is deployed on the VPS."
     },
     {
       "id": "cx.buildengine.queue",
@@ -3096,9 +3155,9 @@
       "parent": "cx.buildengine",
       "title": "Build queue + history",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3119,9 +3178,9 @@
       "parent": "cx.ai",
       "title": "Turn a checked set into a build plan",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3131,9 +3190,9 @@
       "parent": "cx.ai",
       "title": "Review a module's API for breaking changes",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3154,9 +3213,9 @@
       "parent": "cx.github",
       "title": "Open PRs for generated modules",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3166,9 +3225,9 @@
       "parent": "cx.github",
       "title": "Tag releases",
       "tag": "suggested",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
+      "status": "placeholder",
+      "wave": 2,
+      "module": "app-console",
       "notes": ""
     },
     {
@@ -3452,10 +3511,10 @@
       "group": "apps-apps",
       "title": "app-demo-<library> — generated per library by the console",
       "tag": "ph",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 1,
       "module": null,
-      "notes": ""
+      "notes": "axf new-demo generates one; none committed yet."
     },
     {
       "id": "x.home",
@@ -3463,10 +3522,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Landing/loading screen + home dashboard that lists every showcase",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.themes",
@@ -3474,10 +3533,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Theme gallery: 10 light/dark theme pairs with live preview and one-tap swap",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "partial",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.styles",
@@ -3485,10 +3544,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Style pack gallery: 10 packs (fonts, radii, density, motion, blur)",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "partial",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.layouts",
@@ -3496,10 +3555,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Layout gallery: 10 screen layouts, each applied live to the running app",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "partial",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.components",
@@ -3507,10 +3566,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Component gallery: every control in every variant, in every state",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.designer",
@@ -3518,10 +3577,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Live token designer: edit any color/style/layout token, see it applied, export as asset JSON",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.assets",
@@ -3529,10 +3588,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Asset browser: import/export via file, QR code, URL, clipboard",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.menus",
@@ -3540,10 +3599,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "App menu, toolbar, navigation menu and context menu swapping",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.uac",
@@ -3551,10 +3610,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Role switcher (guest/user/admin) showing hide vs disable gating",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.actions",
@@ -3562,10 +3621,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Action console: dispatch any action, watch the bus",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.modules",
@@ -3573,10 +3632,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Module manager: enable/disable libraries live, see dependency graph",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.flags",
@@ -3584,10 +3643,10 @@
       "group": "framework-showcase-proves-every-engine",
       "title": "Feature-flag playground",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
-      "module": null,
-      "notes": ""
+      "status": "built",
+      "wave": 1,
+      "module": "axf-ui",
+      "notes": "Studio views live in axf-ui and the console; 10x themes/styles/layouts are still the 3 shared ones."
     },
     {
       "id": "x.wallpaper",
@@ -3639,10 +3698,10 @@
       "group": "the-six-interfaces",
       "title": "Administration interface: roles, policies, flags, remote config, module toggles, audit trail",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
+      "status": "placeholder",
+      "wave": 2,
       "module": null,
-      "notes": ""
+      "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
     },
     {
       "id": "i.accounts",
@@ -3650,10 +3709,10 @@
       "group": "the-six-interfaces",
       "title": "User account interface: sign-up, sign-in, OAuth, passkeys, biometrics, multi-account",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
+      "status": "placeholder",
+      "wave": 2,
       "module": null,
-      "notes": ""
+      "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
     },
     {
       "id": "i.profile",
@@ -3661,10 +3720,10 @@
       "group": "the-six-interfaces",
       "title": "User profile interface: avatar/camera, details, privacy, sync status",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
+      "status": "placeholder",
+      "wave": 2,
       "module": null,
-      "notes": ""
+      "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
     },
     {
       "id": "i.subs",
@@ -3672,10 +3731,10 @@
       "group": "the-six-interfaces",
       "title": "Subscription interface: plans, paywall, trial, restore, entitlement-gated features",
       "tag": "core",
-      "status": "planned",
-      "wave": 3,
+      "status": "placeholder",
+      "wave": 2,
       "module": null,
-      "notes": ""
+      "notes": "Interface screen exists on mock/local providers; real providers are wave 2."
     },
     {
       "id": "c.texteditor",

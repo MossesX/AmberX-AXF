@@ -14,6 +14,7 @@
  *   axf modules                 list Android framework modules
  *   axf boilerplates            list boilerplates (framework/boilerplates)
  *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf serve [--port 7080] [--token secret]    HTTP driver for the build engine (the Dev Console / VPS)
  */
 import { relative } from 'node:path';
 import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
@@ -94,6 +95,12 @@ try {
     }
     case 'boilerplates': {
       for (const b of listBoilerplates()) console.log(`${c.b(b.id.padEnd(14))} ${c.dim(b.category.padEnd(13))} ${b.name} — ${b.description}`);
+      break;
+    }
+    case 'serve': {
+      const { startBuildServer } = await import('./serve.mjs');
+      startBuildServer({ port: Number(flags.port ?? 7080), token: flags.token, apps: flags.apps });
+      await new Promise(() => {});
       break;
     }
     case 'templates': {
