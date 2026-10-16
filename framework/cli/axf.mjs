@@ -12,6 +12,7 @@
  *                               scaffold framework/android/lib-<name> (Android port)
  *   axf new-demo <library>      create apps/demo-<library>, an Android app showcasing one library
  *   axf modules                 list Android framework modules
+ *   axf dev [dir] [--port 7070] [--framework]   live-reload server: watches assets, pushes changes to devices
  */
 import { relative } from 'node:path';
 import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
@@ -81,6 +82,12 @@ try {
       if (!type || !id) throw new Error('Usage: axf new-asset <type> <id> [--from <id>]');
       const f = newAsset({ dir: flags.dir ?? '.', type, id, from: flags.from, name: flags.name });
       console.log(c.ok(`✓ created ${relative(process.cwd(), f)}`));
+      break;
+    }
+    case 'dev': {
+      const { startDevServer } = await import('./dev-server.mjs');
+      startDevServer({ dir: args[0] ?? '.', port: Number(flags.port ?? 7070), framework: !!flags.framework });
+      await new Promise(() => {});
       break;
     }
     case 'templates': {
