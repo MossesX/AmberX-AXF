@@ -2,8 +2,10 @@ import type { DialogMap } from './axf/react';
 import { SuggestionsDialog } from './views/Catalog';
 import { InstallWizardDialog, LibraryPickerDialog, OpenProjectDialog, UiImportWizardDialog } from './views/Wizards';
 import { NewAppDialog } from './views/Boilerplates';
+import { AddFeatureDialog } from './views/Plan';
 
 export const dialogs: DialogMap = {
+  'plan-add': { title: 'Add a feature to the plan', icon: 'plus', render: (_p, close) => <AddFeatureDialog close={close} /> },
   suggest: { title: 'Suggested features', icon: 'sparkles', render: (p, close) => <SuggestionsDialog itemId={String(p.item ?? '')} close={close} /> },
   libpicker: { title: 'Build a library', icon: 'box', render: (p, close) => <LibraryPickerDialog libraryId={String(p.library ?? '')} close={close} /> },
   install: { title: 'Install library', icon: 'download', render: (p, close) => <InstallWizardDialog libraryId={String(p.library ?? '')} close={close} /> },

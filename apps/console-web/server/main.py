@@ -158,6 +158,42 @@ def ported_kits() -> Any:
     return engine("ported-kits")
 
 
+@app.get("/api/plan")
+def plan() -> Any:
+    return engine("plan")
+
+
+@app.post("/api/plan/feature", dependencies=[Depends(auth)])
+async def plan_feature(request: Request) -> Any:
+    body = await request.json()
+    return ok_or_500(engine("plan-upsert", "plan", feature=body.get("feature"), note=body.get("note")))
+
+
+@app.post("/api/plan/delete", dependencies=[Depends(auth)])
+async def plan_delete(request: Request) -> Any:
+    body = await request.json()
+    return ok_or_500(engine("plan-delete", "plan", id=body.get("id")))
+
+
+@app.post("/api/plan/media", dependencies=[Depends(auth)])
+async def plan_media(request: Request) -> Any:
+    body = await request.json()
+    return ok_or_500(engine("plan-media", "plan", id=body.get("id"), dataUrl=body.get("dataUrl")))
+
+
+@app.post("/api/plan/rebuild", dependencies=[Depends(auth)])
+def plan_rebuild() -> Any:
+    return ok_or_500(engine("plan-rebuild", "plan"))
+
+
+@app.get("/plan-media/{name}")
+def plan_media_file(name: str) -> FileResponse:
+    f = (ROOT / "framework" / "plan" / "media" / name).resolve()
+    if not str(f).startswith(str(ROOT / "framework" / "plan" / "media")) or not f.is_file():
+        raise HTTPException(404, "not found")
+    return FileResponse(f)
+
+
 @app.get("/api/project")
 def project() -> dict[str, Any]:
     return {"dir": _state["project"]}

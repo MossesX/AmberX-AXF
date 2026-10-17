@@ -20,4 +20,9 @@ const modules = [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1]
   return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('kit-') ? 'kit' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
 });
 writeFileSync(join(OUT, 'modules.json'), JSON.stringify({ modules }));
+// the plan + its screenshots
+if (existsSync(join(ROOT, 'framework/plan/plan.json'))) {
+  cpSync(join(ROOT, 'framework/plan/plan.json'), join(OUT, 'plan.json'));
+  if (existsSync(join(ROOT, 'framework/plan/media'))) cpSync(join(ROOT, 'framework/plan/media'), join(OUT, 'plan-media'), { recursive: true });
+}
 console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);

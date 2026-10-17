@@ -96,3 +96,27 @@ export function paramError(p: LibraryParam, text: string): string | null {
   if (p.type === 'choice' && p.choices?.length && !p.choices.includes(t)) return `One of ${p.choices.join(', ')}`;
   return null;
 }
+
+/* ---------------- plan (framework/plan/plan.json) ---------------- */
+
+export type PlanStatus = 'built' | 'partial' | 'in-progress' | 'placeholder' | 'planned' | 'blocked' | 'dropped';
+export const PLAN_STATUSES: PlanStatus[] = ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'];
+export type PortId = 'android' | 'web' | 'python';
+export const PORTS: PortId[] = ['android', 'web', 'python'];
+export interface PlanFeature {
+  id: string; title: string; area: string; group?: string; kind: 'epic' | 'feature' | 'task'; parent?: string; epic?: string;
+  status: PlanStatus; priority: string; wave: number; effort: string; summary: string;
+  ports: Partial<Record<PortId, { status: string; where: string }>>;
+  capabilities: string[]; dependsOn: string[]; catalog: string[]; modules: string[]; files: string[];
+  acceptance: { text: string; done: boolean }[]; warnings: { level: 'info' | 'warn' | 'error'; text: string }[]; recommendations: string[];
+  previews: { kind: 'element' | 'boilerplate' | 'route' | 'url' | 'image'; ref: string; label: string }[];
+  screenshots: { src: string; caption: string }[]; links: { label: string; url: string }[]; tags: string[]; notes: string;
+  source: 'seed' | 'catalog' | 'user'; edited?: boolean; history: { at: string; text: string }[];
+}
+export interface Plan { generatedAt: string; features: PlanFeature[] }
+export const loadPlan = () => getJson<Plan>('plan', 'plan.json');
+export const savePlanFeature = (feature: PlanFeature, note?: string) => post('plan/feature', { feature, note });
+export const deletePlanFeature = (id: string) => post('plan/delete', { id });
+export const uploadPlanMedia = (id: string, dataUrl: string) => post('plan/media', { id, dataUrl });
+/** `media/x.jpg` (plan.json) → URL served by the API, or the static copy next to the page. */
+export const planMediaUrl = (src: string) => (/^(https?:|data:)/.test(src) ? src : backendUp ? `/plan-${src}` : `${DATA}plan-${src}`);

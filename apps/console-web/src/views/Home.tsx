@@ -2,6 +2,7 @@ import { FRAMEWORK_VERSION } from '../axf/core';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import type { Status } from '../api';
+import { PlanSummaryCard } from './Plan';
 
 const TABS: [string, string][] = [['foundations', 'Foundations'], ['kernel', 'Kernel'], ['console', 'Console'], ['modules', 'Modules'], ['demos', 'Demos']];
 
@@ -25,6 +26,7 @@ export function Home() {
       </header>
 
       <div className="fx-grid">
+        <PlanSummaryCard />
         <Container title="Coverage" icon="chart">
           <table className="fx-table"><tbody>
             {TABS.map(([id, label]) => { const c = s.coverage(id); const total = Math.max(1, Object.values(c).reduce((a, b) => a + b, 0)); return (

@@ -10,12 +10,14 @@ import { Demos, Modules } from './views/DemosModules';
 import { Boilerplates } from './views/Boilerplates';
 import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
+import { Plan, PlanFeatureTab } from './views/Plan';
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
-  catalog: { title: 'Catalog', icon: 'layers', render: () => <Catalog /> },
+  plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
+  catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },
   modules: { title: 'Modules', icon: 'package', render: () => <Modules /> },
@@ -29,7 +31,7 @@ function Shell() {
   const s = useStore();
   const drop = useUndockDrop();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
-  return <div {...drop} style={{ display: 'contents' }}><AppShell views={views} dialogs={dialogs} tabs={consoleTabs} /></div>;
+  return <div {...drop} style={{ display: 'contents' }}><AppShell views={views} dialogs={dialogs} tabs={{ ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }} /></div>;
 }
 
 export function App() {

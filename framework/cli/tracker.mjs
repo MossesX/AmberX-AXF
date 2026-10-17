@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeLibrariesIndex } from './libraries.mjs';
+import { buildPlan } from './plan.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -52,6 +53,7 @@ for (const tab of catalog.tabs) {
 const tracker = { $axf: 'tracker@1', frameworkVersion: catalog.frameworkVersion, generatedAt: new Date().toISOString(), summary, items };
 writeFileSync(join(ROOT, 'tracker.json'), JSON.stringify(tracker, null, 2) + '\n');
 writeLibrariesIndex();
+buildPlan();
 
 for (const [tab, s] of Object.entries(summary)) console.log(`${tab.padEnd(12)} built ${String(s.built).padStart(3)}  partial ${String(s.partial).padStart(3)}  placeholder ${String(s.placeholder).padStart(3)}  planned ${String(s.planned).padStart(3)}   ${s.coverage}% built`);
 if (missing.length) console.log(`${missing.length} item(s) without a status in status.json${check ? '' : ' (treated as planned)'}`);

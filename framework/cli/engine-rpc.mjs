@@ -15,6 +15,7 @@ import { execFileSync } from 'node:child_process';
 import { FRAMEWORK_DIR, init, listBoilerplates, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
 import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.mjs';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
+import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
 const safeDir = (d) => { const p = resolve(ROOT, d ?? ''); if (!p.startsWith(ROOT)) throw new Error('dir must be inside the repo'); return p; };
@@ -58,6 +59,11 @@ function run() {
       log(`boilerplate ${data.id} saved; index regenerated`);
       return { id: data.id, file: relative(ROOT, join(dir, 'boilerplate.json')) };
     }
+    case 'plan': return loadPlan();
+    case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }
+    case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); return { feature: f }; }
+    case 'plan-delete': { deleteFeature(b.id); log(`plan: ${b.id} deleted`); return { id: b.id }; }
+    case 'plan-media': return { src: saveMedia(b.id, b.dataUrl) };
     case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'validate': return { dir: b.dir, report: validateApp(safeDir(b.dir)) };
     case 'new-asset': return { file: relative(ROOT, newAsset({ dir: safeDir(b.dir), type: b.type, id: b.id, from: b.from, name: b.name })) };

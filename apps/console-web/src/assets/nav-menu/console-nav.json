@@ -23,6 +23,12 @@
             "view": "home"
           },
           {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "layers",
+            "view": "plan"
+          },
+          {
             "id": "tracker",
             "label": "Tracker",
             "icon": "check-circle",
@@ -31,7 +37,7 @@
           {
             "id": "catalog",
             "label": "Catalog",
-            "icon": "layers",
+            "icon": "list",
             "view": "catalog"
           },
           {
