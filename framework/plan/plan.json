@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-17T16:21:27.098Z",
+ "generatedAt": "2026-10-17T16:43:44.795Z",
  "statuses": [
   "built",
   "partial",
@@ -3869,6 +3869,429 @@
    ],
    "model": "fable",
    "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "f.interop.schemas",
+   "title": "Typed action descriptors: description + JSON Schema input/output, effect, idempotent, long-running, streams (auto-generates MCP tools)",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.schemas"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.exposure",
+   "title": "Default-deny exposure per action/event: LOCAL / LINKED (other AXF apps) / REMOTE (protocol adapters)",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.exposure"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.callers",
+   "title": "Call origins + remote callers: external calls must pass the caller's grants AND the app's UAC role; audited with correlation ids",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.callers"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.callables",
+   "title": "Value-returning callable actions alongside fire-and-forget action-bus handlers",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.callables"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.adapters",
+   "title": "Protocol adapter extension point + guarded ProtocolHost (MCP, axf-link, axHub connector plug in as modules, never kernel changes)",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.adapters"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "f.interop.surface",
+   "title": "surface@1 self-description of everything an app exposes, per audience",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.surface"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.errors",
+   "title": "Stable wire error codes mapped to and from AxfFailure",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.errors"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract written Oct 17 2026, not yet compiled",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.jobs",
+   "title": "Job manager for long-running external calls (progress, cancel, poll) — capability axf.jobs",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "placeholder",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "placeholder",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.jobs"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract + typed placeholder",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "f.interop.remote",
+   "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface — capability axf.remote",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "placeholder",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
+   "ports": {
+    "android": {
+     "status": "placeholder",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.interop.remote"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract + typed placeholder",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "f.tokens",

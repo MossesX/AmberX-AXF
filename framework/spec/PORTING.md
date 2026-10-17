@@ -9,6 +9,7 @@ A port is quick to write because almost everything is already shared and languag
 | Manifest / lock / plugin formats | `framework/schemas/*.json`, `app-structure.json`, `plugin.schema.json` |
 | Engine behaviour (theme, layout, component style, UAC, context menu, actions, validation) | `framework/spec/fixtures/*.json` — golden outputs generated from the reference TypeScript engines |
 | Standard vocabularies | action ids (`StandardActions`), UAC permission ids, extension-point ids, route/settings/work/session/plugin contracts (`framework/android/axf-kernel/.../contract`, mirrored in `framework/core/types.ts`) |
+| Interop contracts (protocol-neutral) | `framework/spec/INTEROP.md` — action/event descriptors, exposure, call origins, `surface@1`, wire error codes, protocol adapters (`axf-kernel/.../interop`; **not yet mirrored in `framework/core`**) |
 | Build engine | `framework/cli/*.mjs` — `init`, `validate`, `new-asset`, `new-module`, `new-demo`, `dev`; a port adds a template folder with a `template.json` |
 | Feature catalog + tracker | `framework/catalog/*.json`, `tracker.json` — the console shows every port's status from the same data |
 
@@ -18,7 +19,8 @@ A port is quick to write because almost everything is already shared and languag
 2. **Platform seams**: clock, ids, dispatchers/threads, key-value store, secure store, logger, telemetry, permissions, file layout, work scheduler, session provider, plugin loader. (`platform/Platform.kt`, `contract/*.kt`.)
 3. **UI layer** that reads only the compiled tokens: theme → native theme, `CompiledLayout` → native layout regions, `ComponentStyles` → native widgets with every variant, menus/toolbars/nav/context menus/dialogs/toasts from the typed assets. The web port's `framework/ui/axf.css` + `framework/react` and the Android `axf-ui` are the two references.
 4. **App template** for `axf init --template <port>` (a `template.json` + boilerplate), and a bootstrap (the port's equivalent of `AxfApplication` + `AxfRoot` + `AppShell`).
-5. **Conformance test** that loads `framework/assets` and asserts the fixture outputs (see `ConformanceTest.kt` for the Kotlin version).
+5. **Interop gate**: `AxfInterop` (descriptors, exposure + grant + role checks, schema check, audit) and the adapter extension point, with the same wire error codes — see `INTEROP.md`.
+6. **Conformance test** that loads `framework/assets` and asserts the fixture outputs (see `ConformanceTest.kt` for the Kotlin version).
 
 Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spec/gen-fixtures.mts`.
 

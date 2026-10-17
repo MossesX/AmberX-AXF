@@ -2036,5 +2036,59 @@
     "wave": 1,
     "module": "lib-browser",
     "notes": "library.json params; axf install browser; console wizard"
+  },
+  "f.interop.schemas": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.exposure": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.callers": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.callables": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.adapters": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.surface": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.errors": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract written Oct 17 2026, not yet compiled"
+  },
+  "f.interop.jobs": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract + typed placeholder"
+  },
+  "f.interop.remote": {
+    "status": "placeholder",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "contract + typed placeholder"
   }
 }

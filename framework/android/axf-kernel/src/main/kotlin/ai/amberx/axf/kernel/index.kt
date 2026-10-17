@@ -14,6 +14,8 @@
  *   state/     AxfStore — reducer/middleware/selector store with undo + persistence (state management engine)
  *   data/      QueryClient/Query/Mutation — keyed fetch + cache, stale-while-revalidate (data fetching & cache engine)
  *   contract/  RouteSpec/Router, SettingsGroup/SettingSpec, Ports, Strings, IconResolver, WorkScheduler/Worker, Session/Principal/AuditLog
+ *   interop/   ActionDescriptor/EventDescriptor, CallOrigin/RemoteCaller, CallableAction, JobManager, RemoteServices,
+ *              ProtocolAdapter/ProtocolHost, AppSurface (surface@1), WireError, AxfInterop   (new — protocol-neutral interop)
  *   manifest/  AxfManifest
  *   AxfKernel  builder + lifecycle + status
  */
