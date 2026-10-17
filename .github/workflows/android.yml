@@ -29,7 +29,8 @@ jobs:
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e
-          for t in react-ts android-compose; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
+          for t in react-ts next-ts android-compose; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
+          (cd /tmp/sweep/t-next-ts && npm install --silent && npm run build)
           for b in $(node -e "console.log(require('./framework/boilerplates/index.json').items.map(i=>i.id).join(' '))"); do node framework/cli/axf.mjs init /tmp/sweep/b-$b --name "B $b" --template android-compose --boilerplate $b > /dev/null; done
           node framework/cli/axf.mjs install browser /tmp/sweep/t-android-compose --yes
           mkdir -p /tmp/fakelib && printf 'package x\nval c = Color(0xFF7C3AED)\nval s = MaterialTheme.colorScheme.surface\n' > /tmp/fakelib/A.kt

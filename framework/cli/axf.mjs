@@ -2,7 +2,7 @@
 /**
  * axf — command-line driver for the AmberX AXF build engine.
  *
- *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser]
+ *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser]
  *   axf validate [dir]          validate an app (or the framework's own assets with --framework)
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
