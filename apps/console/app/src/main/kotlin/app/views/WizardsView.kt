@@ -54,6 +54,7 @@ private fun ai.amberx.axf.kernel.runtime.AxfRuntime.terminalFrom(channel: String
 /* ------------------------------------------------------------------ */
 
 /** Dialog `project`: which AXF app the console's installs and imports apply to (a path under the build engine's apps root). */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun OpenProjectDialog() {
     val repo = rememberRepo() ?: return AxfEmptyState("Console data missing")
@@ -186,6 +187,7 @@ fun UiImportWizardDialog(sourceId: String) {
     val engine = remember(kernel) { kernel?.services?.get(BuildEngineClient::class) }
     val locKey = when (sourceKind) { "git" -> "url"; "local" -> "path"; else -> "coordinate" }
     val slug = kitId.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-')
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
     val script = "node framework/cli/axf.mjs import-ui --name \"$name\" --kit $slug --source $sourceKind --$locKey \"$location\"" + (if (version.isNotBlank()) " --version $version" else "") + " --covers ${covers.joinToString(",")}" + (if (apply && project.isNotBlank()) " --apply $project" else "")
     fun body(): JsonObject = buildJsonObject {
         put("name", JsonPrimitive(name)); put("kitId", JsonPrimitive(slug)); put("library", JsonPrimitive(src?.name ?: name)); put("version", JsonPrimitive(version))

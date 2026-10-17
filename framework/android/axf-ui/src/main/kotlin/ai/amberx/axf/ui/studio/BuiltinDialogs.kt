@@ -90,8 +90,8 @@ private fun ShortcutsDialog() {
     val runtime = LocalAxfRuntime.current
     val rows = remember(compiled.rev) {
         val out = mutableListOf<Triple<String, String, String>>()
-        for (m in compiled.appMenu.menus) for (i in m.items) if (i.shortcut != null && i.action != null) out += Triple(i.shortcut, runtime.actions.get(ai.amberx.axf.kernel.engine.ActionBus.parse(i.action).id)?.label ?: i.label ?: i.action, i.action)
-        for ((_, items) in compiled.contextMenu.targets) for (i in items) if (i.shortcut != null && i.action != null && out.none { it.first == i.shortcut }) out += Triple(i.shortcut, i.label ?: i.action, i.action)
+        for (m in compiled.appMenu.menus) for (i in m.items) { val sc = i.shortcut; val act = i.action; if (sc != null && act != null) out += Triple(sc, runtime.actions.get(ai.amberx.axf.kernel.engine.ActionBus.parse(act).id)?.label ?: i.label ?: act, act) }
+        for ((_, items) in compiled.contextMenu.targets) for (i in items) { val sc = i.shortcut; val act = i.action; if (sc != null && act != null && out.none { it.first == sc }) out += Triple(sc, i.label ?: act, act) }
         out
     }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {

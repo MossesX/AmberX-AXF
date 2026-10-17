@@ -406,6 +406,7 @@ public fun ElementGrid(kitId: String?, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun CategoryStrip(items: List<ElementSpec>, target: ai.amberx.axf.ui.kit.AxfUiKit, kitId: String?) {

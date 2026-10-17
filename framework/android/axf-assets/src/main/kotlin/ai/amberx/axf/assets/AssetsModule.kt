@@ -22,7 +22,7 @@ import java.net.URL
 
 /**
  * Asset sources beyond the bundle:
- *  - [FileAssetSource]: `FileArea.ASSETS/<module>/*.json` — assets imported at runtime survive restarts.
+ *  - [FileAssetSource]: `FileArea.ASSETS/<module>/<id>.json` — assets imported at runtime survive restarts.
  *  - [RemoteAssetSource]: hot-reload from a URL (`axf.assets.url` config) when the `axf.hotReload` flag is on.
  * The bundle itself is passed to the kernel builder by AxfApplication, so the kernel validates it before
  * the first frame; these sources load during `kernel.start()`.

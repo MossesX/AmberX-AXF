@@ -123,6 +123,7 @@ public fun ThemeDesigner(modifier: Modifier = Modifier) {
     var colors by remember(colorAsset.key) { mutableStateOf(ai.amberx.axf.kernel.asset.ColorTheme.fromJson(colorAsset.data).tokens) }
     var style by remember(styleAsset.key) { mutableStateOf(styleAsset.data) }
     var editing by remember { mutableStateOf<String?>(null) }
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
     fun apply() {
         val derivedColor = derive(colorAsset, buildJsonObject { put("scheme", colorAsset.data["scheme"] ?: JsonPrimitive("dark")); put("tokens", JsonObject(colors.mapValues { JsonPrimitive(it.value) })) })
         val derivedStyle = derive(styleAsset, style)
@@ -202,7 +203,7 @@ public fun LayoutGallery(modifier: Modifier = Modifier) {
                             AxfSectionHeader(wc.name.lowercase())
                             Column(Modifier.size(96.dp, 64.dp).border(1.dp, Axf.colors.border, Axf.shapes.xsShape).padding(2.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 for (row in c.rows) if (row.region == null) Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                    for (col in c.columns) Box((if (col.width == null) Modifier.weight(1f) else Modifier.width((col.width / 10).coerceIn(6, 24).dp)).fillMaxHeight().background(if (col.region == ai.amberx.axf.kernel.engine.Region.MAIN) Axf.colors.surface3 else Axf.colors.accentSoft))
+                                    for (col in c.columns) Box((if (col.width == null) Modifier.weight(1f) else Modifier.width(((col.width ?: 100) / 10).coerceIn(6, 24).dp)).fillMaxHeight().background(if (col.region == ai.amberx.axf.kernel.engine.Region.MAIN) Axf.colors.surface3 else Axf.colors.accentSoft))
                                 } else Box(Modifier.fillMaxWidth().height(6.dp).background(Axf.colors.accentSoft))
                             }
                         }

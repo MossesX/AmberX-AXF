@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
  * inspector as a sheet). `views` maps view ids (nav-menu asset `view`) to composables; unknown views render
  * PlaceholderScreen. Modules inject extra content into regions via `ExtensionPoints.SHELL_REGIONS`.
  */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 public fun AppShell(
     views: Map<String, @Composable () -> Unit>,
@@ -108,7 +109,7 @@ private fun DesktopGrid(
                             Region.NAV -> Box(Modifier.width((col.width ?: 224).dp).fillMaxHeight().background(c.navBg).then(if (l.nav == ai.amberx.axf.kernel.asset.NavSide.LEFT) Modifier.drawEndBorder(c.border, 1.dp) else Modifier.drawStartBorder(c.border, 1.dp))) { AxfNav(Modifier.fillMaxSize(), viewIds, Orientation.VERTICAL) }
                             Region.INSPECTOR -> Box(Modifier.width((col.width ?: 260).dp).fillMaxHeight().background(c.surface).then(if (l.inspector == ai.amberx.axf.kernel.asset.InspectorSide.RIGHT) Modifier.drawStartBorder(c.border, 1.dp) else Modifier.drawEndBorder(c.border, 1.dp)).verticalScroll(rememberScrollState())) { inspector?.invoke() ?: AxfInspector { } }
                             Region.MAIN -> Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.TopCenter) {
-                                Box(Modifier.fillMaxSize().then(if (layout.contentMaxWidth != null) Modifier.widthIn(max = layout.contentMaxWidth.dp) else Modifier)) { main() }
+                                Box(Modifier.fillMaxSize().then(layout.contentMaxWidth?.let { Modifier.widthIn(max = it.dp) } ?: Modifier)) { main() }
                                 extras[Region.OVERLAY]?.forEach { it.content() }
                                 if (fab != null) Box(Modifier.align(Alignment.BottomEnd).padding(24.dp)) { fab() }
                             }
@@ -122,6 +123,7 @@ private fun DesktopGrid(
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun PhoneGrid(
     modifier: Modifier, layout: ai.amberx.axf.kernel.engine.CompiledLayout, has: (Region) -> Boolean, viewIds: Set<String>, titles: Map<String, String>, onSearch: ((String) -> Boolean)?,
