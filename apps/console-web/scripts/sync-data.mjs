@@ -1,0 +1,23 @@
+// Copies the framework's catalog / tracker / libraries / boilerplates into public/data so the console
+// works as a static site (no backend) — the Python API serves the same files live when present.
+import { cpSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(HERE, '../../..');
+const OUT = resolve(HERE, '../public/data');
+mkdirSync(OUT, { recursive: true });
+for (const f of ['catalog/catalog.json', 'catalog/status.json', 'catalog/libraries.json']) cpSync(join(ROOT, 'framework', f), join(OUT, f.split('/').pop()));
+cpSync(join(ROOT, 'tracker.json'), join(OUT, 'tracker.json'));
+cpSync(join(ROOT, 'framework/boilerplates/index.json'), join(OUT, 'boilerplates.json'));
+const idx = JSON.parse(readFileSync(join(ROOT, 'framework/boilerplates/index.json'), 'utf8'));
+const items = idx.items.map((i) => JSON.parse(readFileSync(join(ROOT, 'framework/boilerplates', i.id, 'boilerplate.json'), 'utf8')));
+writeFileSync(join(OUT, 'boilerplate-items.json'), JSON.stringify(items));
+const settings = readFileSync(join(ROOT, 'framework/android/settings.gradle.kts'), 'utf8');
+const modules = [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
+  const readme = join(ROOT, 'framework/android', name, 'README.md');
+  const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
+  return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('kit-') ? 'kit' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
+});
+writeFileSync(join(OUT, 'modules.json'), JSON.stringify({ modules }));
+console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);

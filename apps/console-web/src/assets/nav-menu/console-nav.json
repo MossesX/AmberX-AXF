@@ -1,0 +1,93 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "console-nav",
+  "name": "Console navigation",
+  "version": "1.0.0",
+  "description": "The Dev Console's sections.",
+  "author": "AmberX AXF",
+  "tags": [
+    "console"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Dev Console",
+    "sections": [
+      {
+        "label": "Build",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "check-circle",
+            "view": "tracker"
+          },
+          {
+            "id": "catalog",
+            "label": "Catalog",
+            "icon": "layers",
+            "view": "catalog"
+          },
+          {
+            "id": "libraries",
+            "label": "Libraries",
+            "icon": "box",
+            "view": "libraries"
+          },
+          {
+            "id": "boilerplates",
+            "label": "Boilerplates",
+            "icon": "layout",
+            "view": "boilerplates"
+          }
+        ]
+      },
+      {
+        "label": "Framework",
+        "items": [
+          {
+            "id": "modules",
+            "label": "Modules & packages",
+            "icon": "package",
+            "view": "modules"
+          },
+          {
+            "id": "demos",
+            "label": "Demos",
+            "icon": "smartphone",
+            "view": "demos"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "palette",
+            "view": "assets"
+          }
+        ]
+      },
+      {
+        "label": "Account",
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "shield",
+            "view": "account"
+          }
+        ]
+      }
+    ]
+  }
+}
