@@ -1,5 +1,6 @@
 package ai.amberx.axf.kernel
 
+import ai.amberx.axf.kernel.asset.parseJsonObject
 import ai.amberx.axf.kernel.engine.ActionMeta
 import ai.amberx.axf.kernel.interop.ActionDescriptor
 import ai.amberx.axf.kernel.interop.CallOrigin
@@ -24,7 +25,8 @@ import kotlin.test.assertTrue
 /** Interop gate: default-deny exposure, caller grants AND role, schema checks, callables, surfaces, wire errors. */
 class InteropTest {
     private val manifest = AxfManifest.parse("""{"${'$'}axf":"manifest@1","app":{"id":"test","name":"Test","version":"0.1.0"},"framework":{"version":"0.2.0","template":"android-compose"},"targets":["android"],"startView":"home","defaults":${File("../../defaults.json").readText()}}""")!!
-    private fun kernel() = AxfKernel.builder(manifest).build()
+    private fun assets() = File("../../assets").walkTopDown().filter { it.isFile && it.extension == "json" }.mapNotNull { it.readText().parseJsonObject() }.toList()
+    private fun kernel() = AxfKernel.builder(manifest).assets(assets()).build()
     private val input = JsonObject(mapOf("title" to JsonPrimitive("hi")))
     private val schema = JsonSchemas.obj(mapOf("title" to JsonSchemas.prop("string")), required = listOf("title"))
     private fun caller(vararg perms: String) = CallOrigin.remote(RemoteCaller("t1", "mcp", permissions = perms.toSet()), "mcp/test", "c1")
