@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time VPS setup for xaf.amberxai.com (Debian/Ubuntu, run as root).
+# One-time VPS setup for axf.amberxai.com (Debian/Ubuntu, run as root).
 #
 #   curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash
 #
@@ -13,10 +13,10 @@
 # Safe to re-run.
 set -euo pipefail
 
-DOMAIN="${DOMAIN:-xaf.amberxai.com}"
+DOMAIN="${DOMAIN:-axf.amberxai.com}"
 REPO="${REPO:-https://github.com/MossesX/AmberX-AXF.git}"
 BRANCH="${BRANCH:-site}"
-NAME="${NAME:-xaf-amberxai}"
+NAME="${NAME:-axf-amberxai}"
 WEBROOT="/var/www/$DOMAIN"
 EMAIL="${EMAIL:-}"
 
@@ -45,9 +45,16 @@ check_dns() {
   DNS_IP="$(dig +short A "$DOMAIN" | tail -n1)"
   if [ -n "$DNS_IP" ] && [ "$DNS_IP" = "$SERVER_IP" ]; then return 0; fi
   say "DNS for $DOMAIN points to '${DNS_IP:-nothing}' but this server is $SERVER_IP."
-  say "Fix the A record for 'xaf'. HTTPS will start working once it points here."
+  say "Fix the A record for '${DOMAIN%%.*}'. HTTPS will start working once it points here."
   return 1
 }
+
+# ---- 0. Migrate from the old xaf.amberxai.com setup (renamed to axf) ----
+if [ "$DOMAIN" = "axf.amberxai.com" ]; then
+  if command -v docker >/dev/null && docker ps -a --format '{{.Names}}' | grep -qx xaf-amberxai; then say "Removing old xaf-amberxai container"; docker rm -f xaf-amberxai >/dev/null; fi
+  rm -f /etc/cron.d/xaf-amberxai /etc/nginx/sites-enabled/xaf.amberxai.com /etc/nginx/sites-available/xaf.amberxai.com
+  rm -rf /var/www/xaf.amberxai.com /etc/xaf-amberxai
+fi
 
 # ---- 1. Site files (shallow clone of the build branch) ----
 apt_install git dig
@@ -62,10 +69,10 @@ else
 fi
 
 # ---- 2. Auto-update every 2 minutes (files are served live from $WEBROOT) ----
-cat > /etc/cron.d/xaf-amberxai <<CRON
+cat > /etc/cron.d/$NAME <<CRON
 */2 * * * * root git -C $WEBROOT fetch -q --depth 1 origin $BRANCH && git -C $WEBROOT reset -q --hard origin/$BRANCH
 CRON
-chmod 644 /etc/cron.d/xaf-amberxai
+chmod 644 /etc/cron.d/$NAME
 
 NGINX_SERVER_BODY='
     index index.html;
@@ -93,7 +100,7 @@ $NGINX_SERVER_BODY
 }
 NGINX
   docker rm -f "$NAME" >/dev/null 2>&1 || true
-  R="xaf"
+  R="axfsite"
   docker run -d --name "$NAME" --restart unless-stopped --network "$NET" \
     -v "$WEBROOT":/usr/share/nginx/html:ro \
     -v "$CONF_DIR/default.conf":/etc/nginx/conf.d/default.conf:ro \

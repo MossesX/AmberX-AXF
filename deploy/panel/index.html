@@ -166,7 +166,7 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
       ['GITHUB_TOKEN=ghp_… bash /opt/axf/deploy/install-console.sh', 'Re-run with a GitHub token to enable one-click CI artifact downloads'],
       ['cat /opt/axf/.axf-console/env', 'Show the saved AXF_TOKEN / GITHUB_TOKEN on the VPS'],
       ['docker logs -f axf-console', 'Follow the API container'],
-      ['curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash', 'Install / update the demo site at xaf.amberxai.com'],
+      ['curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash', 'Install / update the demo site at axf.amberxai.com'],
     ]],
     ['Web console + API', [
       ['cd apps/console-web && npm install && npm run dev', 'Vite dev server on :5173 (proxies /api to :7090)'],
@@ -183,7 +183,7 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
       ['adb install -r app-debug.apk', 'Install the APK on a connected device'],
     ]],
     ['Web demo + site', [
-      ['cd apps/demo && npm ci && npm run build', 'Build the demo (CI publishes dist/ to the site branch → xaf.amberxai.com)'],
+      ['cd apps/demo && npm ci && npm run build', 'Build the demo (CI publishes dist/ to the site branch → axf.amberxai.com)'],
       ['cd apps/demo && npx vite preview --host --port 4173', 'Preview the built demo'],
     ]],
     ['Git / CI', [

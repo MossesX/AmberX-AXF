@@ -82,7 +82,7 @@ curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/inst
 It prints the `AXF_TOKEN` the panel needs for server control and the terminal (`/panel`). Add `GITHUB_TOKEN=…`
 in front for one-click CI artifact downloads (APK, Maven repo). Point an A record `console` → the VPS IP.
 
-## Deploying the demo (xaf.amberxai.com)
+## Deploying the demo (axf.amberxai.com)
 
 `.github/workflows/deploy.yml` validates and builds `apps/demo` on every push to `main` and publishes `dist/`
 to the `site` branch. The VPS serves that branch with nginx and pulls it every 2 minutes, so GitHub never
@@ -94,7 +94,7 @@ One-time server setup (as root on the VPS, e.g. from Hostinger's browser termina
 curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash
 ```
 
-It installs nginx/certbot/git if needed, clones the `site` branch into `/var/www/xaf.amberxai.com`, writes an
+It installs nginx/certbot/git if needed, clones the `site` branch into `/var/www/axf.amberxai.com`, writes an
 nginx site with SPA fallback, adds the update cron job, and issues a Let's Encrypt certificate once the `xaf`
 A record points at the server. It stops without changes if another web server holds port 80. Safe to re-run.
 
