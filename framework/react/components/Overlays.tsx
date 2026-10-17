@@ -140,7 +140,9 @@ export function ContextMenuHost() {
   }, [state.context]);
 
   if (!state.context) return null;
-  const items = cm.targets[state.context.target] ?? cm.targets.default ?? [];
+  const extra = rt.contextExtras.get(state.context.target)?.() ?? [];
+  const base = cm.targets[state.context.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  const items = [...base, ...(extra as unknown as typeof base)];
   return (
     <div
       ref={ref}

@@ -7,3 +7,5 @@ export * from './engines/layout';
 export * from './engines/components';
 export * from './engines/uac';
 export * from './engines/actions';
+export * from './engines/windows';
+export * from './terminal';

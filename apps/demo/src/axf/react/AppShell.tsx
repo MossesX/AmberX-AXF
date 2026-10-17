@@ -4,6 +4,8 @@ import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
+import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
+import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 
 export interface ViewDef {
   title: string;
@@ -17,18 +19,22 @@ export interface AppShellProps {
   dialogs?: DialogMap;
   /** content for the inspector region (defaults to the hot-swap inspector) */
   inspector?: ReactNode;
+  /** tab renderers (kind → component) for the windowing engine; `terminal` and `placeholder` are built in */
+  tabs?: TabRenderers;
 }
 
 /**
  * The application shell. Regions are placed by the layout engine
  * (CSS grid vars compiled from the active `layout` asset).
  */
-export function AppShell({ views, dialogs = {}, inspector }: AppShellProps) {
+export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
+  useWindowShortcuts();
   const view = views[state.view] ?? Object.values(views)[0];
 
   return (
+    <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
     <div className="fx-shell">
       {layout.showMenubar && (
         <div className="fx-region" style={{ gridArea: 'menubar' }}>
@@ -58,9 +64,11 @@ export function AppShell({ views, dialogs = {}, inspector }: AppShellProps) {
           <StatusBar />
         </div>
       )}
-      <DialogHost dialogs={{ ...builtinDialogs, ...dialogs }} />
+      <DialogHost dialogs={{ ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...dialogs }} />
       <ToastHost />
       <ContextMenuHost />
+      <FloatingWindowsHost />
     </div>
+    </TabRenderersProvider>
   );
 }

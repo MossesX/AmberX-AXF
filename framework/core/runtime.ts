@@ -10,6 +10,8 @@ import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
 import { buttonStyle, containerStyle, contextMenuStyle, dialogStyle, popupStyle, sliderStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
+import { WindowManager } from './engines/windows';
+import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
   type ActiveAssets,
@@ -52,6 +54,12 @@ const safeStorage = {
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
   readonly actions = new ActionBus();
+  /** Window / tab-group / docking engine (floating windows, splits, minimize) — see engines/windows.ts. */
+  readonly windows = new WindowManager();
+  /** The output terminal every install / import / hot swap / kit fallback writes to. */
+  readonly terminal = new OutputTerminal();
+  /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted. */
+  readonly contextExtras = new Map<string, () => import('./engines/windows').MenuEntry[]>();
   readonly manifest: AxfManifest;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
@@ -128,10 +136,12 @@ export class AxfRuntime {
       next = others[Math.floor(Math.random() * others.length)]?.id ?? list[0]?.id;
     } else next = target;
     if (!next || !this.registry.has(type, next)) {
+      this.terminal.error('hot-swap', `${type} → "${target}": no such asset`);
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
     if (next === this.state.active[type]) return true;
+    this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
 
     const active = { ...this.state.active, [type]: next };
     const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
@@ -308,6 +318,22 @@ export class AxfRuntime {
       );
     }, { label: 'Copy asset JSON' });
     a.register('noop', () => {}, { label: 'Nothing' });
+    // windowing engine
+    const wm = this.windows;
+    a.register('windows.undock', ([g]) => g && wm.undock(g), { label: 'Undock tab group' });
+    a.register('windows.split', ([g, mode = 'vertical', r = '2', c = '2']) => g && wm.split(g, mode as import('./engines/windows').SplitMode, Number(r), Number(c)), { label: 'Split tab group' });
+    a.register('windows.closeGroup', ([g]) => g && wm.closeGroup(g), { label: 'Close tab group' });
+    a.register('windows.redock', ([w]) => w && wm.redock(w), { label: 'Redock window' });
+    a.register('windows.close', ([w]) => w && wm.close(w), { label: 'Close window' });
+    a.register('windows.minimizeCorner', ([w]) => w && wm.minimizeToNextCorner(w), { label: 'Minimize to corner' });
+    a.register('windows.minimizeToolbar', ([w, x = '24', y = '24']) => w && wm.minimize(w, 'floating-toolbar', Number(x), Number(y)), { label: 'Minimize to floating toolbar' });
+    a.register('windows.restore', ([w]) => w && wm.restore(w), { label: 'Restore window' });
+    a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window' });
+    a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window' });
+    a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
+    a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
+    this.contextExtras.set('tab-group', () => wm.groupMenu());
+    this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }
 

@@ -10,3 +10,5 @@ export { AccountView } from './studio/AccountView';
 export { Inspector } from './studio/Inspector';
 export { AssetPreview } from './studio/AssetPreview';
 export { builtinDialogs } from './studio/builtinDialogs';
+export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, windowDialogs, type TabRenderer, type TabRenderers } from './windows/WindowHost';
+export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
