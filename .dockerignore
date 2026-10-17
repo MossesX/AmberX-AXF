@@ -1,0 +1,10 @@
+.git
+**/node_modules
+**/dist
+**/dist-single
+**/.next
+**/out
+**/build
+**/.gradle
+**/__pycache__
+.axf-console
