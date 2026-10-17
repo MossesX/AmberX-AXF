@@ -1,0 +1,17 @@
+# AXF Dev Console: React/TypeScript console (built with Node) served by the Python API (FastAPI) that drives the
+# framework's Node build engine. One container; Coolify builds it from the repo root with this Dockerfile.
+#   docker build -f apps/console-web/server/Dockerfile -t axf-console .
+#   docker run -p 7090:7090 -v $PWD:/axf axf-console        # mount the repo so installs/imports write back to it
+FROM node:22-bookworm-slim AS web
+WORKDIR /axf
+COPY . .
+RUN cd apps/console-web && npm ci && npm run build
+
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
+WORKDIR /axf
+COPY --from=web /axf /axf
+RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt
+ENV AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
+EXPOSE 7090
+CMD ["sh", "-c", "cd apps/console-web/server && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

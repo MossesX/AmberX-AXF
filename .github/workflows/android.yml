@@ -6,7 +6,7 @@ name: Android framework + console
 on:
   push:
     branches: [main]
-    paths: ['framework/**', 'apps/console/**', '.github/workflows/android.yml']
+    paths: ['framework/**', 'apps/**', '.github/workflows/android.yml']
   pull_request:
   workflow_dispatch:
 
@@ -35,6 +35,39 @@ jobs:
           mkdir -p /tmp/fakelib && printf 'package x\nval c = Color(0xFF7C3AED)\nval s = MaterialTheme.colorScheme.surface\n' > /tmp/fakelib/A.kt
           node framework/cli/axf.mjs import-ui --name "Fake UI" --kit fake --source local --path /tmp/fakelib --apply /tmp/sweep/t-android-compose
           node framework/cli/axf.mjs validate /tmp/sweep/t-android-compose
+
+  console:
+    name: Web Dev Console (React/TS) + Python API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Re-bake the framework into the console and build it
+        working-directory: apps/console-web
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas; do cp -r ../../framework/$d src/axf/; done
+          npm ci && npm run build
+      - name: Python API smoke (health, libraries, init + install through the engine)
+        working-directory: apps/console-web/server
+        run: |
+          pip install -r requirements.txt httpx
+          python - <<'PY'
+          import main
+          from fastapi.testclient import TestClient
+          c = TestClient(main.app)
+          assert c.get('/api/health').json()['engine']
+          assert c.get('/api/libraries').json()['items']
+          r = c.post('/api/init', json={'dir': 'apps/ci-smoke', 'name': 'CI', 'template': 'android-compose', 'boilerplate': 'notes'}).json(); assert r['ok'], r
+          r = c.post('/api/install', json={'dir': 'apps/ci-smoke', 'library': 'ai.amberx.axf.browser', 'params': {}}).json(); assert r['ok'], r
+          print('api ok', len(c.get('/api/terminal').json()['lines']), 'terminal lines')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: console-web-dist
+          path: apps/console-web/dist
 
   android:
     name: Gradle — framework modules, kernel tests, console APK

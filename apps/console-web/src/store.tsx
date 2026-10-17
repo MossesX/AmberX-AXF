@@ -49,6 +49,13 @@ export function ConsoleStoreProvider({ children }: { children: ReactNode }) {
     setReady(true);
   };
   useEffect(() => { refresh().catch((e) => { rt.terminal.error('console', String(e)); setReady(true); }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Follow the backend's output terminal live (server-sent events) so engine log lines land in the pane as they happen.
+  useEffect(() => {
+    if (!backend || typeof EventSource === 'undefined') return;
+    const es = new EventSource('/api/events');
+    es.onmessage = (ev) => { try { const l = JSON.parse(ev.data) as { channel: string; level: 'info' | 'ok' | 'warn' | 'error' | 'note'; text: string }; rt.terminal.log(`api:${l.channel}`, l.text, l.level); } catch { /* ignore */ } };
+    return () => es.close();
+  }, [backend, rt]);
 
   const store = useMemo<ConsoleStore>(() => {
     const status = (id: string): Status => overrides[id] ?? tracker.items.find((i) => i.id === id)?.status ?? 'planned';

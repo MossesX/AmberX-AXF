@@ -91,7 +91,7 @@ A record points at the server. It stops without changes if another web server ho
 `framework/android/` is the Kotlin + Jetpack Compose port: a pure-Kotlin kernel (`axf-kernel`), Android
 adapters, Compose UI with UI-kit switching, navigation, data, network, devtools, testing, and the libraries
 (`lib-settings`, `lib-logging` real; `lib-admin`, `lib-accounts`, `lib-profile`, `lib-billing` as placeholder
-modules with contracts and mock providers). `apps/console` is the **AXF Dev Console**, the first app on the
+modules with contracts and mock providers). `apps/console-web` is the **AXF Dev Console** (React/TypeScript on the web port + a Python FastAPI API that runs the build engine; `server/Dockerfile` deploys both); `apps/console` is its Android showcase, the first app on the
 port: it tracks what's built, assembles libraries from the feature catalog, generates demo apps and manages
 boilerplates. See `framework/android/README.md`, `framework/spec/PORTING.md`, `framework/boilerplates/README.md`.
 
