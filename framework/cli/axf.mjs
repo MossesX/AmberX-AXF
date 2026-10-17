@@ -18,6 +18,11 @@
  *   axf import-ui --name "Cupertino" --kit cupertino --source git --url https://github.com/x/y [--version 1.0] [--covers BUTTON,CHIP] [--apply apps/my-app]
  *                               port a third-party UI library: clone → refactor to AXF tokens → save as kit-<id> → apply to a project
  *   axf ported-kits             list kits produced by import-ui
+ *   axf library-templates       list library templates (framework/library-templates)
+ *   axf new-library <name> --template feature-screens [--ports android,web,python] [--label "…"] [--param k=v] [--features a,b]
+ *   axf compile-library <slug> [--ports android,web,python]    type-check / compile each port of a library
+ *   axf port-library <slug> --to web|android|python             generate another port of a library from its template
+ *   axf remove-library <slug>                                   delete a template-generated library from every port
  *   axf libraries               list installable libraries (framework/android/<module>/library.json) and their parameters
  *   axf install <library> [appDir] [--param key=value …] [--yes]
  *                               add a library to an app: interactive wizard asks for the required parameters,
@@ -25,6 +30,7 @@
  */
 import { relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
+import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { installLibrary, installScript, libraryInfo, listLibraries, wizard } from './libraries.mjs';
 import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 
@@ -116,6 +122,36 @@ try {
     }
     case 'ported-kits': {
       for (const k of listPortedKits()) console.log(`${c.b(k.module.padEnd(22))} ${k.name} ${c.dim(`← ${k.port?.source?.kind} ${k.port?.source?.url ?? k.port?.source?.coordinate ?? k.port?.source?.path ?? ''}`)}`);
+      break;
+    }
+    case 'library-templates': {
+      for (const t of listLibraryTemplates()) console.log(`${c.b(t.id.padEnd(20))} ${c.dim(t.category.padEnd(14))} ${t.name} — ${t.description}`);
+      break;
+    }
+    case 'new-library': {
+      if (!args[0]) throw new Error('Usage: axf new-library <name> --template <id> [--ports android,web,python]');
+      const params = Object.fromEntries([].concat(flags.param ?? []).map((kv) => { const [k, ...v] = String(kv).split('='); return [k, v.join('=')]; }));
+      const r = newLibrary({ name: args[0], label: flags.label, description: flags.description, template: flags.template ?? 'feature-screens', ports: flags.ports ? String(flags.ports).split(',') : ['android', 'web'], features: flags.features ? String(flags.features).split(',') : [], params, log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ ${r.library.name} (${r.slug}): ${Object.keys(r.ports).join(', ')}`));
+      break;
+    }
+    case 'compile-library': {
+      if (!args[0]) throw new Error('Usage: axf compile-library <slug> [--ports android,web,python]');
+      const r = compileLibrary({ slug: args[0], ports: flags.ports ? String(flags.ports).split(',') : undefined, log: (m) => console.log(c.dim(m)) });
+      let failed = false;
+      for (const [p, x] of Object.entries(r.results)) { console.log(`${p.padEnd(8)} ${x.status === 'passed' ? c.ok('passed') : x.status === 'failed' ? (failed = true, c.bad('failed')) : c.warn(x.status)}  ${c.dim(x.output.split('\n')[0] ?? '')}`); if (x.status === 'failed') console.log(x.output); }
+      if (failed) process.exitCode = 1;
+      break;
+    }
+    case 'port-library': {
+      if (!args[0] || !flags.to) throw new Error('Usage: axf port-library <slug> --to web|android|python');
+      const r = portLibrary({ slug: args[0], to: flags.to, log: (m) => console.log(c.dim(m)) });
+      console.log(c.ok(`✓ ${r.library.name}: ${Object.keys(r.ports).join(', ')}`));
+      break;
+    }
+    case 'remove-library': {
+      if (!args[0]) throw new Error('Usage: axf remove-library <slug>');
+      removeLibrary({ slug: args[0], log: (m) => console.log(c.dim(m)) }); console.log(c.ok(`✓ removed ${args[0]}`));
       break;
     }
     case 'libraries': {

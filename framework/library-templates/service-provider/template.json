@@ -1,0 +1,28 @@
+{
+  "name": "Service provider",
+  "category": "Services",
+  "icon": "package",
+  "description": "A provider contract with a mock implementation and a service apps resolve at runtime \u2014 for accounts, billing, storage, AI\u2026 where real vendors plug in later.",
+  "produces": [
+    "Provider interface",
+    "Mock provider",
+    "Service + capability",
+    "Status screen"
+  ],
+  "params": [
+    {
+      "key": "provider",
+      "label": "Default provider name",
+      "type": "text",
+      "default": "mock"
+    }
+  ],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "service-provider",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

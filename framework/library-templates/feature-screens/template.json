@@ -1,0 +1,20 @@
+{
+  "name": "Feature screens",
+  "category": "Screens & UI",
+  "icon": "layout",
+  "description": "A feature with its own screen, an Open action and a settings group. The starting point for most libraries.",
+  "produces": [
+    "Route + view",
+    "Open action",
+    "Settings group"
+  ],
+  "params": [],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "feature-screens",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

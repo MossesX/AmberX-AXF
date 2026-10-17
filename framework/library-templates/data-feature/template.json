@@ -1,0 +1,27 @@
+{
+  "name": "Data feature (list + detail)",
+  "category": "Data",
+  "icon": "list",
+  "description": "A record type, an observable repository and a list screen with add / toggle / remove \u2014 notes, tasks, expenses, bookmarks.",
+  "produces": [
+    "Record model",
+    "Repository service",
+    "List screen"
+  ],
+  "params": [
+    {
+      "key": "item",
+      "label": "What one record is called",
+      "type": "text",
+      "default": "item"
+    }
+  ],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "data-feature",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

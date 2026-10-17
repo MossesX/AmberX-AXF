@@ -1,0 +1,7 @@
+{
+  "name": "axf-framework-typecheck",
+  "private": true,
+  "description": "Dev dependencies to type-check framework/core, framework/react and web libraries in framework/libs (npm run check:libs). Apps bake the framework sources; this is not a published package.",
+  "scripts": { "check:libs": "tsc -p libs/tsconfig.json" },
+  "devDependencies": { "@types/react": "^18.3.12", "@types/react-dom": "^18.3.1", "react": "^18.3.1", "react-dom": "^18.3.1", "typescript": "~5.6.3" }
+}

@@ -3,8 +3,10 @@ import { SuggestionsDialog } from './views/Catalog';
 import { InstallWizardDialog, LibraryPickerDialog, OpenProjectDialog, UiImportWizardDialog } from './views/Wizards';
 import { NewAppDialog } from './views/Boilerplates';
 import { AddFeatureDialog } from './views/Plan';
+import { NewLibraryDialog } from './views/LibraryTemplates';
 
 export const dialogs: DialogMap = {
+  newlib: { title: 'New library from a template', icon: 'plus', render: (p, close) => <NewLibraryDialog templateId={String(p.template ?? '')} close={close} /> },
   'plan-add': { title: 'Add a feature to the plan', icon: 'plus', render: (_p, close) => <AddFeatureDialog close={close} /> },
   suggest: { title: 'Suggested features', icon: 'sparkles', render: (p, close) => <SuggestionsDialog itemId={String(p.item ?? '')} close={close} /> },
   libpicker: { title: 'Build a library', icon: 'box', render: (p, close) => <LibraryPickerDialog libraryId={String(p.library ?? '')} close={close} /> },

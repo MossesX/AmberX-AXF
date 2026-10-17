@@ -120,3 +120,8 @@ export const deletePlanFeature = (id: string) => post('plan/delete', { id });
 export const uploadPlanMedia = (id: string, dataUrl: string) => post('plan/media', { id, dataUrl });
 /** `media/x.jpg` (plan.json) → URL served by the API, or the static copy next to the page. */
 export const planMediaUrl = (src: string) => (/^(https?:|data:)/.test(src) ? src : backendUp ? `/plan-${src}` : `${DATA}plan-${src}`);
+
+/* ---------------- library templates (framework/library-templates) ---------------- */
+
+export interface LibraryTemplate { id: string; name: string; category: string; icon: string; description: string; produces: string[]; params: LibraryParam[]; deps: string[]; ports: string[]; files: Record<string, string[]> }
+export const loadLibraryTemplates = async () => (await getJson<{ items: LibraryTemplate[] }>('library-templates', 'library-templates.json')).items ?? [];

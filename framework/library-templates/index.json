@@ -1,0 +1,45 @@
+{
+  "$axf": "library-templates@1",
+  "items": [
+    {
+      "id": "feature-screens",
+      "name": "Feature screens",
+      "category": "Screens & UI"
+    },
+    {
+      "id": "service-provider",
+      "name": "Service provider",
+      "category": "Services"
+    },
+    {
+      "id": "data-feature",
+      "name": "Data feature (list + detail)",
+      "category": "Data"
+    },
+    {
+      "id": "device-capability",
+      "name": "Device capability",
+      "category": "Device"
+    },
+    {
+      "id": "integration",
+      "name": "Integration (remote API)",
+      "category": "Integrations"
+    },
+    {
+      "id": "ui-kit",
+      "name": "UI kit",
+      "category": "Screens & UI"
+    },
+    {
+      "id": "background-worker",
+      "name": "Background worker",
+      "category": "Services"
+    },
+    {
+      "id": "blank",
+      "name": "Blank",
+      "category": "Starter"
+    }
+  ]
+}

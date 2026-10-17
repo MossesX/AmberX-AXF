@@ -1,0 +1,30 @@
+{
+  "name": "Background worker",
+  "category": "Services",
+  "icon": "clock",
+  "description": "A background job registered with the work registry, an interval setting and a Run-now action \u2014 sync, backups, cleanups, polling.",
+  "produces": [
+    "Worker",
+    "Worker registration",
+    "Interval setting",
+    "Run-now action"
+  ],
+  "params": [
+    {
+      "key": "interval",
+      "label": "Default interval (minutes)",
+      "type": "number",
+      "default": 60,
+      "min": 15,
+      "max": 1440
+    }
+  ],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "background-worker",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

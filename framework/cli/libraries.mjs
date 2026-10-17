@@ -25,9 +25,20 @@ const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
 const writeJson = (f, o) => writeFileSync(f, JSON.stringify(o, null, 2) + '\n');
 
 export function listLibraries() {
-  return readdirSync(ANDROID_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(join(ANDROID_DIR, d.name, 'library.json')))
-    .map((d) => ({ ...readJson(join(ANDROID_DIR, d.name, 'library.json')), module: d.name }));
+  // Android modules, web libraries (framework/libs) and Python libraries (framework/python/axf_libs) — merged by id.
+  const dirs = [ANDROID_DIR, join(FRAMEWORK_DIR, 'libs'), join(FRAMEWORK_DIR, 'python', 'axf_libs')];
+  const byId = new Map();
+  for (const root of dirs) {
+    if (!existsSync(root)) continue;
+    for (const d of readdirSync(root, { withFileTypes: true })) {
+      const f = join(root, d.name, 'library.json');
+      if (!d.isDirectory() || !existsSync(f)) continue;
+      const lib = readJson(f);
+      const prev = byId.get(lib.id);
+      byId.set(lib.id, prev ? { ...prev, ports: { ...(prev.ports ?? {}), ...(lib.ports ?? {}) } } : { ...lib, module: lib.module ?? d.name });
+    }
+  }
+  return [...byId.values()];
 }
 
 /** framework/catalog/libraries.json — what the console bundles (copyConsoleData) to list installable libraries offline. */

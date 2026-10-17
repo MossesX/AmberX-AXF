@@ -1,8 +1,16 @@
 {
   "label": "React + TypeScript (Vite) web app",
   "kind": "web-app",
-  "targets": ["web"],
-  "bake": ["core", "react", "ui", "schemas"],
+  "targets": [
+    "web"
+  ],
+  "bake": [
+    "core",
+    "react",
+    "ui",
+    "schemas",
+    "libs"
+  ],
   "bakeInto": "src/axf",
   "assetsDir": "src/assets",
   "next": "npm install && npm run dev"

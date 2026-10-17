@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button, Chip, Container, DockArea, useRuntime, useWindowManager } from '../axf/react';
 import { useStore } from '../store';
+import * as api from '../api';
+import { LibraryTemplates } from './LibraryTemplates';
 
 /** A library the console can build: a module id + the catalog features it should cover. */
 export interface LibraryDef { id: string; module: string; label: string; description: string; features: string[]; packageName: string }
@@ -48,11 +50,12 @@ export const UI_LIBRARIES: UiLibrary[] = [
 ];
 
 export function Libraries() {
-  const [tab, setTab] = useState<'framework' | 'ui'>('framework');
+  const [tab, setTab] = useState<'framework' | 'ui' | 'templates'>(() => api.readLocal('libraries-tab', 'framework'));
+  const pick = (t: 'framework' | 'ui' | 'templates') => { setTab(t); api.writeLocal('libraries-tab', t); };
   return (
     <div className="fx-stack fx-stack--lg">
-      <div className="fx-row"><button className={`fx-chip ${tab === 'framework' ? 'is-selected' : ''}`} onClick={() => setTab('framework')}>Framework libraries</button><button className={`fx-chip ${tab === 'ui' ? 'is-selected' : ''}`} onClick={() => setTab('ui')}>UI libraries</button></div>
-      {tab === 'framework' ? <FrameworkLibraries /> : <UiLibraries />}
+      <div className="fx-row"><button className={`fx-chip ${tab === 'framework' ? 'is-selected' : ''}`} onClick={() => pick('framework')}>Framework libraries</button><button className={`fx-chip ${tab === 'ui' ? 'is-selected' : ''}`} onClick={() => pick('ui')}>UI libraries</button><button className={`fx-chip ${tab === 'templates' ? 'is-selected' : ''}`} onClick={() => pick('templates')}>Library templates</button></div>
+      {tab === 'framework' ? <FrameworkLibraries /> : tab === 'ui' ? <UiLibraries /> : <LibraryTemplates />}
     </div>
   );
 }

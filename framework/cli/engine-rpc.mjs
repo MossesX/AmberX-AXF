@@ -15,6 +15,7 @@ import { execFileSync } from 'node:child_process';
 import { FRAMEWORK_DIR, init, listBoilerplates, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
 import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.mjs';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
+import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -59,6 +60,11 @@ function run() {
       log(`boilerplate ${data.id} saved; index regenerated`);
       return { id: data.id, file: relative(ROOT, join(dir, 'boilerplate.json')) };
     }
+    case 'library-templates': return { items: listLibraryTemplates() };
+    case 'new-library': { const r = newLibrary({ name: b.name, label: b.label, description: b.description, template: b.template, ports: b.ports, features: b.features ?? [], params: b.params ?? {}, log }); writeLibrariesIndex(); return r; }
+    case 'compile-library': return compileLibrary({ slug: b.slug, ports: b.ports, log });
+    case 'port-library': { const r = portLibrary({ slug: b.slug, to: b.to, log }); writeLibrariesIndex(); return r; }
+    case 'remove-library': { const r = removeLibrary({ slug: b.slug, log }); writeLibrariesIndex(); return r; }
     case 'plan': return loadPlan();
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }
     case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); return { feature: f }; }

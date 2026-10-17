@@ -1,0 +1,28 @@
+{
+  "name": "Device capability",
+  "category": "Device",
+  "icon": "smartphone",
+  "description": "Wraps one device capability behind its permission: state, request with rationale, open settings \u2014 camera, location, microphone, Bluetooth, NFC, sensors.",
+  "produces": [
+    "Capability service",
+    "Permission flow",
+    "Status screen"
+  ],
+  "params": [
+    {
+      "key": "permission",
+      "label": "Android permission",
+      "type": "text",
+      "default": "android.permission.CAMERA",
+      "help": "Also add it to the app's AndroidManifest.xml"
+    }
+  ],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "device-capability",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

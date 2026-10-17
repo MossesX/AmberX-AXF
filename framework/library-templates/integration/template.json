@@ -1,0 +1,30 @@
+{
+  "name": "Integration (remote API)",
+  "category": "Integrations",
+  "icon": "cloud",
+  "description": "A client for a remote service with base URL and secret token settings, a Sync action and a connection check \u2014 GitHub, VPS, Coolify, Hostinger, Stripe\u2026",
+  "produces": [
+    "HTTP client service",
+    "Base URL + token settings",
+    "Sync action",
+    "Connection screen"
+  ],
+  "params": [
+    {
+      "key": "base_url",
+      "label": "API base URL",
+      "type": "text",
+      "default": "https://api.example.com"
+    }
+  ],
+  "deps": [
+    "ai.amberx.axf.network"
+  ],
+  "$axf": "library-template@1",
+  "id": "integration",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

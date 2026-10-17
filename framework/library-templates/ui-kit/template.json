@@ -1,0 +1,26 @@
+{
+  "name": "UI kit",
+  "category": "Screens & UI",
+  "icon": "grid",
+  "description": "A hot-swappable UI kit: component overrides on top of the default kit, registered at the ui-kits extension point. Kinds it skips fall back automatically.",
+  "produces": [
+    "AxfUiKit + overrides",
+    "Kit module"
+  ],
+  "params": [
+    {
+      "key": "library",
+      "label": "Library it wraps",
+      "type": "text",
+      "default": "androidx.compose.material3"
+    }
+  ],
+  "deps": [],
+  "$axf": "library-template@1",
+  "id": "ui-kit",
+  "ports": [
+    "android",
+    "web",
+    "python"
+  ]
+}

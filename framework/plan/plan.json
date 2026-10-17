@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-17T15:38:18.600Z",
+ "generatedAt": "2026-10-17T15:45:45.829Z",
  "statuses": [
   "built",
   "partial",
@@ -300,11 +300,11 @@
     },
     "web": {
      "status": "partial",
-     "where": "framework/react/library.ts (planned)"
+     "where": "framework/react/library.ts"
     },
     "python": {
-     "status": "planned",
-     "where": "—"
+     "status": "partial",
+     "where": "framework/python/axf/library.py"
     }
    },
    "capabilities": [
@@ -322,13 +322,15 @@
    "acceptance": [],
    "warnings": [
     {
-     "level": "warn",
-     "text": "The web port has no module registry yet — web libraries are wired by hand in App.tsx"
+     "level": "info",
+     "text": "Web port: AxfWebLibrary contract + installLibraries (dependency order, merged views/dialogs/tabs); no extension points or placeholders yet"
+    },
+    {
+     "level": "info",
+     "text": "Python port: Library contract + MemoryKernel stand-in until the kernel is ported"
     }
    ],
-   "recommendations": [
-    "Add an AxfWebLibrary contract (id, dependsOn, register, views, dialogs, tabs) so library templates can target the web port"
-   ],
+   "recommendations": [],
    "previews": [],
    "screenshots": [],
    "links": [],
@@ -1379,26 +1381,32 @@
    "title": "Library templates (build, port, compile new libraries)",
    "area": "Build engine",
    "kind": "epic",
-   "status": "planned",
+   "status": "built",
    "priority": "P1",
    "wave": 1,
    "effort": "L",
    "summary": "Boilerplates for libraries: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank — generating Android, web and Python ports, compiling each, and porting a library to another port from its library.json.",
    "ports": {
     "android": {
-     "status": "planned",
-     "where": "framework/library-templates"
+     "status": "built",
+     "where": "framework/library-templates/*/android → lib-<slug>"
     },
     "web": {
-     "status": "planned",
-     "where": "framework/libs"
+     "status": "built",
+     "where": "framework/libs/<slug>"
     },
     "python": {
-     "status": "planned",
-     "where": "framework/python"
+     "status": "built",
+     "where": "framework/python/axf_libs/<slug>"
     }
    },
-   "capabilities": [],
+   "capabilities": [
+    "8 templates: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank",
+    "Generate any mix of Android / web / Python ports from one set of parameters",
+    "axf compile-library: Gradle (or CI) for Android, tsc for web, compileall + import smoke test for Python",
+    "axf port-library: add a missing port later from the library's template",
+    "Console: Libraries → Library templates (gallery, wizard, compile and port buttons)"
+   ],
    "dependsOn": [
     "x.engine.install",
     "x.modules"
@@ -1406,16 +1414,32 @@
    "catalog": [],
    "modules": [],
    "files": [],
-   "acceptance": [],
-   "warnings": [],
-   "recommendations": [
-    "Add the web library contract (x.modules) first so templates have a web target"
+   "acceptance": [
+    {
+     "text": "Every template generates and compiles for web and Python",
+     "done": true
+    },
+    {
+     "text": "Every template generates for Android and compiles in CI",
+     "done": false
+    },
+    {
+     "text": "A real library (e.g. GPS tracker) built from a template and run on a device",
+     "done": false
+    }
    ],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "Android compile needs the Android SDK; locally it reports \"ci\" and GitHub Actions compiles it"
+    }
+   ],
+   "recommendations": [],
    "previews": [],
    "screenshots": [],
    "links": [],
    "tags": [],
-   "notes": "Requested 2026-10-17; paused before files were written.",
+   "notes": "",
    "source": "seed",
    "history": [
     {

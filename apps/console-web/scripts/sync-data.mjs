@@ -20,6 +20,11 @@ const modules = [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1]
   return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('kit-') ? 'kit' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
 });
 writeFileSync(join(OUT, 'modules.json'), JSON.stringify({ modules }));
+// library templates (metadata + file lists) for the Library templates tab
+{
+  const { listLibraryTemplates } = await import('../../../framework/cli/library-templates.mjs');
+  writeFileSync(join(OUT, 'library-templates.json'), JSON.stringify({ items: listLibraryTemplates() }));
+}
 // the plan + its screenshots
 if (existsSync(join(ROOT, 'framework/plan/plan.json'))) {
   cpSync(join(ROOT, 'framework/plan/plan.json'), join(OUT, 'plan.json'));

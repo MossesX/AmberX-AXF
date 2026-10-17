@@ -1,22 +1,85 @@
 {
   "label": "Next.js 15 + TypeScript (App Router) web app",
   "kind": "web-app",
-  "targets": ["web"],
-  "bake": ["core", "react", "ui", "schemas"],
+  "targets": [
+    "web"
+  ],
+  "bake": [
+    "core",
+    "react",
+    "ui",
+    "schemas",
+    "libs"
+  ],
   "bakeInto": "src/axf",
   "assetsDir": "src/assets",
   "structure": [
-    { "path": "axf.manifest.json", "kind": "file", "required": true, "purpose": "App identity, framework version, targets and the default asset for every slot." },
-    { "path": "axf.lock.json", "kind": "file", "required": true, "purpose": "Framework version + template the app was initialized from, with a hash of every baked file." },
-    { "path": "src/axf", "kind": "dir", "required": true, "purpose": "The baked framework runtime (core engines, React components, CSS, schemas)." },
-    { "path": "src/assets", "kind": "dir", "required": true, "purpose": "Hot-swappable assets, one folder per asset type; read at build time by app/axf-assets.ts." },
-    { "path": "src/views", "kind": "dir", "required": true, "purpose": "The app's views; nav assets reference them by id." },
-    { "path": "src/actions.ts", "kind": "file", "required": true, "purpose": "Binds this app's handlers to the standard action vocabulary." },
-    { "path": "src/dialogs.tsx", "kind": "file", "required": true, "purpose": "The app's dialogs (id → component)." },
-    { "path": "app/layout.tsx", "kind": "file", "required": true, "purpose": "Next.js root layout: loads the manifest + assets on the server and hands them to the client-side AXF runtime." },
-    { "path": "app/page.tsx", "kind": "file", "required": true, "purpose": "The single route that mounts the AXF shell (the shell routes views itself)." },
-    { "path": "app/AxfApp.tsx", "kind": "file", "required": true, "purpose": "Client component: creates the runtime once, registers actions, renders AppShell after mount (no SSR of browser state)." },
-    { "path": "public", "kind": "dir", "required": false, "purpose": "Static files." }
+    {
+      "path": "axf.manifest.json",
+      "kind": "file",
+      "required": true,
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "kind": "file",
+      "required": true,
+      "purpose": "Framework version + template the app was initialized from, with a hash of every baked file."
+    },
+    {
+      "path": "src/axf",
+      "kind": "dir",
+      "required": true,
+      "purpose": "The baked framework runtime (core engines, React components, CSS, schemas)."
+    },
+    {
+      "path": "src/assets",
+      "kind": "dir",
+      "required": true,
+      "purpose": "Hot-swappable assets, one folder per asset type; read at build time by app/axf-assets.ts."
+    },
+    {
+      "path": "src/views",
+      "kind": "dir",
+      "required": true,
+      "purpose": "The app's views; nav assets reference them by id."
+    },
+    {
+      "path": "src/actions.ts",
+      "kind": "file",
+      "required": true,
+      "purpose": "Binds this app's handlers to the standard action vocabulary."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "kind": "file",
+      "required": true,
+      "purpose": "The app's dialogs (id \u2192 component)."
+    },
+    {
+      "path": "app/layout.tsx",
+      "kind": "file",
+      "required": true,
+      "purpose": "Next.js root layout: loads the manifest + assets on the server and hands them to the client-side AXF runtime."
+    },
+    {
+      "path": "app/page.tsx",
+      "kind": "file",
+      "required": true,
+      "purpose": "The single route that mounts the AXF shell (the shell routes views itself)."
+    },
+    {
+      "path": "app/AxfApp.tsx",
+      "kind": "file",
+      "required": true,
+      "purpose": "Client component: creates the runtime once, registers actions, renders AppShell after mount (no SSR of browser state)."
+    },
+    {
+      "path": "public",
+      "kind": "dir",
+      "required": false,
+      "purpose": "Static files."
+    }
   ],
   "next": "npm install && npm run dev"
 }

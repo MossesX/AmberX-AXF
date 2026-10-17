@@ -51,6 +51,11 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas; do cp -r ../../framework/$d src/axf/; done
           npm ci && npm run build
+      - name: Library templates — generate every template for web + Python and compile them
+        run: |
+          set -e
+          cd framework && npm install --no-audit --no-fund --silent && cd ..
+          for t in $(ls framework/library-templates | grep -v '\.'); do node framework/cli/axf.mjs new-library ci-$t --template $t --ports web,python > /dev/null; node framework/cli/axf.mjs compile-library ci-$t; done
       - name: Python API smoke (health, libraries, init + install through the engine)
         working-directory: apps/console-web/server
         run: |
@@ -87,6 +92,8 @@ jobs:
       - name: Kernel unit + conformance tests
         working-directory: framework/android
         run: gradle :axf-kernel:test --no-daemon --stacktrace
+      - name: Generate one library per library template (compiled with the framework modules below)
+        run: for t in $(ls framework/library-templates | grep -v '\.'); do node framework/cli/axf.mjs new-library ci-$t --template $t --ports android > /dev/null; done
       - name: Build every framework module
         working-directory: framework/android
         run: gradle assembleDebug publishToMavenLocal --no-daemon --continue 2>&1 | tee /tmp/build-framework.log; exit ${PIPESTATUS[0]}

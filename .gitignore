@@ -3,3 +3,6 @@ dist/
 dist-single/
 *.tsbuildinfo
 .DS_Store
+framework/node_modules/
+__pycache__/
+.axf-console/
