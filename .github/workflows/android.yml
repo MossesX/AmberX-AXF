@@ -10,6 +10,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   engine:
     name: Build engine sweep (Node)
@@ -50,10 +54,17 @@ jobs:
         run: gradle :axf-kernel:test --no-daemon --stacktrace
       - name: Build every framework module
         working-directory: framework/android
-        run: gradle assembleDebug publishToMavenLocal --no-daemon
+        run: gradle assembleDebug publishToMavenLocal --no-daemon --continue 2>&1 | tee /tmp/build-framework.log; exit ${PIPESTATUS[0]}
       - name: Build the Dev Console
         working-directory: apps/console
-        run: gradle :app:assembleDebug --no-daemon
+        run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
+      - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
         with:
           name: console-debug.apk
