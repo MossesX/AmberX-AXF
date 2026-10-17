@@ -47,12 +47,18 @@ async function getJson<T>(api: string, fallback: string): Promise<T> {
   return (await r.json()) as T;
 }
 
+/** The console token (AXF_TOKEN) kept in this browser; sent with every write. */
+export const getToken = () => { try { return localStorage.getItem('axf-console:token') ?? ''; } catch { return ''; } };
+export const setToken = (t: string) => { try { if (t) localStorage.setItem('axf-console:token', t); else localStorage.removeItem('axf-console:token'); } catch { /* storage blocked */ } };
+const authHeader = (): Record<string, string> => { const t = getToken(); return t ? { authorization: `Bearer ${t}` } : {}; };
+
 export async function post(api: string, body: unknown): Promise<EngineResult> {
   if (STATIC) return { ok: false, error: 'Preview copy: the build engine runs on the VPS. Install it with deploy/install-console.sh, then use https://console.amberxai.com — the command is recorded below.' };
   try {
-    const r = await fetch(`/api/${api}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-    const j = (await r.json().catch(() => ({}))) as EngineResult;
-    return r.ok ? { ...j, ok: true } : { ...j, ok: false, error: j.error ?? r.statusText };
+    const r = await fetch(`/api/${api}`, { method: 'POST', headers: { 'content-type': 'application/json', ...authHeader() }, body: JSON.stringify(body) });
+    const j = (await r.json().catch(() => ({}))) as EngineResult & { detail?: string };
+    if (r.status === 401) return { ...j, ok: false, unauthorized: true, error: 'Unauthorized — set the console token (Home → Console token; it is the AXF_TOKEN printed by install-console.sh)' };
+    return r.ok ? { ...j, ok: true } : { ...j, ok: false, error: j.error ?? j.detail ?? r.statusText };
   } catch (e) { backendUp = false; return { ok: false, error: `Build engine not reachable (${(e as Error).message}). Start server/ (python -m uvicorn main:app --port 7090) or deploy it next to the console.` }; }
 }
 
@@ -112,7 +118,24 @@ export interface PlanFeature {
   previews: { kind: 'element' | 'boilerplate' | 'route' | 'url' | 'image'; ref: string; label: string }[];
   screenshots: { src: string; caption: string }[]; links: { label: string; url: string }[]; tags: string[]; notes: string;
   source: 'seed' | 'catalog' | 'user'; edited?: boolean; history: { at: string; text: string }[];
+  /** Suggested model to build it (top three only) + why; modelEdited when picked by hand. */
+  model?: ModelId; modelReason?: string; modelEdited?: boolean;
 }
+export type ModelId = 'fable' | 'opus' | 'sonnet';
+export const MODELS: { id: ModelId; label: string; api: string; when: string }[] = [
+  { id: 'fable', label: 'Fable 5.1', api: 'claude-fable-5-1', when: 'Strongest reasoning: kernel internals, porting, cross-port contracts, heavy refactors' },
+  { id: 'opus', label: 'Opus 5.5', api: 'claude-opus-5-5', when: 'Default for build work, and anything security-adjacent (servers, shells, auth, deploy)' },
+  { id: 'sonnet', label: 'Sonnet 5.5', api: 'claude-sonnet-5-5', when: 'Only where Opus is clearly not needed: content packs, simple self-contained UI' },
+];
+export const modelLabel = (m?: string) => MODELS.find((x) => x.id === m)?.label ?? 'Opus 5.5';
+
+/* ---------------- build queue (framework/plan/build-queue.json) ---------------- */
+import type { QueueState, QueueView } from './axf/plan/build-queue-core.mjs';
+export const loadBuildQueueState = async (): Promise<QueueState | null> => {
+  try { return (await getJson<{ state: QueueState } | QueueState>('build-queue', 'build-queue.json').then((x) => ('state' in x && x.state ? x.state : (x as QueueState)))); } catch { return null; }
+};
+export type BuildResult = EngineResult & { state?: QueueState; view?: QueueView; proposal?: import('./axf/plan/build-queue-core.mjs').Proposal; log?: string[] };
+export const buildPost = (path: 'sync' | 'order' | 'reprocess' | 'step', body: unknown) => post(`build-queue/${path}`, body) as Promise<BuildResult>;
 export interface Plan { generatedAt: string; features: PlanFeature[] }
 export const loadPlan = () => getJson<Plan>('plan', 'plan.json');
 export const savePlanFeature = (feature: PlanFeature, note?: string) => post('plan/feature', { feature, note });

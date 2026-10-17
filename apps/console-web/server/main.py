@@ -31,6 +31,8 @@ import termios
 import urllib.request
 import zipfile
 from io import BytesIO
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
 
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,7 +46,13 @@ STATE = Path(os.environ.get("AXF_STATE", ROOT / ".axf-console" / "state.json"))
 TOKEN = os.environ.get("AXF_TOKEN", "")
 DIST = HERE.parent / "dist"
 
-app = FastAPI(title="AXF Dev Console API", version="0.2.0")
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    async with _mcp.session_manager.run():  # the MCP endpoint's session manager (defined below)
+        yield
+
+
+app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 PANEL = ROOT / "deploy" / "panel" / "index.html"
 GITHUB_REPO = os.environ.get("AXF_GITHUB_REPO", "MossesX/AmberX-AXF")
@@ -189,6 +197,39 @@ async def plan_media(request: Request) -> Any:
 @app.post("/api/plan/rebuild", dependencies=[Depends(auth)])
 def plan_rebuild() -> Any:
     return ok_or_500(engine("plan-rebuild", "plan"))
+
+
+@app.get("/api/build-queue")
+def build_queue() -> Any:
+    return ok_or_500(engine("build-queue", "build"))
+
+
+async def _body(request: Request) -> dict[str, Any]:
+    try:
+        b = await request.json()
+        return b if isinstance(b, dict) else {}
+    except Exception:  # noqa: BLE001 — empty body is fine
+        return {}
+
+
+@app.post("/api/build-queue/sync", dependencies=[Depends(auth)])
+async def build_sync(request: Request) -> Any:
+    return ok_or_500(engine("build-sync", "build", **await _body(request)))
+
+
+@app.post("/api/build-queue/order", dependencies=[Depends(auth)])
+async def build_order(request: Request) -> Any:
+    return ok_or_500(engine("build-reorder", "build", **await _body(request)))
+
+
+@app.post("/api/build-queue/reprocess", dependencies=[Depends(auth)])
+async def build_reprocess(request: Request) -> Any:
+    return ok_or_500(engine("build-reprocess", "build", **await _body(request)))
+
+
+@app.post("/api/build-queue/step", dependencies=[Depends(auth)])
+async def build_step(request: Request) -> Any:
+    return ok_or_500(engine("build-step", "build", **await _body(request)))
 
 
 @app.get("/plan-media/{name}")
@@ -476,6 +517,50 @@ def panel() -> HTMLResponse:
     if not PANEL.exists():
         raise HTTPException(404, "deploy/panel/index.html missing")
     return HTMLResponse(PANEL.read_text())
+
+
+# ---------------------------------------------------------------- MCP (Model Context Protocol) at /mcp
+
+from mcp.server.transport_security import TransportSecuritySettings  # noqa: E402
+from starlette.routing import Route  # noqa: E402
+from starlette.types import Receive, Scope, Send  # noqa: E402
+
+from mcp_server import build_server  # noqa: E402
+
+_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since])
+# Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
+# the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.
+_mcp_http = _mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
+                                     transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
+
+
+class _McpEndpoint:
+    """/mcp — same Bearer AXF_TOKEN as the API's write routes. A class (not a function) so Starlette passes every
+    HTTP method through as raw ASGI."""
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and TOKEN:
+            sent = dict(scope.get("headers") or []).get(b"authorization", b"").decode()
+            if sent != f"Bearer {TOKEN}":
+                await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
+                return
+        await _mcp_http(scope, receive, send)
+
+
+app.router.routes.insert(0, Route("/mcp", endpoint=_McpEndpoint()))
+if not TOKEN:
+    log("mcp", "AXF_TOKEN is not set — /mcp and the write routes are open; set it before exposing this server", "warn")
+
+
+@app.get("/api/mcp")
+def mcp_info(request: Request) -> dict[str, Any]:
+    """How to connect Claude to this console's MCP endpoint."""
+    base = f"{request.url.scheme}://{request.headers.get('host', 'localhost')}"
+    url = f"{base}/mcp"
+    tools = [t.name for t in _mcp._tool_manager.list_tools()]  # noqa: SLF001
+    return {"url": url, "auth": "Bearer AXF_TOKEN" if TOKEN else "none (AXF_TOKEN not set)", "tools": tools,
+            "claudeCode": f'claude mcp add --transport http axf {url} --header "Authorization: Bearer $AXF_TOKEN"',
+            "local": "python3 apps/console-web/server/mcp_server.py   (stdio, from a local clone; registered in .mcp.json)"}
 
 
 # ---------------------------------------------------------------- the console itself

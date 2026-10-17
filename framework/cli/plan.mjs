@@ -23,6 +23,35 @@ const PLAN = join(PLAN_DIR, 'plan.json');
 const readJson = (f, d) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d);
 const today = () => new Date().toISOString().slice(0, 10);
 export const STATUSES = ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'];
+
+/*
+ * Suggested model per feature — only the top three: Fable 5.1 where the work needs the strongest reasoning,
+ * Opus 5.5 by default, Sonnet 5.5 only where it is clearly enough (content and simple, self-contained UI).
+ * Security-adjacent work (shells, servers, auth, deploy) stays on Opus: Fable adds cybersecurity safeguards.
+ */
+export const MODELS = {
+  fable: { id: 'claude-fable-5-1', label: 'Fable 5.1' },
+  opus: { id: 'claude-opus-5-5', label: 'Opus 5.5' },
+  sonnet: { id: 'claude-sonnet-5-5', label: 'Sonnet 5.5' },
+};
+const FABLE_IDS = new Set(['x.kernel', 'x.engines', 'x.modules', 'x.state', 'x.uikits', 'x.plugins', 'x.conformance', 'x.python.port']);
+const SECURITY = /(terminal|shell|\bvps\b|ssh|sftp|deploy|server|auth|sign-in|login|passkey|biometric|security|secure store|token|password|billing|payment|crypto|vpn|firewall)/i;
+const HARD = /(conformance|porting|\bport\b|ported|kernel|migration|plugin runtime|plugin loader|architecture|refactor|multiplatform|kmp|reactivity|state management|scheduler|module system|extension point|code editor|sync engine|offline-first|conflict)/i;
+const SIMPLE = /(icon pack|string pack|image pack|font pack|motion pack|theme pair|style pack|color theme|dark mode|light mode|tooltip|badge|empty state|about screen|changelog|readme|docs?\b|documentation|screenshot|splash|onboarding copy|placeholder screen|sample data|demo data|wallpaper|haptic)/i;
+
+export function suggestModel(f) {
+  const text = `${f.id} ${f.title} ${f.summary ?? ''}`;
+  const kernelArea = /kernel|python port|foundations/i.test(f.area ?? '');
+  if (SECURITY.test(text)) return { model: 'opus', reason: 'Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down' };
+  if (FABLE_IDS.has(f.id)) return { model: 'fable', reason: 'Core architecture or cross-port contract: the strongest model keeps every port consistent' };
+  if ((f.tags ?? []).includes('porting') || /python port/i.test(f.area ?? '')) return { model: 'fable', reason: 'Porting must reproduce the kernel exactly against the conformance fixtures' };
+  if (f.kind === 'epic' && f.effort === 'XL' && kernelArea) return { model: 'fable', reason: 'XL kernel-level epic touching many modules' };
+  if (HARD.test(f.title)) return { model: 'fable', reason: 'Hard reasoning: kernel internals, porting, migrations or architecture' };
+  if (SIMPLE.test(f.title) && !kernelArea && f.effort !== 'L' && f.effort !== 'XL') return { model: 'sonnet', reason: 'Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough' };
+  return { model: 'opus', reason: 'Default: Opus 5.5' };
+}
+/** Attach the suggested model unless someone picked one by hand in the console (modelEdited). */
+const withModel = (f) => (f.modelEdited && f.model ? f : (() => { const m = suggestModel(f); return { ...f, model: m.model, modelReason: m.reason }; })());
 const CATALOG_STATUSES = new Set(['built', 'partial', 'placeholder', 'planned']);
 
 function fromCatalog() {
@@ -68,11 +97,11 @@ export function buildPlan() {
     seen.add(f.id);
     if (epicOf.has(f.id) && f.source === 'catalog') f.epic = epicOf.get(f.id);
     const old = prevById.get(f.id);
-    if (old?.edited) { features.push(f.source === 'catalog' && !old.statusEdited ? { ...old, status: f.status } : old); continue; }
+    if (old?.edited) { features.push(withModel(f.source === 'catalog' && !old.statusEdited ? { ...old, status: f.status } : old)); continue; }
     if (old) f.history = old.history?.length ? old.history : f.history;
-    features.push(f);
+    features.push(withModel(f));
   }
-  for (const old of prev.features) if (!seen.has(old.id) && old.source === 'user') features.push(old);
+  for (const old of prev.features) if (!seen.has(old.id) && old.source === 'user') features.push(withModel(old));
   const plan = { $axf: 'plan@1', generatedAt: new Date().toISOString(), statuses: STATUSES, features };
   mkdirSync(PLAN_DIR, { recursive: true });
   writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
@@ -87,7 +116,8 @@ export function upsertFeature(feature, note) {
   const plan = loadPlan();
   const i = plan.features.findIndex((f) => f.id === feature.id);
   const old = i >= 0 ? plan.features[i] : null;
-  const f = { ...feature, edited: true, source: old?.source ?? feature.source ?? 'user' };
+  const picked = old && feature.model && feature.model !== old.model;
+  const f = withModel({ ...feature, edited: true, source: old?.source ?? feature.source ?? 'user', ...(picked ? { modelEdited: true, modelReason: feature.modelReason && feature.modelReason !== old.modelReason ? feature.modelReason : 'Picked in the console' } : {}) });
   if (old && old.status !== f.status) f.statusEdited = true;
   f.history = [...(feature.history ?? old?.history ?? []), { at: new Date().toISOString(), text: note || (old ? 'Edited in the console' : 'Added in the console') }].slice(-100);
   if (i >= 0) plan.features[i] = f; else plan.features.push(f);
@@ -100,6 +130,37 @@ export function upsertFeature(feature, note) {
     try { execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' }); } catch { /* tracker is best effort */ }
   }
   return f;
+}
+
+/**
+ * Set many statuses at once (the build queue's sync): one plan write, one status.json write, one tracker regeneration.
+ * changes: [{ id, status, note }]
+ */
+export function setStatuses(changes) {
+  if (!changes?.length) return [];
+  const plan = loadPlan();
+  const byId = new Map(plan.features.map((f, i) => [f.id, i]));
+  const catalog = {};
+  const at = new Date().toISOString();
+  const done = [];
+  for (const c of changes) {
+    const i = byId.get(c.id);
+    if (i == null || !STATUSES.includes(c.status)) continue;
+    const old = plan.features[i];
+    if (old.status === c.status) continue;
+    plan.features[i] = { ...old, status: c.status, edited: true, statusEdited: true, history: [...(old.history ?? []), { at, text: c.note || `Status → ${c.status}` }].slice(-100) };
+    if (old.source === 'catalog' && CATALOG_STATUSES.has(c.status)) catalog[c.id] = c.status;
+    done.push({ id: c.id, from: old.status, to: c.status });
+  }
+  writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
+  if (Object.keys(catalog).length) {
+    const sf = join(FRAMEWORK_DIR, 'catalog/status.json');
+    const s = readJson(sf, {});
+    for (const [id, st] of Object.entries(catalog)) s[id] = { ...(s[id] ?? {}), status: st };
+    writeFileSync(sf, JSON.stringify(s, null, 2) + '\n');
+    try { execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' }); } catch { /* tracker is best effort */ }
+  }
+  return done;
 }
 
 export function deleteFeature(id) {

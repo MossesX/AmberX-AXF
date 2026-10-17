@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRuntime } from './axf/react';
 import * as api from './api';
+import { initBuildSync } from './views/BuildManager';
 import type { Boilerplate, BoilerplateIndex, Catalog, DemoApp, InstallableLibrary, ModuleInfo, PortRecord, Status, Tracker } from './api';
 
 /** Everything the console tracks: repo data (catalog, tracker, libraries, boilerplates, modules) + local state (checked features, status overrides, open project, records). */
@@ -47,6 +48,8 @@ export function ConsoleStoreProvider({ children }: { children: ReactNode }) {
     if (!api.readLocal<string[] | null>('checked', null)) { const rec = new Set(c.tabs.flatMap((tb) => tb.groups.flatMap((g) => g.items.filter((i) => i.recommended).map((i) => i.id)))); setCheckedState(rec); }
     rt.terminal.log('console', `loaded ${t.items.length} tracker items · ${l.length} installable libraries · ${b.length} boilerplates · backend ${up ? 'online' : 'offline (static data)'}`, up ? 'ok' : 'warn');
     setReady(true);
+    // feature tracker ⇄ build queue: two-way status sync every time the console starts
+    initBuildSync((m, l) => rt.terminal.log('build', m, l)).catch((e) => rt.terminal.error('build', String(e)));
   };
   useEffect(() => { refresh().catch((e) => { rt.terminal.error('console', String(e)); setReady(true); }); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Follow the backend's output terminal live (server-sent events) so engine log lines land in the pane as they happen.

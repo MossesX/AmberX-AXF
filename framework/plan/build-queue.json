@@ -1,0 +1,237 @@
+{
+ "$axf": "build-queue@1",
+ "order": [
+  "x.assets",
+  "x.engines",
+  "x.kernel",
+  "x.conformance",
+  "x.windows",
+  "x.terminal",
+  "x.android.modules",
+  "x.android.showcase",
+  "x.web.core",
+  "x.web.templates",
+  "x.engine.cli",
+  "x.engine.install",
+  "x.libs.browser",
+  "x.librarytemplates",
+  "x.console.web",
+  "x.console.api",
+  "x.console.plan",
+  "x.console.panel",
+  "x.ci",
+  "x.deploy.site",
+  "x.web.demo",
+  "x.console.build",
+  "x.console.mcp",
+  "x.modules",
+  "x.deploy.console",
+  "x.state",
+  "x.uikits",
+  "x.libs.core",
+  "x.engine.uiport",
+  "x.engine.dev",
+  "x.session",
+  "x.python.port",
+  "x.plugins",
+  "x.work",
+  "x.showcase.packs",
+  "x.lib.media",
+  "x.lib.location",
+  "x.lib.editor",
+  "x.lib.ai",
+  "x.lib.vps",
+  "x.lib.github",
+  "x.lib.notifications",
+  "x.lib.sensors",
+  "x.lib.files",
+  "x.lib.charts",
+  "x.console.repo"
+ ],
+ "steps": {
+  "x.kernel": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.assets",
+    "x.engines"
+   ]
+  },
+  "x.assets": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": []
+  },
+  "x.engines": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.assets"
+   ]
+  },
+  "x.conformance": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": []
+  },
+  "x.windows": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.kernel"
+   ]
+  },
+  "x.terminal": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.windows"
+   ]
+  },
+  "x.android.modules": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.kernel"
+   ]
+  },
+  "x.libs.browser": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.windows",
+    "x.engine.install"
+   ]
+  },
+  "x.android.showcase": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.android.modules",
+    "x.libs.core"
+   ]
+  },
+  "x.web.core": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.kernel"
+   ]
+  },
+  "x.web.templates": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.web.core"
+   ]
+  },
+  "x.web.demo": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.web.core",
+    "x.deploy.site"
+   ]
+  },
+  "x.engine.cli": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": []
+  },
+  "x.engine.install": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.engine.cli"
+   ]
+  },
+  "x.librarytemplates": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.engine.install",
+    "x.modules"
+   ]
+  },
+  "x.console.web": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.web.core",
+    "x.windows"
+   ]
+  },
+  "x.console.api": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.engine.cli"
+   ]
+  },
+  "x.console.plan": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.console.web",
+    "x.console.api"
+   ]
+  },
+  "x.console.panel": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": [
+    "x.console.api"
+   ]
+  },
+  "x.ci": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": []
+  },
+  "x.deploy.site": {
+   "completedAt": "1970-01-01T00:00:00.000Z",
+   "completedBy": "baseline",
+   "deps": []
+  },
+  "x.console.build": {
+   "completedAt": "2026-10-17T16:21:12.015Z",
+   "completedBy": "feature-tracker",
+   "deps": [
+    "x.console.plan",
+    "x.console.api"
+   ]
+  },
+  "x.console.mcp": {
+   "completedAt": "2026-10-17T16:21:12.015Z",
+   "completedBy": "feature-tracker",
+   "deps": [
+    "x.console.api",
+    "x.console.build"
+   ]
+  }
+ },
+ "dirty": false,
+ "updatedAt": "2026-10-17T16:21:27.179Z",
+ "history": [
+  {
+   "at": "2026-10-17T16:12:45.936Z",
+   "by": "cli",
+   "text": "Build queue created from the plan"
+  },
+  {
+   "at": "2026-10-17T16:12:46.038Z",
+   "by": "cli",
+   "text": "Reprocessed: 0 move(s), 0 step(s) flagged for rework"
+  },
+  {
+   "at": "2026-10-17T16:21:12.015Z",
+   "by": "cli",
+   "text": "Synced with the feature tracker: 2 change(s)"
+  },
+  {
+   "at": "2026-10-17T16:21:27.179Z",
+   "by": "cli",
+   "text": "Reprocessed: 0 move(s), 0 step(s) flagged for rework"
+  }
+ ]
+}

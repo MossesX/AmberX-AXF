@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-17T15:49:28.710Z",
+ "generatedAt": "2026-10-17T16:21:27.098Z",
  "statuses": [
   "built",
   "partial",
@@ -43,8 +43,7 @@
    ],
    "dependsOn": [
     "x.assets",
-    "x.engines",
-    "x.modules"
+    "x.engines"
    ],
    "catalog": [],
    "modules": [
@@ -107,7 +106,9 @@
      "at": "2026-10-17",
      "text": "Verified green in CI"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.assets",
@@ -172,7 +173,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.engines",
@@ -230,7 +233,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.conformance",
@@ -281,7 +286,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.modules",
@@ -345,7 +352,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.state",
@@ -397,7 +406,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.windows",
@@ -464,7 +475,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.terminal",
@@ -516,7 +529,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.uikits",
@@ -580,7 +595,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.plugins",
@@ -634,7 +651,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.work",
@@ -684,7 +703,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "x.session",
@@ -734,7 +755,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.android.modules",
@@ -807,7 +830,9 @@
      "at": "2026-10-17",
      "text": "First real Android compile: 16 errors over 3 rounds, all fixed; green since 66c9e04"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.libs.core",
@@ -868,7 +893,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.libs.browser",
@@ -923,7 +950,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.android.showcase",
@@ -982,7 +1011,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.web.core",
@@ -1021,7 +1052,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "x.web.templates",
@@ -1070,7 +1103,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.web.demo",
@@ -1120,7 +1155,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.python.port",
@@ -1178,7 +1215,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Core architecture or cross-port contract: the strongest model keeps every port consistent"
   },
   {
    "id": "x.engine.cli",
@@ -1223,7 +1262,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.engine.install",
@@ -1267,7 +1308,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.engine.uiport",
@@ -1326,7 +1369,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.engine.dev",
@@ -1374,7 +1419,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.librarytemplates",
@@ -1446,7 +1493,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "x.console.web",
@@ -1505,7 +1554,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.console.api",
@@ -1553,7 +1604,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.console.plan",
@@ -1602,7 +1655,9 @@
      "at": "2026-10-17",
      "text": "Added and loaded with the catalog plus framework epics"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.console.panel",
@@ -1655,7 +1710,146 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "x.console.build",
+   "title": "Build manager (build queue)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The plan's epics as an ordered build queue: drag to reorder, reprocess to restore dependency order, rework flags on built steps whose dependencies changed, a suggested model per step and per feature (Fable 5.1 / Opus 5.5 / Sonnet 5.5), and two-way status sync with the feature tracker on every console start.",
+   "ports": {},
+   "capabilities": [
+    "Queue of 44+ steps with linked catalog features",
+    "Drag-and-drop reorder + reprocess prompt (moves with reasons, cycle detection)",
+    "Rework detection: dependency rebuilt, reopened, or changed",
+    "Suggested model per step/feature (top three models only)",
+    "Complete a step → epic + features built; all features built → step complete",
+    "Same logic in the browser, the API, the CLI and MCP"
+   ],
+   "dependsOn": [
+    "x.console.plan",
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/plan/build-queue-core.mjs",
+    "framework/cli/build-queue.mjs",
+    "apps/console-web/src/views/BuildManager.tsx"
+   ],
+   "acceptance": [
+    {
+     "text": "Reorder → reprocess prompt",
+     "done": true
+    },
+    {
+     "text": "Complete → features built",
+     "done": true
+    },
+    {
+     "text": "Sync on console start",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "planning"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "x.console.mcp",
+   "title": "MCP server (Model Context Protocol)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The console API as MCP tools for Claude: plan search/edit, build queue (next, reorder, reprocess, complete), catalog status, libraries, templates, app init/validate, terminal. Remote at console.amberxai.com/mcp (streamable HTTP, Bearer AXF_TOKEN) or local over stdio via .mcp.json.",
+   "ports": {},
+   "capabilities": [
+    "24 tools + 2 resources + a build-next-step prompt",
+    "Same engine ops as the console, mirrored to its terminal",
+    "No shell or arbitrary file access",
+    "Token-gated remote endpoint; stdio for local clones"
+   ],
+   "dependsOn": [
+    "x.console.api",
+    "x.console.build"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "apps/console-web/server/mcp_server.py",
+    ".mcp.json"
+   ],
+   "acceptance": [
+    {
+     "text": "tools/list + tools/call over HTTP",
+     "done": true
+    },
+    {
+     "text": "stdio from a clone",
+     "done": true
+    },
+    {
+     "text": "Smoke test in CI",
+     "done": true
+    },
+    {
+     "text": "Live on console.amberxai.com",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "claude.ai custom connectors expect OAuth; Claude Code and Claude Desktop work with the bearer header today"
+    }
+   ],
+   "recommendations": [
+    "claude mcp add --transport http axf https://console.amberxai.com/mcp --header \"Authorization: Bearer $AXF_TOKEN\""
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "mcp",
+    "api"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.console.repo",
@@ -1689,7 +1883,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.ci",
@@ -1731,7 +1927,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.deploy.console",
@@ -1776,7 +1974,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.deploy.site",
@@ -1813,7 +2013,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.showcase.packs",
@@ -1847,7 +2049,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.media",
@@ -1900,7 +2104,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.location",
@@ -1952,7 +2158,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.editor",
@@ -2003,7 +2211,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.ai",
@@ -2055,7 +2265,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.vps",
@@ -2107,7 +2319,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.lib.github",
@@ -2158,14 +2372,16 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.notifications",
    "title": "Library: Notifications & push",
    "area": "Showcase",
    "kind": "epic",
-   "status": "planned",
+   "status": "partial",
    "priority": "P2",
    "wave": 2,
    "effort": "L",
@@ -2208,8 +2424,16 @@
     {
      "at": "2026-10-17",
      "text": "Added to the plan"
+    },
+    {
+     "at": "2026-10-17T16:12:45.952Z",
+     "text": "1/2 linked features built (feature tracker)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5",
+   "edited": true,
+   "statusEdited": true
   },
   {
    "id": "x.lib.sensors",
@@ -2261,14 +2485,16 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.lib.files",
    "title": "Library: Files & sync",
    "area": "Showcase",
    "kind": "epic",
-   "status": "planned",
+   "status": "partial",
    "priority": "P2",
    "wave": 2,
    "effort": "L",
@@ -2311,8 +2537,16 @@
     {
      "at": "2026-10-17",
      "text": "Added to the plan"
+    },
+    {
+     "at": "2026-10-17T16:12:45.952Z",
+     "text": "1/2 linked features built (feature tracker)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5",
+   "edited": true,
+   "statusEdited": true
   },
   {
    "id": "x.lib.charts",
@@ -2363,7 +2597,9 @@
      "at": "2026-10-17",
      "text": "Added to the plan"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.pure",
@@ -2408,7 +2644,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.layers",
@@ -2453,7 +2691,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.singleactivity",
@@ -2498,7 +2738,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.composeonly",
@@ -2543,7 +2785,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.state",
@@ -2588,7 +2832,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.coroutines",
@@ -2633,7 +2879,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.result",
@@ -2678,7 +2926,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.serialization",
@@ -2723,7 +2973,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.clock",
@@ -2768,7 +3020,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.di",
@@ -2813,7 +3067,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.minsdk",
@@ -2858,7 +3114,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.ids",
@@ -2903,7 +3161,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.apiversion",
@@ -2948,7 +3208,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.public",
@@ -2993,7 +3255,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.assetver",
@@ -3038,7 +3302,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.migrations",
@@ -3083,7 +3349,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.deprecate",
@@ -3128,7 +3396,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.manifest",
@@ -3173,7 +3443,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.featureflags",
@@ -3218,7 +3490,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.module",
@@ -3263,7 +3537,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.extpoints",
@@ -3308,7 +3584,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "f.stubs",
@@ -3353,7 +3631,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.dynfeatures",
@@ -3398,7 +3678,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.ordering",
@@ -3443,7 +3725,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.registry",
@@ -3488,7 +3772,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.eventbus",
@@ -3533,7 +3819,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.ports",
@@ -3578,7 +3866,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.tokens",
@@ -3623,7 +3913,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "f.tokenset",
@@ -3668,7 +3960,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "f.locals",
@@ -3713,7 +4007,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.regions",
@@ -3758,7 +4054,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.windowclass",
@@ -3803,7 +4101,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.a11y",
@@ -3848,7 +4148,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.i18n",
@@ -3893,7 +4195,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.actions",
@@ -3938,7 +4242,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.uacids",
@@ -3983,7 +4289,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.hotswap",
@@ -4028,7 +4336,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.motion",
@@ -4073,7 +4383,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.icons",
@@ -4118,7 +4430,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.routes",
@@ -4163,7 +4477,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.results",
@@ -4208,7 +4524,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.fs",
@@ -4253,7 +4571,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.dbstrategy",
@@ -4298,7 +4618,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.settingsschema",
@@ -4343,7 +4665,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.secure",
@@ -4388,7 +4712,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.permissions",
@@ -4433,7 +4759,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.offline",
@@ -4478,7 +4806,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.backup",
@@ -4523,7 +4853,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.logging",
@@ -4568,7 +4900,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.telemetry",
@@ -4613,7 +4947,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.errors",
@@ -4658,7 +4994,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.security",
@@ -4698,7 +5036,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "f.gradle",
@@ -4743,7 +5083,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.packages",
@@ -4788,7 +5130,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.manifestmerge",
@@ -4833,7 +5177,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.publish",
@@ -4878,7 +5224,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.signing",
@@ -4918,7 +5266,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.testseams",
@@ -4963,7 +5313,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "f.perf",
@@ -5003,7 +5355,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.buildbridge",
@@ -5048,7 +5402,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "f.repo",
@@ -5093,7 +5449,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.assets",
@@ -5138,7 +5496,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.swap",
@@ -5183,7 +5543,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.theme",
@@ -5228,7 +5590,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "k.layout",
@@ -5273,7 +5637,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.comp",
@@ -5318,7 +5684,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.uac",
@@ -5363,7 +5731,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.ctx",
@@ -5408,7 +5778,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.actions",
@@ -5453,7 +5825,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.manifest",
@@ -5498,7 +5872,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.validate",
@@ -5543,7 +5919,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.newtypes",
@@ -5588,7 +5966,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.modules",
@@ -5633,7 +6013,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.ext",
@@ -5678,7 +6060,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.plugins",
@@ -5723,7 +6107,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.events",
@@ -5768,7 +6154,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.flags",
@@ -5813,7 +6201,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.di",
@@ -5858,7 +6248,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.migrate",
@@ -5903,7 +6295,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.compat",
@@ -5948,7 +6342,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.stubs",
@@ -5993,7 +6389,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.config",
@@ -6038,7 +6436,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.lifecycle",
@@ -6083,7 +6483,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.errors",
@@ -6128,7 +6530,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.scheduler",
@@ -6174,7 +6578,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.work"
+   "epic": "x.work",
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.undo",
@@ -6219,7 +6625,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.clipboard",
@@ -6264,7 +6672,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.search",
@@ -6309,7 +6719,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.shortcuts",
@@ -6354,7 +6766,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.test",
@@ -6399,7 +6813,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "k.devconsole",
@@ -6444,7 +6860,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.hotreload",
@@ -6489,7 +6907,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "k.buildbridge",
@@ -6534,7 +6954,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.nocode",
@@ -6579,7 +7001,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.scripting",
@@ -6624,7 +7048,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "k.ports",
@@ -6669,7 +7095,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "s.settings",
@@ -6715,7 +7143,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "s.prefs",
@@ -6760,7 +7190,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "s.scopes",
@@ -6805,7 +7237,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "s.secure",
@@ -6850,7 +7284,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "s.searchable",
@@ -6895,7 +7331,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.log",
@@ -6941,7 +7379,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.viewer",
@@ -6986,7 +7426,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.crash",
@@ -7031,7 +7473,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.net",
@@ -7076,7 +7520,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.perf",
@@ -7121,7 +7567,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.analytics",
@@ -7166,7 +7614,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.diag",
@@ -7211,7 +7661,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "l.remote",
@@ -7256,7 +7708,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "a.admin",
@@ -7302,7 +7756,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "a.audit",
@@ -7347,7 +7803,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "a.users",
@@ -7392,7 +7850,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "a.content",
@@ -7437,7 +7897,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "a.maint",
@@ -7482,7 +7944,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "a.devicemgmt",
@@ -7527,7 +7991,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "u.accounts",
@@ -7573,7 +8039,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "u.auth",
@@ -7618,7 +8086,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "u.bio",
@@ -7663,7 +8133,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "u.sessions",
@@ -7708,7 +8180,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "u.recovery",
@@ -7753,7 +8227,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "u.roles",
@@ -7798,7 +8274,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "u.guest",
@@ -7843,7 +8321,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "u.gdpr",
@@ -7888,7 +8368,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "p.profile",
@@ -7934,7 +8416,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "p.avatar",
@@ -7979,7 +8463,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "p.sync",
@@ -8024,7 +8510,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "p.public",
@@ -8069,7 +8557,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "p.activity",
@@ -8114,7 +8604,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.subs",
@@ -8160,7 +8652,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.core"
+   "epic": "x.libs.core",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.billing",
@@ -8205,7 +8699,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "b.entitle",
@@ -8250,7 +8746,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.iap",
@@ -8295,7 +8793,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.promo",
@@ -8340,7 +8840,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.license",
@@ -8385,7 +8887,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.ads",
@@ -8430,7 +8934,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "b.stripe",
@@ -8475,7 +8981,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.tokens",
@@ -8520,7 +9028,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.dyn",
@@ -8565,7 +9075,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.contrast",
@@ -8610,7 +9122,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.type",
@@ -8655,7 +9169,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.fonts",
@@ -8700,7 +9216,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.shape",
@@ -8745,7 +9263,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.space",
@@ -8790,7 +9310,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.elev",
@@ -8835,7 +9357,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.motion",
@@ -8880,7 +9404,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.opacity",
@@ -8925,7 +9451,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.icons",
@@ -8970,7 +9498,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.images",
@@ -9015,7 +9545,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.strings",
@@ -9060,7 +9592,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.sounds",
@@ -9105,7 +9639,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.a11y",
@@ -9150,7 +9686,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.controls",
@@ -9195,7 +9733,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.inputs",
@@ -9240,7 +9780,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.nav",
@@ -9285,7 +9827,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.menus",
@@ -9330,7 +9874,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.overlays",
@@ -9375,7 +9921,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.containers",
@@ -9420,7 +9968,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.lists",
@@ -9465,7 +10015,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.tables",
@@ -9511,7 +10063,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.charts"
+   "epic": "x.lib.charts",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.forms",
@@ -9556,7 +10110,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.charts",
@@ -9602,7 +10158,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.charts"
+   "epic": "x.lib.charts",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.media",
@@ -9647,7 +10205,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.editor",
@@ -9693,7 +10253,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.editor"
+   "epic": "x.lib.editor",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.states",
@@ -9738,7 +10300,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.onboard",
@@ -9783,7 +10347,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.templates",
@@ -9828,7 +10394,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.adaptive",
@@ -9873,7 +10441,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.gestures",
@@ -9918,7 +10488,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.widgets",
@@ -9963,7 +10535,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "ui.livewallpaper",
@@ -10008,7 +10582,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.anim",
@@ -10053,7 +10629,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.canvas",
@@ -10098,7 +10676,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.windows",
@@ -10148,7 +10728,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.windows.dividers",
@@ -10189,7 +10771,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.windows.persist",
@@ -10230,7 +10814,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.windows.snap",
@@ -10271,7 +10857,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.windows.multiscreen",
@@ -10312,7 +10900,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.browser",
@@ -10363,7 +10953,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.libs.browser"
+   "epic": "x.libs.browser",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.browser.persist",
@@ -10404,7 +10996,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.browser.remote",
@@ -10445,7 +11039,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.installer.uninstall",
@@ -10486,7 +11082,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.installer.registry",
@@ -10527,7 +11125,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "ui.explorer",
@@ -10572,7 +11172,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "n.routes",
@@ -10610,7 +11212,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "n.shortcuts",
@@ -10648,7 +11252,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "n.tabs",
@@ -10686,7 +11292,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "d.db",
@@ -10724,7 +11332,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "d.kv",
@@ -10762,7 +11372,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "d.files",
@@ -10801,7 +11413,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.files"
+   "epic": "x.lib.files",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "d.search",
@@ -10839,7 +11453,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "d.sync",
@@ -10878,7 +11494,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.files"
+   "epic": "x.lib.files",
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "d.backup",
@@ -10916,7 +11534,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "d.crypto",
@@ -10954,7 +11574,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "d.jsonstore",
@@ -10992,7 +11614,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.http",
@@ -11030,7 +11654,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "w.realtime",
@@ -11068,7 +11694,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.download",
@@ -11106,7 +11734,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.upload",
@@ -11144,7 +11774,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.vps",
@@ -11183,7 +11815,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.vps"
+   "epic": "x.lib.vps",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "w.github",
@@ -11222,7 +11856,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.github"
+   "epic": "x.lib.github",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.hostinger",
@@ -11260,7 +11896,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "w.coolify",
@@ -11299,7 +11937,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.vps"
+   "epic": "x.lib.vps",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.ota",
@@ -11337,7 +11977,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "w.webview",
@@ -11375,7 +12017,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "w.ai",
@@ -11414,7 +12058,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.ai"
+   "epic": "x.lib.ai",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.mcp",
@@ -11453,7 +12099,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.ai"
+   "epic": "x.lib.ai",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "w.push",
@@ -11492,7 +12140,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.notifications"
+   "epic": "x.lib.notifications",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.email",
@@ -11530,7 +12180,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.p2p",
@@ -11568,7 +12220,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "w.cloud",
@@ -11606,7 +12260,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.perm",
@@ -11651,7 +12307,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.notif",
@@ -11697,7 +12355,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.notifications"
+   "epic": "x.lib.notifications",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.bg",
@@ -11743,7 +12403,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.work"
+   "epic": "x.work",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.loc",
@@ -11789,7 +12451,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.location"
+   "epic": "x.lib.location",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.maps",
@@ -11835,7 +12499,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.location"
+   "epic": "x.lib.location",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.camera",
@@ -11880,7 +12546,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.media",
@@ -11926,7 +12594,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.media"
+   "epic": "x.lib.media",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.stream",
@@ -11972,7 +12642,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.media"
+   "epic": "x.lib.media",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "dv.audio",
@@ -12017,7 +12689,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.sensors",
@@ -12063,7 +12737,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.sensors"
+   "epic": "x.lib.sensors",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.ble",
@@ -12109,7 +12785,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.sensors"
+   "epic": "x.lib.sensors",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.nfc",
@@ -12155,7 +12833,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.sensors"
+   "epic": "x.lib.sensors",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.usb",
@@ -12200,7 +12880,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.wifi",
@@ -12245,7 +12927,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.tel",
@@ -12290,7 +12974,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.contacts",
@@ -12335,7 +13021,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.clip",
@@ -12380,7 +13068,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.print",
@@ -12425,7 +13115,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.a11yservice",
@@ -12470,7 +13162,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.pip",
@@ -12515,7 +13209,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.formfactors",
@@ -12560,7 +13256,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.admin",
@@ -12605,7 +13303,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.updates",
@@ -12650,7 +13350,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.security",
@@ -12695,7 +13397,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "dv.ml",
@@ -12740,7 +13444,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.health",
@@ -12785,7 +13491,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.ar",
@@ -12830,7 +13538,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.screen",
@@ -12875,7 +13585,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.power",
@@ -12920,7 +13632,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.storagemon",
@@ -12965,7 +13679,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.locale",
@@ -13010,7 +13726,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.intents",
@@ -13055,7 +13773,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.themeos",
@@ -13100,7 +13820,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "dv.ir",
@@ -13145,7 +13867,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker",
@@ -13192,7 +13916,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.waves",
@@ -13233,7 +13959,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.history",
@@ -13274,7 +14002,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.owner",
@@ -13315,7 +14045,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.gh",
@@ -13356,7 +14088,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.export",
@@ -13397,7 +14131,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.tracker.coverage",
@@ -13438,7 +14174,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.kernelstatus",
@@ -13482,7 +14220,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "cx.kernelstatus.graph",
@@ -13523,7 +14263,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.kernelstatus.health",
@@ -13564,7 +14306,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.kernelstatus.stubs",
@@ -13605,7 +14349,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.roadmap",
@@ -13648,7 +14394,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.roadmap.estimates",
@@ -13689,7 +14437,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.roadmap.deps",
@@ -13730,7 +14480,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.catalog",
@@ -13774,7 +14526,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.catalog.tags",
@@ -13815,7 +14569,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.catalog.custom",
@@ -13856,7 +14612,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.catalog.import",
@@ -13897,7 +14655,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.suggest",
@@ -13940,7 +14700,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.suggest.ai",
@@ -13981,7 +14743,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.suggest.rules",
@@ -14022,7 +14786,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.libpicker",
@@ -14067,7 +14833,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.libpicker.template",
@@ -14108,7 +14876,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.libpicker.prompt",
@@ -14149,7 +14919,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.libpicker.run",
@@ -14190,7 +14962,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.libpicker.install",
@@ -14231,7 +15005,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.demos",
@@ -14274,7 +15050,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.demos.screens",
@@ -14315,7 +15093,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "cx.demos.launch",
@@ -14356,7 +15136,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.modules",
@@ -14401,7 +15183,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.modules.toggle",
@@ -14442,7 +15226,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.modules.new",
@@ -14483,7 +15269,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.modules.publish",
@@ -14524,7 +15312,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.modules.diff",
@@ -14565,7 +15355,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.packages",
@@ -14605,7 +15397,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.assets",
@@ -14649,7 +15443,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "cx.assets.editor",
@@ -14690,7 +15486,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.assets.validate",
@@ -14731,7 +15529,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.assets.push",
@@ -14772,7 +15572,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.boilerplates",
@@ -14817,7 +15619,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "cx.boilerplates.preview",
@@ -14858,7 +15662,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.boilerplates.import",
@@ -14899,7 +15705,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "cx.boilerplates.port",
@@ -14940,7 +15748,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "cx.boilerplates.publish",
@@ -14981,7 +15791,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.buildengine",
@@ -15024,7 +15836,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.buildengine.logs",
@@ -15065,7 +15879,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.buildengine.queue",
@@ -15106,7 +15922,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "cx.ai",
@@ -15149,7 +15967,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.ai.plan",
@@ -15190,7 +16010,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.ai.review",
@@ -15231,7 +16053,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.github",
@@ -15275,7 +16099,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.github"
+   "epic": "x.lib.github",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.github.pr",
@@ -15316,7 +16142,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.github.release",
@@ -15357,7 +16185,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog (suggestion)"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.settings",
@@ -15397,7 +16227,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.logs",
@@ -15437,7 +16269,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "cx.landing",
@@ -15477,7 +16311,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.kernel",
@@ -15515,7 +16351,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "m.platform",
@@ -15553,7 +16391,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.ui",
@@ -15591,7 +16431,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "m.assets",
@@ -15629,7 +16471,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.nav",
@@ -15667,7 +16511,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.data",
@@ -15705,7 +16551,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "m.network",
@@ -15743,7 +16591,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.settings",
@@ -15781,7 +16631,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.logging",
@@ -15819,7 +16671,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.admin",
@@ -15857,7 +16711,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.accounts",
@@ -15895,7 +16751,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.profile",
@@ -15933,7 +16791,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.billing",
@@ -15971,7 +16831,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "m.media",
@@ -16009,7 +16871,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.location",
@@ -16047,7 +16911,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.ai",
@@ -16085,7 +16951,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.vps",
@@ -16123,7 +16991,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "m.devtools",
@@ -16161,7 +17031,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.testing",
@@ -16199,7 +17071,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "m.buildlogic",
@@ -16237,7 +17111,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.template",
@@ -16275,7 +17151,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.app.console",
@@ -16313,7 +17191,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "m.app.demo",
@@ -16351,7 +17231,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.home",
@@ -16396,7 +17278,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.themes",
@@ -16441,7 +17325,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "x.styles",
@@ -16486,7 +17372,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "x.layouts",
@@ -16531,7 +17419,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.components",
@@ -16576,7 +17466,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.designer",
@@ -16621,7 +17513,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "x.menus",
@@ -16666,7 +17560,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.uac",
@@ -16711,7 +17607,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.actions",
@@ -16756,7 +17654,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.flags",
@@ -16801,7 +17701,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "x.wallpaper",
@@ -16839,7 +17741,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "x.a11ymode",
@@ -16877,7 +17781,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "i.settings",
@@ -16922,7 +17828,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "i.logs",
@@ -16967,7 +17875,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "i.admin",
@@ -17005,7 +17915,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "i.accounts",
@@ -17043,7 +17955,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "i.profile",
@@ -17081,7 +17995,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "i.subs",
@@ -17119,7 +18035,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.texteditor",
@@ -17158,7 +18076,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.editor"
+   "epic": "x.lib.editor",
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "c.gps",
@@ -17197,7 +18117,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.location"
+   "epic": "x.lib.location",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.video",
@@ -17236,7 +18158,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.media"
+   "epic": "x.lib.media",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.vpsstream",
@@ -17275,7 +18199,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.media"
+   "epic": "x.lib.media",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.camera",
@@ -17313,7 +18239,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.gallery",
@@ -17351,7 +18279,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.audio",
@@ -17389,7 +18319,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.music",
@@ -17427,7 +18359,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.radio",
@@ -17465,7 +18399,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.screenrec",
@@ -17503,7 +18439,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "sonnet",
+   "modelReason": "Content or simple self-contained UI with a clear spec: Sonnet 5.5 is enough"
   },
   {
    "id": "c.draw",
@@ -17541,7 +18479,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.pdf",
@@ -17579,7 +18519,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.ocr",
@@ -17617,7 +18559,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.3d",
@@ -17655,7 +18599,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.spreadsheet",
@@ -17693,7 +18639,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.slides",
@@ -17731,7 +18679,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.ai",
@@ -17770,7 +18720,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.ai"
+   "epic": "x.lib.ai",
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.aiimage",
@@ -17808,7 +18760,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.terminal",
@@ -17846,7 +18800,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.logtail",
@@ -17884,7 +18840,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.github",
@@ -17922,7 +18880,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.deploy",
@@ -17961,7 +18921,9 @@
      "text": "Imported from the feature catalog"
     }
    ],
-   "epic": "x.lib.vps"
+   "epic": "x.lib.vps",
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.servermon",
@@ -17999,7 +18961,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.dns",
@@ -18037,7 +19001,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.cron",
@@ -18075,7 +19041,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.rest",
@@ -18113,7 +19081,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.json",
@@ -18151,7 +19121,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.dbbrowser",
@@ -18189,7 +19161,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.webview",
@@ -18227,7 +19201,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.mcp",
@@ -18265,7 +19241,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.buildengine",
@@ -18303,7 +19281,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.files",
@@ -18341,7 +19321,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.notes",
@@ -18379,7 +19361,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.calendar",
@@ -18417,7 +19401,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.timer",
@@ -18455,7 +19441,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.contacts",
@@ -18493,7 +19481,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.passwords",
@@ -18531,7 +19521,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.backup",
@@ -18569,7 +19561,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.transfer",
@@ -18607,7 +19601,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.offline",
@@ -18645,7 +19641,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.search",
@@ -18683,7 +19681,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.clipboard",
@@ -18721,7 +19721,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.calc",
@@ -18759,7 +19761,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.weather",
@@ -18797,7 +19801,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.rss",
@@ -18835,7 +19841,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.charts",
@@ -18873,7 +19881,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.sensors",
@@ -18911,7 +19921,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.ble",
@@ -18949,7 +19961,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.nfc",
@@ -18987,7 +20001,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.wifi",
@@ -19025,7 +20041,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "c.notifications",
@@ -19063,7 +20081,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.push",
@@ -19101,7 +20121,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.widgets",
@@ -19139,7 +20161,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.share",
@@ -19177,7 +20201,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.voice",
@@ -19215,7 +20241,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.pilot",
@@ -19253,7 +20281,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.flashlight",
@@ -19291,7 +20321,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.battery",
@@ -19329,7 +20361,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.multiwindow",
@@ -19367,7 +20401,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.a11y",
@@ -19405,7 +20441,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.chat",
@@ -19443,7 +20481,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "c.game",
@@ -19481,7 +20521,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "c.about",
@@ -19519,7 +20561,9 @@
      "at": "2026-10-17",
      "text": "Imported from the feature catalog"
     }
-   ]
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   }
  ]
 }

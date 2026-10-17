@@ -22,7 +22,7 @@ const store: PlanStore = {
 };
 const localEdits = (): Record<string, PlanFeature | null> => api.readLocal(EDITS_KEY, {});
 
-async function loadPlanStore(force = false) {
+export async function loadPlanStore(force = false) {
   if (store.loaded && !force) return;
   try {
     const plan = await api.loadPlan();
@@ -45,12 +45,29 @@ async function saveFeature(f: PlanFeature, note: string, log: (t: string, l?: 'o
     log(`${f.id}: ${note} (saved in this browser — export the plan or connect the API to keep it in the repo)`, 'warn');
   }
 }
+/** Status changes from the build queue when the API is offline: applied to this browser's copy of the plan. */
+export function applyLocalStatuses(changes: { id: string; status: string; note: string }[]) {
+  if (!changes.length) return;
+  const at = new Date().toISOString();
+  const edits = localEdits();
+  const features = store.features.map((f) => {
+    const c = changes.find((x) => x.id === f.id);
+    if (!c || f.status === c.status) return f;
+    const n: PlanFeature = { ...f, status: c.status as PlanStatus, edited: true, history: [...f.history, { at, text: c.note }].slice(-100) };
+    edits[f.id] = n;
+    return n;
+  });
+  api.writeLocal(EDITS_KEY, edits);
+  store.set({ features });
+}
+export const planFeatures = () => store.features;
+
 async function removeFeature(id: string, log: (t: string, l?: 'ok' | 'warn' | 'error') => void) {
   store.set({ features: store.features.filter((x) => x.id !== id) });
   if (api.isBackendUp()) { const r = await api.deletePlanFeature(id); log(r.ok ? `${id} deleted` : `${id}: ${r.error}`, r.ok ? 'ok' : 'error'); }
   else { api.writeLocal(EDITS_KEY, { ...localEdits(), [id]: null }); log(`${id} deleted in this browser`, 'warn'); }
 }
-function usePlan() {
+export function usePlan() {
   const s = useSyncExternalStore((l) => { store.listeners.add(l); return () => { store.listeners.delete(l); }; }, () => store.snapshot, () => store.snapshot);
   useEffect(() => { loadPlanStore(); }, []);
   return s;
@@ -190,11 +207,18 @@ function Row({ x, a, sel, onSel }: { x: PlanFeature; a: Analysis; sel: string | 
       <span className={`pl-dot is-${x.status}`} title={x.status} />
       <span className="pl-row__main"><span className="pl-row__title">{x.title}</span><span className="fx-muted fx-small fx-mono">{x.id}{x.kind !== 'feature' ? ` · ${x.kind}` : ''}</span></span>
       <span className="pl-ports">{api.PORTS.map((p) => <span key={p} className={`pl-port is-${x.ports[p]?.status ?? 'none'}`} title={`${p}: ${x.ports[p]?.status ?? 'not applicable'}`}>{p[0]!.toUpperCase()}</span>)}</span>
+      <ModelChip model={x.model} reason={x.modelReason} />
       <span className="pl-prio">{x.priority}</span>
       {a.blocked.has(x.id) && <span title="Waits on a dependency"><Icon name="lock" size={14} /></span>}
       {w > 0 && <span className="pl-warn" title={`${w} warning(s)`}><Icon name="alert" size={14} />{w}</span>}
     </button>
   );
+}
+
+/** Suggested build model (top three only). */
+export function ModelChip({ model, reason, long }: { model?: string; reason?: string; long?: boolean }) {
+  const m = model ?? 'opus';
+  return <span className={`bm-model is-${m}`} title={`Build with ${api.modelLabel(m)}${reason ? ` — ${reason}` : ''}`}>{long ? api.modelLabel(m) : api.modelLabel(m).split(' ')[0]}</span>;
 }
 
 function GroupedList({ features, a, sel, onSel }: { features: PlanFeature[]; a: Analysis; sel: string | null; onSel: (id: string) => void }) {
@@ -234,7 +258,7 @@ function Board({ features, a, sel, onSel }: { features: PlanFeature[]; a: Analys
         {xs.slice(0, 200).map((x) => (
           <div key={x.id} className={`pl-card ${sel === x.id ? 'is-selected' : ''}`} draggable onDragStart={() => setDrag(x.id)} onClick={() => onSel(x.id)}>
             <div className="pl-row__title">{x.title}</div>
-            <div className="fx-row fx-row--wrap" style={{ gap: 4 }}><span className="pl-prio">{x.priority}</span><span className="fx-muted fx-small">{x.area}</span>{warnCount(x, a) > 0 && <span className="pl-warn"><Icon name="alert" size={12} />{warnCount(x, a)}</span>}</div>
+            <div className="fx-row fx-row--wrap" style={{ gap: 4 }}><ModelChip model={x.model} reason={x.modelReason} /><span className="pl-prio">{x.priority}</span><span className="fx-muted fx-small">{x.area}</span>{warnCount(x, a) > 0 && <span className="pl-warn"><Icon name="alert" size={12} />{warnCount(x, a)}</span>}</div>
           </div>))}
         {xs.length > 200 && <p className="fx-muted fx-small">+{xs.length - 200} more — filter to narrow</p>}
       </div>); })}</div>
@@ -306,7 +330,9 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
           <label>Wave<select className="fx-input" value={d.wave} onChange={(e) => patch({ wave: Number(e.target.value) })}>{[1, 2, 3].map((x) => <option key={x} value={x}>{x}</option>)}</select></label>
           <label>Effort<select className="fx-input" value={d.effort} onChange={(e) => patch({ effort: e.target.value })}><option value="">—</option>{EFFORTS.map((x) => <option key={x}>{x}</option>)}</select></label>
           <label>Area<input className="fx-input" value={d.area} onChange={(e) => patch({ area: e.target.value })} /></label>
+          <label title={api.MODELS.map((m) => `${m.label}: ${m.when}`).join('\n')}>Build with<select className="fx-input" value={d.model ?? 'opus'} onChange={(e) => patch({ model: e.target.value as api.ModelId, modelReason: 'Picked in the console', modelEdited: true })}>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
         </div>
+        {d.modelReason && <p className="fx-small fx-muted" style={{ margin: 0 }}><ModelChip model={d.model} long /> {d.modelReason}</p>}
         <div className="fx-row fx-row--wrap">
           <Button tone="primary" icon="save" disabled={!dirty} onClick={() => save()}>{dirty ? 'Save' : 'Saved'}</Button>
           {dirty && <Button icon="undo" onClick={() => { setD(feature); setDirty(false); }}>Discard</Button>}

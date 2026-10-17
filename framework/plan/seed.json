@@ -33,8 +33,7 @@
    ],
    "dependsOn": [
     "x.assets",
-    "x.engines",
-    "x.modules"
+    "x.engines"
    ],
    "catalog": [],
    "modules": [
@@ -1638,6 +1637,139 @@
    ],
    "links": [],
    "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.build",
+   "title": "Build manager (build queue)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The plan's epics as an ordered build queue: drag to reorder, reprocess to restore dependency order, rework flags on built steps whose dependencies changed, a suggested model per step and per feature (Fable 5.1 / Opus 5.5 / Sonnet 5.5), and two-way status sync with the feature tracker on every console start.",
+   "ports": {},
+   "capabilities": [
+    "Queue of 44+ steps with linked catalog features",
+    "Drag-and-drop reorder + reprocess prompt (moves with reasons, cycle detection)",
+    "Rework detection: dependency rebuilt, reopened, or changed",
+    "Suggested model per step/feature (top three models only)",
+    "Complete a step \u2192 epic + features built; all features built \u2192 step complete",
+    "Same logic in the browser, the API, the CLI and MCP"
+   ],
+   "dependsOn": [
+    "x.console.plan",
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/plan/build-queue-core.mjs",
+    "framework/cli/build-queue.mjs",
+    "apps/console-web/src/views/BuildManager.tsx"
+   ],
+   "acceptance": [
+    {
+     "text": "Reorder \u2192 reprocess prompt",
+     "done": true
+    },
+    {
+     "text": "Complete \u2192 features built",
+     "done": true
+    },
+    {
+     "text": "Sync on console start",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "planning"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.mcp",
+   "title": "MCP server (Model Context Protocol)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The console API as MCP tools for Claude: plan search/edit, build queue (next, reorder, reprocess, complete), catalog status, libraries, templates, app init/validate, terminal. Remote at console.amberxai.com/mcp (streamable HTTP, Bearer AXF_TOKEN) or local over stdio via .mcp.json.",
+   "ports": {},
+   "capabilities": [
+    "24 tools + 2 resources + a build-next-step prompt",
+    "Same engine ops as the console, mirrored to its terminal",
+    "No shell or arbitrary file access",
+    "Token-gated remote endpoint; stdio for local clones"
+   ],
+   "dependsOn": [
+    "x.console.api",
+    "x.console.build"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "apps/console-web/server/mcp_server.py",
+    ".mcp.json"
+   ],
+   "acceptance": [
+    {
+     "text": "tools/list + tools/call over HTTP",
+     "done": true
+    },
+    {
+     "text": "stdio from a clone",
+     "done": true
+    },
+    {
+     "text": "Smoke test in CI",
+     "done": true
+    },
+    {
+     "text": "Live on console.amberxai.com",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "claude.ai custom connectors expect OAuth; Claude Code and Claude Desktop work with the bearer header today"
+    }
+   ],
+   "recommendations": [
+    "claude mcp add --transport http axf https://console.amberxai.com/mcp --header \"Authorization: Bearer $AXF_TOKEN\""
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "mcp",
+    "api"
+   ],
    "notes": "",
    "source": "seed",
    "history": [

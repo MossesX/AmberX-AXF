@@ -30,4 +30,8 @@ if (existsSync(join(ROOT, 'framework/plan/plan.json'))) {
   cpSync(join(ROOT, 'framework/plan/plan.json'), join(OUT, 'plan.json'));
   if (existsSync(join(ROOT, 'framework/plan/media'))) cpSync(join(ROOT, 'framework/plan/media'), join(OUT, 'plan-media'), { recursive: true });
 }
+// the build queue: its state + the shared queue logic (copied into src so the console computes the same queue offline)
+if (existsSync(join(ROOT, 'framework/plan/build-queue.json'))) cpSync(join(ROOT, 'framework/plan/build-queue.json'), join(OUT, 'build-queue.json'));
+mkdirSync(resolve(HERE, '../src/axf/plan'), { recursive: true });
+for (const f of ['build-queue-core.mjs', 'build-queue-core.d.mts']) cpSync(join(ROOT, 'framework/plan', f), resolve(HERE, '../src/axf/plan', f));
 console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);

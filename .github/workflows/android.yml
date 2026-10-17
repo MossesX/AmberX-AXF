@@ -56,7 +56,7 @@ jobs:
           set -e
           cd framework && npm install --no-audit --no-fund --silent && cd ..
           for t in $(ls framework/library-templates | grep -v '\.'); do node framework/cli/axf.mjs new-library ci-$t --template $t --ports web,python > /dev/null; node framework/cli/axf.mjs compile-library ci-$t; done
-      - name: Python API smoke (health, libraries, init + install through the engine)
+      - name: Python API + MCP smoke (health, libraries, init + install, build queue, MCP tools)
         working-directory: apps/console-web/server
         run: |
           pip install -r requirements.txt httpx
@@ -69,6 +69,14 @@ jobs:
           r = c.post('/api/init', json={'dir': 'apps/ci-smoke', 'name': 'CI', 'template': 'android-compose', 'boilerplate': 'notes'}).json(); assert r['ok'], r
           r = c.post('/api/install', json={'dir': 'apps/ci-smoke', 'library': 'ai.amberx.axf.browser', 'params': {}}).json(); assert r['ok'], r
           print('api ok', len(c.get('/api/terminal').json()['lines']), 'terminal lines')
+          with TestClient(main.app) as m:  # lifespan on: the MCP session manager runs
+              h = {'accept': 'application/json, text/event-stream'}
+              tools = m.post('/mcp', json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}, headers=h).json()['result']['tools']
+              assert {'build_next', 'build_step', 'plan_search', 'build_reprocess'} <= {t['name'] for t in tools}, tools
+              r = m.post('/mcp', json={'jsonrpc': '2.0', 'id': 2, 'method': 'tools/call', 'params': {'name': 'build_queue', 'arguments': {}}}, headers=h).json()['result']
+              assert not r.get('isError'), r
+              q = m.get('/api/build-queue').json(); assert q['view']['steps'], q
+              print('mcp ok', len(tools), 'tools; next build step', q['view']['next'])
           PY
       - uses: actions/upload-artifact@v4
         with:

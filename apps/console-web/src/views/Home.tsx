@@ -3,6 +3,7 @@ import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import type { Status } from '../api';
 import { PlanSummaryCard } from './Plan';
+import { BuildSummaryCard } from './BuildManager';
 
 const TABS: [string, string][] = [['foundations', 'Foundations'], ['kernel', 'Kernel'], ['console', 'Console'], ['modules', 'Modules'], ['demos', 'Demos']];
 
@@ -22,11 +23,14 @@ export function Home() {
           <Button icon="folder" onClick={() => rt.openDialog('project')}>{s.project || 'Open project'}</Button>
           <Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button>
           <Button icon="copy" onClick={() => rt.dispatch('console.exportPlan')}>Export plan</Button>
+          <Button icon="play" onClick={() => rt.navigate('build')}>Build queue</Button>
+          <Button icon="lock" onClick={() => rt.openDialog('token')}>Console token</Button>
         </div>
       </header>
 
       <div className="fx-grid">
         <PlanSummaryCard />
+        <BuildSummaryCard />
         <Container title="Coverage" icon="chart">
           <table className="fx-table"><tbody>
             {TABS.map(([id, label]) => { const c = s.coverage(id); const total = Math.max(1, Object.values(c).reduce((a, b) => a + b, 0)); return (
@@ -39,6 +43,7 @@ export function Home() {
             <tr><th>Build engine</th><td>{s.backend ? <Chip tone="success">online</Chip> : <Chip tone="warning">offline — commands are recorded for Claude Code</Chip>}</td></tr>
             <tr><th>Libraries</th><td>{s.libraries.length} installable · {s.modules.length} Android modules</td></tr>
             <tr><th>Boilerplates</th><td>{s.boilerplates.length}</td></tr>
+            <tr><th>MCP endpoint</th><td>{s.backend ? <span className="fx-mono fx-small">{location.origin}/mcp <span className="fx-muted">(Bearer AXF_TOKEN)</span></span> : <span className="fx-muted">local: python3 apps/console-web/server/mcp_server.py</span>}</td></tr>
           </tbody></table>
         </Container>
         <Container title="Recent installs & imports" icon="download">

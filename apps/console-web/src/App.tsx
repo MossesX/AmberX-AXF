@@ -11,12 +11,14 @@ import { Boilerplates } from './views/Boilerplates';
 import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
+import { BuildManager } from './views/BuildManager';
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
+  build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
   catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },

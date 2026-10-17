@@ -29,6 +29,12 @@
             "view": "plan"
           },
           {
+            "id": "build",
+            "label": "Build queue",
+            "icon": "play",
+            "view": "build"
+          },
+          {
             "id": "tracker",
             "label": "Tracker",
             "icon": "check-circle",

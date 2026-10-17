@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "axf": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["apps/console-web/server/mcp_server.py"],
+      "env": {}
+    },
+    "axf-console": {
+      "type": "http",
+      "url": "https://console.amberxai.com/mcp",
+      "headers": { "Authorization": "Bearer ${AXF_TOKEN}" }
+    }
+  }
+}

@@ -17,6 +17,8 @@ import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
+import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
+const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
 const safeDir = (d) => { const p = resolve(ROOT, d ?? ''); if (!p.startsWith(ROOT)) throw new Error('dir must be inside the repo'); return p; };
@@ -49,6 +51,7 @@ function run() {
       writeFileSync(f, JSON.stringify(s, null, 2) + '\n');
       execFileSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/tracker.mjs')], { stdio: 'pipe' });
       log(`status.json: ${b.id} → ${b.status}; tracker.json regenerated`);
+      syncAfter();
       return { id: b.id, status: b.status };
     }
     case 'boilerplate-save': { // a boilerplate@1 object → framework/boilerplates/<id>/boilerplate.json + index
@@ -67,9 +70,14 @@ function run() {
     case 'remove-library': { const r = removeLibrary({ slug: b.slug, log }); writeLibrariesIndex(); return r; }
     case 'plan': return loadPlan();
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }
-    case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); return { feature: f }; }
+    case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); syncAfter(); return { feature: f }; }
     case 'plan-delete': { deleteFeature(b.id); log(`plan: ${b.id} deleted`); return { id: b.id }; }
     case 'plan-media': return { src: saveMedia(b.id, b.dataUrl) };
+    case 'build-queue': return queueView();
+    case 'build-sync': return syncBuildQueue({ by: b.by ?? 'console:init', log });
+    case 'build-reorder': return reorderQueue({ order: b.order, by: b.by ?? 'console', log });
+    case 'build-reprocess': return reprocessQueue({ apply: !!b.apply, by: b.by ?? 'console', log });
+    case 'build-step': return stepQueue({ id: b.id, action: b.action, status: b.status, note: b.note, by: b.by ?? 'console', log });
     case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'validate': return { dir: b.dir, report: validateApp(safeDir(b.dir)) };
     case 'new-asset': return { file: relative(ROOT, newAsset({ dir: safeDir(b.dir), type: b.type, id: b.id, from: b.from, name: b.name })) };
