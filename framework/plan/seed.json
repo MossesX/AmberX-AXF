@@ -1411,7 +1411,7 @@
     },
     {
      "text": "Every template generates for Android and compiles in CI",
-     "done": false
+     "done": true
     },
     {
      "text": "A real library (e.g. GPS tracker) built from a template and run on a device",
