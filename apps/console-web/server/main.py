@@ -22,8 +22,19 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+import fcntl
+import pty
+import select
+import signal
+import struct
+import termios
+import urllib.request
+import zipfile
+from io import BytesIO
+
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 HERE = Path(__file__).resolve().parent
@@ -34,6 +45,10 @@ TOKEN = os.environ.get("AXF_TOKEN", "")
 DIST = HERE.parent / "dist"
 
 app = FastAPI(title="AXF Dev Console API", version="0.2.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+PANEL = ROOT / "deploy" / "panel" / "index.html"
+GITHUB_REPO = os.environ.get("AXF_GITHUB_REPO", "MossesX/AmberX-AXF")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
 # ---------------------------------------------------------------- state + terminal
 
@@ -213,6 +228,213 @@ def _op(name: str, channel: str):
 
 for _name, _channel in [("init", "init"), ("validate", "validate"), ("new-asset", "assets"), ("new-module", "build"), ("new-demo", "build"), ("install", "install"), ("import-ui", "import")]:
     app.add_api_route(f"/api/{_name}", _op(_name, _channel), methods=["POST"], dependencies=[Depends(auth)])
+
+
+# ---------------------------------------------------------------- dev servers (control panel)
+
+NODE = "node"
+SERVER_DEFS: dict[str, dict[str, Any]] = {
+    "console-api": {"label": "Console API (this service)", "port": int(os.environ.get("PORT", "7090")), "cmd": None, "cwd": ".", "url": "/", "note": "FastAPI + build engine; always on while you can read this"},
+    "axf-dev": {"label": "axf dev — live-reload assets to devices", "port": 7070, "cmd": [NODE, "framework/cli/axf.mjs", "dev", "{project}", "--port", "7070"], "cwd": ".", "url": "http://{host}:7070/", "note": "watches the open project's assets; devices long-poll /events"},
+    "axf-serve": {"label": "axf serve — Node HTTP build driver", "port": 7080, "cmd": [NODE, "framework/cli/axf.mjs", "serve", "--port", "7080"], "cwd": ".", "url": "http://{host}:7080/health", "note": "the Android console's build-engine endpoint"},
+    "console-dev": {"label": "Web console — Vite dev server", "port": 5173, "cmd": ["npm", "run", "dev", "--", "--host", "--port", "5173"], "cwd": "apps/console-web", "url": "http://{host}:5173/", "note": "hot reload for the React console (proxies /api here)"},
+    "demo-preview": {"label": "Web demo — vite preview", "port": 4173, "cmd": ["npx", "vite", "preview", "--host", "--port", "4173"], "cwd": "apps/demo", "url": "http://{host}:4173/", "note": "serves apps/demo/dist (run npm run build first)"},
+    "next-dev": {"label": "Open project — next dev", "port": 3000, "cmd": ["npm", "run", "dev", "--", "--port", "3000"], "cwd": "{project}", "url": "http://{host}:3000/", "note": "only for next-ts projects"},
+}
+_procs: dict[str, subprocess.Popen[bytes]] = {}
+_proc_logs: dict[str, list[str]] = {}
+
+
+def _port_open(port: int) -> bool:
+    import socket
+    with socket.socket() as sck:
+        sck.settimeout(0.2)
+        return sck.connect_ex(("127.0.0.1", port)) == 0
+
+
+def _server_row(sid: str, request: Request | None = None) -> dict[str, Any]:
+    d = SERVER_DEFS[sid]
+    proc = _procs.get(sid)
+    running = proc is not None and proc.poll() is None
+    host = (request.headers.get("x-forwarded-host") or request.headers.get("host") or "localhost").split(":")[0] if request else "localhost"
+    managed = d["cmd"] is not None
+    return {"id": sid, "label": d["label"], "port": d["port"], "note": d["note"], "managed": managed, "running": running or (not managed), "listening": _port_open(d["port"]),
+            "pid": proc.pid if running else None, "url": d["url"].replace("{host}", host), "cwd": d["cwd"].replace("{project}", _state["project"] or "apps/console-web"),
+            "command": " ".join(d["cmd"]).replace("{project}", _state["project"] or "apps/console-web") if managed else "uvicorn main:app --port 7090", "log": _proc_logs.get(sid, [])[-40:]}
+
+
+def _pump(sid: str, proc: subprocess.Popen[bytes]) -> None:
+    import threading
+
+    def run() -> None:
+        assert proc.stdout
+        for raw in iter(proc.stdout.readline, b""):
+            line = raw.decode("utf-8", "replace").rstrip()
+            _proc_logs.setdefault(sid, []).append(line)
+            _proc_logs[sid] = _proc_logs[sid][-400:]
+            log(f"server:{sid}", line)
+        log(f"server:{sid}", f"exited with code {proc.wait()}", "warn" if proc.returncode else "info")
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+@app.get("/api/servers")
+def servers(request: Request) -> dict[str, Any]:
+    return {"servers": [_server_row(sid, request) for sid in SERVER_DEFS], "project": _state["project"]}
+
+
+@app.post("/api/servers/{sid}/start", dependencies=[Depends(auth)])
+def server_start(sid: str, request: Request) -> dict[str, Any]:
+    d = SERVER_DEFS.get(sid)
+    if not d or d["cmd"] is None:
+        raise HTTPException(400, "not a managed server")
+    if (p := _procs.get(sid)) and p.poll() is None:
+        return {"ok": True, "server": _server_row(sid, request), "note": "already running"}
+    project = _state["project"] or "apps/console-web"
+    cmd = [c.replace("{project}", project) for c in d["cmd"]]
+    cwd = ROOT / d["cwd"].replace("{project}", project)
+    if not cwd.exists():
+        raise HTTPException(400, f"{cwd} does not exist (open a project first?)")
+    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
+    _procs[sid] = proc
+    _proc_logs[sid] = []
+    _pump(sid, proc)
+    log(f"server:{sid}", f"▶ started pid {proc.pid}: {' '.join(cmd)} (in {d['cwd']})", "ok")
+    return {"ok": True, "server": _server_row(sid, request)}
+
+
+@app.post("/api/servers/{sid}/stop", dependencies=[Depends(auth)])
+def server_stop(sid: str, request: Request) -> dict[str, Any]:
+    proc = _procs.get(sid)
+    if not proc or proc.poll() is not None:
+        return {"ok": True, "server": _server_row(sid, request), "note": "not running"}
+    try:
+        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+        proc.wait(timeout=5)
+    except Exception:
+        try:
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        except Exception:
+            pass
+    log(f"server:{sid}", "■ stopped", "warn")
+    return {"ok": True, "server": _server_row(sid, request)}
+
+
+# ---------------------------------------------------------------- embedded terminal (WebSocket ↔ pty)
+
+
+@app.websocket("/api/shell")
+async def shell(ws: WebSocket) -> None:
+    """A real shell on this host for the control panel's terminal. Protected by AXF_TOKEN (?token=…) when set."""
+    if TOKEN and ws.query_params.get("token") != TOKEN:
+        await ws.close(code=4401)
+        return
+    await ws.accept()
+    pid, fd = pty.fork()
+    if pid == 0:  # child
+        os.chdir(ROOT)
+        os.environ["TERM"] = "xterm-256color"
+        os.execvp(os.environ.get("AXF_SHELL", "bash"), [os.environ.get("AXF_SHELL", "bash"), "-l"])
+    log("shell", f"terminal session opened (pid {pid})")
+    loop = asyncio.get_event_loop()
+
+    async def pump() -> None:
+        try:
+            while True:
+                r, _, _ = await loop.run_in_executor(None, select.select, [fd], [], [], 0.5)
+                if r:
+                    try:
+                        data = os.read(fd, 65536)
+                    except OSError:
+                        break
+                    if not data:
+                        break
+                    await ws.send_bytes(data)
+        except Exception:
+            pass
+
+    task = asyncio.create_task(pump())
+    try:
+        while True:
+            msg = await ws.receive()
+            if msg.get("type") == "websocket.disconnect":
+                break
+            if (txt := msg.get("text")) is not None:
+                if txt.startswith("\x00resize:"):
+                    try:
+                        cols, rows = (int(x) for x in txt[8:].split(","))
+                        fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", rows, cols, 0, 0))
+                    except Exception:
+                        pass
+                else:
+                    os.write(fd, txt.encode())
+            elif (data := msg.get("bytes")) is not None:
+                os.write(fd, data)
+    except WebSocketDisconnect:
+        pass
+    finally:
+        task.cancel()
+        try:
+            os.kill(pid, signal.SIGHUP)
+        except Exception:
+            pass
+        os.close(fd)
+        log("shell", "terminal session closed")
+
+
+# ---------------------------------------------------------------- releases (CI artifacts: APK, maven repo, console dist)
+
+_releases_cache: dict[str, Any] = {"at": 0.0, "data": None}
+
+
+def _gh(url: str) -> Any:
+    req = urllib.request.Request(url, headers={"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {GITHUB_TOKEN}"} if GITHUB_TOKEN else {})})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read().decode())
+
+
+@app.get("/api/releases")
+def releases() -> dict[str, Any]:
+    """Latest successful CI run of the Android workflow + its artifacts, with direct download routes (needs GITHUB_TOKEN to proxy the zips)."""
+    if time.time() - _releases_cache["at"] < 60 and _releases_cache["data"]:
+        return _releases_cache["data"]
+    try:
+        runs = _gh(f"https://api.github.com/repos/{GITHUB_REPO}/actions/workflows/android.yml/runs?status=success&per_page=1")["workflow_runs"]
+        if not runs:
+            return {"ok": False, "error": "no successful run yet"}
+        run = runs[0]
+        arts = _gh(run["artifacts_url"])["artifacts"]
+        data = {"ok": True, "repo": GITHUB_REPO, "run": {"id": run["id"], "sha": run["head_sha"][:7], "message": run["head_commit"]["message"].split("\n")[0], "at": run["updated_at"], "url": run["html_url"]},
+                "artifacts": [{"id": a["id"], "name": a["name"], "size": a["size_in_bytes"], "expires": a["expires_at"], "download": f"/api/releases/download/{a['id']}/{a['name']}", "proxied": bool(GITHUB_TOKEN)} for a in arts],
+                "packages": f"https://github.com/{GITHUB_REPO}/packages", "actions": f"https://github.com/{GITHUB_REPO}/actions/workflows/android.yml"}
+        _releases_cache.update(at=time.time(), data=data)
+        return data
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": str(e), "actions": f"https://github.com/{GITHUB_REPO}/actions/workflows/android.yml"}
+
+
+@app.get("/api/releases/download/{artifact_id}/{name}")
+def release_download(artifact_id: int, name: str) -> Response:
+    """Proxies a CI artifact (GitHub requires a token for artifact zips); single-file artifacts like the APK are unzipped."""
+    if not GITHUB_TOKEN:
+        raise HTTPException(403, "set GITHUB_TOKEN on the API to download CI artifacts directly; otherwise use the run page")
+    req = urllib.request.Request(f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {GITHUB_TOKEN}", "user-agent": "axf-console"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        blob = r.read()
+    z = zipfile.ZipFile(BytesIO(blob))
+    files = [n for n in z.namelist() if not n.endswith("/")]
+    if len(files) == 1:
+        fname = files[0].split("/")[-1]
+        return Response(z.read(files[0]), media_type="application/vnd.android.package-archive" if fname.endswith(".apk") else "application/octet-stream", headers={"content-disposition": f'attachment; filename="{fname}"'})
+    return Response(blob, media_type="application/zip", headers={"content-disposition": f'attachment; filename="{name}.zip"'})
+
+
+@app.get("/panel")
+def panel() -> HTMLResponse:
+    """The server control panel (deploy/panel/index.html) — same origin, so its terminal and server controls are live."""
+    if not PANEL.exists():
+        raise HTTPException(404, "deploy/panel/index.html missing")
+    return HTMLResponse(PANEL.read_text())
 
 
 # ---------------------------------------------------------------- the console itself

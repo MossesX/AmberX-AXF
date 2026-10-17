@@ -1,0 +1,278 @@
+<title>AXF Server Panel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a fixed status bar, then a two-column operations board — servers + downloads on the left, the live
+   terminal pinned on the right at desktop width; everything stacks on a phone. Dark-first: an ops panel is
+   read next to real terminals. */
+:root {
+  --bg: #121311; --panel: #1b1c19; --panel2: #23251f; --line: #33352d; --fg: #ebe7dc; --muted: #9a9789;
+  --accent: #f0a53a; --accent-ink: #1b1300; --ok: #7fc87a; --warn: #e8b84a; --bad: #ef7a6c; --info: #7bb6e8;
+  --display: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg: #f4f2ec; --panel: #ffffff; --panel2: #ebe8df; --line: #d8d4c6; --fg: #1d1c18; --muted: #6b6859; --accent: #c57a0f; --accent-ink: #fff8ec; --ok: #2f8a3a; --warn: #a3700a; --bad: #c2402f; --info: #2b6cb0; color-scheme: light } }
+:root[data-theme="light"] { --bg: #f4f2ec; --panel: #ffffff; --panel2: #ebe8df; --line: #d8d4c6; --fg: #1d1c18; --muted: #6b6859; --accent: #c57a0f; --accent-ink: #fff8ec; --ok: #2f8a3a; --warn: #a3700a; --bad: #c2402f; --info: #2b6cb0; color-scheme: light }
+* { box-sizing: border-box }
+html, body { height: 100% }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--display); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 24px }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg) }
+a { color: var(--accent) }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 600 }
+h1 { font-size: 18px } h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted) }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 0; background: var(--bg); border-bottom: 1px solid var(--line) }
+.top .grow { flex: 1 1 200px; min-width: 0 }
+.mark { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); font: 600 12px var(--mono) }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; font: 500 12px var(--mono); background: var(--panel2); color: var(--muted); border: 1px solid var(--line) }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted) }
+.pill.on { color: var(--ok) } .pill.on i { background: var(--ok) } .pill.off { color: var(--bad) } .pill.off i { background: var(--bad) }
+.board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding-top: 20px; align-items: start }
+@media (max-width: 980px) { .board { grid-template-columns: 1fr } }
+.col { display: grid; gap: 20px; min-width: 0 }
+section { display: grid; gap: 10px; min-width: 0 }
+.sechead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap } .sechead .spacer { flex: 1 }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0 }
+.servers { display: grid; gap: 8px }
+.srv { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 10px 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px }
+.srv .stripe { width: 4px; height: 100%; min-height: 36px; border-radius: 2px; background: var(--line) }
+.srv.running .stripe { background: var(--ok) } .srv.listening:not(.running) .stripe { background: var(--warn) }
+.srv .name { font-weight: 600 } .srv .meta { font: 12px var(--mono); color: var(--muted); overflow-wrap: anywhere }
+.srv .acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end }
+.srv .log { grid-column: 1 / -1; font: 11.5px/1.45 var(--mono); color: var(--muted); background: var(--bg); border-radius: 6px; padding: 6px 8px; max-height: 120px; overflow: auto; white-space: pre-wrap; margin: 0 }
+button, .btn { font: 500 12.5px var(--display); color: var(--fg); background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; line-height: 1.3 }
+button:hover, .btn:hover { border-color: var(--accent) } button:focus-visible, .btn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+button.primary, .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent } button.danger { color: var(--bad) }
+button:disabled { opacity: .45; cursor: default }
+input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 6px 8px; min-width: 0; width: 100% }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center } .row > label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); flex: 1 1 180px; min-width: 0 }
+.cmds { display: grid; gap: 14px }
+.cmdgroup h3 { font-size: 12.5px; color: var(--muted); font-weight: 500; margin-bottom: 6px }
+.cmd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line) }
+.cmd:first-of-type { border-top: 0 }
+.cmd code { font: 12.5px var(--mono); display: block; overflow-x: auto; white-space: pre; padding: 4px 0 }
+.cmd small { color: var(--muted); display: block; font-size: 12px }
+.dl { display: grid; gap: 8px }
+.dl .item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding: 8px 0 }
+.dl .item:first-child { border-top: 0 }
+.dl .meta { font: 12px var(--mono); color: var(--muted) }
+.term { background: #0c0d0b; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) }
+.term .bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--line); font: 12px var(--mono); color: #9a9789; background: #121311 }
+.term .bar .spacer { flex: 1 }
+#xterm { height: 420px; padding: 6px }
+#fallback { height: 420px; display: none; grid-template-rows: minmax(0, 1fr) auto; font: 12.5px/1.45 var(--mono); color: #ebe7dc }
+#fallback pre { margin: 0; overflow: auto; padding: 8px; white-space: pre-wrap } #fallback input { border-radius: 0; border: 0; border-top: 1px solid var(--line); background: #0c0d0b; color: #ebe7dc }
+.notice { border: 1px solid var(--line); border-left: 4px solid var(--info); background: var(--panel); border-radius: 8px; padding: 10px 12px; font-size: 13px }
+.notice.warn { border-left-color: var(--warn) }
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; font-size: 13px; z-index: 20; box-shadow: 0 8px 24px rgba(0,0,0,.35) }
+@media (prefers-reduced-motion: no-preference) { .srv.running .stripe { animation: pulse 2.4s ease-in-out infinite } @keyframes pulse { 50% { opacity: .55 } } }
+.xterm { cursor: text; position: relative; user-select: none; -ms-user-select: none; -webkit-user-select: none; } .xterm.focus, .xterm:focus { outline: none; } .xterm .xterm-helpers { position: absolute; top: 0; z-index: 5; } .xterm .xterm-helper-textarea { padding: 0; border: 0; margin: 0; position: absolute; opacity: 0; left: -9999em; top: 0; width: 0; height: 0; z-index: -5; white-space: nowrap; overflow: hidden; resize: none; } .xterm .composition-view { background: #000; color: #FFF; display: none; position: absolute; white-space: nowrap; z-index: 1; } .xterm .composition-view.active { display: block; } .xterm .xterm-viewport { background-color: #000; overflow-y: scroll; cursor: default; position: absolute; right: 0; left: 0; top: 0; bottom: 0; } .xterm .xterm-screen { position: relative; } .xterm .xterm-screen canvas { position: absolute; left: 0; top: 0; } .xterm .xterm-scroll-area { visibility: hidden; } .xterm-char-measure-element { display: inline-block; visibility: hidden; position: absolute; top: 0; left: -9999em; line-height: normal; } .xterm.enable-mouse-events { cursor: default; } .xterm.xterm-cursor-pointer, .xterm .xterm-cursor-pointer { cursor: pointer; } .xterm.column-select.focus { cursor: crosshair; } .xterm .xterm-accessibility, .xterm .xterm-message { position: absolute; left: 0; top: 0; bottom: 0; right: 0; z-index: 10; color: transparent; pointer-events: none; } .xterm .live-region { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; } .xterm-dim { opacity: 1 !important; } .xterm-underline-1 { text-decoration: underline; } .xterm-underline-2 { text-decoration: double underline; } .xterm-underline-3 { text-decoration: wavy underline; } .xterm-underline-4 { text-decoration: dotted underline; } .xterm-underline-5 { text-decoration: dashed underline; } .xterm-overline { text-decoration: overline; } .xterm-overline.xterm-underline-1 { text-decoration: overline underline; } .xterm-overline.xterm-underline-2 { text-decoration: overline double underline; } .xterm-overline.xterm-underline-3 { text-decoration: overline wavy underline; } .xterm-overline.xterm-underline-4 { text-decoration: overline dotted underline; } .xterm-overline.xterm-underline-5 { text-decoration: overline dashed underline; } .xterm-strikethrough { text-decoration: line-through; } .xterm-screen .xterm-decoration-container .xterm-decoration { z-index: 6; position: absolute; } .xterm-screen .xterm-decoration-container .xterm-decoration.xterm-decoration-top-layer { z-index: 7; } .xterm-decoration-overview-ruler { z-index: 8; position: absolute; top: 0; right: 0; pointer-events: none; } .xterm-decoration-top { z-index: 2; position: relative; }
+</style>
+
+<header class="top">
+  <span class="mark">AX</span>
+  <div class="grow"><h1>AXF Server Panel</h1><div class="meta" style="font:12px var(--mono);color:var(--muted)" id="hostline">connecting…</div></div>
+  <span class="pill" id="apipill"><i></i> API</span>
+  <span class="pill" id="projpill" title="Open project (set in the Dev Console)">project: —</span>
+  <button id="refresh">Refresh</button>
+  <button id="openconsole">Open Dev Console</button>
+</header>
+
+<div id="static" class="notice warn" style="margin-top:16px" hidden>
+  This copy runs on claude.ai, which can't reach your VPS directly. Live controls, downloads and the terminal work when the panel is opened from the API itself: <a id="livelink" href="#" target="_blank" rel="noopener">open the live panel</a> (set the host below if it differs). Commands and links still work here.
+</div>
+
+<div class="board">
+  <div class="col">
+    <section>
+      <div class="sechead"><h2>Dev servers</h2><span class="spacer"></span><span class="meta" style="font:12px var(--mono);color:var(--muted)" id="srvcount"></span></div>
+      <div class="servers" id="servers"><div class="card" style="color:var(--muted)">Loading…</div></div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>Downloads</h2><span class="spacer"></span><a class="btn" id="actionslink" href="https://github.com/MossesX/AmberX-AXF/actions/workflows/android.yml" target="_blank" rel="noopener">CI runs ↗</a><a class="btn" href="https://github.com/MossesX/AmberX-AXF/packages" target="_blank" rel="noopener">Maven packages ↗</a></div>
+      <div class="card dl" id="downloads"><div class="meta">Loading latest build…</div></div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>Commands</h2><span class="spacer"></span><input id="cmdfilter" placeholder="filter commands…" style="max-width:220px"></div>
+      <div class="card cmds" id="commands"></div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>Connection</h2></div>
+      <div class="card row">
+        <label>API host (where the Python console API runs)<input id="host" placeholder="https://console.amberxai.com"></label>
+        <label>Token (AXF_TOKEN, if set on the API)<input id="token" type="password" placeholder="optional"></label>
+        <button id="savehost" class="primary">Save &amp; reconnect</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section>
+      <div class="sechead"><h2>VPS terminal</h2><span class="spacer"></span><span class="pill" id="termpill"><i></i> shell</span></div>
+      <div class="term">
+        <div class="bar"><span id="termwhere">bash on the API host · repo root</span><span class="spacer"></span><button id="termconnect">Connect</button><button id="termclear">Clear</button></div>
+        <div id="xterm"></div>
+        <div id="fallback"><pre id="fbout">xterm.js unavailable — plain mode. Type a line and press Enter.</pre><input id="fbin" placeholder="command…"></div>
+      </div>
+      <div class="notice">The terminal is a real <code>bash</code> on the host running the API (WebSocket ↔ pty on <code>/api/shell</code>). Protect it: set <code>AXF_TOKEN</code> on the API and put the token above; keep the API behind Coolify's proxy with HTTPS.</div>
+    </section>
+
+    <section>
+      <div class="sechead"><h2>Output</h2><span class="spacer"></span><button id="outclear">Clear</button></div>
+      <pre class="card" id="output" style="font:12px/1.45 var(--mono);max-height:260px;overflow:auto;white-space:pre-wrap;margin:0;color:var(--muted)">— engine, install, import and server lines appear here (live over /api/events) —</pre>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/5.3.0/xterm.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm-addon-fit/0.8.0/xterm-addon-fit.min.js"></script>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const ls = { get: (k, d) => { try { return localStorage.getItem('axf-panel:' + k) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem('axf-panel:' + k, v); } catch {} } };
+  const sameOrigin = /^https?:/.test(location.protocol) && !/claude\.ai$/.test(location.hostname);
+  let HOST = ls.get('host', sameOrigin ? location.origin : 'http://localhost:7090').replace(/\/$/, '');
+  let TOKEN = ls.get('token', '');
+  $('#host').value = HOST; $('#token').value = TOKEN;
+  const api = (p) => HOST + '/api/' + p;
+  const headers = () => (TOKEN ? { authorization: 'Bearer ' + TOKEN } : {});
+  let toastT; const toast = (m) => { let t = $('.toast'); if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); } t.textContent = m; clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 2200); };
+  const copy = (text) => navigator.clipboard?.writeText(text).then(() => toast('Copied'), () => toast('Select and copy manually'));
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const out = (line, cls) => { const el = $('#output'); if (el.dataset.empty !== '0') { el.textContent = ''; el.dataset.empty = '0'; } el.textContent += line + '\n'; el.scrollTop = el.scrollHeight; };
+  $('#outclear').onclick = () => { $('#output').textContent = ''; };
+  $('#livelink').href = HOST + '/panel';
+  $('#openconsole').onclick = () => window.open(HOST + '/', '_blank');
+
+  /* ---------- commands catalog ---------- */
+  const CMDS = [
+    ['Build engine (framework/cli)', [
+      ['node framework/cli/axf.mjs init apps/my-app --name "My App" --template react-ts|next-ts|android-compose [--boilerplate notes] [--libraries browser]', 'Create an app from a template, optionally from a boilerplate with pre-build libraries'],
+      ['node framework/cli/axf.mjs validate apps/my-app', 'Validate an app (or --framework for the shared assets)'],
+      ['node framework/cli/axf.mjs install browser apps/my-app', 'Interactive install wizard for a library (--param key=value --yes to script it)'],
+      ['node framework/cli/axf.mjs import-ui --name "AmberX Cupertino" --kit ax-cupertino --source git --url https://github.com/… --apply apps/my-app', 'Port a third-party UI library into a hot-swappable kit and apply it'],
+      ['node framework/cli/axf.mjs new-module media --label "Media"', 'Scaffold framework/android/lib-media'],
+      ['node framework/cli/axf.mjs new-demo media', 'Create apps/demo-media showcasing one library'],
+      ['node framework/cli/axf.mjs libraries · modules · templates · boilerplates · ported-kits', 'Listings'],
+      ['node framework/cli/tracker.mjs [--check]', 'Regenerate tracker.json + catalog/libraries.json from status.json'],
+      ['node framework/cli/axf.mjs dev apps/my-app --port 7070', 'Live-reload assets to devices (HMR for everything that is JSON)'],
+      ['node framework/cli/axf.mjs serve --port 7080 --token secret', 'Node HTTP build driver (used by the Android console)'],
+    ]],
+    ['Web console + API', [
+      ['cd apps/console-web && npm install && npm run dev', 'Vite dev server on :5173 (proxies /api to :7090)'],
+      ['cd apps/console-web && npm run build', 'Build the console → dist/ (served by the API)'],
+      ['cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 7090', 'Run the Python console API (+ console + this panel at /panel)'],
+      ['AXF_TOKEN=secret GITHUB_TOKEN=ghp_… uvicorn main:app --port 7090', 'Protect write routes + the terminal; enable direct CI artifact downloads'],
+      ['docker build -f apps/console-web/server/Dockerfile -t axf-console . && docker run -p 7090:7090 -v $PWD:/axf axf-console', 'One-container deploy (what Coolify builds)'],
+    ]],
+    ['Android (framework/android, apps/console)', [
+      ['cd framework/android && gradle :axf-kernel:test', 'Kernel unit + conformance tests'],
+      ['cd framework/android && gradle assembleDebug publishToMavenLocal', 'Build every module; publish ai.amberx.axf:<module>:0.2.0 to ~/.m2'],
+      ['cd apps/console && gradle :app:assembleDebug', 'Android showcase APK → app/build/outputs/apk/debug/'],
+      ['framework/android/scripts/kernel-offline.sh', 'Compile + test the kernel with bare kotlinc (no Maven)'],
+      ['adb install -r app-debug.apk', 'Install the APK on a connected device'],
+    ]],
+    ['Web demo + site', [
+      ['cd apps/demo && npm ci && npm run build', 'Build the demo (CI publishes dist/ to the site branch → xaf.amberxai.com)'],
+      ['cd apps/demo && npx vite preview --host --port 4173', 'Preview the built demo'],
+    ]],
+    ['Git / CI', [
+      ['git push origin HEAD:main', 'Triggers the Android + console workflows and the site publish'],
+      ['gh run list --workflow android.yml --limit 5', 'Recent CI runs (APK, Maven repo and console-dist artifacts attach to each)'],
+      ['gh run download <run-id> -n console-debug.apk', 'Pull the APK artifact with the GitHub CLI'],
+    ]],
+  ];
+  const renderCmds = () => {
+    const q = $('#cmdfilter').value.trim().toLowerCase();
+    $('#commands').innerHTML = CMDS.map(([g, items]) => { const rows = items.filter(([c, d]) => !q || c.toLowerCase().includes(q) || d.toLowerCase().includes(q)); return rows.length ? `<div class="cmdgroup"><h3>${esc(g)}</h3>${rows.map(([c, d]) => `<div class="cmd"><div><code>${esc(c)}</code><small>${esc(d)}</small></div><button data-copy="${esc(c)}">Copy</button></div>`).join('')}</div>` : ''; }).join('') || '<div class="meta">No command matches.</div>';
+  };
+  $('#cmdfilter').oninput = renderCmds; renderCmds();
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-copy]'); if (b) copy(b.dataset.copy); });
+
+  /* ---------- API: health, servers, downloads ---------- */
+  let online = false;
+  async function health() {
+    try { const r = await fetch(api('health'), { cache: 'no-store' }); const j = await r.json(); online = !!j.ok; $('#hostline').textContent = `${HOST} · root ${j.root} · engine ${j.engine ? 'ready' : 'missing'}`; $('#projpill').textContent = 'project: ' + (j.project || '—'); }
+    catch (e) { online = false; $('#hostline').textContent = `${HOST} — unreachable`; }
+    $('#apipill').className = 'pill ' + (online ? 'on' : 'off'); $('#apipill').innerHTML = `<i></i> API ${online ? 'online' : 'offline'}`;
+    $('#static').hidden = sameOrigin || online;
+    return online;
+  }
+  async function servers() {
+    if (!online) { $('#servers').innerHTML = `<div class="card" style="color:var(--muted)">API offline — nothing to manage. ${sameOrigin ? 'Start it with the command under Web console + API.' : 'Open the live panel on the API host.'}</div>`; return; }
+    const j = await (await fetch(api('servers'), { cache: 'no-store' })).json();
+    $('#srvcount').textContent = `${j.servers.filter((s) => s.running).length}/${j.servers.length} running`;
+    $('#servers').innerHTML = j.servers.map((s) => `
+      <div class="srv ${s.running ? 'running' : ''} ${s.listening ? 'listening' : ''}" data-id="${s.id}">
+        <span class="stripe"></span>
+        <div><div class="name">${esc(s.label)} <span class="meta">:${s.port}</span></div><div class="meta">${esc(s.command)} <span style="opacity:.7">in ${esc(s.cwd)}</span> · ${esc(s.note)}</div></div>
+        <div class="acts">
+          ${s.listening ? `<a class="btn" href="${esc(s.url)}" target="_blank" rel="noopener">Open ↗</a>` : ''}
+          ${s.managed ? (s.running ? `<button class="danger" data-act="stop">Stop</button>` : `<button class="primary" data-act="start">Start</button>`) : `<span class="pill on"><i></i> self</span>`}
+          ${s.log.length ? `<button data-act="log">Log</button>` : ''}
+        </div>
+        ${s.log.length ? `<pre class="log" hidden>${esc(s.log.join('\n'))}</pre>` : ''}
+      </div>`).join('');
+  }
+  $('#servers').addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const id = b.closest('.srv').dataset.id;
+    if (b.dataset.act === 'log') { const p = b.closest('.srv').querySelector('.log'); p.hidden = !p.hidden; return; }
+    b.disabled = true;
+    const r = await fetch(api(`servers/${id}/${b.dataset.act}`), { method: 'POST', headers: headers() }).then((r) => r.json()).catch((e) => ({ error: String(e) }));
+    toast(r.error ? 'Failed: ' + r.error : `${id}: ${b.dataset.act}${r.note ? ' (' + r.note + ')' : ''}`);
+    setTimeout(servers, 600);
+  });
+  async function downloads() {
+    const el = $('#downloads');
+    if (!online) { el.innerHTML = `<div class="item"><div><strong>console-debug.apk</strong> · <strong>axf-maven-repo</strong> · <strong>console-web-dist</strong><div class="meta">Attached to every green run of the Android workflow — open <a href="https://github.com/MossesX/AmberX-AXF/actions/workflows/android.yml" target="_blank" rel="noopener">CI runs ↗</a> → latest run → Artifacts. Direct links appear here when the API is online.</div></div></div>`; return; }
+    const j = await (await fetch(api('releases'), { cache: 'no-store' })).json();
+    if (!j.ok) { el.innerHTML = `<div class="meta">${esc(j.error || 'no build')} — <a href="${esc(j.actions)}" target="_blank" rel="noopener">CI runs ↗</a></div>`; return; }
+    const fmt = (n) => (n > 1e6 ? (n / 1e6).toFixed(1) + ' MB' : Math.round(n / 1e3) + ' KB');
+    el.innerHTML = `<div class="item"><div><strong>Latest green build</strong><div class="meta">${esc(j.run.sha)} · ${esc(j.run.message)} · ${new Date(j.run.at).toLocaleString()}</div></div><a class="btn" href="${esc(j.run.url)}" target="_blank" rel="noopener">Run ↗</a></div>` +
+      j.artifacts.map((a) => `<div class="item"><div><strong>${esc(a.name)}</strong><div class="meta">${fmt(a.size)} · expires ${a.expires.slice(0, 10)}${a.name.includes('apk') ? ' · Android showcase, debug-signed' : ''}</div></div>${a.proxied ? `<a class="btn primary" href="${HOST}${esc(a.download)}" target="_blank" rel="noopener">Download</a>` : `<a class="btn" href="${esc(j.run.url)}" target="_blank" rel="noopener">Get from run ↗</a>`}</div>`).join('') +
+      (j.artifacts.some((a) => a.proxied) ? '' : `<div class="meta">Set GITHUB_TOKEN on the API for one-click downloads (GitHub requires a token for artifact zips).</div>`);
+  }
+  let es;
+  function events() {
+    if (es) es.close(); if (!online || typeof EventSource === 'undefined') return;
+    es = new EventSource(api('events'));
+    es.onmessage = (ev) => { try { const l = JSON.parse(ev.data); out(`${new Date(l.at).toLocaleTimeString([], { hour12: false })} [${l.channel}] ${l.text}`); if (l.channel.startsWith('server:')) clearTimeout(events.t), events.t = setTimeout(servers, 800); } catch {} };
+  }
+  async function refresh() { await health(); await Promise.all([servers(), downloads()]); events(); }
+  $('#refresh').onclick = refresh;
+  $('#savehost').onclick = () => { HOST = $('#host').value.trim().replace(/\/$/, ''); TOKEN = $('#token').value.trim(); ls.set('host', HOST); ls.set('token', TOKEN); $('#livelink').href = HOST + '/panel'; refresh(); disconnectTerm(); };
+  refresh(); setInterval(() => { if (online) servers(); }, 15000);
+
+  /* ---------- terminal ---------- */
+  let ws, term, fit;
+  const hasX = typeof Terminal !== 'undefined';
+  if (!hasX) { $('#xterm').style.display = 'none'; $('#fallback').style.display = 'grid'; }
+  function setTerm(state) { $('#termpill').className = 'pill ' + (state === 'on' ? 'on' : state === 'off' ? 'off' : ''); $('#termpill').innerHTML = `<i></i> ${state === 'on' ? 'connected' : state === 'off' ? 'disconnected' : 'connecting'}`; $('#termconnect').textContent = state === 'on' ? 'Disconnect' : 'Connect'; }
+  function disconnectTerm() { if (ws) { ws.close(); ws = null; } setTerm('off'); }
+  function connectTerm() {
+    if (ws) return disconnectTerm();
+    const url = HOST.replace(/^http/, 'ws') + '/api/shell' + (TOKEN ? '?token=' + encodeURIComponent(TOKEN) : '');
+    setTerm('connecting');
+    try { ws = new WebSocket(url); } catch (e) { setTerm('off'); toast('WebSocket blocked here — open the live panel on the API host'); return; }
+    ws.binaryType = 'arraybuffer';
+    if (hasX && !term) {
+      term = new Terminal({ cursorBlink: true, fontFamily: 'IBM Plex Mono, ui-monospace, monospace', fontSize: 13, theme: { background: '#0c0d0b', foreground: '#ebe7dc', cursor: '#f0a53a', selectionBackground: '#3a3421' }, scrollback: 5000 });
+      try { fit = new FitAddon.FitAddon(); term.loadAddon(fit); } catch {}
+      term.open($('#xterm')); fit?.fit();
+      term.onData((d) => ws && ws.readyState === 1 && ws.send(d));
+      new ResizeObserver(() => { fit?.fit(); ws && ws.readyState === 1 && ws.send('\u0000resize:' + term.cols + ',' + term.rows); }).observe($('#xterm'));
+    }
+    ws.onopen = () => { setTerm('on'); if (term) { fit?.fit(); ws.send('\u0000resize:' + term.cols + ',' + term.rows); term.focus(); } };
+    ws.onmessage = (ev) => { const text = typeof ev.data === 'string' ? ev.data : new TextDecoder().decode(ev.data); if (term) term.write(text); else { $('#fbout').textContent += text.replace(/\x1b\][^\x07]*\x07/g, '').replace(/\x1b\[[0-9;?]*[A-Za-z]/g, ''); $('#fbout').scrollTop = 1e9; } };
+    ws.onclose = (e) => { ws = null; setTerm('off'); if (e.code === 4401) toast('Terminal refused: wrong token'); };
+    ws.onerror = () => { setTerm('off'); if (!sameOrigin) toast('Cannot open a terminal from this origin — use the live panel'); };
+  }
+  $('#termconnect').onclick = connectTerm;
+  $('#termclear').onclick = () => { term?.clear(); $('#fbout').textContent = ''; };
+  $('#fbin').addEventListener('keydown', (e) => { if (e.key === 'Enter' && ws) { ws.send(e.target.value + '\n'); e.target.value = ''; } });
+  setTerm('off');
+})();
+</script>
