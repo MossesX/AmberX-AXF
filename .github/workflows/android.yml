@@ -13,6 +13,7 @@ on:
 permissions:
   contents: read
   issues: write
+  packages: write
 
 jobs:
   engine:
@@ -69,6 +70,18 @@ jobs:
         with:
           name: console-debug.apk
           path: apps/console/app/build/outputs/apk/debug/*.apk
+      - name: Maven repo of every framework module (ai.amberx.axf:<module>:<version>)
+        uses: actions/upload-artifact@v4
+        with:
+          name: axf-maven-repo
+          path: ~/.m2/repository/ai/amberx/axf/**
+      - name: Publish framework modules to GitHub Packages (main only)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        working-directory: framework/android
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gradle publishAllPublicationsToGitHubPackagesRepository --no-daemon 2>&1 | tail -20
       - uses: actions/upload-artifact@v4
         if: always()
         with:
