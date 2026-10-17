@@ -1,15 +1,15 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-17T15:45:24.507Z",
+  "generatedAt": "2026-10-17T16:43:44.769Z",
   "summary": {
     "foundations": {
-      "built": 58,
+      "built": 65,
       "partial": 3,
-      "placeholder": 0,
+      "placeholder": 2,
       "planned": 0,
-      "total": 61,
-      "coverage": 95
+      "total": 70,
+      "coverage": 93
     },
     "kernel": {
       "built": 72,
@@ -341,6 +341,105 @@
       "wave": 1,
       "module": "axf-kernel",
       "notes": ""
+    },
+    {
+      "id": "f.interop.schemas",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Typed action descriptors: description + JSON Schema input/output, effect, idempotent, long-running, streams (auto-generates MCP tools)",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.exposure",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Default-deny exposure per action/event: LOCAL / LINKED (other AXF apps) / REMOTE (protocol adapters)",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.callers",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Call origins + remote callers: external calls must pass the caller's grants AND the app's UAC role; audited with correlation ids",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.callables",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Value-returning callable actions alongside fire-and-forget action-bus handlers",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.adapters",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Protocol adapter extension point + guarded ProtocolHost (MCP, axf-link, axHub connector plug in as modules, never kernel changes)",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.surface",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "surface@1 self-description of everything an app exposes, per audience",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.errors",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Stable wire error codes mapped to and from AxfFailure",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract written Oct 17 2026, not yet compiled"
+    },
+    {
+      "id": "f.interop.jobs",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Job manager for long-running external calls (progress, cancel, poll) — capability axf.jobs",
+      "tag": "lock",
+      "status": "placeholder",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract + typed placeholder"
+    },
+    {
+      "id": "f.interop.remote",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface — capability axf.remote",
+      "tag": "lock",
+      "status": "placeholder",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": "contract + typed placeholder"
     },
     {
       "id": "f.tokens",

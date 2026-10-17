@@ -13,6 +13,7 @@ on:
 permissions:
   contents: read
   issues: write
+  pull-requests: write
   packages: write
 
 jobs:
@@ -99,7 +100,19 @@ jobs:
         with: { gradle-version: '8.14.3' }
       - name: Kernel unit + conformance tests
         working-directory: framework/android
-        run: gradle :axf-kernel:test --no-daemon --stacktrace
+        run: gradle :axf-kernel:test --no-daemon --stacktrace 2>&1 | tee /tmp/test-kernel.log; exit ${PIPESTATUS[0]}
+      - name: Report kernel test failures (readable without artifact downloads)
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          {
+            echo "### Kernel test failures — ${{ github.sha }}"; echo; echo '```'
+            grep -hE "^e: |FAILED|What went wrong|Exception|Error:|expected" /tmp/test-kernel.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -80
+            for f in framework/android/axf-kernel/build/test-results/test/*.xml; do [ -f "$f" ] && grep -A6 "<failure" "$f" | head -40; done
+            echo '```'
+          } > /tmp/test-report.md
+          if [ "${{ github.event_name }}" = "pull_request" ]; then gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/test-report.md || true
+          else N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number'); if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/test-report.md; else gh issue comment "$N" --body-file /tmp/test-report.md; fi; fi
       - name: Generate one library per library template (compiled with the framework modules below)
         run: for t in $(ls framework/library-templates | grep -v '\.'); do node framework/cli/axf.mjs new-library ci-$t --template $t --ports android > /dev/null; done
       - name: Build every framework module

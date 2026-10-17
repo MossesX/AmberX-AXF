@@ -93,6 +93,13 @@ public class AxfKernel private constructor(
     public val scope: CoroutineScope = CoroutineScope(SupervisorJob() + platform.dispatchers.default)
     public val log: Log = Log(platform.logger, "AxfKernel", platform.clock, "kernel")
     public val modules: ModuleRegistry = ModuleRegistry({ context }) { id, st, err -> events.emit(KernelEvent.ModuleStateChanged(id, st.name, err)) }
+    /** Capability `axf.interop`: descriptors, surfaces, guarded external invocation, protocol adapter lifecycle. */
+    public val interop: ai.amberx.axf.kernel.interop.AxfInterop = ai.amberx.axf.kernel.interop.AxfInterop(
+        appId = manifest.appId, appVersion = manifest.appVersion, bus = runtime.actions, roleCan = { runtime.can(it) }, eventBus = events,
+        auditLog = { services.get(ai.amberx.axf.kernel.contract.AuditLog::class) },
+        jobManager = { services.get(ai.amberx.axf.kernel.interop.JobManager::class) },
+        now = { platform.clock.nowMillis() },
+    )
     public var started: Boolean = false
         private set
     public var startupMillis: Long = 0
@@ -123,6 +130,10 @@ public class AxfKernel private constructor(
         services.register(ai.amberx.axf.kernel.contract.WorkRegistry::class, ai.amberx.axf.kernel.contract.WorkRegistry(), "axf.workers")
         services.declarePlaceholder("axf.work")
         services.declarePlaceholder("axf.plugins")
+        // Interop: the protocol-neutral gate every adapter goes through. Jobs + outbound calls are placeholders until a module provides them.
+        services.register(ai.amberx.axf.kernel.interop.AxfInterop::class, interop, "axf.interop")
+        services.declarePlaceholder("axf.jobs")
+        services.declarePlaceholder("axf.remote")
         services.register(ai.amberx.axf.kernel.contract.WindowManager::class, ai.amberx.axf.kernel.contract.WindowManager(), "axf.windows")
         services.register(ai.amberx.axf.kernel.data.QueryClient::class, ai.amberx.axf.kernel.data.QueryClient(scope, platform.clock), "axf.queries")
         for (p in ExtensionPoints.ALL) extensions.declare(p)
@@ -131,7 +142,14 @@ public class AxfKernel private constructor(
         pendingModules.forEach { m -> modules.add(m).onErr { log.e("module ${m.id}: ${it.message}") } }
         // Modules may contribute actions and asset types through extension points; bridge them into the runtime.
         extensions.onChange(ExtensionPoints.ACTIONS) { syncActions() }
+        extensions.onChange(ExtensionPoints.ACTION_DESCRIPTORS) { syncDescriptors() }
+        extensions.onChange(ExtensionPoints.EVENT_DESCRIPTORS) { syncDescriptors() }
         extensions.onChange(ExtensionPoints.ASSET_TYPES) { for (c in extensions.get(ExtensionPoints.ASSET_TYPES)) types.register(c.spec) }
+    }
+
+    private fun syncDescriptors() {
+        for (c in extensions.get(ExtensionPoints.ACTION_DESCRIPTORS)) interop.describe(c.descriptor, c.callable)
+        for (c in extensions.get(ExtensionPoints.EVENT_DESCRIPTORS)) interop.describeEvent(c.descriptor)
     }
 
     private fun syncActions() { for (c in extensions.get(ExtensionPoints.ACTIONS)) runtime.actions.register(c.id, c.meta, c.handler) }
@@ -148,6 +166,8 @@ public class AxfKernel private constructor(
         for (src in extensions.get(ExtensionPoints.ASSET_SOURCES)) runCatching { src.load() }.getOrElse { log.w("asset source failed", it); emptyList() }.forEach { raw -> registry.register(raw, AssetSource.APP).takeIf { !it.ok }?.let { log.w("asset rejected: ${it.errors}") } }
         runtime.recompile()
         modules.startAll()
+        syncDescriptors()
+        if (flags.isEnabled(KernelFlags.INTEROP.id)) interop.startAdapters(extensions.get(ExtensionPoints.PROTOCOL_ADAPTERS)) { a, f -> log.e("adapter ${a.info.tag} (${a.module}): ${f.message}") }
         started = true
         startupMillis = platform.clock.nowMillis() - t0
         platform.telemetry.timing("kernel.start", startupMillis)
@@ -155,7 +175,7 @@ public class AxfKernel private constructor(
         log.i("kernel started", "modules" to modules.all().size.toString(), "assets" to registry.count().toString(), "ms" to startupMillis.toString())
     }
 
-    public suspend fun stop() { modules.stopAll(); started = false; events.emit(KernelEvent.Lifecycle("stopped")) }
+    public suspend fun stop() { interop.stopAdapters(); modules.stopAll(); started = false; events.emit(KernelEvent.Lifecycle("stopped")) }
 
     public suspend fun addModule(m: AxfModule): Unit = modules.addAndStart(m).onErr { log.e("module ${m.id}: ${it.message}") }.let { }
 
@@ -216,5 +236,6 @@ public object KernelFlags {
     public val REMOTE_CONFIG: Flag = Flag("axf.remoteConfig", "Apply remote config/flags from the VPS", default = false)
     public val DYNAMIC_MODULES: Flag = Flag("axf.dynamicModules", "Allow modules to be added after startup", default = true)
     public val STRICT_ASSETS: Flag = Flag("axf.strictAssets", "Refuse to start when any bundled asset fails validation", default = false)
-    public val ALL: List<Flag> = listOf(HOT_RELOAD, DEVTOOLS, REMOTE_CONFIG, DYNAMIC_MODULES, STRICT_ASSETS)
+    public val INTEROP: Flag = Flag("axf.interop", "Start contributed protocol adapters (MCP, axf-link, axHub) with the kernel", default = true)
+    public val ALL: List<Flag> = listOf(HOT_RELOAD, DEVTOOLS, REMOTE_CONFIG, DYNAMIC_MODULES, STRICT_ASSETS, INTEROP)
 }

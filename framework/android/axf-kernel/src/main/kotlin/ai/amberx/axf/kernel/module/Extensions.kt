@@ -84,7 +84,11 @@ public object ExtensionPoints {
     public val WORKERS: ExtensionPoint<Any> = ExtensionPoint("axf.workers", Any::class, "Background workers registered with the work scheduler")
     public val PLUGIN_SOURCES: ExtensionPoint<Any> = ExtensionPoint("axf.plugin-sources", Any::class, "Where plugins are discovered (files, QR, URL, store)")
     public val UI_KITS: ExtensionPoint<Any> = ExtensionPoint("axf.ui-kits", Any::class, "UI kits: a UiKitSpec plus the port's implementation table (third-party widget libraries)")
-    public val ALL: List<ExtensionPoint<*>> = listOf(ACTIONS, ASSET_TYPES, ASSET_SOURCES, ROUTES, SETTINGS, MENU_ITEMS, LOG_SINKS, TELEMETRY, THEME_SOURCES, AUTH_PROVIDERS, BILLING_PROVIDERS, MIGRATIONS, SHELL_REGIONS, DIALOGS, COMMANDS, DEVTOOLS_PANELS, MACROS, WORKERS, PLUGIN_SOURCES, UI_KITS)
+    // Interop (protocol-neutral): adapters for MCP / axf-link / axHub / …, and the descriptors that decide what they may expose.
+    public val PROTOCOL_ADAPTERS: ExtensionPoint<ai.amberx.axf.kernel.interop.ProtocolAdapter> = ExtensionPoint("axf.protocol-adapters", ai.amberx.axf.kernel.interop.ProtocolAdapter::class, "Protocol adapters (MCP, axf-link, axHub connector, …) started with the kernel")
+    public val ACTION_DESCRIPTORS: ExtensionPoint<ai.amberx.axf.kernel.interop.ActionDescriptorContribution> = ExtensionPoint("axf.action-descriptors", ai.amberx.axf.kernel.interop.ActionDescriptorContribution::class, "Typed action descriptors (schemas, exposure) + optional value-returning callables")
+    public val EVENT_DESCRIPTORS: ExtensionPoint<ai.amberx.axf.kernel.interop.EventDescriptorContribution> = ExtensionPoint("axf.event-descriptors", ai.amberx.axf.kernel.interop.EventDescriptorContribution::class, "Event topics external subscribers may receive")
+    public val ALL: List<ExtensionPoint<*>> = listOf(ACTIONS, ASSET_TYPES, ASSET_SOURCES, ROUTES, SETTINGS, MENU_ITEMS, LOG_SINKS, TELEMETRY, THEME_SOURCES, AUTH_PROVIDERS, BILLING_PROVIDERS, MIGRATIONS, SHELL_REGIONS, DIALOGS, COMMANDS, DEVTOOLS_PANELS, MACROS, WORKERS, PLUGIN_SOURCES, UI_KITS, PROTOCOL_ADAPTERS, ACTION_DESCRIPTORS, EVENT_DESCRIPTORS)
 }
 
 /* Contribution shapes for the standard points. Kept in the kernel so every port agrees on them. */

@@ -238,6 +238,78 @@
               "tag": "lock",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "f.interop.schemas",
+              "title": "Typed action descriptors: description + JSON Schema input/output, effect, idempotent, long-running, streams (auto-generates MCP tools)",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.exposure",
+              "title": "Default-deny exposure per action/event: LOCAL / LINKED (other AXF apps) / REMOTE (protocol adapters)",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.callers",
+              "title": "Call origins + remote callers: external calls must pass the caller's grants AND the app's UAC role; audited with correlation ids",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.callables",
+              "title": "Value-returning callable actions alongside fire-and-forget action-bus handlers",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.adapters",
+              "title": "Protocol adapter extension point + guarded ProtocolHost (MCP, axf-link, axHub connector plug in as modules, never kernel changes)",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.surface",
+              "title": "surface@1 self-description of everything an app exposes, per audience",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.errors",
+              "title": "Stable wire error codes mapped to and from AxfFailure",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.jobs",
+              "title": "Job manager for long-running external calls (progress, cancel, poll) \u2014 capability axf.jobs",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "f.interop.remote",
+              "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface \u2014 capability axf.remote",
+              "note": "kernel/interop \u2014 protocol-neutral; see framework/spec/INTEROP.md",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
             }
           ]
         },
