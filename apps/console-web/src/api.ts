@@ -26,9 +26,13 @@ export interface EngineResult { ok: boolean; log?: string[]; error?: string; [k:
 
 /* ---------------- transport ---------------- */
 
-let backendUp: boolean | null = null;
+/** Static preview build (VITE_AXF_STATIC=1): no backend, data read from ./data next to the page. */
+const STATIC = import.meta.env.VITE_AXF_STATIC === '1';
+const DATA = STATIC ? 'data/' : '/data/';
+let backendUp: boolean | null = STATIC ? false : null;
 export async function health(): Promise<boolean> {
-  try { const r = await fetch('/api/health', { cache: 'no-store' }); backendUp = r.ok; } catch { backendUp = false; }
+  if (STATIC) return (backendUp = false);
+  try { const r = await fetch('/api/health', { cache: 'no-store' }); backendUp = r.ok && (r.headers.get('content-type') ?? '').includes('json'); } catch { backendUp = false; }
   return backendUp;
 }
 export const isBackendUp = () => backendUp === true;
@@ -38,12 +42,13 @@ async function getJson<T>(api: string, fallback: string): Promise<T> {
     try { const r = await fetch(`/api/${api}`, { cache: 'no-store' }); if (r.ok) { backendUp = true; return (await r.json()) as T; } } catch { /* fall through */ }
     backendUp = false;
   }
-  const r = await fetch(`/data/${fallback}`, { cache: 'no-store' });
+  const r = await fetch(`${DATA}${fallback}`, { cache: 'no-store' });
   if (!r.ok) throw new Error(`No ${fallback} (run npm run sync)`);
   return (await r.json()) as T;
 }
 
 export async function post(api: string, body: unknown): Promise<EngineResult> {
+  if (STATIC) return { ok: false, error: 'Preview copy: the build engine runs on the VPS. Install it with deploy/install-console.sh, then use https://console.amberxai.com — the command is recorded below.' };
   try {
     const r = await fetch(`/api/${api}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
     const j = (await r.json().catch(() => ({}))) as EngineResult;
