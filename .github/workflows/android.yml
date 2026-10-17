@@ -1,0 +1,61 @@
+name: Android framework + console
+
+# Builds everything the sandbox cannot (Maven + Android SDK): the kernel tests, every framework module,
+# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk + framework maven repo.
+
+on:
+  push:
+    branches: [main]
+    paths: ['framework/**', 'apps/console/**', '.github/workflows/android.yml']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  engine:
+    name: Build engine sweep (Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node framework/cli/axf.mjs validate --framework
+      - run: node framework/cli/tracker.mjs --check
+      - run: node framework/cli/axf.mjs libraries
+      - name: init every template + boilerplate, install a library, import a UI library
+        run: |
+          set -e
+          for t in react-ts android-compose; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
+          for b in $(node -e "console.log(require('./framework/boilerplates/index.json').items.map(i=>i.id).join(' '))"); do node framework/cli/axf.mjs init /tmp/sweep/b-$b --name "B $b" --template android-compose --boilerplate $b > /dev/null; done
+          node framework/cli/axf.mjs install browser /tmp/sweep/t-android-compose --yes
+          mkdir -p /tmp/fakelib && printf 'package x\nval c = Color(0xFF7C3AED)\nval s = MaterialTheme.colorScheme.surface\n' > /tmp/fakelib/A.kt
+          node framework/cli/axf.mjs import-ui --name "Fake UI" --kit fake --source local --path /tmp/fakelib --apply /tmp/sweep/t-android-compose
+          node framework/cli/axf.mjs validate /tmp/sweep/t-android-compose
+
+  android:
+    name: Gradle — framework modules, kernel tests, console APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.14.3' }
+      - name: Kernel unit + conformance tests
+        working-directory: framework/android
+        run: gradle :axf-kernel:test --no-daemon --stacktrace
+      - name: Build every framework module
+        working-directory: framework/android
+        run: gradle assembleDebug publishToMavenLocal --no-daemon
+      - name: Build the Dev Console
+        working-directory: apps/console
+        run: gradle :app:assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: console-debug.apk
+          path: apps/console/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kernel-test-reports
+          path: framework/android/axf-kernel/build/reports/tests/**

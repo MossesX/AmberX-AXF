@@ -187,11 +187,14 @@ public object ThemeEngine {
         v["--fx-font"] = s.fontFamily; v["--fx-font-display"] = s.fontDisplay; v["--fx-font-mono"] = s.fontMono
         v["--fx-font-size"] = "${s.fontSize}px"
         v["--fx-radius-sm"] = "${s.radius.sm}px"; v["--fx-radius-md"] = "${s.radius.md}px"; v["--fx-radius-lg"] = "${s.radius.lg}px"
-        v["--fx-space"] = "${st.space}px"; v["--fx-border-w"] = "${s.borderWidth}px"
+        v["--fx-space"] = "${jsNum(st.space)}px"; v["--fx-border-w"] = "${s.borderWidth}px"
         v["--fx-shadow-sm"] = s.shadow.sm; v["--fx-shadow-md"] = s.shadow.md; v["--fx-shadow-lg"] = s.shadow.lg
         v["--fx-motion"] = "${s.motion}ms"; v["--fx-blur"] = "${s.blur}px"
-        v["--fx-heading-weight"] = s.headingWeight.toString(); v["--fx-tracking"] = "${s.tracking}em"
-        v["--fx-row-h"] = "${st.rowHeight.toInt()}px"; v["--fx-density-k"] = st.densityK.toString()
+        v["--fx-heading-weight"] = s.headingWeight.toString(); v["--fx-tracking"] = "${jsNum(s.tracking)}em"
+        v["--fx-row-h"] = "${st.rowHeight.toInt()}px"; v["--fx-density-k"] = jsNum(st.densityK)
         return v
     }
 }
+
+/** Formats a number the way JavaScript `String(n)` does (no trailing `.0`), so cssVars match the reference engine byte for byte. */
+internal fun jsNum(d: Double): String = if (d == Math.floor(d) && !d.isInfinite()) d.toLong().toString() else d.toString()

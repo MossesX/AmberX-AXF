@@ -20,7 +20,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-/* ---- models mirrored from framework/catalog/*.json, tracker.json and framework/boilerplates ---- */
+/* ---- models mirrored from framework/catalog JSON, tracker.json and framework/boilerplates ---- */
 
 data class Suggestion(val id: String, val title: String)
 data class CatalogItem(val id: String, val title: String, val note: String, val tag: String, val recommended: Boolean, val suggests: List<Suggestion>, val tab: String, val group: String)
@@ -80,7 +80,7 @@ data class InstallableLibrary(val id: String, val module: String, val name: Stri
     }
 }
 
-/** Everything the console tracks, loaded from the APK (`assets/axf/console/**`) with local overrides in the document store. */
+/** Everything the console tracks, loaded from the APK (`assets/axf/console`) with local overrides in the document store. */
 class ConsoleRepo(private val context: Context, private val docs: JsonDocumentStore?) {
     private val module = "axf.console"
     private val _catalog = MutableStateFlow(Catalog("0.2.0", emptyList()))

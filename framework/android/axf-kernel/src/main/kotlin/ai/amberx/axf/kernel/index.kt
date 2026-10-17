@@ -3,7 +3,7 @@
  *
  * Package map (mirrors framework/core on the web port):
  *   asset/     envelope, open type registry, validator, registry, typed models   (core/types.ts, registry.ts, validate.ts)
- *   engine/    theme, layout, component-style, uac, context-menu, action bus     (core/engines/*)
+ *   engine/    theme, layout, component-style, uac, context-menu, action bus     (core/engines)
  *   runtime/   AxfState + AxfRuntime                                            (core/runtime.ts)
  *   module/    AxfModule, ModuleRegistry, ExtensionRegistry, ServiceRegistry, placeholders   (new — Foundations)
  *   event/     typed EventBus                                                   (new)
