@@ -78,7 +78,8 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
 </header>
 
 <div id="static" class="notice warn" style="margin-top:16px" hidden>
-  This copy runs on claude.ai, which can't reach your VPS directly. Live controls, downloads and the terminal work when the panel is opened from the API itself: <a id="livelink" href="#" target="_blank" rel="noopener">open the live panel</a> (set the host below if it differs). Commands and links still work here.
+  This copy runs on claude.ai, which can't reach your VPS directly. Live controls, downloads and the terminal work in the copy the API serves: <a id="livelink" href="#" target="_blank" rel="noopener">open the live panel</a>. Not deployed yet? Run this once as root on the VPS (Hostinger browser terminal), then point the <code>console</code> A record at the server:
+  <div class="cmd" style="margin-top:6px"><div><code>curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install-console.sh | bash</code><small>Builds the console + API + panel container behind Coolify's Traefik at console.amberxai.com, prints the AXF_TOKEN for this panel, and auto-updates from main every 5 minutes.</small></div><button data-copy="curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install-console.sh | bash">Copy</button></div>
 </div>
 
 <div class="board">
@@ -133,7 +134,7 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
   const $ = (s) => document.querySelector(s);
   const ls = { get: (k, d) => { try { return localStorage.getItem('axf-panel:' + k) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem('axf-panel:' + k, v); } catch {} } };
   const sameOrigin = /^https?:/.test(location.protocol) && !/claude\.ai$/.test(location.hostname);
-  let HOST = ls.get('host', sameOrigin ? location.origin : 'http://localhost:7090').replace(/\/$/, '');
+  let HOST = ls.get('host', sameOrigin ? location.origin : 'https://console.amberxai.com').replace(/\/$/, '');
   let TOKEN = ls.get('token', '');
   $('#host').value = HOST; $('#token').value = TOKEN;
   const api = (p) => HOST + '/api/' + p;
@@ -159,6 +160,13 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
       ['node framework/cli/tracker.mjs [--check]', 'Regenerate tracker.json + catalog/libraries.json from status.json'],
       ['node framework/cli/axf.mjs dev apps/my-app --port 7070', 'Live-reload assets to devices (HMR for everything that is JSON)'],
       ['node framework/cli/axf.mjs serve --port 7080 --token secret', 'Node HTTP build driver (used by the Android console)'],
+    ]],
+    ['Deploy (VPS)', [
+      ['curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install-console.sh | bash', 'Install / update the Dev Console + API + panel at https://console.amberxai.com (prints AXF_TOKEN)'],
+      ['GITHUB_TOKEN=ghp_… bash /opt/axf/deploy/install-console.sh', 'Re-run with a GitHub token to enable one-click CI artifact downloads'],
+      ['cat /opt/axf/.axf-console/env', 'Show the saved AXF_TOKEN / GITHUB_TOKEN on the VPS'],
+      ['docker logs -f axf-console', 'Follow the API container'],
+      ['curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install.sh | bash', 'Install / update the demo site at xaf.amberxai.com'],
     ]],
     ['Web console + API', [
       ['cd apps/console-web && npm install && npm run dev', 'Vite dev server on :5173 (proxies /api to :7090)'],

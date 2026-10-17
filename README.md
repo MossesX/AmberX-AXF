@@ -70,6 +70,18 @@ AXF.dispatch('file.save'); AXF.toast('Hi', 'success')
 Desktop and Android packaging (`targets` is recorded in the manifest but only the web build exists), the
 no-code visual asset designer, and the HTTP/MCP drivers for the build engine.
 
+## Deploying the Dev Console (console.amberxai.com)
+
+One command as root on the VPS builds the console + Python API + server panel container and puts it behind
+Coolify's Traefik with HTTPS, then keeps it updated from `main` every 5 minutes:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install-console.sh | bash
+```
+
+It prints the `AXF_TOKEN` the panel needs for server control and the terminal (`/panel`). Add `GITHUB_TOKEN=…`
+in front for one-click CI artifact downloads (APK, Maven repo). Point an A record `console` → the VPS IP.
+
 ## Deploying the demo (xaf.amberxai.com)
 
 `.github/workflows/deploy.yml` validates and builds `apps/demo` on every push to `main` and publishes `dist/`
