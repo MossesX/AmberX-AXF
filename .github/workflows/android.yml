@@ -38,7 +38,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
-      - uses: android-actions/setup-android@v3
+      - name: Android SDK (preinstalled on ubuntu-latest; make sure API 35 + build-tools are there)
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" "platform-tools" > /dev/null
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: '8.14.3' }
       - name: Kernel unit + conformance tests
