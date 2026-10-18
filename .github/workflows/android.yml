@@ -72,11 +72,10 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
-      - name: AI assistant + agent manager plugins (fake providers; agents, memory, training, workflows, add-ons, integration)
+      - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
-          python apps/console-web/plugins/ai-assistant/test.py
-          python apps/console-web/plugins/agent-manager/test.py
+          for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
       - name: Library templates — generate every template for web + Python and compile them
         run: |
           set -e
