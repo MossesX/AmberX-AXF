@@ -44,3 +44,5 @@ sees each batch's outcome (status, errors, exit codes, output tail). Routes `bat
 **Claude Code (subscription) provider:** the CLI's own Edit/Write/Bash stay off; the same tools are handed to it as an
 MCP server (`server/cli_bridge.py`, stdio) that calls back into the turn over a private per-turn unix socket, so the CLI
 gets the same safety list, approval card and snapshot rule as API providers.
+
+Other plugins start a chat (by capability, never by folder): action `ai.chat.start:<uri-encoded JSON {agentId, message, title?, profileId?, model?}>` opens the chat dialog on a new conversation and sends the message.

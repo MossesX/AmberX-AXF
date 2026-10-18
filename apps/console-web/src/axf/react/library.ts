@@ -32,7 +32,12 @@ export interface AxfWebLibrary {
   settingsPanels?: SettingsPanel[];
   /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
+  /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
+  slots?: Record<string, SlotDef[]>;
 }
+
+/** Content for a named slot; `props` are what the view passes to `<Slot name=… props=… />`. */
+export interface SlotDef { id: string; order?: number; render: (props: Record<string, unknown>) => ReactNode }
 
 /** A banner contributed by a library or plugin; lower `order` shows first. */
 export interface BannerDef { id: string; order?: number; render: () => ReactNode }
@@ -55,18 +60,20 @@ export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[
 }
 
 /** Register every library with the runtime and merge their views / dialogs / tab renderers for AppShell. */
-export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; banners: BannerDef[]; missing: string[] } {
+export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; banners: BannerDef[]; slots: Record<string, SlotDef[]>; missing: string[] } {
   const { ordered, missing } = orderLibraries(libs);
   const views: ViewMap = {};
   const dialogs: DialogMap = {};
   const tabs: TabRenderers = {};
   const banners: BannerDef[] = [];
+  const slots: Record<string, SlotDef[]> = {};
   for (const l of ordered) {
     l.register?.(rt);
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
     for (const b of l.banners ?? []) if (!banners.some((x) => x.id === b.id)) banners.push(b);
+    for (const [name, defs] of Object.entries(l.slots ?? {})) for (const d of defs) { const list = (slots[name] ??= []); if (!list.some((x) => x.id === d.id)) list.push(d); }
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
@@ -76,5 +83,6 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
-  return { views, dialogs, tabs, banners, missing };
+  for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
+  return { views, dialogs, tabs, banners, slots, missing };
 }

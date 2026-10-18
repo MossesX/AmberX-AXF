@@ -1,0 +1,25 @@
+/* Feature assistant plugin. Theme tokens only, axp-feature-assist prefix (framework/spec/THEMING.md). */
+.axp-feature-assist { display: flex; flex-direction: column; gap: var(--fx-space); margin-bottom: var(--fx-space); padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-feature-assist__head { all: unset; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-feature-assist__row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-feature-assist__narrow { width: auto; max-width: 130px }
+.axp-feature-assist__ib { all: unset; cursor: pointer; display: inline-flex; padding: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); color: var(--fx-muted) }
+.axp-feature-assist__ib:hover { color: var(--fx-text); background: var(--fx-surface2) }
+.axp-feature-assist__draft { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-feature-assist__draft.is-sub { margin-left: calc(var(--fx-space) * 1.5); background: var(--fx-surface2) }
+.axp-feature-assist__acc, .axp-feature-assist__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5); font-size: calc(var(--fx-font-size) * 13 / 14); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); overflow-wrap: anywhere }
+.axp-feature-assist__clash { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning); background: var(--fx-surface2); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-feature-assist__clash ul { margin: 0; padding-left: var(--fx-space) }
+.axp-feature-assist__opt { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-feature-assist__bad { color: var(--fx-danger); margin: 0 }
+.axp-feature-assist__building { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-accent-soft); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-feature-assist__notes { width: auto; min-width: 0; flex: 1 }
+.axp-feature-assist__dialog { width: min(720px, 92vw); max-width: 100% }
+.axp-feature-assist__steps { list-style: none; margin: 0; padding: 0; display: flex; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-feature-assist__steps li { padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted) }
+.axp-feature-assist__steps li.is-now { border-color: var(--fx-accent); color: var(--fx-text); background: var(--fx-accent-soft) }
+.axp-feature-assist__steps li.is-done { color: var(--fx-success); border-color: var(--fx-success) }
+.axp-feature-assist__order { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--fx-space) }
+.axp-feature-assist__order ol { margin: 0; padding-left: calc(var(--fx-space) * 1.5); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-feature-assist__order li.is-target { font-weight: 700 }
+.axp-feature-assist__order li.is-moved { color: var(--fx-success) }

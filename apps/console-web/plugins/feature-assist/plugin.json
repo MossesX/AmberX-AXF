@@ -1,0 +1,22 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.feature-assist",
+  "name": "Feature assistant",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Plain-English features for the Feature Planner: describe a feature in your own words, the AXF expert drafts proper plan entries (sub-features, dependencies, ports, model) and flags clashes; you edit and approve; they go to the plan and the pending list. Build with Mosses on any unbuilt feature: confirm, plan, new build order, model choice (Opus now, Fable later), then Mosses builds it in the assistant chat with approval cards and snapshots. Settings → Plugins → Feature assistant.",
+  "targets": ["axf-console"],
+  "provides": ["slot:plan.top", "slot:plan.feature", "dialog:feature-assist.build", "settings-tab:feature-assist", "action:feature-assist.build"],
+  "optional": ["service:axf.llm@1", "service:axf.agents@1", "service:axf.containers@1", "service:axf.snapshots@1"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "replacedBy": "pending item feature-assist-plugin (Fable)" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/feature-assist",
+    "env": ["AXF_FEATURE_ASSIST_DIR", "AXF_FEATURE_EXPERT", "AXF_FEATURE_BUILDER"],
+    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+  }
+}

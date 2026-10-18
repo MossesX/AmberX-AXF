@@ -598,7 +598,12 @@ def new_conversation(body: dict[str, Any] | None = None) -> dict[str, Any]:
     settings = dict((body or {}).get("settings") or {})
     if "agentId" not in settings and cfg.get("defaultAgent") and _agents():
         settings["agentId"] = cfg["defaultAgent"]
-    return {"conversation": store.create_conversation(settings)}
+    c = store.create_conversation(settings)
+    title = str((body or {}).get("title") or "").strip()
+    if title:
+        c["title"] = re.sub(r"\s+", " ", title)[:120]
+        store.save_conversation(c)
+    return {"conversation": c}
 
 
 @router.get("/conversations/{cid}")

@@ -13,4 +13,5 @@ export { AssetPreview } from './studio/AssetPreview';
 export { builtinDialogs } from './studio/builtinDialogs';
 export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, windowDialogs, type TabRenderer, type TabRenderers } from './windows/WindowHost';
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
-export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef } from './library';
+export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
+export { Slot, SlotsProvider, useSlotFilled } from './components/Slots';

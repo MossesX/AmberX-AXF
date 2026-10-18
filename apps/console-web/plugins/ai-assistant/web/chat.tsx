@@ -26,7 +26,10 @@ export function useStatus(): Status | undefined {
   return useSyncExternalStore(statusStore.subscribe, statusStore.get, statusStore.get);
 }
 
-export function ChatPanel({ compact = false, initialContext, onClose }: { compact?: boolean; initialContext?: Ctx; onClose?: () => void }) {
+/** `start`: open a fresh conversation with this agent and send this message at once (e.g. “Build with Mosses”). */
+export interface ChatStart { agentId?: string; message: string; title?: string; profileId?: string | null; model?: string | null }
+
+export function ChatPanel({ compact = false, initialContext, onClose, start }: { compact?: boolean; initialContext?: Ctx; onClose?: () => void; start?: ChatStart }) {
   const rt = useRuntime();
   const axState = useAxfState();
   const status = useStatus();
@@ -58,6 +61,20 @@ export function ChatPanel({ compact = false, initialContext, onClose }: { compac
     catch { setConv(null); remember(''); }
   };
   useEffect(() => { void loadList(); }, [archived]);
+  const started = useRef(false);
+  useEffect(() => {
+    if (!start || started.current) return;
+    started.current = true;
+    void (async () => {
+      try {
+        const settings: ConvSettings = { ...(start.agentId ? { agentId: start.agentId } : {}), ...(start.profileId ? { profileId: start.profileId } : {}), ...(start.profileId && start.model ? { model: start.model } : {}) };
+        const r = await post<{ conversation: Conversation }>('conversations', { settings, title: start.title });
+        setConv(r.conversation); remember(r.conversation.id); if (compact) setShowList(false);
+        const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content: start.message, createdAt: Date.now(), meta: { context: null } };
+        await run({ content: start.message }, opt, r.conversation);
+      } catch (e) { setErr((e as Error).message); }
+    })();
+  }, [start]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { const t = setTimeout(() => void loadList(), 250); return () => clearTimeout(t); }, [q]);
   useEffect(() => { const last = recall(); if (last) void open(last); }, []);
   useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [conv?.messages.length, live?.text, live?.tools.length]);
@@ -91,11 +108,11 @@ export function ChatPanel({ compact = false, initialContext, onClose }: { compac
     return r.conversation;
   };
 
-  const run = async (body: Record<string, unknown>, optimistic?: Message) => {
+  const run = async (body: Record<string, unknown>, optimistic?: Message, c0?: Conversation) => {
     if (live) return;
     setErr('');
     let c: Conversation;
-    try { c = await ensureConv(); } catch (e) { setErr((e as Error).message); return; }
+    try { c = c0 ?? await ensureConv(); } catch (e) { setErr((e as Error).message); return; }
     if (optimistic) {
       const msgs = body.editMessageId ? c.messages.slice(0, c.messages.findIndex((m) => m.id === body.editMessageId)) : c.messages;
       setConv({ ...c, messages: [...msgs, optimistic] });

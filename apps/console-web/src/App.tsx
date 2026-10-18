@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, AssetStudio, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -99,11 +99,13 @@ function Shell() {
     : allViews;
   return (
     <div {...drop} style={{ display: 'contents' }}>
+      <SlotsProvider slots={plugins.contributed.slots}>
       <AppShell
         views={withBanner}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />
+      </SlotsProvider>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, useRuntime, useWindowManager } from '../axf/react';
+import { Button, Chip, Container, Icon, Slot, useRuntime, useWindowManager } from '../axf/react';
 import * as api from '../api';
 import type { PlanFeature, PlanStatus, PortId } from '../api';
 import { PreviewPane } from './Boilerplates';
@@ -21,6 +21,10 @@ const store: PlanStore = {
   set(p) { Object.assign(this, p); this.snapshot = { features: this.features, loaded: this.loaded, error: this.error }; this.emit(); },
 };
 const localEdits = (): Record<string, PlanFeature | null> => api.readLocal(EDITS_KEY, {});
+
+/** Plugins that change the plan through the API (e.g. a plain-English feature writer) fire this to refresh every copy. */
+export const PLAN_CHANGED = 'axf:plan-changed';
+globalThis.addEventListener?.(PLAN_CHANGED, () => { void loadPlanStore(true); });
 
 export async function loadPlanStore(force = false) {
   if (store.loaded && !force) return;
@@ -167,6 +171,8 @@ export function Plan() {
           <Button icon="refresh" onClick={() => loadPlanStore(true).then(() => log('plan reloaded'))}>Reload</Button>
         </div>
       </header>
+      {/* Extension point: plugins add boxes here (e.g. “Describe a feature” in plain English). */}
+      <Slot name="plan.top" props={{ features }} />
 
       <div className="pl-bar" role="img" aria-label="Features by status">
         {api.PLAN_STATUSES.map((s) => counts[s] ? <button key={s} className={`pl-bar__seg is-${s} ${f.statuses.has(s) ? 'is-on' : ''}`} style={{ flexGrow: counts[s] }} title={`${s}: ${counts[s]} (${Math.round((counts[s]! / total) * 100)}%)`} onClick={() => toggleStatus(s)}><span>{s} {counts[s]}</span></button> : null)}
@@ -205,7 +211,7 @@ export function Plan() {
 function Row({ x, a, sel, onSel }: { x: PlanFeature; a: Analysis; sel: string | null; onSel: (id: string) => void }) {
   const w = warnCount(x, a);
   return (
-    <button className={`pl-row ${sel === x.id ? 'is-selected' : ''}`} onClick={() => onSel(x.id)}>
+    <button className={`pl-row ${sel === x.id ? 'is-selected' : ''}`} onClick={() => onSel(x.id)} data-fx-ctx-target="axf-plan-feature" data-fx-ctx-payload={x.id}>
       <span className={`pl-dot is-${x.status}`} title={x.status} />
       <span className="pl-row__main"><span className="pl-row__title">{x.title}</span><span className="fx-muted fx-small fx-mono">{x.id}{x.kind !== 'feature' ? ` · ${x.kind}` : ''}</span></span>
       <span className="pl-ports">{api.PORTS.map((p) => <span key={p} className={`pl-port is-${x.ports[p]?.status ?? 'none'}`} title={`${p}: ${x.ports[p]?.status ?? 'not applicable'}`}>{p[0]!.toUpperCase()}</span>)}</span>
@@ -326,6 +332,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
           {d.epic && <button className="fx-chip" onClick={() => go(d.epic!)}>epic: {an.byId.get(d.epic)?.title ?? d.epic}</button>}
           {d.parent && <button className="fx-chip" onClick={() => go(d.parent!)}>parent: {an.byId.get(d.parent)?.title ?? d.parent}</button>}
         </div>
+        <Slot name="plan.feature" props={{ feature: d }} />
         <div className="pl-fields">
           <label>Status<select className="fx-input" value={d.status} onChange={(e) => patch({ status: e.target.value as PlanStatus })}>{api.PLAN_STATUSES.map((x) => <option key={x}>{x}</option>)}</select></label>
           <label>Priority<select className="fx-input" value={d.priority} onChange={(e) => patch({ priority: e.target.value })}>{PRIORITIES.map((x) => <option key={x}>{x}</option>)}</select></label>

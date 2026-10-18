@@ -2,7 +2,7 @@ import { Button, Container, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, type Ctx } from './api';
-import { ChatPanel, useStatus } from './chat';
+import { ChatPanel, type ChatStart, useStatus } from './chat';
 import { BehaviorPanel, PromptsPanel, ProvidersPanel, SetupWizard, UsagePanel } from './settings';
 import './ai-assistant.css';
 
@@ -40,13 +40,20 @@ export const plugin: AxfWebLibrary = {
   provides: ['axf.ai-assistant'],
   register(rt) {
     rt.actions.register('ai-assistant.open', ([prompt]) => rt.openDialog('ai-assistant.chat', prompt ? { note: prompt } : {}), { label: 'Open the AI assistant' });
+    // Generic, capability-style action other plugins use (never this folder's name):
+    //   ai.chat.start:<uri-encoded JSON {agentId?, message, title?, profileId?, model?}>
+    rt.actions.register('ai.chat.start', ([arg]) => {
+      let start: ChatStart | null = null;
+      try { start = JSON.parse(decodeURIComponent(arg ?? '')) as ChatStart; } catch { /* bad payload */ }
+      if (start?.message) rt.openDialog('ai-assistant.chat', { start });
+    }, { label: 'Start an AI chat with an agent', params: true, searchable: false });
   },
   views: { 'ai-assistant': { title: 'AI assistant', icon: 'sparkles', render: () => <AssistantView /> } },
   dialogs: {
     'ai-assistant.chat': {
       title: 'AI assistant',
       icon: 'sparkles',
-      render: (props, close) => <div className="axp-ai-assistant__dialog"><ChatPanel compact initialContext={(props as Ctx).note || (props as Ctx).view ? (props as Ctx) : undefined} onClose={close} /></div>,
+      render: (props, close) => <div className="axp-ai-assistant__dialog"><ChatPanel compact initialContext={(props as Ctx).note || (props as Ctx).view ? (props as Ctx) : undefined} onClose={close} start={(props as { start?: ChatStart }).start} /></div>,
     },
   },
   nav: { label: 'Plugins', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
