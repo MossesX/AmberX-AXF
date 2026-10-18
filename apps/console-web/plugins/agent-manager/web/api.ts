@@ -8,12 +8,13 @@ export type Coll = 'agents' | 'skills' | 'personas' | 'lingo' | 'tools' | 'workf
 interface Base { id: string; name: string; origin?: string; createdAt?: number; updatedAt?: number }
 export interface MemoryCfg { type?: string; record?: string; topK?: number; window?: number; maxItems?: number; decayDays?: number; scope?: string; embedProfile?: string }
 export interface ModelCfg { profile?: string; model?: string; temperature?: number; max_tokens?: number }
-export interface Agent extends Base { icon?: string; description?: string; enabled?: boolean; personaId?: string; lingoIds?: string[]; skillIds?: string[]; toolIds?: string[]; delegates?: string[]; instructions?: string; model?: ModelCfg; memory?: MemoryCfg }
+export interface Voice { provider?: string; voiceId?: string; hint?: string }
+export interface Agent extends Base { voice?: Voice | null; icon?: string; description?: string; enabled?: boolean; personaId?: string; lingoIds?: string[]; skillIds?: string[]; toolIds?: string[]; delegates?: string[]; instructions?: string; model?: ModelCfg; memory?: MemoryCfg }
 export interface Skill extends Base { description?: string; instructions?: string; triggers?: string[]; examples?: { input: string; output: string }[]; toolIds?: string[] }
 export interface Persona extends Base { role?: string; voice?: string; tone?: string; traits?: string[]; rules?: string[] }
 export interface Lingo extends Base { description?: string; style?: string; glossary?: { term: string; meaning: string }[]; phrases?: string[]; avoid?: string[] }
 export interface JsonSchema { type?: string; properties?: Record<string, { type?: string; description?: string; enum?: string[]; items?: { type?: string } }>; required?: string[] }
-export interface Tool extends Base { description?: string; kind: string; config: Record<string, unknown>; parameters?: JsonSchema; enabled?: boolean }
+export interface Tool extends Base { dangerous?: boolean; description?: string; kind: string; config: Record<string, unknown>; parameters?: JsonSchema; enabled?: boolean }
 export interface Step { id: string; agentId: string; prompt?: string; label?: string; when?: string; memory?: boolean }
 export interface Workflow extends Base { description?: string; mode: string; steps: Step[]; routerAgentId?: string; synthAgentId?: string; maxLoops?: number }
 export interface Source { type: string; url?: string; query?: string; limit?: number; include?: string[]; paths?: string[]; title?: string; text?: string; tokenEnv?: string; uri?: string; tool?: string; args?: Record<string, unknown> }
@@ -31,6 +32,7 @@ export interface Settings {
   llm: { kind: string; baseUrl: string; keyEnv: string; model: string; embedModel: string; hasKey: boolean; envPresent: boolean };
   firecrawl: { baseUrl: string; version: string; keyEnv: string; hasKey: boolean; envPresent: boolean };
   defaults: { memoryType: string; topK: number; window: number; maxItems: number }; preferAssistant: boolean; scheduler: boolean;
+  safety: { dangerousAgents: string[] };
 }
 
 export async function call<T>(path: string, init?: RequestInit): Promise<T> {

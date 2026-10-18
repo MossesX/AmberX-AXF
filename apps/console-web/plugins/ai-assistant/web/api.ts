@@ -14,7 +14,8 @@ export interface Config {
   showThinking: boolean; redactSecrets: boolean; dailyTokenBudget: number; agentIntegration: boolean; defaultAgent: string;
   suggestions: string[]; prompts: PromptItem[]; profiles: Profile[];
 }
-export interface AgentRef { id: string; name: string; icon?: string; description?: string; origin?: string }
+export interface WriteMode { containers: string[]; snapshots: boolean }
+export interface AgentRef { id: string; name: string; icon?: string; description?: string; origin?: string; dangerous?: boolean; writeMode?: WriteMode | null }
 export interface Status {
   assistantName: string; setupComplete: boolean; needsSetup: boolean; defaultProfile: Profile | null; profiles: number; ready: number; cliInstalled: boolean;
   integrations: { agents: boolean; agentCount: number }; agents: AgentRef[]; defaultAgent: string; tokensToday: number; budget: number;
@@ -26,7 +27,7 @@ export interface Image { media_type: string; data: string; name?: string }
 export interface Message {
   id: string; role: 'user' | 'assistant' | 'tool'; content: string; createdAt: number; images?: Image[];
   toolCalls?: { id: string; name: string; arguments: Record<string, unknown> }[];
-  meta?: { step?: boolean; profile?: string; model?: string; latencyMs?: number; usage?: { input: number; output: number }; tools?: ToolLog[]; agentId?: string; agentName?: string; stopped?: boolean; thinking?: string; context?: Ctx | null };
+  meta?: { step?: boolean; profile?: string; model?: string; latencyMs?: number; usage?: { input: number; output: number }; tools?: ToolLog[]; agentId?: string; agentName?: string; stopped?: boolean; thinking?: string; context?: Ctx | null; batch?: string };
 }
 export interface ConvSettings { profileId?: string; model?: string; temperature?: number; max_tokens?: number; top_p?: number; systemPrompt?: string; agentId?: string; tools?: boolean; thinking?: boolean }
 export interface Conversation { id: string; title: string; createdAt: number; updatedAt: number; pinned: boolean; archived: boolean; tags: string[]; settings: ConvSettings; messages: Message[] }
@@ -52,6 +53,7 @@ export type TurnEvent =
   | { event: 'text' | 'thinking' | 'status'; data: { text: string } }
   | { event: 'tool'; data: { phase: 'call' | 'result'; id: string; name: string; input?: string; ok?: boolean; preview?: string } }
   | { event: 'error'; data: { message: string } }
+  | { event: 'batch'; data: { batch: unknown } }
   | { event: 'done'; data: { message: Message; title: string } };
 
 /** POST a turn and read its server-sent events. */

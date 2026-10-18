@@ -21,10 +21,12 @@ import re
 import shutil
 import ssl
 import subprocess
+import sys
 import threading
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 from typing import Any, Callable, Iterator
 
 # ---------------------------------------------------------------- catalog
@@ -265,7 +267,7 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
     if proto == "anthropic":
         yield from _stream_anthropic(profile, messages, system, model, tools, params, cancel)
     elif proto == "claude-cli":
-        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd)
+        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner)
     else:
         yield from _stream_openai(profile, messages, system, model, tools, params, cancel)
 
@@ -421,7 +423,75 @@ _CLI_DENY = [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS")
 CLI_DEADLINE = float(os.environ.get("AXF_AI_CLI_TIMEOUT", "600"))
 
 
-def _stream_cli(profile, messages, system, model, params, cancel, cwd):
+class _Bridge:
+    """Per-turn unix socket the CLI's MCP bridge (cli_bridge.py) calls back on. Results go to the turn engine's runner;
+    each finished call is queued so the stream can report it as a ``tool_done`` event."""
+
+    def __init__(self, tools: list[dict[str, Any]], runner: Callable[[str, dict[str, Any]], tuple[bool, str]]):
+        import queue
+        import socket
+        import tempfile
+        self.dir = tempfile.mkdtemp(prefix="axf-bridge-")
+        os.chmod(self.dir, 0o700)
+        self.sock_path = os.path.join(self.dir, "b.sock")
+        self.tools_path = os.path.join(self.dir, "tools.json")
+        self.config_path = os.path.join(self.dir, "mcp.json")
+        with open(self.tools_path, "w", encoding="utf-8") as f:
+            json.dump([{"name": t["name"], "description": t.get("description", ""), "parameters": t.get("parameters")} for t in tools], f)
+        with open(self.config_path, "w", encoding="utf-8") as f:
+            json.dump({"mcpServers": {"axf": {"type": "stdio", "command": sys.executable, "args": [str(Path(__file__).with_name("cli_bridge.py"))],
+                                              "env": {"AXF_BRIDGE_SOCKET": self.sock_path, "AXF_BRIDGE_TOOLS": self.tools_path}}}}, f)
+        self.events: "queue.Queue[dict[str, Any]]" = queue.Queue()
+        self.runner = runner
+        self.srv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.srv.bind(self.sock_path)
+        os.chmod(self.sock_path, 0o600)
+        self.srv.listen(4)
+        self.n = 0
+        self.closed = False
+        threading.Thread(target=self._serve, daemon=True).start()
+
+    def _serve(self) -> None:
+        while not self.closed:
+            try:
+                conn, _ = self.srv.accept()
+            except OSError:
+                return
+            threading.Thread(target=self._one, args=(conn,), daemon=True).start()
+
+    def _one(self, conn) -> None:
+        try:
+            buf = b""
+            while not buf.endswith(b"\n") and len(buf) < 20_000_000:
+                chunk = conn.recv(65536)
+                if not chunk:
+                    break
+                buf += chunk
+            req = json.loads(buf or b"{}")
+            name, args = str(req.get("name") or ""), req.get("arguments") or {}
+            ok, text = self.runner(name, args if isinstance(args, dict) else {})
+            self.n += 1
+            self.events.put({"type": "tool_done", "id": f"cli_{self.n}", "name": name, "arguments": args, "ok": ok, "result": text})
+            conn.sendall((json.dumps({"ok": ok, "text": text}) + "\n").encode())
+        except (OSError, ValueError):
+            pass
+        finally:
+            conn.close()
+
+    def drain(self) -> Iterator[dict[str, Any]]:
+        while not self.events.empty():
+            yield self.events.get_nowait()
+
+    def close(self) -> None:
+        self.closed = True
+        try:
+            self.srv.close()
+        except OSError:
+            pass
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+
+def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None):
     import tempfile
     token = resolve_key(profile)
     if not token:
@@ -436,13 +506,26 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd):
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
             "--model", model, "--permission-mode", "default", "--allowedTools", "Read", "Grep", "Glob", "LS",
             "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *_CLI_DENY]
+    bridge = _Bridge(tools, tool_runner) if tools and tool_runner else None
+    if bridge:
+        # The console's tools as an MCP server (same rules and approval cards as API providers); the CLI's own
+        # Edit/Write/Bash stay off.
+        i = args.index("--disallowedTools")
+        args[i:i] = ["mcp__axf"]
+        args += ["--mcp-config", bridge.config_path, "--strict-mcp-config"]
     if system:
         args += ["--append-system-prompt", system[:100_000]]
-    env = {**os.environ, "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb"}
+    env = {**os.environ, "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb", "MCP_TOOL_TIMEOUT": "900000"}
     for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "AXF_TOKEN", "GITHUB_TOKEN"):
         env.pop(k, None)
     err = tempfile.TemporaryFile(mode="w+")
-    proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True, start_new_session=True)
+    try:
+        proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True, start_new_session=True)
+    except OSError:
+        err.close()
+        if bridge:
+            bridge.close()
+        raise
     killer = threading.Timer(CLI_DEADLINE, proc.kill)
     killer.start()
     streamed = 0
@@ -453,6 +536,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd):
         except BrokenPipeError:
             pass
         for line in proc.stdout:  # type: ignore[union-attr]
+            if bridge:
+                yield from bridge.drain()
             if cancel and cancel.is_set():
                 proc.terminate()
                 yield {"type": "stop", "reason": "cancelled"}
@@ -484,6 +569,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd):
                         raise ProviderError("Claude Code rejected the token. Run `claude setup-token` on the VPS (sign in when asked), copy the long-lived sk-ant-oat01-… token it prints, and paste it into this provider (Edit → Save & test). A token copied from ~/.claude after /login expires and won't work here", 400)
                     yield {"type": "text", "text": ev["result"]}
         proc.wait(timeout=10)
+        if bridge:
+            yield from bridge.drain()
         if proc.returncode and streamed == 0:
             err.seek(0)
             raise ProviderError(f"Claude Code exited with code {proc.returncode}: {err.read()[-300:].strip()}")
@@ -493,6 +580,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd):
         if proc.poll() is None:
             proc.kill()
         err.close()
+        if bridge:
+            bridge.close()
 
 
 # ---------------------------------------------------------------- embeddings (for agent memory)
