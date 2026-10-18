@@ -16,11 +16,16 @@ type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: strin
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
 interface Service { id: string; label: string; icon: string; description: string }
 interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number> }
-type Run = 'queued' | 'working' | 'done' | 'failed' | 'needs-you';
+type Run = 'queued' | 'working' | 'waiting' | 'done' | 'failed' | 'needs-you' | 'skipped';
+type Answer = 'done' | 'skip' | 'stop' | 'ok';
+interface Prompt { id: string; index: number; total: number; note: string }
 
 /* ---------------- shared store (banner + dialog) ---------------- */
-const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean } =
-  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false };
+const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null } =
+  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null };
+/** Fix all waits here while it prompts you for an issue it can't fix alone. */
+let promptResolve: ((a: Answer) => void) | null = null;
+export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve = null; r?.(a); }
 let snap = { ...st };
 const subs = new Set<() => void>();
 const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
@@ -49,6 +54,8 @@ function replace(c: Check) {
   if (!st.report) return;
   st.report = { ...st.report, checks: st.report.checks.map((x) => (x.id === c.id ? c : x)) };
   st.report.counts = (['ok', 'warn', 'error', 'info', 'unknown'] as Status[]).reduce((a, s) => ({ ...a, [s]: st.report!.checks.filter((x) => x.status === s).length }), {} as Record<Status, number>);
+  // a prompted issue that now passes (e.g. you saved a working token) lets Fix all carry on by itself
+  if (st.prompt?.id === c.id && (c.status === 'ok' || c.status === 'info')) answerPrompt('ok');
   emit();
 }
 export const recheck = async (id: string) => { const c = await call<Check>(`check/${id}`, { method: 'POST' }); replace(c); return c; };
@@ -69,25 +76,46 @@ function guidedOrder(list: Check[]) {
   return out;
 }
 
-/** Fix all: one issue at a time, working → completed / failed / needs you. */
+/**
+ * Fix all: one issue at a time. Automatic fixes run by themselves; an issue that needs you (a credential, a
+ * command on the VPS, a setting) pauses the run with a prompt: Done (check it and continue), Skip, or Stop.
+ * Badges: queued → working → completed / failed / skipped, "waiting for you" while it prompts.
+ */
 export async function fixAll() {
   if (st.fixing || !st.report) return;
   const queue = guidedOrder(issues(st.report));
-  st.fixing = true; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
-  for (const c of queue) {
-    st.run = { ...st.run, [c.id]: 'working' }; emit();
+  st.fixing = true; st.prompt = null; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
+  const set = (id: string, r: Run, msg?: string) => { st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; emit(); };
+  const passes = (c: Check) => c.status === 'ok' || c.status === 'info';
+  let stopped = false;
+  for (let k = 0; k < queue.length && !stopped; k++) {
+    const c = queue[k]!;
+    set(c.id, 'working');
     try {
       if (c.autoFix) { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); st.runMsg[c.id] = r.message; }
       await new Promise((res) => setTimeout(res, 350)); // let the badge show
-      const after = await recheck(c.id);
-      const needsYou = !c.autoFix && (c.fix?.type === 'host' || c.fix?.type === 'settings' || (c.fix?.type === 'secrets' && c.fix.fields.some((f) => !f.set)));
-      st.run = { ...st.run, [c.id]: after.status === 'ok' || after.status === 'info' ? 'done' : needsYou ? 'needs-you' : 'failed' };
-      if (needsYou && after.status !== 'ok') st.runMsg[c.id] = c.fix?.type === 'host' ? 'Run the command on the VPS, then check again.' : c.fix?.type === 'secrets' ? 'Needs your credential: open the row and paste it.' : 'Needs a setting changed by you.';
-      else if (after.status !== 'ok' && after.status !== 'info') st.runMsg[c.id] = after.summary;
-    } catch (e) { st.run = { ...st.run, [c.id]: 'failed' }; st.runMsg[c.id] = (e as Error).message; }
-    emit();
+      let after = await recheck(c.id);
+      if (passes(after)) { set(c.id, 'done'); continue; }
+      if (!after.fix || after.fix.type === 'action') { set(c.id, 'failed', after.summary); continue; }
+      // needs you: prompt, then check again; repeat until it passes, you skip, or you stop
+      let note = after.fix.type === 'secrets' ? 'Paste the credential below and press Save & test; Fix all continues as soon as it passes.'
+        : after.fix.type === 'host' ? 'Run the command on the VPS (mosh or ssh), then press Done.' : 'Change the setting, then press Done.';
+      for (;;) {
+        set(c.id, 'waiting', note);
+        st.prompt = { id: c.id, index: k + 1, total: queue.length, note }; emit();
+        const a = await new Promise<Answer>((res) => { promptResolve = res; });
+        st.prompt = null; emit();
+        if (a === 'stop') { stopped = true; set(c.id, 'skipped', 'Fix all was stopped here.'); break; }
+        if (a === 'skip') { set(c.id, 'skipped', 'Skipped: fix it later from its row.'); break; }
+        set(c.id, 'working');
+        after = a === 'ok' ? (snap.report?.checks.find((x) => x.id === c.id) ?? after) : await recheck(c.id);
+        if (passes(after)) { set(c.id, 'done', a === 'ok' ? 'Passes now.' : 'Checked: passes now.'); break; }
+        note = `Still not passing: ${after.summary}`;
+      }
+    } catch (e) { set(c.id, 'failed', (e as Error).message); }
   }
-  st.fixing = false; emit();
+  if (stopped) for (const c of queue) if (st.run[c.id] === 'queued') st.run = { ...st.run, [c.id]: 'skipped' };
+  st.fixing = false; st.prompt = null; promptResolve = null; emit();
 }
 
 /* ---------------- banner ---------------- */
@@ -103,6 +131,17 @@ export function SystemBanner() {
       <div className="syc-banner is-warn" role="alert">
         <Icon name="lock" /><span className="syc-banner__text">Set the console token to run the systems check.</span>
         <Button tone="primary" onClick={() => rt.openDialog('token')}>Set token</Button>
+      </div>
+    );
+  }
+  if (s.prompt) {
+    const c = s.report?.checks.find((x) => x.id === s.prompt!.id);
+    return (
+      <div className="syc-banner is-warn" role="alert">
+        <div className="syc-banner__row">
+          <RunBadge r="waiting" /><span className="syc-banner__text">Fix all is waiting for you: {c?.title ?? s.prompt.id} (step {s.prompt.index} of {s.prompt.total})</span>
+          <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Continue</Button>
+        </div>
       </div>
     );
   }
@@ -147,10 +186,10 @@ export function useSystemCheckOnLoad() {
 const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error: 'Blocking', info: 'Info', unknown: 'Not checked' };
 function StatusDot({ s }: { s: Status }) { return <span className={`syc-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
-const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you' };
+const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
 function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
-  return <span className={`syc-run is-${r}`} role="status">{r === 'working' ? <span className="syc-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' ? 'alert' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
+  return <span className={`syc-run is-${r}`} role="status">{r === 'working' ? <span className="syc-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
 }
 
 function FixPanel({ c }: { c: Check }) {
@@ -211,12 +250,12 @@ function FixPanel({ c }: { c: Check }) {
   );
 }
 
-function CheckBody({ c }: { c: Check }) {
+function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
   const s = useSys();
   return (
     <div className="syc-body">
-      <p style={{ margin: 0 }}>{c.summary}</p>
-      {s.runMsg[c.id] && <p className="fx-small syc-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
+      {!inPrompt && <p style={{ margin: 0 }}>{c.summary}</p>}
+      {!inPrompt && s.runMsg[c.id] && <p className="fx-small syc-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
       {c.details.length > 0 && <ul className="syc-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
       {c.status !== 'ok' && c.fix && <><h4 className="syc-h">Fix it here</h4><FixPanel c={c} /></>}
       {c.instructions.length > 0 && <><h4 className="syc-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><ol className="syc-steps">{c.instructions.map((t) => <li key={t}>{t}</li>)}</ol></>}
@@ -243,7 +282,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const rows = filter === 'issues' ? guidedOrder(iss) : [...r.checks].sort((a, b) => a.order - b.order);
   const toggle = (id: string) => setOpen((o) => { const n = new Set(o); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const goGrid = (id: string) => { setView('grid'); setFilter('all'); setOpen(new Set([id])); };
-  const done = Object.values(s.run).filter((x) => x === 'done' || x === 'failed' || x === 'needs-you').length;
+  const done = Object.values(s.run).filter((x) => x === 'done' || x === 'failed' || x === 'needs-you' || x === 'skipped').length;
   const total = Object.keys(s.run).length;
 
   return (
@@ -259,6 +298,8 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
         </div>
       </div>
       {total > 0 && <div className="syc__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}><span style={{ width: `${(done / Math.max(1, total)) * 100}%` }} /></div>}
+
+      {s.prompt && <PromptPanel p={s.prompt} />}
 
       <div className="syc__tabs" role="tablist">
         {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
@@ -314,6 +355,29 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
       {view === 'guided' && <Guided list={guidedOrder(iss)} />}
     </div>
+  );
+}
+
+/** The step Fix all is waiting on: what's needed, the fix form or command, and Done / Skip / Stop. */
+function PromptPanel({ p }: { p: Prompt }) {
+  const s = useSys();
+  const c = s.report?.checks.find((x) => x.id === p.id);
+  if (!c) return null;
+  const isSecret = c.fix?.type === 'secrets';
+  return (
+    <section className="syc-prompt" aria-live="polite" aria-label={`Fix all needs you: ${c.title}`}>
+      <header className="syc-prompt__head">
+        <RunBadge r="waiting" />
+        <strong className="fx-grow">Step {p.index} of {p.total}: {c.title}</strong>
+      </header>
+      <p className="syc-prompt__note" style={{ margin: 0 }}>{p.note}</p>
+      <CheckBody c={c} inPrompt />
+      <div className="fx-row fx-row--wrap syc-prompt__actions">
+        <Button tone="primary" icon="check" onClick={() => answerPrompt('done')}>{isSecret ? 'Check again & continue' : 'Done, check it'}</Button>
+        <Button icon="arrow-right" onClick={() => answerPrompt('skip')}>Skip</Button>
+        <Button icon="x" onClick={() => answerPrompt('stop')}>Stop Fix all</Button>
+      </div>
+    </section>
   );
 }
 

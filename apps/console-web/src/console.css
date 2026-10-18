@@ -281,3 +281,10 @@
 @media (max-width: 720px) { .syc-hide-sm { display: none } .syc-show-sm { display: inline } .syc-guided { grid-template-columns: minmax(0, 1fr) } .syc-banner__sum { display: none } }
 .fx-dialog:has(.syc) { width: min(calc(var(--fx-space) * 120), 100%); max-height: min(92dvh, calc(var(--fx-space) * 110)) }
 .fx-dialog:has(.syc) .syc { width: auto }
+.syc-run.is-waiting { color: var(--fx-warning); border-color: var(--fx-warning); animation: syc-pulse 1.6s ease-in-out infinite }
+.syc-run.is-skipped { color: var(--fx-muted) }
+.syc-prompt { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space) calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: calc(var(--fx-border-w) * 2) solid var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.syc-prompt__head { display: flex; align-items: center; gap: var(--fx-space); flex-wrap: wrap }
+.syc-prompt__note { font-weight: 600 }
+.syc-prompt__actions { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-space) }
+@media (prefers-reduced-motion: reduce) { .syc-run.is-waiting { animation: none } }
