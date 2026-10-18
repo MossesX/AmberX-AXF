@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T06:06:35.214Z",
+ "updatedAt": "2026-10-18T06:07:53.368Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -105,12 +105,12 @@
    "title": "claude-pick.sh: choose plan or API key at launch",
    "detail": "On the VPS, deploy/claude-pick.sh asks at launch whether Claude Code uses the Claude plan login or an Anthropic API key (billed per use). Key read from ~/.anthropic-key (0600), never the repo; export ANTHROPIC_API_KEY only for that launch; option to save/replace/remove the key; show which is active. Plan is the default. Note: claude.ai connectors and /schedule are unavailable while the API key is active.",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [],
    "createdAt": "2026-10-18T06:06:35.214Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T06:06:35.214Z",
+   "builtAt": "2026-10-18T06:07:53.368Z",
+   "updatedAt": "2026-10-18T06:07:53.368Z",
    "source": "console"
   }
  ]
