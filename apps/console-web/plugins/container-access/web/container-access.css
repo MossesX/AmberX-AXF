@@ -1,0 +1,23 @@
+/* Container access plugin. Theme tokens only, axp-container-access prefix (framework/spec/THEMING.md). */
+.axp-container-access__row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-container-access__note { display: flex; gap: var(--fx-space); align-items: center; padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
+.axp-container-access__note.is-ok { border-color: var(--fx-success) }
+.axp-container-access__note.is-warn { border-color: var(--fx-warning) }
+.axp-container-access__bad { color: var(--fx-danger); margin: 0 }
+.axp-container-access__list, .axp-container-access__entries, .axp-container-access__audit, .axp-container-access__locked { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-container-access__container { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0; overflow-wrap: anywhere }
+.axp-container-access__container.is-off { opacity: var(--fx-opacity-muted) }
+.axp-container-access__entries button { display: flex; width: 100%; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.axp-container-access__entries button:hover { background: var(--fx-surface2) }
+.axp-container-access__code { margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre; overflow: auto; max-height: 60vh }
+.axp-container-access__audit li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-container-access__audit li.is-bad { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-danger) }
+.axp-container-access__locked li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-container-access__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted); min-width: 0; border: 0; padding: 0; margin: 0 }
+.axp-container-access__field > span:first-child { color: var(--fx-text) }
+.axp-container-access__opt { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; color: var(--fx-text) }
+.axp-container-access__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--fx-space) }
+.axp-container-access__narrow { width: auto; max-width: 200px }
+.axp-container-access__seg { display: inline-flex; flex-wrap: wrap; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
+.axp-container-access__seg button { padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer }
+.axp-container-access__seg button[aria-selected='true'] { background: var(--fx-accent-soft); color: var(--fx-text) }

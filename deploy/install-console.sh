@@ -123,10 +123,28 @@ fi
 # against the same data the console will use.
 docker run --rm -v "$DIR":/axf:ro "${DATA_ARGS[@]}" -e AXF_ROOT=/axf --entrypoint node "$NAME:latest" /axf/framework/cli/data-fixes.mjs 2>&1 | sed 's/^/[axf] /' || say "data fixes didn't run (the console still starts)"
 
+# ---- 3c. plugin sidecars ----
+# Container access plugin: the locked-down Docker socket proxy (never the raw socket in the console). Explicit, one plugin.
+PLUGIN_ARGS=()
+CA_HOST="$DIR/apps/console-web/plugins/container-access/deploy/host.sh"  # axf-plugin:container-access
+[ -f "$CA_HOST" ] && { mapfile -t PLUGIN_ARGS < <(NAME="$NAME" bash "$CA_HOST" up) || say "Docker socket proxy didn't start"; }  # axf-plugin:container-access
+# Sidecars of plugins whose folder is gone (label axf.plugin=<folder>) are removed; nothing is run for them.
+for c in $(docker ps -aq --filter label=axf.plugin); do
+  f="$(docker inspect -f '{{index .Config.Labels "axf.plugin"}}' "$c")"
+  if [ -n "$f" ] && [ ! -d "$DIR/apps/console-web/plugins/$f" ]; then docker rm -f "$c" >/dev/null && say "removed the $f sidecar (plugin uninstalled)"; fi
+done
+for n in $(docker network ls -q --filter label=axf.plugin); do
+  f="$(docker network inspect -f '{{index .Labels "axf.plugin"}}' "$n")"
+  if [ -n "$f" ] && [ ! -d "$DIR/apps/console-web/plugins/$f" ]; then docker network rm "$n" >/dev/null 2>&1 || true; fi
+done
+for d in /etc/axf/plugins/*/; do
+  if [ -d "$d" ] && [ ! -d "$DIR/apps/console-web/plugins/$(basename "$d")" ]; then rm -rf "$d"; fi
+done
+
 # ---- 4. container ----
 docker stop -t 15 "$NAME" >/dev/null 2>&1 || true  # clean shutdown first (alerts: no false "unclean restart")
 docker rm -f "$NAME" >/dev/null 2>&1 || true
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF "${PLUGIN_ARGS[@]}")
 if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | tr ' ' '\n' | grep -x coolify || true)"
@@ -146,6 +164,8 @@ else
   docker run "${COMMON[@]}" -p "$PORT:$PORT" "$NAME:latest" >/dev/null
   URL="http://$(curl -fsS -4 --max-time 10 https://ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}'):$PORT"
 fi
+
+[ -f "$CA_HOST" ] && NAME="$NAME" bash "$CA_HOST" attach  # axf-plugin:container-access
 
 # ---- 5. auto-update ----
 cat > /usr/local/bin/axf-console-update <<UPD

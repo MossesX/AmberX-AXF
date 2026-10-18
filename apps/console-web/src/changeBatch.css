@@ -1,0 +1,22 @@
+/* Shared change-batch approval card (src/changeBatch.tsx). Theme tokens only. */
+.cl-batch { display: flex; flex-direction: column; gap: var(--fx-space); padding: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.cl-batch.is-pending { border-color: var(--fx-warning) }
+.cl-batch.is-applied { border-color: var(--fx-success) }
+.cl-batch.is-failed { border-color: var(--fx-danger) }
+.cl-batch p { margin: 0 }
+.cl-batch__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75) }
+.cl-batch__items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.cl-batch__item { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); min-width: 0 }
+.cl-batch__item.is-skipped, .cl-batch__item.is-rejected { opacity: var(--fx-opacity-muted) }
+.cl-batch__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.cl-batch__toggle { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
+.cl-batch__what { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.cl-batch__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.cl-batch__diff, .cl-batch__out, .cl-batch__cmd { margin: 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre; overflow: auto; max-height: calc(var(--fx-row-h) * 14) }
+.cl-batch__out, .cl-batch__cmd { white-space: pre-wrap; overflow-wrap: anywhere }
+.cl-batch__diff .is-add { color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.cl-batch__diff .is-del { color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.cl-batch__diff .is-hunk { color: var(--fx-muted) }
+.cl-batch__err { color: var(--fx-danger); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
+.cl-batch__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.cl-batch__link { padding: 0; border: 0; background: transparent; color: var(--fx-accent); font: inherit; font-family: var(--fx-font-mono); cursor: pointer; margin-right: calc(var(--fx-space) * 0.5) }

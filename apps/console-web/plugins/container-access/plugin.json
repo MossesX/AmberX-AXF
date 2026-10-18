@@ -1,0 +1,22 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.container-access",
+  "name": "Container access",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The master switch for reaching other containers on the VPS. The only code that talks to Docker, through a locked-down socket proxy (list, files, exec, restart only). Protected list enforced on the server (Coolify, Traefik, the console, databases), an audit log of every change, and change batches that need your approval and a snapshot first. Settings → Plugins → Container access.",
+  "targets": ["axf-console"],
+  "provides": ["settings-tab:container-access", "service:axf.containers@1"],
+  "optional": ["service:axf.snapshots@1"],
+  "scopes": ["ROUTES", "DOCKER"],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "replacedBy": "pending item container-access-plugin (Fable)" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/container-access",
+    "env": ["AXF_DOCKER_PROXY", "AXF_DOCKER_PROXY_IMAGE", "AXF_CONSOLE_CONTAINER", "AXF_CONTAINER_ACCESS_DIR"],
+    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md", "deploy/install-console.sh"]
+  }
+}
