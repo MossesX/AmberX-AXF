@@ -97,10 +97,44 @@ try {
   // 3. folders: outside the allowed roots is refused; inside, local only
   const out = await callP({ action: 'inspect', source: { kind: 'folder', path: '/etc' } });
   assert.equal(out.ok, false); assert.match(out.error, /outside the folders/);
-  const folder = join(tmp, 'loose'); mkdirSync(folder); writeFileSync(join(folder, 'main.py'), 'print(1)\n');
-  const r3 = await callP({ action: 'run', plan: { source: { kind: 'folder', path: folder }, display: 'Loose Script', homes: {}, sync: false } });
+  const folder = join(tmp, 'loose'); mkdirSync(folder); writeFileSync(join(folder, 'main.py'), 'print(1)\n'); writeFileSync(join(folder, 'secrets.env'), 'TOKEN=x\n');
+  const loosePlan = { source: { kind: 'folder', path: folder }, display: 'Loose Script', homes: {}, sync: false };
+  const c3 = await callP({ action: 'check', plan: loosePlan });
+  assert.ok(!c3.ok && c3.problems.some((p) => /Commit everything/.test(p)), 'a non-git folder with files needs the commit-everything opt-in');
+  const r3 = await callP({ action: 'run', plan: { ...loosePlan, commitAll: true } });
   assert.equal(r3.ok, true, `${r3.error}\n${(r3.log ?? []).join('\n')}`);
   assert.ok(existsSync(join(folder, '.git')) && existsSync(join(folder, '_claude/claude-ai/README.md')));
+  assert.ok(!g(folder, 'ls-files').split('\n').includes('secrets.env'), 'secrets.env is never committed');
+
+  // folder guards: a whole root, the console's own clone, a folder inside another repo
+  for (const bad of [ws, tmp, fileURLToPath(new URL('../../../../', import.meta.url)), join(seed, 'sub')]) {
+    if (bad.endsWith('sub')) mkdirSync(bad, { recursive: true });
+    const c = await callP({ action: 'check', plan: { source: { kind: 'folder', path: bad }, display: 'Bad One', homes: {}, commitAll: true } });
+    assert.equal(c.ok, false, `refused: ${bad}`);
+  }
+  // sources are validated in check/run, not only in inspect
+  const cv = await callP({ action: 'check', plan: { source: { kind: 'vps', repo: '../../etc' }, display: 'Bad Two', homes: {} } });
+  assert.ok(!cv.ok && cv.problems.some((p) => /VPS/.test(p)));
+  const cg = await callP({ action: 'check', plan: { source: { kind: 'github', repo: 'not a repo' }, display: 'Bad Three', homes: {} } });
+  assert.ok(!cg.ok && cg.problems.some((p) => /GitHub repository/.test(p)));
+  const cn = await callP({ action: 'check', plan: { source: { kind: 'new', template: 'react-ts' }, display: 'Bad Four', homes: { github: { mode: 'new', owner: 'MossesX', name: '-upload-pack=x' } } } });
+  assert.ok(!cn.ok, 'repo names starting with - are refused');
+  // a symlink to outside the folder must refuse the run on a cloned repo
+  const outside = join(tmp, 'outside.txt'); writeFileSync(outside, 'keep me\n');
+  const evil = join(tmp, 'evil'); mkdirSync(evil); g(evil, 'init', '-q', '-b', 'main');
+  spawnSync('ln', ['-s', outside, join(evil, 'CLAUDE.md')]);
+  g(evil, 'add', '-A'); g(evil, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'evil');
+  g(tmp, 'clone', '-q', '--bare', evil, bare('MossesX', 'evil'));
+  const re = await callP({ action: 'run', plan: { source: { kind: 'github', repo: 'MossesX/evil' }, display: 'Evil', homes: { github: { mode: 'existing', owner: 'MossesX', name: 'evil' } }, sync: false } });
+  assert.equal(re.ok, false); assert.match(re.error, /symlink/);
+  assert.equal(readFileSync(outside, 'utf8'), 'keep me\n', 'nothing written through the symlink');
+  // an existing repo: only the wizard's files are committed, not what the user had staged
+  const own = join(tmp, 'own'); mkdirSync(own); g(own, 'init', '-q', '-b', 'main'); writeFileSync(join(own, 'a.txt'), '1'); g(own, 'add', '-A'); g(own, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'a');
+  writeFileSync(join(own, 'wip.txt'), 'half done'); g(own, 'add', 'wip.txt');
+  const ro = await callP({ action: 'run', plan: { source: { kind: 'folder', path: own }, display: 'Own Repo', homes: {}, sync: false } });
+  assert.equal(ro.ok, true, ro.error);
+  assert.ok(!g(own, 'ls-tree', '-r', '--name-only', 'HEAD').split('\n').includes('wip.txt'), 'staged work stays out of the commits');
+  assert.match(g(own, 'status', '--porcelain'), /wip\.txt/, 'and stays staged');
 
   // listings
   assert.ok((await callP({ action: 'list', location: 'vps' })).items.some((i) => i.id === 'notes-pad'));

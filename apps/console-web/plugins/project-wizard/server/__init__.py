@@ -11,8 +11,10 @@ from __future__ import annotations
 
 import json
 import os
+import signal
 import subprocess
 import threading
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Literal
 
@@ -24,20 +26,39 @@ router = APIRouter()
 _PLUGIN = Path(__file__).resolve().parents[1]
 _ROOT = _PLUGIN.parents[3]
 _ENGINE = _PLUGIN / "wizard.mjs"
-_RUN_LOCK = threading.Lock()  # one project run at a time (git pushes, repo creation)
+# One writing action at a time (runs, kit rebuilds, links, forgets: they commit, push and rewrite the wizard's list).
+# The console runs one API process, so a process-wide lock is enough.
+_WRITE_LOCK = threading.Lock()
+
+
+@contextmanager
+def _writing():
+    if not _WRITE_LOCK.acquire(blocking=False):
+        raise HTTPException(409, "the wizard is busy with another project right now; try again when it finishes")
+    try:
+        yield
+    finally:
+        _WRITE_LOCK.release()
 
 
 def _engine(req: dict[str, Any], timeout: int = 60) -> dict[str, Any]:
+    # Own process group, so a timeout also stops the git / ssh / axf children it started.
+    p = subprocess.Popen(["node", str(_ENGINE), "--json", json.dumps(req)], cwd=_ROOT, stdin=subprocess.DEVNULL,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env={**os.environ}, start_new_session=True)
     try:
-        p = subprocess.run(["node", str(_ENGINE), "--json", json.dumps(req)], cwd=_ROOT, stdin=subprocess.DEVNULL,
-                           capture_output=True, text=True, timeout=timeout, env={**os.environ})
+        out, err = p.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
-        raise HTTPException(504, f"the wizard took longer than {timeout} s")
-    lines = p.stdout.strip().splitlines()
+        try:
+            os.killpg(p.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        p.communicate()
+        raise HTTPException(504, f"the wizard took longer than {timeout} s and was stopped")
+    lines = out.strip().splitlines()
     try:
-        return json.loads(lines[-1]) if lines else {"ok": False, "error": (p.stderr or "no output").strip()[-600:]}
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": (err or "no output").strip()[-600:]}
     except json.JSONDecodeError:
-        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+        return {"ok": False, "error": (err or out).strip()[-600:]}
 
 
 def _ok(r: dict[str, Any]) -> dict[str, Any]:
@@ -77,6 +98,7 @@ class Plan(BaseModel):
     port: Literal["bake", "rebuild", "no"] = "no"
     homes: Homes = Field(default_factory=Homes)
     sync: bool = True
+    commitAll: bool = False  # a folder that isn't a git repo yet: commit everything in it (the user checked it)
 
 
 class PlanReq(BaseModel):
@@ -115,13 +137,9 @@ def check(req: PlanReq) -> dict[str, Any]:
 
 @router.post("/run")
 def run(req: PlanReq) -> dict[str, Any]:
-    if not _RUN_LOCK.acquire(blocking=False):
-        raise HTTPException(409, "another project is being made right now; try again when it finishes")
-    try:
+    with _writing():
         # cloning, axf init, pushes and repo creation: give it time; failures come back with the log
         return _engine({"action": "run", "plan": req.plan.model_dump()}, timeout=900)
-    finally:
-        _RUN_LOCK.release()
 
 
 @router.get("/list/{location}")
@@ -131,15 +149,20 @@ def listing(location: Literal["github", "vps", "local"]) -> dict[str, Any]:
 
 @router.post("/kit")
 def kit(req: KitReq) -> dict[str, Any]:
-    return _ok(_engine({"action": "kit", "name": req.name, "rebuild": req.rebuild}, timeout=180))
+    if not req.rebuild:
+        return _ok(_engine({"action": "kit", "name": req.name}, timeout=60))
+    with _writing():
+        return _ok(_engine({"action": "kit", "name": req.name, "rebuild": True}, timeout=180))
 
 
 @router.post("/link")
 def link(req: LinkReq) -> dict[str, Any]:
-    return _ok(_engine({"action": "link", "name": req.name, "url": req.url}, timeout=120))
+    with _writing():
+        return _ok(_engine({"action": "link", "name": req.name, "url": req.url}, timeout=120))
 
 
 @router.post("/forget")
 def forget(req: NameReq) -> dict[str, Any]:
     """Drops the project from the wizard's list only; folders and repositories are never deleted."""
-    return _ok(_engine({"action": "forget", "name": req.name}))
+    with _writing():
+        return _ok(_engine({"action": "forget", "name": req.name}))

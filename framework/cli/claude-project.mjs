@@ -28,9 +28,9 @@
  * GITHUB_API_URL and CLAUDE_PROJECT_GIT_BASE point it at other servers (tests).
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 import { draftManifest, formatProjectValidation, loadRules, PROJECT_MANIFEST_FILE, validateProjectManifest } from './project.mjs';
@@ -194,12 +194,37 @@ venv/
 local.properties
 *.keystore
 *.jks
+secrets.env
+*.secret
+credentials.json
+.npmrc
+.netrc
+.axf-console/
 `;
-const SECRET_FILE = /(^|\/)(\.env(\..+)?|id_(rsa|ed25519|ecdsa)(\.pub)?|[^/]+\.(pem|key|p12|pfx|keystore|jks))$/i;
+export const SECRET_FILE = /(^|\/)(\.env(\..+)?|env|secrets\.env|credentials\.json|mcp-servers\.json|\.npmrc|\.netrc|\.git-credentials|id_(rsa|ed25519|ecdsa)(\.pub)?|[^/]+\.(pem|key|p12|pfx|keystore|jks|secret))$|(^|\/)\.axf-console\//i;
 
 /* ─── files that make it a Claude project ─────────────────────────────────── */
 
+/**
+ * Refuse to read or write through a symlink anywhere between `dir` and `file`: a cloned repo could commit
+ * project.manifest.json, CLAUDE.md or _claude/ as links to files elsewhere (~/.ssh/authorized_keys, …).
+ */
+export function assertInside(dir, file) {
+  const root = resolve(dir);
+  const rel = relative(root, resolve(file));
+  if (rel === '' ) return;
+  if (rel.startsWith('..') || isAbsolute(rel)) throw new Error(`${file} is outside ${root}`);
+  let cur = root;
+  for (const part of rel.split(sep)) {
+    cur = join(cur, part);
+    let st;
+    try { st = lstatSync(cur); } catch { return; } // the rest doesn't exist yet
+    if (st.isSymbolicLink()) throw new Error(`${relative(root, cur)} is a symlink: refusing to read or write through it`);
+  }
+}
+
 function writeIfMissing(file, text, made) {
+  assertInside(CURRENT_DIR, file);
   if (existsSync(file)) return false;
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, text);
@@ -212,6 +237,7 @@ const workingWithBrett = () => {
   const i = t.indexOf('## Working with Brett');
   return i < 0 ? '' : t.slice(i).trimEnd() + '\n';
 };
+let CURRENT_DIR = '/';
 const RULES_IMPORT = '**Brett\'s rules (always loaded):**\n\n@_claude/shared/rules/RULES.md\n@_claude/rules/RULES.md\n';
 
 function claudeMd(p, d) {
@@ -322,6 +348,7 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
   if (flags.help) { log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\*\n/, '').replace(/^ \* ?/gm, '')); return { ok: true }; }
   const dir = resolve(args[0] ?? '.');
   mkdirSync(dir, { recursive: true });
+  CURRENT_DIR = dir;
   const d = detect(dir);
   const rl = interactive && !flags.yes ? asker() : null;
   try {
@@ -372,6 +399,7 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     writeIfMissing(join(cl, 'memory', 'README.md'), `# Memory\n\nFacts and decisions about ${display}. Decisions go in \`decisions.md\`.\n`, made);
     writeIfMissing(join(cl, 'memory', 'decisions.md'), `# Decisions\n\n- ${new Date().toISOString().slice(0, 10)}: made a Claude project with \`claude-project\`; home: ${where.join(', ')}${d.relation === 'none' && port !== 'no' ? `; port to AXF requested (${port}), parked for Fable` : ''}.\n`, made);
     writeIfMissing(join(cl, 'memory', `${name}.md`), `# ${display}\n\n${description || 'What it is: to be written by the first session.'}\n\n- Stack: ${d.stack.join(', ') || 'none detected'}\n- Platforms: ${d.platforms.join(', ') || 'none detected'}\n- AmberX AXF: ${d.relation}\n`, made);
+    assertInside(dir, join(cl, 'shared'));
     if (!existsSync(join(cl, 'shared')) && existsSync(join(REPO_ROOT, '_claude', 'shared'))) {
       cpSync(join(REPO_ROOT, '_claude', 'shared'), join(cl, 'shared'), { recursive: true });
       made.push(join(cl, 'shared') + '/');
@@ -380,6 +408,7 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
 
     // 3. CLAUDE.md and the first-session prompt
     if (!writeIfMissing(join(dir, 'CLAUDE.md'), claudeMd(p, d), made)) {
+      assertInside(dir, join(dir, 'CLAUDE.md'));
       const t = readFileSync(join(dir, 'CLAUDE.md'), 'utf8');
       if (!t.includes('_claude/shared/rules/RULES.md')) {
         const lines = t.split('\n');
@@ -408,16 +437,18 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
       git(dir, ['init', '-q', '-b', 'main']);
       writeIfMissing(join(dir, '.gitignore'), GITIGNORE, made);
     }
-    writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     const v = validateProjectManifest(m, loadRules(), { exists: (rel) => existsSync(join(dir, rel)) });
     if (!v.ok) throw new Error(`project.manifest.json fails validation:\n${formatProjectValidation(v, PROJECT_MANIFEST_FILE)}`);
+    assertInside(dir, mfile);
+    writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     ensureIdentity(me ? { name: me.name || me.login, email: `${me.id}+${me.login}@users.noreply.github.com` } : null);
     const ours = ['project.manifest.json', '_claude', 'CLAUDE.md', 'docs/FIRST_SESSION.md', '.gitignore'].filter((f) => existsSync(join(dir, f)));
     git(dir, ['add', ...(fresh ? ['-A'] : ['--', ...ours])]);
     const staged = git(dir, ['diff', '--cached', '--name-only']).split('\n').filter(Boolean);
     const secrets = staged.filter((f) => SECRET_FILE.test(f));
     if (secrets.length) { git(dir, ['rm', '-q', '--cached', '--', ...secrets]); notes.push(`Not committed (look like secrets): ${secrets.join(', ')}`); }
-    if (staged.length > secrets.length) git(dir, [...identity, 'commit', '-q', '-m', fresh ? `Start ${display} as a Claude project` : `Make ${display} a Claude project`]);
+    // an existing repo commits only our files, never whatever else was already staged
+    if (staged.length > secrets.length) git(dir, [...identity, 'commit', '-q', '-m', fresh ? `Start ${display} as a Claude project` : `Make ${display} a Claude project`, ...(fresh ? [] : ['--', ...ours])]);
     const hasCommit = gitOk(dir, ['rev-parse', '--verify', 'HEAD']);
     const branch = hasCommit ? git(dir, ['rev-parse', '--abbrev-ref', 'HEAD']) : 'main';
 
@@ -444,6 +475,8 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     if (where.includes('vps')) {
       const host = flags['vps-host'] ?? process.env.AXF_VPS_HOST ?? '';
       const user = flags['vps-user'] ?? process.env.AXF_VPS_USER ?? 'root';
+      if (!/^[a-z_][a-z0-9_-]{0,31}$/.test(user)) throw new Error(`"${user}" isn't a valid VPS user name`);
+      if (host && !/^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/.test(host)) throw new Error(`"${host}" isn't a valid VPS host name`);
       const home = host ? (user === 'root' ? '/root' : `/home/${user}`) : homedir();
       const bare = flags['vps-git'] ?? `/srv/git/${name}.git`;
       const work = (flags['vps-dir'] ?? `${home}/projects/${name}`).replace(/^~(?=\/)/, home);
@@ -472,12 +505,13 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     if (where.includes('device')) log(c.ok(`  ✓ This device: ${dir}`));
 
     // 7. record the homes in the manifest and commit that
-    writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     const v2 = validateProjectManifest(m, loadRules(), { exists: (rel) => existsSync(join(dir, rel)) });
     if (!v2.ok) throw new Error(`project.manifest.json fails validation:\n${formatProjectValidation(v2, PROJECT_MANIFEST_FILE)}`);
+    assertInside(dir, mfile);
+    writeFileSync(mfile, JSON.stringify(m, null, 2) + '\n');
     if (git(dir, ['status', '--porcelain', '--', PROJECT_MANIFEST_FILE])) {
       git(dir, ['add', '--', PROJECT_MANIFEST_FILE]);
-      git(dir, [...identity, 'commit', '-q', '-m', `Record where ${display} lives`]);
+      git(dir, [...identity, 'commit', '-q', '-m', `Record where ${display} lives`, '--', PROJECT_MANIFEST_FILE]);
       if (result.github) git(dir, ['push', '-q', `${GIT_BASE()}/${m.repo.owner}/${m.repo.name}.git`, `${branch}:${branch}`], { token: GIT_BASE().startsWith('https://') ? token : '' });
       if (result.vps) git(dir, ['push', '-q', 'vps', `${branch}:${branch}`]);
     }

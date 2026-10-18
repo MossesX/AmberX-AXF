@@ -17,7 +17,7 @@ interface Source { kind: SourceKind; repo: string; path: string; template: strin
 interface Home { mode: HomeMode; owner: string; name: string; path: string }
 interface Plan {
   source: Source; display: string; name: string; description: string; kind: string; visibility: 'private' | 'public';
-  port: 'bake' | 'rebuild' | 'no'; homes: { github: Home; vps: Home; local: Home }; sync: boolean;
+  port: 'bake' | 'rebuild' | 'no'; homes: { github: Home; vps: Home; local: Home }; sync: boolean; commitAll: boolean;
 }
 interface Step { ok: boolean; note: string; at: string }
 interface Project { name: string; display: string; description?: string; dir: string; github?: string; vps?: string; claudeAi?: string; source: { kind: SourceKind; repo?: string; path?: string; template?: string }; steps: Record<string, Step>; kit?: { files: string[] }; failed?: string; updatedAt?: string }
@@ -26,14 +26,20 @@ interface Status {
   workspace: string; roots: string[]; templates: { id: string; label: string; targets: string[] }[];
   boilerplates: { id: string; name: string; category: string; description: string; status: string }[]; claudeNewProjectUrl: string; projects: Project[];
 }
-interface Inspect { kind: SourceKind; repo?: string; path?: string; state?: string; stack?: string[]; relation?: string; axfNote?: string; git?: boolean; hasManifest?: boolean; origin?: string; suggest: { display: string; name: string; description: string; owner?: string; repoName?: string; visibility?: 'private' | 'public' } }
+interface Inspect { kind: SourceKind; repo?: string; path?: string; state?: string; stack?: string[]; relation?: string; axfNote?: string; git?: boolean; empty?: boolean; hasManifest?: boolean; origin?: string; suggest: { display: string; name: string; description: string; owner?: string; repoName?: string; visibility?: 'private' | 'public' } }
 interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
 interface KitFile { path: string; bytes: number; text: string }
 interface RunResult { ok: boolean; error?: string; log: string[]; project: Project; kit?: { files: KitFile[] } }
 interface Item { id: string; label: string; note: string }
 
 const empty = (mode: HomeMode = 'skip'): Home => ({ mode, owner: '', name: '', path: '' });
-const freshPlan = (): Plan => ({ source: { kind: 'github', repo: '', path: '', template: 'react-ts', boilerplate: 'blank' }, display: '', name: '', description: '', kind: 'app', visibility: 'private', port: 'no', homes: { github: empty('new'), vps: empty('skip'), local: empty('keep') }, sync: true });
+const freshPlan = (): Plan => ({ source: { kind: 'github', repo: '', path: '', template: 'react-ts', boilerplate: 'blank' }, display: '', name: '', description: '', kind: 'app', visibility: 'private', port: 'no', homes: { github: empty('new'), vps: empty('skip'), local: empty('keep') }, sync: true, commitAll: false });
+/** "owner/name", a github.com link or a bare name (then the current owner) → [owner, name]. */
+function splitRepo(val: string, owner: string): [string, string] {
+  const t = val.trim().replace(/\.git$/, '').replace(/\/+$/, '');
+  const m = t.match(/^(?:https?:\/\/(?:www\.)?github\.com\/|git@github\.com:)?([^/\s:]+)\/([^/\s]+)$/i);
+  return m ? [m[1] ?? owner, m[2] ?? t] : [owner, t];
+}
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 63);
 
 async function getJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -168,7 +174,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
 
       {step === 0 && <SourceStep st={st} plan={plan} setSource={setSource} info={info} />}
       {step === 1 && <DetailsStep plan={plan} set={set} info={info} />}
-      {step === 2 && <HomesStep st={st} plan={plan} setHome={setHome} set={set} />}
+      {step === 2 && <HomesStep st={st} plan={plan} setHome={setHome} set={set} info={info} />}
       {step === 3 && <ClaudeStep plan={plan} set={set} info={info} />}
       {step === 4 && check && <ReviewStep plan={plan} check={check} />}
 
@@ -301,7 +307,7 @@ const MODES: Record<'github' | 'vps', [HomeMode, string][]> = {
   vps: [['new', 'New repo'], ['existing', 'Existing repo'], ['skip', 'Not on the VPS']],
 };
 
-function HomesStep({ st, plan, setHome, set }: { st: Status; plan: Plan; setHome: (k: keyof Plan['homes'], p: Partial<Home>) => void; set: (p: Partial<Plan>) => void }) {
+function HomesStep({ st, plan, setHome, set, info }: { st: Status; plan: Plan; setHome: (k: keyof Plan['homes'], p: Partial<Home>) => void; set: (p: Partial<Plan>) => void; info: Inspect | null }) {
   const id = plan.name || slug(plan.display);
   const g = plan.homes.github;
   const v = plan.homes.vps;
@@ -314,7 +320,7 @@ function HomesStep({ st, plan, setHome, set }: { st: Status; plan: Plan; setHome
           <div className={`${P}__grid`}>
             <label className={`${P}__field`}>Owner<input className="fx-input fx-mono" value={g.owner} onChange={(e) => setHome('github', { owner: e.target.value.trim() })} placeholder={st.github.login || 'MossesX'} /></label>
             {g.mode === 'existing'
-              ? <Picker location="github" label="Repository" value={g.owner && g.name ? `${g.owner}/${g.name}` : g.name} onChange={(val) => { const [o, n] = val.includes('/') ? val.split('/') : [g.owner, val]; setHome('github', { owner: o, name: n }); }} placeholder="owner/name" />
+              ? <Picker location="github" label="Repository" value={g.owner && g.name ? `${g.owner}/${g.name}` : g.name} onChange={(val) => { const [o, n] = splitRepo(val, g.owner); setHome('github', { owner: o, name: n }); }} placeholder="owner/name" />
               : <label className={`${P}__field`}>Repository name<input className="fx-input fx-mono" value={g.name} onChange={(e) => setHome('github', { name: e.target.value.trim() })} placeholder={id} /></label>}
           </div>
         )}
@@ -332,7 +338,12 @@ function HomesStep({ st, plan, setHome, set }: { st: Status; plan: Plan; setHome
       <fieldset className={`${P}__fieldset`}>
         <legend><Icon name="folder" size={16} /> Local git folder</legend>
         {plan.source.kind === 'folder'
-          ? <p style={{ margin: 0 }}>Stays in <span className="fx-mono">{plan.source.path}</span>{' '}(made a git repo if it isn't one).</p>
+          ? <>
+            <p style={{ margin: 0 }}>Stays in <span className="fx-mono">{info?.path ?? plan.source.path}</span>{info?.git ? ' (its own git repo).' : ' (made a git repo).'}</p>
+            {info && !info.git && !info.empty && (
+              <label className={`${P}__choice`}><input type="checkbox" checked={plan.commitAll} onChange={(e) => set({ commitAll: e.target.checked })} /><span><strong>Commit everything in this folder</strong><br /><span className="fx-muted fx-small">It isn't a git repo yet, so every file in it is committed and pushed to the homes above. Files that look like secrets (.env, keys, secrets.env, credentials) are left out, but check it first.</span></span></label>
+            )}
+          </>
           : <label className={`${P}__field`}>Folder on the console server<input className="fx-input fx-mono" value={plan.homes.local.path} onChange={(e) => setHome('local', { path: e.target.value })} placeholder={`${st.workspace}/${id || '<id>'}`} /><span className="fx-small fx-muted">Must be new or empty, under {st.roots.join(' or ')}.</span></label>}
       </fieldset>
       <label className={`${P}__choice`}><input type="checkbox" checked={plan.sync} onChange={(e) => set({ sync: e.target.checked })} /><span><strong>Sync _claude/ with the hub</strong><br /><span className="fx-muted fx-small">Runs claude-sync when it's installed on the console server, so /projects/{id || '<id>'}/ gets the Claude files.</span></span></label>

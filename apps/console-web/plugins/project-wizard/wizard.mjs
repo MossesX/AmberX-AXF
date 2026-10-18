@@ -24,7 +24,7 @@
  * over SSH; without them /srv/git on this machine is used when it exists), AXF_VPS_GIT_DIR (default /srv/git).
  */
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,7 +39,9 @@ export const KIT_DIR = '_claude/claude-ai';
 
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,62}$/;
 const OWNER_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
-const REPO_RE = /^[A-Za-z0-9._-]{1,100}$/;
+// no leading '.' or '-', no '..' (git would read a leading '-' as an option; '..' walks out of /srv/git)
+const REPO_RE = /^(?!.*\.\.)[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$/;
+const USER_RE = /^[a-z_][a-z0-9_-]{0,31}$/;
 const HOST_RE = /^[A-Za-z0-9.-]{1,253}$/;
 const ANSI = /\x1b\[[0-9;]*m/g;
 const slugOf = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 63);
@@ -51,20 +53,31 @@ const fail = (msg) => { throw Object.assign(new Error(msg), { user: true }); };
 
 export const workspace = () => resolve((process.env.AXF_WIZARD_WORKSPACE || join(homedir(), 'projects')).replace(/^~(?=\/|$)/, homedir()));
 const real = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
+/** Folders the wizard may use. Never the console's own clone (it resets every few minutes and holds .axf-console/). */
 export function roots() {
   const extra = (process.env.AXF_WIZARD_ROOTS || '').split(':').map((s) => s.trim()).filter((s) => isAbsolute(s));
-  return [...new Set([workspace(), REPO_ROOT, ...extra].map(real))];
+  const repo = real(REPO_ROOT);
+  return [...new Set([workspace(), ...extra].map(real))].filter((r) => r !== repo && !r.startsWith(repo + '/') && r !== '/');
+}
+/** realpath of the deepest part of `p` that exists, with the missing rest appended (so a symlinked parent can't escape). */
+function realish(p) {
+  let cur = resolve(p);
+  const rest = [];
+  while (!existsSync(cur)) { const up = dirname(cur); if (up === cur) break; rest.unshift(basename(cur)); cur = up; }
+  return join(real(cur), ...rest);
 }
 /** A folder path from the browser, only if it sits inside one of the allowed roots (symlinks resolved). */
 export function safeFolder(p, { mustExist = true } = {}) {
   const raw = str(p, 1000);
   if (!raw || raw.includes('\0')) fail('Give a folder path');
   const abs = resolve(raw.replace(/^~(?=\/|$)/, homedir()));
-  let target = abs;
-  if (existsSync(abs)) target = real(abs);
-  else if (mustExist) fail(`${abs} doesn't exist on the console server`);
-  else target = join(real(dirname(abs)), basename(abs));
-  const ok = roots().some((r) => target === r || target.startsWith(r + '/'));
+  if (mustExist && !existsSync(abs)) fail(`${abs} doesn't exist on the console server`);
+  const target = realish(abs);
+  const repo = real(REPO_ROOT);
+  if (target === repo || target.startsWith(repo + '/')) fail(`${abs} is inside the console's own clone: pick a folder under ${roots().join(', ') || 'the workspace'}`);
+  if (target.split('/').includes('.axf-console')) fail('The console\'s private folder (.axf-console) can\'t be used');
+  if (roots().includes(target)) fail(`${abs} is a whole workspace folder: pick a project folder inside it`);
+  const ok = roots().some((r) => target.startsWith(r + '/'));
   if (!ok) fail(`${abs} is outside the folders the wizard may use (${roots().join(', ')}). Add it to AXF_WIZARD_ROOTS on the server to allow it.`);
   return target;
 }
@@ -73,7 +86,7 @@ const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-consol
 export function loadStore() { return readJson(STORE()) ?? { $axf: 'project-wizard@1', projects: {} }; }
 function saveStore(s) {
   mkdirSync(dirname(STORE()), { recursive: true });
-  const tmp = `${STORE()}.tmp`;
+  const tmp = `${STORE()}.${process.pid}.${Date.now()}.tmp`;
   writeFileSync(tmp, JSON.stringify(s, null, 2) + '\n', { mode: 0o600 });
   renameSync(tmp, STORE());
   try { chmodSync(STORE(), 0o600); } catch { /* best effort */ }
@@ -151,7 +164,8 @@ export function vpsInfo() {
   const host = str(process.env.AXF_VPS_HOST, 253);
   const user = str(process.env.AXF_VPS_USER, 32) || 'root';
   const dir = str(process.env.AXF_VPS_GIT_DIR, 500) || '/srv/git';
-  if (host && !HOST_RE.test(host)) return { mode: 'off', why: 'AXF_VPS_HOST is not a host name', dir };
+  if (host && (!HOST_RE.test(host) || host.startsWith('-'))) return { mode: 'off', why: 'AXF_VPS_HOST is not a host name', dir };
+  if (host && !USER_RE.test(user)) return { mode: 'off', why: 'AXF_VPS_USER is not a user name', dir };
   if (host) return { mode: 'ssh', host, user, dir };
   if (existsSync(dir)) return { mode: 'local', dir };
   return { mode: 'off', dir, why: `no ${dir} on this machine and no AXF_VPS_HOST set` };
@@ -291,8 +305,22 @@ async function normalise(plan = {}) {
   const l = homes.local ?? { mode: 'keep' };
   const out = { source, display, name, description, kind: str(plan.kind, 30) || 'app', visibility: plan.visibility === 'public' ? 'public' : 'private', port: ['bake', 'rebuild', 'no'].includes(plan.port) ? plan.port : 'no', homes: {}, sync: plan.sync !== false };
 
+  // the source itself
+  if (source.kind === 'github' && !parseGithub(source.repo)) problems.push('Source: give the GitHub repository as owner/name or its link');
+  if (source.kind === 'vps' && !REPO_RE.test(str(source.repo, 100).replace(/\.git$/, ''))) problems.push('Source: pick a repository on the VPS');
+  if (!['github', 'vps', 'folder', 'new'].includes(source.kind)) problems.push('Pick a source');
+  out.commitAll = plan.commitAll === true;
+
   // where the working folder will be
-  if (source.kind === 'folder') out.dir = safeFolder(source.path);
+  if (source.kind === 'folder') {
+    try { out.dir = safeFolder(source.path); } catch (e) { problems.push(e.message); }
+    if (out.dir) {
+      const top = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: out.dir, encoding: 'utf8' });
+      const isGit = existsSync(join(out.dir, '.git'));
+      if (top.status === 0 && real(top.stdout.trim()) !== out.dir) problems.push(`${out.dir} is inside another git repository (${top.stdout.trim()}): pick that repository's folder, or a folder of its own`);
+      else if (!isGit && readdirSync(out.dir).length && !out.commitAll) problems.push(`${out.dir} isn't a git repository yet: every file in it will be committed and pushed. Tick "Commit everything in this folder" after checking it holds no secrets.`);
+    }
+  }
   else {
     const wanted = str(l.path, 1000) || join(workspace(), name || 'project');
     try { out.dir = safeFolder(wanted, { mustExist: false }); } catch (e) { problems.push(e.message); }
@@ -422,6 +450,22 @@ export async function run(plan) {
 
 const cap = (s, n = 60_000) => (s.length > n ? `${s.slice(0, n)}\n\n…(cut at ${n} characters)\n` : s);
 const readMaybe = (f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } };
+/** Read a file of the project only if nothing on the way to it is a symlink (a cloned repo could link _claude/ elsewhere). */
+const readInside = (dir, f) => { try { insideOrThrow(dir, f); return readMaybe(f); } catch { return ''; } };
+function insideOrThrow(dir, f) {
+  const root = resolve(dir);
+  const rel = relative(root, resolve(f));
+  if (rel.startsWith('..') || isAbsolute(rel)) fail(`${f} is outside ${root}`);
+  let cur = root;
+  for (const part of rel.split('/').filter(Boolean)) {
+    cur = join(cur, part);
+    let st;
+    try { st = lstatSync(cur); } catch { return; }
+    if (st.isSymbolicLink()) fail(`${relative(root, cur)} is a symlink: the wizard won't read or write through it`);
+  }
+}
+/** A VPS remote without the user@host part, for files that get committed. */
+const vpsLabel = (u) => (u ? `VPS:${String(u).replace(/^ssh:\/\/[^/]+/, '')}` : '');
 function tree(dir, depth = 2) {
   const skip = new Set(['node_modules', 'dist', 'build', '.git', '.gradle', '.next', '__pycache__', '.venv', 'shared', '.axf-console']);
   const lines = [];
@@ -441,18 +485,19 @@ function tree(dir, depth = 2) {
 
 /** Writes _claude/claude-ai/: INSTRUCTIONS.md (paste into the project's instructions) + context/ (upload as files). */
 export function writeKit(dir, homes = {}) {
-  const m = readJson(join(dir, 'project.manifest.json')) ?? {};
+  insideOrThrow(dir, join(dir, KIT_DIR, 'x'));
+  const m = (readInside(dir, join(dir, 'project.manifest.json')) && readJson(join(dir, 'project.manifest.json'))) || {};
   const display = m.displayName ?? basename(dir);
   const name = m.name ?? slugOf(display);
   const repo = homes.github || m.repo?.url || '';
-  const vps = homes.vps || m.x?.remotes?.vps || '';
+  const vps = vpsLabel(homes.vps || m.x?.remotes?.vps || '');
   const today = new Date().toISOString().slice(0, 10);
-  const shared = readMaybe(join(dir, '_claude/shared/rules/RULES.md')) || readMaybe(join(REPO_ROOT, '_claude/shared/rules/RULES.md'));
-  const projectRules = readMaybe(join(dir, '_claude/rules/RULES.md'));
-  const claudeMd = readMaybe(join(dir, 'CLAUDE.md'));
-  const decisions = readMaybe(join(dir, '_claude/memory/decisions.md'));
-  const memory = readMaybe(join(dir, `_claude/memory/${name}.md`));
-  const first = readMaybe(join(dir, 'docs/FIRST_SESSION.md'));
+  const shared = readInside(dir, join(dir, '_claude/shared/rules/RULES.md')) || readMaybe(join(REPO_ROOT, '_claude/shared/rules/RULES.md'));
+  const projectRules = readInside(dir, join(dir, '_claude/rules/RULES.md'));
+  const claudeMd = readInside(dir, join(dir, 'CLAUDE.md'));
+  const decisions = readInside(dir, join(dir, '_claude/memory/decisions.md'));
+  const memory = readInside(dir, join(dir, `_claude/memory/${name}.md`));
+  const first = readInside(dir, join(dir, 'docs/FIRST_SESSION.md'));
   const relation = m.framework?.relation ?? 'none';
   const files = [];
   const add = (path, text) => files.push({ path, text: cap(text) });
@@ -507,16 +552,16 @@ Made ${today} by the AXF Dev Console project wizard. Regenerate it from the wiza
 4. ${repo ? `Add ${repo.replace(/^https:\/\/github\.com\//, '')} from GitHub to the project's files (the Claude GitHub app already has access, or the wizard told you how to give it).` : 'Give it a GitHub repo later to attach the code.'}
 5. Paste the project's link back into the wizard so it is recorded in project.manifest.json (x.claudeAi.url).
 `);
-  for (const f of files) { const out = join(dir, KIT_DIR, f.path); mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, f.text); }
+  for (const f of files) { const out = join(dir, KIT_DIR, f.path); insideOrThrow(dir, out); mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, f.text); }
   return { dir: join(dir, KIT_DIR), files: files.map((f) => ({ path: f.path, bytes: Buffer.byteLength(f.text), text: f.text })) };
 }
 
 function commitAndPush(dir, paths, message, homes) {
   if (!existsSync(join(dir, '.git'))) return;
   git(dir, ['add', '--', ...paths]);
-  if (!spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: dir }).status) return;
+  if (!spawnSync('git', ['diff', '--cached', '--quiet', '--', ...paths], { cwd: dir }).status) return;
   const identity = gitOk(dir, ['config', 'user.email']) ? [] : ['-c', 'user.name=AXF project wizard', '-c', 'user.email=project-wizard@users.noreply.github.com'];
-  git(dir, [...identity, 'commit', '-q', '-m', message]);
+  git(dir, [...identity, 'commit', '-q', '-m', message, '--', ...paths]);
   const branch = git(dir, ['rev-parse', '--abbrev-ref', 'HEAD']);
   if (homes.github) {
     const r = parseGithub(homes.github);
@@ -537,7 +582,7 @@ export async function kit({ name, rebuild = false }) {
   const p = projectOf(name);
   const k = rebuild ? writeKit(p.dir, { github: p.github, vps: p.vps }) : null;
   if (rebuild) commitAndPush(p.dir, [KIT_DIR], `Rebuild the Claude.ai project kit for ${p.display}`, { github: p.github, vps: !!p.vps });
-  const files = k ? k.files : (p.kit?.files ?? []).map((f) => { const t = readMaybe(join(p.dir, KIT_DIR, f)); return { path: f, bytes: Buffer.byteLength(t), text: t }; });
+  const files = k ? k.files : (p.kit?.files ?? []).map((f) => { const t = readInside(p.dir, join(p.dir, KIT_DIR, f)); return { path: f, bytes: Buffer.byteLength(t), text: t }; });
   if (k) putProject({ name: p.name, kit: { dir: KIT_DIR, files: k.files.map((f) => f.path) } });
   return { ok: true, name: p.name, files, claudeNewProjectUrl: CLAUDE_NEW_PROJECT_URL };
 }
@@ -548,6 +593,7 @@ export async function link({ name, url }) {
   const u = str(url, 300);
   if (!/^https:\/\/claude\.ai\/project\/[A-Za-z0-9-]{8,80}\/?$/.test(u)) fail('Paste the project\'s link from claude.ai (https://claude.ai/project/…)');
   const mf = join(p.dir, 'project.manifest.json');
+  insideOrThrow(p.dir, mf);
   const m = readJson(mf);
   if (!m) fail('The project has no project.manifest.json');
   m.x = { ...(m.x ?? {}), claudeAi: { ...(m.x?.claudeAi ?? {}), url: u, kit: KIT_DIR } };
