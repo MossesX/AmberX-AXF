@@ -1,0 +1,12 @@
+{
+  "version": "baseline-v1",
+  "note": "Measured runs of BASELINE-v1.md (checkin.mjs calibrate). Until a model × effort pair has runs, its estimate uses the seed token counts below and is labelled 'uncalibrated'. The seed is a placeholder guess, not a measurement.",
+  "seed": {
+    "low":    { "input": 60000,  "output": 6000,  "cacheRead": 120000 },
+    "medium": { "input": 90000,  "output": 10000, "cacheRead": 200000 },
+    "high":   { "input": 140000, "output": 16000, "cacheRead": 320000 },
+    "xhigh":  { "input": 200000, "output": 24000, "cacheRead": 480000 },
+    "max":    { "input": 280000, "output": 34000, "cacheRead": 680000 }
+  },
+  "runs": []
+}

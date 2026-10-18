@@ -44,7 +44,8 @@
       "framework/catalog/status.json",
       "framework/catalog/libraries.json",
       "framework/schemas/project-rules.json",
-      "tracker.json"
+      "tracker.json",
+      "sessions/"
     ]
   },
   "owners": [

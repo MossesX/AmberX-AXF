@@ -1,6 +1,6 @@
 # Session check-in (spec)
 
-**Status:** defined Oct 18 2026, not built yet. Suggested build model: Opus 5.5. It's hooks, a small CLI, an archive, a console view and MCP tools, and nothing in it needs Fable.
+**Status:** built Oct 18 2026 on Opus 5.5 as the console plugin `apps/console-web/plugins/session-checkin` (see "How it's built" at the end). Installed from Dev Console → Settings → **Session check-in**, or `node apps/console-web/plugins/session-checkin/install.mjs` in a terminal.
 
 ## What it does
 
@@ -96,7 +96,7 @@ The answer decides which of questions 2–5 apply.
 
 A small, fully specified build that never changes. Its cost per model × effort is **measured**, not guessed.
 
-- **Definition:** `.claude/baseline/BASELINE-v1.md`, pinned to git tag `baseline-v1`. The build must:
+- **Definition:** `apps/console-web/plugins/session-checkin/baseline/BASELINE-v1.md`, pinned to git tag `baseline-v1`. The build must:
   1. Read three named files: `framework/core/engines/layout.ts`, `framework/spec/PORTING.md`, `framework/schemas/asset-types.json`.
   2. Add one fully specified pure function (`compareSlots(a, b)`, spec in the file) to a scratch copy of `layout.ts`, with five named unit tests.
   3. Run `tsc --noEmit` and the tests; both must pass.
@@ -107,11 +107,11 @@ A small, fully specified build that never changes. Its cost per model × effort 
   - pass/fail
   - model and effort
 - **Usage sources:** Claude Code's `/cost` / usage output, or the API `usage` fields when on an API key.
-- **Calibration:** `.claude/baseline/calibration.json`, `{ version: "baseline-v1", runs: [...] }`.
+- **Calibration:** `apps/console-web/plugins/session-checkin/baseline/calibration.json`, `{ version: "baseline-v1", runs: [...] }`.
   - The estimate for a model × effort pair is the **median of its measured runs** × current prices.
   - **Pairs not measured yet** are scaled from the nearest measured pair and labelled **"uncalibrated"**.
   - **Recalibrate** only when Brett asks, or when a new model arrives. He approves each calibration run, because every run costs money.
-- **Prices:** `.claude/baseline/pricing.json`, with per-million input / output / cache-read prices for each of the three models.
+- **Prices:** `apps/console-web/plugins/session-checkin/baseline/pricing.json`, with per-million input / output / cache-read prices for each of the three models.
   - Filled in and dated from docs.claude.com when calibrated.
   - The check-in shows the date. If it's older than 60 days, the estimate carries a "prices may be stale" tag.
 - **A new baseline version** (`baseline-v2`) starts a new calibration. It never overwrites v1, so the history stays comparable.
@@ -150,24 +150,27 @@ Every check-in writes one record, `session-log@1`:
 - **Browsing:**
   - **Console:** a **Sessions** view: a newest-first table with filters (location, model, effort, mismatches, unattended) and a detail panel per session.
   - **Command line:** `node framework/cli/sessions.mjs [--last 20] [--location vps]`.
-  - **MCP:** `session_list` / `session_get`.
+  - **MCP:** not exposed. Console plugin routes are never reachable through the console's MCP server (plugin security rule).
   - **Totals:** sessions per model, check-in mismatches, baseline estimate over time. A price change shows up as a step in that line.
 - **Retention:** keep everything; records are small. Deleting needs Brett's approval, as with memory.
 
-## Pieces to build (when this is picked up)
+## How it's built
 
-1. **Detection:** `framework/cli/session-start.mjs detect`
-   - Prints the detected context (location, repo, container, project, memory source and file list, running model, pending items, baseline estimates) as a short block for Claude's context.
-   - Runs from the `SessionStart` hook, which replaces the current `cat model-policy.md` hook (the policy text is folded into the block).
-2. **The questions:** Claude asks them with the multiple-choice question tool, two rounds of up to four. When no question tool is available, it asks in plain text.
-3. **Logging:**
-   - `session-start.mjs log` writes the record (stdin JSON → validate → write).
-   - `session-start.mjs end`, from a `SessionEnd` hook where supported, fills in `end`.
-4. **Baseline:**
-   - `.claude/baseline/BASELINE-v1.md`, `calibration.json`, `pricing.json`, and the `baseline-v1` tag.
-   - `session-start.mjs calibrate --model … --effort …` prints the steps for a measured run and records the usage he pastes or the client reports.
-5. **Archive access:** `framework/cli/sessions.mjs`, `GET/POST /api/sessions`, MCP `session_list`/`session_get`, and the console **Sessions** view.
-6. **claude.ai side:** a short rule in `memory/RULES.md` (saved to the hub) so claude.ai sessions run the same check-in. They log through axHub, since they have no shell.
+Plugin folder `apps/console-web/plugins/session-checkin/` (id `ai.amberx.axf.console.session-checkin`):
+
+| File | Job |
+| --- | --- |
+| `lib.mjs` | Shared logic: config (`session-checkin-config@1`), install targets and hook entries, detection, memory listing, baseline estimates, archive read/write with secret scrubbing |
+| `checkin.mjs` | The hook and CLI: `detect` (SessionStart), `log`, `end` (SessionEnd), `open <n>` (memory, read-only), `list`, `get`, `baseline`, `calibrate` |
+| `install.mjs` | Installer: interactive in a terminal, `--json` for the console wizard (`status`, `preview`, `install`, `uninstall`) |
+| `server/__init__.py` | Console routes `/api/plugins/session-checkin/{status,preview,install,uninstall,sessions,sessions/{id},baseline,pricing,detect}` (console token on every method) |
+| `web/index.tsx` | **Sessions** view (nav → Plugins) and the Settings tab **Session check-in**: Status, Install or change (5-step wizard), Baseline build costs (prices form) |
+| `baseline/` | `BASELINE-v1.md` (the fixed task), `calibration.json` (placeholder seed + measured runs), `pricing.json` |
+| `test.mjs` | Self-test, run in CI |
+
+Install targets: **this clone** (`.claude/settings.local.json`, git-ignored; on the VPS that's the console's clone `/opt/axf`), **every clone** (`.claude/settings.json`, commit + push), or **user** (`~/.claude/settings.json`, only from a terminal on that device). The installer only adds or removes its own hook entries (marked by `session-checkin/checkin.mjs` in the command) and keeps a `.bak` of the file. SessionStart runs on `startup` (optionally `resume`); stdout becomes the check-in instructions for Claude, ending with the record skeleton to fill in and pipe to `checkin.mjs log`.
+
+Archive: `sessions/<YYYY>/<MM>/<id>.json`; written to the hub's `/projects/amberx-axf/_data/sessions/` where it's mounted, else the repo's `sessions/` (in the root manifest's `data.shared`, so `claude-sync` carries it to the hub). Unattended runs (`CLAUDE_CODE_SESSION_ATTENDED=0`, SDK entrypoints) are logged without questions.
 
 ## Done when
 
@@ -176,5 +179,5 @@ Every check-in writes one record, `session-log@1`:
 - The memory step lists the files and opens any of them read-only; no write path exists from it.
 - The model step follows the top-three policy and tells him the switch command when the pick differs.
 - The effort step shows a baseline cost per level, labelled calibrated or uncalibrated, with the price date.
-- Every check-in, including skipped and unattended ones, has an archive record off the container. Records are browsable in the console, the CLI and MCP.
+- Every check-in, including skipped and unattended ones, has an archive record off the container. Records are browsable in the console and the CLI.
 - Nothing secret is ever written to the archive.

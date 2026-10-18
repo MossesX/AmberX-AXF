@@ -10,3 +10,7 @@ __pycache__/
 # Synced copies of /projects/_shared/_claude (claude-sync); committed once, at the repo root (_claude/shared/)
 apps/*/_claude/shared/
 projects/*/_claude/shared/
+
+# Session check-in (plugin): per-clone install + settings backups
+.claude/*.local.json
+.claude/*.bak

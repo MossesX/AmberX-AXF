@@ -1,0 +1,10 @@
+{
+  "asOf": "2026-10-18",
+  "source": "https://claude.com/pricing (Latest models; cache read = 5-minute cache). Read through a summarising fetch: check against the page.",
+  "unit": "USD per million tokens",
+  "models": {
+    "fable": { "input": 10, "output": 50, "cacheRead": 0.25 },
+    "opus": { "input": 4, "output": 20, "cacheRead": 0.2 },
+    "sonnet": { "input": 2, "output": 10, "cacheRead": 0.1 }
+  }
+}
