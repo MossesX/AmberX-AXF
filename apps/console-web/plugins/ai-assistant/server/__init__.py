@@ -24,7 +24,7 @@ from fastapi.responses import PlainTextResponse, StreamingResponse
 
 import plugin_services
 
-from . import providers, store, tools
+from . import providers, sessions, store, tools
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -79,6 +79,11 @@ def tools_root() -> Path:
 
 
 plugin_services.provide("axf.llm@1", LlmService(), FOLDER)
+
+# Live sessions (live-session@1): every conversation is a session owned by this server; replies run detached from the
+# browser and viewers reattach + replay. See server/sessions.py and framework/spec/LIVE-SESSIONS.md.
+_host = sessions.LocalHost(store.DATA / "sessions")
+plugin_services.provide("axf.live-sessions@1", sessions.LiveSessionsService(_host), FOLDER)
 
 
 # ---------------------------------------------------------------- prompts
@@ -496,7 +501,7 @@ def get_config() -> dict[str, Any]:
 _CONFIG_KEYS = {"setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
                 "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool,
                 "showThinking": bool, "redactSecrets": bool, "dailyTokenBudget": int, "agentIntegration": bool, "defaultAgent": str,
-                "suggestions": list, "prompts": list}
+                "suggestions": list, "prompts": list, "sessionHost": str}
 
 
 @router.put("/config")
@@ -524,6 +529,8 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
             v = [{"id": str(p.get("id") or store.new_id("p"))[:40], "title": str(p.get("title", ""))[:80], "shortcut": str(p.get("shortcut", ""))[:24], "text": str(p.get("text", ""))[:8000]} for p in v if isinstance(p, dict)][:100]
         if k == "suggestions":
             v = [str(s)[:200] for s in v][:12]
+        if k == "sessionHost" and v not in {h["id"] for h in sessions.HOSTS}:
+            raise HTTPException(400, "unknown session host")
         if k == "fallback":
             v = [str(s) for s in v if str(s) in cfg.get("profiles", {})][:10]
         cfg[k] = v
@@ -647,6 +654,7 @@ def remove_conversation(cid: str) -> dict[str, Any]:
         store.delete_conversation(cid)
     except KeyError:
         raise HTTPException(404, "conversation not found") from None
+    _host.close(cid, stop=lambda: _stop_session_turn(cid))
     return {"deleted": cid}
 
 
@@ -720,10 +728,70 @@ def import_conversation(body: dict[str, Any]) -> dict[str, Any]:
 @router.post("/conversations/{cid}/messages")
 def send_message(cid: str, body: dict[str, Any]):
     try:
-        store.get_conversation(cid)
+        conv = store.get_conversation(cid)
     except KeyError:
         raise HTTPException(404, "conversation not found") from None
-    return StreamingResponse(run_turn(cid, body), media_type="text/event-stream", headers={"cache-control": "no-store", "x-accel-buffering": "no"})
+    host = store.load_config().get("sessionHost") or "local"
+    notice = "" if host == "local" else "axHub's session workers aren't built yet, so this reply runs on the console (it still keeps going if you close the browser)."
+    try:
+        seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body), notice)
+    except sessions.Busy as e:
+        raise HTTPException(409, str(e)) from None
+    # The reply runs in its own thread; this response only watches the session log. Leaving doesn't stop it.
+    return StreamingResponse(_host.tail(cid, seq - 1), media_type="text/event-stream", headers=_SSE_HEADERS)
+
+
+_SSE_HEADERS = {"cache-control": "no-store", "x-accel-buffering": "no"}
+
+
+def _stop_session_turn(cid: str) -> bool:
+    """Stop the reply running in a session (the turn id is in its latest `start` event)."""
+    s = _host.get(cid)
+    if not s:
+        return False
+    with s.log.cond:
+        tid = next((e.get("data", {}).get("turnId") for e in reversed(s.log.items) if e.get("kind") == "start" and isinstance(e.get("data"), dict)), None)
+    ev = _turns.get(tid) if tid else None
+    if ev:
+        ev.set()
+    return bool(ev)
+
+
+# ---------------------------------------------------------------- routes: live sessions
+
+@router.get("/sessions")
+def list_sessions(closed: bool = False) -> dict[str, Any]:
+    cfg = store.load_config()
+    return {"contract": sessions.CONTRACT, "host": cfg.get("sessionHost") or "local", "active": "local", "hosts": sessions.HOSTS,
+            "items": _host.list(closed)}
+
+
+@router.get("/sessions/{cid}")
+def session_info(cid: str) -> dict[str, Any]:
+    return {"session": _host.info(cid)}
+
+
+@router.get("/sessions/{cid}/events")
+def session_events(cid: str, since: int = 0, follow: bool = True, limit: int = 500):
+    """follow=1: SSE replay of everything after `since`, then live events until the reply ends.
+    follow=0: one JSON page (`events`, `next`, `gap`, `reset`, `more`)."""
+    if follow:
+        return StreamingResponse(_host.tail(cid, since), media_type="text/event-stream", headers=_SSE_HEADERS)
+    s = _host.get(cid)
+    if not s:
+        return {"events": [], "next": 0, "gap": False, "reset": since > 0, "more": False, "state": "none"}
+    return {**s.log.since(since, max(1, min(limit, 2000))), "state": s.state}
+
+
+@router.post("/sessions/{cid}/stop")
+def session_stop(cid: str) -> dict[str, Any]:
+    return {"stopped": _stop_session_turn(cid)}
+
+
+@router.post("/sessions/{cid}/close")
+def session_close(cid: str) -> dict[str, Any]:
+    """End the live session on purpose (the conversation stays; the next message opens a new session)."""
+    return {"closed": _host.close(cid, stop=lambda: _stop_session_turn(cid))}
 
 
 @router.post("/turns/{tid}/stop")

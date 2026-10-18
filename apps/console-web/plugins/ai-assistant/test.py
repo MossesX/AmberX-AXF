@@ -112,14 +112,30 @@ def check(cond, msg):
     print(f"  ✓ {msg}")
 
 
+_LIFE = {"session.open", "session.close", "turn.start", "turn.end", "wait", "resume", "interrupted", "replay", "session"}
+
+
+def parse_sse(text, lifecycle=False):
+    """(event, data) pairs; lifecycle events and the replay header are skipped unless asked for."""
+    events = []
+    for block in text.split("\n\n"):
+        ev, data, seq = None, None, None
+        for line in block.strip().split("\n"):
+            if line.startswith("event: "):
+                ev = line[7:]
+            elif line.startswith("data: "):
+                data = json.loads(line[6:])
+            elif line.startswith("id: "):
+                seq = int(line[4:])
+        if ev is None or (ev in _LIFE and not lifecycle):
+            continue
+        events.append((ev, data, seq) if lifecycle else (ev, data))
+    return events
+
+
 def turn(cid, **body):
     r = c.post(f"{P}/conversations/{cid}/messages", json=body)
-    events = []
-    for block in r.text.split("\n\n"):
-        lines = block.strip().split("\n")
-        if len(lines) == 2:
-            events.append((lines[0][7:], json.loads(lines[1][6:])))
-    return events
+    return parse_sse(r.text)
 
 
 print("ai-assistant self-test")
@@ -385,4 +401,110 @@ check(not any(k in ce for k in ("COOLIFY_TOKEN", "HOSTINGER_API_TOKEN", "AXHUB_T
       "Claude Code CLI env: every token, key and password removed")
 deny = prov._cli_abs_deny("/work/repo")
 check("Read(//proc/**)" in deny and "Read(//work/repo/.axf-console/**)" in deny and "Grep(~/.ssh/**)" in deny, "Claude Code CLI can't read /proc, the console's private folder or SSH keys")
+
+# ---------------------------------------------------------------- live sessions (live-session@1)
+print("live sessions")
+import time as _time  # noqa: E402
+sess = sys.modules["axf_console_plugins.ai_assistant.sessions"]
+fx = json.load(open(HERE.parents[3] / "framework" / "spec" / "fixtures" / "live-session.json"))
+check(sess.STATES == fx["states"] and sess.KINDS == fx["kinds"], "states + reserved kinds match the kernel contract")
+check(all(sess.reduce(t["state"], t["kind"]) == t["next"] for t in fx["transitions"]), "state reducer matches the reference for every state × kind")
+lg, stt, sts = sess.EventLog(fx["log"]["limit"]), "idle", []
+for a in fx["log"]["appends"]:
+    lg.append(a["kind"], a.get("data"), a["at"])
+    stt = sess.reduce(stt, a["kind"])
+    sts.append(stt)
+check(sts == fx["log"]["states"] and lg.items == fx["log"]["kept"] and lg.last == fx["log"]["lastSeq"] and lg.first_seq == fx["log"]["firstSeq"], "event log appends + trims like the reference")
+check(all(lg.since(q["after"], q["max"]) == q["result"] for q in fx["replays"]), "event log replays (gap / reset / more) match the reference")
+
+# a slow fake reply: the browser leaves after the first event, the reply still finishes on the server
+import queue as _q  # noqa: E402
+gate = _q.Queue()
+
+
+def slow_run_turn(cid, body):
+    yield mod._sse("start", {"turnId": "t-slow", "agent": None})
+    yield mod._sse("text", {"text": "part one "})
+    gate.get(timeout=10)
+    yield mod._sse("text", {"text": "part two"})
+    yield mod._sse("done", {"message": {"id": "m-x", "role": "assistant", "content": "part one part two"}, "title": "Slow chat"})
+
+
+real_run_turn = mod.run_turn
+mod.run_turn = slow_run_turn
+sc = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
+# a real server + a real client that hangs up after the first piece (TestClient can't disconnect)
+import socket as _sock  # noqa: E402
+import http.client as _hc  # noqa: E402
+import uvicorn as _uv  # noqa: E402
+with _sock.socket() as _s:
+    _s.bind(("127.0.0.1", 0))
+    _port = _s.getsockname()[1]
+_srv = _uv.Server(_uv.Config(app, host="127.0.0.1", port=_port, log_level="error"))
+threading.Thread(target=_srv.run, daemon=True).start()
+for _ in range(100):
+    if _srv.started:
+        break
+    _time.sleep(0.05)
+
+
+def hang_up_after(path, marker):
+    """POST like the browser, read until `marker`, then drop the connection."""
+    conn = _hc.HTTPConnection("127.0.0.1", _port, timeout=10)
+    conn.request("POST", path, body=json.dumps({"content": "go"}), headers={"content-type": "application/json"})
+    resp, got = conn.getresponse(), b""
+    while marker not in got:
+        piece = resp.read1(4096)
+        if not piece:
+            break
+        got += piece
+    conn.sock.close()
+    conn.close()
+    return got
+
+
+first = hang_up_after(f"{P}/conversations/{sc}/messages", b"part one")
+_time.sleep(0.3)
+check(b"part one" in first and b"id: " in first, "reply streams with seq ids")
+info = c.get(f"{P}/sessions/{sc}").json()["session"]
+check(info and info["state"] == "running", "browser hung up; the reply keeps running on the server")
+check(c.post(f"{P}/conversations/{sc}/messages", json={"content": "again"}).status_code == 409, "a second message while a reply runs is refused (409)")
+seen = max(seq for _, _, seq in parse_sse(first.decode(), lifecycle=True) if seq)
+gate.put(1)
+for _ in range(100):
+    if c.get(f"{P}/sessions/{sc}").json()["session"]["state"] == "idle":
+        break
+    _time.sleep(0.05)
+rest = parse_sse(c.get(f"{P}/sessions/{sc}/events", params={"since": seen}).text, lifecycle=True)
+check([e for e, _, _ in rest][:1] == ["replay"] and any(e == "text" and d["text"] == "part two" for e, d, _ in rest) and any(e == "turn.end" for e, _, _ in rest),
+      "reattaching replays only what was missed, through the end of the turn")
+page = c.get(f"{P}/sessions/{sc}/events", params={"since": 0, "follow": 0}).json()
+check(page["state"] == "idle" and page["events"][0]["kind"] == "session.open" and not page["gap"], "JSON page of the whole log")
+lst = c.get(f"{P}/sessions").json()
+check(any(i["id"] == sc and i["title"] == "Slow chat" for i in lst["items"]) and {h["id"] for h in lst["hosts"]} == {"local", "axhub"}, "sessions listed with hosts (local + axHub placeholder)")
+check(c.put(f"{P}/config", json={"sessionHost": "axhub"}).status_code == 200 and c.put(f"{P}/config", json={"sessionHost": "nowhere"}).status_code == 400, "session host setting validated")
+gate.put(1)
+ev2 = turn(sc, content="via hub")
+check(any(e == "status" and "axHub" in d["text"] for e, d in ev2), "axHub host not built yet: falls back to this console with a notice")
+c.put(f"{P}/config", json={"sessionHost": "local"})
+svc = plugin_services.get("axf.live-sessions@1")
+check(svc and svc.info(sc)["lastSeq"] > 0 and svc.events(sc, 0, 3)["more"], "axf.live-sessions@1 service for other plugins")
+# restart while running → interrupted; close ends the session; deleting the conversation forgets it
+gate2 = _q.Queue()
+def hang(cid, body):  # noqa: E306
+    yield mod._sse("start", {"turnId": "t-hang", "agent": None})
+    gate2.get(timeout=10)
+mod.run_turn = hang
+hc = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
+hang_up_after(f"{P}/conversations/{hc}/messages", b"t-hang")
+mod._host._save(mod._host.get(hc))
+fresh = sess.LocalHost(mod._host.folder)
+check(fresh.info(hc)["state"] == "idle" and fresh.get(hc).log.items[-1]["kind"] == "interrupted", "after a restart a running turn is marked interrupted, the session stays open")
+gate2.put(1)
+check(c.post(f"{P}/sessions/{hc}/close").json()["closed"] and c.get(f"{P}/sessions/{hc}").json()["session"] is None, "close ends the session on purpose")
+check(not (mod._host.folder / f"{hc}.json").exists(), "closed session's log removed")
+c.delete(f"{P}/conversations/{sc}")
+check(c.get(f"{P}/sessions/{sc}").json()["session"] is None, "deleting a conversation forgets its session")
+mod.run_turn = real_run_turn
+_srv.should_exit = True
 print(f"all {ok} checks passed")

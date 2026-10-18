@@ -16,6 +16,7 @@ import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
+import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
@@ -265,5 +266,36 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     final: sortAlerts(list),
     trim: { kept: trimAlerts(t, 4).map((a) => a.key) },
     diagnostics: diagnostics.map((d) => ({ diagnostic: d, alert: diagnosticToAlert(d) })),
+  });
+}
+
+// Live sessions (live-session@1): the state reducer over every state × reserved kind (+ one owner kind), and a
+// bounded event log replayed from several viewer positions (fresh, caught up, missed some, trimmed away, ahead).
+{
+  const kinds = [...Object.values(LIVE_KINDS), 'text'];
+  const transitions = LIVE_STATES.flatMap((state) => kinds.map((kind) => ({ state, kind, next: reduceLiveState(state, kind) })));
+  const log = new LiveEventLog(5);
+  const appends = [
+    { kind: LIVE_KINDS.open, data: { title: 'Chat' }, at: 1000 },
+    { kind: LIVE_KINDS.turnStart, data: { turn: 't1' }, at: 1001 },
+    { kind: 'text', data: { text: 'Hel' }, at: 1002 },
+    { kind: 'text', data: { text: 'lo' }, at: 1003 },
+    { kind: LIVE_KINDS.wait, data: { batch: 'b1' }, at: 1004 },
+    { kind: LIVE_KINDS.resume, at: 1005 },
+    { kind: LIVE_KINDS.turnEnd, data: { turn: 't1' }, at: 1006 },
+  ];
+  let state: string = 'idle';
+  const states: string[] = [];
+  for (const a of appends) { log.append(a.kind, a.data, a.at); state = reduceLiveState(state as never, a.kind); states.push(state); }
+  const queries = [
+    { after: 0, max: 500 }, { after: 2, max: 500 }, { after: 4, max: 2 }, { after: 6, max: 500 },
+    { after: 7, max: 500 }, { after: 9, max: 500 }, { after: -3, max: 500 }, { after: 5, max: 0 },
+  ];
+  write('live-session.json', {
+    states: LIVE_STATES,
+    kinds: LIVE_KINDS,
+    transitions,
+    log: { limit: 5, appends, states, lastSeq: log.lastSeq, firstSeq: log.firstSeq, kept: log.all() },
+    replays: queries.map((q) => ({ ...q, result: log.since(q.after, q.max) })),
   });
 }

@@ -10,8 +10,8 @@ import { pluginFetch } from '@console/plugins';
 import { Markdown } from './markdown';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, del, fileToImage, fmtNum, fmtTime, patch, post, statusStore, streamTurn,
-  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type Message, type Status, type TurnEvent, type WriteMode,
+  FOLDER, call, del, fileToImage, fmtNum, fmtTime, followSession, patch, post, sessionInfo, statusStore, streamTurn,
+  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type Message, type Status, type StreamEvent, type WriteMode,
 } from './api';
 
 interface Live { text: string; status: string; thinking: string; tools: { id: string; name: string; input?: string; ok?: boolean; preview?: string; done: boolean }[]; error: string; agent: string }
@@ -56,9 +56,15 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
   const name = status?.assistantName || 'Assistant';
 
   const loadList = () => call<{ items: ConvSummary[] }>(`conversations?archived=${archived}&q=${encodeURIComponent(q)}`).then((r) => setList(r.items), (e: Error) => setErr(e.message));
-  const open = async (id: string) => {
-    try { const r = await call<{ conversation: Conversation }>(`conversations/${id}`); setConv(r.conversation); remember(id); setErr(''); if (compact) setShowList(false); }
-    catch { setConv(null); remember(''); }
+  const convId = useRef('');
+  const open = async (id: string, follow = true) => {
+    if (follow && convId.current !== id) abort.current?.abort(); // switching chats detaches from the old one (it keeps running)
+    convId.current = id;
+    try {
+      const r = await call<{ conversation: Conversation }>(`conversations/${id}`);
+      setConv(r.conversation); remember(id); setErr(''); if (compact) setShowList(false);
+      if (follow) void attach(r.conversation);
+    } catch { setConv(null); remember(''); }
   };
   useEffect(() => { void loadList(); }, [archived]);
   const started = useRef(false);
@@ -69,7 +75,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
       try {
         const settings: ConvSettings = { ...(start.agentId ? { agentId: start.agentId } : {}), ...(start.profileId ? { profileId: start.profileId } : {}), ...(start.profileId && start.model ? { model: start.model } : {}) };
         const r = await post<{ conversation: Conversation }>('conversations', { settings, title: start.title });
-        setConv(r.conversation); remember(r.conversation.id); if (compact) setShowList(false);
+        setConv(r.conversation); remember(r.conversation.id); convId.current = r.conversation.id; if (compact) setShowList(false);
         const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content: start.message, createdAt: Date.now(), meta: { context: null } };
         await run({ content: start.message }, opt, r.conversation);
       } catch (e) { setErr((e as Error).message); }
@@ -92,7 +98,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     return () => { live = false; };
   }, [activeAgent?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const newChat = () => { setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
+  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
   const updateSettings = async (s: Partial<ConvSettings>) => {
     if (!conv) { setPending((p) => ({ ...p, ...s })); return; }
     const r = await patch<{ conversation: Conversation }>(`conversations/${conv.id}`, { settings: s });
@@ -104,8 +110,65 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     const s = { ...pending };
     if (s.agentId === undefined && status?.defaultAgent && agents.some((a) => a.id === status.defaultAgent)) s.agentId = status.defaultAgent;
     const r = await post<{ conversation: Conversation }>('conversations', { settings: s });
-    setConv(r.conversation); remember(r.conversation.id);
+    setConv(r.conversation); remember(r.conversation.id); convId.current = r.conversation.id;
     return r.conversation;
+  };
+
+  /*
+   * Live sessions (live-session@1): a reply runs on the console server, not in this tab. This view only watches the
+   * conversation's event log. If the connection drops it reattaches and replays what it missed; closing the chat
+   * just detaches, and opening the conversation again (on any device) picks the running reply back up.
+   */
+  const lastSeq = useRef(0);
+  const applyEvent = (turn: Live, e: StreamEvent) => {
+    if (e.seq) lastSeq.current = Math.max(lastSeq.current, e.seq);
+    if (e.event === 'start') { turnId.current = e.data.turnId; if (e.data.agent) turn.agent = e.data.agent.name; }
+    else if (e.event === 'text') turn.text += e.data.text;
+    else if (e.event === 'thinking') turn.thinking += e.data.text;
+    else if (e.event === 'status') turn.status = e.data.text;
+    else if (e.event === 'tool') {
+      if (e.data.phase === 'call') turn.tools.push({ id: e.data.id, name: e.data.name, input: e.data.input, done: false });
+      else { const t = turn.tools.find((x) => x.id === e.data.id); if (t) Object.assign(t, { ok: e.data.ok, preview: e.data.preview, done: true }); }
+      turn.text += turn.text && !turn.text.endsWith('\n') && e.data.phase === 'call' ? '\n\n' : '';
+    } else if (e.event === 'error') turn.error = e.data.message;
+    else if (e.event === 'interrupted') turn.error = 'The console restarted while this reply was running.';
+    else if (e.event === 'replay' && e.data.reset) lastSeq.current = 0;
+    else return;
+    setLive({ ...turn, tools: turn.tools.map((t) => ({ ...t })) });
+  };
+
+  /** Follow the session until its reply ends, reattaching after dropped connections (backoff up to ~30 s). */
+  const watch = async (cid: string, turn: Live, first: ((onEvent: (e: StreamEvent) => void, signal: AbortSignal) => Promise<void>) | null) => {
+    let attempt = 0;
+    let step = first;
+    for (;;) {
+      const ac = new AbortController();
+      abort.current = ac;
+      try {
+        await (step ?? ((on, sig) => followSession(cid, lastSeq.current, on, sig)))((e) => applyEvent(turn, e), ac.signal);
+        const info = await sessionInfo(cid);
+        if (!info || info.state !== 'running') return;  // finished (or closed) — done
+        step = null; // stream ended early: catch up
+      } catch (e) {
+        if ((e as Error).name === 'AbortError') return; // this viewer left; the reply keeps going on the server
+        if ((e as { status?: number }).status && step) throw e; // the server refused the message itself
+        if (++attempt > 8) { turn.error = 'Lost the connection. The reply is still running on the console — reopen the conversation to follow it.'; return; }
+        turn.status = 'Reconnecting…';
+        setLive({ ...turn, tools: turn.tools.map((t) => ({ ...t })) });
+        await new Promise((r) => setTimeout(r, Math.min(30_000, 500 * 2 ** attempt)));
+        step = null;
+      }
+    }
+  };
+
+  const finish = async (cid: string, turn: Live) => {
+    abort.current = null;
+    turnId.current = '';
+    if (convId.current === cid) await open(cid, false);
+    void loadList();
+    void statusStore.reload();
+    if (turn.error) setErr(turn.error);
+    setLive(null);
   };
 
   const run = async (body: Record<string, unknown>, optimistic?: Message, c0?: Conversation) => {
@@ -123,37 +186,29 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     }
     const turn: Live = { text: '', status: 'Connecting…', thinking: '', tools: [], error: '', agent: activeAgent?.name ?? '' };
     setLive({ ...turn });
-    const ac = new AbortController();
-    abort.current = ac;
     try {
-      await streamTurn(c.id, body, (e: TurnEvent) => {
-        if (e.event === 'start') { turnId.current = e.data.turnId; if (e.data.agent) turn.agent = e.data.agent.name; }
-        else if (e.event === 'text') turn.text += e.data.text;
-        else if (e.event === 'thinking') turn.thinking += e.data.text;
-        else if (e.event === 'status') turn.status = e.data.text;
-        else if (e.event === 'tool') {
-          if (e.data.phase === 'call') turn.tools.push({ id: e.data.id, name: e.data.name, input: e.data.input, done: false });
-          else { const t = turn.tools.find((x) => x.id === e.data.id); if (t) Object.assign(t, { ok: e.data.ok, preview: e.data.preview, done: true }); }
-          turn.text += turn.text && !turn.text.endsWith('\n') && e.data.phase === 'call' ? '\n\n' : '';
-        } else if (e.event === 'error') turn.error = e.data.message;
-        setLive({ ...turn, tools: turn.tools.map((t) => ({ ...t })) });
-      }, ac.signal);
+      await watch(c.id, turn, (on, sig) => streamTurn(c.id, body, on, sig));
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') turn.error = (e as Error).message;
+      turn.error = (e as Error).message;
     } finally {
-      abort.current = null;
-      turnId.current = '';
-      await open(c.id);
-      void loadList();
-      void statusStore.reload();
-      if (turn.error) setErr(turn.error);
-      setLive(null);
+      await finish(c.id, turn);
     }
   };
 
+  /** Opening a conversation whose reply is still running (started here, in another tab or on another device): follow it. */
+  const attach = async (c: Conversation) => {
+    const info = await sessionInfo(c.id);
+    if (!info || info.state !== 'running' || abort.current) return;
+    const turn: Live = { text: '', status: 'Following the running reply…', thinking: '', tools: [], error: '', agent: activeAgent?.name ?? '' };
+    lastSeq.current = Math.max(0, (info.meta?.turnSeq ?? info.lastSeq) - 1);
+    setLive({ ...turn });
+    try { await watch(c.id, turn, null); } finally { await finish(c.id, turn); }
+  };
+  useEffect(() => () => abort.current?.abort(), []); // leaving the chat only detaches
+
   const stop = () => {
     if (turnId.current) void post(`turns/${turnId.current}/stop`, {}).catch(() => undefined);
-    setTimeout(() => abort.current?.abort(), 1500);
+    else if (conv) void post(`sessions/${conv.id}/stop`, {}).catch(() => undefined);
   };
 
   const slash = (t: string): boolean => {

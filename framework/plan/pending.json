@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T22:38:41.501Z",
+ "updatedAt": "2026-10-18T22:52:56.264Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -165,10 +165,15 @@
      "at": "2026-10-18T20:57:10.817Z"
     }
    ],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end only when closed on purpose. Implement SessionHost from framework/core/live-session.ts / Kotlin ai.amberx.axf.kernel.live on every port, keep axf.live-sessions@1, add the axHub host (session workers on the VPS) when axHub builds them, and resume interrupted turns if possible. Spec: framework/spec/LIVE-SESSIONS.md.",
+     "at": "2026-10-18T22:52:56.264Z"
+    }
+   ],
    "createdAt": "2026-10-18T17:20:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T20:57:10.817Z",
+   "updatedAt": "2026-10-18T22:52:56.264Z",
    "planId": "x.plugins.ai-assistant",
    "source": "chat"
   },

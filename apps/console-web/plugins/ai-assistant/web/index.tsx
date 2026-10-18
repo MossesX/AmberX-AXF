@@ -3,7 +3,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, type Ctx } from './api';
 import { ChatPanel, type ChatStart, useStatus } from './chat';
-import { BehaviorPanel, PromptsPanel, ProvidersPanel, SetupWizard, UsagePanel } from './settings';
+import { BehaviorPanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard, UsagePanel } from './settings';
 import './ai-assistant.css';
 
 /*
@@ -64,6 +64,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'ai-assistant.providers', tab: 'ai-assistant', title: 'Providers', icon: 'cloud', order: 20, render: () => <ProvidersPanel /> },
     { id: 'ai-assistant.behavior', tab: 'ai-assistant', title: 'Behaviour & defaults', icon: 'sliders', order: 30, render: () => <BehaviorPanel /> },
     { id: 'ai-assistant.prompts', tab: 'ai-assistant', title: 'Prompt library', icon: 'list', order: 40, render: () => <PromptsPanel /> },
+    { id: 'ai-assistant.sessions', tab: 'ai-assistant', title: 'Live sessions', icon: 'cloud', order: 45, render: () => <SessionsPanel /> },
     { id: 'ai-assistant.usage', tab: 'ai-assistant', title: 'Usage', icon: 'chart', order: 50, render: () => <UsagePanel /> },
     { id: 'ai-assistant.lifecycle', tab: 'ai-assistant', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

@@ -12,7 +12,7 @@ export interface Config {
   setupComplete: boolean; assistantName: string; persona: string; instructions: string; defaultProfile: string; fallback: string[];
   params: Params; contextMessages: number; tools: Record<string, boolean>; maxToolRounds: number; autoTitle: boolean; showUsage: boolean;
   showThinking: boolean; redactSecrets: boolean; dailyTokenBudget: number; agentIntegration: boolean; defaultAgent: string;
-  suggestions: string[]; prompts: PromptItem[]; profiles: Profile[];
+  suggestions: string[]; prompts: PromptItem[]; profiles: Profile[]; sessionHost?: string;
 }
 export interface WriteMode { containers: string[]; snapshots: boolean }
 export interface AgentRef { id: string; name: string; icon?: string; description?: string; origin?: string; dangerous?: boolean; writeMode?: WriteMode | null }
@@ -56,12 +56,20 @@ export type TurnEvent =
   | { event: 'batch'; data: { batch: unknown } }
   | { event: 'done'; data: { message: Message; title: string } };
 
-/** POST a turn and read its server-sent events. */
-export async function streamTurn(cid: string, body: Record<string, unknown>, onEvent: (e: TurnEvent) => void, signal: AbortSignal): Promise<void> {
-  const r = await pluginFetch(FOLDER, `conversations/${cid}/messages`, { method: 'POST', body: JSON.stringify(body), signal });
+/** Live-session lifecycle + replay header (live-session@1); chat code may ignore them. */
+export type SessionEvent =
+  | { event: 'replay'; data: { next: number; gap: boolean; reset: boolean; more: boolean; state: string; lastSeq: number } }
+  | { event: 'session'; data: { state: string; lastSeq: number } }
+  | { event: 'session.open' | 'session.close' | 'turn.start' | 'turn.end' | 'wait' | 'resume' | 'interrupted'; data: unknown };
+export type StreamEvent = (TurnEvent | SessionEvent) & { seq?: number };
+
+export interface LiveSessionInfo { id: string; kind: string; title?: string; state: 'idle' | 'running' | 'waiting' | 'closed'; host: string; createdAt: number; updatedAt: number; lastSeq: number; viewers: number; meta?: { turnSeq?: number } }
+export interface SessionHostInfo { id: string; label: string; available: boolean; note: string }
+
+async function readSse(r: Response, onEvent: (e: StreamEvent) => void): Promise<void> {
   if (!r.ok || !r.body) {
     const j = (await r.json().catch(() => ({}))) as { detail?: string };
-    throw new Error(j.detail ?? `request failed (${r.status})`);
+    throw Object.assign(new Error(j.detail ?? `request failed (${r.status})`), { status: r.status });
   }
   const reader = r.body.getReader();
   const dec = new TextDecoder();
@@ -76,15 +84,31 @@ export async function streamTurn(cid: string, body: Record<string, unknown>, onE
       buf = buf.slice(i + 2);
       let event = 'message';
       let data = '';
+      let seq: number | undefined;
       for (const line of chunk.split('\n')) {
         if (line.startsWith('event:')) event = line.slice(6).trim();
         else if (line.startsWith('data:')) data += line.slice(5).trim();
+        else if (line.startsWith('id:')) seq = Number(line.slice(3).trim()) || undefined;
       }
       if (!data) continue;
-      try { onEvent({ event, data: JSON.parse(data) } as TurnEvent); } catch { /* malformed event */ }
+      try { onEvent({ event, data: JSON.parse(data), seq } as StreamEvent); } catch { /* malformed event */ }
     }
   }
 }
+
+/** POST a turn and watch it. The reply runs on the server: aborting only detaches this viewer. */
+export async function streamTurn(cid: string, body: Record<string, unknown>, onEvent: (e: StreamEvent) => void, signal: AbortSignal): Promise<void> {
+  const r = await pluginFetch(FOLDER, `conversations/${cid}/messages`, { method: 'POST', body: JSON.stringify(body), signal });
+  await readSse(r, onEvent);
+}
+
+/** Reattach to a conversation's live session: replays every event after `since`, then follows until the reply ends. */
+export async function followSession(cid: string, since: number, onEvent: (e: StreamEvent) => void, signal: AbortSignal): Promise<void> {
+  const r = await pluginFetch(FOLDER, `sessions/${cid}/events?since=${Math.max(0, since)}`, { signal });
+  await readSse(r, onEvent);
+}
+
+export const sessionInfo = (cid: string) => call<{ session: LiveSessionInfo | null }>(`sessions/${cid}`).then((r) => r.session, () => null);
 
 /* A tiny shared store so the view, the dialog and the settings tab see the same status/config. */
 type Listener = () => void;

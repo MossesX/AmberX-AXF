@@ -6,7 +6,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
-  type AgentRef, type Config, type ConvSettings, type Profile, type PromptItem, type ProviderKind, type Usage,
+  type AgentRef, type Config, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
 } from './api';
 
 function useStore<T>(s: { get: () => T | undefined; subscribe: (f: () => void) => () => void; reload: () => Promise<T | undefined>; error: () => string }) {
@@ -471,6 +471,48 @@ export function UsagePanel() {
       <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Provider</th><th>Model</th><th>Calls</th><th>In</th><th>Out</th></tr></thead>
         <tbody>{u.byProfileModel.map((r) => <tr key={`${r.profile}|${r.model}`}><td>{r.profile}</td><td className="fx-mono">{r.model}</td><td>{fmtNum(r.calls)}</td><td>{fmtNum(r.input)}</td><td>{fmtNum(r.output)}</td></tr>)}</tbody></table></div>
       {u.byProfileModel.length === 0 && <p className="fx-muted fx-small">No calls yet.</p>}
+    </div>
+  );
+}
+
+/* ================================================================ live sessions */
+
+/** Where chats live, and which are open. Replies run on the host, so closing the browser never stops them. */
+export function SessionsPanel() {
+  const rt = useRuntime();
+  const cfg = useConfig();
+  const [d, setD] = useState<{ host: string; active: string; hosts: SessionHostInfo[]; items: LiveSessionInfo[] } | null>(null);
+  const [err, setErr] = useState('');
+  const load = () => call<{ host: string; active: string; hosts: SessionHostInfo[]; items: LiveSessionInfo[] }>('sessions').then(setD, (e: Error) => setErr(e.message));
+  useEffect(() => { void load(); const t = setInterval(() => void load(), 5000); return () => clearInterval(t); }, []);
+  if (!d) return <p className="fx-muted">{err || 'Loading…'}</p>;
+  const pick = d.host || cfg?.sessionHost || 'local';
+  const closeOne = async (s: LiveSessionInfo) => {
+    if (!window.confirm(`End the live session for “${s.title || s.id}”? ${s.state === 'running' ? 'Its running reply stops. ' : ''}The conversation itself is kept.`)) return;
+    await post(`sessions/${s.id}/close`, {}).catch((e: Error) => rt.toast(e.message, 'danger'));
+    void load();
+  };
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted fx-small">Every chat is a live session on its host. Closing the browser, the dialog or the app only detaches: the reply keeps going, and opening the chat again on any device catches up and follows it. A session ends only when you end it here or delete the conversation.</p>
+      <Field label="Session host" hint={d.hosts.find((h) => h.id === pick)?.note}>
+        <select className="fx-input" value={pick} onChange={(e) => void saveConfig({ sessionHost: e.target.value }).then(load)}>
+          {d.hosts.map((h) => <option key={h.id} value={h.id}>{h.label}{h.available ? '' : ' — not available yet'}</option>)}
+        </select>
+      </Field>
+      {pick !== d.active && <Chip tone="warning">Running on {d.hosts.find((h) => h.id === d.active)?.label ?? d.active} until {d.hosts.find((h) => h.id === pick)?.label ?? pick} is available</Chip>}
+      {d.items.length === 0 ? <p className="fx-muted fx-small">No live sessions yet.</p> : (
+        <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Chat</th><th>State</th><th>Watching</th><th>Last activity</th><th /></tr></thead>
+          <tbody>{d.items.map((s) => (
+            <tr key={s.id}>
+              <td>{s.title || s.id}</td>
+              <td><Chip tone={s.state === 'running' ? 'accent' : s.state === 'waiting' ? 'warning' : undefined}>{s.state}</Chip></td>
+              <td>{s.viewers}</td>
+              <td>{fmtTime(s.updatedAt)}</td>
+              <td><Button icon="x" onClick={() => void closeOne(s)}>End</Button></td>
+            </tr>
+          ))}</tbody></table></div>
+      )}
     </div>
   );
 }

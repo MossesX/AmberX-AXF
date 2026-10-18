@@ -52,6 +52,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "dailyTokenBudget": 0,
     "agentIntegration": True,
     "defaultAgent": "",
+    "sessionHost": "local",
     "suggestions": [
         "Explain how the theme engine compiles a color-theme asset",
         "Where are console plugins loaded, and how do I write one?",

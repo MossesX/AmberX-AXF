@@ -1,0 +1,545 @@
+{
+  "states": [
+    "idle",
+    "running",
+    "waiting",
+    "closed"
+  ],
+  "kinds": {
+    "open": "session.open",
+    "close": "session.close",
+    "turnStart": "turn.start",
+    "turnEnd": "turn.end",
+    "wait": "wait",
+    "resume": "resume",
+    "interrupted": "interrupted"
+  },
+  "transitions": [
+    {
+      "state": "idle",
+      "kind": "session.open",
+      "next": "idle"
+    },
+    {
+      "state": "idle",
+      "kind": "session.close",
+      "next": "closed"
+    },
+    {
+      "state": "idle",
+      "kind": "turn.start",
+      "next": "running"
+    },
+    {
+      "state": "idle",
+      "kind": "turn.end",
+      "next": "idle"
+    },
+    {
+      "state": "idle",
+      "kind": "wait",
+      "next": "idle"
+    },
+    {
+      "state": "idle",
+      "kind": "resume",
+      "next": "idle"
+    },
+    {
+      "state": "idle",
+      "kind": "interrupted",
+      "next": "idle"
+    },
+    {
+      "state": "idle",
+      "kind": "text",
+      "next": "idle"
+    },
+    {
+      "state": "running",
+      "kind": "session.open",
+      "next": "running"
+    },
+    {
+      "state": "running",
+      "kind": "session.close",
+      "next": "closed"
+    },
+    {
+      "state": "running",
+      "kind": "turn.start",
+      "next": "running"
+    },
+    {
+      "state": "running",
+      "kind": "turn.end",
+      "next": "idle"
+    },
+    {
+      "state": "running",
+      "kind": "wait",
+      "next": "waiting"
+    },
+    {
+      "state": "running",
+      "kind": "resume",
+      "next": "running"
+    },
+    {
+      "state": "running",
+      "kind": "interrupted",
+      "next": "idle"
+    },
+    {
+      "state": "running",
+      "kind": "text",
+      "next": "running"
+    },
+    {
+      "state": "waiting",
+      "kind": "session.open",
+      "next": "waiting"
+    },
+    {
+      "state": "waiting",
+      "kind": "session.close",
+      "next": "closed"
+    },
+    {
+      "state": "waiting",
+      "kind": "turn.start",
+      "next": "running"
+    },
+    {
+      "state": "waiting",
+      "kind": "turn.end",
+      "next": "idle"
+    },
+    {
+      "state": "waiting",
+      "kind": "wait",
+      "next": "waiting"
+    },
+    {
+      "state": "waiting",
+      "kind": "resume",
+      "next": "running"
+    },
+    {
+      "state": "waiting",
+      "kind": "interrupted",
+      "next": "idle"
+    },
+    {
+      "state": "waiting",
+      "kind": "text",
+      "next": "waiting"
+    },
+    {
+      "state": "closed",
+      "kind": "session.open",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "session.close",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "turn.start",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "turn.end",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "wait",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "resume",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "interrupted",
+      "next": "closed"
+    },
+    {
+      "state": "closed",
+      "kind": "text",
+      "next": "closed"
+    }
+  ],
+  "log": {
+    "limit": 5,
+    "appends": [
+      {
+        "kind": "session.open",
+        "data": {
+          "title": "Chat"
+        },
+        "at": 1000
+      },
+      {
+        "kind": "turn.start",
+        "data": {
+          "turn": "t1"
+        },
+        "at": 1001
+      },
+      {
+        "kind": "text",
+        "data": {
+          "text": "Hel"
+        },
+        "at": 1002
+      },
+      {
+        "kind": "text",
+        "data": {
+          "text": "lo"
+        },
+        "at": 1003
+      },
+      {
+        "kind": "wait",
+        "data": {
+          "batch": "b1"
+        },
+        "at": 1004
+      },
+      {
+        "kind": "resume",
+        "at": 1005
+      },
+      {
+        "kind": "turn.end",
+        "data": {
+          "turn": "t1"
+        },
+        "at": 1006
+      }
+    ],
+    "states": [
+      "idle",
+      "running",
+      "running",
+      "running",
+      "waiting",
+      "running",
+      "idle"
+    ],
+    "lastSeq": 7,
+    "firstSeq": 3,
+    "kept": [
+      {
+        "seq": 3,
+        "at": 1002,
+        "kind": "text",
+        "data": {
+          "text": "Hel"
+        }
+      },
+      {
+        "seq": 4,
+        "at": 1003,
+        "kind": "text",
+        "data": {
+          "text": "lo"
+        }
+      },
+      {
+        "seq": 5,
+        "at": 1004,
+        "kind": "wait",
+        "data": {
+          "batch": "b1"
+        }
+      },
+      {
+        "seq": 6,
+        "at": 1005,
+        "kind": "resume"
+      },
+      {
+        "seq": 7,
+        "at": 1006,
+        "kind": "turn.end",
+        "data": {
+          "turn": "t1"
+        }
+      }
+    ]
+  },
+  "replays": [
+    {
+      "after": 0,
+      "max": 500,
+      "result": {
+        "events": [
+          {
+            "seq": 3,
+            "at": 1002,
+            "kind": "text",
+            "data": {
+              "text": "Hel"
+            }
+          },
+          {
+            "seq": 4,
+            "at": 1003,
+            "kind": "text",
+            "data": {
+              "text": "lo"
+            }
+          },
+          {
+            "seq": 5,
+            "at": 1004,
+            "kind": "wait",
+            "data": {
+              "batch": "b1"
+            }
+          },
+          {
+            "seq": 6,
+            "at": 1005,
+            "kind": "resume"
+          },
+          {
+            "seq": 7,
+            "at": 1006,
+            "kind": "turn.end",
+            "data": {
+              "turn": "t1"
+            }
+          }
+        ],
+        "next": 7,
+        "gap": true,
+        "reset": false,
+        "more": false
+      }
+    },
+    {
+      "after": 2,
+      "max": 500,
+      "result": {
+        "events": [
+          {
+            "seq": 3,
+            "at": 1002,
+            "kind": "text",
+            "data": {
+              "text": "Hel"
+            }
+          },
+          {
+            "seq": 4,
+            "at": 1003,
+            "kind": "text",
+            "data": {
+              "text": "lo"
+            }
+          },
+          {
+            "seq": 5,
+            "at": 1004,
+            "kind": "wait",
+            "data": {
+              "batch": "b1"
+            }
+          },
+          {
+            "seq": 6,
+            "at": 1005,
+            "kind": "resume"
+          },
+          {
+            "seq": 7,
+            "at": 1006,
+            "kind": "turn.end",
+            "data": {
+              "turn": "t1"
+            }
+          }
+        ],
+        "next": 7,
+        "gap": false,
+        "reset": false,
+        "more": false
+      }
+    },
+    {
+      "after": 4,
+      "max": 2,
+      "result": {
+        "events": [
+          {
+            "seq": 5,
+            "at": 1004,
+            "kind": "wait",
+            "data": {
+              "batch": "b1"
+            }
+          },
+          {
+            "seq": 6,
+            "at": 1005,
+            "kind": "resume"
+          }
+        ],
+        "next": 6,
+        "gap": false,
+        "reset": false,
+        "more": true
+      }
+    },
+    {
+      "after": 6,
+      "max": 500,
+      "result": {
+        "events": [
+          {
+            "seq": 7,
+            "at": 1006,
+            "kind": "turn.end",
+            "data": {
+              "turn": "t1"
+            }
+          }
+        ],
+        "next": 7,
+        "gap": false,
+        "reset": false,
+        "more": false
+      }
+    },
+    {
+      "after": 7,
+      "max": 500,
+      "result": {
+        "events": [],
+        "next": 7,
+        "gap": false,
+        "reset": false,
+        "more": false
+      }
+    },
+    {
+      "after": 9,
+      "max": 500,
+      "result": {
+        "events": [
+          {
+            "seq": 3,
+            "at": 1002,
+            "kind": "text",
+            "data": {
+              "text": "Hel"
+            }
+          },
+          {
+            "seq": 4,
+            "at": 1003,
+            "kind": "text",
+            "data": {
+              "text": "lo"
+            }
+          },
+          {
+            "seq": 5,
+            "at": 1004,
+            "kind": "wait",
+            "data": {
+              "batch": "b1"
+            }
+          },
+          {
+            "seq": 6,
+            "at": 1005,
+            "kind": "resume"
+          },
+          {
+            "seq": 7,
+            "at": 1006,
+            "kind": "turn.end",
+            "data": {
+              "turn": "t1"
+            }
+          }
+        ],
+        "next": 7,
+        "gap": false,
+        "reset": true,
+        "more": false
+      }
+    },
+    {
+      "after": -3,
+      "max": 500,
+      "result": {
+        "events": [
+          {
+            "seq": 3,
+            "at": 1002,
+            "kind": "text",
+            "data": {
+              "text": "Hel"
+            }
+          },
+          {
+            "seq": 4,
+            "at": 1003,
+            "kind": "text",
+            "data": {
+              "text": "lo"
+            }
+          },
+          {
+            "seq": 5,
+            "at": 1004,
+            "kind": "wait",
+            "data": {
+              "batch": "b1"
+            }
+          },
+          {
+            "seq": 6,
+            "at": 1005,
+            "kind": "resume"
+          },
+          {
+            "seq": 7,
+            "at": 1006,
+            "kind": "turn.end",
+            "data": {
+              "turn": "t1"
+            }
+          }
+        ],
+        "next": 7,
+        "gap": true,
+        "reset": false,
+        "more": false
+      }
+    },
+    {
+      "after": 5,
+      "max": 0,
+      "result": {
+        "events": [],
+        "next": 5,
+        "gap": false,
+        "reset": false,
+        "more": true
+      }
+    }
+  ]
+}

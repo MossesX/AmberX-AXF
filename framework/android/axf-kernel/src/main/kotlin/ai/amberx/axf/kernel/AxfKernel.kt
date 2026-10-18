@@ -134,6 +134,9 @@ public class AxfKernel private constructor(
         services.register(ai.amberx.axf.kernel.interop.AxfInterop::class, interop, "axf.interop")
         services.declarePlaceholder("axf.jobs")
         services.declarePlaceholder("axf.remote")
+        // Live sessions (live-session@1): the host registry is kernel-owned; a real host (local or axHub) is a module, placeholder until one registers.
+        services.register(ai.amberx.axf.kernel.live.SessionHosts::class, ai.amberx.axf.kernel.live.SessionHosts(), "axf.live-hosts")
+        services.declarePlaceholder(ai.amberx.axf.kernel.live.LIVE_SESSIONS_CAPABILITY)
         services.register(ai.amberx.axf.kernel.contract.WindowManager::class, ai.amberx.axf.kernel.contract.WindowManager(), "axf.windows")
         services.register(ai.amberx.axf.kernel.data.QueryClient::class, ai.amberx.axf.kernel.data.QueryClient(scope, platform.clock), "axf.queries")
         for (p in ExtensionPoints.ALL) extensions.declare(p)
