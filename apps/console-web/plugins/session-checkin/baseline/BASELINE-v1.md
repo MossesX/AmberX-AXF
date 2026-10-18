@@ -1,13 +1,14 @@
 # Baseline build v1 (fixed reference task)
 
 **Never changes.** Every session check-in quotes this task's cost per model × effort so numbers stay comparable
-across sessions, models and price changes. A new version (`BASELINE-v2.md`, tag `baseline-v2`) starts a new
+across sessions, models and price changes. A new version (`BASELINE-v2.md`, its own pinned commit) starts a new
 calibration; v1 is never edited.
 
-Run it only to calibrate, in a throwaway worktree at tag `baseline-v1`, and never merge or push the result:
+Run it only to calibrate, in a throwaway worktree at the pinned commit `69e855d72914426dcefbf8b81dc33d512735f81b` (tag `baseline-v1` once it's
+created: `git tag baseline-v1 69e855d && git push origin baseline-v1` from the VPS), and never merge or push the result:
 
 ```bash
-git worktree add /tmp/axf-baseline baseline-v1 && cd /tmp/axf-baseline
+git worktree add --detach /tmp/axf-baseline 69e855d72914426dcefbf8b81dc33d512735f81b && cd /tmp/axf-baseline
 claude --model <fable|opus|sonnet>      # set the effort level, then paste the task below
 # afterwards: node apps/console-web/plugins/session-checkin/checkin.mjs calibrate --model … --effort … --input … --output … --cache-read … --wall … --tool-calls …
 git worktree remove --force /tmp/axf-baseline

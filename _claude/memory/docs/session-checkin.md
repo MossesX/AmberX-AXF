@@ -96,7 +96,7 @@ The answer decides which of questions 2–5 apply.
 
 A small, fully specified build that never changes. Its cost per model × effort is **measured**, not guessed.
 
-- **Definition:** `apps/console-web/plugins/session-checkin/baseline/BASELINE-v1.md`, pinned to git tag `baseline-v1`. The build must:
+- **Definition:** `apps/console-web/plugins/session-checkin/baseline/BASELINE-v1.md`, pinned to commit `69e855d` (tag `baseline-v1` to be created from the VPS). The build must:
   1. Read three named files: `framework/core/engines/layout.ts`, `framework/spec/PORTING.md`, `framework/schemas/asset-types.json`.
   2. Add one fully specified pure function (`compareSlots(a, b)`, spec in the file) to a scratch copy of `layout.ts`, with five named unit tests.
   3. Run `tsc --noEmit` and the tests; both must pass.
