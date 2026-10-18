@@ -1,4 +1,4 @@
-export type PendingStatus = 'pending' | 'broken' | 'failed' | 'complete';
+export type PendingStatus = 'pending' | 'unsafe' | 'broken' | 'failed' | 'complete';
 export type PendingModel = 'Fable' | 'Opus' | 'Sonnet';
 export type PendingSort = 'status' | 'added' | 'built';
 export interface PendingEntry { text: string; at: string }

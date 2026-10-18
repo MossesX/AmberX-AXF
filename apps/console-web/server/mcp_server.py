@@ -239,7 +239,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         """The pending build list: builds parked until their model (usually Fable) is available. Check it before
         starting any build. Each item shows when it was added and, once complete, when it was built."""
         r = await run("pending")
-        order = {"pending": 0, "broken": 1, "failed": 2, "complete": 3}
+        order = {"pending": 0, "unsafe": 1, "broken": 2, "failed": 3, "complete": 4}
         items = [i for i in r.get("items", []) if not status or i.get("status") == status]
         items.sort(key=lambda i: i.get("createdAt", ""), reverse=True)  # newest first breaks every tie (stable sorts)
         if sort == "status":
@@ -251,8 +251,8 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     @mcp.tool(annotations=WRITE)
     async def pending_change(action: Literal["add", "update", "status", "note", "sub", "remove"], id: str = "", title: str = "",
                              detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
-                             status: Literal["", "pending", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "") -> dict[str, Any]:
-        """Change the pending build list. add needs title (model defaults to Fable); status marks complete/failed/broken
+                             status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "") -> dict[str, Any]:
+        """Change the pending build list. add needs title (model defaults to Fable); status marks unsafe/complete/failed/broken (unsafe = parked, needs design or review before anyone builds it)
         (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item."""
         change: dict[str, Any] = {"action": action, "source": "mcp"}
         for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id)):

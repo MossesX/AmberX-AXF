@@ -7,19 +7,20 @@
  * A pending item is a build parked until the right model (usually Fable) is available. It mirrors the claude.ai
  * "AXF Pending Builds" artifact (db collection `builds`) field for field, with ISO dates instead of epoch ms:
  *
- *   id, title, detail, model ('Fable' | 'Opus' | 'Sonnet'), status ('pending' | 'complete' | 'failed' | 'broken'),
+ *   id, title, detail, model ('Fable' | 'Opus' | 'Sonnet'), status ('pending' | 'unsafe' | 'complete' | 'failed' | 'broken'),
+ *   (unsafe = parked and not safe to build as written yet: it needs design or review before anyone starts it),
  *   notes [{ text, at }], subPrompts [{ text, at }], createdAt, builtAt (set when status becomes complete),
  *   updatedAt, planId (optional link to a plan epic), source ('console' | 'artifact' | 'plan' | 'chat' | 'mcp')
  *
  * Rules
  *   dates      createdAt is set once. builtAt is stamped the first time an item is marked complete and cleared if it
  *              goes back to pending/failed/broken, so "date built" is always the latest completion.
- *   sort       by status (pending → broken → failed → complete), by date added, or by date built; ties fall back to
+ *   sort       by status (pending → unsafe → broken → failed → complete), by date added, or by date built; ties fall back to
  *              date added (newest first) then title, so every client shows the same order.
  */
 
-export const STATUSES = ['pending', 'broken', 'failed', 'complete'];
-export const STATUS_LABEL = { pending: 'Pending', complete: 'Complete', failed: 'Failed', broken: 'Broken' };
+export const STATUSES = ['pending', 'unsafe', 'broken', 'failed', 'complete'];
+export const STATUS_LABEL = { pending: 'Pending', unsafe: 'Unsafe', complete: 'Complete', failed: 'Failed', broken: 'Broken' };
 export const MODELS = ['Fable', 'Opus', 'Sonnet'];
 export const SORTS = ['status', 'added', 'built'];
 export const ARTIFACT_URL = 'https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye';
