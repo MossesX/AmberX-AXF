@@ -1,4 +1,3 @@
-<!-- Moved from .claude/SESSION-CHECKIN.md on Oct 18 2026 (claude-fs@1); paths updated to _memory and /Claude. -->
 # Session check-in (spec)
 
 **Status:** defined Oct 18 2026, not built yet. Suggested build model: Opus 5.5. It's hooks, a small CLI, an archive, a console view and MCP tools, and nothing in it needs Fable.
@@ -15,7 +14,7 @@ Claude detects as much as it can first and offers it as the default answer. Most
 | --- | --- |
 | Claude Code (VPS over mosh, desktop, laptop) | `SessionStart` hook, `matcher: "startup"` (a new session only; not resume, clear or compact) |
 | Claude Code on the web / phone (cloud container) | same hook (the repo's `.claude/settings.json` travels with the clone) |
-| claude.ai chat / Project | a rule in `_memory/shared/rules/` (synced to the hub): on the first message of a new conversation, run the check-in before answering |
+| claude.ai chat / Project | a rule in `memory/RULES.md`: on the first message of a new conversation, run the check-in before answering |
 | Unattended runs (`claude -p`, scheduled tasks, no one to ask) | ask nothing; use the detected values and the last archived answers for that location; log the run as `unattended` |
 
 Words that skip or shorten the check-in:
@@ -30,7 +29,7 @@ Each question shows the **detected** value as the first option, marked "(detecte
 
 ### 1. Location
 Where is this session running?
-- **VPS terminal:** Claude Code over mosh on the Hostinger VPS. Detected from the hostname, the presence of `/Claude`, and the `MOSH_*` / `SSH_CONNECTION` variables.
+- **VPS terminal:** Claude Code over mosh on the Hostinger VPS. Detected from the hostname, the presence of `/opt/axhub`, and the `MOSH_*` / `SSH_CONNECTION` variables.
 - **Cloud container:** Claude Code on the web or phone. Detected from the remote-session environment markers.
 - **Desktop / laptop:** local Claude Code.
 - **claude.ai:** a chat or Project, so there's no shell.
@@ -67,8 +66,8 @@ The answer decides which of questions 2–5 apply.
 
 ### 5. Memory files (if any are reachable)
 - **Show:** where memory was loaded from, in priority order:
-  1. `/Claude` on the hub (live, through `claude-sync`)
-  2. the project's `_memory/` (synced copy; used as-is when the hub can't be reached)
+  1. axHub `memory/amberx-axf/` (live)
+  2. the repo mirror `memory/` (read-only)
   3. the claude.ai memory store, in claude.ai or a session attached to a Project
 - **Also show:** whether the hub was reachable or the mirror was used as a fallback.
 - **List the files** (path, size, last updated) as a numbered list.
@@ -132,7 +131,7 @@ Every check-in writes one record, `session-log@1`:
   "repo":      { "answer": "MossesX/AmberX-AXF", "detected": "MossesX/AmberX-AXF", "branch": "main", "head": "d74b95d", "dirty": false, "behind": 0, "ok": true },
   "container": { "answer": "host", "detected": "host", "ok": true },
   "project":   { "answer": "AmberX Framework", "detected": "AmberX Framework" },
-  "memory":    { "source": "axhub", "fallback": false, "files": ["shared/rules/RULES.md", "rules/RULES.md", "..."], "opened": ["rules/RULES.md"] },
+  "memory":    { "source": "axhub", "fallback": false, "files": ["RULES.md", "project-memory/preferences.md", "..."], "opened": ["RULES.md"] },
   "model":     { "recommended": "opus", "why": "…", "picked": "opus", "running": "claude-opus-5-5", "switchNeeded": false },
   "effort":    { "picked": "high", "applied": "high" },
   "estimate":  { "baseline": "baseline-v1", "model": "opus", "effort": "high", "usd": 0.00, "calibrated": true, "pricesAsOf": "2026-10-18", "plan": true },
@@ -142,7 +141,7 @@ Every check-in writes one record, `session-log@1`:
 ```
 
 - **Where it's written** (first that works):
-  1. `_memory/sessions/<YYYY>/<MM>/<id>.json` plus an `index.jsonl` line, synced to `/Claude/projects/<project>/_memory/sessions/` by `claude-sync` (claude-fs@1 `sessions/` section)
+  1. the hub persist folder: `/opt/axhub/persist/amberx-axf/sessions/<YYYY>/<MM>/<id>.json`, plus an `index.jsonl` line, through `framework/cli/persist.mjs`
   2. the console API: `POST /api/sessions`
   3. axHub (`call`)
   4. the repo's `sessions/` folder, committed with the session's next commit
@@ -168,7 +167,7 @@ Every check-in writes one record, `session-log@1`:
    - `.claude/baseline/BASELINE-v1.md`, `calibration.json`, `pricing.json`, and the `baseline-v1` tag.
    - `session-start.mjs calibrate --model … --effort …` prints the steps for a measured run and records the usage he pastes or the client reports.
 5. **Archive access:** `framework/cli/sessions.mjs`, `GET/POST /api/sessions`, MCP `session_list`/`session_get`, and the console **Sessions** view.
-6. **claude.ai side:** a short rule in `_memory/shared/rules/` (synced to the hub) so claude.ai sessions run the same check-in. They log through axHub, since they have no shell.
+6. **claude.ai side:** a short rule in `memory/RULES.md` (saved to the hub) so claude.ai sessions run the same check-in. They log through axHub, since they have no shell.
 
 ## Done when
 

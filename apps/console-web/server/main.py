@@ -287,16 +287,10 @@ async def build_step(request: Request) -> Any:
 
 
 def _persist_root() -> Path | None:
-    """The project's live-data folder on the hub (mirrors framework/cli/persist.mjs), or None = the repo."""
-    exact = os.environ.get("AXF_DATA_DIR")
-    if exact is not None:
-        return Path(exact) if exact and exact != "off" else None
-    legacy = os.environ.get("AXF_PERSIST_DIR")
-    project = os.environ.get("AXF_PERSIST_REPO", "amberx-axf")
-    if legacy is not None:
-        return Path(legacy) / project if legacy and legacy != "off" else None
-    root = Path(os.environ.get("CLAUDE_ROOT", "/Claude"))
-    return root / "projects" / project / "data" if root.is_dir() else None
+    """The hub folder holding this repo's live data (mirrors framework/cli/persist.mjs), or None = the repo."""
+    env = os.environ.get("AXF_PERSIST_DIR")
+    base = ("" if env == "off" else env) if env is not None else ("/opt/axhub/persist" if Path("/opt/axhub/persist").is_dir() else "")
+    return Path(base) / os.environ.get("AXF_PERSIST_REPO", "amberx-axf") if base else None
 
 
 def _plan_media_dir() -> Path:
