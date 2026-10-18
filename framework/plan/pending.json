@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T20:59:50.588Z",
+ "updatedAt": "2026-10-18T21:26:32.310Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -240,11 +240,16 @@
    "detail": "Systems check banner and dialog (grid, by service, guided setup, fix all), checks declared from the codebase without AI, What's new banner, AI switches (need the assistant + Mosses) that store an AI-written declarative check routine used when AI is off. Provides axf.syscheck@1. The Opus version is the web console plugin in the folder \"systems-check\" (built Oct 18 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 18 2026 additions to rebuild too: an AI badge on everything a model made (AI routine checks in the banner, drop-down and dialog; the What's new banner and summary) and a Test AI connection button in its settings (one tiny request through axf.llm@1 as Mosses).",
+     "at": "2026-10-18T21:26:32.310Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-18T20:57:10.427Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T20:59:50.372Z",
+   "updatedAt": "2026-10-18T21:26:32.310Z",
    "source": "chat"
   },
   {
