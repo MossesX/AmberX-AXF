@@ -46,15 +46,20 @@
   },
   {
    "id": "plugin-manager",
-   "title": "Plugin manager + settings tabs for every app",
-   "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings.",
+   "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
+   "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugin apps/console-web/plugins/plugin-manager (web console only: four views cards/table/detail/dependency graph in four layouts Studio/Mission control/Terminal/Catalog, default context-menu link, dependencies in detail, opens each plugin's UI and settings, logs, files, install & uninstall). Remove it first with its uninstall script (uninstall.mjs --all --publish), then build the cross-port version following plugin-lifecycle@1 (Android kernel + every app the build engine compiles), keeping the UI-editor rules (last save wins per key; reload current values on open/load/focus).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Opus console plugin built Oct 18 2026 (apps/console-web/plugins/plugin-manager). Remove with its uninstall.mjs --all before installing the Fable build.",
+     "at": "2026-10-18T20:45:00.000Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "updatedAt": "2026-10-18T20:45:00.000Z",
    "planId": "x.plugins.manager",
    "source": "plan"
   },

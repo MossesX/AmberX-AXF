@@ -6,16 +6,37 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav → Plugins → Theme manager; Settings → Plugins → Themes.",
-  "targets": ["axf-console"],
-  "provides": ["view:theme-manager", "settings-tab:theme-manager", "action:theme-manager.open"],
-  "scopes": ["ROUTES"],
+  "description": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav \u2192 Plugins \u2192 Theme manager; Settings \u2192 Plugins \u2192 Themes.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:theme-manager",
+    "settings-tab:theme-manager",
+    "action:theme-manager.open"
+  ],
+  "uiEditor": [
+    "theme",
+    "style",
+    "layout"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item theme-manager-plugin (Fable)" },
+  "builtWith": {
+    "model": "opus",
+    "replacedBy": "pending item theme-manager-plugin (Fable)"
+  },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/theme-manager",
-    "env": ["AXF_THEME_MANAGER_DIR"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "env": [
+      "AXF_THEME_MANAGER_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
   }
 }

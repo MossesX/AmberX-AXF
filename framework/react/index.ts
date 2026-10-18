@@ -15,3 +15,4 @@ export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, T
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { Slot, SlotsProvider, useSlotFilled } from './components/Slots';
+export { useEditorSync, type EditorSyncOptions } from './editorSync';

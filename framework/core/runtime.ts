@@ -60,6 +60,18 @@ const safeStorage = {
   },
 };
 
+/** Context-menu items a library or plugin contributes to one target (web + Android: `addContextItems`). */
+export interface ContextContribution {
+  /** Unique, e.g. `<module>.<name>`; adding the same id again replaces it. */
+  id: string;
+  /** The contributing library or plugin id; `removeContextItems(module)` drops all of its items. */
+  module: string;
+  /** Context target (`data-fx-ctx-target`); default `default`. */
+  target?: string;
+  order?: number;
+  items: import('./engines/windows').MenuEntry[];
+}
+
 /** A nav section a library or plugin contributes; items point at views it registers. */
 export interface NavExtraSection {
   /** Usually the contributing library's id. */
@@ -78,6 +90,8 @@ export class AxfRuntime {
   /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted.
    *  Keys `*` or `*:<owner>` add items to EVERY context menu (after a separator), e.g. a plugin's "Open terminal". */
   readonly contextExtras = new Map<string, (target?: string, payload?: string) => import('./engines/windows').MenuEntry[]>();
+  /** Context-menu items libraries and plugins contribute (`AxfWebLibrary.contextMenu`), keyed by id, removable per module. */
+  private readonly contextContributions = new Map<string, ContextContribution>();
   /** Nav sections contributed by libraries and plugins (keyed, so re-adding replaces). Shown after the nav-menu asset's sections. */
   private readonly navSections = new Map<string, NavExtraSection>();
   /** Settings schema, panels and values (see settings.ts); the settings library renders them. */
@@ -175,6 +189,48 @@ export class AxfRuntime {
 
   removeNavSection(id: string): void {
     if (this.navSections.delete(id)) this.set({});
+  }
+
+  /* ---------------- contributed context-menu items ---------------- */
+
+  /** Add or replace a contribution (same id replaces). The context-menu asset stays untouched, so swapping it keeps them. */
+  addContextItems(c: ContextContribution): void {
+    this.contextContributions.set(c.id, c);
+  }
+
+  /** Remove every contribution of a module (a plugin was disabled or removed). */
+  removeContextItems(module: string): void {
+    for (const [id, c] of this.contextContributions) if (c.module === module) this.contextContributions.delete(id);
+  }
+
+  /** Contributed items for a target (`default` = the menu shown where no element names a target), by order. */
+  contributedContext(target: string): import('./engines/windows').MenuEntry[] {
+    return [...this.contextContributions.values()]
+      .filter((c) => (c.target ?? 'default') === target)
+      .sort((a, b) => (a.order ?? 100) - (b.order ?? 100))
+      .flatMap((c) => c.items);
+  }
+
+  /**
+   * Load the saved hot-swap choices and settings values again (another tab or editor may have saved since; last
+   * save wins). UI-editing plugins (theme, style, layout, manager, builder) call this whenever they open, load or
+   * come back into focus, so they read current token values, never a stale copy. Returns what changed.
+   */
+  refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
+    const settings = this.settings.reload();
+    const saved = safeStorage.get(this.storageKey);
+    const slots: AssetType[] = [];
+    const active = { ...this.state.active };
+    for (const t of ASSET_TYPES) {
+      const id = saved?.active?.[t];
+      if (t === 'uac-policy' || !id || id === active[t] || !this.registry.has(t, id)) continue;
+      active[t] = id;
+      slots.push(t);
+    }
+    const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
+    const role = Boolean(saved?.role && saved.role !== this.state.role && policy.roles.some((r) => r.id === saved.role));
+    if (slots.length || role) this.set({ active, ...(role ? { role: saved!.role } : {}), swaps: this.state.swaps + (slots.length ? 1 : 0) });
+    return { slots, settings, role };
   }
 
   private set(patch: Partial<AxfState>, persist = false) {

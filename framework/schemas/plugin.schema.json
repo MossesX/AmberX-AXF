@@ -3,22 +3,123 @@
   "$id": "axf/plugin.schema.json",
   "title": "AmberX AXF plugin manifest (plugin@1)",
   "type": "object",
-  "required": ["$axf", "id", "name", "version", "kind", "apiLevel"],
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "version",
+    "kind",
+    "apiLevel"
+  ],
   "properties": {
-    "$axf": { "const": "plugin@1" },
-    "id": { "type": "string", "description": "namespaced, e.g. com.example.myplugin" },
-    "name": { "type": "string" },
-    "version": { "type": "string" },
-    "kind": { "enum": ["pack", "module", "script"] },
-    "apiLevel": { "type": "integer", "minimum": 1 },
-    "minFrameworkVersion": { "type": "string" },
-    "author": { "type": "string" },
-    "description": { "type": "string" },
-    "provides": { "type": "array", "items": { "type": "string" } },
-    "requires": { "type": "array", "items": { "type": "string" } },
-    "scopes": { "type": "array", "items": { "enum": ["assets", "actions", "routes", "settings", "menu_items", "network", "files", "notifications", "background", "device", "identity", "billing"] } },
-    "entry": { "type": "string", "description": "module: entry class; pack: entry asset or macro id" },
-    "targets": { "type": "array", "items": { "type": "string" }, "description": "host app ids, * for any" },
-    "signed": { "type": "boolean" }
+    "$axf": {
+      "const": "plugin@1"
+    },
+    "id": {
+      "type": "string",
+      "description": "namespaced, e.g. com.example.myplugin"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "pack",
+        "module",
+        "script"
+      ]
+    },
+    "apiLevel": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "minFrameworkVersion": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "assets",
+          "actions",
+          "routes",
+          "settings",
+          "menu_items",
+          "network",
+          "files",
+          "notifications",
+          "background",
+          "device",
+          "identity",
+          "billing"
+        ]
+      }
+    },
+    "entry": {
+      "type": "string",
+      "description": "module: entry class; pack: entry asset or macro id"
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "host app ids, * for any"
+    },
+    "signed": {
+      "type": "boolean"
+    },
+    "optional": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "capabilities used when present (service:<name>@<v>); the plugin works without them"
+    },
+    "enabledByDefault": {
+      "type": "boolean"
+    },
+    "uiEditor": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "theme",
+          "style",
+          "layout",
+          "manager",
+          "builder"
+        ]
+      },
+      "description": "UI-editing plugin kinds: last save wins per key; reload current values on open/load/focus (useEditorSync / refreshFromSaved)"
+    },
+    "builtWith": {
+      "type": "object",
+      "description": "model that built it and what replaces it (e.g. a pending Fable rebuild)"
+    },
+    "lifecycle": {
+      "type": "object",
+      "description": "plugin-lifecycle@1: dataDir, env, mentions"
+    }
   }
 }

@@ -904,7 +904,7 @@ import credentials  # noqa: E402
 
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
-                            log=log, plugin_enabled=plugin_enabled)
+                            log=log, plugin_enabled=plugin_enabled, terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()
 _prune_plugin_state()

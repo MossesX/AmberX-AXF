@@ -80,7 +80,7 @@ export class SettingsRegistry {
   private readonly groups = new Map<string, SettingsGroup>();
   private readonly panels = new Map<string, SettingsPanel>();
   private readonly tabs = new Map<string, SettingsTab>();
-  private readonly values: Record<string, SettingValue>;
+  private values: Record<string, SettingValue>;
   private readonly secrets: Record<string, SettingValue> = {};
   private readonly listeners = new Set<Listener>();
   private readonly watchers = new Map<string, Set<(value: SettingValue) => void>>();
@@ -156,16 +156,36 @@ export class SettingsRegistry {
     if (spec?.kind === 'secret') {
       this.secrets[key] = value;
     } else {
-      this.values[key] = value;
+      // Last write wins, per key: merge into what storage holds now, so a stale copy (another tab, an editor
+      // opened earlier) never reverts keys it didn't touch.
+      this.values = { ...readValues(this.storageKey), [key]: value };
       writeValues(this.storageKey, this.values);
     }
     for (const w of this.watchers.get(key) ?? []) w(value);
     this.changed();
   }
 
+  /**
+   * Re-read saved values (another tab, window or editor may have saved since). Watchers of changed keys fire.
+   * UI-editing plugins (theme, style, layout, manager, builder) call this, through `rt.refreshFromSaved()`,
+   * whenever they open, load or come back into focus, so they always edit the current values. Returns the changed keys.
+   */
+  reload(): string[] {
+    const fresh = readValues(this.storageKey);
+    const keys = new Set([...Object.keys(fresh), ...Object.keys(this.values)]);
+    const changed = [...keys].filter((k) => JSON.stringify(fresh[k]) !== JSON.stringify(this.values[k]));
+    if (!changed.length) return [];
+    this.values = fresh;
+    for (const k of changed) for (const w of this.watchers.get(k) ?? []) w(this.get(k));
+    this.changed();
+    return changed;
+  }
+
   /** Forget a value (back to its default). */
   clear(key: string): void {
-    delete this.values[key];
+    const fresh = readValues(this.storageKey);
+    delete fresh[key];
+    this.values = fresh;
     delete this.secrets[key];
     writeValues(this.storageKey, this.values);
     for (const w of this.watchers.get(key) ?? []) w(this.get(key));

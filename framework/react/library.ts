@@ -4,6 +4,7 @@
  * Libraries generated from framework/library-templates implement this.
  */
 import type { AxfRuntime, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
 import type { DialogMap } from './components/Overlays';
@@ -30,6 +31,11 @@ export interface AxfWebLibrary {
   settings?: SettingsGroup[];
   /** Custom settings UI for any tab; `render` returns React content. */
   settingsPanels?: SettingsPanel[];
+  /**
+   * Context-menu items, per target (`default` = the app-wide right-click / long-press menu). Added after the
+   * context-menu asset's items and removed with the library, so a plugin's link never outlives the plugin.
+   */
+  contextMenu?: { id: string; target?: string; order?: number; items: MenuEntry[] }[];
   /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
@@ -75,6 +81,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const b of l.banners ?? []) if (!banners.some((x) => x.id === b.id)) banners.push(b);
     for (const [name, defs] of Object.entries(l.slots ?? {})) for (const d of defs) { const list = (slots[name] ??= []); if (!list.some((x) => x.id === d.id)) list.push(d); }
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
+    for (const c of l.contextMenu ?? []) rt.addContextItems({ ...c, module: l.id });
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });

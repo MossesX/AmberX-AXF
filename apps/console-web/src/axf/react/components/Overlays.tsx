@@ -151,11 +151,16 @@ export function ContextMenuHost() {
 
   if (!state.context) return null;
   const ctx = state.context;
-  const extra = rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? [];
+  const contributed = rt.contributedContext(ctx.target);
+  const extra = [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
   const everywhere = [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
   const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
+  const fallback = !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
+  const more = [...extra, ...fallback] as unknown as typeof base;
+  const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...(extra as unknown as typeof base), ...(tail as unknown as typeof base)];
+  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
   return (
     <div
       ref={ref}

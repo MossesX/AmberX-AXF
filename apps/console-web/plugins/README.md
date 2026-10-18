@@ -24,6 +24,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `console-terminal` — floating terminal windows with tabs (container shells through `axf.containers@1`, the console, the VPS host over SSH, Claude Code), Open terminal on every right-click, mouse mode, copy/paste, Mosh mode, phone keys; xterm vendored in `web/vendor/`; settings tab "Terminal". <!-- axf-plugin:console-terminal -->
 - `feature-assist` — plain-English features in the Plan view (AXF expert drafts entries, you approve; plan + pending list) and Build with Mosses on unbuilt features (plan, new build order, model choice incl. Opus now + Fable later, then Mosses builds in the assistant chat); settings tab "Feature assistant". <!-- axf-plugin:feature-assist -->
 - `theme-manager` — roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets), live preview, undo/redo, pins, hand edits; save rolls as asset@1 themes and manage them; settings tab "Themes". <!-- axf-plugin:theme-manager -->
+- `plugin-manager` — the Plugin Manager: every plugin's health, enable/disable, its UI and settings (opened or shown inline), logs, files, install & uninstall, and dependencies in detail (needs, providers, dependents, clashes); views cards/table/detail/dependency graph in layouts Studio/Mission control/Terminal/Catalog; link in the default context menu; settings tab "Plugin Manager"; self-test `test.py`. <!-- axf-plugin:plugin-manager -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
 
@@ -62,6 +63,11 @@ node framework/cli/plugin-lifecycle.mjs list | status <folder> | restore <folder
 ```
 The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/install|uninstall|check|restore]`
 (console routes, so they work while the plugin is disabled; uninstall needs `{"confirm": "<folder>"}`).
+
+## Menus and UI editors
+
+- **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.
+- **UI-editing plugins** declare `"uiEditor": ["theme" | "style" | "layout" | "manager" | "builder"]` in `plugin.json`. Saves are per key and the last save wins; call `useEditorSync({ onRefresh })` (from `@console/axf/react`) in every editing view so it reloads current token values whenever it opens, loads or comes back into focus.
 
 ## How it runs
 

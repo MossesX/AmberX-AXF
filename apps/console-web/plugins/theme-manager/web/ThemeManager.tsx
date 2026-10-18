@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs } from '@console/axf/core';
 import type { AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -62,6 +62,12 @@ export function ThemeManager() {
   const [err, setErr] = useState('');
   const [presets, setPresets] = useState<Record<string, string[]>>({});
   const [pins, setPins] = useState<{ name: string; at: number; snap: Snap }[]>(() => read(LS.pins, []));
+  // UI-editor rule: on open / load / focus, reload current values (active themes via rt.refreshFromSaved, own picks from storage); last save wins.
+  useEditorSync({ onRefresh: () => {
+    const t = read<string[] | null>(LS.ticked, null); if (t) setTicked(new Set(t));
+    setLocked(new Set(read<string[]>(LS.locked, [])));
+    setPins(read(LS.pins, []));
+  } });
   useEffect(() => write(LS.ticked, [...ticked]), [ticked]);
   useEffect(() => write(LS.locked, [...locked]), [locked]);
   useEffect(() => write(LS.pins, pins), [pins]);

@@ -146,6 +146,22 @@ public class AxfRuntime(
         if (persist) store.put(key, Persisted(_state.value.active, _state.value.role, manifest.defaults).toJson())
     }
 
+    /**
+     * Load the saved hot-swap choices again (another window or editor may have saved since; last save wins), as on the
+     * web port (`refreshFromSaved`). UI-editing modules (theme, style, layout, manager, builder) call it whenever they
+     * open, load or come back into focus. Returns the slots that changed (plus "role" when the role did).
+     */
+    public fun refreshFromSaved(): List<String> {
+        val saved = Persisted.fromJson(store.get(key)) ?: return emptyList()
+        val now = _state.value
+        val changed = saved.active.filter { (t, id) -> t != AssetTypes.UAC_POLICY && now.active[t] != id && registry.has(t, id) }
+        val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, now.active.getValue(AssetTypes.UAC_POLICY))!!.data)
+        val role = saved.role?.takeIf { r -> r != now.role && policy.roles.any { it.id == r } }
+        if (changed.isEmpty() && role == null) return emptyList()
+        set({ s -> s.copy(active = s.active + changed, role = role ?: s.role, swaps = s.swaps + if (changed.isEmpty()) 0 else 1) }, recompile = changed.isNotEmpty())
+        return changed.keys.toList() + listOfNotNull(role?.let { "role" })
+    }
+
     public val current: AxfState get() = _state.value
 
     /* ---------------- assets ---------------- */
@@ -286,8 +302,17 @@ public class AxfRuntime(
     public fun closeContext() { if (current.context != null) set({ it.copy(context = null) }) }
     /** Extra context-menu targets registered by modules (tab-group, window-title, …), merged ahead of the asset's items. */
     public val contextExtras: MutableMap<String, List<MenuItem>> = LinkedHashMap()
+    /** Context-menu items libraries and plugins contribute (web: `AxfWebLibrary.contextMenu`), keyed by id; removed per module. */
+    public data class ContextContribution(val id: String, val module: String, val target: String = "default", val order: Int = 100, val items: List<MenuItem>)
+    private val contextContributions = LinkedHashMap<String, ContextContribution>()
+    public fun addContextItems(c: ContextContribution) { contextContributions[c.id] = c }
+    public fun removeContextItems(module: String) { contextContributions.values.removeAll { it.module == module } }
+    public fun contributedContext(target: String): List<MenuItem> =
+        contextContributions.values.filter { it.target == target }.sortedBy { it.order }.flatMap { it.items }
+
     public fun contextItems(target: String, payload: String?): List<MenuItem> {
-        val extra = contextExtras[target]
+        val contributed = contributedContext(target)
+        val extra = (contextExtras[target] ?: emptyList()).plus(contributed).ifEmpty { null }
         val base = ContextMenuEngine.itemsFor(_compiled.value.contextMenu, target, payload) { gate(it) }
         if (extra == null) return base
         val menu = _compiled.value.contextMenu.copy(targets = mapOf(target to extra))

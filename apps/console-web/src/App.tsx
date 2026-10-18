@@ -75,7 +75,7 @@ function usePlugins() {
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
-    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.settings.removeModule(p.manifest.id); }
+    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); }
     return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, ...enabled.map((p) => underPlugins(p.library!))]);
   }, [rt, status, loaded]);
   return { contributed };
