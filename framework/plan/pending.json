@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T21:26:32.310Z",
+ "updatedAt": "2026-10-18T21:50:34.442Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -244,12 +244,16 @@
     {
      "text": "Oct 18 2026 additions to rebuild too: an AI badge on everything a model made (AI routine checks in the banner, drop-down and dialog; the What's new banner and summary) and a Test AI connection button in its settings (one tiny request through axf.llm@1 as Mosses).",
      "at": "2026-10-18T21:26:32.310Z"
+    },
+    {
+     "text": "Oct 18 2026: the badges are now icons only (sparkle = made by AI, code icon = no AI), on every check and on the What's new banner.",
+     "at": "2026-10-18T21:50:34.442Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-18T20:57:10.427Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T21:26:32.310Z",
+   "updatedAt": "2026-10-18T21:50:34.442Z",
    "source": "chat"
   },
   {
