@@ -167,18 +167,22 @@ check(routine.run_one({"id": "h", "kind": "http", "params": {"url": "https://loc
 
 # What's new
 head = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-base = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD~3"], capture_output=True, text=True).stdout.strip()
-w = c.get(f"/p/whats-new?since={base}").json()
-check(w["head"] == head and w["known"] and len(w["commits"]) >= 1 and base not in [x["sha"] for x in w["commits"]], "commits since the last visit (not the last-seen one)")
-check(any(p["folder"] == "systems-check" for p in w["plugins"]), "plugin versions listed (for added / updated / removed)")
+base = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--verify", "-q", "HEAD~3^{commit}"], capture_output=True, text=True).stdout.strip()
+check(any(p["folder"] == "systems-check" for p in c.get("/p/whats-new").json()["plugins"]), "plugin versions listed (for added / updated / removed)")
 check(c.get("/p/whats-new?since=../../x").status_code == 400, "since must be a commit id")
 check(not c.get("/p/whats-new?since=" + "f" * 40).json()["known"], "unknown commit → recent changes, flagged")
-w = c.get(f"/p/whats-new?since={base}&summary=1").json()
-check(w["summary"]["text"].startswith("## New") and w["summary"]["agent"] == "Mosses", "AI summary by Mosses")
-c.put("/p/settings", json={"ai": {"whatsnew": False}})
-n_calls = len(llm.calls)
-w = c.get(f"/p/whats-new?since={base}&summary=1").json()
-check(w["summary"]["cached"] and len(llm.calls) == n_calls, "AI off: the saved summary still shows, no model call")
+if not base:  # a shallow checkout (CI clones one commit): no history to count changes in
+    print("  - commit-range checks skipped (shallow clone: no HEAD~3)")
+    base = head
+else:
+    w = c.get(f"/p/whats-new?since={base}").json()
+    check(w["head"] == head and w["known"] and len(w["commits"]) >= 1 and base not in [x["sha"] for x in w["commits"]], "commits since the last visit (not the last-seen one)")
+    w = c.get(f"/p/whats-new?since={base}&summary=1").json()
+    check(w["summary"]["text"].startswith("## New") and w["summary"]["agent"] == "Mosses", "AI summary by Mosses")
+    c.put("/p/settings", json={"ai": {"whatsnew": False}})
+    n_calls = len(llm.calls)
+    w = c.get(f"/p/whats-new?since={base}&summary=1").json()
+    check(w["summary"]["cached"] and len(llm.calls) == n_calls, "AI off: the saved summary still shows, no model call")
 c.put("/p/settings", json={"whatsNewBanner": False})
 check(c.get(f"/p/whats-new?since={base}").json()["banner"] is False, "banner can be switched off")
 

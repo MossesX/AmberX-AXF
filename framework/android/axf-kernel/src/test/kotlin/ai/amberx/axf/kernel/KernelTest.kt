@@ -22,8 +22,13 @@ class KernelTest {
     @Test fun `every shared asset validates and loads`() {
         val kernel = AxfKernel.builder(manifest).assets(assets()).build()
         assertTrue(kernel.runtime.loadErrors.isEmpty(), "load errors: ${kernel.runtime.loadErrors}")
-        assertEquals(39, kernel.registry.count())  // shared assets; port-specific ones live in framework/android/assets
+        // every shared asset (distinct type + id) is registered; counted from the files so new starter assets need no edit here
+        val expected = assets().filter { (it["\$axf"] as? kotlinx.serialization.json.JsonPrimitive)?.content == "asset@1" }
+            .map { "${(it["type"] as? kotlinx.serialization.json.JsonPrimitive)?.content}:${(it["id"] as? kotlinx.serialization.json.JsonPrimitive)?.content}" }.toSet().size
+        assertEquals(expected, kernel.registry.count())  // shared assets; port-specific ones live in framework/android/assets
         for (t in AssetTypes.CORE) assertTrue(kernel.runtime.current.active.containsKey(t), "slot $t")
+        // the optional shared chrome types ship starters, so the defaults pick them
+        for (t in AssetTypes.OPTIONAL_SHARED) assertTrue(kernel.runtime.current.active.containsKey(t), "optional slot $t")
     }
 
     @Test fun `swap recompiles theme and layout`() = runTest {

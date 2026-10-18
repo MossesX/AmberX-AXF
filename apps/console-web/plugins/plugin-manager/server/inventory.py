@@ -213,7 +213,7 @@ def _backups(backups_dir: Path | None, folder: str) -> int:
     if not backups_dir or not backups_dir.is_dir():
         return 0
     try:
-        # plugin-lifecycle.mjs names them <folder>-<stamp>.tar.gz; the stamp starts with a digit, so "ai" never counts "ai-assistant".
+        # plugin-lifecycle.mjs names them <folder>-<stamp>.tar.gz; the stamp starts with a digit, so a folder named ai never counts the backups of a folder whose name merely starts with ai-.
         return sum(1 for p in backups_dir.iterdir() if re.match(re.escape(folder) + r"-\d", p.name))
     except OSError:
         return 0
