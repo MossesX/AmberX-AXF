@@ -99,6 +99,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           {g.items.map((it) => {
             const gate = rt.gate(it.requires);
             if (gate === 'hide') return null;
+            const count = it.badge ? rt.badge(it.badge) : 0;
             return (
               <button
                 key={it.id}
@@ -106,11 +107,12 @@ export function Toolbar({ views }: { views: ViewMap }) {
                 className="fx-toolbtn"
                 disabled={gate === 'disable'}
                 title={gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
-                aria-label={it.label}
+                aria-label={count ? `${it.label} (${count} new)` : it.label}
                 onClick={() => rt.dispatch(it.action)}
               >
                 {tb.data.variant !== 'labels' && <Icon name={gate === 'disable' ? 'lock' : it.icon} size={16} />}
                 {tb.data.variant !== 'icons' && <span>{it.label}</span>}
+                {count > 0 && <span className="fx-toolbtn__badge" aria-hidden="true">{count > 99 ? '99+' : count}</span>}
               </button>
             );
           })}

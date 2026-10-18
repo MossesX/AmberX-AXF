@@ -41,6 +41,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -161,6 +162,7 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
     val uac = LocalAxfUac.current
     val actions = LocalAxfActions.current
     LocalAxfState.current
+    val badges by runtime.badges.collectAsState()
     val theme = Axf.theme
     val c = theme.colors
     val tb = compiled.toolbar
@@ -197,16 +199,20 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
                     val gate = uac.gate(item.requires)
                     if (gate == Gate.HIDE) continue
                     val locked = gate == Gate.DISABLE
+                    val count = item.badge?.let { badges[it] } ?: 0
                     val h = theme.spacing.rowHeight - 4.dp
                     Row(
                         Modifier.heightIn(min = h).widthIn(min = h).clip(theme.shapes.smShape)
                             .clickable(enabled = !locked, role = Role.Button) { actions.dispatch(item.action) }
                             .alpha(if (locked) 0.4f else 1f).padding(horizontal = 8.dp)
-                            .semantics { contentDescription = if (locked) "${item.label} — requires ${item.requires}" else item.label },
+                            .semantics { contentDescription = if (locked) "${item.label} — requires ${item.requires}" else if (count > 0) "${item.label} ($count new)" else item.label },
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         if (tb.variant != ToolbarVariant.LABELS) AxfIcon(if (locked) "lock" else item.icon, size = 16.dp, tint = c.muted, contentDescription = null)
                         if (tb.variant != ToolbarVariant.ICONS) Text(item.label, style = theme.typography.bodyMedium.copy(fontSize = theme.typography.bodyMedium.fontSize * 0.88f), color = c.muted, maxLines = 1)
+                        if (count > 0) Box(Modifier.clip(RoundedCornerShape(50)).background(c.accent).padding(horizontal = 5.dp)) {
+                            Text(if (count > 99) "99+" else count.toString(), style = theme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = c.accentText, maxLines = 1)
+                        }
                     }
                 }
             }

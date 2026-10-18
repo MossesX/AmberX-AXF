@@ -132,6 +132,8 @@ export interface ToolbarItem {
   label: string;
   action: string;
   requires?: string;
+  /** name of a runtime counter to show as a badge on the button (e.g. `alerts.unread`); hidden at 0 */
+  badge?: string;
 }
 
 export interface ToolbarData {

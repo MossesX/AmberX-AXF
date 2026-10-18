@@ -18,7 +18,12 @@ import { Standards } from './views/Standards';
 import { SystemBanner, useSystemCheckOnLoad } from './views/SystemCheck';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { createAlertsLibrary } from './axf/libs/alerts';
+import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
+
+/** Developer alerts (framework library), stored and pushed by the console server. */
+const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
@@ -62,7 +67,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.settings.removeModule(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, consoleSettings, ...enabled.map((p) => p.library!)]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, ...enabled.map((p) => p.library!)]);
   }, [rt, status, loaded]);
   return { contributed };
 }

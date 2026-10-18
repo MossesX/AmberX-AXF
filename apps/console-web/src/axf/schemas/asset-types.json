@@ -227,7 +227,8 @@
         "density": "compact | regular (default) | roomy — toolbar padding and button height",
         "surface": "flat (default) | raised | glass",
         "divider": "boolean, default true — rule between item groups",
-        "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box."
+        "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
+        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0"
       }
     },
     "nav-menu": {

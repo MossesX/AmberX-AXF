@@ -72,6 +72,12 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
+      - name: Alerts — engine matches the fixture (TS, Python), conflict detection, console alert server, web push encryption
+        run: |
+          pip install -r apps/console-web/server/requirements.txt httpx
+          (cd framework && npm install --no-audit --no-fund --silent)
+          npx -y tsx framework/spec/check-alerts.mts
+          python apps/console-web/server/test_alerts.py
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx

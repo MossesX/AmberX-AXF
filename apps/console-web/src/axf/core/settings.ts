@@ -54,6 +54,8 @@ export interface SettingsTab {
   icon: string;
   order: number;
   description?: string;
+  /** contributing module (filled in by installLibraries) */
+  module?: string;
 }
 
 /** Custom UI inside a tab (a framework-agnostic render function; the React layer calls it). */
@@ -86,10 +88,29 @@ export class SettingsRegistry {
 
   /* ---- contributions ---- */
 
-  addTab(tab: SettingsTab): void { this.tabs.set(tab.id, tab); this.changed(); }
-  addGroup(group: SettingsGroup): void { this.groups.set(group.id, group); this.changed(); }
+  /** Called when a module's contribution clashes with another module's (same setting key, or same tab/group/panel id). */
+  onConflict?: (c: { what: 'setting' | 'tab' | 'group' | 'panel'; id: string; was: string; now: string }) => void;
+
+  private clash(what: 'tab' | 'group' | 'panel', id: string, prev: { module?: string } | undefined, next: { module?: string }): void {
+    const was = prev?.module ?? 'app';
+    const now = next.module ?? 'app';
+    if (prev && was !== now) this.onConflict?.({ what, id, was, now });
+  }
+
+  addTab(tab: SettingsTab): void { this.clash('tab', tab.id, this.tabs.get(tab.id), tab); this.tabs.set(tab.id, tab); this.changed(); }
+  addGroup(group: SettingsGroup): void {
+    this.clash('group', group.id, this.groups.get(group.id), group);
+    if (this.onConflict) {
+      const now = group.module ?? 'app';
+      for (const g of this.groups.values()) {
+        if (g.id === group.id || (g.module ?? 'app') === now) continue;
+        for (const s of g.settings) if (group.settings.some((x) => x.key === s.key)) this.onConflict({ what: 'setting', id: s.key, was: g.module ?? 'app', now });
+      }
+    }
+    this.groups.set(group.id, group); this.changed();
+  }
   removeGroup(id: string): void { if (this.groups.delete(id)) this.changed(); }
-  addPanel(panel: SettingsPanel): void { this.panels.set(panel.id, panel); this.changed(); }
+  addPanel(panel: SettingsPanel): void { this.clash('panel', panel.id, this.panels.get(panel.id), panel); this.panels.set(panel.id, panel); this.changed(); }
   removePanel(id: string): void { if (this.panels.delete(id)) this.changed(); }
 
   /** Remove every group and panel a module contributed (a plugin was disabled). */

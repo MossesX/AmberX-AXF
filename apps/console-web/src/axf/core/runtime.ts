@@ -14,6 +14,7 @@ import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -84,6 +85,10 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: { id: string; label: string; version: string; template?: string }[] = [];
+  /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
+  readonly diagnostics = new Diagnostics();
+  /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
+  private readonly badgeCounts = new Map<string, number>();
   readonly manifest: AxfManifest;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
@@ -95,6 +100,12 @@ export class AxfRuntime {
     this.manifest = opts.manifest;
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
+    this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
+    this.settings.onConflict = (c) => this.diagnostics.report(
+      c.what === 'setting'
+        ? { kind: 'setting-conflict', key: c.id, was: c.was, now: c.now }
+        : { kind: 'contribution-conflict', what: `settings ${c.what}`, id: c.id, was: c.was, now: c.now },
+    );
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -134,6 +145,19 @@ export class AxfRuntime {
   };
 
   getState = () => this.state;
+
+  /* ---------------- badges ---------------- */
+
+  /** A named counter's value (0 when unset). */
+  badge(name: string): number { return this.badgeCounts.get(name) ?? 0; }
+
+  /** Set a named counter; toolbar items with `badge: name` show it (0 hides it). */
+  setBadge(name: string, count: number): void {
+    const n = Math.max(0, Math.floor(count) || 0);
+    if ((this.badgeCounts.get(name) ?? 0) === n) return;
+    this.badgeCounts.set(name, n);
+    this.set({});
+  }
 
   /* ---------------- contributed navigation ---------------- */
 
@@ -271,11 +295,11 @@ export class AxfRuntime {
     this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
   }
 
-  importAsset(raw: unknown, activate = true): ValidationResult {
+  importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
     if (!this.can('assets.import')) {
       return { ok: false, errors: ['Your role needs "assets.import" to import assets.'] };
     }
-    const r = this.registry.register(raw, 'imported');
+    const r = this.registry.register(raw, 'imported', origin);
     if (r.ok && r.asset) {
       if (activate && this.can('assets.swap')) this.swap(r.asset.type, r.asset.id);
       else this.set({});

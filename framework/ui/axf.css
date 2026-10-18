@@ -173,6 +173,13 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 }
 .fx-toolbtn:hover:not(:disabled) { background: var(--fx-surface3); color: var(--fx-text); }
 .fx-toolbtn:disabled { opacity: max(var(--fx-opacity-disabled), 0.4); }
+.fx-toolbtn { position: relative; }
+/* unread counter (toolbar item `badge`) */
+.fx-toolbtn__badge {
+  position: absolute; top: 1px; right: 1px; min-width: 16px; height: 16px; padding: 0 4px; box-sizing: border-box;
+  border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text);
+  font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; pointer-events: none;
+}
 .fx-search {
   display: flex; align-items: center; gap: 6px; margin-left: auto; flex: 0 1 260px; min-width: 150px;
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border);

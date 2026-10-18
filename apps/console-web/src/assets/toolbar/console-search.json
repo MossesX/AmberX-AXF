@@ -78,6 +78,13 @@
         "id": "tools",
         "items": [
           {
+            "id": "alerts",
+            "icon": "bell",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
             "id": "terminal",
             "icon": "terminal",
             "label": "Output terminal",

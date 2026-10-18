@@ -11,6 +11,8 @@ export * from './engines/actions';
 export * from './engines/windows';
 export * from './engines/roll';
 export * from './engines/search';
+export * from './engines/alerts';
+export * from './diagnostics';
 export * from './terminal';
 export * from './options';
 export * from './project';

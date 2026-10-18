@@ -10,15 +10,15 @@
     "src/axf/core/engines/theme.ts": "2669a5c007504bfb",
     "src/axf/core/engines/uac.ts": "b7c1348f9ffe8c68",
     "src/axf/core/engines/windows.ts": "77fbc6bdf3388fd2",
-    "src/axf/core/index.ts": "d5d8497e91877c58",
-    "src/axf/core/registry.ts": "d1fa6efed5167410",
-    "src/axf/core/runtime.ts": "fed817487f4ae045",
+    "src/axf/core/index.ts": "68959fd3bc64e7a4",
+    "src/axf/core/registry.ts": "96f9615e82892806",
+    "src/axf/core/runtime.ts": "24cd05f4058f5dc8",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
-    "src/axf/core/types.ts": "649b73a69dd5cbed",
+    "src/axf/core/types.ts": "940a4f26aae2b3e2",
     "src/axf/core/validate.ts": "eb3309a5fed5777f",
     "src/axf/react/AppShell.tsx": "7ec42136d5c88b0a",
     "src/axf/react/AxfProvider.tsx": "fc14aae5ae82e500",
-    "src/axf/react/components/Chrome.tsx": "6761415f334c78ae",
+    "src/axf/react/components/Chrome.tsx": "067e9f32518f23fa",
     "src/axf/react/components/Controls.tsx": "ea7b00277e9784b9",
     "src/axf/react/components/Icon.tsx": "c7ade5cc953b07b5",
     "src/axf/react/components/MenuList.tsx": "d85b691beeee8e11",
@@ -34,7 +34,7 @@
     "src/axf/react/windows/WindowHost.tsx": "87e35d9471b59b7c",
     "src/axf/schemas/app-structure.json": "b757aff49521a626",
     "src/axf/schemas/asset-types.android.json": "4e673222ce15f5ef",
-    "src/axf/schemas/asset-types.json": "94685b119c99e4b5",
+    "src/axf/schemas/asset-types.json": "2c11c61cd6bf0600",
     "src/axf/schemas/json/app-menu.schema.json": "93777023ab30d82c",
     "src/axf/schemas/json/button.schema.json": "a5e2d5b5143b69d0",
     "src/axf/schemas/json/color-theme.schema.json": "261986185ffbbb81",
@@ -61,6 +61,6 @@
     "src/axf/schemas/json/widget.schema.json": "01761e24be132e2d",
     "src/axf/schemas/json/window.schema.json": "e0f64392890b6c02",
     "src/axf/schemas/plugin.schema.json": "ef19ff3453211ac9",
-    "src/axf/ui/axf.css": "1464194b1b9cf4ea"
+    "src/axf/ui/axf.css": "9fe27c38b4f5dcfd"
   }
 }
