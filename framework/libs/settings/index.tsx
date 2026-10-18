@@ -9,7 +9,7 @@
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, hideable, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
@@ -89,6 +89,19 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'choice':
+      // Up to three options read better as a three-way switch (radio group) than a drop-down.
+      if ((spec.options ?? []).length > 1 && (spec.options ?? []).length <= 3) {
+        const cur = typeof value === 'string' ? value : String(spec.default ?? '');
+        control = (
+          <div className="axf-settings__seg" role="radiogroup" aria-label={spec.label}>
+            {(spec.options ?? []).map((o) => (
+              <button key={o.value} type="button" role="radio" aria-checked={cur === o.value} disabled={locked}
+                className={`axf-settings__segbtn${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
+            ))}
+          </div>
+        );
+        break;
+      }
       control = (
         <select className="axf-settings__field" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
           {(spec.options ?? []).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -390,6 +403,12 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}
+.axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
+.axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
+.axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
+.axf-settings__segbtn.is-on{background:var(--fx-accent);color:var(--fx-accent-text);font-weight:600}
+.axf-settings__segbtn:focus-visible{outline:2px solid var(--fx-accent);outline-offset:-2px}
+.axf-settings__segbtn[disabled]{cursor:default;opacity:var(--fx-opacity-disabled)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
@@ -458,6 +477,7 @@ export const library: AxfWebLibrary = {
       tab: 'appearance',
       order: 20,
       settings: [
+        { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
         { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, description: 'Percent of the normal size.' },
         { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, description: 'Off reduces motion.' },
       ],

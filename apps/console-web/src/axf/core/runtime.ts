@@ -13,6 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { hideable, hiddenSlots } from './engines/hide';
+import { spacingOf, type Spacing } from './engines/spacing';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { Diagnostics } from './diagnostics';
@@ -41,6 +42,8 @@ export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
 export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
 /** Hidden slot override (Settings → Appearance → Assets → Hidden); only hideable types (core/engines/hide.ts). */
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
+/** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
+export const SPACING_KEY = 'axf.appearance.spacing';
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -124,6 +127,8 @@ export class AxfRuntime {
         ? { kind: 'setting-conflict', key: c.id, was: c.was, now: c.now }
         : { kind: 'contribution-conflict', what: `settings ${c.what}`, id: c.id, was: c.was, now: c.now },
     );
+    // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
+    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); this.set({}); });
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -360,6 +365,19 @@ export class AxfRuntime {
     this.set({});
   }
 
+  /* ---------------- spacing (core/engines/spacing.ts) ---------------- */
+
+  /** The user's Spacing choice: tight (default) | compact | regular. */
+  spacing(): Spacing {
+    return spacingOf(this.settings.get(SPACING_KEY));
+  }
+
+  /** Change the Spacing choice; it applies at once to every theme. */
+  setSpacing(s: Spacing): void {
+    if (spacingOf(s) !== s || this.spacing() === s) return;
+    this.settings.set(SPACING_KEY, s);
+  }
+
   /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
   randomize() {
     if (!this.can('assets.swap')) return this.toast('Your role cannot swap assets.', 'danger', 'Permission denied');
@@ -477,7 +495,7 @@ export class AxfRuntime {
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
-      ...styleThemeVars(this.asset('style-theme').data),
+      ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
     };
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
@@ -523,6 +541,8 @@ export class AxfRuntime {
     a.register('slot.hide', ([type, v]) => {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
+    // spacing:tight|compact|regular (Settings → Appearance → Spacing)
+    a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {

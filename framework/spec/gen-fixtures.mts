@@ -12,6 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { hiddenSlots, hideableTypes } from '../core/engines/hide';
+import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { ASSET_TYPES } from '../core/types';
@@ -54,6 +55,16 @@ write('hide.json', {
     { overrides: { toolbar: true, 'nav-menu': false }, hidden: hiddenSlots({ toolbar: true, 'nav-menu': false }) },
     { overrides: { 'color-theme': true, layout: true, 'context-menu': true }, hidden: hiddenSlots({ 'color-theme': true, layout: true, 'context-menu': true }) },
   ],
+});
+// Spacing choice (core/engines/spacing.ts): every style theme compiled under every choice; plus how stored values read.
+write('spacing.json', {
+  default: SPACING_DEFAULT,
+  order: SPACINGS,
+  parse: Object.fromEntries(['tight', 'compact', 'regular', 'roomy', ''].map((v) => [v, spacingOf(v)])),
+  vars: Object.fromEntries(load('style-theme').map((a) => [a.id, Object.fromEntries(SPACINGS.map((sp) => {
+    const v = styleThemeVars(a.data, sp);
+    return [sp, Object.fromEntries(['--fx-space', '--fx-row-h', '--fx-density-k', '--fx-radius-sm', '--fx-radius-md', '--fx-radius-lg', '--fx-font-size'].map((k) => [k, v[k]]))];
+  }))])),
 });
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),

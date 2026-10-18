@@ -1,0 +1,104 @@
+{
+  "default": "tight",
+  "order": [
+    "tight",
+    "compact",
+    "regular"
+  ],
+  "parse": {
+    "tight": "tight",
+    "compact": "compact",
+    "regular": "regular",
+    "roomy": "tight",
+    "": "tight"
+  },
+  "vars": {
+    "glass-orbit": {
+      "tight": {
+        "--fx-space": "6.8px",
+        "--fx-row-h": "26px",
+        "--fx-density-k": "0.7564",
+        "--fx-radius-sm": "6px",
+        "--fx-radius-md": "10px",
+        "--fx-radius-lg": "14px",
+        "--fx-font-size": "15px"
+      },
+      "compact": {
+        "--fx-space": "8.8px",
+        "--fx-row-h": "33px",
+        "--fx-density-k": "0.976",
+        "--fx-radius-sm": "8px",
+        "--fx-radius-md": "13px",
+        "--fx-radius-lg": "19px",
+        "--fx-font-size": "15px"
+      },
+      "regular": {
+        "--fx-space": "11px",
+        "--fx-row-h": "41px",
+        "--fx-density-k": "1.22",
+        "--fx-radius-sm": "10px",
+        "--fx-radius-md": "16px",
+        "--fx-radius-lg": "24px",
+        "--fx-font-size": "15px"
+      }
+    },
+    "sharp-terminal": {
+      "tight": {
+        "--fx-space": "3.4px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.48360000000000003",
+        "--fx-radius-sm": "0px",
+        "--fx-radius-md": "1px",
+        "--fx-radius-lg": "2px",
+        "--fx-font-size": "13px"
+      },
+      "compact": {
+        "--fx-space": "4.4px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.6240000000000001",
+        "--fx-radius-sm": "0px",
+        "--fx-radius-md": "2px",
+        "--fx-radius-lg": "2px",
+        "--fx-font-size": "13px"
+      },
+      "regular": {
+        "--fx-space": "5.5px",
+        "--fx-row-h": "27px",
+        "--fx-density-k": "0.78",
+        "--fx-radius-sm": "0px",
+        "--fx-radius-md": "2px",
+        "--fx-radius-lg": "3px",
+        "--fx-font-size": "13px"
+      }
+    },
+    "soft-studio": {
+      "tight": {
+        "--fx-space": "5px",
+        "--fx-row-h": "22px",
+        "--fx-density-k": "0.62",
+        "--fx-radius-sm": "4px",
+        "--fx-radius-md": "6px",
+        "--fx-radius-lg": "8px",
+        "--fx-font-size": "14px"
+      },
+      "compact": {
+        "--fx-space": "6.4px",
+        "--fx-row-h": "27px",
+        "--fx-density-k": "0.8",
+        "--fx-radius-sm": "5px",
+        "--fx-radius-md": "8px",
+        "--fx-radius-lg": "11px",
+        "--fx-font-size": "14px"
+      },
+      "regular": {
+        "--fx-space": "8px",
+        "--fx-row-h": "34px",
+        "--fx-density-k": "1",
+        "--fx-radius-sm": "6px",
+        "--fx-radius-md": "10px",
+        "--fx-radius-lg": "14px",
+        "--fx-font-size": "14px"
+      }
+    }
+  }
+}

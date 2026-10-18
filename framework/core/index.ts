@@ -11,6 +11,7 @@ export * from './engines/actions';
 export * from './engines/windows';
 export * from './engines/roll';
 export * from './engines/hide';
+export * from './engines/spacing';
 export * from './engines/search';
 export * from './engines/alerts';
 export * from './diagnostics';

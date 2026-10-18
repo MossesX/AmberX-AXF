@@ -31,6 +31,7 @@ import ai.amberx.axf.kernel.engine.ContextMenuEngine
 import ai.amberx.axf.kernel.engine.Gate
 import ai.amberx.axf.kernel.engine.LayoutEngine
 import ai.amberx.axf.kernel.engine.HideEngine
+import ai.amberx.axf.kernel.engine.Spacing
 import ai.amberx.axf.kernel.engine.RollEngine
 import ai.amberx.axf.kernel.engine.RollRules
 import ai.amberx.axf.kernel.engine.SearchEntry
@@ -242,6 +243,21 @@ public class AxfRuntime(
 
     /* ---------------- hidden slots (HideEngine; web: settings `axf.hide.<type>`) ---------------- */
 
+    /* ---------------- spacing (SpacingEngine; web: settings `axf.appearance.spacing`) ---------------- */
+
+    private val spacingKey get() = "$key:spacing"
+
+    /** The user's Spacing choice: TIGHT (default), COMPACT or REGULAR. */
+    public fun spacing(): Spacing = Spacing.of(store.get(spacingKey))
+
+    /** Change the Spacing choice; it applies at once to every theme (styles recompile). */
+    public fun setSpacing(s: Spacing) {
+        if (spacing() == s) return
+        store.put(spacingKey, s.id)
+        terminal.ok("hot-swap", "spacing: ${s.id}")
+        set({ it }, recompile = true)
+    }
+
     private val hideKey get() = "$key:hide"
 
     /** Every hidden slot (only hideable types: the chrome). */
@@ -364,7 +380,7 @@ public class AxfRuntime(
     private fun compile(s: AxfState): Compiled {
         fun d(t: String) = registry.get(t, s.active.getValue(t))!!.data
         val color = ColorTheme.fromJson(d(AssetTypes.COLOR_THEME)); val style = StyleTheme.fromJson(d(AssetTypes.STYLE_THEME))
-        val theme = ThemeEngine.compile(color, style)
+        val theme = ThemeEngine.compile(color, style, spacing())
         val layout = Layout.fromJson(d(AssetTypes.LAYOUT))
         val styles = ComponentStyleEngine.compile(Button.fromJson(d(AssetTypes.BUTTON)), Slider.fromJson(d(AssetTypes.SLIDER)), Container.fromJson(d(AssetTypes.CONTAINER)), Dialog.fromJson(d(AssetTypes.DIALOG)), Popup.fromJson(d(AssetTypes.POPUP)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), theme.style,
             Toolbar.fromJson(d(AssetTypes.TOOLBAR)), NavMenu.fromJson(d(AssetTypes.NAV_MENU)), AppMenu.fromJson(d(AssetTypes.APP_MENU)))
@@ -390,6 +406,8 @@ public class AxfRuntime(
         // roll.slot:<type>:on|off|default · roll.asset:<type>:<id>:on|off|default (same specs as the web port)
         fun onOff(v: String?): Boolean? = when (v) { "on" -> true; "off" -> false; else -> null }
         actions.register("roll.slot", ActionMeta("Include a slot in randomize rolls", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setRollSlot(it, onOff(args.getOrNull(1))) } }
+        // spacing:tight|compact|regular (same spec as the web port)
+        actions.register("spacing", ActionMeta("Change spacing (tight, compact, regular)", params = true)) { args, _ -> args.getOrNull(0)?.let { v -> Spacing.entries.firstOrNull { it.id == v }?.let { setSpacing(it) } } }
         // slot.hide:<type>:on|off (same spec as the web port)
         actions.register("slot.hide", ActionMeta("Hide or show a slot", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setSlotHidden(it, args.getOrNull(1) != "off") } }
         actions.register("roll.asset", ActionMeta("Include an asset in randomize rolls", "assets.swap", params = true)) { args, _ -> val t = args.getOrNull(0); val id = args.getOrNull(1); if (t != null && id != null && registry.types.has(t)) setRollAsset(t, id, onOff(args.getOrNull(2))) }

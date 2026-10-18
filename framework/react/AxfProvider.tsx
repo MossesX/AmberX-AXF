@@ -70,9 +70,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   // Compile active assets -> CSS on the document root (this is the hot-swap).
   // Hidden slots change the layout grid too, so they re-apply it.
   const hidden = runtime.hiddenSlots().join(',');
+  // The Spacing choice scales the style theme (core/engines/spacing.ts), so it re-applies too.
+  const spacing = runtime.spacing();
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active, hidden]);
+  }, [runtime, state.active, hidden, spacing]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

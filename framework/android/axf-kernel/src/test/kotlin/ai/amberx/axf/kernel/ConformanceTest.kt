@@ -97,6 +97,17 @@ class ConformanceTest {
         }
     }
 
+    @Test fun `spacing choice matches the reference engine`() {
+        val f = fixture("spacing.json")
+        assertEquals(f.getValue("default").jsonPrimitive.content, ai.amberx.axf.kernel.engine.Spacing.DEFAULT.id, "default spacing")
+        assertEquals((f.getValue("order") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.Spacing.entries.map { it.id }, "order")
+        for ((raw, want) in f.getValue("parse").jsonObject) assertEquals(want.jsonPrimitive.content, ai.amberx.axf.kernel.engine.Spacing.of(raw).id, "parse '$raw'")
+        for ((id, bySpacing) in f.getValue("vars").jsonObject) for ((sp, vars) in bySpacing.jsonObject) {
+            val css = ThemeEngine.compile(ColorTheme.fromJson(asset("color-theme", "amber-ember")), StyleTheme.fromJson(asset("style-theme", id)), ai.amberx.axf.kernel.engine.Spacing.of(sp)).cssVars
+            for ((k, v) in vars.jsonObject) assertEquals(v.jsonPrimitive.content, css[k], "$id/$sp $k")
+        }
+    }
+
     @Test fun `chrome style attributes match the reference engine`() {
         val f = fixture("components.json")
         val st = ThemeEngine.compile(ColorTheme.fromJson(asset("color-theme", "amber-ember")), StyleTheme.fromJson(asset("style-theme", "soft-studio"))).style

@@ -90,13 +90,14 @@ public data class ThemeTokens(
  * Extended tokens missing from the asset are derived from the core ones so every theme has the full vocabulary.
  */
 public object ThemeEngine {
-    public fun compile(color: ColorTheme, style: StyleTheme): ThemeTokens {
+    /** [spacing] = the user's Spacing choice (SpacingEngine); REGULAR compiles the theme exactly as written. */
+    public fun compile(color: ColorTheme, style: StyleTheme, spacing: Spacing = Spacing.REGULAR): ThemeTokens {
         val colors = LinkedHashMap<String, String>()
         for (t in ColorTokens.CORE) colors[t] = color.tokens[t] ?: fallback(t, color)
         for ((k, v) in color.tokens) if (k !in colors) colors[k] = v
         derive(colors, color.scheme, style)
         val rgba = colors.mapNotNull { (k, v) -> Rgba.parse(v)?.let { k to it } }.toMap()
-        val st = styleTokens(style)
+        val st = styleTokens(style, spacing)
         return ThemeTokens(color.scheme, colors, rgba, st, cssVars(colors, style, st))
     }
 
@@ -166,13 +167,14 @@ public object ThemeEngine {
         put("glassTint") { surface.withAlpha(st.opacityGlass).toCss() }
     }
 
-    public fun styleTokens(s: StyleTheme): StyleTokens {
-        val d = s.density.k
+    public fun styleTokens(s: StyleTheme, spacing: Spacing = Spacing.REGULAR): StyleTokens {
+        val d = s.density.k * spacing.k
+        fun r(v: Int) = SpacingEngine.radius(v.toDouble(), spacing)
         return StyleTokens(
             fontFamily = s.fontFamily, fontDisplay = s.fontDisplay, fontMono = s.fontMono,
             fontSize = s.fontSize.toDouble(), lineHeight = s.lineHeight, typeScale = s.typeScale, headingWeight = s.headingWeight, tracking = s.tracking,
-            radiusXs = s.radius.xs.toDouble(), radiusSm = s.radius.sm.toDouble(), radiusMd = s.radius.md.toDouble(), radiusLg = s.radius.lg.toDouble(), radiusXl = s.radius.xl.toDouble(),
-            space = Math.round(s.space * d * 10) / 10.0, densityK = d, rowHeight = Math.round(34 * d).toDouble(), controlHeight = Math.round(s.controlHeight * d).toDouble(),
+            radiusXs = r(s.radius.xs), radiusSm = r(s.radius.sm), radiusMd = r(s.radius.md), radiusLg = r(s.radius.lg), radiusXl = r(s.radius.xl),
+            space = Math.round(s.space * d * 10) / 10.0, densityK = d, rowHeight = maxOf(SpacingEngine.ROW_MIN, Math.round(34 * d).toDouble()), controlHeight = Math.round(s.controlHeight * d).toDouble(),
             touchTarget = s.touchTarget.toDouble(), iconSize = s.iconSize.toDouble(),
             borderWidth = s.borderWidth.toDouble(), motionMs = s.motion, blur = s.blur.toDouble(), elevationLevels = s.elevationLevels,
             shadowSm = s.shadow.sm, shadowMd = s.shadow.md, shadowLg = s.shadow.lg,
@@ -190,7 +192,7 @@ public object ThemeEngine {
         for ((k, c) in colors) v["--fx-${kebab(k)}"] = c
         v["--fx-font"] = s.fontFamily; v["--fx-font-display"] = s.fontDisplay; v["--fx-font-mono"] = s.fontMono
         v["--fx-font-size"] = "${s.fontSize}px"
-        v["--fx-radius-sm"] = "${s.radius.sm}px"; v["--fx-radius-md"] = "${s.radius.md}px"; v["--fx-radius-lg"] = "${s.radius.lg}px"
+        v["--fx-radius-sm"] = "${jsNum(st.radiusSm)}px"; v["--fx-radius-md"] = "${jsNum(st.radiusMd)}px"; v["--fx-radius-lg"] = "${jsNum(st.radiusLg)}px"
         v["--fx-space"] = "${jsNum(st.space)}px"; v["--fx-border-w"] = "${s.borderWidth}px"
         v["--fx-shadow-sm"] = s.shadow.sm; v["--fx-shadow-md"] = s.shadow.md; v["--fx-shadow-lg"] = s.shadow.lg
         v["--fx-motion"] = "${s.motion}ms"; v["--fx-blur"] = "${s.blur}px"

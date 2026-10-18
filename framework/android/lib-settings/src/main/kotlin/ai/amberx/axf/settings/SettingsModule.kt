@@ -11,6 +11,7 @@ import ai.amberx.axf.kernel.contract.SettingScope
 import ai.amberx.axf.kernel.contract.SettingSpec
 import ai.amberx.axf.kernel.contract.SettingsGroup
 import ai.amberx.axf.kernel.engine.ActionMeta
+import ai.amberx.axf.kernel.engine.Spacing
 import ai.amberx.axf.kernel.module.ActionContribution
 import ai.amberx.axf.kernel.module.BaseModule
 import ai.amberx.axf.kernel.module.Capability
@@ -46,6 +47,8 @@ public class SettingsModule : BaseModule(ID, "Settings") {
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(generalGroup()), order = 20)
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(aboutGroup()), order = 999)
         engine.bind(ctx)
+        // The Spacing choice is the runtime's (it recompiles the theme); the setting mirrors it both ways.
+        engine.onChange { k, v -> if (k == SPACING_KEY) runtime?.setSpacing(Spacing.of((v as? JsonPrimitive)?.content)) }
         ctx.extensions.onChange(ExtensionPoints.SETTINGS) { engine.refreshGroups(ctx) }
     }
 
@@ -55,6 +58,8 @@ public class SettingsModule : BaseModule(ID, "Settings") {
         val types = runtime?.registry?.types?.all() ?: emptyList()
         return SettingsGroup("appearance", "Appearance", "palette", id, order = 10, description = "Every slot is a hot-swappable asset. Changes apply instantly and persist.", settings = listOf(
             SettingSpec("axf.appearance.followSystem", "Follow system dark mode", SettingKind.TOGGLE, "Pick the dark/light counterpart of the color theme automatically", JsonPrimitive(false)),
+            SettingSpec(SPACING_KEY, "Spacing", SettingKind.CHOICE, "How much room between and around things. Applies to every theme; Regular shows the style theme as designed.",
+                JsonPrimitive((runtime?.spacing() ?: Spacing.DEFAULT).id), options = Spacing.entries.map { it.id to it.label }),
         ) + types.filter { !it.optional || runtime?.registry?.list(it.id)?.isNotEmpty() == true }.map { t ->
             SettingSpec("axf.slot.${t.id}", t.label, SettingKind.ASSET_SLOT, if (t.id == AssetTypes.UAC_POLICY) "Changing the policy may change your role" else if (t.hideable) "Hidden removes it from the screen; its other options grey out." else null, JsonPrimitive(""), SettingScope.USER, target = t.id, requires = if (t.id == AssetTypes.UAC_POLICY) "uac.manage" else "assets.swap", icon = t.icon)
         })
@@ -73,7 +78,11 @@ public class SettingsModule : BaseModule(ID, "Settings") {
         SettingSpec("axf.about.reset", "Reset assets to defaults", SettingKind.ACTION, target = "assets.reset", icon = "refresh"),
     ))
 
-    public companion object { public const val ID: String = "ai.amberx.axf.settings" }
+    public companion object {
+        public const val ID: String = "ai.amberx.axf.settings"
+        /** Same key as the web port (core/runtime.ts SPACING_KEY). */
+        public const val SPACING_KEY: String = "axf.appearance.spacing"
+    }
 }
 
 /** Values + groups, observable. Writes go to DataStore (or SecureStore for SECRET) and the kernel Config. */
