@@ -1,0 +1,23 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.snapshot-manager",
+  "name": "Snapshot Manager",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Snapshots of container files, taken before every approved change and restorable in one step (restore snapshots the current state first, so an undo can be undone). Browse by container and date, view the diff, restore, delete, retention (30 days, 5 GB by default; node_modules and caches skipped), and the change log. Settings → Plugins → Snapshots.",
+  "targets": ["axf-console"],
+  "provides": ["settings-tab:snapshots", "service:axf.snapshots@1"],
+  "requires": ["service:axf.containers@1"],
+  "optional": [],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "replacedBy": "pending item snapshot-manager-plugin (Fable)" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/snapshot-manager",
+    "env": ["AXF_SNAPSHOT_MANAGER_DIR"],
+    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+  }
+}

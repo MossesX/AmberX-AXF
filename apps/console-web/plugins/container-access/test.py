@@ -29,6 +29,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 os.environ["AXF_CONTAINER_ACCESS_DIR"] = tempfile.mkdtemp(prefix="axf-ca-test-")
+os.environ["AXF_ROOT"] = tempfile.mkdtemp(prefix="axf-ca-root-")  # data of any other plugin loaded below
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import plugin_services  # noqa: E402
 
@@ -119,10 +120,14 @@ def _run_exec(e: dict) -> tuple[str, int]:
             fs.setdefault("/" + "/".join(parts[:i]), None)
         return "", 0
     if op == "delete":
-        p = cmd[-1]
-        for k in [k for k in fs if k == p or k.startswith(p + "/")]:
-            del fs[k]
+        for p in cmd[cmd.index("--") + 1:]:
+            for k in [k for k in fs if k == p or k.startswith(p + "/")]:
+                del fs[k]
         return "", 0
+    if op == "tree":
+        root, skip = cmd[4], re.findall(r"-name (\S+)", cmd[2])
+        out = [k for k in sorted(fs) if (k == root or k.startswith(root + "/")) and not any(f"/{x}/" in k + "/" for x in skip)]
+        return "\n".join(out) + "\n", 0
     script = cmd[2] if cmd[:2] == ["sh", "-c"] else " ".join(cmd)
     if "fail" in script:
         return f"error from: {script}\n", 1
@@ -351,7 +356,7 @@ plugin_services.provide("axf.snapshots@1", snaps, "fake-snapshots")
 events: list = []
 res = S.approve_batch(b["id"], ["i1", "i2", "i3", "i5"], USER, on_event=events.append)
 check("approved", res["status"] == "applied", json.dumps(res)[:400])
-check("one snapshot per container", len(snaps.taken) == 1 and sorted(snaps.taken[0]["paths"]) == ["/app", "/app/README.md", "/app/src/index.ts"], str(snaps.taken))
+check("one snapshot per container", len(snaps.taken) == 1 and snaps.taken[0]["paths"] == ["/app"], str(snaps.taken))
 check("snapshot linked to batch", snaps.taken[0]["batch"] == b["id"] and snaps.taken[0]["actor"]["name"] == "Mosses")
 check("write applied", FS["a" * 64]["/app/src/index.ts"] == b"console.log('bye')\n")
 check("delete applied", "/app/README.md" not in FS["a" * 64])
@@ -386,6 +391,18 @@ u = S.undo_batch(b["id"], USER)
 check("undo restores batch snapshots", u["status"] == "undone" and snaps.restored == ["s-1"] and u["undoSnapshots"] == ["pre-s-1"])
 check("bad batch id", raises(lambda: S.get_batch("../../etc/passwd"), KeyError) != "")
 
+# tree + restore primitives (used by Snapshot Manager)
+t = S.tree("myapp", "/app", ["node_modules"])
+check("tree skips excluded", "/app/src/index.ts" in t and not any("node_modules" in x for x in t), str(t))
+raw = _tar("a" * 64, "/app/src")
+FS["a" * 64]["/app/src/extra.ts"] = b"new"
+S.archive_restore("myapp", "/app/src", raw, actor=USER, remove=["/app/src/extra.ts"], snapshot="s-x")
+check("restore removes newer files", "/app/src/extra.ts" not in FS["a" * 64])
+check("restore keeps node_modules", "/app/node_modules/x.js" in FS["a" * 64])
+check("restore outside path refused", "outside" in raises(lambda: S.archive_restore("myapp", "/app/src", raw, actor=USER, remove=["/etc/passwd"]), ValueError))
+S.archive_restore("myapp", "/app/tmp-new", None, actor=USER)
+check("restore of absent path removes it", "/app/tmp-new" not in FS["a" * 64])
+
 # snapshot failure → nothing applied
 class BadSnaps(FakeSnaps):
     def take(self, *a, **k):
@@ -397,6 +414,35 @@ b6 = S.create_batch([{"kind": "write", "container": "myapp", "path": "/app/c.txt
 r6 = S.approve_batch(b6["id"], None, USER)
 check("snapshot failure writes nothing", r6["status"] == "failed" and "/app/c.txt" not in FS["a" * 64] and "nothing was changed" in r6["error"])
 plugin_services.provide("axf.snapshots@1", snaps, "fake-snapshots")
+
+# --- end to end with the real snapshot provider, found by capability (never by folder name) ---------------------------
+prov = next((d for d in sorted(HERE.parent.iterdir()) if (d / "plugin.json").exists()
+             and "service:axf.snapshots@1" in json.loads((d / "plugin.json").read_text()).get("provides", [])), None)
+if prov:
+    nm = "axf_console_plugins.snapshot_provider_test"
+    spec = importlib.util.spec_from_file_location(nm, prov / "server" / "__init__.py", submodule_search_locations=[str(prov / "server")])
+    sm = importlib.util.module_from_spec(spec)
+    sys.modules[nm] = sm
+    spec.loader.exec_module(sm)
+    real = plugin_services.get("axf.snapshots@1")
+    fs = FS["a" * 64]
+    fs["/app/src/index.ts"] = b"v1\n"
+    fs.pop("/app/src/new.ts", None)
+    b8 = S.create_batch([{"kind": "write", "container": "myapp", "path": "/app/src/index.ts", "content": "v2\n"},
+                         {"kind": "write", "container": "myapp", "path": "/app/src/added.ts", "content": "added\n"},
+                         {"kind": "exec", "container": "myapp", "command": "touch /app/src/built.js", "paths": ["/app/src"]}], actor=AGENT)
+    r8 = S.approve_batch(b8["id"], None, USER)
+    check("e2e applied", r8["status"] == "applied" and fs["/app/src/index.ts"] == b"v2\n" and "/app/src/built.js" in fs, json.dumps(r8)[:300])
+    snap = real.get(r8["snapshots"][0])
+    check("e2e snapshot of covered paths", snap["paths"] == ["/app/src"] and snap["batch"] == b8["id"], str(snap["paths"]))
+    dd = real.diff(snap["id"])
+    check("e2e diff sees the change", any("/app/src/index.ts" in e.get("changed", []) for e in dd["entries"]), json.dumps(dd)[:300])
+    u8 = S.undo_batch(b8["id"], USER)
+    check("e2e undo restores", fs["/app/src/index.ts"] == b"v1\n" and "/app/src/added.ts" not in fs and "/app/src/built.js" not in fs, str(sorted(k for k in fs if k.startswith("/app/src"))))
+    check("e2e undo is undoable", u8["undoSnapshots"] and real.get(u8["undoSnapshots"][0])["meta"].get("restoreOf") == snap["id"])
+    plugin_services.provide("axf.snapshots@1", snaps, "fake-snapshots")
+else:
+    print("(no snapshot provider installed; end-to-end checks skipped)")
 
 # --- HTTP routes ----------------------------------------------------------------------------------------------------
 try:

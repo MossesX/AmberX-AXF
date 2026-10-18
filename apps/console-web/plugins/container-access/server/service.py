@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import posixpath
+import re
 import threading
 import time
 import urllib.request
@@ -291,26 +292,45 @@ class ContainersService:
         conn, resp = self.docker.get_archive(c["id"], p, timeout=600)
         return {"container": c["name"], "id": c["id"], "path": p, "stat": st}, conn, resp
 
-    def archive_restore(self, container: str, path: str, tar_bytes: bytes | None, actor: dict[str, Any] | None = None,
-                        snapshot: str | None = None) -> dict[str, Any]:
-        """Put ``path`` back exactly: remove what's there now, then unpack the snapshot's tar into the parent folder.
-        ``tar_bytes`` None means the path didn't exist at snapshot time, so it is removed."""
+    def tree(self, container: str, path: str, exclude: list[str] | None = None, limit: int = 100_000) -> list[str] | None:
+        """Absolute paths under ``path`` (itself included), skipping excluded folder names. None when it can't be listed."""
+        c = self.resolve(container)
+        p = norm_path(path)
+        ex = [x for x in (exclude or []) if re.match(r"^[A-Za-z0-9_.-]{1,64}$", x)]
+        prune = " -o ".join(f"-name {x}" for x in ex)
+        script = f'find "$1" \\( {prune} \\) -prune -o -print 2>/dev/null | head -n "$2"' if ex else 'find "$1" -print 2>/dev/null | head -n "$2"'
+        r = self.docker.run(c["id"], ["sh", "-c", script, "sh", p, str(limit)], env=["AXF_OP=tree"], timeout=120, max_output=50_000_000)
+        if r["exitCode"] not in (0, None) and not r["output"]:
+            return None
+        return [x for x in r["output"].splitlines() if x.startswith("/")]
+
+    def archive_restore(self, container: str, path: str, tar_data: Any, actor: dict[str, Any] | None = None,
+                        snapshot: str | None = None, remove: list[str] | None = None, replace: bool = False) -> dict[str, Any]:
+        """Put ``path`` back from a snapshot's tar (bytes or an open uncompressed tar file).
+        ``tar_data`` None: the path didn't exist at snapshot time, so it's removed. ``replace``: remove the path first
+        (a single file, or a type change). ``remove``: paths under ``path`` that are newer than the snapshot."""
         a = _actor(actor)
         c = self.resolve(container)
         p = norm_path(path)
         if p in _DANGEROUS:
             raise ValueError(f"refusing to restore over {p}")
-        r = self.docker.run(c["id"], ["rm", "-rf", "--", p], env=["AXF_OP=delete"], timeout=300)
-        if r["exitCode"] not in (0, None) and self.docker.stat(c["id"], p) is not None:
-            raise DockerError(502, f"couldn't clear {p} before restoring: {r['output'][:200]}")
-        if tar_bytes is not None:
+        doomed = [p] if tar_data is None or replace else [norm_path(x) for x in (remove or [])]
+        for x in doomed:
+            if x != p and not x.startswith(p.rstrip("/") + "/"):
+                raise ValueError(f"{x} is outside {p}")
+        for i in range(0, len(doomed), 200):
+            chunk = doomed[i:i + 200]
+            r = self.docker.run(c["id"], ["rm", "-rf", "--", *chunk], env=["AXF_OP=delete"], timeout=300)
+            if r["exitCode"] not in (0, None):
+                raise DockerError(502, f"couldn't clear {chunk[0]} before restoring: {r['output'][:200]}")
+        if tar_data is not None:
             parent = posixpath.dirname(p) or "/"
             if not self.docker.stat(c["id"], parent):
                 self.docker.run(c["id"], ["mkdir", "-p", "--", parent], env=["AXF_OP=mkdir"], timeout=15)
-            self.docker.put_archive(c["id"], parent, tar_bytes, timeout=600)
+            self.docker.put_archive(c["id"], parent, tar_data, timeout=900)
         store.audit({"op": "restore", "actor": a, "container": {"id": c["id"][:12], "name": c["name"]}, "path": p,
-                     "removed": tar_bytes is None, "ok": True, "snapshot": snapshot})
-        return {"ok": True, "path": p}
+                     "removed": len(doomed) if tar_data is not None else "all", "ok": True, "snapshot": snapshot})
+        return {"ok": True, "path": p, "removed": len(doomed)}
 
     # ------------------------------------------------------------ terminal
     def tty(self, container: str, actor: dict[str, Any] | None = None, cwd: str = "", user: str = "", allow_protected: bool = False,
@@ -438,6 +458,8 @@ class ContainersService:
                     lst = cover.setdefault(it["container"], [])
                     if p not in lst:
                         lst.append(p)
+            for cname, paths in cover.items():  # a path inside another covered folder is already in its snapshot
+                cover[cname] = [p for p in paths if not any(q != p and p.startswith(q.rstrip("/") + "/") for q in paths)]
             snap_for: dict[str, str] = {}
             for cname, paths in cover.items():
                 emit({"type": "snapshot-start", "container": cname, "paths": paths})

@@ -89,6 +89,8 @@ class Docker:
         if query:
             path += "?" + urllib.parse.urlencode({k: v for k, v in query.items() if v is not None})
         h = dict(headers or {})
+        if hasattr(body, "read") and hasattr(body, "fileno"):  # a file: stream it with a known length
+            h.setdefault("Content-Length", str(os.fstat(body.fileno()).st_size - body.tell()))
         if isinstance(body, dict):
             body = json.dumps(body).encode()
             h.setdefault("Content-Type", "application/json")
@@ -151,7 +153,8 @@ class Docker:
         """Open a tar stream of ``path``. Returns (conn, resp); the caller reads and closes."""
         return self.open("GET", f"/containers/{_q(cid)}/archive", query={"path": path}, timeout=timeout)
 
-    def put_archive(self, cid: str, dest_dir: str, tar_bytes: bytes, timeout: float = 120) -> None:
+    def put_archive(self, cid: str, dest_dir: str, tar_bytes: Any, timeout: float = 120) -> None:
+        """``tar_bytes``: bytes, or an open file positioned at the start of an uncompressed tar."""
         self.request("PUT", f"/containers/{_q(cid)}/archive", query={"path": dest_dir, "noOverwriteDirNonDir": "true"},
                      body=tar_bytes, headers={"Content-Type": "application/x-tar"}, timeout=timeout)
 
