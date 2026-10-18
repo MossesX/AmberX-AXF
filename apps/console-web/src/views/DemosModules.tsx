@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '../plugins';
+import { loadPluginIndex, type PlannedPlugin } from '../api';
 import { useStore } from '../store';
 import { LIBRARIES } from './Libraries';
 
@@ -20,52 +21,55 @@ export function Demos() {
   );
 }
 
-/** Console plugins (apps/console-web/plugins/<folder>/): what each is, whether it runs, what it provides, its settings. */
-function ConsolePlugins() {
+type PluginState = 'installed' | 'built' | 'planned';
+const STATE_TONE: Record<PluginState, 'success' | 'accent' | undefined> = { installed: 'success', built: 'accent', planned: undefined };
+const firstSentence = (t = '') => { const m = /^(.+?[.!?])(\s|$)/.exec(t); return m ? m[1] : t; };
+
+/**
+ * Every framework plugin and whether it is installed (built and enabled in this console), built (in the repo, not
+ * enabled here) or planned (framework/catalog/plugins.json, plugin-index@1, not built yet). Same rule as
+ * `node framework/cli/plugins.mjs`.
+ */
+function FrameworkPlugins() {
   const rt = useRuntime();
   const [status, setStatus] = useState<PluginStatus[] | null>(null);
+  const [planned, setPlanned] = useState<PlannedPlugin[]>([]);
   useEffect(() => {
     const load = () => { void fetchPluginStatus().then(setStatus); };
     load();
+    void loadPluginIndex().then(setPlanned).catch(() => setPlanned([]));
     globalThis.addEventListener(PLUGINS_CHANGED, load);
     return () => globalThis.removeEventListener(PLUGINS_CHANGED, load);
   }, []);
-  const rows = bundledPlugins.map((p) => {
-    const s = status?.find((x) => x.folder === p.folder);
-    return { p, s, enabled: s ? s.enabled : p.manifest.enabledByDefault !== false };
-  });
-  const on = rows.filter((r) => r.enabled).length;
+  const rows = [
+    ...bundledPlugins.map((p) => {
+      const st = status?.find((x) => x.folder === p.folder);
+      const on = !p.problem && (st ? st.enabled : p.manifest.enabledByDefault !== false);
+      return { id: p.manifest.id, name: p.manifest.name, version: p.manifest.version, where: `plugins/${p.folder}`, text: p.manifest.description, state: (on ? 'installed' : 'built') as PluginState, tab: p.library?.settingsTabs?.[0]?.id ?? 'plugins' };
+    }),
+    ...planned.filter((p) => !bundledPlugins.some((b) => b.manifest.id === p.id)).map((p) => ({ id: p.id, name: p.name, version: '', where: p.target, text: p.description, state: 'planned' as PluginState, tab: '' })),
+  ].sort((x, y) => (['installed', 'built', 'planned'].indexOf(x.state) - ['installed', 'built', 'planned'].indexOf(y.state)) || x.name.localeCompare(y.name));
+  const count = (k: PluginState) => rows.filter((r) => r.state === k).length;
   return (
-    <Container title="Console plugins" icon="box" actions={<><Chip tone="success">{on} on</Chip><Chip>{rows.length}</Chip><Button icon="settings" onClick={() => rt.dispatch('settings.open:plugins')}>Manage</Button></>}>
-      {rows.length === 0 ? <p className="fx-muted">No plugins installed.</p> : (
-        <ul className="cx-list">{rows.map(({ p, s, enabled }) => {
-          const tab = p.library?.settingsTabs?.[0]?.id;
-          const services = (p.manifest.provides ?? []).filter((x) => x.startsWith('service:')).map((x) => x.slice(8));
-          return (
-            <li key={p.folder} className="cx-item">
-              <Icon name="box" />
-              <div className="fx-grow">
-                <span>{p.manifest.name}</span> <span className="fx-muted fx-small">{p.manifest.version}</span>
-                <div className="fx-mono fx-small">{p.manifest.id} · plugins/{p.folder}</div>
-                {p.manifest.description && <div className="fx-muted fx-small">{p.manifest.description}</div>}
-                <div className="fx-row fx-row--wrap">
-                  <Chip tone={enabled ? 'success' : undefined}>{enabled ? 'enabled' : 'disabled'}</Chip>
-                  {s?.server === 'loaded' && <Chip tone="accent">server part</Chip>}
-                  {s?.server === 'error' && <Chip tone="danger">server part failed</Chip>}
-                  {p.problem && <Chip tone="danger">web part: {p.problem}</Chip>}
-                  {services.map((x) => <Chip key={x}>{x}</Chip>)}
-                </div>
-              </div>
-              <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${tab ?? 'plugins'}`)}>Settings</Button>
-            </li>
-          );
-        })}</ul>
+    <Container title="Plugins" icon="box" actions={<><Chip tone="success">{count('installed')} installed</Chip><Chip tone="accent">{count('built')} built</Chip><Chip>{count('planned')} planned</Chip><Button icon="settings" onClick={() => rt.dispatch('settings.open:plugins')}>Manage</Button></>}>
+      {rows.length === 0 ? <p className="fx-muted">No plugins built or planned.</p> : (
+        <ul className="cx-list">{rows.map((r) => (
+          <li key={r.id} className="cx-item">
+            <Icon name="box" />
+            <div className="fx-grow" style={{ minWidth: 0 }}>
+              <div className="fx-row fx-row--wrap"><span>{r.name}</span>{r.version && <span className="fx-muted fx-small">{r.version}</span>}<Chip tone={STATE_TONE[r.state]}>{r.state}</Chip></div>
+              <div className="fx-mono fx-small" style={{ overflowWrap: 'anywhere' }}>{r.id} · {r.where}</div>
+              {r.text && <div className="fx-muted fx-small">{firstSentence(r.text)}</div>}
+              {r.tab && <div className="fx-row"><Button icon="settings" onClick={() => rt.dispatch(`settings.open:${r.tab}`)}>Settings</Button></div>}
+            </div>
+          </li>
+        ))}</ul>
       )}
     </Container>
   );
 }
 
-/** Modules & packages: every framework module (Android port) with its kind, console plugins, plus the catalog's Modules tab. */
+/** Modules & packages: every framework module (Android port) with its kind, every framework plugin, plus the catalog's Modules tab. */
 export function Modules() {
   const s = useStore();
   const rt = useRuntime();
@@ -73,9 +77,9 @@ export function Modules() {
   const modItems = s.catalog.tabs.find((t) => t.id === 'modules')?.groups ?? [];
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">{s.modules.length} Android modules · {bundledPlugins.length} console plugins · published as ai.amberx.axf:&lt;module&gt;:0.2.0</p><h1>Modules & packages</h1><p className="fx-muted">What the Android port ships (framework/android/settings.gradle.kts). Web port modules live in framework/core + framework/react; Python port planned. Console plugins live in apps/console-web/plugins.</p></div><div className="fx-row"><Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">{s.modules.length} Android modules · {bundledPlugins.length} plugins built · published as ai.amberx.axf:&lt;module&gt;:0.2.0</p><h1>Modules & packages</h1><p className="fx-muted">What the Android port ships (framework/android/settings.gradle.kts). Web port modules live in framework/core + framework/react; Python port planned. Plugins: built ones live in apps/console-web/plugins, planned ones in framework/catalog/plugins.json.</p></div><div className="fx-row"><Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button></div></header>
       <div className="fx-grid">{kinds.map(([k, label]) => { const list = s.modules.filter((m) => m.kind === k); if (!list.length) return null; return <Container key={k} title={label} icon={k === 'kit' ? 'grid' : 'package'} actions={<Chip>{list.length}</Chip>}><ul className="cx-list">{list.map((m) => <li key={m.name} className="cx-item"><Icon name="package" /><div className="fx-grow"><span className="fx-mono">{m.name}</span><div className="fx-muted fx-small">{m.description || '—'}</div></div></li>)}</ul></Container>; })}</div>
-      <ConsolePlugins />
+      <FrameworkPlugins />
       {modItems.map((g) => <Container key={g.id} title={g.label} icon="layers"><ul className="cx-list">{g.items.map((i) => <li key={i.id} className="cx-item"><label className="cx-check"><input type="checkbox" checked={s.isChecked(i.id)} onChange={(e) => s.setChecked(i.id, e.target.checked)} /></label><span className="fx-grow">{i.title} <span className="fx-muted fx-mono fx-small">{i.id}</span></span><Chip tone={s.status(i.id) === 'built' ? 'success' : undefined}>{s.status(i.id)}</Chip></li>)}</ul></Container>)}
     </div>
   );

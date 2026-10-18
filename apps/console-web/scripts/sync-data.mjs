@@ -14,6 +14,7 @@ cpSync(dataPath('framework/catalog/libraries.json'), join(OUT, 'libraries.json')
 cpSync(dataPath('framework/catalog/status.json'), join(OUT, 'status.json'));
 cpSync(dataPath('tracker.json'), join(OUT, 'tracker.json'));
 cpSync(join(ROOT, 'framework/boilerplates/index.json'), join(OUT, 'boilerplates.json'));
+cpSync(join(ROOT, 'framework/catalog/plugins.json'), join(OUT, 'plugin-index.json'));
 const idx = JSON.parse(readFileSync(join(ROOT, 'framework/boilerplates/index.json'), 'utf8'));
 const items = idx.items.map((i) => JSON.parse(readFileSync(join(ROOT, 'framework/boilerplates', i.id, 'boilerplate.json'), 'utf8')));
 writeFileSync(join(OUT, 'boilerplate-items.json'), JSON.stringify(items));

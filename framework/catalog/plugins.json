@@ -1,0 +1,38 @@
+{
+  "$axf": "plugin-index@1",
+  "description": "Every framework plugin that is planned but not built yet. Built plugins are found from their plugin@1 manifests (apps/*/plugins/<folder>/plugin.json), so an entry here turns to built by itself once a plugin with the same id exists. Installed = built and enabled in the app looking at the list. Check: node framework/cli/plugins.mjs --check",
+  "items": [
+    {
+      "id": "ai.amberx.axf.console.asset-designer",
+      "name": "Asset Designer (no-code)",
+      "target": "axf-console",
+      "description": "No-code designer for nav menus, drawers, app and context menus, toolbars, layouts, style packs and colour themes.",
+      "plan": "x.assets.designer",
+      "pending": "asset-designer",
+      "model": "fable"
+    },
+    {
+      "id": "ai.amberx.axf.console.asset-browser",
+      "name": "Asset Browser",
+      "target": "axf-console",
+      "description": "Browse, preview and swap every asset of every type.",
+      "plan": "x.assets.browser",
+      "pending": "asset-browser",
+      "model": "fable"
+    },
+    {
+      "id": "ai.amberx.axf.console.hub-admin",
+      "name": "axHub admin",
+      "target": "axf-console",
+      "description": "Console tab that manages axHub (lib-hub-admin).",
+      "model": "opus"
+    },
+    {
+      "id": "ai.amberx.axf.axhub-adapter",
+      "name": "axHub adapter for AXF",
+      "target": "axhub",
+      "description": "axHub-side plugin (axhub-adapter-axf) that plugs AXF apps into axHub; lives in this repo.",
+      "model": "opus"
+    }
+  ]
+}

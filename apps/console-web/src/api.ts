@@ -71,6 +71,8 @@ export const loadTracker = () => getJson<Tracker>('tracker', 'tracker.json');
 export const loadLibraries = async () => (await getJson<{ items: InstallableLibrary[] }>('libraries', 'libraries.json')).items ?? [];
 export const loadBoilerplateIndex = () => getJson<BoilerplateIndex>('boilerplates', 'boilerplates.json');
 export const loadBoilerplates = async (): Promise<Boilerplate[]> => { const x = await getJson<{ items: Boilerplate[] } | Boilerplate[]>('boilerplates/items', 'boilerplate-items.json'); return Array.isArray(x) ? x : x.items ?? []; };
+export interface PlannedPlugin { id: string; name: string; target: string; description?: string; plan?: string; pending?: string; model?: string }
+export const loadPluginIndex = async () => (await getJson<{ items: PlannedPlugin[] }>('plugin-index', 'plugin-index.json')).items ?? [];
 export const loadModules = async () => (await getJson<{ modules: ModuleInfo[] }>('modules', 'modules.json')).modules ?? [];
 
 /* ---------------- local state (checked features, project, records) ---------------- */

@@ -203,6 +203,16 @@ def boilerplate_items() -> Any:
     return engine("boilerplate-items")
 
 
+@app.get("/api/plugin-index")
+def plugin_index() -> Any:
+    """framework/catalog/plugins.json (plugin-index@1): planned framework plugins. Built ones come from their manifests."""
+    f = ROOT / "framework" / "catalog" / "plugins.json"
+    try:
+        return json.loads(f.read_text())
+    except (OSError, ValueError):
+        return {"$axf": "plugin-index@1", "items": []}
+
+
 @app.get("/api/modules")
 def modules() -> Any:
     return engine("modules")
