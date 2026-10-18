@@ -11,7 +11,9 @@ FROM python:3.12-slim
 RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
 WORKDIR /axf
 COPY --from=web /axf /axf
-RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt
-ENV AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
+RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
+ && cp -r apps/console-web/dist /opt/axf-console-dist
+# install-console.sh mounts the host clone over /axf, hiding apps/console-web/dist; serve the copy outside it.
+ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
 EXPOSE 7090
 CMD ["sh", "-c", "cd apps/console-web/server && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

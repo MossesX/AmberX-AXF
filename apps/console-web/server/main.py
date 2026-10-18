@@ -44,7 +44,11 @@ ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
 RPC = ROOT / "framework" / "cli" / "engine-rpc.mjs"
 STATE = Path(os.environ.get("AXF_STATE", ROOT / ".axf-console" / "state.json"))
 TOKEN = os.environ.get("AXF_TOKEN", "")
+# The built console. The image keeps a copy outside /axf because install-console.sh mounts the host clone
+# over /axf (dist/ is git-ignored, so the mount would hide the build). Prefer the repo build when it exists.
 DIST = HERE.parent / "dist"
+if not DIST.exists() and os.environ.get("AXF_CONSOLE_DIST"):
+    DIST = Path(os.environ["AXF_CONSOLE_DIST"])
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
