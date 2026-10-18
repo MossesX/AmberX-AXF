@@ -14,10 +14,18 @@
  *   shared  <repo>/.claude/settings.json        every clone after commit + push (phone / cloud sessions too)
  *   user    ~/.claude/settings.json             every folder on the device the installer runs on
  *
+ * From the console (--json), the "shared" target is published: the change is committed in a temporary worktree of
+ * origin's branch and pushed to GitHub with the console's GITHUB_TOKEN (needs Contents: write), so it survives the
+ * VPS clone's 5-minute reset to origin and reaches every clone. The token is passed to git through GIT_ASKPASS,
+ * never in a URL, an argument or the log.
+ *
  * Only hook entries whose command contains "session-checkin/checkin.mjs" are ever added or removed; everything
  * else in the settings file is kept as it was. The old file is saved as <file>.bak before each change.
  */
-import { copyFileSync, existsSync, unlinkSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdtempSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { createInterface } from 'node:readline/promises';
 import { relative, resolve } from 'node:path';
 import * as L from './lib.mjs';
@@ -57,7 +65,8 @@ function uninstall(target, dir, log) {
   const s = L.readJson(t.settings);
   if (!s || !L.installedIn(t.settings)) { log(`not installed in ${show(t.settings)}`); return false; }
   copyFileSync(t.settings, `${t.settings}.bak`);
-  L.writeJsonAtomic(t.settings, L.withoutOurHooks(s));
+  const rest = L.withoutOurHooks(s);
+  if (Object.keys(rest).length) L.writeJsonAtomic(t.settings, rest); else unlinkSync(t.settings); // nothing else in it: remove the file
   log(`hooks removed from ${show(t.settings)} (backup ${show(t.settings)}.bak)`);
   if (existsSync(t.config)) { unlinkSync(t.config); log(`config removed: ${show(t.config)}`); }
   log('the session archive is kept');
@@ -73,6 +82,56 @@ function status(dir) {
   }));
 }
 
+/* ------------------------------------------------------------------ publish "shared" to GitHub (console) */
+
+function publishShared({ remove = false, config, log }) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error('Publishing for every clone needs the console\'s GITHUB_TOKEN with Contents: write access. Re-run deploy/install-console.sh with GITHUB_TOKEN=… set, or use "This clone".');
+  const git = (args, opts = {}) => {
+    const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { encoding: 'utf8', timeout: 120000, cwd: opts.cwd, env: { ...process.env, ...opts.env, GIT_TERMINAL_PROMPT: '0' } });
+    if (r.status !== 0 && !opts.ok) throw new Error(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ').replace(token, '***')}`);
+    return { ok: r.status === 0, out: (r.stdout || '').trim(), err: (r.stderr || '').trim() };
+  };
+  const root = L.REPO_ROOT;
+  const slug = L.repoSlug(git(['-C', root, 'remote', 'get-url', 'origin']).out);
+  if (!slug) throw new Error('could not read the repo\'s GitHub origin');
+  const branch = git(['-C', root, 'rev-parse', '--abbrev-ref', 'HEAD']).out || 'main';
+  const url = process.env.AXF_CHECKIN_PUSH_URL || `https://github.com/${slug}.git`; // override for tests
+  const tmp = mkdtempSync(join(tmpdir(), 'axf-checkin-'));
+  const askpass = join(tmp, 'askpass.sh');
+  writeFileSync(askpass, '#!/bin/sh\ncase "$1" in Username*) echo x-access-token ;; *) printf %s "$AXF_GIT_PUSH_TOKEN" ;; esac\n');
+  chmodSync(askpass, 0o700);
+  const auth = { env: { GIT_ASKPASS: askpass, AXF_GIT_PUSH_TOKEN: token } };
+  const wt = join(tmp, 'wt');
+  try {
+    git(['-C', root, 'fetch', '-q', url, branch], auth);
+    git(['-C', root, 'worktree', 'add', '-q', '--detach', wt, 'FETCH_HEAD']);
+    const sub = [];
+    if (remove) uninstall('shared', wt, (m) => sub.push(m)); else apply(plan('shared', wt, config), (m) => sub.push(m));
+    git(['-C', wt, 'add', '-A', '--', '.claude/settings.json', '.claude/session-checkin.json'], { ok: true });
+    if (git(['-C', wt, 'diff', '--cached', '--quiet'], { ok: true }).ok) { log(`GitHub already has this ${remove ? 'removal' : 'install'}; nothing to push`); }
+    else {
+      git(['-C', wt, '-c', 'user.name=AXF Dev Console', '-c', 'user.email=axf-console@users.noreply.github.com', 'commit', '-q', '-m', `Session check-in: ${remove ? 'remove from' : 'install for'} every clone (from the Dev Console)`]);
+      let pushed = false;
+      for (let i = 0; i < 3 && !pushed; i++) {
+        const r = git(['-C', wt, 'push', '-q', url, `HEAD:refs/heads/${branch}`], { ...auth, ok: true });
+        if (r.ok) { pushed = true; break; }
+        if (/denied|403|401|not permitted|authentication/i.test(r.err)) throw new Error('GitHub refused the push: the console\'s GITHUB_TOKEN needs Contents: write on this repo');
+        git(['-C', wt, 'fetch', '-q', url, branch], auth);
+        git(['-C', wt, 'rebase', '-q', 'FETCH_HEAD']);
+      }
+      if (!pushed) throw new Error('could not push after 3 tries (main kept moving); try again');
+      log(`pushed ${git(['-C', wt, 'rev-parse', '--short', 'HEAD']).out} to ${slug} ${branch}: every clone gets it on its next pull`);
+    }
+  } finally {
+    git(['-C', root, 'worktree', 'remove', '--force', wt], { ok: true });
+    rmSync(tmp, { recursive: true, force: true });
+  }
+  // apply to this clone right away too (its 5-minute reset to origin then changes nothing)
+  if (remove) uninstall('shared', root, () => {}); else apply(plan('shared', root, config), () => {});
+  log(remove ? 'removed here and on GitHub' : 'installed here and on GitHub — new Claude Code sessions in any clone run the check-in');
+}
+
 /* ------------------------------------------------------------------ JSON mode (the console wizard) */
 
 async function jsonMode(raw) {
@@ -83,13 +142,17 @@ async function jsonMode(raw) {
   try {
     const action = req.action ?? 'preview';
     if (action === 'status') { console.log(JSON.stringify({ ok: true, version: L.VERSION, targets: status(req.dir), questions: L.QUESTIONS, defaults: L.defaultConfig() })); return; }
-    if (action === 'uninstall') { const changed = uninstall(req.target, req.dir, log); console.log(JSON.stringify({ ok: true, changed, log: lines })); return; }
+    const publish = req.target === 'shared' && req.publish === true;
+    if (action === 'uninstall') {
+      if (publish) { publishShared({ remove: true, log }); console.log(JSON.stringify({ ok: true, changed: true, log: lines })); return; }
+      const changed = uninstall(req.target, req.dir, log); console.log(JSON.stringify({ ok: true, changed, log: lines })); return;
+    }
     if (req.target === 'user') throw new Error('the "user" target is installed on the device itself: run the installer there in a terminal');
     const p = plan(req.target, req.dir, req.config);
     const result = { settings: show(p.paths.settings), config: show(p.paths.config), before: p.before, after: p.after, configJson: p.config };
     if (action === 'preview') { console.log(JSON.stringify({ ok: true, preview: result })); return; }
     if (action !== 'install') throw new Error(`unknown action "${action}"`);
-    apply(p, log);
+    if (publish) publishShared({ config: req.config, log }); else apply(p, log);
     console.log(JSON.stringify({ ok: true, installed: result, log: lines }));
   } catch (e) { console.log(JSON.stringify({ ok: false, error: e.message, log: lines })); }
 }

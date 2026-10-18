@@ -42,7 +42,7 @@ def _node(args: list[str], timeout: int = 60) -> dict[str, Any]:
 
 
 def _installer(req: dict[str, Any]) -> dict[str, Any]:
-    r = _node([str(_INSTALL), "--json", json.dumps({**req, "dir": str(_ROOT)})])
+    r = _node([str(_INSTALL), "--json", json.dumps({**req, "dir": str(_ROOT)})], timeout=300)
     if not r.get("ok"):
         raise HTTPException(400, r.get("error", "installer failed"))
     return r
@@ -96,12 +96,13 @@ def preview(req: InstallReq) -> dict[str, Any]:
 
 @router.post("/install")
 def install(req: InstallReq) -> dict[str, Any]:
-    return _installer({"action": "install", "target": req.target, "config": req.config.model_dump()})
+    # "shared" is committed and pushed to GitHub (the VPS clone resets to origin every 5 minutes)
+    return _installer({"action": "install", "target": req.target, "config": req.config.model_dump(), "publish": req.target == "shared"})
 
 
 @router.post("/uninstall")
 def uninstall(req: UninstallReq) -> dict[str, Any]:
-    return _installer({"action": "uninstall", "target": req.target})
+    return _installer({"action": "uninstall", "target": req.target, "publish": req.target == "shared"})
 
 
 @router.get("/sessions")

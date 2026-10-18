@@ -2,7 +2,7 @@
 // Self-test for the session check-in plugin (CI: node apps/console-web/plugins/session-checkin/test.mjs).
 // Uses a throwaway folder for the settings files and the archive; never touches the repo's own .claude/.
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -52,5 +52,21 @@ try {
   // memory files open read-only and never outside the memory folders
   assert.notEqual(run([join(L.PLUGIN_DIR, 'checkin.mjs'), 'open', '../../etc/passwd']).status, 0);
   assert.match(L.repoSlug('http://user:tok@127.0.0.1:9/git/MossesX/AmberX-AXF'), /^MossesX\/AmberX-AXF$/);
+  // "every clone" from the console: commit + push (to a local bare repo standing in for GitHub)
+  const hadClaude = existsSync(join(L.REPO_ROOT, '.claude'));
+  const bare = join(dir, 'origin.git');
+  if (spawnSync('git', ['clone', '-q', '--bare', L.REPO_ROOT, bare]).status === 0 && !hadClaude) {
+    const pub = (action) => JSON.parse(spawnSync(process.execPath, [join(L.PLUGIN_DIR, 'install.mjs'), '--json', JSON.stringify({ action, target: 'shared', publish: true })], { encoding: 'utf8', env: { ...process.env, GITHUB_TOKEN: 'test', AXF_CHECKIN_PUSH_URL: bare } }).stdout.trim());
+    try {
+      const a = pub('install'); assert.equal(a.ok, true, a.error);
+      const branch = spawnSync('git', ['-C', L.REPO_ROOT, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).stdout.trim();
+      const shown = spawnSync('git', ['--git-dir', bare, 'show', `${branch}:.claude/settings.json`], { encoding: 'utf8' }).stdout;
+      assert.ok(shown.includes(L.HOOK_MARK), 'the pushed commit carries the hook');
+      assert.equal(pub('uninstall').ok, true);
+      assert.notEqual(spawnSync('git', ['--git-dir', bare, 'cat-file', '-e', `${branch}:.claude/settings.json`]).status, 0, 'removal pushed, empty file deleted');
+      const noTok = JSON.parse(spawnSync(process.execPath, [join(L.PLUGIN_DIR, 'install.mjs'), '--json', JSON.stringify({ action: 'install', target: 'shared', publish: true })], { encoding: 'utf8', env: { ...process.env, GITHUB_TOKEN: '', AXF_CHECKIN_PUSH_URL: bare } }).stdout.trim());
+      assert.equal(noTok.ok, false); assert.match(noTok.error, /GITHUB_TOKEN/);
+    } finally { rmSync(join(L.REPO_ROOT, '.claude'), { recursive: true, force: true }); }
+  }
   console.log('session-checkin: all checks passed');
 } finally { rmSync(dir, { recursive: true, force: true }); }

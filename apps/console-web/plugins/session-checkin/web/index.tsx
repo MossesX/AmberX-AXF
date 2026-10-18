@@ -271,7 +271,7 @@ function InstallWizard() {
             <label key={t} className={`${P}__choice`}>
               <input type="radio" name="sc-target" checked={target === t} onChange={() => setTarget(t)} />
               <span><strong>{t === 'local' ? 'This clone only' : 'Every clone of the repo'}</strong>{st.targets[t].installed ? ' · installed' : ''}<br />
-                <span className="fx-muted fx-small">{t === 'local' ? `Claude Code sessions started in ${st.repo} on the server. Not committed (.claude/settings.local.json).` : 'Written to .claude/settings.json in the repo. After you commit and push it, every clone gets it: phone/cloud sessions, the VPS, your laptop.'}</span></span>
+                <span className="fx-muted fx-small">{t === 'local' ? `Claude Code sessions started in ${st.repo} on the server. Not committed (.claude/settings.local.json).` : 'Commits .claude/settings.json to GitHub from here, so every clone gets it: phone/cloud sessions, the VPS, your laptop. Needs the console\'s GITHUB_TOKEN with write access.'}</span></span>
             </label>
           ))}
           <p className="fx-small fx-muted" style={{ margin: 0 }}>For your user settings on a device (every folder there), run the installer on that device: see Status above.</p>
@@ -316,10 +316,10 @@ function InstallWizard() {
 
       {step === 4 && preview && (
         <div className="fx-stack">
-          <p style={{ margin: 0 }}>{already ? 'Update' : 'Install'} the check-in in <span className="fx-mono">{preview.settings}</span>. Only the check-in's own hook entries change; everything else in that file stays as it is, and the old file is kept as <span className="fx-mono">.bak</span>.</p>
+          <p style={{ margin: 0 }}>{already ? 'Update' : 'Install'} the check-in in <span className="fx-mono">{preview.settings}</span>{target === 'shared' ? ' and push it to GitHub' : ''}. Only the check-in's own hook entries change; everything else in that file stays as it is, and the old file is kept as <span className="fx-mono">.bak</span>.</p>
           <details className={`${P}__preview`}><summary>Settings file after install</summary><pre className={`${P}__pre`}>{JSON.stringify(preview.after, null, 2)}</pre></details>
           <details className={`${P}__preview`}><summary>Check-in config ({preview.config})</summary><pre className={`${P}__pre`}>{JSON.stringify(preview.configJson, null, 2)}</pre></details>
-          <div className="fx-row fx-row--wrap"><Button tone="primary" icon="download" disabled={busy} onClick={() => void install()}>{busy ? 'Installing…' : already ? 'Update' : 'Install'}</Button></div>
+          <div className="fx-row fx-row--wrap"><Button tone="primary" icon="download" disabled={busy} onClick={() => void install()}>{busy ? (target === 'shared' ? 'Pushing to GitHub…' : 'Installing…') : already ? 'Update' : 'Install'}</Button></div>
           {out.length > 0 && <pre className={`${P}__pre ${P}__out`} aria-live="polite">{out.join('\n')}</pre>}
         </div>
       )}
