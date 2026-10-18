@@ -21,4 +21,5 @@ RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
 ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
-CMD ["sh", "-c", "umask 002 && cd apps/console-web/server && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+# exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly
+CMD ["sh", "-c", "umask 002 && cd apps/console-web/server && exec uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

@@ -32,13 +32,13 @@ const P = 'axf-alerts';
 export interface AlertSourceInfo { id: string; label: string; description?: string; enabled: boolean }
 export interface AlertConfig {
   rules: AlertRules;
-  ntfy?: { enabled: boolean; server: string; topic: string; hasToken: boolean };
+  ntfy?: { enabled: boolean; server: string; topic: string; hasToken: boolean; details?: boolean };
   webpush?: { enabled: boolean; publicKey: string | null };
   sources?: AlertSourceInfo[];
 }
 export interface AlertConfigPatch {
   rules?: AlertRules;
-  ntfy?: { enabled?: boolean; server?: string; topic?: string; token?: string | null };
+  ntfy?: { enabled?: boolean; server?: string; topic?: string; token?: string | null; details?: boolean };
   webpush?: { enabled?: boolean };
   sources?: Record<string, boolean>;
 }
@@ -352,8 +352,9 @@ function NtfyPanel() {
   };
   return (
     <div className="fx-stack">
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>Install the <strong>ntfy</strong> app on your phone and subscribe to the topic below (same server). Anyone who knows the topic can read it on a public server, so keep it long and random, or use your own ntfy server with a token.</p>
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>Install the <strong>ntfy</strong> app on your phone and subscribe to the topic below (same server). Anyone who knows the topic can read it on a public server, so keep it long and random, or use your own ntfy server (https) with a token.</p>
       <label className={`${P}__choice`}><input type="checkbox" checked={n.enabled} disabled={busy} onChange={(e) => void apply({ enabled: e.target.checked })} /><span><strong>Send alerts to ntfy</strong></span></label>
+      <label className={`${P}__choice`}><input type="checkbox" checked={!!n.details} disabled={busy} onChange={(e) => void apply({ details: e.target.checked })} /><span><strong>Include details</strong><br /><span className="fx-muted fx-small">Off: the phone gets the title and a link; tracebacks and CI output stay in the bell. Turn on only with your own server or a token-protected topic.</span></span></label>
       <div className={`${P}__grid`}>
         <label className={`${P}__field`}>Server<input className="fx-input fx-mono" value={server} onChange={(e) => setServer(e.target.value)} placeholder="https://ntfy.sh" /></label>
         <label className={`${P}__field`}>Topic

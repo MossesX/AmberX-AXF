@@ -974,14 +974,18 @@ ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, defa
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 
 
-@app.middleware("http")
-async def _alert_on_crash(request: Request, call_next):  # type: ignore[no-untyped-def]
-    """An unhandled API error becomes a crash alert (then fails as before)."""
-    try:
-        return await call_next(request)
-    except Exception as e:  # noqa: BLE001
-        ALERTS.crash(f"api {request.method} {request.url.path[:80]}", e)
-        raise
+async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:
+    """An unhandled API error becomes a crash alert, keyed by the route template (never the raw path, so random URLs
+    can't make new alerts) and rate-limited in the hub; the client gets the usual 500. Runs inside Starlette's
+    ServerErrorMiddleware, so no route's streaming behaviour changes."""
+    from starlette.concurrency import run_in_threadpool
+
+    route = getattr(request.scope.get("route"), "path", None) or "unrouted"
+    await run_in_threadpool(ALERTS.crash, f"api {request.method} {route}", exc)
+    return JSONResponse({"detail": "Internal Server Error"}, status_code=500)
+
+
+app.add_exception_handler(Exception, _alert_on_crash)
 
 
 # ---------------------------------------------------------------- the console itself
@@ -994,4 +998,8 @@ if DIST.exists():
     @app.get("/{path:path}")
     def spa(path: str) -> FileResponse:
         f = DIST / path
-        return FileResponse(f if path and f.is_file() else DIST / "index.html")
+        try:
+            is_file = bool(path) and f.is_file()
+        except (OSError, ValueError):  # a path too long or with a NUL byte is simply not a file
+            is_file = False
+        return FileResponse(f if is_file else DIST / "index.html")

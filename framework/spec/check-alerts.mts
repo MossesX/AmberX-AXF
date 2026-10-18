@@ -13,7 +13,7 @@ import { SettingsRegistry } from '../core/settings';
 
 const root = new URL('../', import.meta.url).pathname;
 
-// asset registry: same origin = an update (no report); another origin with other content = a conflict
+// asset registry: only two named modules clash; overriding a built-in (app, import) is deliberate
 {
   const reg = new AssetRegistry();
   const seen: unknown[] = [];
@@ -21,8 +21,11 @@ const root = new URL('../', import.meta.url).pathname;
   const theme = JSON.parse(readFileSync(join(root, 'assets/color-theme', readdirSync(join(root, 'assets/color-theme'))[0]!), 'utf8'));
   assert.equal(reg.register(theme, 'builtin').ok, true);
   reg.register(theme, 'builtin');
-  reg.register({ ...theme }, 'imported', 'ai.example.a'); // same content from someone else: not a clash
+  reg.register({ ...theme, name: 'Mine' }, 'imported'); // a user import overriding a built-in: not a clash
+  reg.register({ ...theme, name: 'App' }, 'app', 'ai.example.a'); // a module overriding a built-in: not a clash
+  reg.register({ ...theme, name: 'App' }, 'imported', 'ai.example.c'); // same content from another module: not a clash
   assert.equal(seen.length, 0);
+  reg.register({ ...theme, name: 'App' }, 'imported', 'ai.example.a');
   reg.register({ ...theme, name: 'Other' }, 'imported', 'ai.example.b');
   assert.deepEqual(seen, [{ type: 'color-theme', id: theme.id, was: 'ai.example.a', now: 'ai.example.b' }]);
 }
@@ -47,7 +50,9 @@ const root = new URL('../', import.meta.url).pathname;
   const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
   const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults: defaults.defaults ?? defaults } as never, assets, storageKey: 'test:rt' });
   const theme = assets.find((a) => a.type === 'color-theme');
-  rt.importAsset({ ...theme, name: 'Clash' }, false, 'ai.example.themes');
+  rt.importAsset({ ...theme, name: 'Mine' }, false); // a plain import over a built-in: no report
+  rt.importAsset({ ...theme, name: 'From A' }, false, 'ai.example.a');
+  rt.importAsset({ ...theme, name: 'From B' }, false, 'ai.example.b');
   const late: Diagnostic[] = [];
   rt.diagnostics.subscribe((d) => late.push(d), true);
   assert.equal(late.length, 1);

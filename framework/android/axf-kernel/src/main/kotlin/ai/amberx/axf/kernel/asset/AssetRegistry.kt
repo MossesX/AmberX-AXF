@@ -16,27 +16,24 @@ public class AssetRegistry(public val types: AssetTypeRegistry = AssetTypeRegist
     private val replacementList = mutableListOf<AssetReplacement>()
     /** Replacements seen so far (also those before a runtime attached [onReplace]). */
     public val replacements: List<AssetReplacement> get() = replacementList.toList()
-    /** Called when an asset replaces one with the same type and id from another origin and with other content. */
+    /** Called when two modules clash (same type and id, other content). Overriding a built-in is not a clash. */
     public var onReplace: ((AssetReplacement) -> Unit)? = null
 
-    /** [origin] = the module (library / plugin id) registering it, when known; else the source. */
+    /** [origin] = the module (library / plugin id) registering it, when known. */
     public fun register(raw: JsonObject, source: AssetSource = AssetSource.BUILTIN, origin: String? = null): RegisterResult {
         val v = validator.validate(raw)
         if (!v.ok) return RegisterResult(false, v.errors)
         val asset = AssetEnvelope.fromJson(raw, source)
         val slot = "${asset.type}/${asset.id}"
-        val who = origin ?: source.name.lowercase()
         val prev = store[asset.type]?.get(asset.id)
-        if (prev != null) {
-            val was = origins[slot] ?: prev.source.name.lowercase()
-            if (was != who && prev.toJson() != asset.toJson()) {
-                val r = AssetReplacement(asset.type, asset.id, was, who)
-                replacementList += r
-                if (replacementList.size > 100) replacementList.removeAt(0)
-                onReplace?.invoke(r)
-            }
+        val was = origins[slot]
+        if (prev != null && was != null && origin != null && was != origin && prev.toJson() != asset.toJson()) {
+            val r = AssetReplacement(asset.type, asset.id, was, origin)
+            replacementList += r
+            if (replacementList.size > 100) replacementList.removeAt(0)
+            onReplace?.invoke(r)
         }
-        origins[slot] = who
+        if (origin != null) origins[slot] = origin else origins.remove(slot)
         store.getOrPut(asset.type) { LinkedHashMap() }[asset.id] = asset
         listeners.forEach { it(asset) }
         return RegisterResult(true, emptyList(), asset)

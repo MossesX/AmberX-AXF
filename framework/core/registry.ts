@@ -16,7 +16,10 @@ export interface AssetReplacement { type: string; id: string; was: string; now: 
 /** In-memory store of every asset available to the app, keyed by type then id. */
 export class AssetRegistry {
   private store = new Map<AssetType, Map<string, RegisteredAsset>>();
-  /** Called when an asset replaces one with the same type and id from another origin and with other content. */
+  /**
+   * Called when two modules clash: an asset replaces one with the same type and id that another module registered,
+   * with other content. Apps and imports overriding a built-in asset are deliberate overrides, not clashes.
+   */
   onReplace?: (r: AssetReplacement) => void;
 
   constructor() {
@@ -28,10 +31,9 @@ export class AssetRegistry {
     if (!result.ok) return result;
     const asset = Object.freeze({ ...(raw as AssetEnvelope), __source: source, ...(origin ? { __origin: origin } : {}) }) as RegisteredAsset;
     const prev = this.store.get(asset.type)!.get(asset.id);
-    if (prev && this.onReplace) {
-      const who = (a: RegisteredAsset) => a.__origin ?? a.__source ?? 'builtin';
+    if (prev?.__origin && asset.__origin && prev.__origin !== asset.__origin && this.onReplace) {
       const strip = ({ __source: _s, __origin: _o, ...rest }: RegisteredAsset) => JSON.stringify(rest);
-      if (who(prev) !== who(asset) && strip(prev) !== strip(asset)) this.onReplace({ type: asset.type, id: asset.id, was: who(prev), now: who(asset) });
+      if (strip(prev) !== strip(asset)) this.onReplace({ type: asset.type, id: asset.id, was: prev.__origin, now: asset.__origin });
     }
     this.store.get(asset.type)!.set(asset.id, asset);
     return { ...result, asset };

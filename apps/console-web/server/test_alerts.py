@@ -133,10 +133,11 @@ def check_hub() -> None:
         hub = A.AlertHub(d, github_token=lambda: "gh-test", default_repos=["MossesX/x"], systems=lambda: checks, pending_file=lambda: pending, plugins=plugins, github_api=base)
 
         # config: validation, token never echoed, files private
-        try:
-            hub.set_config({"ntfy": {"server": "file:///etc/passwd"}}); raise AssertionError("bad server accepted")
-        except A.HTTPException:
-            pass
+        for bad in ("file:///etc/passwd", "http://example.com", "http://169.254.169.254"):
+            try:
+                hub.set_config({"ntfy": {"server": bad}}); raise AssertionError(f"bad server accepted: {bad}")
+            except A.HTTPException:
+                pass
         try:
             hub.set_config({"rules": {"channels": {"bell": {"min": "loud"}}}}); raise AssertionError("bad rule accepted")
         except A.HTTPException:
@@ -177,6 +178,12 @@ def check_hub() -> None:
         assert len(Fake.posts) == 1, Fake.posts
         p = Fake.posts[0]
         assert p["auth"] == "Bearer tk_secret123" and p["body"]["topic"] == "axf-test" and p["body"]["priority"] == 4 and p["body"]["click"] == "https://example.com/x", p
+        assert "Boom" not in p["body"]["message"] or p["body"]["message"].endswith("for details"), "details stay in the bell by default"
+        Fake.posts.clear()
+        hub.set_config({"ntfy": {"details": True}})
+        hub.send_ntfy({"key": "k", "title": "T", "body": "Traceback xyz", "severity": "error", "source": "crashes", "link": ""})
+        assert Fake.posts[-1]["body"]["message"] == "Traceback xyz"
+        hub.set_config({"ntfy": {"details": False}})
         alert, event, targets = hub.raise_alert({"source": "crashes", "severity": "error", "title": "Boom"})
         assert event == "repeat" and targets == ["bell"], (event, targets)
         ok, detail = hub.test("ntfy")
@@ -186,6 +193,26 @@ def check_hub() -> None:
         hub.set_config({"sources": {"crashes": True}})
         hub.crash("unit", ValueError("bad thing"))
         assert any(a["key"] == "crash:unit:ValueError" for a in hub.snapshot()["alerts"])
+        for _ in range(5):
+            hub.crash("unit", ValueError("again"))
+        assert {a["key"]: a for a in hub.snapshot()["alerts"]}["crash:unit:ValueError"]["count"] == 1, "one crash alert per key a minute"
+        for i in range(40):
+            hub.crash(f"flood{i}", RuntimeError("x"))
+        assert sum(1 for a in hub.snapshot()["alerts"] if a["key"].startswith("crash:flood")) <= 19, "at most 20 crash alerts in 10 minutes"
+        assert hub._outbox.maxsize == 100
+
+        # CI runs already seen survive a restart: a dismissed failure doesn't come back
+        hub.dismiss(["ci:MossesX/x:.github/workflows/android.yml:main"])
+        Fake.runs = [run(9, "failure")]
+        hub.poll_github()
+        hub.dismiss(["ci:MossesX/x:.github/workflows/android.yml:main"])
+        again = A.AlertHub(d, github_token=lambda: "gh-test", default_repos=["MossesX/x"], github_api=base, plugins={})
+        again.poll_github()
+        assert not any(a["key"] == "ci:MossesX/x:.github/workflows/android.yml:main" for a in again.snapshot()["alerts"]), "seen runs are remembered"
+
+        # web push payloads always fit
+        big = A._push_payload({"key": "k", "title": "é" * 300, "body": "€" * 3000, "severity": "info"}, "https://x/" + "y" * 600)
+        assert len(big) <= A.PUSH_MAX and json.loads(big)["title"]
 
         # restart detection
         hub.start(); hub.stop()
@@ -221,8 +248,47 @@ def check_hub() -> None:
     print("hub, sources, delivery and routes OK")
 
 
+def check_damaged_store() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp)
+        good = A.apply_alert([], {"source": "s", "severity": "info", "title": "ok"}, 1)[0][0]
+        (d / "alerts.json").write_text(json.dumps([good, {"key": "half"}, {**good, "key": "bad-sev", "id": "bad-sev", "severity": "loud"}, "junk"]))
+        hub = A.AlertHub(d, plugins={})
+        assert [a["key"] for a in hub.items] == ["s:ok"]
+        hub.raise_alert({"source": "s", "severity": "error", "title": "new"}, deliver=False)
+        (d / "alerts.json").write_text("{not json")
+        assert A.AlertHub(d, plugins={}).items == []
+    print("damaged store OK")
+
+
+def check_console_app() -> None:
+    """The real console app: an overlong path is not a crash, and crash alerts are keyed by route, not by URL."""
+    with tempfile.TemporaryDirectory() as tmp:
+        os.environ["AXF_STATE"] = str(Path(tmp) / "state.json")
+        os.environ.setdefault("AXF_DATA_DIR", "off")
+        import main  # noqa: PLC0415
+        c = TestClient(main.app, raise_server_exceptions=False)
+        before = len(main.ALERTS.items)
+        for i in range(3):
+            r = c.get("/" + ("a%d" % i) * 150)
+            assert r.status_code in (200, 404), r.status_code
+        assert len(main.ALERTS.items) == before, "an overlong path must not raise crash alerts"
+
+        def boom(x: str) -> None:
+            raise RuntimeError("boom")
+        main.app.add_api_route("/api/__test_boom/{x}", boom, methods=["GET"])
+        main.app.router.routes.insert(0, main.app.router.routes.pop())  # before the console's catch-all page route
+        for x in ("a", "b", "c"):
+            assert c.get(f"/api/__test_boom/{x}").status_code == 500
+        crashes = [a for a in main.ALERTS.items if a["key"].startswith("crash:api")]
+        assert [a["key"] for a in crashes] == ["crash:api GET /api/__test_boom/{x}:RuntimeError"], crashes
+    print("console app crash handling OK")
+
+
 if __name__ == "__main__":
     check_fixture()
     check_webpush()
     check_hub()
+    check_damaged_store()
+    check_console_app()
     print("alerts: all checks passed")

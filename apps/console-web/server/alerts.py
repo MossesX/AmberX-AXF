@@ -157,6 +157,37 @@ def _now() -> int:
     return int(time.time() * 1000)
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Never follow redirects: they would carry the Authorization header (ntfy token, GitHub token) to another host."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[no-untyped-def]
+        return None
+
+
+_OPENER = urllib.request.build_opener(_NoRedirect)
+_LOOPBACK = re.compile(r"^http://(127\.0\.0\.1|localhost|\[::1\])(:\d+)?(/|$)")
+
+
+def _target_ok(url: str) -> bool:
+    """https anywhere; plain http only to this machine (a local ntfy, tests)."""
+    return url.startswith("https://") or bool(_LOOPBACK.match(url))
+
+
+ALERT_FIELDS: dict[str, tuple[type, ...]] = {
+    "id": (str,), "key": (str,), "source": (str,), "severity": (str,), "title": (str,), "body": (str,), "link": (str,), "meta": (dict,),
+    "firstAt": (int,), "lastAt": (int,), "count": (int,), "ack": (bool,), "resolved": (bool,),
+}
+
+
+def _valid_alert(a: Any) -> bool:
+    """A stored alert with every field the engine needs (a damaged alerts.json must not break every raise)."""
+    if not isinstance(a, dict) or a.get("severity") not in SEVERITIES:
+        return False
+    if any(not isinstance(a.get(k), t) or (t == (int,) and isinstance(a.get(k), bool)) for k, t in ALERT_FIELDS.items()):
+        return False
+    return a.get("resolvedAt") is None or (isinstance(a["resolvedAt"], int) and not isinstance(a["resolvedAt"], bool))
+
+
 def _read_json(p: Path, default: Any) -> Any:
     try:
         return json.loads(p.read_text())
@@ -214,12 +245,19 @@ class AlertHub:
         self.plugins = plugins if plugins is not None else {}
         self.default_repos = [r for r in (default_repos or []) if REPO_RE.match(r)]
         self.lock = threading.RLock()
-        self.items: list[dict[str, Any]] = trim_alerts([a for a in _read_json(self.f_alerts, []) if isinstance(a, dict) and "key" in a])
+        loaded = _read_json(self.f_alerts, [])
+        self.items: list[dict[str, Any]] = trim_alerts([a for a in (loaded if isinstance(loaded, list) else []) if _valid_alert(a)])
         self.version = 0
-        self._outbox: queue.Queue[tuple[dict[str, Any], list[str]] | None] = queue.Queue()
+        # bounded: if phones can't keep up, new deliveries are dropped (the bell still has every alert)
+        self._outbox: queue.Queue[tuple[dict[str, Any], list[str]] | None] = queue.Queue(maxsize=100)
+        self.f_seen = data_dir / "alerts-seen.json"
+        self._crash_times: list[float] = []
+        self._crash_last: dict[str, float] = {}
         self._stop = threading.Event()
         self._threads: list[threading.Thread] = []
-        self._seen_runs: set[int] | None = None
+        seen = _read_json(data_dir / "alerts-seen.json", None)
+        # CI runs already looked at, kept across restarts so a dismissed failure doesn't push again after an update
+        self._seen_runs: set[int] | None = {int(x) for x in seen if isinstance(x, int)} if isinstance(seen, list) else None
         self._pending_seen: dict[str, str] | None = None
         self.delivery_log: list[dict[str, Any]] = []
 
@@ -230,7 +268,9 @@ class AlertHub:
         rules = c.get("rules") if isinstance(c.get("rules"), dict) else DEFAULT_RULES
         return {
             "rules": rules,
-            "ntfy": {"enabled": bool(c.get("ntfy", {}).get("enabled", False)), "server": c.get("ntfy", {}).get("server") or "https://ntfy.sh", "topic": c.get("ntfy", {}).get("topic") or ""},
+            "ntfy": {"enabled": bool(c.get("ntfy", {}).get("enabled", False)), "server": c.get("ntfy", {}).get("server") or "https://ntfy.sh", "topic": c.get("ntfy", {}).get("topic") or "",
+                     # off: phones get the title and a link only; details (tracebacks, CI output) stay in the bell
+                     "details": bool(c.get("ntfy", {}).get("details", False))},
             "webpush": {"enabled": bool(c.get("webpush", {}).get("enabled", False))},
             "sources": {s: bool(c.get("sources", {}).get(s, True)) for s in SOURCE_IDS},
             "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and REPO_RE.match(r)],
@@ -262,9 +302,11 @@ class AlertHub:
                     n["enabled"] = bool(p["enabled"])
                 if p.get("server") is not None:
                     srv = str(p["server"]).strip().rstrip("/")
-                    if srv and not re.match(r"^https?://[A-Za-z0-9.-]+(:\d+)?(/[A-Za-z0-9._~/-]*)?$", srv):
-                        raise HTTPException(400, "ntfy server must be an http(s) URL")
+                    if srv and (not re.match(r"^https?://[A-Za-z0-9.\[\]:-]+(/[A-Za-z0-9._~/-]*)?$", srv) or not _target_ok(srv)):
+                        raise HTTPException(400, "ntfy server must be an https:// URL (plain http only on this machine)")
                     n["server"] = srv or "https://ntfy.sh"
+                if p.get("details") is not None:
+                    n["details"] = bool(p["details"])
                 if p.get("topic") is not None:
                     topic = str(p["topic"]).strip()
                     if topic and not re.match(r"^[A-Za-z0-9_-]{1,64}$", topic):
@@ -327,7 +369,10 @@ class AlertHub:
             targets = delivery_targets(alert, event, self.config()["rules"])
         pushes = [t for t in targets if t != "bell"]
         if deliver and pushes:
-            self._outbox.put((alert, pushes))
+            try:
+                self._outbox.put_nowait((alert, pushes))
+            except queue.Full:
+                self.log("alerts", f"phone delivery queue full: {alert['key'][:60]} only in the bell", "warn")
         return alert, event, targets
 
     def resolve(self, keys: list[str]) -> None:
@@ -373,7 +418,10 @@ class AlertHub:
         c = self.config()["ntfy"]
         if not c["enabled"] or not c["topic"]:
             return False, "ntfy is off or has no topic"
-        body: dict[str, Any] = {"topic": c["topic"], "title": alert["title"][:200], "message": (alert.get("body") or alert["title"])[:3000],
+        if not _target_ok(c["server"]):
+            return False, "ntfy server must be https"
+        message = (alert.get("body") or alert["title"])[:3000] if c.get("details") else f"{alert['severity']} · {alert['source']} — open the console for details"
+        body: dict[str, Any] = {"topic": c["topic"], "title": alert["title"][:200], "message": message,
                                 "priority": ntfy_priority(alert["severity"]), "tags": [alert["severity"], alert["source"]]}
         click = self._click_url(alert)
         if click:
@@ -384,7 +432,7 @@ class AlertHub:
             headers["Authorization"] = f"Bearer {tok}"
         req = urllib.request.Request(c["server"].rstrip("/") + "/", data=json.dumps(body).encode(), headers=headers, method="POST")
         try:
-            with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310 — the URL is validated in set_config
+            with _OPENER.open(req, timeout=10) as r:  # validated in set_config; redirects are not followed
                 return 200 <= r.status < 300, f"sent to ntfy ({r.status})"
         except urllib.error.HTTPError as e:
             return False, f"ntfy answered {e.code}"
@@ -441,7 +489,7 @@ class AlertHub:
         if not subs:
             return False, "no device has turned on web push"
         self.vapid_public_key()  # makes the key on first use
-        payload = json.dumps({"title": alert["title"][:120], "body": (alert.get("body") or "")[:400], "url": self._click_url(alert) or "/", "tag": alert["key"][:120], "severity": alert["severity"]}).encode()
+        payload = _push_payload(alert, self._click_url(alert) or "/")
         urgency = "high" if alert["severity"] in ("error", "critical") else "normal"
         sent, gone, errors = 0, [], []
         for s in subs:
@@ -480,7 +528,7 @@ class AlertHub:
         if not tok:
             raise RuntimeError("no GitHub token")
         req = urllib.request.Request(f"{self.github_api}{path}", headers={"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-alerts"})
-        with urllib.request.urlopen(req, timeout=15) as r:  # noqa: S310 — fixed API host
+        with _OPENER.open(req, timeout=15) as r:  # fixed API host; redirects not followed (they'd carry the token)
             return json.loads(r.read().decode())
 
     def poll_github(self) -> None:
@@ -518,7 +566,11 @@ class AlertHub:
                     if deploy and fresh and not first:
                         self.raise_alert({"source": "deploys", "severity": "success", "key": f"deployed:{repo}:{wf}:{branch}", "title": f"{name} finished on {branch} ({repo})",
                                           "body": str(run.get("display_title") or ""), "link": run.get("html_url") or "", "meta": {"repo": repo, "run": rid}})
-        self._seen_runs = set(list(seen)[-5000:])
+        self._seen_runs = set(sorted(seen)[-5000:])
+        try:
+            _write_private(self.f_seen, sorted(self._seen_runs))
+        except OSError:
+            pass
 
     def poll_systems(self) -> None:
         if not self.systems or not self.source_on("system"):
@@ -579,6 +631,17 @@ class AlertHub:
                 self.raise_alert({"source": "conflicts", "severity": "warning", "key": f"plugins:dup:{pid}", "title": f"Plugins {', '.join(folders)} share the id {pid}", "body": "Each plugin needs its own id in plugin.json.", "link": "settings:plugins"})
 
     def crash(self, where: str, exc: BaseException) -> None:
+        """At most one alert per crash key a minute and 20 crash alerts in 10 minutes, so nobody can flood phones."""
+        now = time.time()
+        key = f"crash:{where}:{type(exc).__name__}"
+        with self.lock:
+            self._crash_times = [t for t in self._crash_times if now - t < 600]
+            if len(self._crash_times) >= 20 or now - self._crash_last.get(key, 0) < 60:
+                return
+            self._crash_times.append(now)
+            self._crash_last[key] = now
+            if len(self._crash_last) > 500:
+                self._crash_last = dict(sorted(self._crash_last.items(), key=lambda kv: kv[1])[-250:])
         tb = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))[-1500:]
         try:
             self.raise_alert({"source": "crashes", "severity": "error", "key": f"crash:{where}:{type(exc).__name__}", "title": f"Crash in {where}: {type(exc).__name__}", "body": f"{exc}\n{tb}"[:2000], "meta": {"where": where}})
@@ -688,6 +751,24 @@ def vapid_header(endpoint: str, key_file: Path, sub: str, ttl: int = 12 * 3600) 
     return f"vapid t={jwt}, k={_b64u(pub)}"
 
 
+PUSH_MAX = 3000  # payload bytes before encryption (push services take 4096 minus the record overhead)
+
+
+def _push_payload(alert: dict[str, Any], url: str) -> bytes:
+    """UTF-8 JSON (not \\u-escaped) that always fits a push message: the body is shortened first, then the title."""
+    def enc(title: str, body: str) -> bytes:
+        return json.dumps({"title": title, "body": body, "url": url[:300], "tag": alert["key"][:120], "severity": alert["severity"]}, ensure_ascii=False).encode()
+    title, body = alert["title"][:120], (alert.get("body") or "")[:400]
+    out = enc(title, body)
+    while len(out) > PUSH_MAX and body:
+        body = body[: len(body) // 2]
+        out = enc(title, body)
+    while len(out) > PUSH_MAX and len(title) > 10:
+        title = title[: len(title) // 2]
+        out = enc(title, body)
+    return out
+
+
 def webpush_send(sub: dict[str, Any], payload: bytes, key_file: Path, vapid_sub: str, urgency: str = "normal") -> int:
     """POST one encrypted message to the subscription's push service; returns the HTTP status."""
     body = webpush_encrypt(payload, sub["keys"]["p256dh"], sub["keys"]["auth"])
@@ -695,7 +776,7 @@ def webpush_send(sub: dict[str, Any], payload: bytes, key_file: Path, vapid_sub:
         "Content-Encoding": "aes128gcm", "Content-Type": "application/octet-stream", "TTL": "86400", "Urgency": urgency,
         "Authorization": vapid_header(sub["endpoint"], key_file, vapid_sub)})
     try:
-        with urllib.request.urlopen(req, timeout=10) as r:  # noqa: S310 — https endpoint, checked when subscribed
+        with _OPENER.open(req, timeout=10) as r:  # https endpoint (checked when subscribed); no redirects
             return r.status
     except urllib.error.HTTPError as e:
         return e.code

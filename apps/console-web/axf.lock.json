@@ -11,7 +11,7 @@
     "src/axf/core/engines/uac.ts": "b7c1348f9ffe8c68",
     "src/axf/core/engines/windows.ts": "77fbc6bdf3388fd2",
     "src/axf/core/index.ts": "68959fd3bc64e7a4",
-    "src/axf/core/registry.ts": "96f9615e82892806",
+    "src/axf/core/registry.ts": "8cf580aca5b3988e",
     "src/axf/core/runtime.ts": "24cd05f4058f5dc8",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "940a4f26aae2b3e2",

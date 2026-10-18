@@ -88,6 +88,7 @@ LEGACY="$PERSIST_DIR/amberx-axf"
 if [ -n "$VOL" ]; then
   say "projects volume: $VOL → /projects (main copy of the shared data: /projects/amberx-axf/_data)"
   # The old console must not write the legacy folder while it is copied.
+  docker stop -t 15 "$NAME" >/dev/null 2>&1 || true  # let the API shut down cleanly (alerts tell an unclean stop from a crash)
   docker rm -f "$NAME" >/dev/null 2>&1 || true
   HELPER=(docker run --rm -v "$VOL":/projects -v "$DIR":/axf:ro -e AXF_DATA_DIR=/projects/amberx-axf/_data -e HUB_UID="$HUB_UID")
   [ -d "$LEGACY" ] && HELPER+=(-v "$LEGACY":/old:ro)
@@ -123,6 +124,7 @@ fi
 docker run --rm -v "$DIR":/axf:ro "${DATA_ARGS[@]}" -e AXF_ROOT=/axf --entrypoint node "$NAME:latest" /axf/framework/cli/data-fixes.mjs 2>&1 | sed 's/^/[axf] /' || say "data fixes didn't run (the console still starts)"
 
 # ---- 4. container ----
+docker stop -t 15 "$NAME" >/dev/null 2>&1 || true  # clean shutdown first (alerts: no false "unclean restart")
 docker rm -f "$NAME" >/dev/null 2>&1 || true
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
 if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
