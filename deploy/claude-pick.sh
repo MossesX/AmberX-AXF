@@ -56,6 +56,15 @@ if [[ "${1:-}" == "--install" ]]; then
     [[ -f "$rc" ]] || continue
     grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: ask how to sign in and which model before starting Claude Code\nalias claude='claude-pick'\n" >> "$rc"
   done
+  # claude-project: make any folder a Claude project (shell command + /claude-project in every Claude Code session).
+  AXF_ROOT="$(cd "$HERE/.." && pwd)"
+  if [[ -f "$AXF_ROOT/framework/cli/claude-project.mjs" ]]; then
+    printf '#!/usr/bin/env bash\nexec node %q "$@"\n' "$AXF_ROOT/framework/cli/claude-project.mjs" > "$HOME/.local/bin/claude-project"
+    chmod 0755 "$HOME/.local/bin/claude-project"
+    mkdir -p "$HOME/.claude/commands"
+    sed "s#<AXF>/framework/cli/claude-project.mjs#$AXF_ROOT/framework/cli/claude-project.mjs#g" "$AXF_ROOT/.claude/commands/claude-project.md" > "$HOME/.claude/commands/claude-project.md"
+    echo "claude-project installed (shell command + /claude-project in every Claude Code session)."
+  fi
   # Brett's rules + memory (axhub-projects@1): the claude-sync SessionStart hook syncs and loads _claude/ in every
   # project and _claude/shared everywhere. Drop the older @…/memory/RULES.md import if an earlier install added it.
   if [[ -f "$HOME/.claude/CLAUDE.md" ]]; then

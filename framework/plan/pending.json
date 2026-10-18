@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T06:07:53.368Z",
+ "updatedAt": "2026-10-18T16:13:56.090Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -112,6 +112,32 @@
    "builtAt": "2026-10-18T06:07:53.368Z",
    "updatedAt": "2026-10-18T06:07:53.368Z",
    "source": "console"
+  },
+  {
+   "id": "app-port-engine",
+   "title": "Port engine: bring a non-AXF app onto AmberX AXF (bake or rebuild)",
+   "detail": "Runs the ports that claude-project parks (pending items port-<name>, manifest x.port, plan in the project at _claude/memory/docs/port-to-axf.md). Brett chose: ask each time between the two ways.\n\n- bake: keep the codebase, run axf init into it (react-ts / next-ts / android-compose), then move its look and chrome into asset@1 assets step by step (colour/style themes, menus, toolbars, nav, dialogs, layout with region slots); UI reads engine tokens only (THEMING.md). Old styles go as each piece moves.\n- rebuild: new AXF app from the closest boilerplate (axf boilerplates), old code kept alongside as reference, rebuilt feature by feature on assets/libraries/plugins.\n\nDeliver: axf port <dir> --mode bake|rebuild (analysis report: what maps to which asset types, libraries, plugins; then staged codemods like ui-port.mjs does for UI kits), console + MCP drivers, manifest relation none -> built-on when it starts, fixtures/tests. First real targets: xGallery (MossesX/xGallery, React 19 + Express + SQLite) and whatever claude-project parks.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T16:13:56.087Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T16:13:56.087Z",
+   "source": "chat"
+  },
+  {
+   "id": "lib-clone",
+   "title": "lib-clone: any AXF app clones its own install with current data",
+   "detail": "Turn xGallery's New project wizard (MossesX/xGallery: server/src/routes/newproject.ts, src/pages/dev/newproject/NewProjectWizard.tsx, kit/new-project.mjs) into an AXF library so every app built on AXF can clone its install into a new project. Brett: keep the xGallery wizard as is and make it a library for AXF.\n\nWhat the xGallery wizard does today (reuse the design): renamed copy from the kit, GitHub repo, per-project deploy key installed on the VPS + Actions secrets (VPS_SSH_KEY, ADMIN_PASSWORD, HOSTINGER_API_TOKEN), Hostinger DNS for site + dev panel, Claude GitHub app access, push main, wait for the site deploy, push panel, wait, first-session prompt; resumable, no secrets stored.\n\nNew for the library: clone WITH current data (database snapshot + media/files, consistent copy, secrets and sessions stripped, owner reset), the copy gets its own project.manifest.json + _claude/ (claude-project), cross-port contract (web + Android) for the clone action exposed through the interop gate (default-deny), a settings tab (plugin manager rules: no own settings screen), console + MCP drivers. Open questions for Brett at build time: which data is copied by default, and whether the clone keeps users/members.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T16:13:56.090Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T16:13:56.090Z",
+   "source": "chat"
   }
  ]
 }

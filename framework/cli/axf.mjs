@@ -6,6 +6,8 @@
  *            project manifest: [--repo owner/name] [--repo-exists] [--visibility private] [--description "…"] [--kind app]
  *   axf project validate|init|list|rules|schema …   project manifests (same as node framework/cli/project.mjs)
  *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
+ *   axf claude-project [dir] [--where github,vps,device] [--port bake|rebuild|no] …   make any folder a Claude project
+ *                               and give it a home (framework/cli/claude-project.mjs; also /claude-project in Claude Code)
  *
  *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
  *     --wrap-groups              every section / group gets a collapse toggle top-right (style-theme wrapGroups)
@@ -104,6 +106,11 @@ try {
       if (res.libraries?.length) console.log(`  libraries: ${res.libraries.map((l) => l.library).join(', ')}`);
       printReport(res.report);
       console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && ${res.next || 'npm install && npm run dev'}\n`);
+      break;
+    }
+    case 'claude-project': {
+      const { run } = await import('./claude-project.mjs');
+      await run(process.argv.slice(3));
       break;
     }
     case 'project': {
