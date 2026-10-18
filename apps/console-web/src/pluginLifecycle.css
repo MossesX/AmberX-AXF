@@ -1,0 +1,14 @@
+/* Shared plugin lifecycle panel (src/pluginLifecycle.tsx). Theme tokens only. */
+.cl-life__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
+.cl-life__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.5) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.cl-life__facts dt { color: var(--fx-muted) }
+.cl-life__facts dd { margin: 0; overflow-wrap: anywhere }
+.cl-life__box { padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.cl-life__box summary { cursor: pointer; font-weight: 600 }
+.cl-life__danger { border-color: var(--fx-danger) }
+.cl-life__opt { display: flex; gap: var(--fx-space); align-items: flex-start; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.cl-life__confirm { max-width: 240px }
+.cl-life__note { display: flex; gap: var(--fx-space); padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow-wrap: anywhere }
+.cl-life__note.is-warn { border-color: var(--fx-warning) }
+.cl-life__note.is-ok { border-color: var(--fx-success) }
+.cl-life__bad { color: var(--fx-danger) }

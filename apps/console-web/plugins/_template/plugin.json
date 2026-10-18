@@ -6,9 +6,26 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Copy this folder (without the leading underscore) to start a console plugin.",
-  "targets": ["axf-console"],
-  "provides": ["view:example"],
-  "scopes": ["ROUTES"],
-  "enabledByDefault": true
+  "description": "Copy this folder (without the leading underscore) to start a console plugin. Follow plugin-lifecycle@1 (plugins/README.md \u2192 Lifecycle).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:example",
+    "settings-tab:example"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/example",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
 }

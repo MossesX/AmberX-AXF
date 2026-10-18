@@ -35,6 +35,10 @@ jobs:
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
         run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Plugin lifecycle — plugins that follow plugin-lifecycle@1 have install/uninstall scripts and no stale references
+        run: |
+          set -e
+          for f in $(node -e "for (const p of JSON.parse(require('child_process').execSync('node framework/cli/plugin-lifecycle.mjs list --json')).items) if (p.lifecycle) console.log(p.folder)"); do node framework/cli/plugin-lifecycle.mjs check $f; done
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e
@@ -68,6 +72,11 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
+      - name: AI assistant + agent manager plugins (fake providers; agents, memory, training, workflows, add-ons, integration)
+        run: |
+          pip install -r apps/console-web/server/requirements.txt httpx
+          python apps/console-web/plugins/ai-assistant/test.py
+          python apps/console-web/plugins/agent-manager/test.py
       - name: Library templates — generate every template for web + Python and compile them
         run: |
           set -e

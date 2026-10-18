@@ -1,0 +1,376 @@
+"""Agent tools: definitions (stored in tools.json) and the executor.
+
+Tool kinds
+  builtin   repo_list · repo_read · repo_search · current_time · calculator · web_fetch · memory_search · memory_save ·
+            firecrawl_scrape · firecrawl_search            (config.builtin names which one)
+  http      call an HTTP API: method, url template ({{arg}}), headers (values may be "env:VAR"), JSON body template.
+            Public hosts only unless config.allowPrivate (for services on the VPS you trust).
+  mcp       call a tool on a Streamable-HTTP MCP server: config.url, config.tokenEnv, config.tool
+  prompt    a sub-prompt run on a model: config.template ({{arg}}), config.system, config.model
+  agent     delegate a task to another agent: config.agentId
+  workflow  run a workflow: config.workflowId (input = the "input" argument)
+Every tool has a function `name`, a `description` and JSON-Schema `parameters` — what the model sees.
+Nothing here runs shell commands or arbitrary code.
+"""
+from __future__ import annotations
+
+import ast
+import asyncio
+import html
+import ipaddress
+import json
+import operator
+import os
+import re
+import socket
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+from typing import Any
+from urllib.parse import quote, urlparse
+
+from . import store
+
+ROOT = store.ROOT
+_DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
+_DENY_FILE = re.compile(r"(^\.env|\.pem$|\.key$|id_rsa|id_ed25519|secrets?\.(env|json|ya?ml)$|credentials\.json$|\.p12$|\.keystore$|\.jks$)", re.I)
+NAME_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]{0,63}$")
+KINDS = ("builtin", "http", "mcp", "prompt", "agent", "workflow")
+
+BUILTINS: dict[str, dict[str, Any]] = {
+    "repo_list": {"description": "List files in the AmberX AXF repository (path and size). Use dir to narrow.", "parameters": {"type": "object", "properties": {"dir": {"type": "string"}}}},
+    "repo_read": {"description": "Read a repository text file with line numbers; optional start_line/end_line.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "start_line": {"type": "integer"}, "end_line": {"type": "integer"}}, "required": ["path"]}},
+    "repo_search": {"description": "Search the repository for a regular expression (case-insensitive); file:line: text.", "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}, "dir": {"type": "string"}}, "required": ["pattern"]}},
+    "current_time": {"description": "Current date, time and time zone.", "parameters": {"type": "object", "properties": {}}},
+    "calculator": {"description": "Evaluate arithmetic (+ - * / // % **, parentheses).", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}},
+    "web_fetch": {"description": "Fetch a public web page and return its readable text (up to 40k characters).", "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}},
+    "memory_search": {"description": "Search your own long-term memory (facts, knowledge, past exchanges).", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer"}}, "required": ["query"]}},
+    "memory_save": {"description": "Save a durable fact or note to your long-term memory for future conversations.", "parameters": {"type": "object", "properties": {"text": {"type": "string"}, "kind": {"type": "string", "enum": ["fact", "note"]}, "tags": {"type": "array", "items": {"type": "string"}}}, "required": ["text"]}},
+    "firecrawl_scrape": {"description": "Scrape one web page to clean Markdown with Firecrawl (handles JavaScript sites).", "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}},
+    "firecrawl_search": {"description": "Search the web with Firecrawl and return the top results as Markdown.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer"}}, "required": ["query"]}},
+}
+
+
+# ---------------------------------------------------------------- safe primitives
+
+def _safe_path(rel: str) -> Path:
+    p = (ROOT / (rel or ".").lstrip("/")).resolve()
+    if p != ROOT and not str(p).startswith(str(ROOT) + os.sep):
+        raise ValueError("path is outside the repository")
+    parts = set(p.relative_to(ROOT).parts) if p != ROOT else set()
+    if parts & _DENY_DIRS or _DENY_FILE.search(p.name):
+        raise ValueError("that path is not readable")
+    return p
+
+
+def walk_repo(base: Path):
+    for dirpath, dirnames, filenames in os.walk(base, followlinks=False):
+        dirnames[:] = sorted(d for d in dirnames if d not in _DENY_DIRS and not d.startswith(".git"))
+        for f in sorted(filenames):
+            fp = Path(dirpath) / f
+            if not _DENY_FILE.search(f) and not fp.is_symlink():
+                yield fp
+
+
+def repo_read(path: str, start: int | None = None, end: int | None = None, numbered: bool = True) -> str:
+    p = _safe_path(path)
+    if not p.is_file():
+        raise ValueError(f"not a file: {path}")
+    lines = p.read_text(errors="replace").split("\n")
+    s, e = max(1, int(start or 1)), min(len(lines), int(end or len(lines)))
+    out = "\n".join((f"{i:>5}  " if numbered else "") + lines[i - 1] for i in range(s, e + 1))
+    return out[:60_000]
+
+
+def _public(host: str) -> None:
+    for info in socket.getaddrinfo(host, None):
+        ip = ipaddress.ip_address(info[4][0])
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
+            raise ValueError("that address is not public")
+
+
+class _Guard(urllib.request.HTTPRedirectHandler):
+    def __init__(self, allow_private: bool):
+        self.allow_private = allow_private
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
+        u = urlparse(newurl)
+        if u.scheme not in ("http", "https") or not u.hostname:
+            return None
+        if not self.allow_private:
+            _public(u.hostname)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def http(method: str, url: str, headers: dict[str, str] | None = None, body: Any = None, timeout: float = 30, allow_private: bool = False, limit: int = 2_000_000) -> tuple[int, str, str]:
+    u = urlparse(url)
+    if u.scheme not in ("http", "https") or not u.hostname:
+        raise ValueError("only http(s) URLs")
+    if not allow_private:
+        _public(u.hostname)
+    data = None if body is None else (body if isinstance(body, bytes) else json.dumps(body).encode())
+    h = {"user-agent": "AmberX-AXF-AgentManager/1", **({"content-type": "application/json"} if data is not None else {}), **(headers or {})}
+    req = urllib.request.Request(url, data=data, headers=h, method=method.upper())
+    opener = urllib.request.build_opener(_Guard(allow_private))
+    try:
+        with opener.open(req, timeout=timeout) as r:  # noqa: S310
+            return r.status, r.headers.get("content-type", ""), r.read(limit).decode(r.headers.get_content_charset() or "utf-8", "replace")
+    except urllib.error.HTTPError as e:
+        return e.code, e.headers.get("content-type", "") if e.headers else "", e.read(20_000).decode("utf-8", "replace")
+
+
+def page_text(raw: str, ctype: str) -> str:
+    if "html" in ctype:
+        raw = re.sub(r"(?is)<(script|style|noscript|svg).*?</\1>", " ", raw)
+        raw = html.unescape(re.sub(r"(?s)<[^>]+>", " ", raw))
+    return re.sub(r"\n\s*\n+", "\n\n", re.sub(r"[ \t]+", " ", raw)).strip()
+
+
+_OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod, ast.Pow: operator.pow, ast.USub: operator.neg, ast.UAdd: operator.pos}
+
+
+def calc(expr: str) -> str:
+    def ev(n):
+        if isinstance(n, ast.Expression):
+            return ev(n.body)
+        if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
+            return n.value
+        if isinstance(n, ast.BinOp) and type(n.op) in _OPS:
+            if isinstance(n.op, ast.Pow) and abs(ev(n.right)) > 1000:
+                raise ValueError("exponent too large")
+            return _OPS[type(n.op)](ev(n.left), ev(n.right))
+        if isinstance(n, ast.UnaryOp) and type(n.op) in _OPS:
+            return _OPS[type(n.op)](ev(n.operand))
+        raise ValueError("only numbers and arithmetic")
+    return str(ev(ast.parse(expr[:300], mode="eval")))
+
+
+def _fill(template: str, args: dict[str, Any], url: bool = False) -> str:
+    def rep(m):
+        v = args.get(m.group(1), "")
+        s = v if isinstance(v, str) else json.dumps(v)
+        return quote(s, safe="") if url else s
+    return re.sub(r"\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}", rep, template)
+
+
+# ---------------------------------------------------------------- Firecrawl
+
+def firecrawl(path: str, body: dict[str, Any] | None = None, method: str = "POST", timeout: float = 90) -> dict[str, Any]:
+    s = store.load_settings()["firecrawl"]
+    key = store.secret("firecrawl")
+    if not key:
+        raise ValueError("Firecrawl isn't configured: set FIRECRAWL_API_KEY or add a key in Settings → Agent manager → Training")
+    base = (s.get("baseUrl") or "https://api.firecrawl.dev").rstrip("/")
+    ver = s.get("version") or "v2"
+    allow_private = not base.startswith("https://api.firecrawl.dev")  # a self-hosted Firecrawl may live on the VPS
+    code, _ct, text = http(method, f"{base}/{ver}/{path.lstrip('/')}", {"authorization": f"Bearer {key}"}, body, timeout=timeout, allow_private=allow_private, limit=20_000_000)
+    try:
+        j = json.loads(text)
+    except ValueError:
+        raise ValueError(f"Firecrawl answered HTTP {code} with non-JSON") from None
+    if code >= 400 or j.get("success") is False:
+        raise ValueError(f"Firecrawl HTTP {code}: {str(j.get('error') or j.get('message') or text)[:300]}")
+    return j
+
+
+def fc_scrape(url: str) -> dict[str, Any]:
+    j = firecrawl("scrape", {"url": url, "formats": ["markdown"], "onlyMainContent": True})
+    d = j.get("data") or {}
+    return {"url": url, "title": (d.get("metadata") or {}).get("title", ""), "markdown": d.get("markdown") or ""}
+
+
+def fc_search(query: str, limit: int = 5) -> list[dict[str, Any]]:
+    j = firecrawl("search", {"query": query, "limit": max(1, min(int(limit or 5), 20)), "scrapeOptions": {"formats": ["markdown"], "onlyMainContent": True}})
+    data = j.get("data") or []
+    rows = data.get("web", []) if isinstance(data, dict) else data  # v2: {web: [...]}, v1: [...]
+    return [{"url": r.get("url") or (r.get("metadata") or {}).get("sourceURL", ""), "title": r.get("title") or (r.get("metadata") or {}).get("title", ""),
+             "markdown": r.get("markdown") or r.get("description") or ""} for r in rows if isinstance(r, dict)]
+
+
+def fc_crawl(url: str, limit: int = 20, include: list[str] | None = None, max_wait: float = 600) -> list[dict[str, Any]]:
+    body: dict[str, Any] = {"url": url, "limit": max(1, min(int(limit or 20), 500)), "scrapeOptions": {"formats": ["markdown"], "onlyMainContent": True}}
+    if include:
+        body["includePaths"] = include
+    start = firecrawl("crawl", body)
+    cid = start.get("id")
+    if not cid:
+        raise ValueError("Firecrawl did not return a crawl id")
+    deadline = time.time() + max_wait
+    pages: list[dict[str, Any]] = []
+    while time.time() < deadline:
+        st = firecrawl(f"crawl/{cid}", method="GET")
+        if st.get("status") in ("completed", "failed", "cancelled"):
+            pages = list(st.get("data") or [])
+            nxt = st.get("next")
+            while nxt and len(pages) < body["limit"]:
+                p = urlparse(nxt)
+                more = firecrawl(p.path.split("/", 2)[-1] + (f"?{p.query}" if p.query else ""), method="GET")
+                pages += more.get("data") or []
+                nxt = more.get("next")
+            if st.get("status") != "completed" and not pages:
+                raise ValueError(f"crawl {st.get('status')}")
+            break
+        time.sleep(4)
+    return [{"url": (d.get("metadata") or {}).get("sourceURL", ""), "title": (d.get("metadata") or {}).get("title", ""), "markdown": d.get("markdown") or ""} for d in pages]
+
+
+# ---------------------------------------------------------------- MCP
+
+def mcp_call(url: str, token_env: str, tool: str | None = None, args: dict[str, Any] | None = None, resource: str | None = None, timeout: float = 60) -> str:
+    async def go() -> str:
+        from mcp import Client
+        from mcp.client.streamable_http import create_mcp_http_client, streamable_http_client
+        token = os.environ.get(token_env, "") if token_env else ""
+        if token_env and not token:
+            raise ValueError(f"environment variable {token_env} is not set on the console server")
+        http_client = create_mcp_http_client(headers={"Authorization": f"Bearer {token}"} if token else {})
+        async with http_client:
+            async with Client(streamable_http_client(url, http_client=http_client), read_timeout_seconds=timeout) as c:
+                if resource:
+                    r = await c.read_resource(resource)
+                    return "\n\n".join(getattr(x, "text", "") or "" for x in r.contents)
+                r = await c.call_tool(tool or "", args or {})
+                return "\n\n".join(getattr(x, "text", "") or json.dumps(getattr(x, "model_dump", lambda: {})()) for x in r.content)
+    u = urlparse(url)
+    if u.scheme not in ("http", "https"):
+        raise ValueError("MCP tools use Streamable HTTP URLs only")
+    return asyncio.run(go())
+
+
+# ---------------------------------------------------------------- definitions → model-facing specs
+
+def validate(rec: dict[str, Any]) -> dict[str, Any]:
+    name = str(rec.get("name") or "").strip()
+    if not NAME_RE.match(name):
+        raise ValueError("tool name must be a function name: letters, digits, underscores (e.g. get_weather)")
+    kind = rec.get("kind") or "builtin"
+    if kind not in KINDS:
+        raise ValueError(f"tool kind must be one of {', '.join(KINDS)}")
+    cfg = dict(rec.get("config") or {})
+    params = rec.get("parameters") or {"type": "object", "properties": {}}
+    if kind == "builtin":
+        if cfg.get("builtin") not in BUILTINS:
+            raise ValueError(f"unknown builtin; choose one of {', '.join(BUILTINS)}")
+        params = rec.get("parameters") or BUILTINS[cfg["builtin"]]["parameters"]
+    if kind == "http":
+        if not re.match(r"^https?://", str(cfg.get("url", ""))):
+            raise ValueError("http tools need a URL starting with http:// or https://")
+        if str(cfg.get("method", "GET")).upper() not in ("GET", "POST", "PUT", "PATCH", "DELETE"):
+            raise ValueError("unsupported method")
+        for k, v in (cfg.get("headers") or {}).items():
+            if not isinstance(v, str):
+                raise ValueError("header values must be strings (use env:VAR for secrets)")
+            if not v.startswith("env:") and re.search(r"(?i)bearer\s+\S{12,}|sk-|key", v) and k.lower() in ("authorization", "x-api-key", "api-key"):
+                raise ValueError(f"put secrets in an environment variable: set header {k} to env:MY_VAR")
+    if kind == "mcp" and (not re.match(r"^https?://", str(cfg.get("url", ""))) or not cfg.get("tool")):
+        raise ValueError("mcp tools need a server URL and the remote tool name")
+    if kind == "prompt" and not str(cfg.get("template", "")).strip():
+        raise ValueError("prompt tools need a template")
+    if kind == "agent" and not cfg.get("agentId"):
+        raise ValueError("agent tools need the agent to delegate to")
+    if kind == "workflow" and not cfg.get("workflowId"):
+        raise ValueError("workflow tools need a workflow")
+    if not isinstance(params, dict) or params.get("type") != "object":
+        raise ValueError("parameters must be a JSON Schema object ({type: object, properties: {...}})")
+    return {**rec, "name": name, "kind": kind, "config": cfg, "parameters": params, "description": str(rec.get("description") or BUILTINS.get(cfg.get("builtin", ""), {}).get("description", ""))[:1000]}
+
+
+def spec(tool: dict[str, Any]) -> dict[str, Any]:
+    return {"name": tool["name"], "description": tool.get("description", ""), "parameters": tool.get("parameters") or {"type": "object", "properties": {}}}
+
+
+# ---------------------------------------------------------------- execution
+
+def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> str:
+    """Run one tool. ctx: {agent, scope, depth, run_agent, run_workflow}."""
+    kind, cfg, a = tool.get("kind"), tool.get("config") or {}, args or {}
+    if kind == "builtin":
+        b = cfg.get("builtin")
+        if b == "repo_list":
+            base = _safe_path(str(a.get("dir") or "."))
+            out = []
+            for fp in walk_repo(base if base.is_dir() else base.parent):
+                out.append(f"{fp.relative_to(ROOT)} ({fp.stat().st_size})")
+                if len(out) >= 500:
+                    out.append("… truncated")
+                    break
+            return "\n".join(out) or "Empty."
+        if b == "repo_read":
+            return repo_read(str(a.get("path") or ""), a.get("start_line"), a.get("end_line"))
+        if b == "repo_search":
+            rx = re.compile(str(a.get("pattern") or "")[:200], re.I)
+            hits = []
+            for fp in walk_repo(_safe_path(str(a.get("dir") or "."))):
+                if fp.stat().st_size > 1_000_000:
+                    continue
+                for i, line in enumerate(fp.read_text(errors="ignore").split("\n"), 1):
+                    if rx.search(line):
+                        hits.append(f"{fp.relative_to(ROOT)}:{i}: {line.strip()[:200]}")
+                        if len(hits) >= 200:
+                            return "\n".join(hits) + "\n… 200 matches"
+            return "\n".join(hits) or "No matches."
+        if b == "current_time":
+            return json.dumps({"iso": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "zone": time.strftime("%Z")})
+        if b == "calculator":
+            return calc(str(a.get("expression") or ""))
+        if b == "web_fetch":
+            code, ctype, text = http("GET", str(a.get("url") or ""))
+            return f"HTTP {code}\n\n" + page_text(text, ctype)[:40_000]
+        if b in ("memory_search", "memory_save"):
+            from . import memory
+            scope = ctx.get("scope") or (ctx.get("agent") or {}).get("id")
+            if not scope:
+                raise ValueError("no memory scope")
+            if b == "memory_search":
+                hits = memory.search(scope, str(a.get("query") or ""), int(a.get("limit") or 6), "hybrid")
+                return "\n".join(f"- [{h['kind']}] {h['text'][:800]}" for h in hits) or "Nothing relevant in memory."
+            agent = ctx.get("agent") or {}
+            mc = memory.config(agent) if agent else {"type": "keyword", "embedProfile": "", "maxItems": 2000}
+            kind2 = a.get("kind") if a.get("kind") in ("fact", "note") else "fact"
+            memory.add(scope, str(a.get("text") or ""), kind2, a.get("tags") or [], source="agent", embed=mc["type"] in ("vector", "hybrid"), embed_profile=mc["embedProfile"], max_items=mc["maxItems"])
+            return "Saved to memory."
+        if b == "firecrawl_scrape":
+            r = fc_scrape(str(a.get("url") or ""))
+            return f"# {r['title']}\n{r['url']}\n\n{r['markdown'][:40_000]}"
+        if b == "firecrawl_search":
+            rows = fc_search(str(a.get("query") or ""), int(a.get("limit") or 5))
+            return "\n\n---\n\n".join(f"## {r['title']}\n{r['url']}\n\n{r['markdown'][:6000]}" for r in rows) or "No results."
+        raise ValueError(f"unknown builtin {b}")
+    if kind == "http":
+        headers = {}
+        for k, v in (cfg.get("headers") or {}).items():
+            if v.startswith("env:"):
+                val = os.environ.get(v[4:], "")
+                if not val:
+                    raise ValueError(f"environment variable {v[4:]} is not set")
+                headers[k] = val
+            else:
+                headers[k] = _fill(v, a)
+        url = _fill(str(cfg["url"]), a, url=True)
+        body = None
+        if cfg.get("body"):
+            filled = _fill(cfg["body"] if isinstance(cfg["body"], str) else json.dumps(cfg["body"]), a)
+            try:
+                body = json.loads(filled)
+            except ValueError:
+                body = filled.encode()
+        elif str(cfg.get("method", "GET")).upper() in ("POST", "PUT", "PATCH"):
+            body = a
+        code, ctype, text = http(str(cfg.get("method", "GET")), url, headers, body, timeout=float(cfg.get("timeout") or 30), allow_private=bool(cfg.get("allowPrivate")))
+        return f"HTTP {code}\n\n" + (text if "json" in ctype else page_text(text, ctype))[:40_000]
+    if kind == "mcp":
+        return mcp_call(str(cfg["url"]), str(cfg.get("tokenEnv") or ""), tool=str(cfg["tool"]), args=a)[:40_000]
+    if kind == "prompt":
+        from . import llm
+        out = llm.complete([{"role": "user", "content": _fill(str(cfg["template"]), a)}], system=cfg.get("system") or None, model_cfg={"model": cfg.get("model") or "", "profile": cfg.get("profile") or "", "temperature": cfg.get("temperature")})
+        return out["text"]
+    if kind == "agent":
+        if (ctx.get("depth") or 0) >= 3:
+            raise ValueError("delegation depth limit reached (3)")
+        return ctx["run_agent"](cfg["agentId"], str(a.get("task") or a.get("input") or json.dumps(a)), depth=(ctx.get("depth") or 0) + 1)["text"]
+    if kind == "workflow":
+        if (ctx.get("depth") or 0) >= 3:
+            raise ValueError("delegation depth limit reached (3)")
+        return ctx["run_workflow"](cfg["workflowId"], str(a.get("input") or json.dumps(a)), depth=(ctx.get("depth") or 0) + 1)["output"]
+    raise ValueError(f"unknown tool kind {kind}")

@@ -746,7 +746,7 @@ def auth_always(request: Request) -> None:
 
 def plugin_enabled(folder: str) -> bool:
     info = PLUGINS.get(folder)
-    if not info:
+    if not info or info.get("removed"):
         return False
     return bool(_state.get("plugins", {}).get(folder, info.get("enabledByDefault", True)))
 
@@ -776,6 +776,12 @@ def load_plugins() -> None:
     """Discover plugins and mount their server routers. A broken plugin is reported, never fatal."""
     if not PLUGINS_DIR.is_dir():
         return
+    # Parent package for plugin server parts, so a plugin can split its server into modules (`from . import x`).
+    if "axf_console_plugins" not in _sys.modules:
+        import types as _types
+        pkg = _types.ModuleType("axf_console_plugins")
+        pkg.__path__ = []  # type: ignore[attr-defined]
+        _sys.modules["axf_console_plugins"] = pkg
     for folder in sorted(PLUGINS_DIR.iterdir()):
         if not folder.is_dir() or folder.name.startswith("_") or not (folder / "plugin.json").exists():
             continue
@@ -812,6 +818,16 @@ def load_plugins() -> None:
             log("plugins", f"{folder.name}: {info['error']}", "error")
 
 
+def _prune_plugin_state() -> None:
+    """A plugin whose folder is gone leaves no enabled flag behind (plugin-lifecycle@1)."""
+    known = _state.get("plugins", {})
+    gone = [f for f in known if f not in PLUGINS]
+    for f in gone:
+        known.pop(f, None)
+    if gone:
+        _save_state()
+
+
 @app.get("/api/plugins")
 def list_plugins() -> dict[str, Any]:
     return {"items": [{**info, "enabled": plugin_enabled(f)} for f, info in PLUGINS.items()]}
@@ -828,7 +844,104 @@ def set_plugin_enabled(folder: str, body: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "folder": folder, "enabled": on}
 
 
+import plugin_services  # noqa: E402 — generic cross-plugin services (capability names, never plugin folders)
+
+plugin_services.configure(plugin_enabled)
+
 load_plugins()
+_prune_plugin_state()
+
+
+@app.get("/api/plugin-services", dependencies=[Depends(auth_always)])
+def list_plugin_services() -> dict[str, Any]:
+    return {"items": plugin_services.available()}
+
+
+# ---------------------------------------------------------------- plugin lifecycle (framework/cli/plugin-lifecycle.mjs)
+#
+# Generic install / uninstall / stale-check for every plugin (plugin-lifecycle@1). These routes are the console's,
+# not a plugin's, so they keep working while a plugin is disabled or after its code is gone. One action at a time.
+
+import threading as _threading  # noqa: E402
+
+LIFECYCLE = ROOT / "framework" / "cli" / "plugin-lifecycle.mjs"
+_lifecycle_lock = _threading.Lock()
+
+
+def _lifecycle(args: list[str], timeout: int = 300) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(LIFECYCLE), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout,
+                          env={**os.environ, "AXF_ROOT": str(ROOT), "AXF_STATE": str(STATE)})
+    try:
+        out = json.loads((proc.stdout or "").strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        raise HTTPException(500, f"plugin-lifecycle failed: {(proc.stderr or proc.stdout)[-400:]}") from None
+    if not out.get("ok"):
+        raise HTTPException(400, out.get("error", "plugin-lifecycle failed"))
+    return out
+
+
+@app.get("/api/plugin-lifecycle", dependencies=[Depends(auth_always)])
+def lifecycle_list() -> dict[str, Any]:
+    return _lifecycle(["list"])
+
+
+@app.get("/api/plugin-lifecycle/{folder}", dependencies=[Depends(auth_always)])
+def lifecycle_status(folder: str) -> dict[str, Any]:
+    if not _PLUGIN_FOLDER.match(folder):
+        raise HTTPException(400, "bad plugin folder")
+    out = _lifecycle(["status", folder])
+    out["loaded"] = folder in PLUGINS and not PLUGINS[folder].get("removed")
+    out["enabled"] = plugin_enabled(folder)
+    return out
+
+
+@app.post("/api/plugin-lifecycle/{folder}/{action}", dependencies=[Depends(auth)])
+def lifecycle_action(folder: str, action: str, body: dict[str, Any]) -> dict[str, Any]:
+    if not _PLUGIN_FOLDER.match(folder):
+        raise HTTPException(400, "bad plugin folder")
+    if not _lifecycle_lock.acquire(blocking=False):
+        raise HTTPException(409, "another plugin install/uninstall is running")
+    try:
+        if action == "install":
+            out = _lifecycle(["install", folder, "--no-state"])
+            _state.setdefault("plugins", {})[folder] = True
+            _save_state()
+            log("plugins", f"{folder} installed (data folder + hooks)")
+            return out
+        if action == "check":
+            return _lifecycle(["check", folder] + (["--after-uninstall"] if body.get("afterUninstall") else []))
+        if action == "restore":
+            return _lifecycle(["restore", folder, str(body.get("backup", ""))])
+        if action != "uninstall":
+            raise HTTPException(404, f"unknown lifecycle action {action}")
+        dry = bool(body.get("dryRun"))
+        if not dry and body.get("confirm") != folder:
+            raise HTTPException(400, f'type the plugin folder name ("{folder}") to confirm')
+        args = ["uninstall", folder, "--no-state"]
+        for flag in ("data", "code", "all", "publish"):
+            if body.get(flag):
+                args.append(f"--{flag}")
+        if body.get("backup") is False:
+            args.append("--no-backup")
+        if dry:
+            args.append("--dry-run")
+        out = _lifecycle(args, timeout=600)
+        if not dry:
+            if out.get("data") or body.get("all") or body.get("data") or not body.get("code"):
+                _state.get("plugins", {}).pop(folder, None)
+                _save_state()
+            if out.get("code"):
+                plugin_services.withdraw(folder)
+                if folder in PLUGINS:
+                    PLUGINS[folder]["removed"] = True
+                    PLUGINS[folder]["enabledByDefault"] = False  # its routes 404 until the console restarts without it
+                _state.get("plugins", {}).pop(folder, None)
+                _save_state()
+                out["restartNeeded"] = True
+            log("plugins", f"{folder} uninstalled ({'code + ' if out.get('code') else ''}{'data' if out.get('data') else 'no data'})")
+        return out
+    finally:
+        _lifecycle_lock.release()
 
 # ---------------------------------------------------------------- systems check (server/syscheck.py)
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Container } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
+import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 
 /** The folder name under plugins/ — this plugin's server routes live at /api/plugins/<FOLDER>/. */
 const FOLDER = 'example';
@@ -24,4 +25,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   views: { example: { title: 'Example', icon: 'box', render: () => <ExampleView /> } },
   nav: { label: 'Plugins', items: [{ id: 'example', label: 'Example', icon: 'box', view: 'example' }] },
+  // Plugins never ship their own settings screen: they add a tab to the app's settings, with the shared lifecycle panel.
+  settingsTabs: [{ id: 'example', label: 'Example', icon: 'box', order: 90 }],
+  settingsPanels: [{ id: 'example.lifecycle', tab: 'example', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

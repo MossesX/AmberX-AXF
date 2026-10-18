@@ -16,8 +16,42 @@ Installed plugins: `mcp-client` (connects the console to other MCP servers; sett
 Claude project with its homes on GitHub / the VPS / a local git folder and a Claude.ai project kit; settings tab
 "Project wizard"; engine `wizard.mjs` on top of `framework/cli/claude-project.mjs`, self-test `test.mjs`).
 
-Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description),
-the `id`, `FOLDER` and views in `web/index.tsx`, and the routes in `server/__init__.py`.
+- `ai-assistant` — AI assistant ported from xGallery (many providers, setup wizard, chat dialog + in-chat settings, provides `axf.llm@1`, chats as agents via `axf.agents@1`; settings tab "AI assistant"; self-test `test.py`). <!-- axf-plugin:ai-assistant -->
+- `agent-manager` — agents from personas, lingo, skills and tools with per-agent persistent memory, wizards, training (Firecrawl, URLs, repo, MCP), workflows, add-on agents (coder, axf-expert, ai-expert); provides `axf.agents@1`; settings tab "Agent manager"; self-test `test.py`. <!-- axf-plugin:agent-manager -->
+
+Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
+`lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
+folder name in `install.mjs` / `uninstall.mjs`.
+
+## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
+
+Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a
+Fable rebuild of an Opus plugin) can be installed cleanly.
+
+1. **Code only in the plugin folder.** Nothing outside `plugins/<folder>/` is edited for a plugin. The console finds
+   plugins by folder (Vite glob + `load_plugins`), so deleting the folder removes every import.
+2. **Data only in `lifecycle.dataDir`** (default `.axf-console/plugins/<folder>/`, gitignored, 0700). Settings, stored
+   keys, history, caches — all of it.
+3. **The only other trace is the enabled flag** in the console state file; it is removed on uninstall and pruned at
+   startup for folders that no longer exist.
+4. **Doc lines** outside the folder (CLAUDE.md Status, this README) end with the marker `<!-- axf-plugin:<folder> -->`
+   and their files are listed in `lifecycle.mentions`; `uninstall --all` strips them.
+5. **Cross-plugin features use capability names, never folders:** a plugin `provide`s a service such as `axf.llm@1`
+   or `axf.agents@1` through `server/plugin_services.py` and others `get` it at request time (None when absent), so
+   either side can be removed. List optional services in `plugin.json` → `optional`.
+6. **Ship `install.mjs` and `uninstall.mjs`** (thin wrappers around `framework/cli/plugin-lifecycle.mjs`), optional
+   `hooks.mjs` (`onInstall`, `onUninstall`, `checks`), and show the shared **Install & uninstall** panel
+   (`import { PluginLifecyclePanel } from '@console/pluginLifecycle'`) in the plugin's settings tab.
+
+```bash
+node apps/console-web/plugins/<folder>/install.mjs                 # data folder + hooks + enable
+node apps/console-web/plugins/<folder>/uninstall.mjs [--data]      # data + state (backed up to .axf-console/plugin-backups/)
+node apps/console-web/plugins/<folder>/uninstall.mjs --all [--publish]   # + code + doc lines; --publish commits and pushes the removal
+node framework/cli/plugin-lifecycle.mjs check <folder> [--after-uninstall]   # stale-reference check (CI-friendly exit code)
+node framework/cli/plugin-lifecycle.mjs list | status <folder> | restore <folder> <backup>
+```
+The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/install|uninstall|check|restore]`
+(console routes, so they work while the plugin is disabled; uninstall needs `{"confirm": "<folder>"}`).
 
 ## How it runs
 
