@@ -106,5 +106,8 @@
     "$installed": [
       "ai.amberx.axf.browser"
     ]
+  },
+  "options": {
+    "wrap-groups": true
   }
 }

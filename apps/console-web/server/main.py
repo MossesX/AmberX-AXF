@@ -376,7 +376,7 @@ def _op(name: str, channel: str):
     return handler
 
 
-for _name, _channel in [("new-library", "libraries"), ("compile-library", "libraries"), ("port-library", "libraries"), ("remove-library", "libraries"), ("init", "init"), ("validate", "validate"), ("new-asset", "assets"), ("new-module", "build"), ("new-demo", "build"), ("install", "install"), ("import-ui", "import")]:
+for _name, _channel in [("new-library", "libraries"), ("compile-library", "libraries"), ("port-library", "libraries"), ("remove-library", "libraries"), ("init", "init"), ("validate", "validate"), ("new-asset", "assets"), ("options", "assets"), ("new-module", "build"), ("new-demo", "build"), ("install", "install"), ("import-ui", "import")]:
     app.add_api_route(f"/api/{_name}", _op(_name, _channel), methods=["POST"], dependencies=[Depends(auth)])
 
 

@@ -39,7 +39,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('SEARCH_FIELD', 'Search field', 'Inputs', 'Toolbar search', [['surface2', 'Field background'], ['muted', 'Icon']]),
   E('CARD', 'Card / container', 'Containers', 'Card from the container asset', [['surface', 'Card fill'], ['border', 'Card border'], ['shadow', 'Shadow']],
     [p('style', 'Style', 'card / panel / glass / outline', 'container', ['style'], 'enum', 0, 0, ['card', 'panel', 'glass', 'outline']), alpha('opacityGlass', 'Glass opacity', 'How much surface colour glass panels keep'), p('padding', 'Padding', 'multiple of the spacing unit', 'container', ['padding'], 'number', 0, 4), ...radius.slice(1, 3), ...spacing],
-    [f('divider', 'Header divider', 'Rule under the header', 'container', ['headerDivider']), f('collapsible', 'Collapsible', 'Header toggles the body', 'container', ['collapsible'])]),
+    [f('divider', 'Header divider', 'Rule under the header', 'container', ['headerDivider']), f('collapsible', 'Collapsible', 'Header toggles the body', 'container', ['collapsible']), f('wrapGroups', 'Wrap groups', 'Every section / group gets a collapse toggle top-right (style-theme, --wrap-groups)', 'style-theme', ['wrapGroups'])]),
   E('LIST_ITEM', 'List item', 'Containers', 'Row with icon, title, subtitle, trailing', [['text', 'Title'], ['muted', 'Subtitle'], ['accentSoft', 'Selected']], spacing),
   E('SECTION_HEADER', 'Section header', 'Containers', 'Uppercase eyebrow', [['muted', 'Text'], ['accent', 'Accent variant']], type.slice(1)),
   E('BADGE', 'Badge', 'Containers', 'Small pill', [['surface3', 'Fill'], ['muted', 'Text']]),

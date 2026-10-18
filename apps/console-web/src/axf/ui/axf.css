@@ -345,6 +345,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-card__head { display: flex; align-items: center; gap: 8px; padding: calc(var(--fx-card-pad) * 0.6) var(--fx-card-pad) 0; color: var(--fx-muted); }
 .fx-card__head h3 { font-size: 1em; color: var(--fx-text); flex: 1; }
 .fx-card__actions { display: flex; align-items: center; gap: 4px; }
+/* collapsible groups (container.collapsible or style-theme wrapGroups / --wrap-groups): toggle pinned top-right */
+.fx-card__toggle { margin-left: auto; }
+.fx-card[data-fx-collapsible='closed'] .fx-card__head { padding-bottom: calc(var(--fx-card-pad) * 0.6); border-bottom: 0; }
 [data-fx-card-header='divided'] .fx-card__head { padding-bottom: calc(var(--fx-card-pad) * 0.6); border-bottom: var(--fx-border-w) solid var(--fx-border); }
 [data-fx-card-header='accent'] .fx-card__head { position: relative; }
 [data-fx-card-header='accent'] .fx-card__head::before {

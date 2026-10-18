@@ -89,6 +89,8 @@ public data class StyleTheme(
     val springDamping: Double = 0.8,
     val glass: Boolean = true,
     val extra: Map<String, String> = emptyMap(),
+    /** Every section / group (Container) is collapsible with a top-right toggle. Build option --wrap-groups; default off. */
+    val wrapGroups: Boolean = false,
 ) {
     public companion object {
         public fun fromJson(o: JsonObject): StyleTheme {
@@ -111,6 +113,7 @@ public data class StyleTheme(
                 easing = o.str("easing", "standard"), springStiffness = o.double("springStiffness", 400.0), springDamping = o.double("springDamping", 0.8),
                 glass = o.bool("glass", true),
                 extra = o.strMap("extra"),
+                wrapGroups = o.bool("wrapGroups", false),
             )
         }
     }

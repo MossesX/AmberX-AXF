@@ -93,6 +93,9 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- behaviour ---- */
+  /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
+  wrapGroups?: boolean;
 }
 
 export interface LayoutData {

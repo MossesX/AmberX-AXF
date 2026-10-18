@@ -47,5 +47,11 @@ export function styleThemeVars(s: StyleThemeData): VarMap {
     '--fx-opacity-tint': String(s.opacityTint ?? OPACITY_DEFAULTS.tint),
     '--fx-opacity-scrim': String(s.opacityScrim ?? OPACITY_DEFAULTS.scrim),
     '--fx-opacity-glass': String(s.opacityGlass ?? OPACITY_DEFAULTS.glass),
+    '--fx-wrap-groups': wrapGroups(s) ? '1' : '0',
   };
+}
+
+/** Build option --wrap-groups as a style token: true only when the theme says exactly `true` (default off). */
+export function wrapGroups(s: Pick<StyleThemeData, 'wrapGroups'> | undefined | null): boolean {
+  return s?.wrapGroups === true;
 }

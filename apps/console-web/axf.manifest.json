@@ -62,5 +62,8 @@
       "path": "public",
       "purpose": "Static files served as-is."
     }
-  ]
+  ],
+  "options": {
+    "wrap-groups": true
+  }
 }

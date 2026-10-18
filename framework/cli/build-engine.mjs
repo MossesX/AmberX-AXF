@@ -5,6 +5,7 @@
  */
 import { installLibrary } from './libraries.mjs';
 import { createHash } from 'node:crypto';
+import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -164,7 +165,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -196,6 +197,11 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, tpl.assetsDir), { recursive: true });
   for (const extra of tpl.extraAssets) if (existsSync(join(FRAMEWORK_DIR, extra))) cpSync(join(FRAMEWORK_DIR, extra), join(dest, tpl.assetsDir), { recursive: true });
 
+  // Build options (--wrap-groups …): every option is written at its default unless given, so new builds
+  // start from the registry defaults even when the framework's own starter assets differ.
+  const buildOptions = resolveOptions(options);
+  applyOptions(join(dest, tpl.assetsDir), buildOptions, log);
+
   log('• writing axf.manifest.json');
   const manifest = {
     $axf: 'manifest@1',
@@ -205,6 +211,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     targets,
     startView: bp?.screens?.[0]?.id ?? 'home',
     defaults: { ...defaults, ...(bp?.defaults ?? {}) },
+    options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
   if (bp) manifest.boilerplate = { id: bp.id, name: bp.name, category: bp.category, screens: bp.screens, features: bp.features ?? [] };
@@ -234,6 +241,32 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   const report = validateApp(dest);
   if (!report.ok) throw new Error(`Initialized app failed validation:\n${report.errors.join('\n')}`);
   return { dir: dest, manifest: installed.length ? readJson(join(dest, 'axf.manifest.json')) : manifest, assets: assets.length, bakedFiles: Object.keys(files).length, libraries: installed.map((i) => ({ library: i.library, config: i.config })), report, next: tpl.next };
+}
+
+/* ------------------------------------------------------------------ */
+/* build options on an existing app (axf options)                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Read or change build options on an existing app (or the framework's own assets with framework: true).
+ * Writes the tokens into the app's assets and records the values in axf.manifest.json.
+ */
+export function appOptions({ dir = '.', framework = false, options = {}, log = () => {} } = {}) {
+  const dirs = framework ? [join(FRAMEWORK_DIR, 'assets')] : [join(resolve(dir), appTemplate(resolve(dir)).assetsDir)];
+  if (!framework && !existsSync(dirs[0])) throw new Error(`No AXF assets at ${dirs[0]} — is ${dir} an AXF app?`);
+  const changed = [];
+  for (const d of dirs) changed.push(...applyOptions(d, options, log));
+  const values = readOptions(dirs[0]);
+  if (!framework && Object.keys(options).length) {
+    const root = resolve(dir);
+    for (const mPath of [join(root, 'axf.manifest.json'), join(root, dirname(appTemplate(root).assetsDir), 'axf.manifest.json')]) {
+      if (!existsSync(mPath)) continue;
+      const m = readJson(mPath);
+      m.options = { ...(m.options ?? {}), ...values };
+      writeFileSync(mPath, JSON.stringify(m, null, 2) + '\n');
+    }
+  }
+  return { options: values, changed: changed.map((f) => relative(framework ? FRAMEWORK_DIR : resolve(dir), f)) };
 }
 
 /* ------------------------------------------------------------------ */

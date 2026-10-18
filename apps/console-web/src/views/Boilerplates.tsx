@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, Chip, Container, Icon, Slider, useRuntime } from '../axf/react';
+import { BUILD_OPTIONS, buildOptionFlags, resolveBuildOptions, type BuildOptionValues } from '../axf/core';
 import { useStore } from '../store';
 import * as api from '../api';
 import type { Boilerplate, BoilerplateScreen } from '../api';
@@ -134,11 +135,13 @@ export function NewAppDialog({ boilerplateId, close }: { boilerplateId: string; 
   const [template, setTemplate] = useState<'react-ts' | 'android-compose'>('react-ts');
   const [dir, setDir] = useState(`apps/${boilerplateId}`);
   const [log, setLog] = useState('');
+  const [options, setOptions] = useState<BuildOptionValues>(() => resolveBuildOptions());
   if (!b) return <p>Unknown boilerplate.</p>;
-  const script = `node framework/cli/axf.mjs init ${dir} --name "${name}" --template ${template} --boilerplate ${b.id}`;
+  const flags = buildOptionFlags(options);
+  const script = `node framework/cli/axf.mjs init ${dir} --name "${name}" --template ${template} --boilerplate ${b.id}${flags ? ` ${flags}` : ''}`;
   const run = async () => {
     rt.terminal.log('init', `▶ ${name} from ${b.id} (${template}) → ${dir}`); rt.dispatch('terminal.open:init');
-    const r = await api.post('init', { dir, name, template, boilerplate: b.id, libraries: (b.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)) });
+    const r = await api.post('init', { dir, name, template, boilerplate: b.id, options, libraries: (b.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)) });
     if (r.log) rt.terminal.many('init', r.log);
     if (r.ok) { rt.terminal.ok('init', `${name} created at ${String(r.dir)}`); s.openProject(String(r.dir)); } else { rt.terminal.error('init', r.error ?? 'failed'); if (!s.backend) rt.terminal.many('init', script); }
     setLog(r.ok ? `✓ ${String(r.dir)} — project opened` : `✗ ${r.error}`);
@@ -151,6 +154,15 @@ export function NewAppDialog({ boilerplateId, close }: { boilerplateId: string; 
       <label className="fx-field">App name<input className="fx-input" value={name} onChange={(e) => setName(e.target.value)} /></label>
       <div className="fx-row">{(['react-ts', 'android-compose'] as const).map((t) => <button key={t} className={`fx-chip ${template === t ? 'is-selected' : ''}`} onClick={() => setTemplate(t)}>{t}</button>)}</div>
       <label className="fx-field">Directory<input className="fx-input fx-mono" value={dir} onChange={(e) => setDir(e.target.value)} /></label>
+      <fieldset className="fx-stack" style={{ border: 0, padding: 0, margin: 0 }}>
+        <legend className="fx-muted fx-small">Build options</legend>
+        {Object.entries(BUILD_OPTIONS).map(([n, o]) => (
+          <label key={n} className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)', alignItems: 'flex-start' }} title={o.description}>
+            <input id={`newapp-opt-${n}`} type="checkbox" checked={!!options[n]} onChange={(e) => setOptions({ ...options, [n]: e.target.checked })} />
+            <span>{o.label} <span className="fx-mono fx-muted fx-small">--{n}</span><br /><span className="fx-muted fx-small">{o.description}</span></span>
+          </label>
+        ))}
+      </fieldset>
       <pre className="fx-code" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{script}{log ? `\n${log}` : ''}</pre>
       <div className="fx-row fx-row--end"><Button icon="copy" onClick={() => navigator.clipboard?.writeText(script).then(() => rt.toast('Command copied.', 'success'))}>Copy</Button><Button tone="primary" icon="rocket" onClick={run}>{s.backend ? 'Create app' : 'Record'}</Button><Button onClick={close}>Close</Button></div>
     </div>

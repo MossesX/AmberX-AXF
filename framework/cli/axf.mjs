@@ -2,7 +2,11 @@
 /**
  * axf — command-line driver for the AmberX AXF build engine.
  *
- *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser]
+ *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser] [build options]
+ *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
+ *
+ *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
+ *     --wrap-groups              every section / group gets a collapse toggle top-right (style-theme wrapGroups)
  *   axf validate [dir]          validate an app (or the framework's own assets with --framework)
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
@@ -32,7 +36,8 @@ import { relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { installLibrary, installScript, libraryInfo, listLibraries, wizard } from './libraries.mjs';
-import { FRAMEWORK_DIR, FRAMEWORK_VERSION, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
+import { OPTIONS, describeOptions, pickOptions } from './build-options.mjs';
+import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 const flags = {};
@@ -43,6 +48,17 @@ for (let i = 0; i < rest.length; i++) {
     const val = rest[i + 1] && !rest[i + 1].startsWith('--') ? rest[++i] : true;
     flags[key] = key in flags ? [].concat(flags[key], val) : val;
   } else args.push(rest[i]);
+}
+// A boolean build option swallows the next word only when it is on/off; otherwise that word is a positional arg.
+const ONOFF = /^(on|off|true|false|1|0|yes|no|enabled?|disabled?)$/i;
+for (const [name, spec] of Object.entries(OPTIONS)) {
+  if (spec.type !== 'boolean') continue;
+  for (const key of [name, `no-${name}`]) {
+    const v = flags[key];
+    if (typeof v !== 'string' || (key === name && ONOFF.test(v))) continue;
+    if (args.length) { console.error(`\x1b[31m✗ --${key} takes ${key === name ? 'on|off' : 'no value'} (got "${v}")\x1b[0m`); process.exit(1); }
+    args.push(v); flags[key] = true; // `axf options --wrap-groups apps/x`: the word was the app dir
+  }
 }
 
 const c = { dim: (s) => `\x1b[2m${s}\x1b[0m`, ok: (s) => `\x1b[32m${s}\x1b[0m`, bad: (s) => `\x1b[31m${s}\x1b[0m`, warn: (s) => `\x1b[33m${s}\x1b[0m`, b: (s) => `\x1b[1m${s}\x1b[0m` };
@@ -68,6 +84,7 @@ try {
         modules: flags.modules ? String(flags.modules).split(',') : [],
         boilerplate: flags.boilerplate,
         // --libraries browser,other  (pre-build configuration; each library's defaults, or --param key=value for all)
+        options: pickOptions(flags),
         libraries: flags.libraries ? String(flags.libraries).split(',').map((l) => ({ library: l.trim(), params: Object.fromEntries([].concat(flags.param ?? []).map((kv) => { const [k, ...v] = String(kv).split('='); return [k, v.join('=')]; })) })) : [],
         log: (m) => console.log(c.dim(m)),
       });
@@ -76,6 +93,16 @@ try {
       if (res.libraries?.length) console.log(`  libraries: ${res.libraries.map((l) => l.library).join(', ')}`);
       printReport(res.report);
       console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && ${res.next || 'npm install && npm run dev'}\n`);
+      break;
+    }
+    case 'options': {
+      const given = pickOptions(flags);
+      const r = appOptions({ dir: args[0] ?? '.', framework: !!flags.framework, options: given, log: (m) => console.log(c.dim(m)) });
+      if (Object.keys(given).length) console.log(c.ok(`✓ ${r.changed.length} file(s) updated`));
+      for (const o of describeOptions()) {
+        const v = r.options[o.flag.slice(2)];
+        console.log(`${c.b(o.flag.padEnd(16))} ${v === true ? c.ok('on ') : v === false ? c.dim('off') : c.warn(String(v))}  ${o.label} ${c.dim(`(${o.token}, default ${o.default ? 'on' : 'off'})`)}`);
+      }
       break;
     }
     case 'validate': {

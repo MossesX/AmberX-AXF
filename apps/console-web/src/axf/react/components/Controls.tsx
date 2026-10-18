@@ -1,6 +1,7 @@
 import { useId, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { useAsset, useGate } from '../AxfProvider';
 import { Icon } from './Icon';
+import { containerCollapsible } from '../../core';
 
 /* ---------------- Button (styled by the active `button` asset) ---------------- */
 
@@ -93,20 +94,25 @@ export interface ContainerProps {
 
 export function Container({ title, icon, actions, children, className, ctx, ctxPayload }: ContainerProps) {
   const c = useAsset('container').data;
+  // style-theme `wrapGroups` (build option --wrap-groups) makes every titled group collapsible.
+  const collapsible = containerCollapsible(c, useAsset('style-theme').data);
   const [open, setOpen] = useState(true);
+  const bodyId = useId();
+  const shown = open || !collapsible;
   return (
-    <section className={`fx-card ${className ?? ''}`} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload}>
+    <section className={`fx-card ${className ?? ''}`} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload}>
       {title && (
         <header className="fx-card__head">
           {icon && <Icon name={icon} size={16} />}
           <h3>{title}</h3>
           <div className="fx-card__actions">
             {actions}
-            {c.collapsible && (
+            {collapsible && (
               <button
                 type="button"
-                className="fx-iconbtn"
+                className="fx-iconbtn fx-card__toggle"
                 aria-expanded={open}
+                aria-controls={bodyId}
                 aria-label={open ? 'Collapse' : 'Expand'}
                 onClick={() => setOpen((o) => !o)}
               >
@@ -116,7 +122,7 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
           </div>
         </header>
       )}
-      {open && <div className="fx-card__body">{children}</div>}
+      {shown && <div className="fx-card__body" id={bodyId}>{children}</div>}
     </section>
   );
 }

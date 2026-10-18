@@ -86,6 +86,9 @@
           "md",
           "lg"
         ]
+      },
+      "optional_fields": {
+        "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
       }
     },
     "layout": {

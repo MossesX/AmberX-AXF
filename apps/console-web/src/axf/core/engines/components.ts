@@ -54,6 +54,15 @@ export function containerStyle(c: ContainerData): StyleOutput {
   };
 }
 
+/**
+ * Whether a section / group renders a collapse toggle: the container asset asks for it, or the
+ * active style theme turns on `wrapGroups` (build option --wrap-groups), which wraps every group.
+ * Mirrors ComponentStyleEngine.container on Android.
+ */
+export function containerCollapsible(c: Pick<ContainerData, 'collapsible'>, s?: { wrapGroups?: boolean } | null): boolean {
+  return c.collapsible === true || s?.wrapGroups === true;
+}
+
 export function dialogStyle(d: DialogData): StyleOutput {
   return {
     vars: { '--fx-dialog-w': `${d.width}px` },

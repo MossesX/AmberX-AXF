@@ -3,7 +3,9 @@
  *
  *   node framework/cli/axf.mjs serve [--port 7080] [--token secret] [--apps apps]
  *
- *   POST /init        { dir?, name, template?, modules?, boilerplate?, applicationId? }
+ *   POST /init        { dir?, name, template?, modules?, boilerplate?, applicationId?, options? }   options = build options, e.g. { "wrap-groups": true }
+ *   GET  /build-options                    the build option registry (--switches)
+ *   POST /options     { dir, options? }    show / change build options on an existing app
  *   POST /validate    { dir }
  *   POST /new-asset   { dir, type, id, from? }
  *   POST /new-module  { name, label?, capabilities?, dependsOn?, compose? }
@@ -21,7 +23,8 @@ import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import { FRAMEWORK_DIR, init, listBoilerplates, listModules, listTemplates, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
+import { describeOptions } from './build-options.mjs';
+import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listModules, listTemplates, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
 import { dataPath } from './persist.mjs';
 
 export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ?? '', apps = 'apps', log = console.log } = {}) {
@@ -42,6 +45,7 @@ export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ??
           case '/modules': return json(res, { modules: listModules() });
           case '/boilerplates': return json(res, { boilerplates: listBoilerplates() });
           case '/templates': return json(res, { templates: listTemplates() });
+          case '/build-options': return json(res, { options: describeOptions() });
           case '/libraries': return json(res, { libraries: listLibraries() });
           case '/ported-kits': return json(res, { kits: listPortedKits() });
           case '/catalog': return json(res, JSON.parse(readFileSync(join(FRAMEWORK_DIR, 'catalog/catalog.json'), 'utf8')));
@@ -53,7 +57,8 @@ export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ??
         const lines = [];
         const logf = (m) => { lines.push(m); log(m); };
         switch (url.pathname) {
-          case '/init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'android-compose', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, log: logf }); return json(res, { ok: true, dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, log: lines }); }
+          case '/init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'android-compose', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, log: logf }); return json(res, { ok: true, dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, log: lines }); }
+          case '/options': { const r = appOptions({ dir: safeDir(b.dir ?? '.'), options: b.options ?? {}, log: logf }); return json(res, { ok: true, ...r, log: lines }); }
           case '/import-ui': { const r = importUiLibrary({ name: b.name, kitId: b.kitId, library: b.library, version: b.version, source: b.source, covers: b.covers, dir: b.dir ? safeDir(b.dir) : undefined, overwrite: !!b.overwrite, log: logf }); return json(res, { ok: true, module: r.module, kitId: r.kitId, report: r.report, log: lines }); }
           case '/install': { const r = installLibrary({ dir: safeDir(b.dir), library: b.library, params: b.params ?? {}, log: logf }); return json(res, { ok: true, dir: relative(ROOT, r.dir), library: r.library, config: r.config, changed: r.changed, script: r.script, log: lines }); }
           case '/validate': return json(res, { ok: true, dir: b.dir, report: validateApp(safeDir(b.dir)) });

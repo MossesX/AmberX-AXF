@@ -54,6 +54,8 @@ public data class StyleTokens(
     val borderWidth: Double, val motionMs: Int, val blur: Double, val elevationLevels: List<Int>,
     val shadowSm: String, val shadowMd: String, val shadowLg: String,
     val opacityDisabled: Double, val opacityMuted: Double, val opacityHover: Double, val opacityTint: Double, val opacityScrim: Double, val opacityGlass: Double, val easing: String, val springStiffness: Double, val springDamping: Double, val glass: Boolean,
+    /** style-theme wrapGroups (build option --wrap-groups): every titled group gets a collapse toggle. */
+    val wrapGroups: Boolean = false,
 ) {
     /** The type scale ladder (label, body, title, headline, display) derived from fontSize and typeScale. */
     public val typeLadder: Map<String, Double> get() = mapOf(
@@ -176,6 +178,7 @@ public object ThemeEngine {
             shadowSm = s.shadow.sm, shadowMd = s.shadow.md, shadowLg = s.shadow.lg,
             opacityDisabled = s.opacityDisabled, opacityMuted = s.opacityMuted,
             opacityHover = s.opacityHover, opacityTint = s.opacityTint, opacityScrim = s.opacityScrim, opacityGlass = s.opacityGlass, easing = s.easing, springStiffness = s.springStiffness, springDamping = s.springDamping, glass = s.glass,
+            wrapGroups = s.wrapGroups,
         )
     }
 
@@ -196,6 +199,7 @@ public object ThemeEngine {
         v["--fx-opacity-disabled"] = jsNum(s.opacityDisabled); v["--fx-opacity-muted"] = jsNum(s.opacityMuted)
         v["--fx-opacity-hover"] = jsNum(s.opacityHover); v["--fx-opacity-tint"] = jsNum(s.opacityTint)
         v["--fx-opacity-scrim"] = jsNum(s.opacityScrim); v["--fx-opacity-glass"] = jsNum(s.opacityGlass)
+        v["--fx-wrap-groups"] = if (s.wrapGroups) "1" else "0"
         return v
     }
 }

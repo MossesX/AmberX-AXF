@@ -28,6 +28,7 @@
     "motion": 90,
     "blur": 0,
     "headingWeight": 600,
-    "tracking": 0
+    "tracking": 0,
+    "wrapGroups": true
   }
 }

@@ -65,7 +65,7 @@ public object ComponentStyleEngine {
         when (s.thumb) { Thumb.CIRCLE -> 50.0; Thumb.BAR -> 3.0 / s.thumbSize * 100; Thumb.SQUARE -> st.radiusSm / s.thumbSize * 100 },
         s.fill, s.ticks, s.showValue,
     )
-    public fun container(c: Container, st: StyleTokens): ContainerStyle = ContainerStyle(st.space * PAD.getValue(c.padding) * 2, c.elevation, c.variant, c.header, c.collapsible)
+    public fun container(c: Container, st: StyleTokens): ContainerStyle = ContainerStyle(st.space * PAD.getValue(c.padding) * 2, c.elevation, c.variant, c.header, c.collapsible || st.wrapGroups)
     public fun dialog(d: Dialog): DialogStyle = DialogStyle(d.width.toDouble(), d.variant, d.backdrop, d.animation, d.header, d.closeOnBackdrop)
     public fun popup(p: Popup): PopupStyle = PopupStyle(p.position, p.variant, p.duration, p.showIcon, p.maxVisible)
     public fun contextMenu(c: ContextMenu, st: StyleTokens): ContextMenuStyle = ContextMenuStyle(c.variant, c.showIcons, c.showShortcuts,

@@ -34,6 +34,7 @@
     "opacityHover": 0.1,
     "opacityTint": 0.16,
     "opacityScrim": 0.45,
-    "opacityGlass": 0.6
+    "opacityGlass": 0.6,
+    "wrapGroups": true
   }
 }

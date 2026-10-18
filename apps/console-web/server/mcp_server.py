@@ -316,14 +316,32 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
 
     @mcp.tool(annotations=WRITE)
     async def app_init(name: str, template: Literal["react-ts", "next-ts", "android-compose"] = "react-ts", dir: str = "", libraries: list[str] | None = None,
-                       boilerplate: str = "") -> dict[str, Any]:
-        """Create a new AXF app from a template (optionally from a boilerplate, with libraries installed)."""
+                       boilerplate: str = "", wrap_groups: bool = False, options: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Create a new AXF app from a template (optionally from a boilerplate, with libraries installed).
+        Build options are the same --switches as the CLI (see build_options): wrap_groups=True is --wrap-groups
+        (every section / group collapsible with a top-right toggle); `options` takes any option by flag name,
+        e.g. {"wrap-groups": true}. Every option not given starts at its default (off)."""
         args: dict[str, Any] = {"name": name, "template": template, "libraries": libraries or []}
         if dir:
             args["dir"] = dir
         if boilerplate:
             args["boilerplate"] = boilerplate
+        opts = dict(options or {})
+        if wrap_groups:
+            opts.setdefault("wrap-groups", True)
+        if opts:
+            args["options"] = opts
         return await run("init", **args)
+
+    @mcp.tool(annotations=READ)
+    async def build_options() -> dict[str, Any]:
+        """The build option registry: every --switch a UI build accepts (flag, default, which asset token it sets)."""
+        return await run("build-options")
+
+    @mcp.tool(annotations=WRITE)
+    async def app_options(dir: str, options: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Show (no options) or change build options on an existing AXF app, e.g. {"wrap-groups": "on"}; writes the asset tokens."""
+        return await run("options", dir=dir, options=options or {})
 
     @mcp.tool(annotations=READ)
     async def app_validate(dir: str) -> dict[str, Any]:

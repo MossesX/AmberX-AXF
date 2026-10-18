@@ -77,7 +77,8 @@
     "--fx-opacity-hover": "0.1",
     "--fx-opacity-tint": "0.16",
     "--fx-opacity-scrim": "0.45",
-    "--fx-opacity-glass": "0.6"
+    "--fx-opacity-glass": "0.6",
+    "--fx-wrap-groups": "1"
   },
   "style-theme:sharp-terminal": {
     "--fx-font": "'IBM Plex Sans', system-ui, sans-serif",
@@ -103,7 +104,8 @@
     "--fx-opacity-hover": "0.1",
     "--fx-opacity-tint": "0.18",
     "--fx-opacity-scrim": "0.6",
-    "--fx-opacity-glass": "0.85"
+    "--fx-opacity-glass": "0.85",
+    "--fx-wrap-groups": "1"
   },
   "style-theme:soft-studio": {
     "--fx-font": "'Inter', system-ui, sans-serif",
@@ -129,6 +131,7 @@
     "--fx-opacity-hover": "0.08",
     "--fx-opacity-tint": "0.14",
     "--fx-opacity-scrim": "0.5",
-    "--fx-opacity-glass": "0.72"
+    "--fx-opacity-glass": "0.72",
+    "--fx-wrap-groups": "1"
   }
 }
