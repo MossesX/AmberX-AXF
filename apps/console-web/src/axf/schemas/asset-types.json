@@ -445,6 +445,118 @@
         ]
       }
     },
+    "banner": {
+      "label": "Banner",
+      "group": "Chrome",
+      "icon": "menu",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges, clocks) on its left, center or right; plugins attach more at run time.",
+      "required": [
+        "height",
+        "surface",
+        "logo",
+        "attach"
+      ],
+      "enums": {
+        "surface": [
+          "flat",
+          "raised",
+          "accent"
+        ]
+      },
+      "nested": {
+        "logo": [
+          "show",
+          "text"
+        ]
+      },
+      "optional": true,
+      "hideable": true,
+      "attach": {
+        "_doc": "data.attach = [{type, id, at: left|center|right, order?}]. Only attachable types (badge, clock) are placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
+        "types": [
+          "badge",
+          "clock"
+        ],
+        "sides": [
+          "left",
+          "center",
+          "right"
+        ]
+      },
+      "optional_fields": {
+        "divider": "boolean — line under the banner (default true)",
+        "height": "number — px, 16 to 48 (thin = 24)"
+      }
+    },
+    "clock": {
+      "label": "Clock",
+      "group": "Chrome",
+      "icon": "clock",
+      "description": "A clock that attaches to the banner (or anywhere that hosts attachments).",
+      "required": [
+        "format",
+        "seconds",
+        "date"
+      ],
+      "enums": {
+        "format": [
+          "24h",
+          "12h"
+        ],
+        "date": [
+          "none",
+          "short",
+          "weekday"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "timezone": "string — IANA zone (e.g. America/New_York); default the device's",
+        "mono": "boolean — monospace digits (default true)"
+      }
+    },
+    "badge": {
+      "label": "Badge",
+      "group": "Chrome",
+      "icon": "star",
+      "description": "A small status badge (icon, label, tone) that attaches to the banner. Plugins supply their own badges.",
+      "required": [
+        "icon",
+        "label",
+        "tone",
+        "shape"
+      ],
+      "enums": {
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ],
+        "shape": [
+          "pill",
+          "icon",
+          "dot"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "tooltip": "string — shown on hover/long-press",
+        "link": "string — action spec run on tap (e.g. settings.open:x)"
+      }
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",
@@ -473,5 +585,8 @@
   },
   "hideDefaults": {
     "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
+  },
+  "attachDefaults": {
+    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host (the banner) by the host's data or by plugins at run time. They're never rolled."
   }
 }

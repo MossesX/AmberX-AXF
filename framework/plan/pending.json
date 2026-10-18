@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T21:50:34.442Z",
+ "updatedAt": "2026-10-18T22:30:06.923Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -293,6 +293,32 @@
    "createdAt": "2026-10-18T20:57:10.655Z",
    "builtAt": "",
    "updatedAt": "2026-10-18T20:59:50.588Z",
+   "source": "chat"
+  },
+  {
+   "id": "banner-assets",
+   "title": "Banner, badge and clock asset types (Fable rebuild)",
+   "detail": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Banner and add the Android Compose banner (not built on Opus). The Opus version is in the framework (Oct 18 2026); keep the asset types and fixtures (spec/fixtures/banner.json) stable for apps that already use them.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T22:30:06.842Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T22:30:06.842Z",
+   "source": "chat"
+  },
+  {
+   "id": "claude-badge-plugin",
+   "title": "Claude badge plugin (Fable rebuild)",
+   "detail": "Tests the AI connection on every console load and attaches a Claude badge asset to the banner: green with a 5-second pop-out \"Powered by <model>\", or grey \"AI unavailable\". The Opus version is the web console plugin in the folder \"claude-badge\" (built Oct 18 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T22:30:06.923Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T22:30:06.923Z",
    "source": "chat"
   }
  ]

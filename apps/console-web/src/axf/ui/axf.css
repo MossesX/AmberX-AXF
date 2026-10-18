@@ -45,6 +45,57 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 
 /* ---------------- shell / layout engine ---------------- */
 
+/* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
+.fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+.fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
+
+/* ---------------- banner (core/engines/banner.ts) ---------------- */
+.fx-banner {
+  flex: none; height: var(--fx-banner-h); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  gap: var(--fx-space); padding: 0 calc(var(--fx-space) * 1.25); background: var(--fx-bg); color: var(--fx-muted);
+  font-size: calc(var(--fx-font-size) * 12 / 14); line-height: 1; position: relative; z-index: 30; min-width: 0;
+}
+.fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
+.fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-banner.has-divider { border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-banner__side { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; }
+.fx-banner__side.is-center { justify-content: center; }
+.fx-banner__side.is-right { justify-content: flex-end; }
+.fx-banner__logo { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-family: var(--fx-font-display); font-weight: 700; color: var(--fx-text); white-space: nowrap; }
+.fx-banner.is-accent .fx-banner__logo { color: inherit; }
+.fx-banner__logo .fx-brand__mark { width: calc(var(--fx-banner-h) * 0.55); height: calc(var(--fx-banner-h) * 0.55); }
+.fx-banner__item { position: relative; display: inline-flex; align-items: center; }
+.fx-banner__clock { white-space: nowrap; }
+.fx-banner__clock.is-mono { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; }
+.fx-banner__badge {
+  display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); padding: 0 calc(var(--fx-space) * 0.6);
+  height: calc(var(--fx-banner-h) * 0.72); border-radius: 999px; font: inherit; font-weight: 600; white-space: nowrap;
+  color: var(--fx-text); border: var(--fx-border-w) solid currentColor;
+  background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent);
+}
+/* tone → theme token (BADGE_TONE_TOKEN in core/engines/banner.ts) */
+.fx-banner__badge[data-tone='success'] { color: var(--fx-success); }
+.fx-banner__badge[data-tone='warning'] { color: var(--fx-warning); }
+.fx-banner__badge[data-tone='danger'] { color: var(--fx-danger); }
+.fx-banner__badge[data-tone='accent'] { color: var(--fx-accent); }
+.fx-banner__badge[data-tone='muted'] { color: var(--fx-muted); }
+.fx-banner__badge.is-icon, .fx-banner__badge.is-dot { padding: 0; width: calc(var(--fx-banner-h) * 0.72); justify-content: center; }
+button.fx-banner__badge { cursor: pointer; }
+button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
+.fx-banner__dot { width: 40%; height: 40%; border-radius: 999px; background: currentColor; }
+.fx-banner__pop {
+  position: absolute; left: calc(100% + var(--fx-space)); top: 50%; transform: translateY(-50%); white-space: nowrap;
+  padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface);
+  color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-md); font-weight: 600;
+  animation: fx-banner-pop var(--fx-motion) ease-out; pointer-events: none;
+}
+.fx-banner__pop::before {
+  content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%);
+  border: calc(var(--fx-space) * 0.6) solid transparent; border-right-color: var(--fx-border);
+}
+@keyframes fx-banner-pop { from { opacity: 0; transform: translate(calc(var(--fx-space) * -1), -50%); } to { opacity: 1; transform: translateY(-50%); } }
+@media (max-width: 480px) { .fx-banner__name { display: none; } }
+
 .fx-shell {
   height: 100%;
   display: grid;

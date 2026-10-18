@@ -97,6 +97,42 @@ class ConformanceTest {
         }
     }
 
+    @Test fun `banner engine matches the reference engine`() {
+        val f = fixture("banner.json")
+        val E = ai.amberx.axf.kernel.engine.BannerEngine
+        assertEquals((f.getValue("attachable") as JsonArray).map { it.jsonPrimitive.content }, E.ATTACHABLE, "attachable types")
+        assertEquals((f.getValue("sides") as JsonArray).map { it.jsonPrimitive.content }, E.SIDES, "sides")
+        val thin = ai.amberx.axf.kernel.engine.BannerData.fromJson(asset("banner", "amberx-thin"))
+        for ((id, vars) in f.getValue("vars").jsonObject) {
+            val v = when (id) {
+                "hidden" -> E.vars(thin, true); "none" -> E.vars(null)
+                "too-tall", "too-short", "not-a-number" -> E.vars(thin.copy(height = when (id) { "too-tall" -> 400.0; "too-short" -> 2.0; else -> null }))
+                else -> E.vars(ai.amberx.axf.kernel.engine.BannerData.fromJson(asset("banner", id)))
+            }
+            assertEquals(vars.jsonObject.getValue("--fx-banner-h").jsonPrimitive.content, v["--fx-banner-h"], "banner vars $id")
+        }
+        val exists = (f.getValue("exists") as JsonArray).map { it.jsonPrimitive.content }.toSet()
+        for ((name, c) in f.getValue("place").jsonObject) {
+            val o = c.jsonObject
+            val b = (o["banner"] as? JsonObject)?.let { ai.amberx.axf.kernel.engine.BannerData.fromJson(it) }
+            val extra = (o.getValue("extra") as JsonArray).map { e -> val x = e.jsonObject; ai.amberx.axf.kernel.engine.BannerAttachment(x.getValue("type").jsonPrimitive.content, x.getValue("id").jsonPrimitive.content, x.getValue("at").jsonPrimitive.content, x["order"]?.jsonPrimitive?.content?.toDoubleOrNull(), x["origin"]?.jsonPrimitive?.content) }
+            val placed = E.place(b, extra) { t, id -> "$t:$id" in exists }
+            for ((side, list) in o.getValue("placed").jsonObject) {
+                val want = (list as JsonArray).map { val p = it.jsonObject; listOf("key", "at", "origin").joinToString("|") { k -> p.getValue(k).jsonPrimitive.content } + "|" + p.getValue("order").jsonPrimitive.content.toDouble() }
+                val got = placed.getValue(side).map { "${it.key}|${it.at}|${it.origin}|${it.order}" }
+                assertEquals(want, got, "place $name $side")
+            }
+        }
+        for (c in f.getValue("clock") as JsonArray) {
+            val o = c.jsonObject
+            val clock = ai.amberx.axf.kernel.engine.ClockData.fromJson(o.getValue("clock").jsonObject)
+            val p = o.getValue("parts").jsonObject
+            fun i(k: String) = p.getValue(k).jsonPrimitive.content.toInt()
+            assertEquals(o.getValue("text").jsonPrimitive.content, E.formatClock(clock, ai.amberx.axf.kernel.engine.ClockParts(i("year"), i("month"), i("day"), i("weekday"), i("hour"), i("minute"), i("second"))), "clock $o")
+        }
+        for ((tone, token) in f.getValue("tones").jsonObject) assertEquals(token.jsonPrimitive.content, E.toneToken(tone), "tone $tone")
+    }
+
     @Test fun `spacing choice matches the reference engine`() {
         val f = fixture("spacing.json")
         assertEquals(f.getValue("default").jsonPrimitive.content, ai.amberx.axf.kernel.engine.Spacing.DEFAULT.id, "default spacing")

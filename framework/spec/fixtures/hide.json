@@ -3,7 +3,8 @@
     "app-menu",
     "toolbar",
     "nav-menu",
-    "context-menu"
+    "context-menu",
+    "banner"
   ],
   "cases": [
     {

@@ -32,6 +32,10 @@ import ai.amberx.axf.kernel.engine.Gate
 import ai.amberx.axf.kernel.engine.LayoutEngine
 import ai.amberx.axf.kernel.engine.HideEngine
 import ai.amberx.axf.kernel.engine.Spacing
+import ai.amberx.axf.kernel.engine.BannerAttachment
+import ai.amberx.axf.kernel.engine.BannerData
+import ai.amberx.axf.kernel.engine.BannerEngine
+import ai.amberx.axf.kernel.engine.PlacedAttachment
 import ai.amberx.axf.kernel.engine.RollEngine
 import ai.amberx.axf.kernel.engine.RollRules
 import ai.amberx.axf.kernel.engine.SearchEntry
@@ -242,6 +246,36 @@ public class AxfRuntime(
     }
 
     /* ---------------- hidden slots (HideEngine; web: settings `axf.hide.<type>`) ---------------- */
+
+    /* ---------------- banner (BannerEngine; web: rt.attachToBanner / rt.banner / rt.showBannerPopup) ---------------- */
+
+    private var bannerExtra: List<BannerAttachment> = emptyList()
+
+    /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
+    public fun assetOrNull(type: String): ai.amberx.axf.kernel.asset.AssetEnvelope? = asset(type)
+
+    /** Attach an asset (badge, clock) to the banner at run time; same type + id replaces the earlier one. Returns detach. */
+    public fun attachToBanner(a: BannerAttachment): () -> Unit {
+        bannerExtra = bannerExtra.filter { it.key != a.key } + a
+        set({ it })
+        return { detachFromBanner(a.key) }
+    }
+
+    /** Remove run-time attachments by key (`type:id`) or by origin (a module / plugin id). */
+    public fun detachFromBanner(keyOrOrigin: String) {
+        val next = bannerExtra.filter { it.key != keyOrOrigin && it.origin != keyOrOrigin }
+        if (next.size != bannerExtra.size) { bannerExtra = next; set({ it }) }
+    }
+
+    /** The banner to draw: its data (null = no banner or hidden), its height and where every attachment goes. */
+    public fun banner(): Triple<BannerData?, Int, Map<String, List<PlacedAttachment>>> {
+        val b = if (slotHidden(AssetTypes.BANNER)) null else assetOrNull(AssetTypes.BANNER)?.let { BannerData.fromJson(it.data) }
+        return Triple(b, BannerEngine.height(b), BannerEngine.place(b, if (b != null) bannerExtra else emptyList()) { t, id -> registry.has(t, id) })
+    }
+
+    /** Pop a short message out of a banner attachment; the UI layer calls [dismissBannerPopup] after its duration. */
+    public fun showBannerPopup(key: String, text: String, durationMs: Long = 5000): Unit = set({ it.copy(bannerPopup = BannerPopup(key, text, durationMs)) })
+    public fun dismissBannerPopup() { if (current.bannerPopup != null) set({ it.copy(bannerPopup = null) }) }
 
     /* ---------------- spacing (SpacingEngine; web: settings `axf.appearance.spacing`) ---------------- */
 

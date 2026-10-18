@@ -1,0 +1,514 @@
+{
+  "attachable": [
+    "badge",
+    "clock"
+  ],
+  "sides": [
+    "left",
+    "center",
+    "right"
+  ],
+  "vars": {
+    "amberx-accent": {
+      "--fx-banner-h": "30px"
+    },
+    "amberx-thin": {
+      "--fx-banner-h": "24px"
+    },
+    "hidden": {
+      "--fx-banner-h": "0px"
+    },
+    "none": {
+      "--fx-banner-h": "0px"
+    },
+    "too-tall": {
+      "--fx-banner-h": "48px"
+    },
+    "too-short": {
+      "--fx-banner-h": "16px"
+    },
+    "not-a-number": {
+      "--fx-banner-h": "24px"
+    }
+  },
+  "exists": [
+    "badge:claude",
+    "badge:new",
+    "clock:digital-12h",
+    "clock:digital-24h"
+  ],
+  "place": {
+    "asset-only": {
+      "banner": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "AmberX"
+        },
+        "attach": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right"
+          }
+        ],
+        "divider": true
+      },
+      "extra": [],
+      "placed": {
+        "left": [],
+        "center": [],
+        "right": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right",
+            "order": 0,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "plugin-badge-left": {
+      "banner": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "AmberX"
+        },
+        "attach": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right"
+          }
+        ],
+        "divider": true
+      },
+      "extra": [
+        {
+          "type": "badge",
+          "id": "claude",
+          "at": "left",
+          "order": 5,
+          "origin": "claude-badge"
+        }
+      ],
+      "placed": {
+        "left": [
+          {
+            "key": "badge:claude",
+            "type": "badge",
+            "id": "claude",
+            "at": "left",
+            "order": 5,
+            "origin": "claude-badge"
+          }
+        ],
+        "center": [],
+        "right": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right",
+            "order": 0,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "runtime-replaces-asset": {
+      "banner": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "AmberX"
+        },
+        "attach": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right"
+          }
+        ],
+        "divider": true
+      },
+      "extra": [
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "center",
+          "origin": "x"
+        }
+      ],
+      "placed": {
+        "left": [],
+        "center": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "center",
+            "order": 1000,
+            "origin": "x"
+          }
+        ],
+        "right": []
+      }
+    },
+    "skips-bad": {
+      "banner": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "AmberX"
+        },
+        "attach": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right"
+          }
+        ],
+        "divider": true
+      },
+      "extra": [
+        {
+          "type": "button",
+          "id": "x",
+          "at": "left"
+        },
+        {
+          "type": "badge",
+          "id": "missing",
+          "at": "left"
+        },
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "top"
+        }
+      ],
+      "placed": {
+        "left": [],
+        "center": [],
+        "right": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "right",
+            "order": 0,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "order-ties": {
+      "banner": {
+        "height": 24,
+        "surface": "flat",
+        "logo": {
+          "show": true,
+          "text": "AmberX"
+        },
+        "attach": [],
+        "divider": true
+      },
+      "extra": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "right",
+          "order": 1
+        },
+        {
+          "type": "badge",
+          "id": "claude",
+          "at": "right",
+          "order": 1
+        },
+        {
+          "type": "clock",
+          "id": "digital-24h",
+          "at": "right",
+          "order": 0
+        }
+      ],
+      "placed": {
+        "left": [],
+        "center": [],
+        "right": [
+          {
+            "key": "clock:digital-24h",
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "right",
+            "order": 0,
+            "origin": "runtime"
+          },
+          {
+            "key": "badge:claude",
+            "type": "badge",
+            "id": "claude",
+            "at": "right",
+            "order": 1,
+            "origin": "runtime"
+          },
+          {
+            "key": "badge:new",
+            "type": "badge",
+            "id": "new",
+            "at": "right",
+            "order": 1,
+            "origin": "runtime"
+          }
+        ]
+      }
+    },
+    "no-banner": {
+      "banner": null,
+      "extra": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "left"
+        }
+      ],
+      "placed": {
+        "left": [
+          {
+            "key": "badge:new",
+            "type": "badge",
+            "id": "new",
+            "at": "left",
+            "order": 1000,
+            "origin": "runtime"
+          }
+        ],
+        "center": [],
+        "right": []
+      }
+    }
+  },
+  "clock": [
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": false,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 10,
+        "day": 18,
+        "weekday": 0,
+        "hour": 18,
+        "minute": 5,
+        "second": 9
+      },
+      "text": "18:05"
+    },
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": false,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 1,
+        "day": 2,
+        "weekday": 5,
+        "hour": 0,
+        "minute": 0,
+        "second": 0
+      },
+      "text": "00:00"
+    },
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": false,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 12,
+        "day": 31,
+        "weekday": 4,
+        "hour": 12,
+        "minute": 59,
+        "second": 59
+      },
+      "text": "12:59"
+    },
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": true,
+        "date": "weekday"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 10,
+        "day": 18,
+        "weekday": 0,
+        "hour": 18,
+        "minute": 5,
+        "second": 9
+      },
+      "text": "Sun Oct 18 18:05:09"
+    },
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": true,
+        "date": "weekday"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 1,
+        "day": 2,
+        "weekday": 5,
+        "hour": 0,
+        "minute": 0,
+        "second": 0
+      },
+      "text": "Fri Jan 2 00:00:00"
+    },
+    {
+      "clock": {
+        "format": "24h",
+        "seconds": true,
+        "date": "weekday"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 12,
+        "day": 31,
+        "weekday": 4,
+        "hour": 12,
+        "minute": 59,
+        "second": 59
+      },
+      "text": "Thu Dec 31 12:59:59"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": false,
+        "date": "short"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 10,
+        "day": 18,
+        "weekday": 0,
+        "hour": 18,
+        "minute": 5,
+        "second": 9
+      },
+      "text": "Oct 18 6:05 PM"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": false,
+        "date": "short"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 1,
+        "day": 2,
+        "weekday": 5,
+        "hour": 0,
+        "minute": 0,
+        "second": 0
+      },
+      "text": "Jan 2 12:00 AM"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": false,
+        "date": "short"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 12,
+        "day": 31,
+        "weekday": 4,
+        "hour": 12,
+        "minute": 59,
+        "second": 59
+      },
+      "text": "Dec 31 12:59 PM"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": true,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 10,
+        "day": 18,
+        "weekday": 0,
+        "hour": 18,
+        "minute": 5,
+        "second": 9
+      },
+      "text": "6:05:09 PM"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": true,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 1,
+        "day": 2,
+        "weekday": 5,
+        "hour": 0,
+        "minute": 0,
+        "second": 0
+      },
+      "text": "12:00:00 AM"
+    },
+    {
+      "clock": {
+        "format": "12h",
+        "seconds": true,
+        "date": "none"
+      },
+      "parts": {
+        "year": 2026,
+        "month": 12,
+        "day": 31,
+        "weekday": 4,
+        "hour": 12,
+        "minute": 59,
+        "second": 59
+      },
+      "text": "12:59:59 PM"
+    }
+  ],
+  "tones": {
+    "neutral": "text",
+    "success": "success",
+    "warning": "warning",
+    "danger": "danger",
+    "accent": "accent",
+    "muted": "muted"
+  }
+}

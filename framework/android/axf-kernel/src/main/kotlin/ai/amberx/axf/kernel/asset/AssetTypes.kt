@@ -18,6 +18,11 @@ public object AssetTypes {
     public const val SLIDER: String = "slider"
     public const val CONTAINER: String = "container"
     public const val UAC_POLICY: String = "uac-policy"
+    /** Optional chrome types every port shares: the banner, and the attachable types it hosts. */
+    public const val BANNER: String = "banner"
+    public const val CLOCK: String = "clock"
+    public const val BADGE: String = "badge"
+    public val OPTIONAL_SHARED: List<String> = listOf(BANNER, CLOCK, BADGE)
 
     /** Android-port asset types (framework/schemas/asset-types.android.json). Optional slots: an app may have none. */
     public const val SCREEN_TEMPLATE: String = "screen-template"
@@ -60,6 +65,8 @@ public data class AssetTypeSpec(
     val rollAsset: Boolean? = null,
     /** `hideable`: the slot may be hidden (chrome only; see HideEngine). */
     val hideable: Boolean = false,
+    /** `attachable`: assets placed on a host (the banner), not a slot picked in Appearance or rolled (see BannerEngine). */
+    val attachable: Boolean = false,
 ) {
     public companion object {
         public fun fromJson(id: String, o: JsonObject, owner: String = "kernel", optional: Boolean = false): AssetTypeSpec = AssetTypeSpec(
@@ -76,6 +83,7 @@ public data class AssetTypeSpec(
             rollSlot = o.obj("roll")?.let { (it["slot"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
             rollAsset = o.obj("roll")?.let { (it["asset"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
             hideable = o.bool("hideable", false),
+            attachable = o.bool("attachable", false),
         )
     }
 }

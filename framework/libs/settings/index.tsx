@@ -9,7 +9,7 @@
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
@@ -185,7 +185,7 @@ function rollGroup(): SettingsGroup {
     tab: 'appearance',
     order: 15,
     description: 'Which slots "Randomize all" may change. A slot that is off keeps its current asset.',
-    settings: ASSET_TYPES.filter((t) => !rollNever(t)).map((t) => ({
+    settings: ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t)).map((t) => ({
       key: ROLL_SLOT_KEY(t),
       label: assetTypeSpecs[t].label,
       kind: 'toggle' as const,
@@ -202,7 +202,7 @@ function RollAssetsPanel() {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
-  const types = ASSET_TYPES.filter((t) => !rollNever(t));
+  const types = ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t));
   const [type, setType] = useState<AssetType>('context-menu');
   const locked = rt.gate('assets.swap') !== 'allow';
   const slotOn = rt.rollSlotIncluded(type);
@@ -435,7 +435,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
     tab: 'appearance',
     order: 10,
     description: 'Pick the active asset for each slot.',
-    settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0).map((t) => ({
+    settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
       key: `axf.slot.${t}`,
       label: assetTypeSpecs[t].label,
       kind: 'asset_slot' as const,

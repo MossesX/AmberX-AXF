@@ -12,6 +12,9 @@
     "button": true,
     "slider": true,
     "container": true,
+    "banner": true,
+    "clock": false,
+    "badge": false,
     "uac-policy": false
   },
   "cases": {
@@ -72,6 +75,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     },
@@ -136,6 +143,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     },
@@ -206,6 +217,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     },
@@ -270,6 +285,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     },
@@ -331,6 +350,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     },
@@ -395,6 +418,10 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "banner": [
+          "amberx-accent",
+          "amberx-thin"
         ]
       }
     }

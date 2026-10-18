@@ -60,7 +60,7 @@ public class SettingsModule : BaseModule(ID, "Settings") {
             SettingSpec("axf.appearance.followSystem", "Follow system dark mode", SettingKind.TOGGLE, "Pick the dark/light counterpart of the color theme automatically", JsonPrimitive(false)),
             SettingSpec(SPACING_KEY, "Spacing", SettingKind.CHOICE, "How much room between and around things. Applies to every theme; Regular shows the style theme as designed.",
                 JsonPrimitive((runtime?.spacing() ?: Spacing.DEFAULT).id), options = Spacing.entries.map { it.id to it.label }),
-        ) + types.filter { !it.optional || runtime?.registry?.list(it.id)?.isNotEmpty() == true }.map { t ->
+        ) + types.filter { !it.attachable && (!it.optional || runtime?.registry?.list(it.id)?.isNotEmpty() == true) }.map { t ->
             SettingSpec("axf.slot.${t.id}", t.label, SettingKind.ASSET_SLOT, if (t.id == AssetTypes.UAC_POLICY) "Changing the policy may change your role" else if (t.hideable) "Hidden removes it from the screen; its other options grey out." else null, JsonPrimitive(""), SettingScope.USER, target = t.id, requires = if (t.id == AssetTypes.UAC_POLICY) "uac.manage" else "assets.swap", icon = t.icon)
         })
     }

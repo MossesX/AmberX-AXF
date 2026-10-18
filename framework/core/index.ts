@@ -12,6 +12,7 @@ export * from './engines/windows';
 export * from './engines/roll';
 export * from './engines/hide';
 export * from './engines/spacing';
+export * from './engines/banner';
 export * from './engines/search';
 export * from './engines/alerts';
 export * from './diagnostics';

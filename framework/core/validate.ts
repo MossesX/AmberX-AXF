@@ -18,6 +18,11 @@ interface TypeSpec {
 export const assetTypeSpecs = spec.types as unknown as Record<AssetType, TypeSpec>;
 export const FRAMEWORK_VERSION: string = spec.frameworkVersion;
 
+/** Attachable types (badge, clock): assets placed on a host (the banner), not slots picked in Appearance or rolled. */
+export function attachable(t: string): boolean {
+  return (spec.types as unknown as Record<string, { attachable?: boolean }>)[t]?.attachable === true;
+}
+
 export function isAssetType(t: unknown): t is AssetType {
   return typeof t === 'string' && (ASSET_TYPES as readonly string[]).includes(t);
 }

@@ -8,6 +8,7 @@ import { builtinDialogs } from './studio/builtinDialogs';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
+import { Banner } from './components/Banner';
 
 export interface ViewDef {
   title: string;
@@ -49,6 +50,9 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
 
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
+    <div className="fx-frame">
+    {/* Banner asset: thin permanent bar above the layout (hidden slot or no banner asset = nothing) */}
+    <Banner />
     <div className="fx-shell">
       {showMenubar && (
         <div className="fx-region" style={{ gridArea: 'menubar' }}>
@@ -84,6 +88,7 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />
+    </div>
     </div>
     </TabRenderersProvider>
   );

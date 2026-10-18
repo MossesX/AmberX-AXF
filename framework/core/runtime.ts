@@ -14,12 +14,14 @@ import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { hideable, hiddenSlots } from './engines/hide';
 import { spacingOf, type Spacing } from './engines/spacing';
+import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
+  OPTIONAL_TYPES,
   type ActiveAssets,
   type Asset,
   type AssetType,
@@ -28,7 +30,7 @@ import {
   type Gate,
   type Toast,
 } from './types';
-import { assetTypeSpecs, type ValidationResult } from './validate';
+import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
 export interface AxfRuntimeOptions {
   manifest: AxfManifest;
@@ -141,6 +143,7 @@ export class AxfRuntime {
       const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== opts.manifest.defaults[t];
       const candidates = [appChanged ? undefined : saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
       const pick = candidates.find((id) => id && this.registry.has(t, id));
+      if (!pick && (OPTIONAL_TYPES as readonly string[]).includes(t)) { active[t] = ''; continue; } // optional type, none shipped
       if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
       active[t] = pick;
     }
@@ -251,6 +254,46 @@ export class AxfRuntime {
 
   asset<K extends AssetType>(type: K): Asset<K> {
     return this.registry.get(type, this.state.active[type])!;
+  }
+
+  /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
+  assetOrNull<K extends AssetType>(type: K): Asset<K> | null {
+    const id = this.state.active[type];
+    return id ? this.registry.get(type, id) ?? null : null;
+  }
+
+  /* ---------------- banner (core/engines/banner.ts) ---------------- */
+
+  private bannerExtra: BannerAttachment[] = [];
+  private bannerPopupTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Attach an asset (badge, clock) to the banner at run time. Same type + id replaces the earlier one. Returns detach. */
+  attachToBanner(a: BannerAttachment & { origin: string }): () => void {
+    const key = attachmentKey(a.type, a.id);
+    this.bannerExtra = [...this.bannerExtra.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }];
+    this.set({});
+    return () => this.detachFromBanner(key);
+  }
+
+  /** Remove run-time attachments by key (`type:id`) or by origin (a module / plugin id). */
+  detachFromBanner(keyOrOrigin: string): void {
+    const before = this.bannerExtra.length;
+    this.bannerExtra = this.bannerExtra.filter((x) => attachmentKey(x.type, x.id) !== keyOrOrigin && x.origin !== keyOrOrigin);
+    if (this.bannerExtra.length !== before) this.set({});
+  }
+
+  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
+  banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
+    const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
+    const placed = placeAttachments(b, b ? this.bannerExtra : [], (t, id) => this.registry.has(t as AssetType, id));
+    return { data: b, placed };
+  }
+
+  /** Pop a short message out of a banner attachment for `ms` (default 5 s), e.g. a status badge on load. */
+  showBannerPopup(key: string, text: string, ms = 5000): void {
+    if (this.bannerPopupTimer) clearTimeout(this.bannerPopupTimer);
+    this.set({ bannerPopup: { key, text, until: Date.now() + ms } });
+    this.bannerPopupTimer = setTimeout(() => { this.bannerPopupTimer = null; this.set({ bannerPopup: null }); }, ms);
   }
 
   /** Hot-swap the active asset of a slot. `target` = asset id | "next" | "prev" | "random". */
@@ -381,7 +424,7 @@ export class AxfRuntime {
   /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
   randomize() {
     if (!this.can('assets.swap')) return this.toast('Your role cannot swap assets.', 'danger', 'Permission denied');
-    const plan = rollPlan(ASSET_TYPES.filter((t) => !this.slotHidden(t)), (t) => this.registry.list(t as AssetType), this.rollRules());
+    const plan = rollPlan(ASSET_TYPES.filter((t) => !this.slotHidden(t) && !attachable(t)), (t) => this.registry.list(t as AssetType), this.rollRules());
     const targets: Partial<ActiveAssets> = {};
     for (const [t, ids] of Object.entries(plan) as [AssetType, string[]][]) {
       targets[t] = ids[Math.floor(Math.random() * ids.length)];
@@ -394,7 +437,7 @@ export class AxfRuntime {
   reset() {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
-    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]!.id;
+    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]?.id ?? '';
     const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
     this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
   }
@@ -497,6 +540,7 @@ export class AxfRuntime {
       ...colorThemeVars(color),
       ...styleThemeVars(this.asset('style-theme').data, this.spacing()),
       ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
+      ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
     };
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
     for (const p of parts) {

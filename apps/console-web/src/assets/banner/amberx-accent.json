@@ -1,0 +1,17 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "amberx-accent",
+  "name": "AmberX accent",
+  "version": "1.0.0",
+  "description": "A slightly taller banner in the accent colour, logo on the left, a 24-hour clock with the date on the right.",
+  "author": "AmberX AXF",
+  "tags": ["banner", "accent"],
+  "data": {
+    "height": 30,
+    "surface": "accent",
+    "logo": { "show": true, "text": "AmberX" },
+    "attach": [{ "type": "clock", "id": "digital-24h", "at": "right" }],
+    "divider": false
+  }
+}

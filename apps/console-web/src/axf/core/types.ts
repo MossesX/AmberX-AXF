@@ -17,8 +17,14 @@ export const ASSET_TYPES = [
   'button',
   'slider',
   'container',
+  'banner',
+  'clock',
+  'badge',
   'uac-policy',
 ] as const;
+
+/** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
+export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'badge'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -207,6 +213,34 @@ export interface PopupData {
   maxVisible: number;
 }
 
+/* ---------- banner + attachables (core/engines/banner.ts) ---------- */
+
+export type BannerSide = 'left' | 'center' | 'right';
+export interface BannerAttach { type: string; id: string; at: BannerSide; order?: number }
+export interface BannerData {
+  /** px, 16 to 48 (thin = 24) */
+  height: number;
+  surface: 'flat' | 'raised' | 'accent';
+  logo: { show: boolean; text: string };
+  attach: BannerAttach[];
+  divider?: boolean;
+}
+export interface ClockData {
+  format: '24h' | '12h';
+  seconds: boolean;
+  date: 'none' | 'short' | 'weekday';
+  timezone?: string;
+  mono?: boolean;
+}
+export interface BadgeData {
+  icon: string;
+  label: string;
+  tone: 'neutral' | 'success' | 'warning' | 'danger' | 'accent' | 'muted';
+  shape: 'pill' | 'icon' | 'dot';
+  tooltip?: string;
+  link?: string;
+}
+
 /* ---------- controls ---------- */
 
 export interface ButtonData {
@@ -270,6 +304,9 @@ export interface AssetDataMap {
   button: ButtonData;
   slider: SliderData;
   container: ContainerData;
+  banner: BannerData;
+  clock: ClockData;
+  badge: BadgeData;
   'uac-policy': UACPolicyData;
 }
 
@@ -305,6 +342,8 @@ export interface AxfState {
   rev: number;
   /** increments on every successful hot-swap */
   swaps: number;
+  /** A short message popping out of a banner attachment (key = `type:id`), e.g. a status badge on load. */
+  bannerPopup?: { key: string; text: string; until: number } | null;
 }
 
 export type Gate = 'allow' | 'disable' | 'hide';

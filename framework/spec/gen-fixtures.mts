@@ -13,6 +13,7 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
+import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { ASSET_TYPES } from '../core/types';
@@ -66,6 +67,43 @@ write('spacing.json', {
     return [sp, Object.fromEntries(['--fx-space', '--fx-row-h', '--fx-density-k', '--fx-radius-sm', '--fx-radius-md', '--fx-radius-lg', '--fx-font-size'].map((k) => [k, v[k]]))];
   }))])),
 });
+// Banner (core/engines/banner.ts): height vars, where attachments go, clock text, badge tone tokens.
+{
+  const banners = Object.fromEntries(load('banner').map((a) => [a.id, a.data]));
+  const exists = new Set([...load('badge').map((a) => `badge:${a.id}`), ...load('clock').map((a) => `clock:${a.id}`), 'badge:claude']);
+  const has = (t: string, id: string) => exists.has(`${t}:${id}`);
+  const thin = banners['amberx-thin'];
+  const placeCases = {
+    'asset-only': { banner: thin, extra: [] },
+    'plugin-badge-left': { banner: thin, extra: [{ type: 'badge', id: 'claude', at: 'left', order: 5, origin: 'claude-badge' }] },
+    'runtime-replaces-asset': { banner: thin, extra: [{ type: 'clock', id: 'digital-12h', at: 'center', origin: 'x' }] },
+    'skips-bad': { banner: thin, extra: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: 'missing', at: 'left' }, { type: 'badge', id: 'new', at: 'top' }] },
+    'order-ties': { banner: { ...thin, attach: [] }, extra: [{ type: 'badge', id: 'new', at: 'right', order: 1 }, { type: 'badge', id: 'claude', at: 'right', order: 1 }, { type: 'clock', id: 'digital-24h', at: 'right', order: 0 }] },
+    'no-banner': { banner: null, extra: [{ type: 'badge', id: 'new', at: 'left' }] },
+  } as const;
+  const parts = [
+    { year: 2026, month: 10, day: 18, weekday: 0, hour: 18, minute: 5, second: 9 },
+    { year: 2026, month: 1, day: 2, weekday: 5, hour: 0, minute: 0, second: 0 },
+    { year: 2026, month: 12, day: 31, weekday: 4, hour: 12, minute: 59, second: 59 },
+  ];
+  const clocks = [
+    { format: '24h', seconds: false, date: 'none' }, { format: '24h', seconds: true, date: 'weekday' },
+    { format: '12h', seconds: false, date: 'short' }, { format: '12h', seconds: true, date: 'none' },
+  ] as const;
+  write('banner.json', {
+    attachable: ATTACHABLE_TYPES,
+    sides: BANNER_SIDES,
+    vars: {
+      ...Object.fromEntries(Object.entries(banners).map(([id, d]) => [id, bannerVars(d as never)])),
+      'hidden': bannerVars(thin as never, true), 'none': bannerVars(null),
+      'too-tall': bannerVars({ ...thin, height: 400 } as never), 'too-short': bannerVars({ ...thin, height: 2 } as never), 'not-a-number': bannerVars({ ...thin, height: 'x' } as never),
+    },
+    exists: [...exists].sort(),
+    place: Object.fromEntries(Object.entries(placeCases).map(([k, c]) => [k, { banner: c.banner, extra: c.extra, placed: placeAttachments(c.banner as never, c.extra as never, has) }])),
+    clock: clocks.flatMap((c) => parts.map((t) => ({ clock: c, parts: t, text: formatClock(c, t) }))),
+    tones: BADGE_TONE_TOKEN,
+  });
+}
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),

@@ -27,6 +27,9 @@
     "button": "rounded-solid",
     "slider": "classic-round",
     "container": "soft-card",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "badge": "new",
     "uac-policy": "standard"
   },
   "structure": [

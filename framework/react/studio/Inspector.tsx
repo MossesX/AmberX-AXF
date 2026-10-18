@@ -1,4 +1,4 @@
-import { ASSET_TYPES, assetTypeSpecs } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, attachable } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 
@@ -16,7 +16,7 @@ export function Inspector() {
         </button>
       </div>
       <ul className="fx-inspector__list">
-        {ASSET_TYPES.map((t) => {
+        {ASSET_TYPES.filter((t) => !attachable(t) && rt.assetOrNull(t)).map((t) => {
           const a = rt.asset(t);
           return (
             <li key={t} className="fx-inspector__row">

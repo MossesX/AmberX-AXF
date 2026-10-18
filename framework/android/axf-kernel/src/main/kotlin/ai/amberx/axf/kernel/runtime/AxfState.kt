@@ -24,6 +24,8 @@ public data class AxfState(
     /** increments on every successful hot-swap */
     val swaps: Long = 0,
     val windowWidthDp: Int = 0,
+    /** A short message popping out of a banner attachment (key = `type:id`); the UI layer calls dismissBannerPopup after it. */
+    val bannerPopup: BannerPopup? = null,
 ) {
     public fun active(type: String): String? = active[type]
     public val colorTheme: String get() = active.getValue(AssetTypes.COLOR_THEME)
@@ -43,3 +45,6 @@ public data class Persisted(val active: Map<String, String>, val role: String?, 
         }
     }
 }
+
+/** See AxfState.bannerPopup (web: AxfState.bannerPopup). */
+public data class BannerPopup(val key: String, val text: String, val durationMs: Long = 5000)
