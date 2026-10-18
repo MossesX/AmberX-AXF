@@ -14,6 +14,10 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { chromium } from 'playwright';
 
 const PORT = 7098;
+const lines = [];
+const log = (m) => { lines.push(m); console.log(m); };
+/** In CI, problems also become annotations so they're readable without downloading logs. */
+const annotate = (m) => { if (process.env.GITHUB_ACTIONS) console.log(`::error title=Theme swap::${m.replace(/\n/g, '%0A')}`); };
 const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' });
 let failed = false;
 try {
@@ -61,14 +65,14 @@ try {
       if (vals[0] && vals.every((v) => v === vals[0])) stuck.push(`${n} ${prop} ${vals[0]}`);
     }
   }
-  console.log(`colour themes ${colourThemes.join(', ')}: ${names.length} elements, ${stuck.length} colours that never changed`);
-  for (const s of stuck.slice(0, 40)) console.log(`  ✗ ${s}`);
+  log(`colour themes ${colourThemes.join(', ')}: ${names.length} elements, ${stuck.length} colours that never changed`);
+  for (const s of stuck.slice(0, 40)) log(`  ✗ ${s}`);
   if (stuck.length) failed = true;
 
   let styleSelect = -1;
   for (let i = 0; i < (await selects.count()); i += 1) if ((await valuesOf(i)).includes('glass-orbit')) styleSelect = i;
   if (styleSelect < 0) {
-    console.log('✗ no style-theme picker found');
+    log('✗ no style-theme picker found');
     failed = true;
   } else {
     const seen = new Set();
@@ -76,16 +80,20 @@ try {
       await selects.nth(styleSelect).selectOption(st);
       await page.waitForTimeout(300);
       const vals = await page.evaluate(() => ['disabled', 'muted', 'hover', 'tint', 'scrim', 'glass'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(`--fx-opacity-${k}`).trim()));
-      console.log(`style theme ${st}: opacity ${vals.join(' / ')}`);
-      if (vals.some((v) => v === '')) { console.log('  ✗ a transparency token is missing'); failed = true; }
+      log(`style theme ${st}: opacity ${vals.join(' / ')}`);
+      if (vals.some((v) => v === '')) { log('  ✗ a transparency token is missing'); failed = true; }
       seen.add(vals.join('/'));
     }
-    if (seen.size < 2) { console.log('✗ transparency tokens did not change between style themes'); failed = true; }
+    if (seen.size < 2) { log('✗ transparency tokens did not change between style themes'); failed = true; }
   }
-  if (errors.length) { console.log(`✗ page errors:\n  ${errors.join('\n  ')}`); failed = true; }
+  if (errors.length) { log(`✗ page errors:\n  ${errors.join('\n  ')}`); failed = true; }
   await browser.close();
+} catch (err) {
+  log(`✗ the check could not run: ${err instanceof Error ? err.message : String(err)}`);
+  failed = true;
 } finally {
   server.kill();
 }
 console.log(failed ? '✗ theme swap check failed' : '✓ every colour and transparency follows the active themes');
+if (failed) annotate(lines.filter((l) => l.includes('✗')).slice(0, 30).join('\n') || 'failed');
 process.exit(failed ? 1 : 0);
