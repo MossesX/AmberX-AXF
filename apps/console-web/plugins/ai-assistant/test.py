@@ -58,7 +58,10 @@ class Fake(BaseHTTPRequestHandler):
         w = lambda s: (self.wfile.write(s.encode()), self.wfile.flush())  # noqa: E731
         if self.path.startswith("/oa/chat/completions"):
             msgs = body["messages"]
-            if body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "calc" in json.dumps(msgs[-1]):
+            if body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "write it" in json.dumps(msgs[-1]):
+                args = json.dumps({"container": "web", "path": "/app/a.ts", "content": "new", "reason": "fix"})
+                w(f'data: {json.dumps({"choices": [{"delta": {"tool_calls": [{"index": 0, "id": "w1", "function": {"name": "container_write", "arguments": args}}]}, "finish_reason": "tool_calls"}]})}\n\n')
+            elif body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "calc" in json.dumps(msgs[-1]):
                 w('data: {"choices":[{"delta":{"tool_calls":[{"index":0,"id":"c1","function":{"name":"calculator","arguments":"{\\"expr"}}]}}]}\n\n')
                 w('data: {"choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"ession\\": \\"6*7\\"}"}}]},"finish_reason":"tool_calls"}]}\n\n')
             else:
@@ -256,4 +259,123 @@ CALLS.clear()
 list(sys.modules["axf_console_plugins.ai_assistant.providers"].stream_chat({"kind": "anthropic", "baseUrl": f"{BASE}/an", "key": "x" * 30}, [{"role": "user", "content": "hi"}], system="s", model="m", params={"thinking": True, "max_tokens": 4096, "thinking_budget": 4096}))
 b = CALLS[-1]["body"]
 check(b["thinking"]["budget_tokens"] < b["max_tokens"], "thinking budget stays below max_tokens")
+
+# --- Mosses: proposed container changes become one change batch (approval card), proxied by capability ------------
+class FakeMosses(FakeAgents):
+    def get_agent(self, aid):
+        return {"id": aid, "name": "Mosses", "icon": "code", "system_prompt": "You are Mosses.", "model": {},
+                "tools": [{"name": "container_write", "description": "propose", "parameters": {"type": "object", "properties": {}}}],
+                "writeMode": {"containers": ["web"], "snapshots": True}}
+
+    def run_tool(self, aid, name, args, ctx):
+        n = ctx["stage"]({"kind": "write", **args})
+        return f"Proposed change #{n}"
+
+
+class FakeContainers:
+    batches: dict = {}
+
+    def create_batch(self, items, actor=None, conversation="", turn="", title=""):
+        b = {"id": f"b-20261018000000-{len(self.batches):08x}", "status": "pending", "items": [{**it, "id": f"i{i + 1}", "status": "pending"} for i, it in enumerate(items)],
+             "actor": actor, "conversation": conversation, "turn": turn, "title": title, "snapshots": [], "createdAt": 1}
+        self.batches[b["id"]] = b
+        return b
+
+    def public_batch(self, b):
+        return {**b, "items": [{k: v for k, v in it.items() if k != "content"} for it in b["items"]]}
+
+    def get_batch(self, bid):
+        if bid not in self.batches:
+            raise KeyError("no such batch")
+        return self.batches[bid]
+
+    def list_batches(self, status="", conversation="", limit=50):
+        return [b for b in self.batches.values() if not conversation or b["conversation"] == conversation][:limit]
+
+    def approve_stream(self, bid, items, who):
+        b = self.batches[bid]
+        b.update(status="applied", snapshots=["s-1"])
+        for it in b["items"]:
+            it["status"] = "applied"
+        yield f"data: {json.dumps({'type': 'snapshot', 'id': 's-1'})}\n\n"
+        yield f"data: {json.dumps({'type': 'batch', 'batch': self.public_batch(b)})}\n\n"
+
+    def reject_batch(self, bid, who=None):
+        self.batches[bid]["status"] = "rejected"
+        return self.batches[bid]
+
+    def undo_batch(self, bid, who=None):
+        self.batches[bid]["status"] = "undone"
+        return self.batches[bid]
+
+
+plugin_services.provide("axf.agents@1", FakeMosses(), "fake-agent-manager")
+check(c.get(f"{P}/agents/coder/write-mode").json()["writeMode"] is None or True, "write-mode route answers")
+c4 = c.post(f"{P}/conversations", json={"settings": {"agentId": "coder", "profileId": oa}}).json()["conversation"]
+ev = turn(c4["id"], content="please write it")
+check(any(e == "batch" for e, _ in ev) is False, "no batch without Container access (changes dropped with a note)")
+check(any(e == "text" and "dropped" in d["text"] for e, d in ev), "…and the chat says so")
+fc = FakeContainers()
+plugin_services.provide("axf.containers@1", fc, "fake-container-access")
+check(c.get(f"{P}/agents/coder/write-mode").json()["writeMode"]["containers"] == ["web"], "write-mode badge data for the selected agent")
+c4 = c.post(f"{P}/conversations", json={"settings": {"agentId": "coder", "profileId": oa}}).json()["conversation"]
+ev = turn(c4["id"], content="please write it")
+bev = [d for e, d in ev if e == "batch"]
+check(bev and bev[0]["batch"]["items"][0]["path"] == "/app/a.ts" and "content" not in bev[0]["batch"]["items"][0], "proposals become one batch (content stays server-side)")
+start = [d for e, d in ev if e == "start"][0]
+check(start["agent"]["writeMode"]["containers"] == ["web"], "start event carries write mode")
+done = [d for e, d in ev if e == "done"][0]["message"]
+bid = bev[0]["batch"]["id"]
+check(done["meta"]["batch"] == bid and fc.batches[bid]["conversation"] == c4["id"] and fc.batches[bid]["actor"]["name"] == "Mosses", "reply links its batch; batch knows the conversation and agent")
+check(c.get(f"{P}/batches/{bid}").json()["id"] == bid, "batch readable through the assistant")
+r = c.post(f"{P}/batches/{bid}/approve", json={"items": ["i1"]})
+check('"applied"' in r.text and r.headers["content-type"].startswith("text/event-stream"), "approval streams through the assistant")
+check(c.post(f"{P}/batches/{bid}/undo", json={}).status_code == 400 and c.post(f"{P}/batches/{bid}/undo", json={"confirm": "undo"}).json()["status"] == "undone", "undo needs a confirm")
+CALLS.clear()
+turn(c4["id"], content="what happened?")
+sent = next(x["body"] for x in CALLS if "what happened" in json.dumps(x["body"]))
+check(bid in sent["messages"][0]["content"] and "undone" in sent["messages"][0]["content"], "next turn sees the batch outcome")
+check(c.get(f"{P}/batches/b-nope").status_code == 404, "unknown batch is 404")
+
+# --- the Claude Code CLI gets the same tools through the MCP bridge -------------------------------------------------
+import os as _os  # noqa: E402
+import stat as _stat  # noqa: E402
+import tempfile as _tf  # noqa: E402
+fake_dir = _tf.mkdtemp(prefix="fake-claude-")
+argv_file = _os.path.join(fake_dir, "argv.json")
+fake = _os.path.join(fake_dir, "claude")
+with open(fake, "w") as f:
+    f.write(f"""#!{sys.executable}
+import json, subprocess, sys
+json.dump(sys.argv, open({argv_file!r}, "w"))
+sys.stdin.read()
+cfg = json.load(open(sys.argv[sys.argv.index("--mcp-config") + 1]))["mcpServers"]["axf"]
+p = subprocess.Popen([cfg["command"], *cfg["args"]], env=cfg["env"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+def rpc(i, m, params):
+    p.stdin.write(json.dumps({{"jsonrpc": "2.0", "id": i, "method": m, "params": params}}) + "\\n"); p.stdin.flush()
+    return json.loads(p.stdout.readline())
+rpc(1, "initialize", {{"protocolVersion": "2025-06-18"}})
+tools = rpc(2, "tools/list", {{}})["result"]["tools"]
+r = rpc(3, "tools/call", {{"name": next(t["name"] for t in tools if t["name"] == "container_write"), "arguments": {{"container": "web", "path": "/app/b.ts", "content": "x", "reason": "cli"}}}})
+txt = r["result"]["content"][0]["text"]
+print(json.dumps({{"type": "stream_event", "event": {{"type": "content_block_delta", "delta": {{"type": "text_delta", "text": "Done: " + txt}}}}}}), flush=True)
+print(json.dumps({{"type": "result", "usage": {{"input_tokens": 3, "output_tokens": 2}}}}), flush=True)
+p.stdin.close(); p.wait()
+""")
+_os.chmod(fake, _os.stat(fake).st_mode | _stat.S_IEXEC)
+_os.environ["CLAUDE_BIN"] = fake
+cli = c.post(f"{P}/profiles", json={"kind": "claude-code", "label": "Sub", "key": "sk-ant-oat01-" + "x" * 40, "defaultModel": "claude-test"}).json()["profile"]["id"]
+c5 = c.post(f"{P}/conversations", json={"settings": {"agentId": "coder", "profileId": cli}}).json()["conversation"]
+ev = turn(c5["id"], content="change b.ts")
+argv = json.load(open(argv_file))
+allowed = argv[argv.index("--allowedTools") + 1:argv.index("--disallowedTools")]
+denied = argv[argv.index("--disallowedTools") + 1:]
+check("mcp__axf" in allowed and "Edit" in denied and "Bash" in denied and "--strict-mcp-config" in argv, "CLI gets the console tools over MCP; its own Edit/Bash stay off")
+check(any(e == "tool" and d.get("phase") == "result" and d["name"] == "container_write" for e, d in ev), "bridged tool calls show in the chat")
+check(any(e == "text" and "Proposed change #1" in d["text"] for e, d in ev), "the CLI got the tool result")
+bev = [d for e, d in ev if e == "batch"]
+check(bev and bev[0]["batch"]["items"][0]["path"] == "/app/b.ts", "CLI proposals land on the same approval card")
+check(not [x for x in _os.listdir(_tf.gettempdir()) if x.startswith("axf-bridge-")], "bridge folder removed after the turn")
+plugin_services.withdraw("fake-container-access")
+plugin_services.withdraw("fake-agent-manager")
 print(f"all {ok} checks passed")

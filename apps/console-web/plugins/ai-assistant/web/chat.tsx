@@ -5,11 +5,13 @@
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
 import { Button, Chip, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
+import { pluginFetch } from '@console/plugins';
 import { Markdown } from './markdown';
 import { ChatSettingsDialog } from './settings';
 import {
-  call, del, fileToImage, fmtNum, fmtTime, patch, post, statusStore, streamTurn,
-  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type Message, type Status, type TurnEvent,
+  FOLDER, call, del, fileToImage, fmtNum, fmtTime, patch, post, statusStore, streamTurn,
+  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type Message, type Status, type TurnEvent, type WriteMode,
 } from './api';
 
 interface Live { text: string; status: string; thinking: string; tools: { id: string; name: string; input?: string; ok?: boolean; preview?: string; done: boolean }[]; error: string; agent: string }
@@ -64,6 +66,14 @@ export function ChatPanel({ compact = false, initialContext, onClose }: { compac
   const settings: ConvSettings = conv?.settings ?? pending;
   const agents = status?.integrations.agents ? status.agents : [];
   const activeAgent = agents.find((a) => a.id === (settings.agentId ?? (conv ? '' : status?.defaultAgent)));
+  const [writeMode, setWriteMode] = useState<WriteMode | null>(null);
+  useEffect(() => {
+    setWriteMode(null);
+    if (!activeAgent) return;
+    let live = true;
+    void call<{ writeMode: WriteMode | null }>(`agents/${encodeURIComponent(activeAgent.id)}/write-mode`).then((r) => { if (live) setWriteMode(r.writeMode); }, () => undefined);
+    return () => { live = false; };
+  }, [activeAgent?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const newChat = () => { setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
   const updateSettings = async (s: Partial<ConvSettings>) => {
@@ -273,6 +283,11 @@ export function ChatPanel({ compact = false, initialContext, onClose }: { compac
               <span className="fx-small fx-muted">{activeAgent ? `${activeAgent.name} · ` : ''}{settings.model || status?.defaultProfile?.defaultModel || ''}{settings.profileId ? ` · ${settings.profileId}` : status?.defaultProfile ? ` · ${status.defaultProfile.label}` : ''}</span>
             </div>
           </div>
+          {writeMode && (
+            <span className="axp-ai-assistant__write" title={`${activeAgent?.name ?? 'This agent'} can propose changes to these containers. Nothing changes until you approve a card; a snapshot is taken first.`}>
+              <Icon name="shield" size={13} /> Write mode{writeMode.containers.length ? `: ${writeMode.containers.slice(0, 4).join(', ')}${writeMode.containers.length > 4 ? ` +${writeMode.containers.length - 4}` : ''}` : ''}
+            </span>
+          )}
           {agents.length > 0 && (
             <select className="fx-input axp-ai-assistant__agent" value={settings.agentId ?? (conv ? '' : status?.defaultAgent ?? '')} onChange={(e) => void updateSettings({ agentId: e.target.value })} aria-label="Active agent" title="Active agent (from the agent manager)">
               <option value="">{name} (no agent)</option>
@@ -382,6 +397,7 @@ function MessageView({ m, name, isLast, busy, showUsage, toolSteps, onCopy, onEd
         {ai && meta.thinking && <details className="axp-ai-assistant__thinking"><summary>Reasoning</summary><p>{meta.thinking}</p></details>}
         {m.images?.length ? <div className="axp-ai-assistant__imgs">{m.images.map((im, i) => <img key={i} alt={im.name || 'attachment'} src={`data:${im.media_type};base64,${im.data}`} />)}</div> : null}
         {ai ? <Markdown text={m.content || (meta.stopped ? '(stopped)' : '')} /> : <p className="axp-ai-assistant__plain">{m.content}</p>}
+        {ai && meta.batch && <BatchFromId id={meta.batch} />}
         {!ai && meta.context?.view && <span className="fx-small fx-muted">context: {meta.context.view}{meta.context.selection ? ` · “${meta.context.selection.slice(0, 80)}”` : ''}</span>}
         <div className="axp-ai-assistant__meta">
           {ai && showUsage && (meta.model || meta.usage) && <span className="fx-small fx-muted">{meta.model}{meta.latencyMs ? ` · ${(meta.latencyMs / 1000).toFixed(1)}s` : ''}{meta.usage ? ` · ${fmtNum(meta.usage.input)}→${fmtNum(meta.usage.output)} tok` : ''}</span>}
@@ -396,6 +412,29 @@ function MessageView({ m, name, isLast, busy, showUsage, toolSteps, onCopy, onEd
       </div>
       <span className="axp-ai-assistant__sr">{ai ? name : 'You'}</span>
     </div>
+  );
+}
+
+/** The approval card for the change batch an agent proposed in this reply (change-batch@1, via axf.containers@1). */
+function BatchFromId({ id }: { id: string }) {
+  const rt = useRuntime();
+  const [b, setB] = useState<Batch | null>(null);
+  const [err, setErr] = useState('');
+  useEffect(() => { void call<Batch>(`batches/${encodeURIComponent(id)}`).then(setB, (e: Error) => setErr(e.message)); }, [id]);
+  if (err) return <p className="fx-small fx-muted">Change batch {id}: {err}</p>;
+  if (!b) return <p className="fx-small fx-muted">Loading the approval card…</p>;
+  return (
+    <ChangeBatchCard batch={b} actions={{
+      approve: async (items, onEvent) => {
+        let last: Batch | null = null;
+        const r = await pluginFetch(FOLDER, `batches/${encodeURIComponent(id)}/approve`, { method: 'POST', body: JSON.stringify({ items }) });
+        await readEventStream(r, (e) => { if (e.type === 'batch' && e.batch) last = e.batch; onEvent(e); });
+        return last;
+      },
+      reject: () => post<Batch>(`batches/${encodeURIComponent(id)}/reject`, {}),
+      undo: () => post<Batch>(`batches/${encodeURIComponent(id)}/undo`, { confirm: 'undo' }),
+      openSnapshot: rt.actions.get('snapshots.show') ? (sid: string) => rt.dispatch(`snapshots.show:${sid}`) : undefined,
+    }} />
   );
 }
 

@@ -10,7 +10,8 @@ Tool kinds
   agent     delegate a task to another agent: config.agentId
   workflow  run a workflow: config.workflowId (input = the "input" argument)
 Every tool has a function `name`, a `description` and JSON-Schema `parameters` — what the model sees.
-Nothing here runs shell commands or arbitrary code.
+Nothing here runs shell commands or arbitrary code. Container tools (containers.py) only read, or *propose* changes
+that Brett approves on a card; they're dangerous tools, given only to agents allowed in Settings → Safety.
 """
 from __future__ import annotations
 
@@ -24,7 +25,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote, urlparse
 
-from . import safety, store
+from . import containers, safety, store
 
 ROOT = store.ROOT
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
@@ -44,6 +45,12 @@ BUILTINS: dict[str, dict[str, Any]] = {
     "firecrawl_scrape": {"description": "Scrape one web page to clean Markdown with Firecrawl (handles JavaScript sites).", "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}},
     "firecrawl_search": {"description": "Search the web with Firecrawl and return the top results as Markdown.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer"}}, "required": ["query"]}},
 }
+BUILTINS.update(containers.ALL)
+
+
+def is_dangerous(rec: dict[str, Any]) -> bool:
+    """Tools that touch containers, write or run commands. Only agents allowed in Settings → Safety get them."""
+    return containers.is_container_tool(rec) or bool(rec.get("dangerous"))
 
 
 # ---------------------------------------------------------------- safe primitives
@@ -282,6 +289,8 @@ def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> 
             kind2 = a.get("kind") if a.get("kind") in ("fact", "note") else "fact"
             memory.add(scope, str(a.get("text") or ""), kind2, a.get("tags") or [], source="agent", embed=mc["type"] in ("vector", "hybrid"), embed_profile=mc["embedProfile"], max_items=mc["maxItems"])
             return "Saved to memory."
+        if b in containers.ALL:
+            return containers.execute(b, a, ctx)
         if b == "firecrawl_scrape":
             r = fc_scrape(str(a.get("url") or ""))
             return f"# {r['title']}\n{r['url']}\n\n{r['markdown'][:40_000]}"

@@ -112,3 +112,27 @@ export function MemoryDefaultsPanel() {
     </div>
   );
 }
+
+/** Settings → Safety: which agents may use dangerous tools (containers, writes, commands). Personas can't change this. */
+export function SafetyPanel() {
+  const { s, err, saveS } = useSettings();
+  const { cache } = useData();
+  if (err) return <p className="axp-agent-manager__bad">{err}</p>;
+  if (!s || !cache) return <p className="fx-muted">Loading…</p>;
+  const allowed = new Set(s.safety?.dangerousAgents ?? []);
+  const flip = (id: string) => { const n = new Set(allowed); if (n.has(id)) n.delete(id); else n.add(id); void saveS({ safety: { dangerousAgents: [...n] } }); };
+  const dangerous = cache.tools.filter((t) => t.dangerous || String((t.config as { builtin?: string }).builtin ?? '').startsWith('container_'));
+  return (
+    <div className="fx-stack">
+      <p className="fx-small fx-muted">Dangerous tools touch the VPS containers, write files or run commands. Only the agents ticked here get them, whatever their persona or skills say. Every change they propose still needs your approval on a card, with a snapshot first.</p>
+      <div className="fx-stack">
+        {cache.agents.map((a) => (
+          <label key={a.id} className="axp-agent-manager__toggle">
+            <input type="checkbox" checked={allowed.has(a.id)} onChange={() => flip(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
+          </label>
+        ))}
+      </div>
+      <p className="fx-small fx-muted">Dangerous tools: {dangerous.length ? dangerous.map((t) => t.name).join(', ') : 'none yet'}.</p>
+    </div>
+  );
+}

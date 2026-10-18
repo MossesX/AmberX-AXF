@@ -35,6 +35,8 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "firecrawl": {"baseUrl": "https://api.firecrawl.dev", "version": "v2", "keyEnv": "FIRECRAWL_API_KEY", "key": ""},
     "defaults": {"memoryType": "hybrid", "topK": 6, "window": 8, "maxItems": 2000},
     "scheduler": True,
+    # Agents allowed to use dangerous tools (container access, writes, commands). Personas and skills can't change this.
+    "safety": {"dangerousAgents": ["coder"]},
 }
 
 
@@ -72,7 +74,7 @@ def _read(path: Path, default: Any) -> Any:
 def load_settings() -> dict[str, Any]:
     raw = _read(DATA / "settings.json", {})
     s = {**deepcopy(DEFAULT_SETTINGS), **raw}
-    for k in ("llm", "firecrawl", "defaults"):
+    for k in ("llm", "firecrawl", "defaults", "safety"):
         s[k] = {**DEFAULT_SETTINGS[k], **(raw.get(k) or {})}
     return s
 

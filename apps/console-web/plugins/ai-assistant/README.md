@@ -33,3 +33,14 @@ node apps/console-web/plugins/ai-assistant/uninstall.mjs            # data only 
 node apps/console-web/plugins/ai-assistant/uninstall.mjs --all      # + code + doc lines (add --publish to push the removal)
 python3 apps/console-web/plugins/ai-assistant/test.py               # self-test, fake providers
 ```
+
+## Change batches and write mode (with Container access + Snapshot Manager)
+When the selected agent has write mode (Mosses), the chat header shows a **Write mode** badge naming the containers he
+can change. Every change he proposes in a reply lands on **one approval card** under that reply (`src/changeBatch.tsx`):
+diffs, commands, tick/untick, approve, reject, then a one-tap **Undo** that restores the batch's snapshots. The next turn
+sees each batch's outcome (status, errors, exit codes, output tail). Routes `batches/{id}`, `batches/{id}/approve` (SSE),
+`reject`, `undo` (`{"confirm":"undo"}`), `agents/{id}/write-mode`, proxied to `axf.containers@1` by capability.
+
+**Claude Code (subscription) provider:** the CLI's own Edit/Write/Bash stay off; the same tools are handed to it as an
+MCP server (`server/cli_bridge.py`, stdio) that calls back into the turn over a private per-turn unix socket, so the CLI
+gets the same safety list, approval card and snapshot rule as API providers.

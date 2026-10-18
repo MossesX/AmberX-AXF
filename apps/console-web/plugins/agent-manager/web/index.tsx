@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { AddonsTab, AgentManagerView } from './views';
 import { WIZARDS, WizardDialog } from './wizards';
-import { MemoryDefaultsPanel, ModelPanel, TrainingPanel, WizardsPanel } from './settings';
+import { MemoryDefaultsPanel, ModelPanel, SafetyPanel, TrainingPanel, WizardsPanel } from './settings';
 import './agent-manager.css';
 
 /*
@@ -36,6 +36,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'agent-manager.addons', tab: 'agent-manager', title: 'Add-on agents', icon: 'package', order: 20, render: () => <div className="axp-agent-manager"><AddonsTab /></div> },
     { id: 'agent-manager.model', tab: 'agent-manager', title: 'Model', icon: 'sparkles', order: 30, render: () => <ModelPanel /> },
     { id: 'agent-manager.training', tab: 'agent-manager', title: 'Training & Firecrawl', icon: 'download', order: 40, render: () => <TrainingPanel /> },
+    { id: 'agent-manager.safety', tab: 'agent-manager', title: 'Safety: dangerous tools', icon: 'shield', order: 45, render: () => <SafetyPanel /> },
     { id: 'agent-manager.memory', tab: 'agent-manager', title: 'Memory defaults', icon: 'layers', order: 50, render: () => <MemoryDefaultsPanel /> },
     { id: 'agent-manager.lifecycle', tab: 'agent-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

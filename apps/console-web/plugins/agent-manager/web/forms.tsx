@@ -254,6 +254,11 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
       {show('tools') && <Field label="Tools" hint="Plus the tools its skills need, and memory tools when memory is on"><Pick items={cache.tools} value={v.toolIds} onChange={(toolIds) => set({ ...v, toolIds })} empty="No tools yet." /></Field>}
       {show('delegates') && <Field label="Can delegate to" hint="Each becomes an ask_<agent> tool"><Pick items={cache.agents.filter((a) => a.id !== v.id)} value={v.delegates} onChange={(delegates) => set({ ...v, delegates })} empty="No other agents yet." /></Field>}
       {show('instructions') && <Field label="Extra instructions"><Area value={v.instructions} onChange={(instructions) => set({ ...v, instructions })} rows={4} /></Field>}
+      {show('identity') && (
+        <Field label="Voice" hint="Empty until a voice plugin is installed; describe the voice you want so it can be matched later">
+          <Text value={v.voice?.hint} onChange={(hint) => set({ ...v, voice: { ...(v.voice ?? {}), hint } })} placeholder="e.g. cat-like, calm, fast" />
+        </Field>
+      )}
       {show('model') && (
         <div className="axp-agent-manager__cols">
           {status?.llm.source === 'assistant' ? (

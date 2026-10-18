@@ -118,3 +118,4 @@
   .axp-ai-assistant__side { position: absolute; inset: 0 auto 0 0; width: min(280px, 85%); z-index: 2; box-shadow: var(--fx-shadow-lg) }
   .axp-ai-assistant__bubble { max-width: 100% }
 }
+.axp-ai-assistant__write { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-warning); color: var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 12 / 14); font-weight: 600; white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis }

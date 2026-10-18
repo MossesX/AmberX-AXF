@@ -47,6 +47,8 @@ def _err(e: Exception) -> HTTPException:
         return HTTPException(404, str(e).strip("'\""))
     if isinstance(e, ValueError):
         return HTTPException(400, str(e))
+    if isinstance(e, PermissionError):
+        return HTTPException(403, str(e))
     return HTTPException(500, f"{type(e).__name__}: {e}")
 
 
@@ -109,8 +111,41 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
         if context.get("note"):
             text += f"\n{str(context['note'])[:2000]}"
         parts.append(text)
+    if agent and agent.get("writeMode"):
+        parts.append(_batch_history(conv.get("id", "")))
     parts.append(f"Today is {time.strftime('%A %B %d, %Y')}.")
     return "\n\n".join(p for p in parts if p)
+
+
+def _containers():
+    return plugin_services.get("axf.containers@1")
+
+
+def _batch_history(cid: str) -> str:
+    """What happened to the change batches proposed in this conversation, so the agent knows next turn."""
+    cs = _containers()
+    if not cs or not cid:
+        return ""
+    try:
+        bs = cs.list_batches(conversation=cid, limit=5)
+    except Exception:  # noqa: BLE001
+        return ""
+    if not bs:
+        return ""
+    out = ["Change batches in this conversation (newest first):"]
+    for b in bs:
+        out.append(f"- {b['id']}: {b['status']}" + (f" — {b['error']}" if b.get("error") else ""))
+        for it in b.get("items", []):
+            what = it.get("path") or it.get("command") or ""
+            line = f"    {it['id']} {it['kind']} {it.get('container', '')} {what[:120]}: {it['status']}"
+            if it.get("error"):
+                line += f" ({it['error'][:200]})"
+            if it.get("exitCode") is not None:
+                line += f", exit {it['exitCode']}"
+            out.append(line)
+            if it.get("output") and it["kind"] == "exec":
+                out.append("      output (tail): " + it["output"][-1200:].replace("\n", "\n      "))
+    return "\n".join(out)
 
 
 def _redact(text: str, on: bool) -> str:
@@ -156,8 +191,13 @@ def _wire_history(msgs: list[dict[str, Any]], limit: int) -> list[dict[str, Any]
     return out
 
 
+def _batch_title(user_text: str, n: int) -> str:
+    t = re.sub(r"\s+", " ", user_text or "").strip()
+    return f"{n} change{'s' if n != 1 else ''}: {t[:80]}{'…' if len(t) > 80 else ''}" if t else f"{n} change{'s' if n != 1 else ''}"
+
+
 def _summ(args: dict[str, Any]) -> str:
-    for k in ("path", "pattern", "url", "query", "expression", "dir", "name", "id"):
+    for k in ("path", "command", "pattern", "url", "query", "expression", "dir", "name", "id", "container"):
         if isinstance(args.get(k), str) and args[k]:
             return args[k][:160]
     s = json.dumps(args)[:160]
@@ -240,7 +280,27 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         if st.get("thinking") is not None:
             params["thinking"] = bool(st["thinking"])
 
-        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon")} if agent else None})
+        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None})
+
+        staged: list[dict[str, Any]] = []
+
+        def stage(item: dict[str, Any]) -> int:
+            if len(staged) >= 50:
+                raise ValueError("at most 50 changes per reply; send the rest after this batch")
+            staged.append(item)
+            return len(staged)
+
+        def exec_tool(name: str, args: dict[str, Any]) -> tuple[bool, str]:
+            try:
+                if name in agent_tools and svc:
+                    res = str(svc.run_tool(agent_id, name, args, {"conversationId": cid, "turnId": turn_id, "stage": stage}))
+                elif name in tools.BUILTIN_NAMES and any(sp["name"] == name for sp in tool_specs):
+                    res = tools.run(name, args)
+                else:
+                    raise ValueError(f"tool {name} is not available")
+                return True, res[:50_000]
+            except Exception as e:  # noqa: BLE001
+                return False, f"Error: {e}"[:50_000]
 
         # 3. model rounds with tools, falling back to the next profile if one fails before producing anything
         wire = _wire_history(msgs, int(cfg.get("contextMessages") or 40))
@@ -276,8 +336,15 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                     round_text = ""
                     round_thinking: list[dict[str, Any]] = []
                     calls: list[dict[str, Any]] = []
-                    for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root())):
+                    for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root()),
+                                                    tool_runner=exec_tool):
                         t = ev["type"]
+                        if t == "tool_done":  # a tool the CLI ran through the console's bridge
+                            produced = True
+                            tool_log.append({"id": ev["id"], "name": ev["name"], "input": _summ(ev.get("arguments") or {}), "ok": ev["ok"], "preview": ev["result"][:300]})
+                            yield _sse("tool", {"phase": "call", "id": ev["id"], "name": ev["name"], "input": _summ(ev.get("arguments") or {})})
+                            yield _sse("tool", {"phase": "result", "id": ev["id"], "name": ev["name"], "ok": ev["ok"], "preview": ev["result"][:300]})
+                            continue
                         if t == "text":
                             produced = True
                             round_text += ev["text"]
@@ -304,17 +371,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                     new_msgs.append({"role": "assistant", "content": round_text, "tool_calls": tc_list, **({"thinking_blocks": round_thinking} if round_thinking else {})})
                     for c in tc_list:
                         yield _sse("tool", {"phase": "call", "id": c["id"], "name": c["name"], "input": _summ(c["arguments"])})
-                        ok = True
-                        try:
-                            if c["name"] in agent_tools and svc:
-                                result = str(svc.run_tool(agent_id, c["name"], c["arguments"], {"conversationId": cid, "turnId": turn_id}))
-                            elif c["name"] in tools.BUILTIN_NAMES and any(s["name"] == c["name"] for s in tool_specs):
-                                result = tools.run(c["name"], c["arguments"])
-                            else:
-                                raise ValueError(f"tool {c['name']} is not available")
-                        except Exception as e:  # noqa: BLE001
-                            ok, result = False, f"Error: {e}"
-                        result = result[:50_000]
+                        ok, result = exec_tool(c["name"], c["arguments"])
                         tool_log.append({"id": c["id"], "name": c["name"], "input": _summ(c["arguments"]), "ok": ok, "preview": result[:300]})
                         new_msgs.append({"role": "tool", "content": result, "tool_call_id": c["id"], "is_error": not ok})
                         yield _sse("tool", {"phase": "result", "id": c["id"], "name": c["name"], "ok": ok, "preview": result[:300]})
@@ -338,7 +395,26 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
             last_round += note
             yield _sse("text", {"text": note})
 
-        # 4. store the turn
+        # 4. proposed container changes → one change batch on an approval card (nothing is changed yet)
+        batch_id = ""
+        if staged and not cancel.is_set():
+            cs = _containers()
+            if cs:
+                try:
+                    b = cs.create_batch(staged, actor={"kind": "agent", "id": agent_id, "name": (agent or {}).get("name") or agent_id},
+                                        conversation=cid, turn=turn_id, title=_batch_title(user_text, len(staged)))
+                    batch_id = b["id"]
+                    yield _sse("batch", {"batch": cs.public_batch(b)})
+                except Exception as e:  # noqa: BLE001
+                    note = f"\n\n_(Couldn't put the proposed changes on an approval card: {str(e)[:200]})_"
+                    final_text += note
+                    yield _sse("text", {"text": note})
+            else:
+                note = "\n\n_(Container access isn't installed any more, so the proposed changes were dropped.)_"
+                final_text += note
+                yield _sse("text", {"text": note})
+
+        # 5. store the turn
         for nm in new_msgs:
             if nm["role"] == "assistant":
                 msgs.append({"id": store.new_id("m"), "role": "assistant", "content": nm["content"], "toolCalls": nm["tool_calls"], "createdAt": store.now_ms(), "meta": {"step": True},
@@ -348,7 +424,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         amsg = {"id": store.new_id("m"), "role": "assistant", "content": final_text.strip() or ("(stopped)" if cancel.is_set() else ""), "createdAt": store.now_ms(),
                 "meta": {"profile": used_pid, "model": used_model, "latencyMs": int((time.monotonic() - started) * 1000), "usage": total, "tools": tool_log,
                          "agentId": agent["id"] if agent else "", "agentName": agent.get("name") if agent else "", "stopped": cancel.is_set(),
-                         "thinking": thinking[:20_000] if thinking else "", "lastRound": last_round.strip()}}
+                         "thinking": thinking[:20_000] if thinking else "", "lastRound": last_round.strip(), **({"batch": batch_id} if batch_id else {})}}
         # A trailing assistant "step" with tool calls and no final text would leave the next turn without a reply: keep the final one always.
         msgs.append(amsg)
         if conv.get("title", "New conversation") == "New conversation" and user_text:
@@ -693,6 +769,68 @@ def agents() -> dict[str, Any]:
         return {"available": True, "items": svc.list_agents()}
     except Exception as e:  # noqa: BLE001
         return {"available": True, "items": [], "error": str(e)[:200]}
+
+
+@router.get("/agents/{aid}/write-mode")
+def agent_write_mode(aid: str) -> dict[str, Any]:
+    """For the chat's write-mode badge: which containers the selected agent may change (None when read-only)."""
+    svc = _agents()
+    if not svc:
+        return {"writeMode": None}
+    try:
+        a = svc.get_agent(aid)
+    except Exception:  # noqa: BLE001
+        a = None
+    return {"writeMode": (a or {}).get("writeMode")}
+
+
+# ---------------------------------------------------------------- change batches (approval cards in the chat)
+# Proxied to axf.containers@1 by capability; the batch format is change-batch@1 (src/changeBatch.tsx renders it).
+_CHAT_USER = {"kind": "user", "id": "console", "name": "Brett (assistant chat)"}
+
+
+def _cs_or_404():
+    cs = _containers()
+    if not cs:
+        raise HTTPException(404, "Container access isn't installed or enabled")
+    return cs
+
+
+@router.get("/batches/{bid}")
+def batch_get(bid: str) -> dict[str, Any]:
+    cs = _cs_or_404()
+    try:
+        return cs.public_batch(cs.get_batch(bid))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/batches/{bid}/approve")
+def batch_approve(bid: str, body: dict[str, Any]) -> StreamingResponse:
+    cs = _cs_or_404()
+    items = body.get("items")
+    return StreamingResponse(cs.approve_stream(bid, items if isinstance(items, list) else None, _CHAT_USER), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
+
+
+@router.post("/batches/{bid}/reject")
+def batch_reject(bid: str) -> dict[str, Any]:
+    cs = _cs_or_404()
+    try:
+        return cs.public_batch(cs.reject_batch(bid, _CHAT_USER))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/batches/{bid}/undo")
+def batch_undo(bid: str, body: dict[str, Any]) -> dict[str, Any]:
+    if body.get("confirm") != "undo":
+        raise HTTPException(400, 'send {"confirm": "undo"}')
+    cs = _cs_or_404()
+    try:
+        return cs.public_batch(cs.undo_batch(bid, _CHAT_USER))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
 
 
 @router.get("/tools")

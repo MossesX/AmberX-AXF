@@ -219,7 +219,7 @@ counts_before = {k: len(c.get(f"/am/c/{k}").json()["items"]) for k in ("agents",
 r = post("addons/coder/uninstall")
 counts_after = {k: len(c.get(f"/am/c/{k}").json()["items"]) for k in counts_before}
 removed = {k: counts_before[k] - counts_after[k] for k in counts_before}
-check(removed["agents"] == 1 and removed["skills"] == 6 and removed["tools"] == 5 and removed["workflows"] == 1, f"uninstalling coder removes exactly its entities {removed}")
+check(removed["agents"] == 1 and removed["skills"] == 7 and removed["tools"] == 14 and removed["workflows"] == 1, f"uninstalling coder removes exactly its entities {removed}")
 check(not (Path(os.environ["AXF_AGENT_MANAGER_DIR"]) / "memory" / "coder.json").exists(), "…and its memory")
 check(c.post("/am/c/agents", json={"id": "coder.persona"}).status_code == 400, "names are required")
 
@@ -250,4 +250,57 @@ n_before = am.memory.stats("axf-expert")["items"]
 post("addons/sneaky/uninstall")
 check(am.memory.stats("axf-expert")["items"] == n_before, "…and uninstalling it leaves that memory alone")
 check(c.post("/am/memory/nope/clear").status_code == 404 and c.delete("/am/memory/nope/x").status_code == 404, "missing agents answer 404")
+
+# --- Mosses: container tools behind Container access + Snapshot Manager, safety allow list, staging, voice slot -------
+class FakeCS:
+    def list(self):
+        return [{"name": "web", "image": "node:20", "state": "running", "reachable": True, "coolify": None}, {"name": "coolify", "reachable": False}]
+
+    def read_file(self, c, p, max_bytes=None):
+        return {"container": c, "path": p, "content": "a\nb\n", "encoding": "utf8", "truncated": False, "size": 4}
+
+    def workdir(self, c):
+        return "/app"
+
+
+post("addons/coder/install")
+ag = svc.get_agent("coder")
+check(ag["name"] == "Mosses" and (ag.get("voice") or {}).get("hint", "").startswith("cat"), "coder add-on is now Mosses, with a voice slot")
+check(not any(t["name"].startswith("container_") for t in ag["tools"]) and ag["writeMode"] is None, "no container tools without Container access")
+plugin_services.provide("axf.containers@1", FakeCS(), "fake-container-access")
+ag = svc.get_agent("coder")
+names = {t["name"] for t in ag["tools"]}
+check("container_read" in names and "container_write" not in names and ag["writeMode"] is None and "read only" in ag["system_prompt"], "read-only container tools without Snapshot Manager")
+plugin_services.provide("axf.snapshots@1", object(), "fake-snapshot-manager")
+ag = svc.get_agent("coder")
+names = {t["name"] for t in ag["tools"]}
+check({"container_write", "container_exec", "container_restart"} <= names and ag["writeMode"] == {"containers": ["web"], "snapshots": True}, "write mode with both services")
+check("approval card" in ag["system_prompt"] and "never how careful" in ag["system_prompt"], "Mosses gets the container guide (persona never relaxes safety)")
+staged = []
+out = svc.run_tool("coder", "container_write", {"container": "web", "path": "/app/a.ts", "content": "x", "reason": "fix"}, {"stage": lambda it: (staged.append(it), len(staged))[1]})
+check("Proposed change #1" in out and staged[0] == {"kind": "write", "container": "web", "reason": "fix", "path": "/app/a.ts", "content": "x"}, "container_write stages a proposal")
+out = svc.run_tool("coder", "container_exec", {"container": "web", "command": "npm test", "paths": ["/app"], "reason": "test"}, {"stage": lambda it: (staged.append(it), len(staged))[1]})
+check(staged[1]["kind"] == "exec" and staged[1]["paths"] == ["/app"], "container_exec stages with snapshot paths")
+check("Not applied" in svc.run_tool("coder", "container_delete", {"container": "web", "path": "/app/a.ts", "reason": "x"}, {}), "no stage (outside the chat): nothing applied")
+check("a" in svc.run_tool("coder", "container_read", {"container": "web", "path": "/app/a.ts"}) and "1  a" in svc.run_tool("coder", "container_read", {"container": "web", "path": "/app/a.ts"}), "container_read reads at once")
+c.post("/am/c/agents", json={"id": "rogue", "name": "Rogue", "toolIds": ["coder.container-write", "coder.repo-read"]})
+rg = svc.get_agent("rogue")
+check(not any(t["name"].startswith("container_") for t in rg["tools"]) and "switched off" in rg["system_prompt"], "other agents don't get dangerous tools")
+c.put("/am/settings", json={"safety": {"dangerousAgents": ["coder", "rogue"]}})
+check(any(t["name"] == "container_write" for t in svc.get_agent("rogue")["tools"]), "…unless allowed in Settings → Safety")
+c.put("/am/settings", json={"safety": {"dangerousAgents": ["coder"]}})
+check(any(a["id"] == "coder" and a["dangerous"] for a in svc.list_agents()), "agent list marks allowed agents")
+check(c.post("/am/c/agents", json={"name": "V", "voice": "loud"}).status_code == 400, "voice slot must be an object")
+r = c.post("/am/c/agents", json={"name": "V2", "voice": {"provider": "", "voiceId": "", "hint": "calm", "x": "drop"}}).json()["item"]
+check(r["voice"] == {"provider": "", "voiceId": "", "hint": "calm"}, "voice slot is cleaned")
+c.delete("/am/c/agents/rogue")
+# migration Coder 1.x → Mosses 2.x keeps memory
+scope = am.memory.config(am.store.get("agents", "coder"))["scope"]
+am.memory.add(scope, "Brett likes tabs", "fact", [], source="test")
+recs = am.store.addon_records(); recs["coder"]["version"] = "1.0.0"; am.store.save_addon_records(recs)
+am._migrate_mosses()
+check(am.store.addon_records()["coder"]["version"] == "2.0.0", "Coder 1.x is migrated to Mosses on start")
+check(any("tabs" in h["text"] for h in am.memory.search(scope, "tabs", 5, "keyword")), "…and keeps what he learned")
+plugin_services.withdraw("fake-container-access")
+plugin_services.withdraw("fake-snapshot-manager")
 print(f"all {ok} checks passed")
