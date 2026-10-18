@@ -3,7 +3,7 @@
   "id": "voice",
   "name": "Voice Control",
   "category": "assistant",
-  "description": "Hands-free control via voice + gestures (ActiveX-style)",
+  "description": "Hands-free control via voice + gestures",
   "features": [
     "c.voice",
     "c.pilot"

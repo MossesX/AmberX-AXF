@@ -119,7 +119,7 @@
       "id": "deploy",
       "name": "Deploy Console",
       "category": "devops",
-      "description": "SSH terminal, deploy wizard, server monitoring (ShipX-style)",
+      "description": "SSH terminal, deploy wizard, server monitoring",
       "features": 4,
       "screens": 4,
       "modules": [
@@ -264,7 +264,7 @@
       "id": "voice",
       "name": "Voice Control",
       "category": "assistant",
-      "description": "Hands-free control via voice + gestures (ActiveX-style)",
+      "description": "Hands-free control via voice + gestures",
       "features": 2,
       "screens": 3,
       "modules": [

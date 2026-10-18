@@ -3,7 +3,7 @@
   "id": "deploy",
   "name": "Deploy Console",
   "category": "devops",
-  "description": "SSH terminal, deploy wizard, server monitoring (ShipX-style)",
+  "description": "SSH terminal, deploy wizard, server monitoring",
   "features": [
     "c.terminal",
     "c.deploy",

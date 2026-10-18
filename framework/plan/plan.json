@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T15:05:42.128Z",
+ "generatedAt": "2026-10-18T15:15:07.252Z",
  "statuses": [
   "built",
   "partial",
@@ -13544,7 +13544,7 @@
   },
   {
    "id": "dv.a11yservice",
-   "title": "Accessibility service + overlay/draw-over-apps (for PilotX-style control)",
+   "title": "Accessibility service + overlay/draw-over-apps",
    "area": "Kernel",
    "group": "Device & platform capabilities",
    "kind": "feature",
@@ -19309,7 +19309,7 @@
   },
   {
    "id": "c.deploy",
-   "title": "Deploy wizard (ShipX-style) from phone to VPS subdomain",
+   "title": "Deploy wizard from phone to VPS subdomain",
    "area": "Demos later",
    "group": "Dev, server and AI",
    "kind": "feature",
@@ -20630,7 +20630,7 @@
   },
   {
    "id": "c.voice",
-   "title": "Voice commands + gesture hooks (ActiveX-style)",
+   "title": "Voice commands + gesture hooks",
    "area": "Demos later",
    "group": "Device, sensors, connectivity",
    "kind": "feature",
@@ -20670,7 +20670,7 @@
   },
   {
    "id": "c.pilot",
-   "title": "Screen-control demo (accessibility service + overlay, PilotX-style)",
+   "title": "Screen-control demo (accessibility service + overlay)",
    "area": "Demos later",
    "group": "Device, sensors, connectivity",
    "kind": "feature",
