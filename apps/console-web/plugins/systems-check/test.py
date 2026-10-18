@@ -116,7 +116,7 @@ class FakeLlm:
 
     def complete(self, messages, system=None, profile=None, model=None, tools=None, params=None):
         self.calls.append({"system": system, "text": messages[-1]["content"]})
-        if "systems check" in messages[-1]["content"]:
+        if messages[-1]["content"].startswith("You're running the systems check"):
             return {"text": "Aight boss, here's the routine:\n" + json.dumps(REPLY), "model": "fake-1", "profile": "fake"}
         return {"text": "## New\n- **Mosses** got container powers\n- Snapshots before every change", "model": "fake-1"}
 
