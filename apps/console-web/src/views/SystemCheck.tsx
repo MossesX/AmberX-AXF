@@ -1,0 +1,349 @@
+import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { Button, Chip, Icon, useRuntime } from '../axf/react';
+import * as api from '../api';
+
+/*
+ * Systems check (server/syscheck.py): runs every time the console loads. When something the console or its features
+ * need is missing or broken, a banner appears at the top of every view. Clicking its summary drops down the issues;
+ * clicking the banner's button or an issue opens the dialog: Grid (expandable rows: details, fix, instructions, links),
+ * By service (cards per system) and Guided setup (one issue at a time, in dependency order), plus "Fix all".
+ * Credentials typed here go to the server only and are never sent back.
+ */
+
+type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
+interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
+type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string } | null;
+export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
+interface Service { id: string; label: string; icon: string; description: string }
+interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number> }
+type Run = 'queued' | 'working' | 'done' | 'failed' | 'needs-you';
+
+/* ---------------- shared store (banner + dialog) ---------------- */
+const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean } =
+  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false };
+let snap = { ...st };
+const subs = new Set<() => void>();
+const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
+const useSys = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => snap, () => snap);
+
+async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers);
+  const t = api.getToken();
+  if (t) headers.set('authorization', `Bearer ${t}`);
+  if (init.body) headers.set('content-type', 'application/json');
+  const r = await fetch(`/api/system/${path}`, { ...init, headers, cache: 'no-store' });
+  const j = (await r.json().catch(() => ({}))) as T & { detail?: string };
+  if (r.status === 401) { st.unauthorized = true; emit(); throw new Error('Set the console token first.'); }
+  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.statusText);
+  return j;
+}
+
+export async function loadSystemCheck(force = false) {
+  if (!api.isBackendUp()) return;
+  st.loading = true; emit();
+  try { st.report = await call<Report>(`check${force ? '?force=1' : ''}`); st.error = ''; st.unauthorized = false; }
+  catch (e) { st.error = (e as Error).message; }
+  st.loading = false; emit();
+}
+function replace(c: Check) {
+  if (!st.report) return;
+  st.report = { ...st.report, checks: st.report.checks.map((x) => (x.id === c.id ? c : x)) };
+  st.report.counts = (['ok', 'warn', 'error', 'info', 'unknown'] as Status[]).reduce((a, s) => ({ ...a, [s]: st.report!.checks.filter((x) => x.status === s).length }), {} as Record<Status, number>);
+  emit();
+}
+export const recheck = async (id: string) => { const c = await call<Check>(`check/${id}`, { method: 'POST' }); replace(c); return c; };
+const isIssue = (c: Check) => c.status === 'error' || c.status === 'warn';
+/** Issues, with host checks the VPS hasn't reported folded into the single "host report" item. */
+function issues(r: Report | null) {
+  if (!r) return [];
+  const hostMissing = r.checks.some((c) => c.id === 'host-report' && c.status !== 'ok');
+  return r.checks.filter((c) => isIssue(c) && !(hostMissing && c.dependsOn.includes('host-report') && c.status === 'unknown'));
+}
+/** Dependency order (a check's dependsOn first), then each check's order. */
+function guidedOrder(list: Check[]) {
+  const ids = new Set(list.map((c) => c.id));
+  const out: Check[] = []; const seen = new Set<string>();
+  const visit = (c: Check, all: Map<string, Check>) => { if (seen.has(c.id)) return; seen.add(c.id); for (const d of c.dependsOn) { const dc = all.get(d); if (dc && ids.has(d)) visit(dc, all); } out.push(c); };
+  const all = new Map(list.map((c) => [c.id, c]));
+  [...list].sort((a, b) => a.order - b.order).forEach((c) => visit(c, all));
+  return out;
+}
+
+/** Fix all: one issue at a time, working → completed / failed / needs you. */
+export async function fixAll() {
+  if (st.fixing || !st.report) return;
+  const queue = guidedOrder(issues(st.report));
+  st.fixing = true; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
+  for (const c of queue) {
+    st.run = { ...st.run, [c.id]: 'working' }; emit();
+    try {
+      if (c.autoFix) { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); st.runMsg[c.id] = r.message; }
+      await new Promise((res) => setTimeout(res, 350)); // let the badge show
+      const after = await recheck(c.id);
+      const needsYou = !c.autoFix && (c.fix?.type === 'host' || c.fix?.type === 'settings' || (c.fix?.type === 'secrets' && c.fix.fields.some((f) => !f.set)));
+      st.run = { ...st.run, [c.id]: after.status === 'ok' || after.status === 'info' ? 'done' : needsYou ? 'needs-you' : 'failed' };
+      if (needsYou && after.status !== 'ok') st.runMsg[c.id] = c.fix?.type === 'host' ? 'Run the command on the VPS, then check again.' : c.fix?.type === 'secrets' ? 'Needs your credential: open the row and paste it.' : 'Needs a setting changed by you.';
+      else if (after.status !== 'ok' && after.status !== 'info') st.runMsg[c.id] = after.summary;
+    } catch (e) { st.run = { ...st.run, [c.id]: 'failed' }; st.runMsg[c.id] = (e as Error).message; }
+    emit();
+  }
+  st.fixing = false; emit();
+}
+
+/* ---------------- banner ---------------- */
+
+export function SystemBanner() {
+  const s = useSys();
+  const rt = useRuntime();
+  const [open, setOpen] = useState(false);
+  const list = useMemo(() => issues(s.report), [s.report]);
+  if (s.dismissed) return null;
+  if (s.unauthorized) {
+    return (
+      <div className="syc-banner is-warn" role="alert">
+        <Icon name="lock" /><span className="syc-banner__text">Set the console token to run the systems check.</span>
+        <Button tone="primary" onClick={() => rt.openDialog('token')}>Set token</Button>
+      </div>
+    );
+  }
+  if (!s.report || list.length === 0) return null;
+  const errors = list.filter((c) => c.status === 'error').length;
+  return (
+    <div className={`syc-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
+      <div className="syc-banner__row">
+        <Icon name="alert" />
+        <button type="button" className="syc-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+          {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
+          <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
+        </button>
+        <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
+        <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => { st.dismissed = true; emit(); }}><Icon name="x" size={16} /></button>
+      </div>
+      {open && (
+        <ul className="syc-banner__list">
+          {guidedOrder(list).map((c) => (
+            <li key={c.id}><button type="button" className="syc-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+              <StatusDot s={c.status} /><span className="syc-banner__title">{c.title}</span><span className="syc-banner__sum">{c.summary}</span>
+            </button></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/** Mount once in the shell: runs the check when the console loads and when the token changes. */
+export function useSystemCheckOnLoad() {
+  useEffect(() => {
+    const t = setTimeout(() => void loadSystemCheck(true), 400); // after the backend health check
+    const onToken = () => void loadSystemCheck(true);
+    globalThis.addEventListener(api.TOKEN_CHANGED, onToken);
+    return () => { clearTimeout(t); globalThis.removeEventListener(api.TOKEN_CHANGED, onToken); };
+  }, []);
+}
+
+/* ---------------- bits ---------------- */
+
+const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error: 'Blocking', info: 'Info', unknown: 'Not checked' };
+function StatusDot({ s }: { s: Status }) { return <span className={`syc-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
+function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
+const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you' };
+function RunBadge({ r }: { r?: Run }) {
+  if (!r) return null;
+  return <span className={`syc-run is-${r}`} role="status">{r === 'working' ? <span className="syc-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' ? 'alert' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
+}
+
+function FixPanel({ c }: { c: Check }) {
+  const rt = useRuntime();
+  const s = useSys();
+  const [vals, setVals] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+  const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => rt.toast('Command copied', 'success'), () => rt.toast('Clipboard blocked', 'warning'));
+  const save = async () => {
+    if (c.fix?.type !== 'secrets') return;
+    setBusy(true); setMsg('');
+    try {
+      for (const f of c.fix.fields) {
+        const v = (vals[f.key] ?? '').trim();
+        if (!v) continue;
+        const r = await call<{ checks: Check[] }>('secret', { method: 'POST', body: JSON.stringify({ key: f.key, value: v }) });
+        r.checks.forEach(replace);
+      }
+      setVals({}); const now = snap.report?.checks.find((x) => x.id === c.id);
+      setMsg(now?.status === 'ok' ? 'Saved and verified.' : `Saved. ${now?.summary ?? ''}`);
+    } catch (e) { setMsg((e as Error).message); }
+    setBusy(false);
+  };
+  const clear = async (key: string) => { setBusy(true); try { (await call<{ checks: Check[] }>('secret/clear', { method: 'POST', body: JSON.stringify({ key }) })).checks.forEach(replace); setMsg('Removed.'); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
+  const auto = async () => { setBusy(true); setMsg(''); try { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); replace(r.check); setMsg(r.message); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
+  const again = async () => { setBusy(true); try { const n = await recheck(c.id); setMsg(n.status === 'ok' ? 'Passes now.' : n.summary); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
+  const f = c.fix;
+  return (
+    <div className="syc-fix">
+      {f?.type === 'secrets' && (
+        <form className="syc-fix__form" onSubmit={(e) => { e.preventDefault(); void save(); }}>
+          {f.fields.map((x) => (
+            <label key={x.key} className="syc-field">
+              <span>{x.label} {x.set && <Chip tone="success">saved</Chip>}</span>
+              <span className="syc-field__row">
+                <input className="fx-input fx-mono" type={x.secret ? 'password' : 'url'} autoComplete="off" spellCheck={false} placeholder={x.set ? (x.secret ? '•••••••• (saved; type to replace)' : x.value) : x.placeholder}
+                  value={vals[x.key] ?? ''} onChange={(e) => setVals({ ...vals, [x.key]: e.target.value })} aria-label={x.label} />
+                {x.set && <Button icon="trash" disabled={busy} onClick={() => void clear(x.key)}>Clear</Button>}
+              </span>
+              <span className="fx-small fx-muted">{x.help}</span>
+            </label>
+          ))}
+          <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={busy || !Object.values(vals).some((v) => v.trim())} onClick={() => void save()}>{busy ? 'Testing…' : 'Save & test'}</Button></div>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>Saved on the console server only (owner-only file), never sent back to the browser or committed.</p>
+        </form>
+      )}
+      {f?.type === 'action' && <div className="fx-row fx-row--wrap"><Button tone="primary" icon="zap" disabled={busy} onClick={() => void auto()}>{busy ? 'Fixing…' : f.label}</Button></div>}
+      {f?.type === 'host' && (
+        <div className="syc-fix__host">
+          <p className="fx-small" style={{ margin: 0 }}>Run this on the VPS (mosh or ssh). The console can't change the host from its container.</p>
+          <div className="fx-row fx-row--wrap"><code className="syc-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
+        </div>
+      )}
+      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
+      <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}</div>
+    </div>
+  );
+}
+
+function CheckBody({ c }: { c: Check }) {
+  const s = useSys();
+  return (
+    <div className="syc-body">
+      <p style={{ margin: 0 }}>{c.summary}</p>
+      {s.runMsg[c.id] && <p className="fx-small syc-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
+      {c.details.length > 0 && <ul className="syc-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
+      {c.status !== 'ok' && c.fix && <><h4 className="syc-h">Fix it here</h4><FixPanel c={c} /></>}
+      {c.instructions.length > 0 && <><h4 className="syc-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><ol className="syc-steps">{c.instructions.map((t) => <li key={t}>{t}</li>)}</ol></>}
+      {c.links.length > 0 && <><h4 className="syc-h">Resources</h4><ul className="syc-links">{c.links.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></li>)}</ul></>}
+      {c.status === 'ok' && c.fix?.type === 'secrets' && <FixPanel c={c} />}
+    </div>
+  );
+}
+
+/* ---------------- dialog ---------------- */
+
+type View = 'grid' | 'service' | 'guided';
+
+export function SystemCheckDialog({ focus }: { focus?: string }) {
+  const s = useSys();
+  const [view, setView] = useState<View>('grid');
+  const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
+  const [filter, setFilter] = useState<'issues' | 'all'>('issues');
+  useEffect(() => { if (!s.report && !s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
+  if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
+  const r = s.report;
+  const iss = issues(r);
+  const rows = filter === 'issues' ? guidedOrder(iss) : [...r.checks].sort((a, b) => a.order - b.order);
+  const toggle = (id: string) => setOpen((o) => { const n = new Set(o); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const goGrid = (id: string) => { setView('grid'); setFilter('all'); setOpen(new Set([id])); };
+  const done = Object.values(s.run).filter((x) => x === 'done' || x === 'failed' || x === 'needs-you').length;
+  const total = Object.keys(s.run).length;
+
+  return (
+    <div className="syc">
+      <div className="syc__top">
+        <div className="syc__counts">
+          {(['error', 'warn', 'ok', 'unknown'] as Status[]).map((k) => <span key={k} className="syc__count"><StatusDot s={k} /> {r.counts[k] ?? 0} {STATUS_LABEL[k].toLowerCase()}</span>)}
+          <span className="fx-muted fx-small">checked {new Date(r.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+        <div className="fx-row fx-row--wrap">
+          <Button icon="refresh" disabled={s.loading || s.fixing} onClick={() => void loadSystemCheck(true)}>{s.loading ? 'Checking…' : 'Check again'}</Button>
+          <Button tone="primary" icon="zap" disabled={s.fixing || iss.length === 0} onClick={() => { setView('grid'); setFilter('issues'); void fixAll(); }}>{s.fixing ? `Fixing ${Math.min(done + 1, total)} of ${total}…` : 'Fix all'}</Button>
+        </div>
+      </div>
+      {total > 0 && <div className="syc__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}><span style={{ width: `${(done / Math.max(1, total)) * 100}%` }} /></div>}
+
+      <div className="syc__tabs" role="tablist">
+        {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
+          <button key={id} type="button" role="tab" aria-selected={view === id} className="syc__tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
+        ))}
+      </div>
+
+      {view === 'grid' && (
+        <div className="syc__grid">
+          <div className="fx-row fx-row--wrap">
+            <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'issues'} onChange={() => setFilter('issues')} /> Issues ({iss.length})</label>
+            <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'all'} onChange={() => setFilter('all')} /> Everything ({r.checks.length})</label>
+          </div>
+          {rows.length === 0 && <p className="fx-muted">No issues: everything the console needs is configured.</p>}
+          <table className="fx-table syc-table">
+            <thead><tr><th aria-label="Expand" /><th>Status</th><th>Check</th><th className="syc-hide-sm">Service</th><th className="syc-hide-sm">Summary</th></tr></thead>
+            <tbody>
+              {rows.map((c) => (
+                <Fragment key={c.id}>
+                  <tr className={`syc-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
+                    <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
+                    <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
+                    <td><strong>{c.title}</strong><span className="syc-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
+                    <td className="syc-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
+                    <td className="syc-hide-sm fx-small">{c.summary}</td>
+                  </tr>
+                  {open.has(c.id) && <tr className="syc-exp"><td colSpan={5}><CheckBody c={c} /></td></tr>}
+                </Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {view === 'service' && (
+        <div className="syc__cards">
+          {r.services.map((sv) => {
+            const cs = r.checks.filter((c) => c.service === sv.id);
+            const bad = cs.filter(isIssue);
+            const worst: Status = cs.some((c) => c.status === 'error') ? 'error' : bad.length ? 'warn' : cs.some((c) => c.status === 'unknown') ? 'unknown' : 'ok';
+            return (
+              <section key={sv.id} className={`syc-card is-${worst}`}>
+                <header className="syc-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
+                <p className="fx-small fx-muted" style={{ margin: 0 }}>{sv.description}</p>
+                <ul className="syc-card__list">
+                  {cs.map((c) => <li key={c.id}><button type="button" className="syc-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span>{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
+      )}
+
+      {view === 'guided' && <Guided list={guidedOrder(iss)} />}
+    </div>
+  );
+}
+
+function Guided({ list }: { list: Check[] }) {
+  const s = useSys();
+  const [i, setI] = useState(0);
+  const [skipped, setSkipped] = useState<Set<string>>(new Set());
+  if (list.length === 0) return <div className="syc-guided__done"><Icon name="check-circle" size={32} /><p>All set: the console and its features are configured.</p></div>;
+  const idx = Math.min(i, list.length - 1);
+  const c = list[idx]!;
+  const live = s.report?.checks.find((x) => x.id === c.id) ?? c;
+  return (
+    <div className="syc-guided">
+      <ol className="syc-guided__steps">
+        {list.map((x, k) => {
+          const now = s.report?.checks.find((y) => y.id === x.id) ?? x;
+          return <li key={x.id}><button type="button" className={`syc-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
+            <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span>{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
+        })}
+      </ol>
+      <div className="syc-guided__pane">
+        <p className="fx-eyebrow" style={{ margin: 0 }}>Step {idx + 1} of {list.length}{live.dependsOn.length ? ` · after ${live.dependsOn.join(', ')}` : ''}</p>
+        <h3 style={{ margin: 0 }}>{live.title} <StatusChip s={live.status} /></h3>
+        <CheckBody c={live} />
+        <div className="fx-row fx-row--wrap">
+          <Button icon="arrow-left" disabled={idx === 0} onClick={() => setI(idx - 1)}>Back</Button>
+          <Button icon="minus" disabled={idx >= list.length - 1} onClick={() => { setSkipped(new Set([...skipped, c.id])); setI(idx + 1); }}>Skip</Button>
+          <Button tone="primary" icon="arrow-right" disabled={idx >= list.length - 1} onClick={() => setI(idx + 1)}>Next</Button>
+        </div>
+      </div>
+    </div>
+  );
+}

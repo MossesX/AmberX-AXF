@@ -97,7 +97,9 @@ app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 PANEL = ROOT / "deploy" / "panel" / "index.html"
 GITHUB_REPO = os.environ.get("AXF_GITHUB_REPO", "MossesX/AmberX-AXF")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+def _gh_token() -> str:
+    """Read live: the systems check can save a new token into this process's environment."""
+    return os.environ.get("GITHUB_TOKEN", "")
 
 # ---------------------------------------------------------------- state + terminal
 
@@ -617,7 +619,7 @@ _releases_cache: dict[str, Any] = {"at": 0.0, "data": None}
 
 
 def _gh(url: str) -> Any:
-    req = urllib.request.Request(url, headers={"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {GITHUB_TOKEN}"} if GITHUB_TOKEN else {})})
+    req = urllib.request.Request(url, headers={"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {_gh_token()}"} if _gh_token() else {})})
     with urllib.request.urlopen(req, timeout=20) as r:
         return json.loads(r.read().decode())
 
@@ -634,7 +636,7 @@ def releases() -> dict[str, Any]:
         run = runs[0]
         arts = _gh(run["artifacts_url"])["artifacts"]
         data = {"ok": True, "repo": GITHUB_REPO, "run": {"id": run["id"], "sha": run["head_sha"][:7], "message": run["head_commit"]["message"].split("\n")[0], "at": run["updated_at"], "url": run["html_url"]},
-                "artifacts": [{"id": a["id"], "name": a["name"], "size": a["size_in_bytes"], "expires": a["expires_at"], "download": f"/api/releases/download/{a['id']}/{a['name']}", "proxied": bool(GITHUB_TOKEN)} for a in arts],
+                "artifacts": [{"id": a["id"], "name": a["name"], "size": a["size_in_bytes"], "expires": a["expires_at"], "download": f"/api/releases/download/{a['id']}/{a['name']}", "proxied": bool(_gh_token())} for a in arts],
                 "packages": f"https://github.com/{GITHUB_REPO}/packages", "actions": f"https://github.com/{GITHUB_REPO}/actions/workflows/android.yml"}
         _releases_cache.update(at=time.time(), data=data)
         return data
@@ -645,9 +647,9 @@ def releases() -> dict[str, Any]:
 @app.get("/api/releases/download/{artifact_id}/{name}")
 def release_download(artifact_id: int, name: str) -> Response:
     """Proxies a CI artifact (GitHub requires a token for artifact zips); single-file artifacts like the APK are unzipped."""
-    if not GITHUB_TOKEN:
+    if not _gh_token():
         raise HTTPException(403, "set GITHUB_TOKEN on the API to download CI artifacts directly; otherwise use the run page")
-    req = urllib.request.Request(f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {GITHUB_TOKEN}", "user-agent": "axf-console"})
+    req = urllib.request.Request(f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {_gh_token()}", "user-agent": "axf-console"})
     with urllib.request.urlopen(req, timeout=120) as r:
         blob = r.read()
     z = zipfile.ZipFile(BytesIO(blob))
@@ -827,6 +829,13 @@ def set_plugin_enabled(folder: str, body: dict[str, Any]) -> dict[str, Any]:
 
 
 load_plugins()
+
+# ---------------------------------------------------------------- systems check (server/syscheck.py)
+
+import syscheck  # noqa: E402
+
+SYSCHECK = syscheck.SysCheck(ROOT, current_token, _persist_root, PLUGINS, log, GITHUB_REPO)
+app.include_router(syscheck.router_for(SYSCHECK, auth_always))
 
 
 # ---------------------------------------------------------------- the console itself

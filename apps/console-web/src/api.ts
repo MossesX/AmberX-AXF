@@ -49,7 +49,9 @@ async function getJson<T>(api: string, fallback: string): Promise<T> {
 
 /** The console token (AXF_TOKEN) kept in this browser; sent with every write. */
 export const getToken = () => { try { return localStorage.getItem('axf-console:token') ?? ''; } catch { return ''; } };
-export const setToken = (t: string) => { try { if (t) localStorage.setItem('axf-console:token', t); else localStorage.removeItem('axf-console:token'); } catch { /* storage blocked */ } };
+export const setToken = (t: string) => { try { if (t) localStorage.setItem('axf-console:token', t); else localStorage.removeItem('axf-console:token'); } catch { /* storage blocked */ } globalThis.dispatchEvent?.(new Event(TOKEN_CHANGED)); };
+/** Fired on window when the console token saved in this browser changes (the systems check re-runs). */
+export const TOKEN_CHANGED = 'axf:token-changed';
 const authHeader = (): Record<string, string> => { const t = getToken(); return t ? { authorization: `Bearer ${t}` } : {}; };
 
 export async function post(api: string, body: unknown): Promise<EngineResult> {

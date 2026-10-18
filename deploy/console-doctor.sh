@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# AXF console setup / doctor — run on the VPS host (mosh or ssh). Checks what the Dev Console needs on the host,
+# fixes what you approve, and writes a report the console shows in its systems check banner.
+#
+#   bash /opt/axf/deploy/console-doctor.sh               check everything, offer each fix (asks first, every time)
+#   bash /opt/axf/deploy/console-doctor.sh --fix <id>    offer the fix for one check (ids below / in the console)
+#   bash /opt/axf/deploy/console-doctor.sh --report      check only, no questions (cron runs this every 15 minutes)
+#
+# Report: $DIR/.axf-console/host-check.json (no secrets: statuses and short summaries only).
+set -u
+DIR="${DIR:-/opt/axf}"
+NAME="${NAME:-axf-console}"
+REPORT="$DIR/.axf-console/host-check.json"
+MODE="interactive"; ONLY=""
+case "${1:-}" in
+  --report) MODE="report" ;;
+  --fix) ONLY="${2:-}"; [ -n "$ONLY" ] || { echo "usage: $0 --fix <check-id>"; exit 2; } ;;
+  -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+esac
+[ -t 0 ] || [ "$MODE" = "report" ] || MODE="report"   # no terminal → never ask
+
+USER_HOME="${SUDO_USER:+$(getent passwd "$SUDO_USER" | cut -d: -f6)}"; USER_HOME="${USER_HOME:-$HOME}"
+declare -A ST SUM
+ORDER=()
+put() { ST[$1]="$2"; SUM[$1]="$(printf '%s' "$3" | tr -d '"\\' | tr '\n' ' ' | cut -c1-280)"; [[ " ${ORDER[*]} " == *" $1 "* ]] || ORDER+=("$1"); }
+have() { command -v "$1" >/dev/null 2>&1; }
+ask() { [ "$MODE" = "interactive" ] || [ -n "$ONLY" ] || return 1; read -r -p "  → $1 [y/N] " a </dev/tty; [[ "$a" =~ ^[Yy] ]]; }
+want() { [ -z "$ONLY" ] || [ "$ONLY" = "$1" ]; }
+
+check_all() {
+  # mosh
+  if have mosh-server; then put host-mosh ok "mosh-server $(mosh-server --version 2>/dev/null | head -1 | awk '{print $2}') installed"
+  else put host-mosh error "mosh-server is not installed"; fi
+  # firewall: mosh needs UDP 60000-61000
+  if have ufw && ufw status 2>/dev/null | grep -q "Status: active"; then
+    if ufw status 2>/dev/null | grep -Eq '60000:61000/udp.*ALLOW'; then put host-mosh-ports ok "ufw allows UDP 60000-61000"
+    else put host-mosh-ports error "ufw is active but doesn't allow UDP 60000-61000 (mosh can't connect)"; fi
+  else put host-mosh-ports info "ufw not active here; if Hostinger's firewall is on, allow UDP 60000-61000 in hPanel"; fi
+  # docker + console container
+  if have docker && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$NAME"; then put host-docker ok "container $NAME is running"
+  elif have docker; then put host-docker error "Docker is installed but container $NAME isn't running"
+  else put host-docker error "Docker is not installed"; fi
+  # auto-update cron
+  if [ -f /etc/cron.d/axf-console ]; then put host-update-cron ok "console auto-update every 5 minutes"; else put host-update-cron warn "no /etc/cron.d/axf-console: the console won't update itself"; fi
+  # Claude Code
+  if have claude; then put host-claude-cli ok "Claude Code $(claude --version 2>/dev/null | head -1)"; else put host-claude-cli error "Claude Code (claude) is not installed"; fi
+  if [ -s "$USER_HOME/.claude/.credentials.json" ] || [ -s "$USER_HOME/.anthropic-key" ]; then put host-claude-login ok "signed in (plan credentials or API key file present)"
+  else put host-claude-login warn "no Claude sign-in found for $(basename "$USER_HOME"): run claude and /login"; fi
+  if have claude && grep -qs "claude-pick" "$(command -v claude)" 2>/dev/null; then put host-claude-pick ok "claude asks for model + sign-in at launch"
+  else put host-claude-pick warn "claude-pick isn't installed: launches don't ask for the model"; fi
+  if have claude-sync; then put host-claude-sync ok "claude-sync installed"; else put host-claude-sync warn "claude-sync isn't installed: rules and memory don't sync from the hub"; fi
+  if grep -qs "session-checkin/checkin.mjs" "$USER_HOME/.claude/settings.json" "$DIR/.claude/settings.json" "$DIR/.claude/settings.local.json"; then put host-session-checkin ok "session check-in hook installed"
+  else put host-session-checkin warn "session check-in isn't installed for VPS sessions"; fi
+  if [ -f "$USER_HOME/.anthropic-key" ]; then
+    m=$(stat -c %a "$USER_HOME/.anthropic-key" 2>/dev/null); [ "$m" = "600" ] && put host-anthropic-keyfile ok "~/.anthropic-key is owner-only" || put host-anthropic-keyfile error "~/.anthropic-key is mode $m (should be 600)"
+  else put host-anthropic-keyfile info "no ~/.anthropic-key (only needed for API-key sign-in)"; fi
+  # GitHub access from the host clone
+  if [ -d "$DIR/.git" ] && GIT_TERMINAL_PROMPT=0 timeout 20 git -C "$DIR" ls-remote -q origin HEAD >/dev/null 2>&1; then put host-git-auth ok "the VPS clone can reach GitHub"
+  else put host-git-auth error "the VPS clone can't reach GitHub without a password (auto-update will fail)"; fi
+  # axHub projects volume
+  if have docker && docker volume ls -q 2>/dev/null | grep -Eq '(^|[-_])axhub-projects$'; then put host-axhub-volume ok "axhub-projects volume exists"
+  else put host-axhub-volume warn "no axhub-projects volume: shared data stays in the legacy folder"; fi
+}
+
+fix() {
+  local id="$1"; want "$id" || return 0
+  [ "${ST[$id]:-ok}" = "ok" ] || [ "${ST[$id]:-}" = "info" ] && [ -z "$ONLY" ] && return 0
+  echo; echo "✗ $id: ${SUM[$id]:-}"
+  case "$id" in
+    host-mosh) ask "Install mosh (apt-get install -y mosh)?" && { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mosh; } ;;
+    host-mosh-ports) ask "Allow UDP 60000-61000 in ufw (mosh)?" && ufw allow 60000:61000/udp; echo "  If Hostinger's firewall is on: hPanel → VPS → Firewall → allow UDP 60000-61000." ;;
+    host-docker|host-update-cron) ask "Re-run the console installer (bash $DIR/deploy/install-console.sh)?" && bash "$DIR/deploy/install-console.sh" ;;
+    host-claude-cli) ask "Install Claude Code (official installer from claude.ai/install.sh)?" && { curl -fsSL https://claude.ai/install.sh | bash; } ;;
+    host-claude-login) echo "  Run: claude   then type /login and sign in with your Claude plan (or: claude-pick --set-key for an API key)." ;;
+    host-claude-pick) ask "Install claude-pick as the claude launcher?" && bash "$DIR/deploy/claude-pick.sh" --install ;;
+    host-claude-sync) if [ -f "$USER_HOME/axHub/clients/claude-code/claude-sync.mjs" ]; then ask "Install claude-sync from ~/axHub?" && node "$USER_HOME/axHub/clients/claude-code/claude-sync.mjs" install
+                      else echo "  git clone https://github.com/MossesX/axHub ~/axHub && node ~/axHub/clients/claude-code/claude-sync.mjs install"; fi ;;
+    host-session-checkin) if have node; then ask "Run the session check-in installer now (asks a few questions)?" && node "$DIR/apps/console-web/plugins/session-checkin/install.mjs"
+                          else echo "  Install Node 22, then: node $DIR/apps/console-web/plugins/session-checkin/install.mjs"; fi ;;
+    host-anthropic-keyfile) ask "Make ~/.anthropic-key owner-only (chmod 600)?" && chmod 600 "$USER_HOME/.anthropic-key" ;;
+    host-git-auth) echo "  Store GitHub access for the clone: gh auth login   (or a token in git's credential helper), then: git -C $DIR fetch" ;;
+    host-axhub-volume) echo "  Coolify → axHub → Persistent Storage: add volume axhub-projects at /projects, redeploy axHub, then: bash $DIR/deploy/install-console.sh" ;;
+    *) echo "  unknown check id $id" ;;
+  esac
+}
+
+write_report() {
+  mkdir -p "$(dirname "$REPORT")"
+  { printf '{"$axf":"host-check@1","at":%s,"host":"%s","checks":{' "$(date +%s)" "$(hostname)"
+    local first=1
+    for id in "${ORDER[@]}"; do [ $first -eq 1 ] || printf ','; first=0; printf '"%s":{"status":"%s","summary":"%s"}' "$id" "${ST[$id]}" "${SUM[$id]}"; done
+    printf '}}\n'; } > "$REPORT.tmp" && chmod 644 "$REPORT.tmp" && mv "$REPORT.tmp" "$REPORT"
+}
+
+check_all
+if [ "$MODE" = "interactive" ] || [ -n "$ONLY" ]; then
+  echo "AXF console setup — $(hostname)"
+  for id in "${ORDER[@]}"; do printf '  %-8s %-22s %s\n' "${ST[$id]}" "$id" "${SUM[$id]}"; done
+  for id in "${ORDER[@]}"; do fix "$id"; done
+  check_all
+fi
+write_report
+bad=0; for id in "${ORDER[@]}"; do [ "${ST[$id]}" = "error" ] && bad=$((bad+1)); done
+[ "$MODE" = "report" ] || echo; [ "$MODE" = "report" ] || echo "Report written to $REPORT ($bad error(s)). The console's banner updates on its next check."
+exit 0
