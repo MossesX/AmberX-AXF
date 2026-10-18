@@ -39,4 +39,11 @@ if (existsSync(dataPath('framework/plan/build-queue.json'))) cpSync(dataPath('fr
 mkdirSync(resolve(HERE, '../src/axf/plan'), { recursive: true });
 if (existsSync(dataPath('framework/plan/pending.json'))) cpSync(dataPath('framework/plan/pending.json'), join(OUT, 'pending.json'));
 for (const f of ['build-queue-core.mjs', 'build-queue-core.d.mts', 'pending-core.mjs', 'pending-core.d.mts']) cpSync(join(ROOT, 'framework/plan', f), resolve(HERE, '../src/axf/plan', f));
+// Standards: every project's manifest + validation, and the rules in force (static preview)
+{
+  const { RULES_REL, baseRules, checkProject, findProjects, loadRules } = await import('../../../framework/cli/project.mjs');
+  const rules = loadRules();
+  writeFileSync(join(OUT, 'projects.json'), JSON.stringify({ rulesFile: RULES_REL, items: findProjects(ROOT).map((d) => { const r = checkProject(d, { rules }); return { dir: r.rel, exists: r.exists, manifest: r.manifest, validation: r.validation }; }) }));
+  writeFileSync(join(OUT, 'project-rules.json'), JSON.stringify({ rules, base: baseRules(), file: RULES_REL }));
+}
 console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);

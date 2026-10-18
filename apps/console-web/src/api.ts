@@ -153,3 +153,10 @@ export const planMediaUrl = (src: string) => (/^(https?:|data:)/.test(src) ? src
 
 export interface LibraryTemplate { id: string; name: string; category: string; icon: string; description: string; produces: string[]; params: LibraryParam[]; deps: string[]; ports: string[]; files: Record<string, string[]> }
 export const loadLibraryTemplates = async () => (await getJson<{ items: LibraryTemplate[] }>('library-templates', 'library-templates.json')).items ?? [];
+
+/* ---------------- Standards: project manifests (project.manifest.json) + their rules ---------------- */
+import type { ProjectManifest, ProjectRules, ProjectValidation } from './axf/core/project';
+export interface ProjectRow { dir: string; exists: boolean; manifest: ProjectManifest | null; validation: ProjectValidation }
+export const loadProjects = () => getJson<{ rulesFile: string; items: ProjectRow[] }>('standards/projects', 'projects.json');
+export const loadProjectRules = () => getJson<{ rules: ProjectRules; base: ProjectRules; file: string }>('standards/rules', 'project-rules.json');
+export const saveProjectRules = (rules: ProjectRules) => post('standards/rules', { rules }) as Promise<EngineResult & { rules?: ProjectRules }>;

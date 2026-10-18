@@ -1,0 +1,29 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "activex",
+  "displayName": "ActiveX",
+  "description": "Android app for hands-free YouTube control (Shorts scrolling plus every YouTube action) by voice, hand and face gestures.",
+  "kind": "app",
+  "status": "active",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "none"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "ActiveX",
+    "exists": true,
+    "url": "https://github.com/MossesX/ActiveX"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-02",
+  "notes": "Held here until the manifest is copied into the ActiveX repo."
+}

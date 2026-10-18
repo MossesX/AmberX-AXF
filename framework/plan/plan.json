@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T13:23:44.250Z",
+ "generatedAt": "2026-10-18T14:25:28.033Z",
  "statuses": [
   "built",
   "partial",
@@ -21405,6 +21405,77 @@
    "modelEdited": true,
    "modelReason": "Cross-port library contract: Fable keeps every port consistent",
    "edited": true
+  },
+  {
+   "id": "x.projects",
+   "title": "Project manifests, Standards and the /projects tree",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Every project has a validated project.manifest.json (project-manifest@1); the build engine never loads or compiles a project without one. Rules live in the Dev Console under Standards. Claude files and shared data sync with the hub at /projects/<name>/{_claude,_data}.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/core/project.ts, framework/core/project-check.mjs, apps/console-web/src/views/Standards.tsx"
+    },
+    "android": {
+     "status": "partial",
+     "where": "axf-kernel project/ProjectManifest.kt (compiled by CI); android-compose Gradle guard"
+    }
+   },
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5",
+   "files": [
+    "framework/schemas/project-rules.json",
+    "framework/core/project.ts",
+    "framework/core/project-check.mjs",
+    "framework/core/project-guard.mjs",
+    "framework/cli/project.mjs",
+    "framework/spec/fixtures/project-manifest.json",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/project/ProjectManifest.kt",
+    "apps/console-web/src/views/Standards.tsx",
+    "framework/cli/persist.mjs",
+    "deploy/install-console.sh"
+   ],
+   "acceptance": [
+    {
+     "text": "Every template ships a manifest; axf init fills it in",
+     "done": true
+    },
+    {
+     "text": "No project is loaded or compiled without a valid manifest (CLI, console, template guards)",
+     "done": true
+    },
+    {
+     "text": "Rules editable in the console (Standards), locked rules protected",
+     "done": true
+    },
+    {
+     "text": "TS, JS and Kotlin validators agree on the fixtures",
+     "done": true
+    },
+    {
+     "text": "Shared data read from /projects/<name>/_data on the VPS",
+     "done": true
+    }
+   ],
+   "tags": [
+    "standards",
+    "manifest",
+    "hub"
+   ],
+   "notes": "Oct 18 2026, built on Opus. axHub side: /projects store + claude-sync (decisions #70-#76).",
+   "edited": true,
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-18T14:17:14.440Z",
+     "text": "built on Opus"
+    }
+   ]
   }
  ]
 }

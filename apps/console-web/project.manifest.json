@@ -1,0 +1,43 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "axf-console-web",
+  "displayName": "AXF Dev Console",
+  "description": "The web Dev Console (React/TS + FastAPI + MCP server), live at console.amberxai.com.",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "web",
+    "server"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "react-ts",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "axf-console",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/console-web"
+  },
+  "deploy": {
+    "url": "https://console.amberxai.com",
+    "via": "coolify",
+    "installer": "deploy/install-console.sh"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-16",
+  "notes": "Its own repo (axf-console) is reserved, not created: Brett decides when the console moves out."
+}

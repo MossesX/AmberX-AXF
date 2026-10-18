@@ -3,6 +3,8 @@
  * axf — command-line driver for the AmberX AXF build engine.
  *
  *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser] [build options]
+ *            project manifest: [--repo owner/name] [--repo-exists] [--visibility private] [--description "…"] [--kind app]
+ *   axf project validate|init|list|rules|schema …   project manifests (same as node framework/cli/project.mjs)
  *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
  *
  *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
@@ -32,12 +34,13 @@
  *                               add a library to an app: interactive wizard asks for the required parameters,
  *                               then writes manifest + gradle + App.kt + a generated <Name>Setup.kt
  */
-import { relative } from 'node:path';
+import { join, relative } from 'node:path';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { installLibrary, installScript, libraryInfo, listLibraries, wizard } from './libraries.mjs';
 import { OPTIONS, describeOptions, pickOptions } from './build-options.mjs';
 import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
+import { checkProject } from './project.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 const flags = {};
@@ -85,14 +88,29 @@ try {
         boilerplate: flags.boilerplate,
         // --libraries browser,other  (pre-build configuration; each library's defaults, or --param key=value for all)
         options: pickOptions(flags),
+        project: {
+          ...(flags.repo ? { owner: String(flags.repo).split('/')[0], repoName: String(flags.repo).split('/')[1] } : {}),
+          ...(flags['repo-exists'] ? { repoExists: true } : {}),
+          ...(flags.visibility ? { visibility: String(flags.visibility) } : {}),
+          ...(flags.description ? { description: String(flags.description) } : {}),
+          ...(flags.kind ? { kind: String(flags.kind) } : {}),
+        },
         libraries: flags.libraries ? String(flags.libraries).split(',').map((l) => ({ library: l.trim(), params: Object.fromEntries([].concat(flags.param ?? []).map((kv) => { const [k, ...v] = String(kv).split('='); return [k, v.join('=')]; })) })) : [],
         log: (m) => console.log(c.dim(m)),
       });
       console.log(c.ok(`\n✓ ${res.manifest.app.name} (${res.manifest.app.id}) created`));
+      console.log(`  project.manifest.json → hub folder /projects/${res.manifest.app.id}`);
       console.log(`  ${res.assets} assets · ${res.bakedFiles} baked framework files`);
       if (res.libraries?.length) console.log(`  libraries: ${res.libraries.map((l) => l.library).join(', ')}`);
       printReport(res.report);
       console.log(`\n  cd ${relative(process.cwd(), res.dir) || '.'} && ${res.next || 'npm install && npm run dev'}\n`);
+      break;
+    }
+    case 'project': {
+      // Delegates to framework/cli/project.mjs (validate, init, list, rules, schema).
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/project.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
       break;
     }
     case 'options': {
@@ -109,7 +127,11 @@ try {
       if (flags.framework) {
         const list = [...loadAssets(`${FRAMEWORK_DIR}/assets`), ...loadAssets(`${FRAMEWORK_DIR}/android/assets`)];
         const errors = list.filter((a) => !a.result.ok).map((a) => `${relative(FRAMEWORK_DIR, a.file)}: ${a.result.errors.join('; ')}`);
-        printReport({ ok: !errors.length, errors, assets: list.length });
+        // The framework is a project too (the repo root's project.manifest.json).
+        const project = checkProject(join(FRAMEWORK_DIR, '..'));
+        errors.push(...project.validation.errors.map((e) => `project.manifest.json: ${e.message} [${e.rule}]`));
+        const warnings = project.validation.warnings.map((w) => `project.manifest.json: ${w.message} [${w.rule}]`);
+        printReport({ ok: !errors.length, errors, warnings, assets: list.length });
         process.exitCode = errors.length ? 1 : 0;
       } else {
         const r = validateApp(args[0] ?? '.');

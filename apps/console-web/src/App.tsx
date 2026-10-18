@@ -14,6 +14,7 @@ import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
+import { Standards } from './views/Standards';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { consoleSettings } from './consoleSettings';
@@ -25,6 +26,9 @@ const views: ViewMap = {
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
   build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
+  // Standards: rules every project must meet (first: project manifests).
+  'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },
+  'standards-rules': { title: 'Manifest rules', icon: 'shield', render: () => <Standards tab="rules" /> },
   catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },

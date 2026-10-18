@@ -67,6 +67,23 @@
         ]
       },
       {
+        "label": "Standards",
+        "items": [
+          {
+            "id": "standards-projects",
+            "label": "Projects",
+            "icon": "folder",
+            "view": "standards-projects"
+          },
+          {
+            "id": "standards-rules",
+            "label": "Manifest rules",
+            "icon": "shield",
+            "view": "standards-rules"
+          }
+        ]
+      },
+      {
         "label": "Framework",
         "items": [
           {

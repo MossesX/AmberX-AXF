@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "axf-console-android",
+  "displayName": "AXF Dev Console (Android)",
+  "description": "Android showcase of the Dev Console on the AXF Android port (ai.amberx.axf.console).",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "android-compose",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "axf-console-android",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/console"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-14"
+}

@@ -26,6 +26,8 @@ jobs:
         with: { node-version: 22 }
       - run: node framework/cli/axf.mjs validate --framework
       - run: node framework/cli/tracker.mjs --check
+      - run: node framework/cli/project.mjs validate --all          # every project manifest (the build rule)
+      - run: node framework/spec/check-project-fixtures.mjs          # JS validator = reference fixtures
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs

@@ -1,0 +1,42 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "axf-demo",
+  "displayName": "AmberX AXF Demo",
+  "description": "The demo site: untouched `axf init` output, deployed to axf.amberxai.com.",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "web",
+    "desktop",
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "react-ts",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "axf-demo",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/demo"
+  },
+  "deploy": {
+    "url": "https://axf.amberxai.com",
+    "via": "github-actions → site branch → VPS"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-15"
+}

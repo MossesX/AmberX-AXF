@@ -1,0 +1,33 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "shipx",
+  "displayName": "ShipX",
+  "description": "Android deploy wizard: pick a project (GitHub repo or VPS folder) and deploy it to a subdomain on the Hostinger VPS.",
+  "kind": "app",
+  "status": "planned",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "none"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "ShipX",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "projects/shipx"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-13",
+  "notes": "No repo yet; the name is reserved here. Kotlin + Jetpack Compose (chosen over building on AmberX Studio)."
+}

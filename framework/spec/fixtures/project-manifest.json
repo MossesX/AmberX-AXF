@@ -1,0 +1,520 @@
+{
+  "valid": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "existing": [
+      "axf.manifest.json",
+      "state",
+      "notes.json"
+    ],
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "valid-no-file-access": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "not-an-object": {
+    "manifest": [
+      "x"
+    ],
+    "ok": false,
+    "errors": [
+      "manifest-object"
+    ],
+    "warnings": []
+  },
+  "empty-object": {
+    "manifest": {},
+    "ok": false,
+    "errors": [
+      "manifest-tag",
+      "name-format",
+      "display-name",
+      "kind",
+      "framework-relation",
+      "repo-owner",
+      "repo-name",
+      "repo-exists"
+    ],
+    "warnings": []
+  },
+  "bad-name": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "Bad_Name",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "name-format"
+    ],
+    "warnings": []
+  },
+  "reserved-name": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "shared",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "name-reserved"
+    ],
+    "warnings": []
+  },
+  "no-repo": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "repo-owner",
+      "repo-name",
+      "repo-exists"
+    ],
+    "warnings": []
+  },
+  "repo-without-exists": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "owner": "MossesX",
+        "name": "axf-demo"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "repo-exists"
+    ],
+    "warnings": []
+  },
+  "future-repo-no-location": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "location-when-no-repo"
+    ]
+  },
+  "bad-vocab": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "website",
+      "status": "paused",
+      "version": "0.1.0",
+      "platforms": [
+        "web",
+        "tv"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "svn",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "secret"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "kind",
+      "status",
+      "repo-host"
+    ],
+    "warnings": [
+      "repo-visibility",
+      "platforms"
+    ]
+  },
+  "unsafe-data-paths": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "/etc/passwd",
+          "../up",
+          "ok.json",
+          "a\\b"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "existing": [
+      "ok.json",
+      "axf.manifest.json"
+    ],
+    "ok": false,
+    "errors": [
+      "data-paths"
+    ],
+    "warnings": []
+  },
+  "missing-data-files": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "existing": [],
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "data-paths-exist",
+      "app-manifest-exists"
+    ]
+  },
+  "warnings-only": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "AXF Demo",
+      "kind": "app",
+      "status": "active",
+      "version": "v1",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private",
+        "url": "http://x"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "yesterday",
+      "extra": 1
+    },
+    "existing": [
+      "axf.manifest.json",
+      "state",
+      "notes.json"
+    ],
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "repo-url",
+      "version",
+      "created",
+      "unknown-keys"
+    ]
+  },
+  "display-name-too-long": {
+    "manifest": {
+      "$manifest": "project-manifest@1",
+      "name": "axf-demo",
+      "displayName": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "kind": "app",
+      "status": "active",
+      "version": "0.1.0",
+      "platforms": [
+        "web"
+      ],
+      "framework": {
+        "relation": "built-on",
+        "appManifest": "axf.manifest.json"
+      },
+      "repo": {
+        "host": "github",
+        "owner": "MossesX",
+        "name": "axf-demo",
+        "exists": false,
+        "visibility": "private"
+      },
+      "location": {
+        "repo": "MossesX/AmberX-AXF",
+        "path": "apps/demo"
+      },
+      "data": {
+        "shared": [
+          "state/",
+          "notes.json"
+        ]
+      },
+      "created": "2026-10-18"
+    },
+    "ok": false,
+    "errors": [
+      "display-name"
+    ],
+    "warnings": []
+  }
+}

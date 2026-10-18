@@ -19,6 +19,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dataPath } from './persist.mjs';
+import { requireProject } from './project.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ANDROID_DIR = join(FRAMEWORK_DIR, 'android');
@@ -98,6 +99,7 @@ function findAppKt(dir) {
 }
 
 export function installLibrary({ dir, library, params = {}, log = () => {} }) {
+  requireProject(dir, 'changed');
   const root = resolve(dir);
   const mPath = join(root, 'axf.manifest.json');
   if (!existsSync(mPath)) throw new Error(`Not an AXF app (no axf.manifest.json in ${root})`);

@@ -11,3 +11,4 @@ export * from './engines/actions';
 export * from './engines/windows';
 export * from './terminal';
 export * from './options';
+export * from './project';

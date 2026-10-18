@@ -54,12 +54,16 @@ chmod 600 "$ENVF"
 
 # ---- 3. image ----
 say "Building image (first build takes a few minutes: npm ci + pip)"
-# live data (pending list, plan, build queue, catalog status, tracker) lives on the hub: $PERSIST_DIR/amberx-axf/
+# Shared data (the root project.manifest.json's data.shared) lives in the hub's projects tree (axhub-projects@1):
+#   /projects/amberx-axf/_data/<same path as in the repo>, on axHub's own Docker volume "axhub-projects"
+# (Coolify → axHub → Persistent Storage, axHub deploy/coolify.md §5b). The console mounts the same volume.
+# Until that volume exists, data stays in the legacy folder $PERSIST_DIR/amberx-axf.
 PERSIST_DIR="${PERSIST_DIR:-/opt/axhub/persist}"
-mkdir -p "$PERSIST_DIR"
+HUB_UID="${HUB_UID:-1000}"
 # Undo of claude-fs@1 (Oct 18 2026): an install from that version may have moved live data into
 # /Claude/projects/<project>/data on this VPS. Move it back, then remove /Claude if nothing else is left in it.
 if [ -d /Claude/projects ] && ! mountpoint -q /Claude 2>/dev/null; then
+  mkdir -p "$PERSIST_DIR"
   for d in /Claude/projects/*/data; do
     [ -d "$d" ] || continue
     p="$(basename "$(dirname "$d")")"; to="$PERSIST_DIR/$p"
@@ -70,12 +74,37 @@ if [ -d /Claude/projects ] && ! mountpoint -q /Claude 2>/dev/null; then
   find /Claude -depth -type d -empty -delete 2>/dev/null || true
   [ -d /Claude ] && say "/Claude still has files (left in place): $(find /Claude -type f | head -3 | tr '\n' ' ')" || say "removed the empty /Claude folder"
 fi
-AXF_PERSIST_DIR="$PERSIST_DIR" node "$DIR/framework/cli/persist.mjs" push 2>/dev/null | sed 's/^/[axf] /' || say "node not on the host; the console seeds $PERSIST_DIR/amberx-axf on first read"
 docker build -q -f "$DIR/apps/console-web/server/Dockerfile" -t "$NAME:latest" "$DIR" >/dev/null
+
+VOL="${AXHUB_PROJECTS_VOLUME:-$(docker volume ls -q | grep -E '(^|[-_])axhub-projects$' | head -n1 || true)}"
+if [ -n "$VOL" ]; then
+  say "projects volume: $VOL → /projects (data: /projects/amberx-axf/_data)"
+  # Once, without overwriting: copy the legacy folder in, seed what's missing from the repo, then make the
+  # project's folders shared with the hub user ($HUB_UID): group $HUB_UID, setgid folders, group-writable files.
+  docker run --rm -v "$VOL":/projects -v "$DIR":/axf:ro $( [ -d "$PERSIST_DIR/amberx-axf" ] && echo "-v $PERSIST_DIR/amberx-axf:/old:ro" ) \
+    -e AXF_DATA_DIR=/projects/amberx-axf/_data -e HUB_UID="$HUB_UID" --entrypoint sh "$NAME:latest" -c '
+      set -e
+      for d in _data _claude/memory _claude/instructions _claude/rules _claude/shared; do mkdir -p "/projects/amberx-axf/$d"; done
+      mkdir -p /projects/_shared/_claude
+      if [ -d /old ] && [ ! -e /projects/amberx-axf/_data/.legacy-copied ]; then cp -a -n /old/. /projects/amberx-axf/_data/ 2>/dev/null || true; touch /projects/amberx-axf/_data/.legacy-copied; echo "copied the legacy data folder in (left in place)"; fi
+      node /axf/framework/cli/persist.mjs push | sed "s/^/  /"
+      chown -R "$HUB_UID:$HUB_UID" /projects/amberx-axf /projects/_shared
+      chown "$HUB_UID:$HUB_UID" /projects
+      find /projects/amberx-axf /projects/_shared -type d -exec chmod 2775 {} +
+      find /projects/amberx-axf /projects/_shared -type f -exec chmod ug+rw {} +
+    ' | sed 's/^/[axf] /'
+  DATA_ARGS=(-v "$VOL":/projects)
+  say "Root shells on this VPS can sync directly: export AXHUB_PROJECTS_DIR=$(docker volume inspect -f '{{.Mountpoint}}' "$VOL")"
+else
+  say "No axhub-projects volume yet (add it to axHub in Coolify: deploy/coolify.md §5b in the axHub repo); keeping $PERSIST_DIR/amberx-axf"
+  mkdir -p "$PERSIST_DIR"
+  AXF_PERSIST_DIR="$PERSIST_DIR" node "$DIR/framework/cli/persist.mjs" push 2>/dev/null | sed 's/^/[axf] /' || say "node not on the host; the console seeds $PERSIST_DIR/amberx-axf on first read"
+  DATA_ARGS=(-v "$PERSIST_DIR":/persist -e AXF_PERSIST_DIR=/persist)
+fi
 
 # ---- 4. container ----
 docker rm -f "$NAME" >/dev/null 2>&1 || true
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$PERSIST_DIR":/persist -e AXF_PERSIST_DIR=/persist -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
 if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | tr ' ' '\n' | grep -x coolify || true)"

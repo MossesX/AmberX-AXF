@@ -11,6 +11,18 @@ android {
     }
 }
 
+// AmberX build rule: no project is compiled without a validated manifest (project.manifest.json, project-manifest@1).
+// The framework's build engine checks it before every build (needs Node 22, like `axf`); the rules are
+// framework/schemas/project-rules.json, managed in the Dev Console under Standards.
+val axfProjectDir: File = rootDir
+val axfCheckProject = tasks.register<Exec>("axfCheckProject") {
+    group = "verification"
+    description = "Validates project.manifest.json against the AmberX project rules"
+    workingDir = axfProjectDir
+    commandLine("node", axfProjectDir.resolve("../../framework/cli/project.mjs").absolutePath, "validate", axfProjectDir.absolutePath)
+}
+tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(axfCheckProject) }
+
 val axf = libs.versions.axf.get()
 dependencies {
     implementation("ai.amberx.axf:axf-kernel:$axf")

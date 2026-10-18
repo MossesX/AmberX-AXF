@@ -8,6 +8,12 @@
   "assetsDir": "app/src/main/assets/axf/assets",
   "structure": [
     {
+      "path": "project.manifest.json",
+      "kind": "file",
+      "required": true,
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
       "path": "axf.manifest.json",
       "kind": "file",
       "required": true,
