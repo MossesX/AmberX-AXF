@@ -135,11 +135,13 @@ export function Plan() {
   const areas = useMemo(() => [...new Set(features.map((x) => x.area))], [features]);
   const visible = useMemo(() => {
     const q = f.q.trim().toLowerCase();
+    // While searching, every feature is searched (titles, ids, summaries, tags, capabilities), whatever kind filter is set.
+    const searching = q.length > 0;
     return features.filter((x) =>
       (!q || x.title.toLowerCase().includes(q) || x.id.toLowerCase().includes(q) || x.summary.toLowerCase().includes(q) || x.tags.some((t) => t.includes(q)) || x.capabilities.some((c) => c.toLowerCase().includes(q))) &&
       (!f.area || x.area === f.area) && (!f.statuses.size || f.statuses.has(x.status)) &&
       (!f.port || (x.ports[f.port] && (!f.portStatus || x.ports[f.port]!.status === f.portStatus))) &&
-      (!f.priority || x.priority === f.priority) && (!f.wave || String(x.wave) === f.wave) && (!f.kind || x.kind === f.kind) &&
+      (!f.priority || x.priority === f.priority) && (!f.wave || String(x.wave) === f.wave) && (!f.kind || searching || x.kind === f.kind) &&
       (!f.warnings || warnCount(x, a) > 0) && (!f.blocked || a.blocked.has(x.id)));
   }, [features, f, a]);
   const counts = useMemo(() => Object.fromEntries(api.PLAN_STATUSES.map((s) => [s, features.filter((x) => x.status === s).length])), [features]);
@@ -188,10 +190,10 @@ export function Plan() {
       {!loaded ? <div className="fx-empty">Loading the plan…</div> : error ? <div className="fx-empty">Couldn't load the plan: {error}. Run <code>node framework/cli/plan.mjs</code>, then <code>npm run sync</code>.</div> : (
         <div className="pl-main">
           <div className="pl-results">
-            <p className="fx-muted fx-small" style={{ margin: '0 0 calc(var(--fx-space) * 0.75)' }}>{visible.length} shown</p>
+            <p className="fx-muted fx-small" style={{ margin: '0 0 calc(var(--fx-space) * 0.75)' }}>{visible.length} shown{f.q.trim() ? ` matching “${f.q.trim()}” in every feature` : ''}</p>
             {visible.length === 0 ? <div className="fx-empty">No feature matches these filters.</div>
               : mode === 'board' ? <Board features={visible} a={a} sel={sel} onSel={setSel} />
-              : mode === 'epics' ? <EpicList features={visible} a={a} sel={sel} onSel={setSel} />
+              : mode === 'epics' && !f.q.trim() ? <EpicList features={visible} a={a} sel={sel} onSel={setSel} />
               : <GroupedList features={visible} a={a} sel={sel} onSel={setSel} />}
           </div>
           <aside className="pl-detail">{current ? <FeatureDetail key={current.id} feature={current} a={a} onSelect={setSel} /> : <div className="fx-empty">Select a feature to see and edit its details.</div>}</aside>
