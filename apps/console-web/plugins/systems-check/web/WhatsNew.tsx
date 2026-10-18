@@ -8,6 +8,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Icon } from '@console/axf/react';
 import * as api from '@console/api';
 import { Markdown } from './Markdown';
+import { AiBadge } from './SystemCheck';
 
 interface Commit { sha: string; short: string; subject: string; author: string; at: number }
 interface Plugin { folder: string; name: string; version: string }
@@ -83,6 +84,7 @@ export function WhatsNewBanner() {
         <Icon name="sparkles" />
         <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-systems-check-banner__title">What’s new</span>
+          {d.summary?.text && <AiBadge title={`Summary written by ${d.summary.agent ?? 'Mosses'} (AI)${d.summary.cached && !d.aiOn ? ', saved earlier' : ''}`} />}
           <span className="axp-systems-check-banner__sum">{bits} since you last opened the console ({since}){d.known ? '' : ' (recent changes shown)'}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </button>
@@ -94,7 +96,7 @@ export function WhatsNewBanner() {
           {d.summary?.text && (
             <div className="axp-systems-check-new__summary">
               <Markdown text={d.summary.text} />
-              <span className="fx-small fx-muted">Summary by {d.summary.agent ?? 'Mosses'}{d.summary.cached && !d.aiOn ? ' (saved earlier; AI is off now)' : ''}</span>
+              <span className="fx-small fx-muted"><AiBadge title="Written by AI" /> Summary by {d.summary.agent ?? 'Mosses'}{d.summary.cached && !d.aiOn ? ' (saved earlier; AI is off now)' : ''}</span>
             </div>
           )}
           {d.summaryError && <p className="fx-small fx-muted">No AI summary: {d.summaryError}</p>}

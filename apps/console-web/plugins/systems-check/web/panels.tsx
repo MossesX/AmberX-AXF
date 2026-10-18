@@ -37,6 +37,40 @@ function Need({ what, providers, extra }: { what: string; providers: Provider[];
   );
 }
 
+interface TestResult { ok: boolean; agent?: string; model?: string; profile?: string; ms?: number; reply?: string; error?: string }
+
+/** "Test AI connection": one tiny request through the AI assistant, as Mosses (the same path the AI switches use). */
+function AiTest({ disabled, why }: { disabled: boolean; why: string }) {
+  const [busy, setBusy] = useState(false);
+  const [r, setR] = useState<TestResult | null>(null);
+  const run = async () => {
+    setBusy(true); setR(null);
+    try { setR(await call<TestResult>('ai/test', { method: 'POST' })); }
+    catch (e) { setR({ ok: false, error: (e as Error).message }); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="axp-systems-check-aitest">
+      <div className="fx-row fx-row--wrap">
+        <Button icon="zap" disabled={disabled || busy} onClick={() => void run()}>{busy ? 'Testing…' : 'Test AI connection'}</Button>
+        {disabled && <span className="fx-small fx-muted">{why}</span>}
+        {!disabled && !r && !busy && <span className="fx-small fx-muted">Sends one tiny message through the AI assistant as Mosses, the way the AI switches do.</span>}
+        {r && <Chip tone={r.ok ? 'success' : 'danger'}>{r.ok ? 'connected' : 'failed'}</Chip>}
+      </div>
+      {r && (
+        <dl aria-live="polite">
+          {r.agent && <><dt>Agent</dt><dd>{r.agent}</dd></>}
+          {r.model && <><dt>Model</dt><dd className="fx-mono">{r.model}</dd></>}
+          {r.profile && <><dt>Provider</dt><dd>{r.profile}</dd></>}
+          {r.ms != null && <><dt>Time</dt><dd>{(r.ms / 1000).toFixed(1)} s</dd></>}
+          {r.reply && <><dt>Reply</dt><dd>{r.reply}</dd></>}
+          {r.error && <><dt>Error</dt><dd className="axp-systems-check-bad">{r.error}</dd></>}
+        </dl>
+      )}
+    </div>
+  );
+}
+
 export function AiPanel() {
   const [s, setS] = useState<AiState | null>(null);
   const [err, setErr] = useState('');
@@ -76,6 +110,7 @@ export function AiPanel() {
       {!missing && !req.assistant.ready && <p className="fx-small fx-muted"><Icon name="info" size={12} /> The AI assistant has no provider with a working key yet; AI runs will fail until one is set up.</p>}
       {sw('systems', 'Use AI for the systems check', `${req.mosses.name ?? 'Mosses'} reads the codebase and adds checks, saved as a routine. When AI is off, the saved routine still runs, with no model. Refreshed when the code changes.`)}
       {sw('whatsnew', 'Use AI for What’s new', `${req.mosses.name ?? 'Mosses'} writes a plain-English summary of what changed since your last visit. Summaries are saved, so they stay when AI is off.`)}
+      <AiTest disabled={missing} why="Install what's missing above to test the connection." />
       <p className="fx-small fx-muted">Without AI, the checks come from reading the codebase: every plugin, the services it needs and its own declared self-checks, every project manifest and the shared data files, plus the built-in checks.</p>
     </div>
   );

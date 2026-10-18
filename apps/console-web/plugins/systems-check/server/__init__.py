@@ -172,6 +172,31 @@ def ai_status() -> dict[str, Any]:
     return {"requirements": req, "settings": s, "effective": {k: bool(s["ai"].get(k)) and req["ok"] for k in ("systems", "whatsnew")}}
 
 
+@router.post("/ai/test")
+def ai_test() -> dict[str, Any]:
+    """Test the AI connection the switches use: one tiny request through the AI assistant (axf.llm@1), as Mosses.
+    Works whether or not the switches are on. Never returns keys; the reply is cut short."""
+    req = derive.requirement_status()
+    if not req["ok"]:
+        missing = [x for x, ok in (("the AI assistant", req["assistant"]["ok"]), ("the Mosses agent", req["mosses"]["ok"])) if not ok]
+        raise HTTPException(409, f"Install {' and '.join(missing)} first")
+    llm = plugin_services.get("axf.llm@1")
+    agent = (plugin_services.get("axf.agents@1").get_agent(derive.MOSSES) or {})
+    started = time.time()
+    try:
+        out = llm.complete([{"role": "user", "content": "Connection test from the systems check. Reply with one short line that starts with OK."}],
+                           system=(agent.get("system_prompt") or "")[:20000], params={"temperature": 0, "max_tokens": 60})
+    except Exception as e:  # noqa: BLE001
+        msg = str(e).strip("'\"")[:300] or e.__class__.__name__
+        cx.log("system", f"AI connection test failed: {msg}", "error")
+        return {"ok": False, "error": msg, "agent": agent.get("name") or "Mosses", "ms": int((time.time() - started) * 1000)}
+    text = str(out.get("text") or "").strip()
+    res = {"ok": bool(text), "agent": agent.get("name") or "Mosses", "model": out.get("model") or "", "profile": out.get("profile") or "",
+           "ms": int((time.time() - started) * 1000), "reply": text[:200], "error": "" if text else "the model answered with nothing"}
+    cx.log("system", f"AI connection test: {'ok' if res['ok'] else 'empty reply'} ({res['model'] or 'model unknown'}, {res['ms']} ms)", "ok" if res["ok"] else "warn")
+    return res
+
+
 @router.put("/settings")
 def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     want = body.get("ai") if isinstance(body.get("ai"), dict) else {}

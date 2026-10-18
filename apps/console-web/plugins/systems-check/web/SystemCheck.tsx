@@ -26,6 +26,14 @@ interface Prompt { id: string; index: number; total: number; note: string }
 /* ---------------- shared store (banner + dialog) ---------------- */
 const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null; aiBusy: boolean; aiError: string } =
   { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null, aiBusy: false, aiError: '' };
+/** Checks Mosses wrote (the AI routine) run with ids `routine:<id>`; everything else comes from reading the codebase. */
+export const isAiCheck = (c: Check) => c.id.startsWith('routine:');
+/** Small "AI" badge: marks anything a model generated (routine checks, What's new summaries). */
+export function AiBadge({ title }: { title: string }) {
+  return <span className="axp-systems-check-aibadge" title={title} aria-label={title}><Icon name="sparkles" size={11} /> AI</span>;
+}
+const AI_CHECK = 'Added by Mosses (AI routine). It runs without a model once saved.';
+
 /** Fix all waits here while it prompts you for an issue it can't fix alone. */
 let promptResolve: ((a: Answer) => void) | null = null;
 export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve = null; r?.(a); }
@@ -166,6 +174,7 @@ export function SystemBanner() {
         <Icon name="alert" />
         <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
+          {list.some(isAiCheck) && <AiBadge title={`${list.filter(isAiCheck).length} of these come from checks Mosses wrote (AI routine)`} />}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
@@ -175,7 +184,7 @@ export function SystemBanner() {
         <ul className="axp-systems-check-banner__list">
           {guidedOrder(list).map((c) => (
             <li key={c.id}><button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
-              <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><span className="axp-systems-check-banner__sum">{c.summary}</span>
+              <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span>{isAiCheck(c) && <AiBadge title={AI_CHECK} />}<span className="axp-systems-check-banner__sum">{c.summary}</span>
             </button></li>
           ))}
         </ul>
@@ -341,7 +350,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                   <tr className={`axp-systems-check-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
                     <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
                     <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
-                    <td><strong>{c.title}</strong><span className="axp-systems-check-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
+                    <td><strong>{c.title}</strong>{isAiCheck(c) && <> <AiBadge title={AI_CHECK} /></>}<span className="axp-systems-check-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
                     <td className="axp-systems-check-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
                     <td className="axp-systems-check-hide-sm fx-small">{c.summary}</td>
                   </tr>
@@ -364,7 +373,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                 <header className="axp-systems-check-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
                 <p className="fx-small fx-muted" style={{ margin: 0 }}>{sv.description}</p>
                 <ul className="axp-systems-check-card__list">
-                  {cs.map((c) => <li key={c.id}><button type="button" className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span>{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
+                  {cs.map((c) => <li key={c.id}><button type="button" className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span>{isAiCheck(c) && <AiBadge title={AI_CHECK} />}{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
                 </ul>
               </section>
             );
@@ -387,7 +396,7 @@ function PromptPanel({ p }: { p: Prompt }) {
     <section className="axp-systems-check-prompt" aria-live="polite" aria-label={`Fix all needs you: ${c.title}`}>
       <header className="axp-systems-check-prompt__head">
         <RunBadge r="waiting" />
-        <strong className="fx-grow">Step {p.index} of {p.total}: {c.title}</strong>
+        <strong className="fx-grow">Step {p.index} of {p.total}: {c.title} {isAiCheck(c) && <AiBadge title={AI_CHECK} />}</strong>
       </header>
       <p className="axp-systems-check-prompt__note" style={{ margin: 0 }}>{p.note}</p>
       <CheckBody c={c} inPrompt />
@@ -414,7 +423,7 @@ function Guided({ list }: { list: Check[] }) {
         {list.map((x, k) => {
           const now = s.report?.checks.find((y) => y.id === x.id) ?? x;
           return <li key={x.id}><button type="button" className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
-            <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span>{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
+            <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span>{isAiCheck(x) && <AiBadge title={AI_CHECK} />}{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
         })}
       </ol>
       <div className="axp-systems-check-guided__pane">

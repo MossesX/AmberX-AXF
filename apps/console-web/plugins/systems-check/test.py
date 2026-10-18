@@ -85,6 +85,8 @@ check("COOLIFY_TOKEN" not in os.environ, "credential cleared")
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()
 check(not a["requirements"]["ok"] and not a["effective"]["systems"], "AI greyed out with nothing installed")
+r409 = c.post("/p/ai/test")
+check(r409.status_code == 409 and "AI assistant" in r409.json()["detail"] and "Mosses" in r409.json()["detail"], "AI test says what's missing")
 def _providing(cap):
     return sorted(f.parent.name for f in (REPO / "apps/console-web/plugins").glob("*/plugin.json")
                   if not f.parent.name.startswith("_") and f"service:{cap}" in json.loads(f.read_text()).get("provides", []))
@@ -116,6 +118,10 @@ class FakeLlm:
 
     def complete(self, messages, system=None, profile=None, model=None, tools=None, params=None):
         self.calls.append({"system": system, "text": messages[-1]["content"]})
+        if messages[-1]["content"].startswith("Connection test"):
+            if getattr(self, "broken", False):
+                raise RuntimeError("401 invalid x-api-key")
+            return {"text": "OK, Mosses here.", "model": "fake-1", "profile": "fake"}
         if messages[-1]["content"].startswith("You're running the systems check"):
             return {"text": "Aight boss, here's the routine:\n" + json.dumps(REPLY), "model": "fake-1", "profile": "fake"}
         return {"text": "## New\n- **Mosses** got container powers\n- Snapshots before every change", "model": "fake-1"}
@@ -132,6 +138,12 @@ check(not c.get("/p/ai").json()["requirements"]["ok"], "assistant alone isn't en
 plugin_services.provide("axf.agents@1", FakeAgents(), "fake-agent-manager")
 a = c.get("/p/ai").json()
 check(a["requirements"]["ok"] and a["requirements"]["mosses"]["name"] == "Mosses", "assistant + Mosses → AI available")
+t = c.post("/p/ai/test").json()
+check(t["ok"] and t["agent"] == "Mosses" and t["model"] == "fake-1" and t["reply"].startswith("OK") and t["ms"] >= 0 and "You are Mosses" in llm.calls[-1]["system"], "AI test: one request through the assistant, as Mosses (switches still off)")
+llm.broken = True
+t = c.post("/p/ai/test").json()
+check(not t["ok"] and "invalid x-api-key" in t["error"], "AI test reports the provider's error")
+llm.broken = False
 check(c.put("/p/settings", json={"ai": {"systems": True, "whatsnew": True}}).status_code == 200, "AI switches turn on")
 rr = c.post("/p/routine/run").json()["routine"]
 kept = {x["id"] for x in rr["checks"]}
@@ -172,6 +184,7 @@ check(c.get(f"/p/whats-new?since={base}").json()["banner"] is False, "banner can
 
 plugin_services.withdraw("fake-agent-manager")
 check(not c.get("/p/ai").json()["effective"]["systems"], "removing Mosses switches AI off again")
+check(c.post("/p/ai/test").status_code == 409, "AI test refused again without Mosses")
 check(c.delete("/p/routine").json()["ok"] and c.get("/p/routine").json()["routine"] is None, "routine can be deleted")
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
