@@ -18,13 +18,16 @@ const lines = [];
 const log = (m) => { lines.push(m); console.log(m); };
 /** In CI, problems also become annotations so they're readable without downloading logs. */
 const annotate = (m) => { if (process.env.GITHUB_ACTIONS) console.log(`::error title=Theme swap::${m.replace(/\n/g, '%0A')}`); };
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' });
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { stdio: 'inherit' });
 let failed = false;
 try {
-  for (let i = 0; i < 60; i += 1) {
-    try { if ((await fetch(`http://127.0.0.1:${PORT}/`)).ok) break; } catch { /* not up yet */ }
-    await sleep(500);
+  // Bind and probe 127.0.0.1 explicitly: on CI runners "localhost" can resolve to ::1 only.
+  let up = false;
+  for (let i = 0; i < 60 && !up; i += 1) {
+    try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not up yet */ }
+    if (!up) await sleep(500);
   }
+  if (!up) throw new Error(`vite preview did not start on 127.0.0.1:${PORT} within 30 s (is dist/ built?)`);
   const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   const page = await browser.newPage({ viewport: { width: 412, height: 900 } });
   const errors = [];

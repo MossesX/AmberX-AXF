@@ -171,7 +171,7 @@ export function BuildManager() {
         <Container title="Next up" icon="play">
           {next ? (
             <div className="fx-stack">
-              <div className="fx-row fx-row--wrap" style={{ gap: 6 }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /></div>
+              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /></div>
               <p className="fx-small fx-muted" style={{ margin: 0 }}>{next.modelReason}</p>
               <p className="fx-small" style={{ margin: 0 }}>{next.summary}</p>
               <div className="fx-row fx-row--wrap">
@@ -185,13 +185,13 @@ export function BuildManager() {
         <Container title="Progress" icon="chart">
           <table className="fx-table"><tbody>
             {Object.entries(view.counts).map(([k, n]) => <tr key={k}><th>{STATE_LABEL[k] ?? k}</th><td>{n}</td></tr>)}
-            <tr><th>Remaining by model</th><td className="fx-row fx-row--wrap" style={{ gap: 4 }}>{api.MODELS.filter((m) => view.byModel[m.id]).map((m) => <span key={m.id}><ModelChip model={m.id} /> {view.byModel[m.id]}</span>)}</td></tr>
+            <tr><th>Remaining by model</th><td className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}>{api.MODELS.filter((m) => view.byModel[m.id]).map((m) => <span key={m.id}><ModelChip model={m.id} /> {view.byModel[m.id]}</span>)}</td></tr>
           </tbody></table>
         </Container>
         <Container title={`Rework (${reworks.length})`} icon="undo">
           {reworks.length === 0 ? <p className="fx-muted">No built step needs rework.</p> : reworks.map((s) => (
             <div key={s.id} className="bm-rework">
-              <div className="fx-row fx-row--wrap" style={{ gap: 6 }}><strong>{s.title}</strong><ModelChip model={s.model} reason={s.modelReason} /></div>
+              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{s.title}</strong><ModelChip model={s.model} reason={s.modelReason} /></div>
               <ul className="fx-small">{s.rework!.reasons.map((r, i) => <li key={i}>{r}</li>)}</ul>
               <div className="fx-row fx-row--wrap"><Button icon="copy" onClick={() => copy(s)}>Copy brief</Button><Button icon="check" disabled={busy} onClick={() => run({ kind: 'step', id: s.id, action: 'resolve-rework' })}>Reworked</Button></div>
             </div>
@@ -200,8 +200,8 @@ export function BuildManager() {
       </div>
 
       <div className="fx-row fx-row--wrap">
-        <label className="fx-row" style={{ gap: 6 }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
-        <label className="fx-row" style={{ gap: 6 }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+        <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
+        <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
       </div>
 
       <div className="bm-queue" role="list">

@@ -8,11 +8,11 @@
  *  - literal colours: #rgb / #rrggbb / #rrggbbaa, rgb()/rgba()/hsl()/hsla(), named colours in style props
  *  - var(--fx-…, fallback): the theme always defines its tokens, a fallback hides a wrong name
  *  - --fx-* variables no engine or axf.css defines
- *  - hard-coded design sizes: font-size / padding / margin / gap / border-radius as literal numbers or px
+ *  - hard-coded design sizes (999px pill radii are shapes and allowed): font-size / padding / margin / gap / border-radius as literal numbers or px
  *    (use --fx-space, --fx-radius-*, --fx-font-size; layout limits like min-width/max-width are fine)
  *  - defining --fx-* variables (reserved for the engines; see framework/spec/THEMING.md naming principles)
  *  - fixed transparency: color-mix(… NN%, transparent) and opacity literals (use --fx-opacity-*)
- *  Profiles: libraries + plugins get every rule; framework React/CSS and apps' own UI get the colour and
+ *  Profiles: libraries, plugins and the console's own UI get every rule; framework React/CSS and apps' own UI get the colour and
  *  transparency rules (a colour-theme or style-theme swap must restyle them too).
  * Put `theme-ok` in a comment on a line to allow a deliberate exception (e.g. a colour input's default value).
  */
@@ -81,7 +81,9 @@ const scans = paths.length
       { path: join(FRAMEWORK, 'react'), profile: 'colour' },
       { path: join(FRAMEWORK, 'ui'), profile: 'colour' },
       // apps/demo is untouched `axf init` output with an older baked framework; its source of truth is the templates.
-      ...apps.filter((a) => a !== 'demo').map((a) => join(ROOT, 'apps', a, 'src')).filter(existsSync).map((path) => ({ path, profile: 'colour' })),
+      // The console's own UI is held to every rule too (sizes converted to tokens Oct 17 2026).
+      { path: join(ROOT, 'apps', 'console-web', 'src'), profile: 'strict' },
+      ...apps.filter((a) => a !== 'demo' && a !== 'console-web').map((a) => join(ROOT, 'apps', a, 'src')).filter(existsSync).map((path) => ({ path, profile: 'colour' })),
       ...readdirSync(join(FRAMEWORK, 'templates')).map((t) => join(FRAMEWORK, 'templates', t, 'src')).filter(existsSync).map((path) => ({ path, profile: 'colour' })),
     ];
 
@@ -94,8 +96,8 @@ const RULES = [
   { id: 'opacity', re: /\bopacity\s*:\s*['"]?0?\.\d+/g, msg: 'fixed opacity; use var(--fx-opacity-disabled / -muted / …)' },
   { id: 'reserved', re: /(?:^|[;{\s'"])--fx-[a-z0-9-]+['"]?\s*:/g, msg: '--fx-* is reserved for the engines; prefix private variables with your own prefix (framework/spec/THEMING.md)' },
   { id: 'fallback', re: /var\(\s*--fx-[a-z0-9-]+\s*,/g, msg: 'var() fallback hides a wrong token name; drop the fallback' },
-  { id: 'size', re: /\b(?:fontSize|padding(?:Top|Bottom|Left|Right|Inline|Block)?|margin(?:Top|Bottom|Left|Right|Inline|Block)?|gap|rowGap|columnGap|borderRadius)\s*:\s*(?:[1-9]\d*(?:\.\d+)?|['"][1-9][\d.]*px['"])/g, msg: 'hard-coded size; use --fx-space / --fx-radius-* / --fx-font-size' },
-  { id: 'size', re: /(?:^|[;{\s])(?:font-size|padding(?:-[a-z]+)?|margin(?:-[a-z]+)?|gap|border-radius)\s*:\s*[^;}]*?\b[1-9]\d*(?:\.\d+)?px/g, msg: 'hard-coded px size in CSS; use theme tokens' },
+  { id: 'size', re: /\b(?:fontSize|padding(?:Top|Bottom|Left|Right|Inline|Block)?|margin(?:Top|Bottom|Left|Right|Inline|Block)?|gap|rowGap|columnGap|borderRadius)\s*:\s*(?!999\b|'999px')(?:[1-9]\d*(?:\.\d+)?|['"][1-9][\d.]*px['"])/g, msg: 'hard-coded size; use --fx-space / --fx-radius-* / --fx-font-size' },
+  { id: 'size', re: /(?:^|[;{\s])(?:font-size|padding(?:-[a-z]+)?|margin(?:-[a-z]+)?|gap|border-radius)\s*:\s*[^;}]*?\b(?!999px)[1-9]\d*(?:\.\d+)?px/g, msg: 'hard-coded px size in CSS; use theme tokens' },
 ];
 
 let problems = 0;

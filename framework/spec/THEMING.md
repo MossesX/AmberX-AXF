@@ -45,7 +45,8 @@ plugin's UI has to be built from parts the engines and the designer understand.
 
 1. **Tokens only.** No colour literals (`#hex`, `rgb()`, `hsl()`, named colours), no fixed transparency
    (`opacity: .5`, `color-mix(… 20%, transparent)`), no hard-coded font sizes, spacing or radii. Use `var(--fx-…)`, or `calc()` on a token (`calc(var(--fx-space) * 1.5)`). Layout
-   limits (`min-width`, `max-width`, percentages, `0`) are fine.
+   limits and shapes (`min-width`, `max-width`, fixed heights of bars and charts, percentages, `0`, `999px`
+   pill radii) are fine.
 2. **No `var()` fallbacks** on `--fx-*`. The engines always define their tokens; a fallback only hides a
    misspelt or non-existent name.
 3. **Lay out with the framework's primitives** (`fx-stack`, `fx-row`, `Container`, `Button`, `Chip`, …)
@@ -56,9 +57,9 @@ plugin's UI has to be built from parts the engines and the designer understand.
    is not built yet; until it is, plugins use the app's active assets.*
 5. Deliberate exceptions (a colour picker's default *value*, say) carry a `theme-ok` comment on the line.
 
-Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Libraries and plugins get every
-rule: literal colours, fixed transparency, hard-coded sizes, `var()` fallbacks, unknown `--fx-*` names and
-defining `--fx-*`. The framework's React/CSS, app UIs (the console) and the app templates get the colour and
+Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Libraries, plugins and the console's
+own UI get every rule: literal colours, fixed transparency, hard-coded sizes, `var()` fallbacks, unknown `--fx-*` names and
+defining `--fx-*`. The framework's React/CSS, other app UIs and the app templates get the colour and
 transparency rules, so swapping a colour or style theme restyles them too. (`apps/demo` is untouched
 `axf init` output on an older baked framework and is skipped until it is re-baked.)
 
