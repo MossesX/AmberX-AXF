@@ -5,10 +5,8 @@ import { NewAppDialog } from './views/Boilerplates';
 import { AddFeatureDialog } from './views/Plan';
 import { NewLibraryDialog } from './views/LibraryTemplates';
 import { ReprocessDialog, TokenDialog } from './views/BuildManager';
-import { SystemCheckDialog } from './views/SystemCheck';
 
 export const dialogs: DialogMap = {
-  'system-check': { title: 'Systems check', icon: 'shield', render: (p) => <SystemCheckDialog focus={typeof p.focus === 'string' ? p.focus : undefined} /> },
   'build-reprocess': { title: 'Reprocess the build queue', icon: 'shuffle', render: (_p, close) => <ReprocessDialog close={close} /> },
   token: { title: 'Console token', icon: 'lock', render: (_p, close) => <TokenDialog close={close} /> },
   newlib: { title: 'New library from a template', icon: 'plus', render: (p, close) => <NewLibraryDialog templateId={String(p.template ?? '')} close={close} /> },

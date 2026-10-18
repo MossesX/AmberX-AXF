@@ -4,6 +4,7 @@
  * Libraries generated from framework/library-templates implement this.
  */
 import type { AxfRuntime, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
 import type { DialogMap } from './components/Overlays';
 import type { TabRenderers } from './windows/WindowHost';
@@ -29,7 +30,12 @@ export interface AxfWebLibrary {
   settings?: SettingsGroup[];
   /** Custom settings UI for any tab; `render` returns React content. */
   settingsPanels?: SettingsPanel[];
+  /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
+  banners?: BannerDef[];
 }
+
+/** A banner contributed by a library or plugin; lower `order` shows first. */
+export interface BannerDef { id: string; order?: number; render: () => ReactNode }
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
 export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[]; missing: string[] } {
@@ -49,16 +55,18 @@ export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[
 }
 
 /** Register every library with the runtime and merge their views / dialogs / tab renderers for AppShell. */
-export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; missing: string[] } {
+export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; banners: BannerDef[]; missing: string[] } {
   const { ordered, missing } = orderLibraries(libs);
   const views: ViewMap = {};
   const dialogs: DialogMap = {};
   const tabs: TabRenderers = {};
+  const banners: BannerDef[] = [];
   for (const l of ordered) {
     l.register?.(rt);
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
+    for (const b of l.banners ?? []) if (!banners.some((x) => x.id === b.id)) banners.push(b);
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
@@ -67,5 +75,6 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
-  return { views, dialogs, tabs, missing };
+  banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
+  return { views, dialogs, tabs, banners, missing };
 }

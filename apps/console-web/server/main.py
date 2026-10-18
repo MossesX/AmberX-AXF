@@ -855,6 +855,14 @@ import plugin_services  # noqa: E402 — generic cross-plugin services (capabili
 
 plugin_services.configure(plugin_enabled)
 
+# Core context + credentials for plugins (the systems-check plugin, alerts and every feature read the same env).
+import console_context  # noqa: E402
+import credentials  # noqa: E402
+
+credentials.init(ROOT)
+console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
+                            log=log, plugin_enabled=plugin_enabled)
+
 load_plugins()
 _prune_plugin_state()
 
@@ -951,12 +959,12 @@ def lifecycle_action(folder: str, action: str, body: dict[str, Any]) -> dict[str
     finally:
         _lifecycle_lock.release()
 
-# ---------------------------------------------------------------- systems check (server/syscheck.py)
+# The systems check lives in a plugin that provides axf.syscheck@1; alerts use it when it's installed.
 
-import syscheck  # noqa: E402
 
-SYSCHECK = syscheck.SysCheck(ROOT, current_token, _persist_root, PLUGINS, log, GITHUB_REPO)
-app.include_router(syscheck.router_for(SYSCHECK, auth_always))
+def _systems_checks() -> list[dict[str, Any]]:
+    sc = plugin_services.get("axf.syscheck@1")
+    return sc.run_all() if sc else []
 
 # ---------------------------------------------------------------- developer alerts (server/alerts.py)
 
@@ -970,7 +978,7 @@ def _pending_file() -> Path:
 
 
 ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],
-                             systems=lambda: SYSCHECK.run_all(), pending_file=_pending_file, plugins=PLUGINS)
+                             systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 
 

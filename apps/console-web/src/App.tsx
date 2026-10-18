@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -15,7 +15,6 @@ import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
-import { SystemBanner, useSystemCheckOnLoad } from './views/SystemCheck';
 import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
@@ -93,9 +92,11 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
-  // Systems check: runs when the console loads; its banner sits at the top of every view while anything needs setup.
-  useSystemCheckOnLoad();
-  const withBanner: ViewMap = Object.fromEntries(Object.entries(allViews).map(([id, v]) => [id, { ...v, render: () => <><SystemBanner />{v.render()}</> }]));
+  // Banners plugins contribute (e.g. the systems check and What's new) sit at the top of every view.
+  const banners = plugins.contributed.banners;
+  const withBanner: ViewMap = banners.length
+    ? Object.fromEntries(Object.entries(allViews).map(([id, v]) => [id, { ...v, render: () => <>{banners.map((b) => <Fragment key={b.id}>{b.render()}</Fragment>)}{v.render()}</> }]))
+    : allViews;
   return (
     <div {...drop} style={{ display: 'contents' }}>
       <AppShell

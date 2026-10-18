@@ -1,16 +1,9 @@
-"""Systems check: everything the console and its features need, checked every time the console loads.
+"""Systems check — the built-in checks (moved from the console core into this plugin).
 
-  GET  /api/system/check[?force=1]    every check (cached 60 s unless forced)
-  POST /api/system/check/{id}         re-run one check (used after a fix and by "Fix all")
-  POST /api/system/secret             {key, value}  save a credential, then re-test it
-  POST /api/system/secret/clear       {key}
-  POST /api/system/fix/{id}           run a check's automatic fix (only checks that have one)
-
-All routes need the console token. Credentials are kept server-side only, in <repo>/.axf-console/secrets.env
-(0600, git-ignored, separate from the env file install-console.sh rewrites). They are loaded into this process's
-environment so every feature (and every subprocess) sees them, and are never sent back to the browser: the API only
-says whether each one is set. Checks of the VPS host itself (mosh, the Claude CLI, cron, Docker…) come from
-deploy/console-doctor.sh, which writes <repo>/.axf-console/host-check.json; the container can't look at the host.
+Everything the console and its features need: the console token, credentials (stored by the core credential store,
+server/credentials.py), GitHub, Anthropic, Hostinger, Coolify, axHub, the repo clone, project manifest, shared data,
+Claude files, and the VPS host items reported by deploy/console-doctor.sh (<repo>/.axf-console/host-check.json).
+Codebase-derived checks (derive.py) and the stored AI routine (routine.py) run next to these.
 """
 from __future__ import annotations
 
@@ -28,76 +21,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable
 
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
 
-# ---------------------------------------------------------------- credential store
-
-KEY_RE = re.compile(r"^[A-Z][A-Z0-9_]{1,63}$")
-
-
-class CredStore:
-    def __init__(self, path: Path) -> None:
-        self.path = path
-
-    def read(self) -> dict[str, str]:
-        out: dict[str, str] = {}
-        try:
-            for line in self.path.read_text().splitlines():
-                if "=" in line and not line.lstrip().startswith("#"):
-                    k, v = line.split("=", 1)
-                    if KEY_RE.match(k.strip()):
-                        out[k.strip()] = v.strip()
-        except OSError:
-            pass
-        return out
-
-    def write(self, values: dict[str, str]) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = self.path.with_suffix(".tmp")
-        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-        with os.fdopen(fd, "w") as f:
-            f.write("# AXF Dev Console credentials (saved from the systems check). Never commit this file.\n")
-            for k in sorted(values):
-                f.write(f"{k}={values[k]}\n")
-        os.chmod(tmp, 0o600)
-        tmp.replace(self.path)
-
-    def set(self, key: str, value: str) -> None:
-        vals = self.read()
-        vals[key] = value
-        self.write(vals)
-        os.environ[key] = value
-
-    def clear(self, key: str) -> None:
-        vals = self.read()
-        vals.pop(key, None)
-        self.write(vals)
-        os.environ.pop(key, None)
-
-    def load_into_env(self) -> None:
-        for k, v in self.read().items():
-            if v:
-                os.environ[k] = v
-
-
-# What can be stored. `secret` values are masked everywhere; `pattern` is a light format check (never a guarantee).
-CREDENTIALS: dict[str, dict[str, Any]] = {
-    "GITHUB_TOKEN": {"label": "GitHub token", "secret": True, "pattern": r"^(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})$",
-                     "placeholder": "github_pat_… or ghp_…", "help": "Fine-grained token for MossesX/AmberX-AXF: Contents read/write, Actions read."},
-    "ANTHROPIC_API_KEY": {"label": "Anthropic API key", "secret": True, "pattern": r"^sk-ant-[A-Za-z0-9_\-]{20,}$",
-                          "placeholder": "sk-ant-…", "help": "From console.anthropic.com → API keys. Used by API-key features and claude-pick's API mode."},
-    "HOSTINGER_API_TOKEN": {"label": "Hostinger API token", "secret": True, "pattern": r"^[A-Za-z0-9_\-\.]{20,}$",
-                            "placeholder": "token from hPanel", "help": "hPanel → Profile → API → New token."},
-    "COOLIFY_URL": {"label": "Coolify URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",
-                    "placeholder": "https://coolify.amberxai.com", "help": "The address of your Coolify dashboard."},
-    "COOLIFY_TOKEN": {"label": "Coolify API token", "secret": True, "pattern": r"^\S{10,}$",
-                      "placeholder": "token from Coolify", "help": "Coolify → Keys & Tokens → API tokens (root or write permission)."},
-    "AXHUB_URL": {"label": "axHub URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",
-                  "placeholder": "https://axhub.amberxai.com", "help": "Where your axHub runs."},
-    "AXHUB_TOKEN": {"label": "axHub token", "secret": True, "pattern": r"^\S{10,}$",
-                    "placeholder": "axHub access token", "help": "axHub → Clients → token for the Dev Console."},
-}
+from credentials import CREDENTIALS, CredStore  # noqa: E402 — core module (server/credentials.py)
 
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
@@ -151,8 +76,8 @@ class SysCheck:
         self.plugins = plugins
         self.log = log
         self.repo = github_repo
-        self.store = CredStore(root / ".axf-console" / "secrets.env")
-        self.store.load_into_env()
+        import credentials
+        self.store = credentials.STORE or credentials.init(root)
         self.host_file = root / ".axf-console" / "host-check.json"
         self._cache: tuple[float, list[Check]] | None = None
         self.checks: dict[str, Callable[[], Check]] = {
@@ -421,68 +346,3 @@ HOST_CHECKS: dict[str, dict[str, Any]] = {
     "host-git-auth": {"service": "github", "title": "GitHub access from the VPS", "order": 12, "instructions": ["git -C /opt/axf fetch   (should work without a password prompt)", "If it fails: gh auth login, or store a token with git's credential helper."]},
     "host-axhub-volume": {"service": "axhub", "title": "axhub-projects volume", "order": 61, "instructions": ["Coolify → axHub → Persistent Storage: add a volume named axhub-projects mounted at /projects (axHub repo deploy/coolify.md §5b), then redeploy axHub.", "Then on the VPS: bash /opt/axf/deploy/install-console.sh"]},
 }
-
-
-# ---------------------------------------------------------------- routes
-
-class SecretReq(BaseModel):
-    key: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,63}$")
-    value: str = Field(min_length=1, max_length=500)
-
-
-class ClearReq(BaseModel):
-    key: str = Field(pattern=r"^[A-Z][A-Z0-9_]{1,63}$")
-
-
-def router_for(sc: SysCheck, auth: Callable[..., None]) -> APIRouter:
-    r = APIRouter(prefix="/api/system", dependencies=[Depends(auth)])
-
-    def related(key: str) -> list[str]:
-        return {"GITHUB_TOKEN": ["github-token"], "ANTHROPIC_API_KEY": ["anthropic-key"], "HOSTINGER_API_TOKEN": ["hostinger-token"],
-                "COOLIFY_URL": ["coolify"], "COOLIFY_TOKEN": ["coolify"], "AXHUB_URL": ["axhub"], "AXHUB_TOKEN": ["axhub"]}.get(key, [])
-
-    @r.get("/check")
-    def check(force: bool = False) -> dict[str, Any]:
-        items = sc.run_all(force)
-        return {"at": int(time.time() * 1000), "services": SERVICES, "checks": items, "hostScript": HOST_SCRIPT,
-                "counts": {s: sum(1 for c in items if c["status"] == s) for s in ("ok", "warn", "error", "info", "unknown")}}
-
-    @r.post("/check/{cid}")
-    def check_one(cid: str) -> dict[str, Any]:
-        c = sc.run_one(cid)
-        sc._cache = None  # noqa: SLF001
-        return c
-
-    @r.post("/secret")
-    def set_secret(req: SecretReq) -> dict[str, Any]:
-        meta = CREDENTIALS.get(req.key)
-        if not meta:
-            raise HTTPException(400, f"{req.key} isn't a credential the console stores")
-        value = req.value.strip()
-        if "\n" in value or "\r" in value or not re.match(meta["pattern"], value):
-            raise HTTPException(400, f"That doesn't look right for {meta['label']} (expected: {meta['placeholder']}).")
-        sc.store.set(req.key, value.rstrip("/") if not meta["secret"] else value)
-        sc._cache = None  # noqa: SLF001
-        sc.log("system", f"{meta['label']} saved (server-side, owner-only)", "ok")
-        return {"ok": True, "key": req.key, "checks": [sc.run_one(c) for c in related(req.key)]}
-
-    @r.post("/secret/clear")
-    def clear_secret(req: ClearReq) -> dict[str, Any]:
-        if req.key not in CREDENTIALS:
-            raise HTTPException(400, "unknown credential")
-        sc.store.clear(req.key)
-        sc._cache = None  # noqa: SLF001
-        sc.log("system", f"{CREDENTIALS[req.key]['label']} removed", "warn")
-        return {"ok": True, "checks": [sc.run_one(c) for c in related(req.key)]}
-
-    @r.post("/fix/{cid}")
-    def fix(cid: str) -> dict[str, Any]:
-        fn = sc.fixes.get(cid)
-        if not fn:
-            raise HTTPException(400, "this check has no automatic fix")
-        msg = fn()
-        sc._cache = None  # noqa: SLF001
-        sc.log("system", f"{cid}: {msg}", "ok")
-        return {"ok": True, "message": msg, "check": sc.run_one(cid)}
-
-    return r

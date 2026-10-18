@@ -18,6 +18,7 @@
  *  4. Documentation lines outside the folder that mention it end with the marker `axf-plugin:<folder>` (in a comment)
  *     and their files are listed in `lifecycle.mentions`; uninstall --code strips those lines.
  *  5. Optional hooks in <folder>/hooks.mjs: onInstall(ctx), onUninstall(ctx), checks(ctx) → [{ id, ok, detail }].
+ *     `checks` are the plugin's declared self-checks: run after install, by `checks <folder>`, and by the systems check.
  *  6. The plugin ships install.mjs + uninstall.mjs (thin wrappers around this file) and shows the shared lifecycle panel
  *     in its settings tab.
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
@@ -186,6 +187,17 @@ export async function install(folder, { noState = false } = {}, log = () => {}) 
   return { installed: true, checks };
 }
 
+/** The plugin's declared self-checks (hooks.mjs → checks(ctx)), without installing anything. */
+export async function runChecks(folder) {
+  const p = readManifest(folder);
+  if (!p.present) throw new Error(`plugin ${folder} is not in apps/console-web/plugins`);
+  const h = await hooks(p);
+  if (!h.checks) return { folder, checks: [], declared: false };
+  const raw = await h.checks(ctxFor(p, () => {}));
+  const checks = (Array.isArray(raw) ? raw : []).slice(0, 50).map((c) => ({ id: String(c?.id ?? '').slice(0, 64), ok: c?.ok !== false, detail: String(c?.detail ?? '').slice(0, 500) })).filter((c) => /^[a-z0-9][a-z0-9._-]*$/i.test(c.id));
+  return { folder, checks, declared: true };
+}
+
 function backup(p, data, log) {
   if (!existsSync(data)) return null;
   mkdirSync(BACKUPS, { recursive: true, mode: 0o700 });
@@ -347,7 +359,7 @@ export async function main(argv, forcedFolder) {
   const out = (o) => { if (flags.json) console.log(JSON.stringify({ ok: true, ...o, log: lines })); else if (o && !o.log) console.log(JSON.stringify(o, null, 2)); };
   try {
     if (cmd === 'list') return out({ items: list() });
-    if (!folder) throw new Error('usage: plugin-lifecycle.mjs <status|install|uninstall|check|restore> <folder> [flags]');
+    if (!folder) throw new Error('usage: plugin-lifecycle.mjs <status|install|uninstall|check|checks|restore> <folder> [flags]');
     if (cmd === 'status') return out(status(folder));
     if (cmd === 'install') return out(await install(folder, { noState: !!flags['no-state'] }, log));
     if (cmd === 'uninstall') {
@@ -363,6 +375,7 @@ export async function main(argv, forcedFolder) {
       if (!r.ok) process.exitCode = 1;
       return;
     }
+    if (cmd === 'checks') return out(await runChecks(folder));
     if (cmd === 'restore') return out(restore(folder, extra));
     throw new Error(`unknown command "${cmd}"`);
   } catch (e) {

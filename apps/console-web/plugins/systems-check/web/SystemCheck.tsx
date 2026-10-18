@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '../axf/react';
-import * as api from '../api';
-import { StepList } from '../commandText';
+import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import * as api from '@console/api';
+import { StepList } from '@console/commandText';
+import './systems-check.css';
 
 /*
- * Systems check (server/syscheck.py): runs every time the console loads. When something the console or its features
+ * Systems check plugin (server/__init__.py): runs every time the console loads. When something the console or its features
  * need is missing or broken, a banner appears at the top of every view. Clicking its summary drops down the issues;
  * clicking the banner's button or an issue opens the dialog: Grid (expandable rows: details, fix, instructions, links),
  * By service (cards per system) and Guided setup (one issue at a time, in dependency order), plus "Fix all".
@@ -16,14 +17,15 @@ interface Field { key: string; label: string; secret: boolean; placeholder: stri
 type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
 interface Service { id: string; label: string; icon: string; description: string }
-interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number> }
+interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
+interface Report { at: number; services: Service[]; checks: Check[]; hostScript: string; counts: Record<Status, number>; routine?: RoutineInfo | null; aiOn?: boolean; aiNote?: string | null }
 type Run = 'queued' | 'working' | 'waiting' | 'done' | 'failed' | 'needs-you' | 'skipped';
 type Answer = 'done' | 'skip' | 'stop' | 'ok';
 interface Prompt { id: string; index: number; total: number; note: string }
 
 /* ---------------- shared store (banner + dialog) ---------------- */
-const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null } =
-  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null };
+const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null; aiBusy: boolean; aiError: string } =
+  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null, aiBusy: false, aiError: '' };
 /** Fix all waits here while it prompts you for an issue it can't fix alone. */
 let promptResolve: ((a: Answer) => void) | null = null;
 export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve = null; r?.(a); }
@@ -37,7 +39,7 @@ async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
   const t = api.getToken();
   if (t) headers.set('authorization', `Bearer ${t}`);
   if (init.body) headers.set('content-type', 'application/json');
-  const r = await fetch(`/api/system/${path}`, { ...init, headers, cache: 'no-store' });
+  const r = await fetch(`/api/plugins/systems-check/${path}`, { ...init, headers, cache: 'no-store' });
   const j = (await r.json().catch(() => ({}))) as T & { detail?: string };
   if (r.status === 401) { st.unauthorized = true; emit(); throw new Error('Set the console token first.'); }
   if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.statusText);
@@ -50,6 +52,16 @@ export async function loadSystemCheck(force = false) {
   try { st.report = await call<Report>(`check${force ? '?force=1' : ''}`); st.error = ''; st.unauthorized = false; }
   catch (e) { st.error = (e as Error).message; }
   st.loading = false; emit();
+  const r = st.report;
+  if (force && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
+}
+
+/** With AI on: Mosses reads the codebase and refreshes the saved routine (only when the code changed), then re-checks. */
+export async function refreshRoutine() {
+  st.aiBusy = true; st.aiError = ''; emit();
+  try { await call('routine/run', { method: 'POST' }); st.report = await call<Report>('check?force=1'); }
+  catch (e) { st.aiError = (e as Error).message; }
+  st.aiBusy = false; emit();
 }
 function replace(c: Check) {
   if (!st.report) return;
@@ -129,8 +141,8 @@ export function SystemBanner() {
   if (s.dismissed) return null;
   if (s.unauthorized) {
     return (
-      <div className="syc-banner is-warn" role="alert">
-        <Icon name="lock" /><span className="syc-banner__text">Set the console token to run the systems check.</span>
+      <div className="axp-systems-check-banner is-warn" role="alert">
+        <Icon name="lock" /><span className="axp-systems-check-banner__text">Set the console token to run the systems check.</span>
         <Button tone="primary" onClick={() => rt.openDialog('token')}>Set token</Button>
       </div>
     );
@@ -138,9 +150,9 @@ export function SystemBanner() {
   if (s.prompt) {
     const c = s.report?.checks.find((x) => x.id === s.prompt!.id);
     return (
-      <div className="syc-banner is-warn" role="alert">
-        <div className="syc-banner__row">
-          <RunBadge r="waiting" /><span className="syc-banner__text">Fix all is waiting for you: {c?.title ?? s.prompt.id} (step {s.prompt.index} of {s.prompt.total})</span>
+      <div className="axp-systems-check-banner is-warn" role="alert">
+        <div className="axp-systems-check-banner__row">
+          <RunBadge r="waiting" /><span className="axp-systems-check-banner__text">Fix all is waiting for you: {c?.title ?? s.prompt.id} (step {s.prompt.index} of {s.prompt.total})</span>
           <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Continue</Button>
         </div>
       </div>
@@ -149,10 +161,10 @@ export function SystemBanner() {
   if (!s.report || list.length === 0) return null;
   const errors = list.filter((c) => c.status === 'error').length;
   return (
-    <div className={`syc-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
-      <div className="syc-banner__row">
+    <div className={`axp-systems-check-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
+      <div className="axp-systems-check-banner__row">
         <Icon name="alert" />
-        <button type="button" className="syc-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
@@ -160,10 +172,10 @@ export function SystemBanner() {
         <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => { st.dismissed = true; emit(); }}><Icon name="x" size={16} /></button>
       </div>
       {open && (
-        <ul className="syc-banner__list">
+        <ul className="axp-systems-check-banner__list">
           {guidedOrder(list).map((c) => (
-            <li key={c.id}><button type="button" className="syc-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
-              <StatusDot s={c.status} /><span className="syc-banner__title">{c.title}</span><span className="syc-banner__sum">{c.summary}</span>
+            <li key={c.id}><button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+              <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><span className="axp-systems-check-banner__sum">{c.summary}</span>
             </button></li>
           ))}
         </ul>
@@ -185,12 +197,12 @@ export function useSystemCheckOnLoad() {
 /* ---------------- bits ---------------- */
 
 const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error: 'Blocking', info: 'Info', unknown: 'Not checked' };
-function StatusDot({ s }: { s: Status }) { return <span className={`syc-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
+function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
 function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
-  return <span className={`syc-run is-${r}`} role="status">{r === 'working' ? <span className="syc-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
+  return <span className={`axp-systems-check-run is-${r}`} role="status">{r === 'working' ? <span className="axp-systems-check-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
 }
 
 function FixPanel({ c }: { c: Check }) {
@@ -220,13 +232,13 @@ function FixPanel({ c }: { c: Check }) {
   const again = async () => { setBusy(true); try { const n = await recheck(c.id); setMsg(n.status === 'ok' ? 'Passes now.' : n.summary); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
   const f = c.fix;
   return (
-    <div className="syc-fix">
+    <div className="axp-systems-check-fix">
       {f?.type === 'secrets' && (
-        <form className="syc-fix__form" onSubmit={(e) => { e.preventDefault(); void save(); }}>
+        <form className="axp-systems-check-fix__form" onSubmit={(e) => { e.preventDefault(); void save(); }}>
           {f.fields.map((x) => (
-            <label key={x.key} className="syc-field">
+            <label key={x.key} className="axp-systems-check-field">
               <span>{x.label} {x.set && <Chip tone="success">saved</Chip>}</span>
-              <span className="syc-field__row">
+              <span className="axp-systems-check-field__row">
                 <input className="fx-input fx-mono" type={x.secret ? 'password' : 'url'} autoComplete="off" spellCheck={false} placeholder={x.set ? (x.secret ? '•••••••• (saved; type to replace)' : x.value) : x.placeholder}
                   value={vals[x.key] ?? ''} onChange={(e) => setVals({ ...vals, [x.key]: e.target.value })} aria-label={x.label} />
                 {x.set && <Button icon="trash" disabled={busy} onClick={() => void clear(x.key)}>Clear</Button>}
@@ -240,9 +252,9 @@ function FixPanel({ c }: { c: Check }) {
       )}
       {f?.type === 'action' && <div className="fx-row fx-row--wrap"><Button tone="primary" icon="zap" disabled={busy} onClick={() => void auto()}>{busy ? 'Fixing…' : f.label}</Button></div>}
       {f?.type === 'host' && (
-        <div className="syc-fix__host">
+        <div className="axp-systems-check-fix__host">
           <p className="fx-small" style={{ margin: 0 }}>Run this on the VPS (mosh or ssh). The console can't change the host from its container.</p>
-          <div className="fx-row fx-row--wrap"><code className="syc-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
+          <div className="fx-row fx-row--wrap"><code className="axp-systems-check-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
         </div>
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
@@ -254,13 +266,13 @@ function FixPanel({ c }: { c: Check }) {
 function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
   const s = useSys();
   return (
-    <div className="syc-body">
+    <div className="axp-systems-check-body">
       {!inPrompt && <p style={{ margin: 0 }}>{c.summary}</p>}
-      {!inPrompt && s.runMsg[c.id] && <p className="fx-small syc-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
-      {c.details.length > 0 && <ul className="syc-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
-      {c.status !== 'ok' && c.fix && <><h4 className="syc-h">Fix it here</h4><FixPanel c={c} /></>}
-      {c.instructions.length > 0 && <><h4 className="syc-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><StepList className="syc-steps" steps={c.instructions} /></>}
-      {c.links.length > 0 && <><h4 className="syc-h">Resources</h4><ul className="syc-links">{c.links.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></li>)}</ul></>}
+      {!inPrompt && s.runMsg[c.id] && <p className="fx-small axp-systems-check-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
+      {c.details.length > 0 && <ul className="axp-systems-check-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
+      {c.status !== 'ok' && c.fix && <><h4 className="axp-systems-check-h">Fix it here</h4><FixPanel c={c} /></>}
+      {c.instructions.length > 0 && <><h4 className="axp-systems-check-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><StepList className="axp-systems-check-steps" steps={c.instructions} /></>}
+      {c.links.length > 0 && <><h4 className="axp-systems-check-h">Resources</h4><ul className="axp-systems-check-links">{c.links.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></li>)}</ul></>}
       {c.status === 'ok' && c.fix?.type === 'secrets' && <FixPanel c={c} />}
     </div>
   );
@@ -287,47 +299,53 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const total = Object.keys(s.run).length;
 
   return (
-    <div className="syc">
-      <div className="syc__top">
-        <div className="syc__counts">
-          {(['error', 'warn', 'ok', 'unknown'] as Status[]).map((k) => <span key={k} className="syc__count"><StatusDot s={k} /> {r.counts[k] ?? 0} {STATUS_LABEL[k].toLowerCase()}</span>)}
+    <div className="axp-systems-check">
+      <div className="axp-systems-check__top">
+        <div className="axp-systems-check__counts">
+          {(['error', 'warn', 'ok', 'unknown'] as Status[]).map((k) => <span key={k} className="axp-systems-check__count"><StatusDot s={k} /> {r.counts[k] ?? 0} {STATUS_LABEL[k].toLowerCase()}</span>)}
           <span className="fx-muted fx-small">checked {new Date(r.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <span className="fx-muted fx-small">
+            {s.aiBusy ? 'Mosses is reading the codebase for new checks…'
+              : r.routine ? `AI routine: ${r.routine.checks} checks${r.routine.stale ? ' (code changed since)' : ''}${r.aiOn ? '' : ', run without AI'}`
+                : r.aiOn ? 'AI on: no routine yet' : 'checks from the codebase (AI off)'}
+          </span>
+          {(s.aiError || r.aiNote) && <span className="fx-small axp-systems-check-bad">{s.aiError || r.aiNote}</span>}
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="refresh" disabled={s.loading || s.fixing} onClick={() => void loadSystemCheck(true)}>{s.loading ? 'Checking…' : 'Check again'}</Button>
           <Button tone="primary" icon="zap" disabled={s.fixing || iss.length === 0} onClick={() => { setView('grid'); setFilter('issues'); void fixAll(); }}>{s.fixing ? `Fixing ${Math.min(done + 1, total)} of ${total}…` : 'Fix all'}</Button>
         </div>
       </div>
-      {total > 0 && <div className="syc__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}><span style={{ width: `${(done / Math.max(1, total)) * 100}%` }} /></div>}
+      {total > 0 && <div className="axp-systems-check__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}><span style={{ width: `${(done / Math.max(1, total)) * 100}%` }} /></div>}
 
       {s.prompt && <PromptPanel p={s.prompt} />}
 
-      <div className="syc__tabs" role="tablist">
+      <div className="axp-systems-check__tabs" role="tablist">
         {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={view === id} className="syc__tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
+          <button key={id} type="button" role="tab" aria-selected={view === id} className="axp-systems-check__tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
         ))}
       </div>
 
       {view === 'grid' && (
-        <div className="syc__grid">
+        <div className="axp-systems-check__grid">
           <div className="fx-row fx-row--wrap">
             <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'issues'} onChange={() => setFilter('issues')} /> Issues ({iss.length})</label>
             <label className="fx-row" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}><input type="radio" checked={filter === 'all'} onChange={() => setFilter('all')} /> Everything ({r.checks.length})</label>
           </div>
           {rows.length === 0 && <p className="fx-muted">No issues: everything the console needs is configured.</p>}
-          <table className="fx-table syc-table">
-            <thead><tr><th aria-label="Expand" /><th>Status</th><th>Check</th><th className="syc-hide-sm">Service</th><th className="syc-hide-sm">Summary</th></tr></thead>
+          <table className="fx-table axp-systems-check-table">
+            <thead><tr><th aria-label="Expand" /><th>Status</th><th>Check</th><th className="axp-systems-check-hide-sm">Service</th><th className="axp-systems-check-hide-sm">Summary</th></tr></thead>
             <tbody>
               {rows.map((c) => (
                 <Fragment key={c.id}>
-                  <tr className={`syc-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
+                  <tr className={`axp-systems-check-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
                     <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
                     <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
-                    <td><strong>{c.title}</strong><span className="syc-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
-                    <td className="syc-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
-                    <td className="syc-hide-sm fx-small">{c.summary}</td>
+                    <td><strong>{c.title}</strong><span className="axp-systems-check-show-sm fx-small fx-muted"><br />{c.summary}</span></td>
+                    <td className="axp-systems-check-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
+                    <td className="axp-systems-check-hide-sm fx-small">{c.summary}</td>
                   </tr>
-                  {open.has(c.id) && <tr className="syc-exp"><td colSpan={5}><CheckBody c={c} /></td></tr>}
+                  {open.has(c.id) && <tr className="axp-systems-check-exp"><td colSpan={5}><CheckBody c={c} /></td></tr>}
                 </Fragment>
               ))}
             </tbody>
@@ -336,17 +354,17 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
       )}
 
       {view === 'service' && (
-        <div className="syc__cards">
+        <div className="axp-systems-check__cards">
           {r.services.map((sv) => {
             const cs = r.checks.filter((c) => c.service === sv.id);
             const bad = cs.filter(isIssue);
             const worst: Status = cs.some((c) => c.status === 'error') ? 'error' : bad.length ? 'warn' : cs.some((c) => c.status === 'unknown') ? 'unknown' : 'ok';
             return (
-              <section key={sv.id} className={`syc-card is-${worst}`}>
-                <header className="syc-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
+              <section key={sv.id} className={`axp-systems-check-card is-${worst}`}>
+                <header className="axp-systems-check-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
                 <p className="fx-small fx-muted" style={{ margin: 0 }}>{sv.description}</p>
-                <ul className="syc-card__list">
-                  {cs.map((c) => <li key={c.id}><button type="button" className="syc-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span>{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
+                <ul className="axp-systems-check-card__list">
+                  {cs.map((c) => <li key={c.id}><button type="button" className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span>{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
                 </ul>
               </section>
             );
@@ -366,14 +384,14 @@ function PromptPanel({ p }: { p: Prompt }) {
   if (!c) return null;
   const isSecret = c.fix?.type === 'secrets';
   return (
-    <section className="syc-prompt" aria-live="polite" aria-label={`Fix all needs you: ${c.title}`}>
-      <header className="syc-prompt__head">
+    <section className="axp-systems-check-prompt" aria-live="polite" aria-label={`Fix all needs you: ${c.title}`}>
+      <header className="axp-systems-check-prompt__head">
         <RunBadge r="waiting" />
         <strong className="fx-grow">Step {p.index} of {p.total}: {c.title}</strong>
       </header>
-      <p className="syc-prompt__note" style={{ margin: 0 }}>{p.note}</p>
+      <p className="axp-systems-check-prompt__note" style={{ margin: 0 }}>{p.note}</p>
       <CheckBody c={c} inPrompt />
-      <div className="fx-row fx-row--wrap syc-prompt__actions">
+      <div className="fx-row fx-row--wrap axp-systems-check-prompt__actions">
         <Button tone="primary" icon="check" onClick={() => answerPrompt('done')}>{isSecret ? 'Check again & continue' : 'Done, check it'}</Button>
         <Button icon="arrow-right" onClick={() => answerPrompt('skip')}>Skip</Button>
         <Button icon="x" onClick={() => answerPrompt('stop')}>Stop Fix all</Button>
@@ -386,20 +404,20 @@ function Guided({ list }: { list: Check[] }) {
   const s = useSys();
   const [i, setI] = useState(0);
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
-  if (list.length === 0) return <div className="syc-guided__done"><Icon name="check-circle" size={32} /><p>All set: the console and its features are configured.</p></div>;
+  if (list.length === 0) return <div className="axp-systems-check-guided__done"><Icon name="check-circle" size={32} /><p>All set: the console and its features are configured.</p></div>;
   const idx = Math.min(i, list.length - 1);
   const c = list[idx]!;
   const live = s.report?.checks.find((x) => x.id === c.id) ?? c;
   return (
-    <div className="syc-guided">
-      <ol className="syc-guided__steps">
+    <div className="axp-systems-check-guided">
+      <ol className="axp-systems-check-guided__steps">
         {list.map((x, k) => {
           const now = s.report?.checks.find((y) => y.id === x.id) ?? x;
-          return <li key={x.id}><button type="button" className={`syc-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
+          return <li key={x.id}><button type="button" className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
             <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span>{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
         })}
       </ol>
-      <div className="syc-guided__pane">
+      <div className="axp-systems-check-guided__pane">
         <p className="fx-eyebrow" style={{ margin: 0 }}>Step {idx + 1} of {list.length}{live.dependsOn.length ? ` · after ${live.dependsOn.join(', ')}` : ''}</p>
         <h3 style={{ margin: 0 }}>{live.title} <StatusChip s={live.status} /></h3>
         <CheckBody c={live} />
