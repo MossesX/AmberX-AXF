@@ -62,7 +62,8 @@ public data class SettingSpec(
     val restartRequired: Boolean = false,
 )
 
-public data class SettingsGroup(val id: String, val label: String, val icon: String = "settings", val module: String = "app", val order: Int = 100, val settings: List<SettingSpec>, val description: String? = null)
+/** `tab` picks the settings tab (appearance, account, connections, plugins, about, or any a module adds); null = general. Same field as the web port. */
+public data class SettingsGroup(val id: String, val label: String, val icon: String = "settings", val module: String = "app", val order: Int = 100, val settings: List<SettingSpec>, val description: String? = null, val tab: String? = null)
 
 /* ---------- ports (Foundations: f.ports) ---------- */
 

@@ -2,6 +2,7 @@ export * from './types';
 export * from './validate';
 export * from './registry';
 export * from './runtime';
+export * from './settings';
 export * from './engines/theme';
 export * from './engines/layout';
 export * from './engines/components';

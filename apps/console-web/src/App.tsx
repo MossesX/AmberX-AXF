@@ -13,8 +13,9 @@ import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
-import { PluginsView } from './views/Plugins';
-import { bundledPlugins, enabledPlugins, fetchPluginStatus, type PluginStatus } from './plugins';
+import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
+import { library as settingsLibrary } from './axf/libs/settings';
+import { consoleSettings } from './consoleSettings';
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
@@ -32,20 +33,31 @@ const views: ViewMap = {
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
 
+function OpenSettingsTab({ tab }: { tab: string }) {
+  const rt = useRuntime();
+  useEffect(() => { rt.dispatch(`settings.open:${tab}`); }, [rt, tab]);
+  return null;
+}
+
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
 function usePlugins() {
   const rt = useRuntime();
   const [status, setStatus] = useState<PluginStatus[] | null>(null);
   const [loaded, setLoaded] = useState(false);
   const reload = useCallback(async () => { setStatus(await fetchPluginStatus()); setLoaded(true); }, []);
-  useEffect(() => { void reload(); }, [reload]);
+  useEffect(() => {
+    void reload();
+    const onChange = () => void reload();
+    globalThis.addEventListener(PLUGINS_CHANGED, onChange);
+    return () => globalThis.removeEventListener(PLUGINS_CHANGED, onChange);
+  }, [reload]);
   const contributed = useMemo(() => {
-    if (!loaded) return { views: {}, dialogs: {}, tabs: {} };
-    const enabled = enabledPlugins(status);
-    for (const p of bundledPlugins) if (!enabled.includes(p)) rt.removeNavSection(p.manifest.id);
-    return installLibraries(rt, enabled.map((p) => p.library!));
+    // The settings library and the console's own settings always run; plugins once the backend has answered.
+    const enabled = loaded ? enabledPlugins(status) : [];
+    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.settings.removeModule(p.manifest.id); }
+    return installLibraries(rt, [settingsLibrary, consoleSettings, ...enabled.map((p) => p.library!)]);
   }, [rt, status, loaded]);
-  return { status, reload, contributed };
+  return { contributed };
 }
 
 function Shell() {
@@ -56,7 +68,8 @@ function Shell() {
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,
-    plugins: { title: 'Plugins', icon: 'package', render: () => <PluginsView status={plugins.status} reload={plugins.reload} /> },
+    // Old link: the plugin manager now lives in Settings → Plugins.
+    plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
   return (
     <div {...drop} style={{ display: 'contents' }}>

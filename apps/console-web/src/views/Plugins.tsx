@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Button, Chip, Container, useRuntime } from '../axf/react';
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Chip, useRuntime } from '../axf/react';
 import { isBackendUp, post } from '../api';
-import { bundledPlugins, type PluginStatus } from '../plugins';
+import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '../plugins';
 
-/** Manage console plugins: what's installed, whether it runs, and whether its server part loaded. */
-export function PluginsView({ status, reload }: { status: PluginStatus[] | null; reload: () => Promise<void> }) {
+/** Settings → Plugins: the console's plugins, whether each runs, and whether its server part loaded. */
+export function PluginsPanel() {
   const rt = useRuntime();
+  const [status, setStatus] = useState<PluginStatus[] | null>(null);
   const [busy, setBusy] = useState('');
+  const reload = useCallback(async () => setStatus(await fetchPluginStatus()), []);
+  useEffect(() => { void reload(); }, [reload]);
 
   const toggle = async (folder: string, enabled: boolean) => {
     setBusy(folder);
@@ -17,43 +20,39 @@ export function PluginsView({ status, reload }: { status: PluginStatus[] | null;
       return;
     }
     await reload();
+    globalThis.dispatchEvent(new Event(PLUGINS_CHANGED));
     rt.toast(`${enabled ? 'Enabled' : 'Disabled'} ${folder}.`, 'success', 'Plugins');
   };
 
   return (
-    <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead">
-        <div>
-          <p className="fx-eyebrow">Console</p>
-          <h1>Plugins</h1>
-          <p className="fx-muted">
-            Plugins add tabs and server routes to the console. They live in <code>apps/console-web/plugins/</code>;
-            see its README to write one.
-          </p>
-        </div>
-      </header>
-      {!isBackendUp() && <Container title="No backend" icon="alert"><p style={{ margin: 0 }}>Without the console API, plugins enabled by default run, and their server parts are unavailable.</p></Container>}
-      {bundledPlugins.length === 0 && <Container title="No plugins installed" icon="box"><p style={{ margin: 0 }}>Add one under <code>apps/console-web/plugins/&lt;name&gt;/</code>.</p></Container>}
+    <div className="fx-stack">
+      <p className="fx-muted" style={{ marginTop: 0 }}>
+        Plugins add tabs and server routes to the console. They live in <code>apps/console-web/plugins/</code>; copy
+        <code> plugins/_template</code> to write one.
+      </p>
+      {!isBackendUp() && <p className="fx-muted">Without the console API, plugins enabled by default run, and their server parts are unavailable.</p>}
+      {bundledPlugins.length === 0 && <p className="fx-muted" style={{ margin: 0 }}>No plugins installed.</p>}
       {bundledPlugins.map((p) => {
         const s = status?.find((x) => x.folder === p.folder);
         const enabled = s ? s.enabled : p.manifest.enabledByDefault !== false;
         return (
-          <Container key={p.folder} title={`${p.manifest.name} ${p.manifest.version}`} icon="package">
-            <p className="fx-muted" style={{ marginTop: 0 }}>{p.manifest.description}</p>
-            <p className="fx-mono" style={{ fontSize: 12 }}>{p.manifest.id} · plugins/{p.folder}</p>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
+          <div key={p.folder} style={{ borderTop: '1px solid var(--fx-border, rgba(127,127,127,.2))', paddingTop: 12 }}>
+            <strong>{p.manifest.name}</strong> <span className="fx-muted">{p.manifest.version}</span>
+            {p.manifest.description && <p className="fx-muted" style={{ margin: '4px 0' }}>{p.manifest.description}</p>}
+            <p className="fx-mono" style={{ fontSize: 12, margin: '4px 0' }}>{p.manifest.id} · plugins/{p.folder}</p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', margin: '8px 0' }}>
               <Chip tone={enabled ? 'success' : undefined}>{enabled ? 'enabled' : 'disabled'}</Chip>
               {s?.server === 'loaded' && <Chip tone="accent">server part loaded</Chip>}
               {s?.server === 'error' && <Chip tone="danger">server part failed</Chip>}
               {p.problem && <Chip tone="danger">web part: {p.problem}</Chip>}
+              {s && (
+                <Button tone={enabled ? 'neutral' : 'primary'} icon={enabled ? 'x' : 'check'} disabled={busy === p.folder} onClick={() => void toggle(p.folder, !enabled)}>
+                  {enabled ? 'Disable' : 'Enable'}
+                </Button>
+              )}
             </div>
             {s?.error && <p className="fx-mono" style={{ color: 'var(--fx-danger, #c33)', fontSize: 12 }}>{s.error}</p>}
-            {s && (
-              <Button tone={enabled ? undefined : 'primary'} icon={enabled ? 'x' : 'check'} disabled={busy === p.folder} onClick={() => void toggle(p.folder, !enabled)}>
-                {enabled ? 'Disable' : 'Enable'}
-              </Button>
-            )}
-          </Container>
+          </div>
         );
       })}
     </div>

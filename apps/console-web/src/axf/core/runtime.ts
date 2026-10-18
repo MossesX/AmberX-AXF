@@ -4,6 +4,7 @@
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
+import { SettingsRegistry } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
@@ -70,6 +71,10 @@ export class AxfRuntime {
   readonly contextExtras = new Map<string, () => import('./engines/windows').MenuEntry[]>();
   /** Nav sections contributed by libraries and plugins (keyed, so re-adding replaces). Shown after the nav-menu asset's sections. */
   private readonly navSections = new Map<string, NavExtraSection>();
+  /** Settings schema, panels and values (see settings.ts); the settings library renders them. */
+  readonly settings: SettingsRegistry;
+  /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
+  readonly libraries: { id: string; label: string; version: string; template?: string }[] = [];
   readonly manifest: AxfManifest;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
@@ -80,6 +85,7 @@ export class AxfRuntime {
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
+    this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });

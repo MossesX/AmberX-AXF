@@ -3,7 +3,7 @@
  * dialogs, tab renderers and actions; apps list their libraries and merge what they contribute into AppShell.
  * Libraries generated from framework/library-templates implement this.
  */
-import type { AxfRuntime, NavItem } from '../core';
+import type { AxfRuntime, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
 import type { ViewMap } from './AppShell';
 import type { DialogMap } from './components/Overlays';
 import type { TabRenderers } from './windows/WindowHost';
@@ -23,6 +23,12 @@ export interface AxfWebLibrary {
   tabs?: TabRenderers;
   /** Nav entries for this library's views, shown as their own section after the nav-menu asset's sections. */
   nav?: { label?: string; items: NavItem[] };
+  /** Settings tabs this library adds (the settings library declares the standard ones). */
+  settingsTabs?: SettingsTab[];
+  /** Settings groups (schema → generated controls) for any tab. */
+  settings?: SettingsGroup[];
+  /** Custom settings UI for any tab; `render` returns React content. */
+  settingsPanels?: SettingsPanel[];
 }
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
@@ -54,6 +60,10 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
+    for (const t of l.settingsTabs ?? []) rt.settings.addTab(t);
+    for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
+    for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
+    if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push({ id: l.id, label: l.label, version: l.version, ...(l.template ? { template: l.template } : {}) });
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);

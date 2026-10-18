@@ -90,3 +90,6 @@ export async function pluginFetch(folder: string, path: string, init: RequestIni
   if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
   return fetch(`/api/plugins/${folder}/${path.replace(/^\/+/, '')}`, { ...init, headers, cache: 'no-store' });
 }
+
+/** Fired on window when a plugin is enabled or disabled, so the shell re-installs plugins. */
+export const PLUGINS_CHANGED = 'axf:plugins-changed';
