@@ -14,7 +14,8 @@
 #   6. puts the console behind axHub's sign-in wall (Traefik forwardAuth → https://axhub.amberxai.com/auth/verify)
 #      once the hub can sign someone in; machines with the console token still reach /api and /mcp.
 #      AXF_WALL=off bash install-console.sh   turns it off (saved; use it if the hub is down and you're locked out)
-#      AXF_WALL=on  bash install-console.sh   turns it back on (default)
+#      AXF_WALL=on  bash install-console.sh   always on (it also saves "on" by itself the first time the hub is ready)
+#      AXF_WALL=auto bash install-console.sh  back to waiting for the hub (the default before the first success)
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-console.amberxai.com}"
@@ -157,18 +158,26 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   # ---- 6. the wall (axHub sign-in, decision #77 in axHub) ----
   WALLF="$DIR/.axf-console/wall"
   [ -n "${AXF_WALL:-}" ] && { echo "$AXF_WALL" > "$WALLF"; chmod 600 "$WALLF"; }
-  WALL="$(cat "$WALLF" 2>/dev/null || echo on)"
+  # "off" = no wall; "on" = always walled (written after the first time the hub could sign someone in, so a hub
+  # outage blocks the console instead of opening it); nothing saved yet = wait until the hub is ready.
+  WALL="$(cat "$WALLF" 2>/dev/null || echo auto)"
   WALL_HUB="${AXF_WALL_HUB:-https://axhub.amberxai.com}"
   WALL_ARGS=()
   if [ "$WALL" = "off" ]; then
     rm -f "$DIR/.axf-console/wall-waiting"
     say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on)"
   else
-    # Only switch it on when the hub really can sign someone in, so a hub without accounts (or an older hub) never locks you out.
-    LOGIN="$(curl -fsS --max-time 10 "$WALL_HUB/auth/login" 2>/dev/null || true)"
-    if echo "$LOGIN" | grep -q 'action="/auth/login"' && ! echo "$LOGIN" | grep -q 'No accounts yet'; then
+    if [ "$WALL" != "on" ]; then
+      # Switch it on only when the hub really can sign someone in, so a hub without accounts never locks you out.
+      LOGIN="$(curl -fsS --max-time 10 "$WALL_HUB/auth/login" 2>/dev/null || true)"
+      if echo "$LOGIN" | grep -q 'action="/auth/login"' && ! echo "$LOGIN" | grep -q 'No accounts yet'; then
+        WALL=on; echo on > "$WALLF"; chmod 600 "$WALLF"
+      fi
+    fi
+    if [ "$WALL" = "on" ]; then
       rm -f "$DIR/.axf-console/wall-waiting"
       say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins only); the console token still works on /api and /mcp"
+      say "  locked out because the hub is down? AXF_WALL=off bash $DIR/deploy/install-console.sh"
       WALL_ARGS=(-l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Via=" \
@@ -176,8 +185,8 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
         -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Via" \
         -l "traefik.http.routers.$R.middlewares=$R-strip,$R-wall")
     else
-      say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"
       touch "$DIR/.axf-console/wall-waiting"
+      say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"
     fi
   fi
   docker run "${COMMON[@]}" --network "$NET" "${WALL_ARGS[@]}" \

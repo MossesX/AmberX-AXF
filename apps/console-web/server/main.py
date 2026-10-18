@@ -103,6 +103,19 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+
+@app.middleware("http")
+async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
+    """Behind axHub's sign-in wall, a request let through on a bearer header (X-Auth-Via: token, set by the hub; the
+    proxy strips any client copy) must carry the real console token on every route, reads included."""
+    if request.headers.get("x-auth-via") == "token":
+        tok = current_token()
+        got = request.headers.get("authorization", "")
+        import hmac as _hmac
+        if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
+            return JSONResponse({"detail": "console token required (Authorization: Bearer AXF_TOKEN)"}, status_code=401)
+    return await call_next(request)
 PANEL = ROOT / "deploy" / "panel" / "index.html"
 GITHUB_REPO = os.environ.get("AXF_GITHUB_REPO", "MossesX/AmberX-AXF")
 def _gh_token() -> str:
