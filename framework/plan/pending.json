@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T16:13:56.090Z",
+ "updatedAt": "2026-10-18T17:20:23.926Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -132,11 +132,16 @@
    "detail": "Turn xGallery's New project wizard (MossesX/xGallery: server/src/routes/newproject.ts, src/pages/dev/newproject/NewProjectWizard.tsx, kit/new-project.mjs) into an AXF library so every app built on AXF can clone its install into a new project. Brett: keep the xGallery wizard as is and make it a library for AXF.\n\nWhat the xGallery wizard does today (reuse the design): renamed copy from the kit, GitHub repo, per-project deploy key installed on the VPS + Actions secrets (VPS_SSH_KEY, ADMIN_PASSWORD, HOSTINGER_API_TOKEN), Hostinger DNS for site + dev panel, Claude GitHub app access, push main, wait for the site deploy, push panel, wait, first-session prompt; resumable, no secrets stored.\n\nNew for the library: clone WITH current data (database snapshot + media/files, consistent copy, secrets and sessions stripped, owner reset), the copy gets its own project.manifest.json + _claude/ (claude-project), cross-port contract (web + Android) for the clone action exposed through the interop gate (default-deny), a settings tab (plugin manager rules: no own settings screen), console + MCP drivers. Open questions for Brett at build time: which data is copied by default, and whether the clone keeps users/members.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app → GitHub/VPS/local homes → manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
+     "at": "2026-10-18T17:20:23.926Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-18T16:13:56.090Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T16:13:56.090Z",
+   "updatedAt": "2026-10-18T17:20:23.926Z",
    "source": "chat"
   }
  ]

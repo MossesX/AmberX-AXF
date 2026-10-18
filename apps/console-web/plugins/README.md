@@ -10,9 +10,11 @@ plugins/<folder>/
   server/__init__.py   optional; exports `router: fastapi.APIRouter`
 ```
 
-Installed plugins: `mcp-client` (connects the console to other MCP servers; settings tab "MCP servers") and
+Installed plugins: `mcp-client` (connects the console to other MCP servers; settings tab "MCP servers"),
 `session-checkin` (the questions every new Claude Code session opens with + the Sessions archive; settings tab
-"Session check-in").
+"Session check-in") and `project-wizard` (nav → Plugins → New project: a repo, folder or new AXF app becomes a
+Claude project with its homes on GitHub / the VPS / a local git folder and a Claude.ai project kit; settings tab
+"Project wizard"; engine `wizard.mjs` on top of `framework/cli/claude-project.mjs`, self-test `test.mjs`).
 
 Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description),
 the `id`, `FOLDER` and views in `web/index.tsx`, and the routes in `server/__init__.py`.

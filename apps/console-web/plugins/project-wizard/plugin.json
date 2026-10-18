@@ -1,0 +1,14 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.project-wizard",
+  "name": "Project wizard",
+  "version": "1.0.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Turns a GitHub repo, a VPS repo, a folder or a new AXF app into a Claude project: name and description, a home on GitHub, the VPS and/or a local git folder (existing or new), a validated project manifest and _claude/ files, and a Claude.ai project kit (instructions + context files). Ported from xGallery's New project wizard.",
+  "targets": ["axf-console"],
+  "provides": ["view:project-wizard", "settings-tab:project-wizard"],
+  "scopes": ["ROUTES", "FILES", "NETWORK"],
+  "enabledByDefault": true
+}

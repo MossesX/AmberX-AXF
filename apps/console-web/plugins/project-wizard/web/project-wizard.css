@@ -1,0 +1,55 @@
+/* Project wizard plugin. Theme tokens only, axp-project-wizard prefix (framework/spec/THEMING.md). */
+.axp-project-wizard__notice { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space); padding: var(--fx-space) calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-md); background: var(--fx-accent-soft); border: var(--fx-border-w) solid var(--fx-accent) }
+.axp-project-wizard__error { color: var(--fx-danger); margin: 0; overflow-wrap: anywhere }
+.axp-project-wizard__steps { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); margin: 0; padding: 0; list-style: none }
+.axp-project-wizard__step button { padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: transparent; color: var(--fx-muted); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
+.axp-project-wizard__step button:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
+.axp-project-wizard__step.is-done button { color: var(--fx-text) }
+.axp-project-wizard__step.is-active button { color: var(--fx-text); border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-project-wizard__fieldset { display: flex; flex-direction: column; gap: var(--fx-space); margin: 0; padding: 0; border: 0; min-width: 0 }
+.axp-project-wizard__fieldset legend { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-weight: 600; margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-project-wizard__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-space) }
+.axp-project-wizard__card { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-space) * 0.375); padding: var(--fx-space) calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.axp-project-wizard__card span { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted) }
+.axp-project-wizard__card:hover { background: var(--fx-surface2) }
+.axp-project-wizard__card.is-selected { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-project-wizard__card:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
+.axp-project-wizard__card:focus-visible, .axp-project-wizard__row:focus-visible, .axp-project-wizard__item:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-project-wizard__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fx-space) }
+.axp-project-wizard__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted); min-width: 0 }
+.axp-project-wizard__field .fx-input { color: var(--fx-text) }
+.axp-project-wizard__choice { display: flex; align-items: flex-start; gap: var(--fx-space); cursor: pointer }
+.axp-project-wizard__choice input { margin-top: calc(var(--fx-space) * 0.25) }
+.axp-project-wizard__modes { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-project-wizard__mode { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.375); padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
+.axp-project-wizard__mode.is-selected { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-project-wizard__found, .axp-project-wizard__problem, .axp-project-wizard__warning { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); margin: 0; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
+.axp-project-wizard__found { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-project-wizard__problem { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-project-wizard__warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-project-wizard__browse { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.axp-project-wizard__items { display: flex; flex-direction: column; max-height: calc(var(--fx-row-h) * 9); overflow: auto }
+.axp-project-wizard__item { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.125); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.axp-project-wizard__item:hover { background: var(--fx-surface) }
+.axp-project-wizard__item.is-selected { background: var(--fx-accent-soft) }
+.axp-project-wizard__item-label { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
+.axp-project-wizard__item-note { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); overflow-wrap: anywhere }
+.axp-project-wizard__details summary { cursor: pointer; overflow-wrap: anywhere }
+.axp-project-wizard__details > .fx-row { margin-top: calc(var(--fx-space) * 0.5) }
+.axp-project-wizard__pre { margin: calc(var(--fx-space) * 0.5) 0 0; padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere; max-height: calc(var(--fx-row-h) * 14); overflow: auto }
+.axp-project-wizard__kit { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space) calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-surface) }
+.axp-project-wizard__kit-title { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0; font-weight: 600 }
+.axp-project-wizard__howto { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-project-wizard__files { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-project-wizard__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
+.axp-project-wizard__list > [role='listitem'] + [role='listitem'] { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-project-wizard__row { display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: var(--fx-space) calc(var(--fx-space) * 1.25); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.axp-project-wizard__row:hover { background: var(--fx-surface2) }
+.axp-project-wizard__row.is-selected { background: var(--fx-accent-soft); box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
+.axp-project-wizard__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
+.axp-project-wizard__name { font-weight: 600 }
+.axp-project-wizard__sub { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-project-wizard__detail { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space) calc(var(--fx-space) * 1.25) calc(var(--fx-space) * 1.5); border-top: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow-wrap: anywhere }
+.axp-project-wizard__detail th { white-space: nowrap; vertical-align: top }
+@media (max-width: 720px) { .axp-project-wizard__cards { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .axp-project-wizard__grid { grid-template-columns: minmax(0, 1fr) } }

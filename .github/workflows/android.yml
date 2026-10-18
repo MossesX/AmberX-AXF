@@ -33,6 +33,8 @@ jobs:
         run: node framework/cli/check-theme.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
+      - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
+        run: node apps/console-web/plugins/project-wizard/test.mjs
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e
