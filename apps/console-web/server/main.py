@@ -655,7 +655,11 @@ if not current_token():
 @app.get("/api/mcp")
 def mcp_info(request: Request) -> dict[str, Any]:
     """How to connect Claude to this console's MCP endpoint."""
-    base = f"{request.url.scheme}://{request.headers.get('host', 'localhost')}"
+    # Behind Traefik/Coolify the container only sees plain http; the proxy's X-Forwarded-* headers carry what the
+    # client actually used, so the advertised URL is https://console.amberxai.com/mcp rather than http://.
+    proto = (request.headers.get("x-forwarded-proto") or request.url.scheme).split(",")[0].strip()
+    host = (request.headers.get("x-forwarded-host") or request.headers.get("host") or "localhost").split(",")[0].strip()
+    base = f"{proto if proto in ('http', 'https') else request.url.scheme}://{host}"
     url = f"{base}/mcp"
     tools = [t.name for t in _mcp._tool_manager.list_tools()]  # noqa: SLF001
     return {"url": url, "auth": "Bearer AXF_TOKEN" if current_token() else "none (AXF_TOKEN not set)", "tools": tools,
