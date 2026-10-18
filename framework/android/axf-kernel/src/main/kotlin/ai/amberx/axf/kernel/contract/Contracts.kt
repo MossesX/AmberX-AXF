@@ -60,6 +60,8 @@ public data class SettingSpec(
     val icon: String? = null,
     val searchable: Boolean = true,
     val restartRequired: Boolean = false,
+    /** The asset slot this setting is about: greyed out while that slot is hidden (same field as the web port). */
+    val slot: String? = null,
 )
 
 /** `tab` picks the settings tab (appearance, account, connections, plugins, about, or any a module adds); null = general. Same field as the web port. */

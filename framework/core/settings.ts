@@ -33,6 +33,8 @@ export interface SettingSpec {
   requires?: string;
   icon?: string;
   restartRequired?: boolean;
+  /** The asset slot this setting is about. While that slot is hidden (Appearance → Assets → Hidden) the row is greyed out. */
+  slot?: string;
 }
 
 /** A group of settings shown as one card. `tab` picks the settings tab (default `general`). */

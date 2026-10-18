@@ -11,6 +11,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
+import { hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { ASSET_TYPES } from '../core/types';
@@ -31,12 +32,29 @@ write('theme.json', Object.fromEntries([
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
 // Slot contract cases: a region that refuses its chrome drops out of the grid on every port.
 const base = load('layout').find((a) => a.id === 'studio-dock')?.data ?? load('layout')[0].data;
-write('layout-slots.json', Object.fromEntries(Object.entries({
+write('layout-slots.json', Object.fromEntries([...Object.entries({
   'no-menubar': { menubar: [] },
   'no-nav': { nav: [] },
   'no-toolbar': { toolbar: ['nav-menu'] },
   'overlay-dialog-only': { overlay: ['dialog'] },
-}).map(([k, slots]) => { const data = { ...base, slots }; return [k, { slots, compiled: compileLayout(data) }]; })));
+}).map(([k, slots]) => { const data = { ...base, slots }; return [k, { slots, compiled: compileLayout(data) }]; }),
+  // Hidden slots (core/engines/hide.ts): the user hid a chrome type; its region drops out like a refusing slot.
+  ...Object.entries({
+    'hidden-nav': ['nav-menu'],
+    'hidden-toolbar': ['toolbar'],
+    'hidden-menubar': ['app-menu'],
+    'hidden-all-chrome': ['app-menu', 'toolbar', 'nav-menu', 'context-menu'],
+  }).map(([k, hidden]) => [k, { slots: {}, hidden, compiled: compileLayout({ ...base, slots: {} }, hidden) }]),
+]));
+// Which types can be hidden, and which overrides count (non-hideable types never hide).
+write('hide.json', {
+  hideable: hideableTypes(),
+  cases: [
+    { overrides: {}, hidden: hiddenSlots({}) },
+    { overrides: { toolbar: true, 'nav-menu': false }, hidden: hiddenSlots({ toolbar: true, 'nav-menu': false }) },
+    { overrides: { 'color-theme': true, layout: true, 'context-menu': true }, hidden: hiddenSlots({ 'color-theme': true, layout: true, 'context-menu': true }) },
+  ],
+});
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),

@@ -12,6 +12,7 @@ import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { hideable, hiddenSlots } from './engines/hide';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { Diagnostics } from './diagnostics';
@@ -38,6 +39,8 @@ export interface AxfRuntimeOptions {
 /** Settings keys for roll overrides (values: true | false; absent = built-in default). */
 export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
 export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
+/** Hidden slot override (Settings → Appearance → Assets → Hidden); only hideable types (core/engines/hide.ts). */
+export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
 
 /** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
 type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
@@ -332,10 +335,35 @@ export class AxfRuntime {
     else this.settings.set(ROLL_ASSET_KEY(type, id), on);
   }
 
-  /** "Randomize all": rolls every included slot over its included assets. Excluded slots keep their asset. */
+  /* ---------------- hidden slots (core/engines/hide.ts) ---------------- */
+
+  /** Is this slot hidden? Only hideable types (the chrome) can be. */
+  slotHidden(type: AssetType): boolean {
+    return hideable(type) && this.settings.get(HIDE_KEY(type)) === true;
+  }
+
+  /** Every hidden slot. */
+  hiddenSlots(): AssetType[] {
+    const o: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) === true) o[t] = true;
+    return hiddenSlots(o) as AssetType[];
+  }
+
+  /** Hide or show a slot's chrome. Ignored for types that aren't hideable. */
+  setSlotHidden(type: AssetType, hidden: boolean): void {
+    if (!hideable(type) || this.slotHidden(type) === hidden) return;
+    if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
+    if (hidden) this.settings.set(HIDE_KEY(type), true);
+    else this.settings.clear(HIDE_KEY(type));
+    if (hidden && type === 'context-menu') this.closeContext();
+    this.terminal.ok('hot-swap', `${type} ${hidden ? 'hidden' : 'shown'}`);
+    this.set({});
+  }
+
+  /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
   randomize() {
     if (!this.can('assets.swap')) return this.toast('Your role cannot swap assets.', 'danger', 'Permission denied');
-    const plan = rollPlan(ASSET_TYPES, (t) => this.registry.list(t as AssetType), this.rollRules());
+    const plan = rollPlan(ASSET_TYPES.filter((t) => !this.slotHidden(t)), (t) => this.registry.list(t as AssetType), this.rollRules());
     const targets: Partial<ActiveAssets> = {};
     for (const [t, ids] of Object.entries(plan) as [AssetType, string[]][]) {
       targets[t] = ids[Math.floor(Math.random() * ids.length)];
@@ -346,6 +374,7 @@ export class AxfRuntime {
   }
 
   reset() {
+    for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
     for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]!.id;
     const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
@@ -418,6 +447,7 @@ export class AxfRuntime {
   }
 
   openContext(x: number, y: number, target: string, payload?: string) {
+    if (this.slotHidden('context-menu')) return;
     this.set({ context: { x, y, target, payload } });
   }
 
@@ -448,7 +478,7 @@ export class AxfRuntime {
     const vars: VarMap = {
       ...colorThemeVars(color),
       ...styleThemeVars(this.asset('style-theme').data),
-      ...layoutVars(this.asset('layout').data),
+      ...layoutVars(this.asset('layout').data, this.hiddenSlots()),
     };
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme };
     for (const p of parts) {
@@ -489,6 +519,10 @@ export class AxfRuntime {
     a.register('roll.asset', ([type, id, v]) => {
       if (type && id && (ASSET_TYPES as readonly string[]).includes(type)) this.setRollAsset(type as AssetType, id, onOff(v));
     }, { label: 'Include an asset in randomize rolls', requires: 'assets.swap', params: true });
+    // Hidden slots from code, menus or MCP: slot.hide:<type>:on|off
+    a.register('slot.hide', ([type, v]) => {
+      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
+    }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {

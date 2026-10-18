@@ -56,7 +56,9 @@ public fun SettingsGroupView(group: SettingsGroup, values: Map<String, JsonEleme
         if (group.description != null) AxfText(group.description!!, muted = true)
         Column(verticalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             for (s in visible) {
-                val enabled = uac.gate(s.requires) == Gate.ALLOW
+                // A setting about a hidden slot (Appearance → Assets → Hidden) is greyed out until it's shown again.
+                val off = s.slot?.let { runtime.slotHidden(it) } == true
+                val enabled = !off && uac.gate(s.requires) == Gate.ALLOW
                 val v = values[s.key] ?: s.default
                 when (s.kind) {
                     SettingKind.SECTION -> ai.amberx.axf.ui.components.AxfSectionHeader(s.label, accent = true)
@@ -69,12 +71,18 @@ public fun SettingsGroupView(group: SettingsGroup, values: Map<String, JsonEleme
                     SettingKind.MULTI_CHOICE -> { val set = v.asText().split(',').filter { it.isNotBlank() }.toSet(); Column { AxfText(s.label); FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for ((id, label) in s.options) AxfChip(label, selected = id in set, onClick = if (enabled) ({ onChange(s.key, JsonPrimitive((if (id in set) set - id else set + id).joinToString(","))) }) else null) } } }
                     SettingKind.COLOR -> { val rgba = ai.amberx.axf.kernel.engine.Rgba.parse(v.asText()); AxfListItem(s.label, subtitle = v.asText(), trailing = { Box(Modifier.size(22.dp).background(rgba?.let { Color(it.r, it.g, it.b, (it.a * 255).toInt()) } ?: Axf.colors.border, Axf.shapes.xsShape)) }); AxfTextField(v.asText(), { onChange(s.key, JsonPrimitive(it)) }, Modifier.fillMaxWidth(), monospace = true, enabled = enabled) }
                     SettingKind.ASSET_SLOT -> { val type = s.target ?: ""; val list = runtime.registry.list(type); val active = state.active[type]
-                        Column { AxfText(s.label); if (s.description != null) AxfText(s.description!!, muted = true); FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for (a in list) AxfChip(a.name, selected = a.id == active, onClick = if (enabled) ({ runtime.swap(type, a.id) }) else null) } } }
+                        // Chrome slots (hideable in asset-types.json) also offer Hidden.
+                        val canHide = ai.amberx.axf.kernel.engine.HideEngine.hideable(runtime.registry.types, type); val hidden = runtime.slotHidden(type)
+                        Column { AxfText(s.label); if (s.description != null) AxfText(s.description!!, muted = true); FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            for (a in list) AxfChip(a.name, selected = !hidden && a.id == active, onClick = if (enabled) ({ if (hidden) runtime.setSlotHidden(type, false); if (a.id != active) runtime.swap(type, a.id) }) else null)
+                            if (canHide) AxfChip("Hidden", selected = hidden, onClick = if (enabled) ({ runtime.setSlotHidden(type, true) }) else null)
+                        } } }
                     SettingKind.ACTION -> AxfListItem(s.label, subtitle = s.description, icon = s.icon ?: "zap", enabled = enabled, onClick = { s.target?.let { actions.dispatch(it) } }, trailing = { AxfBadge("run") })
                     SettingKind.LINK -> AxfListItem(s.label, subtitle = s.description, icon = s.icon ?: "chevron-right", enabled = enabled, onClick = { s.target?.let { runtime.navigate(it) } })
                     SettingKind.CUSTOM -> AxfListItem(s.label, subtitle = s.description ?: "Custom setting (rendered by its module)", icon = s.icon ?: "box", enabled = enabled)
                 }
                 if (s.restartRequired) AxfText("Takes effect after restart.", muted = true)
+                if (off) AxfText("${runtime.registry.types.get(s.slot!!)?.label ?: s.slot} is hidden (Assets above).", muted = true)
             }
         }
     }

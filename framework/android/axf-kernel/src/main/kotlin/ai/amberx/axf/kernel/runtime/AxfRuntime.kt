@@ -30,6 +30,7 @@ import ai.amberx.axf.kernel.engine.ComponentStyles
 import ai.amberx.axf.kernel.engine.ContextMenuEngine
 import ai.amberx.axf.kernel.engine.Gate
 import ai.amberx.axf.kernel.engine.LayoutEngine
+import ai.amberx.axf.kernel.engine.HideEngine
 import ai.amberx.axf.kernel.engine.RollEngine
 import ai.amberx.axf.kernel.engine.RollRules
 import ai.amberx.axf.kernel.engine.SearchEntry
@@ -239,10 +240,34 @@ public class AxfRuntime(
         saveRollRules(r.copy(assets = if (on == null) r.assets - k else r.assets + (k to on)))
     }
 
-    /** "Randomize all": rolls every included slot over its included assets; excluded slots keep their asset. */
+    /* ---------------- hidden slots (HideEngine; web: settings `axf.hide.<type>`) ---------------- */
+
+    private val hideKey get() = "$key:hide"
+
+    /** Every hidden slot (only hideable types: the chrome). */
+    public fun hiddenSlots(): List<String> {
+        val arr = store.get(hideKey)?.let { ai.amberx.axf.kernel.asset.AxfJson.runCatching { parseToJsonElement(it) as kotlinx.serialization.json.JsonArray }.getOrNull() } ?: return emptyList()
+        val set = arr.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.content }.associateWith { true }
+        return HideEngine.hiddenSlots(registry.types, set)
+    }
+
+    public fun slotHidden(type: String): Boolean = type in hiddenSlots()
+
+    /** Hide or show a slot's chrome; ignored for types that aren't hideable. */
+    public fun setSlotHidden(type: String, hidden: Boolean) {
+        if (!HideEngine.hideable(registry.types, type) || slotHidden(type) == hidden) return
+        if (!can("assets.swap")) { toast("Your role cannot change the layout.", ToastKind.DANGER, "Permission denied"); return }
+        val next = if (hidden) hiddenSlots() + type else hiddenSlots() - type
+        store.put(hideKey, kotlinx.serialization.json.JsonArray(next.map { kotlinx.serialization.json.JsonPrimitive(it) }).toString())
+        terminal.ok("hot-swap", "$type ${if (hidden) "hidden" else "shown"}")
+        set({ s -> if (hidden && type == AssetTypes.CONTEXT_MENU) s.copy(context = null) else s }, recompile = true)
+    }
+
+    /** "Randomize all": rolls every included slot over its included assets; excluded and hidden slots keep their asset. */
     public fun randomize() {
         if (!can("assets.swap")) { toast("Your role cannot swap assets.", ToastKind.DANGER, "Permission denied"); return }
-        val plan = RollEngine.plan(registry.types, registry.types.ids(), { registry.list(it) }, rollRules())
+        val hidden = hiddenSlots()
+        val plan = RollEngine.plan(registry.types, registry.types.ids().filter { it !in hidden }, { registry.list(it) }, rollRules())
         val targets = plan.mapNotNull { (t, ids) -> ids.randomOrNull(random)?.let { t to it } }.toMap()
         if (targets.isEmpty()) { toast("No slot is included in rolls.", ToastKind.INFO, "Nothing to roll"); return }
         terminal.ok("hot-swap", "roll: ${targets.keys.joinToString()}")
@@ -250,6 +275,7 @@ public class AxfRuntime(
     }
 
     public fun reset() {
+        store.remove(hideKey)
         val active = LinkedHashMap<String, String>()
         for (t in registry.types.ids()) { val d = manifest.defaults[t]; val id = if (d != null && registry.has(t, d)) d else registry.list(t).firstOrNull()?.id; if (id != null) active[t] = id }
         val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, active.getValue(AssetTypes.UAC_POLICY))!!.data)
@@ -298,7 +324,10 @@ public class AxfRuntime(
     /** The UI layer calls this after `popup.duration` ms (the kernel has no timers of its own). */
     public fun dismissToast(id: Long) { if (current.toasts.any { it.id == id }) set({ s -> s.copy(toasts = s.toasts.filter { it.id != id }) }) }
 
-    public fun openContext(x: Float, y: Float, target: String, payload: String? = null): Unit = set({ it.copy(context = ContextState(x, y, target, payload)) })
+    public fun openContext(x: Float, y: Float, target: String, payload: String? = null) {
+        if (slotHidden(AssetTypes.CONTEXT_MENU)) return
+        set({ it.copy(context = ContextState(x, y, target, payload)) })
+    }
     public fun closeContext() { if (current.context != null) set({ it.copy(context = null) }) }
     /** Extra context-menu targets registered by modules (tab-group, window-title, …), merged ahead of the asset's items. */
     public val contextExtras: MutableMap<String, List<MenuItem>> = LinkedHashMap()
@@ -339,7 +368,8 @@ public class AxfRuntime(
         val layout = Layout.fromJson(d(AssetTypes.LAYOUT))
         val styles = ComponentStyleEngine.compile(Button.fromJson(d(AssetTypes.BUTTON)), Slider.fromJson(d(AssetTypes.SLIDER)), Container.fromJson(d(AssetTypes.CONTAINER)), Dialog.fromJson(d(AssetTypes.DIALOG)), Popup.fromJson(d(AssetTypes.POPUP)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), theme.style,
             Toolbar.fromJson(d(AssetTypes.TOOLBAR)), NavMenu.fromJson(d(AssetTypes.NAV_MENU)), AppMenu.fromJson(d(AssetTypes.APP_MENU)))
-        return Compiled(theme, layout, WindowClass.entries.associateWith { LayoutEngine.compile(layout, it) }, styles,
+        val hidden = hiddenSlots()
+        return Compiled(theme, layout, WindowClass.entries.associateWith { LayoutEngine.compile(layout, it, hidden) }, styles,
             AppMenu.fromJson(d(AssetTypes.APP_MENU)), Toolbar.fromJson(d(AssetTypes.TOOLBAR)), NavMenu.fromJson(d(AssetTypes.NAV_MENU)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), UacPolicy.fromJson(d(AssetTypes.UAC_POLICY)),
             Popup.fromJson(d(AssetTypes.POPUP)), Dialog.fromJson(d(AssetTypes.DIALOG)), s.rev)
     }
@@ -360,6 +390,8 @@ public class AxfRuntime(
         // roll.slot:<type>:on|off|default · roll.asset:<type>:<id>:on|off|default (same specs as the web port)
         fun onOff(v: String?): Boolean? = when (v) { "on" -> true; "off" -> false; else -> null }
         actions.register("roll.slot", ActionMeta("Include a slot in randomize rolls", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setRollSlot(it, onOff(args.getOrNull(1))) } }
+        // slot.hide:<type>:on|off (same spec as the web port)
+        actions.register("slot.hide", ActionMeta("Hide or show a slot", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setSlotHidden(it, args.getOrNull(1) != "off") } }
         actions.register("roll.asset", ActionMeta("Include an asset in randomize rolls", "assets.swap", params = true)) { args, _ -> val t = args.getOrNull(0); val id = args.getOrNull(1); if (t != null && id != null && registry.types.has(t)) setRollAsset(t, id, onOff(args.getOrNull(2))) }
         actions.register("assets.reset", ActionMeta("Reset to defaults")) { _, _ -> reset() }
         actions.register("asset.json", ActionMeta("View asset JSON")) { a, _ -> openDialog("asset-json", mapOf("type" to a.getOrElse(0) { "" }, "id" to a.getOrElse(1) { "" })) }

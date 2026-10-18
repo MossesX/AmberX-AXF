@@ -51,7 +51,8 @@ export interface CompiledLayout {
 
 const row = (cells: string[]) => `"${cells.join(' ')}"`;
 
-export function compileLayout(l: LayoutData): CompiledLayout {
+/** `hidden`: slot types the user hid (core/engines/hide.ts); their regions drop out like a refusing slot. */
+export function compileLayout(l: LayoutData, hidden: readonly string[] = []): CompiledLayout {
   const cols: string[] = [];
   const sizes: string[] = [];
   const push = (name: string, size: string) => {
@@ -60,7 +61,7 @@ export function compileLayout(l: LayoutData): CompiledLayout {
   };
   // Chrome regions render only when their slot accepts the matching asset type.
   const slots = compileSlots(l);
-  const shows = (r: Region, type: string) => regionAccepts(slots, r, type);
+  const shows = (r: Region, type: string) => regionAccepts(slots, r, type) && !hidden.includes(type);
   const navOn = shows('nav', 'nav-menu');
   const nav = navOn ? l.nav : 'none';
   if (nav === 'left') push('nav', `${l.navWidth}px`);
@@ -111,8 +112,8 @@ export function compileLayout(l: LayoutData): CompiledLayout {
   };
 }
 
-export function layoutVars(l: LayoutData): VarMap {
-  const c = compileLayout(l);
+export function layoutVars(l: LayoutData, hidden: readonly string[] = []): VarMap {
+  const c = compileLayout(l, hidden);
   return {
     '--fx-grid-areas': c.areas,
     '--fx-grid-cols': c.columns,

@@ -76,12 +76,24 @@ class ConformanceTest {
         for ((case, f) in fixture("layout-slots.json")) {
             val slots = f.jsonObject.getValue("slots").jsonObject
             val c = f.jsonObject.getValue("compiled").jsonObject
-            val desktop = LayoutEngine.compile(Layout.fromJson(JsonObject(base + ("slots" to slots))), WindowClass.EXPANDED)
+            // `hidden-*` cases: slot types the user hid (HideEngine) drop out like a refusing slot.
+            val hidden = (f.jsonObject["hidden"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            val desktop = LayoutEngine.compile(Layout.fromJson(JsonObject(base + ("slots" to slots))), WindowClass.EXPANDED, hidden)
             assertEquals(c.getValue("areas").jsonPrimitive.content, desktop.cssAreas, "$case areas")
             assertEquals(c.getValue("columns").jsonPrimitive.content, desktop.cssColumns, "$case columns")
             assertEquals(c.getValue("rows").jsonPrimitive.content, desktop.cssRows, "$case rows")
             assertEquals((c.getValue("regions") as JsonArray).map { it.jsonPrimitive.content }, desktop.regions.map { it.id }, "$case regions")
             for ((region, types) in c.getValue("slots").jsonObject) assertEquals((types as JsonArray).map { it.jsonPrimitive.content }, desktop.slots[Region.parse(region)], "$case slot $region")
+        }
+    }
+
+    @Test fun `hidden slots match the reference engine`() {
+        val f = fixture("hide.json")
+        val types = ai.amberx.axf.kernel.asset.AssetTypeRegistry.builtin()
+        assertEquals((f.getValue("hideable") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hideableTypes(types), "hideable types")
+        for (c in f.getValue("cases") as JsonArray) {
+            val o = c.jsonObject.getValue("overrides").jsonObject.mapValues { it.value.jsonPrimitive.content.toBoolean() }
+            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o), "hidden for $o")
         }
     }
 

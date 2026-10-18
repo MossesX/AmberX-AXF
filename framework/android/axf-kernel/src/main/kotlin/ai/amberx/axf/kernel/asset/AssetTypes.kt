@@ -58,6 +58,8 @@ public data class AssetTypeSpec(
     /** Randomize rolls (`roll` block): does the slot take part, and the default for an asset's own `roll` flag. null = registry default. */
     val rollSlot: Boolean? = null,
     val rollAsset: Boolean? = null,
+    /** `hideable`: the slot may be hidden (chrome only; see HideEngine). */
+    val hideable: Boolean = false,
 ) {
     public companion object {
         public fun fromJson(id: String, o: JsonObject, owner: String = "kernel", optional: Boolean = false): AssetTypeSpec = AssetTypeSpec(
@@ -73,6 +75,7 @@ public data class AssetTypeSpec(
             owner = owner,
             rollSlot = o.obj("roll")?.let { (it["slot"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
             rollAsset = o.obj("roll")?.let { (it["asset"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
+            hideable = o.bool("hideable", false),
         )
     }
 }

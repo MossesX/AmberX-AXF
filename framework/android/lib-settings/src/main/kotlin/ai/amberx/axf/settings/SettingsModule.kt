@@ -56,7 +56,7 @@ public class SettingsModule : BaseModule(ID, "Settings") {
         return SettingsGroup("appearance", "Appearance", "palette", id, order = 10, description = "Every slot is a hot-swappable asset. Changes apply instantly and persist.", settings = listOf(
             SettingSpec("axf.appearance.followSystem", "Follow system dark mode", SettingKind.TOGGLE, "Pick the dark/light counterpart of the color theme automatically", JsonPrimitive(false)),
         ) + types.filter { !it.optional || runtime?.registry?.list(it.id)?.isNotEmpty() == true }.map { t ->
-            SettingSpec("axf.slot.${t.id}", t.label, SettingKind.ASSET_SLOT, if (t.id == AssetTypes.UAC_POLICY) "Changing the policy may change your role" else null, JsonPrimitive(""), SettingScope.USER, target = t.id, requires = if (t.id == AssetTypes.UAC_POLICY) "uac.manage" else "assets.swap", icon = t.icon)
+            SettingSpec("axf.slot.${t.id}", t.label, SettingKind.ASSET_SLOT, if (t.id == AssetTypes.UAC_POLICY) "Changing the policy may change your role" else if (t.hideable) "Hidden removes it from the screen; its other options grey out." else null, JsonPrimitive(""), SettingScope.USER, target = t.id, requires = if (t.id == AssetTypes.UAC_POLICY) "uac.manage" else "assets.swap", icon = t.icon)
         })
     }
     private fun generalGroup(): SettingsGroup = SettingsGroup("general", "General", "settings", id, order = 20, settings = listOf(

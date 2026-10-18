@@ -68,9 +68,11 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   const state = useSyncExternalStore(runtime.subscribe, runtime.getState, runtime.getState);
 
   // Compile active assets -> CSS on the document root (this is the hot-swap).
+  // Hidden slots change the layout grid too, so they re-apply it.
+  const hidden = runtime.hiddenSlots().join(',');
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active]);
+  }, [runtime, state.active, hidden]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

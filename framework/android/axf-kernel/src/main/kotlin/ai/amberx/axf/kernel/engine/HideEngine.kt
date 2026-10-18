@@ -1,0 +1,21 @@
+package ai.amberx.axf.kernel.engine
+
+import ai.amberx.axf.kernel.asset.AssetTypeRegistry
+
+/**
+ * Hide engine — which slots may be hidden, and which are hidden now. Mirrors core/engines/hide.ts:
+ * a type with `"hideable": true` in asset-types.json (the chrome: app-menu, toolbar, nav-menu, context-menu)
+ * gets a Hidden choice; while hidden its chrome is not drawn (LayoutEngine drops its region, a hidden
+ * context menu never opens) and randomize rolls skip it. Themes, layouts, controls and the access policy
+ * are never hideable. Fixtures: spec/fixtures/hide.json, layout-slots.json (`hidden-*` cases).
+ */
+public object HideEngine {
+    public fun hideable(types: AssetTypeRegistry, type: String): Boolean = types.get(type)?.hideable == true
+
+    /** Every hideable type, in spec order. */
+    public fun hideableTypes(types: AssetTypeRegistry): List<String> = types.ids().filter { hideable(types, it) }
+
+    /** The hidden slots given runtime overrides (type -> hidden); non-hideable types never hide. */
+    public fun hiddenSlots(types: AssetTypeRegistry, overrides: Map<String, Boolean>): List<String> =
+        hideableTypes(types).filter { overrides[it] == true }
+}

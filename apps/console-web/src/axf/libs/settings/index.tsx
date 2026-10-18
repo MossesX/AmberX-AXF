@@ -9,7 +9,7 @@
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, hideable, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
@@ -36,14 +36,26 @@ function useSettingsRevision(rt: AxfRuntime): number {
 
 /** Every row carries a search anchor, so the toolbar search can scroll to it and flash it. */
 function SettingRow({ spec }: { spec: SettingSpec }) {
-  return <div data-axf-anchor={`setting:${spec.key}`}><SettingControl spec={spec} /></div>;
-}
-
-function SettingControl({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
-  const locked = spec.requires ? rt.gate(spec.requires) !== 'allow' : false;
+  // A setting about a hidden slot is greyed out (and its control disabled) until the slot is shown again.
+  const off = !!spec.slot && rt.slotHidden(spec.slot as AssetType);
+  return (
+    <div data-axf-anchor={`setting:${spec.key}`} className={off ? 'axf-settings__off' : undefined} aria-disabled={off || undefined}>
+      <SettingControl spec={spec} off={off} />
+      {off && <p className="fx-muted axf-settings__hint axf-settings__offnote">{assetTypeSpecs[spec.slot as AssetType]?.label ?? spec.slot} is hidden (Assets above).</p>}
+    </div>
+  );
+}
+
+function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolean }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  // `denied` = the role can't change it (lock icon); `off` = its slot is hidden (greyed, no lock).
+  const denied = spec.requires ? rt.gate(spec.requires) !== 'allow' : false;
+  const locked = off || denied;
   const value = rt.settings.get(spec.key);
   const set = (v: SettingValue) => rt.settings.set(spec.key, v);
 
@@ -109,7 +121,7 @@ function SettingControl({ spec }: { spec: SettingSpec }) {
   return (
     <div className="axf-settings__row">
       <div className="axf-settings__label">
-        <span>{locked && <Icon name="lock" size={13} />} {spec.label}{spec.restartRequired && <Chip tone="warning">restart</Chip>}</span>
+        <span>{denied && <Icon name="lock" size={13} />} {spec.label}{spec.restartRequired && <Chip tone="warning">restart</Chip>}</span>
         {spec.description && <span className="fx-muted axf-settings__hint">{spec.description}</span>}
       </div>
       <div className="axf-settings__control">{control}</div>
@@ -117,13 +129,23 @@ function SettingControl({ spec }: { spec: SettingSpec }) {
   );
 }
 
+/** Picks the active asset of a slot. Chrome slots (hideable in asset-types.json) also offer Hidden. */
+const HIDDEN = '__axf-hidden';
 function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }) {
   const rt = useRuntime();
   const state = useAxfState();
   const options = rt.registry.list(type);
+  const canHide = hideable(type);
+  const hidden = rt.slotHidden(type);
+  const pick = (v: string) => {
+    if (v === HIDDEN) return rt.setSlotHidden(type, true);
+    if (hidden) rt.setSlotHidden(type, false);
+    if (v !== state.active[type]) rt.swap(type, v);
+  };
   return (
-    <select className="axf-settings__field" value={state.active[type]} disabled={locked || options.length < 2} onChange={(e) => rt.swap(type, e.target.value)}>
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+      {canHide && <option value={HIDDEN}>Hidden</option>}
     </select>
   );
 }
@@ -156,6 +178,7 @@ function rollGroup(): SettingsGroup {
       kind: 'toggle' as const,
       default: rollSlotDefault(t),
       requires: 'assets.swap',
+      slot: t,
       ...(t === 'context-menu' ? { description: 'Off by default: rolls leave context menus alone.' } : {}),
     })),
   };
@@ -170,12 +193,13 @@ function RollAssetsPanel() {
   const [type, setType] = useState<AssetType>('context-menu');
   const locked = rt.gate('assets.swap') !== 'allow';
   const slotOn = rt.rollSlotIncluded(type);
+  const hidden = rt.slotHidden(type);
   return (
     <div className="axf-settings__rows">
       <div className="axf-settings__row">
         <div className="axf-settings__label">
           <span>Slot</span>
-          <span className="fx-muted axf-settings__hint">{slotOn ? 'Rolls change this slot, picking only the assets switched on below.' : 'This slot is off above, so rolls leave it alone whatever is switched on here.'}</span>
+          <span className="fx-muted axf-settings__hint">{hidden ? `${assetTypeSpecs[type].label} is hidden (Assets above), so rolls skip it.` : slotOn ? 'Rolls change this slot, picking only the assets switched on below.' : 'This slot is off above, so rolls leave it alone whatever is switched on here.'}</span>
         </div>
         <div className="axf-settings__control">
           <select className="axf-settings__field" value={type} onChange={(e) => setType(e.target.value as AssetType)} aria-label="Slot">
@@ -187,17 +211,17 @@ function RollAssetsPanel() {
         const on = rt.rollAssetIncluded(type, a.id);
         const overridden = typeof rt.settings.get(ROLL_ASSET_KEY(type, a.id)) === 'boolean';
         return (
-          <div key={a.id} className="axf-settings__row" data-axf-anchor={`roll-asset:${type}:${a.id}`}>
+          <div key={a.id} className={`axf-settings__row${hidden ? ' axf-settings__off' : ''}`} aria-disabled={hidden || undefined} data-axf-anchor={`roll-asset:${type}:${a.id}`}>
             <div className="axf-settings__label">
               <span>{a.name}</span>
               <span className="fx-muted axf-settings__hint fx-mono">{a.id}{overridden ? ' · changed here' : ''}</span>
             </div>
             <div className="axf-settings__control fx-row fx-row--wrap">
               <label className="axf-settings__switch">
-                <input type="checkbox" checked={on} disabled={locked} onChange={(e) => rt.setRollAsset(type, a.id, e.target.checked)} aria-label={`Include ${a.name} in rolls`} />
+                <input type="checkbox" checked={on} disabled={locked || hidden} onChange={(e) => rt.setRollAsset(type, a.id, e.target.checked)} aria-label={`Include ${a.name} in rolls`} />
                 <span>{on ? 'In rolls' : 'Not in rolls'}</span>
               </label>
-              {overridden && <Button tone="ghost" icon="refresh" disabled={locked} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
+              {overridden && <Button tone="ghost" icon="refresh" disabled={locked || hidden} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
             </div>
           </div>
         );
@@ -360,6 +384,9 @@ const CSS = `
 .axf-settings__field{font:inherit;padding:calc(var(--fx-space)*.75) var(--fx-space);border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2);color:var(--fx-text)}
 .axf-settings__field:focus-visible{outline:2px solid var(--fx-accent);outline-offset:1px}
 .axf-settings__field:disabled{opacity:var(--fx-opacity-disabled)}
+.axf-settings__off{opacity:var(--fx-opacity-disabled)}
+.axf-settings__off .axf-settings__field:disabled{opacity:1}
+.axf-settings__offnote{margin:calc(var(--fx-space)*.25) 0 0}
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}
@@ -395,7 +422,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
       kind: 'asset_slot' as const,
       target: t,
       requires: t === 'uac-policy' ? 'uac.manage' : 'assets.swap',
-      ...(t === 'uac-policy' ? { description: 'Changing the policy may change your role.' } : {}),
+      ...(t === 'uac-policy' ? { description: 'Changing the policy may change your role.' } : hideable(t) ? { description: 'Hidden removes it from the screen; its other options here grey out.' } : {}),
     })),
   };
 }

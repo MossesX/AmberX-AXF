@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
-import { useAsset, useAxfState } from './AxfProvider';
+import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { Inspector } from './studio/Inspector';
@@ -36,9 +36,11 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
   const slots = compileSlots(layout);
-  const showMenubar = layout.showMenubar && regionAccepts(slots, 'menubar', 'app-menu');
-  const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar');
-  const showNav = regionAccepts(slots, 'nav', 'nav-menu');
+  // Hidden slots (Settings → Appearance → Assets → Hidden) drop out the same way.
+  const rt = useRuntime();
+  const showMenubar = layout.showMenubar && regionAccepts(slots, 'menubar', 'app-menu') && !rt.slotHidden('app-menu');
+  const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
+  const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
   const allDialogs: DialogMap = { ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.

@@ -98,6 +98,7 @@ export function ContextMenuHost() {
       const t = e.target as Element;
       if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
       if (!t.closest('.fx-shell')) return;
+      if (rt.slotHidden('context-menu')) return; // hidden: the browser's own menu
       e.preventDefault();
       open(t, e.clientX, e.clientY);
     };
@@ -105,7 +106,7 @@ export function ContextMenuHost() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     let start: { x: number; y: number } | null = null;
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType !== 'touch') return;
+      if (e.pointerType !== 'touch' || rt.slotHidden('context-menu')) return;
       const t = e.target as Element;
       if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell')) return;
       start = { x: e.clientX, y: e.clientY };

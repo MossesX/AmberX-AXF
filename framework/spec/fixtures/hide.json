@@ -1,0 +1,33 @@
+{
+  "hideable": [
+    "app-menu",
+    "toolbar",
+    "nav-menu",
+    "context-menu"
+  ],
+  "cases": [
+    {
+      "overrides": {},
+      "hidden": []
+    },
+    {
+      "overrides": {
+        "toolbar": true,
+        "nav-menu": false
+      },
+      "hidden": [
+        "toolbar"
+      ]
+    },
+    {
+      "overrides": {
+        "color-theme": true,
+        "layout": true,
+        "context-menu": true
+      },
+      "hidden": [
+        "context-menu"
+      ]
+    }
+  ]
+}

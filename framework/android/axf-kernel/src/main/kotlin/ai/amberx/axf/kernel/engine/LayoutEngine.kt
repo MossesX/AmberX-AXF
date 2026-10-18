@@ -73,13 +73,15 @@ public object LayoutEngine {
         else -> WindowClass.COMPACT
     }
 
-    public fun compile(l: Layout, wc: WindowClass): CompiledLayout = if (wc == WindowClass.EXPANDED) desktop(l) else mobile(l, wc)
+    /** `hidden`: slot types the user hid (HideEngine); their regions drop out like a refusing slot. */
+    public fun compile(l: Layout, wc: WindowClass, hidden: Collection<String> = emptySet()): CompiledLayout = if (wc == WindowClass.EXPANDED) desktop(l, hidden) else mobile(l, wc, hidden)
 
-    private fun desktop(l: Layout): CompiledLayout {
+    private fun desktop(l: Layout, hidden: Collection<String>): CompiledLayout {
         val slots = Slots.compile(l)
-        val navOn = Slots.accepts(slots, Region.NAV, "nav-menu")
-        val menubar = l.showMenubar && Slots.accepts(slots, Region.MENUBAR, "app-menu")
-        val toolbar = l.showToolbar && Slots.accepts(slots, Region.TOOLBAR, "toolbar")
+        fun shows(r: Region, type: String) = Slots.accepts(slots, r, type) && type !in hidden
+        val navOn = shows(Region.NAV, "nav-menu")
+        val menubar = l.showMenubar && shows(Region.MENUBAR, "app-menu")
+        val toolbar = l.showToolbar && shows(Region.TOOLBAR, "toolbar")
         val cols = mutableListOf<Column>()
         if (navOn && l.nav == NavSide.LEFT) cols += Column(Region.NAV, l.navWidth)
         if (l.inspector == InspectorSide.LEFT) cols += Column(Region.INSPECTOR, l.inspectorWidth)
@@ -107,12 +109,13 @@ public object LayoutEngine {
             l.contentMaxWidth.takeIf { it > 0 }, false, l.mobile.fab, areas, cssCols, cssRows, slots)
     }
 
-    private fun mobile(l: Layout, wc: WindowClass): CompiledLayout {
+    private fun mobile(l: Layout, wc: WindowClass, hidden: Collection<String>): CompiledLayout {
         val m = l.mobile
         val slots = Slots.compile(l)
-        val navOn = Slots.accepts(slots, Region.NAV, "nav-menu")
-        val menubar = l.showMenubar && Slots.accepts(slots, Region.MENUBAR, "app-menu")
-        val toolbar = l.showToolbar && m.showToolbar && Slots.accepts(slots, Region.TOOLBAR, "toolbar")
+        fun shows(r: Region, type: String) = Slots.accepts(slots, r, type) && type !in hidden
+        val navOn = shows(Region.NAV, "nav-menu")
+        val menubar = l.showMenubar && shows(Region.MENUBAR, "app-menu")
+        val toolbar = l.showToolbar && m.showToolbar && shows(Region.TOOLBAR, "toolbar")
         val rows = mutableListOf<Row>()
         val regions = mutableListOf(Region.MAIN)
         fun add(r: Region) { rows += Row(r, null); regions += r }

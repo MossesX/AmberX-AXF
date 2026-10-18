@@ -188,7 +188,8 @@
       "optional_fields": {
         "density": "compact | regular (default) | roomy — menubar height",
         "surface": "flat (default) | raised | glass"
-      }
+      },
+      "hideable": true
     },
     "toolbar": {
       "label": "Toolbar",
@@ -229,7 +230,8 @@
         "divider": "boolean, default true — rule between item groups",
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0"
-      }
+      },
+      "hideable": true
     },
     "nav-menu": {
       "label": "Navigation menu",
@@ -261,7 +263,8 @@
         "density": "compact | regular (default) | roomy — item padding",
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
         "showIcons": "boolean, default true"
-      }
+      },
+      "hideable": true
     },
     "context-menu": {
       "label": "Context menu",
@@ -288,7 +291,8 @@
       "roll": {
         "slot": false,
         "asset": false
-      }
+      },
+      "hideable": true
     },
     "dialog": {
       "label": "Dialog",
@@ -466,5 +470,8 @@
     "never": [
       "uac-policy"
     ]
+  },
+  "hideDefaults": {
+    "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
   }
 }
