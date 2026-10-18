@@ -94,6 +94,17 @@ public class AxfRuntime(
     public val terminal: OutputTerminal = OutputTerminal()
     /** Search index (SearchEngine) the toolbar's live search reads; the UI layer adds views, settings, dialogs, page text. */
     public val search: SearchIndex = SearchIndex { gate(it) }
+    /** Conflicts (two modules, same asset id) and crashes, as on the web port (alerts/AlertEngine.kt turns them into alerts). */
+    public val diagnostics: ai.amberx.axf.kernel.alerts.Diagnostics = ai.amberx.axf.kernel.alerts.Diagnostics()
+    private val _badges = MutableStateFlow<Map<String, Int>>(emptyMap())
+    /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
+    public val badges: StateFlow<Map<String, Int>> get() = _badges.asStateFlow()
+    public fun badge(name: String): Int = _badges.value[name] ?: 0
+    public fun setBadge(name: String, count: Int) {
+        val n = count.coerceAtLeast(0)
+        if ((_badges.value[name] ?: 0) == n) return
+        _badges.value = _badges.value + (name to n)
+    }
     private var toastSeq = 0L
 
     init {
@@ -111,6 +122,9 @@ public class AxfRuntime(
         val role = saved?.role?.takeIf { r -> policy.roles.any { it.id == r } } ?: policy.defaultRole
         _state = MutableStateFlow(AxfState(active, role, manifest.startView))
         _compiled = MutableStateFlow(compile(_state.value))
+        // asset ids registered twice by different modules: those from before the runtime existed, then live ones
+        for (r in registry.replacements) diagnostics.report(ai.amberx.axf.kernel.alerts.Diagnostic.AssetConflict(r.type, r.id, r.was, r.now))
+        registry.onReplace = { r -> diagnostics.report(ai.amberx.axf.kernel.alerts.Diagnostic.AssetConflict(r.type, r.id, r.was, r.now)) }
         registerBuiltinActions()
         search.add("axf.actions") {
             actions.list().filter { (_, m) -> !m.stub && !m.params && m.searchable }.map { (id, m) ->
@@ -226,9 +240,9 @@ public class AxfRuntime(
         set({ s -> s.copy(active = active, role = policy.defaultRole, swaps = s.swaps + 1) }, persist = true, recompile = true)
     }
 
-    public fun importAsset(raw: JsonObject, activate: Boolean = true): RegisterResult {
+    public fun importAsset(raw: JsonObject, activate: Boolean = true, origin: String? = null): RegisterResult {
         if (!can("assets.import")) return RegisterResult(false, listOf("Your role needs \"assets.import\" to import assets."))
-        val r = registry.register(raw, AssetSource.IMPORTED)
+        val r = registry.register(raw, AssetSource.IMPORTED, origin)
         r.asset?.let { a ->
             events.emit(KernelEvent.AssetImported(a.type, a.id))
             if (activate && can("assets.swap")) swap(a.type, a.id) else set({ it })

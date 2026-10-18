@@ -793,7 +793,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-ui",
-    "notes": "Schema \u2192 form for settings kinds; conditional fields and wizards are wave 2."
+    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
   },
   "ui.dyn": {
     "status": "placeholder",
@@ -981,9 +981,10 @@
     "module": null
   },
   "w.push": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": null,
+    "note": "Oct 18 2026: developer alerts library (framework/libs/alerts) pushes through ntfy and web push (RFC 8291/8292, console server). FCM/UnifiedPush for app users still to do."
   },
   "w.email": {
     "status": "placeholder",

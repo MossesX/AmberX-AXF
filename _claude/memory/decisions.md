@@ -18,6 +18,8 @@
 - Oct 18 2026: xGallery's New project wizard stays in xGallery and becomes an AXF library later so any AXF app can clone its install **with current data** (pending `lib-clone`, Fable).
 - Oct 18 2026 (built on Opus): the project-creation side of that wizard is now a **Dev Console plugin** (`project-wizard`): take a GitHub repo, a VPS repo, a folder or a new AXF app; set name and description; check and pick where it lives (GitHub, VPS git, local git folder, each existing or new); then make it a Claude project with instructions and context files. It runs on `claude-project`, never a second copy of it. claude.ai has no API to create Projects, so the wizard produces a Claude.ai project kit (`_claude/claude-ai/`) and records the project's link in the manifest (`x.claudeAi.url`) once Brett pastes it back. `lib-clone` stays parked for the cross-port library and cloning with data.
 
+- Oct 18 2026 (built on Opus): developer alerts are a **framework library** (`ai.amberx.axf.alerts`), not a console plugin, so any AXF app can install it; the engine is a cross-port contract (TS reference, Kotlin, and the console's Python server all match one fixture). Brett picked all three channels (console bell, ntfy, web push) and every source: CI failures, deploys, systems check, builds + plugins, system conflicts and crashes. Conflicts between modules (same asset id, setting key, settings id) are reported by the runtime itself as diagnostics.
+
 ## Dev Console
 
 - Oct 16 2026: the first app is the AXF Dev Console. It tracks what's built, picks libraries to build by generating demo apps, has a feature list with suggestion dialogs, and a modules & packages tab. The first build includes only what full future scalability needs.

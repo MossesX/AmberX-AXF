@@ -60,7 +60,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
-    for (const t of l.settingsTabs ?? []) rt.settings.addTab(t);
+    for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
     if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push({ id: l.id, label: l.label, version: l.version, ...(l.template ? { template: l.template } : {}) });

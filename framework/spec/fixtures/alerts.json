@@ -1,0 +1,445 @@
+{
+  "severities": [
+    "info",
+    "success",
+    "warning",
+    "error",
+    "critical"
+  ],
+  "keys": [
+    "ci:Failed",
+    "ci:Failed",
+    "k1"
+  ],
+  "ntfyPriority": {
+    "info": 2,
+    "success": 2,
+    "warning": 3,
+    "error": 4,
+    "critical": 5
+  },
+  "rules": {
+    "channels": {
+      "bell": {
+        "min": "info"
+      },
+      "ntfy": {
+        "min": "error",
+        "sources": {
+          "ci": "warning",
+          "builds": "off"
+        }
+      },
+      "webpush": {
+        "min": "critical"
+      }
+    }
+  },
+  "steps": [
+    {
+      "op": "raise",
+      "at": 1000,
+      "input": {
+        "source": "ci",
+        "severity": "warning",
+        "title": "Android CI failed",
+        "key": "ci:run:1",
+        "link": "https://github.com/x/y/actions/runs/1"
+      }
+    },
+    {
+      "op": "raise",
+      "at": 2000,
+      "input": {
+        "source": "ci",
+        "severity": "warning",
+        "title": "Android CI failed",
+        "key": "ci:run:1"
+      }
+    },
+    {
+      "op": "ack",
+      "ids": [
+        "ci:run:1"
+      ]
+    },
+    {
+      "op": "raise",
+      "at": 3000,
+      "input": {
+        "source": "ci",
+        "severity": "warning",
+        "title": "Android CI failed",
+        "key": "ci:run:1",
+        "body": "still failing"
+      }
+    },
+    {
+      "op": "raise",
+      "at": 4000,
+      "input": {
+        "source": "ci",
+        "severity": "error",
+        "title": "Android CI failed",
+        "key": "ci:run:1"
+      }
+    },
+    {
+      "op": "raise",
+      "at": 5000,
+      "input": {
+        "source": "builds",
+        "severity": "error",
+        "title": "Build broken"
+      }
+    },
+    {
+      "op": "raise",
+      "at": 6000,
+      "input": {
+        "source": "crashes",
+        "severity": "critical",
+        "title": "API crashed",
+        "body": "Traceback…",
+        "meta": {
+          "where": "api"
+        }
+      }
+    },
+    {
+      "op": "resolve",
+      "at": 7000,
+      "keys": [
+        "ci:run:1",
+        "nope"
+      ]
+    },
+    {
+      "op": "raise",
+      "at": 8000,
+      "input": {
+        "source": "ci",
+        "severity": "info",
+        "title": "Android CI failed",
+        "key": "ci:run:1"
+      }
+    },
+    {
+      "op": "raise",
+      "at": 9000,
+      "input": {
+        "source": "system",
+        "severity": "oops",
+        "title": "  spaced  "
+      }
+    },
+    {
+      "op": "ack",
+      "ids": "all"
+    }
+  ],
+  "events": [
+    {
+      "op": "raise",
+      "key": "ci:run:1",
+      "event": "new",
+      "severity": "warning",
+      "count": 1,
+      "ack": false,
+      "targets": [
+        "bell",
+        "ntfy"
+      ],
+      "defaultTargets": [
+        "bell"
+      ],
+      "unread": 1
+    },
+    {
+      "op": "raise",
+      "key": "ci:run:1",
+      "event": "repeat",
+      "severity": "warning",
+      "count": 2,
+      "ack": false,
+      "targets": [
+        "bell"
+      ],
+      "defaultTargets": [
+        "bell"
+      ],
+      "unread": 1
+    },
+    {
+      "op": "ack",
+      "unread": 0
+    },
+    {
+      "op": "raise",
+      "key": "ci:run:1",
+      "event": "repeat",
+      "severity": "warning",
+      "count": 3,
+      "ack": true,
+      "targets": [
+        "bell"
+      ],
+      "defaultTargets": [
+        "bell"
+      ],
+      "unread": 0
+    },
+    {
+      "op": "raise",
+      "key": "ci:run:1",
+      "event": "escalated",
+      "severity": "error",
+      "count": 4,
+      "ack": false,
+      "targets": [
+        "bell",
+        "ntfy"
+      ],
+      "defaultTargets": [
+        "bell",
+        "ntfy",
+        "webpush"
+      ],
+      "unread": 1
+    },
+    {
+      "op": "raise",
+      "key": "builds:Build broken",
+      "event": "new",
+      "severity": "error",
+      "count": 1,
+      "ack": false,
+      "targets": [
+        "bell"
+      ],
+      "defaultTargets": [
+        "bell",
+        "ntfy",
+        "webpush"
+      ],
+      "unread": 2
+    },
+    {
+      "op": "raise",
+      "key": "crashes:API crashed",
+      "event": "new",
+      "severity": "critical",
+      "count": 1,
+      "ack": false,
+      "targets": [
+        "bell",
+        "ntfy",
+        "webpush"
+      ],
+      "defaultTargets": [
+        "bell",
+        "ntfy",
+        "webpush"
+      ],
+      "unread": 3
+    },
+    {
+      "op": "resolve",
+      "unread": 2
+    },
+    {
+      "op": "raise",
+      "key": "ci:run:1",
+      "event": "reopened",
+      "severity": "info",
+      "count": 1,
+      "ack": false,
+      "targets": [
+        "bell"
+      ],
+      "defaultTargets": [
+        "bell"
+      ],
+      "unread": 3
+    },
+    {
+      "op": "raise",
+      "key": "system:spaced",
+      "event": "new",
+      "severity": "info",
+      "count": 1,
+      "ack": false,
+      "targets": [
+        "bell"
+      ],
+      "defaultTargets": [
+        "bell"
+      ],
+      "unread": 4
+    },
+    {
+      "op": "ack",
+      "unread": 0
+    }
+  ],
+  "final": [
+    {
+      "id": "system:spaced",
+      "key": "system:spaced",
+      "source": "system",
+      "severity": "info",
+      "title": "  spaced  ",
+      "body": "",
+      "link": "",
+      "meta": {},
+      "firstAt": 9000,
+      "lastAt": 9000,
+      "count": 1,
+      "ack": true,
+      "resolved": false,
+      "resolvedAt": null
+    },
+    {
+      "id": "ci:run:1",
+      "key": "ci:run:1",
+      "source": "ci",
+      "severity": "info",
+      "title": "Android CI failed",
+      "body": "still failing",
+      "link": "https://github.com/x/y/actions/runs/1",
+      "meta": {},
+      "firstAt": 8000,
+      "lastAt": 8000,
+      "count": 1,
+      "ack": true,
+      "resolved": false,
+      "resolvedAt": null
+    },
+    {
+      "id": "crashes:API crashed",
+      "key": "crashes:API crashed",
+      "source": "crashes",
+      "severity": "critical",
+      "title": "API crashed",
+      "body": "Traceback…",
+      "link": "",
+      "meta": {
+        "where": "api"
+      },
+      "firstAt": 6000,
+      "lastAt": 6000,
+      "count": 1,
+      "ack": true,
+      "resolved": false,
+      "resolvedAt": null
+    },
+    {
+      "id": "builds:Build broken",
+      "key": "builds:Build broken",
+      "source": "builds",
+      "severity": "error",
+      "title": "Build broken",
+      "body": "",
+      "link": "",
+      "meta": {},
+      "firstAt": 5000,
+      "lastAt": 5000,
+      "count": 1,
+      "ack": true,
+      "resolved": false,
+      "resolvedAt": null
+    }
+  ],
+  "trim": {
+    "kept": [
+      "s:a0",
+      "s:a2",
+      "s:a4",
+      "s:a5"
+    ]
+  },
+  "diagnostics": [
+    {
+      "diagnostic": {
+        "kind": "asset-conflict",
+        "type": "color-theme",
+        "id": "ocean",
+        "was": "builtin",
+        "now": "ai.example.themes"
+      },
+      "alert": {
+        "source": "conflicts",
+        "severity": "warning",
+        "key": "conflict:asset:color-theme/ocean",
+        "title": "Two color-theme assets share the id \"ocean\"",
+        "body": "The ai.example.themes copy replaced the builtin one. Give one of them another id.",
+        "meta": {
+          "type": "color-theme",
+          "id": "ocean",
+          "was": "builtin",
+          "now": "ai.example.themes"
+        }
+      }
+    },
+    {
+      "diagnostic": {
+        "kind": "setting-conflict",
+        "key": "theme.accent",
+        "was": "ai.example.a",
+        "now": "ai.example.b"
+      },
+      "alert": {
+        "source": "conflicts",
+        "severity": "warning",
+        "key": "conflict:setting:theme.accent",
+        "title": "Two modules use the setting \"theme.accent\"",
+        "body": "ai.example.a and ai.example.b read and write the same value. Prefix setting keys with the module id.",
+        "meta": {
+          "key": "theme.accent",
+          "was": "ai.example.a",
+          "now": "ai.example.b"
+        }
+      }
+    },
+    {
+      "diagnostic": {
+        "kind": "contribution-conflict",
+        "what": "settings tab",
+        "id": "themes",
+        "was": "ai.example.a",
+        "now": "ai.example.b"
+      },
+      "alert": {
+        "source": "conflicts",
+        "severity": "warning",
+        "key": "conflict:settings tab:themes",
+        "title": "Two modules add the settings tab \"themes\"",
+        "body": "ai.example.b replaced the one from ai.example.a.",
+        "meta": {
+          "what": "settings tab",
+          "id": "themes",
+          "was": "ai.example.a",
+          "now": "ai.example.b"
+        }
+      }
+    },
+    {
+      "diagnostic": {
+        "kind": "crash",
+        "where": "web",
+        "message": "TypeError: x is undefined",
+        "detail": "at App.tsx:10"
+      },
+      "alert": {
+        "source": "crashes",
+        "severity": "error",
+        "key": "crash:web:TypeError: x is undefined",
+        "title": "Crash in web",
+        "body": "TypeError: x is undefined\nat App.tsx:10",
+        "meta": {
+          "where": "web"
+        }
+      }
+    }
+  ]
+}

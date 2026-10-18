@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-18T18:03:34.400Z",
+  "generatedAt": "2026-10-18T18:57:13.733Z",
   "summary": {
     "foundations": {
       "built": 65,
@@ -13,8 +13,8 @@
     },
     "kernel": {
       "built": 73,
-      "partial": 4,
-      "placeholder": 99,
+      "partial": 5,
+      "placeholder": 98,
       "planned": 0,
       "total": 176,
       "coverage": 41
@@ -2435,7 +2435,7 @@
       "group": "navigation-data-network",
       "title": "Push notifications (FCM) + self-hosted push (UnifiedPush/WebSocket) placeholder",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
       "module": null,
       "notes": ""

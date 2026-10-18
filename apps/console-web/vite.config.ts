@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import { axfProjectGuard } from './src/axf/core/project';
+import { alertsServiceWorker } from './src/axf/libs/alerts/vite-plugin.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -14,6 +15,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     axfProjectGuard({ root, read: (f) => (existsSync(join(root, f)) ? readFileSync(join(root, f), 'utf8') : undefined), exists: (p) => existsSync(join(root, p)) }),
     react(),
+    // the alerts library's web push service worker, served and built as /alerts-sw.js
+    alertsServiceWorker(),
     ...(mode === 'single' ? [viteSingleFile()] : []),
   ],
   // Console plugins (./plugins) import the console's framework and helpers as `@console/...`.

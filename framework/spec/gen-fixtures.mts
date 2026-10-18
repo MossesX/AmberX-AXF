@@ -12,6 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { scoreEntry } from '../core/engines/search';
+import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
@@ -142,3 +143,60 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const v = validateProjectManifest(raw, DEFAULT_PROJECT_RULES, c.existing ? { exists: (p) => c.existing!.includes(p) } : {});
   return [k, { manifest: raw, ...(c.existing ? { existing: c.existing } : {}), ok: v.ok, errors: v.errors.map((e) => e.rule), warnings: v.warnings.map((w) => w.rule) }];
 })));
+
+// Developer alerts: one alert per key, repeats bump the count, worse severity escalates, resolved ones reopen;
+// delivery rules per channel with per-source overrides. Every port replays these steps and must match.
+{
+  type Step = { op: 'raise'; at: number; input: AlertInput } | { op: 'resolve'; at: number; keys: string[] } | { op: 'ack'; ids: string[] | 'all' };
+  const rules: AlertRules = { channels: { bell: { min: 'info' }, ntfy: { min: 'error', sources: { ci: 'warning', builds: 'off' } }, webpush: { min: 'critical' } } };
+  const steps: Step[] = [
+    { op: 'raise', at: 1000, input: { source: 'ci', severity: 'warning', title: 'Android CI failed', key: 'ci:run:1', link: 'https://github.com/x/y/actions/runs/1' } },
+    { op: 'raise', at: 2000, input: { source: 'ci', severity: 'warning', title: 'Android CI failed', key: 'ci:run:1' } },
+    { op: 'ack', ids: ['ci:run:1'] },
+    { op: 'raise', at: 3000, input: { source: 'ci', severity: 'warning', title: 'Android CI failed', key: 'ci:run:1', body: 'still failing' } },
+    { op: 'raise', at: 4000, input: { source: 'ci', severity: 'error', title: 'Android CI failed', key: 'ci:run:1' } },
+    { op: 'raise', at: 5000, input: { source: 'builds', severity: 'error', title: 'Build broken' } },
+    { op: 'raise', at: 6000, input: { source: 'crashes', severity: 'critical', title: 'API crashed', body: 'Traceback…', meta: { where: 'api' } } },
+    { op: 'resolve', at: 7000, keys: ['ci:run:1', 'nope'] },
+    { op: 'raise', at: 8000, input: { source: 'ci', severity: 'info', title: 'Android CI failed', key: 'ci:run:1' } },
+    { op: 'raise', at: 9000, input: { source: 'system', severity: 'oops' as never, title: '  spaced  ' } },
+    { op: 'ack', ids: 'all' },
+  ];
+  let list: Alert[] = [];
+  const events: unknown[] = [];
+  for (const st of steps) {
+    if (st.op === 'raise') {
+      const r = applyAlert(list, st.input, st.at);
+      list = r.list;
+      events.push({ op: 'raise', key: r.alert.key, event: r.event, severity: r.alert.severity, count: r.alert.count, ack: r.alert.ack, targets: deliveryTargets(r.alert, r.event, rules), defaultTargets: deliveryTargets(r.alert, r.event, DEFAULT_ALERT_RULES), unread: unreadCount(list) });
+    } else if (st.op === 'resolve') {
+      list = resolveAlerts(list, st.keys, st.at);
+      events.push({ op: 'resolve', unread: unreadCount(list) });
+    } else {
+      list = ackAlerts(list, st.ids);
+      events.push({ op: 'ack', unread: unreadCount(list) });
+    }
+  }
+  // trimming: 6 alerts kept to 4 drops the oldest resolved, then the oldest acknowledged
+  let t: Alert[] = [];
+  for (let i = 0; i < 6; i++) t = applyAlert(t, { source: 's', severity: 'info', title: `a${i}` }, 100 + i).list;
+  t = resolveAlerts(t, ['s:a3'], 200);
+  t = ackAlerts(t, ['s:a1']);
+  const diagnostics: Diagnostic[] = [
+    { kind: 'asset-conflict', type: 'color-theme', id: 'ocean', was: 'builtin', now: 'ai.example.themes' },
+    { kind: 'setting-conflict', key: 'theme.accent', was: 'ai.example.a', now: 'ai.example.b' },
+    { kind: 'contribution-conflict', what: 'settings tab', id: 'themes', was: 'ai.example.a', now: 'ai.example.b' },
+    { kind: 'crash', where: 'web', message: 'TypeError: x is undefined', detail: 'at App.tsx:10' },
+  ];
+  write('alerts.json', {
+    severities: ALERT_SEVERITIES,
+    keys: [alertKey({ source: 'ci', title: 'Failed' }), alertKey({ source: ' ci ', title: ' Failed ', key: '  ' }), alertKey({ source: 'x', title: 'y', key: 'k1' })],
+    ntfyPriority: Object.fromEntries(ALERT_SEVERITIES.map((s) => [s, ntfyPriority(s)])),
+    rules,
+    steps,
+    events,
+    final: sortAlerts(list),
+    trim: { kept: trimAlerts(t, 4).map((a) => a.key) },
+    diagnostics: diagnostics.map((d) => ({ diagnostic: d, alert: diagnosticToAlert(d) })),
+  });
+}

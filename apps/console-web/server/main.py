@@ -90,7 +90,14 @@ if not DIST.exists() and os.environ.get("AXF_CONSOLE_DIST"):
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     async with _mcp.session_manager.run():  # the MCP endpoint's session manager (defined below)
-        yield
+        hub = globals().get("ALERTS")  # developer alerts (defined below): sources + phone delivery threads
+        if hub:
+            hub.start()
+        try:
+            yield
+        finally:
+            if hub:
+                hub.stop()
 
 
 app = FastAPI(title="AXF Dev Console API", version="0.2.0", lifespan=lifespan)
@@ -950,6 +957,31 @@ import syscheck  # noqa: E402
 
 SYSCHECK = syscheck.SysCheck(ROOT, current_token, _persist_root, PLUGINS, log, GITHUB_REPO)
 app.include_router(syscheck.router_for(SYSCHECK, auth_always))
+
+# ---------------------------------------------------------------- developer alerts (server/alerts.py)
+
+import alerts as alerts_hub  # noqa: E402
+
+
+def _pending_file() -> Path:
+    root = _persist_root()
+    hub_copy = root / "framework" / "plan" / "pending.json" if root else None
+    return hub_copy if hub_copy and hub_copy.is_file() else ROOT / "framework" / "plan" / "pending.json"
+
+
+ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],
+                             systems=lambda: SYSCHECK.run_all(), pending_file=_pending_file, plugins=PLUGINS)
+app.include_router(alerts_hub.router_for(ALERTS, auth_always))
+
+
+@app.middleware("http")
+async def _alert_on_crash(request: Request, call_next):  # type: ignore[no-untyped-def]
+    """An unhandled API error becomes a crash alert (then fails as before)."""
+    try:
+        return await call_next(request)
+    except Exception as e:  # noqa: BLE001
+        ALERTS.crash(f"api {request.method} {request.url.path[:80]}", e)
+        raise
 
 
 # ---------------------------------------------------------------- the console itself

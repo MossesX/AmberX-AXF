@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T18:03:34.429Z",
+ "generatedAt": "2026-10-18T18:57:13.752Z",
  "statuses": [
   "built",
   "partial",
@@ -12578,7 +12578,7 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
