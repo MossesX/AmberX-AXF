@@ -8,7 +8,7 @@ COPY . .
 RUN cd apps/console-web && npm ci && npm run build
 
 FROM python:3.12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates openssh-client procps && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
 WORKDIR /axf
 COPY --from=web /axf /axf
 # Claude Code CLI inside the container: the AI assistant's "Claude Code (subscription)" provider runs it here

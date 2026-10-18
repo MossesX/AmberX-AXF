@@ -60,7 +60,7 @@ function Browser({ c, close }: { c: Container; close: () => void }) {
   };
   const up = path.replace(/\/[^/]*$/, '') || '/';
   return (
-    <div className={`${P}__browser fx-stack`}>
+    <div className={`${P}__browser fx-stack`} data-fx-ctx-target="axf-container-path" data-fx-ctx-payload={`${c.name}|${path || '/'}`}>
       <div className={`${P}__row`}>
         <strong className="fx-grow"><Icon name="folder" size={14} /> {c.name}: <span className="fx-mono">{path || '…'}</span></strong>
         <Button tone="ghost" icon="arrow-left" disabled={path === '/'} onClick={() => void go(up)}>Up</Button>
@@ -76,7 +76,7 @@ function Browser({ c, close }: { c: Container; close: () => void }) {
       ) : (
         <ul className={`${P}__entries`}>
           {(entries ?? []).map((e) => (
-            <li key={e.name}>
+            <li key={e.name} data-fx-ctx-target="axf-container-path" data-fx-ctx-payload={`${c.name}|${path === '/' ? '' : path}/${e.name}`}>
               <button type="button" onClick={() => void (e.type === 'dir' ? go(`${path === '/' ? '' : path}/${e.name}`) : open(`${path === '/' ? '' : path}/${e.name}`))}>
                 <Icon name={e.type === 'dir' ? 'folder' : 'file'} size={14} /><span className="fx-grow fx-mono">{e.name}{e.type === 'link' ? ' →' : ''}</span>
                 {e.type === 'file' && <span className="fx-small fx-muted">{kb(e.size)}</span>}
@@ -104,7 +104,7 @@ export function ContainersPanel() {
       </div>
       <ul className={`${P}__list`}>
         {v.map((c) => (
-          <li key={c.id} className={`${P}__container ${c.reachable ? '' : 'is-off'}`}>
+          <li key={c.id} className={`${P}__container ${c.reachable ? '' : 'is-off'}`} data-fx-ctx-target="axf-container" data-fx-ctx-payload={c.name}>
             <div className={`${P}__row`}>
               <Icon name={c.protected ? 'lock' : 'box'} size={15} />
               <strong className="fx-grow fx-mono">{c.name}</strong>

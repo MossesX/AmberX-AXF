@@ -145,6 +145,28 @@ export class WindowManager {
     return out;
   }
 
+  /** Add a tab to an existing group at `index` (-1 = end) and make it active (a terminal's "+" button). */
+  addTab(groupId: string, tab: TabSpec, index = -1) {
+    this.set((s) => {
+      const g = s.groups[groupId]; if (!g || g.tabs.some((t) => t.id === tab.id)) return s;
+      const tabs = [...g.tabs]; tabs.splice(index < 0 ? tabs.length : Math.max(0, Math.min(index, tabs.length)), 0, tab);
+      return { ...s, groups: { ...s.groups, [groupId]: { ...g, tabs, active: tabs.indexOf(tab) } } };
+    });
+  }
+
+  /** Rename a tab wherever it is. */
+  renameTab(tabId: string, title: string) {
+    this.set((s) => {
+      const g = Object.values(s.groups).find((gr) => gr.tabs.some((t) => t.id === tabId)); if (!g) return s;
+      return { ...s, groups: { ...s.groups, [g.id]: { ...g, tabs: g.tabs.map((t) => (t.id === tabId ? { ...t, title } : t)) } } };
+    });
+  }
+
+  /** The group a tab is in (null when it's gone). */
+  groupOf(tabId: string): string | null {
+    return Object.values(this._state.groups).find((g) => g.tabs.some((t) => t.id === tabId))?.id ?? null;
+  }
+
   /** Move a tab to another group (any window) at `index` (-1 = end). Empty source groups disappear; an emptied floating window closes. */
   moveTab(tabId: string, toGroup: string, index = -1) {
     this.set((s) => {

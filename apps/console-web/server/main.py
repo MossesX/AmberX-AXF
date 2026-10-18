@@ -37,7 +37,8 @@ from io import BytesIO
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect, WebSocketException
+from starlette.requests import HTTPConnection
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -744,11 +745,43 @@ _PLUGIN_ID = _re.compile(r"^[a-z][a-z0-9]*(\.[a-z][a-z0-9-]*)+$")
 PLUGINS: dict[str, dict[str, Any]] = {}
 
 
-def auth_always(request: Request) -> None:
-    """Console token for every method. Plugin data (services, logs, settings) is private even to read."""
+_ws_tickets: dict[str, tuple[float, str]] = {}
+_ws_lock = __import__("threading").Lock()
+
+
+def auth_always(request: HTTPConnection) -> None:
+    """Console token for every method. Plugin data (services, logs, settings) is private even to read.
+    WebSockets can't send an Authorization header, so they present a one-time ticket from POST /api/ws-ticket
+    (single use, 30 s, bound to the path it was issued for); the token itself never goes in a URL."""
     tok = current_token()
+    if request.scope.get("type") == "websocket":
+        if not tok:
+            return
+        t = request.query_params.get("ticket", "")
+        with _ws_lock:
+            v = _ws_tickets.pop(t, None) if t else None
+        if not v or v[0] < time.time() or not request.url.path.startswith(v[1]):
+            raise WebSocketException(code=4401, reason="ticket required (POST /api/ws-ticket)")
+        return
     if tok and request.headers.get("authorization") != f"Bearer {tok}":
         raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
+
+
+@app.post("/api/ws-ticket", dependencies=[Depends(auth_always)])
+def ws_ticket(body: dict[str, Any]) -> dict[str, Any]:
+    """A one-time ticket for a plugin WebSocket (``{"path": "/api/plugins/<folder>/…"}``), valid 30 s."""
+    path = str(body.get("path") or "")
+    if not _re.match(r"^/api/plugins/[a-z0-9-]+/[A-Za-z0-9/_.-]*$", path) or ".." in path:
+        raise HTTPException(400, "path must be a plugin route (/api/plugins/<folder>/…)")
+    now = time.time()
+    t = secrets.token_urlsafe(24)
+    with _ws_lock:
+        for k in [k for k, v in _ws_tickets.items() if v[0] < now]:
+            _ws_tickets.pop(k, None)
+        if len(_ws_tickets) > 500:
+            raise HTTPException(429, "too many open tickets")
+        _ws_tickets[t] = (now + 30, path)
+    return {"ticket": t, "expiresIn": 30}
 
 
 def plugin_enabled(folder: str) -> bool:

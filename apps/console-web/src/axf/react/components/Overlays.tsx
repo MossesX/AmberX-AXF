@@ -96,7 +96,7 @@ export function ContextMenuHost() {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
       if (start) { e.preventDefault(); return; }
       const t = e.target as Element;
-      if (t.closest('input, textarea, .fx-ctx')) return;
+      if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
       if (!t.closest('.fx-shell')) return;
       e.preventDefault();
       open(t, e.clientX, e.clientY);
@@ -107,7 +107,7 @@ export function ContextMenuHost() {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType !== 'touch') return;
       const t = e.target as Element;
-      if (t.closest('input, textarea, .fx-ctx') || !t.closest('.fx-shell')) return;
+      if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell')) return;
       start = { x: e.clientX, y: e.clientY };
       timer = setTimeout(() => open(t, e.clientX, e.clientY), 550);
     };
@@ -150,9 +150,12 @@ export function ContextMenuHost() {
   }, [state.context]);
 
   if (!state.context) return null;
-  const extra = rt.contextExtras.get(state.context.target)?.() ?? [];
-  const base = cm.targets[state.context.target] ?? (extra.length ? [] : cm.targets.default ?? []);
-  const items = [...base, ...(extra as unknown as typeof base)];
+  const ctx = state.context;
+  const extra = rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? [];
+  const everywhere = [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
+  const items = [...base, ...(extra as unknown as typeof base), ...(tail as unknown as typeof base)];
   return (
     <div
       ref={ref}

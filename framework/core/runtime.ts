@@ -75,8 +75,9 @@ export class AxfRuntime {
   readonly windows = new WindowManager();
   /** The output terminal every install / import / hot swap / kit fallback writes to. */
   readonly terminal = new OutputTerminal();
-  /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted. */
-  readonly contextExtras = new Map<string, () => import('./engines/windows').MenuEntry[]>();
+  /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted.
+   *  Keys `*` or `*:<owner>` add items to EVERY context menu (after a separator), e.g. a plugin's "Open terminal". */
+  readonly contextExtras = new Map<string, (target?: string, payload?: string) => import('./engines/windows').MenuEntry[]>();
   /** Nav sections contributed by libraries and plugins (keyed, so re-adding replaces). Shown after the nav-menu asset's sections. */
   private readonly navSections = new Map<string, NavExtraSection>();
   /** Settings schema, panels and values (see settings.ts); the settings library renders them. */

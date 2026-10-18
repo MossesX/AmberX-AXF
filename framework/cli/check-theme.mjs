@@ -33,7 +33,7 @@ function walk(dir, out = []) {
   if (!existsSync(dir)) return out;
   if (!statSync(dir).isDirectory()) return [dir];
   for (const name of readdirSync(dir)) {
-    if (name === 'node_modules' || name === 'dist' || name.startsWith('.')) continue;
+    if (name === 'node_modules' || name === 'dist' || name === 'vendor' || name.startsWith('.')) continue; // vendor/: third-party code, themed by our own CSS on top
     const p = join(dir, name);
     if (statSync(p).isDirectory()) walk(p, out);
     else out.push(p);

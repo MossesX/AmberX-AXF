@@ -130,6 +130,27 @@ public class WindowManager(public val mainWindowId: String = "main") {
         return out
     }
 
+    /** Add a tab to an existing group at `index` (-1 = end) and make it active (a terminal's "+" button). */
+    public fun addTab(groupId: String, tab: TabSpec, index: Int = -1) {
+        _state.update { s ->
+            val g = s.groups[groupId] ?: return@update s
+            if (g.tabs.any { it.id == tab.id }) return@update s
+            val tabs = g.tabs.toMutableList().apply { add(if (index < 0) size else index.coerceIn(0, size), tab) }
+            s.copy(groups = s.groups + (groupId to g.copy(tabs = tabs, active = tabs.indexOf(tab))))
+        }
+    }
+
+    /** Rename a tab wherever it is. */
+    public fun renameTab(tabId: String, title: String) {
+        _state.update { s ->
+            val g = s.groups.values.firstOrNull { gr -> gr.tabs.any { it.id == tabId } } ?: return@update s
+            s.copy(groups = s.groups + (g.id to g.copy(tabs = g.tabs.map { if (it.id == tabId) it.copy(title = title) else it })))
+        }
+    }
+
+    /** The group a tab is in (null when it's gone). */
+    public fun groupOf(tabId: String): String? = current.groups.values.firstOrNull { gr -> gr.tabs.any { it.id == tabId } }?.id
+
     /** Move a tab to another group (any window) at `index` (-1 = end). Empty source groups disappear; an emptied floating window closes. */
     public fun moveTab(tabId: String, toGroup: String, index: Int = -1) {
         _state.update { s ->
