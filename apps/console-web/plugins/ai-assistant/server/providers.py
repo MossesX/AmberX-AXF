@@ -420,6 +420,34 @@ def cli_available() -> bool:
 
 _CLI_DENY = [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS")
              for pat in (".axf-console/**", "**/.axf-console/**", "**/.env", "**/.env.*", "**/*.pem", "**/*.key", "**/secrets.env", "**/credentials.json", "**/id_rsa*", "**/id_ed25519*", ".git/**")]
+_SECRETISH = re.compile(r"(TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIAL|PRIVATE|(^|_)KEY$|_KEY_|API_KEY|AUTH)", re.I)
+_ENV_KEEP = {"PATH", "HOME", "LANG", "LC_ALL", "LC_CTYPE", "TZ", "SHELL", "USER", "LOGNAME", "HOSTNAME", "PWD", "NODE_VERSION", "PYTHON_VERSION", "CLAUDE_BIN", "XDG_CONFIG_HOME"}
+
+
+def _cli_env() -> dict[str, str]:
+    """The console's environment minus every secret-looking variable and every stored credential (the core credential
+    store loads them into os.environ), so nothing the CLI reads (e.g. /proc/self/environ) holds the console's keys."""
+    try:
+        import credentials
+        stored = set((credentials.STORE.read() if credentials.STORE else {}).keys())
+    except Exception:  # noqa: BLE001
+        stored = set()
+    return {k: v for k, v in os.environ.items() if k in _ENV_KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith("AXF_"))}
+
+
+def _cli_abs_deny(cwd: str | None) -> list[str]:
+    """Absolute-path deny rules (Claude Code's `//abs/path` form): process info, the console's private folder, keys."""
+    roots = {os.path.abspath(cwd or os.getcwd())}
+    try:
+        import console_context as cx
+        roots.add(str(cx.ROOT))
+    except Exception:  # noqa: BLE001
+        pass
+    pats = ["//proc/**", "//sys/**", "//etc/shadow", "~/.ssh/**", "~/.anthropic-key", "~/.claude/.credentials.json", "~/.config/gh/**"]
+    pats += [f"/{r}/.axf-console/**" for r in sorted(roots)]
+    return [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS") for pat in pats]
+
+
 CLI_DEADLINE = float(os.environ.get("AXF_AI_CLI_TIMEOUT", "600"))
 
 
@@ -515,9 +543,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         args += ["--mcp-config", bridge.config_path, "--strict-mcp-config"]
     if system:
         args += ["--append-system-prompt", system[:100_000]]
-    env = {**os.environ, "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb", "MCP_TOOL_TIMEOUT": "900000"}
-    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "AXF_TOKEN", "GITHUB_TOKEN"):
-        env.pop(k, None)
+    env = {**_cli_env(), "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb", "MCP_TOOL_TIMEOUT": "900000"}
+    args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
     err = tempfile.TemporaryFile(mode="w+")
     try:
         proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True, start_new_session=True)

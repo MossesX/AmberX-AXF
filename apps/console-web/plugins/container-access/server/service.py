@@ -27,6 +27,7 @@ from . import store
 from .docker_api import Docker, DockerError
 
 TEXT_LIMIT = 512 * 1024
+HASH_LIMIT = 20_000_000  # files up to this size can be replaced (exact base hash); bigger ones are refused
 _SKIP_DIRS = ("node_modules", ".git")
 
 
@@ -130,6 +131,19 @@ class ContainersService:
             import base64
             text, enc = base64.b64encode(data).decode(), "base64"
         return {"container": c["name"], "path": p, "content": text, "encoding": enc, "truncated": trunc, **info}
+
+    def _base(self, cid: str, path: str) -> tuple[bytes | None, bool]:
+        """(content, exists) of a file about to be replaced, read in full up to HASH_LIMIT so its hash is exact. A file
+        bigger than that can't be replaced safely (its change couldn't be checked) and raises."""
+        try:
+            data, trunc, _ = self.docker.read_file(cid, path, HASH_LIMIT)
+        except DockerError as e:
+            if e.status == 404:
+                return None, False
+            raise
+        if trunc:
+            raise ValueError(f"{path} is larger than {HASH_LIMIT // 1_000_000} MB; it can't be replaced through a change batch")
+        return data, True
 
     def _read_bytes(self, cid: str, path: str) -> bytes | None:
         try:
@@ -376,9 +390,11 @@ class ContainersService:
                     content = str(raw.get("content") or "")
                     if len(content.encode()) > 2_000_000:
                         raise ValueError("file too large for one change (2 MB)")
-                    cur = self._read_bytes(c["id"], p)
-                    it.update(path=p, content=content, baseHash=_sha(cur), created=cur is None, bytes=len(content.encode()))
-                    it["diff"] = _diff(cur, content.encode(), p)
+                    cur, exists = self._base(c["id"], p)
+                    it.update(path=p, content=content, baseHash=_sha(cur) if exists else None, created=not exists, bytes=len(content.encode()))
+                    it["diff"] = _diff(cur, content.encode(), p) if (cur is None or len(cur) <= 2_000_000) else {"added": 0, "removed": 0, "text": "", "tooLarge": True}
+                    d = it["diff"]
+                    it["unseen"] = bool(d.get("truncated") or d.get("binary") or d.get("tooLarge"))
                 elif kind == "delete":
                     p = norm_path(raw.get("path", ""))
                     st = self.docker.stat(c["id"], p)
@@ -392,6 +408,8 @@ class ContainersService:
                     if not paths:
                         d = wd or self.workdir(c["name"])
                         paths = [d] if d != "/" else []
+                    if not paths:
+                        raise ValueError("say which folders the command changes (paths), so they can be snapshotted first; the whole filesystem can't be")
                     it.update(command=cmd, workdir=wd, paths=paths, timeout=int(raw.get("timeout") or 0) or None)
                 elif kind in ("restart", "redeploy"):
                     if kind == "redeploy" and not c.get("coolify"):
@@ -426,7 +444,7 @@ class ContainersService:
         return store.save_batch(b)
 
     def approve_batch(self, bid: str, item_ids: list[str] | None, approver: dict[str, Any] | None = None,
-                      on_event: Callable[[dict[str, Any]], None] | None = None) -> dict[str, Any]:
+                      on_event: Callable[[dict[str, Any]], None] | None = None, accept_unseen: bool = False) -> dict[str, Any]:
         """Snapshot first (one snapshot per container, all linked to the batch), then apply the ticked items in order.
         Stops at the first failure; the rest are skipped. Nothing is written when the snapshot fails."""
         emit = on_event or (lambda e: None)
@@ -447,6 +465,8 @@ class ContainersService:
                     it["status"] = "skipped"
             if not sel:
                 raise ValueError("nothing ticked to apply")
+            if not accept_unseen and any(it.get("unseen") for it in sel):
+                raise ValueError("some changes can't be fully shown (diff cut short, binary or very large file); tick “accept what I can't see” to apply them")
             agent = b["actor"]
             b.update(status="applying", decidedBy=who, approvedAt=int(time.time() * 1000))
             store.save_batch(b)
@@ -485,11 +505,17 @@ class ContainersService:
                     it["status"] = "skipped"
                     continue
                 emit({"type": "item-start", "item": it["id"]})
-                sid = snap_for.get(it["container"]) or "no-paths"
+                sid = snap_for.get(it["container"])
+                if it["kind"] in ("write", "delete", "exec") and not sid:
+                    it.update(status="failed", error="no snapshot covers this change, so it wasn't applied")
+                    failed = True
+                    emit({"type": "item-done", "item": it["id"], "ok": False, "error": it["error"]})
+                    store.save_batch(b)
+                    continue
                 try:
                     if it["kind"] == "write":
-                        cur = self._read_bytes(self.resolve(it["container"])["id"], it["path"])
-                        if _sha(cur) != it.get("baseHash"):
+                        cur, exists = self._base(self.resolve(it["container"])["id"], it["path"])
+                        if (_sha(cur) if exists else None) != it.get("baseHash"):
                             raise ValueError("the file changed since this was proposed; ask for a fresh proposal")
                         r = self.write_file(it["container"], it["path"], it["content"], actor=agent, snapshot=sid, batch=bid)
                     elif it["kind"] == "delete":
@@ -523,23 +549,30 @@ class ContainersService:
 
     def undo_batch(self, bid: str, approver: dict[str, Any] | None = None) -> dict[str, Any]:
         """Restore every snapshot of the batch (newest first). Snapshot Manager snapshots the current state first."""
-        b = store.get_batch(bid)
-        if not b.get("snapshots"):
-            raise ValueError("this batch has no snapshots to restore")
-        snaps = plugin_services.get("axf.snapshots@1")
-        if not snaps:
-            raise PermissionError("Snapshot Manager isn't installed or enabled")
-        who = _actor(approver)
-        results = [snaps.restore(sid, actor=who) for sid in reversed(b["snapshots"])]
-        b["status"] = "undone"
-        b["undoneAt"] = int(time.time() * 1000)
-        b["undoSnapshots"] = [r.get("before") for r in results]
-        store.audit({"op": "batch-undo", "actor": who, "batch": bid, "ok": True, "snapshots": b["snapshots"]})
-        return store.save_batch(b)
+        if not self._apply_lock.acquire(timeout=1):
+            raise ValueError("a batch is being applied; undo once it has finished")
+        try:
+            b = store.get_batch(bid)
+            if b["status"] not in ("applied", "partial", "failed"):
+                raise ValueError(f"batch is {b['status']}; only an applied, partial or failed batch can be undone")
+            if not b.get("snapshots"):
+                raise ValueError("this batch has no snapshots to restore")
+            snaps = plugin_services.get("axf.snapshots@1")
+            if not snaps:
+                raise PermissionError("Snapshot Manager isn't installed or enabled")
+            who = _actor(approver)
+            results = [snaps.restore(sid, actor=who) for sid in reversed(b["snapshots"])]
+            b["status"] = "undone"
+            b["undoneAt"] = int(time.time() * 1000)
+            b["undoSnapshots"] = [r.get("before") for r in results]
+            store.audit({"op": "batch-undo", "actor": who, "batch": bid, "ok": True, "snapshots": b["snapshots"]})
+            return store.save_batch(b)
+        finally:
+            self._apply_lock.release()
 
 
     # ------------------------------------------------------------ approval as a stream (for routes)
-    def approve_stream(self, bid: str, items: list[str] | None, who: dict[str, Any] | None):
+    def approve_stream(self, bid: str, items: list[str] | None, who: dict[str, Any] | None, accept_unseen: bool = False):
         """Server-sent events for an approval: snapshot-start, snapshot, item-start, output, item-done, done | error, then
         ``batch`` (public form). Used by this plugin's route and by consumers that proxy it (the assistant's chat card)."""
         import queue
@@ -547,7 +580,7 @@ class ContainersService:
 
         def run() -> None:
             try:
-                q.put({"type": "batch", "batch": self.public_batch(self.approve_batch(bid, items, who, on_event=q.put))})
+                q.put({"type": "batch", "batch": self.public_batch(self.approve_batch(bid, items, who, on_event=q.put, accept_unseen=accept_unseen))})
             except Exception as e:  # noqa: BLE001
                 q.put({"type": "error", "error": str(e).strip("'\"")})
             q.put(None)

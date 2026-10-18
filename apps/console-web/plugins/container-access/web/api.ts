@@ -24,9 +24,9 @@ export const post = <T,>(path: string, body: unknown = {}) => call<T>(path, { me
 export const put = <T,>(path: string, body: unknown) => call<T>(path, { method: 'PUT', body: JSON.stringify(body) });
 
 export const batchActions = (id: string) => ({
-  approve: async (items: string[], onEvent: (e: BatchEvent) => void): Promise<Batch | null> => {
+  approve: async (items: string[], onEvent: (e: BatchEvent) => void, opts: { acceptUnseen: boolean }): Promise<Batch | null> => {
     let last: Batch | null = null;
-    const r = await pluginFetch(FOLDER, `batches/${id}/approve`, { method: 'POST', body: JSON.stringify({ items }) });
+    const r = await pluginFetch(FOLDER, `batches/${id}/approve`, { method: 'POST', body: JSON.stringify({ items, acceptUnseen: opts.acceptUnseen }) });
     await readEventStream(r, (e) => { if (e.type === 'batch' && e.batch) last = e.batch; onEvent(e); });
     return last;
   },

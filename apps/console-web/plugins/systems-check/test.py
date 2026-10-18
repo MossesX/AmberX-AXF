@@ -148,7 +148,8 @@ c.put("/p/settings", json={"ai": {"systems": False}})
 n_calls = len(llm.calls)
 r = c.get("/p/check?force=1").json()
 check(any(x["id"] == "routine:readme" for x in r["checks"]) and len(llm.calls) == n_calls, "AI off: the saved routine still runs, with no model call")
-check(routine.validate([{"id": "x1", "kind": "env", "params": {"name": "A_B", "pattern": "(a+)+$"}}])[0] == [], "nested-quantifier patterns refused")
+check("pattern" not in routine.validate([{"id": "x1", "kind": "env", "params": {"name": "A_B", "pattern": "(a|aa)+$"}}])[0][0]["params"], "env checks are presence only (no pattern on a secret's value)")
+check(routine._public_ips("localhost") == [] and routine._public_ips("10.0.0.1") == [], "https checks resolve once and only to public addresses")
 check(routine.run_one({"id": "h", "kind": "http", "params": {"url": "https://localhost/"}, "title": "h", "service": "routine", "severity": "warn"}, mod.SVC.core.item)["summary"].startswith("refused"),
       "https checks only reach public hosts")
 

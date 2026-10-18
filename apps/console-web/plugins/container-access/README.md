@@ -17,6 +17,20 @@ gets a 403. Uninstall this plugin and nothing in the console can touch another c
   Snapshot Manager, nothing is written. A file that changed since it was proposed is refused.
 - **Audit log** of every write, delete, command, restart, redeploy, restore, terminal session and settings change.
 
+## Known limit: the proxy doesn't know container names
+
+The Docker proxy allows exec and file uploads on **any** container id; the protected list (Coolify, Traefik, the console,
+the proxy, databases) is enforced in this plugin's Python code only. Anything that runs code inside the console
+container (the terminal's Console or Claude Code tab, or a bug in any plugin) can reach the proxy directly, and an exec
+in Coolify (which holds the Docker socket) is root on the host. Treat the console as host-root equivalent while this
+plugin is installed. Hardening option: a small filtering proxy that resolves each id to its name and refuses protected
+containers (not built).
+
+Also enforced (after an independent review, Oct 18 2026): a file over 20 MB can't be replaced through a batch (its
+change couldn't be checked); changes the card can't fully show (diff cut short, binary or very large) need an explicit
+"accept what I can't see"; a command needs folders to snapshot (never the whole filesystem); undo only on a finished
+batch and never while one is applying.
+
 ## Service `axf.containers@1`
 `status()`, `list()`, `resolve(name)`, `workdir(name)`, `stat`, `read_file`, `list_dir`, `search` (literal grep, skips
 node_modules/.git), `write_file`, `delete_file`, `exec`, `restart`, `redeploy` (Coolify API for Coolify apps),

@@ -292,7 +292,7 @@ class FakeContainers:
     def list_batches(self, status="", conversation="", limit=50):
         return [b for b in self.batches.values() if not conversation or b["conversation"] == conversation][:limit]
 
-    def approve_stream(self, bid, items, who):
+    def approve_stream(self, bid, items, who, accept_unseen=False):
         b = self.batches[bid]
         b.update(status="applied", snapshots=["s-1"])
         for it in b["items"]:
@@ -378,4 +378,11 @@ check(bev and bev[0]["batch"]["items"][0]["path"] == "/app/b.ts", "CLI proposals
 check(not [x for x in _os.listdir(_tf.gettempdir()) if x.startswith("axf-bridge-")], "bridge folder removed after the turn")
 plugin_services.withdraw("fake-container-access")
 plugin_services.withdraw("fake-agent-manager")
+prov = sys.modules["axf_console_plugins.ai_assistant.providers"]
+os.environ.update({"COOLIFY_TOKEN": "c-secret", "HOSTINGER_API_TOKEN": "h", "AXHUB_TOKEN": "a", "AXF_TOKEN": "t", "SOME_PASSWORD": "p", "HARMLESS_SETTING": "ok"})
+ce = prov._cli_env()
+check(not any(k in ce for k in ("COOLIFY_TOKEN", "HOSTINGER_API_TOKEN", "AXHUB_TOKEN", "AXF_TOKEN", "SOME_PASSWORD")) and ce.get("HARMLESS_SETTING") == "ok" and "PATH" in ce,
+      "Claude Code CLI env: every token, key and password removed")
+deny = prov._cli_abs_deny("/work/repo")
+check("Read(//proc/**)" in deny and "Read(//work/repo/.axf-console/**)" in deny and "Grep(~/.ssh/**)" in deny, "Claude Code CLI can't read /proc, the console's private folder or SSH keys")
 print(f"all {ok} checks passed")

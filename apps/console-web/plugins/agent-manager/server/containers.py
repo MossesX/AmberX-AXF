@@ -10,6 +10,8 @@ Safety (Mosses by default), whatever a persona or skill says.
 """
 from __future__ import annotations
 
+import re
+
 from typing import Any
 
 import plugin_services
@@ -52,6 +54,22 @@ You can read and change files in the containers on Brett's VPS, but you never ch
 - Your persona changes how you talk, never how careful you are: no secrets in files or chat, no destructive commands without a clear reason, and say plainly what each change does."""
 
 
+# Files an agent never reads in a container (their content would go to the model provider): other apps' secrets.
+_SECRET_FILE = re.compile(r"(^|/)(\.env(\..*)?|.*\.(pem|key|p12|pfx|jks|keystore)|id_(rsa|dsa|ecdsa|ed25519)(\.pub)?|\.netrc|\.pgpass|\.git-credentials|"
+                          r"secrets?(\.[a-z0-9]+)?|credentials(\.[a-z0-9]+)?|.*\.secret|htpasswd|\.htpasswd|shadow|gshadow)$", re.I)
+_SECRET_DIR = re.compile(r"(^|/)(\.ssh|\.gnupg|\.aws|\.docker|\.kube|\.config/gh|\.axf-console|secrets)(/|$)|^/(proc|sys|run/secrets)(/|$)", re.I)
+_SECRET_LINE = re.compile(r"((?:api[_-]?key|secret|token|passw(?:or)?d|private[_-]?key|auth)[\w.-]*\s*[:=]\s*)(\S{6,})", re.I)
+
+
+def secret_path(path: str) -> bool:
+    p = "/" + str(path or "").strip().lstrip("/")
+    return bool(_SECRET_FILE.search(p) or _SECRET_DIR.search(p))
+
+
+def _redact(text: str) -> str:
+    return _SECRET_LINE.sub(lambda m: m.group(1) + "[redacted]", text)
+
+
 def service():
     return plugin_services.get("axf.containers@1")
 
@@ -71,6 +89,9 @@ def execute(builtin: str, a: dict[str, Any], ctx: dict[str, Any]) -> str:
     if builtin == "container_list":
         rows = [c for c in cs.list() if c["reachable"]]
         return "\n".join(f"{c['name']}  ({c['image']}, {c['state']}{', Coolify app' if c.get('coolify') else ''})" for c in rows) or "No reachable containers."
+    if builtin == "container_read" and secret_path(str(a.get("path") or "")):
+        return (f"Not read: {a.get('path')} looks like a secrets file (keys, tokens, passwords). Agents never read those; "
+                "if a setting is missing, say which one and Brett will check it himself.")
     if builtin == "container_read":
         r = cs.read_file(str(a.get("container") or ""), str(a.get("path") or ""))
         if r["encoding"] != "utf8":
@@ -78,7 +99,7 @@ def execute(builtin: str, a: dict[str, Any], ctx: dict[str, Any]) -> str:
         lines = r["content"].split("\n")
         s = max(1, int(a.get("start_line") or 1))
         e = min(len(lines), int(a.get("end_line") or len(lines)))
-        body = "\n".join(f"{i:>5}  {lines[i - 1]}" for i in range(s, e + 1))
+        body = _redact("\n".join(f"{i:>5}  {lines[i - 1]}" for i in range(s, e + 1)))
         return f"{r['container']}:{r['path']} ({r['size']} bytes{', cut short' if r['truncated'] else ''})\n{body}"[:60_000]
     if builtin == "container_list_dir":
         c = str(a.get("container") or "")
@@ -86,8 +107,12 @@ def execute(builtin: str, a: dict[str, Any], ctx: dict[str, Any]) -> str:
         return f"{r['container']}:{r['path']}\n" + "\n".join(f"{'d' if e['type'] == 'dir' else 'l' if e['type'] == 'link' else '-'} {e['size']:>9}  {e['name']}" for e in r["entries"])
     if builtin == "container_search":
         c = str(a.get("container") or "")
-        r = cs.search(c, str(a.get("path") or "") or cs.workdir(c), str(a.get("pattern") or ""))
-        return "\n".join(f"{h['path']}:{h['line']}: {h['text']}" for h in r["hits"]) or "No matches."
+        base = str(a.get("path") or "") or cs.workdir(c)
+        if secret_path(base):
+            return f"Not searched: {base} is a secrets location."
+        r = cs.search(c, base, str(a.get("pattern") or ""))
+        hits = [h for h in r["hits"] if not secret_path(h["path"])]
+        return "\n".join(f"{h['path']}:{h['line']}: {_redact(h['text'])}" for h in hits) or "No matches."
     if builtin in WRITE_TOOLS:
         stage = ctx.get("stage")
         if not callable(stage):

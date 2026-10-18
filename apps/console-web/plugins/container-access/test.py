@@ -390,6 +390,18 @@ check("reject", S.reject_batch(b5["id"], USER)["status"] == "rejected")
 u = S.undo_batch(b["id"], USER)
 check("undo restores batch snapshots", u["status"] == "undone" and snaps.restored == ["s-1"] and u["undoSnapshots"] == ["pre-s-1"])
 check("bad batch id", raises(lambda: S.get_batch("../../etc/passwd"), KeyError) != "")
+check("undo of a pending batch refused", "pending" in raises(lambda: S.undo_batch(b4["id"], USER), ValueError))
+# large existing file: exact base hash, marked unseen, needs an explicit accept, drift still caught
+FS["a" * 64]["/app/big.txt"] = b"line\n" * 130_000  # ~650 KB, over the 512 KB text read limit
+bb = S.create_batch([{"kind": "write", "container": "myapp", "path": "/app/big.txt", "content": "small now"}], actor=AGENT)
+it = bb["items"][0]
+check("big file is a replace, not a new file", it["status"] == "pending" and not it["created"] and it["baseHash"] and it["unseen"], json.dumps(it)[:300])
+check("unseen change needs an explicit accept", "accept" in raises(lambda: S.approve_batch(bb["id"], None, USER), ValueError))
+FS["a" * 64]["/app/big.txt"] = b"line\n" * 130_001
+rb = S.approve_batch(bb["id"], None, USER, accept_unseen=True)
+check("drift on a big file caught", rb["items"][0]["status"] == "failed" and "changed since" in rb["items"][0]["error"] and FS["a" * 64]["/app/big.txt"].startswith(b"line"))
+bn = S.create_batch([{"kind": "exec", "container": "myapp", "command": "rm -rf /tmp/x", "workdir": "/"}], actor=AGENT)
+check("exec with nothing to snapshot is invalid", bn["items"][0]["status"] == "invalid" and "paths" in bn["items"][0]["error"])
 
 # tree + restore primitives (used by Snapshot Manager)
 t = S.tree("myapp", "/app", ["node_modules"])

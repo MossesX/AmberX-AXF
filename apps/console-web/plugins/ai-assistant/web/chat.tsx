@@ -442,9 +442,9 @@ function BatchFromId({ id }: { id: string }) {
   if (!b) return <p className="fx-small fx-muted">Loading the approval card…</p>;
   return (
     <ChangeBatchCard batch={b} actions={{
-      approve: async (items, onEvent) => {
+      approve: async (items, onEvent, opts) => {
         let last: Batch | null = null;
-        const r = await pluginFetch(FOLDER, `batches/${encodeURIComponent(id)}/approve`, { method: 'POST', body: JSON.stringify({ items }) });
+        const r = await pluginFetch(FOLDER, `batches/${encodeURIComponent(id)}/approve`, { method: 'POST', body: JSON.stringify({ items, acceptUnseen: opts.acceptUnseen }) });
         await readEventStream(r, (e) => { if (e.type === 'batch' && e.batch) last = e.batch; onEvent(e); });
         return last;
       },

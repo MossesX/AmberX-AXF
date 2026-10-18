@@ -6,7 +6,7 @@ status notes, the checks that already exist) and asks for extra checks in a fixe
 validated, run, and saved as `routine.json` (check-routine@1). With AI off, the saved routine still runs, exactly as
 written, with no model. Nothing an AI writes is ever executed as code: only these check kinds exist.
 
-  env      {name, pattern?}            the variable is set in the console's environment (value never shown)
+  env      {name}                      the variable is set in the console's environment (presence only; value never read)
   file     {path, mode?}               a file or folder exists (repo-relative, or under the shared data folder)
   json     {path, key}                 a JSON file has a key (dot path)
   service  {name}                      a capability service is provided (e.g. axf.containers@1)
@@ -64,8 +64,6 @@ def validate(raw: Any) -> tuple[list[dict[str, Any]], list[str]]:
             why = f"unknown kind {kind!r}"
         elif kind == "env" and not re.match(r"^[A-Z][A-Z0-9_]{1,63}$", str(p.get("name", ""))):
             why = "env name"
-        elif kind == "env" and p.get("pattern") and (len(str(p["pattern"])) > 120 or re.search(r"\([^)]*[+*][^)]*\)[+*]", str(p["pattern"]))):
-            why = "env pattern too complex"
         elif kind in ("file", "json") and not _rel_ok(str(p.get("path", ""))):
             why = "path must be relative inside the repo"
         elif kind == "json" and not re.match(r"^[A-Za-z0-9_$.-]{1,120}$", str(p.get("key", ""))):
@@ -80,7 +78,7 @@ def validate(raw: Any) -> tuple[list[dict[str, Any]], list[str]]:
             problems.append(f"{cid or '#' + str(i)}: {why}")
             continue
         seen.add(cid)
-        out.append({"id": cid, "kind": kind, "params": {k: v for k, v in p.items() if k in ("name", "pattern", "path", "mode", "key", "folder", "url", "expect")},
+        out.append({"id": cid, "kind": kind, "params": {k: v for k, v in p.items() if k in ("name", "path", "mode", "key", "folder", "url", "expect")},
                     "title": str(c.get("title") or cid)[:120], "service": str(c.get("service") or "routine")[:30],
                     "severity": c.get("severity") if c.get("severity") in SEVERITIES else "warn",
                     "why": str(c.get("why") or "")[:300], "instructions": [str(x)[:300] for x in (c.get("instructions") or [])][:5]})
@@ -91,14 +89,43 @@ def validate(raw: Any) -> tuple[list[dict[str, Any]], list[str]]:
 
 # ---------------------------------------------------------------- running (no AI involved)
 
-def _public_host(host: str) -> bool:
+def _public_ips(host: str, port: int = 443) -> list[str]:
+    """Every address the host resolves to, or [] when any of them isn't a public address."""
     try:
-        for fam, *_rest, sa in socket.getaddrinfo(host, 443, proto=socket.IPPROTO_TCP):
-            if not ipaddress.ip_address(sa[0]).is_global:
-                return False
-        return True
+        ips = [sa[0] for _fam, *_rest, sa in socket.getaddrinfo(host, port, proto=socket.IPPROTO_TCP)]
+        return ips if ips and all(ipaddress.ip_address(ip).is_global for ip in ips) else []
     except (OSError, ValueError):
-        return False
+        return []
+
+
+def _public_host(host: str) -> bool:
+    return bool(_public_ips(host))
+
+
+def _https_status(url: str) -> int:
+    """GET over https to the address that was checked (no second DNS lookup, so no rebinding), certificate checked for
+    the host name, redirects not followed (a 3xx is the answer)."""
+    import http.client
+    import ssl
+    u = urllib.parse.urlparse(url)
+    host, port = u.hostname or "", u.port or 443
+    ips = _public_ips(host, port)
+    if not ips:
+        raise PermissionError("not a public host")
+    ctx = ssl.create_default_context()
+    sock = socket.create_connection((ips[0], port), timeout=8)
+    try:
+        tls = ctx.wrap_socket(sock, server_hostname=host)
+    except Exception:
+        sock.close()
+        raise
+    conn = http.client.HTTPSConnection(host, port, timeout=8, context=ctx)
+    conn.sock = tls
+    try:
+        conn.request("GET", (u.path or "/") + (f"?{u.query}" if u.query else ""), headers={"user-agent": "axf-console-syscheck", "host": u.netloc})
+        return conn.getresponse().status
+    finally:
+        conn.close()
 
 
 def run_one(d: dict[str, Any], item: Callable[..., Check]) -> Check:
@@ -107,8 +134,8 @@ def run_one(d: dict[str, Any], item: Callable[..., Check]) -> Check:
     try:
         if kind == "env":
             v = os.environ.get(p["name"], "")
-            ok = bool(v) and (not p.get("pattern") or re.match(str(p["pattern"]), v[:300]) is not None)
-            summary = f"{p['name']} is set" if ok else f"{p['name']} isn't set" if not v else f"{p['name']} doesn't look right"
+            ok = bool(v)  # presence only: matching a pattern against a secret's value would leak it bit by bit
+            summary = f"{p['name']} is set" if ok else f"{p['name']} isn't set"
         elif kind in ("file", "json"):
             base = cx.persist_root()
             path = next((b / p["path"] for b in ([base] if base else []) + [cx.ROOT] if (b / p["path"]).exists()), None)
@@ -140,12 +167,7 @@ def run_one(d: dict[str, Any], item: Callable[..., Check]) -> Check:
             if not _public_host(u.hostname or ""):
                 summary = "refused: not a public host"
             else:
-                req = urllib.request.Request(p["url"], method="GET", headers={"user-agent": "axf-console-syscheck"})
-                try:
-                    with urllib.request.urlopen(req, timeout=8) as r:  # noqa: S310 — https, public host only
-                        code = r.status
-                except urllib.error.HTTPError as e:
-                    code = e.code
+                code = _https_status(p["url"])
                 exp = p.get("expect")
                 ok = code in exp if isinstance(exp, list) else 200 <= code < 400
                 summary = f"HTTP {code}"
@@ -207,7 +229,7 @@ Answer with ONLY a JSON object, no prose:
 {"checks": [{"id": "kebab-id", "kind": "env|file|json|service|plugin|http", "params": {...}, "title": "short title",
   "service": "console|github|claude|vps|coolify|axhub|data|plugins|routine", "severity": "error|warn|info",
   "why": "one plain sentence", "instructions": ["how Brett fixes it"]}]}
-params per kind: env {name, pattern?} · file {path (repo-relative), mode?} · json {path, key (dot path)} ·
+params per kind: env {name} · file {path (repo-relative), mode?} · json {path, key (dot path)} ·
 service {name, e.g. axf.containers@1} · plugin {folder} · http {url (https, public), expect? [codes]}.
 At most 25 checks. Never include secret values. Prefer checks that are true when things are set up right."""
 

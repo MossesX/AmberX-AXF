@@ -3,7 +3,7 @@ kept on the server so a browser can drop and re-attach (Mosh mode) without losin
 
 Every session keeps the last 512 KB of output and a running byte offset. A client attaches with the offset it has
 seen; it gets the missing bytes, or a reset + the whole buffer when they've scrolled out. Sessions close when idle
-(no input or output) for `idleMinutes`, or when nobody is attached for longer than their keep-alive (Mosh mode:
+(no typed input; output alone doesn't count) for `idleMinutes`, or when nobody is attached for longer than their keep-alive (Mosh mode:
 `moshKeepMinutes`; otherwise a short grace so a page reload re-attaches). The console's own tokens and keys never
 reach a shell's environment.
 """
@@ -140,7 +140,7 @@ class Session:
         self.id = "t" + secrets.token_hex(6)
         self.kind, self.title, self.target, self.cwd, self.backend = kind, title, target, cwd, backend
         self.mosh, self.badge, self.protected = mosh, badge, protected
-        self.created = self.last = time.time()
+        self.created = self.last = self.last_input = time.time()
         self.detached_at: float | None = time.time()
         self.buf = bytearray()
         self.offset = 0  # total bytes ever produced
@@ -192,7 +192,7 @@ class Session:
                 self.detached_at = time.time()
 
     def write(self, data: bytes) -> None:
-        self.last = time.time()
+        self.last = self.last_input = time.time()
         self.backend.write(data)
 
 
@@ -276,7 +276,16 @@ class Manager:
             raise ValueError("kind is console, container, vps or claude")
         s = Session(kind, title, target, cwd, be, mosh, badge, protected)
         with self.lock:
-            self.sessions[s.id] = s
+            full = len(self.sessions) >= MAX_SESSIONS  # checked again here: two opens can race past the first check
+            if not full:
+                self.sessions[s.id] = s
+        if full:
+            s.closed = True
+            try:
+                be.close()
+            except Exception:  # noqa: BLE001
+                pass
+            raise ValueError(f"at most {MAX_SESSIONS} terminals at once; close one first")
         store.log({"op": "open", "id": s.id, "kind": kind, "target": target, "cwd": cwd, "protected": protected, "mosh": mosh})
         return s
 
@@ -309,7 +318,7 @@ class Manager:
             st = store.settings()
             now = time.time()
             for s in list(self.sessions.values()):
-                if now - s.last > st["idleMinutes"] * 60:
+                if now - s.last_input > st["idleMinutes"] * 60:  # output alone (top, tail -f) doesn't keep a terminal open
                     self.close(s.id, "idle")
                 elif s.detached_at is not None:
                     keep = st["moshKeepMinutes"] * 60 if s.mosh else GRACE_SECONDS

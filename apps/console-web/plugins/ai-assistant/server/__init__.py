@@ -814,7 +814,7 @@ def batch_get(bid: str) -> dict[str, Any]:
 def batch_approve(bid: str, body: dict[str, Any]) -> StreamingResponse:
     cs = _cs_or_404()
     items = body.get("items")
-    return StreamingResponse(cs.approve_stream(bid, items if isinstance(items, list) else None, _CHAT_USER), media_type="text/event-stream",
+    return StreamingResponse(cs.approve_stream(bid, items if isinstance(items, list) else None, _CHAT_USER, accept_unseen=body.get("acceptUnseen") is True), media_type="text/event-stream",
                              headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 

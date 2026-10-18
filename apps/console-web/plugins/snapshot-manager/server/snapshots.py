@@ -175,7 +175,8 @@ class SnapshotsService:
              "createdAt": int(time.time() * 1000), "actor": _actor(actor), "reason": str(reason or "")[:500], "batch": batch,
              "meta": {k: v for k, v in (meta or {}).items() if isinstance(v, (str, int, float, bool, dict, type(None)))}, "exclude": s["exclude"]}
         _write_json(d / "manifest.json", m)
-        self.prune(keep={sid})
+        # keep every snapshot of the same batch: an earlier container's snapshot must survive for the batch's undo
+        self.prune(keep={sid} | ({m["id"] for m in self.list(batch=batch, limit=1_000_000)} if batch else set()))
         return m
 
     # ------------------------------------------------------------ read

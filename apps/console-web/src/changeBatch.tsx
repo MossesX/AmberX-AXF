@@ -11,7 +11,7 @@ import './changeBatch.css';
 
 export interface BatchItem {
   id: string; kind: 'write' | 'delete' | 'exec' | 'restart' | 'redeploy'; status: string; container: string; reason?: string;
-  path?: string; created?: boolean; bytes?: number; diff?: { added: number; removed: number; text: string; truncated?: boolean; binary?: boolean };
+  path?: string; created?: boolean; bytes?: number; diff?: { added: number; removed: number; text: string; truncated?: boolean; binary?: boolean; tooLarge?: boolean }; unseen?: boolean;
   recursive?: boolean; exists?: boolean; isDir?: boolean; command?: string; workdir?: string; paths?: string[];
   exitCode?: number | null; output?: string; error?: string; snapshot?: string;
 }
@@ -21,7 +21,8 @@ export interface Batch {
 }
 export interface BatchEvent { type: string; item?: string; text?: string; stream?: string; ok?: boolean; error?: string; container?: string; id?: string; paths?: string[]; batch?: Batch; status?: string; bytes?: number }
 export interface BatchActions {
-  approve: (items: string[], onEvent: (e: BatchEvent) => void) => Promise<Batch | null>;
+  /** `acceptUnseen`: the approver accepted changes the card can't fully show (the server refuses them otherwise). */
+  approve: (items: string[], onEvent: (e: BatchEvent) => void, opts: { acceptUnseen: boolean }) => Promise<Batch | null>;
   reject: () => Promise<Batch>;
   undo?: () => Promise<Batch>;
   /** Optional: open a snapshot (e.g. in the snapshot manager). */
@@ -60,7 +61,8 @@ const TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefin
 };
 
 function Diff({ d }: { d: NonNullable<BatchItem['diff']> }) {
-  if (d.binary) return <p className="fx-small fx-muted">Binary file: no text diff.</p>;
+  if (d.binary) return <p className="fx-small fx-muted">Binary file: no text diff. Approving replaces it with the proposed text.</p>;
+  if (d.tooLarge) return <p className="fx-small fx-muted">Very large file: no diff shown. Approving replaces all of it.</p>;
   return (
     <pre className="cl-batch__diff">
       {d.text.split('\n').map((l, i) => (
@@ -81,6 +83,8 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
   const [busy, setBusy] = useState('');
   const [err, setErr] = useState('');
   const [log, setLog] = useState<string[]>([]);
+  const [acceptUnseen, setAcceptUnseen] = useState(false);
+  const unseenTicked = valid.some((i) => i.unseen && ticked.has(i.id));
   const update = (nb: Batch) => { setB(nb); onChange?.(nb); };
 
   const approve = async () => {
@@ -94,7 +98,7 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
         else if (e.type === 'item-done' && e.item) setLive((s) => ({ ...s, [e.item!]: { ...s[e.item!], out: s[e.item!]?.out ?? '', status: e.ok ? 'applied' : 'failed', error: e.error } }));
         else if (e.type === 'error') setErr(e.error ?? 'failed');
         else if (e.type === 'batch' && e.batch) update(e.batch);
-      });
+      }, { acceptUnseen });
       if (nb) update(nb);
     } catch (e) { setErr((e as Error).message); }
     finally { setBusy(''); }
@@ -135,6 +139,7 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
                     <strong>{k.label}</strong> <span className="fx-mono">{it.container}</span>
                     {it.path && <> · <span className="fx-mono">{it.path}</span></>}
                     {it.kind === 'write' && it.diff && <span className="fx-muted"> {it.created ? '(new file)' : ''} +{it.diff.added} −{it.diff.removed}</span>}
+                    {it.unseen && <Chip tone="warning">not fully shown</Chip>}
                     {it.kind === 'delete' && <span className="fx-muted"> {it.exists === false ? '(already gone)' : it.isDir ? '(folder, everything in it)' : ''}</span>}
                     {it.kind === 'exec' && <> · <code className="fx-mono">{(it.command ?? '').slice(0, 80)}{(it.command ?? '').length > 80 ? '…' : ''}</code></>}
                   </span>
@@ -171,9 +176,15 @@ export function ChangeBatchCard({ batch: initial, actions, onChange }: { batch: 
         </p>
       )}
       <div className="cl-batch__actions">
+        {pending && unseenTicked && (
+          <label className="cl-batch__accept">
+            <input type="checkbox" checked={acceptUnseen} onChange={(e) => setAcceptUnseen(e.target.checked)} />
+            Some ticked changes can't be fully shown here (diff cut short, binary or very large file). Accept what I can't see.
+          </label>
+        )}
         {pending && (
           <>
-            <Button tone="primary" icon="check" disabled={!!busy || ticked.size === 0} onClick={() => void approve()}>
+            <Button tone="primary" icon="check" disabled={!!busy || ticked.size === 0 || (unseenTicked && !acceptUnseen)} onClick={() => void approve()}>
               {busy === 'approve' ? 'Applying…' : ticked.size === valid.length ? `Approve all (${ticked.size})` : `Approve ${ticked.size} of ${valid.length}`}
             </Button>
             <Button tone="ghost" icon="x" disabled={!!busy} onClick={() => void simple('reject')}>Reject</Button>

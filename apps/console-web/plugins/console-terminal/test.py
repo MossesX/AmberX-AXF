@@ -110,10 +110,13 @@ c.delete(f"/p/sessions/{m['id']}")
 
 # idle timeout
 i = c.post("/p/sessions", json={"kind": "console", "mosh": True}).json()
-time.sleep(1.5)  # let the shell print its prompt first (output counts as activity)
-sessions.MANAGER.get(i["id"]).last = time.time() - 61 * 60
+time.sleep(1.5)
+sessions.MANAGER.get(i["id"]).last_input = time.time() - 61 * 60  # output (the prompt) doesn't count, only typing
 time.sleep(6)
-check(i["id"] not in {x["id"] for x in c.get("/p/sessions").json()["items"]}, "idle sessions close (60 min)")
+check(i["id"] not in {x["id"] for x in c.get("/p/sessions").json()["items"]}, "idle sessions close after 60 min without typing, even while printing")
+sessions.MAX_SESSIONS, _was = len(sessions.MANAGER.sessions), sessions.MAX_SESSIONS
+check(c.post("/p/sessions", json={"kind": "console"}).status_code in (400, 409, 429), "session cap enforced")
+sessions.MAX_SESSIONS = _was
 
 # containers through axf.containers@1
 check(c.post("/p/sessions", json={"kind": "container", "container": "web"}).status_code == 403, "no Container access → console shell only")

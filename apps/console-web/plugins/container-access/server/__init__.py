@@ -116,7 +116,7 @@ def undo(bid: str, body: dict[str, Any]) -> dict[str, Any]:
 def approve(bid: str, body: dict[str, Any]) -> StreamingResponse:
     """Server-sent events: snapshot-start, snapshot, item-start, output, item-done, done | error, then batch."""
     items = body.get("items")
-    return StreamingResponse(SERVICE.approve_stream(bid, items if isinstance(items, list) else None, USER), media_type="text/event-stream",
+    return StreamingResponse(SERVICE.approve_stream(bid, items if isinstance(items, list) else None, USER, accept_unseen=body.get("acceptUnseen") is True), media_type="text/event-stream",
                              headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 

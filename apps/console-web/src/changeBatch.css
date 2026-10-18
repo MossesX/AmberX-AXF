@@ -20,3 +20,4 @@
 .cl-batch__err { color: var(--fx-danger); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
 .cl-batch__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
 .cl-batch__link { padding: 0; border: 0; background: transparent; color: var(--fx-accent); font: inherit; font-family: var(--fx-font-mono); cursor: pointer; margin-right: calc(var(--fx-space) * 0.5) }
+.cl-batch__accept { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; font-size: calc(var(--fx-font-size) * 13 / 14); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning) }

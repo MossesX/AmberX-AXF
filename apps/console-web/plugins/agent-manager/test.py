@@ -285,6 +285,11 @@ out = svc.run_tool("coder", "container_exec", {"container": "web", "command": "n
 check(staged[1]["kind"] == "exec" and staged[1]["paths"] == ["/app"], "container_exec stages with snapshot paths")
 check("Not applied" in svc.run_tool("coder", "container_delete", {"container": "web", "path": "/app/a.ts", "reason": "x"}, {}), "no stage (outside the chat): nothing applied")
 check("a" in svc.run_tool("coder", "container_read", {"container": "web", "path": "/app/a.ts"}) and "1  a" in svc.run_tool("coder", "container_read", {"container": "web", "path": "/app/a.ts"}), "container_read reads at once")
+for sp in ("/app/.env", "/app/.env.production", "/root/.ssh/id_ed25519", "/proc/1/environ", "/etc/shadow", "/srv/tls/server.key", "/app/config/credentials.json"):
+    check("Not read" in svc.run_tool("coder", "container_read", {"container": "web", "path": sp}), f"agents never read secrets files: {sp}")
+cm = sys.modules["axf_console_plugins.agent_manager.containers"] if "axf_console_plugins.agent_manager.containers" in sys.modules else None
+if cm:
+    check(cm._redact("API_KEY=abcdef123456 and x") == "API_KEY=[redacted] and x" and not cm.secret_path("/app/src/index.ts"), "secret-looking values redacted; normal files still readable")
 c.post("/am/c/agents", json={"id": "rogue", "name": "Rogue", "toolIds": ["coder.container-write", "coder.repo-read"]})
 rg = svc.get_agent("rogue")
 check(not any(t["name"].startswith("container_") for t in rg["tools"]) and "switched off" in rg["system_prompt"], "other agents don't get dangerous tools")
