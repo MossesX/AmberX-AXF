@@ -11,6 +11,10 @@
 #   3. runs it as `axf-console` on Coolify's network behind Traefik (HTTPS via letsencrypt), or on port 7090 without Coolify
 #   4. generates AXF_TOKEN (saved in /opt/axf/.axf-console/env) — needed by the panel for server control + terminal
 #   5. installs a cron that pulls main every 5 minutes and rebuilds when it changed
+#   6. puts the console behind axHub's sign-in wall (Traefik forwardAuth → https://axhub.amberxai.com/auth/verify)
+#      once the hub can sign someone in; machines with the console token still reach /api and /mcp.
+#      AXF_WALL=off bash install-console.sh   turns it off (saved; use it if the hub is down and you're locked out)
+#      AXF_WALL=on  bash install-console.sh   turns it back on (default)
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-console.amberxai.com}"
@@ -150,7 +154,33 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   NET="$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | tr ' ' '\n' | grep -x coolify || true)"
   NET="${NET:-$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}' | head -n1)}"
   R="axfconsole"
-  docker run "${COMMON[@]}" --network "$NET" \
+  # ---- 6. the wall (axHub sign-in, decision #77 in axHub) ----
+  WALLF="$DIR/.axf-console/wall"
+  [ -n "${AXF_WALL:-}" ] && { echo "$AXF_WALL" > "$WALLF"; chmod 600 "$WALLF"; }
+  WALL="$(cat "$WALLF" 2>/dev/null || echo on)"
+  WALL_HUB="${AXF_WALL_HUB:-https://axhub.amberxai.com}"
+  WALL_ARGS=()
+  if [ "$WALL" = "off" ]; then
+    rm -f "$DIR/.axf-console/wall-waiting"
+    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on)"
+  else
+    # Only switch it on when the hub really can sign someone in, so a hub without accounts (or an older hub) never locks you out.
+    LOGIN="$(curl -fsS --max-time 10 "$WALL_HUB/auth/login" 2>/dev/null || true)"
+    if echo "$LOGIN" | grep -q 'action="/auth/login"' && ! echo "$LOGIN" | grep -q 'No accounts yet'; then
+      rm -f "$DIR/.axf-console/wall-waiting"
+      say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins only); the console token still works on /api and /mcp"
+      WALL_ARGS=(-l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
+        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
+        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Via=" \
+        -l "traefik.http.middlewares.$R-wall.forwardauth.address=$WALL_HUB/auth/verify" \
+        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Via" \
+        -l "traefik.http.routers.$R.middlewares=$R-strip,$R-wall")
+    else
+      say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"
+      touch "$DIR/.axf-console/wall-waiting"
+    fi
+  fi
+  docker run "${COMMON[@]}" --network "$NET" "${WALL_ARGS[@]}" \
     -l traefik.enable=true -l "traefik.docker.network=$NET" \
     -l "traefik.http.routers.$R-http.rule=Host(\`$DOMAIN\`)" -l "traefik.http.routers.$R-http.entrypoints=http" \
     -l "traefik.http.routers.$R-http.middlewares=$R-https" -l "traefik.http.middlewares.$R-https.redirectscheme.scheme=https" \
@@ -173,7 +203,7 @@ cat > /usr/local/bin/axf-console-update <<UPD
 set -e
 cd "$DIR"
 before=\$(git rev-parse HEAD); git fetch -q origin $BRANCH && git reset -q --hard origin/$BRANCH
-[ "\$before" = "\$(git rev-parse HEAD)" ] && exit 0
+[ "\$before" = "\$(git rev-parse HEAD)" ] && [ ! -f "$DIR/.axf-console/wall-waiting" ] && exit 0  # also re-run while the sign-in wall waits for the hub
 GITHUB_TOKEN="$GITHUB_TOKEN" DOMAIN="$DOMAIN" NAME="$NAME" DIR="$DIR" PORT="$PORT" bash "$DIR/deploy/install-console.sh" >> /var/log/axf-console-update.log 2>&1
 UPD
 chmod +x /usr/local/bin/axf-console-update
