@@ -57,6 +57,19 @@ say "Building image (first build takes a few minutes: npm ci + pip)"
 # live data (pending list, plan, build queue, catalog status, tracker) lives on the hub: $PERSIST_DIR/amberx-axf/
 PERSIST_DIR="${PERSIST_DIR:-/opt/axhub/persist}"
 mkdir -p "$PERSIST_DIR"
+# Undo of claude-fs@1 (Oct 18 2026): an install from that version may have moved live data into
+# /Claude/projects/<project>/data on this VPS. Move it back, then remove /Claude if nothing else is left in it.
+if [ -d /Claude/projects ] && ! mountpoint -q /Claude 2>/dev/null; then
+  for d in /Claude/projects/*/data; do
+    [ -d "$d" ] || continue
+    p="$(basename "$(dirname "$d")")"; to="$PERSIST_DIR/$p"
+    if [ -e "$to" ] && [ -n "$(ls -A "$to" 2>/dev/null)" ]; then say "kept $to; $d left in place for you to check"; continue; fi
+    rmdir "$to" 2>/dev/null || true
+    mv "$d" "$to" && say "moved $d back to $to"
+  done
+  find /Claude -depth -type d -empty -delete 2>/dev/null || true
+  [ -d /Claude ] && say "/Claude still has files (left in place): $(find /Claude -type f | head -3 | tr '\n' ' ')" || say "removed the empty /Claude folder"
+fi
 AXF_PERSIST_DIR="$PERSIST_DIR" node "$DIR/framework/cli/persist.mjs" push 2>/dev/null | sed 's/^/[axf] /' || say "node not on the host; the console seeds $PERSIST_DIR/amberx-axf on first read"
 docker build -q -f "$DIR/apps/console-web/server/Dockerfile" -t "$NAME:latest" "$DIR" >/dev/null
 
