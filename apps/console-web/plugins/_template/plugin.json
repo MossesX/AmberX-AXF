@@ -1,0 +1,14 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.example",
+  "name": "Example",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Copy this folder (without the leading underscore) to start a console plugin.",
+  "targets": ["axf-console"],
+  "provides": ["view:example"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true
+}

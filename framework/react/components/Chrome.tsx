@@ -137,7 +137,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
-      {nav.data.sections.map((sec, i) => {
+      {[...nav.data.sections, ...rt.navExtras].map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide');
         if (!items.length) return null;
         return (

@@ -86,6 +86,12 @@
             "label": "Assets",
             "icon": "palette",
             "view": "assets"
+          },
+          {
+            "id": "plugins",
+            "label": "Plugins",
+            "icon": "package",
+            "view": "plugins"
           }
         ]
       },

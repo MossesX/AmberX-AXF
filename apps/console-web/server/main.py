@@ -64,7 +64,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
 # ---------------------------------------------------------------- state + terminal
 
-_state: dict[str, Any] = {"project": "", "terminal": []}
+_state: dict[str, Any] = {"project": "", "terminal": [], "plugins": {}}
 _subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
 
@@ -78,7 +78,7 @@ def _load_state() -> None:
 
 def _save_state() -> None:
     STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps({"project": _state["project"], "terminal": _state["terminal"][-500:]}, indent=2))
+    STATE.write_text(json.dumps({"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, indent=2))
 
 
 def log(channel: str, text: str, level: str = "info") -> None:
@@ -565,6 +565,119 @@ def mcp_info(request: Request) -> dict[str, Any]:
     return {"url": url, "auth": "Bearer AXF_TOKEN" if TOKEN else "none (AXF_TOKEN not set)", "tools": tools,
             "claudeCode": f'claude mcp add --transport http axf {url} --header "Authorization: Bearer $AXF_TOKEN"',
             "local": "python3 apps/console-web/server/mcp_server.py   (stdio, from a local clone; registered in .mcp.json)"}
+
+
+# ---------------------------------------------------------------- plugins
+#
+# Console plugins live in apps/console-web/plugins/<folder>/ (see plugins/README.md):
+#   plugin.json          plugin@1 manifest (targets must include "axf-console")
+#   web/index.tsx        exports `plugin: AxfWebLibrary` (views, nav, actions) — bundled by Vite
+#   server/__init__.py   optional; exports `router: fastapi.APIRouter`, mounted at /api/plugins/<folder>/
+# Every plugin route requires the console token for EVERY method (not only writes), and answers 404
+# while the plugin is disabled. Plugin routes are never exposed through the console's MCP server.
+# Folders starting with "_" (templates) are ignored.
+
+import importlib.util
+import re as _re
+import sys as _sys
+
+PLUGINS_DIR = HERE.parent / "plugins"
+_PLUGIN_FOLDER = _re.compile(r"^[a-z0-9][a-z0-9-]{1,47}$")
+_PLUGIN_ID = _re.compile(r"^[a-z][a-z0-9]*(\.[a-z][a-z0-9-]*)+$")
+PLUGINS: dict[str, dict[str, Any]] = {}
+
+
+def auth_always(request: Request) -> None:
+    """Console token for every method. Plugin data (services, logs, settings) is private even to read."""
+    if TOKEN and request.headers.get("authorization") != f"Bearer {TOKEN}":
+        raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
+
+
+def plugin_enabled(folder: str) -> bool:
+    info = PLUGINS.get(folder)
+    if not info:
+        return False
+    return bool(_state.get("plugins", {}).get(folder, info.get("enabledByDefault", True)))
+
+
+def _plugin_guard(folder: str):
+    def guard() -> None:
+        if not plugin_enabled(folder):
+            raise HTTPException(404, f"plugin {folder} is disabled")
+    return guard
+
+
+def _read_plugin_manifest(folder: Path) -> dict[str, Any]:
+    raw = json.loads((folder / "plugin.json").read_text())
+    if not isinstance(raw, dict) or raw.get("$axf") != "plugin@1":
+        raise ValueError('plugin.json must be a plugin@1 manifest ("$axf": "plugin@1")')
+    for key in ("id", "name", "version", "kind", "apiLevel"):
+        if key not in raw:
+            raise ValueError(f"plugin.json is missing {key!r}")
+    if not isinstance(raw["id"], str) or not _PLUGIN_ID.match(raw["id"]):
+        raise ValueError("plugin id must be namespaced, e.g. ai.amberx.axf.console.hub")
+    if "axf-console" not in (raw.get("targets") or []):
+        raise ValueError('plugin.json targets must include "axf-console"')
+    return raw
+
+
+def load_plugins() -> None:
+    """Discover plugins and mount their server routers. A broken plugin is reported, never fatal."""
+    if not PLUGINS_DIR.is_dir():
+        return
+    for folder in sorted(PLUGINS_DIR.iterdir()):
+        if not folder.is_dir() or folder.name.startswith("_") or not (folder / "plugin.json").exists():
+            continue
+        info: dict[str, Any] = {"folder": folder.name, "server": "none", "error": None}
+        PLUGINS[folder.name] = info
+        try:
+            if not _PLUGIN_FOLDER.match(folder.name):
+                raise ValueError("plugin folder names are lowercase letters, digits and dashes")
+            m = _read_plugin_manifest(folder)
+            info.update({
+                "id": m["id"], "name": m["name"], "version": m["version"], "description": m.get("description", ""),
+                "author": m.get("author", ""), "provides": m.get("provides", []), "scopes": m.get("scopes", []),
+                "enabledByDefault": m.get("enabledByDefault", True) is not False,
+            })
+            entry = folder / "server" / "__init__.py"
+            if entry.exists():
+                name = f"axf_console_plugins.{folder.name.replace('-', '_')}"
+                spec = importlib.util.spec_from_file_location(name, entry, submodule_search_locations=[str(entry.parent)])
+                if not spec or not spec.loader:
+                    raise ImportError("cannot load server/__init__.py")
+                module = importlib.util.module_from_spec(spec)
+                _sys.modules[name] = module
+                spec.loader.exec_module(module)
+                router = getattr(module, "router", None)
+                if router is None:
+                    raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
+                app.include_router(router, prefix=f"/api/plugins/{folder.name}",
+                                   dependencies=[Depends(auth_always), Depends(_plugin_guard(folder.name))])
+                info["server"] = "loaded"
+            log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
+        except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
+            info["error"] = f"{type(e).__name__}: {str(e)[:300]}"
+            info["server"] = "error" if (folder / "server").exists() else info["server"]
+            log("plugins", f"{folder.name}: {info['error']}", "error")
+
+
+@app.get("/api/plugins")
+def list_plugins() -> dict[str, Any]:
+    return {"items": [{**info, "enabled": plugin_enabled(f)} for f, info in PLUGINS.items()]}
+
+
+@app.post("/api/plugins/{folder}/enabled", dependencies=[Depends(auth)])
+def set_plugin_enabled(folder: str, body: dict[str, Any]) -> dict[str, Any]:
+    if folder not in PLUGINS:
+        raise HTTPException(404, f"no plugin {folder}")
+    on = bool(body.get("enabled"))
+    _state.setdefault("plugins", {})[folder] = on
+    _save_state()
+    log("plugins", f"{PLUGINS[folder].get('name', folder)} {'enabled' if on else 'disabled'}")
+    return {"ok": True, "folder": folder, "enabled": on}
+
+
+load_plugins()
 
 
 # ---------------------------------------------------------------- the console itself

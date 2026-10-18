@@ -19,3 +19,9 @@ npm run build                                   # dist/ — served by the API (o
 Without the API the console still runs on the static data synced into `public/data` and *records* engine commands (copy the script, run it with Claude Code). With it, every wizard runs for real and writes to the repo.
 
 Deploy: `server/Dockerfile` (Node 22 + Python 3.12, one container) — point Coolify at it with the repo root as build context. The Android app in `apps/console` is the framework's **Android showcase** of the same console views.
+
+## Plugins
+
+The console loads plugins from `plugins/` (web part bundled at build time, optional FastAPI router mounted at
+`/api/plugins/<folder>/` behind the console token). Manage them under Framework → Plugins. To write one, copy
+`plugins/_template` and read `plugins/README.md`.

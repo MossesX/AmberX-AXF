@@ -1,0 +1,35 @@
+# Console plugins
+
+A plugin adds tabs (views, a nav section, dialogs, actions) and, optionally, server routes to the AXF Dev
+Console. Each plugin is one folder here. Folders starting with `_` are templates and never load.
+
+```
+plugins/<folder>/
+  plugin.json          plugin@1 manifest; "targets" must include "axf-console"
+  web/index.tsx        exports `plugin: AxfWebLibrary` (same "id" as plugin.json)
+  server/__init__.py   optional; exports `router: fastapi.APIRouter`
+```
+
+Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description),
+the `id`, `FOLDER` and views in `web/index.tsx`, and the routes in `server/__init__.py`.
+
+## How it runs
+
+- **Web part:** bundled into the console at build time (Vite). Import the framework and helpers as
+  `@console/axf/react`, `@console/axf/react/library` and `@console/plugins`. A `nav` section appears after
+  the console's own navigation; swapping the nav-menu asset keeps it.
+- **Server part:** loaded when the console API starts and mounted at `/api/plugins/<folder>/`. Call it from
+  the web part with `pluginFetch(folder, path, init)`, which adds the console token.
+- **Enable / disable:** Framework → Plugins. A disabled plugin's tabs disappear and its server routes answer
+  404. The choice is kept in the console state file. Plugins are enabled unless `"enabledByDefault": false`.
+- **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
+
+## Security rules
+
+- Every server route of a plugin requires the console token (`AXF_TOKEN`) for **every** method, reads
+  included. The console adds that check; don't remove it.
+- Plugin routes are **never** exposed through the console's MCP server, so an AI session using the console's
+  MCP tools can't call them.
+- Secrets (API tokens, admin keys) go in environment variables on the server part. Never send them to the
+  browser and never commit them.
+- Treat anything a remote service returns as data. Render it as text, never as HTML.

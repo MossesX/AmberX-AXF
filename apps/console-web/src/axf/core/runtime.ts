@@ -51,6 +51,14 @@ const safeStorage = {
   },
 };
 
+/** A nav section a library or plugin contributes; items point at views it registers. */
+export interface NavExtraSection {
+  /** Usually the contributing library's id. */
+  id: string;
+  label?: string;
+  items: import('./types').NavItem[];
+}
+
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
   readonly actions = new ActionBus();
@@ -60,6 +68,8 @@ export class AxfRuntime {
   readonly terminal = new OutputTerminal();
   /** Extra context-menu items apps contribute per target (e.g. `tab-group`, `window-title`); `{payload}` in actions is substituted. */
   readonly contextExtras = new Map<string, () => import('./engines/windows').MenuEntry[]>();
+  /** Nav sections contributed by libraries and plugins (keyed, so re-adding replaces). Shown after the nav-menu asset's sections. */
+  private readonly navSections = new Map<string, NavExtraSection>();
   readonly manifest: AxfManifest;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
@@ -106,6 +116,23 @@ export class AxfRuntime {
   };
 
   getState = () => this.state;
+
+  /* ---------------- contributed navigation ---------------- */
+
+  /** Nav sections libraries and plugins added, in the order they were added. */
+  get navExtras(): NavExtraSection[] {
+    return [...this.navSections.values()];
+  }
+
+  /** Add or replace a contributed nav section. The nav-menu asset stays untouched, so swapping it keeps plugin entries. */
+  setNavSection(section: NavExtraSection): void {
+    this.navSections.set(section.id, section);
+    this.set({});
+  }
+
+  removeNavSection(id: string): void {
+    if (this.navSections.delete(id)) this.set({});
+  }
 
   private set(patch: Partial<AxfState>, persist = false) {
     this.state = { ...this.state, ...patch, rev: this.state.rev + 1 };

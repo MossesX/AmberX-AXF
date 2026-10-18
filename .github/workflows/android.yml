@@ -51,6 +51,8 @@ jobs:
         working-directory: apps/console-web
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas; do cp -r ../../framework/$d src/axf/; done
+          # Build with the plugin template installed, so the template and the plugin loader stay valid.
+          cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           npm ci && npm run build
       - name: Library templates — generate every template for web + Python and compile them
         run: |
@@ -70,6 +72,10 @@ jobs:
           r = c.post('/api/init', json={'dir': 'apps/ci-smoke', 'name': 'CI', 'template': 'android-compose', 'boilerplate': 'notes'}).json(); assert r['ok'], r
           r = c.post('/api/install', json={'dir': 'apps/ci-smoke', 'library': 'ai.amberx.axf.browser', 'params': {}}).json(); assert r['ok'], r
           print('api ok', len(c.get('/api/terminal').json()['lines']), 'terminal lines')
+          plugins = {p['folder']: p for p in c.get('/api/plugins').json()['items']}
+          assert plugins['ci-example']['server'] == 'loaded' and plugins['ci-example']['error'] is None, plugins
+          assert c.get('/api/plugins/ci-example/hello').json()['message'], 'plugin route'
+          print('plugins ok', sorted(plugins))
           with TestClient(main.app) as m:  # lifespan on: the MCP session manager runs
               h = {'accept': 'application/json, text/event-stream'}
               tools = m.post('/mcp', json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}, headers=h).json()['result']['tools']

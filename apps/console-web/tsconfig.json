@@ -13,7 +13,10 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": { "@console/*": ["src/*"] }
   },
-  "include": ["src", "axf.manifest.json"]
+  "include": ["src", "plugins", "axf.manifest.json"],
+  "exclude": ["plugins/_*"]
 }

@@ -3,7 +3,7 @@
  * dialogs, tab renderers and actions; apps list their libraries and merge what they contribute into AppShell.
  * Libraries generated from framework/library-templates implement this.
  */
-import type { AxfRuntime } from '../core';
+import type { AxfRuntime, NavItem } from '../core';
 import type { ViewMap } from './AppShell';
 import type { DialogMap } from './components/Overlays';
 import type { TabRenderers } from './windows/WindowHost';
@@ -21,6 +21,8 @@ export interface AxfWebLibrary {
   views?: ViewMap;
   dialogs?: DialogMap;
   tabs?: TabRenderers;
+  /** Nav entries for this library's views, shown as their own section after the nav-menu asset's sections. */
+  nav?: { label?: string; items: NavItem[] };
 }
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
@@ -51,6 +53,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
+    if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);

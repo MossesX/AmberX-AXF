@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { AccountView, AppShell, AssetStudio, type ViewMap } from './axf/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AccountView, AppShell, AssetStudio, useRuntime, type ViewMap } from './axf/react';
+import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
 import { Home } from './views/Home';
@@ -12,6 +13,8 @@ import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
+import { PluginsView } from './views/Plugins';
+import { bundledPlugins, enabledPlugins, fetchPluginStatus, type PluginStatus } from './plugins';
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
@@ -29,11 +32,41 @@ const views: ViewMap = {
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
 
+/** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
+function usePlugins() {
+  const rt = useRuntime();
+  const [status, setStatus] = useState<PluginStatus[] | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const reload = useCallback(async () => { setStatus(await fetchPluginStatus()); setLoaded(true); }, []);
+  useEffect(() => { void reload(); }, [reload]);
+  const contributed = useMemo(() => {
+    if (!loaded) return { views: {}, dialogs: {}, tabs: {} };
+    const enabled = enabledPlugins(status);
+    for (const p of bundledPlugins) if (!enabled.includes(p)) rt.removeNavSection(p.manifest.id);
+    return installLibraries(rt, enabled.map((p) => p.library!));
+  }, [rt, status, loaded]);
+  return { status, reload, contributed };
+}
+
 function Shell() {
   const s = useStore();
   const drop = useUndockDrop();
+  const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
-  return <div {...drop} style={{ display: 'contents' }}><AppShell views={views} dialogs={dialogs} tabs={{ ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }} /></div>;
+  const allViews: ViewMap = {
+    ...plugins.contributed.views,
+    ...views,
+    plugins: { title: 'Plugins', icon: 'package', render: () => <PluginsView status={plugins.status} reload={plugins.reload} /> },
+  };
+  return (
+    <div {...drop} style={{ display: 'contents' }}>
+      <AppShell
+        views={allViews}
+        dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
+        tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
+      />
+    </div>
+  );
 }
 
 export function App() {
