@@ -297,7 +297,7 @@ class SysCheck:
 
     def c_repo_clone(self) -> Check:
         if not (self.root / ".git").exists():
-            return self.item("repo-clone", "data", "Repo clone", "error", f"{self.root} is not a git clone.", instructions=["Re-run deploy/install-console.sh on the VPS."], order=70)
+            return self.item("repo-clone", "data", "Repo clone", "error", f"{self.root} is not a git clone.", instructions=["On the VPS: bash /opt/axf/deploy/install-console.sh"], order=70)
         head = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(self.root), "log", "-1", "--format=%h %cr"], capture_output=True, text=True, timeout=10).stdout.strip()
         return self.item("repo-clone", "data", "Repo clone", "ok", f"{self.root} at {head or '?'} (auto-updates every 5 minutes).", order=70)
 
@@ -318,7 +318,7 @@ class SysCheck:
         root = self.persist_root()
         if not root:
             return self.item("shared-data", "data", "Shared data folder", "warn", "Shared data is read from the repo: the hub's /projects volume isn't mounted, so console edits are only snapshots.",
-                             instructions=["Add the axhub-projects volume to axHub (axHub repo deploy/coolify.md §5b), then re-run deploy/install-console.sh on the VPS."],
+                             instructions=["Add the axhub-projects volume to axHub (axHub repo deploy/coolify.md §5b).", "Then on the VPS: bash /opt/axf/deploy/install-console.sh"],
                              fix={"type": "host", "command": "bash /opt/axf/deploy/install-console.sh"}, depends=["manifest"], order=72)
         missing = [p for p in self._shared_paths() if not (root / p).exists()]
         writable = os.access(root, os.W_OK)
@@ -345,7 +345,7 @@ class SysCheck:
 
     def c_host_report(self) -> Check:
         rep = self.host_report()
-        base = dict(fix={"type": "host", "command": HOST_SCRIPT}, instructions=["Open mosh/ssh to the VPS and run the console setup script; it checks the host, fixes what you approve and reports back here.",
+        base = dict(fix={"type": "host", "command": HOST_SCRIPT}, instructions=["Open mosh/ssh to the VPS and run the console setup script; it checks the host, fixes what you approve and reports back here.", f"On the VPS: {HOST_SCRIPT}",
                                                                                   "install-console.sh also schedules it every 15 minutes in report-only mode."], order=30)
         if not rep:
             return self.item("host-report", "vps", "VPS host report", "warn", "The VPS host hasn't reported yet, so mosh, Claude Code and cron can't be checked.", **base)
@@ -419,7 +419,7 @@ HOST_CHECKS: dict[str, dict[str, Any]] = {
     "host-session-checkin": {"service": "claude", "title": "Session check-in on the VPS", "order": 25, "instructions": ["node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs   (choose: every folder on this device)", "Or install it for every clone from Settings → Session check-in."], "links": [{"label": "Claude Code hooks", "url": DOCS["claude_hooks"]}]},
     "host-anthropic-keyfile": {"service": "claude", "title": "API key file (~/.anthropic-key)", "order": 26, "instructions": ["claude-pick --set-key (stores it owner-only)", "chmod 600 ~/.anthropic-key"]},
     "host-git-auth": {"service": "github", "title": "GitHub access from the VPS", "order": 12, "instructions": ["git -C /opt/axf fetch   (should work without a password prompt)", "If it fails: gh auth login, or store a token with git's credential helper."]},
-    "host-axhub-volume": {"service": "axhub", "title": "axhub-projects volume", "order": 61, "instructions": ["Coolify → axHub → Persistent Storage: add a volume named axhub-projects mounted at /projects (axHub repo deploy/coolify.md §5b), redeploy axHub, then bash /opt/axf/deploy/install-console.sh."]},
+    "host-axhub-volume": {"service": "axhub", "title": "axhub-projects volume", "order": 61, "instructions": ["Coolify → axHub → Persistent Storage: add a volume named axhub-projects mounted at /projects (axHub repo deploy/coolify.md §5b), then redeploy axHub.", "Then on the VPS: bash /opt/axf/deploy/install-console.sh"]},
 }
 
 

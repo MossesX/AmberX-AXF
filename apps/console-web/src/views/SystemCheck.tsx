@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useRuntime } from '../axf/react';
 import * as api from '../api';
+import { StepList } from '../commandText';
 
 /*
  * Systems check (server/syscheck.py): runs every time the console loads. When something the console or its features
@@ -258,7 +259,7 @@ function CheckBody({ c, inPrompt }: { c: Check; inPrompt?: boolean }) {
       {!inPrompt && s.runMsg[c.id] && <p className="fx-small syc-runmsg" style={{ margin: 0 }}><RunBadge r={s.run[c.id]} /> {s.runMsg[c.id]}</p>}
       {c.details.length > 0 && <ul className="syc-details">{c.details.map((d) => <li key={d} className="fx-mono fx-small">{d}</li>)}</ul>}
       {c.status !== 'ok' && c.fix && <><h4 className="syc-h">Fix it here</h4><FixPanel c={c} /></>}
-      {c.instructions.length > 0 && <><h4 className="syc-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><ol className="syc-steps">{c.instructions.map((t) => <li key={t}>{t}</li>)}</ol></>}
+      {c.instructions.length > 0 && <><h4 className="syc-h">{c.status === 'ok' ? 'How it was set up' : 'Fix it manually'}</h4><StepList className="syc-steps" steps={c.instructions} /></>}
       {c.links.length > 0 && <><h4 className="syc-h">Resources</h4><ul className="syc-links">{c.links.map((l) => <li key={l.url}><a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></li>)}</ul></>}
       {c.status === 'ok' && c.fix?.type === 'secrets' && <FixPanel c={c} />}
     </div>

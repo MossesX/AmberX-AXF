@@ -9,6 +9,7 @@
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, useRuntime } from './axf/react';
+import { CopyLink } from './commandText';
 import './pluginLifecycle.css';
 
 interface Ref { file: string; line: number; text: string; managed: boolean }
@@ -106,7 +107,12 @@ export function PluginLifecyclePanel({ folder }: { folder: string }) {
           <Button icon="eye" disabled={!!busy} onClick={() => void run('preview', 'uninstall', { ...uninstallBody, dryRun: true })}>Preview</Button>
           <Button tone="danger" icon="trash" disabled={!!busy || confirm !== folder} onClick={() => void run('uninstall', 'uninstall', { ...uninstallBody, confirm })}>Uninstall</Button>
         </div>
-        <p className="fx-small fx-muted">Terminal: <code className="fx-mono">node apps/console-web/plugins/{folder}/uninstall.mjs {level === 'all' ? '--all' : '--data'}{publish && level === 'all' ? ' --publish' : ''}</code> · install: <code className="fx-mono">node apps/console-web/plugins/{folder}/install.mjs</code></p>
+        <div className="fx-stack fx-small fx-muted">
+          <span>Or in a terminal on the VPS:</span>
+          {[`node apps/console-web/plugins/${folder}/uninstall.mjs ${level === 'all' ? '--all' : '--data'}${publish && level === 'all' ? ' --publish' : ''}`, `node apps/console-web/plugins/${folder}/install.mjs`, `node framework/cli/plugin-lifecycle.mjs check ${folder}${level === 'all' ? ' --after-uninstall' : ''}`].map((cmd) => (
+            <span key={cmd} className="cl-cmd"><code className="cl-cmd__code">{cmd}</code><CopyLink text={cmd} /></span>
+          ))}
+        </div>
       </div>
 
       {busy && <p className="fx-muted">Working ({busy})…</p>}

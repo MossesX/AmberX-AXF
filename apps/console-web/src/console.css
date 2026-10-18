@@ -288,3 +288,9 @@
 .syc-prompt__note { font-weight: 600 }
 .syc-prompt__actions { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-space) }
 @media (prefers-reduced-motion: reduce) { .syc-run.is-waiting { animation: none } }
+
+/* Commands with copy links (src/commandText.tsx): Systems check "Fix it manually", plugin lifecycle panel. */
+.cl-cmd { display: inline-flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); max-width: 100%; vertical-align: middle }
+.cl-cmd__code { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); overflow-wrap: anywhere; min-width: 0; user-select: all }
+.cl-copy { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: 0; border: 0; background: transparent; color: var(--fx-accent); font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14); cursor: pointer; text-decoration: underline; text-underline-offset: 2px }
+.cl-copy:hover { color: var(--fx-text) }
