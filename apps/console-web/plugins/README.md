@@ -24,6 +24,14 @@ the `id`, `FOLDER` and views in `web/index.tsx`, and the routes in `server/__ini
   404. The choice is kept in the console state file. Plugins are enabled unless `"enabledByDefault": false`.
 - **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
 
+## Look and naming
+
+A plugin's UI must conform to the theme engines: theme tokens only (no colour literals, hard-coded sizes or
+`var()` fallbacks), the framework's layout primitives, and the naming scheme (`axp-<folder>` prefix, BEM
+parts named for what they are, shared `is-*` states, never define `--fx-*`). The future plugin designer
+lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI runs
+`node framework/cli/check-theme.mjs` over every plugin.
+
 ## Security rules
 
 - Every server route of a plugin requires the console token (`AXF_TOKEN`) for **every** method, reads

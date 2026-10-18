@@ -62,18 +62,18 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
         </div>
       );
     case 'number':
-      control = <input className="fx-input" type="number" value={typeof value === 'number' ? value : ''} min={spec.min} max={spec.max} step={spec.step} disabled={locked} onChange={(e) => set(e.target.value === '' ? null : Number(e.target.value))} />;
+      control = <input className="axf-settings__field" type="number" value={typeof value === 'number' ? value : ''} min={spec.min} max={spec.max} step={spec.step} disabled={locked} onChange={(e) => set(e.target.value === '' ? null : Number(e.target.value))} />;
       break;
     case 'text':
     case 'secret':
-      control = <input className="fx-input" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'color':
-      control = <input type="color" value={typeof value === 'string' ? value : '#000000'} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'choice':
       control = (
-        <select className="fx-input" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
+        <select className="axf-settings__field" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
           {(spec.options ?? []).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       );
@@ -117,7 +117,7 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   const state = useAxfState();
   const options = rt.registry.list(type);
   return (
-    <select className="fx-input" value={state.active[type]} disabled={locked || options.length < 2} onChange={(e) => rt.swap(type, e.target.value)}>
+    <select className="axf-settings__field" value={state.active[type]} disabled={locked || options.length < 2} onChange={(e) => rt.swap(type, e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
     </select>
   );
@@ -143,7 +143,7 @@ function RolePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Acting as</span><span className="fx-muted axf-settings__hint">Roles come from the active access policy ({policy.name}).</span></div>
         <div className="axf-settings__control">
-          <select className="fx-input" value={state.role} onChange={(e) => rt.setRole(e.target.value)}>
+          <select className="axf-settings__field" value={state.role} onChange={(e) => rt.setRole(e.target.value)}>
             {policy.data.roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
           </select>
         </div>
@@ -184,7 +184,7 @@ function AboutPanel() {
     <div className="axf-settings__rows">
       <p style={{ marginTop: 0 }}><strong>{m.app.name}</strong> {m.app.version}</p>
       <p className="fx-muted">AmberX AXF {m.framework.version} · {m.framework.template} · {counts} assets · {rt.libraries.length} libraries</p>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="fx-row fx-row--wrap">
         <Button icon="info" onClick={() => rt.dispatch('help.about')}>About this app</Button>
         <Button icon="keyboard" onClick={() => rt.dispatch('view.shortcuts')}>Shortcuts</Button>
         <Button icon="refresh" requires="assets.swap" onClick={() => rt.dispatch('assets.reset')}>Reset assets to defaults</Button>
@@ -246,21 +246,28 @@ function applyDisplay(rt: AxfRuntime): void {
 
 /* ---------------- styles (tokens only) ---------------- */
 
+/* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
+   sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
 const CSS = `
-.axf-settings__tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.axf-settings__tab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:8px 12px;border-radius:var(--fx-radius-md,10px);border:1px solid var(--fx-border,rgba(127,127,127,.25));background:transparent;color:inherit;font:inherit;cursor:pointer}
-.axf-settings__tab.is-active{background:var(--fx-accent,#c96);color:var(--fx-on-accent,#fff);border-color:transparent}
-.axf-settings__rows{display:flex;flex-direction:column;gap:12px}
-.axf-settings__row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.axf-settings__tabs{display:flex;gap:var(--fx-space);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
+.axf-settings__tab:hover{color:var(--fx-text)}
+.axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
+.axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
+.axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
-.axf-settings__label{display:flex;flex-direction:column;gap:2px;min-width:180px;flex:1}
+.axf-settings__label{display:flex;flex-direction:column;gap:calc(var(--fx-space)*.25);min-width:180px;flex:1}
 .axf-settings__control{flex:0 1 260px;min-width:160px}
 .axf-settings__control select,.axf-settings__control input:not([type=checkbox]):not([type=color]){width:100%}
-.axf-settings__hint{font-size:.85em}
-.axf-settings__switch{display:inline-flex;gap:8px;align-items:center;cursor:pointer}
-.axf-settings__multi{display:flex;flex-direction:column;gap:4px}
-.axf-settings__section{margin:8px 0 0;font-size:.95em}
-.axf-settings__list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.axf-settings__field{font:inherit;padding:calc(var(--fx-space)*.75) var(--fx-space);border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2);color:var(--fx-text)}
+.axf-settings__field:focus-visible{outline:2px solid var(--fx-accent);outline-offset:1px}
+.axf-settings__field:disabled{opacity:.55}
+.axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
+.axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
+.axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}
+.axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
+.axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
+.axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
 [data-reduced-motion] *{transition:none!important;animation:none!important}
 `;
 

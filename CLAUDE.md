@@ -78,6 +78,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 ## Conventions & decisions
 
 - **Everything visible is an asset** (`asset@1`). Engines compile assets into tokens/variables; UI reads only compiled tokens and never hardcodes colours or sizes. Hot-swap = `runtime.swap(type, id)`.
+- **Plugin and library UIs conform to the theme engines** (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`; CI check: `node framework/cli/check-theme.mjs`.
 - `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.
 - **Engine compatibility across ports is a hard constraint.** Kotlin kernel and TS `framework/core` are the same design, file for file. Fixtures in `framework/spec/fixtures` are the conformance contract. Change a reference engine, then regenerate fixtures.
 - Android kernel is **pure Kotlin (no Android imports)**. Platform specifics go behind kernel seams. Packages are `ai.amberx.axf.*`, Maven coordinates are `ai.amberx.axf:<module>:<version>`.

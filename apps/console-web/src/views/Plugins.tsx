@@ -36,11 +36,11 @@ export function PluginsPanel() {
         const s = status?.find((x) => x.folder === p.folder);
         const enabled = s ? s.enabled : p.manifest.enabledByDefault !== false;
         return (
-          <div key={p.folder} style={{ borderTop: '1px solid var(--fx-border, rgba(127,127,127,.2))', paddingTop: 12 }}>
+          <div key={p.folder} className="fx-stack" style={{ borderTop: 'var(--fx-border-w) solid var(--fx-border)', paddingTop: 'calc(var(--fx-space) * 1.5)' }}>
             <strong>{p.manifest.name}</strong> <span className="fx-muted">{p.manifest.version}</span>
-            {p.manifest.description && <p className="fx-muted" style={{ margin: '4px 0' }}>{p.manifest.description}</p>}
-            <p className="fx-mono" style={{ fontSize: 12, margin: '4px 0' }}>{p.manifest.id} · plugins/{p.folder}</p>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', margin: '8px 0' }}>
+            {p.manifest.description && <p className="fx-muted" style={{ margin: 0 }}>{p.manifest.description}</p>}
+            <p className="fx-mono fx-small" style={{ margin: 0 }}>{p.manifest.id} · plugins/{p.folder}</p>
+            <div className="fx-row fx-row--wrap">
               <Chip tone={enabled ? 'success' : undefined}>{enabled ? 'enabled' : 'disabled'}</Chip>
               {s?.server === 'loaded' && <Chip tone="accent">server part loaded</Chip>}
               {s?.server === 'error' && <Chip tone="danger">server part failed</Chip>}
@@ -51,7 +51,7 @@ export function PluginsPanel() {
                 </Button>
               )}
             </div>
-            {s?.error && <p className="fx-mono" style={{ color: 'var(--fx-danger, #c33)', fontSize: 12 }}>{s.error}</p>}
+            {s?.error && <p className="fx-mono fx-small" style={{ color: 'var(--fx-danger)', margin: 0 }}>{s.error}</p>}
           </div>
         );
       })}

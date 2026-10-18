@@ -27,6 +27,8 @@ jobs:
       - run: node framework/cli/axf.mjs validate --framework
       - run: node framework/cli/tracker.mjs --check
       - run: node framework/cli/axf.mjs libraries
+      - name: Libraries and plugins conform to the theme engines
+        run: node framework/cli/check-theme.mjs
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e

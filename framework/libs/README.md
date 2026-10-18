@@ -5,6 +5,9 @@ Libraries for the web port (React/TypeScript), one folder each, generated from `
 (`framework/react/library.ts`); apps merge them with `installLibraries(runtime, [...])`.
 Type-check them all: `cd framework && npm install && npm run check:libs` (what `axf compile-library` runs).
 
+Every library with UI must conform to the theme engines and follow the naming principles in
+`framework/spec/THEMING.md` (prefix `axf-<library>`). CI checks it with `node framework/cli/check-theme.mjs`.
+
 ## settings (`ai.amberx.axf.settings`)
 
 Hand-written, schema-driven Settings page (web port of `framework/android/lib-settings`). Tabs: Appearance,

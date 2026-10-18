@@ -85,7 +85,7 @@ function ParamField({ p, value, onChange }: { p: LibraryParam; value: string; on
   const err = api.paramError(p, value);
   const def = api.paramDefaultText(p);
   if (p.type === 'bool') return <label className="fx-row"><input type="checkbox" checked={/^(true|yes|on|1)$/i.test(value || def)} onChange={(e) => onChange(String(e.target.checked))} /> {p.label}{p.help && <span className="fx-muted fx-small"> — {p.help}</span>}</label>;
-  if (p.type === 'choice') return <div className="fx-stack" style={{ gap: 4 }}><span>{p.label}</span>{p.help && <span className="fx-muted fx-small">{p.help}</span>}<div className="fx-row fx-row--wrap">{p.choices?.map((c) => <button key={c} className={`fx-chip ${(value || def) === c ? 'is-selected' : ''}`} onClick={() => onChange(c)}>{c}</button>)}</div></div>;
+  if (p.type === 'choice') return <div className="fx-stack" style={{ gap: 'calc(var(--fx-space) * .5)' }}><span>{p.label}</span>{p.help && <span className="fx-muted fx-small">{p.help}</span>}<div className="fx-row fx-row--wrap">{p.choices?.map((c) => <button key={c} className={`fx-chip ${(value || def) === c ? 'is-selected' : ''}`} onClick={() => onChange(c)}>{c}</button>)}</div></div>;
   return <label className="fx-field">{p.label}{p.required ? ' *' : ''}{p.type === 'list' ? <textarea className="fx-input fx-mono" rows={2} value={value} onChange={(e) => onChange(e.target.value)} placeholder={def || p.help} /> : <input className="fx-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={def || p.help} />}{p.help && <span className="fx-muted fx-small">{p.help}</span>}{err && <span className="fx-no fx-small">{err}</span>}</label>;
 }
 
