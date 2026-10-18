@@ -18,7 +18,7 @@ from fastapi import APIRouter, HTTPException
 
 import plugin_services
 
-from . import addons, engine, llm, memory, store, toolkit, training
+from . import containers, addons, engine, llm, memory, store, toolkit, training
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -38,7 +38,8 @@ class AgentsService:
     version = 1
 
     def list_agents(self) -> list[dict[str, Any]]:
-        return [{"id": a["id"], "name": a.get("name", a["id"]), "icon": a.get("icon", "user"), "description": a.get("description", ""), "origin": a.get("origin", "user")}
+        return [{"id": a["id"], "name": a.get("name", a["id"]), "icon": a.get("icon", "user"), "description": a.get("description", ""), "origin": a.get("origin", "user"),
+                 "dangerous": a["id"] in store.load_settings()["safety"]["dangerousAgents"]}
                 for a in sorted(store.items("agents").values(), key=lambda a: a.get("name", "").lower()) if a.get("enabled", True) is not False]
 
     def get_agent(self, agent_id: str) -> dict[str, Any] | None:
@@ -48,8 +49,17 @@ class AgentsService:
             return None
         if c["agent"].get("enabled", True) is False:
             return None
-        return {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
-                "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]}}
+        out = {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
+               "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
+               "voice": c["agent"].get("voice") or None, "writeMode": None}
+        if c.get("writeMode"):
+            cs = containers.service()
+            try:
+                reach = [x["name"] for x in cs.list() if x["reachable"]] if cs else []
+            except Exception:  # noqa: BLE001 — proxy down: still in write mode, list unknown
+                reach = []
+            out["writeMode"] = {"containers": reach, "snapshots": True}
+        return out
 
     def memory_context(self, agent_id: str, query: str) -> str:
         return memory.context_for(store.get("agents", agent_id), query)
@@ -59,13 +69,28 @@ class AgentsService:
         t = next((x for x in c["tools"] if x["name"] == name), None)
         if not t:
             raise ValueError(f"{c['agent'].get('name')} has no tool {name}")
-        return toolkit.execute(t, args, {"agent": c["agent"], "scope": c["memory"]["scope"], "depth": 0, "run_agent": engine.run_agent, "run_workflow": engine.run_workflow})
+        # ctx["stage"] (from the assistant's chat turn) collects proposed container changes for its approval card.
+        return toolkit.execute(t, args, {"agent": c["agent"], "scope": c["memory"]["scope"], "depth": 0, "run_agent": engine.run_agent, "run_workflow": engine.run_workflow,
+                                         "stage": (ctx or {}).get("stage")})
 
     def record_turn(self, agent_id: str, user_text: str, reply: str, meta: dict[str, Any] | None = None) -> None:
         memory.record(store.get("agents", agent_id), user_text, reply, meta)
 
 
 plugin_services.provide("axf.agents@1", AgentsService(), FOLDER)
+
+
+def _migrate_mosses() -> None:
+    """Coder 1.x → Mosses 2.x (same add-on id `coder`): reinstall keeps the agent's memory, swaps persona, skills and tools."""
+    try:
+        rec = store.addon_records().get("coder")
+        if rec and str(rec.get("version", "")).startswith("1.") and "coder" in addons.bundles():
+            addons.install("coder", run_training=False)
+    except Exception:  # noqa: BLE001 — never block the console start
+        pass
+
+
+_migrate_mosses()
 training.start_scheduler(lambda: plugin_services.get("axf.agents@1") is not None)
 
 
@@ -106,6 +131,9 @@ def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     for k in ("preferAssistant", "scheduler"):
         if k in body:
             s[k] = bool(body[k])
+    if isinstance(body.get("safety"), dict) and isinstance(body["safety"].get("dangerousAgents"), list):
+        ids = [str(x) for x in body["safety"]["dangerousAgents"] if store.ID_RE.match(str(x))][:20]
+        s["safety"] = {**s["safety"], "dangerousAgents": sorted(set(ids))}
     store.save_settings(s)
     return store.public_settings()
 
@@ -148,6 +176,12 @@ def _validate(coll: str, rec: dict[str, Any]) -> dict[str, Any]:
             rec[f] = [x for x in rec.get(f) or [] if x in have and x != rec.get("id")]
         if rec.get("personaId") and rec["personaId"] not in store.items("personas"):
             rec["personaId"] = ""
+        # Voice slot: empty until a voice plugin provides voices (provider + voice id); `hint` describes the wanted voice.
+        v = rec.get("voice")
+        if v is not None and not isinstance(v, dict):
+            raise ValueError("voice is an object {provider, voiceId, hint} or null")
+        if isinstance(v, dict):
+            rec["voice"] = {k: str(v.get(k) or "")[:200] for k in ("provider", "voiceId", "hint")}
     if coll == "workflows":
         if (rec.get("mode") or "sequential") not in ("sequential", "parallel", "router", "critic"):
             raise ValueError("mode is sequential, parallel, router or critic")

@@ -253,8 +253,10 @@ def _to_openai(messages: list[dict[str, Any]], system: str | None) -> list[dict[
 
 def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, system: str | None = None, model: str | None = None,
                 tools: list[dict[str, Any]] | None = None, params: dict[str, Any] | None = None,
-                cancel: threading.Event | None = None, cwd: str | None = None) -> Iterator[dict[str, Any]]:
-    """Stream one model call. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job."""
+                cancel: threading.Event | None = None, cwd: str | None = None,
+                tool_runner: Callable[[str, dict[str, Any]], tuple[bool, str]] | None = None) -> Iterator[dict[str, Any]]:
+    """Stream one model call. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
+    ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI)."""
     proto = protocol_of(profile)
     model = model or profile.get("defaultModel") or (BY_KIND.get(profile.get("kind", ""), {}).get("models") or [""])[0]
     if not model:

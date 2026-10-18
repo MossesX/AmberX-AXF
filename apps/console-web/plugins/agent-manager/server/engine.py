@@ -14,7 +14,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from . import llm, memory, store, toolkit
+from . import containers, llm, memory, store, toolkit
 
 MEMORY_TOOLS = ("memory_search", "memory_save")
 
@@ -61,6 +61,22 @@ def compose(agent_id: str) -> dict[str, Any]:
         parts.append(f"## Instructions\n{a['instructions'].strip()}")
     tool_ids = list(dict.fromkeys([*(a.get("toolIds") or []), *[t for s in sk for t in (s.get("toolIds") or [])]]))
     trecs = [tools[t] for t in tool_ids if t in tools and tools[t].get("enabled", True) is not False]
+    # Safety (never decided by a persona or skill): dangerous tools only for allowed agents; container tools only when
+    # Container access is there; change proposals only when Snapshot Manager is there too.
+    allowed = agent_id in store.load_settings().get("safety", {}).get("dangerousAgents", [])
+    dropped = [t["name"] for t in trecs if toolkit.is_dangerous(t) and not allowed]
+    trecs = [t for t in trecs if allowed or not toolkit.is_dangerous(t)]
+    avail = containers.available()
+    if not avail["containers"]:
+        trecs = [t for t in trecs if not containers.is_container_tool(t)]
+    elif not avail["snapshots"]:
+        trecs = [t for t in trecs if (t.get("config") or {}).get("builtin") not in containers.WRITE_TOOLS]
+    write_mode = any((t.get("config") or {}).get("builtin") in containers.WRITE_TOOLS for t in trecs if t.get("kind") == "builtin")
+    if any(containers.is_container_tool(t) for t in trecs):
+        parts.append(containers.GUIDE if write_mode else "## Containers (read only)\nYou can read files in the VPS containers. Changes aren't possible right now"
+                     + (" (Snapshot Manager isn't installed: nothing is written without a snapshot)." if not avail["snapshots"] else "."))
+    if dropped:
+        parts.append("## Safety\nSome tools are switched off for you (only allowed agents get tools that change things): " + ", ".join(dropped))
     mcfg = memory.config(a)
     if mcfg["type"] != "none":
         have = {t["name"] for t in trecs}
@@ -74,7 +90,7 @@ def compose(agent_id: str) -> dict[str, Any]:
                       "description": f"Delegate a task to {d.get('name')}: {d.get('description', '')[:200]}", "parameters": {"type": "object", "properties": {"task": {"type": "string"}}, "required": ["task"]}})
     if trecs:
         parts.append("## Tools\nUse your tools when they help; read before you claim. Tools: " + ", ".join(t["name"] for t in trecs))
-    return {"agent": a, "system": "\n\n".join(parts), "tools": trecs, "model": a.get("model") or {}, "memory": mcfg}
+    return {"agent": a, "system": "\n\n".join(parts), "tools": trecs, "model": a.get("model") or {}, "memory": mcfg, "writeMode": write_mode}
 
 
 def run_agent(agent_id: str, task: str, history: list[dict[str, Any]] | None = None, depth: int = 0, max_rounds: int = 10, use_memory: bool = True) -> dict[str, Any]:
