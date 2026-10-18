@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T04:11:52.092Z",
+ "generatedAt": "2026-10-18T04:22:03.007Z",
  "statuses": [
   "built",
   "partial",
@@ -21265,42 +21265,43 @@
    "title": "Pending build list manager (console)",
    "area": "Dev Console",
    "kind": "epic",
-   "status": "planned",
+   "status": "built",
    "priority": "P1",
    "wave": 2,
    "effort": "M",
    "summary": "A console view for the pending build list: date added next to everything not built, date built next to built items, sortable by status and by date.",
    "ports": {
     "web": {
-     "status": "planned",
-     "where": "—"
-    },
-    "android": {
-     "status": "planned",
-     "where": "—"
+     "status": "built",
+     "where": "apps/console-web/src/views/Pending.tsx"
     }
    },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [],
    "modules": [],
-   "files": [],
+   "files": [
+    "framework/plan/pending-core.mjs",
+    "framework/plan/pending.json",
+    "framework/cli/pending.mjs",
+    "apps/console-web/src/views/Pending.tsx"
+   ],
    "acceptance": [
     {
      "text": "Shows added date for unbuilt items and built date for built ones",
-     "done": false
+     "done": true
     },
     {
      "text": "Sort by status",
-     "done": false
+     "done": true
     },
     {
      "text": "Sort by date (added / built)",
-     "done": false
+     "done": true
     },
     {
      "text": "Reads and writes plan.json through the console API",
-     "done": false
+     "done": true
     }
    ],
    "warnings": [],
@@ -21322,12 +21323,17 @@
     {
      "at": "2026-10-18T04:10:52.490Z",
      "text": "Added to the pending build list (waits on Fable)"
+    },
+    {
+     "at": "2026-10-18T04:22:02.806Z",
+     "text": "Built on Opus: console Pending view + /api/pending + MCP pending_list/pending_change"
     }
    ],
    "model": "fable",
    "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
    "edited": true,
-   "modelEdited": true
+   "modelEdited": true,
+   "statusEdited": true
   }
  ]
 }

@@ -9,7 +9,7 @@ import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { buttonStyle, containerStyle, contextMenuStyle, dialogStyle, popupStyle, sliderStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { OutputTerminal } from './terminal';
@@ -304,6 +304,9 @@ export class AxfRuntime {
       dialogStyle(this.asset('dialog').data),
       popupStyle(this.asset('popup').data),
       contextMenuStyle(this.asset('context-menu').data),
+      toolbarStyle(this.asset('toolbar').data),
+      navMenuStyle(this.asset('nav-menu').data),
+      appMenuStyle(this.asset('app-menu').data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

@@ -213,10 +213,15 @@
     "x.console.api",
     "x.console.build"
    ]
+  },
+  "x.console.pending": {
+   "completedAt": "2026-10-18T04:22:02.883Z",
+   "completedBy": "feature-tracker",
+   "deps": []
   }
  },
- "dirty": false,
- "updatedAt": "2026-10-18T04:10:00.000Z",
+ "dirty": true,
+ "updatedAt": "2026-10-18T04:22:02.883Z",
  "history": [
   {
    "at": "2026-10-17T16:12:45.936Z",
@@ -242,6 +247,11 @@
    "at": "2026-10-18T04:10:00.000Z",
    "by": "claude.ai",
    "text": "Pending (waits on Fable): asset designer, asset browser, plugin manager + settings tabs, asset templates, pending build list manager"
+  },
+  {
+   "at": "2026-10-18T04:22:02.883Z",
+   "by": "cli",
+   "text": "Synced with the feature tracker: 1 change(s)"
   }
  ]
 }

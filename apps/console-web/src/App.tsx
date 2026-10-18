@@ -13,6 +13,7 @@ import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
+import { Pending } from './views/Pending';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { consoleSettings } from './consoleSettings';
@@ -23,6 +24,7 @@ const views: ViewMap = {
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
   build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
+  pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
   catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },

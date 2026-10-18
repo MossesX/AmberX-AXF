@@ -105,12 +105,20 @@ export interface LayoutData {
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;
   contentMaxWidth: number;
+  /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
+  slots?: Partial<Record<string, string[]>>;
 }
+
+/** Shared density / surface vocabulary for chrome assets (toolbar, nav-menu, app-menu). */
+export type ChromeDensity = 'compact' | 'regular' | 'roomy';
+export type ChromeSurface = 'flat' | 'raised' | 'glass';
 
 /* ---------- navigation ---------- */
 
 export interface AppMenuData {
   menus: { id: string; label: string; items: MenuItem[] }[];
+  density?: ChromeDensity;
+  surface?: ChromeSurface;
 }
 
 export interface ToolbarItem {
@@ -126,6 +134,11 @@ export interface ToolbarData {
   align: 'start' | 'center' | 'spread';
   groups: { id: string; items: ToolbarItem[] }[];
   showSearch: boolean;
+  window?: string;
+  density?: ChromeDensity;
+  surface?: ChromeSurface;
+  /** rule between item groups (default true) */
+  divider?: boolean;
 }
 
 export interface NavItem {
@@ -141,6 +154,10 @@ export interface NavMenuData {
   style: 'list' | 'pills' | 'rail';
   header?: string;
   sections: { label?: string; items: NavItem[] }[];
+  density?: ChromeDensity;
+  indicator?: 'auto' | 'bar' | 'fill' | 'none';
+  /** default true */
+  showIcons?: boolean;
 }
 
 export interface ContextMenuData {

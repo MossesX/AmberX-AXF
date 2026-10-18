@@ -139,3 +139,40 @@
 .bm-list { margin: 0; padding-left: calc(var(--fx-space) * 2.25); max-height: 40vh; overflow: auto } .bm-list li { margin: calc(var(--fx-space) * 0.5) 0 }
 @media (max-width: 640px) { .bm-progress, .bm-state { display: none } .bm-step__body { padding-left: calc(var(--fx-space) * 1.75) } }
 .bm-dialog { max-width: 100%; overflow-wrap: anywhere } .bm-dialog .fx-row { flex-wrap: wrap }
+
+/* ---------------- pending builds (views/Pending.tsx) ---------------- */
+.pd-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--fx-space) }
+.pd-count { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.125); text-align: left; padding: var(--fx-space) calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); cursor: pointer }
+.pd-count b { font-size: calc(var(--fx-font-size) * 1.5); font-variant-numeric: tabular-nums }
+.pd-count span { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: 0.06em; color: var(--fx-muted) }
+.pd-count[aria-pressed='true'] { border-color: var(--fx-accent); box-shadow: inset 0 0 0 var(--fx-border-w) var(--fx-accent) }
+.pd-sortbar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.75) }
+.pd-sort { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.375); padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
+.pd-sort[aria-pressed='true'] { background: var(--fx-accent); border-color: var(--fx-accent); color: var(--fx-accent-text) }
+.pd-list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 1.5) }
+.pd-card { display: flex; flex-direction: column; gap: var(--fx-space); padding: calc(var(--fx-space) * 2); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.pd-card.is-complete { opacity: max(var(--fx-opacity-muted), 0.8) }
+.pd-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fx-space); flex-wrap: wrap }
+.pd-card__title { margin: 0; font-size: calc(var(--fx-font-size) * 16 / 14); font-weight: 600; flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; overflow-wrap: anywhere }
+.pd-badge { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: 0; cursor: pointer; color: var(--fx-text); background: var(--fx-surface2) }
+.pd-badge:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
+.pd-badge.is-pending { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-warning) }
+.pd-badge.is-complete { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-success) }
+.pd-badge.is-failed { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger) }
+.pd-badge.is-broken { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-info) }
+.pd-meta { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 1.5); font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted) }
+.pd-date { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.375); color: var(--fx-text); font-weight: 600 }
+.pd-date.is-built { color: var(--fx-success) }
+.pd-detail { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.pd-thread { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) dashed var(--fx-border); padding-top: var(--fx-space) }
+.pd-thread h3 { margin: 0; font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: 0.07em; color: var(--fx-muted); font-weight: 500 }
+.pd-entry { display: flex; gap: var(--fx-space); min-width: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.pd-entry time { color: var(--fx-muted); white-space: nowrap; font-size: calc(var(--fx-font-size) * 11 / 14); padding-top: calc(var(--fx-space) * 0.25) }
+.pd-entry p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0 }
+.pd-entry.is-mono p { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.pd-confirm { color: var(--fx-danger) }
+.pd-add { padding: calc(var(--fx-space) * 1.5) calc(var(--fx-space) * 2); border-radius: var(--fx-radius-lg); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.pd-add summary { cursor: pointer; font-weight: 600; margin-bottom: var(--fx-space) }
+.pd-field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted) }
+.pd-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--fx-space) }
+@media (max-width: 520px) { .pd-strip { grid-template-columns: repeat(2, minmax(0, 1fr)) } .pd-two { grid-template-columns: 1fr } }

@@ -39,6 +39,7 @@ WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHin
 
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
+Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
 Model policy (top three models only): Fable 5.1 where the work needs the strongest reasoning (kernel internals,
 porting, cross-port contracts, heavy refactors); Opus 5.5 for everything else; Sonnet 5.5 only where it is clearly
 enough. Security-adjacent work (servers, shells, auth, deploy) stays on Opus.
@@ -232,6 +233,35 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         return {"log": r.get("log", []), "counts": r["view"]["counts"], "next": r["view"]["next"]}
 
     # ------------------------------------------------------------------ catalog, libraries, templates, projects
+
+    @mcp.tool(annotations=READ)
+    async def pending_list(sort: Literal["status", "added", "built"] = "status", status: str = "") -> dict[str, Any]:
+        """The pending build list: builds parked until their model (usually Fable) is available. Check it before
+        starting any build. Each item shows when it was added and, once complete, when it was built."""
+        r = await run("pending")
+        order = {"pending": 0, "broken": 1, "failed": 2, "complete": 3}
+        items = [i for i in r.get("items", []) if not status or i.get("status") == status]
+        items.sort(key=lambda i: i.get("createdAt", ""), reverse=True)  # newest first breaks every tie (stable sorts)
+        if sort == "status":
+            items.sort(key=lambda i: order.get(i.get("status"), 9))
+        elif sort == "built":
+            items.sort(key=lambda i: i.get("builtAt", ""), reverse=True)  # ISO dates sort as text; unbuilt ("") land last
+        return {"artifact": r.get("artifact"), "count": len(items), "items": items}
+
+    @mcp.tool(annotations=WRITE)
+    async def pending_change(action: Literal["add", "update", "status", "note", "sub", "remove"], id: str = "", title: str = "",
+                             detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
+                             status: Literal["", "pending", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "") -> dict[str, Any]:
+        """Change the pending build list. add needs title (model defaults to Fable); status marks complete/failed/broken
+        (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item."""
+        change: dict[str, Any] = {"action": action, "source": "mcp"}
+        for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id)):
+            if v:
+                change[k] = v
+        if detail is not None:
+            change["detail"] = detail
+        r = await run("pending-act", change=change)
+        return {"item": r.get("item"), "log": r.get("log", [])}
 
     @mcp.tool(annotations=READ)
     async def tracker_summary() -> dict[str, Any]:

@@ -203,6 +203,19 @@ def plan_rebuild() -> Any:
     return ok_or_500(engine("plan-rebuild", "plan"))
 
 
+@app.get("/api/pending")
+def pending() -> Any:
+    """The pending build list (framework/plan/pending.json, pending@1): builds parked until their model is available."""
+    return engine("pending")
+
+
+@app.post("/api/pending", dependencies=[Depends(auth)])
+async def pending_act(request: Request) -> Any:
+    """One change: {action: add|update|status|note|sub|remove, ...} — see framework/plan/pending-core.mjs."""
+    body = await request.json()
+    return ok_or_500(engine("pending-act", "pending", change=body))
+
+
 @app.get("/api/build-queue")
 def build_queue() -> Any:
     return ok_or_500(engine("build-queue", "build"))

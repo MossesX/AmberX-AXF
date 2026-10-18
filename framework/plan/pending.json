@@ -1,0 +1,90 @@
+{
+ "$axf": "pending@1",
+ "updatedAt": "2026-10-18T04:21:56.128Z",
+ "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+ "items": [
+  {
+   "id": "named-asset-rule",
+   "title": "Every UI element is a named asset",
+   "detail": "Apply the rule across schemas/asset-types.json, the web and Android ports, the 39 starter assets and the conformance fixtures.\n\n- Two tiers: element assets (button, slider, toggle, input, icon, label...) and parent assets (toolbar, menu, nav, app menu, dialog, container, window). A standalone element in a layout is its own named asset; groups only exist inside a parent asset.\n- Namespaced ids for every asset (e.g. axf.button.save, axf.toolbar.editor); layouts and parents reference ids.\n- Split instance (label, icon, action, state) from skin (style asset + theme tokens).\n- Slots with type contracts in layout regions and parents; hot-swap and drag-and-drop = rebinding a slot to a compatible asset id.\n- Kernel unchanged (open type registry).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:05:00.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T04:03:12.610Z",
+   "source": "artifact"
+  },
+  {
+   "id": "asset-designer",
+   "title": "Asset Designer plugin (no-code)",
+   "detail": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a drawer asset type. Installed by default.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "planId": "x.assets.designer",
+   "source": "plan"
+  },
+  {
+   "id": "asset-browser",
+   "title": "Asset Browser plugin",
+   "detail": "Browse, preview, import, export and hot-swap assets across apps built on AXF. Installed by default.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "planId": "x.assets.browser",
+   "source": "plan"
+  },
+  {
+   "id": "plugin-manager",
+   "title": "Plugin manager + settings tabs for every app",
+   "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "planId": "x.plugins.manager",
+   "source": "plan"
+  },
+  {
+   "id": "asset-templates",
+   "title": "Asset templates: 10+ per type + defaults",
+   "detail": "At least 10 editable templates/boilerplates for every asset type the designer covers, plus a default asset per type.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "planId": "x.assets.templates",
+   "source": "plan"
+  },
+  {
+   "id": "pending-list-manager",
+   "title": "Pending build list manager (console)",
+   "detail": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-18T04:10:00.000Z",
+   "builtAt": "2026-10-18T04:21:56.128Z",
+   "updatedAt": "2026-10-18T04:21:56.128Z",
+   "planId": "x.console.pending",
+   "source": "plan"
+  }
+ ]
+}

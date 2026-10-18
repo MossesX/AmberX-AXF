@@ -35,6 +35,12 @@
             "view": "build"
           },
           {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
             "id": "tracker",
             "label": "Tracker",
             "icon": "check-circle",

@@ -66,11 +66,28 @@ export function validateAsset(raw: unknown): ValidationResult {
     if (!isObj(inner)) continue;
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
+  if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/**
+ * Layout slot contract: keys must be regions from asset-types.json (layout.slots.regions),
+ * values lists of known asset types. Same messages in build-engine.mjs and AssetValidator.kt.
+ */
+export function validateSlots(slots: unknown, known: (t: string) => boolean): string[] {
+  const regions = (spec.types.layout as unknown as { slots: { regions: string[] } }).slots.regions;
+  if (!isObj(slots)) return ['data.slots must be an object'];
+  const errors: string[] = [];
+  for (const [r, types] of Object.entries(slots)) {
+    if (!regions.includes(r)) { errors.push(`data.slots.${r} is not a layout region (one of: ${regions.join(', ')})`); continue; }
+    if (!Array.isArray(types)) { errors.push(`data.slots.${r} must be a list of asset types`); continue; }
+    for (const t of types) if (typeof t !== 'string' || !known(t)) errors.push(`data.slots.${r} accepts unknown asset type "${String(t)}"`);
+  }
+  return errors;
 }
 
 export function asEnvelope(raw: unknown): AssetEnvelope {

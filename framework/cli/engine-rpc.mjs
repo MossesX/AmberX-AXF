@@ -18,6 +18,7 @@ import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
+import { actPending, loadPending } from './pending.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -68,6 +69,8 @@ function run() {
     case 'compile-library': return compileLibrary({ slug: b.slug, ports: b.ports, log });
     case 'port-library': { const r = portLibrary({ slug: b.slug, to: b.to, log }); writeLibrariesIndex(); return r; }
     case 'remove-library': { const r = removeLibrary({ slug: b.slug, log }); writeLibrariesIndex(); return r; }
+    case 'pending': return loadPending();
+    case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
     case 'plan': return loadPlan();
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }
     case 'plan-upsert': { const f = upsertFeature(b.feature, b.note); log(`plan: ${f.id} saved (${f.status})`); syncAfter(); return { feature: f }; }

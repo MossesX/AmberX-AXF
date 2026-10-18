@@ -138,6 +138,11 @@ export type BuildResult = EngineResult & { state?: QueueState; view?: QueueView;
 export const buildPost = (path: 'sync' | 'order' | 'reprocess' | 'step', body: unknown) => post(`build-queue/${path}`, body) as Promise<BuildResult>;
 export interface Plan { generatedAt: string; features: PlanFeature[] }
 export const loadPlan = () => getJson<Plan>('plan', 'plan.json');
+
+/* ---------------- pending build list (framework/plan/pending.json) ---------------- */
+import type { PendingAction, PendingItem, PendingState } from './axf/plan/pending-core.mjs';
+export const loadPending = () => getJson<PendingState>('pending', 'pending.json');
+export const pendingPost = (change: PendingAction) => post('pending', change) as Promise<EngineResult & { state?: PendingState; item?: PendingItem }>;
 export const savePlanFeature = (feature: PlanFeature, note?: string) => post('plan/feature', { feature, note });
 export const deletePlanFeature = (id: string) => post('plan/delete', { id });
 export const uploadPlanMedia = (id: string, dataUrl: string) => post('plan/media', { id, dataUrl });

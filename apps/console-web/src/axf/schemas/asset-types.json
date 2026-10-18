@@ -118,6 +118,43 @@
           "right",
           "none"
         ]
+      },
+      "slots": {
+        "regions": [
+          "menubar",
+          "toolbar",
+          "nav",
+          "main",
+          "inspector",
+          "status",
+          "fab",
+          "sheet",
+          "overlay"
+        ],
+        "defaults": {
+          "menubar": [
+            "app-menu"
+          ],
+          "toolbar": [
+            "toolbar"
+          ],
+          "nav": [
+            "nav-menu"
+          ],
+          "main": [],
+          "inspector": [],
+          "status": [],
+          "fab": [],
+          "sheet": [],
+          "overlay": [
+            "dialog",
+            "popup",
+            "context-menu"
+          ]
+        }
+      },
+      "optional_fields": {
+        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types."
       }
     },
     "app-menu": {
@@ -126,7 +163,23 @@
       "icon": "menu",
       "required": [
         "menus"
-      ]
+      ],
+      "enums": {
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "surface": [
+          "flat",
+          "raised",
+          "glass"
+        ]
+      },
+      "optional_fields": {
+        "density": "compact | regular (default) | roomy — menubar height",
+        "surface": "flat (default) | raised | glass"
+      }
     },
     "toolbar": {
       "label": "Toolbar",
@@ -148,10 +201,23 @@
           "start",
           "center",
           "spread"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "surface": [
+          "flat",
+          "raised",
+          "glass"
         ]
       },
       "optional_fields": {
-        "window": "id or kind of the window this toolbar is attached to (`main` by default); the window-settings icon renders only when the toolbar is inside a floating window"
+        "window": "id or kind of the window this toolbar is attached to (`main` by default); the window-settings icon renders only when the toolbar is inside a floating window",
+        "density": "compact | regular (default) | roomy — toolbar padding and button height",
+        "surface": "flat (default) | raised | glass",
+        "divider": "boolean, default true — rule between item groups"
       }
     },
     "nav-menu": {
@@ -167,7 +233,23 @@
           "list",
           "pills",
           "rail"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "indicator": [
+          "auto",
+          "bar",
+          "fill",
+          "none"
         ]
+      },
+      "optional_fields": {
+        "density": "compact | regular (default) | roomy — item padding",
+        "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
+        "showIcons": "boolean, default true"
       }
     },
     "context-menu": {
