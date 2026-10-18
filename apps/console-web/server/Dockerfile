@@ -16,4 +16,5 @@ RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
 # install-console.sh mounts the host clone over /axf, hiding apps/console-web/dist; serve the copy outside it.
 ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
 EXPOSE 7090
-CMD ["sh", "-c", "cd apps/console-web/server && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+# umask 002: files written into /Claude stay group-writable for axHub (claude-fs@1).
+CMD ["sh", "-c", "umask 002 && cd apps/console-web/server && uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

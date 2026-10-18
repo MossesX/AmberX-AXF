@@ -56,15 +56,16 @@ if [[ "${1:-}" == "--install" ]]; then
     [[ -f "$rc" ]] || continue
     grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: ask how to sign in and which model before starting Claude Code\nalias claude='claude-pick'\n" >> "$rc"
   done
-  # Brett's rules + memory, imported from this clone so they stay current after every git pull.
-  rules="$(cd "$HERE/.." && pwd)/memory/RULES.md"
-  if [[ -f "$rules" ]] && ! grep -qF "@$rules" "$HOME/.claude/CLAUDE.md" 2>/dev/null; then
-    printf "\n<!-- AXF rules: Brett's working rules, decisions and memory (from the AmberX-AXF clone) -->\n@%s\n" "$rules" >> "$HOME/.claude/CLAUDE.md"
+  # Brett's rules + memory (claude-fs@1): the claude-sync SessionStart hook syncs and loads _memory/ in every
+  # project and _memory/shared everywhere. Drop the older @…/memory/RULES.md import if an earlier install added it.
+  if [[ -f "$HOME/.claude/CLAUDE.md" ]]; then
+    sed -i '/<!-- AXF rules: Brett.s working rules/d; /^@.*\/memory\/RULES\.md$/d' "$HOME/.claude/CLAUDE.md"
   fi
-  # Shared memory on axHub (memory/<repo>/): install its SessionStart hook when the axHub clone is here.
-  for hub in "$HOME/axHub" "$HOME/axhub" "$(cd "$HERE/../.." && pwd)/axHub"; do
-    if [[ -f "$hub/clients/claude-code/axhub-memory.mjs" ]]; then node "$hub/clients/claude-code/axhub-memory.mjs" install; break; fi
+  found=""
+  for hub in "$HOME/axHub" "$HOME/axhub" "$(cd "$HERE/../.." && pwd)/axHub" "$(cd "$HERE/../.." && pwd)/axhub"; do
+    if [[ -f "$hub/clients/claude-code/claude-sync.mjs" ]]; then node "$hub/clients/claude-code/claude-sync.mjs" install; found=1; break; fi
   done
+  [[ -n "$found" ]] || echo "Memory sync: clone MossesX/axHub to ~/axHub, then run: node ~/axHub/clients/claude-code/claude-sync.mjs install"
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
   echo "Save an API key with: claude-pick --set-key   ·   bypass the menus with: command claude …"
   exit 0

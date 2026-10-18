@@ -54,15 +54,32 @@ chmod 600 "$ENVF"
 
 # ---- 3. image ----
 say "Building image (first build takes a few minutes: npm ci + pip)"
-# live data (pending list, plan, build queue, catalog status, tracker) lives on the hub: $PERSIST_DIR/amberx-axf/
-PERSIST_DIR="${PERSIST_DIR:-/opt/axhub/persist}"
-mkdir -p "$PERSIST_DIR"
-AXF_PERSIST_DIR="$PERSIST_DIR" node "$DIR/framework/cli/persist.mjs" push 2>/dev/null | sed 's/^/[axf] /' || say "node not on the host; the console seeds $PERSIST_DIR/amberx-axf on first read"
+# live data (pending list, plan, build queue, catalog status, tracker) lives on the hub, claude-fs@1:
+#   $CLAUDE_ROOT/projects/amberx-axf/data/<same path as in the repo>   (shared with the axHub container, uid 1000)
+CLAUDE_ROOT="${CLAUDE_ROOT:-/Claude}"
+DATA_DIR="$CLAUDE_ROOT/projects/amberx-axf/data"
+HUB_UID="${HUB_UID:-1000}"
+mkdir -p "$CLAUDE_ROOT/_memory/shared" "$CLAUDE_ROOT/projects"
+OLD_PERSIST="${PERSIST_DIR:-/opt/axhub/persist}"
+if [ -d "$OLD_PERSIST" ]; then
+  for old in "$OLD_PERSIST"/*/; do
+    [ -d "$old" ] || continue
+    p="$(basename "$old")"; to="$CLAUDE_ROOT/projects/$p/data"
+    if [ -e "$to" ]; then say "kept $to (already there); old copy left in $old"; else mkdir -p "$(dirname "$to")"; mv "$old" "$to"; say "moved $old -> $to"; fi
+  done
+  rmdir "$OLD_PERSIST" 2>/dev/null && say "removed empty $OLD_PERSIST" || true
+fi
+mkdir -p "$DATA_DIR"
+AXF_DATA_DIR="$DATA_DIR" node "$DIR/framework/cli/persist.mjs" push 2>/dev/null | sed 's/^/[axf] /' || say "node not on the host; the console seeds $DATA_DIR on first read"
+# Both the console (root, umask 002) and axHub (uid $HUB_UID) write here: group $HUB_UID, setgid folders, group-writable files.
+chown -R "$HUB_UID:$HUB_UID" "$CLAUDE_ROOT"
+find "$CLAUDE_ROOT" -type d -exec chmod 2770 {} +
+find "$CLAUDE_ROOT" -type f -exec chmod ug+rw,o-rwx {} +
 docker build -q -f "$DIR/apps/console-web/server/Dockerfile" -t "$NAME:latest" "$DIR" >/dev/null
 
 # ---- 4. container ----
 docker rm -f "$NAME" >/dev/null 2>&1 || true
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$PERSIST_DIR":/persist -e AXF_PERSIST_DIR=/persist -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf -v "$DATA_DIR":/data -e AXF_DATA_DIR=/data -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
 if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
   NET="$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | tr ' ' '\n' | grep -x coolify || true)"

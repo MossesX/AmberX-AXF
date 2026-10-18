@@ -1,37 +1,39 @@
 #!/usr/bin/env node
 /**
- * persist — where the framework's live data lives.
+ * persist — where the framework's live data lives (claude-fs@1, axHub decisions #71-#76).
  *
- * Live data (the pending build list, the plan + its media, the build queue, catalog status + libraries index,
- * tracker.json) is read
- * and written in the hub's persist folder on the VPS, in a subfolder named after this repo:
+ * Live data (the paths in `_memory/data.json`: pending list, plan + media, build queue, catalog status +
+ * libraries index, tracker.json) is read and written in the project's data folder on the hub:
  *
- *   <AXF_PERSIST_DIR>/<AXF_PERSIST_REPO>/<same path as in the repo>
- *   e.g. /opt/axhub/persist/amberx-axf/framework/plan/pending.json
+ *   /Claude/projects/amberx-axf/data/<same path as in the repo>
+ *   e.g. /Claude/projects/amberx-axf/data/framework/plan/pending.json
  *
- * Resolution of the persist folder:
- *   AXF_PERSIST_DIR set      → that folder ('off' or '' forces the repo copy, e.g. in CI)
- *   else /opt/axhub/persist  → used when it exists (the hub's folder on the VPS)
- *   else                     → the repo copy (laptops, CI, fresh clones): behaviour is unchanged
- * AXF_PERSIST_REPO overrides the subfolder name (default: amberx-axf).
+ * Resolution of the data folder:
+ *   AXF_DATA_DIR set         → that folder exactly ('off' forces the repo copy, e.g. in CI)
+ *   AXF_PERSIST_DIR set      → <that>/<AXF_PERSIST_REPO> (older setups; 'off' forces the repo copy)
+ *   else /Claude exists      → /Claude/projects/<AXF_PERSIST_REPO>/data (CLAUDE_ROOT overrides /Claude)
+ *   else                     → the repo copy (laptops, CI, fresh clones)
+ * AXF_PERSIST_REPO overrides the project name (default: amberx-axf).
  *
- * A file missing on the hub is seeded from the repo copy the first time it is read, so nothing is lost on switch-over.
- * The repo copies stay as the seed and as committed snapshots (`pull`), since the repo is also the shared memory.
+ * A file missing on the hub is seeded from the repo copy the first time it is read. The repo copies at the
+ * original paths are synced snapshots: `claude-sync sync` keeps them in step (three-way, conflicts held), and
+ * they are committed.
  *
  *   node framework/cli/persist.mjs            where each live file is read from
  *   node framework/cli/persist.mjs push       copy repo → hub for files the hub doesn't have yet (--force: overwrite)
  *   node framework/cli/persist.mjs pull       copy hub → repo, to commit a snapshot
  */
-import { cpSync, existsSync, mkdirSync, statSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
-export const DEFAULT_HUB_PERSIST = '/opt/axhub/persist';
+export const CLAUDE_ROOT = process.env.CLAUDE_ROOT || '/Claude';
+const PROJECT = () => process.env.AXF_PERSIST_REPO || 'amberx-axf';
 
-/** Live data, as paths relative to the repo root. Directories end with '/'. */
-export const LIVE_DATA = [
+/** Built-in list, used when `_memory/data.json` is missing or unreadable. */
+const DEFAULT_LIVE_DATA = [
   'framework/plan/pending.json',
   'framework/plan/plan.json',
   'framework/plan/build-queue.json',
@@ -41,13 +43,22 @@ export const LIVE_DATA = [
   'tracker.json',
 ];
 
+/** Live data, as paths relative to the repo root (directories end with '/'), from `_memory/data.json` (claude-data@1). */
+export const LIVE_DATA = (() => {
+  try {
+    const map = JSON.parse(readFileSync(join(REPO_ROOT, '_memory', 'data.json'), 'utf8'));
+    const paths = (map.paths ?? []).filter((p) => typeof p === 'string' && p && !p.startsWith('/') && !p.split('/').includes('..'));
+    return paths.length ? paths : DEFAULT_LIVE_DATA;
+  } catch { return DEFAULT_LIVE_DATA; }
+})();
+
 /** The hub folder holding this repo's data, or null when data stays in the repo. */
 export function persistRoot() {
-  const env = process.env.AXF_PERSIST_DIR;
-  let base;
-  if (env !== undefined) base = env === 'off' ? '' : env;
-  else base = existsSync(DEFAULT_HUB_PERSIST) ? DEFAULT_HUB_PERSIST : '';
-  return base ? join(base, process.env.AXF_PERSIST_REPO || 'amberx-axf') : null;
+  const exact = process.env.AXF_DATA_DIR;
+  if (exact !== undefined) return exact && exact !== 'off' ? exact : null;
+  const legacy = process.env.AXF_PERSIST_DIR;
+  if (legacy !== undefined) return legacy && legacy !== 'off' ? join(legacy, PROJECT()) : null;
+  return existsSync(CLAUDE_ROOT) ? join(CLAUDE_ROOT, 'projects', PROJECT(), 'data') : null;
 }
 
 /**
@@ -79,10 +90,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const force = process.argv.includes('--force');
   const root = persistRoot();
   if (!root) {
-    console.log(`Live data is read from the repo (no hub persist folder: set AXF_PERSIST_DIR or create ${DEFAULT_HUB_PERSIST}).`);
+    console.log(`Live data is read from the repo (no ${CLAUDE_ROOT} folder here; set AXF_DATA_DIR to use another one).`);
     process.exit(cmd === 'status' ? 0 : 1);
   }
-  console.log(`Hub persist folder: ${root}`);
+  console.log(`Hub data folder: ${root}`);
   for (const rel of LIVE_DATA) {
     const repo = join(REPO_ROOT, rel), hub = join(root, rel);
     if (cmd === 'push') console.log(`${copy(repo, hub, force).padEnd(8)} ${rel}`);
