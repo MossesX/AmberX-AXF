@@ -28,6 +28,12 @@
     "motion": 180,
     "blur": 14,
     "headingWeight": 650,
-    "tracking": -0.02
+    "tracking": -0.02,
+    "opacityDisabled": 0.38,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.72
   }
 }

@@ -92,6 +92,10 @@ public class AxfTheme(
     public val isDark: Boolean get() = tokens.isDark
     public val opacityDisabled: Float get() = style.opacityDisabled.toFloat()
     public val opacityMuted: Float get() = style.opacityMuted.toFloat()
+    public val opacityHover: Float get() = style.opacityHover.toFloat()
+    public val opacityTint: Float get() = style.opacityTint.toFloat()
+    public val opacityScrim: Float get() = style.opacityScrim.toFloat()
+    public val opacityGlass: Float get() = style.opacityGlass.toFloat()
     /** Elevation in dp for a 0..5 level from the style theme ladder. */
     public fun elevation(level: Int): Dp = style.elevationLevels.getOrElse(level.coerceAtLeast(0)) { style.elevationLevels.last() }.dp
 

@@ -10,9 +10,28 @@ port follows the same rules with Compose tokens.
 | Engine | Source assets | Emits |
 | --- | --- | --- |
 | theme (`core/engines/theme.ts`) | `color-theme` | one `--fx-<token>` per colour token: `--fx-bg`, `--fx-surface`, `--fx-surface2`, `--fx-surface3`, `--fx-text`, `--fx-muted`, `--fx-border`, `--fx-accent`, `--fx-accent-text`, `--fx-accent-soft`, `--fx-success`, `--fx-warning`, `--fx-danger`, … |
-| theme | `style-theme` | `--fx-font`, `--fx-font-display`, `--fx-font-mono`, `--fx-font-size`, `--fx-space`, `--fx-radius-sm/md/lg`, `--fx-border-w`, `--fx-shadow-sm/md/lg`, `--fx-motion`, `--fx-blur`, `--fx-heading-weight`, `--fx-tracking`, `--fx-row-h`, `--fx-density-k` |
+| theme | `style-theme` | `--fx-font`, `--fx-font-display`, `--fx-font-mono`, `--fx-font-size`, `--fx-space`, `--fx-radius-sm/md/lg`, `--fx-border-w`, `--fx-shadow-sm/md/lg`, `--fx-motion`, `--fx-blur`, `--fx-heading-weight`, `--fx-tracking`, `--fx-row-h`, `--fx-density-k`, and the transparency tokens below |
 | layout (`core/engines/layout.ts`) | `layout` | `--fx-grid-*`, `--fx-content-max` and the shell's regions |
 | components (`core/engines/components.ts`) | `button`, `slider`, `container`, … | `--fx-btn-*`, `--fx-slider-*`, … plus `data-fx-*` attributes |
+
+## Transparency tokens
+
+Part of the style theme (optional fields, 0–1; defaults in `OPACITY_DEFAULTS`, identical on Android):
+
+| Field | Variable | Default | Use |
+| --- | --- | --- | --- |
+| `opacityDisabled` | `--fx-opacity-disabled` | 0.38 | disabled controls (`opacity: var(--fx-opacity-disabled)`) |
+| `opacityMuted` | `--fx-opacity-muted` | 0.62 | de-emphasised content: secondary icons, done items |
+| `opacityHover` | `--fx-opacity-hover` | 0.08 | hover / pressed wash over a surface |
+| `opacityTint` | `--fx-opacity-tint` | 0.14 | soft status/accent backgrounds (chips, badges, error boxes) |
+| `opacityScrim` | `--fx-opacity-scrim` | 0.5 | backdrop behind dialogs, sheets, lightboxes |
+| `opacityGlass` | `--fx-opacity-glass` | 0.72 | how much surface colour a glass panel keeps |
+
+Translucent colours are built from a colour token and a transparency token, never a fixed percentage:
+`color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent)`.
+`--fx-scrim` is derived the same way on both ports (black at `opacityScrim`); a colour theme that authors a
+`scrim` token overrides it. The style editors (Android Studio → Style tokens, web Element Explorer → Dialog,
+Chip, Card) edit these live.
 
 `framework/ui/axf.css` is the base stylesheet. It reads only these variables and provides the shared layout
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
@@ -24,8 +43,8 @@ Every library (`framework/libs/*`) and every app plugin (`apps/*/plugins/*`) tha
 engines. This matters beyond looks: the planned **plugin designer** will lay out plugin interfaces, so a
 plugin's UI has to be built from parts the engines and the designer understand.
 
-1. **Tokens only.** No colour literals (`#hex`, `rgb()`, `hsl()`, named colours), no hard-coded font sizes,
-   spacing or radii. Use `var(--fx-…)`, or `calc()` on a token (`calc(var(--fx-space) * 1.5)`). Layout
+1. **Tokens only.** No colour literals (`#hex`, `rgb()`, `hsl()`, named colours), no fixed transparency
+   (`opacity: .5`, `color-mix(… 20%, transparent)`), no hard-coded font sizes, spacing or radii. Use `var(--fx-…)`, or `calc()` on a token (`calc(var(--fx-space) * 1.5)`). Layout
    limits (`min-width`, `max-width`, percentages, `0`) are fine.
 2. **No `var()` fallbacks** on `--fx-*`. The engines always define their tokens; a fallback only hides a
    misspelt or non-existent name.
@@ -37,8 +56,11 @@ plugin's UI has to be built from parts the engines and the designer understand.
    is not built yet; until it is, plugins use the app's active assets.*
 5. Deliberate exceptions (a colour picker's default *value*, say) carry a `theme-ok` comment on the line.
 
-Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). It flags literal colours,
-hard-coded sizes, `var()` fallbacks, unknown `--fx-*` names and plugins that define `--fx-*` themselves.
+Checked automatically: `node framework/cli/check-theme.mjs` (runs in CI). Libraries and plugins get every
+rule: literal colours, fixed transparency, hard-coded sizes, `var()` fallbacks, unknown `--fx-*` names and
+defining `--fx-*`. The framework's React/CSS, app UIs (the console) and the app templates get the colour and
+transparency rules, so swapping a colour or style theme restyles them too. (`apps/demo` is untouched
+`axf init` output on an older baked framework and is skipped until it is re-baked.)
 
 ### Naming principles for plugin UIs
 

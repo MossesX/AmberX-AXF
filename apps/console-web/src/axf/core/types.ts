@@ -80,6 +80,19 @@ export interface StyleThemeData {
   headingWeight: number;
   /** heading letter-spacing in em */
   tracking: number;
+  /* ---- transparency (0..1, optional; defaults in engines/theme.ts OPACITY_DEFAULTS) ---- */
+  /** disabled controls */
+  opacityDisabled?: number;
+  /** de-emphasised content (secondary icons, closed-tab buttons) */
+  opacityMuted?: number;
+  /** hover / pressed wash over a surface */
+  opacityHover?: number;
+  /** soft status and accent tints (backgrounds behind success/warning/danger/info) */
+  opacityTint?: number;
+  /** backdrop behind dialogs, sheets and lightboxes */
+  opacityScrim?: number;
+  /** glass surfaces (how much of the surface colour a frosted panel keeps) */
+  opacityGlass?: number;
 }
 
 export interface LayoutData {

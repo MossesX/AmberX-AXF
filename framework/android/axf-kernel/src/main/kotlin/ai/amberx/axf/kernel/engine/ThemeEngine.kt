@@ -53,7 +53,7 @@ public data class StyleTokens(
     val space: Double, val densityK: Double, val rowHeight: Double, val controlHeight: Double, val touchTarget: Double, val iconSize: Double,
     val borderWidth: Double, val motionMs: Int, val blur: Double, val elevationLevels: List<Int>,
     val shadowSm: String, val shadowMd: String, val shadowLg: String,
-    val opacityDisabled: Double, val opacityMuted: Double, val easing: String, val springStiffness: Double, val springDamping: Double, val glass: Boolean,
+    val opacityDisabled: Double, val opacityMuted: Double, val opacityHover: Double, val opacityTint: Double, val opacityScrim: Double, val opacityGlass: Double, val easing: String, val springStiffness: Double, val springDamping: Double, val glass: Boolean,
 ) {
     /** The type scale ladder (label, body, title, headline, display) derived from fontSize and typeScale. */
     public val typeLadder: Map<String, Double> get() = mapOf(
@@ -92,7 +92,7 @@ public object ThemeEngine {
         val colors = LinkedHashMap<String, String>()
         for (t in ColorTokens.CORE) colors[t] = color.tokens[t] ?: fallback(t, color)
         for ((k, v) in color.tokens) if (k !in colors) colors[k] = v
-        derive(colors, color.scheme)
+        derive(colors, color.scheme, style)
         val rgba = colors.mapNotNull { (k, v) -> Rgba.parse(v)?.let { k to it } }.toMap()
         val st = styleTokens(style)
         return ThemeTokens(color.scheme, colors, rgba, st, cssVars(colors, style, st))
@@ -119,7 +119,7 @@ public object ThemeEngine {
     }
 
     /** Derives EXTENDED tokens that the theme did not author. Authored values always win. */
-    private fun derive(c: MutableMap<String, String>, scheme: Scheme) {
+    private fun derive(c: MutableMap<String, String>, scheme: Scheme, st: StyleTheme) {
         val dark = scheme == Scheme.DARK
         val accent = Rgba.parse(c["accent"]) ?: Rgba(245, 165, 36)
         val text = Rgba.parse(c["text"]) ?: if (dark) Rgba.WHITE else Rgba.BLACK
@@ -133,19 +133,19 @@ public object ThemeEngine {
         put("accent2Text") { c["accentText"] ?: "#ffffff" }
         put("link") { c["info"] ?: accent.toCss() }
         put("selection") { accent.withAlpha(0.28).toCss() }
-        put("overlay") { (if (dark) Rgba.WHITE else Rgba.BLACK).withAlpha(0.06).toCss() }
-        put("scrim") { Rgba.BLACK.withAlpha(if (dark) 0.6 else 0.4).toCss() }
+        put("overlay") { (if (dark) Rgba.WHITE else Rgba.BLACK).withAlpha(st.opacityHover).toCss() }
+        put("scrim") { Rgba.BLACK.withAlpha(st.opacityScrim).toCss() }
         put("inverseSurface") { text.toCss() }
         put("inverseText") { bg.toCss() }
         for (s in listOf("danger", "success", "warning", "info")) {
             val base = Rgba.parse(c[s]) ?: accent
-            put("${s}Soft") { base.withAlpha(0.14).toCss() }
+            put("${s}Soft") { base.withAlpha(st.opacityTint).toCss() }
             put("on${s.replaceFirstChar { it.uppercase() }}") { if (base.isLight) "#1a1206" else "#ffffff" }
         }
         put("outline") { border.toCss() }
         put("outlineVariant") { border.withAlpha(0.6).toCss() }
         put("disabledBg") { text.withAlpha(0.08).toCss() }
-        put("disabledText") { text.withAlpha(0.38).toCss() }
+        put("disabledText") { text.withAlpha(st.opacityDisabled).toCss() }
         put("placeholder") { c["muted"] ?: text.withAlpha(0.5).toCss() }
         put("divider") { border.toCss() }
         put("tooltipBg") { text.toCss() }
@@ -161,7 +161,7 @@ public object ThemeEngine {
         chart.forEachIndexed { i, v -> put("chart${i + 1}") { v.toCss() } }
         put("gradientStart") { accent.toCss() }
         put("gradientEnd") { (Rgba.parse(c["info"]) ?: accent.mix(text, 0.3)).toCss() }
-        put("glassTint") { surface.withAlpha(0.72).toCss() }
+        put("glassTint") { surface.withAlpha(st.opacityGlass).toCss() }
     }
 
     public fun styleTokens(s: StyleTheme): StyleTokens {
@@ -174,7 +174,8 @@ public object ThemeEngine {
             touchTarget = s.touchTarget.toDouble(), iconSize = s.iconSize.toDouble(),
             borderWidth = s.borderWidth.toDouble(), motionMs = s.motion, blur = s.blur.toDouble(), elevationLevels = s.elevationLevels,
             shadowSm = s.shadow.sm, shadowMd = s.shadow.md, shadowLg = s.shadow.lg,
-            opacityDisabled = s.opacityDisabled, opacityMuted = s.opacityMuted, easing = s.easing, springStiffness = s.springStiffness, springDamping = s.springDamping, glass = s.glass,
+            opacityDisabled = s.opacityDisabled, opacityMuted = s.opacityMuted,
+            opacityHover = s.opacityHover, opacityTint = s.opacityTint, opacityScrim = s.opacityScrim, opacityGlass = s.opacityGlass, easing = s.easing, springStiffness = s.springStiffness, springDamping = s.springDamping, glass = s.glass,
         )
     }
 
@@ -192,6 +193,9 @@ public object ThemeEngine {
         v["--fx-motion"] = "${s.motion}ms"; v["--fx-blur"] = "${s.blur}px"
         v["--fx-heading-weight"] = s.headingWeight.toString(); v["--fx-tracking"] = "${jsNum(s.tracking)}em"
         v["--fx-row-h"] = "${st.rowHeight.toInt()}px"; v["--fx-density-k"] = jsNum(st.densityK)
+        v["--fx-opacity-disabled"] = jsNum(s.opacityDisabled); v["--fx-opacity-muted"] = jsNum(s.opacityMuted)
+        v["--fx-opacity-hover"] = jsNum(s.opacityHover); v["--fx-opacity-tint"] = jsNum(s.opacityTint)
+        v["--fx-opacity-scrim"] = jsNum(s.opacityScrim); v["--fx-opacity-glass"] = jsNum(s.opacityGlass)
         return v
     }
 }

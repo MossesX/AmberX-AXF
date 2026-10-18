@@ -15,7 +15,7 @@
 .cx-explorer__detail { overflow: auto; display: grid; gap: 8px; align-content: start; }
 .cx-node { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: var(--fx-radius-sm); cursor: pointer; font-size: 13px; user-select: none; }
 .cx-node--cat { font-weight: 600; } .cx-node--el { padding-left: 22px; } .cx-node:hover { background: var(--fx-surface2); } .cx-node.is-selected { background: var(--fx-accent-soft); color: var(--fx-accent); }
-.cx-node.is-disabled, .cx-details.is-disabled .cx-row, .cx-strip__cell.is-disabled { opacity: .45; }
+.cx-node.is-disabled, .cx-details.is-disabled .cx-row, .cx-strip__cell.is-disabled { opacity: max(var(--fx-opacity-disabled), 0.45); }
 .cx-row { display: flex; align-items: center; gap: 8px; padding: 3px 6px 3px 24px; font-size: 12px; }
 .cx-row .fx-input, .cx-row select { max-width: 150px; padding: 2px 6px; font-size: 12px; }
 .cx-swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--fx-border); flex: 0 0 auto; }
@@ -66,7 +66,7 @@
 .pl-row__main { display: grid; flex: 1 1 auto; min-width: 0 } .pl-row__title { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .pl-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; border: 1px solid var(--fx-border) }
 .pl-ports { display: inline-flex; gap: 2px } .pl-port { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 4px; font: 600 10px var(--fx-font-mono); background: var(--fx-surface2); color: var(--fx-muted) }
-.pl-port.is-built { background: var(--fx-success); color: var(--fx-accent-text) } .pl-port.is-partial, .pl-port.is-in-progress { background: var(--fx-accent-soft); color: var(--fx-accent) } .pl-port.is-placeholder { background: var(--fx-warning); color: var(--fx-accent-text) } .pl-port.is-none { opacity: .35 }
+.pl-port.is-built { background: var(--fx-success); color: var(--fx-accent-text) } .pl-port.is-partial, .pl-port.is-in-progress { background: var(--fx-accent-soft); color: var(--fx-accent) } .pl-port.is-placeholder { background: var(--fx-warning); color: var(--fx-accent-text) } .pl-port.is-none { opacity: var(--fx-opacity-disabled) }
 .pl-prio { font: 600 11px var(--fx-font-mono); color: var(--fx-muted); padding: 1px 6px; border: 1px solid var(--fx-border); border-radius: 999px }
 .pl-warn { display: inline-flex; align-items: center; gap: 2px; color: var(--fx-warning); font: 600 11px var(--fx-font-mono) }
 .pl-kids { display: flex; align-items: center; gap: 8px; padding: 0 10px 8px 28px }
@@ -93,7 +93,7 @@
 .pl-shot { margin: 0; display: grid; gap: 4px } .pl-shot__img { all: unset; cursor: zoom-in; border: 1px solid var(--fx-border); border-radius: var(--fx-radius-sm); overflow: hidden; aspect-ratio: 16 / 10; max-width: 100% } .pl-shot__img img { width: 100%; height: 100%; object-fit: cover; display: block }
 .pl-shot figcaption { display: flex; gap: 4px; align-items: center } .pl-shot figcaption .fx-input { flex: 1; min-width: 0 }
 .pl-paste { border: 1px dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 8px; text-align: center; font-size: 12px; color: var(--fx-muted) } .pl-paste:focus { outline: 2px solid var(--fx-accent) }
-.pl-lightbox { position: fixed; inset: 0; z-index: 200; background: color-mix(in srgb, var(--fx-bg) 85%, transparent); display: grid; place-items: center; padding: 24px; cursor: zoom-out } .pl-lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px }
+.pl-lightbox { position: fixed; inset: 0; z-index: 200; background: var(--fx-scrim); display: grid; place-items: center; padding: 24px; cursor: zoom-out } .pl-lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px }
 .pl-upload { cursor: pointer; font-size: 12px }
 .pl-preview { display: grid; gap: 6px; padding: 8px; border: 1px solid var(--fx-border); border-radius: var(--fx-radius-sm) }
 .pl-ports-table td { vertical-align: middle } .pl-ports-table .fx-input { width: 100% }
@@ -109,27 +109,27 @@
 
 /* ---------------- build manager ---------------- */
 .bm-model { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; white-space: nowrap; border: 1px solid transparent }
-.bm-model.is-fable { background: color-mix(in srgb, var(--fx-info) 18%, transparent); color: color-mix(in srgb, var(--fx-info) 80%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-info) 40%, transparent) }
-.bm-model.is-opus { background: color-mix(in srgb, var(--fx-accent) 16%, transparent); color: color-mix(in srgb, var(--fx-accent) 80%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-accent) 35%, transparent) }
-.bm-model.is-sonnet { background: color-mix(in srgb, var(--fx-success) 16%, transparent); color: color-mix(in srgb, var(--fx-success) 75%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-success) 35%, transparent) }
-.bm-banner { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-warning) 14%, var(--fx-surface)); border: 1px solid color-mix(in srgb, var(--fx-warning) 45%, transparent) }
+.bm-model.is-fable { background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); color: color-mix(in srgb, var(--fx-info) 80%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 60%), transparent) }
+.bm-model.is-opus { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); color: color-mix(in srgb, var(--fx-accent) 80%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 60%), transparent) }
+.bm-model.is-sonnet { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); color: color-mix(in srgb, var(--fx-success) 75%, var(--fx-text)); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 60%), transparent) }
+.bm-banner { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: var(--fx-radius-md); background: color-mix(in srgb, var(--fx-warning) 14%, var(--fx-surface)); border: 1px solid color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 60%), transparent) }
 .bm-queue { display: flex; flex-direction: column; border: 1px solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden; background: var(--fx-surface) }
 .bm-drop { border-top: 2px solid transparent } .bm-drop.is-over { border-top-color: var(--fx-accent) }
 .bm-divider { padding: 6px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--fx-muted); background: var(--fx-surface2); border-top: 1px solid var(--fx-border) }
 .bm-step { border-top: 1px solid var(--fx-border); min-width: 0 }
 .bm-queue > .bm-step:first-child, .bm-queue > .bm-drop:first-child .bm-step { border-top: 0 }
-.bm-step.is-done, .bm-step.is-dropped { opacity: .75 } .bm-step.has-violation { box-shadow: inset 3px 0 0 var(--fx-warning) } .bm-step.is-rework { box-shadow: inset 3px 0 0 var(--fx-danger) }
+.bm-step.is-done, .bm-step.is-dropped { opacity: var(--fx-opacity-muted) } .bm-step.has-violation { box-shadow: inset 3px 0 0 var(--fx-warning) } .bm-step.is-rework { box-shadow: inset 3px 0 0 var(--fx-danger) }
 .bm-step[draggable="true"] { cursor: grab } .bm-step[draggable="true"]:active { cursor: grabbing }
 .bm-step__head { display: flex; align-items: center; gap: 8px; padding: 6px 10px; min-width: 0 }
 .bm-step__head:hover { background: var(--fx-surface2) }
-.bm-grip { color: var(--fx-muted); display: inline-flex } .bm-grip.is-fixed { opacity: .5 }
+.bm-grip { color: var(--fx-muted); display: inline-flex } .bm-grip.is-fixed { opacity: var(--fx-opacity-disabled) }
 .bm-pos { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 2ch; text-align: right; color: var(--fx-muted) }
 .bm-step__title { all: unset; cursor: pointer; display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis }
 .bm-step__title:focus-visible { outline: 2px solid var(--fx-accent) }
 .bm-step__title .fx-grow { overflow: hidden; text-overflow: ellipsis }
 .bm-state { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--fx-surface2); white-space: nowrap }
-.bm-state.is-done { background: color-mix(in srgb, var(--fx-success) 18%, transparent) } .bm-state.is-active { background: color-mix(in srgb, var(--fx-accent) 18%, transparent) }
-.bm-state.is-rework { background: color-mix(in srgb, var(--fx-danger) 18%, transparent) } .bm-state.is-blocked { background: color-mix(in srgb, var(--fx-warning) 18%, transparent) }
+.bm-state.is-done { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) } .bm-state.is-active { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.bm-state.is-rework { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) } .bm-state.is-blocked { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .bm-progress { width: 54px; height: 6px; border-radius: 3px; background: var(--fx-surface2); overflow: hidden; flex: none } .bm-progress > span { display: block; height: 100%; background: var(--fx-success) }
 .bm-actions { display: inline-flex; gap: 2px }
 .bm-step__body { padding: 4px 14px 12px 46px; display: flex; flex-direction: column; gap: 8px }

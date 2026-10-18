@@ -56,6 +56,12 @@ jobs:
           # Build with the plugin template installed, so the template and the plugin loader stay valid.
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           npm ci && npm run build
+      - name: Theme swap — every colour and transparency follows the active colour and style themes
+        working-directory: apps/console-web
+        run: |
+          npm i --no-save --no-audit --no-fund playwright@1.56.0
+          npx playwright install --with-deps chromium
+          node scripts/theme-swap.mjs
       - name: Library templates — generate every template for web + Python and compile them
         run: |
           set -e

@@ -261,7 +261,7 @@ const CSS = `
 .axf-settings__control select,.axf-settings__control input:not([type=checkbox]):not([type=color]){width:100%}
 .axf-settings__field{font:inherit;padding:calc(var(--fx-space)*.75) var(--fx-space);border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2);color:var(--fx-text)}
 .axf-settings__field:focus-visible{outline:2px solid var(--fx-accent);outline-offset:1px}
-.axf-settings__field:disabled{opacity:.55}
+.axf-settings__field:disabled{opacity:var(--fx-opacity-disabled)}
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}

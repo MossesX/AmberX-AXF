@@ -8,7 +8,7 @@ import { UI_LIBRARIES } from './Libraries';
 /* element catalog (mirrors axf-ui/studio/ElementExplorer.kt)           */
 /* ------------------------------------------------------------------ */
 
-export interface StyleParam { key: string; label: string; tip: string; type: AssetType; path: string[]; kind: 'number' | 'enum' | 'text'; min?: number; max?: number; options?: string[] }
+export interface StyleParam { key: string; label: string; tip: string; type: AssetType; path: string[]; kind: 'number' | 'enum' | 'text'; min?: number; max?: number; step?: number; options?: string[] }
 export interface FlagSpec { key: string; label: string; tip: string; type: AssetType; path: string[] }
 export interface ElementSpec { kind: string; label: string; category: string; tooltip: string; tokens: [string, string][]; params: StyleParam[]; flags: FlagSpec[] }
 
@@ -17,6 +17,8 @@ const f = (key: string, label: string, tip: string, type: AssetType, path: strin
 const radius = [p('radius.sm', 'Radius sm', 'Small corner radius (style-theme)', 'style-theme', ['radius', 'sm'], 'number', 0, 24), p('radius.md', 'Radius md', 'Medium corner radius', 'style-theme', ['radius', 'md'], 'number', 0, 32), p('radius.lg', 'Radius lg', 'Large corner radius', 'style-theme', ['radius', 'lg'], 'number', 0, 48)];
 const spacing = [p('space', 'Spacing unit', 'Base spacing unit; every padding is a multiple', 'style-theme', ['space'], 'number', 4, 16), p('density', 'Density', 'compact / comfortable / spacious scales row heights and paddings', 'style-theme', ['density'], 'enum', 0, 0, ['compact', 'comfortable', 'spacious'])];
 const type = [p('fontSize', 'Font size', 'Base font size (px)', 'style-theme', ['fontSize'], 'number', 10, 20), p('headingWeight', 'Heading weight', 'Font weight of headings', 'style-theme', ['headingWeight'], 'number', 300, 900)];
+/** Transparency tokens (style-theme, 0..1). */
+const alpha = (key: string, label: string, tip: string): StyleParam => ({ ...p(key, label, tip, 'style-theme', [key], 'number', 0, 1), step: 0.01 });
 const E = (kind: string, label: string, category: string, tooltip: string, tokens: [string, string][], params: StyleParam[] = [], flags: FlagSpec[] = []): ElementSpec => ({ kind, label, category, tooltip, tokens, params, flags });
 
 /** The element catalog: what each kind reads. Mirrors the Android explorer so compare windows show the same tree on every port. */
@@ -27,7 +29,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('ICON_BUTTON', 'Icon button', 'Controls', 'Square icon-only button', [['muted', 'Icon tint'], ['accentSoft', 'Active background']], radius.slice(0, 1)),
   E('SWITCH', 'Switch', 'Controls', 'On/off toggle with label', [['accent', 'On track'], ['surface3', 'Off track'], ['accentText', 'Thumb on']]),
   E('CHECKBOX', 'Checkbox', 'Controls', 'Checkbox with label', [['accent', 'Checked'], ['border', 'Unchecked border']]),
-  E('CHIP', 'Chip', 'Controls', 'Filter / tone chips', [['accentSoft', 'Selected fill'], ['accent', 'Selected text'], ['border', 'Outline']], radius.slice(0, 1)),
+  E('CHIP', 'Chip', 'Controls', 'Filter / tone chips', [['accentSoft', 'Selected fill'], ['accent', 'Selected text'], ['border', 'Outline']], [...radius.slice(0, 1), alpha('opacityTint', 'Tint opacity', 'Strength of soft status tints (chips, badges, errors)')]),
   E('SEGMENTED', 'Segmented', 'Controls', 'Segmented control', [['surface2', 'Track'], ['surface', 'Selected segment'], ['accent', 'Selected text']], radius.slice(1, 2)),
   E('SLIDER', 'Slider', 'Controls', 'Slider from the slider asset', [['accent', 'Active track'], ['surface3', 'Inactive track']],
     [p('thumb', 'Thumb', 'round / square / bar', 'slider', ['thumb'], 'enum', 0, 0, ['round', 'square', 'bar']), p('trackHeight', 'Track height', 'px', 'slider', ['trackHeight'], 'number', 2, 16)],
@@ -36,7 +38,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('PASSWORD_FIELD', 'Password field', 'Inputs', 'Masked input with reveal', [['surface', 'Field background'], ['muted', 'Reveal icon']]),
   E('SEARCH_FIELD', 'Search field', 'Inputs', 'Toolbar search', [['surface2', 'Field background'], ['muted', 'Icon']]),
   E('CARD', 'Card / container', 'Containers', 'Card from the container asset', [['surface', 'Card fill'], ['border', 'Card border'], ['shadow', 'Shadow']],
-    [p('style', 'Style', 'card / panel / glass / outline', 'container', ['style'], 'enum', 0, 0, ['card', 'panel', 'glass', 'outline']), p('padding', 'Padding', 'multiple of the spacing unit', 'container', ['padding'], 'number', 0, 4), ...radius.slice(1, 3), ...spacing],
+    [p('style', 'Style', 'card / panel / glass / outline', 'container', ['style'], 'enum', 0, 0, ['card', 'panel', 'glass', 'outline']), alpha('opacityGlass', 'Glass opacity', 'How much surface colour glass panels keep'), p('padding', 'Padding', 'multiple of the spacing unit', 'container', ['padding'], 'number', 0, 4), ...radius.slice(1, 3), ...spacing],
     [f('divider', 'Header divider', 'Rule under the header', 'container', ['headerDivider']), f('collapsible', 'Collapsible', 'Header toggles the body', 'container', ['collapsible'])]),
   E('LIST_ITEM', 'List item', 'Containers', 'Row with icon, title, subtitle, trailing', [['text', 'Title'], ['muted', 'Subtitle'], ['accentSoft', 'Selected']], spacing),
   E('SECTION_HEADER', 'Section header', 'Containers', 'Uppercase eyebrow', [['muted', 'Text'], ['accent', 'Accent variant']], type.slice(1)),
@@ -46,7 +48,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('TOOLBAR', 'Toolbar', 'Navigation', 'Toolbar from the toolbar asset', [['toolbarBg', 'Bar'], ['muted', 'Icons']], [p('iconSize', 'Icon size', 'px', 'toolbar', ['iconSize'], 'number', 14, 28)], [f('labels', 'Labels', 'Text under icons', 'toolbar', ['showLabels'])]),
   E('NAV_LIST', 'Navigation', 'Navigation', 'Nav from the nav-menu asset', [['navBg', 'Background'], ['navText', 'Items'], ['navActive', 'Active item']]),
   E('STATUS_BAR', 'Status bar', 'Navigation', 'Bottom status strip', [['statusBg', 'Background'], ['muted', 'Text']]),
-  E('DIALOG', 'Dialog', 'Overlays', 'Dialog from the dialog asset', [['surface', 'Panel'], ['scrim', 'Backdrop']], [p('position', 'Position', 'center / top / bottom / side', 'dialog', ['position'], 'enum', 0, 0, ['center', 'top', 'bottom', 'side']), ...radius.slice(2, 3)], [f('blur', 'Backdrop blur', 'Blur behind the dialog', 'dialog', ['backdropBlur'])]),
+  E('DIALOG', 'Dialog', 'Overlays', 'Dialog from the dialog asset', [['surface', 'Panel'], ['scrim', 'Backdrop']], [alpha('opacityScrim', 'Scrim opacity', 'How dark the backdrop behind dialogs is'), p('position', 'Position', 'center / top / bottom / side', 'dialog', ['position'], 'enum', 0, 0, ['center', 'top', 'bottom', 'side']), ...radius.slice(2, 3)], [f('blur', 'Backdrop blur', 'Blur behind the dialog', 'dialog', ['backdropBlur'])]),
   E('TOAST', 'Toast', 'Overlays', 'Toasts from the popup asset', [['inverseSurface', 'Toast'], ['inverseText', 'Text']], [p('corner', 'Corner', 'where toasts stack', 'popup', ['corner'], 'enum', 0, 0, ['top-right', 'bottom-right', 'bottom-left', 'top-left', 'top', 'bottom'])]),
   E('CONTEXT_MENU', 'Context menu', 'Overlays', 'Right-click / long-press menu from the context-menu asset', [['surface', 'Menu'], ['accentSoft', 'Hover']], [p('density', 'Density', 'compact / comfortable', 'context-menu', ['density'], 'enum', 0, 0, ['compact', 'comfortable'])], [f('icons', 'Show icons', '', 'context-menu', ['showIcons']), f('shortcuts', 'Show shortcuts', '', 'context-menu', ['showShortcuts'])]),
   E('EMPTY_STATE', 'Empty state', 'States', 'Empty / loading / error blocks', [['muted', 'Text'], ['surface2', 'Icon well']]),
@@ -163,7 +165,7 @@ function ParamRow({ p, available }: { p: StyleParam; available: boolean }) {
       <span className="fx-grow">{p.label} <span className="fx-muted fx-mono fx-small">{p.type}.{p.path.join('.')}</span></span>
       {!available || cur === undefined ? <span className="fx-muted fx-small">{cur === undefined ? 'n/a' : String(cur)}</span>
         : p.kind === 'enum' ? <select className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)}>{p.options?.map((o) => <option key={o} value={o}>{o}</option>)}</select>
-        : p.kind === 'number' ? <span style={{ width: 160 }}><Slider label="" value={Number(cur)} min={p.min} max={p.max} onChange={(v) => edit(p.type, p.path, v)} /></span>
+        : p.kind === 'number' ? <span style={{ width: 160 }}><Slider label="" value={Number(cur)} min={p.min} max={p.max} step={p.step} onChange={(v) => edit(p.type, p.path, v)} /></span>
         : <input className="fx-input" value={String(cur)} onChange={(e) => edit(p.type, p.path, e.target.value)} />}
     </div>
   );

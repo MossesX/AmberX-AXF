@@ -169,6 +169,12 @@ public fun ThemeDesigner(modifier: Modifier = Modifier) {
             AxfSlider("Border width", s.borderWidth.toFloat(), { num("borderWidth", it.toInt()) }, max = 4f, unit = "px")
             AxfSlider("Motion", s.motion.toFloat(), { num("motion", it.toInt()) }, max = 600f, step = 10f, unit = "ms")
             AxfSlider("Blur", s.blur.toFloat(), { num("blur", it.toInt()) }, max = 40f, unit = "px")
+            AxfSlider("Disabled opacity", (s.opacityDisabled * 100).toFloat(), { num("opacityDisabled", it / 100.0) }, max = 100f, unit = "%")
+            AxfSlider("Muted opacity", (s.opacityMuted * 100).toFloat(), { num("opacityMuted", it / 100.0) }, max = 100f, unit = "%")
+            AxfSlider("Hover opacity", (s.opacityHover * 100).toFloat(), { num("opacityHover", it / 100.0) }, max = 100f, unit = "%")
+            AxfSlider("Tint opacity", (s.opacityTint * 100).toFloat(), { num("opacityTint", it / 100.0) }, max = 100f, unit = "%")
+            AxfSlider("Scrim opacity", (s.opacityScrim * 100).toFloat(), { num("opacityScrim", it / 100.0) }, max = 100f, unit = "%")
+            AxfSlider("Glass opacity", (s.opacityGlass * 100).toFloat(), { num("opacityGlass", it / 100.0) }, max = 100f, unit = "%")
             AxfSlider("Heading weight", s.headingWeight.toFloat(), { num("headingWeight", it.toInt()) }, min = 300f, max = 900f, step = 50f)
             AxfSlider("Tracking", (s.tracking * 100).toFloat(), { num("tracking", it / 100.0) }, min = -8f, max = 8f, unit = "/100em")
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { for (d in listOf("compact", "comfortable", "spacious")) AxfChip(d, selected = s.density.name.equals(d, true), onClick = { style = JsonObject(style + ("density" to JsonPrimitive(d))) }) }

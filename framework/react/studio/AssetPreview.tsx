@@ -111,7 +111,7 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
     }
     case 'container': {
       const c = (a as Asset<'container'>).data;
-      const bg = c.variant === 'glass' ? 'color-mix(in srgb, var(--fx-surface) 60%, transparent)' : c.variant === 'outline' ? 'transparent' : c.variant === 'panel' ? 'var(--fx-surface2)' : 'var(--fx-surface)';
+      const bg = c.variant === 'glass' ? 'color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent)' : c.variant === 'outline' ? 'transparent' : c.variant === 'panel' ? 'var(--fx-surface2)' : 'var(--fx-surface)';
       return (
         <Screen>
           <div style={{ background: bg, border: c.variant === 'card' && c.elevation > 1 ? 'none' : '1px solid var(--fx-border)', borderRadius: 6, boxShadow: c.elevation ? `var(--fx-shadow-${['sm', 'sm', 'md', 'lg'][c.elevation]})` : 'none', overflow: 'hidden' }}>
@@ -135,7 +135,7 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
             : { position: 'absolute', left: '22%', right: '22%', top: '18%', bottom: '18%', borderRadius: 6 };
       return (
         <div className="fx-pv-screen" style={{ position: 'relative', overflow: 'hidden', minHeight: 64 }}>
-          <div style={{ position: 'absolute', inset: 0, background: d.backdrop === 'none' ? 'transparent' : 'color-mix(in srgb, var(--fx-bg) 60%, transparent)', backdropFilter: d.backdrop === 'blur' ? 'blur(2px)' : undefined }} />
+          <div style={{ position: 'absolute', inset: 0, background: d.backdrop === 'none' ? 'transparent' : 'var(--fx-scrim)', backdropFilter: d.backdrop === 'blur' ? 'blur(2px)' : undefined }} />
           <div style={{ ...panel, background: 'var(--fx-surface)', border: '1px solid var(--fx-border)', overflow: 'hidden' }}>
             <div style={{ height: d.header === 'filled' ? 10 : 6, background: d.header === 'filled' ? 'var(--fx-accent)' : 'transparent', borderTop: d.header === 'accent-bar' ? '3px solid var(--fx-accent)' : 'none' }} />
           </div>
@@ -208,7 +208,7 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
       const items = (c.targets.default ?? []).filter((i) => !i.separator).slice(0, 3);
       return (
         <Screen>
-          <div style={{ width: '75%', margin: '0 auto', padding: 4, borderRadius: 6, background: c.variant === 'glass' ? 'color-mix(in srgb, var(--fx-surface) 55%, transparent)' : 'var(--fx-surface)', border: '1px solid var(--fx-border)', boxShadow: 'var(--fx-shadow-md)' }}>
+          <div style={{ width: '75%', margin: '0 auto', padding: 4, borderRadius: 6, background: c.variant === 'glass' ? 'color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent)' : 'var(--fx-surface)', border: '1px solid var(--fx-border)', boxShadow: 'var(--fx-shadow-md)' }}>
             {items.map((i) => (
               <div key={i.id} style={{ display: 'flex', gap: 5, alignItems: 'center', fontSize: 9, padding: c.variant === 'roomy' ? '4px 4px' : '2px 4px', color: 'var(--fx-text)' }}>
                 {c.showIcons && <Icon name={i.icon} size={10} />}

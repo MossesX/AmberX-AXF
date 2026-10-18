@@ -15,6 +15,9 @@ export function colorThemeVars(t: ColorThemeData): VarMap {
   return vars;
 }
 
+/** Transparency defaults, identical to the Android kernel's StyleTheme defaults. */
+export const OPACITY_DEFAULTS = { disabled: 0.38, muted: 0.62, hover: 0.08, tint: 0.14, scrim: 0.5, glass: 0.72 } as const;
+
 const DENSITY = { compact: 0.78, comfortable: 1, spacious: 1.22 } as const;
 
 export function styleThemeVars(s: StyleThemeData): VarMap {
@@ -38,5 +41,11 @@ export function styleThemeVars(s: StyleThemeData): VarMap {
     '--fx-tracking': `${s.tracking}em`,
     '--fx-row-h': `${Math.round(34 * d)}px`,
     '--fx-density-k': String(d),
+    '--fx-opacity-disabled': String(s.opacityDisabled ?? OPACITY_DEFAULTS.disabled),
+    '--fx-opacity-muted': String(s.opacityMuted ?? OPACITY_DEFAULTS.muted),
+    '--fx-opacity-hover': String(s.opacityHover ?? OPACITY_DEFAULTS.hover),
+    '--fx-opacity-tint': String(s.opacityTint ?? OPACITY_DEFAULTS.tint),
+    '--fx-opacity-scrim': String(s.opacityScrim ?? OPACITY_DEFAULTS.scrim),
+    '--fx-opacity-glass': String(s.opacityGlass ?? OPACITY_DEFAULTS.glass),
   };
 }

@@ -113,9 +113,9 @@ export function Components() {
       <style>{`
         .gallery-stage { position: relative; padding: calc(var(--fx-space) * 2); border-radius: var(--fx-radius-lg); overflow: hidden;
           background:
-            radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--fx-accent) 55%, transparent), transparent 45%),
-            radial-gradient(circle at 85% 30%, color-mix(in srgb, var(--fx-info) 50%, transparent), transparent 45%),
-            radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--fx-success) 40%, transparent), transparent 50%),
+            radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 90%), transparent), transparent 45%),
+            radial-gradient(circle at 85% 30%, color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 80%), transparent), transparent 45%),
+            radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 65%), transparent), transparent 50%),
             var(--fx-surface2);
           border: var(--fx-border-w) solid var(--fx-border); }
         .gallery-stat { display: flex; align-items: baseline; gap: 8px; }

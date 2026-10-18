@@ -71,7 +71,13 @@
     "--fx-heading-weight": "700",
     "--fx-tracking": "-0.03em",
     "--fx-row-h": "41px",
-    "--fx-density-k": "1.22"
+    "--fx-density-k": "1.22",
+    "--fx-opacity-disabled": "0.38",
+    "--fx-opacity-muted": "0.6",
+    "--fx-opacity-hover": "0.1",
+    "--fx-opacity-tint": "0.16",
+    "--fx-opacity-scrim": "0.45",
+    "--fx-opacity-glass": "0.6"
   },
   "style-theme:sharp-terminal": {
     "--fx-font": "'IBM Plex Sans', system-ui, sans-serif",
@@ -91,7 +97,13 @@
     "--fx-heading-weight": "600",
     "--fx-tracking": "0em",
     "--fx-row-h": "27px",
-    "--fx-density-k": "0.78"
+    "--fx-density-k": "0.78",
+    "--fx-opacity-disabled": "0.4",
+    "--fx-opacity-muted": "0.65",
+    "--fx-opacity-hover": "0.1",
+    "--fx-opacity-tint": "0.18",
+    "--fx-opacity-scrim": "0.6",
+    "--fx-opacity-glass": "0.85"
   },
   "style-theme:soft-studio": {
     "--fx-font": "'Inter', system-ui, sans-serif",
@@ -111,6 +123,12 @@
     "--fx-heading-weight": "650",
     "--fx-tracking": "-0.02em",
     "--fx-row-h": "34px",
-    "--fx-density-k": "1"
+    "--fx-density-k": "1",
+    "--fx-opacity-disabled": "0.38",
+    "--fx-opacity-muted": "0.62",
+    "--fx-opacity-hover": "0.08",
+    "--fx-opacity-tint": "0.14",
+    "--fx-opacity-scrim": "0.5",
+    "--fx-opacity-glass": "0.72"
   }
 }
