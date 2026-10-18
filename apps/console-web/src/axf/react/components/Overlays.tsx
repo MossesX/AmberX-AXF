@@ -91,6 +91,8 @@ export function ContextMenuHost() {
       rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
     };
     const onCtx = (e: MouseEvent) => {
+      // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
+      if (start) { e.preventDefault(); return; }
       const t = e.target as Element;
       if (t.closest('input, textarea, .fx-ctx')) return;
       if (!t.closest('.fx-shell')) return;
@@ -107,8 +109,9 @@ export function ContextMenuHost() {
       start = { x: e.clientX, y: e.clientY };
       timer = setTimeout(() => open(t, e.clientX, e.clientY), 550);
     };
-    const cancel = (e: PointerEvent) => {
-      if (start && e.type === 'pointermove' && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 10) return;
+    const cancel = (e: Event) => {
+      const p = e as PointerEvent;
+      if (start && e.type === 'pointermove' && Math.hypot(p.clientX - start.x, p.clientY - start.y) < 10) return;
       clearTimeout(timer);
       start = null;
     };
@@ -119,6 +122,9 @@ export function ContextMenuHost() {
     document.addEventListener('pointerdown', onDown);
     document.addEventListener('pointermove', cancel);
     document.addEventListener('pointerup', cancel);
+    // Scrolling on a phone ends the touch with pointercancel (no move/up), so the timer must stop there too.
+    document.addEventListener('pointercancel', cancel);
+    document.addEventListener('scroll', cancel, true);
     document.addEventListener('pointerdown', onAway, true);
     window.addEventListener('blur', () => rt.closeContext());
     return () => {
@@ -126,6 +132,8 @@ export function ContextMenuHost() {
       document.removeEventListener('pointerdown', onDown);
       document.removeEventListener('pointermove', cancel);
       document.removeEventListener('pointerup', cancel);
+      document.removeEventListener('pointercancel', cancel);
+      document.removeEventListener('scroll', cancel, true);
       document.removeEventListener('pointerdown', onAway, true);
     };
   }, [rt]);

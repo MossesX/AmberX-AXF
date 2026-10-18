@@ -118,6 +118,10 @@ else
   DATA_ARGS=(-v "$PERSIST_DIR":/persist -e AXF_PERSIST_DIR=/persist)
 fi
 
+# One-off fixes to the live shared data (idempotent; each only changes what still needs it), run in the console image
+# against the same data the console will use.
+docker run --rm -v "$DIR":/axf:ro "${DATA_ARGS[@]}" -e AXF_ROOT=/axf --entrypoint node "$NAME:latest" /axf/framework/cli/data-fixes.mjs 2>&1 | sed 's/^/[axf] /' || say "data fixes didn't run (the console still starts)"
+
 # ---- 4. container ----
 docker rm -f "$NAME" >/dev/null 2>&1 || true
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF)
