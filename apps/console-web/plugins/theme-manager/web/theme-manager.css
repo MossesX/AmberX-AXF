@@ -1,0 +1,35 @@
+/* Theme manager plugin. Theme tokens only, axp-theme-manager prefix (framework/spec/THEMING.md). */
+.axp-theme-manager__rolls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: calc(var(--fx-space) * 0.75) }
+.axp-theme-manager__rolls .fx-btn { min-height: calc(var(--fx-row-h) * 1.4); justify-content: center }
+.axp-theme-manager__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-theme-manager__bad { color: var(--fx-danger); margin: 0 }
+.axp-theme-manager__warn { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; margin: 0; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-theme-manager__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-space); align-items: start }
+@media (max-width: 760px) { .axp-theme-manager__main { grid-template-columns: 1fr } }
+.axp-theme-manager__treebox, .axp-theme-manager__editor { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.axp-theme-manager__tree { list-style: none; margin: 0; padding: 0; max-height: 60vh; overflow: auto }
+.axp-theme-manager__tree .axp-theme-manager__tree { max-height: none; overflow: visible }
+.axp-theme-manager__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); min-width: 0 }
+.axp-theme-manager__row:hover { background: var(--fx-surface2) }
+.axp-theme-manager__row.is-sel { background: var(--fx-accent-soft) }
+.axp-theme-manager__twisty { all: unset; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); cursor: pointer; font-size: calc(var(--fx-font-size) * 13 / 14); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-height: calc(var(--fx-row-h) * 0.9) }
+.axp-theme-manager__twisty:focus-visible, .axp-theme-manager__lock:focus-visible, .axp-theme-manager__chip:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent) }
+.axp-theme-manager__swatch { flex: none; width: calc(var(--fx-space) * 1.25); height: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-theme-manager__lock { all: unset; cursor: pointer; padding: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); color: var(--fx-muted); opacity: var(--fx-opacity-muted) }
+.axp-theme-manager__lock.is-on { color: var(--fx-accent); opacity: 1 }
+.axp-theme-manager__only { all: unset; cursor: pointer; font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted); padding: 0 calc(var(--fx-space) * 0.5) }
+.axp-theme-manager__only:hover { color: var(--fx-text) }
+.axp-theme-manager__chip { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-theme-manager__chip.is-saved { border-color: var(--fx-accent) }
+.axp-theme-manager__narrow { width: auto; max-width: 160px }
+.axp-theme-manager__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
+.axp-theme-manager__crumbs button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-accent) }
+.axp-theme-manager__opt { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center }
+.axp-theme-manager__pins { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-theme-manager__pin { display: inline-flex; align-items: center; border-radius: 999px; border: var(--fx-border-w) solid var(--fx-accent); overflow: hidden; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-theme-manager__pin button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.5) }
+.axp-theme-manager__pin button:hover { background: var(--fx-accent-soft) }
+.axp-theme-manager__save { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: var(--fx-surface2) }
+.axp-theme-manager__save .fx-input { width: auto; flex: 1; min-width: 120px }
+.axp-theme-manager__saved { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-theme-manager__saved li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); overflow-wrap: anywhere }
