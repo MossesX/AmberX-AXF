@@ -106,6 +106,19 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
         <label>Token (AXF_TOKEN, if set on the API)<input id="token" type="password" placeholder="optional"></label>
         <button id="savehost" class="primary">Save &amp; reconnect</button>
       </div>
+      <div class="card" id="tokenreset" style="margin-top:8px">
+        <div class="meta">The token is saved on the server in <code>/opt/axf/.axf-console/env</code>.</div>
+        <div id="tr-idle" style="margin-top:6px"><button id="tr-start">Reset token</button></div>
+        <div id="tr-confirm" hidden style="margin-top:6px">
+          <div class="notice">Reset the token? The current one stops working right away: in this panel, the console, Claude Code's MCP connection and any open terminal.</div>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button id="tr-go" class="primary">Reset now</button><button id="tr-cancel">Cancel</button></div>
+        </div>
+        <div id="tr-done" hidden style="margin-top:6px">
+          <div class="meta">New token (shown once; already saved in this panel):</div>
+          <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap"><input id="tr-new" readonly style="flex:1;min-width:0;font-family:ui-monospace,Menlo,monospace"><button id="tr-copy">Copy</button></div>
+          <div class="meta" style="margin-top:4px">Paste it into the Dev Console (Settings → Account &amp; security) and wherever Claude Code reads <code>AXF_TOKEN</code>.</div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -251,6 +264,23 @@ input { font: 13px var(--mono); color: var(--fg); background: var(--bg); border:
   }
   async function refresh() { await health(); await Promise.all([servers(), downloads()]); events(); }
   $('#refresh').onclick = refresh;
+  /* ---------- token reset ---------- */
+  const trShow = (id) => ['tr-idle', 'tr-confirm', 'tr-done'].forEach((k) => { $('#' + k).hidden = k !== id; });
+  $('#tr-start').onclick = () => { if (!TOKEN) { toast('Save the current token above first'); return; } trShow('tr-confirm'); };
+  $('#tr-cancel').onclick = () => trShow('tr-idle');
+  $('#tr-go').onclick = async () => {
+    $('#tr-go').disabled = true;
+    try {
+      const r = await fetch(api('token/reset'), { method: 'POST', headers: { 'content-type': 'application/json', ...headers() }, body: JSON.stringify({ confirm: 'reset' }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.token) { toast(r.status === 401 ? 'Reset refused: the saved token is wrong' : (j.detail || j.error || 'Reset failed')); trShow('tr-idle'); return; }
+      TOKEN = j.token; ls.set('token', TOKEN); $('#token').value = TOKEN; $('#tr-new').value = TOKEN;
+      trShow('tr-done'); disconnectTerm(); toast('Token reset');
+    } catch (e) { toast('Server not reachable'); trShow('tr-idle'); }
+    finally { $('#tr-go').disabled = false; }
+  };
+  $('#tr-copy').onclick = () => { const el = $('#tr-new'); el.select(); copy(el.value); };
+
   $('#savehost').onclick = () => { HOST = $('#host').value.trim().replace(/\/$/, ''); TOKEN = $('#token').value.trim(); ls.set('host', HOST); ls.set('token', TOKEN); $('#livelink').href = HOST + '/panel'; refresh(); disconnectTerm(); };
   refresh(); setInterval(() => { if (online) servers(); }, 15000);
 

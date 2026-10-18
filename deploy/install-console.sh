@@ -35,12 +35,16 @@ fi
 mkdir -p "$DIR/.axf-console"
 
 # ---- 2. secrets ----
+# A token passed on the command line (AXF_TOKEN=… bash install-console.sh) replaces the saved one; otherwise the saved
+# one (possibly reset from the panel or console settings) is kept.
+ARG_AXF_TOKEN="${AXF_TOKEN:-}"
+ARG_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 if [ -f "$ENVF" ]; then
   # shellcheck disable=SC1090
   . "$ENVF"
 fi
-AXF_TOKEN="${AXF_TOKEN:-$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)}"
-GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+AXF_TOKEN="${ARG_AXF_TOKEN:-${AXF_TOKEN:-$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)}}"
+GITHUB_TOKEN="${ARG_GITHUB_TOKEN:-${GITHUB_TOKEN:-}}"
 cat > "$ENVF" <<ENV
 AXF_TOKEN=$AXF_TOKEN
 GITHUB_TOKEN=$GITHUB_TOKEN

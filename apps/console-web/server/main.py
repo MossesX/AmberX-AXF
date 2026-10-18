@@ -9,7 +9,7 @@ FastAPI service that fronts the framework's build engine (framework/cli, Node) f
 
 Run locally:  cd apps/console-web/server && pip install -r requirements.txt && uvicorn main:app --port 7090 --reload
 Deploy:       the Dockerfile next to this file (Node 22 + Python 3.12) — Coolify builds it straight from the repo.
-Config:       AXF_ROOT (repo root, default: ../../.. from here), AXF_TOKEN (optional bearer token for POST routes),
+Config:       AXF_ROOT (repo root, default: ../../.. from here), AXF_TOKEN (optional bearer token for POST routes; the AXF_TOKEN line in AXF_TOKEN_FILE, default .axf-console/env, wins and is what POST /api/token/reset rewrites),
               AXF_STATE (where project/terminal state is kept, default: <root>/.axf-console/state.json)
 """
 from __future__ import annotations
@@ -17,6 +17,8 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import secrets
+import string
 import subprocess
 import time
 from pathlib import Path
@@ -43,7 +45,41 @@ HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
 RPC = ROOT / "framework" / "cli" / "engine-rpc.mjs"
 STATE = Path(os.environ.get("AXF_STATE", ROOT / ".axf-console" / "state.json"))
-TOKEN = os.environ.get("AXF_TOKEN", "")
+# The console token. The saved env file (AXF_TOKEN_FILE, default .axf-console/env, written by install-console.sh and by
+# a reset) wins over the AXF_TOKEN environment variable, so a reset from the panel survives container restarts.
+TOKEN_FILE = Path(os.environ.get("AXF_TOKEN_FILE", ROOT / ".axf-console" / "env"))
+_token_cache: dict[str, Any] = {"mtime": None, "value": os.environ.get("AXF_TOKEN", "")}
+_shells: set[WebSocket] = set()
+
+
+def current_token() -> str:
+    """The token every protected route checks; re-read whenever the env file changes."""
+    try:
+        m = TOKEN_FILE.stat().st_mtime_ns
+    except OSError:
+        return _token_cache["value"]
+    if m != _token_cache["mtime"]:
+        try:
+            for line in TOKEN_FILE.read_text().splitlines():
+                if line.startswith("AXF_TOKEN=") and line[10:].strip():
+                    _token_cache["value"] = line[10:].strip()
+        except OSError:
+            pass
+        _token_cache["mtime"] = m
+    return _token_cache["value"]
+
+
+def _write_token(new: str) -> None:
+    """Replace AXF_TOKEN in the env file (other lines kept), owner-only, atomically."""
+    lines = TOKEN_FILE.read_text().splitlines() if TOKEN_FILE.is_file() else []
+    lines = [l for l in lines if not l.startswith("AXF_TOKEN=")]
+    TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    tmp = TOKEN_FILE.with_name(TOKEN_FILE.name + ".tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as fh:
+        fh.write("\n".join([f"AXF_TOKEN={new}", *lines]) + "\n")
+    os.replace(tmp, TOKEN_FILE)
+    _token_cache.update(value=new, mtime=TOKEN_FILE.stat().st_mtime_ns)
 # The built console. The image keeps a copy outside /axf because install-console.sh mounts the host clone
 # over /axf (dist/ is git-ignored, so the mount would hide the build). Prefer the repo build when it exists.
 DIST = HERE.parent / "dist"
@@ -112,7 +148,8 @@ def engine(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
 
 
 def auth(request: Request) -> None:
-    if TOKEN and request.headers.get("authorization") != f"Bearer {TOKEN}":
+    tok = current_token()
+    if tok and request.headers.get("authorization") != f"Bearer {tok}":
         raise HTTPException(401, "unauthorized")
 
 
@@ -433,16 +470,46 @@ def server_stop(sid: str, request: Request) -> dict[str, Any]:
     return {"ok": True, "server": _server_row(sid, request)}
 
 
+# ---------------------------------------------------------------- console token reset
+
+
+@app.post("/api/token/reset")
+async def token_reset(request: Request) -> Response:
+    """Issue a new console token. Needs the current one; the old one stops working at once (API, /mcp, plugin
+    routes, terminal) and open terminal sessions are closed. The new token is returned once and saved in the env file."""
+    if not current_token():
+        raise HTTPException(409, "no token is set on this server; run deploy/install-console.sh to set one")
+    auth(request)
+    body = await _body(request)
+    if body.get("confirm") != "reset":
+        raise HTTPException(400, 'send {"confirm": "reset"} to reset the token')
+    alphabet = string.ascii_letters + string.digits
+    new = "".join(secrets.choice(alphabet) for _ in range(32))
+    try:
+        _write_token(new)
+    except OSError as e:
+        raise HTTPException(500, f"could not save the new token in {TOKEN_FILE}: {e.strerror}")
+    for ws in list(_shells):
+        try:
+            await ws.close(code=4401)
+        except Exception:
+            pass
+    log("auth", "console token reset; the old token no longer works", "warn")
+    return JSONResponse({"ok": True, "token": new, "savedIn": ".axf-console/env"}, headers={"cache-control": "no-store"})
+
+
 # ---------------------------------------------------------------- embedded terminal (WebSocket ↔ pty)
 
 
 @app.websocket("/api/shell")
 async def shell(ws: WebSocket) -> None:
     """A real shell on this host for the control panel's terminal. Protected by AXF_TOKEN (?token=…) when set."""
-    if TOKEN and ws.query_params.get("token") != TOKEN:
+    tok = current_token()
+    if tok and ws.query_params.get("token") != tok:
         await ws.close(code=4401)
         return
     await ws.accept()
+    _shells.add(ws)
     pid, fd = pty.fork()
     if pid == 0:  # child
         os.chdir(ROOT)
@@ -483,9 +550,10 @@ async def shell(ws: WebSocket) -> None:
                     os.write(fd, txt.encode())
             elif (data := msg.get("bytes")) is not None:
                 os.write(fd, data)
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         pass
     finally:
+        _shells.discard(ws)
         task.cancel()
         try:
             os.kill(pid, signal.SIGHUP)
@@ -570,16 +638,17 @@ class _McpEndpoint:
     HTTP method through as raw ASGI."""
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] == "http" and TOKEN:
+        tok = current_token()
+        if scope["type"] == "http" and tok:
             sent = dict(scope.get("headers") or []).get(b"authorization", b"").decode()
-            if sent != f"Bearer {TOKEN}":
+            if sent != f"Bearer {tok}":
                 await JSONResponse({"error": "unauthorized — send Authorization: Bearer <AXF_TOKEN>"}, status_code=401, headers={"www-authenticate": "Bearer"})(scope, receive, send)
                 return
         await _mcp_http(scope, receive, send)
 
 
 app.router.routes.insert(0, Route("/mcp", endpoint=_McpEndpoint()))
-if not TOKEN:
+if not current_token():
     log("mcp", "AXF_TOKEN is not set — /mcp and the write routes are open; set it before exposing this server", "warn")
 
 
@@ -589,7 +658,7 @@ def mcp_info(request: Request) -> dict[str, Any]:
     base = f"{request.url.scheme}://{request.headers.get('host', 'localhost')}"
     url = f"{base}/mcp"
     tools = [t.name for t in _mcp._tool_manager.list_tools()]  # noqa: SLF001
-    return {"url": url, "auth": "Bearer AXF_TOKEN" if TOKEN else "none (AXF_TOKEN not set)", "tools": tools,
+    return {"url": url, "auth": "Bearer AXF_TOKEN" if current_token() else "none (AXF_TOKEN not set)", "tools": tools,
             "claudeCode": f'claude mcp add --transport http axf {url} --header "Authorization: Bearer $AXF_TOKEN"',
             "local": "python3 apps/console-web/server/mcp_server.py   (stdio, from a local clone; registered in .mcp.json)"}
 
@@ -616,7 +685,8 @@ PLUGINS: dict[str, dict[str, Any]] = {}
 
 def auth_always(request: Request) -> None:
     """Console token for every method. Plugin data (services, logs, settings) is private even to read."""
-    if TOKEN and request.headers.get("authorization") != f"Bearer {TOKEN}":
+    tok = current_token()
+    if tok and request.headers.get("authorization") != f"Bearer {tok}":
         raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
 
 
