@@ -15,6 +15,7 @@ Config:       AXF_ROOT (repo root, default: ../../.. from here), AXF_TOKEN (opti
 from __future__ import annotations
 
 import asyncio
+from starlette.concurrency import run_in_threadpool
 import json
 import os
 import secrets
@@ -253,6 +254,36 @@ async def pending_act(request: Request) -> Any:
     return ok_or_500(engine("pending-act", "pending", change=body))
 
 
+# ---------------------------------------------------------------- Standards: project manifests + their rules
+
+
+@app.get("/api/standards/projects")
+def standards_projects() -> Any:
+    """Every project in the repo (project.manifest.json, project-manifest@1) with its validation result."""
+    return ok_or_500(engine("projects", "standards"))
+
+
+@app.get("/api/standards/rules")
+def standards_rules() -> Any:
+    """The project-manifest rules in force (framework/schemas/project-rules.json, shared copy) and the framework's own."""
+    return ok_or_500(engine("project-rules", "standards"))
+
+
+@app.post("/api/standards/rules", dependencies=[Depends(auth)])
+async def standards_rules_save(request: Request) -> Any:
+    """Save the rules ({rules}). Refused when a locked rule is removed or changed, or a rule is malformed."""
+    body = await _body(request)
+    return ok_or_500(await run_in_threadpool(engine, "project-rules-save", "standards", rules=body.get("rules")))
+
+
+@app.post("/api/standards/validate", dependencies=[Depends(auth)])
+async def standards_validate(request: Request) -> Any:
+    """Validate {dir} (a project in the repo) or {manifest} (an edited manifest, optionally against draft {rules})."""
+    body = await _body(request)
+    args = {k: body[k] for k in ("dir", "manifest", "rules") if k in body}
+    return ok_or_500(await run_in_threadpool(engine, "project-validate", "standards", **args))
+
+
 @app.get("/api/build-queue")
 def build_queue() -> Any:
     return ok_or_500(engine("build-queue", "build"))
@@ -286,11 +317,28 @@ async def build_step(request: Request) -> Any:
     return ok_or_500(engine("build-step", "build", **await _body(request)))
 
 
+def _project_name() -> str:
+    """The repo's project name from project.manifest.json (its folder in the hub's /projects)."""
+    try:
+        name = json.loads((ROOT / "project.manifest.json").read_text()).get("name")
+        return name if isinstance(name, str) and name else "amberx-axf"
+    except Exception:
+        return "amberx-axf"
+
+
 def _persist_root() -> Path | None:
-    """The hub folder holding this repo's live data (mirrors framework/cli/persist.mjs), or None = the repo."""
-    env = os.environ.get("AXF_PERSIST_DIR")
-    base = ("" if env == "off" else env) if env is not None else ("/opt/axhub/persist" if Path("/opt/axhub/persist").is_dir() else "")
-    return Path(base) / os.environ.get("AXF_PERSIST_REPO", "amberx-axf") if base else None
+    """The folder holding this project's shared data (mirrors framework/cli/persist.mjs), or None = the repo."""
+    exact = os.environ.get("AXF_DATA_DIR")
+    if exact is not None:
+        return Path(exact) if exact and exact != "off" else None
+    legacy = os.environ.get("AXF_PERSIST_DIR")
+    if legacy is not None:
+        return Path(legacy) / os.environ.get("AXF_PERSIST_REPO", _project_name()) if legacy and legacy != "off" else None
+    projects = Path(os.environ.get("AXHUB_PROJECTS_DIR") or "/projects")
+    if projects.is_dir():
+        return projects / _project_name() / "_data"
+    old = Path("/opt/axhub/persist") / _project_name()
+    return old if old.is_dir() else None
 
 
 def _plan_media_dir() -> Path:

@@ -21,6 +21,7 @@ import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './
 import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { dataPath } from './persist.mjs';
+import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -71,6 +72,25 @@ function run() {
     case 'compile-library': return compileLibrary({ slug: b.slug, ports: b.ports, log });
     case 'port-library': { const r = portLibrary({ slug: b.slug, to: b.to, log }); writeLibrariesIndex(); return r; }
     case 'remove-library': { const r = removeLibrary({ slug: b.slug, log }); writeLibrariesIndex(); return r; }
+    // Standards → project manifests (project.manifest.json, project-manifest@1) and their rules.
+    case 'projects': {
+      const rules = loadRules();
+      return { rulesFile: relative(ROOT, dataPath(RULES_REL)) || dataPath(RULES_REL), items: findProjects(ROOT).map((d) => { const r = checkProject(d, { rules }); return { dir: r.rel, exists: r.exists, manifest: r.manifest, validation: r.validation }; }) };
+    }
+    case 'project-rules': return { rules: loadRules(), base: baseRules(), file: dataPath(RULES_REL) };
+    case 'project-rules-save': { // { rules } → validated, then written to the shared copy (hub or repo)
+      const problems = validateProjectRules(b.rules);
+      if (problems.length) throw new Error(`rules refused: ${problems.join('; ')}`);
+      const out = { ...b.rules, updatedAt: new Date().toISOString() };
+      writeFileSync(dataPath(RULES_REL), JSON.stringify(out, null, 2) + '\n');
+      log(`project rules saved (${out.rules.length} rules) → ${dataPath(RULES_REL)}`);
+      return { rules: out };
+    }
+    case 'project-validate': { // { dir } (a project in the repo) or { manifest } (an edited one, checked without file access)
+      if (b.manifest !== undefined) return { validation: validateProjectManifest(b.manifest, b.rules ?? loadRules()) };
+      const r = checkProject(safeDir(b.dir ?? '.'));
+      return { dir: r.rel, manifest: r.manifest, validation: r.validation };
+    }
     case 'pending': return loadPending();
     case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
     case 'plan': return loadPlan();

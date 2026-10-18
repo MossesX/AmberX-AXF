@@ -6,6 +6,7 @@
 import { installLibrary } from './libraries.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
+import { PROJECT_MANIFEST_FILE, checkProject, requireProject } from './project.mjs';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -165,7 +166,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, project = {}, log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -227,6 +228,11 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
 
   if (bp) applyBoilerplate(dest, tpl, bp, log);
 
+  // Project manifest (project-manifest@1): every template ships one; fill in this app's identity and repo.
+  // The build engine never loads or compiles a project without a validated manifest.
+  log(`• writing ${PROJECT_MANIFEST_FILE}`);
+  writeProjectManifest(dest, { name, appId, template, targets, project });
+
   // Pre-build configuration: libraries chosen in the console / boilerplate are installed with their parameters.
   const installed = [];
   for (const l of libraries) {
@@ -243,6 +249,46 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   return { dir: dest, manifest: installed.length ? readJson(join(dest, 'axf.manifest.json')) : manifest, assets: assets.length, bakedFiles: Object.keys(files).length, libraries: installed.map((i) => ({ library: i.library, config: i.config })), report, next: tpl.next };
 }
 
+/** Where `dir` sits inside a git repo whose root has a project manifest: { repo: "owner/name", path }. */
+function enclosingRepo(dir) {
+  let d = dirname(dir);
+  while (d !== dirname(d)) {
+    const f = join(d, PROJECT_MANIFEST_FILE);
+    if (existsSync(f) && existsSync(join(d, '.git'))) {
+      try { const m = readJson(f); if (m.repo?.owner && m.repo?.name) return { repo: `${m.repo.owner}/${m.repo.name}`, path: relative(d, dir).split('\\').join('/') }; } catch { /* not readable */ }
+    }
+    d = dirname(d);
+  }
+  return null;
+}
+
+/**
+ * Fills in the template's project.manifest.json (or writes one when a template has none). `project` overrides:
+ * { name, displayName, description, kind, owner, repoName, repoExists, visibility, shared, platforms }.
+ */
+export function writeProjectManifest(dest, { name, appId, template, targets = [], project = {} }) {
+  const file = join(dest, PROJECT_MANIFEST_FILE);
+  const m = existsSync(file) ? readJson(file) : { $manifest: 'project-manifest@1', kind: 'app', status: 'active', version: '0.1.0', framework: { relation: 'built-on' }, repo: { host: 'github' }, data: { shared: [] } };
+  const owner = project.owner ?? m.repo?.owner ?? 'MossesX';
+  const repoName = project.repoName ?? appId;
+  const exists = project.repoExists ?? false;
+  const inside = enclosingRepo(dest);
+  m.name = project.name ?? appId;
+  m.displayName = project.displayName ?? name;
+  m.description = project.description ?? m.description ?? '';
+  if (project.kind) m.kind = project.kind;
+  m.platforms = project.platforms ?? (targets.length ? targets.filter((t) => ['web', 'android', 'desktop', 'server', 'python', 'ios', 'cli'].includes(t)) : m.platforms);
+  m.framework = { ...m.framework, relation: m.framework?.relation ?? 'built-on', version: FRAMEWORK_VERSION, template, appManifest: 'axf.manifest.json' };
+  m.repo = { ...m.repo, host: m.repo?.host ?? 'github', owner, name: repoName, exists, visibility: project.visibility ?? m.repo?.visibility ?? 'private', ...(exists ? { url: `https://github.com/${owner}/${repoName}`, defaultBranch: 'main' } : {}) };
+  if (!exists && m.repo.url) delete m.repo.url;
+  m.location = inside ?? { repo: `${owner}/${repoName}`, path: '.' };
+  m.data = { shared: project.shared ?? m.data?.shared ?? [] };
+  m.owners = m.owners?.length ? m.owners : [owner];
+  m.created = new Date().toISOString().slice(0, 10);
+  writeFileSync(file, JSON.stringify(m, null, 2) + '\n');
+  return m;
+}
+
 /* ------------------------------------------------------------------ */
 /* build options on an existing app (axf options)                      */
 /* ------------------------------------------------------------------ */
@@ -252,6 +298,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
  * Writes the tokens into the app's assets and records the values in axf.manifest.json.
  */
 export function appOptions({ dir = '.', framework = false, options = {}, log = () => {} } = {}) {
+  requireProject(framework ? join(FRAMEWORK_DIR, '..') : dir, 'changed');
   const dirs = framework ? [join(FRAMEWORK_DIR, 'assets')] : [join(resolve(dir), appTemplate(resolve(dir)).assetsDir)];
   if (!framework && !existsSync(dirs[0])) throw new Error(`No AXF assets at ${dirs[0]} — is ${dir} an AXF app?`);
   const changed = [];
@@ -290,6 +337,10 @@ export function validateApp(dir) {
   const root = resolve(dir);
   const errors = [];
   const warnings = [];
+  // The build rule: a project is only loaded or compiled with a validated manifest.
+  const project = checkProject(root);
+  for (const e of project.validation.errors) errors.push(`${PROJECT_MANIFEST_FILE}: ${e.message} [${e.rule}]`);
+  for (const w of project.validation.warnings) warnings.push(`${PROJECT_MANIFEST_FILE}: ${w.message} [${w.rule}]`);
   const tpl = appTemplate(root);
   for (const e of tpl.structure) {
     const p = join(root, pkgPath(root, e.path));
@@ -318,7 +369,7 @@ export function validateApp(dir) {
       else if (sha(p) !== hash) warnings.push(`baked file modified: ${rel}`);
     }
   }
-  return { ok: errors.length === 0, errors, warnings, assets: assets.length };
+  return { ok: errors.length === 0, errors, warnings, assets: assets.length, project: project.manifest?.name ?? null };
 }
 
 /* ------------------------------------------------------------------ */
@@ -328,6 +379,7 @@ export function validateApp(dir) {
 export function newAsset({ dir, type, id, from, name }) {
   if (!spec.types[type]) throw new Error(`Unknown type "${type}". Types: ${Object.keys(spec.types).join(', ')}`);
   const root = resolve(dir);
+  if (existsSync(join(root, 'axf.manifest.json'))) requireProject(root, 'changed');
   const assetsDir = existsSync(join(root, 'axf.manifest.json')) ? join(root, appTemplate(root).assetsDir) : join(root, 'src/assets');
   const source = from ? join(assetsDir, type, `${from}.json`) : null;
   const base = source && existsSync(source) ? readJson(source) : loadAssets(assetsDir).find((a) => a.raw?.type === type)?.raw;

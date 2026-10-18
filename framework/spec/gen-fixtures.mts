@@ -11,6 +11,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { validateAsset } from '../core/validate';
+import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 
 const root = new URL('..', import.meta.url).pathname;
 const assetsDir = join(root, 'assets');
@@ -77,3 +78,36 @@ write('validation.json', [
   { case: 'chrome-bad-enum', raw: { $axf: 'asset@1', type: 'toolbar', id: 'x', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, density: 'huge' } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
 console.log('fixtures written to', out);
+
+// Project manifests (project-manifest@1): every port's validator must report the same rule ids, in order.
+// `existing` = the project-relative paths that exist, so pathsExist rules run identically everywhere.
+const okManifest = {
+  $manifest: 'project-manifest@1', name: 'axf-demo', displayName: 'AXF Demo', kind: 'app', status: 'active', version: '0.1.0',
+  platforms: ['web'], framework: { relation: 'built-on', appManifest: 'axf.manifest.json' },
+  repo: { host: 'github', owner: 'MossesX', name: 'axf-demo', exists: false, visibility: 'private' },
+  location: { repo: 'MossesX/AmberX-AXF', path: 'apps/demo' }, data: { shared: ['state/', 'notes.json'] }, created: '2026-10-18',
+};
+const projectCases: Record<string, { manifest: unknown; existing?: string[] }> = {
+  valid: { manifest: okManifest, existing: ['axf.manifest.json', 'state', 'notes.json'] },
+  'valid-no-file-access': { manifest: okManifest },
+  'not-an-object': { manifest: ['x'] },
+  'empty-object': { manifest: {} },
+  'bad-name': { manifest: { ...okManifest, name: 'Bad_Name' } },
+  'reserved-name': { manifest: { ...okManifest, name: 'shared' } },
+  'no-repo': { manifest: { ...okManifest, repo: undefined } },
+  'repo-without-exists': { manifest: { ...okManifest, repo: { owner: 'MossesX', name: 'axf-demo' } } },
+  'future-repo-no-location': { manifest: { ...okManifest, location: undefined } },
+  'bad-vocab': { manifest: { ...okManifest, kind: 'website', status: 'paused', platforms: ['web', 'tv'], repo: { ...okManifest.repo, host: 'svn', visibility: 'secret' } } },
+  'unsafe-data-paths': { manifest: { ...okManifest, data: { shared: ['/etc/passwd', '../up', 'ok.json', 'a\\b'] } }, existing: ['ok.json', 'axf.manifest.json'] },
+  'missing-data-files': { manifest: okManifest, existing: [] },
+  'warnings-only': { manifest: { ...okManifest, version: 'v1', created: 'yesterday', repo: { ...okManifest.repo, url: 'http://x' }, extra: 1 }, existing: ['axf.manifest.json', 'state', 'notes.json'] },
+  'display-name-too-long': { manifest: { ...okManifest, displayName: 'x'.repeat(81) } },
+  // Java's `$` also matches before a final line break; JavaScript's doesn't. Ports must follow the reference.
+  'name-trailing-newline': { manifest: { ...okManifest, name: 'axf-demo\n' } },
+  'pattern-input-too-long': { manifest: { ...okManifest, repo: { ...okManifest.repo, url: `https://${'x'.repeat(400)}` } } },
+};
+write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).map(([k, c]) => {
+  const raw = JSON.parse(JSON.stringify(c.manifest ?? null));
+  const v = validateProjectManifest(raw, DEFAULT_PROJECT_RULES, c.existing ? { exists: (p) => c.existing!.includes(p) } : {});
+  return [k, { manifest: raw, ...(c.existing ? { existing: c.existing } : {}), ok: v.ok, errors: v.errors.map((e) => e.rule), warnings: v.warnings.map((w) => w.rule) }];
+})));

@@ -1,53 +1,70 @@
 #!/usr/bin/env node
 /**
- * persist — where the framework's live data lives.
+ * persist — where the framework's shared data lives.
  *
- * Live data (the pending build list, the plan + its media, the build queue, catalog status + libraries index,
- * tracker.json) is read
- * and written in the hub's persist folder on the VPS, in a subfolder named after this repo:
+ * Shared data is what the repo's project manifest (project.manifest.json) lists under data.shared: the pending
+ * build list, the plan + its media, the build queue, catalog status + libraries index, the project rules,
+ * tracker.json. On the VPS it is read and written in the hub's projects tree, in the project's _data folder,
+ * at the same path as in the repo (axhub-projects@1):
  *
- *   <AXF_PERSIST_DIR>/<AXF_PERSIST_REPO>/<same path as in the repo>
- *   e.g. /opt/axhub/persist/amberx-axf/framework/plan/pending.json
+ *   /projects/<manifest name>/_data/<same path as in the repo>
+ *   e.g. /projects/amberx-axf/_data/framework/plan/pending.json
  *
- * Resolution of the persist folder:
- *   AXF_PERSIST_DIR set      → that folder ('off' or '' forces the repo copy, e.g. in CI)
- *   else /opt/axhub/persist  → used when it exists (the hub's folder on the VPS)
- *   else                     → the repo copy (laptops, CI, fresh clones): behaviour is unchanged
- * AXF_PERSIST_REPO overrides the subfolder name (default: amberx-axf).
+ * Resolution of the data folder:
+ *   AXF_DATA_DIR set             → exactly that folder ('off' or '' forces the repo copy, e.g. in CI)
+ *   AXF_PERSIST_DIR set          → legacy: <that>/<name> ('off' = repo)
+ *   /projects exists             → /projects/<name>/_data (AXHUB_PROJECTS_DIR overrides /projects): the
+ *                                  axhub-projects volume, mounted in the Dev Console container
+ *   /opt/axhub/persist/<name>    → legacy folder, while the installer hasn't moved it yet
+ *   else                         → the repo copy (laptops, CI, fresh clones)
  *
- * A file missing on the hub is seeded from the repo copy the first time it is read, so nothing is lost on switch-over.
- * The repo copies stay as the seed and as committed snapshots (`pull`), since the repo is also the shared memory.
+ * A file missing there is seeded from the repo copy the first time it is read, so nothing is lost on switch-over.
+ * The repo copies stay as the seed and as committed snapshots (claude-sync sync, or `pull` here, then commit).
  *
- *   node framework/cli/persist.mjs            where each live file is read from
+ *   node framework/cli/persist.mjs            where each shared file is read from
  *   node framework/cli/persist.mjs push       copy repo → hub for files the hub doesn't have yet (--force: overwrite)
  *   node framework/cli/persist.mjs pull       copy hub → repo, to commit a snapshot
  */
-import { cpSync, existsSync, mkdirSync, statSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '..', '..');
 export const DEFAULT_HUB_PERSIST = '/opt/axhub/persist';
+export const DEFAULT_PROJECTS_DIR = '/projects';
 
-/** Live data, as paths relative to the repo root. Directories end with '/'. */
-export const LIVE_DATA = [
+/** Used when the manifest can't be read (it is validated elsewhere; this module only needs its name and paths). */
+const FALLBACK_DATA = [
   'framework/plan/pending.json',
   'framework/plan/plan.json',
   'framework/plan/build-queue.json',
   'framework/plan/media/',
   'framework/catalog/status.json',
   'framework/catalog/libraries.json',
+  'framework/schemas/project-rules.json',
   'tracker.json',
 ];
 
-/** The hub folder holding this repo's data, or null when data stays in the repo. */
+function rootManifest() {
+  try { return JSON.parse(readFileSync(join(REPO_ROOT, 'project.manifest.json'), 'utf8')); } catch { return {}; }
+}
+const MANIFEST = rootManifest();
+/** The project's name = its folder in the hub's /projects. */
+export const PROJECT_NAME = typeof MANIFEST.name === 'string' && MANIFEST.name ? MANIFEST.name : 'amberx-axf';
+/** Shared data, as paths relative to the repo root (directories end with '/'): the manifest's data.shared. */
+export const LIVE_DATA = Array.isArray(MANIFEST.data?.shared) && MANIFEST.data.shared.length ? MANIFEST.data.shared.filter((p) => typeof p === 'string' && p && !p.startsWith('/') && !p.includes('\\') && !p.split('/').includes('..')) : FALLBACK_DATA;
+
+/** The folder holding this project's shared data, or null when data stays in the repo. */
 export function persistRoot() {
-  const env = process.env.AXF_PERSIST_DIR;
-  let base;
-  if (env !== undefined) base = env === 'off' ? '' : env;
-  else base = existsSync(DEFAULT_HUB_PERSIST) ? DEFAULT_HUB_PERSIST : '';
-  return base ? join(base, process.env.AXF_PERSIST_REPO || 'amberx-axf') : null;
+  const exact = process.env.AXF_DATA_DIR;
+  if (exact !== undefined) return exact && exact !== 'off' ? exact : null;
+  const legacy = process.env.AXF_PERSIST_DIR;
+  if (legacy !== undefined) return legacy && legacy !== 'off' ? join(legacy, process.env.AXF_PERSIST_REPO || PROJECT_NAME) : null;
+  const projects = process.env.AXHUB_PROJECTS_DIR || DEFAULT_PROJECTS_DIR;
+  if (existsSync(projects)) return join(projects, PROJECT_NAME, '_data');
+  const old = join(DEFAULT_HUB_PERSIST, PROJECT_NAME);
+  return existsSync(old) ? old : null;
 }
 
 /**
@@ -79,10 +96,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const force = process.argv.includes('--force');
   const root = persistRoot();
   if (!root) {
-    console.log(`Live data is read from the repo (no hub persist folder: set AXF_PERSIST_DIR or create ${DEFAULT_HUB_PERSIST}).`);
+    console.log(`Shared data is read from the repo (no ${DEFAULT_PROJECTS_DIR} here; set AXF_DATA_DIR to use another folder).`);
     process.exit(cmd === 'status' ? 0 : 1);
   }
-  console.log(`Hub persist folder: ${root}`);
+  console.log(`Shared data folder: ${root}`);
   for (const rel of LIVE_DATA) {
     const repo = join(REPO_ROOT, rel), hub = join(root, rel);
     if (cmd === 'push') console.log(`${copy(repo, hub, force).padEnd(8)} ${rel}`);

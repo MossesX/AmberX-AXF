@@ -19,9 +19,12 @@ import { createServer } from 'node:http';
 import { existsSync, readFileSync, watch } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { appTemplate, FRAMEWORK_DIR, loadAssets, validateAsset } from './build-engine.mjs';
+import { requireProject } from './project.mjs';
 
 export function startDevServer({ dir = '.', port = 7070, framework = false, log = console.log } = {}) {
   const root = resolve(dir);
+  // The build rule: no project is loaded without a validated manifest (the framework's own is the repo root).
+  requireProject(framework ? join(FRAMEWORK_DIR, '..') : root, 'loaded');
   const assetsDir = framework ? join(FRAMEWORK_DIR, 'assets') : join(root, appTemplate(root).assetsDir);
   const manifestPath = join(root, 'axf.manifest.json');
   if (!existsSync(assetsDir)) throw new Error(`No assets folder at ${assetsDir}`);

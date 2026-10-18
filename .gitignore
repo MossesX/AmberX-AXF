@@ -6,3 +6,7 @@ dist-single/
 framework/node_modules/
 __pycache__/
 .axf-console/
+
+# Synced copies of /projects/_shared/_claude (claude-sync); committed once, at the repo root (_claude/shared/)
+apps/*/_claude/shared/
+projects/*/_claude/shared/

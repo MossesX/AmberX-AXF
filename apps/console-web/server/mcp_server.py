@@ -263,6 +263,34 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         r = await run("pending-act", change=change)
         return {"item": r.get("item"), "log": r.get("log", [])}
 
+    # ------------------------------------------------------------------ Standards: project manifests
+
+    @mcp.tool(annotations=READ)
+    async def project_list() -> dict[str, Any]:
+        """Every project in the repo with a manifest (project.manifest.json, project-manifest@1): its name (= its folder
+        in the hub's /projects), repo, and whether it passes the Standards rules. No project is loaded or compiled
+        without a valid manifest."""
+        r = await run("projects")
+        items = [{"dir": i["dir"], "name": (i.get("manifest") or {}).get("name"), "displayName": (i.get("manifest") or {}).get("displayName"),
+                  "kind": (i.get("manifest") or {}).get("kind"), "repo": (i.get("manifest") or {}).get("repo"),
+                  "ok": i["validation"]["ok"], "errors": i["validation"]["errors"], "warnings": i["validation"]["warnings"]} for i in r.get("items", [])]
+        return {"rulesFile": r.get("rulesFile"), "count": len(items), "items": items}
+
+    @mcp.tool(annotations=READ)
+    async def project_rules() -> dict[str, Any]:
+        """The project-manifest rules in force (managed in the Dev Console under Standards): id, title, severity,
+        whether it is locked (always an error), and the check it runs. Read-only here."""
+        r = await run("project-rules")
+        rules = r.get("rules", {})
+        return {"file": r.get("file"), "vocab": rules.get("vocab"), "knownKeys": rules.get("knownKeys"), "rules": rules.get("rules", [])}
+
+    @mcp.tool(annotations=READ)
+    async def project_validate(dir: str = ".", manifest: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Validate one project's manifest: `dir` = a folder in the repo, or pass `manifest` (an object) to check a
+        draft before writing it."""
+        r = await run("project-validate", **({"manifest": manifest} if manifest is not None else {"dir": dir}))
+        return {"dir": r.get("dir"), "validation": r.get("validation")}
+
     @mcp.tool(annotations=READ)
     async def tracker_summary() -> dict[str, Any]:
         """The catalog tracker (tracker.json) summary: built / partial / placeholder / planned per catalog tab."""

@@ -17,6 +17,7 @@
  *   interop/   ActionDescriptor/EventDescriptor, CallOrigin/RemoteCaller, CallableAction, JobManager, RemoteServices,
  *              ProtocolAdapter/ProtocolHost, AppSurface (surface@1), WireError, AxfInterop   (new — protocol-neutral interop)
  *   manifest/  AxfManifest
+ *   project/   ProjectManifests, ProjectRules, ProjectValidator — project.manifest.json (project-manifest@1)   (core/project.ts)
  *   AxfKernel  builder + lifecycle + status
  */
 package ai.amberx.axf.kernel

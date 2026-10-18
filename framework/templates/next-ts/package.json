@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "axf": { "framework": "{{FRAMEWORK_VERSION}}", "template": "next-ts" },
   "scripts": {
+    "predev": "node src/axf/core/project-guard.mjs",
     "dev": "next dev",
+    "prebuild": "node src/axf/core/project-guard.mjs",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
