@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
+import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '../plugins';
 import { useStore } from '../store';
 import { LIBRARIES } from './Libraries';
 
@@ -18,7 +20,52 @@ export function Demos() {
   );
 }
 
-/** Modules & packages: every framework module (Android port) with its kind, plus the catalog's Modules tab. */
+/** Console plugins (apps/console-web/plugins/<folder>/): what each is, whether it runs, what it provides, its settings. */
+function ConsolePlugins() {
+  const rt = useRuntime();
+  const [status, setStatus] = useState<PluginStatus[] | null>(null);
+  useEffect(() => {
+    const load = () => { void fetchPluginStatus().then(setStatus); };
+    load();
+    globalThis.addEventListener(PLUGINS_CHANGED, load);
+    return () => globalThis.removeEventListener(PLUGINS_CHANGED, load);
+  }, []);
+  const rows = bundledPlugins.map((p) => {
+    const s = status?.find((x) => x.folder === p.folder);
+    return { p, s, enabled: s ? s.enabled : p.manifest.enabledByDefault !== false };
+  });
+  const on = rows.filter((r) => r.enabled).length;
+  return (
+    <Container title="Console plugins" icon="box" actions={<><Chip tone="success">{on} on</Chip><Chip>{rows.length}</Chip><Button icon="settings" onClick={() => rt.dispatch('settings.open:plugins')}>Manage</Button></>}>
+      {rows.length === 0 ? <p className="fx-muted">No plugins installed.</p> : (
+        <ul className="cx-list">{rows.map(({ p, s, enabled }) => {
+          const tab = p.library?.settingsTabs?.[0]?.id;
+          const services = (p.manifest.provides ?? []).filter((x) => x.startsWith('service:')).map((x) => x.slice(8));
+          return (
+            <li key={p.folder} className="cx-item">
+              <Icon name="box" />
+              <div className="fx-grow">
+                <span>{p.manifest.name}</span> <span className="fx-muted fx-small">{p.manifest.version}</span>
+                <div className="fx-mono fx-small">{p.manifest.id} · plugins/{p.folder}</div>
+                {p.manifest.description && <div className="fx-muted fx-small">{p.manifest.description}</div>}
+                <div className="fx-row fx-row--wrap">
+                  <Chip tone={enabled ? 'success' : undefined}>{enabled ? 'enabled' : 'disabled'}</Chip>
+                  {s?.server === 'loaded' && <Chip tone="accent">server part</Chip>}
+                  {s?.server === 'error' && <Chip tone="danger">server part failed</Chip>}
+                  {p.problem && <Chip tone="danger">web part: {p.problem}</Chip>}
+                  {services.map((x) => <Chip key={x}>{x}</Chip>)}
+                </div>
+              </div>
+              <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${tab ?? 'plugins'}`)}>Settings</Button>
+            </li>
+          );
+        })}</ul>
+      )}
+    </Container>
+  );
+}
+
+/** Modules & packages: every framework module (Android port) with its kind, console plugins, plus the catalog's Modules tab. */
 export function Modules() {
   const s = useStore();
   const rt = useRuntime();
@@ -26,8 +73,9 @@ export function Modules() {
   const modItems = s.catalog.tabs.find((t) => t.id === 'modules')?.groups ?? [];
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">{s.modules.length} Android modules · published as ai.amberx.axf:&lt;module&gt;:0.2.0</p><h1>Modules & packages</h1><p className="fx-muted">What the Android port ships (framework/android/settings.gradle.kts). Web port modules live in framework/core + framework/react; Python port planned.</p></div><div className="fx-row"><Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">{s.modules.length} Android modules · {bundledPlugins.length} console plugins · published as ai.amberx.axf:&lt;module&gt;:0.2.0</p><h1>Modules & packages</h1><p className="fx-muted">What the Android port ships (framework/android/settings.gradle.kts). Web port modules live in framework/core + framework/react; Python port planned. Console plugins live in apps/console-web/plugins.</p></div><div className="fx-row"><Button icon="terminal" onClick={() => rt.dispatch('terminal.open')}>Terminal</Button></div></header>
       <div className="fx-grid">{kinds.map(([k, label]) => { const list = s.modules.filter((m) => m.kind === k); if (!list.length) return null; return <Container key={k} title={label} icon={k === 'kit' ? 'grid' : 'package'} actions={<Chip>{list.length}</Chip>}><ul className="cx-list">{list.map((m) => <li key={m.name} className="cx-item"><Icon name="package" /><div className="fx-grow"><span className="fx-mono">{m.name}</span><div className="fx-muted fx-small">{m.description || '—'}</div></div></li>)}</ul></Container>; })}</div>
+      <ConsolePlugins />
       {modItems.map((g) => <Container key={g.id} title={g.label} icon="layers"><ul className="cx-list">{g.items.map((i) => <li key={i.id} className="cx-item"><label className="cx-check"><input type="checkbox" checked={s.isChecked(i.id)} onChange={(e) => s.setChecked(i.id, e.target.checked)} /></label><span className="fx-grow">{i.title} <span className="fx-muted fx-mono fx-small">{i.id}</span></span><Chip tone={s.status(i.id) === 'built' ? 'success' : undefined}>{s.status(i.id)}</Chip></li>)}</ul></Container>)}
     </div>
   );
