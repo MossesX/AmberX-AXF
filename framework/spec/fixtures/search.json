@@ -1,0 +1,94 @@
+[
+  {
+    "label": "Randomize",
+    "kind": "setting",
+    "detail": "Settings › Appearance",
+    "keywords": [],
+    "query": "random",
+    "score": 59.85
+  },
+  {
+    "label": "Randomize assets",
+    "kind": "action",
+    "detail": "assets.random",
+    "keywords": [],
+    "query": "randomize assets",
+    "score": 129.733333
+  },
+  {
+    "label": "Context menu",
+    "kind": "setting",
+    "detail": "Settings › Appearance › Randomize",
+    "keywords": [
+      "axf.roll.slot.context-menu"
+    ],
+    "query": "menu",
+    "score": 39.8
+  },
+  {
+    "label": "Context menu",
+    "kind": "setting",
+    "detail": "Settings › Appearance › Randomize",
+    "keywords": [
+      "axf.roll.slot.context-menu"
+    ],
+    "query": "roll context",
+    "score": 69.8
+  },
+  {
+    "label": "Pending builds",
+    "kind": "view",
+    "detail": "Page",
+    "keywords": [
+      "pending"
+    ],
+    "query": "Pending builds",
+    "score": 129.766667
+  },
+  {
+    "label": "Console token",
+    "kind": "setting",
+    "detail": "Settings › Account & security",
+    "keywords": [],
+    "query": "tok",
+    "score": 39.783333
+  },
+  {
+    "label": "Console token",
+    "kind": "setting",
+    "detail": "Settings › Account & security",
+    "keywords": [],
+    "query": "security",
+    "score": 9.783333
+  },
+  {
+    "label": "Café menu",
+    "kind": "text",
+    "detail": "Home",
+    "keywords": [],
+    "query": "cafe",
+    "score": 59.85
+  },
+  {
+    "label": "Output terminal",
+    "kind": "action",
+    "detail": "terminal.open",
+    "keywords": [],
+    "query": "xyz",
+    "score": 0
+  },
+  {
+    "label": "Next layout",
+    "kind": "action",
+    "keywords": [],
+    "query": "action layout",
+    "score": 49.816667
+  },
+  {
+    "label": "Swap (a+b)",
+    "kind": "action",
+    "keywords": [],
+    "query": "(a+b",
+    "score": 39.833333
+  }
+]

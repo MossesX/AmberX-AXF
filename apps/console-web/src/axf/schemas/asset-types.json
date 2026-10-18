@@ -11,7 +11,13 @@
       "version",
       "data"
     ],
-    "idPattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    "idPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+    "optional_fields": {
+      "description": "string",
+      "author": "string",
+      "tags": "string[]",
+      "roll": "boolean — whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
+    }
   },
   "types": {
     "color-theme": {
@@ -220,7 +226,8 @@
         "window": "id or kind of the window this toolbar is attached to (`main` by default); the window-settings icon renders only when the toolbar is inside a floating window",
         "density": "compact | regular (default) | roomy — toolbar padding and button height",
         "surface": "flat (default) | raised | glass",
-        "divider": "boolean, default true — rule between item groups"
+        "divider": "boolean, default true — rule between item groups",
+        "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box."
       }
     },
     "nav-menu": {
@@ -276,6 +283,10 @@
         "targets": [
           "default"
         ]
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
       }
     },
     "dialog": {
@@ -446,5 +457,13 @@
         ]
       }
     }
+  },
+  "rollDefaults": {
+    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled.",
+    "slot": true,
+    "asset": true,
+    "never": [
+      "uac-policy"
+    ]
   }
 }

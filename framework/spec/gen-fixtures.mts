@@ -10,6 +10,9 @@ import { compileLayout, layoutVars } from '../core/engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
+import { rollPlan, rollSlotDefault } from '../core/engines/roll';
+import { scoreEntry } from '../core/engines/search';
+import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 
@@ -77,6 +80,34 @@ write('validation.json', [
   { case: 'slots-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { menubar: ['app-menu', 'toolbar'], nav: [] } } } },
   { case: 'chrome-bad-enum', raw: { $axf: 'asset@1', type: 'toolbar', id: 'x', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, density: 'huge' } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
+// Randomize rolls: which slots a roll touches and which assets it may pick (context menus are opt-in).
+const rollCases: Record<string, { slots?: Record<string, boolean>; assets?: Record<string, boolean> }> = {
+  default: {},
+  'context-menu-slot-on': { slots: { 'context-menu': true } },
+  'context-menu-slot-on-one-asset': { slots: { 'context-menu': true }, assets: { 'context-menu/compact-classic': true } },
+  'asset-on-slot-off': { assets: { 'context-menu/compact-classic': true } },
+  'toolbar-off-color-one-out': { slots: { toolbar: false }, assets: { 'color-theme/amber-ember': false } },
+  'uac-never': { slots: { 'uac-policy': true } },
+};
+write('roll.json', {
+  slotDefaults: Object.fromEntries(ASSET_TYPES.map((t) => [t, rollSlotDefault(t)])),
+  cases: Object.fromEntries(Object.entries(rollCases).map(([k, rules]) => [k, { rules, plan: rollPlan(ASSET_TYPES, (t) => load(t), rules) }])),
+});
+// Search scoring: every port ranks the same entries the same way.
+const searchCases = [
+  { label: 'Randomize', kind: 'setting', detail: 'Settings › Appearance', keywords: [], query: 'random' },
+  { label: 'Randomize assets', kind: 'action', detail: 'assets.random', keywords: [], query: 'randomize assets' },
+  { label: 'Context menu', kind: 'setting', detail: 'Settings › Appearance › Randomize', keywords: ['axf.roll.slot.context-menu'], query: 'menu' },
+  { label: 'Context menu', kind: 'setting', detail: 'Settings › Appearance › Randomize', keywords: ['axf.roll.slot.context-menu'], query: 'roll context' },
+  { label: 'Pending builds', kind: 'view', detail: 'Page', keywords: ['pending'], query: 'Pending builds' },
+  { label: 'Console token', kind: 'setting', detail: 'Settings › Account & security', keywords: [], query: 'tok' },
+  { label: 'Console token', kind: 'setting', detail: 'Settings › Account & security', keywords: [], query: 'security' },
+  { label: 'Café menu', kind: 'text', detail: 'Home', keywords: [], query: 'cafe' },
+  { label: 'Output terminal', kind: 'action', detail: 'terminal.open', keywords: [], query: 'xyz' },
+  { label: 'Next layout', kind: 'action', keywords: [], query: 'action layout' },
+  { label: 'Swap (a+b)', kind: 'action', keywords: [], query: '(a+b' },
+];
+write('search.json', searchCases.map((c) => ({ ...c, score: Math.round(scoreEntry(c, c.query) * 1e6) / 1e6 })));
 console.log('fixtures written to', out);
 
 // Project manifests (project-manifest@1): every port's validator must report the same rule ids, in order.

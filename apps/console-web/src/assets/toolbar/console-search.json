@@ -1,0 +1,96 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "console-search",
+  "name": "Console Search",
+  "version": "1.0.0",
+  "description": "Console shortcuts with a live search box that finds any page, action, setting, dialog, asset or word in the console as you type and brings it into focus.",
+  "author": "AmberX AXF",
+  "tags": [
+    "search",
+    "console",
+    "live"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search the console…  (Ctrl K)",
+      "maxResults": 14
+    },
+    "groups": [
+      {
+        "id": "go",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Home",
+            "action": "nav:home"
+          },
+          {
+            "id": "plan",
+            "icon": "layers",
+            "label": "Plan",
+            "action": "nav:plan"
+          },
+          {
+            "id": "build",
+            "icon": "play",
+            "label": "Build",
+            "action": "nav:build"
+          },
+          {
+            "id": "pending",
+            "icon": "clock",
+            "label": "Pending builds",
+            "action": "nav:pending"
+          }
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          {
+            "id": "color",
+            "icon": "palette",
+            "label": "Next color theme",
+            "action": "swap:color-theme:next"
+          },
+          {
+            "id": "layout",
+            "icon": "layout",
+            "label": "Next layout",
+            "action": "swap:layout:next"
+          },
+          {
+            "id": "random",
+            "icon": "shuffle",
+            "label": "Randomize",
+            "action": "assets.random",
+            "requires": "assets.swap"
+          }
+        ]
+      },
+      {
+        "id": "tools",
+        "items": [
+          {
+            "id": "terminal",
+            "icon": "terminal",
+            "label": "Output terminal",
+            "action": "terminal.open"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T15:45:22.625Z",
+ "generatedAt": "2026-10-18T18:03:34.429Z",
  "statuses": [
   "built",
   "partial",
@@ -5971,6 +5971,52 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "k.roll",
+   "title": "Randomize roll rules: per-slot and per-asset include switches (context menus opt-in), changeable in settings, code or actions",
+   "area": "Kernel",
+   "group": "Kernel core (already defined by the web demo, ported to Kotlin)",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "RollEngine (TS core/engines/roll.ts = Kotlin engine/RollEngine.kt), defaults in asset-types.json rollDefaults/roll, fixtures spec/fixtures/roll.json.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "k.roll"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-18",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "k.theme",
    "title": "Theme engine → Compose tokens (color-theme + style-theme)",
    "area": "Kernel",
@@ -7105,14 +7151,14 @@
    "area": "Kernel",
    "group": "Kernel architecture & extension safety",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
+     "status": "partial",
      "where": "axf-kernel"
     }
    },
@@ -16732,6 +16778,47 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "cx.search",
+   "title": "Console search toolbar: live dropdown over pages, actions, settings, dialogs, assets and words on pages; a pick is brought into focus",
+   "area": "Console app",
+   "group": "Console plumbing",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "Toolbar asset console-search (data.search.live) on the search engine (core/engines/search.ts = Kotlin SearchEngine.kt).",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "cx.search"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-18",
      "text": "Imported from the feature catalog"
     }
    ],

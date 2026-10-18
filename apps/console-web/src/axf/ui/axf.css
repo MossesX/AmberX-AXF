@@ -181,6 +181,34 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-toolbar[data-align='spread'] .fx-search { margin-left: 0; }
 .fx-search input { border: 0; outline: 0; background: transparent; width: 100%; height: calc(var(--fx-row-h) - 6px); font-size: 0.9em; }
 .fx-search:focus-within { border-color: var(--fx-accent); }
+/* live search (toolbar asset data.search.live): dropdown that updates on every keystroke */
+.fx-search--live { position: relative; }
+.fx-search__clear { border: 0; background: transparent; color: var(--fx-muted); display: inline-flex; padding: 2px; border-radius: var(--fx-radius-sm); cursor: pointer; }
+.fx-search__clear:hover { color: var(--fx-text); background: var(--fx-surface3); }
+.fx-search__results {
+  position: fixed; z-index: 85; max-height: 440px; overflow: auto; overscroll-behavior: contain;
+  padding: 4px; display: flex; flex-direction: column; gap: 1px;
+}
+.fx-search__hit {
+  display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space);
+  border-radius: var(--fx-radius-sm); color: var(--fx-text); cursor: pointer;
+}
+.fx-search__hit > svg { color: var(--fx-muted); flex: none; }
+.fx-search__hit.is-active { background: var(--fx-accent-soft); }
+.fx-search__hit.is-active > svg { color: var(--fx-accent); }
+.fx-search__hit.is-locked { opacity: max(var(--fx-opacity-disabled), 0.5); }
+.fx-search__text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.fx-search__label, .fx-search__detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-search__detail { font-size: 0.8em; color: var(--fx-muted); }
+.fx-search__kind { flex: none; font-size: 0.72em; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fx-muted); border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; padding: 1px 7px; }
+.fx-search__empty { padding: var(--fx-space); color: var(--fx-muted); font-size: 0.9em; }
+/* the element a search result brought into focus */
+@keyframes fx-search-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  20%, 70% { box-shadow: 0 0 0 3px var(--fx-accent); background-color: var(--fx-accent-soft); }
+}
+.fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
+[data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
 
 /* ---------------- nav menu (nav-menu asset) ---------------- */
 

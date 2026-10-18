@@ -31,14 +31,15 @@ public data class AxfState(
 }
 
 /** The on-disk part of the state (hot-swap choices + role), identical to the web port's localStorage payload. */
-public data class Persisted(val active: Map<String, String>, val role: String?) {
+public data class Persisted(val active: Map<String, String>, val role: String?, val defaults: Map<String, String>? = null) {
     public fun toJson(): String = kotlinx.serialization.json.buildJsonObject {
         put("active", kotlinx.serialization.json.JsonObject(active.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }))
         role?.let { put("role", kotlinx.serialization.json.JsonPrimitive(it)) }
+        defaults?.let { d -> put("defaults", kotlinx.serialization.json.JsonObject(d.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) })) }
     }.toString()
     public companion object {
         public fun fromJson(text: String?): Persisted? = text?.let { ai.amberx.axf.kernel.asset.AxfJson.runCatching { parseToJsonElement(it) as kotlinx.serialization.json.JsonObject }.getOrNull() }?.let { o ->
-            Persisted(ai.amberx.axf.kernel.asset.strMap(o, "active"), ai.amberx.axf.kernel.asset.strOrNull(o, "role"))
+            Persisted(ai.amberx.axf.kernel.asset.strMap(o, "active"), ai.amberx.axf.kernel.asset.strOrNull(o, "role"), if (o.containsKey("defaults")) ai.amberx.axf.kernel.asset.strMap(o, "defaults") else null)
         }
     }
 }

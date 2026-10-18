@@ -31,6 +31,8 @@ export interface AssetEnvelope<T = unknown> {
   description?: string;
   author?: string;
   tags?: string[];
+  /** May a randomize roll pick this asset? Default comes from the type (engines/roll.ts); runtime overrides win. */
+  roll?: boolean;
   data: T;
 }
 
@@ -142,6 +144,19 @@ export interface ToolbarData {
   surface?: ChromeSurface;
   /** rule between item groups (default true) */
   divider?: boolean;
+  /** live search box (see ToolbarSearch); absent or live:false = classic submit-to-jump box */
+  search?: ToolbarSearch;
+}
+
+/** Toolbar search behaviour. Results come from the runtime's search index (engines/search.ts). */
+export interface ToolbarSearch {
+  /** dropdown that updates on every keystroke */
+  live: boolean;
+  placeholder?: string;
+  /** default 12 */
+  maxResults?: number;
+  /** limit results to these kinds (default: all) */
+  kinds?: string[];
 }
 
 export interface NavItem {

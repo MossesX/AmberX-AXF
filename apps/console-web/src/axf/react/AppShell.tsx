@@ -7,11 +7,14 @@ import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
+import { useSearchHost } from './components/Search';
 
 export interface ViewDef {
   title: string;
   icon?: string;
   render: () => ReactNode;
+  /** extra words the toolbar search should find this view by */
+  keywords?: string[];
 }
 export type ViewMap = Record<string, ViewDef>;
 
@@ -37,6 +40,9 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu');
   useWindowShortcuts();
+  const allDialogs: DialogMap = { ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
+  // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
+  useSearchHost(views, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
 
   return (
@@ -72,7 +78,7 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
           <StatusBar />
         </div>
       )}
-      <DialogHost dialogs={{ ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...dialogs }} />
+      <DialogHost dialogs={allDialogs} />
       <ToastHost />
       <ContextMenuHost />
       <FloatingWindowsHost />

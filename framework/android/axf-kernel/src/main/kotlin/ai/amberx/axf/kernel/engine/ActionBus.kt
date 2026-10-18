@@ -3,7 +3,7 @@ package ai.amberx.axf.kernel.engine
 import ai.amberx.axf.kernel.result.AxfFailure
 import ai.amberx.axf.kernel.result.AxfResult
 
-public data class ActionMeta(val label: String, val requires: String? = null, /** true for the framework's no-op stubs (apps override) */ val stub: Boolean = false, val module: String = "kernel")
+public data class ActionMeta(val label: String, val requires: String? = null, /** true for the framework's no-op stubs (apps override) */ val stub: Boolean = false, val module: String = "kernel", /** needs arguments (`swap:<type>:<id>`); search lists only argument-free actions */ val params: Boolean = false, /** false keeps an argument-free action out of search */ val searchable: Boolean = true)
 
 public class ActionContext(public val payload: String? = null, public val extras: Map<String, Any?> = emptyMap())
 

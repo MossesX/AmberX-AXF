@@ -4,6 +4,7 @@ export { Button, Slider, Container, Chip, Kbd, type ButtonProps, type SliderProp
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList } from './components/MenuList';
 export { MenuBar, Toolbar, NavMenu, StatusBar } from './components/Chrome';
+export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';
 export { AccountView } from './studio/AccountView';

@@ -1,0 +1,402 @@
+{
+  "slotDefaults": {
+    "color-theme": true,
+    "style-theme": true,
+    "layout": true,
+    "app-menu": true,
+    "toolbar": true,
+    "nav-menu": true,
+    "context-menu": false,
+    "dialog": true,
+    "popup": true,
+    "button": true,
+    "slider": true,
+    "container": true,
+    "uac-policy": false
+  },
+  "cases": {
+    "default": {
+      "rules": {},
+      "plan": {
+        "color-theme": [
+          "amber-ember",
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "toolbar": [
+          "labeled-actions",
+          "standard-icons",
+          "text-commands"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    },
+    "context-menu-slot-on": {
+      "rules": {
+        "slots": {
+          "context-menu": true
+        }
+      },
+      "plan": {
+        "color-theme": [
+          "amber-ember",
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "toolbar": [
+          "labeled-actions",
+          "standard-icons",
+          "text-commands"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    },
+    "context-menu-slot-on-one-asset": {
+      "rules": {
+        "slots": {
+          "context-menu": true
+        },
+        "assets": {
+          "context-menu/compact-classic": true
+        }
+      },
+      "plan": {
+        "color-theme": [
+          "amber-ember",
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "toolbar": [
+          "labeled-actions",
+          "standard-icons",
+          "text-commands"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "context-menu": [
+          "compact-classic"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    },
+    "asset-on-slot-off": {
+      "rules": {
+        "assets": {
+          "context-menu/compact-classic": true
+        }
+      },
+      "plan": {
+        "color-theme": [
+          "amber-ember",
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "toolbar": [
+          "labeled-actions",
+          "standard-icons",
+          "text-commands"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    },
+    "toolbar-off-color-one-out": {
+      "rules": {
+        "slots": {
+          "toolbar": false
+        },
+        "assets": {
+          "color-theme/amber-ember": false
+        }
+      },
+      "plan": {
+        "color-theme": [
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    },
+    "uac-never": {
+      "rules": {
+        "slots": {
+          "uac-policy": true
+        }
+      },
+      "plan": {
+        "color-theme": [
+          "amber-ember",
+          "arctic-daylight",
+          "neon-tide"
+        ],
+        "style-theme": [
+          "glass-orbit",
+          "sharp-terminal",
+          "soft-studio"
+        ],
+        "layout": [
+          "classic-ide",
+          "focus-top",
+          "studio-dock"
+        ],
+        "app-menu": [
+          "developer",
+          "minimal-picker",
+          "standard-desktop"
+        ],
+        "toolbar": [
+          "labeled-actions",
+          "standard-icons",
+          "text-commands"
+        ],
+        "nav-menu": [
+          "icon-rail",
+          "pill-tabs",
+          "sidebar-list"
+        ],
+        "dialog": [
+          "bottom-sheet",
+          "centered-modal",
+          "side-drawer"
+        ],
+        "popup": [
+          "center-minimal",
+          "corner-solid",
+          "stack-outline"
+        ],
+        "button": [
+          "pill-gradient",
+          "rounded-solid",
+          "square-outline"
+        ],
+        "slider": [
+          "chunky-gradient",
+          "classic-round",
+          "precision-bar"
+        ],
+        "container": [
+          "divided-panel",
+          "frosted-glass",
+          "soft-card"
+        ]
+      }
+    }
+  }
+}

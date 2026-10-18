@@ -19,6 +19,10 @@ export interface ActionMeta {
   requires?: string;
   /** true for the framework's no-op stubs (apps are expected to override) */
   stub?: boolean;
+  /** true when the action needs arguments (`swap:<type>:<id>`); search lists only argument-free actions */
+  params?: boolean;
+  /** false keeps an argument-free action out of search */
+  searchable?: boolean;
 }
 
 export class ActionBus {

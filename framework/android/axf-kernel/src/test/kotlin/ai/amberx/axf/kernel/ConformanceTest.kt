@@ -13,6 +13,11 @@ import ai.amberx.axf.kernel.engine.LayoutEngine
 import ai.amberx.axf.kernel.engine.Region
 import ai.amberx.axf.kernel.engine.ThemeEngine
 import ai.amberx.axf.kernel.engine.UacEngine
+import ai.amberx.axf.kernel.engine.RollEngine
+import ai.amberx.axf.kernel.engine.RollRules
+import ai.amberx.axf.kernel.engine.SearchEngine
+import ai.amberx.axf.kernel.asset.AssetEnvelope
+import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 import ai.amberx.axf.kernel.engine.WindowClass
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -113,6 +118,31 @@ class ConformanceTest {
                     assertEquals((expected as JsonPrimitive).content.toBoolean(), UacEngine.hasPermission(UacEngine.resolvePermissions(policy, role), perm), "$id/$role/$perm")
                 }
             }
+        }
+    }
+
+    @Test fun `randomize roll plan matches the reference engine`() {
+        val types = AssetTypeRegistry.builtin()
+        val f = fixture("roll.json")
+        for ((t, v) in f.getValue("slotDefaults").jsonObject) assertEquals(v.jsonPrimitive.content.toBoolean(), RollEngine.slotDefault(types, t), "slot default $t")
+        val core = f.getValue("slotDefaults").jsonObject.keys.toList()
+        fun list(t: String) = (File(assets, t).listFiles() ?: emptyArray()).sortedBy { it.name }.map { AssetEnvelope.fromJson(it.readText().parseJsonObject()!!) }
+        for ((case, c) in f.getValue("cases").jsonObject) {
+            val r = c.jsonObject.getValue("rules").jsonObject
+            fun bools(k: String) = (r[k] as? JsonObject)?.mapValues { it.value.jsonPrimitive.content.toBoolean() } ?: emptyMap()
+            val plan = RollEngine.plan(types, core, ::list, RollRules(bools("slots"), bools("assets")))
+            val expected = c.jsonObject.getValue("plan").jsonObject.mapValues { (_, ids) -> (ids as JsonArray).map { it.jsonPrimitive.content } }
+            assertEquals(expected, plan, case)
+        }
+    }
+
+    @Test fun `search scoring matches the reference engine`() {
+        val cases = File(fixtures, "search.json").readText().let { ai.amberx.axf.kernel.asset.AxfJson.parseToJsonElement(it) as JsonArray }
+        for (c in cases) {
+            val o = c.jsonObject
+            val kw = (o["keywords"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            val got = SearchEngine.score(o.getValue("label").jsonPrimitive.content, (o["detail"] as? JsonPrimitive)?.content, kw, o.getValue("kind").jsonPrimitive.content, o.getValue("query").jsonPrimitive.content)
+            assertEquals(o.getValue("score").jsonPrimitive.content.toDouble(), Math.round(got * 1e6) / 1e6, o.getValue("query").jsonPrimitive.content)
         }
     }
 }

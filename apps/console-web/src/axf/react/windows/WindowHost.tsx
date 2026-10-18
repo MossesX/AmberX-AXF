@@ -231,8 +231,8 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
 
 /** Register these with the shell's dialogs: `{ ...windowDialogs }`. */
 export const windowDialogs = {
-  'split-grid': { title: 'Custom grid', icon: 'grid', render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
-  'window-settings': { title: 'Window settings', icon: 'settings', render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
+  'split-grid': { title: 'Custom grid', icon: 'grid', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <SplitGridDialog groupId={String(p.arg ?? '')} close={close} /> },
+  'window-settings': { title: 'Window settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>, close: () => void) => <WindowSettingsDialog windowId={String(p.arg ?? '')} close={close} /> },
 };
 
 /** Keep the floating host's pointer/escape handling simple: Escape closes the focused floating window. */

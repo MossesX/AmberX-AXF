@@ -8,8 +8,8 @@
  *
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
  */
-import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { ASSET_TYPES, assetTypeSpecs, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 
@@ -34,7 +34,12 @@ function useSettingsRevision(rt: AxfRuntime): number {
 
 /* ---------------- controls ---------------- */
 
+/** Every row carries a search anchor, so the toolbar search can scroll to it and flash it. */
 function SettingRow({ spec }: { spec: SettingSpec }) {
+  return <div data-axf-anchor={`setting:${spec.key}`}><SettingControl spec={spec} /></div>;
+}
+
+function SettingControl({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
@@ -125,10 +130,79 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
 
 function GroupCard({ group }: { group: SettingsGroup }) {
   return (
-    <Container title={group.label} icon={group.icon ?? 'settings'}>
-      {group.description && <p className="fx-muted" style={{ marginTop: 0 }}>{group.description}</p>}
-      <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
-    </Container>
+    <div data-axf-anchor={`settings-group:${group.id}`}>
+      <Container title={group.label} icon={group.icon ?? 'settings'}>
+        {group.description && <p className="fx-muted" style={{ marginTop: 0 }}>{group.description}</p>}
+        <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
+      </Container>
+    </div>
+  );
+}
+
+/* ---------------- randomize rolls (core/engines/roll.ts) ---------------- */
+
+/** Slot switches: which slots "Randomize all" may change. Context menus start off. uac-policy is never rolled. */
+function rollGroup(): SettingsGroup {
+  return {
+    id: 'axf.roll',
+    label: 'Randomize',
+    icon: 'shuffle',
+    tab: 'appearance',
+    order: 15,
+    description: 'Which slots "Randomize all" may change. A slot that is off keeps its current asset.',
+    settings: ASSET_TYPES.filter((t) => !rollNever(t)).map((t) => ({
+      key: ROLL_SLOT_KEY(t),
+      label: assetTypeSpecs[t].label,
+      kind: 'toggle' as const,
+      default: rollSlotDefault(t),
+      requires: 'assets.swap',
+      ...(t === 'context-menu' ? { description: 'Off by default: rolls leave context menus alone.' } : {}),
+    })),
+  };
+}
+
+/** Per-asset switches: which assets a roll may pick. Context-menu assets are opt-in, one by one. */
+function RollAssetsPanel() {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  const types = ASSET_TYPES.filter((t) => !rollNever(t));
+  const [type, setType] = useState<AssetType>('context-menu');
+  const locked = rt.gate('assets.swap') !== 'allow';
+  const slotOn = rt.rollSlotIncluded(type);
+  return (
+    <div className="axf-settings__rows">
+      <div className="axf-settings__row">
+        <div className="axf-settings__label">
+          <span>Slot</span>
+          <span className="fx-muted axf-settings__hint">{slotOn ? 'Rolls change this slot, picking only the assets switched on below.' : 'This slot is off above, so rolls leave it alone whatever is switched on here.'}</span>
+        </div>
+        <div className="axf-settings__control">
+          <select className="axf-settings__field" value={type} onChange={(e) => setType(e.target.value as AssetType)} aria-label="Slot">
+            {types.map((t) => <option key={t} value={t}>{assetTypeSpecs[t].label}</option>)}
+          </select>
+        </div>
+      </div>
+      {rt.registry.list(type).map((a) => {
+        const on = rt.rollAssetIncluded(type, a.id);
+        const overridden = typeof rt.settings.get(ROLL_ASSET_KEY(type, a.id)) === 'boolean';
+        return (
+          <div key={a.id} className="axf-settings__row" data-axf-anchor={`roll-asset:${type}:${a.id}`}>
+            <div className="axf-settings__label">
+              <span>{a.name}</span>
+              <span className="fx-muted axf-settings__hint fx-mono">{a.id}{overridden ? ' · changed here' : ''}</span>
+            </div>
+            <div className="axf-settings__control fx-row fx-row--wrap">
+              <label className="axf-settings__switch">
+                <input type="checkbox" checked={on} disabled={locked} onChange={(e) => rt.setRollAsset(type, a.id, e.target.checked)} aria-label={`Include ${a.name} in rolls`} />
+                <span>{on ? 'In rolls' : 'Not in rolls'}</span>
+              </label>
+              {overridden && <Button tone="ghost" icon="refresh" disabled={locked} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -225,8 +299,11 @@ export function SettingsView() {
         ))}
       </nav>
       {current?.description && <p className="fx-muted" style={{ margin: 0 }}>{current.description}</p>}
-      {panels.map((p) => <Container key={p.id} title={p.title} icon={p.icon ?? current?.icon ?? 'settings'}>{p.render() as ReactNode}</Container>)}
-      {groups.map((g) => <GroupCard key={g.id} group={g} />)}
+      {/* panels and groups interleaved by `order` (panels first on a tie) */}
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? current?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+        ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
+        .sort((a, b) => a.order - b.order || a.tie - b.tie)
+        .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
         <p className="fx-muted">{current?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
       )}
@@ -310,6 +387,7 @@ export const library: AxfWebLibrary = {
   register(rt) {
     injectStyles();
     rt.settings.addGroup(appearanceGroup(rt));
+    rt.settings.addGroup(rollGroup());
     applyDisplay(rt);
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
@@ -320,7 +398,7 @@ export const library: AxfWebLibrary = {
         rt.settings.set(TAB_KEY, tab);
         globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: tab }));
       }
-    }, { label: 'Open a settings tab' });
+    }, { label: 'Open a settings tab', params: true });
   },
   views: { [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> } },
   settingsTabs: Object.values(SETTINGS_TABS),
@@ -340,6 +418,7 @@ export const library: AxfWebLibrary = {
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],

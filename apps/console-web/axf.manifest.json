@@ -19,7 +19,7 @@
     "style-theme": "soft-studio",
     "layout": "classic-ide",
     "app-menu": "standard-desktop",
-    "toolbar": "standard-icons",
+    "toolbar": "console-search",
     "nav-menu": "console-nav",
     "context-menu": "compact-classic",
     "dialog": "centered-modal",

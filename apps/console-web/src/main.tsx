@@ -17,6 +17,14 @@ const axf = createAxf({
 });
 registerActions(axf);
 
+// One-time move to the new default toolbar for browsers that saved their choices before saves recorded the
+// app's defaults (newer saves carry them, and the runtime adopts a changed default by itself).
+try {
+  const raw = localStorage.getItem(`axf:${manifest.app.id}`);
+  const saved = raw ? (JSON.parse(raw) as { active?: { toolbar?: string }; defaults?: unknown }) : null;
+  if (saved && !saved.defaults && saved.active?.toolbar === 'standard-icons') axf.swapAll({ toolbar: manifest.defaults.toolbar });
+} catch { /* storage unavailable */ }
+
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
 
 createRoot(document.getElementById('root')!).render(

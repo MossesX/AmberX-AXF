@@ -9,6 +9,8 @@ export * from './engines/components';
 export * from './engines/uac';
 export * from './engines/actions';
 export * from './engines/windows';
+export * from './engines/roll';
+export * from './engines/search';
 export * from './terminal';
 export * from './options';
 export * from './project';

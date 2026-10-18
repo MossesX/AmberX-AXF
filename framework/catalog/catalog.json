@@ -630,6 +630,14 @@
               "suggests": []
             },
             {
+              "id": "k.roll",
+              "title": "Randomize roll rules: per-slot and per-asset include switches (context menus opt-in), changeable in settings, code or actions",
+              "note": "RollEngine (TS core/engines/roll.ts = Kotlin engine/RollEngine.kt), defaults in asset-types.json rollDefaults/roll, fixtures spec/fixtures/roll.json.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "k.theme",
               "title": "Theme engine \u2192 Compose tokens (color-theme + style-theme)",
               "note": "",
@@ -2409,6 +2417,14 @@
               "title": "Landing/loading screen + home dashboard",
               "note": "",
               "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.search",
+              "title": "Console search toolbar: live dropdown over pages, actions, settings, dialogs, assets and words on pages; a pick is brought into focus",
+              "note": "Toolbar asset console-search (data.search.live) on the search engine (core/engines/search.ts = Kotlin SearchEngine.kt).",
+              "tag": "",
               "recommended": true,
               "suggests": []
             }

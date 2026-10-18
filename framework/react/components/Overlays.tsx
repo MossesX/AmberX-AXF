@@ -8,6 +8,8 @@ export interface DialogDef {
   title: string;
   icon?: string;
   render: (props: Record<string, unknown>, close: () => void) => ReactNode;
+  /** false keeps it out of search (dialogs that only make sense with props, e.g. asset-json) */
+  searchable?: boolean;
 }
 export type DialogMap = Record<string, DialogDef>;
 

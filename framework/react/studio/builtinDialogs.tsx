@@ -140,6 +140,7 @@ export const builtinDialogs: DialogMap = {
     title: 'Asset JSON',
     icon: 'code',
     render: (p) => <AssetJson type={p.type as AssetType} id={p.id as string} />,
+    searchable: false,
   },
   shortcuts: { title: 'Keyboard shortcuts', icon: 'keyboard', render: () => <Shortcuts /> },
   'import-asset': { title: 'Import asset', icon: 'upload', render: (_p, close) => <ImportAsset close={close} /> },

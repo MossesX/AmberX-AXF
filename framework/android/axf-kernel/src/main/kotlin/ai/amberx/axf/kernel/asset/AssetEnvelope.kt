@@ -31,6 +31,8 @@ public data class AssetEnvelope(
 ) {
     public val key: String get() = "$type:$id"
     public val isDark: Boolean? get() = data.strOrNull("scheme")?.let { it == "dark" }
+    /** The asset's own randomize-roll flag (envelope `roll`), kept in [extra]; null = its type's default (RollEngine). */
+    public val roll: Boolean? get() = (extra["roll"] as? JsonPrimitive)?.let { if (it.isString) null else it.content.toBooleanStrictOrNull() }
 
     /** Portable on-disk JSON (runtime-only fields stripped). */
     public fun toJson(): JsonObject = buildJsonObject {

@@ -12,6 +12,8 @@ import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
+import { SearchIndex } from './engines/search';
 import { OutputTerminal } from './terminal';
 import {
   ASSET_TYPES,
@@ -32,7 +34,12 @@ export interface AxfRuntimeOptions {
   storageKey?: string;
 }
 
-type Persisted = { active?: Partial<ActiveAssets>; role?: string };
+/** Settings keys for roll overrides (values: true | false; absent = built-in default). */
+export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
+export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
+
+/** `defaults` = the app's manifest defaults when the choices were saved, so a changed app default can win (see constructor). */
+type Persisted = { active?: Partial<ActiveAssets>; role?: string; defaults?: Partial<ActiveAssets> };
 
 const safeStorage = {
   get(key: string): Persisted | null {
@@ -73,6 +80,8 @@ export class AxfRuntime {
   private readonly navSections = new Map<string, NavExtraSection>();
   /** Settings schema, panels and values (see settings.ts); the settings library renders them. */
   readonly settings: SettingsRegistry;
+  /** Search index the toolbar's live search reads (engines/search.ts); anyone can add providers. */
+  readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: { id: string; label: string; version: string; template?: string }[] = [];
   readonly manifest: AxfManifest;
@@ -93,7 +102,10 @@ export class AxfRuntime {
     const saved = safeStorage.get(this.storageKey);
     const active = {} as ActiveAssets;
     for (const t of ASSET_TYPES) {
-      const candidates = [saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
+      // When the app ships a new default for a slot (its manifest default differs from the one saved alongside
+      // the user's choices), the new default wins once; the user's later swaps persist as usual.
+      const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== opts.manifest.defaults[t];
+      const candidates = [appChanged ? undefined : saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
       const pick = candidates.find((id) => id && this.registry.has(t, id));
       if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
       active[t] = pick;
@@ -142,7 +154,7 @@ export class AxfRuntime {
 
   private set(patch: Partial<AxfState>, persist = false) {
     this.state = { ...this.state, ...patch, rev: this.state.rev + 1 };
-    if (persist) safeStorage.set(this.storageKey, { active: this.state.active, role: this.state.role });
+    if (persist) safeStorage.set(this.storageKey, { active: this.state.active, role: this.state.role, defaults: this.manifest.defaults });
     for (const l of this.listeners) l();
   }
 
@@ -198,13 +210,57 @@ export class AxfRuntime {
     this.set({ active, swaps: this.state.swaps + 1 }, true);
   }
 
+  /* ---------------- randomize rolls (engines/roll.ts) ---------------- */
+
+  /** Runtime overrides for rolls, kept as settings (`axf.roll.slot.<type>`, `axf.roll.asset.<type>.<id>`). */
+  rollRules(): RollRules {
+    const slots: Record<string, boolean> = {};
+    const assets: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) {
+      const v = this.settings.get(ROLL_SLOT_KEY(t));
+      if (typeof v === 'boolean') slots[t] = v;
+      for (const a of this.registry.list(t)) {
+        const av = this.settings.get(ROLL_ASSET_KEY(t, a.id));
+        if (typeof av === 'boolean') assets[rollAssetKey(t, a.id)] = av;
+      }
+    }
+    return { slots, assets };
+  }
+
+  /** Does a roll change this slot? Context menus: no, unless switched on. */
+  rollSlotIncluded(type: AssetType): boolean {
+    return rollSlotIncluded(type, this.rollRules());
+  }
+
+  /** Include or exclude a slot from rolls; `null` goes back to the built-in default. */
+  setRollSlot(type: AssetType, on: boolean | null): void {
+    if (rollNever(type)) return;
+    if (on === null) this.settings.clear(ROLL_SLOT_KEY(type));
+    else this.settings.set(ROLL_SLOT_KEY(type), on);
+  }
+
+  /** May a roll pick this asset? (the asset's own `roll` flag, else its type's default, else a runtime override) */
+  rollAssetIncluded(type: AssetType, id: string): boolean {
+    const a = this.registry.get(type, id);
+    return a ? rollAssetIncluded(a, this.rollRules()) : false;
+  }
+
+  /** Include or exclude one asset from rolls; `null` goes back to the asset's own flag. */
+  setRollAsset(type: AssetType, id: string, on: boolean | null): void {
+    if (on === null) this.settings.clear(ROLL_ASSET_KEY(type, id));
+    else this.settings.set(ROLL_ASSET_KEY(type, id), on);
+  }
+
+  /** "Randomize all": rolls every included slot over its included assets. Excluded slots keep their asset. */
   randomize() {
     if (!this.can('assets.swap')) return this.toast('Your role cannot swap assets.', 'danger', 'Permission denied');
+    const plan = rollPlan(ASSET_TYPES, (t) => this.registry.list(t as AssetType), this.rollRules());
     const targets: Partial<ActiveAssets> = {};
-    for (const t of ASSET_TYPES) {
-      const list = this.registry.list(t);
-      targets[t] = list[Math.floor(Math.random() * list.length)]?.id;
+    for (const [t, ids] of Object.entries(plan) as [AssetType, string[]][]) {
+      targets[t] = ids[Math.floor(Math.random() * ids.length)];
     }
+    if (!Object.keys(targets).length) return this.toast('No slot is included in rolls. Turn some on in Settings → Appearance → Randomize.', 'info', 'Nothing to roll');
+    this.terminal.ok('hot-swap', `roll: ${Object.keys(targets).join(', ')}`);
     this.swapAll(targets);
   }
 
@@ -338,34 +394,42 @@ export class AxfRuntime {
     a.register('swap', ([type, target = 'next']) => {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.swap(type as AssetType, target);
       else this.toast(`Unknown asset type "${type}".`, 'warning');
-    }, { label: 'Swap asset' });
-    a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate' });
-    a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog' });
-    a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast' });
-    a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role' });
+    }, { label: 'Swap asset', params: true });
+    a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
+    a.register('dialog', ([id, ...rest]) => id && this.openDialog(id, rest.length ? { arg: rest.join(':') } : undefined), { label: 'Open dialog', params: true });
+    a.register('toast', ([kind = 'info', ...msg]) => this.toast(msg.join(':') || 'Hello from AmberX AXF', kind as Toast['kind']), { label: 'Show toast', params: true });
+    a.register('role', ([id]) => id && this.setRole(id), { label: 'Switch role', params: true });
     a.register('assets.random', () => this.randomize(), { label: 'Randomize assets', requires: 'assets.swap' });
+    // Rolls from code, menus or MCP: roll.slot:<type>:on|off|default · roll.asset:<type>:<id>:on|off|default
+    const onOff = (v?: string) => (v === 'on' ? true : v === 'off' ? false : null);
+    a.register('roll.slot', ([type, v]) => {
+      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setRollSlot(type as AssetType, onOff(v));
+    }, { label: 'Include a slot in randomize rolls', requires: 'assets.swap', params: true });
+    a.register('roll.asset', ([type, id, v]) => {
+      if (type && id && (ASSET_TYPES as readonly string[]).includes(type)) this.setRollAsset(type as AssetType, id, onOff(v));
+    }, { label: 'Include an asset in randomize rolls', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
-    a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON' });
+    a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';
       navigator.clipboard?.writeText(json).then(
         () => this.toast('Asset JSON copied to clipboard.', 'success', 'Copied'),
         () => this.toast('Clipboard is not available here.', 'warning'),
       );
-    }, { label: 'Copy asset JSON' });
-    a.register('noop', () => {}, { label: 'Nothing' });
+    }, { label: 'Copy asset JSON', params: true });
+    a.register('noop', () => {}, { label: 'Nothing', searchable: false });
     // windowing engine
     const wm = this.windows;
-    a.register('windows.undock', ([g]) => g && wm.undock(g), { label: 'Undock tab group' });
-    a.register('windows.split', ([g, mode = 'vertical', r = '2', c = '2']) => g && wm.split(g, mode as import('./engines/windows').SplitMode, Number(r), Number(c)), { label: 'Split tab group' });
-    a.register('windows.closeGroup', ([g]) => g && wm.closeGroup(g), { label: 'Close tab group' });
-    a.register('windows.redock', ([w]) => w && wm.redock(w), { label: 'Redock window' });
-    a.register('windows.close', ([w]) => w && wm.close(w), { label: 'Close window' });
-    a.register('windows.minimizeCorner', ([w]) => w && wm.minimizeToNextCorner(w), { label: 'Minimize to corner' });
-    a.register('windows.minimizeToolbar', ([w, x = '24', y = '24']) => w && wm.minimize(w, 'floating-toolbar', Number(x), Number(y)), { label: 'Minimize to floating toolbar' });
-    a.register('windows.restore', ([w]) => w && wm.restore(w), { label: 'Restore window' });
-    a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window' });
-    a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window' });
+    a.register('windows.undock', ([g]) => g && wm.undock(g), { label: 'Undock tab group', params: true });
+    a.register('windows.split', ([g, mode = 'vertical', r = '2', c = '2']) => g && wm.split(g, mode as import('./engines/windows').SplitMode, Number(r), Number(c)), { label: 'Split tab group', params: true });
+    a.register('windows.closeGroup', ([g]) => g && wm.closeGroup(g), { label: 'Close tab group', params: true });
+    a.register('windows.redock', ([w]) => w && wm.redock(w), { label: 'Redock window', params: true });
+    a.register('windows.close', ([w]) => w && wm.close(w), { label: 'Close window', params: true });
+    a.register('windows.minimizeCorner', ([w]) => w && wm.minimizeToNextCorner(w), { label: 'Minimize to corner', params: true });
+    a.register('windows.minimizeToolbar', ([w, x = '24', y = '24']) => w && wm.minimize(w, 'floating-toolbar', Number(x), Number(y)), { label: 'Minimize to floating toolbar', params: true });
+    a.register('windows.restore', ([w]) => w && wm.restore(w), { label: 'Restore window', params: true });
+    a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
     this.contextExtras.set('tab-group', () => wm.groupMenu());

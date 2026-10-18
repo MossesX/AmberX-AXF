@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-18T15:45:22.599Z",
+  "generatedAt": "2026-10-18T18:03:34.400Z",
   "summary": {
     "foundations": {
       "built": 65,
@@ -12,20 +12,20 @@
       "coverage": 93
     },
     "kernel": {
-      "built": 72,
-      "partial": 3,
-      "placeholder": 100,
+      "built": 73,
+      "partial": 4,
+      "placeholder": 99,
       "planned": 0,
-      "total": 175,
+      "total": 176,
       "coverage": 41
     },
     "console": {
-      "built": 13,
+      "built": 14,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 17,
-      "coverage": 76
+      "total": 18,
+      "coverage": 78
     },
     "modules": {
       "built": 14,
@@ -838,6 +838,17 @@
       "notes": ""
     },
     {
+      "id": "k.roll",
+      "tab": "kernel",
+      "group": "kernel-core-already-defined-by-the-web-demo-ported-to-kotlin",
+      "title": "Randomize roll rules: per-slot and per-asset include switches (context menus opt-in), changeable in settings, code or actions",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "axf-kernel",
+      "notes": ""
+    },
+    {
       "id": "k.theme",
       "tab": "kernel",
       "group": "kernel-core-already-defined-by-the-web-demo-ported-to-kotlin",
@@ -1107,7 +1118,7 @@
       "group": "kernel-architecture-extension-safety",
       "title": "App-wide search/command palette engine",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
       "module": "axf-kernel",
       "notes": ""
@@ -3486,6 +3497,17 @@
       "group": "console-plumbing",
       "title": "Landing/loading screen + home dashboard",
       "tag": "core",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": ""
+    },
+    {
+      "id": "cx.search",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Console search toolbar: live dropdown over pages, actions, settings, dialogs, assets and words on pages; a pick is brought into focus",
+      "tag": "",
       "status": "built",
       "wave": 1,
       "module": "app-console",

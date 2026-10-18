@@ -1,6 +1,7 @@
 package ai.amberx.axf.kernel.asset
 
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.booleanOrNull
 
 /** Ids of the asset types every port shares (framework/schemas/asset-types.json). */
 public object AssetTypes {
@@ -54,6 +55,9 @@ public data class AssetTypeSpec(
     val swapTier: HotSwapTier = HotSwapTier.RECOMPOSE,
     /** Which module registered it (`kernel` for the built-ins). */
     val owner: String = "kernel",
+    /** Randomize rolls (`roll` block): does the slot take part, and the default for an asset's own `roll` flag. null = registry default. */
+    val rollSlot: Boolean? = null,
+    val rollAsset: Boolean? = null,
 ) {
     public companion object {
         public fun fromJson(id: String, o: JsonObject, owner: String = "kernel", optional: Boolean = false): AssetTypeSpec = AssetTypeSpec(
@@ -67,6 +71,8 @@ public data class AssetTypeSpec(
             optional = o.bool("optional", optional),
             swapTier = HotSwapTier.parse(o.str("swapTier", if (id.endsWith("theme")) "LIVE" else "RECOMPOSE")),
             owner = owner,
+            rollSlot = o.obj("roll")?.let { (it["slot"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
+            rollAsset = o.obj("roll")?.let { (it["asset"] as? kotlinx.serialization.json.JsonPrimitive)?.booleanOrNull },
         )
     }
 }
@@ -91,6 +97,12 @@ public class AssetTypeRegistry {
     private val envelopeRequired = mutableListOf("\$axf", "type", "id", "name", "version", "data")
     public var idPattern: Regex = Regex("^[a-z0-9][a-z0-9-]{1,47}$")
         private set
+    /** `rollDefaults` from the spec (see RollEngine): slot / asset defaults and slots never rolled. */
+    public var rollSlotDefault: Boolean = true
+        private set
+    public var rollAssetDefault: Boolean = true
+        private set
+    public val rollNever: MutableSet<String> = mutableSetOf()
 
     public fun register(spec: AssetTypeSpec): AssetTypeSpec { specs[spec.id] = spec; return spec }
     public fun get(id: String): AssetTypeSpec? = specs[id]
@@ -104,6 +116,11 @@ public class AssetTypeRegistry {
         json.obj("envelope")?.let { env ->
             env.strOrNull("idPattern")?.let { idPattern = Regex(it) }
             env.strList("required").takeIf { it.isNotEmpty() }?.let { envelopeRequired.clear(); envelopeRequired += it }
+        }
+        json.obj("rollDefaults")?.let { rd ->
+            rollSlotDefault = rd.bool("slot", rollSlotDefault)
+            rollAssetDefault = rd.bool("asset", rollAssetDefault)
+            rollNever += rd.strList("never")
         }
         val types = json.obj("types") ?: return 0
         var n = 0

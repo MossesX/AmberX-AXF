@@ -30,6 +30,10 @@ import ai.amberx.axf.kernel.engine.ComponentStyles
 import ai.amberx.axf.kernel.engine.ContextMenuEngine
 import ai.amberx.axf.kernel.engine.Gate
 import ai.amberx.axf.kernel.engine.LayoutEngine
+import ai.amberx.axf.kernel.engine.RollEngine
+import ai.amberx.axf.kernel.engine.RollRules
+import ai.amberx.axf.kernel.engine.SearchEntry
+import ai.amberx.axf.kernel.engine.SearchIndex
 import ai.amberx.axf.kernel.engine.StandardActions
 import ai.amberx.axf.kernel.engine.ThemeEngine
 import ai.amberx.axf.kernel.engine.ThemeTokens
@@ -88,6 +92,8 @@ public class AxfRuntime(
     public val compiled: StateFlow<Compiled> get() = _compiled.asStateFlow()
     /** The output terminal every install / import / hot-swap writes to (see [OutputTerminal]). */
     public val terminal: OutputTerminal = OutputTerminal()
+    /** Search index (SearchEngine) the toolbar's live search reads; the UI layer adds views, settings, dialogs, page text. */
+    public val search: SearchIndex = SearchIndex { gate(it) }
     private var toastSeq = 0L
 
     init {
@@ -95,7 +101,9 @@ public class AxfRuntime(
         val active = LinkedHashMap<String, String>()
         for (t in registry.types.ids()) {
             val spec = registry.types.get(t)!!
-            val pick = listOf(saved?.active?.get(t), manifest.defaults[t], registry.list(t).firstOrNull()?.id).firstOrNull { it != null && registry.has(t, it) }
+            // A changed app default (manifest default ≠ the one saved with the choices) wins once, as on the web port.
+            val appChanged = saved?.defaults != null && saved.defaults[t] != manifest.defaults[t]
+            val pick = listOf(if (appChanged) null else saved?.active?.get(t), manifest.defaults[t], registry.list(t).firstOrNull()?.id).firstOrNull { it != null && registry.has(t, it) }
             if (pick == null) { if (!spec.optional) throw IllegalStateException("AmberX AXF: no \"$t\" asset is available — every core slot needs at least one asset.") }
             else active[t] = pick
         }
@@ -104,6 +112,16 @@ public class AxfRuntime(
         _state = MutableStateFlow(AxfState(active, role, manifest.startView))
         _compiled = MutableStateFlow(compile(_state.value))
         registerBuiltinActions()
+        search.add("axf.actions") {
+            actions.list().filter { (_, m) -> !m.stub && !m.params && m.searchable }.map { (id, m) ->
+                SearchEntry("action:$id", "action", m.label, detail = id, icon = "zap", requires = m.requires, focus = mapOf("kind" to "action", "spec" to id))
+            }
+        }
+        search.add("axf.assets") {
+            registry.types.ids().flatMap { t -> registry.list(t).map { a ->
+                SearchEntry("asset:$t:${a.id}", "asset", a.name, detail = t, icon = "palette", keywords = listOfNotNull(a.id, a.description) + a.tags, focus = mapOf("kind" to "asset", "type" to t, "id" to a.id))
+            } }
+        }
     }
 
     /* ---------------- store ---------------- */
@@ -111,7 +129,7 @@ public class AxfRuntime(
     private fun set(patch: (AxfState) -> AxfState, persist: Boolean = false, recompile: Boolean = false) {
         _state.update { s -> patch(s).copy(rev = s.rev + 1) }
         if (recompile) _compiled.value = compile(_state.value)
-        if (persist) store.put(key, Persisted(_state.value.active, _state.value.role).toJson())
+        if (persist) store.put(key, Persisted(_state.value.active, _state.value.role, manifest.defaults).toJson())
     }
 
     public val current: AxfState get() = _state.value
@@ -158,9 +176,47 @@ public class AxfRuntime(
         set({ s -> s.copy(active = s.active + targets.filter { (t, id) -> t != AssetTypes.UAC_POLICY && registry.has(t, id) }, swaps = s.swaps + 1) }, persist = true, recompile = true)
     }
 
+    /* ---------------- randomize rolls (RollEngine) ---------------- */
+
+    private val rollKey get() = "$key:roll"
+
+    /** Runtime roll overrides, persisted next to the hot-swap choices (web port: settings `axf.roll.*`). */
+    public fun rollRules(): RollRules {
+        val o = store.get(rollKey)?.let { ai.amberx.axf.kernel.asset.AxfJson.runCatching { parseToJsonElement(it) as JsonObject }.getOrNull() } ?: return RollRules()
+        fun bools(k: String) = (o[k] as? JsonObject)?.mapNotNull { (id, v) -> (v as? kotlinx.serialization.json.JsonPrimitive)?.content?.toBooleanStrictOrNull()?.let { id to it } }?.toMap() ?: emptyMap()
+        return RollRules(bools("slots"), bools("assets"))
+    }
+
+    private fun saveRollRules(r: RollRules) {
+        store.put(rollKey, kotlinx.serialization.json.buildJsonObject {
+            put("slots", JsonObject(r.slots.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }))
+            put("assets", JsonObject(r.assets.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }))
+        }.toString())
+        set({ it })
+    }
+
+    public fun rollSlotIncluded(type: String): Boolean = RollEngine.slotIncluded(registry.types, type, rollRules())
+    /** Include or exclude a slot from rolls; null = built-in default. */
+    public fun setRollSlot(type: String, on: Boolean?) {
+        if (RollEngine.never(registry.types, type)) return
+        val r = rollRules()
+        saveRollRules(r.copy(slots = if (on == null) r.slots - type else r.slots + (type to on)))
+    }
+    public fun rollAssetIncluded(type: String, id: String): Boolean = registry.get(type, id)?.let { RollEngine.assetIncluded(registry.types, it, rollRules()) } ?: false
+    /** Include or exclude one asset from rolls; null = the asset's own flag. */
+    public fun setRollAsset(type: String, id: String, on: Boolean?) {
+        val r = rollRules(); val k = RollEngine.assetKey(type, id)
+        saveRollRules(r.copy(assets = if (on == null) r.assets - k else r.assets + (k to on)))
+    }
+
+    /** "Randomize all": rolls every included slot over its included assets; excluded slots keep their asset. */
     public fun randomize() {
         if (!can("assets.swap")) { toast("Your role cannot swap assets.", ToastKind.DANGER, "Permission denied"); return }
-        swapAll(registry.types.ids().mapNotNull { t -> registry.list(t).randomOrNull(random)?.let { t to it.id } }.toMap())
+        val plan = RollEngine.plan(registry.types, registry.types.ids(), { registry.list(it) }, rollRules())
+        val targets = plan.mapNotNull { (t, ids) -> ids.randomOrNull(random)?.let { t to it } }.toMap()
+        if (targets.isEmpty()) { toast("No slot is included in rolls.", ToastKind.INFO, "Nothing to roll"); return }
+        terminal.ok("hot-swap", "roll: ${targets.keys.joinToString()}")
+        swapAll(targets)
     }
 
     public fun reset() {
@@ -262,6 +318,10 @@ public class AxfRuntime(
         actions.register("toast", ActionMeta("Show toast")) { a, _ -> toast(a.drop(1).joinToString(":").ifEmpty { "Hello from AmberX AXF" }, ToastKind.entries.firstOrNull { it.name.equals(a.getOrNull(0), true) } ?: ToastKind.INFO) }
         actions.register("role", ActionMeta("Switch role")) { a, _ -> a.getOrNull(0)?.let(::setRole) }
         actions.register("assets.random", ActionMeta("Randomize assets", "assets.swap")) { _, _ -> randomize() }
+        // roll.slot:<type>:on|off|default · roll.asset:<type>:<id>:on|off|default (same specs as the web port)
+        fun onOff(v: String?): Boolean? = when (v) { "on" -> true; "off" -> false; else -> null }
+        actions.register("roll.slot", ActionMeta("Include a slot in randomize rolls", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setRollSlot(it, onOff(args.getOrNull(1))) } }
+        actions.register("roll.asset", ActionMeta("Include an asset in randomize rolls", "assets.swap", params = true)) { args, _ -> val t = args.getOrNull(0); val id = args.getOrNull(1); if (t != null && id != null && registry.types.has(t)) setRollAsset(t, id, onOff(args.getOrNull(2))) }
         actions.register("assets.reset", ActionMeta("Reset to defaults")) { _, _ -> reset() }
         actions.register("asset.json", ActionMeta("View asset JSON")) { a, _ -> openDialog("asset-json", mapOf("type" to a.getOrElse(0) { "" }, "id" to a.getOrElse(1) { "" })) }
         actions.register("asset.copy", ActionMeta("Copy asset JSON")) { a, ctx -> val json = if (a.size >= 2) exportAsset(a[0], a[1]) else ""; (ctx.extras["clipboard"] as? (String) -> Unit)?.invoke(json) ?: toast("Clipboard is not available here.", ToastKind.WARNING) }

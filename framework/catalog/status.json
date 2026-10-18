@@ -438,7 +438,7 @@
     "module": "axf-kernel"
   },
   "k.search": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
     "module": "axf-kernel"
   },
@@ -2090,5 +2090,15 @@
     "wave": 1,
     "module": "axf-kernel",
     "notes": "contract + typed placeholder"
+  },
+  "k.roll": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel"
+  },
+  "cx.search": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console"
   }
 }

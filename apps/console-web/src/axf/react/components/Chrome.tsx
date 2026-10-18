@@ -4,6 +4,7 @@ import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { MenuList } from './MenuList';
+import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
@@ -115,7 +116,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
           })}
         </div>
       ))}
-      {tb.data.showSearch && (
+      {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
+      {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">
           <Icon name="search" size={14} />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
