@@ -9,3 +9,4 @@ aliases: [axHub, HubX, connector hub, MCP hub, VPS hub, Claude Code hub]
 - [stated] wants to build a hub on his VPS that acts as a Claude Code connector, linking all his apps, MCP servers, API servers, devices, computers and services, routing traffic between them, with a config interface storing credentials, keys and addresses (Oct 2026)
 - [stated] going with a standalone repo, separate from [[amberx-axf]] (AXF to integrate via its own connector); starting it as a new Project
 - [stated] Oct 17 2026: repo will be a private GitHub repo named axHub (MossesX) with a README; initialization files kept in project/initialization/
+- [stated] Oct 17 2026: wants an interface to control axHub built as a plugin for the AXF Dev Console (not a hardwired tab); approving pending calls there requires a PIN only he knows; wants the console made plugin-capable first

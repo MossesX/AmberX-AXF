@@ -13,9 +13,10 @@ if [[ "${1:-}" == "--install" ]]; then
     [[ -f "$rc" ]] || continue
     grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: ask which model before starting Claude Code\nalias claude='claude-pick'\n" >> "$rc"
   done
-  policy="$HERE/../.claude/model-policy.md"
-  if [[ -f "$policy" ]] && ! grep -q "AXF model policy" "$HOME/.claude/CLAUDE.md" 2>/dev/null; then
-    { printf "\n<!-- AXF model policy -->\n"; cat "$policy"; } >> "$HOME/.claude/CLAUDE.md"
+  # Brett's rules + memory, imported from this clone so they stay current after every git pull.
+  rules="$(cd "$HERE/.." && pwd)/memory/RULES.md"
+  if [[ -f "$rules" ]] && ! grep -qF "@$rules" "$HOME/.claude/CLAUDE.md" 2>/dev/null; then
+    printf "\n<!-- AXF rules: Brett's working rules, decisions and memory (from the AmberX-AXF clone) -->\n@%s\n" "$rules" >> "$HOME/.claude/CLAUDE.md"
   fi
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
   echo "Bypass the menu with: command claude …  or  claude --model opus"

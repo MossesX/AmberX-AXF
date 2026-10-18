@@ -2,6 +2,12 @@
 
 Cross-platform app framework where every UI piece (theme, layout, menu, toolbar, dialog, popup, button, slider, container, access policy) is a hot-swappable JSON asset in one shared format, `asset@1`. One framework, several ports: the **web port** (TypeScript reference engines + React) and the **Android port** (Kotlin/Compose, pure-Kotlin kernel). Apps built on it (starting with the Dev Console) define and extend the framework as they are built.
 
+**Brett's rules, decisions and memory (always loaded):**
+
+@memory/RULES.md
+
+Full copies of his claude.ai Project memory and docs live in `memory/` (see `memory/README.md`).
+
 ## Status (as of Oct 17 2026)
 
 - **Built:** web reference engines (`framework/core`), React layer, 39 starter assets, build engine + CLI (`axf init/validate/new-asset/install/import-ui/serve/dev`), Android kernel + modules, Android console showcase, web Dev Console + Python API + MCP server (`/mcp`, 24 tools), CI, demo site deploy. Build-queue steps `x.assets` … `x.console.mcp` are done.
@@ -107,7 +113,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 ## Working with Brett (same in every MossesX repo)
 
 - **Where he works:** mostly from his Android phone (Samsung Galaxy S26 Ultra), often through **Moshi** (mosh) into his Hostinger VPS, where Claude Code runs. Keep replies phone-readable: lead with the result, short paragraphs, no walls of text.
-- **Model choice:** before any build task, recommend which model to use and why, then let him pick from the top three (Fable, Opus, Sonnet). Use Fable where it's warranted, Opus for most work, and Sonnet only when you're sure Opus isn't needed. You can't switch models yourself: if his pick differs from the model you're running, ask him to run `/model <name>`. In this repo a SessionStart hook (`.claude/settings.json`) injects `.claude/model-policy.md` into every session; on the VPS, `bash deploy/claude-pick.sh --install` makes `claude` ask for the model at launch and copies the policy into `~/.claude/CLAUDE.md` so it applies in every directory.
+- **Model choice:** before any build task, recommend which model to use and why, then let him pick from the top three (Fable, Opus, Sonnet). Use Fable where it's warranted, Opus for most work, and Sonnet only when you're sure Opus isn't needed. You can't switch models yourself: if his pick differs from the model you're running, ask him to run `/model <name>`. In this repo a SessionStart hook (`.claude/settings.json`) injects `.claude/model-policy.md` into every session; on the VPS, `bash deploy/claude-pick.sh --install` makes `claude` ask for the model at launch and imports `memory/RULES.md` into `~/.claude/CLAUDE.md` so the rules apply in every directory.
 - **The repo is the shared memory.** Sessions on the phone (Moshi), desktop, web and claude.ai don't share chat history, so anything a future session needs must live in this repo. Commit and push often with clear messages, and update the **Status** section of this file whenever something meaningful changes.
 - **No secrets in the repo:** no tokens, passwords, keys or IPs with credentials. Use environment variables or GitHub Actions secrets.
 - **GitHub:** account `MossesX`. A new repo must exist on GitHub before a session can push to it.
