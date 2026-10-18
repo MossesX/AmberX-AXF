@@ -23,6 +23,7 @@ When something here changes in conversation, save it on the hub (`axhub.memory_w
 - **Every app gets a landing/loading screen and a settings interface by default.** Every app compiled by the build engine ships the settings interface and lib-settings.
 - **Plugins:** each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen; they add tabs to the app's settings interface. Plugin UIs use theme tokens only (`framework/spec/THEMING.md`).
 - axHub's control interface is a Dev Console **plugin** (not a hardwired tab); approving pending calls needs a PIN only Brett knows.
+- **Build options are `--switches` (Oct 18 2026):** however a UI is built (session, terminal, MCP, API), options are `--` switches from one registry, `framework/schemas/build-options.json`, each setting an asset token. **Every future build defaults every option to off**; existing files were set on. First option: `--wrap-groups` → style-theme `wrapGroups` (every section/group collapsible with a small toggle top-right). *(Added in the repo mirror; copy to axHub `memory/amberx-axf/RULES.md` — the hub's `call` tool wasn't live yet.)*
 - Layout regions have a typed slot contract (`asset-types.json` → `layout.slots`); toolbar, nav-menu and app-menu are styled by the component style engine.
 - Planned next big rule (pending, Fable): **every UI element is a named asset** (element vs parent assets, namespaced ids, instance vs skin, slot rebinding).
 
