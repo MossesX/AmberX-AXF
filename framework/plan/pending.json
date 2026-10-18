@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-18T22:30:06.923Z",
+ "updatedAt": "2026-10-18T22:38:41.501Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -288,11 +288,16 @@
    "detail": "Roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets, phone drill-down), contrast-checked rolls, live preview, undo/redo, pins, hand edits, save as asset@1 themes and manage them. Also port to Android. The Opus version is the web console plugin in the folder \"theme-manager\" (built Oct 18 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Rebuild must keep the Show/Hide switch on hideable (chrome) types in the token tree (rt.setSlotHidden = Appearance → Assets → Hidden; a hidden type greys out and never rolls). Added on Opus Oct 18 2026.",
+     "at": "2026-10-18T22:38:41.501Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-18T20:57:10.655Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T20:59:50.588Z",
+   "updatedAt": "2026-10-18T22:38:41.501Z",
    "source": "chat"
   },
   {

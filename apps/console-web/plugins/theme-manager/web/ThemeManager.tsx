@@ -5,8 +5,8 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
-import { assetTypeSpecs } from '@console/axf/core';
-import type { AxfRuntime } from '@console/axf/core';
+import { assetTypeSpecs, hideable } from '@console/axf/core';
+import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
 import { call, del, post, put, type SavedTheme } from './api';
 
@@ -109,7 +109,9 @@ export function ThemeManager() {
     next[n.type] = setAt(next[n.type]!, n.leaf.path, v);
     applySnap(next); push(next);
   };
-  const rollable = (t: string) => leaves(tree.find((n) => n.type === t) ?? { id: '', label: '', type: t, children: [] }).some((l) => ticked.has(l.id) && !locked.has(l.id));
+  // A hidden slot (Show/Hide switch on its row = Appearance → Assets → Hidden) is greyed out and never rolled.
+  const isHidden = (t: string) => rt.slotHidden(t as AssetType);
+  const rollable = (t: string) => !isHidden(t) && leaves(tree.find((n) => n.type === t) ?? { id: '', label: '', type: t, children: [] }).some((l) => ticked.has(l.id) && !locked.has(l.id));
   const changed = types.filter((t) => store.base[t]);
   const colorProblems = active['color-theme'] ? readability(active['color-theme']) : [];
 
@@ -118,10 +120,12 @@ export function ThemeManager() {
     const st = triState(n, ticked);
     const isOpen = open.has(n.id) || !!q.trim();
     const lockedLeaf = n.leaf && locked.has(n.id);
+    const off = isHidden(n.type);
+    const top = n.id === n.type || depth === 0;
     return (
       <li>
-        <div className={`${P}__row ${sel === n.id ? 'is-sel' : ''}`} style={{ paddingLeft: `calc(var(--fx-space) * ${depth * 1.25})` }}>
-          <input type="checkbox" aria-label={`Roll ${n.label}`} checked={st === 'on'} ref={(el) => { if (el) el.indeterminate = st === 'some'; }} onChange={() => setTicked(toggle(n, ticked))} />
+        <div className={`${P}__row ${sel === n.id ? 'is-sel' : ''} ${off ? 'is-off' : ''}`} style={{ paddingLeft: `calc(var(--fx-space) * ${depth * 1.25})` }}>
+          <input type="checkbox" className={`${P}__tick`} aria-label={`Roll ${n.label}`} checked={st === 'on'} disabled={off} ref={(el) => { if (el) el.indeterminate = st === 'some'; }} onChange={() => setTicked(toggle(n, ticked))} />
           {n.children.length > 0 ? (
             <button type="button" className={`${P}__twisty`} aria-expanded={isOpen} onClick={() => (narrow ? setPath([...path, n.id]) : setOpen((o) => { const x = new Set(o); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; }))}>
               <Icon name={narrow ? 'chevron-right' : isOpen ? 'chevron-down' : 'chevron-right'} size={13} />{n.icon && <Icon name={n.icon} size={13} />}<span>{n.label}</span>
@@ -135,6 +139,12 @@ export function ThemeManager() {
           )}
           {n.leaf && <button type="button" className={`${P}__lock ${lockedLeaf ? 'is-on' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
           {!n.leaf && !narrow && <button type="button" className={`${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
+          {top && !n.leaf && hideable(n.type) && (
+            <label className={`${P}__hide`} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}>
+              <input type="checkbox" role="switch" aria-label={`Show ${n.label}`} checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(e) => rt.setSlotHidden(n.type as AssetType, !e.target.checked)} />
+              <span>{off ? 'Hidden' : 'Shown'}</span>
+            </label>
+          )}
         </div>
         {!narrow && isOpen && n.children.length > 0 && <ul className={`${P}__tree`}>{n.children.map((c) => <Row key={c.id} n={c} depth={depth + 1} />)}</ul>}
       </li>
