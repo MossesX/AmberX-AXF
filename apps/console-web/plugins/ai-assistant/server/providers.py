@@ -209,7 +209,7 @@ def _to_anthropic(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             else:
                 out.append({"role": "user", "content": [block]})
             continue
-        blocks: list[dict[str, Any]] = []
+        blocks: list[dict[str, Any]] = [dict(b) for b in (m.get("thinking_blocks") or []) if role == "assistant"]
         for img in m.get("images") or []:
             blocks.append({"type": "image", "source": {"type": "base64", "media_type": img.get("media_type", "image/png"), "data": img.get("data", "")}})
         if m.get("content"):
@@ -283,8 +283,11 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
     if tools:
         body["tools"] = [{"name": t["name"], "description": t.get("description", ""), "input_schema": t.get("parameters") or {"type": "object", "properties": {}}} for t in tools]
     if params.get("thinking"):
-        body["thinking"] = {"type": "enabled", "budget_tokens": int(params.get("thinking_budget") or 4096)}
+        budget = max(1024, int(params.get("thinking_budget") or 4096))
+        body["thinking"] = {"type": "enabled", "budget_tokens": budget}
+        body["max_tokens"] = max(body["max_tokens"], budget + 2048)  # the API requires budget < max_tokens
         body.pop("temperature", None)
+        body.pop("top_p", None)
     blocks: dict[int, dict[str, Any]] = {}
     usage = {"input": 0, "output": 0}
     with _open(f"{_base(profile)}/v1/messages", _headers(profile, key), body) as resp:
@@ -302,7 +305,7 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
                 usage["input"] = int(u.get("input_tokens", 0)) + int(u.get("cache_read_input_tokens", 0) or 0) + int(u.get("cache_creation_input_tokens", 0) or 0)
             elif t == "content_block_start":
                 b = j.get("content_block", {})
-                blocks[j.get("index", 0)] = {"type": b.get("type"), "id": b.get("id"), "name": b.get("name"), "json": ""}
+                blocks[j.get("index", 0)] = {"type": b.get("type"), "id": b.get("id"), "name": b.get("name"), "json": "", "thinking": "", "signature": "", "data": b.get("data")}
             elif t == "content_block_delta":
                 d = j.get("delta", {})
                 if d.get("type") == "text_delta":
@@ -310,7 +313,10 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
                 elif d.get("type") == "input_json_delta":
                     blocks.setdefault(j.get("index", 0), {"json": ""})["json"] += d.get("partial_json", "")
                 elif d.get("type") == "thinking_delta":
+                    blocks.setdefault(j.get("index", 0), {"json": "", "thinking": "", "signature": ""})["thinking"] += d.get("thinking", "")
                     yield {"type": "thinking", "text": d.get("thinking", "")}
+                elif d.get("type") == "signature_delta":
+                    blocks.setdefault(j.get("index", 0), {"json": "", "thinking": "", "signature": ""})["signature"] += d.get("signature", "")
             elif t == "content_block_stop":
                 b = blocks.get(j.get("index", 0))
                 if b and b.get("type") == "tool_use":
@@ -319,6 +325,10 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
                     except ValueError:
                         args = {}
                     yield {"type": "tool_call", "id": b["id"], "name": b["name"], "arguments": args}
+                elif b and b.get("type") == "thinking":
+                    yield {"type": "thinking_block", "block": {"type": "thinking", "thinking": b["thinking"], "signature": b["signature"]}}
+                elif b and b.get("type") == "redacted_thinking":
+                    yield {"type": "thinking_block", "block": {"type": "redacted_thinking", "data": b.get("data") or ""}}
             elif t == "message_delta":
                 usage["output"] = int(j.get("usage", {}).get("output_tokens", usage["output"]))
                 if j.get("delta", {}).get("stop_reason"):
@@ -401,27 +411,40 @@ def cli_available() -> bool:
     return shutil.which(os.environ.get("CLAUDE_BIN", "claude")) is not None
 
 
+_CLI_DENY = [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS")
+             for pat in (".axf-console/**", "**/.axf-console/**", "**/.env", "**/.env.*", "**/*.pem", "**/*.key", "**/secrets.env", "**/credentials.json", "**/id_rsa*", "**/id_ed25519*", ".git/**")]
+CLI_DEADLINE = float(os.environ.get("AXF_AI_CLI_TIMEOUT", "600"))
+
+
 def _stream_cli(profile, messages, system, model, params, cancel, cwd):
+    import tempfile
     token = resolve_key(profile)
     if not token:
         raise ProviderError("no Claude Code token: run `claude setup-token` and paste it, or set CLAUDE_CODE_OAUTH_TOKEN", 400)
     if not cli_available():
         raise ProviderError("the `claude` CLI is not installed on the console server", 400)
-    # The CLI keeps no session for us here: earlier turns go in as a transcript.
+    # The CLI keeps no session for us here: earlier turns go in as a transcript, on stdin (no argv size limit).
     history = "\n\n".join(f"{m['role'].upper()}: {m.get('content', '')}" for m in messages[:-1] if m.get("role") in ("user", "assistant"))
     prompt = (f"Conversation so far:\n{history}\n\nUSER: " if history else "") + str(messages[-1].get("content", ""))
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
             "--model", model, "--permission-mode", "default", "--allowedTools", "Read", "Grep", "Glob", "LS",
-            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash"]
+            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *_CLI_DENY]
     if system:
-        args += ["--append-system-prompt", system]
-    args += ["--", prompt]
+        args += ["--append-system-prompt", system[:100_000]]
     env = {**os.environ, "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb"}
-    env.pop("ANTHROPIC_API_KEY", None)
-    env.pop("ANTHROPIC_AUTH_TOKEN", None)
-    proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
+    for k in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "AXF_TOKEN", "GITHUB_TOKEN"):
+        env.pop(k, None)
+    err = tempfile.TemporaryFile(mode="w+")
+    proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True, start_new_session=True)
+    killer = threading.Timer(CLI_DEADLINE, proc.kill)
+    killer.start()
     streamed = 0
     try:
+        try:
+            proc.stdin.write(prompt)  # type: ignore[union-attr]
+            proc.stdin.close()  # type: ignore[union-attr]
+        except BrokenPipeError:
+            pass
         for line in proc.stdout:  # type: ignore[union-attr]
             if cancel and cancel.is_set():
                 proc.terminate()
@@ -453,12 +476,14 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd):
                     yield {"type": "text", "text": ev["result"]}
         proc.wait(timeout=10)
         if proc.returncode and streamed == 0:
-            err = (proc.stderr.read() if proc.stderr else "")[-300:]  # type: ignore[union-attr]
-            raise ProviderError(f"Claude Code exited with code {proc.returncode}: {err.strip()}")
+            err.seek(0)
+            raise ProviderError(f"Claude Code exited with code {proc.returncode}: {err.read()[-300:].strip()}")
         yield {"type": "stop", "reason": "end_turn"}
     finally:
+        killer.cancel()
         if proc.poll() is None:
             proc.kill()
+        err.close()
 
 
 # ---------------------------------------------------------------- embeddings (for agent memory)
@@ -485,6 +510,8 @@ def collect(events: Iterator[dict[str, Any]], on_event: Callable[[dict[str, Any]
             out["tool_calls"].append({"id": ev["id"], "name": ev["name"], "arguments": ev.get("arguments") or {}})
         elif ev["type"] == "usage":
             out["usage"] = {"input": ev.get("input", 0), "output": ev.get("output", 0)}
+        elif ev["type"] == "thinking_block":
+            out.setdefault("thinking_blocks", []).append(ev["block"])
         elif ev["type"] == "stop":
             out["stop"] = ev.get("reason")
     return out

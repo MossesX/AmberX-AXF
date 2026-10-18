@@ -927,8 +927,9 @@ def lifecycle_action(folder: str, action: str, body: dict[str, Any]) -> dict[str
             args.append("--dry-run")
         out = _lifecycle(args, timeout=600)
         if not dry:
-            if out.get("data") or body.get("all") or body.get("data") or not body.get("code"):
-                _state.get("plugins", {}).pop(folder, None)
+            if not out.get("code"):
+                # data only: the code stays, so keep it OFF (it would otherwise come back enabled by default and recreate its data)
+                _state.setdefault("plugins", {})[folder] = False
                 _save_state()
             if out.get("code"):
                 plugin_services.withdraw(folder)

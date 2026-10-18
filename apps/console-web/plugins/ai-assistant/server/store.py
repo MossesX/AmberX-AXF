@@ -117,7 +117,7 @@ def public_profile(pid: str, p: dict[str, Any]) -> dict[str, Any]:
         "keyEnv": env, "hasKey": bool(p.get("key")), "envPresent": bool(env and os.environ.get(env)),
         "keyReady": bool(providers.resolve_key(p)) or providers.BY_KIND.get(p.get("kind", ""), {}).get("local", False) or p.get("auth") == "none",
         "defaultModel": p.get("defaultModel", ""), "models": p.get("models", []), "embedModel": p.get("embedModel", ""),
-        "enabled": p.get("enabled", True) is not False, "headers": {k: v for k, v in (p.get("headers") or {}).items()},
+        "enabled": p.get("enabled", True) is not False, "headers": {k: MASK for k in (p.get("headers") or {})},
         "lastTest": p.get("lastTest"), "createdAt": p.get("createdAt"),
     }
 
@@ -155,6 +155,8 @@ def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
         if base_url and not re.match(r"^https?://", base_url) and cat["protocol"] != "claude-cli":
             raise ValueError("baseUrl must start with http:// or https://")
         headers = body.get("headers", old.get("headers", {})) or {}
+        if isinstance(headers, dict):  # the browser only ever sees masked values: keep the stored one for those
+            headers = {k: (old.get("headers", {}).get(k, "") if v == MASK else v) for k, v in headers.items()}
         if not isinstance(headers, dict) or any(not isinstance(k, str) or not isinstance(v, str) for k, v in headers.items()):
             raise ValueError("headers must be a map of strings")
         rec = {

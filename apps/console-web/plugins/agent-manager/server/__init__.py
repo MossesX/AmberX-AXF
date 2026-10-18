@@ -290,7 +290,10 @@ def compose_all(body: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------- memory
 
 def _scope(aid: str) -> str:
-    return memory.config(store.get("agents", aid))["scope"]
+    try:
+        return memory.config(store.get("agents", aid))["scope"]
+    except KeyError as e:
+        raise _err(e) from None
 
 
 @router.get("/memory/{aid}")
@@ -405,7 +408,7 @@ def addon_uninstall(aid: str, body: dict[str, Any] | None = None) -> dict[str, A
 @router.post("/addons/import")
 def addon_import(body: dict[str, Any]) -> dict[str, Any]:
     try:
-        return addons.import_bundle(body.get("bundle"), body.get("url"))
+        return addons.import_bundle(body.get("bundle"), body.get("url"), trust=bool(body.get("trust")))
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
 

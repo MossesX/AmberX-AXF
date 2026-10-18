@@ -225,4 +225,35 @@ c.put(f"{P}/config", json={"dailyTokenBudget": 1})
 ev = turn(conv["id"], content="over budget?")
 check(any(e == "error" and "budget" in d["message"] for e, d in ev), "daily token budget enforced")
 check(c.delete(f"{P}/profiles/{bad}").status_code == 200, "delete profile")
+# --- regression checks from the security review
+import time as _t  # noqa: E402
+safety = sys.modules["axf_console_plugins.ai_assistant.safety"]
+tools_mod = sys.modules["axf_console_plugins.ai_assistant.tools"]
+for bomb in ("((9**999)**999)**999", "2**" * 60 + "2", "9**9**9**9", "(10**4000)*(10**4000)"):
+    t0 = _t.monotonic()
+    try:
+        safety.calc(bomb)
+        res = "ok"
+    except ValueError:
+        res = "refused"
+    check(_t.monotonic() - t0 < 1, f"calculator bomb {bomb[:24]}… returns fast ({res})")
+check(safety.calc("2**10 + 3*(4-1)") == "1033", "calculator still does arithmetic")
+t0 = _t.monotonic()
+tools_mod.repo_search("(a+)+$", "apps/console-web/plugins/ai-assistant")
+check(_t.monotonic() - t0 < 5, "repo search is literal (no ReDoS)")
+for u in ("http://127.0.0.1:1/", "http://localhost/", "http://169.254.169.254/latest/", "http://[::1]/", "http://100.64.0.1/"):
+    try:
+        tools_mod.web_fetch(u)
+        check(False, f"web_fetch refuses {u}")
+    except ValueError:
+        check(True, f"web_fetch refuses {u}")
+r = c.post(f"{P}/profiles", json={"kind": "custom", "label": "Hdr", "baseUrl": f"{BASE}/oa", "key": "k" * 24, "headers": {"x-goog-api-key": "supersecret"}}).json()["profile"]
+check(r["headers"]["x-goog-api-key"] != "supersecret" and "supersecret" not in c.get(f"{P}/config").text, "custom header values are masked in the browser")
+c.post(f"{P}/profiles", json={"id": r["id"], "kind": "custom", "headers": r["headers"]})
+check(sys.modules["axf_console_plugins.ai_assistant.store"].load_config()["profiles"][r["id"]]["headers"]["x-goog-api-key"] == "supersecret", "saving masked headers keeps the stored value")
+c.put(f"{P}/config", json={"dailyTokenBudget": 0})
+CALLS.clear()
+list(sys.modules["axf_console_plugins.ai_assistant.providers"].stream_chat({"kind": "anthropic", "baseUrl": f"{BASE}/an", "key": "x" * 30}, [{"role": "user", "content": "hi"}], system="s", model="m", params={"thinking": True, "max_tokens": 4096, "thinking_budget": 4096}))
+b = CALLS[-1]["body"]
+check(b["thinking"]["budget_tokens"] < b["max_tokens"], "thinking budget stays below max_tokens")
 print(f"all {ok} checks passed")

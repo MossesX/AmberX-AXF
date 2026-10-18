@@ -97,7 +97,7 @@ export function PluginLifecyclePanel({ folder }: { folder: string }) {
 
       <div className="cl-life__box cl-life__danger fx-stack">
         <strong><Icon name="trash" size={14} /> Uninstall</strong>
-        <label className="cl-life__opt"><input type="radio" checked={level === 'data'} onChange={() => setLevel('data')} /> Data only: wipe settings, history and the enabled flag (code stays; reinstall starts fresh)</label>
+        <label className="cl-life__opt"><input type="radio" checked={level === 'data'} onChange={() => setLevel('data')} /> Data only: wipe settings, keys and history and switch it off (code stays; Install starts it fresh)</label>
         <label className="cl-life__opt"><input type="radio" checked={level === 'all'} onChange={() => setLevel('all')} /> Everything: code + data + doc lines, nothing left behind (use before installing a newer build)</label>
         {level === 'all' && <label className="cl-life__opt"><input type="checkbox" checked={publish} onChange={(e) => setPublish(e.target.checked)} /> Also commit the removal and push it to GitHub (needs the console's GITHUB_TOKEN), so every clone drops it</label>}
         <label className="cl-life__opt"><input type="checkbox" checked={backup} onChange={(e) => setBackup(e.target.checked)} /> Back up the data folder first (.axf-console/plugin-backups/)</label>

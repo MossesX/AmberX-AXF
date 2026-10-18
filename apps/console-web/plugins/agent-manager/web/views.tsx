@@ -387,8 +387,12 @@ export function AddonsTab() {
       await Promise.all([load(), refresh()]);
     } catch (e) { setErr((e as Error).message); } finally { setBusy(''); }
   };
+  const report = (r: { warnings: string[]; stripped: boolean }) => {
+    rt.toast('Add-on imported — install it below', 'success');
+    if (r.stripped) setErr(`For safety these were removed from the imported add-on (re-import with trust to keep them): ${r.warnings.join('; ')}`);
+  };
   const importJson = async (f: File) => {
-    try { await post('addons/import', { bundle: JSON.parse(await f.text()) }); await load(); rt.toast('Add-on imported — install it below', 'success'); } catch (e) { setErr((e as Error).message); }
+    try { const r = await post<{ warnings: string[]; stripped: boolean }>('addons/import', { bundle: JSON.parse(await f.text()) }); await load(); report(r); } catch (e) { setErr((e as Error).message); }
   };
   if (!items) return <p className="fx-muted">Loading…</p>;
   return (
@@ -415,7 +419,7 @@ export function AddonsTab() {
         <strong>Add more</strong>
         <div className="axp-agent-manager__row">
           <input className="fx-input fx-mono fx-grow" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…/my-agent.addon.json" aria-label="Add-on URL" />
-          <Button icon="download" disabled={!url.trim()} onClick={() => void post('addons/import', { url }).then(() => { setUrl(''); return load(); }, (e: Error) => setErr(e.message))}>Import URL</Button>
+          <Button icon="download" disabled={!url.trim()} onClick={() => void post<{ warnings: string[]; stripped: boolean }>('addons/import', { url }).then((r) => { setUrl(''); report(r); return load(); }, (e: Error) => setErr(e.message))}>Import URL</Button>
           <label className="fx-btn fx-btn--neutral axp-agent-manager__file"><Icon name="upload" size={14} /> Import file<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) void importJson(f); e.target.value = ''; }} /></label>
         </div>
         <span className="fx-small fx-muted">Format: agent-addon@1 (see the plugin README). Export any agent from its editor to make one.</span>

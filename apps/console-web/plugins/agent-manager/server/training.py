@@ -127,7 +127,8 @@ def run(job_id: str) -> dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         log(f"✗ {e}")
         try:
-            store.upsert("training", {"id": job_id, "status": "failed", "lastRun": store.now_ms(), "log": lines[-60:]})
+            j2 = store.items("training").get(job_id) or {}
+            store.upsert("training", {"id": job_id, "status": "failed", "lastRun": store.now_ms(), "log": lines[-60:], "nextRun": _next(j2.get("schedule") or "manual")})
         except Exception:  # noqa: BLE001
             pass
         raise

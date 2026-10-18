@@ -22,7 +22,7 @@
  *     in its settings tab.
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
  */
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -54,14 +54,19 @@ function defaults(folder) {
 
 function safeDataDir(p) {
   const abs = resolve(ROOT, p.lifecycle.dataDir);
-  const base = resolve(ROOT, '.axf-console');
-  if (!abs.startsWith(base + '/') || abs === base) throw new Error(`lifecycle.dataDir must be inside .axf-console/ (got ${p.lifecycle.dataDir})`);
+  const own = resolve(ROOT, '.axf-console/plugins', p.folder);
+  // Only the plugin's own folder (or something inside it): never .axf-console itself, plugins/, backups, env or state.
+  if (abs !== own && !abs.startsWith(own + '/')) throw new Error(`lifecycle.dataDir must be .axf-console/plugins/${p.folder} (or inside it), got ${p.lifecycle.dataDir}`);
+  let st = null;
+  try { st = lstatSync(abs); } catch { /* not there yet */ }
+  if (st?.isSymbolicLink()) throw new Error(`${p.lifecycle.dataDir} is a symlink; refusing to touch it`);
   return abs;
 }
 
 function sizeOf(path) {
-  if (!existsSync(path)) return { files: 0, bytes: 0 };
-  const st = statSync(path);
+  let st;
+  try { st = lstatSync(path); } catch { return { files: 0, bytes: 0 }; }
+  if (st.isSymbolicLink()) return { files: 1, bytes: 0 };
   if (!st.isDirectory()) return { files: 1, bytes: st.size };
   let files = 0, bytes = 0;
   for (const n of readdirSync(path)) { const s = sizeOf(join(path, n)); files += s.files; bytes += s.bytes; }
@@ -84,7 +89,8 @@ function* walk(dir) {
   for (const n of readdirSync(dir)) {
     if (SKIP_DIRS.has(n)) continue;
     const p = join(dir, n);
-    let st; try { st = statSync(p); } catch { continue; }
+    let st; try { st = lstatSync(p); } catch { continue; }
+    if (st.isSymbolicLink()) continue;
     if (st.isDirectory()) yield* walk(p);
     else if (TEXT_EXT.test(n) && st.size < 2_000_000) yield p;
   }
@@ -215,8 +221,15 @@ export async function uninstall(folder, opts = {}, log = () => {}) {
       result.data = true;
     } else log(`no data folder (${relative(ROOT, data)})`);
     if (!opts.noState) {
-      const had = Object.prototype.hasOwnProperty.call(readState().plugins ?? {}, folder);
-      if (had) { if (!dry) writeState((s) => { delete s.plugins[folder]; }); log(`${dry ? 'would remove' : 'removed'} its console state entry`); result.state = true; }
+      if (doCode) {
+        const had = Object.prototype.hasOwnProperty.call(readState().plugins ?? {}, folder);
+        if (had) { if (!dry) writeState((s) => { delete s.plugins[folder]; }); log(`${dry ? 'would remove' : 'removed'} its console state entry`); result.state = true; }
+      } else {
+        // Code stays: keep it switched OFF so it doesn't come back enabled by default and recreate its data. Install turns it on.
+        if (!dry) writeState((s) => { s.plugins = { ...(s.plugins ?? {}), [folder]: false }; });
+        log(`${dry ? 'would disable' : 'disabled'} it (code kept; run install to turn it back on)`);
+        result.state = true;
+      }
     }
   }
 
@@ -252,7 +265,8 @@ function publishRemoval(p, log) {
   const m = git(['-C', ROOT, 'remote', 'get-url', 'origin']).out.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
   if (!m) throw new Error('could not read the repo\'s GitHub origin');
   const slug = m[1];
-  const branch = git(['-C', ROOT, 'rev-parse', '--abbrev-ref', 'HEAD']).out || 'main';
+  const branch = git(['-C', ROOT, 'rev-parse', '--abbrev-ref', 'HEAD']).out;
+  if (!branch || branch === 'HEAD') throw new Error('--publish needs a checked-out branch (this clone is on a detached HEAD)');
   const url = process.env.AXF_LIFECYCLE_PUSH_URL || `https://github.com/${slug}.git`;
   const tmp = mkdtempSync(join(tmpdir(), 'axf-lifecycle-'));
   const askpass = join(tmp, 'askpass.sh');
@@ -266,8 +280,8 @@ function publishRemoval(p, log) {
     const rel = `apps/console-web/plugins/${p.folder}`;
     if (existsSync(join(wt, rel))) git(['-C', wt, 'rm', '-r', '-q', '--', rel]);
     for (const mm of p.lifecycle.mentions ?? []) {
-      const f = join(wt, mm);
-      if (!existsSync(f)) continue;
+      const f = resolve(wt, mm);
+      if (!f.startsWith(wt + '/') || !existsSync(f)) continue;
       const lines = readFileSync(f, 'utf8').split('\n');
       const kept = lines.filter((l) => !l.includes(`axf-plugin:${p.folder}`));
       if (kept.length !== lines.length) { writeFileSync(f, kept.join('\n')); git(['-C', wt, 'add', '--', mm]); }
@@ -311,6 +325,7 @@ export function restore(folder, file) {
   const p = readManifest(folder);
   const abs = resolve(ROOT, file);
   if (!abs.startsWith(BACKUPS + '/')) throw new Error('backups are restored from .axf-console/plugin-backups/ only');
+  if (!abs.slice(BACKUPS.length + 1).startsWith(`${folder}-`) || abs.slice(BACKUPS.length + 1).includes('/')) throw new Error(`that backup does not belong to ${folder}`);
   const data = safeDataDir(p);
   if (existsSync(data)) throw new Error(`${p.lifecycle.dataDir} exists; uninstall the data first`);
   mkdirSync(dirname(data), { recursive: true });

@@ -7,19 +7,15 @@ web_fetch                            public http(s) pages as text (private/loopb
 """
 from __future__ import annotations
 
-import ast
 import html
-import ipaddress
 import json
-import operator
 import os
 import re
-import socket
 import time
-import urllib.request
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+
+from . import safety
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
@@ -31,7 +27,7 @@ SPECS: list[dict[str, Any]] = [
      "parameters": {"type": "object", "properties": {"dir": {"type": "string"}}, "additionalProperties": False}},
     {"name": "repo_read", "group": "repo", "description": "Read a text file from the repository with line numbers; optional start_line/end_line for a slice.",
      "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "start_line": {"type": "integer"}, "end_line": {"type": "integer"}}, "required": ["path"], "additionalProperties": False}},
-    {"name": "repo_search", "group": "repo", "description": "Search the repository for a regular expression (case-insensitive). Returns file:line: text, at most 200 matches.",
+    {"name": "repo_search", "group": "repo", "description": "Search the repository for literal text (case-insensitive). Returns file:line: text, at most 200 matches.",
      "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}, "dir": {"type": "string"}}, "required": ["pattern"], "additionalProperties": False}},
     {"name": "current_time", "group": "utility", "description": "The current date, time and time zone.", "parameters": {"type": "object", "properties": {}, "additionalProperties": False}},
     {"name": "calculator", "group": "utility", "description": "Evaluate an arithmetic expression (+ - * / // % **, parentheses, decimals).",
@@ -90,9 +86,9 @@ def repo_read(path: str, start_line: int | None = None, end_line: int | None = N
 
 
 def repo_search(pattern: str, dir: str = ".") -> str:  # noqa: A002
-    if len(pattern) > 200:
-        raise ValueError("pattern too long")
-    rx = re.compile(pattern, re.I)
+    if not pattern or len(pattern) > 200:
+        raise ValueError("pattern must be 1-200 characters")
+    rx = re.compile(re.escape(pattern), re.I)  # literal: a model-supplied regex could hang the server (ReDoS)
     hits = []
     for fp in _walk(_safe_path(dir)):
         if fp.stat().st_size > 1_000_000:
@@ -108,59 +104,19 @@ def repo_search(pattern: str, dir: str = ".") -> str:  # noqa: A002
     return "\n".join(hits) or "No matches."
 
 
-_OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv,
-        ast.Mod: operator.mod, ast.Pow: operator.pow, ast.USub: operator.neg, ast.UAdd: operator.pos}
-
-
 def calculator(expression: str) -> str:
-    def ev(n: ast.AST) -> float:
-        if isinstance(n, ast.Expression):
-            return ev(n.body)
-        if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
-            return n.value
-        if isinstance(n, ast.BinOp) and type(n.op) in _OPS:
-            if isinstance(n.op, ast.Pow) and abs(ev(n.right)) > 1000:
-                raise ValueError("exponent too large")
-            return _OPS[type(n.op)](ev(n.left), ev(n.right))
-        if isinstance(n, ast.UnaryOp) and type(n.op) in _OPS:
-            return _OPS[type(n.op)](ev(n.operand))
-        raise ValueError("only numbers and arithmetic operators are allowed")
-    return str(ev(ast.parse(expression[:300], mode="eval")))
-
-
-def _public_host(host: str) -> None:
-    for info in socket.getaddrinfo(host, None):
-        ip = ipaddress.ip_address(info[4][0])
-        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
-            raise ValueError("that address is not public; web_fetch only reads public pages")
-
-
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
-        u = urlparse(newurl)
-        if u.scheme not in ("http", "https") or not u.hostname:
-            return None
-        _public_host(u.hostname)
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
+    return safety.calc(expression)
 
 
 def web_fetch(url: str) -> str:
-    u = urlparse(url.strip())
-    if u.scheme not in ("http", "https") or not u.hostname:
-        raise ValueError("only http(s) URLs")
-    _public_host(u.hostname)
-    opener = urllib.request.build_opener(_NoRedirect)
-    req = urllib.request.Request(url, headers={"user-agent": "AmberX-AXF-Assistant/1 (+https://console.amberxai.com)"})
-    with opener.open(req, timeout=20) as r:  # noqa: S310
-        raw = r.read(2_000_000).decode(r.headers.get_content_charset() or "utf-8", "replace")
-        ctype = r.headers.get("content-type", "")
+    code, ctype, raw = safety.fetch(url.strip(), headers={"user-agent": "AmberX-AXF-Assistant/1 (+https://console.amberxai.com)"})
     if "html" in ctype:
         raw = re.sub(r"(?is)<(script|style|noscript|svg).*?</\1>", " ", raw)
         raw = re.sub(r"(?s)<[^>]+>", " ", raw)
         raw = html.unescape(raw)
     text = re.sub(r"[ \t]+", " ", raw)
     text = re.sub(r"\n\s*\n+", "\n\n", text).strip()
-    return text[:40_000]
+    return (f"HTTP {code}\n\n" if code >= 400 else "") + text[:40_000]
 
 
 def run(name: str, args: dict[str, Any]) -> str:

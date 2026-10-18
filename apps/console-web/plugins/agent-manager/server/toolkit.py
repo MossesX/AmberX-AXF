@@ -14,23 +14,17 @@ Nothing here runs shell commands or arbitrary code.
 """
 from __future__ import annotations
 
-import ast
 import asyncio
 import html
-import ipaddress
 import json
-import operator
 import os
 import re
-import socket
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote, urlparse
 
-from . import store
+from . import safety, store
 
 ROOT = store.ROOT
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
@@ -41,7 +35,7 @@ KINDS = ("builtin", "http", "mcp", "prompt", "agent", "workflow")
 BUILTINS: dict[str, dict[str, Any]] = {
     "repo_list": {"description": "List files in the AmberX AXF repository (path and size). Use dir to narrow.", "parameters": {"type": "object", "properties": {"dir": {"type": "string"}}}},
     "repo_read": {"description": "Read a repository text file with line numbers; optional start_line/end_line.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "start_line": {"type": "integer"}, "end_line": {"type": "integer"}}, "required": ["path"]}},
-    "repo_search": {"description": "Search the repository for a regular expression (case-insensitive); file:line: text.", "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}, "dir": {"type": "string"}}, "required": ["pattern"]}},
+    "repo_search": {"description": "Search the repository for literal text (case-insensitive); file:line: text.", "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}, "dir": {"type": "string"}}, "required": ["pattern"]}},
     "current_time": {"description": "Current date, time and time zone.", "parameters": {"type": "object", "properties": {}}},
     "calculator": {"description": "Evaluate arithmetic (+ - * / // % **, parentheses).", "parameters": {"type": "object", "properties": {"expression": {"type": "string"}}, "required": ["expression"]}},
     "web_fetch": {"description": "Fetch a public web page and return its readable text (up to 40k characters).", "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}},
@@ -83,41 +77,11 @@ def repo_read(path: str, start: int | None = None, end: int | None = None, numbe
     return out[:60_000]
 
 
-def _public(host: str) -> None:
-    for info in socket.getaddrinfo(host, None):
-        ip = ipaddress.ip_address(info[4][0])
-        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
-            raise ValueError("that address is not public")
-
-
-class _Guard(urllib.request.HTTPRedirectHandler):
-    def __init__(self, allow_private: bool):
-        self.allow_private = allow_private
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
-        u = urlparse(newurl)
-        if u.scheme not in ("http", "https") or not u.hostname:
-            return None
-        if not self.allow_private:
-            _public(u.hostname)
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
-
-
 def http(method: str, url: str, headers: dict[str, str] | None = None, body: Any = None, timeout: float = 30, allow_private: bool = False, limit: int = 2_000_000) -> tuple[int, str, str]:
-    u = urlparse(url)
-    if u.scheme not in ("http", "https") or not u.hostname:
-        raise ValueError("only http(s) URLs")
-    if not allow_private:
-        _public(u.hostname)
+    """SSRF-safe request (address resolved once, checked, pinned; redirects re-checked; total deadline)."""
     data = None if body is None else (body if isinstance(body, bytes) else json.dumps(body).encode())
     h = {"user-agent": "AmberX-AXF-AgentManager/1", **({"content-type": "application/json"} if data is not None else {}), **(headers or {})}
-    req = urllib.request.Request(url, data=data, headers=h, method=method.upper())
-    opener = urllib.request.build_opener(_Guard(allow_private))
-    try:
-        with opener.open(req, timeout=timeout) as r:  # noqa: S310
-            return r.status, r.headers.get("content-type", ""), r.read(limit).decode(r.headers.get_content_charset() or "utf-8", "replace")
-    except urllib.error.HTTPError as e:
-        return e.code, e.headers.get("content-type", "") if e.headers else "", e.read(20_000).decode("utf-8", "replace")
+    return safety.fetch(url, method, h, data, allow_private=allow_private, timeout=timeout, deadline=max(timeout * 3, 60), max_bytes=limit)
 
 
 def page_text(raw: str, ctype: str) -> str:
@@ -127,23 +91,8 @@ def page_text(raw: str, ctype: str) -> str:
     return re.sub(r"\n\s*\n+", "\n\n", re.sub(r"[ \t]+", " ", raw)).strip()
 
 
-_OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv, ast.FloorDiv: operator.floordiv, ast.Mod: operator.mod, ast.Pow: operator.pow, ast.USub: operator.neg, ast.UAdd: operator.pos}
-
-
 def calc(expr: str) -> str:
-    def ev(n):
-        if isinstance(n, ast.Expression):
-            return ev(n.body)
-        if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
-            return n.value
-        if isinstance(n, ast.BinOp) and type(n.op) in _OPS:
-            if isinstance(n.op, ast.Pow) and abs(ev(n.right)) > 1000:
-                raise ValueError("exponent too large")
-            return _OPS[type(n.op)](ev(n.left), ev(n.right))
-        if isinstance(n, ast.UnaryOp) and type(n.op) in _OPS:
-            return _OPS[type(n.op)](ev(n.operand))
-        raise ValueError("only numbers and arithmetic")
-    return str(ev(ast.parse(expr[:300], mode="eval")))
+    return safety.calc(expr)
 
 
 def _fill(template: str, args: dict[str, Any], url: bool = False) -> str:
@@ -299,7 +248,10 @@ def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> 
         if b == "repo_read":
             return repo_read(str(a.get("path") or ""), a.get("start_line"), a.get("end_line"))
         if b == "repo_search":
-            rx = re.compile(str(a.get("pattern") or "")[:200], re.I)
+            pat = str(a.get("pattern") or "")[:200]
+            if not pat:
+                raise ValueError("pattern is required")
+            rx = re.compile(re.escape(pat), re.I)  # literal: a model-supplied regex could hang the server (ReDoS)
             hits = []
             for fp in walk_repo(_safe_path(str(a.get("dir") or "."))):
                 if fp.stat().st_size > 1_000_000:

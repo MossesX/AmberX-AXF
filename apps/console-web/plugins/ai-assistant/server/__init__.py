@@ -133,12 +133,18 @@ def _wire_history(msgs: list[dict[str, Any]], limit: int) -> list[dict[str, Any]
     while keep and keep[0].get("role") == "tool":  # never start on an orphaned tool result
         keep.pop(0)
     out = []
-    for m in keep:
-        w: dict[str, Any] = {"role": m["role"], "content": m.get("content", "")}
+    for i, m in enumerate(keep):
+        content = m.get("content", "")
+        prev = keep[i - 1] if i else None
+        if m.get("role") == "assistant" and not (m.get("meta") or {}).get("step") and prev and prev.get("role") == "tool":
+            content = (m.get("meta") or {}).get("lastRound", content)  # earlier rounds' text already sits in the step messages
+        w: dict[str, Any] = {"role": m["role"], "content": content}
         if m.get("images"):
             w["images"] = m["images"]
         if m.get("toolCalls"):
             w["tool_calls"] = m["toolCalls"]
+        if m.get("thinkingBlocks"):
+            w["thinking_blocks"] = m["thinkingBlocks"]
         if m.get("role") == "tool":
             w["tool_call_id"] = m.get("toolCallId", "")
             w["is_error"] = bool(m.get("isError"))
@@ -238,7 +244,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         total = {"input": 0, "output": 0}
         tool_log: list[dict[str, Any]] = []
         used_pid, used_model = "", ""
-        final_text, thinking = "", ""
+        final_text, thinking, last_round = "", "", ""
         last_error: Exception | None = None
         for pid_try in chain:
             try:
@@ -264,6 +270,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                     if rnd == 0:
                         yield _sse("status", {"text": f"Thinking on {prof.get('label') or pid} · {model}"})
                     round_text = ""
+                    round_thinking: list[dict[str, Any]] = []
                     calls: list[dict[str, Any]] = []
                     for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root())):
                         t = ev["type"]
@@ -275,6 +282,8 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                             thinking += ev["text"]
                             if cfg.get("showThinking"):
                                 yield _sse("thinking", {"text": ev["text"]})
+                        elif t == "thinking_block":
+                            round_thinking.append(ev["block"])
                         elif t == "status":
                             yield _sse("status", {"text": ev["text"]})
                         elif t == "tool_call":
@@ -284,10 +293,11 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                             total["input"] += ev.get("input", 0)
                             total["output"] += ev.get("output", 0)
                     final_text += round_text
+                    last_round = round_text
                     if not calls or cancel.is_set():
                         break
                     tc_list = [{"id": c["id"], "name": c["name"], "arguments": c.get("arguments") or {}} for c in calls]
-                    new_msgs.append({"role": "assistant", "content": round_text, "tool_calls": tc_list})
+                    new_msgs.append({"role": "assistant", "content": round_text, "tool_calls": tc_list, **({"thinking_blocks": round_thinking} if round_thinking else {})})
                     for c in tc_list:
                         yield _sse("tool", {"phase": "call", "id": c["id"], "name": c["name"], "input": _summ(c["arguments"])})
                         ok = True
@@ -318,17 +328,23 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                 continue
         if last_error and not final_text and not tool_log:
             raise last_error
+        if last_error:  # failed after producing something: keep what we have and say so
+            note = f"\n\n_(The provider stopped with an error: {str(last_error)[:200]})_"
+            final_text += note
+            last_round += note
+            yield _sse("text", {"text": note})
 
         # 4. store the turn
         for nm in new_msgs:
             if nm["role"] == "assistant":
-                msgs.append({"id": store.new_id("m"), "role": "assistant", "content": nm["content"], "toolCalls": nm["tool_calls"], "createdAt": store.now_ms(), "meta": {"step": True}})
+                msgs.append({"id": store.new_id("m"), "role": "assistant", "content": nm["content"], "toolCalls": nm["tool_calls"], "createdAt": store.now_ms(), "meta": {"step": True},
+                             **({"thinkingBlocks": nm["thinking_blocks"]} if nm.get("thinking_blocks") else {})})
             else:
                 msgs.append({"id": store.new_id("m"), "role": "tool", "content": nm["content"], "toolCallId": nm["tool_call_id"], "isError": nm["is_error"], "createdAt": store.now_ms()})
         amsg = {"id": store.new_id("m"), "role": "assistant", "content": final_text.strip() or ("(stopped)" if cancel.is_set() else ""), "createdAt": store.now_ms(),
                 "meta": {"profile": used_pid, "model": used_model, "latencyMs": int((time.monotonic() - started) * 1000), "usage": total, "tools": tool_log,
                          "agentId": agent["id"] if agent else "", "agentName": agent.get("name") if agent else "", "stopped": cancel.is_set(),
-                         "thinking": thinking[:20_000] if thinking else ""}}
+                         "thinking": thinking[:20_000] if thinking else "", "lastRound": last_round.strip()}}
         # A trailing assistant "step" with tool calls and no final text would leave the next turn without a reply: keep the final one always.
         msgs.append(amsg)
         if conv.get("title", "New conversation") == "New conversation" and user_text:
@@ -567,7 +583,10 @@ def fork_conversation(cid: str, body: dict[str, Any]) -> dict[str, Any]:
 @router.delete("/conversations/{cid}/messages/{mid}")
 def delete_message(cid: str, mid: str) -> dict[str, Any]:
     """Delete one message and, for an assistant reply, the tool steps that led to it."""
-    c = store.get_conversation(cid)
+    try:
+        c = store.get_conversation(cid)
+    except KeyError:
+        raise HTTPException(404, "conversation not found") from None
     msgs = c.get("messages", [])
     idx = next((i for i, m in enumerate(msgs) if m.get("id") == mid), -1)
     if idx < 0:

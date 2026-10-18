@@ -81,6 +81,11 @@ def install(aid: str, run_training: bool = True) -> dict[str, Any]:
                 rec = toolkit.validate(rec)
             if sec == "training":
                 rec = training.validate(rec)
+            if sec == "agents":
+                scope = (rec.get("memory") or {}).get("scope") or rec.get("id")
+                taken = {memory.config(a)["scope"] for a in store.items("agents").values() if a.get("origin") != origin}
+                if scope in taken or (scope != rec.get("id") and not str(scope).startswith(f"{aid}")):
+                    rec = {**rec, "memory": {**(rec.get("memory") or {}), "scope": ""}}  # never share or take over your agents' memory
             out = store.upsert(sec, rec, origin=origin)
             created[sec].append(out["id"])
     seeded = 0
@@ -122,7 +127,10 @@ def uninstall(aid: str, keep_memory: bool = False) -> dict[str, Any]:
             it = store.items(sec).get(iid)
             if it and it.get("origin") == origin:
                 if sec == "agents" and not keep_memory:
-                    memory.clear(memory.config(it)["scope"])
+                    scope = memory.config(it)["scope"]
+                    users = [a for a in store.items("agents").values() if a["id"] != iid and memory.config(a)["scope"] == scope]
+                    if not users:
+                        memory.clear(scope)
                 store.delete(sec, iid)
                 n += 1
         removed[sec] = n
@@ -131,7 +139,39 @@ def uninstall(aid: str, keep_memory: bool = False) -> dict[str, Any]:
     return {"uninstalled": aid, "removed": removed, "memoryKept": keep_memory}
 
 
-def import_bundle(data: dict[str, Any] | None = None, url: str | None = None) -> dict[str, Any]:
+def risky(b: dict[str, Any]) -> list[str]:
+    """What an add-on could do with your secrets or network: env-var headers, private addresses, MCP tokens."""
+    out = []
+    for t in (b.get("provides") or {}).get("tools") or []:
+        cfg = t.get("config") or {}
+        for k, v in (cfg.get("headers") or {}).items():
+            if isinstance(v, str) and v.startswith("env:"):
+                out.append(f"tool {t.get('name')}: header {k} reads environment variable {v[4:]}")
+        if cfg.get("allowPrivate"):
+            out.append(f"tool {t.get('name')}: may call private/internal addresses")
+        if cfg.get("tokenEnv"):
+            out.append(f"tool {t.get('name')}: sends environment variable {cfg['tokenEnv']} to {cfg.get('url')}")
+    for j in (b.get("provides") or {}).get("training") or []:
+        for src in j.get("sources") or []:
+            if src.get("tokenEnv"):
+                out.append(f"training {j.get('id')}: sends environment variable {src['tokenEnv']} to {src.get('url')}")
+    return out
+
+
+def _strip_risky(b: dict[str, Any]) -> dict[str, Any]:
+    b = json.loads(json.dumps(b))
+    for t in (b.get("provides") or {}).get("tools") or []:
+        cfg = t.get("config") or {}
+        cfg["headers"] = {k: v for k, v in (cfg.get("headers") or {}).items() if not (isinstance(v, str) and v.startswith("env:"))}
+        cfg.pop("allowPrivate", None)
+        cfg.pop("tokenEnv", None)
+    for j in (b.get("provides") or {}).get("training") or []:
+        for src in j.get("sources") or []:
+            src.pop("tokenEnv", None)
+    return b
+
+
+def import_bundle(data: dict[str, Any] | None = None, url: str | None = None, trust: bool = False) -> dict[str, Any]:
     if url:
         code, _ct, text = toolkit.http("GET", url, limit=5_000_000)
         if code >= 400:
@@ -140,9 +180,12 @@ def import_bundle(data: dict[str, Any] | None = None, url: str | None = None) ->
     b = _valid(data or {})
     if (BUNDLED / b["id"]).exists():
         raise ValueError(f"{b['id']} is a bundled add-on; imported add-ons need their own id")
+    warnings = risky(b)
+    if warnings and not trust:
+        b = _strip_risky(b)  # imported bundles don't get your secrets or private network unless you say so
     IMPORTED.mkdir(parents=True, exist_ok=True, mode=0o700)
     (IMPORTED / f"{b['id']}.json").write_text(json.dumps(b, indent=2))
-    return {"imported": b["id"], "name": b.get("name")}
+    return {"imported": b["id"], "name": b.get("name"), "warnings": warnings, "stripped": bool(warnings and not trust)}
 
 
 def remove_imported(aid: str) -> None:
