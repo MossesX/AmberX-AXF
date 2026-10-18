@@ -70,8 +70,8 @@ function ImportAsset({ close }: { close: () => void }) {
     const base = JSON.parse(rt.exportAsset('color-theme', rt.getState().active['color-theme']));
     base.id = `custom-${Date.now().toString(36)}`;
     base.name = 'My Custom Theme';
-    base.data.tokens.accent = '#e8467c';
-    base.data.tokens.accentSoft = 'rgba(232,70,124,.16)';
+    base.data.tokens.accent = '#e8467c'; // theme-ok: writes theme data
+    base.data.tokens.accentSoft = 'rgba(232,70,124,.16)'; // theme-ok: writes theme data
     setText(JSON.stringify(base, null, 2));
   };
 

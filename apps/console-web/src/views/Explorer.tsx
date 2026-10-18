@@ -149,7 +149,7 @@ function TokenRow({ token, what, available }: { token: string; what: string; ava
     <div className="cx-row" title={`${what} — color-theme token "${token}" (${value || 'derived'})`}>
       <span className="cx-swatch" style={{ background: value ? `var(--fx-${token.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())})` : 'transparent' }} />
       <span className="fx-grow">{what} <span className="fx-muted fx-mono fx-small">{token}</span></span>
-      {available && value ? <input type="color" value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888'} onChange={(e) => edit('color-theme', ['tokens', token], e.target.value)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
+      {available && value ? <input type="color" value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888' /* theme-ok: data value */} onChange={(e) => edit('color-theme', ['tokens', token], e.target.value)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
     </div>
   );
 }
@@ -213,7 +213,7 @@ export function ElementPreview({ kind }: { kind: string }) {
       case 'EMPTY_STATE': return <div className="fx-empty">Nothing here yet</div>;
       case 'PROGRESS': return <div className="cx-progress"><span /></div>;
       case 'TABLE': return <table className="fx-table"><tbody><tr><th>Name</th><td>Value</td></tr><tr><th>Other</th><td>Value</td></tr></tbody></table>;
-      case 'CHART': return <div className="cx-chart">{[40, 70, 55, 90, 30].map((h, i) => <span key={i} style={{ height: `${h}%`, background: `var(--fx-chart${(i % 3) + 1}, var(--fx-accent))` }} />)}</div>;
+      case 'CHART': return <div className="cx-chart">{[40, 70, 55, 90, 30].map((h, i) => <span key={i} style={{ height: `${h}%`, background: ['var(--fx-accent)', 'var(--fx-info)', 'var(--fx-success)'][i % 3] }} />)}</div>;
       default: return <div className="fx-empty">{kind} — rendered by a library kit</div>;
     }
   })();

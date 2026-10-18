@@ -135,7 +135,7 @@ export function AssetPreview({ asset }: { asset: AssetEnvelope }) {
             : { position: 'absolute', left: '22%', right: '22%', top: '18%', bottom: '18%', borderRadius: 6 };
       return (
         <div className="fx-pv-screen" style={{ position: 'relative', overflow: 'hidden', minHeight: 64 }}>
-          <div style={{ position: 'absolute', inset: 0, background: d.backdrop === 'none' ? 'transparent' : 'rgba(0,0,0,.35)', backdropFilter: d.backdrop === 'blur' ? 'blur(2px)' : undefined }} />
+          <div style={{ position: 'absolute', inset: 0, background: d.backdrop === 'none' ? 'transparent' : 'color-mix(in srgb, var(--fx-bg) 60%, transparent)', backdropFilter: d.backdrop === 'blur' ? 'blur(2px)' : undefined }} />
           <div style={{ ...panel, background: 'var(--fx-surface)', border: '1px solid var(--fx-border)', overflow: 'hidden' }}>
             <div style={{ height: d.header === 'filled' ? 10 : 6, background: d.header === 'filled' ? 'var(--fx-accent)' : 'transparent', borderTop: d.header === 'accent-bar' ? '3px solid var(--fx-accent)' : 'none' }} />
           </div>
