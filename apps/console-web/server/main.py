@@ -1046,11 +1046,14 @@ if DIST.exists():
     if (DIST / "data").exists():
         app.mount("/data", StaticFiles(directory=DIST / "data"), name="data")
 
+    _DIST_ROOT = DIST.resolve()
+
     @app.get("/{path:path}")
     def spa(path: str) -> FileResponse:
-        f = DIST / path
+        # Never serve anything outside dist/: the path arrives decoded, so ../ (also as %2e%2e or %2f) must be refused here.
         try:
-            is_file = bool(path) and f.is_file()
-        except (OSError, ValueError):  # a path too long or with a NUL byte is simply not a file
+            f = (_DIST_ROOT / path).resolve()
+            is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
+        except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else DIST / "index.html")
+        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
