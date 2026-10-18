@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T04:22:03.007Z",
+ "generatedAt": "2026-10-18T04:30:25.185Z",
  "statuses": [
   "built",
   "partial",
@@ -21334,6 +21334,77 @@
    "edited": true,
    "modelEdited": true,
    "statusEdited": true
+  },
+  {
+   "id": "x.lib.mcp",
+   "title": "lib-mcp: MCP client (and server) library for every AXF app",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Framework library so any AXF app (web + Android, later Python) can connect to MCP servers as a client: server registry, Streamable HTTP transport, tool/resource/prompt browsing, tool calls behind the kernel interop exposure rules, tokens in secure storage. The console MCP client plugin (apps/console-web/plugins/mcp-client) is the reference UI.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "lib-mcp"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [],
+   "modules": [
+    "lib-mcp"
+   ],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Same client contract on web and Android (conformance fixtures)",
+     "done": false
+    },
+    {
+     "text": "Tokens only in secure storage / server env",
+     "done": false
+    },
+    {
+     "text": "Remote tool calls respect UAC + interop exposure",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [
+    "Port the console plugin server part (plugins/mcp-client/server) as the behaviour reference"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-18",
+     "text": "Parked on the pending list: console plugin built first on Opus"
+    },
+    {
+     "at": "2026-10-18T04:30:05.543Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelEdited": true,
+   "modelReason": "Cross-port library contract: Fable keeps every port consistent",
+   "edited": true
   }
  ]
 }

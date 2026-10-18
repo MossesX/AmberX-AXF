@@ -1,0 +1,14 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.mcp-client",
+  "name": "MCP client",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Connect the console to other MCP servers (Streamable HTTP): browse their tools, resources and prompts, call tools, and keep a call log. Servers are managed in Settings → MCP servers.",
+  "targets": ["axf-console"],
+  "provides": ["view:mcp-client", "settings-tab:mcp"],
+  "scopes": ["ROUTES", "NETWORK"],
+  "enabledByDefault": true
+}

@@ -51,7 +51,8 @@
   "x.assets.browser",
   "x.plugins.manager",
   "x.assets.templates",
-  "x.console.pending"
+  "x.console.pending",
+  "x.lib.mcp"
  ],
  "steps": {
   "x.kernel": {
