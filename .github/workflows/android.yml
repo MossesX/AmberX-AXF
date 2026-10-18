@@ -96,6 +96,10 @@ jobs:
               assert not r.get('isError'), r
               q = m.get('/api/build-queue').json(); assert q['view']['steps'], q
               print('mcp ok', len(tools), 'tools; next build step', q['view']['next'])
+              sc = m.get('/api/system/check').json(); assert sc['checks'] and sc['services'], sc
+              assert any(c['id'] == 'console-token' for c in sc['checks'])
+              bad = m.post('/api/system/secret', json={'key': 'PATH', 'value': 'x'}); assert bad.status_code == 400, bad.text
+              print('systems check ok:', sc['counts'])
           PY
       - uses: actions/upload-artifact@v4
         with:

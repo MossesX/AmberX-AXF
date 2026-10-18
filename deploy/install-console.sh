@@ -157,6 +157,10 @@ UPD
 chmod +x /usr/local/bin/axf-console-update
 echo "*/5 * * * * root /usr/local/bin/axf-console-update" > /etc/cron.d/axf-console
 chmod 644 /etc/cron.d/axf-console
+# Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
+echo "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1" > /etc/cron.d/axf-doctor
+chmod 644 /etc/cron.d/axf-doctor
+DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true
 
 sleep 3
 docker ps --filter "name=^$NAME$" --format '{{.Names}} is {{.Status}}' | sed 's/^/[axf] /'
@@ -165,5 +169,6 @@ DNS_IP="$(getent hosts "$DOMAIN" | awk '{print $1}' | tail -n1 || true)"
 [ "$DNS_IP" = "$SERVER_IP" ] || say "DNS: point an A record for $DOMAIN at $SERVER_IP (currently '${DNS_IP:-unset}'); HTTPS starts working once it resolves."
 say "Dev Console:   $URL"
 say "Server panel:  $URL/panel"
+say "Setup check:   bash $DIR/deploy/console-doctor.sh   (fixes host issues the console banner lists)"
 say "AXF_TOKEN:     $AXF_TOKEN   (paste it into the panel's Connection → Token; saved in $ENVF)"
 [ -n "$GITHUB_TOKEN" ] || say "Tip: re-run with GITHUB_TOKEN=ghp_… for one-click APK / Maven downloads from CI (with Contents: write it also lets Settings → Session check-in install for every clone)."

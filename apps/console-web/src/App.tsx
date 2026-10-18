@@ -15,6 +15,7 @@ import { Plan, PlanFeatureTab } from './views/Plan';
 import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
+import { SystemBanner, useSystemCheckOnLoad } from './views/SystemCheck';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { consoleSettings } from './consoleSettings';
@@ -77,10 +78,13 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
+  // Systems check: runs when the console loads; its banner sits at the top of every view while anything needs setup.
+  useSystemCheckOnLoad();
+  const withBanner: ViewMap = Object.fromEntries(Object.entries(allViews).map(([id, v]) => [id, { ...v, render: () => <><SystemBanner />{v.render()}</> }]));
   return (
     <div {...drop} style={{ display: 'contents' }}>
       <AppShell
-        views={allViews}
+        views={withBanner}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />
