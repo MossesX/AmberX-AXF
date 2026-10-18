@@ -110,5 +110,161 @@
         "data.defaultRole must reference a role id"
       ]
     }
+  },
+  {
+    "case": "slots-not-object",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "slots": [
+          "nav"
+        ]
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.slots must be an object"
+      ]
+    }
+  },
+  {
+    "case": "slots-bad-region",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "slots": {
+          "sidebar": [
+            "nav-menu"
+          ]
+        }
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.slots.sidebar is not a layout region (one of: menubar, toolbar, nav, main, inspector, status, fab, sheet, overlay)"
+      ]
+    }
+  },
+  {
+    "case": "slots-bad-type",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "slots": {
+          "toolbar": [
+            "toolbar",
+            "ribbon"
+          ]
+        }
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.slots.toolbar accepts unknown asset type \"ribbon\""
+      ]
+    }
+  },
+  {
+    "case": "slots-ok",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "layout",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "nav": "left",
+        "navWidth": 84,
+        "showMenubar": false,
+        "showToolbar": true,
+        "toolbarPosition": "bottom",
+        "showStatusbar": true,
+        "inspector": "left",
+        "inspectorWidth": 250,
+        "contentMaxWidth": 0,
+        "slots": {
+          "menubar": [
+            "app-menu",
+            "toolbar"
+          ],
+          "nav": []
+        }
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$"
+      ]
+    }
+  },
+  {
+    "case": "chrome-bad-enum",
+    "raw": {
+      "$axf": "asset@1",
+      "type": "toolbar",
+      "id": "x",
+      "name": "X",
+      "version": "1",
+      "data": {
+        "variant": "icons",
+        "align": "start",
+        "groups": [],
+        "showSearch": false,
+        "density": "huge"
+      }
+    },
+    "result": {
+      "ok": false,
+      "errors": [
+        "\"id\" must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.density must be one of: compact, regular, roomy"
+      ]
+    }
   }
 ]

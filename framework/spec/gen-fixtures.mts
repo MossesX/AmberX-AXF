@@ -7,7 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { compileLayout, layoutVars } from '../core/engines/layout';
-import { buttonStyle, containerStyle, contextMenuStyle, dialogStyle, popupStyle, sliderStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { validateAsset } from '../core/validate';
@@ -24,6 +24,14 @@ write('theme.json', Object.fromEntries([
   ...load('style-theme').map((a) => [`style-theme:${a.id}`, styleThemeVars(a.data)]),
 ]));
 write('layout.json', Object.fromEntries(load('layout').map((a) => [a.id, { compiled: compileLayout(a.data), vars: layoutVars(a.data) }])));
+// Slot contract cases: a region that refuses its chrome drops out of the grid on every port.
+const base = load('layout').find((a) => a.id === 'studio-dock')?.data ?? load('layout')[0].data;
+write('layout-slots.json', Object.fromEntries(Object.entries({
+  'no-menubar': { menubar: [] },
+  'no-nav': { nav: [] },
+  'no-toolbar': { toolbar: ['nav-menu'] },
+  'overlay-dialog-only': { overlay: ['dialog'] },
+}).map(([k, slots]) => { const data = { ...base, slots }; return [k, { slots, compiled: compileLayout(data) }]; })));
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),
@@ -31,6 +39,18 @@ write('components.json', {
   dialog: Object.fromEntries(load('dialog').map((a) => [a.id, dialogStyle(a.data)])),
   popup: Object.fromEntries(load('popup').map((a) => [a.id, popupStyle(a.data)])),
   'context-menu': Object.fromEntries(load('context-menu').map((a) => [a.id, contextMenuStyle(a.data)])),
+  toolbar: Object.fromEntries(load('toolbar').map((a) => [a.id, toolbarStyle(a.data)])),
+  'nav-menu': Object.fromEntries(load('nav-menu').map((a) => [a.id, navMenuStyle(a.data)])),
+  'app-menu': Object.fromEntries(load('app-menu').map((a) => [a.id, appMenuStyle(a.data)])),
+  // style fields set explicitly (the starter assets mostly use defaults)
+  'chrome-cases': {
+    'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),
+    'toolbar-roomy-raised': toolbarStyle({ variant: 'icons', align: 'center', groups: [], showSearch: true, density: 'roomy', surface: 'raised' }),
+    'nav-compact-fill': navMenuStyle({ style: 'pills', sections: [], density: 'compact', indicator: 'fill', showIcons: false }),
+    'nav-roomy-none': navMenuStyle({ style: 'list', sections: [], density: 'roomy', indicator: 'none' }),
+    'menu-compact-glass': appMenuStyle({ menus: [], density: 'compact', surface: 'glass' }),
+    'menu-roomy-raised': appMenuStyle({ menus: [], density: 'roomy', surface: 'raised' }),
+  },
 });
 write('uac.json', Object.fromEntries(load('uac-policy').map((p) => [p.id, {
   roles: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, [...resolvePermissions(p.data, r.id)].sort()])),
@@ -50,5 +70,10 @@ write('validation.json', [
   { case: 'unknown-type', raw: { $axf: 'asset@1', type: 'nope', id: 'x', name: 'X', version: '1', data: {} } },
   { case: 'bad-enum', raw: { $axf: 'asset@1', type: 'button', id: 'x', name: 'X', version: '1', data: { shape: 'blob', fill: 'solid', weight: 600, uppercase: false, size: 'md', elevation: false } } },
   { case: 'uac-default-role', raw: { $axf: 'asset@1', type: 'uac-policy', id: 'x', name: 'X', version: '1', data: { defaultRole: 'ghost', gating: 'hide', roles: [{ id: 'a', label: 'A', permissions: [] }], permissions: {} } } },
+  { case: 'slots-not-object', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: ['nav'] } } },
+  { case: 'slots-bad-region', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { sidebar: ['nav-menu'] } } } },
+  { case: 'slots-bad-type', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { toolbar: ['toolbar', 'ribbon'] } } } },
+  { case: 'slots-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { menubar: ['app-menu', 'toolbar'], nav: [] } } } },
+  { case: 'chrome-bad-enum', raw: { $axf: 'asset@1', type: 'toolbar', id: 'x', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, density: 'huge' } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
 console.log('fixtures written to', out);

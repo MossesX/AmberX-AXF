@@ -78,10 +78,24 @@ export function validateAsset(raw) {
   for (const [k, keys] of Object.entries(ts.nested ?? {})) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
+  if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/** Layout slot contract — mirrors validateSlots in core/validate.ts. */
+export function validateSlots(slots) {
+  const regions = spec.types.layout.slots.regions;
+  if (!isObj(slots)) return ['data.slots must be an object'];
+  const errors = [];
+  for (const [r, types] of Object.entries(slots)) {
+    if (!regions.includes(r)) { errors.push(`data.slots.${r} is not a layout region (one of: ${regions.join(', ')})`); continue; }
+    if (!Array.isArray(types)) { errors.push(`data.slots.${r} must be a list of asset types`); continue; }
+    for (const t of types) if (typeof t !== 'string' || !spec.types[t]) errors.push(`data.slots.${r} accepts unknown asset type "${String(t)}"`);
+  }
+  return errors;
 }
 
 /** Load every *.json asset under a directory (expects <dir>/<type>/<id>.json). */

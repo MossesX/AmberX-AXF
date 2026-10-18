@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
@@ -30,25 +31,32 @@ export interface AppShellProps {
 export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
+  // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
+  const slots = compileSlots(layout);
+  const showMenubar = layout.showMenubar && regionAccepts(slots, 'menubar', 'app-menu');
+  const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar');
+  const showNav = regionAccepts(slots, 'nav', 'nav-menu');
   useWindowShortcuts();
   const view = views[state.view] ?? Object.values(views)[0];
 
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
     <div className="fx-shell">
-      {layout.showMenubar && (
+      {showMenubar && (
         <div className="fx-region" style={{ gridArea: 'menubar' }}>
           <MenuBar />
         </div>
       )}
-      {layout.showToolbar && (
+      {showToolbar && (
         <div className="fx-region fx-region--toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
           <Toolbar views={views} />
         </div>
       )}
-      <div className="fx-region fx-region--nav" style={{ gridArea: 'nav' }} data-side={layout.nav}>
-        <NavMenu views={views} />
-      </div>
+      {showNav && (
+        <div className="fx-region fx-region--nav" style={{ gridArea: 'nav' }} data-side={layout.nav}>
+          <NavMenu views={views} />
+        </div>
+      )}
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
         <div className="fx-main__inner" key={state.view}>
           {view?.render()}

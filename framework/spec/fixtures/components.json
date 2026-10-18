@@ -187,5 +187,158 @@
         "data-fx-ctx": "roomy"
       }
     }
+  },
+  "toolbar": {
+    "labeled-actions": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 4px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons-labels",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on"
+      }
+    },
+    "standard-icons": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 4px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on"
+      }
+    },
+    "text-commands": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 4px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "labels",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on"
+      }
+    }
+  },
+  "nav-menu": {
+    "icon-rail": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "rail",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "pill-tabs": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "sidebar-list": {
+      "vars": {
+        "--fx-nav-item-py": "7px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "auto",
+        "data-fx-nav-icons": "on"
+      }
+    }
+  },
+  "app-menu": {
+    "developer": {
+      "vars": {
+        "--fx-menubar-h": "calc(var(--fx-row-h) + 4px)"
+      },
+      "attrs": {
+        "data-fx-menubar": "flat"
+      }
+    },
+    "minimal-picker": {
+      "vars": {
+        "--fx-menubar-h": "calc(var(--fx-row-h) + 4px)"
+      },
+      "attrs": {
+        "data-fx-menubar": "flat"
+      }
+    },
+    "standard-desktop": {
+      "vars": {
+        "--fx-menubar-h": "calc(var(--fx-row-h) + 4px)"
+      },
+      "attrs": {
+        "data-fx-menubar": "flat"
+      }
+    }
+  },
+  "chrome-cases": {
+    "toolbar-compact-glass": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.35)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 8px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "labels",
+        "data-fx-toolbar-surface": "glass",
+        "data-fx-toolbar-divider": "off"
+      }
+    },
+    "toolbar-roomy-raised": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.9)",
+        "--fx-toolbtn-h": "var(--fx-row-h)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons",
+        "data-fx-toolbar-surface": "raised",
+        "data-fx-toolbar-divider": "on"
+      }
+    },
+    "nav-compact-fill": {
+      "vars": {
+        "--fx-nav-item-py": "4px"
+      },
+      "attrs": {
+        "data-fx-nav": "pills",
+        "data-fx-nav-indicator": "fill",
+        "data-fx-nav-icons": "off"
+      }
+    },
+    "nav-roomy-none": {
+      "vars": {
+        "--fx-nav-item-py": "10px"
+      },
+      "attrs": {
+        "data-fx-nav": "list",
+        "data-fx-nav-indicator": "none",
+        "data-fx-nav-icons": "on"
+      }
+    },
+    "menu-compact-glass": {
+      "vars": {
+        "--fx-menubar-h": "var(--fx-row-h)"
+      },
+      "attrs": {
+        "data-fx-menubar": "glass"
+      }
+    },
+    "menu-roomy-raised": {
+      "vars": {
+        "--fx-menubar-h": "calc(var(--fx-row-h) + 12px)"
+      },
+      "attrs": {
+        "data-fx-menubar": "raised"
+      }
+    }
   }
 }

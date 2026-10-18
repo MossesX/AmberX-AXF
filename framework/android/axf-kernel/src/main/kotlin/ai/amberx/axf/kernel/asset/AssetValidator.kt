@@ -36,6 +36,7 @@ public class AssetValidator(private val types: AssetTypeRegistry) {
             val inner = data.obj(k) ?: continue
             for (nk in keys) if (nk !in inner) errors += "data.$k.$nk is required"
         }
+        if (type == AssetTypes.LAYOUT && "slots" in data) errors += validateSlots(data["slots"])
         if (type == AssetTypes.UAC_POLICY) {
             val roles = data.arr("roles") as? JsonArray
             val ids = roles?.mapNotNull { (it as? JsonObject)?.strOrNull("id") } ?: emptyList()
@@ -45,4 +46,21 @@ public class AssetValidator(private val types: AssetTypeRegistry) {
     }
 
     public fun validate(asset: AssetEnvelope): ValidationResult = validate(asset.toJson())
+
+    /** Layout slot contract; same messages as validateSlots in core/validate.ts and build-engine.mjs. */
+    private fun validateSlots(slots: kotlinx.serialization.json.JsonElement?): List<String> {
+        val regions = ai.amberx.axf.kernel.engine.Region.entries.map { it.id }
+        val obj = slots as? JsonObject ?: return listOf("data.slots must be an object")
+        val errors = mutableListOf<String>()
+        for ((r, v) in obj) {
+            if (r !in regions) { errors += "data.slots.$r is not a layout region (one of: ${regions.joinToString(", ")})"; continue }
+            val list = v as? JsonArray
+            if (list == null) { errors += "data.slots.$r must be a list of asset types"; continue }
+            for (t in list) {
+                val name = (t as? JsonPrimitive)?.takeIf { it.isString }?.content
+                if (name == null || types.get(name) == null) errors += "data.slots.$r accepts unknown asset type \"${name ?: t.toString()}\""
+            }
+        }
+        return errors
+    }
 }

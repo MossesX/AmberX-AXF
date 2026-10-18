@@ -154,6 +154,8 @@ public data class Layout(
     val nav: NavSide, val navWidth: Int, val showMenubar: Boolean, val showToolbar: Boolean, val toolbarPosition: Side,
     val showStatusbar: Boolean, val inspector: InspectorSide, val inspectorWidth: Int, val contentMaxWidth: Int,
     val mobile: MobileLayout = MobileLayout(),
+    /** Region slot overrides: region name (lowercase) -> accepted asset types. Empty = the contract defaults. */
+    val slots: Map<String, List<String>> = emptyMap(),
 ) {
     public companion object {
         public fun fromJson(o: JsonObject): Layout = Layout(
@@ -162,42 +164,53 @@ public data class Layout(
             showStatusbar = o.bool("showStatusbar", true), inspector = InspectorSide.parse(o.strOrNull("inspector")),
             inspectorWidth = o.int("inspectorWidth", 260), contentMaxWidth = o.int("contentMaxWidth", 1080),
             mobile = MobileLayout.fromJson(o.obj("mobile")),
+            slots = o.obj("slots")?.entries?.mapNotNull { (k, v) -> (v as? kotlinx.serialization.json.JsonArray)?.let { a -> k to a.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { p -> p.isString }?.content } } }?.toMap() ?: emptyMap(),
         )
     }
 }
 
 /* ---------- navigation ---------- */
 
-public data class AppMenu(val menus: List<Menu>) {
+/** Shared chrome vocabulary for toolbar, nav-menu and app-menu (component style engine). */
+public enum class ChromeDensity { COMPACT, REGULAR, ROOMY; public companion object { public fun parse(s: String?): ChromeDensity = entries.firstOrNull { it.name.equals(s, true) } ?: REGULAR } }
+public enum class ChromeSurface { FLAT, RAISED, GLASS; public companion object { public fun parse(s: String?): ChromeSurface = entries.firstOrNull { it.name.equals(s, true) } ?: FLAT } }
+public enum class NavIndicator { AUTO, BAR, FILL, NONE; public companion object { public fun parse(s: String?): NavIndicator = entries.firstOrNull { it.name.equals(s, true) } ?: AUTO } }
+
+public data class AppMenu(val menus: List<Menu>, val density: ChromeDensity = ChromeDensity.REGULAR, val surface: ChromeSurface = ChromeSurface.FLAT) {
     public data class Menu(val id: String, val label: String, val items: List<MenuItem>)
     public companion object {
-        public fun fromJson(o: JsonObject): AppMenu = AppMenu(o.objList("menus").map { Menu(it.str("id"), it.str("label"), MenuItem.list(it, "items")) })
+        public fun fromJson(o: JsonObject): AppMenu = AppMenu(o.objList("menus").map { Menu(it.str("id"), it.str("label"), MenuItem.list(it, "items")) },
+            ChromeDensity.parse(o.strOrNull("density")), ChromeSurface.parse(o.strOrNull("surface")))
     }
 }
 
 public enum class ToolbarVariant { ICONS, ICONS_LABELS, LABELS; public companion object { public fun parse(s: String?): ToolbarVariant = when (s) { "icons-labels" -> ICONS_LABELS; "labels" -> LABELS; else -> ICONS } } }
 public enum class Align { START, CENTER, SPREAD; public companion object { public fun parse(s: String?): Align = entries.firstOrNull { it.name.equals(s, true) } ?: START } }
 public data class ToolbarItem(val id: String, val icon: String, val label: String, val action: String, val requires: String? = null)
-public data class Toolbar(val variant: ToolbarVariant, val align: Align, val groups: List<Group>, val showSearch: Boolean, /** window id/kind this toolbar is attached to; "main" by default */ val window: String = "main") {
+public data class Toolbar(val variant: ToolbarVariant, val align: Align, val groups: List<Group>, val showSearch: Boolean, /** window id/kind this toolbar is attached to; "main" by default */ val window: String = "main",
+    val density: ChromeDensity = ChromeDensity.REGULAR, val surface: ChromeSurface = ChromeSurface.FLAT, /** rule between item groups */ val divider: Boolean = true) {
     public data class Group(val id: String, val items: List<ToolbarItem>)
     public companion object {
         public fun fromJson(o: JsonObject): Toolbar = Toolbar(
             ToolbarVariant.parse(o.strOrNull("variant")), Align.parse(o.strOrNull("align")),
             o.objList("groups").map { g -> Group(g.str("id"), g.objList("items").map { ToolbarItem(it.str("id"), it.str("icon"), it.str("label"), it.str("action"), it.strOrNull("requires")) }) },
             o.bool("showSearch"), o.str("window", "main"),
+            ChromeDensity.parse(o.strOrNull("density")), ChromeSurface.parse(o.strOrNull("surface")), o.bool("divider", true),
         )
     }
 }
 
 public enum class NavStyle { LIST, PILLS, RAIL; public companion object { public fun parse(s: String?): NavStyle = entries.firstOrNull { it.name.equals(s, true) } ?: LIST } }
 public data class NavItem(val id: String, val label: String, val icon: String, val view: String, val badge: String? = null, val requires: String? = null)
-public data class NavMenu(val style: NavStyle, val header: String?, val sections: List<Section>) {
+public data class NavMenu(val style: NavStyle, val header: String?, val sections: List<Section>,
+    val density: ChromeDensity = ChromeDensity.REGULAR, val indicator: NavIndicator = NavIndicator.AUTO, val showIcons: Boolean = true) {
     public data class Section(val label: String?, val items: List<NavItem>)
     public val items: List<NavItem> get() = sections.flatMap { it.items }
     public companion object {
         public fun fromJson(o: JsonObject): NavMenu = NavMenu(
             NavStyle.parse(o.strOrNull("style")), o.strOrNull("header"),
             o.objList("sections").map { s -> Section(s.strOrNull("label"), s.objList("items").map { NavItem(it.str("id"), it.str("label"), it.str("icon"), it.str("view"), it.strOrNull("badge"), it.strOrNull("requires")) }) },
+            ChromeDensity.parse(o.strOrNull("density")), NavIndicator.parse(o.strOrNull("indicator")), o.bool("showIcons", true),
         )
     }
 }

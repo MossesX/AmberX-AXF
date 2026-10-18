@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-17T16:43:44.795Z",
+ "generatedAt": "2026-10-18T04:11:52.092Z",
  "statuses": [
   "built",
   "partial",
@@ -20987,6 +20987,347 @@
    ],
    "model": "opus",
    "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "x.assets.designer",
+   "title": "Asset Designer plugin (no-code)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a `drawer` asset type.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Designs every listed type with live preview",
+     "done": false
+    },
+    {
+     "text": "Saves only assets that pass validateAsset on both ports",
+     "done": false
+    },
+    {
+     "text": "`drawer` asset type in asset-types.json with engine + region slot support",
+     "done": false
+    },
+    {
+     "text": "Installed by default",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "Pending build list (Oct 17 2026): wait for Fable before building.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the pending build list from claude.ai chat"
+    },
+    {
+     "at": "2026-10-18T04:10:52.431Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
+   "edited": true,
+   "modelEdited": true
+  },
+  {
+   "id": "x.assets.templates",
+   "title": "Asset templates: 10+ per type + defaults",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "XL",
+   "summary": "At least 10 editable templates/boilerplates for every asset type the designer covers, plus a default asset per type in defaults.json.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.assets.designer"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "≥10 templates per type, all valid",
+     "done": false
+    },
+    {
+     "text": "Default asset per type",
+     "done": false
+    },
+    {
+     "text": "Conformance fixtures regenerated",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "Pending build list (Oct 17 2026): wait for Fable before building.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the pending build list from claude.ai chat"
+    },
+    {
+     "at": "2026-10-18T04:10:52.450Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
+   "edited": true,
+   "modelEdited": true
+  },
+  {
+   "id": "x.assets.browser",
+   "title": "Asset Browser plugin",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "M",
+   "summary": "Browse, preview, import, export and hot-swap assets across apps built on AXF. Installed by default.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Browse/preview/swap every type",
+     "done": false
+    },
+    {
+     "text": "Import validates before install",
+     "done": false
+    },
+    {
+     "text": "Installed by default",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "Pending build list (Oct 17 2026): wait for Fable before building.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the pending build list from claude.ai chat"
+    },
+    {
+     "at": "2026-10-18T04:10:52.464Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
+   "edited": true,
+   "modelEdited": true
+  },
+  {
+   "id": "x.plugins.manager",
+   "title": "Plugin manager + settings tabs for every app",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Every plugin gets a plugin-manager entry: info, enable/disable, view logs, settings. Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Entry per plugin with info, enable/disable, logs, settings",
+     "done": false
+    },
+    {
+     "text": "Plugin settings appear only as tabs in app settings",
+     "done": false
+    },
+    {
+     "text": "`axf init` output includes the settings interface on web + Android",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "Pending build list (Oct 17 2026): wait for Fable before building.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the pending build list from claude.ai chat"
+    },
+    {
+     "at": "2026-10-18T04:10:52.477Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
+   "edited": true,
+   "modelEdited": true
+  },
+  {
+   "id": "x.console.pending",
+   "title": "Pending build list manager (console)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "M",
+   "summary": "A console view for the pending build list: date added next to everything not built, date built next to built items, sortable by status and by date.",
+   "ports": {
+    "web": {
+     "status": "planned",
+     "where": "—"
+    },
+    "android": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Shows added date for unbuilt items and built date for built ones",
+     "done": false
+    },
+    {
+     "text": "Sort by status",
+     "done": false
+    },
+    {
+     "text": "Sort by date (added / built)",
+     "done": false
+    },
+    {
+     "text": "Reads and writes plan.json through the console API",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "pending",
+    "waits-on-fable"
+   ],
+   "notes": "Pending build list (Oct 17 2026): wait for Fable before building.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the pending build list from claude.ai chat"
+    },
+    {
+     "at": "2026-10-18T04:10:52.490Z",
+     "text": "Added to the pending build list (waits on Fable)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Brett asked to hold this for Fable (Oct 17 2026): cross-port contracts + many schema-validated assets",
+   "edited": true,
+   "modelEdited": true
   }
  ]
 }

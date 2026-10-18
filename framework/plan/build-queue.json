@@ -46,7 +46,12 @@
   "x.lib.sensors",
   "x.lib.files",
   "x.lib.charts",
-  "x.console.repo"
+  "x.console.repo",
+  "x.assets.designer",
+  "x.assets.browser",
+  "x.plugins.manager",
+  "x.assets.templates",
+  "x.console.pending"
  ],
  "steps": {
   "x.kernel": {
@@ -211,7 +216,7 @@
   }
  },
  "dirty": false,
- "updatedAt": "2026-10-17T16:21:27.179Z",
+ "updatedAt": "2026-10-18T04:10:00.000Z",
  "history": [
   {
    "at": "2026-10-17T16:12:45.936Z",
@@ -232,6 +237,11 @@
    "at": "2026-10-17T16:21:27.179Z",
    "by": "cli",
    "text": "Reprocessed: 0 move(s), 0 step(s) flagged for rework"
+  },
+  {
+   "at": "2026-10-18T04:10:00.000Z",
+   "by": "claude.ai",
+   "text": "Pending (waits on Fable): asset designer, asset browser, plugin manager + settings tabs, asset templates, pending build list manager"
   }
  ]
 }

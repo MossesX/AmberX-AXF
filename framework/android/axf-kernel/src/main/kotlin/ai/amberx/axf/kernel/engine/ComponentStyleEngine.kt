@@ -1,6 +1,14 @@
 package ai.amberx.axf.kernel.engine
 
+import ai.amberx.axf.kernel.asset.AppMenu
 import ai.amberx.axf.kernel.asset.Button
+import ai.amberx.axf.kernel.asset.ChromeDensity
+import ai.amberx.axf.kernel.asset.ChromeSurface
+import ai.amberx.axf.kernel.asset.NavIndicator
+import ai.amberx.axf.kernel.asset.NavMenu
+import ai.amberx.axf.kernel.asset.NavStyle
+import ai.amberx.axf.kernel.asset.Toolbar
+import ai.amberx.axf.kernel.asset.ToolbarVariant
 import ai.amberx.axf.kernel.asset.Container
 import ai.amberx.axf.kernel.asset.ContextMenu
 import ai.amberx.axf.kernel.asset.Dialog
@@ -17,8 +25,14 @@ public data class ContainerStyle(val padding: Double, val elevation: Int, val va
 public data class DialogStyle(val width: Double, val variant: ai.amberx.axf.kernel.asset.DialogVariant, val backdrop: ai.amberx.axf.kernel.asset.Backdrop, val animation: ai.amberx.axf.kernel.asset.DialogAnim, val header: ai.amberx.axf.kernel.asset.HeaderStyle, val closeOnBackdrop: Boolean)
 public data class PopupStyle(val position: ai.amberx.axf.kernel.asset.PopupPosition, val variant: ai.amberx.axf.kernel.asset.PopupVariant, val durationMs: Int, val showIcon: Boolean, val maxVisible: Int)
 public data class ContextMenuStyle(val variant: ai.amberx.axf.kernel.asset.ContextVariant, val showIcons: Boolean, val showShortcuts: Boolean, val rowHeight: Double, val minWidth: Double)
+public data class ToolbarStyle(val variant: ToolbarVariant, val density: ChromeDensity, val surface: ChromeSurface, val divider: Boolean, val paddingY: Double, val buttonHeight: Double)
+public data class NavMenuStyle(val style: NavStyle, val density: ChromeDensity, val indicator: NavIndicator, val showIcons: Boolean, val itemPaddingY: Double)
+public data class AppMenuStyle(val density: ChromeDensity, val surface: ChromeSurface, val height: Double)
 
-public data class ComponentStyles(val button: ButtonStyle, val slider: SliderStyle, val container: ContainerStyle, val dialog: DialogStyle, val popup: PopupStyle, val contextMenu: ContextMenuStyle) {
+public data class ComponentStyles(
+    val button: ButtonStyle, val slider: SliderStyle, val container: ContainerStyle, val dialog: DialogStyle, val popup: PopupStyle, val contextMenu: ContextMenuStyle,
+    val toolbar: ToolbarStyle, val navMenu: NavMenuStyle, val appMenu: AppMenuStyle,
+) {
     /** Root data-attributes identical to the web port (data-fx-btn, data-fx-card, …) for WebView hosts and devtools. */
     public val attrs: Map<String, String> get() = mapOf(
         "data-fx-btn" to button.fill.name.lowercase(), "data-fx-slider" to slider.fill.name.lowercase(),
@@ -27,6 +41,11 @@ public data class ComponentStyles(val button: ButtonStyle, val slider: SliderSty
         "data-fx-dialog-anim" to dialog.animation.name.lowercase(), "data-fx-dialog-header" to dialog.header.name.lowercase().replace('_', '-'),
         "data-fx-toast-pos" to popup.position.name.lowercase().replace('_', '-'), "data-fx-toast" to popup.variant.name.lowercase(),
         "data-fx-ctx" to contextMenu.variant.name.lowercase(),
+        "data-fx-toolbar" to toolbar.variant.name.lowercase().replace('_', '-'), "data-fx-toolbar-surface" to toolbar.surface.name.lowercase(),
+        "data-fx-toolbar-divider" to if (toolbar.divider) "on" else "off",
+        "data-fx-nav" to navMenu.style.name.lowercase(), "data-fx-nav-indicator" to navMenu.indicator.name.lowercase(),
+        "data-fx-nav-icons" to if (navMenu.showIcons) "on" else "off",
+        "data-fx-menubar" to appMenu.surface.name.lowercase(),
     )
 }
 
@@ -52,6 +71,18 @@ public object ComponentStyleEngine {
     public fun contextMenu(c: ContextMenu, st: StyleTokens): ContextMenuStyle = ContextMenuStyle(c.variant, c.showIcons, c.showShortcuts,
         when (c.variant) { ai.amberx.axf.kernel.asset.ContextVariant.ROOMY -> st.rowHeight + 10; else -> st.rowHeight }, if (c.variant == ai.amberx.axf.kernel.asset.ContextVariant.ROOMY) 240.0 else 200.0)
 
-    public fun compile(b: Button, s: Slider, c: Container, d: Dialog, p: Popup, m: ContextMenu, st: StyleTokens): ComponentStyles =
-        ComponentStyles(button(b, st), slider(s, st), container(c, st), dialog(d), popup(p), contextMenu(m, st))
+    // Chrome: same ladders as components.ts (defaults reproduce the pre-0.2.1 look).
+    private val TOOLBAR_PY = mapOf(ChromeDensity.COMPACT to 0.35, ChromeDensity.REGULAR to 0.6, ChromeDensity.ROOMY to 0.9)
+    private val TOOLBTN_H = mapOf(ChromeDensity.COMPACT to -8.0, ChromeDensity.REGULAR to -4.0, ChromeDensity.ROOMY to 0.0)
+    private val NAV_PY = mapOf(ChromeDensity.COMPACT to 4.0, ChromeDensity.REGULAR to 7.0, ChromeDensity.ROOMY to 10.0)
+    private val MENUBAR_H = mapOf(ChromeDensity.COMPACT to 0.0, ChromeDensity.REGULAR to 4.0, ChromeDensity.ROOMY to 12.0)
+
+    public fun toolbar(t: Toolbar, st: StyleTokens): ToolbarStyle =
+        ToolbarStyle(t.variant, t.density, t.surface, t.divider, st.space * TOOLBAR_PY.getValue(t.density), st.rowHeight + TOOLBTN_H.getValue(t.density))
+    public fun navMenu(n: NavMenu): NavMenuStyle = NavMenuStyle(n.style, n.density, n.indicator, n.showIcons, NAV_PY.getValue(n.density))
+    public fun appMenu(a: AppMenu, st: StyleTokens): AppMenuStyle = AppMenuStyle(a.density, a.surface, st.rowHeight + MENUBAR_H.getValue(a.density))
+
+    public fun compile(b: Button, s: Slider, c: Container, d: Dialog, p: Popup, m: ContextMenu, st: StyleTokens,
+                       toolbar: Toolbar, nav: NavMenu, appMenu: AppMenu): ComponentStyles =
+        ComponentStyles(button(b, st), slider(s, st), container(c, st), dialog(d), popup(p), contextMenu(m, st), toolbar(toolbar, st), navMenu(nav), appMenu(appMenu, st))
 }

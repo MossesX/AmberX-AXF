@@ -242,7 +242,8 @@ public class AxfRuntime(
         val color = ColorTheme.fromJson(d(AssetTypes.COLOR_THEME)); val style = StyleTheme.fromJson(d(AssetTypes.STYLE_THEME))
         val theme = ThemeEngine.compile(color, style)
         val layout = Layout.fromJson(d(AssetTypes.LAYOUT))
-        val styles = ComponentStyleEngine.compile(Button.fromJson(d(AssetTypes.BUTTON)), Slider.fromJson(d(AssetTypes.SLIDER)), Container.fromJson(d(AssetTypes.CONTAINER)), Dialog.fromJson(d(AssetTypes.DIALOG)), Popup.fromJson(d(AssetTypes.POPUP)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), theme.style)
+        val styles = ComponentStyleEngine.compile(Button.fromJson(d(AssetTypes.BUTTON)), Slider.fromJson(d(AssetTypes.SLIDER)), Container.fromJson(d(AssetTypes.CONTAINER)), Dialog.fromJson(d(AssetTypes.DIALOG)), Popup.fromJson(d(AssetTypes.POPUP)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), theme.style,
+            Toolbar.fromJson(d(AssetTypes.TOOLBAR)), NavMenu.fromJson(d(AssetTypes.NAV_MENU)), AppMenu.fromJson(d(AssetTypes.APP_MENU)))
         return Compiled(theme, layout, WindowClass.entries.associateWith { LayoutEngine.compile(layout, it) }, styles,
             AppMenu.fromJson(d(AssetTypes.APP_MENU)), Toolbar.fromJson(d(AssetTypes.TOOLBAR)), NavMenu.fromJson(d(AssetTypes.NAV_MENU)), ContextMenu.fromJson(d(AssetTypes.CONTEXT_MENU)), UacPolicy.fromJson(d(AssetTypes.UAC_POLICY)),
             Popup.fromJson(d(AssetTypes.POPUP)), Dialog.fromJson(d(AssetTypes.DIALOG)), s.rev)
