@@ -1,15 +1,14 @@
 # Brett's working rules and decisions (active in every session)
 
-Loaded by `CLAUDE.md` (and, on the VPS, by `~/.claude/CLAUDE.md` after `bash deploy/claude-pick.sh --install`).
-Sources: the claude.ai "AmberX Framework" Project memory and docs, copied into `memory/` (see `memory/README.md`).
-When something here changes in conversation, update this file and the matching file under `memory/`, then commit.
+**The live copy is on axHub at `memory/amberx-axf/`** (the hub is the source of truth for every Claude session on every device). This `memory/` folder is a read-only mirror: `axhub-memory load` (the SessionStart hook) refreshes it at session start and falls back to it when the hub is down. Loaded here by `CLAUDE.md`.
+When something here changes in conversation, save it on the hub (`axhub.memory_write` with repo `amberx-axf`, or `printf '%s' "..." | axhub-memory write <path>`), then commit the refreshed mirror.
 
 ## How to work with Brett
 - He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS. Lead with the result, short paragraphs, phone-readable.
 - **Model choice before every build:** recommend Fable / Opus / Sonnet and why, then ask him to pick and wait. Only the top three models. Fable where the strongest reasoning is needed (kernel internals, cross-port contracts, heavy refactors), Opus for everything else (and anything security-adjacent: servers, shells, auth, deploy), Sonnet only when you're sure Opus isn't needed. You can't switch models yourself: if his pick differs, ask him to run `/model <name>`.
 - **Pending builds:** before any build, check the pending list (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). Work he says should wait on Fable goes there (and on the claude.ai Pending Builds page, artifact `HTwGSP7HcEt5yBd3MNz2Ye`, db collection `builds`). "Add to the pending build list" means park it, don't build it.
 - **Live data is read from the server hub:** pending list, plan, build queue, catalog status, libraries index and tracker live in `/opt/axhub/persist/amberx-axf/` on the VPS (`framework/cli/persist.mjs`). Repo copies are seeds/snapshots; `persist.mjs pull` then commit to snapshot.
-- **The repo is the shared memory.** Phone, VPS, desktop and claude.ai sessions don't share chat history. Commit and push often; update `CLAUDE.md` Status and this file when something meaningful changes.
+- **Shared memory = axHub `memory/<repo>/` + the repo.** Phone, VPS, desktop and claude.ai sessions don't share chat history. Save new rules and decisions to the hub, commit and push code often, keep `CLAUDE.md` Status current.
 - **No secrets in the repo** (tokens, passwords, keys, credentialed IPs). Environment variables or GitHub Actions secrets only.
 - GitHub account `MossesX`; a new repo must exist on GitHub before a session can push to it. AmberX-AXF is private. Don't create the separate console repo until he says so.
 - VPS: Hostinger, runs **Coolify**; its Traefik proxy owns 80/443, so web apps go behind it as Coolify apps (no separate nginx). Domain `amberxai.com`. Claude Code and mosh are installed there.

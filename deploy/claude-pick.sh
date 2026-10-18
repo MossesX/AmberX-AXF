@@ -18,6 +18,10 @@ if [[ "${1:-}" == "--install" ]]; then
   if [[ -f "$rules" ]] && ! grep -qF "@$rules" "$HOME/.claude/CLAUDE.md" 2>/dev/null; then
     printf "\n<!-- AXF rules: Brett's working rules, decisions and memory (from the AmberX-AXF clone) -->\n@%s\n" "$rules" >> "$HOME/.claude/CLAUDE.md"
   fi
+  # Shared memory on axHub (memory/<repo>/): install its SessionStart hook when the axHub clone is here.
+  for hub in "$HOME/axHub" "$HOME/axhub" "$(cd "$HERE/../.." && pwd)/axHub"; do
+    if [[ -f "$hub/clients/claude-code/axhub-memory.mjs" ]]; then node "$hub/clients/claude-code/axhub-memory.mjs" install; break; fi
+  done
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
   echo "Bypass the menu with: command claude …  or  claude --model opus"
   exit 0
