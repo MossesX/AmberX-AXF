@@ -271,6 +271,8 @@ def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
     key = resolve_key(profile)
     if not key:
         raise ProviderError("no API key: add one in the profile or set its environment variable", 400)
+    if key.startswith("sk-ant-oat"):
+        raise ProviderError("this profile holds a Claude Code subscription token (sk-ant-oat…), which the Anthropic API rejects. Move it to the “Claude Code (subscription)” provider and give this one an API key (sk-ant-api…) from console.anthropic.com", 400)
     body: dict[str, Any] = {"model": model, "max_tokens": int(params.get("max_tokens") or 8192), "messages": _to_anthropic(messages), "stream": True}
     if system:
         body["system"] = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]

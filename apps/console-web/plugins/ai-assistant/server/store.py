@@ -174,7 +174,12 @@ def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
             if old.get("key"):
                 rec["key"] = old["key"]
         elif str(key).strip():
-            rec["key"] = re.sub(r"\s+", "", str(key))
+            k = re.sub(r"\s+", "", str(key))
+            if cat["protocol"] == "anthropic" and k.startswith("sk-ant-oat"):
+                raise ValueError("that's a Claude Code subscription token (sk-ant-oat…), not an API key: put it in the “Claude Code (subscription)” provider. Anthropic API keys start with sk-ant-api…")
+            if cat["protocol"] == "claude-cli" and k.startswith("sk-ant-api"):
+                raise ValueError("that's an Anthropic API key (sk-ant-api…): put it in the “Anthropic (Claude)” provider. The subscription provider needs the token from `claude setup-token` (sk-ant-oat…)")
+            rec["key"] = k
         profiles[pid] = rec
         if not cfg.get("defaultProfile"):
             cfg["defaultProfile"] = pid

@@ -11,6 +11,10 @@ FROM python:3.12-slim
 RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
 WORKDIR /axf
 COPY --from=web /axf /axf
+# Claude Code CLI inside the container: the AI assistant's "Claude Code (subscription)" provider runs it here
+# (a CLI installed on the VPS host is invisible to the container). Auth comes from the profile's token per call.
+RUN npm install -g @anthropic-ai/claude-code && claude --version
+ENV DISABLE_AUTOUPDATER=1 CLAUDE_BIN=claude
 RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
  && cp -r apps/console-web/dist /opt/axf-console-dist
 # install-console.sh mounts the host clone over /axf, hiding apps/console-web/dist; serve the copy outside it.

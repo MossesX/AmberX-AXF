@@ -38,7 +38,11 @@ def _agents():
 
 def _err(e: Exception) -> HTTPException:
     if isinstance(e, providers.ProviderError):
-        return HTTPException(e.status if e.status in (400, 401) else 502, str(e))
+        # Never 401: the browser reads 401 as "console token missing". A provider rejecting its key is a 400.
+        msg = str(e)
+        if e.status == 401:
+            msg = f"the provider rejected the key — {msg}. Check the key in Settings → AI assistant → Providers → Edit."
+        return HTTPException(400 if e.status in (400, 401) else 502, msg)
     if isinstance(e, KeyError):
         return HTTPException(404, str(e).strip("'\""))
     if isinstance(e, ValueError):
