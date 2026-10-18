@@ -19,6 +19,7 @@ import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLi
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
 import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
+import { dataPath } from './persist.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
 const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -44,9 +45,9 @@ function run() {
     case 'boilerplates': return readJson(join(FRAMEWORK_DIR, 'boilerplates/index.json'));
     case 'boilerplate-items': return { items: listBoilerplates().map((i) => loadBoilerplate(i.id)) };
     case 'catalog': return readJson(join(FRAMEWORK_DIR, 'catalog/catalog.json'));
-    case 'tracker': return existsSync(join(ROOT, 'tracker.json')) ? readJson(join(ROOT, 'tracker.json')) : { items: [], summary: {} };
+    case 'tracker': return existsSync(dataPath('tracker.json')) ? readJson(dataPath('tracker.json')) : { items: [], summary: {} };
     case 'status': { // { id, status, wave?, module?, notes? } → status.json + regenerate tracker.json + libraries.json
-      const f = join(FRAMEWORK_DIR, 'catalog/status.json');
+      const f = dataPath('framework/catalog/status.json');
       const s = existsSync(f) ? readJson(f) : {};
       s[b.id] = { ...(s[b.id] ?? {}), status: b.status, ...(b.wave ? { wave: b.wave } : {}), ...(b.module ? { module: b.module } : {}), ...(b.notes != null ? { notes: b.notes } : {}) };
       writeFileSync(f, JSON.stringify(s, null, 2) + '\n');

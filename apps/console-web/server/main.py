@@ -249,10 +249,24 @@ async def build_step(request: Request) -> Any:
     return ok_or_500(engine("build-step", "build", **await _body(request)))
 
 
+def _persist_root() -> Path | None:
+    """The hub folder holding this repo's live data (mirrors framework/cli/persist.mjs), or None = the repo."""
+    env = os.environ.get("AXF_PERSIST_DIR")
+    base = ("" if env == "off" else env) if env is not None else ("/opt/axhub/persist" if Path("/opt/axhub/persist").is_dir() else "")
+    return Path(base) / os.environ.get("AXF_PERSIST_REPO", "amberx-axf") if base else None
+
+
+def _plan_media_dir() -> Path:
+    root = _persist_root()
+    hub = root / "framework" / "plan" / "media" if root else None
+    return (hub if hub and hub.is_dir() else ROOT / "framework" / "plan" / "media").resolve()
+
+
 @app.get("/plan-media/{name}")
 def plan_media_file(name: str) -> FileResponse:
-    f = (ROOT / "framework" / "plan" / "media" / name).resolve()
-    if not str(f).startswith(str(ROOT / "framework" / "plan" / "media")) or not f.is_file():
+    media = _plan_media_dir()
+    f = (media / name).resolve()
+    if not str(f).startswith(str(media)) or not f.is_file():
         raise HTTPException(404, "not found")
     return FileResponse(f)
 

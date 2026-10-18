@@ -8,9 +8,10 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
+import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const PENDING = join(FRAMEWORK_DIR, 'plan', 'pending.json');
+export const PENDING = dataPath('framework/plan/pending.json');
 
 export function loadPending() { return core.normalizeState(existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
 export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }

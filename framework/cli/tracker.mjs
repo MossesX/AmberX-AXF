@@ -17,11 +17,12 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeLibrariesIndex } from './libraries.mjs';
 import { buildPlan } from './plan.mjs';
+import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(FRAMEWORK_DIR, '..');
 const catalog = JSON.parse(readFileSync(join(FRAMEWORK_DIR, 'catalog/catalog.json'), 'utf8'));
-const statusFile = join(FRAMEWORK_DIR, 'catalog/status.json');
+const statusFile = dataPath('framework/catalog/status.json');
 const status = existsSync(statusFile) ? JSON.parse(readFileSync(statusFile, 'utf8')) : {};
 const check = process.argv.includes('--check');
 
@@ -51,7 +52,7 @@ for (const tab of catalog.tabs) {
   summary[tab.id].coverage = rows.length ? Math.round((rows.filter((r) => r.status === 'built').length / rows.length) * 100) : 0;
 }
 const tracker = { $axf: 'tracker@1', frameworkVersion: catalog.frameworkVersion, generatedAt: new Date().toISOString(), summary, items };
-writeFileSync(join(ROOT, 'tracker.json'), JSON.stringify(tracker, null, 2) + '\n');
+writeFileSync(dataPath('tracker.json'), JSON.stringify(tracker, null, 2) + '\n');
 writeLibrariesIndex();
 buildPlan();
 

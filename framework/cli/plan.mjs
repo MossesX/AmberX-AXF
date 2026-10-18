@@ -16,10 +16,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLAN_DIR = join(FRAMEWORK_DIR, 'plan');
-const PLAN = join(PLAN_DIR, 'plan.json');
+const PLAN = dataPath('framework/plan/plan.json');
 const readJson = (f, d) => (existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d);
 const today = () => new Date().toISOString().slice(0, 10);
 export const STATUSES = ['built', 'partial', 'in-progress', 'placeholder', 'planned', 'blocked', 'dropped'];
@@ -56,7 +57,7 @@ const CATALOG_STATUSES = new Set(['built', 'partial', 'placeholder', 'planned'])
 
 function fromCatalog() {
   const catalog = readJson(join(FRAMEWORK_DIR, 'catalog/catalog.json'), { tabs: [] });
-  const status = readJson(join(FRAMEWORK_DIR, 'catalog/status.json'), {});
+  const status = readJson(dataPath('framework/catalog/status.json'), {});
   const out = [];
   for (const tab of catalog.tabs) for (const g of tab.groups) for (const it of g.items) {
     const s = status[it.id] ?? {};
@@ -123,7 +124,7 @@ export function upsertFeature(feature, note) {
   if (i >= 0) plan.features[i] = f; else plan.features.push(f);
   writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
   if (f.source === 'catalog' && old && old.status !== f.status && CATALOG_STATUSES.has(f.status)) {
-    const sf = join(FRAMEWORK_DIR, 'catalog/status.json');
+    const sf = dataPath('framework/catalog/status.json');
     const s = readJson(sf, {});
     s[f.id] = { ...(s[f.id] ?? {}), status: f.status };
     writeFileSync(sf, JSON.stringify(s, null, 2) + '\n');
@@ -154,7 +155,7 @@ export function setStatuses(changes) {
   }
   writeFileSync(PLAN, JSON.stringify(plan, null, 1) + '\n');
   if (Object.keys(catalog).length) {
-    const sf = join(FRAMEWORK_DIR, 'catalog/status.json');
+    const sf = dataPath('framework/catalog/status.json');
     const s = readJson(sf, {});
     for (const [id, st] of Object.entries(catalog)) s[id] = { ...(s[id] ?? {}), status: st };
     writeFileSync(sf, JSON.stringify(s, null, 2) + '\n');
@@ -179,9 +180,10 @@ export function saveMedia(featureId, dataUrl) {
   if (!m) throw new Error('expected a base64 image data URL (png, jpg, webp or gif)');
   const buf = Buffer.from(m[2], 'base64');
   if (buf.length > 8 * 1024 * 1024) throw new Error('image larger than 8 MB');
-  mkdirSync(join(PLAN_DIR, 'media'), { recursive: true });
+  const MEDIA = dataPath('framework/plan/media/');
+  mkdirSync(MEDIA, { recursive: true });
   const name = `${String(featureId).replace(/[^a-z0-9.-]+/gi, '-')}-${Date.now().toString(36)}.${m[1] === 'jpeg' ? 'jpg' : m[1]}`;
-  writeFileSync(join(PLAN_DIR, 'media', name), buf);
+  writeFileSync(join(MEDIA, name), buf);
   return `media/${name}`;
 }
 

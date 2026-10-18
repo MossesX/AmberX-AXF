@@ -22,6 +22,7 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { FRAMEWORK_DIR, init, listBoilerplates, listModules, listTemplates, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
+import { dataPath } from './persist.mjs';
 
 export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ?? '', apps = 'apps', log = console.log } = {}) {
   const ROOT = resolve(FRAMEWORK_DIR, '..');
@@ -44,7 +45,7 @@ export function startBuildServer({ port = 7080, token = process.env.AXF_TOKEN ??
           case '/libraries': return json(res, { libraries: listLibraries() });
           case '/ported-kits': return json(res, { kits: listPortedKits() });
           case '/catalog': return json(res, JSON.parse(readFileSync(join(FRAMEWORK_DIR, 'catalog/catalog.json'), 'utf8')));
-          case '/tracker': return existsSync(join(ROOT, 'tracker.json')) ? json(res, JSON.parse(readFileSync(join(ROOT, 'tracker.json'), 'utf8'))) : json(res, { error: 'no tracker' }, 404);
+          case '/tracker': return existsSync(dataPath('tracker.json')) ? json(res, JSON.parse(readFileSync(dataPath('tracker.json'), 'utf8'))) : json(res, { error: 'no tracker' }, 404);
         }
       }
       if (req.method === 'POST') {

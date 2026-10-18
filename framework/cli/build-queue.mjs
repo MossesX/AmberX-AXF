@@ -14,9 +14,10 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadPlan, setStatuses } from './plan.mjs';
 import * as core from '../plan/build-queue-core.mjs';
+import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const QUEUE = join(FRAMEWORK_DIR, 'plan', 'build-queue.json');
+const QUEUE = dataPath('framework/plan/build-queue.json');
 
 export const loadQueueState = () => (existsSync(QUEUE) ? JSON.parse(readFileSync(QUEUE, 'utf8')) : null);
 const saveQueueState = (q) => writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n');

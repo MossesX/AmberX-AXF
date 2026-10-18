@@ -18,6 +18,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ANDROID_DIR = join(FRAMEWORK_DIR, 'android');
@@ -43,7 +44,7 @@ export function listLibraries() {
 
 /** framework/catalog/libraries.json — what the console bundles (copyConsoleData) to list installable libraries offline. */
 export function writeLibrariesIndex() {
-  const out = join(FRAMEWORK_DIR, 'catalog/libraries.json');
+  const out = dataPath('framework/catalog/libraries.json');
   writeJson(out, { $axf: 'libraries@1', generatedAt: new Date().toISOString(), items: listLibraries() });
   return out;
 }
