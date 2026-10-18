@@ -109,7 +109,7 @@ def firecrawl(path: str, body: dict[str, Any] | None = None, method: str = "POST
     s = store.load_settings()["firecrawl"]
     key = store.secret("firecrawl")
     if not key:
-        raise ValueError("Firecrawl isn't configured: set FIRECRAWL_API_KEY or add a key in Settings → Agent manager → Training")
+        raise ValueError("Firecrawl isn't configured: set FIRECRAWL_API_KEY or add a key in Settings → Plugins → Agent manager → Training")
     base = (s.get("baseUrl") or "https://api.firecrawl.dev").rstrip("/")
     ver = s.get("version") or "v2"
     allow_private = not base.startswith("https://api.firecrawl.dev")  # a self-hosted Firecrawl may live on the VPS

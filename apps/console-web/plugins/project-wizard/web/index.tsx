@@ -103,7 +103,7 @@ function Readiness({ st }: { st: Status }) {
   const issues: ReactNode[] = [];
   if (!st.github.token) issues.push(<>No GitHub token on the console server, so GitHub sources and homes are off. Add one in the Systems check.</>);
   else if (st.github.error) issues.push(<>GitHub token problem: {st.github.error}</>);
-  if (st.vps.mode === 'off') issues.push(<>VPS git is off: {st.vps.why}. See Settings → Project wizard.</>);
+  if (st.vps.mode === 'off') issues.push(<>VPS git is off: {st.vps.why}. See Settings → Plugins → Project wizard.</>);
   if (!issues.length) return null;
   return (
     <div className={`${P}__notice`} role="status">
@@ -533,7 +533,7 @@ function Projects({ st, reload }: { st: Status; reload: () => void }) {
   );
 }
 
-/* ================================================================== Settings → Project wizard */
+/* ================================================================== Settings → Plugins → Project wizard */
 
 function SettingsPanel() {
   const { st, err, reload } = useStatus();

@@ -10,7 +10,7 @@ import './ai-assistant.css';
  * AI assistant plugin (web part). Ported from xGallery's assistant and extended — see server/__init__.py.
  *  - view "ai-assistant": full-page chat (nav → Plugins → AI assistant)
  *  - dialog "ai-assistant.chat": the chat dialog, from anywhere (action ai-assistant.open, payload = optional prompt)
- *  - Settings → AI assistant: setup wizard, providers, behaviour, prompts, usage, install & uninstall
+ *  - Settings → Plugins → AI assistant: setup wizard, providers, behaviour, prompts, usage, install & uninstall
  * Talks to the agent manager only through the server's axf.agents@1 lookup, so either plugin can be removed cleanly.
  */
 

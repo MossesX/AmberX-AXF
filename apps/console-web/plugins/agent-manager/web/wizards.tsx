@@ -270,13 +270,13 @@ function TrainingWizard({ done, agentId }: { done: (msg: string) => void; agentI
       {step === 0 && <Field label="Which agent learns?"><Pick items={cache.agents} value={j.agentId ? [j.agentId] : []} onChange={(v) => setJ({ ...j, agentId: v[v.length - 1] })} empty="Create an agent first." /></Field>}
       {step === 1 && (
         <div className="fx-stack">
-          {!status?.firecrawl && <p className="fx-small fx-muted">Tip: Firecrawl turns whole doc sites into clean Markdown. Add FIRECRAWL_API_KEY (or a key in Settings → Agent manager) to unlock the Firecrawl sources; URL, repo, text and MCP sources work without it.</p>}
+          {!status?.firecrawl && <p className="fx-small fx-muted">Tip: Firecrawl turns whole doc sites into clean Markdown. Add FIRECRAWL_API_KEY (or a key in Settings → Plugins → Agent manager) to unlock the Firecrawl sources; URL, repo, text and MCP sources work without it.</p>}
           <TrainingForm v={j} set={setJ} cache={cache} status={status} lockAgent />
         </div>
       )}
       {step === 2 && (
         <div className="fx-stack">
-          <p className="fx-small fx-muted">Scheduled jobs run in the background while the console runs (Settings → Agent manager → scheduler).</p>
+          <p className="fx-small fx-muted">Scheduled jobs run in the background while the console runs (Settings → Plugins → Agent manager → scheduler).</p>
           <Field label="Schedule"><select className="fx-input" value={j.schedule ?? 'manual'} onChange={(e) => setJ({ ...j, schedule: e.target.value })}>{['manual', 'hourly', 'daily', 'weekly'].map((s) => <option key={s}>{s}</option>)}</select></Field>
           <label className="axp-agent-manager__toggle"><input type="checkbox" checked={runNow} onChange={(e) => setRunNow(e.target.checked)} /> Run it now</label>
         </div>

@@ -1,4 +1,4 @@
-/* Settings → Agent manager panels: wizards, model, training & Firecrawl, memory defaults, integration. */
+/* Settings → Plugins → Agent manager panels: wizards, model, training & Firecrawl, memory defaults, integration. */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { Field, Num, Text } from './forms';

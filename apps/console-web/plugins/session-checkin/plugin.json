@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every new Claude Code session opens with a short group of questions (location first, then repo, container, project, memory files read-only, model, effort with a fixed baseline cost) and is logged to a browsable session archive. Installed from Settings → Session check-in with an interactive wizard.",
+  "description": "Every new Claude Code session opens with a short group of questions (location first, then repo, container, project, memory files read-only, model, effort with a fixed baseline cost) and is logged to a browsable session archive. Installed from Settings → Plugins → Session check-in with an interactive wizard.",
   "targets": ["axf-console"],
   "provides": ["view:sessions", "settings-tab:session-checkin"],
   "scopes": ["ROUTES", "FILES"],

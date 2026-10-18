@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "AI assistant ported from xGallery and extended: Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio and any OpenAI-compatible server. Setup wizard in Settings → AI assistant; settings dialog inside the chat. Chats as an agent from an installed agent manager.",
+  "description": "AI assistant ported from xGallery and extended: Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio and any OpenAI-compatible server. Setup wizard in Settings → Plugins → AI assistant; settings dialog inside the chat. Chats as an agent from an installed agent manager.",
   "targets": ["axf-console", "axf-web-app"],
   "provides": ["view:ai-assistant", "dialog:ai-assistant.chat", "settings-tab:ai-assistant", "action:ai-assistant.open", "service:axf.llm@1"],
   "optional": ["service:axf.agents@1"],

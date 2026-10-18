@@ -272,21 +272,26 @@ function AboutPanel() {
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  const tabs = rt.settings.listTabs();
-  const initial = (() => {
-    const last = rt.settings.get(TAB_KEY);
-    return typeof last === 'string' && tabs.some((t) => t.id === last) ? last : tabs[0]?.id ?? 'appearance';
-  })();
-  const [tab, setTab] = useState(initial);
+  const tabs = rt.settings.topTabs();
+  // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
+  const resolve = (id: unknown): [string, string] => {
+    const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
+    if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
+    if (t) return [t.id, ''];
+    return [tabs[0]?.id ?? 'appearance', ''];
+  };
+  const [[tab, sub], setSel] = useState<[string, string]>(() => resolve(rt.settings.get(TAB_KEY)));
   useEffect(() => {
-    const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) setTab(id); };
+    const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) setSel(resolve(id)); };
     globalThis.addEventListener?.('axf:settings-tab', onOpen);
     return () => globalThis.removeEventListener?.('axf:settings-tab', onOpen);
   }, []);
-  const choose = (id: string) => { setTab(id); rt.settings.set(TAB_KEY, id); };
+  const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
-  const groups = current ? rt.settings.groupsIn(current.id) : [];
-  const panels = current ? rt.settings.panelsIn(current.id) : [];
+  const subs = current ? rt.settings.subTabs(current.id) : [];
+  const shown = (sub && subs.find((t) => t.id === sub)) || current;
+  const groups = shown ? rt.settings.groupsIn(shown.id) : [];
+  const panels = shown ? rt.settings.panelsIn(shown.id) : [];
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
@@ -298,14 +303,26 @@ export function SettingsView() {
           </button>
         ))}
       </nav>
-      {current?.description && <p className="fx-muted" style={{ margin: 0 }}>{current.description}</p>}
+      {subs.length > 0 && current && (
+        <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
+          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`axf-settings__subtab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+            <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
+          </button>
+          {subs.map((t) => (
+            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`axf-settings__subtab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
+              <Icon name={t.icon} size={13} /> {t.label}
+            </button>
+          ))}
+        </nav>
+      )}
+      {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
       {/* panels and groups interleaved by `order` (panels first on a tie) */}
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? current?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? shown?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
         ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
         .sort((a, b) => a.order - b.order || a.tie - b.tie)
         .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
-        <p className="fx-muted">{current?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+        <p className="fx-muted">{shown?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
       )}
     </div>
   );
@@ -330,6 +347,10 @@ const CSS = `
 .axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
 .axf-settings__tab:hover{color:var(--fx-text)}
 .axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
+.axf-settings__subtabs{display:flex;gap:calc(var(--fx-space)*.5);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);border-bottom:var(--fx-border-w) solid var(--fx-border);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.axf-settings__subtab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);white-space:nowrap;padding:calc(var(--fx-space)*.6) var(--fx-space);border:0;border-bottom:calc(var(--fx-border-w)*2) solid transparent;background:transparent;color:var(--fx-muted);font:inherit;cursor:pointer}
+.axf-settings__subtab:hover{color:var(--fx-text)}
+.axf-settings__subtab.is-active{color:var(--fx-text);border-bottom-color:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
 .axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}

@@ -47,13 +47,17 @@ export interface SettingsGroup {
   settings: SettingSpec[];
 }
 
-/** A settings tab. The settings library declares the standard ones; anyone may add more. */
+/**
+ * A settings tab. The settings library declares the standard ones; anyone may add more.
+ * `parent` makes it a sub-tab of another tab (e.g. every plugin's tab lives under `plugins`); sub-tabs can nest one level.
+ */
 export interface SettingsTab {
   id: string;
   label: string;
   icon: string;
   order: number;
   description?: string;
+  parent?: string;
 }
 
 /** Custom UI inside a tab (a framework-agnostic render function; the React layer calls it). */
@@ -100,7 +104,13 @@ export class SettingsRegistry {
     if (changed) this.changed();
   }
 
+  /** Every tab, sub-tabs included (search indexes them all). */
   listTabs(): SettingsTab[] { return [...this.tabs.values()].sort((a, b) => a.order - b.order); }
+  /** Top-level tabs: no parent, or a parent that isn't registered (so a sub-tab never disappears). */
+  topTabs(): SettingsTab[] { return this.listTabs().filter((t) => !t.parent || !this.tabs.has(t.parent)); }
+  /** Sub-tabs of a tab, in order. */
+  subTabs(parent: string): SettingsTab[] { return this.listTabs().filter((t) => t.parent === parent); }
+  getTab(id: string): SettingsTab | undefined { return this.tabs.get(id); }
   groupsIn(tab: string): SettingsGroup[] {
     return [...this.groups.values()].filter((g) => (g.tab ?? 'general') === tab).sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Session check-in installer. Interactive in a terminal; the console's Settings → Session check-in wizard drives
+ * Session check-in installer. Interactive in a terminal; the console's Settings → Plugins → Session check-in wizard drives
  * the same steps through --json.
  *
  *   node install.mjs                         interactive (asks where, which questions, behaviour, expected values)

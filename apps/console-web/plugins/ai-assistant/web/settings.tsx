@@ -1,5 +1,5 @@
 /*
- * AI assistant settings: the in-chat settings dialog, and the panels of Settings → AI assistant (setup wizard,
+ * AI assistant settings: the in-chat settings dialog, and the panels of Settings → Plugins → AI assistant (setup wizard,
  * providers, behaviour, prompts, usage). The plugin never ships its own settings screen — these are settings-tab panels.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
@@ -55,7 +55,7 @@ export function ChatSettingsDialog({ settings, onChange, onClose, onOpenFull }: 
     <div className="axp-ai-assistant__sheet" role="dialog" aria-modal="true" aria-label="Chat settings" onKeyDown={(e) => e.key === 'Escape' && onClose()}>
       <div className="axp-ai-assistant__sheet-panel fx-stack">
         <header className="axp-ai-assistant__sheet-head"><Icon name="sliders" size={16} /><h3>Chat settings</h3><button type="button" className="fx-iconbtn" aria-label="Close" onClick={onClose}><Icon name="x" size={14} /></button></header>
-        <p className="fx-small fx-muted">These apply to this conversation. Defaults live in Settings → AI assistant.</p>
+        <p className="fx-small fx-muted">These apply to this conversation. Defaults live in Settings → Plugins → AI assistant.</p>
         {agents && (
           <Field label="Agent" hint="Chat as an agent from the agent manager: its persona, skills, tools and memory.">
             <select className="fx-input" value={settings.agentId ?? ''} onChange={(e) => void onChange({ agentId: e.target.value })}>

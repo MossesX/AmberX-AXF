@@ -16,7 +16,7 @@ An **agent** = persona + lingo packs + skills + tools + delegates + model + **me
 
 ## Wizards (dialog `agent-manager.wizard`, `{ kind }`)
 `builder` (all-in-one: create or reuse persona, lingo, skills, tools; memory; training — one `/compose` call, rolled back on error) ·
-`agent` · `skill` · `tool` (then test it) · `training`. Launch from the view header, Settings → Agent manager → Wizards, or the action `agent-manager.wizard:<kind>`.
+`agent` · `skill` · `tool` (then test it) · `training`. Launch from the view header, Settings → Plugins → Agent manager → Wizards, or the action `agent-manager.wizard:<kind>`.
 
 ## Add-ons (`agent-addon@1`)
 ```json
@@ -30,7 +30,7 @@ URL; export any agent as a bundle. Uninstalling an add-on removes exactly what i
 
 ## Integration (capability services, never folder names)
 - Provides **`axf.agents@1`**: `list_agents()`, `get_agent(id)`, `memory_context(id, query)`, `run_tool(id, name, args, ctx)`, `record_turn(id, user, reply, meta)`.
-- Consumes **`axf.llm@1`** when available (the AI assistant's providers); otherwise Settings → Agent manager → Model.
+- Consumes **`axf.llm@1`** when available (the AI assistant's providers); otherwise Settings → Plugins → Agent manager → Model.
 
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/agent-manager/` (collections, `memory/`, imported `addons/`, `runs.json`, `settings.json`).

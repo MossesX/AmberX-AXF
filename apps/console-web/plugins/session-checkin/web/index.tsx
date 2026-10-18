@@ -182,7 +182,7 @@ function SessionDetail({ id }: { id: string }) {
   );
 }
 
-/* ================================================================== Settings → Session check-in */
+/* ================================================================== Settings → Plugins → Session check-in */
 
 function StatusPanel() {
   const rt = useRuntime();

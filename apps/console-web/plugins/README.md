@@ -39,7 +39,9 @@ Fable rebuild of an Opus plugin) can be installed cleanly.
 5. **Cross-plugin features use capability names, never folders:** a plugin `provide`s a service such as `axf.llm@1`
    or `axf.agents@1` through `server/plugin_services.py` and others `get` it at request time (None when absent), so
    either side can be removed. List optional services in `plugin.json` → `optional`.
-6. **Ship `install.mjs` and `uninstall.mjs`** (thin wrappers around `framework/cli/plugin-lifecycle.mjs`), optional
+6. **Settings live under Settings → Plugins.** A plugin's `settingsTabs` become sub-tabs of the Plugins tab (the
+   console sets `parent: 'plugins'` on every plugin tab); open one with `rt.dispatch('settings.open:<tab id>')`.
+7. **Ship `install.mjs` and `uninstall.mjs`** (thin wrappers around `framework/cli/plugin-lifecycle.mjs`), optional
    `hooks.mjs` (`onInstall`, `onUninstall`, `checks`), and show the shared **Install & uninstall** panel
    (`import { PluginLifecyclePanel } from '@console/pluginLifecycle'`) in the plugin's settings tab.
 

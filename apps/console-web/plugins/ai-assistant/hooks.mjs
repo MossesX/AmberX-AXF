@@ -10,7 +10,7 @@ export async function onInstall(ctx) {
     // The server fills in every default on first read; this marks the install and keeps the file private from the start.
     writeFileSync(cfg, JSON.stringify({ $axf: 'ai-assistant-config@1', setupComplete: false, profiles: {} }, null, 2));
     chmodSync(cfg, 0o600);
-    ctx.log('seeded config.json (run the setup wizard in Settings → AI assistant)');
+    ctx.log('seeded config.json (run the setup wizard in Settings → Plugins → AI assistant)');
   } else ctx.log('kept the existing config.json');
 }
 

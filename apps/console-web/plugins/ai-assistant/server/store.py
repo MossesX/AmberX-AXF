@@ -203,7 +203,7 @@ def get_profile(pid: str | None) -> tuple[str, dict[str, Any]]:
     profiles = cfg.get("profiles", {})
     pid = pid or cfg.get("defaultProfile") or next(iter(profiles), "")
     if not pid or pid not in profiles:
-        raise KeyError("no provider is set up yet: run the setup wizard in Settings → AI assistant")
+        raise KeyError("no provider is set up yet: run the setup wizard in Settings → Plugins → AI assistant")
     return pid, profiles[pid]
 
 

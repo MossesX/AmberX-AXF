@@ -1,4 +1,4 @@
-"""Built-in assistant tools. All read-only; each can be switched off in Settings → AI assistant → Tools.
+"""Built-in assistant tools. All read-only; each can be switched off in Settings → Plugins → AI assistant → Tools.
 
 repo_list / repo_read / repo_search  the framework repo (never .git, .axf-console, env/key/secret files, symlinks out)
 current_time                         date, time and time zone of the console server

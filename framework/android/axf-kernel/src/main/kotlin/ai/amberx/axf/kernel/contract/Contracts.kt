@@ -63,6 +63,9 @@ public data class SettingSpec(
 )
 
 /** `tab` picks the settings tab (appearance, account, connections, plugins, about, or any a module adds); null = general. Same field as the web port. */
+/** A settings tab (web: framework/core/settings.ts SettingsTab). `parent` makes it a sub-tab, e.g. each plugin under "plugins". */
+public data class SettingsTab(val id: String, val label: String, val icon: String = "settings", val order: Int = 100, val description: String? = null, val parent: String? = null)
+
 public data class SettingsGroup(val id: String, val label: String, val icon: String = "settings", val module: String = "app", val order: Int = 100, val settings: List<SettingSpec>, val description: String? = null, val tab: String? = null)
 
 /* ---------- ports (Foundations: f.ports) ---------- */

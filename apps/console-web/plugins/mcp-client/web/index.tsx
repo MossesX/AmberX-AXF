@@ -6,7 +6,7 @@ import './mcp-client.css';
 
 /*
  * MCP client: connects the console to other MCP servers over Streamable HTTP. Servers (URL + how to
- * authenticate) are managed in Settings → MCP servers and stored by the server part; tokens never reach the
+ * authenticate) are managed in Settings → Plugins → MCP servers and stored by the server part; tokens never reach the
  * browser. The MCP view browses a server's tools, resources and prompts and calls tools with JSON arguments.
  * Everything a remote server returns is shown as text.
  */
@@ -113,7 +113,7 @@ function McpView() {
         <div>
           <p className="fx-eyebrow">Plugin · MCP client · {list.length} server{list.length === 1 ? '' : 's'}</p>
           <h1>MCP servers</h1>
-          <p className="fx-muted">Connect to other MCP servers, browse what they offer and call their tools. Add or edit servers in Settings → MCP servers.</p>
+          <p className="fx-muted">Connect to other MCP servers, browse what they offer and call their tools. Add or edit servers in Settings → Plugins → MCP servers.</p>
         </div>
         <div className="fx-row fx-row--wrap">
           <Button icon="settings" onClick={() => rt.dispatch('settings.open:mcp')}>Manage servers</Button>
@@ -300,7 +300,7 @@ function CallLog() {
   );
 }
 
-/* ---------------- Settings → MCP servers ---------------- */
+/* ---------------- Settings → Plugins → MCP servers ---------------- */
 
 type Auth = 'none' | 'env' | 'token';
 interface Draft { id: string; name: string; url: string; description: string; auth: Auth; tokenEnv: string; token: string }

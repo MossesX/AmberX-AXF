@@ -10,7 +10,7 @@ Source types
   text              {title, text}                pasted notes, docs, transcripts
   mcp-resource      {url, tokenEnv, uri}         a resource from an MCP server
   mcp-tool          {url, tokenEnv, tool, args}  the output of an MCP tool call
-Schedules: manual · hourly · daily · weekly. A background thread runs due jobs (Settings → Agent manager → scheduler).
+Schedules: manual · hourly · daily · weekly. A background thread runs due jobs (Settings → Plugins → Agent manager → scheduler).
 """
 from __future__ import annotations
 

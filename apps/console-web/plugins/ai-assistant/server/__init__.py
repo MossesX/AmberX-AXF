@@ -41,7 +41,7 @@ def _err(e: Exception) -> HTTPException:
         # Never 401: the browser reads 401 as "console token missing". A provider rejecting its key is a 400.
         msg = str(e)
         if e.status == 401:
-            msg = f"the provider rejected the key — {msg}. Check the key in Settings → AI assistant → Providers → Edit."
+            msg = f"the provider rejected the key — {msg}. Check the key in Settings → Plugins → AI assistant → Providers → Edit."
         return HTTPException(400 if e.status in (400, 401) else 502, msg)
     if isinstance(e, KeyError):
         return HTTPException(404, str(e).strip("'\""))
@@ -176,7 +176,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         msgs: list[dict[str, Any]] = conv.setdefault("messages", [])
         budget = int(cfg.get("dailyTokenBudget") or 0)
         if budget and store.tokens_today() >= budget:
-            yield _sse("error", {"message": f"Daily token budget reached ({budget:,} tokens). Raise it in Settings → AI assistant."})
+            yield _sse("error", {"message": f"Daily token budget reached ({budget:,} tokens). Raise it in Settings → Plugins → AI assistant."})
             return
 
         # 1. the user message (new, regenerate, or edit-and-resend)

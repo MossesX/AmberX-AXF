@@ -26,6 +26,6 @@ export const plugin: AxfWebLibrary = {
   views: { example: { title: 'Example', icon: 'box', render: () => <ExampleView /> } },
   nav: { label: 'Plugins', items: [{ id: 'example', label: 'Example', icon: 'box', view: 'example' }] },
   // Plugins never ship their own settings screen: they add a tab to the app's settings, with the shared lifecycle panel.
-  settingsTabs: [{ id: 'example', label: 'Example', icon: 'box', order: 90 }],
+  settingsTabs: [{ id: 'example', label: 'Example', icon: 'box', order: 90, parent: 'plugins' }], // a sub-tab of Settings → Plugins
   settingsPanels: [{ id: 'example.lifecycle', tab: 'example', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

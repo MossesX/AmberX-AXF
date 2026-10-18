@@ -6,7 +6,7 @@ Ported from xGallery's assistant and extended. Web console only for now.
 ## Where it is
 - **Chat page:** nav → Plugins → AI assistant. **Chat dialog:** from anywhere with `rt.openDialog('ai-assistant.chat')` or the action `ai-assistant.open[:prompt]`.
 - **In-chat settings dialog:** the sliders button in the chat header (agent, provider, model, temperature, tokens, tools, thinking, instructions for this conversation).
-- **Settings → AI assistant:** setup wizard · providers · behaviour & defaults · prompt library · usage · install & uninstall.
+- **Settings → Plugins → AI assistant:** setup wizard · providers · behaviour & defaults · prompt library · usage · install & uninstall.
 
 ## Providers
 Anthropic, Claude Code (subscription token + `claude` CLI on the server, read-only repo tools), OpenAI, xAI Grok, Google

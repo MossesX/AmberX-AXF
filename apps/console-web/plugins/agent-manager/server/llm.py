@@ -66,7 +66,7 @@ def _own_complete(messages, system, tools, model, params) -> dict[str, Any]:
     base = (cfg.get("baseUrl") or BASES.get(kind, BASES["openai"])).rstrip("/")
     if kind == "anthropic":
         if not key:
-            raise LlmError("no model is configured: install the AI assistant, or add a key in Settings → Agent manager → Model")
+            raise LlmError("no model is configured: install the AI assistant, or add a key in Settings → Plugins → Agent manager → Model")
         wire = []
         for m in messages:
             if m["role"] == "tool":

@@ -16,6 +16,7 @@ import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import { SystemBanner, useSystemCheckOnLoad } from './views/SystemCheck';
+import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { consoleSettings } from './consoleSettings';
@@ -46,6 +47,15 @@ function OpenSettingsTab({ tab }: { tab: string }) {
   return null;
 }
 
+/**
+ * Plugins never get a top-level settings tab: every tab a plugin contributes becomes a sub-tab of Settings → Plugins
+ * (Brett's rule, Oct 18 2026). Enforced here for every plugin, so a plugin can't opt out by forgetting `parent`.
+ */
+function underPlugins(lib: AxfWebLibrary): AxfWebLibrary {
+  if (!lib.settingsTabs?.length) return lib;
+  return { ...lib, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) };
+}
+
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
 function usePlugins() {
   const rt = useRuntime();
@@ -62,7 +72,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.settings.removeModule(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, consoleSettings, ...enabled.map((p) => p.library!)]);
+    return installLibraries(rt, [settingsLibrary, consoleSettings, ...enabled.map((p) => underPlugins(p.library!))]);
   }, [rt, status, loaded]);
   return { contributed };
 }

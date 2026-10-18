@@ -10,7 +10,7 @@ import './agent-manager.css';
  * Agent manager plugin (web part) — see server/__init__.py for the model.
  *  - view "agent-manager" (nav → Plugins → Agent manager)
  *  - dialog "agent-manager.wizard" { kind: builder | agent | skill | tool | training, agentId? } — open it from anywhere
- *  - Settings → Agent manager: wizards, add-ons, model, training & Firecrawl, memory defaults, install & uninstall
+ *  - Settings → Plugins → Agent manager: wizards, add-ons, model, training & Firecrawl, memory defaults, install & uninstall
  * The AI assistant chats as these agents through the server's axf.agents@1 service; nothing here names that plugin.
  */
 export const plugin: AxfWebLibrary = {

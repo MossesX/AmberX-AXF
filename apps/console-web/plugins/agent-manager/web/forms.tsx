@@ -260,7 +260,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
             <Field label="Provider" hint="From the AI assistant's profiles">
               <select className="fx-input" value={m.profile ?? ''} onChange={(e) => setM({ profile: e.target.value })}><option value="">Assistant default</option>{status.llm.profiles.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}</select>
             </Field>
-          ) : <Field label="Provider" hint="Settings → Agent manager → Model"><input className="fx-input" disabled value={status?.llm.kind ?? 'own'} /></Field>}
+          ) : <Field label="Provider" hint="Settings → Plugins → Agent manager → Model"><input className="fx-input" disabled value={status?.llm.kind ?? 'own'} /></Field>}
           <Field label="Model"><Text mono value={m.model} onChange={(model) => setM({ model })} placeholder={status?.llm.profiles.find((p) => p.id === m.profile)?.defaultModel || status?.llm.model || 'default'} /></Field>
           <Field label={`Temperature: ${m.temperature ?? 'default'}`}><input type="range" min={0} max={1.5} step={0.05} value={m.temperature ?? 0.5} onChange={(e) => setM({ temperature: Number(e.target.value) })} /></Field>
           <Field label="Max output tokens"><Num value={m.max_tokens} onChange={(max_tokens) => setM({ max_tokens })} placeholder="4096" /></Field>
@@ -370,7 +370,7 @@ export function TrainingForm({ v, set, cache, status, lockAgent }: { v: Partial<
       <div className="fx-row fx-row--wrap">
         {['firecrawl-crawl', 'firecrawl-search', 'url', 'repo', 'text', 'mcp-resource'].map((t) => <Button key={t} icon="plus" onClick={() => set({ ...v, sources: [...src, { type: t }] })}>{t}</Button>)}
       </div>
-      {needsFc && !status?.firecrawl && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />Firecrawl sources need FIRECRAWL_API_KEY on the server or a key in Settings → Agent manager → Training.</div>}
+      {needsFc && !status?.firecrawl && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />Firecrawl sources need FIRECRAWL_API_KEY on the server or a key in Settings → Plugins → Agent manager → Training.</div>}
       <div className="axp-agent-manager__cols">
         <Field label="Schedule"><select className="fx-input" value={v.schedule ?? 'manual'} onChange={(e) => set({ ...v, schedule: e.target.value })}>{['manual', 'hourly', 'daily', 'weekly'].map((s) => <option key={s}>{s}</option>)}</select></Field>
         <Field label="Chunk size (characters)"><Num value={v.chunkSize} min={300} max={6000} onChange={(chunkSize) => set({ ...v, chunkSize })} placeholder="1200" /></Field>

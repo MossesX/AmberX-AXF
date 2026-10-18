@@ -21584,7 +21584,7 @@
    "priority": "P2",
    "wave": 1,
    "effort": "M",
-   "summary": "Console plugin: every new Claude Code session opens with grouped questions (location, repo, container, project, memory files read-only, model, effort with a fixed baseline-build cost) and is logged as session-log@1. Installed from Settings → Session check-in (wizard) or the terminal installer; browsed in Plugins → Sessions.",
+   "summary": "Console plugin: every new Claude Code session opens with grouped questions (location, repo, container, project, memory files read-only, model, effort with a fixed baseline-build cost) and is logged as session-log@1. Installed from Settings → Plugins → Session check-in (wizard) or the terminal installer; browsed in Plugins → Sessions.",
    "files": [
     "apps/console-web/plugins/session-checkin"
    ],
