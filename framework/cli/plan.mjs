@@ -119,6 +119,8 @@ export function upsertFeature(feature, note) {
   const old = i >= 0 ? plan.features[i] : null;
   const picked = old && feature.model && feature.model !== old.model;
   const f = withModel({ ...feature, edited: true, source: old?.source ?? feature.source ?? 'user', ...(picked ? { modelEdited: true, modelReason: feature.modelReason && feature.modelReason !== old.modelReason ? feature.modelReason : 'Picked in the console' } : {}) });
+  // A partial feature (CLI, MCP) keeps the list fields the console iterates over.
+  for (const k of ['capabilities', 'dependsOn', 'catalog', 'modules', 'files', 'acceptance', 'warnings', 'recommendations', 'previews', 'screenshots', 'links', 'tags']) if (!Array.isArray(f[k])) f[k] = Array.isArray(old?.[k]) ? old[k] : [];
   if (old && old.status !== f.status) f.statusEdited = true;
   f.history = [...(feature.history ?? old?.history ?? []), { at: new Date().toISOString(), text: note || (old ? 'Edited in the console' : 'Added in the console') }].slice(-100);
   if (i >= 0) plan.features[i] = f; else plan.features.push(f);

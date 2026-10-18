@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-18T14:39:29.446Z",
+ "generatedAt": "2026-10-18T14:57:06.353Z",
  "statuses": [
   "built",
   "partial",
@@ -21475,7 +21475,18 @@
      "at": "2026-10-18T14:17:14.440Z",
      "text": "built on Opus"
     }
-   ]
+   ],
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "modelEdited": true,
+   "statusEdited": true
   }
  ]
 }
