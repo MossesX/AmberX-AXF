@@ -28,6 +28,15 @@ Namespace entity ids with the add-on id (`my-addon.persona`). Bundled: **coder**
 (trains daily on this repo's docs), **ai-expert** (trains weekly with Firecrawl once a key is set). Import from JSON or a
 URL; export any agent as a bundle. Uninstalling an add-on removes exactly what it added (and its agents' memory).
 
+## Library (skills, tools, personas, lingo)
+Reusable items with search, tags, **Used by** (which agents, directly or through a skill), **Fork for <agent>** (a
+private copy swapped into that agent only; editing the shared item changes it for every agent), **Duplicate**,
+**Export / Import** (`agent-library-item@1`; imports lose env-var secrets and private access, like add-ons),
+**Versions** (every save keeps the previous copy, last 30, with a diff and **Roll back**, itself undoable;
+`<dataDir>/versions/`), and **Describe it** (plain English → the AXF expert, when installed, drafts the item for you
+to review; never saved by itself). Personas have sample replies and a voice slot (agents inherit it). Tools can be
+marked dangerous; container tools always are. Add-on items are listed and editable or forkable like any other.
+
 ## Containers and safety (Mosses)
 - Builtin container tools (`server/containers.py`), all **dangerous**: `container_list`, `container_read`, `container_list_dir`,
   `container_search` (read at once) and `container_write`, `container_delete`, `container_exec`, `container_restart`,

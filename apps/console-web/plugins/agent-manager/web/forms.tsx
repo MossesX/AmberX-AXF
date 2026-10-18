@@ -52,7 +52,11 @@ export function PersonaForm({ v, set }: { v: Partial<Persona>; set: (p: Partial<
         <Field label="Tone"><Text value={v.tone} onChange={(tone) => set({ ...v, tone })} placeholder="Calm, encouraging" /></Field>
       </div>
       <Field label="Traits" hint="One per line"><Lines value={v.traits} onChange={(traits) => set({ ...v, traits })} /></Field>
-      <Field label="Rules" hint="Things this persona always / never does"><Lines value={v.rules} onChange={(rules) => set({ ...v, rules })} rows={4} /></Field>
+      <Field label="Rules" hint="Things this persona always / never does (a persona never weakens safety rules)"><Lines value={v.rules} onChange={(rules) => set({ ...v, rules })} rows={4} /></Field>
+      <Field label="Sample replies" hint="One per line: how it talks, not what it says"><Lines value={v.samples} onChange={(samples) => set({ ...v, samples })} rows={3} /></Field>
+      <Field label="Voice (for a future voice plugin)" hint="Empty until a voice plugin is installed; describe the voice you want">
+        <Text value={v.voiceSlot?.hint} onChange={(hint) => set({ ...v, voiceSlot: { ...(v.voiceSlot ?? {}), hint } })} placeholder="e.g. cat-like, warm, fast" />
+      </Field>
     </div>
   );
 }
@@ -134,8 +138,13 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
   const [params, setParams] = useState<Param[]>(() => toParams(v.parameters));
   const upd = (ps: Param[]) => { setParams(ps); set({ ...v, parameters: toSchema(ps) }); };
   const headers = (cfg.headers as Record<string, string> | undefined) ?? {};
+  const forcedDangerous = kind === 'builtin' && String(cfg.builtin ?? '').startsWith('container_');
   return (
     <div className="fx-stack">
+      <label className="axp-agent-manager__toggle" title="Dangerous tools change things (files, containers, commands, money). Only agents allowed in Settings → Safety get them.">
+        <input type="checkbox" checked={forcedDangerous || !!v.dangerous} disabled={forcedDangerous} onChange={(e) => set({ ...v, dangerous: e.target.checked })} />
+        Dangerous {forcedDangerous ? '(always: it touches containers)' : '(writes, runs commands or touches containers)'}
+      </label>
       <Field label="Kind">
         <div className="axp-agent-manager__picks">
           {(status?.toolKinds ?? Object.keys(KIND_HELP)).map((k) => <button key={k} type="button" className={`axp-agent-manager__pick${kind === k ? ' is-active' : ''}`} aria-pressed={kind === k} title={KIND_HELP[k]} onClick={() => set({ ...v, kind: k, config: {} })}>{k}</button>)}

@@ -18,7 +18,7 @@ from fastapi import APIRouter, HTTPException
 
 import plugin_services
 
-from . import containers, addons, engine, llm, memory, store, toolkit, training
+from . import containers, addons, engine, library, llm, memory, store, toolkit, training
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -51,7 +51,7 @@ class AgentsService:
             return None
         out = {"id": agent_id, "name": c["agent"].get("name"), "icon": c["agent"].get("icon", "user"), "description": c["agent"].get("description", ""),
                "system_prompt": c["system"], "model": c["model"], "tools": [toolkit.spec(t) for t in c["tools"]], "memory": {"type": c["memory"]["type"]},
-               "voice": c["agent"].get("voice") or None, "writeMode": None}
+               "voice": _voice(c["agent"]), "writeMode": None}
         if c.get("writeMode"):
             cs = containers.service()
             try:
@@ -75,6 +75,12 @@ class AgentsService:
 
     def record_turn(self, agent_id: str, user_text: str, reply: str, meta: dict[str, Any] | None = None) -> None:
         memory.record(store.get("agents", agent_id), user_text, reply, meta)
+
+
+def _voice(agent: dict[str, Any]) -> dict[str, Any] | None:
+    """The agent's voice slot, else its persona's (empty until a voice plugin provides voices)."""
+    v = agent.get("voice") or (store.items("personas").get(agent.get("personaId") or "") or {}).get("voiceSlot")
+    return v if isinstance(v, dict) and any(v.values()) else None
 
 
 plugin_services.provide("axf.agents@1", AgentsService(), FOLDER)
@@ -182,6 +188,11 @@ def _validate(coll: str, rec: dict[str, Any]) -> dict[str, Any]:
             raise ValueError("voice is an object {provider, voiceId, hint} or null")
         if isinstance(v, dict):
             rec["voice"] = {k: str(v.get(k) or "")[:200] for k in ("provider", "voiceId", "hint")}
+    if coll == "personas" and rec.get("voiceSlot") is not None:
+        vs = rec["voiceSlot"]
+        if not isinstance(vs, dict):
+            raise ValueError("voiceSlot is an object {provider, voiceId, hint} or null")
+        rec["voiceSlot"] = {k: str(vs.get(k) or "")[:200] for k in ("provider", "voiceId", "hint")}
     if coll == "workflows":
         if (rec.get("mode") or "sequential") not in ("sequential", "parallel", "router", "critic"):
             raise ValueError("mode is sequential, parallel, router or critic")
@@ -191,7 +202,7 @@ def _validate(coll: str, rec: dict[str, Any]) -> dict[str, Any]:
             if s.get("agentId") not in agents:
                 raise ValueError(f"step {s['id']}: unknown agent {s.get('agentId')}")
     if coll in ("skills", "personas", "lingo"):
-        for f in ("triggers", "traits", "rules", "phrases", "avoid", "toolIds"):
+        for f in ("triggers", "traits", "rules", "phrases", "avoid", "toolIds", "samples"):
             if f in rec and isinstance(rec[f], str):
                 rec[f] = [x.strip() for x in rec[f].split("\n") if x.strip()]
     return rec
@@ -217,6 +228,8 @@ def get_item(coll: str, iid: str) -> dict[str, Any]:
 def save_item(coll: str, body: dict[str, Any]) -> dict[str, Any]:
     try:
         rec = _validate(coll, body)
+        prev = store.items(coll).get(str(rec.get("id") or ""))
+        library.record(coll, prev, str(body.get("_note") or "saved in the console")[:120])
         return {"item": store.upsert(coll, rec)}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
@@ -232,9 +245,82 @@ def delete_item(coll: str, iid: str) -> dict[str, Any]:
             for j in [j for j in store.items("training").values() if j.get("agentId") == iid]:
                 store.delete("training", j["id"])
         store.delete(coll, iid)
+        library.drop_versions(coll, iid)
         return {"deleted": iid}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
+
+
+# ---------------------------------------------------------------- library: versions, used by, duplicate, fork, import/export, drafts
+
+def _lib(fn, *a, **k):
+    try:
+        return fn(*a, **k)
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.get("/c/{coll}/{iid}/versions")
+def item_versions(coll: str, iid: str) -> dict[str, Any]:
+    return {"items": _lib(library.versions, coll, iid)}
+
+
+@router.post("/c/{coll}/{iid}/rollback")
+def item_rollback(coll: str, iid: str, body: dict[str, Any]) -> dict[str, Any]:
+    return {"item": _lib(library.rollback, coll, iid, int(body.get("at") or 0))}
+
+
+@router.get("/c/{coll}/{iid}/used-by")
+def item_used_by(coll: str, iid: str) -> dict[str, Any]:
+    return {"items": _lib(library.used_by, coll, iid)}
+
+
+@router.post("/c/{coll}/{iid}/duplicate")
+def item_duplicate(coll: str, iid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    return {"item": _lib(library.duplicate, coll, iid, (body or {}).get("name"))}
+
+
+@router.post("/c/{coll}/{iid}/fork")
+def item_fork(coll: str, iid: str, body: dict[str, Any]) -> dict[str, Any]:
+    return {"item": _lib(library.fork, coll, iid, str(body.get("agentId") or ""))}
+
+
+@router.get("/c/{coll}/{iid}/export")
+def item_export(coll: str, iid: str) -> dict[str, Any]:
+    it = _lib(store.get, coll, iid)
+    return {"$axf": "agent-library-item@1", "collection": coll, "item": {k: v for k, v in it.items() if k not in ("createdAt", "updatedAt", "origin")}}
+
+
+@router.post("/c/{coll}/import")
+def item_import(coll: str, body: dict[str, Any]) -> dict[str, Any]:
+    raw = body.get("item") if isinstance(body.get("item"), dict) else body
+    if raw.get("$axf") == "agent-library-item@1":
+        if raw.get("collection") != coll:
+            raise HTTPException(400, f"that file is a {raw.get('collection')} item, not {coll}")
+        raw = raw.get("item") or {}
+    item, warnings = library.strip_risky(coll, raw)
+    if body.get("trust"):
+        item, warnings = raw, []
+    item.pop("origin", None)
+    if item.get("id") in store.items(coll):
+        item["id"] = library._unique_id(coll, f"{item['id']}-imported")  # noqa: SLF001
+    try:
+        rec = _validate(coll, item)
+        return {"item": store.upsert(coll, rec, origin="user"), "warnings": warnings}
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+
+
+@router.post("/draft/{coll}")
+def item_draft(coll: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Plain English → a new item for review (never saved here). Written by the AXF expert when it's installed."""
+    expert = None
+    try:
+        c = engine.compose("axf-expert")
+        expert = {"system": c["system"], "name": c["agent"].get("name")}
+    except Exception:  # noqa: BLE001
+        expert = None
+    return _lib(library.draft, coll, str(body.get("text") or ""), expert)
 
 
 # ---------------------------------------------------------------- agents

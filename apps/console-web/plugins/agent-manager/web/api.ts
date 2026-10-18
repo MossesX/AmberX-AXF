@@ -5,13 +5,13 @@ export const FOLDER = 'agent-manager';
 export const ID = 'ai.amberx.axf.console.agent-manager';
 
 export type Coll = 'agents' | 'skills' | 'personas' | 'lingo' | 'tools' | 'workflows' | 'training';
-interface Base { id: string; name: string; origin?: string; createdAt?: number; updatedAt?: number }
+interface Base { id: string; name: string; origin?: string; createdAt?: number; updatedAt?: number; tags?: string[]; forkedFrom?: string }
 export interface MemoryCfg { type?: string; record?: string; topK?: number; window?: number; maxItems?: number; decayDays?: number; scope?: string; embedProfile?: string }
 export interface ModelCfg { profile?: string; model?: string; temperature?: number; max_tokens?: number }
 export interface Voice { provider?: string; voiceId?: string; hint?: string }
 export interface Agent extends Base { voice?: Voice | null; icon?: string; description?: string; enabled?: boolean; personaId?: string; lingoIds?: string[]; skillIds?: string[]; toolIds?: string[]; delegates?: string[]; instructions?: string; model?: ModelCfg; memory?: MemoryCfg }
 export interface Skill extends Base { description?: string; instructions?: string; triggers?: string[]; examples?: { input: string; output: string }[]; toolIds?: string[] }
-export interface Persona extends Base { role?: string; voice?: string; tone?: string; traits?: string[]; rules?: string[] }
+export interface Persona extends Base { role?: string; voice?: string; tone?: string; traits?: string[]; rules?: string[]; samples?: string[]; voiceSlot?: Voice | null }
 export interface Lingo extends Base { description?: string; style?: string; glossary?: { term: string; meaning: string }[]; phrases?: string[]; avoid?: string[] }
 export interface JsonSchema { type?: string; properties?: Record<string, { type?: string; description?: string; enum?: string[]; items?: { type?: string } }>; required?: string[] }
 export interface Tool extends Base { dangerous?: boolean; description?: string; kind: string; config: Record<string, unknown>; parameters?: JsonSchema; enabled?: boolean }

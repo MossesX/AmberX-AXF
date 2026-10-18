@@ -66,3 +66,7 @@
   .axp-agent-manager__list { max-height: 40vh }
   .axp-agent-manager__example { grid-template-columns: minmax(0, 1fr) }
 }
+.axp-agent-manager__uses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-agent-manager__uses li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); overflow-wrap: anywhere }
+.axp-agent-manager__diff .is-add { color: var(--fx-success) }
+.axp-agent-manager__diff .is-del { color: var(--fx-danger) }

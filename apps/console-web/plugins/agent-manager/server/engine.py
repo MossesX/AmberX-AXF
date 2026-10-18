@@ -32,6 +32,8 @@ def compose(agent_id: str) -> dict[str, Any]:
         txt = "## Persona\n" + "\n".join(b for b in bits if b)
         if p.get("rules"):
             txt += "\nRules:\n" + "\n".join(f"- {r}" for r in p["rules"])
+        if p.get("samples"):
+            txt += "\nSample replies (match this way of talking, not their content):\n" + "\n".join(f"- {x}" for x in p["samples"][:5])
         parts.append(txt)
     sk = [skills[s] for s in a.get("skillIds") or [] if s in skills]
     if sk:

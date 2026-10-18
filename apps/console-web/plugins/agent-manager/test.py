@@ -56,6 +56,8 @@ class FakeLlm:
             return {"text": "", "tool_calls": [{"id": "t1", "name": "memory_save", "arguments": {"text": text.split("remember that", 1)[1].strip()}}], "usage": u, "model": "fake-1"}
         if "multiply" in text.lower() and any(t["name"] == "calculator" for t in tools or []):
             return {"text": "", "tool_calls": [{"id": "t2", "name": "calculator", "arguments": {"expression": "6*7"}}], "usage": u, "model": "fake-1"}
+        if "for his agents, described in plain words" in text:
+            return {"text": json.dumps({"id": "sneaky-id", "name": "Calm teacher", "role": "teacher", "voice": "calm", "traits": ["patient"], "rules": ["explain with analogies"], "samples": ["Think of it like a library."]}), "tool_calls": [], "usage": u, "model": "fake-1"}
         if "long-term memory" in (system or ""):
             return {"text": json.dumps({"facts": ["Brett deploys with Coolify"], "summary": "Talked about deploys."}), "tool_calls": [], "usage": u, "model": "fake-1"}
         if "Pick the best step" in text:
@@ -303,4 +305,39 @@ check(am.store.addon_records()["coder"]["version"] == "2.0.0", "Coder 1.x is mig
 check(any("tabs" in h["text"] for h in am.memory.search(scope, "tabs", 5, "keyword")), "…and keeps what he learned")
 plugin_services.withdraw("fake-container-access")
 plugin_services.withdraw("fake-snapshot-manager")
+
+# --- library: versions, used by, duplicate, fork, import, drafts ----------------------------------------------------
+sk = c.post("/am/c/skills", json={"id": "lib.skill", "name": "Lib skill", "instructions": "v1", "tags": ["review"]}).json()["item"]
+c.post("/am/c/skills", json={**sk, "instructions": "v2"})
+c.post("/am/c/skills", json={**sk, "instructions": "v3"})
+vs = c.get("/am/c/skills/lib.skill/versions").json()["items"]
+check(len(vs) == 2 and vs[0]["item"]["instructions"] == "v2" and vs[1]["item"]["instructions"] == "v1", "each save keeps the previous version")
+rb = c.post("/am/c/skills/lib.skill/rollback", json={"at": vs[1]["at"]}).json()["item"]
+check(rb["instructions"] == "v1" and c.get("/am/c/skills/lib.skill/versions").json()["items"][0]["item"]["instructions"] == "v3", "rollback restores, and the replaced version is kept")
+c.post("/am/c/agents", json={"id": "lib-a", "name": "Lib A", "skillIds": ["lib.skill"]})
+c.post("/am/c/agents", json={"id": "lib-b", "name": "Lib B", "skillIds": ["lib.skill"]})
+ub = c.get("/am/c/skills/lib.skill/used-by").json()["items"]
+check({u["id"] for u in ub} == {"lib-a", "lib-b"}, "used by lists every agent")
+fk = c.post("/am/c/skills/lib.skill/fork", json={"agentId": "lib-b"}).json()["item"]
+check(fk["forkedFrom"] == "lib.skill" and c.get("/am/c/agents/lib-b").json()["item"]["skillIds"] == [fk["id"]] and c.get("/am/c/agents/lib-a").json()["item"]["skillIds"] == ["lib.skill"], "fork swaps a private copy into one agent only")
+dp = c.post("/am/c/skills/lib.skill/duplicate").json()["item"]
+check(dp["id"] != "lib.skill" and dp["name"].endswith("(copy)") and dp["origin"] == "user", "duplicate")
+ex = c.get("/am/c/tools/coder.repo-read/export").json()
+check(ex["$axf"] == "agent-library-item@1" and "origin" not in ex["item"], "export an item")
+imp = c.post("/am/c/tools/import", json={"item": {"name": "leaky", "kind": "http", "config": {"url": "https://example.com", "headers": {"Authorization": "env:GITHUB_TOKEN"}, "allowPrivate": True}}}).json()
+check(imp["warnings"] and not imp["item"]["config"]["headers"] and not imp["item"]["config"].get("allowPrivate"), "imports lose env-var secrets and private access")
+imp2 = c.post("/am/c/tools/import", json={"item": ex}).json()["item"]
+check(imp2["id"] != "coder.repo-read", "importing an existing id makes a new one")
+check(c.post("/am/c/skills/import", json={"item": ex}).status_code == 400, "a tool file can't be imported as a skill")
+plugin_services.provide("axf.llm@1", fake, "fake-llm")  # the consumer check above may have loaded a real assistant
+dr = c.post("/am/draft/personas", json={"text": "a calm teacher"}).json()
+check(dr["item"]["name"] == "Calm teacher" and "id" not in dr["item"] and dr["item"]["samples"], "plain-English draft (not saved, no id)")
+check(not any(p["name"] == "Calm teacher" for p in c.get("/am/c/personas").json()["items"]), "…nothing saved until you do")
+check(c.post("/am/draft/agents", json={"text": "x"}).status_code == 400, "drafts are for skills, tools, personas, lingo")
+pv = c.post("/am/c/personas", json={"name": "Voice P", "voiceSlot": {"hint": "cat-like"}, "samples": "one\ntwo"}).json()["item"]
+check(pv["voiceSlot"] == {"provider": "", "voiceId": "", "hint": "cat-like"} and pv["samples"] == ["one", "two"], "persona voice slot + sample replies")
+c.post("/am/c/agents", json={"id": "voice-a", "name": "Voice A", "personaId": pv["id"]})
+check(svc.get_agent("voice-a")["voice"]["hint"] == "cat-like" and "Sample replies" in svc.get_agent("voice-a")["system_prompt"], "agents inherit the persona's voice slot and samples")
+c.delete("/am/c/skills/lib.skill")
+check(c.get("/am/c/skills/lib.skill/versions").json()["items"] == [], "deleting an item deletes its versions")
 print(f"all {ok} checks passed")

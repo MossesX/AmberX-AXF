@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
-import { AgentForm, LingoForm, OriginChip, PersonaForm, SkillForm, ToolForm, TrainingForm, WorkflowForm } from './forms';
+import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
 import {
   MEMORY_HELP, call, del, download, fmtTime, post, refresh, remove, save,
@@ -80,7 +80,11 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
   const [q, setQ] = useState('');
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
-  const shown = items.filter((i) => !q || JSON.stringify(i).toLowerCase().includes(q.toLowerCase()));
+  const [tag, setTag] = useState('');
+  const [describe, setDescribe] = useState(false);
+  const lib = LIB.includes(coll);
+  const allTags = [...new Set(items.flatMap((i) => (i.tags as string[] | undefined) ?? []))].sort();
+  const shown = items.filter((i) => (!q || JSON.stringify(i).toLowerCase().includes(q.toLowerCase())) && (!tag || ((i.tags as string[] | undefined) ?? []).includes(tag)));
   const open = (it: Rec) => { setSel(String(it.id)); setDraft(structuredClone(it)); setMsg(''); };
   const label = coll === 'lingo' ? 'Lingo pack' : coll === 'training' ? 'Training job' : coll.slice(0, -1).replace(/^\w/, (c) => c.toUpperCase());
   const doSave = async () => {
@@ -99,11 +103,15 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
           <strong className="fx-grow">{label}s ({items.length})</strong>
           <Button icon="plus" onClick={() => { setSel(''); setDraft({ ...blank }); setMsg(''); }}>New</Button>
           {wizardKind && <Button icon="rocket" onClick={() => rt.openDialog('agent-manager.wizard', { kind: wizardKind })}>Wizard</Button>}
+          {lib && coll !== 'agents' && <Button icon="sparkles" onClick={() => setDescribe(!describe)}>Describe it</Button>}
+          {lib && <ImportButton coll={coll} onDone={(it) => { void refresh(); open(it); }} />}
         </div>
+        {describe && <DescribeIt coll={coll} onDraft={(it, warnings) => { setSel(''); setDraft(it); setMsg(warnings.length ? `Review before saving: ${warnings.join('; ')}` : ''); setDescribe(false); }} />}
         <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter" aria-label="Filter" />
+        {allTags.length > 0 && <div className="axp-agent-manager__picks">{allTags.map((t) => <button key={t} type="button" className={`axp-agent-manager__pick${tag === t ? ' is-active' : ''}`} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}</div>}
         {shown.map((it) => (
           <button key={String(it.id)} type="button" className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
-            <strong>{String(it.name ?? it.id)}</strong>
+            <strong>{String(it.name ?? it.id)}{coll === 'tools' && (it.dangerous || String((it.config as { builtin?: string } | undefined)?.builtin ?? '').startsWith('container_')) ? <Chip tone="warning">dangerous</Chip> : null}</strong>
             <span className="fx-small fx-muted">{String(it.description ?? it.role ?? it.kind ?? it.mode ?? (it as unknown as Training).status ?? '')}{it.origin && it.origin !== 'user' ? ` · ${String(it.origin).replace('addon:', 'add-on ')}` : ''}</span>
           </button>
         ))}
@@ -115,16 +123,127 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
             <div className="fx-row fx-row--wrap"><h3 className="fx-grow axp-agent-manager__h">{draft.id ? String(draft.name ?? draft.id) : `New ${label.toLowerCase()}`}</h3><OriginChip origin={draft.origin} /></div>
             {draft.origin?.startsWith('addon:') && <p className="fx-small fx-muted">Part of an add-on: your edits are kept until the add-on is reinstalled or updated.</p>}
             {render(draft, setDraft)}
+            {lib && <Field label="Tags" hint="Comma-separated; filter the list by tag"><Text value={((draft.tags as string[] | undefined) ?? []).join(', ')} onChange={(t) => setDraft({ ...draft, tags: t.split(',').map((x) => x.trim()).filter(Boolean) })} /></Field>}
             {msg && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{msg}</div>}
             <div className="fx-row fx-row--wrap">
               <Button tone="primary" icon="save" disabled={busy} onClick={() => void doSave()}>Save</Button>
               {draft.id && <Button icon="trash" onClick={() => void doDelete()}>Delete</Button>}
+              {lib && draft.id && <Button tone="ghost" icon="copy" onClick={() => void post<{ item: Rec }>(`c/${coll}/${draft.id}/duplicate`).then((r) => { void refresh(); open(r.item); rt.toast('Duplicated', 'success'); }, (e: Error) => setMsg(e.message))}>Duplicate</Button>}
+              {lib && draft.id && <Button tone="ghost" icon="download" onClick={() => void call(`c/${coll}/${draft.id}/export`).then((b) => download(`${draft.id}.${coll.slice(0, -1)}.json`, b))}>Export</Button>}
             </div>
+            {lib && draft.id && <LibraryPanel coll={coll} item={draft} onChanged={(it) => { void refresh(); if (it) open(it); }} />}
             {extra?.(draft)}
           </>
         )}
       </div>
     </section>
+  );
+}
+
+/* ---------------------------------------------------------------- library: used by, fork, versions, describe, import */
+
+const LIB: Coll[] = ['skills', 'tools', 'personas', 'lingo', 'agents'];
+
+function LibraryPanel({ coll, item, onChanged }: { coll: Coll; item: Rec; onChanged: (it?: Rec) => void }) {
+  const rt = useRuntime();
+  const [users, setUsers] = useState<{ id: string; name: string; how: string; kind?: string }[] | null>(null);
+  const [vers, setVers] = useState<{ at: number; note: string; item: Rec }[] | null>(null);
+  const [showV, setShowV] = useState<number | null>(null);
+  const id = String(item.id);
+  useEffect(() => {
+    setUsers(null); setVers(null); setShowV(null);
+    void call<{ items: { id: string; name: string; how: string; kind?: string }[] }>(`c/${coll}/${id}/used-by`).then((r) => setUsers(r.items), () => setUsers([]));
+    void call<{ items: { at: number; note: string; item: Rec }[] }>(`c/${coll}/${id}/versions`).then((r) => setVers(r.items), () => setVers([]));
+  }, [coll, id, item.updatedAt]);
+  const fork = async (agentId: string) => {
+    try { const r = await post<{ item: Rec }>(`c/${coll}/${id}/fork`, { agentId }); rt.toast(`Private copy made for ${agentId}`, 'success'); onChanged(r.item); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
+  const rollback = async (at: number) => {
+    try { const r = await post<{ item: Rec }>(`c/${coll}/${id}/rollback`, { at }); rt.toast('Rolled back (the version you had is kept too)', 'success'); onChanged(r.item); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
+  const agents = (users ?? []).filter((u) => u.kind !== 'skill');
+  return (
+    <div className="fx-stack">
+      {coll !== 'agents' && (
+        <details className="axp-agent-manager__card" open={agents.length > 0}>
+          <summary><strong>Used by</strong> <span className="fx-small fx-muted">{users ? `${users.length}` : '…'}</span></summary>
+          {users && !users.length && <p className="fx-small fx-muted">No agent uses it yet. Attach it in an agent’s editor.</p>}
+          <ul className="axp-agent-manager__uses">
+            {(users ?? []).map((u) => (
+              <li key={`${u.kind ?? 'agent'}-${u.id}`}>
+                <Icon name={u.kind === 'skill' ? 'star' : 'user'} size={13} /> <strong>{u.name}</strong> <span className="fx-small fx-muted">{u.how}</span>
+                {u.kind !== 'skill' && <Button tone="ghost" icon="branch" title="A private copy for this agent only; the others keep the shared one" onClick={() => void fork(u.id)}>Fork for {u.name}</Button>}
+              </li>
+            ))}
+          </ul>
+          {agents.length > 1 && <p className="fx-small fx-muted">Editing this {coll.slice(0, -1)} changes it for all {agents.length} agents. Fork to change it for one.</p>}
+        </details>
+      )}
+      <details className="axp-agent-manager__card">
+        <summary><strong>Versions</strong> <span className="fx-small fx-muted">{vers ? vers.length : '…'}</span></summary>
+        {vers && !vers.length && <p className="fx-small fx-muted">Each save keeps the previous version here (last 30).</p>}
+        <ul className="axp-agent-manager__uses">
+          {(vers ?? []).map((v) => (
+            <li key={v.at}>
+              <span className="fx-small">{fmtTime(v.at)}</span> <span className="fx-small fx-muted">{v.note}</span>
+              <Button tone="ghost" icon="eye" onClick={() => setShowV(showV === v.at ? null : v.at)}>{showV === v.at ? 'Hide' : 'Diff'}</Button>
+              <Button tone="ghost" icon="undo" onClick={() => void rollback(v.at)}>Roll back</Button>
+              {showV === v.at && <JsonDiff a={v.item} b={item} />}
+            </li>
+          ))}
+        </ul>
+      </details>
+    </div>
+  );
+}
+
+function JsonDiff({ a, b }: { a: Rec; b: Rec }) {
+  const clean = (r: Rec) => JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => !['updatedAt', 'createdAt'].includes(k)).sort(([x], [y]) => x.localeCompare(y))), null, 1).split('\n');
+  const A = clean(a), B = clean(b);
+  const setA = new Set(A), setB = new Set(B);
+  return (
+    <pre className="axp-agent-manager__out axp-agent-manager__diff">
+      {A.filter((l) => !setB.has(l)).map((l, i) => <span key={`a${i}`} className="is-del">{`- ${l}\n`}</span>)}
+      {B.filter((l) => !setA.has(l)).map((l, i) => <span key={`b${i}`} className="is-add">{`+ ${l}\n`}</span>)}
+      {A.every((l) => setB.has(l)) && B.every((l) => setA.has(l)) && <span>Same as now.</span>}
+    </pre>
+  );
+}
+
+function DescribeIt({ coll, onDraft }: { coll: Coll; onDraft: (it: Rec, warnings: string[]) => void }) {
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const go = async () => {
+    setBusy(true); setErr('');
+    try { const r = await post<{ item: Rec; warnings: string[]; by: string }>(`draft/${coll}`, { text }); onDraft(r.item, [`drafted by ${r.by}`, ...r.warnings]); }
+    catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  };
+  return (
+    <div className="axp-agent-manager__card fx-stack">
+      <span className="fx-small">Describe the {coll === 'lingo' ? 'lingo pack' : coll.slice(0, -1)} in plain English; the AXF expert drafts it for you to review and save.</span>
+      <textarea className="fx-input" rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder={coll === 'tools' ? 'e.g. look up today’s weather for a city' : coll === 'personas' ? 'e.g. a calm teacher who explains with analogies' : 'e.g. review a pull request for security issues'} />
+      <div className="fx-row fx-row--wrap"><Button tone="primary" icon="sparkles" disabled={!text.trim() || busy} onClick={() => void go()}>{busy ? 'Drafting…' : 'Draft it'}</Button>{err && <span className="axp-agent-manager__bad fx-small">{err}</span>}</div>
+    </div>
+  );
+}
+
+function ImportButton({ coll, onDone }: { coll: Coll; onDone: (it: Rec) => void }) {
+  const rt = useRuntime();
+  return (
+    <label className="axp-agent-manager__file fx-small" title="Import an exported item (JSON)">
+      <Icon name="upload" size={13} /> Import
+      <input type="file" accept="application/json" hidden onChange={(e) => {
+        const f = e.target.files?.[0]; e.target.value = '';
+        if (!f) return;
+        void f.text().then((t) => post<{ item: Rec; warnings: string[] }>(`c/${coll}/import`, { item: JSON.parse(t) })).then((r) => {
+          rt.toast(r.warnings.length ? `Imported without: ${r.warnings.join('; ')}` : 'Imported', r.warnings.length ? 'warning' : 'success');
+          onDone(r.item);
+        }, (err: Error) => rt.toast(err.message, 'danger'));
+      }} />
+    </label>
   );
 }
 
