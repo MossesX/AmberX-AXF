@@ -1,0 +1,33 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.plugin-switches",
+  "name": "Plugin switches",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A pop-up dialog with a simple list of every plugin and a switch to turn each one on or off. Its own switch is greyed out, so it can't switch itself off from its own list. Warns when switching off a plugin that another running plugin needs. Open it from the right-click / long-press menu anywhere, the action plugin-switches.open, search, or Settings → Plugins → Plugin switches.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:plugin-switches",
+    "settings-tab:plugin-switches"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus",
+    "replacedBy": "pending item plugin-switches (Fable)"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/plugin-switches",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}

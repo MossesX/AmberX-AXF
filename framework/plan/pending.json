@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T00:30:25.265Z",
+ "updatedAt": "2026-10-19T11:10:43.137Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -351,6 +351,19 @@
    "createdAt": "2026-10-19T00:18:03.979Z",
    "builtAt": "",
    "updatedAt": "2026-10-19T00:18:03.979Z",
+   "source": "chat"
+  },
+  {
+   "id": "plugin-switches",
+   "title": "Plugin switches plugin (Fable rebuild)",
+   "detail": "A pop-up dialog with a simple list of every plugin and an on/off switch for each; its own switch is greyed out; asks before switching off a plugin that a running plugin needs. The Opus version is the web console plugin in the folder \"plugin-switches\" (built Oct 19 2026): run its uninstaller first (uninstall.mjs --all, then the lifecycle check with --after-uninstall), then build this one following plugin-lifecycle@1.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-19T11:10:43.137Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-19T11:10:43.137Z",
    "source": "chat"
   }
  ]
