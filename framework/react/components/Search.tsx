@@ -203,6 +203,7 @@ export function LiveSearch({ config }: { config: ToolbarSearch }) {
       if (!box.current?.contains(t) && !document.getElementById(listId)?.contains(t)) setOpen(false);
     };
     const key = (e: globalThis.KeyboardEvent) => {
+      if (config.shortcut === false) return;
       const typing = (e.target as HTMLElement | null)?.closest?.('input, textarea, select, [contenteditable="true"]');
       if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') || (e.key === '/' && !typing)) {
         e.preventDefault();
@@ -214,7 +215,7 @@ export function LiveSearch({ config }: { config: ToolbarSearch }) {
     window.addEventListener('pointerdown', down);
     window.addEventListener('keydown', key);
     return () => { window.removeEventListener('pointerdown', down); window.removeEventListener('keydown', key); };
-  }, []);
+  }, [config.shortcut]);
 
   const pick = (h: SearchHit | undefined) => {
     if (!h) return;

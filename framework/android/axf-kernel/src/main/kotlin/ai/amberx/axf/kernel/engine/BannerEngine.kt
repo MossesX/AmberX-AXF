@@ -12,7 +12,7 @@ import kotlinx.serialization.json.doubleOrNull
 /**
  * Banner engine (asset type `banner`): the thin permanent bar across the top of the screen and the assets it holds.
  * Same rules as the web reference engine (framework/core/engines/banner.ts); fixtures in spec/fixtures/banner.json.
- * A banner shows the app logo and hosts attachments of the attachable types (badge, clock) on its left, center or right,
+ * A banner shows the app logo and hosts attachments of the attachable types (badge and every widget: clock, search bar) on its left, center or right,
  * from the asset's own `attach` list and from modules at run time; a run-time attachment with the same type + id replaces
  * the asset's own. Unknown types, bad sides and assets that don't exist are skipped.
  */
@@ -51,7 +51,7 @@ public data class BadgeData(val icon: String, val label: String, val tone: Strin
 public data class ClockParts(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int)
 
 public object BannerEngine {
-    public val ATTACHABLE: List<String> = listOf("badge", "clock")
+    public val ATTACHABLE: List<String> = listOf("badge") + WidgetEngine.WIDGET_TYPES
     public val SIDES: List<String> = listOf("left", "center", "right")
     public const val HEIGHT_MIN: Int = 16
     public const val HEIGHT_MAX: Int = 48
@@ -71,18 +71,8 @@ public object BannerEngine {
     public fun vars(b: BannerData?, hidden: Boolean = false): Map<String, String> = mapOf("--fx-banner-h" to "${height(b, hidden)}px")
 
     /** Where every attachment goes. [has] says whether that asset exists. */
-    public fun place(b: BannerData?, extra: List<BannerAttachment>, has: (String, String) -> Boolean): Map<String, List<PlacedAttachment>> {
-        val byKey = LinkedHashMap<String, PlacedAttachment>()
-        fun add(a: BannerAttachment, fallbackOrder: Double, origin: String) {
-            if (a.type !in ATTACHABLE || a.at !in SIDES || !has(a.type, a.id)) return
-            val order = a.order?.takeIf { it.isFinite() } ?: fallbackOrder
-            // a later entry with the same key replaces the earlier one (each side is sorted afterwards)
-            byKey[a.key] = PlacedAttachment(a.key, a.type, a.id, a.at, order, a.origin ?: origin)
-        }
-        b?.attach?.forEachIndexed { i, a -> add(a, i * 10.0, "asset") }
-        extra.forEachIndexed { i, a -> add(a, 1000.0 + i * 10, "runtime") }
-        return SIDES.associateWith { side -> byKey.values.filter { it.at == side }.sortedWith(compareBy<PlacedAttachment> { it.order }.thenBy { it.key }) }
-    }
+    public fun place(b: BannerData?, extra: List<BannerAttachment>, has: (String, String) -> Boolean): Map<String, List<PlacedAttachment>> =
+        WidgetEngine.placeOnHost(b?.attach, extra, has, ATTACHABLE, SIDES)
 
     public fun toneToken(tone: String): String = TONE_TOKEN[tone] ?: "text"
 

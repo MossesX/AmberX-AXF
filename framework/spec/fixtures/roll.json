@@ -14,6 +14,7 @@
     "container": true,
     "banner": true,
     "clock": false,
+    "search-bar": false,
     "badge": false,
     "uac-policy": false
   },

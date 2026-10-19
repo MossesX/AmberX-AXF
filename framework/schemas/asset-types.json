@@ -229,9 +229,17 @@
         "surface": "flat (default) | raised | glass",
         "divider": "boolean, default true — rule between item groups",
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
-        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0"
+        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
+        "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these."
       },
-      "hideable": true
+      "hideable": true,
+      "widgets": {
+        "_doc": "Widget host: only widget types (\"widget\": true) are placed; missing assets are skipped.",
+        "sides": [
+          "start",
+          "end"
+        ]
+      }
     },
     "nav-menu": {
       "label": "Navigation menu",
@@ -475,7 +483,8 @@
         "_doc": "data.attach = [{type, id, at: left|center|right, order?}]. Only attachable types (badge, clock) are placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
         "types": [
           "badge",
-          "clock"
+          "clock",
+          "search-bar"
         ],
         "sides": [
           "left",
@@ -490,9 +499,9 @@
     },
     "clock": {
       "label": "Clock",
-      "group": "Chrome",
+      "group": "Widgets",
       "icon": "clock",
-      "description": "A clock that attaches to the banner (or anywhere that hosts attachments).",
+      "description": "A clock widget: attaches to banners and toolbars (any widget host).",
       "required": [
         "format",
         "seconds",
@@ -518,6 +527,36 @@
       "optional_fields": {
         "timezone": "string — IANA zone (e.g. America/New_York); default the device's",
         "mono": "boolean — monospace digits (default true)"
+      },
+      "widget": true
+    },
+    "search-bar": {
+      "label": "Search bar",
+      "group": "Widgets",
+      "icon": "search",
+      "description": "A search bar widget: searches the whole app (views, settings, actions, assets, windows, words on the page, and anything a module adds, e.g. the console's plan features, pending builds and plugins). Attaches to banners and toolbars.",
+      "required": [
+        "placeholder",
+        "maxResults",
+        "width"
+      ],
+      "enums": {
+        "width": [
+          "compact",
+          "regular",
+          "wide"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "kinds": "string[] — only these result kinds (default: all)",
+        "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)"
       }
     },
     "badge": {
@@ -587,6 +626,6 @@
     "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
   },
   "attachDefaults": {
-    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host (the banner) by the host's data or by plugins at run time. They're never rolled."
+    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true: clock, search bar) attach to banners and toolbars; badges to banners."
   }
 }

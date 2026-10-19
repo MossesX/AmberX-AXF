@@ -1,0 +1,169 @@
+{
+  "widgetTypes": [
+    "clock",
+    "search-bar"
+  ],
+  "toolbarSides": [
+    "start",
+    "end"
+  ],
+  "searchBarWidth": {
+    "compact": 18,
+    "regular": 30,
+    "wide": 46
+  },
+  "exists": [
+    "badge:new",
+    "clock:digital-12h",
+    "clock:digital-24h",
+    "search-bar:compact",
+    "search-bar:everything"
+  ],
+  "toolbar": {
+    "none": {
+      "toolbar": {
+        "widgets": []
+      },
+      "extra": [],
+      "placed": {
+        "start": [],
+        "end": []
+      }
+    },
+    "own-widgets": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end"
+          },
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          }
+        ]
+      },
+      "extra": [],
+      "placed": {
+        "start": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start",
+            "order": 10,
+            "origin": "asset"
+          }
+        ],
+        "end": [
+          {
+            "key": "search-bar:everything",
+            "type": "search-bar",
+            "id": "everything",
+            "at": "end",
+            "order": 0,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "runtime-moves-own": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "start"
+          }
+        ]
+      },
+      "extra": [
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "end",
+          "order": 1,
+          "origin": "p"
+        }
+      ],
+      "placed": {
+        "start": [],
+        "end": [
+          {
+            "key": "clock:digital-12h",
+            "type": "clock",
+            "id": "digital-12h",
+            "at": "end",
+            "order": 1,
+            "origin": "p"
+          }
+        ]
+      }
+    },
+    "badges-are-not-widgets": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "badge",
+            "id": "new",
+            "at": "start"
+          },
+          {
+            "type": "search-bar",
+            "id": "missing",
+            "at": "end"
+          },
+          {
+            "type": "clock",
+            "id": "digital-24h",
+            "at": "left"
+          }
+        ]
+      },
+      "extra": [],
+      "placed": {
+        "start": [],
+        "end": []
+      }
+    },
+    "no-widgets-field": {
+      "toolbar": {},
+      "extra": [
+        {
+          "type": "search-bar",
+          "id": "compact",
+          "at": "start"
+        }
+      ],
+      "placed": {
+        "start": [
+          {
+            "key": "search-bar:compact",
+            "type": "search-bar",
+            "id": "compact",
+            "at": "start",
+            "order": 1000,
+            "origin": "runtime"
+          }
+        ],
+        "end": []
+      }
+    },
+    "no-toolbar": {
+      "toolbar": null,
+      "extra": [
+        {
+          "type": "search-bar",
+          "id": "compact",
+          "at": "start"
+        }
+      ],
+      "placed": {
+        "start": [],
+        "end": []
+      }
+    }
+  }
+}

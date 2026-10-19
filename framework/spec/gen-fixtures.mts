@@ -13,6 +13,7 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
+import { SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, placeToolbarWidgets } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -71,7 +72,7 @@ write('spacing.json', {
 // Banner (core/engines/banner.ts): height vars, where attachments go, clock text, badge tone tokens.
 {
   const banners = Object.fromEntries(load('banner').map((a) => [a.id, a.data]));
-  const exists = new Set([...load('badge').map((a) => `badge:${a.id}`), ...load('clock').map((a) => `clock:${a.id}`), 'badge:claude']);
+  const exists = new Set([...load('badge').map((a) => `badge:${a.id}`), ...load('clock').map((a) => `clock:${a.id}`), ...load('search-bar').map((a) => `search-bar:${a.id}`), 'badge:claude']);
   const has = (t: string, id: string) => exists.has(`${t}:${id}`);
   const thin = banners['amberx-thin'];
   const placeCases = {
@@ -103,6 +104,26 @@ write('spacing.json', {
     place: Object.fromEntries(Object.entries(placeCases).map(([k, c]) => [k, { banner: c.banner, extra: c.extra, placed: placeAttachments(c.banner as never, c.extra as never, has) }])),
     clock: clocks.flatMap((c) => parts.map((t) => ({ clock: c, parts: t, text: formatClock(c, t) }))),
     tones: BADGE_TONE_TOKEN,
+  });
+}
+// Widgets (core/engines/widgets.ts): the toolbar as a widget host (start / end), widgets only.
+{
+  const exists = new Set([...load('clock').map((a) => `clock:${a.id}`), ...load('search-bar').map((a) => `search-bar:${a.id}`), ...load('badge').map((a) => `badge:${a.id}`)]);
+  const has = (t: string, id: string) => exists.has(`${t}:${id}`);
+  const cases = {
+    'none': { toolbar: { widgets: [] }, extra: [] },
+    'own-widgets': { toolbar: { widgets: [{ type: 'search-bar', id: 'everything', at: 'end' }, { type: 'clock', id: 'digital-12h', at: 'start' }] }, extra: [] },
+    'runtime-moves-own': { toolbar: { widgets: [{ type: 'clock', id: 'digital-12h', at: 'start' }] }, extra: [{ type: 'clock', id: 'digital-12h', at: 'end', order: 1, origin: 'p' }] },
+    'badges-are-not-widgets': { toolbar: { widgets: [{ type: 'badge', id: 'new', at: 'start' }, { type: 'search-bar', id: 'missing', at: 'end' }, { type: 'clock', id: 'digital-24h', at: 'left' }] }, extra: [] },
+    'no-widgets-field': { toolbar: {}, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
+    'no-toolbar': { toolbar: null, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
+  } as const;
+  write('widgets.json', {
+    widgetTypes: WIDGET_TYPES,
+    toolbarSides: TOOLBAR_SIDES,
+    searchBarWidth: SEARCH_BAR_WIDTH,
+    exists: [...exists].sort(),
+    toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
   });
 }
 write('components.json', {

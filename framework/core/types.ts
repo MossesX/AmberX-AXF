@@ -19,12 +19,13 @@ export const ASSET_TYPES = [
   'container',
   'banner',
   'clock',
+  'search-bar',
   'badge',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'badge'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'search-bar', 'badge'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -154,6 +155,8 @@ export interface ToolbarData {
   divider?: boolean;
   /** live search box (see ToolbarSearch); absent or live:false = classic submit-to-jump box */
   search?: ToolbarSearch;
+  /** widget assets (clock, search bar) at the toolbar's start or end (core/engines/widgets.ts) */
+  widgets?: ToolbarWidget[];
 }
 
 /** Toolbar search behaviour. Results come from the runtime's search index (engines/search.ts). */
@@ -163,6 +166,8 @@ export interface ToolbarSearch {
   placeholder?: string;
   /** default 12 */
   maxResults?: number;
+  /** Ctrl/Cmd+K and / focus this box (default true) */
+  shortcut?: boolean;
   /** limit results to these kinds (default: all) */
   kinds?: string[];
 }
@@ -232,6 +237,15 @@ export interface ClockData {
   timezone?: string;
   mono?: boolean;
 }
+export interface SearchBarData {
+  placeholder: string;
+  maxResults: number;
+  width: 'compact' | 'regular' | 'wide';
+  kinds?: string[];
+  shortcut?: boolean;
+}
+/** A widget placed on a toolbar (asset type toolbar → data.widgets). */
+export interface ToolbarWidget { type: string; id: string; at: 'start' | 'end'; order?: number }
 export interface BadgeData {
   icon: string;
   label: string;
@@ -306,6 +320,7 @@ export interface AssetDataMap {
   container: ContainerData;
   banner: BannerData;
   clock: ClockData;
+  'search-bar': SearchBarData;
   badge: BadgeData;
   'uac-policy': UACPolicyData;
 }

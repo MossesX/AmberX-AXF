@@ -6,6 +6,7 @@ import { Icon } from './Icon';
 import { MenuList } from './MenuList';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
+import { WidgetView } from './Widgets';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -69,6 +70,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const tb = useAsset('toolbar');
   useAxfState();
   const [q, setQ] = useState('');
+  // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
+  const widgets = rt.toolbarWidgets();
 
   // Search doubles as a mini command palette: jump to a view or hot-swap an asset by name.
   const run = (e: FormEvent) => {
@@ -94,6 +97,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
 
   return (
     <div className={`fx-toolbar fx-toolbar--${tb.data.variant}`} data-align={tb.data.align} role="toolbar">
+      {widgets.start.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key}><WidgetView type={w.type} id={w.id} /></span>)}
       {tb.data.groups.map((g) => (
         <div key={g.id} className="fx-toolbar__group">
           {g.items.map((it) => {
@@ -118,6 +122,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           })}
         </div>
       ))}
+      {widgets.end.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key}><WidgetView type={w.type} id={w.id} /></span>)}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">

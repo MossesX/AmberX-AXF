@@ -30,6 +30,7 @@ import ai.amberx.axf.kernel.engine.ComponentStyles
 import ai.amberx.axf.kernel.engine.ContextMenuEngine
 import ai.amberx.axf.kernel.engine.Gate
 import ai.amberx.axf.kernel.engine.LayoutEngine
+import ai.amberx.axf.kernel.engine.WidgetEngine
 import ai.amberx.axf.kernel.engine.HideEngine
 import ai.amberx.axf.kernel.engine.Spacing
 import ai.amberx.axf.kernel.engine.BannerAttachment
@@ -276,6 +277,29 @@ public class AxfRuntime(
     /** Pop a short message out of a banner attachment; the UI layer calls [dismissBannerPopup] after its duration. */
     public fun showBannerPopup(key: String, text: String, durationMs: Long = 5000): Unit = set({ it.copy(bannerPopup = BannerPopup(key, text, durationMs)) })
     public fun dismissBannerPopup() { if (current.bannerPopup != null) set({ it.copy(bannerPopup = null) }) }
+
+    /* ---------------- toolbar widgets (WidgetEngine; web: rt.attachToToolbar / rt.toolbarWidgets) ---------------- */
+
+    private var toolbarExtra: List<BannerAttachment> = emptyList()
+
+    /** Attach a widget (clock, search bar) to the toolbar's start or end at run time; same type + id replaces. Returns detach. */
+    public fun attachToToolbar(a: BannerAttachment): () -> Unit {
+        toolbarExtra = toolbarExtra.filter { it.key != a.key } + a
+        set({ it })
+        return { detachFromToolbar(a.key) }
+    }
+
+    /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
+    public fun detachFromToolbar(keyOrOrigin: String) {
+        val next = toolbarExtra.filter { it.key != keyOrOrigin && it.origin != keyOrOrigin }
+        if (next.size != toolbarExtra.size) { toolbarExtra = next; set({ it }) }
+    }
+
+    /** Where the toolbar's widgets go (start / end); empty when there's no toolbar or it's hidden. */
+    public fun toolbarWidgets(): Map<String, List<PlacedAttachment>> {
+        val tb = if (slotHidden("toolbar")) null else asset("toolbar")?.data
+        return WidgetEngine.placeToolbar(tb, toolbarExtra) { t, id -> registry.has(t, id) }
+    }
 
     /* ---------------- spacing (SpacingEngine; web: settings `axf.appearance.spacing`) ---------------- */
 

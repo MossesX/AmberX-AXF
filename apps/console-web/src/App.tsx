@@ -1,3 +1,4 @@
+import { installConsoleSearch } from './consoleSearch';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
@@ -72,6 +73,8 @@ function usePlugins() {
     globalThis.addEventListener(PLUGINS_CHANGED, onChange);
     return () => globalThis.removeEventListener(PLUGINS_CHANGED, onChange);
   }, [reload]);
+  // Search bar (banner widget): plan features, tracker items, pending builds and plugins on top of the framework's own.
+  useEffect(() => installConsoleSearch(rt), [rt]);
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];

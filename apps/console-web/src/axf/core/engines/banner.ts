@@ -6,29 +6,22 @@
  * (`rt.attachToBanner`, e.g. a plugin's status badge); a run-time attachment with the same type + id replaces the asset's
  * own. Unknown types, bad sides and assets that don't exist are skipped, so a banner never breaks on a missing piece.
  *
- * Pure functions, mirrored by the Kotlin kernel (engine/BannerEngine.kt); fixtures in spec/fixtures/banner.json.
+ * Placement is the shared widget-host rule (engines/widgets.ts). Pure functions, mirrored by the Kotlin kernel
+ * (engine/BannerEngine.kt); fixtures in spec/fixtures/banner.json.
  */
 import type { BadgeData, BannerData, BannerSide, ClockData } from '../types';
 import type { VarMap } from './theme';
+import { WIDGET_TYPES, attachmentKey, placeOnHost, type HostAttachment, type PlacedAttachment } from './widgets';
 
-/** Types a banner can hold (asset-types.json → banner.attach.types). */
-export const ATTACHABLE_TYPES = ['badge', 'clock'] as const;
+/** Types a banner can hold (asset-types.json → banner.attach.types): badges and every widget. */
+export const ATTACHABLE_TYPES = ['badge', ...WIDGET_TYPES] as const;
 export const BANNER_SIDES: readonly BannerSide[] = ['left', 'center', 'right'];
 export const BANNER_HEIGHT = { min: 16, max: 48, thin: 24 } as const;
 
-export interface BannerAttachment {
-  type: string;
-  id: string;
-  at: BannerSide;
-  /** Lower comes first on its side. Asset entries default to their index × 10. */
-  order?: number;
-  /** Who attached it: `asset` for the banner's own list, else the module / plugin id. */
-  origin?: string;
-}
-export interface PlacedAttachment { key: string; type: string; id: string; at: BannerSide; order: number; origin: string }
+export interface BannerAttachment extends HostAttachment { at: BannerSide }
+export type { PlacedAttachment };
 export type PlacedBanner = Record<BannerSide, PlacedAttachment[]>;
-
-export const attachmentKey = (type: string, id: string) => `${type}:${id}`;
+export { attachmentKey };
 
 const clampHeight = (h: unknown) => {
   const n = typeof h === 'number' && Number.isFinite(h) ? Math.round(h) : BANNER_HEIGHT.thin;
@@ -40,24 +33,9 @@ export function bannerVars(b: BannerData | null | undefined, hidden = false): Va
   return { '--fx-banner-h': b && !hidden ? `${clampHeight(b.height)}px` : '0px' };
 }
 
-/** Where every attachment goes. `has(type, id)` says whether that asset exists. */
+/** Where every attachment goes (the banner as a host: badges and widgets, left / center / right). */
 export function placeAttachments(b: BannerData | null | undefined, extra: BannerAttachment[], has: (type: string, id: string) => boolean): PlacedBanner {
-  const byKey = new Map<string, PlacedAttachment>();
-  const add = (a: BannerAttachment, fallbackOrder: number, origin: string) => {
-    if (!a || typeof a.type !== 'string' || typeof a.id !== 'string') return;
-    if (!(ATTACHABLE_TYPES as readonly string[]).includes(a.type)) return;
-    if (!(BANNER_SIDES as readonly string[]).includes(a.at)) return;
-    if (!has(a.type, a.id)) return;
-    const key = attachmentKey(a.type, a.id);
-    const order = typeof a.order === 'number' && Number.isFinite(a.order) ? a.order : fallbackOrder;
-    byKey.set(key, { key, type: a.type, id: a.id, at: a.at, order, origin: a.origin ?? origin });
-  };
-  (Array.isArray(b?.attach) ? b!.attach : []).forEach((a, i) => add(a, i * 10, 'asset'));
-  extra.forEach((a, i) => add(a, 1000 + i * 10, 'runtime'));
-  const out: PlacedBanner = { left: [], center: [], right: [] };
-  for (const p of byKey.values()) out[p.at].push(p);
-  for (const side of BANNER_SIDES) out[side].sort((x, y) => x.order - y.order || (x.key < y.key ? -1 : x.key > y.key ? 1 : 0));
-  return out;
+  return placeOnHost(b?.attach, extra, has, ATTACHABLE_TYPES, BANNER_SIDES) as PlacedBanner;
 }
 
 /** The theme token a badge tone paints with (`--fx-<token>`). */

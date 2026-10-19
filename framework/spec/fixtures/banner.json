@@ -1,7 +1,8 @@
 {
   "attachable": [
     "badge",
-    "clock"
+    "clock",
+    "search-bar"
   ],
   "sides": [
     "left",
@@ -35,7 +36,9 @@
     "badge:claude",
     "badge:new",
     "clock:digital-12h",
-    "clock:digital-24h"
+    "clock:digital-24h",
+    "search-bar:compact",
+    "search-bar:everything"
   ],
   "place": {
     "asset-only": {
@@ -48,6 +51,11 @@
         },
         "attach": [
           {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center"
+          },
+          {
             "type": "clock",
             "id": "digital-12h",
             "at": "right"
@@ -58,14 +66,23 @@
       "extra": [],
       "placed": {
         "left": [],
-        "center": [],
+        "center": [
+          {
+            "key": "search-bar:everything",
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center",
+            "order": 0,
+            "origin": "asset"
+          }
+        ],
         "right": [
           {
             "key": "clock:digital-12h",
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 0,
+            "order": 10,
             "origin": "asset"
           }
         ]
@@ -80,6 +97,11 @@
           "text": "AmberX"
         },
         "attach": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center"
+          },
           {
             "type": "clock",
             "id": "digital-12h",
@@ -108,14 +130,23 @@
             "origin": "claude-badge"
           }
         ],
-        "center": [],
+        "center": [
+          {
+            "key": "search-bar:everything",
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center",
+            "order": 0,
+            "origin": "asset"
+          }
+        ],
         "right": [
           {
             "key": "clock:digital-12h",
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 0,
+            "order": 10,
             "origin": "asset"
           }
         ]
@@ -130,6 +161,11 @@
           "text": "AmberX"
         },
         "attach": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center"
+          },
           {
             "type": "clock",
             "id": "digital-12h",
@@ -149,6 +185,14 @@
       "placed": {
         "left": [],
         "center": [
+          {
+            "key": "search-bar:everything",
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center",
+            "order": 0,
+            "origin": "asset"
+          },
           {
             "key": "clock:digital-12h",
             "type": "clock",
@@ -170,6 +214,11 @@
           "text": "AmberX"
         },
         "attach": [
+          {
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center"
+          },
           {
             "type": "clock",
             "id": "digital-12h",
@@ -197,14 +246,23 @@
       ],
       "placed": {
         "left": [],
-        "center": [],
+        "center": [
+          {
+            "key": "search-bar:everything",
+            "type": "search-bar",
+            "id": "everything",
+            "at": "center",
+            "order": 0,
+            "origin": "asset"
+          }
+        ],
         "right": [
           {
             "key": "clock:digital-12h",
             "type": "clock",
             "id": "digital-12h",
             "at": "right",
-            "order": 0,
+            "order": 10,
             "origin": "asset"
           }
         ]

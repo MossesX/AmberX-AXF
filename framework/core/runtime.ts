@@ -15,6 +15,7 @@ import { WindowManager } from './engines/windows';
 import { hideable, hiddenSlots } from './engines/hide';
 import { spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
+import { placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { Diagnostics } from './diagnostics';
@@ -287,6 +288,31 @@ export class AxfRuntime {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
     const placed = placeAttachments(b, b ? this.bannerExtra : [], (t, id) => this.registry.has(t as AssetType, id));
     return { data: b, placed };
+  }
+
+  /* ---------------- toolbar widgets (core/engines/widgets.ts) ---------------- */
+
+  private toolbarExtra: HostAttachment[] = [];
+
+  /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
+  attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }): () => void {
+    const key = attachmentKey(a.type, a.id);
+    this.toolbarExtra = [...this.toolbarExtra.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }];
+    this.set({});
+    return () => this.detachFromToolbar(key);
+  }
+
+  /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
+  detachFromToolbar(keyOrOrigin: string): void {
+    const before = this.toolbarExtra.length;
+    this.toolbarExtra = this.toolbarExtra.filter((x) => attachmentKey(x.type, x.id) !== keyOrOrigin && x.origin !== keyOrOrigin);
+    if (this.toolbarExtra.length !== before) this.set({});
+  }
+
+  /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
+  toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
+    const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
+    return placeToolbarWidgets(tb, this.toolbarExtra, (t, id) => this.registry.has(t as AssetType, id));
   }
 
   /** Pop a short message out of a banner attachment for `ms` (default 5 s), e.g. a status badge on load. */

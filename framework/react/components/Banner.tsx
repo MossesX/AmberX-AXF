@@ -9,6 +9,7 @@ import { BANNER_SIDES, badgeToneToken, formatClock, type ClockParts, type Placed
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { WidgetView } from './Widgets';
 
 function clockParts(tz?: string): ClockParts {
   const now = new Date();
@@ -55,7 +56,7 @@ function Attached({ a }: { a: PlacedAttachment }) {
   const pop = state.bannerPopup && state.bannerPopup.key === a.key ? state.bannerPopup : null;
   return (
     <span className="fx-banner__item" data-axf-banner-item={a.key}>
-      {a.type === 'clock' ? <BannerClock data={asset.data as ClockData} /> : <BannerBadge data={asset.data as BadgeData} />}
+      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} />}
       {pop && <span className="fx-banner__pop" role="status">{pop.text}</span>}
     </span>
   );

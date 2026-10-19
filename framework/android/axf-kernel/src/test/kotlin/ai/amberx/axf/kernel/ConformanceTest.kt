@@ -133,6 +133,28 @@ class ConformanceTest {
         for ((tone, token) in f.getValue("tones").jsonObject) assertEquals(token.jsonPrimitive.content, E.toneToken(tone), "tone $tone")
     }
 
+    @Test fun `widget engine matches the reference engine`() {
+        val f = fixture("widgets.json")
+        val W = ai.amberx.axf.kernel.engine.WidgetEngine
+        assertEquals((f.getValue("widgetTypes") as JsonArray).map { it.jsonPrimitive.content }, W.WIDGET_TYPES, "widget types")
+        assertEquals((f.getValue("toolbarSides") as JsonArray).map { it.jsonPrimitive.content }, W.TOOLBAR_SIDES, "toolbar sides")
+        for ((w, n) in f.getValue("searchBarWidth").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.SEARCH_BAR_WIDTH[w], "search bar width $w")
+        val exists = (f.getValue("exists") as JsonArray).map { it.jsonPrimitive.content }.toSet()
+        for ((name, c) in f.getValue("toolbar").jsonObject) {
+            val o = c.jsonObject
+            val tb = o["toolbar"] as? JsonObject
+            val extra = (o.getValue("extra") as JsonArray).map { e -> val x = e.jsonObject; ai.amberx.axf.kernel.engine.BannerAttachment(x.getValue("type").jsonPrimitive.content, x.getValue("id").jsonPrimitive.content, x.getValue("at").jsonPrimitive.content, x["order"]?.jsonPrimitive?.content?.toDoubleOrNull(), x["origin"]?.jsonPrimitive?.content) }
+            val placed = W.placeToolbar(tb, extra) { t, id -> "$t:$id" in exists }
+            for ((side, list) in o.getValue("placed").jsonObject) {
+                val want = (list as JsonArray).map { val p = it.jsonObject; listOf("key", "at", "origin").joinToString("|") { k -> p.getValue(k).jsonPrimitive.content } + "|" + p.getValue("order").jsonPrimitive.content.toDouble() }
+                val got = placed.getValue(side).map { "${it.key}|${it.at}|${it.origin}|${it.order}" }
+                assertEquals(want, got, "toolbar $name $side")
+            }
+        }
+        val bar = ai.amberx.axf.kernel.engine.SearchBarData.fromJson(asset("search-bar", "everything"))
+        assertEquals("regular", bar.width, "search bar width field")
+    }
+
     @Test fun `spacing choice matches the reference engine`() {
         val f = fixture("spacing.json")
         assertEquals(f.getValue("default").jsonPrimitive.content, ai.amberx.axf.kernel.engine.Spacing.DEFAULT.id, "default spacing")

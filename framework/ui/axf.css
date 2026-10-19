@@ -96,6 +96,15 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 @keyframes fx-banner-pop { from { opacity: 0; transform: translate(calc(var(--fx-space) * -1), -50%); } to { opacity: 1; transform: translateY(-50%); } }
 @media (max-width: 480px) { .fx-banner__name { display: none; } }
 
+/* ---------------- widgets (core/engines/widgets.ts): clock, search bar on banners and toolbars ---------------- */
+.fx-widget-search { display: flex; min-width: 0; max-width: 100%; }
+.fx-widget-search .fx-search { width: 100%; margin: 0; min-width: 0; }
+.fx-banner .fx-widget-search .fx-search { height: calc(var(--fx-banner-h) - var(--fx-border-w) * 2 - 4px); padding-top: 0; padding-bottom: 0; }
+.fx-banner .fx-widget-search .fx-search input { height: 100%; font-size: 1em; }
+.fx-toolbar__widget { display: inline-flex; align-items: center; min-width: 0; flex: none; }
+.fx-toolbar__widget .fx-banner__clock { color: var(--fx-muted); font-size: 0.9em; padding: 0 var(--fx-space); }
+
+
 .fx-shell {
   height: 100%;
   display: grid;
