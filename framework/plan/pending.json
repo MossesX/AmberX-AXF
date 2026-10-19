@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T11:40:14.809Z",
+ "updatedAt": "2026-10-19T12:02:10.988Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -255,6 +255,19 @@
    "createdAt": "2026-10-19T11:40:14.809Z",
    "builtAt": "",
    "updatedAt": "2026-10-19T11:40:14.809Z",
+   "source": "chat"
+  },
+  {
+   "id": "build-pilot-agents",
+   "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
+   "detail": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplates, assets and build options, or build NEW AXF libraries (approved by a person). Rule: all assembly of apps goes through the agent. Also rebuild the Opus feature manager plugin (plugins/feature-manager, built Oct 19 2026) and the gate (pilot-assembly@1, server/assembly.py); keep server/test_server.py passing or replace it with stricter tests.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-19T12:02:10.988Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-19T12:02:10.988Z",
    "source": "chat"
   }
  ]
