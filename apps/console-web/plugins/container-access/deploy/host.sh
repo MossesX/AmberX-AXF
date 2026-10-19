@@ -11,7 +11,7 @@ PLUGIN="$(basename "$(dirname "$HERE")")"
 PROXY="axf-docker-proxy"; NETW="axf-docker-proxy"; IMAGE="${AXF_DOCKER_PROXY_IMAGE:-haproxy:2.9-alpine}"
 case "${1:-}" in
   up)
-    docker network inspect "$NETW" >/dev/null 2>&1 || docker network create --internal -l "axf.plugin=$PLUGIN" "$NETW" >/dev/null
+    docker network inspect "$NETW" >/dev/null 2>&1 || docker network create --internal --label "axf.plugin=$PLUGIN" "$NETW" >/dev/null
     want="$(sha256sum "$HERE/haproxy.cfg" | cut -c1-16)-$IMAGE"
     have="$(docker inspect -f '{{index .Config.Labels "axf.config"}}' "$PROXY" 2>/dev/null || true)"
     running="$(docker inspect -f '{{.State.Running}}' "$PROXY" 2>/dev/null || echo false)"

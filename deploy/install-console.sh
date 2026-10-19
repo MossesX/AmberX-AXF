@@ -183,7 +183,7 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
       # everything else on the console needs a hub admin. The console trusts the wall's headers only with AXF_TRUST_WALL=1.
       USER_PATHS="$(cd "$DIR/apps/console-web/plugins" 2>/dev/null && for f in */plugin.json; do
         d="${f%/plugin.json}"; case "$d" in _*) continue;; esac
-        grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f" && printf '/api/plugins/%s/%%2C' "$d"; done)"  # %2C = "," (kept out of the label's own list syntax)
+        if grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f"; then printf '/api/plugins/%s/%%2C' "$d"; fi; done; true)"  # %2C = "," (kept out of the label's own list syntax)
       USER_PATHS="${USER_PATHS%\%2C}"
       # Signed-in hub *users* (not just admins) may open the whole console; the console itself decides what each
       # one may do (server/wall.py: page + read-only data + plugins an admin granted). AXF_WALL_USERS=off = admins only.
