@@ -27,8 +27,7 @@ case "${1:-}" in
         "$IMAGE" >/dev/null
       echo "[axf] Docker socket proxy (re)started: $PROXY" >&2
     fi
-    echo "-e"; echo "AXF_DOCKER_PROXY=http://$PROXY:2375"
-    echo "-l"; echo "axf.console=1"
+    printf '%s\n' -e "AXF_DOCKER_PROXY=http://$PROXY:2375" -l "axf.console=1"
     ;;
   attach)
     docker network connect "$NETW" "${NAME:-axf-console}" 2>/dev/null || true
