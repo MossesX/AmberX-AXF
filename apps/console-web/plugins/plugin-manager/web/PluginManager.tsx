@@ -1,5 +1,5 @@
 /**
- * The Plugin Manager. Four views (cards, table, detail, dependency graph) inside four layouts that are built
+ * The Plugin Manager. Five views (cards, table, detail, dependency graph, install from the catalog) inside four layouts that are built
  * differently, not just recoloured: Studio (rail + drawer), Mission control (status tiles + signals column),
  * Terminal (monospace with a command line) and Catalog (store shelves + product page). Everything is theme tokens,
  * so every colour / style theme still applies to every layout.
@@ -11,6 +11,7 @@ import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
 import { HEALTH_LABEL, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
 import { FILTERS, LAYOUTS, SORTS, usePrefs, VIEWS, type FilterId, type LayoutId, type Prefs, type SortId, type ViewId } from './prefs';
 import { CardsView, GraphView, MasterDetailView, TableView, type ViewProps } from './views';
+import { InstallView } from './InstallView';
 import './plugin-manager.css';
 
 const FILTER_LABEL: Record<FilterId, string> = { all: 'All', enabled: 'Running', off: 'Switched off', problems: 'Needs attention', editors: 'UI editors' };
@@ -40,6 +41,7 @@ function ViewBody(p: ViewProps & { view: ViewId }) {
   if (p.view === 'table') return <TableView {...p} />;
   if (p.view === 'detail') return <MasterDetailView {...p} />;
   if (p.view === 'graph') return <GraphView {...p} />;
+  if (p.view === 'install') return <InstallView {...p} />;
   return <CardsView {...p} />;
 }
 
@@ -277,13 +279,15 @@ function Terminal(p: LayoutProps) {
     switch (c.toLowerCase()) {
       case 'help':
         return print([
-          'ls                      list plugins          view grid|table|detail|graph',
+          'ls                      list plugins          view grid|table|detail|graph|install',
           'select <plugin>         show details          layout studio|mission|terminal|catalog',
           'deps <plugin>           dependencies          filter all|enabled|off|problems|editors',
           'open <plugin>           open its UI           settings <plugin>    open its settings',
           'enable|disable <plugin> switch it             logs <plugin>        show recent log lines',
           'clashes                 list conflicts        refresh | clear',
+          'install                 the plugin catalog (install, update, publish)',
         ]);
+      case 'install': return (p.set('view', 'install'), print(['view → install (plugin catalog)']));
       case 'ls':
         return print(p.rows.map((r) => `${r.enabled ? '[ ON ]' : '[OFF ]'} ${r.folder.padEnd(18)} ${r.version.padEnd(7)} ${HEALTH_LABEL[r.health].padEnd(14)} ${r.name}`));
       case 'view': return VIEWS.some((v) => v.id === a) ? (p.set('view', a as ViewId), print([`view → ${a}`])) : print([`unknown view "${a ?? ''}"`], 'err');

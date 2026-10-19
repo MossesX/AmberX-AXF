@@ -272,6 +272,17 @@
 .axp-plugin-manager--catalog .axp-plugin-manager-tabs__tab.is-active { background: var(--fx-text); color: var(--fx-bg) }
 
 /* ---------- narrow desktop: studio drawer takes the rail's room ---------- */
+/* Install view: the plugin catalog */
+.axp-plugin-manager-install__head { justify-content: space-between; align-items: center; gap: var(--fx-space) }
+.axp-plugin-manager-install__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.75) }
+.axp-plugin-manager-install__item { display: grid; gap: calc(var(--fx-space) * 0.5) }
+.axp-plugin-manager-install__item p { margin: 0 }
+.axp-plugin-manager-install__confirm { padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-plugin-manager-install__confirm p { margin: 0 }
+.axp-plugin-manager-install__confirm label { display: grid; gap: calc(var(--fx-space) * 0.35) }
+.axp-plugin-manager-install__note { margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-plugin-manager-install__share code { word-break: break-all }
+
 @media (max-width: 1500px) {
   .axp-plugin-manager-studio.has-drawer { grid-template-columns: minmax(0, 1fr) minmax(calc(var(--fx-space) * 20), calc(var(--fx-space) * 26)) }
   .axp-plugin-manager-studio.has-drawer .axp-plugin-manager-studio__rail { grid-column: 1 / -1; position: static; flex-direction: row; overflow-x: auto; align-items: center }

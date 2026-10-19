@@ -29,6 +29,7 @@ jobs:
       - run: node framework/cli/plugins.mjs --check
       - run: node framework/cli/project.mjs validate --all          # every project manifest (the build rule)
       - run: node framework/spec/check-project-fixtures.mjs          # JS validator = reference fixtures
+      - run: node framework/spec/check-plugin-catalog.mjs            # plugin-catalog@1: pack, publish, verify, install guards
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -81,6 +82,7 @@ jobs:
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py
+          python apps/console-web/server/test_plugin_catalog.py
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx

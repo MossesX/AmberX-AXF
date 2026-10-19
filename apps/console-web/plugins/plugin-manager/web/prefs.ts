@@ -17,6 +17,7 @@ export const VIEWS = [
   { id: 'table', label: 'Table', icon: 'list' },
   { id: 'detail', label: 'Detail', icon: 'layers' },
   { id: 'graph', label: 'Dependencies', icon: 'branch' },
+  { id: 'install', label: 'Install', icon: 'download' },
 ] as const;
 export type LayoutId = (typeof LAYOUTS)[number]['id'];
 export type ViewId = (typeof VIEWS)[number]['id'];

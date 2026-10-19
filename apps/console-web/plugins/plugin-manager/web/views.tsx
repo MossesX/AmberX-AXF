@@ -1,4 +1,4 @@
-/** The four views. Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
+/** The views (Install is in InstallView.tsx). Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
 import { useMemo, useState } from 'react';
 import { Chip, Icon, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi } from './actions';

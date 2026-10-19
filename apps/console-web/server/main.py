@@ -954,7 +954,7 @@ def load_plugins() -> None:
         pkg.__path__ = []  # type: ignore[attr-defined]
         _sys.modules["axf_console_plugins"] = pkg
     for folder in sorted(PLUGINS_DIR.iterdir()):
-        if not folder.is_dir() or folder.name.startswith("_") or not (folder / "plugin.json").exists():
+        if not folder.is_dir() or folder.name.startswith(("_", ".")) or not (folder / "plugin.json").exists():
             continue
         info: dict[str, Any] = {"folder": folder.name, "server": "none", "error": None}
         PLUGINS[folder.name] = info
@@ -1079,6 +1079,151 @@ def app_apk_file(dir: str) -> Any:
     except app_ci.CiError as e:
         raise HTTPException(409, str(e)) from None
     return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
+
+
+# ---- Plugin catalog (plugin-catalog@1, framework/cli/plugin-catalog.mjs): plugins kept on axHub ----------------------
+# /projects/_shared/_data/plugin-catalog (the console mounts /projects). Console token on every route (admins only behind
+# the wall); never on MCP. Installing a console plugin unpacks it into this clone, runs its lifecycle install and commits
+# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps (Build Pilot) read packages
+# here with the console token and install them on their side.
+CATALOG_CLI = ROOT / "framework" / "cli" / "plugin-catalog.mjs"
+import threading as _threading  # noqa: E402
+_catalog_lock = _threading.Lock()
+_CATALOG_KIND = _re.compile(r"^[a-z][a-z0-9-]{0,31}$")
+_CATALOG_VERSION = _re.compile(r"^[0-9][0-9A-Za-z.+-]{0,60}$")
+MAX_PACKAGE_BODY = 12 * 1024 * 1024
+
+
+def _catalog(args: list[str], stdin: str | None = None, timeout: int = 300) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(CATALOG_CLI), *args, "--json"], cwd=ROOT, input=stdin, capture_output=True, text=True, timeout=timeout,
+                          env={**os.environ, "AXF_ROOT": str(ROOT), "AXF_STATE": str(STATE)})
+    try:
+        out = json.loads((proc.stdout or "").strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        raise HTTPException(500, f"plugin-catalog failed: {(proc.stderr or proc.stdout)[-400:]}") from None
+    if out.get("ok") is False:
+        msg = str(out.get("error", "plugin-catalog failed"))
+        raise HTTPException(404 if "not in the catalog" in msg or "has no version" in msg else 503 if "not reachable" in msg else 400, msg)
+    return out
+
+
+def _local_plugin(folder: str) -> dict[str, Any] | None:
+    f = ROOT / "apps" / "console-web" / "plugins" / folder / "plugin.json"
+    try:
+        if f.parent.is_symlink():
+            return None
+        m = json.loads(f.read_text())
+        return {"id": m.get("id"), "version": m.get("version")}
+    except (OSError, ValueError):
+        return None
+
+
+def _catalog_args(kind: str, folder: str) -> None:
+    if not _CATALOG_KIND.match(kind or "") or not _PLUGIN_FOLDER.match(folder or ""):
+        raise HTTPException(400, "bad plugin kind or folder")
+
+
+@app.get("/api/plugin-catalog", dependencies=[Depends(auth_always)])
+def catalog_list(kind: str = "") -> dict[str, Any]:
+    if kind and not _CATALOG_KIND.match(kind):
+        raise HTTPException(400, "bad plugin kind")
+    out = _catalog(["list"] + (["--kind", kind] if kind else []))
+    out.pop("root", None)
+    for it in out.get("items", []):
+        if it.get("kind") == "console":
+            local = _local_plugin(str(it.get("folder", "")))
+            it["installed"] = local["version"] if local and local.get("id") == it.get("id") else None
+            it["clash"] = bool(local and local.get("id") != it.get("id"))
+            it["loaded"] = it.get("folder") in PLUGINS and not PLUGINS[it["folder"]].get("removed")
+    return out
+
+
+@app.get("/api/plugin-catalog/package", dependencies=[Depends(auth_always)])
+def catalog_package(kind: str, folder: str, version: str = "") -> Any:
+    """A verified plugin-package@1 (files in base64). Build Pilot fetches pilot plugins here, server to server."""
+    _catalog_args(kind, folder)
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    args = ["package", kind, folder] + (["--version", version] if version else [])
+    return _catalog(args)
+
+
+@app.post("/api/plugin-catalog/install", dependencies=[Depends(auth_always)])
+def catalog_install(body: dict[str, Any]) -> dict[str, Any]:
+    """Install (or update) a console plugin from the catalog into this clone and commit it to GitHub."""
+    folder = str(body.get("folder", ""))
+    _catalog_args("console", folder)
+    version = str(body.get("version", "") or "")
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    if body.get("confirm") != folder:
+        raise HTTPException(400, f'installing runs the plugin\'s code on this server: confirm with the folder name ("{folder}")')
+    if not _catalog_lock.acquire(blocking=False):
+        raise HTTPException(409, "another catalog install is running")
+    if not _lifecycle_lock.acquire(blocking=False):
+        _catalog_lock.release()
+        raise HTTPException(409, "a plugin install/uninstall is running")
+    try:
+        args = ["install", "console", folder, "--no-state"]
+        if body.get("update"):
+            args.append("--update")
+        publish = body.get("publish", True) is not False and bool(os.environ.get("GITHUB_TOKEN"))
+        if publish:
+            args.append("--publish")
+        if version:
+            args += ["--version", version]
+        out = _catalog(args, timeout=600)
+        _state.setdefault("plugins", {})[folder] = True
+        _save_state()
+        log("plugins", f"{folder} {'updated' if out.get('updated') else 'installed'} from the plugin catalog ({out.get('version')})")
+        out["restartNeeded"] = True
+        out["note"] = ("Committed to GitHub: the console rebuilds with it within about 5 minutes." if (out.get("published") or {}).get("pushed")
+                       else "Already on GitHub: the console loads it at its next rebuild." if publish
+                       else "Unpacked in this clone only (no GITHUB_TOKEN): it loads after the next rebuild of this console, but other clones won't get it.")
+        return out
+    finally:
+        _lifecycle_lock.release()
+        _catalog_lock.release()
+
+
+@app.post("/api/plugin-catalog/publish", dependencies=[Depends(auth_always)])
+async def catalog_publish(request: Request) -> dict[str, Any]:
+    """Put a plugin in the catalog: {"folder"} = a console plugin in this clone, or {"package": plugin-package@1} from elsewhere."""
+    raw = await request.body()
+    if len(raw) > MAX_PACKAGE_BODY:
+        raise HTTPException(413, "package too large")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "body is not JSON") from None
+    who = str(getattr(request.state, "axf_user", {}).get("name", "") if isinstance(getattr(request.state, "axf_user", None), dict) else "")
+    src = f"console{(' · ' + who) if who else ''} · {str(body.get('from', ''))[:60]}".rstrip(" ·")
+    def run() -> dict[str, Any]:
+        with _catalog_lock:
+            if isinstance(body.get("package"), dict):
+                return _catalog(["publish-package", "-", "--from", src], stdin=json.dumps(body["package"]))
+            folder = str(body.get("folder", ""))
+            _catalog_args("console", folder)
+            d = ROOT / "apps" / "console-web" / "plugins" / folder
+            if d.is_symlink() or not d.is_dir():
+                raise HTTPException(404, f"{folder} is not a console plugin in this clone")
+            return _catalog(["publish", str(d), "--kind", "console", "--from", src])
+    out = await run_in_threadpool(run)
+    item = out.get("item") or {}
+    log("plugins", f"{item.get('kind')}/{item.get('folder')} {item.get('version')} {'published to' if out.get('published') else 'already in'} the plugin catalog")
+    return out
+
+
+@app.post("/api/plugin-catalog/remove", dependencies=[Depends(auth_always)])
+def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
+    kind, folder = str(body.get("kind", "")), str(body.get("folder", ""))
+    _catalog_args(kind, folder)
+    if body.get("confirm") != folder:
+        raise HTTPException(400, f'confirm with the folder name ("{folder}")')
+    with _catalog_lock:
+        out = _catalog(["remove", kind, folder])
+    log("plugins", f"{kind}/{folder} taken out of the plugin catalog")
+    return out
 
 
 @app.get("/api/plugin-services", dependencies=[Depends(auth_always)])

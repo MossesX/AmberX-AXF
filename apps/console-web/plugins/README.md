@@ -34,6 +34,16 @@ Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.js
 `lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
 folder name in `install.mjs` / `uninstall.mjs`.
 
+## Sharing and installing (plugin-catalog@1)
+
+The plugin catalog on axHub (`/projects/_shared/_data/plugin-catalog`) holds plugins other consoles and apps can install.
+Plugin Manager → **Install** publishes a plugin from this console (its folder only: no data, no secrets, no
+node_modules) and installs or updates ones from the catalog (unpacked here, lifecycle install, committed to GitHub so
+the console rebuilds with it). From a terminal: `node framework/cli/plugin-catalog.mjs publish apps/console-web/plugins/<folder> --kind console`
+(where `/projects` is mounted) or add `--console https://console.amberxai.com` with `AXF_TOKEN` set. A published
+version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
+folder, as the lifecycle rules already require, and it installs cleanly anywhere.
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a

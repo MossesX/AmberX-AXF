@@ -23,7 +23,7 @@
  *     in its settings tab.
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
  */
-import { chmodSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -267,8 +267,38 @@ export async function uninstall(folder, opts = {}, log = () => {}) {
 
 /** Commit the folder removal (+ stripped doc lines) in a temporary worktree of origin's branch and push it. */
 function publishRemoval(p, log) {
+  return publishToSource((wt, git) => {
+    const rel = `apps/console-web/plugins/${p.folder}`;
+    if (existsSync(join(wt, rel))) git(['-C', wt, 'rm', '-r', '-q', '--', rel]);
+    for (const mm of p.lifecycle.mentions ?? []) {
+      const f = resolve(wt, mm);
+      if (!f.startsWith(wt + '/') || !existsSync(f)) continue;
+      const lines = readFileSync(f, 'utf8').split('\n');
+      const kept = lines.filter((l) => !l.includes(`axf-plugin:${p.folder}`));
+      if (kept.length !== lines.length) { writeFileSync(f, kept.join('\n')); git(['-C', wt, 'add', '--', mm]); }
+    }
+  }, `Uninstall plugin ${p.manifest?.name ?? p.folder} (${p.folder}): remove its code and doc lines (plugin-lifecycle)`, log, 'GitHub already has this removal');
+}
+
+/**
+ * Commit a plugin folder that is in this clone (e.g. just installed from the plugin catalog) to the repo on GitHub,
+ * so the 5-minute reset keeps it and every clone gets it. Only that folder is committed; nothing else in the clone.
+ */
+export function publishAddition(folder, message, log = () => {}) {
+  const p = readManifest(folder);
+  if (!p.present) throw new Error(`apps/console-web/plugins/${folder} is not in this clone`);
+  return publishToSource((wt, git) => {
+    const rel = `apps/console-web/plugins/${folder}`;
+    rmSync(join(wt, rel), { recursive: true, force: true });
+    cpSync(p.dir, join(wt, rel), { recursive: true, verbatimSymlinks: true, filter: (src) => !SKIP_DIRS.has(src.split('/').pop()) });
+    git(['-C', wt, 'add', '-A', '--', rel]);
+  }, message || `Install plugin ${p.manifest?.name ?? folder} (${folder}) from the plugin catalog`, log, 'GitHub already has this plugin as installed');
+}
+
+/** Run `change(worktree, git)` in a temporary worktree of origin's current branch, then commit and push it. */
+function publishToSource(change, message, log, already) {
   const token = process.env.GITHUB_TOKEN;
-  if (!token) throw new Error('--publish needs GITHUB_TOKEN with Contents: write on the repo');
+  if (!token) throw new Error('publishing needs GITHUB_TOKEN with Contents: write on the repo');
   const git = (args, o = {}) => {
     const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { encoding: 'utf8', timeout: 120000, cwd: o.cwd, env: { ...process.env, ...o.env, GIT_TERMINAL_PROMPT: '0' } });
     if (r.status !== 0 && !o.ok) throw new Error(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ').replaceAll(token, '***')}`);
@@ -277,8 +307,8 @@ function publishRemoval(p, log) {
   const m = git(['-C', ROOT, 'remote', 'get-url', 'origin']).out.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
   if (!m) throw new Error('could not read the repo\'s GitHub origin');
   const slug = m[1];
-  const branch = git(['-C', ROOT, 'rev-parse', '--abbrev-ref', 'HEAD']).out;
-  if (!branch || branch === 'HEAD') throw new Error('--publish needs a checked-out branch (this clone is on a detached HEAD)');
+  const branch = process.env.AXF_LIFECYCLE_BRANCH || git(['-C', ROOT, 'rev-parse', '--abbrev-ref', 'HEAD']).out;
+  if (!branch || branch === 'HEAD') throw new Error('publishing needs a checked-out branch (this clone is on a detached HEAD)');
   const url = process.env.AXF_LIFECYCLE_PUSH_URL || `https://github.com/${slug}.git`;
   const tmp = mkdtempSync(join(tmpdir(), 'axf-lifecycle-'));
   const askpass = join(tmp, 'askpass.sh');
@@ -289,17 +319,9 @@ function publishRemoval(p, log) {
   try {
     git(['-C', ROOT, 'fetch', '-q', url, branch], auth);
     git(['-C', ROOT, 'worktree', 'add', '-q', '--detach', wt, 'FETCH_HEAD']);
-    const rel = `apps/console-web/plugins/${p.folder}`;
-    if (existsSync(join(wt, rel))) git(['-C', wt, 'rm', '-r', '-q', '--', rel]);
-    for (const mm of p.lifecycle.mentions ?? []) {
-      const f = resolve(wt, mm);
-      if (!f.startsWith(wt + '/') || !existsSync(f)) continue;
-      const lines = readFileSync(f, 'utf8').split('\n');
-      const kept = lines.filter((l) => !l.includes(`axf-plugin:${p.folder}`));
-      if (kept.length !== lines.length) { writeFileSync(f, kept.join('\n')); git(['-C', wt, 'add', '--', mm]); }
-    }
-    if (git(['-C', wt, 'diff', '--cached', '--quiet'], { ok: true }).ok) { log('GitHub already has this removal'); return { pushed: false }; }
-    git(['-C', wt, '-c', 'user.name=AXF Dev Console', '-c', 'user.email=axf-console@users.noreply.github.com', 'commit', '-q', '-m', `Uninstall plugin ${p.manifest?.name ?? p.folder} (${p.folder}): remove its code and doc lines (plugin-lifecycle)`]);
+    change(wt, git);
+    if (git(['-C', wt, 'diff', '--cached', '--quiet'], { ok: true }).ok) { log(already); return { pushed: false }; }
+    git(['-C', wt, '-c', 'user.name=AXF Dev Console', '-c', 'user.email=axf-console@users.noreply.github.com', 'commit', '-q', '-m', message]);
     for (let i = 0; i < 3; i++) {
       const r = git(['-C', wt, 'push', '-q', url, `HEAD:refs/heads/${branch}`], { ...auth, ok: true });
       if (r.ok) { const sha = git(['-C', wt, 'rev-parse', '--short', 'HEAD']).out; log(`pushed ${sha} to ${slug} ${branch}`); return { pushed: true, sha }; }
