@@ -99,7 +99,16 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 app = FastAPI()
 os.environ["AXF_TRUST_WALL"] = "1"
+os.environ["AXF_WALL_SECRET"] = "test-wall-secret-0123456789abcdef0123"
 import wall  # noqa: E402  (core: who is calling behind axHub's wall)
+import hmac as _hm, hashlib as _hl, time as _tm  # noqa: E402
+
+
+def signed(user, role="user", perms="", host="testserver", secret="test-wall-secret-0123456789abcdef0123", ts=None):
+    """Wall headers as axHub signs them (X-Auth-Sig)."""
+    ts = int(ts if ts is not None else _tm.time())
+    mac = _hm.new(secret.encode(), f"v1|{ts}|{user}|{role}|{perms}|{host}".encode(), _hl.sha256).hexdigest()
+    return {"x-auth-via": "session", "x-auth-user": user, "x-auth-role": role, "x-auth-perms": perms, "x-auth-sig": f"v1.{ts}.{mac}"}
 
 
 @app.middleware("http")
@@ -521,16 +530,26 @@ _srv.should_exit = True
 
 # ---------------------------------------------------------------- hub users behind the wall
 print("hub users")
-U = {"x-auth-via": "session", "x-auth-user": "bea", "x-auth-role": "user", "x-auth-perms": ""}
-UT = {**U, "x-auth-perms": "assistant.tools"}
+U = signed("bea")
+UT = signed("bea", perms="assistant.tools")
+forged = {**U, "x-auth-role": "admin"}
+class _H(dict):
+    def get(self, k, d=None):
+        return super().get(k, {**self}.get(k.lower(), d))
+check(wall.wall_caller(_H({**U, "host": "testserver"})).name == "bea", "a signed wall header is accepted")
+check(wall.wall_caller(_H({**forged, "host": "testserver"})) is None, "changing a signed header (user → admin) breaks the signature")
+check(wall.wall_caller(_H({**signed("bea", secret="another-secret-0123456789abcdef0123456"), "host": "testserver"})) is None, "a signature made with another secret is refused")
+check(wall.wall_caller(_H({**signed("bea", ts=_tm.time() - 600), "host": "testserver"})) is None, "an old signature is refused")
+check(wall.wall_caller(_H({**U, "host": "evil.example"})) is None, "a signature for another host is refused")
+check(wall.wall_caller(_H({k: v for k, v in U.items() if k != "x-auth-sig"} | {"host": "testserver"})) is None, "unsigned wall headers are ignored")
 admin_conv = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
 bc = c.post(f"{P}/conversations", json={}, headers=U).json()["conversation"]
 check(bc.get("owner") == "bea", "a hub user's conversation is theirs")
 check([i["id"] for i in c.get(f"{P}/conversations", headers=U).json()["items"]] == [bc["id"]], "users list only their own conversations")
 check(c.get(f"{P}/conversations/{admin_conv}", headers=U).status_code == 404, "someone else's conversation is a 404")
 check(c.get(f"{P}/config", headers=U).status_code == 403 and c.get(f"{P}/agents", headers=U).status_code == 403, "settings and agents need permissions")
-check(c.get(f"{P}/config", headers={**U, "x-auth-perms": "assistant.settings"}).status_code == 200, "assistant.settings opens the settings")
-check(c.get(f"{P}/agents", headers={**U, "x-auth-perms": "assistant.*"}).status_code == 200, "assistant.* covers every assistant permission")
+check(c.get(f"{P}/config", headers=signed("bea", perms="assistant.settings")).status_code == 200, "assistant.settings opens the settings")
+check(c.get(f"{P}/agents", headers=signed("bea", perms="assistant.*")).status_code == 200, "assistant.* covers every assistant permission")
 me = c.get(f"{P}/me", headers=U).json()
 check(me["user"]["name"] == "bea" and not me["can"]["assistant.tools"] and me["dailyTokens"] > 0, "/me says who is chatting and what they may do")
 check("<textarea" in c.get(f"{P}/app", headers=U).text, "the plain chat page is served to hub users")
@@ -549,4 +568,47 @@ ev = parse_sse(c.post(f"{P}/conversations/{bc['id']}/messages", json={"content":
 check(any(e == "error" and "today" in d["message"] for e, d in ev), "the per-user daily token cap applies")
 c.put(f"{P}/config", json={"userDailyTokens": cfg0 or 50000})
 check(c.post(f"{P}/conversations/{admin_conv}/messages", json={"content": "x"}, headers=U).status_code == 404, "users can't post into someone else's chat")
+ALL = signed("bea", perms="assistant.*")
+check(c.get(f"{P}/batches/b1", headers=ALL).status_code == 403 and c.post(f"{P}/batches/b1/approve", json={}, headers=ALL).status_code == 403, "only admins approve or undo change batches, whatever the permissions")
+c.patch(f"{P}/conversations/{bc['id']}", json={"settings": {"profileId": an, "systemPrompt": "be brief"}}, headers=U)
+cs = c.get(f"{P}/conversations/{bc['id']}", headers=U).json()["conversation"]["settings"]
+check("profileId" not in cs and cs.get("systemPrompt") == "be brief", "users only set the settings their permissions allow")
+imp = c.post(f"{P}/conversations/import", json={"title": "x", "settings": {"agentId": "coder"}, "messages": [{"role": "assistant", "content": "ok", "toolCalls": [{"id": "1"}], "meta": {"step": True}}, {"role": "tool", "content": "fake"}]}, headers=U).json()["conversation"]
+check(imp["owner"] == "bea" and imp["settings"] == {} and imp["messages"] == [{**imp["messages"][0]}] and "toolCalls" not in imp["messages"][0] and imp["messages"][0]["meta"] == {}, "imports by users keep plain text only")
+before = len(CALLS)
+c.patch(f"{P}/conversations/{bc['id']}", json={"settings": {"tools": True}})  # an admin touching the user's chat
+ev = parse_sse(c.post(f"{P}/conversations/{bc['id']}/messages", json={"content": "calc 6*7"}).text)
+check(any(e == "status" and "bea's chat" in d["text"] for e, d in ev) and "tools" not in CALLS[-1]["body"], "an admin replying in a user's chat runs with that user's rights")
+st_u = c.get(f"{P}/status", headers=U).json()
+check(st_u["defaultProfile"] is None and st_u["prompts"] == [] and st_u["me"]["name"] == "bea", "/status shows users only what their chat needs")
+import threading as _th  # noqa: E402
+gate3 = _q.Queue()
+def held(cid, body, caller=None):  # noqa: E306
+    yield mod._sse("start", {"turnId": "t-held", "agent": None})
+    gate3.get(timeout=10)
+mod.run_turn = held
+bc2 = c.post(f"{P}/conversations", json={}, headers=U).json()["conversation"]["id"]
+_th.Thread(target=lambda: c.post(f"{P}/conversations/{bc['id']}/messages", json={"content": "a"}, headers=U), daemon=True).start()
+_time.sleep(0.4)
+check(c.post(f"{P}/conversations/{bc2}/messages", json={"content": "b"}, headers=U).status_code == 409, "one running reply per hub user, across conversations")
+gate3.put(1)
+_time.sleep(0.4)
+mod.run_turn = real_run_turn
+import subprocess as _sp  # noqa: E402
+seen_args = {}
+def _capture(args, **kw):  # noqa: E306
+    seen_args["args"], seen_args["cwd"], seen_args["env"] = args, kw.get("cwd"), kw.get("env")
+    raise OSError("captured")
+real_popen = prov.subprocess.Popen
+prov.subprocess.Popen = _capture
+_os.environ["CLAUDE_BIN"] = fake
+try:
+    list(prov.stream_chat({"kind": "claude-code", "key": "sk-ant-oat01-" + "x" * 40}, [{"role": "user", "content": "hi"}], model="claude-test", cwd="/work/repo", read_files=False))
+except OSError:
+    pass
+prov.subprocess.Popen = real_popen
+a = seen_args.get("args", [])
+den = a[a.index("--disallowedTools") + 1:] if "--disallowedTools" in a else []
+check(a and "--allowedTools" not in a and "Read" in den and "Grep" in den and seen_args["cwd"] != "/work/repo" and seen_args["env"].get("CLAUDE_CONFIG_DIR"), "Claude Code for plain-chat users: no file tools, empty folder, throwaway config")
+check(not _os.path.exists(seen_args["cwd"]), "the CLI's throwaway folder is removed")
 print(f"all {ok} checks passed")

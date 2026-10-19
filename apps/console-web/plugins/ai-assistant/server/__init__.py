@@ -48,6 +48,21 @@ _USER_ROUTES = {
 }
 
 
+_SETTINGS_ALLOWED = {"profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking"}
+
+
+def _settings_for(c: "wall.Caller") -> set[str]:
+    """Conversation settings this caller may set (admins: all)."""
+    if c.admin:
+        return set(_SETTINGS_ALLOWED)
+    keys = {"temperature", "top_p", "systemPrompt", "tools"}
+    if c.can("assistant.agents"):
+        keys.add("agentId")
+    if c.can("assistant.models"):
+        keys |= {"profileId", "model", "max_tokens", "thinking"}
+    return keys
+
+
 def _me() -> "wall.Caller":
     """The caller of the current request (the console token when nothing says otherwise)."""
     return _CALLER.get() or wall.TOKEN_CALLER
@@ -62,7 +77,10 @@ async def _access(request: Request) -> None:
     tpl = (getattr(route, "path", "") or "").split(_PREFIX, 1)[-1] or "/"
     key = (request.method.upper(), tpl)
     if key not in _USER_ROUTES:
-        need = "assistant.agents" if tpl.startswith("/agents") else "assistant.write" if tpl.startswith("/batches") else "assistant.settings"
+        if tpl.startswith("/batches"):
+            # Approving, rejecting or undoing a change batch applies changes to containers: admins only, always.
+            raise HTTPException(403, "only an admin can approve or undo changes")
+        need = "assistant.agents" if tpl.startswith("/agents") else "assistant.settings"
         if not c.can(need):
             raise HTTPException(403, f"your account can't do that here (needs {need}; an admin can allow it on the hub's users page)")
     # A user only ever sees their own conversations (and their sessions).
@@ -81,6 +99,8 @@ async def _access(request: Request) -> None:
 
 router = APIRouter(dependencies=[Depends(_access)])
 _turn_owner: dict[str, str] = {}
+_busy_users: set[str] = set()
+_busy_lock = threading.Lock()
 FOLDER = Path(__file__).resolve().parents[1].name
 _turns: dict[str, threading.Event] = {}
 _SECRET = re.compile(r"\b(sk-(?:ant-|proj-)?[A-Za-z0-9_\-]{20,}|xai-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_\-]{30,}|fc-[a-f0-9]{24,})\b")
@@ -265,6 +285,7 @@ def _summ(args: dict[str, Any]) -> str:
 
 def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None) -> Iterator[str]:
     me = caller or wall.TOKEN_CALLER
+    caller_name = me.name
     cfg = store.load_config()
     turn_id = store.new_id("t")
     cancel = threading.Event()
@@ -273,7 +294,15 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
     started = time.monotonic()
     try:
         conv = store.get_conversation(cid)
+        owner = conv.get("owner")
+        if owner and owner != me.name:
+            # Someone (an admin) replying in a hub user's chat runs with that user's rights, never their own:
+            # the chat's settings and history came from the user.
+            me = wall.Caller(owner, "user", frozenset(), "session")
+            yield _sse("status", {"text": f"This is {owner}'s chat, so the reply runs with {owner}'s permissions (plain chat)."})
         st = conv.setdefault("settings", {})
+        if not me.admin:
+            st = {k: v for k, v in st.items() if k in _settings_for(me)}
         msgs: list[dict[str, Any]] = conv.setdefault("messages", [])
         budget = int(cfg.get("dailyTokenBudget") or 0)
         if budget and store.tokens_today() >= budget:
@@ -324,9 +353,13 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 yield _sse("status", {"text": f"Agent {agent_id} is not available; answering as {cfg.get('assistantName')}."})
         elif agent_id and not svc:
             yield _sse("status", {"text": "The agent manager isn't installed or enabled; answering without the agent."})
-        if agent and agent.get("writeMode") and not me.can("assistant.write"):
-            yield _sse("status", {"text": f"{agent.get('name', 'That agent')} works in write mode, which your account can't use; answering as the assistant."})
-            agent, agent_id = None, ""
+        if agent and not me.admin:
+            if agent.get("writeMode"):
+                yield _sse("status", {"text": f"{agent.get('name', 'That agent')} works in write mode, which only admins can use; answering as the assistant."})
+                agent, agent_id = None, ""
+            else:
+                # Users get the agent's persona and model only: no agent tools (HTTP/MCP/container), no agent memory.
+                agent = {**agent, "tools": []}
         groups = dict(cfg.get("tools", {}))
         if not me.admin:
             groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
@@ -335,7 +368,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
         agent_tools = {t["name"]: t for t in (agent or {}).get("tools", [])} if tool_on else {}
         tool_specs = [t for t in tool_specs if t["name"] not in agent_tools] + list(agent_tools.values())
         memory = ""
-        if agent and svc:
+        if agent and svc and me.admin:
             try:
                 memory = svc.memory_context(agent_id, user_text) or ""
                 if memory:
@@ -356,6 +389,13 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 params[k] = amodel[k]
         if st.get("thinking") is not None:
             params["thinking"] = bool(st["thinking"])
+        if not me.admin:
+            try:
+                params["max_tokens"] = max(256, min(int(params.get("max_tokens") or 4096), 4096 if not me.can("assistant.models") else 16384))
+            except (TypeError, ValueError):
+                params["max_tokens"] = 4096
+            if not me.can("assistant.models"):
+                params["thinking"] = False
 
         yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None})
 
@@ -414,7 +454,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                     round_thinking: list[dict[str, Any]] = []
                     calls: list[dict[str, Any]] = []
                     for ev in providers.stream_chat(prof, wire + new_msgs, system=system, model=model, tools=tool_specs or None, params=params, cancel=cancel, cwd=str(tools_root()),
-                                                    tool_runner=exec_tool):
+                                                    tool_runner=exec_tool, read_files=me.can("assistant.tools")):
                         t = ev["type"]
                         if t == "tool_done":  # a tool the CLI ran through the console's bridge
                             produced = True
@@ -514,7 +554,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             store.add_usage(used_pid, used_model, total)
         if not me.admin:
             store.add_user_usage(me.name, total)
-        if agent and svc:
+        if agent and svc and me.admin:
             try:
                 svc.record_turn(agent_id, user_text, amsg["content"], {"conversationId": cid, "profile": used_pid, "model": used_model})
             except Exception:  # noqa: BLE001
@@ -525,6 +565,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
     finally:
         _turns.pop(turn_id, None)
         _turn_owner.pop(turn_id, None)
+        with _busy_lock:
+            _busy_users.discard(caller_name)
 
 
 def _auto_title(cid: str, pid: str, user_text: str, reply: str) -> None:
@@ -564,6 +606,21 @@ def chat_app() -> HTMLResponse:
 @router.get("/status")
 def status() -> dict[str, Any]:
     cfg = store.load_config()
+    me = _me()
+    if not me.admin:
+        # Hub users see only what their chat needs (no providers, keys' env names, test errors or other agents' details).
+        agents_u: list[dict[str, Any]] = []
+        svc_u = _agents() if me.can("assistant.agents") and cfg.get("agentIntegration", True) else None
+        if svc_u:
+            try:
+                agents_u = [{"id": a.get("id"), "name": a.get("name"), "icon": a.get("icon"), "description": a.get("description", "")}
+                            for a in svc_u.list_agents() if not a.get("writeMode") and not a.get("dangerous")]
+            except Exception:  # noqa: BLE001
+                agents_u = []
+        return {"assistantName": cfg.get("assistantName"), "setupComplete": True, "needsSetup": False, "defaultProfile": None, "profiles": 0, "ready": 0,
+                "cliInstalled": False, "integrations": {"agents": bool(agents_u), "agentCount": len(agents_u)}, "agents": agents_u, "defaultAgent": "",
+                "tokensToday": store.user_tokens_today(me.name), "budget": int(cfg.get("userDailyTokens") or 0),
+                "suggestions": cfg.get("suggestions", []), "prompts": [], "showUsage": True, "me": me.public()}
     svc = _agents()
     profs = store.public_config(cfg)["profiles"]
     ready = [p for p in profs if p["enabled"] and p["keyReady"]]
@@ -730,7 +787,7 @@ def patch_conversation(cid: str, body: dict[str, Any]) -> dict[str, Any]:
     if "tags" in body and isinstance(body["tags"], list):
         c["tags"] = [str(t)[:30] for t in body["tags"]][:12]
     if "settings" in body and isinstance(body["settings"], dict):
-        allowed = {"profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking"}
+        allowed = _settings_for(_me())
         s = c.setdefault("settings", {})
         for k, v in body["settings"].items():
             if k in allowed:
@@ -813,10 +870,16 @@ def import_conversation(body: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(msgs, list):
         raise HTTPException(400, "expected an exported conversation (JSON with messages)")
     me = _me()
-    c = store.create_conversation(dict(body.get("settings") or {}), title=str(body.get("title") or "Imported")[:120], owner=None if me.admin else me.name)
-    c["messages"] = [{"id": store.new_id("m"), "role": m.get("role"), "content": str(m.get("content", ""))[:200_000], "createdAt": m.get("createdAt") or store.now_ms(),
-                      "meta": m.get("meta") or {}, **({"toolCalls": m["toolCalls"]} if m.get("toolCalls") else {}), **({"toolCallId": m["toolCallId"]} if m.get("toolCallId") else {})}
-                     for m in msgs if isinstance(m, dict) and m.get("role") in ("user", "assistant", "tool")][:5000]
+    keys = _settings_for(me)
+    settings = {k: v for k, v in dict(body.get("settings") or {}).items() if k in keys}
+    c = store.create_conversation(settings, title=str(body.get("title") or "Imported")[:120], owner=None if me.admin else me.name)
+    if me.admin:
+        c["messages"] = [{"id": store.new_id("m"), "role": m.get("role"), "content": str(m.get("content", ""))[:200_000], "createdAt": m.get("createdAt") or store.now_ms(),
+                          "meta": m.get("meta") or {}, **({"toolCalls": m["toolCalls"]} if m.get("toolCalls") else {}), **({"toolCallId": m["toolCallId"]} if m.get("toolCallId") else {})}
+                         for m in msgs if isinstance(m, dict) and m.get("role") in ("user", "assistant", "tool")][:5000]
+    else:  # users import plain text only (no tool calls or steps that could pass for real tool output)
+        c["messages"] = [{"id": store.new_id("m"), "role": m.get("role"), "content": str(m.get("content", ""))[:200_000], "createdAt": store.now_ms(), "meta": {}}
+                         for m in msgs if isinstance(m, dict) and m.get("role") in ("user", "assistant")][:2000]
     store.save_conversation(c)
     return {"conversation": c}
 
@@ -831,7 +894,17 @@ def send_message(cid: str, body: dict[str, Any]):
     notice = "" if host == "local" else "axHub's session workers aren't built yet, so this reply runs on the console (it still keeps going if you close the browser)."
     try:
         me = _me()
-        seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body, me), notice)
+        if not me.admin:
+            with _busy_lock:  # one running reply per hub user (keeps the daily cap honest)
+                if me.name in _busy_users:
+                    raise HTTPException(409, "you already have a reply running; wait for it or stop it first")
+                _busy_users.add(me.name)
+        try:
+            seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body, me), notice)
+        except Exception:
+            with _busy_lock:
+                _busy_users.discard(me.name)
+            raise
     except sessions.Busy as e:
         raise HTTPException(409, str(e)) from None
     # The reply runs in its own thread; this response only watches the session log. Leaving doesn't stop it.

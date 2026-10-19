@@ -256,8 +256,11 @@ def _to_openai(messages: list[dict[str, Any]], system: str | None) -> list[dict[
 def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, system: str | None = None, model: str | None = None,
                 tools: list[dict[str, Any]] | None = None, params: dict[str, Any] | None = None,
                 cancel: threading.Event | None = None, cwd: str | None = None,
-                tool_runner: Callable[[str, dict[str, Any]], tuple[bool, str]] | None = None) -> Iterator[dict[str, Any]]:
-    """Stream one model call. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
+                tool_runner: Callable[[str, dict[str, Any]], tuple[bool, str]] | None = None,
+                read_files: bool = True) -> Iterator[dict[str, Any]]:
+    """Stream one model call. ``read_files=False`` (hub users without assistant.tools): the Claude Code CLI gets no
+    file tools, an empty working folder and a throwaway config folder, so it can't read the server's files or
+    earlier sessions' transcripts. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
     ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI)."""
     proto = protocol_of(profile)
     model = model or profile.get("defaultModel") or (BY_KIND.get(profile.get("kind", ""), {}).get("models") or [""])[0]
@@ -267,7 +270,7 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
     if proto == "anthropic":
         yield from _stream_anthropic(profile, messages, system, model, tools, params, cancel)
     elif proto == "claude-cli":
-        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner)
+        yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files)
     else:
         yield from _stream_openai(profile, messages, system, model, tools, params, cancel)
 
@@ -519,7 +522,7 @@ class _Bridge:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
-def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None):
+def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True):
     import tempfile
     token = resolve_key(profile)
     if not token:
@@ -545,6 +548,19 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         args += ["--append-system-prompt", system[:100_000]]
     env = {**_cli_env(), "CLAUDE_CODE_OAUTH_TOKEN": token, "CI": "1", "TERM": "dumb", "MCP_TOOL_TIMEOUT": "900000"}
     args[args.index("--disallowedTools") + 1:args.index("--disallowedTools") + 1] = _cli_abs_deny(cwd)
+    jail = None
+    if not read_files:
+        # No file tools at all, an empty folder to run in, and a config folder that is thrown away afterwards.
+        i = args.index("--allowedTools")
+        j = args.index("--disallowedTools")
+        kept = [a for a in args[i + 1:j] if a.startswith("mcp__")]
+        args[i:j] = (["--allowedTools", *kept] if kept else [])
+        k = args.index("--disallowedTools")
+        args[k + 1:k + 1] = ["Read", "Grep", "Glob", "LS", "Task", "WebSearch"]
+        jail = tempfile.mkdtemp(prefix="axf-cli-jail-")
+        os.chmod(jail, 0o700)
+        cwd = jail
+        env.update({"HOME": jail, "CLAUDE_CONFIG_DIR": os.path.join(jail, ".claude")})
     err = tempfile.TemporaryFile(mode="w+")
     try:
         proc = subprocess.Popen(args, cwd=cwd or os.getcwd(), env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True, start_new_session=True)
@@ -552,6 +568,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         err.close()
         if bridge:
             bridge.close()
+        if jail:
+            shutil.rmtree(jail, ignore_errors=True)
         raise
     killer = threading.Timer(CLI_DEADLINE, proc.kill)
     killer.start()
@@ -609,6 +627,8 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
         err.close()
         if bridge:
             bridge.close()
+        if jail:
+            shutil.rmtree(jail, ignore_errors=True)
 
 
 # ---------------------------------------------------------------- embeddings (for agent memory)

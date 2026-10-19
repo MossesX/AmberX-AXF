@@ -185,13 +185,23 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
         grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f" && printf '/api/plugins/%s/%%2C' "$d"; done)"  # %2C = "," (kept out of the label's own list syntax)
       USER_PATHS="${USER_PATHS%\%2C}"
       WALL_ADDR="$WALL_HUB/auth/verify${USER_PATHS:+?user_paths=$USER_PATHS}"
-      WALL_ARGS=(-e AXF_TRUST_WALL=1 \
+      # The hub signs who is signed in (X-Auth-Sig) with a secret both sides share, so nothing that reaches the console
+      # without the proxy can claim to be signed in. Generated once here; copy it to the axHub app as AXHUB_WALL_SECRET.
+      WSECF="$DIR/.axf-console/wall-secret"
+      [ -n "${AXF_WALL_SECRET:-}" ] && { printf '%s' "$AXF_WALL_SECRET" > "$WSECF"; chmod 600 "$WSECF"; }
+      if [ ! -s "$WSECF" ]; then
+        (umask 077; openssl rand -hex 32 2>/dev/null > "$WSECF" || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n' > "$WSECF")
+        say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
+      fi
+      say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
+      WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Perms=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Via=" \
+        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Sig=" \
         -l "traefik.http.middlewares.$R-wall.forwardauth.address=$WALL_ADDR" \
-        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Perms,X-Auth-Via" \
+        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Perms,X-Auth-Via,X-Auth-Sig" \
         -l "traefik.http.routers.$R.middlewares=$R-strip,$R-wall")
       [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
     else

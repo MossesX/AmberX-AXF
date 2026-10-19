@@ -2,8 +2,10 @@
 
 Traefik asks axHub (`/auth/verify`) before every request; for a signed-in browser axHub answers with
 `X-Auth-User`, `X-Auth-Role` (admin|user), `X-Auth-Perms` (comma list, "*" for admins) and `X-Auth-Via: session`.
-A strip middleware removes any copy a client sends, so these headers can be trusted — but only when the installer
-says the wall is on (`AXF_TRUST_WALL=1`). Without that, they are ignored and only the console token counts.
+A strip middleware removes any copy a client sends — but a container on the same Docker network could reach the
+console without the proxy, so the headers are trusted only when they carry axHub's signature (`X-Auth-Sig`:
+HMAC-SHA256 with the secret shared as AXHUB_WALL_SECRET on the hub and AXF_WALL_SECRET here, at most 120 s old,
+for this host) and the installer says the wall is on (`AXF_TRUST_WALL=1`). Otherwise only the console token counts.
 
 - A wall **admin** is treated like the console token (so a signed-in browser needs no pasted token).
 - A wall **user** reaches only plugins whose plugin.json says `"wallUsers": true`; the plugin decides what they may
@@ -13,8 +15,11 @@ says the wall is on (`AXF_TRUST_WALL=1`). Without that, they are ignored and onl
 """
 from __future__ import annotations
 
+import hmac
+import hashlib
 import os
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Any
 from urllib.parse import urlsplit
@@ -24,8 +29,27 @@ _NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{1,31}$")
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
+MAX_AGE_S = 120
+
+
+def _secret() -> str:
+    return os.environ.get("AXF_WALL_SECRET", "").strip()
+
+
 def trusted() -> bool:
-    return os.environ.get("AXF_TRUST_WALL", "").strip() == "1"
+    return os.environ.get("AXF_TRUST_WALL", "").strip() == "1" and len(_secret()) >= 32
+
+
+def signature_ok(sig: str, user: str, role: str, perms: str, host: str, now: float | None = None) -> bool:
+    """Checks axHub's `v1.<ts>.<hex>` over `v1|ts|user|role|perms|host` (constant-time, recent, this host)."""
+    parts = (sig or "").split(".")
+    if len(parts) != 3 or parts[0] != "v1" or not parts[1].isdigit() or len(parts[2]) != 64:
+        return False
+    ts = int(parts[1])
+    if abs((now if now is not None else time.time()) - ts) > MAX_AGE_S:
+        return False
+    want = hmac.new(_secret().encode(), f"v1|{ts}|{user}|{role}|{perms}|{host.lower()}".encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(want, parts[2])
 
 
 @dataclass(frozen=True)
@@ -57,11 +81,17 @@ def wall_caller(headers: Any) -> Caller | None:
     """The signed-in person from the wall's headers, or None (wall off, not a session, malformed)."""
     if not trusted() or headers.get("x-auth-via") != "session":
         return None
-    name = (headers.get("x-auth-user") or "").strip().lower()
-    role = (headers.get("x-auth-role") or "").strip().lower()
+    raw_user = headers.get("x-auth-user") or ""
+    raw_role = headers.get("x-auth-role") or ""
+    raw_perms = headers.get("x-auth-perms") or ""
+    host = headers.get("host") or ""  # Traefik passes the original Host; the hub signed X-Forwarded-Host = the same
+    if not signature_ok(headers.get("x-auth-sig") or "", raw_user, raw_role, raw_perms, host):
+        return None
+    name = raw_user.strip().lower()
+    role = raw_role.strip().lower()
     if not _NAME.match(name) or role not in ("admin", "user"):
         return None
-    perms = frozenset(p for p in (x.strip().lower() for x in (headers.get("x-auth-perms") or "").split(",")) if _PERM.match(p))
+    perms = frozenset(p for p in (x.strip().lower() for x in raw_perms.split(",")) if _PERM.match(p))
     if role == "admin":
         perms = frozenset({"*"})
     return Caller(name, role, perms, "session")
