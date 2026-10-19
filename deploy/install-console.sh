@@ -178,12 +178,22 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
       rm -f "$DIR/.axf-console/wall-waiting"
       say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins only); the console token still works on /api and /mcp"
       say "  locked out because the hub is down? AXF_WALL=off bash $DIR/deploy/install-console.sh"
-      WALL_ARGS=(-l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
+      # Plugins whose plugin.json says "wallUsers": true are open to every signed-in hub user (the plugin limits them);
+      # everything else on the console needs a hub admin. The console trusts the wall's headers only with AXF_TRUST_WALL=1.
+      USER_PATHS="$(cd "$DIR/apps/console-web/plugins" 2>/dev/null && for f in */plugin.json; do
+        d="${f%/plugin.json}"; case "$d" in _*) continue;; esac
+        grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f" && printf '/api/plugins/%s/%%2C' "$d"; done)"  # %2C = "," (kept out of the label's own list syntax)
+      USER_PATHS="${USER_PATHS%\%2C}"
+      WALL_ADDR="$WALL_HUB/auth/verify${USER_PATHS:+?user_paths=$USER_PATHS}"
+      WALL_ARGS=(-e AXF_TRUST_WALL=1 \
+        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
+        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Perms=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Via=" \
-        -l "traefik.http.middlewares.$R-wall.forwardauth.address=$WALL_HUB/auth/verify" \
-        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Via" \
+        -l "traefik.http.middlewares.$R-wall.forwardauth.address=$WALL_ADDR" \
+        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Perms,X-Auth-Via" \
         -l "traefik.http.routers.$R.middlewares=$R-strip,$R-wall")
+      [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
     else
       touch "$DIR/.axf-console/wall-waiting"
       say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"

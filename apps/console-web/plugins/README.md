@@ -79,6 +79,12 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   the web part with `pluginFetch(folder, path, init)`, which adds the console token.
 - **Enable / disable:** Framework → Plugins. A disabled plugin's tabs disappear and its server routes answer
   404. The choice is kept in the console state file. Plugins are enabled unless `"enabledByDefault": false`.
+- **Hub users (`"wallUsers": true`, Oct 18 2026):** behind axHub's sign-in wall the console trusts the wall's
+  headers (`AXF_TRUST_WALL=1`, set by the installer) — a signed-in hub **admin** counts as the console token
+  everywhere; a hub **user** reaches only plugins whose plugin.json says `"wallUsers": true`, and the installer
+  opens `/api/plugins/<folder>/` to them at the wall. Such a plugin must limit users itself from
+  `request.state.axf_user` (`server/wall.py`: `Caller.name/role/perms`, `can("x.y")`, `assistant.*` wildcards).
+  Browser-session writes must come from the console's own origin (the core refuses cross-site ones).
 - **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
 
 ## Look and naming

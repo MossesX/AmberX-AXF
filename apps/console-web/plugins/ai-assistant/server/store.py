@@ -53,6 +53,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "agentIntegration": True,
     "defaultAgent": "",
     "sessionHost": "local",
+    "userDailyTokens": 50000,
     "suggestions": [
         "Explain how the theme engine compiles a color-theme asset",
         "Where are console plugins loaded, and how do I write one?",
@@ -254,6 +255,23 @@ def tokens_today() -> int:
     return int(t.get("input", 0)) + int(t.get("output", 0))
 
 
+def add_user_usage(user: str, usage: dict[str, Any]) -> None:
+    """Tokens per hub user per day (for the per-user daily cap)."""
+    with _lock:
+        u = _read(DATA / "usage-users.json", {"days": {}})
+        day = time.strftime("%Y-%m-%d")
+        slot = u.setdefault("days", {}).setdefault(day, {})
+        slot[user] = int(slot.get(user, 0)) + int(usage.get("input", 0) or 0) + int(usage.get("output", 0) or 0)
+        for d in sorted(u["days"])[:-31]:
+            u["days"].pop(d, None)
+        _write(DATA / "usage-users.json", u)
+
+
+def user_tokens_today(user: str) -> int:
+    u = _read(DATA / "usage-users.json", {"days": {}})
+    return int((u.get("days", {}).get(time.strftime("%Y-%m-%d"), {}) or {}).get(user, 0))
+
+
 # ---------------------------------------------------------------- conversations
 
 def _cpath(cid: str) -> Path:
@@ -262,7 +280,8 @@ def _cpath(cid: str) -> Path:
     return CONV / f"{cid}.json"
 
 
-def list_conversations(q: str = "", archived: bool = False) -> list[dict[str, Any]]:
+def list_conversations(q: str = "", archived: bool = False, owner: str | None = None) -> list[dict[str, Any]]:
+    """owner=None lists everything (admins); otherwise only that hub user's conversations."""
     out = []
     if not CONV.exists():
         return out
@@ -273,20 +292,24 @@ def list_conversations(q: str = "", archived: bool = False) -> list[dict[str, An
             continue
         if bool(c.get("archived")) != archived:
             continue
+        if owner is not None and c.get("owner") != owner:
+            continue
         if ql and ql not in c.get("title", "").lower() and not any(ql in str(m.get("content", "")).lower() for m in c.get("messages", [])):
             continue
         last = next((m for m in reversed(c.get("messages", [])) if m.get("role") in ("user", "assistant")), None)
         out.append({"id": c["id"], "title": c.get("title", "New conversation"), "pinned": bool(c.get("pinned")), "archived": bool(c.get("archived")),
                     "tags": c.get("tags", []), "updatedAt": c.get("updatedAt"), "createdAt": c.get("createdAt"),
                     "messages": sum(1 for m in c.get("messages", []) if m.get("role") in ("user", "assistant")),
-                    "agentId": (c.get("settings") or {}).get("agentId", ""), "preview": str(last.get("content", ""))[:120] if last else ""})
+                    "agentId": (c.get("settings") or {}).get("agentId", ""), "owner": c.get("owner") or "", "preview": str(last.get("content", ""))[:120] if last else ""})
     out.sort(key=lambda c: (not c["pinned"], -(c["updatedAt"] or 0)))
     return out
 
 
-def create_conversation(settings: dict[str, Any] | None = None, title: str = "New conversation") -> dict[str, Any]:
+def create_conversation(settings: dict[str, Any] | None = None, title: str = "New conversation", owner: str | None = None) -> dict[str, Any]:
     c = {"$axf": "ai-conversation@1", "id": new_id("c"), "title": title[:120], "createdAt": now_ms(), "updatedAt": now_ms(),
          "pinned": False, "archived": False, "tags": [], "settings": settings or {}, "messages": []}
+    if owner:
+        c["owner"] = owner  # a hub user's conversation (live-session / wall users); admins' have no owner
     save_conversation(c)
     return c
 

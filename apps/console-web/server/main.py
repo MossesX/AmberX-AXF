@@ -43,6 +43,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
+import hmac as _hmac  # noqa: E402
+
+import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall)
+
 HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
 RPC = ROOT / "framework" / "cli" / "engine-rpc.mjs"
@@ -112,7 +116,6 @@ async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-unty
     if request.headers.get("x-auth-via") == "token":
         tok = current_token()
         got = request.headers.get("authorization", "")
-        import hmac as _hmac
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
             return JSONResponse({"detail": "console token required (Authorization: Bearer AXF_TOKEN)"}, status_code=401)
     return await call_next(request)
@@ -171,10 +174,30 @@ def engine(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
     return result
 
 
+def _token_ok(request: HTTPConnection, tok: str) -> bool:
+    got = request.headers.get("authorization") or ""
+    return _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode())
+
+
+def _wall_admin(request: HTTPConnection) -> bool:
+    """A browser signed in to axHub as an admin (only when the wall is on, see server/wall.py) counts as the token."""
+    c = wall.wall_caller(request.headers)
+    if not c or not c.admin:
+        return False
+    if not wall.same_origin(request):
+        raise HTTPException(403, "cross-site request refused")
+    request.state.axf_user = c
+    return True
+
+
 def auth(request: Request) -> None:
     tok = current_token()
-    if tok and request.headers.get("authorization") != f"Bearer {tok}":
-        raise HTTPException(401, "unauthorized")
+    if not tok or _token_ok(request, tok):
+        request.state.axf_user = wall.TOKEN_CALLER
+        return
+    if _wall_admin(request):
+        return
+    raise HTTPException(401, "unauthorized")
 
 
 def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
@@ -786,8 +809,27 @@ def auth_always(request: HTTPConnection) -> None:
         if not v or v[0] < time.time() or not request.url.path.startswith(v[1]):
             raise WebSocketException(code=4401, reason="ticket required (POST /api/ws-ticket)")
         return
-    if tok and request.headers.get("authorization") != f"Bearer {tok}":
-        raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
+    if not tok or _token_ok(request, tok):
+        request.state.axf_user = wall.TOKEN_CALLER
+        return
+    if _wall_admin(request):
+        return
+    raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
+
+
+def _plugin_auth(wall_users: bool):
+    """Plugin routes: the console token or a wall admin, plus wall *users* for plugins that opt in ("wallUsers": true).
+    The plugin then limits what a user may do from request.state.axf_user."""
+    def dep(request: HTTPConnection) -> None:
+        if wall_users and request.scope.get("type") == "http":
+            c = wall.wall_caller(request.headers)
+            if c and not c.admin:
+                if not wall.same_origin(request):
+                    raise HTTPException(403, "cross-site request refused")
+                request.state.axf_user = c
+                return
+        auth_always(request)
+    return dep
 
 
 @app.post("/api/ws-ticket", dependencies=[Depends(auth_always)])
@@ -872,7 +914,8 @@ def load_plugins() -> None:
                 if router is None:
                     raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
                 app.include_router(router, prefix=f"/api/plugins/{folder.name}",
-                                   dependencies=[Depends(auth_always), Depends(_plugin_guard(folder.name))])
+                                   dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True)), Depends(_plugin_guard(folder.name))])
+                info["wallUsers"] = m.get("wallUsers") is True
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console

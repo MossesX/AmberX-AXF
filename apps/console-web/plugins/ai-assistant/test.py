@@ -98,6 +98,17 @@ from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
 app = FastAPI()
+os.environ["AXF_TRUST_WALL"] = "1"
+import wall  # noqa: E402  (core: who is calling behind axHub's wall)
+
+
+@app.middleware("http")
+async def _as_console_core(request, call_next):  # what the console's _plugin_auth does for a "wallUsers" plugin
+    c = wall.wall_caller(request.headers)
+    if c:
+        request.state.axf_user = c
+    return await call_next(request)
+
 app.include_router(mod.router, prefix="/api/plugins/ai-assistant")
 c = TestClient(app)
 P = "/api/plugins/ai-assistant"
@@ -422,7 +433,7 @@ import queue as _q  # noqa: E402
 gate = _q.Queue()
 
 
-def slow_run_turn(cid, body):
+def slow_run_turn(cid, body, caller=None):
     yield mod._sse("start", {"turnId": "t-slow", "agent": None})
     yield mod._sse("text", {"text": "part one "})
     gate.get(timeout=10)
@@ -491,7 +502,7 @@ svc = plugin_services.get("axf.live-sessions@1")
 check(svc and svc.info(sc)["lastSeq"] > 0 and svc.events(sc, 0, 3)["more"], "axf.live-sessions@1 service for other plugins")
 # restart while running → interrupted; close ends the session; deleting the conversation forgets it
 gate2 = _q.Queue()
-def hang(cid, body):  # noqa: E306
+def hang(cid, body, caller=None):  # noqa: E306
     yield mod._sse("start", {"turnId": "t-hang", "agent": None})
     gate2.get(timeout=10)
 mod.run_turn = hang
@@ -507,4 +518,35 @@ c.delete(f"{P}/conversations/{sc}")
 check(c.get(f"{P}/sessions/{sc}").json()["session"] is None, "deleting a conversation forgets its session")
 mod.run_turn = real_run_turn
 _srv.should_exit = True
+
+# ---------------------------------------------------------------- hub users behind the wall
+print("hub users")
+U = {"x-auth-via": "session", "x-auth-user": "bea", "x-auth-role": "user", "x-auth-perms": ""}
+UT = {**U, "x-auth-perms": "assistant.tools"}
+admin_conv = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
+bc = c.post(f"{P}/conversations", json={}, headers=U).json()["conversation"]
+check(bc.get("owner") == "bea", "a hub user's conversation is theirs")
+check([i["id"] for i in c.get(f"{P}/conversations", headers=U).json()["items"]] == [bc["id"]], "users list only their own conversations")
+check(c.get(f"{P}/conversations/{admin_conv}", headers=U).status_code == 404, "someone else's conversation is a 404")
+check(c.get(f"{P}/config", headers=U).status_code == 403 and c.get(f"{P}/agents", headers=U).status_code == 403, "settings and agents need permissions")
+check(c.get(f"{P}/config", headers={**U, "x-auth-perms": "assistant.settings"}).status_code == 200, "assistant.settings opens the settings")
+check(c.get(f"{P}/agents", headers={**U, "x-auth-perms": "assistant.*"}).status_code == 200, "assistant.* covers every assistant permission")
+me = c.get(f"{P}/me", headers=U).json()
+check(me["user"]["name"] == "bea" and not me["can"]["assistant.tools"] and me["dailyTokens"] > 0, "/me says who is chatting and what they may do")
+check("<textarea" in c.get(f"{P}/app", headers=U).text, "the plain chat page is served to hub users")
+c.patch(f"{P}/conversations/{bc['id']}", json={"settings": {"profileId": an}}, headers=U)
+before = len(CALLS)
+ev = turn_as = parse_sse(c.post(f"{P}/conversations/{bc['id']}/messages", json={"content": "calc 6*7"}, headers=U).text)
+sent = CALLS[before:]
+check(sent and "tools" not in sent[-1]["body"] and sent[-1]["path"].startswith("/oa/"), "plain chat: no tools, and the user's model choice is ignored without assistant.models")
+check(any(e == "done" for e, _ in ev), "a hub user gets a reply")
+ev = parse_sse(c.post(f"{P}/conversations/{bc['id']}/messages", json={"content": "calc 6*7"}, headers=UT).text)
+check(any(e == "tool" for e, _ in ev), "assistant.tools turns the tools on for that user")
+check(c.get(f"{P}/sessions", headers=U).json()["items"] and all(i["id"] == bc["id"] for i in c.get(f"{P}/sessions", headers=U).json()["items"]), "users see only their own live sessions")
+cfg0 = c.get(f"{P}/config").json().get("userDailyTokens")
+c.put(f"{P}/config", json={"userDailyTokens": 5})
+ev = parse_sse(c.post(f"{P}/conversations/{bc['id']}/messages", json={"content": "hi"}, headers=U).text)
+check(any(e == "error" and "today" in d["message"] for e, d in ev), "the per-user daily token cap applies")
+c.put(f"{P}/config", json={"userDailyTokens": cfg0 or 50000})
+check(c.post(f"{P}/conversations/{admin_conv}/messages", json={"content": "x"}, headers=U).status_code == 404, "users can't post into someone else's chat")
 print(f"all {ok} checks passed")

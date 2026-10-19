@@ -19,14 +19,68 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Iterator
 
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import PlainTextResponse, StreamingResponse
+from contextvars import ContextVar
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse, StreamingResponse
 
 import plugin_services
+import wall
 
 from . import providers, sessions, store, tools
 
-router = APIRouter()
+# ---------------------------------------------------------------- who may do what (hub users behind the wall)
+# The console lets hub *users* into this plugin ("wallUsers": true). Admins (and the console token) can do
+# everything. Users get plain chat in their own conversations; their extra permissions are switches on the hub's
+# users page: assistant.tools (repo + utility tools), assistant.web (web fetch), assistant.agents (chat as an
+# agent), assistant.write (agents in write mode / approval cards), assistant.models (pick provider and model),
+# assistant.settings (everything else: config, providers, usage, compare).
+_CALLER: ContextVar["wall.Caller | None"] = ContextVar("ai_assistant_caller", default=None)
+_PREFIX = "/api/plugins/ai-assistant"
+_USER_ROUTES = {
+    ("GET", "/app"), ("GET", "/me"), ("GET", "/status"), ("GET", "/catalog"),
+    ("GET", "/conversations"), ("POST", "/conversations"), ("POST", "/conversations/import"),
+    ("GET", "/conversations/{cid}"), ("PATCH", "/conversations/{cid}"), ("DELETE", "/conversations/{cid}"),
+    ("POST", "/conversations/{cid}/fork"), ("DELETE", "/conversations/{cid}/messages/{mid}"), ("GET", "/conversations/{cid}/export"),
+    ("POST", "/conversations/{cid}/messages"), ("POST", "/turns/{tid}/stop"),
+    ("GET", "/sessions"), ("GET", "/sessions/{cid}"), ("GET", "/sessions/{cid}/events"),
+    ("POST", "/sessions/{cid}/stop"), ("POST", "/sessions/{cid}/close"),
+}
+
+
+def _me() -> "wall.Caller":
+    """The caller of the current request (the console token when nothing says otherwise)."""
+    return _CALLER.get() or wall.TOKEN_CALLER
+
+
+async def _access(request: Request) -> None:
+    c = wall.caller_of(request) or wall.TOKEN_CALLER
+    _CALLER.set(c)
+    if c.admin:
+        return
+    route = request.scope.get("route")
+    tpl = (getattr(route, "path", "") or "").split(_PREFIX, 1)[-1] or "/"
+    key = (request.method.upper(), tpl)
+    if key not in _USER_ROUTES:
+        need = "assistant.agents" if tpl.startswith("/agents") else "assistant.write" if tpl.startswith("/batches") else "assistant.settings"
+        if not c.can(need):
+            raise HTTPException(403, f"your account can't do that here (needs {need}; an admin can allow it on the hub's users page)")
+    # A user only ever sees their own conversations (and their sessions).
+    cid = request.path_params.get("cid")
+    if cid:
+        try:
+            owner = store.get_conversation(cid).get("owner")
+        except KeyError:
+            owner = None
+        if owner != c.name:
+            raise HTTPException(404, "conversation not found")
+    tid = request.path_params.get("tid")
+    if tid and _turn_owner.get(tid) != c.name:
+        raise HTTPException(404, "no such reply")
+
+
+router = APIRouter(dependencies=[Depends(_access)])
+_turn_owner: dict[str, str] = {}
 FOLDER = Path(__file__).resolve().parents[1].name
 _turns: dict[str, threading.Event] = {}
 _SECRET = re.compile(r"\b(sk-(?:ant-|proj-)?[A-Za-z0-9_\-]{20,}|xai-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_\-]{30,}|fc-[a-f0-9]{24,})\b")
@@ -209,11 +263,13 @@ def _summ(args: dict[str, Any]) -> str:
     return "" if s == "{}" else s
 
 
-def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
+def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None) -> Iterator[str]:
+    me = caller or wall.TOKEN_CALLER
     cfg = store.load_config()
     turn_id = store.new_id("t")
     cancel = threading.Event()
     _turns[turn_id] = cancel
+    _turn_owner[turn_id] = me.name
     started = time.monotonic()
     try:
         conv = store.get_conversation(cid)
@@ -223,6 +279,11 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         if budget and store.tokens_today() >= budget:
             yield _sse("error", {"message": f"Daily token budget reached ({budget:,} tokens). Raise it in Settings → Plugins → AI assistant."})
             return
+        if not me.admin:
+            cap = int(cfg.get("userDailyTokens") or 0)
+            if cap and store.user_tokens_today(me.name) >= cap:
+                yield _sse("error", {"message": f"You've used today's {cap:,} tokens. Ask an admin to raise your limit, or come back tomorrow."})
+                return
 
         # 1. the user message (new, regenerate, or edit-and-resend)
         if body.get("editMessageId"):
@@ -251,6 +312,9 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         agent = None
         svc = _agents() if cfg.get("agentIntegration", True) else None
         agent_id = st.get("agentId") or ""
+        if agent_id and not me.can("assistant.agents"):
+            yield _sse("status", {"text": "Your account can't chat as an agent; answering as the assistant."})
+            agent_id = ""
         if agent_id and svc:
             try:
                 agent = svc.get_agent(agent_id)
@@ -260,8 +324,14 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                 yield _sse("status", {"text": f"Agent {agent_id} is not available; answering as {cfg.get('assistantName')}."})
         elif agent_id and not svc:
             yield _sse("status", {"text": "The agent manager isn't installed or enabled; answering without the agent."})
+        if agent and agent.get("writeMode") and not me.can("assistant.write"):
+            yield _sse("status", {"text": f"{agent.get('name', 'That agent')} works in write mode, which your account can't use; answering as the assistant."})
+            agent, agent_id = None, ""
+        groups = dict(cfg.get("tools", {}))
+        if not me.admin:
+            groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
         tool_on = st.get("tools", True) is not False
-        tool_specs = tools.specs(cfg.get("tools", {})) if tool_on else []
+        tool_specs = tools.specs(groups) if tool_on else []
         agent_tools = {t["name"]: t for t in (agent or {}).get("tools", [])} if tool_on else {}
         tool_specs = [t for t in tool_specs if t["name"] not in agent_tools] + list(agent_tools.values())
         memory = ""
@@ -274,6 +344,8 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
                 memory = ""
         system = _system_prompt(cfg, conv, agent, body.get("context"), tool_specs, memory)
         amodel = (agent or {}).get("model") or {}
+        if not me.can("assistant.models"):
+            st = {k: v for k, v in st.items() if k not in ("profileId", "model")}  # the default model for this account
         chain = [p for p in [st.get("profileId") or amodel.get("profile") or cfg.get("defaultProfile"), *cfg.get("fallback", [])] if p]
         chain = list(dict.fromkeys(chain)) or [""]
         params = {**cfg.get("params", {})}
@@ -440,6 +512,8 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         store.save_conversation(conv)
         if used_pid:
             store.add_usage(used_pid, used_model, total)
+        if not me.admin:
+            store.add_user_usage(me.name, total)
         if agent and svc:
             try:
                 svc.record_turn(agent_id, user_text, amsg["content"], {"conversationId": cid, "profile": used_pid, "model": used_model})
@@ -450,6 +524,7 @@ def run_turn(cid: str, body: dict[str, Any]) -> Iterator[str]:
         yield _sse("error", {"message": str(e).strip("'\"") or type(e).__name__})
     finally:
         _turns.pop(turn_id, None)
+        _turn_owner.pop(turn_id, None)
 
 
 def _auto_title(cid: str, pid: str, user_text: str, reply: str) -> None:
@@ -467,6 +542,24 @@ def _auto_title(cid: str, pid: str, user_text: str, reply: str) -> None:
 
 
 # ---------------------------------------------------------------- routes: status + config
+
+@router.get("/me")
+def me_route() -> dict[str, Any]:
+    """Who is chatting and what their account allows (for the chat page)."""
+    me = _me()
+    cfg = store.load_config()
+    can = {p: me.can(p) for p in ("assistant.tools", "assistant.web", "assistant.agents", "assistant.write", "assistant.models", "assistant.settings")}
+    cap = 0 if me.admin else int(cfg.get("userDailyTokens") or 0)
+    return {"user": me.public(), "admin": me.admin, "can": can, "dailyTokens": cap, "usedToday": 0 if me.admin else store.user_tokens_today(me.name),
+            "assistantName": cfg.get("assistantName") or "Amber"}
+
+
+@router.get("/app", response_class=HTMLResponse)
+def chat_app() -> HTMLResponse:
+    """A plain chat page for hub users (and anyone signed in): https://<console>/api/plugins/ai-assistant/app"""
+    return HTMLResponse((Path(__file__).resolve().parent / "app.html").read_text(), headers={"cache-control": "no-store", "x-frame-options": "DENY",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"})
+
 
 @router.get("/status")
 def status() -> dict[str, Any]:
@@ -498,7 +591,7 @@ def get_config() -> dict[str, Any]:
     return store.public_config()
 
 
-_CONFIG_KEYS = {"setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
+_CONFIG_KEYS = {"userDailyTokens": int, "setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
                 "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool,
                 "showThinking": bool, "redactSecrets": bool, "dailyTokenBudget": int, "agentIntegration": bool, "defaultAgent": str,
                 "suggestions": list, "prompts": list, "sessionHost": str}
@@ -596,16 +689,18 @@ def draft_models(body: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/conversations")
 def conversations(q: str = "", archived: bool = False) -> dict[str, Any]:
-    return {"items": store.list_conversations(q, archived)}
+    me = _me()
+    return {"items": store.list_conversations(q, archived, owner=None if me.admin else me.name)}
 
 
 @router.post("/conversations")
 def new_conversation(body: dict[str, Any] | None = None) -> dict[str, Any]:
     cfg = store.load_config()
     settings = dict((body or {}).get("settings") or {})
-    if "agentId" not in settings and cfg.get("defaultAgent") and _agents():
+    me = _me()
+    if "agentId" not in settings and cfg.get("defaultAgent") and _agents() and me.can("assistant.agents"):
         settings["agentId"] = cfg["defaultAgent"]
-    c = store.create_conversation(settings)
+    c = store.create_conversation(settings, owner=None if me.admin else me.name)
     title = str((body or {}).get("title") or "").strip()
     if title:
         c["title"] = re.sub(r"\s+", " ", title)[:120]
@@ -667,7 +762,7 @@ def fork_conversation(cid: str, body: dict[str, Any]) -> dict[str, Any]:
     mid = body.get("messageId")
     msgs = c.get("messages", [])
     idx = next((i for i, m in enumerate(msgs) if m.get("id") == mid), len(msgs) - 1)
-    f = store.create_conversation(dict(c.get("settings") or {}), title=f"{c.get('title', 'Conversation')} (fork)")
+    f = store.create_conversation(dict(c.get("settings") or {}), title=f"{c.get('title', 'Conversation')} (fork)", owner=c.get("owner"))
     f["messages"] = msgs[: idx + 1]
     store.save_conversation(f)
     return {"conversation": f}
@@ -717,7 +812,8 @@ def import_conversation(body: dict[str, Any]) -> dict[str, Any]:
     msgs = body.get("messages")
     if not isinstance(msgs, list):
         raise HTTPException(400, "expected an exported conversation (JSON with messages)")
-    c = store.create_conversation(dict(body.get("settings") or {}), title=str(body.get("title") or "Imported")[:120])
+    me = _me()
+    c = store.create_conversation(dict(body.get("settings") or {}), title=str(body.get("title") or "Imported")[:120], owner=None if me.admin else me.name)
     c["messages"] = [{"id": store.new_id("m"), "role": m.get("role"), "content": str(m.get("content", ""))[:200_000], "createdAt": m.get("createdAt") or store.now_ms(),
                       "meta": m.get("meta") or {}, **({"toolCalls": m["toolCalls"]} if m.get("toolCalls") else {}), **({"toolCallId": m["toolCallId"]} if m.get("toolCallId") else {})}
                      for m in msgs if isinstance(m, dict) and m.get("role") in ("user", "assistant", "tool")][:5000]
@@ -734,7 +830,8 @@ def send_message(cid: str, body: dict[str, Any]):
     host = store.load_config().get("sessionHost") or "local"
     notice = "" if host == "local" else "axHub's session workers aren't built yet, so this reply runs on the console (it still keeps going if you close the browser)."
     try:
-        seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body), notice)
+        me = _me()
+        seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body, me), notice)
     except sessions.Busy as e:
         raise HTTPException(409, str(e)) from None
     # The reply runs in its own thread; this response only watches the session log. Leaving doesn't stop it.
@@ -762,8 +859,13 @@ def _stop_session_turn(cid: str) -> bool:
 @router.get("/sessions")
 def list_sessions(closed: bool = False) -> dict[str, Any]:
     cfg = store.load_config()
+    me = _me()
+    items = _host.list(closed)
+    if not me.admin:
+        mine = {c["id"] for c in store.list_conversations("", False, owner=me.name)} | {c["id"] for c in store.list_conversations("", True, owner=me.name)}
+        items = [i for i in items if i["id"] in mine]
     return {"contract": sessions.CONTRACT, "host": cfg.get("sessionHost") or "local", "active": "local", "hosts": sessions.HOSTS,
-            "items": _host.list(closed)}
+            "items": items}
 
 
 @router.get("/sessions/{cid}")
