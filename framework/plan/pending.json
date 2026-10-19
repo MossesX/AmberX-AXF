@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T00:18:04.038Z",
+ "updatedAt": "2026-10-19T00:30:25.265Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -253,12 +253,16 @@
     {
      "text": "Oct 18 2026: the badges are now icons only (sparkle = made by AI, code icon = no AI), on every check and on the What's new banner.",
      "at": "2026-10-18T21:50:34.442Z"
+    },
+    {
+     "text": "Oct 18 2026: only an admin (console token or hub admin) can clear What's new; the seen point is shared on the server (whatsnew-seen.json), so clearing it clears it for everyone. Keep this in the rebuild.",
+     "at": "2026-10-19T00:30:25.265Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-18T20:57:10.427Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T21:50:34.442Z",
+   "updatedAt": "2026-10-19T00:30:25.265Z",
    "source": "chat"
   },
   {
