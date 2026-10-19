@@ -28,8 +28,7 @@
   ],
   "enabledByDefault": true,
   "builtWith": {
-    "model": "opus",
-    "replacedBy": "pending item systems-check-plugin (Fable)"
+    "model": "opus"
   },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

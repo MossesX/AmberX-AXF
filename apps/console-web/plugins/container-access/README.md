@@ -1,6 +1,6 @@
 # Container access (console plugin)
 
-`ai.amberx.axf.console.container-access` · built on Opus (Oct 18 2026) · Fable rebuild pending (`container-access-plugin`).
+`ai.amberx.axf.console.container-access` · built on Opus (Oct 18 2026).
 
 The **master switch** for reaching other containers on the VPS. It is the only code in the console that talks to
 Docker, and it does so through a **locked-down socket proxy** (`deploy/haproxy.cfg`): list/inspect containers, the

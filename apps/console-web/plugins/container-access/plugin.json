@@ -12,7 +12,7 @@
   "optional": ["service:axf.snapshots@1"],
   "scopes": ["ROUTES", "DOCKER"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item container-access-plugin (Fable)" },
+  "builtWith": { "model": "opus" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/container-access",

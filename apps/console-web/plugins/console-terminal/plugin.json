@@ -12,7 +12,7 @@
   "optional": ["service:axf.containers@1"],
   "scopes": ["ROUTES", "SHELL"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item terminal-plugin (Fable)" },
+  "builtWith": { "model": "opus" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/console-terminal",

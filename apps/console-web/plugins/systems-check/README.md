@@ -1,6 +1,6 @@
 # Systems check (console plugin)
 
-`ai.amberx.axf.console.systems-check` · built on Opus (Oct 18 2026; moved out of the console core) · Fable rebuild pending (`systems-check-plugin`).
+`ai.amberx.axf.console.systems-check` · built on Opus (Oct 18 2026; moved out of the console core).
 
 Two banners at the top of every view, one dialog, one settings sub-tab (Settings → Plugins → **Systems check**).
 

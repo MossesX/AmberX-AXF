@@ -18,8 +18,7 @@
   "scopes": [],
   "enabledByDefault": true,
   "builtWith": {
-    "model": "opus",
-    "replacedBy": "pending item plugin-switches (Fable)"
+    "model": "opus"
   },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

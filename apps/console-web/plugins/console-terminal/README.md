@@ -1,6 +1,6 @@
 # Terminal (console plugin)
 
-`ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026) · Fable rebuild pending (`terminal-plugin`).
+`ai.amberx.axf.console.terminal` · built on Opus (Oct 18 2026).
 
 Floating terminal windows (drag, resize, minimize, dock/undock like any console window) with tabs:
 - **Container**: a root shell in a container, through Container access (`axf.containers@1` → exec TTY), so the

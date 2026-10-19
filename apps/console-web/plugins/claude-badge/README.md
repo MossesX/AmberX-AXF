@@ -1,6 +1,6 @@
 # Claude badge (console plugin)
 
-`ai.amberx.axf.console.claude-badge` · built on Opus · Fable rebuild pending (`claude-badge-plugin`, starts with `uninstall.mjs --all`).
+`ai.amberx.axf.console.claude-badge` · built on Opus.
 
 On every console load it tests the AI connection (one tiny request through the AI assistant's `axf.llm@1`) and attaches a
 **badge asset** (framework type `badge`, id `claude`) to the **banner** (framework type `banner`, left side):

@@ -1,6 +1,6 @@
 # Snapshot Manager (console plugin)
 
-`ai.amberx.axf.console.snapshot-manager` · built on Opus (Oct 18 2026) · Fable rebuild pending (`snapshot-manager-plugin`).
+`ai.amberx.axf.console.snapshot-manager` · built on Opus (Oct 18 2026).
 
 Snapshots of container files, taken **before every approved change** (Container access calls it for each change batch)
 and restorable in one step. **Restore snapshots the current state first**, so an undo can itself be undone.

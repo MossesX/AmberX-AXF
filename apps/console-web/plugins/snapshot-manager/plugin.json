@@ -13,7 +13,7 @@
   "optional": [],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item snapshot-manager-plugin (Fable)" },
+  "builtWith": { "model": "opus" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/snapshot-manager",

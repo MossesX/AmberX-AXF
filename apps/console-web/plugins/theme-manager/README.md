@@ -1,6 +1,6 @@
 # Theme manager (console plugin)
 
-`ai.amberx.axf.console.theme-manager` · built on Opus · Fable rebuild pending (`theme-manager-plugin`, starts with `uninstall.mjs --all`).
+`ai.amberx.axf.console.theme-manager` · built on Opus.
 
 Roll colour / style / layout themes, or everything themeable, and choose exactly which tokens a roll may change.
 

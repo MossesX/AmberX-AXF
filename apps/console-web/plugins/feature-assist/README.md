@@ -1,6 +1,6 @@
 # Feature assistant (console plugin)
 
-`ai.amberx.axf.console.feature-assist` · built on Opus (Oct 18 2026) · Fable rebuild pending (`feature-assist-plugin`).
+`ai.amberx.axf.console.feature-assist` · built on Opus (Oct 18 2026).
 
 Adds two things to the Feature Planner (the console's Plan view) through its extension points (`plan.top`,
 `plan.feature`, and context-menu target `axf-plan-feature`), so it disappears cleanly when uninstalled:
