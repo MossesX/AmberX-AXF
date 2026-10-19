@@ -37,11 +37,11 @@ greyed out, with what's missing and a link to install or set it up (found by cap
 
 ## Routes (`/api/plugins/systems-check/`, console token)
 `GET check[?force=1]`, `POST check/{id}`, `POST secret`, `POST secret/clear`, `POST fix/{id}`, `GET ai`,
-`PUT settings`, `GET|DELETE routine`, `POST routine/run`, `GET whats-new?since=<sha>[&summary=1]`.
+`PUT settings`, `GET|DELETE routine`, `POST routine/run`, `GET whats-new[?summary=1]` (changes since the shared seen point, `canClear`), `POST whats-new/seen {head}` (admins only: console token or hub admin; clears it for everyone).
 Provides `axf.syscheck@1` (`run_all`) for the console's alerts.
 
 ## Lifecycle (plugin-lifecycle@1)
-Data: `.axf-console/plugins/systems-check/` (`settings.json`, `routine.json`, `whatsnew/`).
+Data: `.axf-console/plugins/systems-check/` (`settings.json`, `routine.json`, `whatsnew/`, `whatsnew-seen.json`).
 ```bash
 node apps/console-web/plugins/systems-check/install.mjs
 node apps/console-web/plugins/systems-check/uninstall.mjs --all

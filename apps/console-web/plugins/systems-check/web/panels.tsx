@@ -152,20 +152,29 @@ export function RoutinePanel() {
 export function BannersPanel() {
   const rt = useRuntime();
   const [on, setOn] = useState<boolean | null>(null);
+  const [wn, setWn] = useState<{ head: string; canClear?: boolean; seen?: { at: number; by?: string } | null } | null>(null);
   useEffect(() => { void call<AiState>('ai').then((x) => setOn(x.settings.whatsNewBanner !== false), () => setOn(true)); }, []);
+  useEffect(() => { void call<{ head: string; canClear?: boolean; seen?: { at: number; by?: string } | null }>('whats-new').then(setWn, () => setWn(null)); }, []);
   if (on === null) return <p className="fx-muted">Loading…</p>;
   const flip = async (v: boolean) => { await call('settings', { method: 'PUT', body: JSON.stringify({ whatsNewBanner: v }) }); setOn(v); void loadWhatsNew(); };
-  const reset = () => { try { localStorage.removeItem('axf-console:whats-new'); } catch { /* blocked */ } rt.toast('This browser starts counting changes from now', 'success'); void loadWhatsNew(); };
+  const reset = async () => {
+    if (!wn?.head) return;
+    try {
+      const r = await call<{ seen: { at: number; by?: string } }>('whats-new/seen', { method: 'POST', body: JSON.stringify({ head: wn.head }) });
+      setWn({ ...wn, seen: r.seen }); rt.toast('What’s new cleared for everyone', 'success'); void loadWhatsNew();
+    } catch (e) { rt.toast(`Couldn’t clear: ${(e as Error).message}`, 'danger'); }
+  };
   return (
     <div className="fx-stack">
       <label className="axp-systems-check-switch">
         <input type="checkbox" checked={on} onChange={(e) => void flip(e.target.checked)} />
-        <span className="axp-systems-check-switch__text"><strong>Show What’s new when the console loads</strong><span className="fx-small fx-muted">Changes since this browser last opened the console: commits on the console’s clone and plugins added, updated or removed.</span></span>
+        <span className="axp-systems-check-switch__text"><strong>Show What’s new when the console loads</strong><span className="fx-small fx-muted">Changes since an admin last cleared it: commits on the console’s clone and plugins added, updated or removed. Everyone sees the same list; only an admin can clear it.</span></span>
       </label>
       <div className="fx-row fx-row--wrap">
         <Button icon="shield" onClick={() => rt.openDialog('system-check', {})}>Open the systems check</Button>
-        <Button tone="ghost" icon="refresh" onClick={reset}>Mark everything seen in this browser</Button>
+        {wn?.canClear && <Button tone="ghost" icon="check" onClick={() => void reset()}>Clear What’s new for everyone</Button>}
       </div>
+      {wn?.seen?.at ? <p className="fx-small fx-muted">Last cleared {new Date(wn.seen.at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}{wn.seen.by ? ` by ${wn.seen.by}` : ''}.{wn.canClear ? '' : ' Only an admin can clear it.'}</p> : null}
     </div>
   );
 }

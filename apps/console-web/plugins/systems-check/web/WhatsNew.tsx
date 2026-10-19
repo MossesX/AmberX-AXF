@@ -1,8 +1,8 @@
 /*
- * What's new banner: what changed since this browser last opened the console (commits on the console's clone, plugins
- * added / updated / removed), with a plain-English summary by Mosses when "Use AI for What's new" is on (saved, so it
- * stays when AI is off). "Got it" marks everything seen. What this browser last saw is kept in localStorage (a per-viewer
- * convenience): a fresh browser starts from now.
+ * What's new banner: what changed since an admin last cleared it (commits on the console's clone, plugins added /
+ * updated / removed), with a plain-English summary by Mosses when "Use AI for What's new" is on (saved, so it stays when
+ * AI is off). The seen point lives on the server and is shared by every viewer; only an admin (console token or hub
+ * admin) gets "Got it", which clears it for everyone. Everyone else sees the banner until an admin clears it.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Icon } from '@console/axf/react';
@@ -12,18 +12,15 @@ import { SourceBadge } from './SystemCheck';
 
 interface Commit { sha: string; short: string; subject: string; author: string; at: number }
 interface Plugin { folder: string; name: string; version: string }
-interface Resp { head: string; commits: Commit[]; truncated?: boolean; known: boolean; plugins: Plugin[]; banner: boolean; aiOn: boolean; summary?: { text: string; agent?: string; cached?: boolean }; summaryError?: string; error?: string }
-interface Seen { sha: string; at: number; plugins: Record<string, string> }
+interface Seen { sha: string; at: number; plugins: Record<string, string>; by?: string }
+interface Resp { head: string; commits: Commit[]; truncated?: boolean; known: boolean; plugins: Plugin[]; banner: boolean; aiOn: boolean; seen?: Seen | null; canClear?: boolean; summary?: { text: string; agent?: string; cached?: boolean }; summaryError?: string; error?: string }
 
-const KEY = 'axf-console:whats-new';
-function readSeen(): Seen | null { try { const v = localStorage.getItem(KEY); return v ? (JSON.parse(v) as Seen) : null; } catch { return null; } }
-function writeSeen(s: Seen) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* storage blocked: shows again next load */ } }
-
-async function call<T>(path: string): Promise<T> {
+async function call<T>(path: string, body?: unknown): Promise<T> {
   const headers = new Headers();
   const t = api.getToken();
   if (t) headers.set('authorization', `Bearer ${t}`);
-  const r = await fetch(`/api/plugins/systems-check/${path}`, { headers, cache: 'no-store' });
+  if (body !== undefined) headers.set('content-type', 'application/json');
+  const r = await fetch(`/api/plugins/systems-check/${path}`, { method: body === undefined ? 'GET' : 'POST', headers, body: body === undefined ? undefined : JSON.stringify(body), cache: 'no-store' });
   const j = (await r.json().catch(() => ({}))) as T & { detail?: string };
   if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : r.statusText);
   return j;
@@ -38,18 +35,13 @@ const useWN = () => useSyncExternalStore((f) => { subs.add(f); return () => { su
 
 export async function loadWhatsNew() {
   if (!api.isBackendUp()) return;
-  const seen = readSeen();
   try {
-    const d = await call<Resp>(`whats-new?since=${encodeURIComponent(seen?.sha ?? '')}`);
-    if (!seen) { // first visit from this browser: start counting from now
-      if (d.head) writeSeen({ sha: d.head, at: Date.now(), plugins: Object.fromEntries(d.plugins.map((p) => [p.folder, p.version])) });
-      set({ data: null, seen: null });
-      return;
-    }
+    const d = await call<Resp>('whats-new');
+    const seen = d.seen ?? null;
     set({ data: d, seen });
-    if (d.known && d.commits.length) {
+    if (seen && d.known && d.commits.length) {
       set({ summarizing: d.aiOn });
-      try { const s = await call<Resp>(`whats-new?since=${encodeURIComponent(seen.sha)}&summary=1`); if (s.summary || s.summaryError) set({ data: { ...d, summary: s.summary, summaryError: s.summaryError } }); }
+      try { const s = await call<Resp>('whats-new?summary=1'); if (s.summary || s.summaryError) set({ data: { ...d, summary: s.summary, summaryError: s.summaryError } }); }
       catch { /* the commit list still shows */ }
       set({ summarizing: false });
     }
@@ -75,7 +67,10 @@ export function WhatsNewBanner() {
   const nCommits = d.head === seen.sha ? 0 : d.commits.length;
   const nPlugins = pc.added.length + pc.updated.length + pc.removed.length;
   if (!nCommits && !nPlugins) return null;
-  const markSeen = () => { writeSeen({ sha: d.head, at: Date.now(), plugins: Object.fromEntries(d.plugins.map((p) => [p.folder, p.version])) }); set({ dismissed: true }); };
+  const markSeen = async () => {
+    try { const r = await call<{ seen: Seen }>('whats-new/seen', { head: d.head }); set({ dismissed: true, seen: r.seen }); }
+    catch (e) { set({ data: { ...d, summaryError: `Couldn't clear: ${(e as Error).message}` } }); }
+  };
   const since = new Date(seen.at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
   const bits = [nCommits ? `${nCommits}${d.truncated ? '+' : ''} change${nCommits === 1 ? '' : 's'}` : '', nPlugins ? `${nPlugins} plugin update${nPlugins === 1 ? '' : 's'}` : ''].filter(Boolean).join(' and ');
   return (
@@ -87,10 +82,10 @@ export function WhatsNewBanner() {
           {d.summary?.text
             ? <SourceBadge ai title={`Made by AI: summary written by ${d.summary.agent ?? 'Mosses'}${d.summary.cached && !d.aiOn ? ' (saved earlier)' : ''}`} />
             : <SourceBadge ai={false} title="Not AI: straight from the commit history and plugin versions" />}
-          <span className="axp-systems-check-banner__sum">{bits} since you last opened the console ({since}){d.known ? '' : ' (recent changes shown)'}</span>
+          <span className="axp-systems-check-banner__sum">{bits} since an admin last cleared it ({since}){d.known ? '' : ' (recent changes shown)'}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </button>
-        <Button tone="primary" icon="check" onClick={markSeen}>Got it</Button>
+        {d.canClear && <Button tone="primary" icon="check" onClick={() => void markSeen()} title="Clears it for everyone">Got it</Button>}
       </div>
       {open && (
         <div className="axp-systems-check-new__body">

@@ -78,3 +78,19 @@ def save_summary(key: str, data: dict[str, Any]) -> None:
         files = sorted(d.glob("*.json"), key=lambda f: f.stat().st_mtime)
         for f in files[:-200]:  # keep the last 200 summaries
             f.unlink(missing_ok=True)
+
+
+# What's new: the point everyone last "got" (shared by every viewer; only an admin moves it).
+def whats_new_seen() -> dict[str, Any] | None:
+    v = _read(data_dir() / "whatsnew-seen.json", None)
+    if not isinstance(v, dict) or not isinstance(v.get("sha"), str) or not isinstance(v.get("plugins"), dict):
+        return None
+    return {"sha": v["sha"], "at": int(v.get("at") or 0), "plugins": {str(k): str(x) for k, x in v["plugins"].items()}, "by": str(v.get("by") or "")}
+
+
+def save_whats_new_seen(sha: str, plugins: dict[str, str], by: str) -> dict[str, Any]:
+    import time
+    v = {"$axf": "whats-new-seen@1", "sha": sha, "at": int(time.time() * 1000), "plugins": plugins, "by": by}
+    with _lock:
+        _write(data_dir() / "whatsnew-seen.json", v)
+    return whats_new_seen() or v

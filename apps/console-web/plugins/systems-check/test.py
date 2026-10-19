@@ -45,6 +45,17 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 app = FastAPI()
 app.include_router(mod.router, prefix="/p")
+
+
+@app.middleware("http")
+async def _who(request, call_next):  # stands in for the console's auth: x-test-role picks the caller
+    import wall
+    role = request.headers.get("x-test-role", "admin")
+    if role == "admin":
+        request.state.axf_user = wall.TOKEN_CALLER
+    elif role == "user":
+        request.state.axf_user = wall.Caller("sam", "user", frozenset(), "session")
+    return await call_next(request)
 c = TestClient(app)
 ok = 0
 
@@ -165,26 +176,39 @@ check(routine._public_ips("localhost") == [] and routine._public_ips("10.0.0.1")
 check(routine.run_one({"id": "h", "kind": "http", "params": {"url": "https://localhost/"}, "title": "h", "service": "routine", "severity": "warn"}, mod.SVC.core.item)["summary"].startswith("refused"),
       "https checks only reach public hosts")
 
-# What's new
+# What's new (one shared "seen" point on the server; only admins move it)
 head = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
 base = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--verify", "-q", "HEAD~3^{commit}"], capture_output=True, text=True).stdout.strip()
-check(any(p["folder"] == "systems-check" for p in c.get("/p/whats-new").json()["plugins"]), "plugin versions listed (for added / updated / removed)")
-check(c.get("/p/whats-new?since=../../x").status_code == 400, "since must be a commit id")
-check(not c.get("/p/whats-new?since=" + "f" * 40).json()["known"], "unknown commit → recent changes, flagged")
+w = c.get("/p/whats-new").json()
+check(any(p["folder"] == "systems-check" for p in w["plugins"]), "plugin versions listed (for added / updated / removed)")
+check(w["seen"]["sha"] == head and not w["commits"], "first run starts counting from now, for everyone")
+check(w["canClear"] is True and c.get("/p/whats-new", headers={"x-test-role": "user"}).json()["canClear"] is False, "canClear: admins yes, hub users no")
+check(c.get("/p/whats-new", headers={"x-test-role": "none"}).json()["canClear"] is False, "unknown caller can't clear (fails closed)")
+check(c.post("/p/whats-new/seen", json={"head": head}, headers={"x-test-role": "user"}).status_code == 403, "a non-admin can't clear What's new")
+check(c.post("/p/whats-new/seen", json={"head": head}, headers={"x-test-role": "none"}).status_code == 403, "an unknown caller can't clear What's new")
+check(c.post("/p/whats-new/seen", json={"head": "../../x"}).status_code == 400, "head must look like a commit id")
+check(c.post("/p/whats-new/seen", json={"head": "f" * 40}).status_code == 400, "head must be a commit on the branch")
 if not base:  # a shallow checkout (CI clones one commit): no history to count changes in
     print("  - commit-range checks skipped (shallow clone: no HEAD~3)")
     base = head
 else:
-    w = c.get(f"/p/whats-new?since={base}").json()
-    check(w["head"] == head and w["known"] and len(w["commits"]) >= 1 and base not in [x["sha"] for x in w["commits"]], "commits since the last visit (not the last-seen one)")
-    w = c.get(f"/p/whats-new?since={base}&summary=1").json()
+    store = mod.store
+    store.save_whats_new_seen(base, {"systems-check": "0.0.0"}, "test")
+    w = c.get("/p/whats-new", headers={"x-test-role": "user"}).json()
+    check(w["head"] == head and w["known"] and len(w["commits"]) >= 1 and base not in [x["sha"] for x in w["commits"]], "commits since the shared seen point (not the seen one)")
+    check(w["seen"]["plugins"] == {"systems-check": "0.0.0"}, "seen plugin versions shared (so updates show)")
+    w = c.get("/p/whats-new?summary=1").json()
     check(w["summary"]["text"].startswith("## New") and w["summary"]["agent"] == "Mosses", "AI summary by Mosses")
     c.put("/p/settings", json={"ai": {"whatsnew": False}})
     n_calls = len(llm.calls)
-    w = c.get(f"/p/whats-new?since={base}&summary=1").json()
+    w = c.get("/p/whats-new?summary=1").json()
     check(w["summary"]["cached"] and len(llm.calls) == n_calls, "AI off: the saved summary still shows, no model call")
+    r = c.post("/p/whats-new/seen", json={"head": head})
+    check(r.status_code == 200 and r.json()["seen"]["by"] == "console-token", "an admin clears it (who is recorded)")
+    w = c.get("/p/whats-new", headers={"x-test-role": "user"}).json()
+    check(not w["commits"] and w["seen"]["sha"] == head, "cleared for every viewer")
 c.put("/p/settings", json={"whatsNewBanner": False})
-check(c.get(f"/p/whats-new?since={base}").json()["banner"] is False, "banner can be switched off")
+check(c.get("/p/whats-new").json()["banner"] is False, "banner can be switched off")
 
 plugin_services.withdraw("fake-agent-manager")
 check(not c.get("/p/ai").json()["effective"]["systems"], "removing Mosses switches AI off again")

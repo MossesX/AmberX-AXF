@@ -16,7 +16,8 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
-  GET  whats-new?since=<sha>[&summary=1]
+  GET  whats-new[?summary=1]         changes since the shared "seen" point (+ canClear: is this caller an admin)
+  POST whats-new/seen               {head} admins only: mark everything up to head seen, for every viewer
 """
 from __future__ import annotations
 
@@ -25,7 +26,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 import console_context as cx
@@ -235,16 +236,30 @@ def delete_routine() -> dict[str, Any]:
 
 # ---------------------------------------------------------------- What's new
 
+def _admin(request: Request) -> tuple[bool, str]:
+    """Who may clear What's new: the console token or a hub admin (fail closed when the caller is unknown)."""
+    c = getattr(request.state, "axf_user", None)
+    return bool(c is not None and getattr(c, "admin", False)), str(getattr(c, "name", "") or "")
+
+
+def _plugin_versions() -> dict[str, str]:
+    return {p["folder"]: p["version"] for p in whatsnew.plugins()}
+
+
 @router.get("/whats-new")
-def whats_new(since: str = "", summary: bool = False) -> dict[str, Any]:
-    since = since.strip().lower()
-    if since and not whatsnew.SHA.match(since):
-        raise HTTPException(400, "since is a commit id")
+def whats_new(request: Request, summary: bool = False) -> dict[str, Any]:
+    """Changes since the shared seen point. The point lives on the server, so clearing it clears it for everyone."""
+    seen = store.whats_new_seen()
     try:
-        r = whatsnew.commits(since)
+        r = whatsnew.commits(seen["sha"] if seen else "")
     except Exception as e:  # noqa: BLE001
         r = {"head": "", "commits": [], "known": False, "error": str(e)[:200]}
     r["plugins"] = whatsnew.plugins()
+    if seen is None and r.get("head"):  # first run: start counting from now
+        seen = store.save_whats_new_seen(r["head"], _plugin_versions(), "first run")
+        r["commits"], r["known"] = [], True
+    r["seen"] = seen
+    r["canClear"] = _admin(request)[0]
     r["banner"] = store.settings().get("whatsNewBanner", True)
     r["aiOn"] = _ai_allowed("whatsnew")
     if summary and r["commits"] and r.get("known"):
@@ -260,3 +275,24 @@ def whats_new(since: str = "", summary: bool = False) -> dict[str, Any]:
         except Exception as e:  # noqa: BLE001
             r["summaryError"] = str(e)[:200]
     return r
+
+
+class SeenBody(BaseModel):
+    head: str = Field(..., min_length=7, max_length=40)
+
+
+@router.post("/whats-new/seen")
+def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
+    """Admins only: everything up to `head` (what the admin was shown) is seen, for every viewer."""
+    ok, who = _admin(request)
+    if not ok:
+        raise HTTPException(403, "only an admin can clear What's new")
+    h = body.head.strip().lower()
+    if not whatsnew.SHA.match(h):
+        raise HTTPException(400, "head is a commit id")
+    try:
+        whatsnew._git("cat-file", "-e", f"{h}^{{commit}}")
+        whatsnew._git("merge-base", "--is-ancestor", h, "HEAD")
+    except Exception:  # noqa: BLE001
+        raise HTTPException(400, "head isn't a commit on the console's branch") from None
+    return {"seen": store.save_whats_new_seen(h, _plugin_versions(), who)}
