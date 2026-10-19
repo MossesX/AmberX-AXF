@@ -30,6 +30,8 @@ for f in $HITS; do
       cid="$(grep -l "^$ov" "$R"/var/lib/docker/image/overlay2/layerdb/mounts/*/mount-id 2>/dev/null | sed -E 's#.*/mounts/([^/]+)/mount-id#\1#' | head -n1)"
       name="$(sed -E 's/.*"Name":"\/([^"]+)".*/\1/' "$R/var/lib/docker/containers/$cid/config.v2.json" 2>/dev/null)"
       echo "→ INSIDE CONTAINER: ${name:-unknown} (${cid:0:12})"; flag "malware inside container ${name:-?}";;
+    "$R"/var/lib/containerd/io.containerd.snapshotter.v1.*/snapshots/*)
+      echo "→ INSIDE A CONTAINER (containerd snapshot $(echo "$f" | sed -E 's#.*/snapshots/([0-9]+)/.*#\1#'); docker inspect shows which)"; flag "malware inside a container (containerd snapshot): ${f#$R}";;
     *) echo "→ ON THE SERVER ITSELF (host filesystem)"; flag "malware on the HOST: $f";;
   esac
   echo "-- printable strings (first 25, masked):"; strings -n 8 "$f" 2>/dev/null | head -n 25 | mask
