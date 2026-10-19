@@ -9,6 +9,7 @@ import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShor
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
+import { Slot } from './components/Slots';
 
 export interface ViewDef {
   title: string;
@@ -51,6 +52,9 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
     <div className="fx-frame">
+    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits above everything (e.g. app tabs);
+        app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
+    <Slot name="app.frame.top" />
     {/* Banner asset: thin permanent bar above the layout (hidden slot or no banner asset = nothing) */}
     <Banner />
     <div className="fx-shell">
@@ -89,6 +93,7 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
       <ContextMenuHost />
       <FloatingWindowsHost />
     </div>
+    <Slot name="app.frame.cover" />
     </div>
     </TabRenderersProvider>
   );

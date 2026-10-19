@@ -44,6 +44,8 @@ the console rebuilds with it). From a terminal: `node framework/cli/plugin-catal
 version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
+Page-level slots (React shell): `app.frame.top` renders above everything, `app.frame.cover` after the shell (e.g. the app-tabs plugin's tab bar and app frames). <!-- axf-plugin:app-tabs -->
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a
