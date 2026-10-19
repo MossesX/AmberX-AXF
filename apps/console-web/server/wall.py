@@ -105,18 +105,40 @@ USER_READ_PATHS = frozenset({
 })
 
 
-def user_may(caller: Caller, method: str, path: str, wall_user_plugins: frozenset[str] = frozenset()) -> bool:
-    """May this signed-in hub *user* (not admin) make this request? Plugin routes: granted or wallUsers plugins."""
+def plugin_granted(caller: Caller, folder: str, wall_user_plugins: frozenset[str], grantable: frozenset[str]) -> bool:
+    """A user reaches a plugin's routes only when the plugin is open to every user (wallUsers: it checks each user
+    itself) or it says it is safe to hand to a user ("userGrantable": true) *and* the admin granted exactly
+    console.plugin.<folder> (no wildcards: a wildcard must never open a plugin that wasn't meant for users)."""
     if caller.admin:
         return True
-    if not (path == "/api" or path.startswith("/api/") or path == "/mcp" or path.startswith("/mcp/")):
+    if folder in wall_user_plugins:
+        return True
+    return folder in grantable and plugin_perm(folder) in caller.perms
+
+
+ADMIN_PAGES = ("/data/", "/panel")
+
+
+def user_may(caller: Caller, method: str, path: str, wall_user_plugins: frozenset[str] = frozenset(), grantable: frozenset[str] = frozenset()) -> bool:
+    """May this signed-in hub *user* (not admin) make this request? Plugin routes: see plugin_granted."""
+    if caller.admin:
+        return True
+    low = path.lower()
+    if any(low == p.rstrip("/") or low.startswith(p) for p in ADMIN_PAGES):
+        return False  # the static data copies and the server panel are admins' (they hold what the API keeps back)
+    if not (low == "/api" or low.startswith("/api/") or low == "/mcp" or low.startswith("/mcp/")):
         return True  # the page and its static files; every API below is checked
     if path.startswith("/api/plugins/"):
         folder = path[len("/api/plugins/"):].split("/", 1)[0]
         if not _FOLDER.match(folder) or "/." in path or "%" in path or "\\" in path:
             return False  # only a plain plugin folder name counts (no dot segments or encoded tricks)
-        return folder in wall_user_plugins or caller.can(plugin_perm(folder))
+        return plugin_granted(caller, folder, wall_user_plugins, grantable)
     return method.upper() in SAFE_METHODS and path.rstrip("/") in USER_READ_PATHS
+
+
+def malformed_session(headers: Any) -> bool:
+    """The wall said "a signed-in browser" but its headers don't parse: refuse (never fall back to anonymous)."""
+    return trusted() and headers.get("x-auth-via") == "session" and wall_caller(headers) is None
 
 
 def ui_role(caller: Caller) -> str:

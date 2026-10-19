@@ -47,7 +47,20 @@ def same(h: dict[str, str]) -> dict[str, str]:
 
 
 plugins = sorted(main.PLUGINS)
-granted_plugin = "theme-manager" if "theme-manager" in plugins else plugins[0]
+# Plugins are picked from what's loaded (never by name, so removing any plugin keeps this test working).
+def plugin_routes(folder: str) -> list:
+    mod = sys.modules.get(f"axf_console_plugins.{folder.replace('-', '_')}")
+    return list(getattr(getattr(mod, "router", None), "routes", []) or [])
+
+
+def get_routes(folder: str) -> list[str]:
+    """Parameter-free GET routes of a loaded plugin, as full paths."""
+    return sorted(f"/api/plugins/{folder}{r.path}" for r in plugin_routes(folder)
+                  if "GET" in (getattr(r, "methods", None) or set()) and "{" not in getattr(r, "path", "{"))
+
+
+grantable = sorted(f for f in main.USER_GRANTABLE_PLUGINS if get_routes(f))
+granted_plugin = grantable[0] if grantable else (sorted(main.USER_GRANTABLE_PLUGINS) or plugins)[0]
 wall_user_plugins = sorted(main.WALL_USER_PLUGINS)
 
 print("who is calling")
@@ -58,7 +71,8 @@ me = c.get("/api/me", headers=user(perms=f"console.themes,console.plugin.{grante
 ok(me["role"] == "themes" and me["themes"] is True and granted_plugin in me["plugins"], "console.themes + a plugin grant show up")
 me = c.get("/api/me", headers=user("brett", role="admin")).json()
 ok(me["admin"] is True and me["role"] == "admin" and set(me["plugins"]) == set(plugins), "a hub admin has everything")
-ok(c.get("/api/me", headers=user(name="BAD NAME")).json()["user"] is None, "malformed wall headers are ignored")
+ok(c.get("/api/me", headers=user(name="BAD NAME")).status_code == 403, "malformed wall headers are refused, never anonymous")
+ok(c.get("/api/terminal", headers=user(name="a")).status_code == 403, "an unparseable session can't reach routes without their own check")
 os.environ["AXF_TRUST_WALL"] = ""
 ok(c.get("/api/me", headers=user()).json()["user"] is None, "without AXF_TRUST_WALL the wall's headers mean nothing")
 os.environ["AXF_TRUST_WALL"] = "1"
@@ -74,18 +88,25 @@ for m, p in (("GET", "/api/terminal"), ("GET", "/api/events"), ("GET", "/api/ale
              ("GET", "/api/project"), ("GET", "/api/servers")):
     ok(c.request(m, p, headers=same(user())).status_code == 403, f"{m} {p} is admins only")
 ok(c.get("/api/terminal", headers=user(perms="*.*,console.*")).status_code == 403, "no permission opens admin-only routes")
+for p in ("/data/projects.json", "/data/status.json", "/DATA/projects.json", "/panel", "/panel/"):
+    ok(c.get(p, headers=user()).status_code == 403, f"{p} is admins only")
+ok("root" not in c.get("/api/health", headers=user()).json(), "health shows no host path to users")
+ok("root" in c.get("/api/health", headers={"authorization": f"Bearer {TOKEN}"}).json(), "admins still see it")
 
 print("plugins")
 listed = {i["folder"]: i["enabled"] for i in c.get("/api/plugins", headers=user()).json()["items"]}
 ok(not any(on for f, on in listed.items() if f not in wall_user_plugins), "plugins not granted are off for the user")
 r = c.get(f"/api/plugins/{granted_plugin}/x", headers=user())
 ok(r.status_code == 403, "a plugin's routes are refused without its grant")
-real = "/api/plugins/theme-manager/themes" if granted_plugin == "theme-manager" else f"/api/plugins/{granted_plugin}/x"
+real = (get_routes(granted_plugin) or [f"/api/plugins/{granted_plugin}/x"])[0]
 r = c.get(real, headers=user(perms=f"console.plugin.{granted_plugin}"))
 ok(r.status_code == 200 and "json" in r.headers.get("content-type", ""), f"granted: {granted_plugin}'s routes open ({r.status_code})")
 ok(c.get(real, headers=user()).status_code == 403, "the same real route without the grant is refused")
-r = c.get(real, headers=user(perms="console.plugin.*"))
-ok(r.status_code not in (401, 403), "console.plugin.* grants every plugin")
+ok(c.get(real, headers=user(perms="console.plugin.*")).status_code == 403, "wildcards never open a plugin")
+ok(c.get(real, headers=user(perms="console.*")).status_code == 403, "console.* doesn't either")
+risky = next(f for f in plugins if f not in main.USER_GRANTABLE_PLUGINS and f not in main.WALL_USER_PLUGINS and get_routes(f))
+ok(c.get(f"/api/plugins/{risky}/x", headers=user(perms=f"console.plugin.{risky}")).status_code == 403, f"{risky} stays admin-only even when granted")
+ok(risky not in c.get("/api/me", headers=user(perms=f"console.plugin.{risky}")).json()["plugins"], "and isn't listed as usable")
 listed = {i["folder"]: i["enabled"] for i in c.get("/api/plugins", headers=user(perms=f"console.plugin.{granted_plugin}")).json()["items"]}
 ok(listed.get(granted_plugin) == main.plugin_enabled(granted_plugin), "a granted plugin shows as on (when it's on)")
 r = c.post(f"/api/plugins/{granted_plugin}/enabled", json={"enabled": False}, headers=same(user(perms=f"console.plugin.{granted_plugin}")))
@@ -97,6 +118,18 @@ r = c.post(f"/api/plugins/{granted_plugin}/x", headers={**user(perms=f"console.p
 ok(r.status_code == 403, "cross-site writes from a signed-in browser are refused")
 ok(c.get(f"/api/plugins/{granted_plugin}/x", headers=user(perms=f"console.plugin.{granted_plugin}", via="token")).status_code in (401, 403),
    "a request the hub let through on a bearer header still needs the real token")
+
+print("websockets")
+from starlette.websockets import WebSocketDisconnect  # noqa: E402
+ws_paths = ["/api/shell"] + [f"/api/plugins/{f}{r.path}" for f in plugins for r in plugin_routes(f) if type(r).__name__ == "APIWebSocketRoute" and "{" not in r.path][:3]
+for path in ws_paths:
+    refused = False
+    try:
+        with c.websocket_connect(path, headers=user(perms="console.plugin." + path.split("/")[3] if path.startswith("/api/plugins/") else "")) as w:
+            w.receive_text()
+    except Exception:  # noqa: BLE001 — closed or refused, either way not open
+        refused = True
+    ok(refused, f"{path}: no WebSocket for hub users")
 
 print("roles for the access policy")
 ok(wall.ui_role(wall.Caller("a", "admin")) == "admin", "admin role")

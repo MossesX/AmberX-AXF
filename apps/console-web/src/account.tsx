@@ -19,6 +19,10 @@ export interface Me {
   admin: boolean;
   role: 'admin' | 'themes' | 'user' | null;
   themes: boolean;
+  /** plugins an admin may grant to a user (plugin.json "userGrantable": true) */
+  grantable?: string[];
+  /** plugins open to every signed-in user (plugin.json "wallUsers": true) */
+  open?: string[];
   plugins: string[];
 }
 
@@ -99,12 +103,14 @@ function AccountPanel() {
   );
 }
 
-/** The permission names an admin can tick for a user on the hub's users page, with what each one opens. */
-export function grantablePermissions(): { id: string; label: string; danger?: boolean }[] {
-  const dangerous = new Set(['console-terminal', 'container-access', 'snapshot-manager', 'agent-manager', 'project-wizard', 'session-checkin', 'mcp-client']);
+/**
+ * The permission names an admin can tick for a user on the hub's users page, with what each one opens. Only plugins
+ * that say they are safe for users ("userGrantable": true) can be granted; the rest stay admin-only (server-enforced).
+ */
+export function grantablePermissions(grantable: string[]): { id: string; label: string }[] {
   return [
     { id: THEMES_PERM, label: 'Change themes, colours, layouts and style' },
-    ...bundledPlugins.map((p) => ({ id: pluginPerm(p.folder), label: `Plugin: ${p.manifest.name}`, danger: dangerous.has(p.folder) })),
+    ...bundledPlugins.filter((p) => grantable.includes(p.folder)).map((p) => ({ id: pluginPerm(p.folder), label: `Plugin: ${p.manifest.name}` })),
   ];
 }
 
@@ -113,7 +119,8 @@ function ManagementPanel() {
   const rt = useRuntime();
   const me = useAccount();
   if (!me?.admin) return <p className="fx-muted" style={{ margin: 0 }}>Only admins manage accounts.</p>;
-  const perms = grantablePermissions();
+  const perms = grantablePermissions(me.grantable ?? []);
+  const adminOnly = bundledPlugins.filter((p) => !(me.grantable ?? []).includes(p.folder) && !(me.open ?? []).includes(p.folder));
   const hints = perms.map((p) => `${p.id}=${p.label.replace(/[,=]/g, ' ')}`).join(',');
   const copy = (text: string, what: string) =>
     navigator.clipboard?.writeText(text).then(() => rt.toast(`${what} copied`, 'success'), () => rt.toast('Select it and copy it by hand', 'warning'));
@@ -128,7 +135,7 @@ function ManagementPanel() {
         {perms.map((p) => (
           <li key={p.id} className="cx-item">
             <div className="fx-grow" style={{ minWidth: 0 }}>
-              <div className="fx-row fx-row--wrap"><span>{p.label}</span>{p.danger && <Chip tone="danger">reaches the server</Chip>}</div>
+              <span>{p.label}</span>
               <div className="fx-mono fx-small" style={{ overflowWrap: 'anywhere' }}>{p.id}</div>
             </div>
             <Button tone="ghost" icon="copy" onClick={() => copy(p.id, 'Permission')} aria-label={`Copy ${p.id}`} />
@@ -141,8 +148,8 @@ function ManagementPanel() {
       </p>
       <div><Button icon="copy" onClick={() => copy(hints, 'AXHUB_PERMISSION_HINTS value')}>Copy AXHUB_PERMISSION_HINTS value</Button></div>
       <p className="fx-muted" style={{ margin: 0 }}>
-        Plugins marked "reaches the server" can change files, containers or the host. The terminal also needs a
-        WebSocket ticket, which stays admin-only.
+        Admins only, whatever is granted (they can reach secrets, containers, files or the host):{' '}
+        {adminOnly.map((p) => p.manifest.name).join(', ') || 'none'}. Plugins open to every signed-in user check each user themselves.
       </p>
     </div>
   );

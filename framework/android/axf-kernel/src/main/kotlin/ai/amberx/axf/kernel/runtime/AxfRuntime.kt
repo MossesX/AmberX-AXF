@@ -381,6 +381,7 @@ public class AxfRuntime(
 
     public fun importAsset(raw: JsonObject, activate: Boolean = true, origin: String? = null): RegisterResult {
         if (!can("assets.import")) return RegisterResult(false, listOf("Your role needs \"assets.import\" to import assets."))
+        if (principal != null && (raw["type"] as? kotlinx.serialization.json.JsonPrimitive)?.content == AssetTypes.UAC_POLICY) return RegisterResult(false, listOf("Access policies come from your account while you are signed in."))
         val r = registry.register(raw, AssetSource.IMPORTED, origin)
         r.asset?.let { a ->
             events.emit(KernelEvent.AssetImported(a.type, a.id))
@@ -489,7 +490,7 @@ public class AxfRuntime(
         fun onOff(v: String?): Boolean? = when (v) { "on" -> true; "off" -> false; else -> null }
         actions.register("roll.slot", ActionMeta("Include a slot in randomize rolls", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setRollSlot(it, onOff(args.getOrNull(1))) } }
         // spacing:tight|compact|regular (same spec as the web port)
-        actions.register("spacing", ActionMeta("Change spacing (tight, compact, regular)", params = true)) { args, _ -> args.getOrNull(0)?.let { v -> Spacing.entries.firstOrNull { it.id == v }?.let { setSpacing(it) } } }
+        actions.register("spacing", ActionMeta("Change spacing (tight, compact, regular)", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { v -> Spacing.entries.firstOrNull { it.id == v }?.let { setSpacing(it) } } }
         // slot.hide:<type>:on|off (same spec as the web port)
         actions.register("slot.hide", ActionMeta("Hide or show a slot", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setSlotHidden(it, args.getOrNull(1) != "off") } }
         actions.register("roll.asset", ActionMeta("Include an asset in randomize rolls", "assets.swap", params = true)) { args, _ -> val t = args.getOrNull(0); val id = args.getOrNull(1); if (t != null && id != null && registry.types.has(t)) setRollAsset(t, id, onOff(args.getOrNull(2))) }

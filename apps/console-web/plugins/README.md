@@ -85,6 +85,11 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   opens `/api/plugins/<folder>/` to them at the wall. Such a plugin must limit users itself from
   `request.state.axf_user` (`server/wall.py`: `Caller.name/role/perms`, `can("x.y")`, `assistant.*` wildcards).
   Browser-session writes must come from the console's own origin (the core refuses cross-site ones).
+- **Grantable to users (`"userGrantable": true`, Oct 18 2026):** an admin may hand a plugin to one hub user by ticking
+  `console.plugin.<folder>` on the hub's users page (exact name; wildcards never open a plugin). Only declare it when
+  **every** route of the plugin is safe for a non-admin (the theme manager and the Claude badge are; anything that
+  touches secrets, containers, files on the host, git or other services is not). Plugins without it stay admin-only
+  whatever is granted. `wallUsers` plugins are open to every user and check each one themselves.
 - **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
 
 ## Look and naming

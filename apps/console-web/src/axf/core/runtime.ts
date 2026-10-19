@@ -528,6 +528,9 @@ export class AxfRuntime {
     if (!this.can('assets.import')) {
       return { ok: false, errors: ['Your role needs "assets.import" to import assets.'] };
     }
+    if (this.principal && (raw as { type?: unknown } | null)?.type === 'uac-policy') {
+      return { ok: false, errors: ['Access policies come from your account while you are signed in.'] };
+    }
     const r = this.registry.register(raw, 'imported', origin);
     if (r.ok && r.asset) {
       if (activate && this.can('assets.swap')) this.swap(r.asset.type, r.asset.id);
@@ -672,7 +675,7 @@ export class AxfRuntime {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
-    a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', params: true });
+    a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
