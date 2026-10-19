@@ -16,6 +16,7 @@
 #      AXF_WALL=off bash install-console.sh   turns it off (saved; use it if the hub is down and you're locked out)
 #      AXF_WALL=on  bash install-console.sh   always on (it also saves "on" by itself the first time the hub is ready)
 #      AXF_WALL=auto bash install-console.sh  back to waiting for the hub (the default before the first success)
+#      AXF_WALL_USERS=off|on bash install-console.sh   hub users (not admins) in the console: off = admins only (saved)
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-console.amberxai.com}"
@@ -176,7 +177,7 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
     fi
     if [ "$WALL" = "on" ]; then
       rm -f "$DIR/.axf-console/wall-waiting"
-      say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins only); the console token still works on /api and /mcp"
+      say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins, plus users for what an admin granted them); the console token still works on /api and /mcp"
       say "  locked out because the hub is down? AXF_WALL=off bash $DIR/deploy/install-console.sh"
       # Plugins whose plugin.json says "wallUsers": true are open to every signed-in hub user (the plugin limits them);
       # everything else on the console needs a hub admin. The console trusts the wall's headers only with AXF_TRUST_WALL=1.
@@ -184,8 +185,12 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
         d="${f%/plugin.json}"; case "$d" in _*) continue;; esac
         grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f" && printf '/api/plugins/%s/%%2C' "$d"; done)"  # %2C = "," (kept out of the label's own list syntax)
       USER_PATHS="${USER_PATHS%\%2C}"
+      # Signed-in hub *users* (not just admins) may open the whole console; the console itself decides what each
+      # one may do (server/wall.py: page + read-only data + plugins an admin granted). AXF_WALL_USERS=off = admins only.
+      [ -n "${AXF_WALL_USERS:-}" ] && { echo "$AXF_WALL_USERS" > "$DIR/.axf-console/wall-users"; chmod 600 "$DIR/.axf-console/wall-users"; }
+      [ "$(cat "$DIR/.axf-console/wall-users" 2>/dev/null || echo on)" = "off" ] || USER_PATHS="/"
       WALL_ADDR="$WALL_HUB/auth/verify${USER_PATHS:+?user_paths=$USER_PATHS}"
-      WALL_ARGS=(-e AXF_TRUST_WALL=1 \
+      WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_HUB=$WALL_HUB" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
         -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Perms=" \

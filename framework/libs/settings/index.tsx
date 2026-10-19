@@ -477,7 +477,7 @@ export const library: AxfWebLibrary = {
       tab: 'appearance',
       order: 20,
       settings: [
-        { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
+        { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, requires: 'assets.swap', options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
         { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, description: 'Percent of the normal size.' },
         { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, description: 'Off reduces motion.' },
       ],
