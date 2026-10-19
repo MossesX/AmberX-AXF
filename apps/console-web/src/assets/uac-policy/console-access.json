@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "uac-policy",
+  "id": "console-access",
+  "name": "Console accounts",
+  "version": "1.0.0",
+  "description": "Set by your hub account (sign-in wall), not picked here: admins have everything; a user changes themes, colours, layouts or style only when an admin granted console.themes.",
+  "author": "AmberX AXF",
+  "tags": ["accounts"],
+  "roll": false,
+  "data": {
+    "defaultRole": "user",
+    "gating": "disable",
+    "permissions": {
+      "assets.swap": "Change themes, colours, layouts and style",
+      "assets.import": "Import new assets",
+      "uac.manage": "Change the account control policy",
+      "files.write": "Save, export and delete files",
+      "dev.tools": "Build and open the developer console",
+      "dev.deploy": "Deploy the application"
+    },
+    "roles": [
+      { "id": "admin", "label": "Admin", "description": "Everything, plus account management on the hub.", "permissions": ["*"] },
+      { "id": "themes", "label": "User (themes allowed)", "description": "Granted console.themes: may change themes, colours, layouts and style.", "permissions": ["assets.swap", "assets.import"] },
+      { "id": "user", "label": "User", "description": "Looks around; themes and plugins only when an admin grants them.", "permissions": [] }
+    ]
+  }
+}

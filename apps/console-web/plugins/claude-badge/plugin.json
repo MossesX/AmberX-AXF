@@ -7,16 +7,35 @@
   "apiLevel": 1,
   "author": "Brett",
   "description": "Tests the AI connection every time the console loads and attaches a Claude badge to the banner (framework badge asset, top left). Connected: green, and a tooltip pops out to its right for 5 seconds saying “Powered by” and the model (e.g. Claude Opus 5.5). Not connected: grey, and the tooltip says “AI unavailable”. Uses the AI assistant's model service (axf.llm@1). Removing the plugin removes only the Claude badge; the banner, badge and clock asset types stay in the framework.",
-  "targets": ["axf-console"],
-  "provides": ["asset:badge/claude", "banner:left", "settings-tab:claude-badge"],
-  "optional": ["service:axf.llm@1"],
-  "scopes": ["ROUTES"],
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "asset:badge/claude",
+    "banner:left",
+    "settings-tab:claude-badge"
+  ],
+  "optional": [
+    "service:axf.llm@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item claude-badge-plugin (Fable)" },
+  "builtWith": {
+    "model": "opus",
+    "replacedBy": "pending item claude-badge-plugin (Fable)"
+  },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/claude-badge",
-    "env": ["AXF_CLAUDE_BADGE_DIR"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
-  }
+    "env": [
+      "AXF_CLAUDE_BADGE_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "userGrantable": true
 }

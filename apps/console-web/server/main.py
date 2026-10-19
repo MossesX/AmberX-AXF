@@ -119,6 +119,32 @@ async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-unty
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
             return JSONResponse({"detail": "console token required (Authorization: Bearer AXF_TOKEN)"}, status_code=401)
     return await call_next(request)
+
+
+@app.middleware("http")
+async def _wall_user_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
+    """Behind the wall, a signed-in hub *user* (not an admin) reaches only what wall.user_may allows: the page, a few
+    read-only framework routes and the routes of plugins they were granted. Default-deny for everything else."""
+    if wall.malformed_session(request.headers):
+        # The hub said "signed in" but the headers don't check out (bad signature, unknown name): never treat that as
+        # anonymous. The real console token still works (e.g. while AXHUB_WALL_SECRET isn't set on the hub yet).
+        tok = current_token()
+        if not (tok and _token_ok(request, tok)):
+            return JSONResponse({"detail": "sign-in not understood: sign in again at the hub, or use the console token"}, status_code=403)
+    c = wall.wall_caller(request.headers)
+    if c and not c.admin:
+        path = request.url.path
+        if not wall.user_may(c, request.method, path, WALL_USER_PLUGINS, USER_GRANTABLE_PLUGINS):
+            return JSONResponse({"detail": "admins only: ask an admin to grant you this on the hub's users page"}, status_code=403)
+        if request.method.upper() not in wall.SAFE_METHODS and not wall.same_origin(request):
+            return JSONResponse({"detail": "cross-site request refused"}, status_code=403)
+    return await call_next(request)
+
+
+# Plugins whose plugin.json says "wallUsers": true (open to every signed-in user) or "userGrantable": true (an admin
+# may grant it to a user: console.plugin.<folder>); filled when plugins load.
+WALL_USER_PLUGINS: frozenset[str] = frozenset()
+USER_GRANTABLE_PLUGINS: frozenset[str] = frozenset()
 PANEL = ROOT / "deploy" / "panel" / "index.html"
 GITHUB_REPO = os.environ.get("AXF_GITHUB_REPO", "MossesX/AmberX-AXF")
 def _gh_token() -> str:
@@ -209,8 +235,26 @@ def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------- reads
 
 
+@app.get("/api/me")
+def me(request: Request) -> dict[str, Any]:
+    """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
+    hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
+    c = wall.wall_caller(request.headers)
+    if c:
+        return {"wall": True, "hub": hub, "user": c.public(), "admin": c.admin, "role": wall.ui_role(c),
+                "themes": c.can(wall.THEMES_PERM), "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS),
+                "plugins": sorted(f for f in PLUGINS if wall.plugin_granted(c, f, WALL_USER_PLUGINS, USER_GRANTABLE_PLUGINS))}
+    tok = current_token()
+    via_token = bool(tok) and _token_ok(request, tok)
+    return {"wall": wall.trusted(), "hub": hub, "user": None, "admin": via_token or not tok, "role": "admin" if (via_token or not tok) else None,
+            "themes": True, "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS), "plugins": sorted(PLUGINS)}
+
+
 @app.get("/api/health")
-def health() -> dict[str, Any]:
+def health(request: Request) -> dict[str, Any]:
+    c = wall.wall_caller(request.headers)
+    if c and not c.admin:  # no host paths for hub users
+        return {"ok": True, "axf": "console-api@1", "engine": RPC.exists()}
     return {"ok": True, "axf": "console-api@1", "root": str(ROOT), "engine": RPC.exists(), "project": _state["project"]}
 
 
@@ -609,7 +653,9 @@ async def token_reset(request: Request) -> Response:
 async def shell(ws: WebSocket) -> None:
     """A real shell on this host for the control panel's terminal. Protected by AXF_TOKEN (?token=…) when set."""
     tok = current_token()
-    if tok and ws.query_params.get("token") != tok:
+    c = wall.wall_caller(ws.headers)
+    # host shell: never for hub users, and never open (no token) once the console trusts the wall
+    if (c and not c.admin) or (not tok and wall.trusted()) or (tok and ws.query_params.get("token") != tok):
         await ws.close(code=4401)
         return
     await ws.accept()
@@ -801,7 +847,12 @@ def auth_always(request: HTTPConnection) -> None:
     (single use, 30 s, bound to the path it was issued for); the token itself never goes in a URL."""
     tok = current_token()
     if request.scope.get("type") == "websocket":
+        c = wall.wall_caller(request.headers)
+        if c and not c.admin:
+            raise WebSocketException(code=4403, reason="admins only")
         if not tok:
+            if wall.trusted():
+                raise WebSocketException(code=4401, reason="console token required")
             return
         t = request.query_params.get("ticket", "")
         with _ws_lock:
@@ -817,13 +868,14 @@ def auth_always(request: HTTPConnection) -> None:
     raise HTTPException(401, "console token required (Authorization: Bearer AXF_TOKEN)")
 
 
-def _plugin_auth(wall_users: bool):
-    """Plugin routes: the console token or a wall admin, plus wall *users* for plugins that opt in ("wallUsers": true).
-    The plugin then limits what a user may do from request.state.axf_user."""
+def _plugin_auth(wall_users: bool, folder: str = ""):
+    """Plugin routes: the console token or a wall admin, plus wall *users* for plugins that opt in ("wallUsers": true)
+    or that an admin granted them (hub permission console.plugin.<folder>). The plugin then limits what a user may do
+    from request.state.axf_user."""
     def dep(request: HTTPConnection) -> None:
-        if wall_users and request.scope.get("type") == "http":
+        if request.scope.get("type") == "http":
             c = wall.wall_caller(request.headers)
-            if c and not c.admin:
+            if c and not c.admin and wall.plugin_granted(c, folder, frozenset({folder}) if wall_users else frozenset(), USER_GRANTABLE_PLUGINS):
                 if not wall.same_origin(request):
                     raise HTTPException(403, "cross-site request refused")
                 request.state.axf_user = c
@@ -900,6 +952,7 @@ def load_plugins() -> None:
                 "id": m["id"], "name": m["name"], "version": m["version"], "description": m.get("description", ""),
                 "author": m.get("author", ""), "provides": m.get("provides", []), "scopes": m.get("scopes", []),
                 "enabledByDefault": m.get("enabledByDefault", True) is not False,
+                "wallUsers": m.get("wallUsers") is True, "userGrantable": m.get("userGrantable") is True,
             })
             entry = folder / "server" / "__init__.py"
             if entry.exists():
@@ -914,8 +967,7 @@ def load_plugins() -> None:
                 if router is None:
                     raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
                 app.include_router(router, prefix=f"/api/plugins/{folder.name}",
-                                   dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True)), Depends(_plugin_guard(folder.name))])
-                info["wallUsers"] = m.get("wallUsers") is True
+                                   dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True, folder.name)), Depends(_plugin_guard(folder.name))])
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
@@ -935,8 +987,14 @@ def _prune_plugin_state() -> None:
 
 
 @app.get("/api/plugins")
-def list_plugins() -> dict[str, Any]:
-    return {"items": [{**info, "enabled": plugin_enabled(f)} for f, info in PLUGINS.items()]}
+def list_plugins(request: Request) -> dict[str, Any]:
+    # A signed-in hub user sees a plugin as on only when it's on and granted to them (or open to every user).
+    c = wall.wall_caller(request.headers)
+    def on(f: str) -> bool:
+        if not plugin_enabled(f):
+            return False
+        return not c or wall.plugin_granted(c, f, WALL_USER_PLUGINS, USER_GRANTABLE_PLUGINS)
+    return {"items": [{**info, "enabled": on(f)} for f, info in PLUGINS.items()]}
 
 
 @app.post("/api/plugins/{folder}/enabled", dependencies=[Depends(auth)])
@@ -964,6 +1022,8 @@ console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS,
 
 load_plugins()
 _prune_plugin_state()
+WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers") is True)
+USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
 
 
 @app.get("/api/plugin-services", dependencies=[Depends(auth_always)])

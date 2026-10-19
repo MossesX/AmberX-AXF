@@ -163,7 +163,7 @@ public class AxfRuntime(
         val now = _state.value
         val changed = saved.active.filter { (t, id) -> t != AssetTypes.UAC_POLICY && now.active[t] != id && registry.has(t, id) }
         val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, now.active.getValue(AssetTypes.UAC_POLICY))!!.data)
-        val role = saved.role?.takeIf { r -> r != now.role && policy.roles.any { it.id == r } }
+        val role = saved.role?.takeIf { r -> principal == null && r != now.role && policy.roles.any { it.id == r } }
         if (changed.isEmpty() && role == null) return emptyList()
         set({ s -> s.copy(active = s.active + changed, role = role ?: s.role, swaps = s.swaps + if (changed.isEmpty()) 0 else 1) }, recompile = changed.isNotEmpty())
         return changed.keys.toList() + listOfNotNull(role?.let { "role" })
@@ -178,7 +178,29 @@ public class AxfRuntime(
     public inline fun <T> decode(type: String, decoder: (JsonObject) -> T): T = decoder(requireAsset(type).data)
 
     /** Hot-swap the active asset of a slot. `target` = asset id | "next" | "prev" | "random". */
+    /* ---------------- signed-in account (web: runtime.bindPrincipal) ---------------- */
+
+    /** A signed-in account bound to the runtime: its policy + role replace the role switcher. */
+    public data class BoundPrincipal(val id: String, val label: String, val policy: String, val role: String, val attributes: Map<String, String> = emptyMap())
+
+    private var principal: BoundPrincipal? = null
+
+    /** The app signed someone in. While bound, setRole and uac-policy swaps are refused; unbindPrincipal on sign-out. */
+    public fun bindPrincipal(p: BoundPrincipal): Boolean {
+        val asset = registry.get(AssetTypes.UAC_POLICY, p.policy) ?: return false
+        if (UacPolicy.fromJson(asset.data).role(p.role) == null) return false
+        principal = p
+        set({ s -> s.copy(active = s.active + (AssetTypes.UAC_POLICY to p.policy), role = p.role) }, recompile = true)
+        terminal.ok("uac", "signed in as ${p.label} (${p.role})")
+        return true
+    }
+
+    public fun unbindPrincipal() { if (principal != null) { principal = null; set({ it }) } }
+
+    public fun boundPrincipal(): BoundPrincipal? = principal
+
     public fun swap(type: String, target: String): Boolean {
+        if (type == AssetTypes.UAC_POLICY && principal != null) { toast("Your access comes from your account. An admin changes it in Account management.", ToastKind.INFO, "Access"); return false }
         val spec = registry.types.get(type) ?: run { toast("Unknown asset type \"$type\".", ToastKind.WARNING); return false }
         val need = if (type == AssetTypes.UAC_POLICY) "uac.manage" else "assets.swap"
         if (!can(need)) { toast("Your role needs \"$need\" to change the ${spec.label.lowercase()}.", ToastKind.DANGER, "Permission denied"); return false }
@@ -352,12 +374,14 @@ public class AxfRuntime(
         store.remove(hideKey)
         val active = LinkedHashMap<String, String>()
         for (t in registry.types.ids()) { val d = manifest.defaults[t]; val id = if (d != null && registry.has(t, d)) d else registry.list(t).firstOrNull()?.id; if (id != null) active[t] = id }
+        principal?.let { p -> active[AssetTypes.UAC_POLICY] = p.policy; set({ s -> s.copy(active = active, role = p.role, swaps = s.swaps + 1) }, persist = true, recompile = true); return }
         val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, active.getValue(AssetTypes.UAC_POLICY))!!.data)
         set({ s -> s.copy(active = active, role = policy.defaultRole, swaps = s.swaps + 1) }, persist = true, recompile = true)
     }
 
     public fun importAsset(raw: JsonObject, activate: Boolean = true, origin: String? = null): RegisterResult {
         if (!can("assets.import")) return RegisterResult(false, listOf("Your role needs \"assets.import\" to import assets."))
+        if (principal != null && (raw["type"] as? kotlinx.serialization.json.JsonPrimitive)?.content == AssetTypes.UAC_POLICY) return RegisterResult(false, listOf("Access policies come from your account while you are signed in."))
         val r = registry.register(raw, AssetSource.IMPORTED, origin)
         r.asset?.let { a ->
             events.emit(KernelEvent.AssetImported(a.type, a.id))
@@ -375,6 +399,7 @@ public class AxfRuntime(
     public fun can(perm: String?): Boolean = UacEngine.hasPermission(permissions(), perm)
     public fun gate(requires: String?): Gate = UacEngine.gateFor(policy, permissions(), requires)
     public fun setRole(id: String) {
+        principal?.let { if (id != it.role) toast("Your role comes from your account. An admin changes it in Account management.", ToastKind.INFO, "Access"); return }
         val p = policy; val role = p.role(id) ?: return
         val from = current.role
         set({ it.copy(role = id) }, persist = true)
@@ -465,7 +490,7 @@ public class AxfRuntime(
         fun onOff(v: String?): Boolean? = when (v) { "on" -> true; "off" -> false; else -> null }
         actions.register("roll.slot", ActionMeta("Include a slot in randomize rolls", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setRollSlot(it, onOff(args.getOrNull(1))) } }
         // spacing:tight|compact|regular (same spec as the web port)
-        actions.register("spacing", ActionMeta("Change spacing (tight, compact, regular)", params = true)) { args, _ -> args.getOrNull(0)?.let { v -> Spacing.entries.firstOrNull { it.id == v }?.let { setSpacing(it) } } }
+        actions.register("spacing", ActionMeta("Change spacing (tight, compact, regular)", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { v -> Spacing.entries.firstOrNull { it.id == v }?.let { setSpacing(it) } } }
         // slot.hide:<type>:on|off (same spec as the web port)
         actions.register("slot.hide", ActionMeta("Hide or show a slot", "assets.swap", params = true)) { args, _ -> args.getOrNull(0)?.let { if (registry.types.has(it)) setSlotHidden(it, args.getOrNull(1) != "off") } }
         actions.register("roll.asset", ActionMeta("Include an asset in randomize rolls", "assets.swap", params = true)) { args, _ -> val t = args.getOrNull(0); val id = args.getOrNull(1); if (t != null && id != null && registry.types.has(t)) setRollAsset(t, id, onOff(args.getOrNull(2))) }

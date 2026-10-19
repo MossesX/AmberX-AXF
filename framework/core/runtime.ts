@@ -33,6 +33,20 @@ import {
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
 
+/** A signed-in account bound to the runtime (bindPrincipal): its policy + role replace the role switcher. */
+export interface BoundPrincipal {
+  /** stable account id */
+  id: string;
+  /** shown name */
+  label: string;
+  /** uac-policy asset id the account's role lives in */
+  policy: string;
+  /** role id in that policy */
+  role: string;
+  /** extra facts the app wants to keep with it (username, grants…), never secrets */
+  attributes?: Record<string, string>;
+}
+
 export interface AxfRuntimeOptions {
   manifest: AxfManifest;
   assets: unknown[];
@@ -240,7 +254,7 @@ export class AxfRuntime {
       slots.push(t);
     }
     const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
-    const role = Boolean(saved?.role && saved.role !== this.state.role && policy.roles.some((r) => r.id === saved.role));
+    const role = !this.principal && Boolean(saved?.role && saved.role !== this.state.role && policy.roles.some((r) => r.id === saved.role));
     if (slots.length || role) this.set({ active, ...(role ? { role: saved!.role } : {}), swaps: this.state.swaps + (slots.length ? 1 : 0) });
     return { slots, settings, role };
   }
@@ -323,7 +337,43 @@ export class AxfRuntime {
   }
 
   /** Hot-swap the active asset of a slot. `target` = asset id | "next" | "prev" | "random". */
+  /* ---------------- signed-in account (principal) ---------------- */
+
+  private principal: BoundPrincipal | null = null;
+
+  /**
+   * The app signed someone in: their account decides the access policy and role, not the role switcher.
+   * While bound, `setRole` and swapping the uac-policy are refused (the account wall owns them); `unbindPrincipal`
+   * on sign-out. Same contract as Kotlin `AxfRuntime.bindPrincipal`.
+   */
+  bindPrincipal(p: BoundPrincipal): boolean {
+    const policy = this.registry.get('uac-policy', p.policy);
+    if (!policy || !policy.data.roles.some((r) => r.id === p.role)) {
+      this.terminal.error('uac', `bindPrincipal: no role "${p.role}" in policy "${p.policy}"`);
+      return false;
+    }
+    this.principal = { ...p };
+    this.set({ active: { ...this.state.active, 'uac-policy': p.policy }, role: p.role });
+    this.terminal.ok('uac', `signed in as ${p.label} (${p.role})`);
+    return true;
+  }
+
+  unbindPrincipal(): void {
+    if (!this.principal) return;
+    this.principal = null;
+    this.set({});
+  }
+
+  /** The signed-in account, or null when the app has no account wall (or nobody is signed in). */
+  boundPrincipal(): BoundPrincipal | null {
+    return this.principal ? { ...this.principal } : null;
+  }
+
   swap(type: AssetType, target: string): boolean {
+    if (type === 'uac-policy' && this.principal) {
+      this.toast('Your access comes from your account. An admin changes it in Account management.', 'info', 'Access');
+      return false;
+    }
     const need = type === 'uac-policy' ? 'uac.manage' : 'assets.swap';
     if (!this.can(need)) {
       this.toast(`Your role needs "${need}" to change the ${assetTypeSpecs[type].label.toLowerCase()}.`, 'danger', 'Permission denied');
@@ -464,6 +514,12 @@ export class AxfRuntime {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
     for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]?.id ?? '';
+    if (this.principal) {
+      // signed in: the account keeps deciding the policy and role
+      active['uac-policy'] = this.principal.policy;
+      this.set({ active, role: this.principal.role, swaps: this.state.swaps + 1 }, true);
+      return;
+    }
     const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
     this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
   }
@@ -471,6 +527,9 @@ export class AxfRuntime {
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
     if (!this.can('assets.import')) {
       return { ok: false, errors: ['Your role needs "assets.import" to import assets.'] };
+    }
+    if (this.principal && (raw as { type?: unknown } | null)?.type === 'uac-policy') {
+      return { ok: false, errors: ['Access policies come from your account while you are signed in.'] };
     }
     const r = this.registry.register(raw, 'imported', origin);
     if (r.ok && r.asset) {
@@ -500,6 +559,10 @@ export class AxfRuntime {
   }
 
   setRole(id: string) {
+    if (this.principal) {
+      if (id !== this.principal.role) this.toast('Your role comes from your account. An admin changes it in Account management.', 'info', 'Access');
+      return;
+    }
     const policy = this.asset('uac-policy').data;
     if (!policy.roles.some((r) => r.id === id)) return;
     this.set({ role: id }, true);
@@ -612,7 +675,7 @@ export class AxfRuntime {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
-    a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', params: true });
+    a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
