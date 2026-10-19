@@ -1,0 +1,65 @@
+name: App APK (Build Pilot)
+
+# Compiles one app the build engine made (apps/<name>) into a debug APK. Started by the Dev Console
+# (app-ci@1, POST /api/apps/apk) on a branch pilot/<name> it pushed with that app and any framework files the
+# engine changed on the server (new libraries). The APK is the artifact `<name>-debug.apk`; Build Pilot downloads it
+# through the console. Never runs on push, so pilot branches don't trigger the main CI.
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_dir:
+        description: 'App folder, e.g. apps/pilot-notes'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pilot-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: APK for ${{ inputs.app_dir }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check the app folder
+        env: { APP_DIR: '${{ inputs.app_dir }}' }
+        run: |
+          echo "$APP_DIR" | grep -Eq '^apps/[a-z0-9][a-z0-9-]{0,63}$' || { echo "bad app_dir: $APP_DIR"; exit 1; }
+          echo "APP_NAME=${APP_DIR#apps/}" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+      - name: The app exists and is an Android AXF app with a valid project manifest
+        env: { APP_DIR: '${{ inputs.app_dir }}' }
+        run: |
+          test -f "$APP_DIR/axf.manifest.json" && test -f "$APP_DIR/settings.gradle.kts"
+          grep -q '"android"' "$APP_DIR/axf.manifest.json"
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 'Validate (the build rule: nothing compiles without a valid manifest)'
+        env: { APP_DIR: '${{ inputs.app_dir }}' }
+        run: node framework/cli/axf.mjs validate "$APP_DIR"
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - name: Android SDK (API 35 + build-tools)
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" "platform-tools" > /dev/null
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.14.3' }
+      - name: Build the APK
+        env: { APP_DIR: '${{ inputs.app_dir }}' }
+        working-directory: ${{ inputs.app_dir }}
+        run: gradle :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/apk.log; exit ${PIPESTATUS[0]}
+      - name: 'Compiler errors (Build Pilot shows these lines)'
+        if: failure()
+        run: |
+          grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved reference" /tmp/apk.log | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -100 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-debug.apk
+          path: ${{ inputs.app_dir }}/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14

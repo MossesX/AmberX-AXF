@@ -1040,6 +1040,47 @@ WALL_USER_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("wallUsers"
 USER_GRANTABLE_PLUGINS = frozenset(f for f, i in PLUGINS.items() if i.get("userGrantable") is True)
 
 
+# ---------------------------------------------------------------- app-ci@1: APKs on GitHub Actions (Build Pilot's Build APK)
+import app_ci  # noqa: E402
+
+APP_CI = app_ci.AppCi(ROOT, GITHUB_REPO, lambda: os.environ.get("GITHUB_TOKEN", ""), ROOT / ".axf-console" / "app-apks")
+_app_ci_lock = __import__("threading").Lock()
+
+
+@app.post("/api/apps/apk", dependencies=[Depends(auth)])
+def app_apk_start(body: dict[str, Any]) -> dict[str, Any]:
+    """Publish apps/<name> to branch pilot/<name> and start the pilot-apk workflow there."""
+    if not _app_ci_lock.acquire(blocking=False):
+        raise HTTPException(409, "another APK build is being published; try again in a moment")
+    try:
+        r = APP_CI.publish(str(body.get("dir") or ""))
+        log("build", f"APK build started for {r['dir']} on {r['branch']}")
+        return r
+    except app_ci.CiError as e:
+        raise HTTPException(400, str(e)) from None
+    finally:
+        _app_ci_lock.release()
+
+
+@app.get("/api/apps/apk", dependencies=[Depends(auth_always)])
+def app_apk_status(dir: str) -> dict[str, Any]:
+    try:
+        return APP_CI.status(dir if app_ci.APP_DIR_RE.match(dir) else "apps/-")
+    except app_ci.CiError as e:
+        raise HTTPException(502, str(e)) from None
+
+
+@app.get("/api/apps/apk/file", dependencies=[Depends(auth_always)])
+def app_apk_file(dir: str) -> Any:
+    if not app_ci.APP_DIR_RE.match(dir):
+        raise HTTPException(400, "dir must be apps/<name>")
+    try:
+        path = APP_CI.apk(dir)
+    except app_ci.CiError as e:
+        raise HTTPException(409, str(e)) from None
+    return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
+
+
 @app.get("/api/plugin-services", dependencies=[Depends(auth_always)])
 def list_plugin_services() -> dict[str, Any]:
     return {"items": plugin_services.available()}
