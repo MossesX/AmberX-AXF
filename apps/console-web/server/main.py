@@ -303,6 +303,20 @@ def templates() -> Any:
     return engine("templates")
 
 
+@app.get("/api/build-options")
+def build_options() -> Any:
+    """The build options registry (--switches): what `init` accepts as `options`."""
+    return engine("build-options")
+
+
+@app.get("/api/framework-assets")
+def framework_assets(template: str | None = None) -> Any:
+    """Assets a new app can start from, per type (plus the template's extra assets): what `init` accepts as `slots`."""
+    if template is not None and not _re.fullmatch(r"[a-z0-9-]{1,40}", template):
+        raise HTTPException(400, "bad template id")
+    return engine("framework-assets", template=template) if template else engine("framework-assets")
+
+
 @app.get("/api/ported-kits")
 def ported_kits() -> Any:
     return engine("ported-kits")

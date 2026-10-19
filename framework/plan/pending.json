@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T11:15:47.377Z",
+ "updatedAt": "2026-10-19T11:40:14.809Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -242,6 +242,19 @@
    "createdAt": "2026-10-19T00:18:03.979Z",
    "builtAt": "",
    "updatedAt": "2026-10-19T00:18:03.979Z",
+   "source": "chat"
+  },
+  {
+   "id": "build-pilot-contract",
+   "title": "Build Pilot plugin contract (Fable rebuild)",
+   "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-19T11:40:14.809Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-19T11:40:14.809Z",
    "source": "chat"
   }
  ]

@@ -101,6 +101,37 @@ export function validateSlots(slots) {
 }
 
 /** Load every *.json asset under a directory (expects <dir>/<type>/<id>.json). */
+/**
+ * Framework assets a new app can start from, per asset type: [{ id, name, description }]. Includes the
+ * template's extra assets (e.g. android/assets for Android apps) when a template is given.
+ */
+export function listFrameworkAssets(template) {
+  const dirs = [join(FRAMEWORK_DIR, 'assets')];
+  if (template) for (const extra of templateInfo(template).extraAssets) dirs.push(join(FRAMEWORK_DIR, extra));
+  const out = {};
+  for (const d of dirs) for (const a of loadAssets(d)) {
+    if (!a.result.ok || !a.raw) continue;
+    (out[a.raw.type] ??= []).push({ id: a.raw.id, name: a.raw.name ?? a.raw.id, description: a.raw.description ?? '' });
+  }
+  for (const t of Object.keys(out)) out[t].sort((x, y) => x.name.localeCompare(y.name));
+  return out;
+}
+
+/** Default-asset picks for `init` ({ type: id }): every pick must name an asset the new app will actually ship. */
+export function checkSlotPicks(slots, template) {
+  if (!slots || typeof slots !== 'object' || Array.isArray(slots)) throw new Error('slots must be an object of { assetType: assetId }');
+  const known = listFrameworkAssets(template);
+  const out = {};
+  for (const [type, id] of Object.entries(slots)) {
+    if (id === undefined || id === null || id === '') continue;
+    if (typeof id !== 'string') throw new Error(`slots.${type} must be an asset id`);
+    if (!known[type]) throw new Error(`slots: unknown asset type "${type}"`);
+    if (!known[type].some((a) => a.id === id)) throw new Error(`slots: no ${type} asset "${id}"`);
+    out[type] = id;
+  }
+  return out;
+}
+
 export function loadAssets(dir) {
   const out = [];
   if (!existsSync(dir)) return out;
@@ -166,7 +197,7 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, project = {}, log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, project = {}, log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -175,6 +206,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   targets ??= tpl.targets;
   const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
   const bp = boilerplate ? loadBoilerplate(boilerplate) : null;
+  const picks = checkSlotPicks(slots, template);
   if (bp) { modules = [...new Set([...modules, ...(bp.modules ?? [])])]; libraries = [...(bp.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)), ...libraries]; }
   const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
@@ -211,7 +243,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     initializedAt: new Date().toISOString(),
     targets,
     startView: bp?.screens?.[0]?.id ?? 'home',
-    defaults: { ...defaults, ...(bp?.defaults ?? {}) },
+    defaults: { ...defaults, ...(bp?.defaults ?? {}), ...picks },
     options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
