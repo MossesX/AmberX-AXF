@@ -26,8 +26,8 @@ import kotlinx.coroutines.launch
  * approval can't be made from a locked phone.
  */
 class MainActivity : AxfActivity() {
-    private val app get() = application as App
-    private val gate get() = app.appModule.gate
+    private val axhub get() = application as App
+    private val gate get() = axhub.appModule.gate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
@@ -41,7 +41,7 @@ class MainActivity : AxfActivity() {
     override fun onStart() {
         super.onStart()
         // The lock mode is a saved setting: decide only once settings have loaded.
-        app.appScope.launch { app.ready.first { it }; gate.onReturn() }
+        axhub.appScope.launch { axhub.ready.first { it }; gate.onReturn() }
     }
 
     override fun onStop() { gate.onLeave(); super.onStop() }
