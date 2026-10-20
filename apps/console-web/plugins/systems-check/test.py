@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import time
 import os
 import subprocess
 import sys
@@ -92,6 +93,23 @@ check("COOLIFY_TOKEN=tok-1234567890abcdef" in (CRED_DIR / ".axf-console" / "secr
 check((CRED_DIR / ".axf-console" / "secrets.env").stat().st_mode & 0o077 == 0, "credential file is owner-only")
 c.post("/p/secret/clear", json={"key": "COOLIFY_TOKEN"})
 check("COOLIFY_TOKEN" not in os.environ, "credential cleared")
+
+# Moshi key: public key saved here, installed on the VPS only by the host doctor (after it asks)
+core = mod.SVC.core
+core.host_file = CRED_DIR / "host-check.json"
+def moshi_report(status):
+    core.host_file.write_text(json.dumps({"at": int(time.time()), "checks": {"host-moshi-key": {"status": status, "summary": "Moshi's key can sign in as root (SHA256:abc)" if status == "ok" else "no key"}}}))
+    core._cache = None
+    return c.post("/p/check/moshi-key").json()
+m = moshi_report("error")
+check(m["status"] == "error" and m["fix"]["type"] == "secrets" and m["fix"]["fields"][0]["key"] == "MOSHI_SSH_PUBKEY", "missing Moshi key asks for it (Keys banner)")
+check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": "ssh-ed25519 AAAA; rm -rf /"}).status_code == 400, "a bad public key is refused")
+PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi"
+check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": PUB}).status_code == 200, "Moshi public key saved")
+m = moshi_report("error")
+check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved but not on the VPS: says the command that installs it")
+check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
+c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
 
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()

@@ -57,6 +57,10 @@ check_all() {
   # GitHub access from the host clone
   if [ -d "$DIR/.git" ] && GIT_TERMINAL_PROMPT=0 timeout 20 git -C "$DIR" ls-remote -q origin HEAD >/dev/null 2>&1; then put host-git-auth ok "the VPS clone can reach GitHub"
   else put host-git-auth error "the VPS clone can't reach GitHub without a password (auto-update will fail)"; fi
+  # Moshi (phone mosh/ssh app): a key named "moshi" that can sign in as root
+  local mk; mk=$(grep -hiE '^[^#].* [^ ]*moshi[^ ]*$' /root/.ssh/authorized_keys 2>/dev/null | head -1)
+  if [ -n "$mk" ]; then put host-moshi-key ok "Moshi's key can sign in as root ($(printf '%s\n' "$mk" | ssh-keygen -lf - 2>/dev/null | awk '{print $2}'))"
+  else put host-moshi-key error "no key named moshi in root's authorized_keys: Moshi can't sign in with a key"; fi
   # axHub projects volume
   if have docker && docker volume ls -q 2>/dev/null | grep -Eq '(^|[-_])axhub-projects$'; then put host-axhub-volume ok "axhub-projects volume exists"
   else put host-axhub-volume warn "no axhub-projects volume: shared data stays in the legacy folder"; fi
@@ -79,6 +83,20 @@ fix() {
                           else echo "  Install Node 22, then: node $DIR/apps/console-web/plugins/session-checkin/install.mjs"; fi ;;
     host-anthropic-keyfile) ask "Make ~/.anthropic-key owner-only (chmod 600)?" && chmod 600 "$USER_HOME/.anthropic-key" ;;
     host-git-auth) echo "  Store GitHub access for the clone: gh auth login   (or a token in git's credential helper), then: git -C $DIR fetch" ;;
+    host-moshi-key)
+      local k; k=$(grep -h '^MOSHI_SSH_PUBKEY=' "$DIR/.axf-console/secrets.env" 2>/dev/null | tail -1 | cut -d= -f2- | sed "s/^[\"']//;s/[\"']$//")
+      if [ -z "$k" ]; then echo "  Paste Moshi's public key in the console (Keys needed banner), then run this again."; return 0; fi
+      if ! printf '%s\n' "$k" | grep -Eq '^(ssh-ed25519|ecdsa-sha2-nistp(256|384|521)|ssh-rsa) [A-Za-z0-9+/=]+( [A-Za-z0-9@._ -]+)?$' || ! printf '%s\n' "$k" | ssh-keygen -lf - >/dev/null 2>&1; then
+        echo "  The saved key isn't a valid public key; paste it again in the console."; return 0; fi
+      local blob; blob=$(printf '%s' "$k" | awk '{print $2}')
+      if grep -qsF "$blob" /root/.ssh/authorized_keys; then echo "  That key is already allowed."; return 0; fi
+      echo "  Key: $(printf '%s\n' "$k" | ssh-keygen -lf -)"
+      [ -t 0 ] || { echo "  Run this from a terminal: it asks before adding a sign-in key."; return 0; }
+      read -r -p "  → Allow this key to sign in as root? [y/N] " a </dev/tty
+      if [[ "$a" =~ ^[Yy] ]]; then
+        install -d -m 700 /root/.ssh; touch /root/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys
+        case "$k" in *" "*" "*) printf '%s\n' "$k" ;; *) printf '%s moshi\n' "$k" ;; esac >> /root/.ssh/authorized_keys && echo "  Added."
+      fi ;;
     host-axhub-volume) echo "  Coolify → axHub → Persistent Storage: add volume axhub-projects at /projects, redeploy axHub, then: bash $DIR/deploy/install-console.sh" ;;
     *) echo "  unknown check id $id" ;;
   esac

@@ -73,6 +73,9 @@ CREDENTIALS: dict[str, dict[str, Any]] = {
                       "placeholder": "token from Coolify", "help": "Coolify → Keys & Tokens → API tokens (root or write permission)."},
     "AXHUB_URL": {"label": "axHub URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",
                   "placeholder": "https://axhub.amberxai.com", "help": "Where your axHub runs."},
+    "MOSHI_SSH_PUBKEY": {"label": "Moshi public key", "secret": False,
+                         "pattern": r"^(ssh-ed25519|ecdsa-sha2-nistp(256|384|521)|ssh-rsa) [A-Za-z0-9+/=]{60,1200}( [A-Za-z0-9@._ -]{1,64})?$",
+                         "placeholder": "ssh-ed25519 AAAA… moshi", "help": "Moshi → Keys → your key → copy the public key (one line starting with ssh-ed25519). Public, not a secret."},
     "AXHUB_TOKEN": {"label": "axHub token", "secret": True, "pattern": r"^\S{10,}$",
                     "placeholder": "axHub access token", "help": "axHub → Clients → token for the Dev Console."},
 }

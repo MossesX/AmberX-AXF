@@ -95,6 +95,7 @@ class SysCheck:
             "shared-data": self.c_shared_data,
             "claude-files": self.c_claude_files,
             "host-report": self.c_host_report,
+            "moshi-key": self.c_moshi_key,
         }
         for hid, meta in HOST_CHECKS.items():
             self.checks[hid] = (lambda h=hid: self.c_host(h))
@@ -278,6 +279,24 @@ class SysCheck:
         if age > 86400:
             return self.item("host-report", "vps", "VPS host report", "warn", f"Last host report is {int(age // 3600)} hours old.", **base)
         return self.item("host-report", "vps", "VPS host report", "ok", f"Host {rep.get('host', '?')} reported {int(age // 60)} minute(s) ago.", **base)
+
+    def c_moshi_key(self) -> Check:
+        """Can Moshi (the phone's mosh/ssh app) sign in to the VPS with a key? The host doctor looks for a key named "moshi"
+        in root's authorized_keys. A key pasted here is only saved; the doctor installs it after showing its fingerprint."""
+        rep = self.host_report() or {}
+        r = (rep.get("checks") or {}).get("host-moshi-key") or {}
+        saved = bool(os.environ.get("MOSHI_SSH_PUBKEY"))
+        cmd = f"{HOST_SCRIPT} --fix host-moshi-key"
+        base = dict(fix=self.secret_fix("MOSHI_SSH_PUBKEY"), depends=["host-report"], order=30,
+                    instructions=["In Moshi: Keys → your key → copy the public key, and paste it here.", f"Then on the VPS: {cmd}   (shows the key's fingerprint and asks before adding it)"],
+                    links=[{"label": "Moshi", "url": "https://getmoshi.app"}])
+        if r.get("status") == "ok":
+            return self.item("moshi-key", "vps", "Moshi key", "ok", str(r.get("summary", ""))[:300], **base)
+        if not r:
+            return self.item("moshi-key", "vps", "Moshi key", "unknown", "The VPS hasn't reported its sign-in keys yet.", **base)
+        if saved:
+            return self.item("moshi-key", "vps", "Moshi key", "warn", f"Saved here, not on the VPS yet. Run on the VPS: {cmd}", **base)
+        return self.item("moshi-key", "vps", "Moshi key", "error", "No Moshi key can sign in to the VPS: paste Moshi's public key.", **base)
 
     def c_host(self, hid: str) -> Check:
         meta = HOST_CHECKS[hid]

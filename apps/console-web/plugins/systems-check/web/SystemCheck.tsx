@@ -256,7 +256,7 @@ export function FixPanel({ c }: { c: Check }) {
             <label key={x.key} className="axp-systems-check-field">
               <span>{x.label} {x.set && <Chip tone="success">saved</Chip>}</span>
               <span className="axp-systems-check-field__row">
-                <input className="fx-input fx-mono" type={x.secret ? 'password' : 'url'} autoComplete="off" spellCheck={false} placeholder={x.set ? (x.secret ? '•••••••• (saved; type to replace)' : x.value) : x.placeholder}
+                <input className="fx-input fx-mono" type={x.secret ? 'password' : x.key.endsWith('_URL') ? 'url' : 'text'} autoComplete="off" spellCheck={false} placeholder={x.set ? (x.secret ? '•••••••• (saved; type to replace)' : x.value) : x.placeholder}
                   value={vals[x.key] ?? ''} onChange={(e) => setVals({ ...vals, [x.key]: e.target.value })} aria-label={x.label} />
                 {x.set && <Button icon="trash" disabled={busy} onClick={() => void clear(x.key)}>Clear</Button>}
               </span>

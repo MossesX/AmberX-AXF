@@ -126,7 +126,7 @@ class ClearReq(BaseModel):
 
 def _related(key: str) -> list[str]:
     return {"GITHUB_TOKEN": ["github-token"], "ANTHROPIC_API_KEY": ["anthropic-key"], "HOSTINGER_API_TOKEN": ["hostinger-token"],
-            "COOLIFY_URL": ["coolify"], "COOLIFY_TOKEN": ["coolify"], "AXHUB_URL": ["axhub"], "AXHUB_TOKEN": ["axhub"]}.get(key, [])
+            "COOLIFY_URL": ["coolify"], "COOLIFY_TOKEN": ["coolify"], "AXHUB_URL": ["axhub"], "AXHUB_TOKEN": ["axhub"], "MOSHI_SSH_PUBKEY": ["moshi-key"]}.get(key, [])
 
 
 @router.post("/secret")
