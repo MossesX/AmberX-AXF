@@ -42,7 +42,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'whats-new', order: 20, render: () => <WhatsNewBanner /> },
   ],
   dialogs: {
-    'keys-needed': { title: 'Keys needed', icon: 'key', render: () => <KeysDialog /> },
+    'keys-needed': { title: '🔑 Keys needed', icon: 'key', render: () => <KeysDialog /> },
     'system-check': { title: 'Systems check', icon: 'shield', render: (p) => <SystemCheckDialog focus={typeof p.focus === 'string' ? p.focus : undefined} /> },
   },
   settingsTabs: [{ id: 'systems-check', label: 'Systems check', icon: 'shield', parent: 'plugins', order: 5, description: 'The systems check and What’s new banners, their AI switches, and the routine Mosses saved for running without AI.' }],

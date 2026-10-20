@@ -20,7 +20,7 @@ export function KeysBanner() {
       <div className="axp-systems-check-banner__row">
         <Icon name="key" />
         <button type="button" className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
-          {need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`}: {names}
+          <span aria-hidden>🔑 </span>{need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`}: {names}
         </button>
         <Button tone="primary" icon="key" onClick={() => rt.openDialog('keys-needed', {})}>Add {need.length === 1 ? 'it' : 'them'}</Button>
         <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => setHidden(true)}><Icon name="x" size={16} /></button>
@@ -44,7 +44,7 @@ export function KeysDialog() {
       </p>
       {list.map((c) => (
         <section key={c.id} className="fx-card axp-systems-check-keys__item">
-          <h3 className="axp-systems-check-h" style={{ marginTop: 0 }}><StatusDot s={c.status} /> {c.title}</h3>
+          <h3 className="axp-systems-check-h" style={{ marginTop: 0 }}><StatusDot s={c.status} /> <span aria-hidden>🔑</span> {c.title}</h3>
           <p className="fx-small" style={{ margin: 0 }}>{c.summary}</p>
           {c.links.length > 0 && <p className="fx-small" style={{ margin: 0 }}>{c.links.map((l, i) => <span key={l.url}>{i ? ' · ' : ''}<a href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <Icon name="external" size={12} /></a></span>)}</p>}
           <FixPanel c={c} />
