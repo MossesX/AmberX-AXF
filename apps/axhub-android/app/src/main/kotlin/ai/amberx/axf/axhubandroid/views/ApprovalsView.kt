@@ -101,7 +101,10 @@ private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
     val canPost = remember(tick) { Alerts.canPost(ctx) }
     val canFull = remember(tick) { Alerts.canFullScreen(ctx) }
     LifecycleResumeEffect(Unit) { tick++; onPauseOrDispose { } }
+    val feed by HubState.feed.collectAsState()
     LaunchedEffect(Unit) { if (prefs.watching && !running) ApprovalWatchService.start(ctx) }
+    // First successful sign-in turns watching on, unless the user already chose.
+    LaunchedEffect(feed) { if (feed is Feed.Ok && !prefs.watchingChosen) { prefs.watching = true; ApprovalWatchService.start(ctx); tick++ } }
 
     AxfCard(Modifier.fillMaxWidth(), title = if (running) "Watching for approvals" else "Not watching", icon = "bell") {
         AxfText(if (running) "AXHub checks the hub every ${prefs.intervalSec} s and alerts you the moment something needs approval." else "Turn watching on to get an alert for every new approval.", muted = true)

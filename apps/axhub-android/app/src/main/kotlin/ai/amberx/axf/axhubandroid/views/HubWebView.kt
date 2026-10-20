@@ -1,6 +1,10 @@
 package ai.amberx.axf.axhubandroid.views
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.content.Context
+import android.os.Environment
+import android.widget.Toast
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -12,7 +16,6 @@ import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +33,7 @@ import ai.amberx.axf.axhubandroid.hub.HubAddress
  */
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun HubWebView(base: String, url: String, modifier: Modifier = Modifier, onPage: (String) -> Unit = {}) {
+fun HubWebView(base: String, url: String, modifier: Modifier = Modifier, reload: Long = 0L, allowDownloads: Boolean = false, onPage: (String) -> Unit = {}) {
     var view by remember { mutableStateOf<WebView?>(null) }
     var canGoBack by remember { mutableStateOf(false) }
     AndroidView(
@@ -51,7 +54,8 @@ fun HubWebView(base: String, url: String, modifier: Modifier = Modifier, onPage:
                     cacheMode = WebSettings.LOAD_NO_CACHE
                 }
                 CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
-                setDownloadListener { _, _, _, _, _ -> }
+                // Only the hub's own app downloads (the Apps page), and only when this view allows them.
+                setDownloadListener { dl, _, _, _, _ -> if (allowDownloads) downloadFromHub(ctx, base, dl) }
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
                         val target = request.url.toString()
@@ -73,10 +77,33 @@ fun HubWebView(base: String, url: String, modifier: Modifier = Modifier, onPage:
                 view = this
             }
         },
+        onRelease = { it.stopLoading(); it.destroy(); view = null },
     )
-    LaunchedEffect(view, url) { view?.takeIf { HubAddress.isHub(base, url) }?.loadUrl(url) }
+    // A new page, or the same page asked for again (reload counter), loads it.
+    LaunchedEffect(view, url, reload) { view?.takeIf { HubAddress.isHub(base, url) }?.loadUrl(url) }
     BackHandler(enabled = canGoBack) { view?.goBack() }
-    DisposableEffect(Unit) { onDispose { view?.apply { stopLoading(); destroy() }; view = null } }
+}
+
+private val APK_PATH = Regex("^/apps/download/[a-z0-9][a-z0-9-]{0,63}/([A-Za-z0-9][A-Za-z0-9._-]{0,127}\\.apk)$")
+
+/**
+ * Hands a hub app download to Android's download manager with the hub session cookie (sent only to the
+ * hub's own address). Saved in this app's Downloads folder; tapping the finished notification installs it.
+ */
+private fun downloadFromHub(ctx: Context, base: String, url: String) {
+    val uri = Uri.parse(url)
+    val name = APK_PATH.find(uri.path ?: "")?.groupValues?.get(1)
+    if (!HubAddress.isHub(base, url) || name == null || uri.query != null) return
+    runCatching {
+        val req = DownloadManager.Request(uri)
+            .setTitle(name).setDescription("From your hub")
+            .setMimeType("application/vnd.android.package-archive")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalFilesDir(ctx, Environment.DIRECTORY_DOWNLOADS, name)
+        CookieManager.getInstance().getCookie(url)?.let { req.addRequestHeader("Cookie", it) }
+        ctx.getSystemService(DownloadManager::class.java)?.enqueue(req)
+        Toast.makeText(ctx, "Downloading $name. Tap the notification when it's done to install.", Toast.LENGTH_LONG).show()
+    }.onFailure { Toast.makeText(ctx, "Couldn't start the download.", Toast.LENGTH_SHORT).show() }
 }
 
 /** Signs this phone out of the hub (drops the hub session cookie from the app). */

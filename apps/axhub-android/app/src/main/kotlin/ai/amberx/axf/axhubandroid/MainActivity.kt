@@ -8,6 +8,7 @@ import ai.amberx.axf.axhubandroid.hub.HubAddress
 import ai.amberx.axf.axhubandroid.hub.HubState
 import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.views.ApprovalsView
+import ai.amberx.axf.axhubandroid.views.AppsView
 import ai.amberx.axf.axhubandroid.views.Gated
 import ai.amberx.axf.axhubandroid.views.HubAreaView
 import ai.amberx.axf.axhubandroid.views.HubPageView
@@ -47,12 +48,15 @@ class MainActivity : AxfActivity() {
     override fun onStop() { gate.onLeave(); super.onStop() }
 
     private fun handle(i: Intent?) {
+        // Reopened from recents: the old alert's extras come back with it; don't act on them twice.
+        if (i == null || (i.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) return
         val base = WatchPrefs(this).base
-        val id = i?.getStringExtra(Alerts.EXTRA_APPROVAL)
+        val id = i.getStringExtra(Alerts.EXTRA_APPROVAL)
         when {
             id != null -> HubAddress.approval(base, id)?.let { HubState.open(it); kernel.runtime.navigate("hub") }
-            i?.getBooleanExtra(Alerts.EXTRA_OPEN_LIST, false) == true -> kernel.runtime.navigate("home")
+            i.getBooleanExtra(Alerts.EXTRA_OPEN_LIST, false) -> kernel.runtime.navigate("home")
         }
+        i.removeExtra(Alerts.EXTRA_APPROVAL); i.removeExtra(Alerts.EXTRA_OPEN_LIST)
     }
 
     @Composable
@@ -60,6 +64,7 @@ class MainActivity : AxfActivity() {
         val views = mutableMapOf<String, @Composable () -> Unit>(
             "home" to { Gated(gate) { ApprovalsView() } },
             "hub" to { Gated(gate) { HubPageView() } },
+            "apps" to { Gated(gate) { AppsView() } },
             "settings" to { Gated(gate) { SettingsView() } },
             "lock-pin" to { Gated(gate) { PinSetupScreen() } },
         )

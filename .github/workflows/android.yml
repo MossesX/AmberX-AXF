@@ -83,6 +83,7 @@ jobs:
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py
           python apps/console-web/server/test_plugin_catalog.py
+          python apps/console-web/server/test_app_catalog.py
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
@@ -130,10 +131,18 @@ jobs:
   android:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
+    env:
+      # Every app's versionCode = this run number, so each catalog build installs over the previous one.
+      AXF_BUILD_NUMBER: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
+      - name: Stable debug signing key (secret ANDROID_DEBUG_KEYSTORE, base64), so updates install without uninstalling
+        env: { KS: '${{ secrets.ANDROID_DEBUG_KEYSTORE }}' }
+        run: |
+          if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore && echo "using the stable debug key"
+          else echo "::warning::ANDROID_DEBUG_KEYSTORE is not set: APKs are signed with a fresh key, so installing an update needs an uninstall first"; fi
       - name: Android SDK (preinstalled on ubuntu-latest; make sure API 35 + build-tools are there)
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
@@ -173,11 +182,20 @@ jobs:
       - name: Build AXHub (apps/axhub-android) + its unit tests
         working-directory: apps/axhub-android
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-axhub.log; exit ${PIPESTATUS[0]}
+      - name: Build every other framework Android app (apps/* found by app-bundle.mjs; new apps need no CI change)
+        run: |
+          set -o pipefail
+          for d in $(node framework/cli/app-bundle.mjs list --android --dirs); do
+            ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
+            echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
+          done
+      - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
+        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
@@ -192,6 +210,11 @@ jobs:
         with:
           name: axhub-debug.apk
           path: apps/axhub-android/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-apks
+          path: dist/app-apks/
+          retention-days: 30
       - name: Maven repo of every framework module (ai.amberx.axf:<module>:<version>)
         uses: actions/upload-artifact@v4
         with:

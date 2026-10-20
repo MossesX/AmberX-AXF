@@ -1,6 +1,7 @@
 package ai.amberx.axf.axhubandroid.watch
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -61,6 +62,7 @@ object Alerts {
             .setContentIntent(openIntent(context, 0, null))
             .build()
 
+    @SuppressLint("MissingPermission") // canPost() checks POST_NOTIFICATIONS first
     fun approval(context: Context, a: PendingApproval, fullScreen: Boolean) {
         if (!canPost(context)) return
         val open = openIntent(context, a.id.hashCode(), a.id)
@@ -83,11 +85,13 @@ object Alerts {
 
     fun clearApproval(context: Context, id: String) { NotificationManagerCompat.from(context).cancel(tag(id), 0) }
 
-    fun signedOut(context: Context) {
+    /** Not urgent: on the quiet channel. [notAdmin] = signed in, but the account can't approve. */
+    @SuppressLint("MissingPermission") // canPost() checks POST_NOTIFICATIONS first
+    fun signedOut(context: Context, notAdmin: Boolean = false) {
         if (!canPost(context)) return
-        val n = NotificationCompat.Builder(context, CH_APPROVAL)
-            .setSmallIcon(R.drawable.ic_axhub_notify).setContentTitle("Sign in to AXHub")
-            .setContentText("Your hub session ended, so approvals can't be watched.")
+        val n = NotificationCompat.Builder(context, CH_WATCH)
+            .setSmallIcon(R.drawable.ic_axhub_notify).setContentTitle(if (notAdmin) "This hub account can't approve" else "Sign in to AXHub")
+            .setContentText(if (notAdmin) "Sign in with an admin account (or finish the hub's password change)." else "Your hub session ended, so approvals can't be watched.")
             .setAutoCancel(true).setContentIntent(openIntent(context, ID_SIGNIN, null)).build()
         runCatching { NotificationManagerCompat.from(context).notify(ID_SIGNIN, n) }
     }

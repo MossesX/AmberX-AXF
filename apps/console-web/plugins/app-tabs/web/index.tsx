@@ -2,7 +2,7 @@
  * App tabs console plugin (ai.amberx.axf.console.app-tabs).
  *
  * A tab group across the whole page (framework slot `app.frame.top`, above the banner): one tab per AmberX app picked
- * in Settings → Plugins → App tabs, Console and Pilot by default. The console's own tab shows the console; any other
+ * in Settings → Plugins → App tabs, Console, Pilot and axHub by default. The console's own tab shows the console; any other
  * tab covers the page below the tab bar (slot `app.frame.cover`) with that app in a frame. A frame stays loaded once
  * opened, so switching back and forth keeps its state. Apps: built-in list + project manifests with a deploy.url +
  * ones added in settings (https only). Choices are settings (`app-tabs.tabs`, `app-tabs.custom`, `app-tabs.active`),
@@ -13,12 +13,13 @@ import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { loadProjects } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { BUILT_IN, DEFAULT_TABS, encodeCustom, fromManifests, isHome, mergeApps, parseCustom, safeUrl, slug, tabsFor, type AppDef } from './apps';
+import { BUILT_IN, DEFAULT_TABS, LATER_DEFAULTS, encodeCustom, fromManifests, isHome, mergeApps, parseCustom, safeUrl, slug, tabsFor, type AppDef } from './apps';
 import './app-tabs.css';
 
 const ID = 'ai.amberx.axf.console.app-tabs';
 const FOLDER = 'app-tabs';
 const KEYS = { tabs: 'app-tabs.tabs', custom: 'app-tabs.custom', active: 'app-tabs.active' } as const;
+const SEEN_KEY = 'app-tabs.seenDefaults';
 const here = () => globalThis.location?.origin ?? '';
 
 /* ---------------- shared state: the app list and the saved choices ---------------- */
@@ -45,6 +46,16 @@ function useAppTabs() {
   }, [rt]);
   const [s, setS] = useState(read);
   const [, bump] = useState(0);
+  // Defaults added after a choice was saved (axHub): put each on a saved list once; removing it later sticks.
+  useEffect(() => {
+    const seen = rt.settings.get(SEEN_KEY);
+    const seenList = Array.isArray(seen) ? seen.filter((x): x is string => typeof x === 'string') : [];
+    const fresh = LATER_DEFAULTS.filter((id) => !seenList.includes(id));
+    if (!fresh.length) return;
+    const saved = read().chosen;
+    if (saved) rt.settings.set(KEYS.tabs, [...saved, ...fresh.filter((id) => !saved.includes(id))]);
+    rt.settings.set(SEEN_KEY, [...seenList, ...fresh]);
+  }, [rt, read]);
   useEditorSync({ onRefresh: () => setS(read()) });
   useEffect(() => {
     void loadManifestApps();
@@ -185,7 +196,7 @@ function TabsPanel() {
         <span className="fx-muted fx-small">An app that refuses to be shown in a frame stays blank: open it with the arrow at the end of the tab bar instead. Apps behind axHub's sign-in use the hub session you already have.</span>
       </div>
       <div className="fx-row fx-row--wrap">
-        <Button tone="ghost" icon="undo" onClick={() => { t.setChosen(DEFAULT_TABS); t.setActive(''); }}>Back to Console + Pilot</Button>
+        <Button tone="ghost" icon="undo" onClick={() => { t.setChosen(DEFAULT_TABS); t.setActive(''); }}>Back to Console + Pilot + axHub</Button>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 package ai.amberx.axf.axhubandroid.watch
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -38,18 +39,24 @@ class ApprovalWatchService : Service() {
         super.onCreate()
         Alerts.channels(this)
         val type = if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE else 0
-        ServiceCompat.startForeground(this, Alerts.ID_WATCH, Alerts.watching(this, 0), type)
+        try {
+            ServiceCompat.startForeground(this, Alerts.ID_WATCH, Alerts.watching(this, 0), type)
+        } catch (e: Exception) {
+            // Android may refuse a restart from the background (ForegroundServiceStartNotAllowedException): stop quietly.
+            stopSelf(); return
+        }
         HubState.setRunning(true)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val prefs = WatchPrefs(this)
         if (!prefs.watching || intent?.action == ACTION_STOP) { stopSelf(); return START_NOT_STICKY }
-        if (intent?.action == ACTION_CHECK_NOW || loop?.isActive != true) { loop?.cancel(); loop = scope.launch { run(prefs) } }
+        if (intent?.action == ACTION_CHECK_NOW || loop?.isActive != true) { loop?.cancel(); loop = scope.launch { pollLoop(prefs) } }
         return START_STICKY
     }
 
-    private suspend fun run(prefs: WatchPrefs) {
+    @SuppressLint("MissingPermission") // every notify() is behind Alerts.canPost()
+    private suspend fun pollLoop(prefs: WatchPrefs) {
         while (scope.isActive) {
             if (!prefs.watching) { stopSelf(); return }
             val f = HubClient.feed(prefs.base)
@@ -59,18 +66,20 @@ class ApprovalWatchService : Service() {
                 is Feed.Ok -> {
                     signedOutAlerted = false
                     val ids = f.pending.map { it.id }
+                    prefs.gone(ids).forEach { Alerts.clearApproval(this, it) } // decided elsewhere or expired
                     val fresh = f.pending.filter { !prefs.alerted(it.id) }
                     fresh.forEach { Alerts.approval(this, it, prefs.fullScreen) }
                     prefs.markAlerted(fresh.map { it.id }, keepOnly = ids)
                     if (Alerts.canPost(this)) runCatching { nm.notify(Alerts.ID_WATCH, Alerts.watching(this, f.count)) }
                 }
                 Feed.SignedOut, Feed.NotAdmin -> {
-                    if (!signedOutAlerted) { Alerts.signedOut(this); signedOutAlerted = true }
+                    if (!signedOutAlerted) { Alerts.signedOut(this, notAdmin = f == Feed.NotAdmin); signedOutAlerted = true }
                     if (Alerts.canPost(this)) runCatching { nm.notify(Alerts.ID_WATCH, Alerts.watching(this, 0, if (f == Feed.NotAdmin) "This account isn't a hub admin" else "Signed out of the hub")) }
                 }
                 is Feed.Error -> if (Alerts.canPost(this)) runCatching { nm.notify(Alerts.ID_WATCH, Alerts.watching(this, 0, "Can't reach the hub right now")) }
             }
-            delay(prefs.intervalSec * 1000L)
+            // Signed out: nothing to watch until a sign-in, so check rarely (the app also checks on every open).
+            delay(if (f == Feed.SignedOut || f == Feed.NotAdmin) SIGNED_OUT_MS else prefs.intervalSec * 1000L)
         }
     }
 
@@ -83,6 +92,7 @@ class ApprovalWatchService : Service() {
     companion object {
         const val ACTION_STOP = "ai.amberx.axf.axhubandroid.STOP_WATCH"
         const val ACTION_CHECK_NOW = "ai.amberx.axf.axhubandroid.CHECK_NOW"
+        private const val SIGNED_OUT_MS = 5 * 60_000L
 
         fun start(context: Context, checkNow: Boolean = false) {
             val i = Intent(context, ApprovalWatchService::class.java).apply { if (checkNow) action = ACTION_CHECK_NOW }

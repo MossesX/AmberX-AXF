@@ -21,12 +21,14 @@ import ai.amberx.axf.lock.LockResult
 import ai.amberx.axf.lock.PinPrompt
 import ai.amberx.axf.lock.findFragmentActivity
 import ai.amberx.axf.lock.message
+import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.ui.LocalAxfKernel
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.theme.Axf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
@@ -47,8 +49,10 @@ fun Gated(gate: AppLockGate, content: @Composable () -> Unit) {
     var resetSure by remember { mutableStateOf(false) }
 
     fun tryUnlock() {
-        val l = lock ?: run { gate.unlock(); return }
+        val l = lock ?: run { note = "The lock isn't available, so AXHub stays locked. Use Sign out and reset below."; return }
         scope.launch {
+            // The lock mode is a saved setting: never decide before settings have loaded.
+            (ctx.applicationContext as? AxfApplication)?.ready?.first { it }
             when (l.mode) {
                 LockMode.NONE -> gate.unlock()
                 LockMode.BIOMETRIC -> {

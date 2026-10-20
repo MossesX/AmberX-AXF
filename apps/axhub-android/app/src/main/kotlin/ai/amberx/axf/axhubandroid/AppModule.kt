@@ -2,6 +2,7 @@ package ai.amberx.axf.axhubandroid
 
 import android.content.Context
 import ai.amberx.axf.axhubandroid.hub.HubAddress
+import ai.amberx.axf.axhubandroid.hub.HubClient
 import ai.amberx.axf.axhubandroid.hub.HubState
 import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.views.hubAreas
@@ -26,6 +27,10 @@ import ai.amberx.axf.lock.AppLock
 import ai.amberx.axf.lock.LockMode
 import ai.amberx.axf.settings.SettingsEngine
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,20 +46,22 @@ class AppLockGate {
     private var leftAt = 0L
     internal var lock: AppLock? = null
     internal var settings: SettingsEngine? = null
+    internal var base: String? = null
 
     fun unlock() { _unlocked.value = true }
     fun lockNow() { _unlocked.value = false }
     fun onLeave(now: Long = System.currentTimeMillis()) { leftAt = now }
     /** Called once settings have loaded (app ready) and on every return to the app. */
     fun onReturn(now: Long = System.currentTimeMillis()) {
-        val l = lock
-        if (l == null || l.mode == LockMode.NONE) { unlock(); return }
+        val l = lock ?: return // no lock service: stay locked (fail closed); "Sign out and reset" is the way out
+        if (l.mode == LockMode.NONE) { unlock(); return }
         if (leftAt > 0 && now - leftAt >= l.autoLockMinutes * 60_000L) lockNow()
         leftAt = 0
     }
     /** "Sign out and reset": the hub session goes first, then the lock is turned off. */
     suspend fun resetAfterSignOut() {
         val done = CompletableDeferred<Unit>()
+        base?.let { runCatching { HubClient.signOut(it) } } // ends the session on the hub too, not just on this phone
         signOutOfHub { done.complete(Unit) }
         done.await()
         HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut)
@@ -72,17 +79,25 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.lock")
     val gate: AppLockGate = AppLockGate()
     private val prefs = WatchPrefs(context)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun register(ctx: ModuleContext) {
         val runtime = ctx.service(AxfRuntime::class)
         gate.lock = ctx.service(AppLock::class)
         gate.settings = ctx.service(SettingsEngine::class)
-        val routes = listOf(RouteSpec("home", "Approvals", icon = "shield", module = id), RouteSpec("hub", "Hub", icon = "external", module = id)) +
+        gate.base = prefs.base
+        val routes = listOf(RouteSpec("home", "Approvals", icon = "shield", module = id), RouteSpec("hub", "Hub", icon = "external", module = id), RouteSpec("apps", "Apps", icon = "download", module = id)) +
             hubAreas.map { RouteSpec(it.route, it.title, icon = it.icon, module = id, group = "Manage") }
         routes.forEach { ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(it)) }
 
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("axhub.signout", ActionMeta("Sign out of the hub", module = id)) { _, _ ->
-            signOutOfHub { HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut); runtime?.toast("Signed out of the hub on this phone.", ToastKind.INFO, "AXHub") }
+            scope.launch {
+                val ended = runCatching { HubClient.signOut(prefs.base) }.getOrDefault(false)
+                signOutOfHub {
+                    HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut)
+                    runtime?.toast(if (ended) "Signed out of the hub." else "Signed out on this phone (the hub couldn't be reached to end the session there).", ToastKind.INFO, "AXHub")
+                }
+            }
         })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("axhub.lock", ActionMeta("Lock AXHub", module = id)) { _, _ -> gate.lockNow() })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About")) { _, _ ->
@@ -109,7 +124,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             K_BASE -> {
                 val ok = HubAddress.normalize(v)
                 if (ok == null) { if (v != null && runtime != null) runtime.toast("Hub address must be https with no path; kept ${prefs.base}.", ToastKind.WARNING, "AXHub") }
-                else if (ok != prefs.base) { prefs.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
+                else if (ok != prefs.base) { prefs.base = ok; gate.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
             }
             K_INTERVAL -> v?.toIntOrNull()?.let { prefs.intervalSec = it }
             K_FULL -> v?.toBooleanStrictOrNull()?.let { prefs.fullScreen = it }

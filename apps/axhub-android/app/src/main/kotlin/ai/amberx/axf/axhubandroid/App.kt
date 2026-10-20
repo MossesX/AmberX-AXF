@@ -3,6 +3,8 @@ package ai.amberx.axf.axhubandroid
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.devtools.DevtoolsModule
+import android.webkit.WebView
+import ai.amberx.axf.lock.LockMode
 import ai.amberx.axf.lock.LockModule
 import ai.amberx.axf.lock.LockWording
 import ai.amberx.axf.logging.LoggingModule
@@ -20,9 +22,14 @@ import ai.amberx.axf.ui.windows.WindowsModule
 class App : AxfApplication() {
     val appModule: AppModule by lazy { AppModule(this) }
 
+    override fun onCreate() {
+        super.onCreate()
+        WebView.setWebContentsDebuggingEnabled(false) // the hub session lives in the WebView
+    }
+
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
-        LockModule(LockWording(groupLabel = "Unlock", groupDescription = "This app holds your hub admin session. Ask for a fingerprint or PIN before it opens.", modeLabel = "Open AXHub with")),
+        LockModule(LockWording(groupLabel = "Unlock", groupDescription = "This app holds your hub admin session. Ask for a fingerprint or PIN before it opens.", modeLabel = "Open AXHub with"), defaultMode = LockMode.BIOMETRIC),
         appModule,
     ) + AppModule.placeholders()
 }

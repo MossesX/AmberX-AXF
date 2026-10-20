@@ -27,6 +27,12 @@
             "label": "Hub",
             "icon": "external",
             "view": "hub"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
           }
         ]
       },
@@ -88,6 +94,7 @@
           }
         ]
       }
-    ]
+    ],
+    "description": "AXHub: approvals, the hub, app downloads, planned hub areas, settings."
   }
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -40,17 +42,34 @@ fun HubPageView() {
     val page by HubState.page.collectAsState()
     val scope = rememberCoroutineScope()
     val base = prefs.base
-    val url = page?.takeIf { HubAddress.isHub(base, it) } ?: HubAddress.approvals(base)
+    val url = page.first?.takeIf { HubAddress.isHub(base, it) } ?: HubAddress.approvals(base)
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = Axf.space.two, vertical = Axf.space.one), horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             AxfButton("Approvals", { HubState.open(null); runtime.navigate("home") }, tone = ButtonTone.GHOST, icon = "arrow-left")
             AxfButton("All on hub", { HubState.open(HubAddress.approvals(base)) }, tone = ButtonTone.GHOST, icon = "list")
         }
-        HubWebView(base, url, Modifier.weight(1f)) { finished ->
+        HubWebView(base, url, Modifier.weight(1f), reload = page.second) { finished ->
             // After any hub page (e.g. an approval decided), refresh the list and drop that approval's alert.
             Regex("/auth/admin/approvals/([0-9a-f-]{36})").find(finished)?.groupValues?.get(1)?.let { Alerts.clearApproval(ctx, it) }
             scope.launch { HubState.update(HubClient.feed(base)) }
         }
+    }
+}
+
+/**
+ * Route `apps`: the hub's app catalog (every app built with the framework, with download links). Downloads
+ * go to this app's Downloads folder; Android then offers to install the APK.
+ */
+@Composable
+fun AppsView() {
+    val ctx = LocalContext.current
+    val base = remember { WatchPrefs(ctx).base }
+    var reload by remember { mutableLongStateOf(0L) }
+    Column(Modifier.fillMaxSize()) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = Axf.space.two, vertical = Axf.space.one), horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
+            AxfButton("Refresh", { reload = System.nanoTime() }, tone = ButtonTone.GHOST, icon = "refresh")
+        }
+        HubWebView(base, HubAddress.apps(base), Modifier.weight(1f), reload = reload, allowDownloads = true)
     }
 }
 

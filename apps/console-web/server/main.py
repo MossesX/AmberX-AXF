@@ -98,6 +98,9 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         hub = globals().get("ALERTS")  # developer alerts (defined below): sources + phone delivery threads
         if hub:
             hub.start()
+        cat = globals().get("APP_CATALOG")  # app catalog on axHub (defined below): files new CI APKs
+        if cat:
+            cat.start(int(os.environ.get("AXF_APP_CATALOG_EVERY", "600") or 600))
         try:
             yield
         finally:
@@ -1079,6 +1082,30 @@ def app_apk_file(dir: str) -> Any:
     except app_ci.CiError as e:
         raise HTTPException(409, str(e)) from None
     return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
+
+
+# ---- App catalog (app-catalog@1, app_catalog.py): every framework app's APK, filed on axHub for its Apps page ----------
+# CI's app-apks bundle -> /projects/_shared/_data/app-catalog (checked against sha256). Checks every 10 min
+# (AXF_APP_CATALOG_EVERY seconds); console token on every route.
+import app_catalog  # noqa: E402
+
+APP_CATALOG = app_catalog.AppCatalog(GITHUB_REPO, lambda: os.environ.get("GITHUB_TOKEN", ""), app_catalog.default_dir())
+
+
+@app.get("/api/app-catalog", dependencies=[Depends(auth_always)])
+def app_catalog_status() -> dict[str, Any]:
+    return {**APP_CATALOG.status(), "catalog": APP_CATALOG.read()}
+
+
+@app.post("/api/app-catalog/sync", dependencies=[Depends(auth)])
+def app_catalog_sync(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    try:
+        r = APP_CATALOG.sync(force=bool((body or {}).get("force")))
+        if r.get("state") == "updated":
+            log("build", f"app catalog updated: {', '.join(r.get('added', [])) or 'nothing new'}")
+        return r
+    except app_catalog.CatalogError as e:
+        raise HTTPException(409, str(e)) from None
 
 
 # ---- Plugin catalog (plugin-catalog@1, framework/cli/plugin-catalog.mjs): plugins kept on axHub ----------------------

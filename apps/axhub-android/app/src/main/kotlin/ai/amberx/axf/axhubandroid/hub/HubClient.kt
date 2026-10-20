@@ -35,17 +35,21 @@ object HubAddress {
         val t = raw?.trim()?.trimEnd('/') ?: return null
         val u = runCatching { URL(t) }.getOrNull() ?: return null
         if (u.protocol != "https" || u.host.isNullOrBlank() || !u.userInfo.isNullOrEmpty() || (u.path ?: "").isNotEmpty() || u.query != null || u.ref != null) return null
-        return "https://${u.host.lowercase()}${if (u.port != -1) ":${u.port}" else ""}"
+        val port = if (u.port == -1 || u.port == u.defaultPort) "" else ":${u.port}"
+        return "https://${u.host.lowercase()}$port"
     }
 
     fun approvals(base: String): String = "$base/auth/admin/approvals"
     /** The hub's single-request page; ids are checked so nothing else can be built into the link. */
     fun approval(base: String, id: String): String? = if (ID.matches(id)) "${approvals(base)}/$id" else null
+    fun apps(base: String): String = "$base/apps"
     fun login(base: String): String = "$base/auth/login?rd=${java.net.URLEncoder.encode("/auth/admin/approvals", "UTF-8")}"
     fun isHub(base: String, url: String?): Boolean {
         val u = runCatching { URL(url) }.getOrNull() ?: return false
         val b = URL(base)
-        return u.protocol == "https" && u.host.equals(b.host, true) && u.port == b.port
+        val up = if (u.port == -1) u.defaultPort else u.port
+        val bp = if (b.port == -1) b.defaultPort else b.port
+        return u.protocol == "https" && u.host.equals(b.host, true) && up == bp
     }
 }
 
@@ -74,6 +78,30 @@ object HubClient {
         } catch (e: Exception) {
             Feed.Error(e.message?.take(120) ?: "Can't reach the hub.")
         } finally { conn.disconnect() }
+    }
+
+    /**
+     * Ends this phone's session on the hub (not just here): reads the CSRF token from the account page and posts the
+     * hub's own sign-out form with the hub as Origin. Best effort; the caller clears the cookies either way.
+     */
+    suspend fun signOut(base: String): Boolean = withContext(Dispatchers.IO) {
+        val cookie = runCatching { CookieManager.getInstance().getCookie(base) }.getOrNull() ?: return@withContext false
+        runCatching {
+            val page = (URL("$base/auth/account").openConnection() as HttpURLConnection).run {
+                instanceFollowRedirects = false; connectTimeout = 10_000; readTimeout = 10_000
+                setRequestProperty("Cookie", cookie)
+                try { if (responseCode == 200) readLimited(inputStream) else "" } finally { disconnect() }
+            }
+            val csrf = Regex("name=\"csrf\" value=\"([^\"]+)\"").find(page)?.groupValues?.get(1) ?: return@runCatching false
+            (URL("$base/auth/logout").openConnection() as HttpURLConnection).run {
+                instanceFollowRedirects = false; connectTimeout = 10_000; readTimeout = 10_000
+                requestMethod = "POST"; doOutput = true
+                setRequestProperty("Cookie", cookie); setRequestProperty("Origin", base)
+                setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+                outputStream.use { it.write("csrf=${java.net.URLEncoder.encode(csrf, "UTF-8")}".toByteArray()) }
+                try { responseCode in 200..399 } finally { disconnect() }
+            }
+        }.getOrDefault(false)
     }
 
     internal fun parse(text: String): Feed = try {

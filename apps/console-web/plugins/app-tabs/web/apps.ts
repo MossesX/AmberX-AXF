@@ -10,11 +10,18 @@ export interface AppDef { id: string; name: string; url: string; icon: string; f
 export const BUILT_IN: AppDef[] = [
   { id: 'axf-console-web', name: 'Console', url: 'https://console.amberxai.com', icon: 'terminal', from: 'built-in', note: 'AXF Dev Console' },
   { id: 'build-pilot', name: 'Pilot', url: 'https://pilot.amberxai.com', icon: 'rocket', from: 'built-in', note: 'Build Pilot app designer' },
+  { id: 'axhub', name: 'axHub', url: 'https://axhub.amberxai.com/apps', icon: 'layers', from: 'built-in', note: 'axHub: apps catalog (approvals open in a new tab)' },
   { id: 'axf-demo', name: 'Demo', url: 'https://axf.amberxai.com', icon: 'layout', from: 'built-in', note: 'AXF demo site' },
 ];
 
-/** Default tabs, in order: the console and Build Pilot. */
-export const DEFAULT_TABS = ['axf-console-web', 'build-pilot'];
+/** Default tabs, in order: the console, Build Pilot and axHub. */
+export const DEFAULT_TABS = ['axf-console-web', 'build-pilot', 'axhub'];
+
+/**
+ * Tabs added to the defaults after people had saved their own choice: each is added once to a saved list (then
+ * remembered in `seenDefaults`), so removing it later sticks.
+ */
+export const LATER_DEFAULTS = ['axhub'];
 
 const ID_RE = /^[a-z0-9][a-z0-9-]{0,47}$/;
 
