@@ -59,13 +59,13 @@ public class SpeechInput(private val context: Context) {
     public val onDeviceAvailable: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
 
     public suspend fun listen(options: ListenOptions = ListenOptions()): Heard = mutex.withLock {
-        withContext(Dispatchers.Main) {
+        withContext<Heard>(Dispatchers.Main) {
             if (!available) return@withContext Heard.Failed(-1, "Speech recognition isn't available on this phone.")
             if (options.secret && !onDeviceAvailable && !options.allowOnlineSecret) return@withContext Heard.Failed(NO_ON_DEVICE, "This phone has no on-device speech recognition, so secrets aren't spoken. Type it instead, or allow online recognition in Settings → Voice.")
             val recognizer = if (options.secret && onDeviceAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
                 else SpeechRecognizer.createSpeechRecognizer(context)
             try {
-                suspendCancellableCoroutine { cont ->
+                suspendCancellableCoroutine<Heard> { cont ->
                     fun finish(h: Heard) { _listening.value = false; _level.value = 0f; if (cont.isActive) cont.resume(h) }
                     recognizer.setRecognitionListener(object : RecognitionListener {
                         override fun onReadyForSpeech(params: Bundle?) { _listening.value = true }

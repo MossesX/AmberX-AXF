@@ -74,9 +74,9 @@ public class AppLock internal constructor(private val secure: SecureStore?, priv
     }
 
     /** Shows the system fingerprint/face sheet. */
-    public suspend fun biometric(activity: FragmentActivity, title: String, subtitle: String? = null): LockResult = withContext(Dispatchers.Main) {
+    public suspend fun biometric(activity: FragmentActivity, title: String, subtitle: String? = null): LockResult = withContext<LockResult>(Dispatchers.Main) {
         biometricProblem(activity)?.let { return@withContext LockResult.Unavailable(it) }
-        suspendCancellableCoroutine { cont ->
+        suspendCancellableCoroutine<LockResult> { cont ->
             val prompt = BiometricPrompt(activity, ContextCompat.getMainExecutor(activity), object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) { if (cont.isActive) cont.resume(LockResult.Passed) }
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
