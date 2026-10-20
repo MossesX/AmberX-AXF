@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-19T15:45:01.197Z",
+  "generatedAt": "2026-10-20T15:49:01.440Z",
   "items": [
     {
       "$axf": "library@1",
@@ -109,6 +109,92 @@
           "browser"
         ]
       }
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.lock",
+      "module": "lib-lock",
+      "name": "App lock (fingerprint/face or PIN)",
+      "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay. Settings group App lock (mode, auto-lock delay) and a set/change PIN screen (current PIN required to change). Fills the platform's android.biometric placeholder.",
+      "features": [
+        "u.bio"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.lock",
+      "params": [
+        {
+          "key": "defaultMode",
+          "label": "Default second step",
+          "type": "choice",
+          "choices": [
+            "none",
+            "biometric",
+            "pin"
+          ],
+          "default": "none",
+          "required": true
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-lock:$axf\")",
+        "module": "LockModule()",
+        "import": "ai.amberx.axf.lock.LockModule",
+        "routes": [
+          "lock-pin"
+        ]
+      },
+      "placeholders": [
+        {
+          "capability": "axf.lock.keybound",
+          "note": "Keystore keys that need the fingerprint for every decrypt (CryptoObject). Not built: the lock gates the UI; data keys don't require auth yet."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.voice",
+      "module": "lib-voice",
+      "name": "Voice (speech in, prompts out, voice commands)",
+      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+      "features": [
+        "c.voice",
+        "dv.audio"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.voice",
+      "params": [
+        {
+          "key": "speakPrompts",
+          "label": "Speak prompts by default",
+          "type": "bool",
+          "default": true
+        },
+        {
+          "key": "preferOffline",
+          "label": "Prefer on-device recognition",
+          "type": "bool",
+          "default": true,
+          "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
+        "module": "VoiceModule(this)",
+        "import": "ai.amberx.axf.voice.VoiceModule",
+        "routes": [
+          "voice-triggers"
+        ]
+      },
+      "placeholders": [
+        {
+          "capability": "axf.voice.wakeword",
+          "note": "Always-on wake word in a foreground service (not built; the app listens only while open)."
+        },
+        {
+          "capability": "axf.voice.speaker-id",
+          "note": "Recognise the owner's voice (not built)."
+        }
+      ]
     }
   ]
 }

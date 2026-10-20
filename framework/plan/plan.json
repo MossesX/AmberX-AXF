@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-19T15:45:01.219Z",
+ "generatedAt": "2026-10-20T15:49:01.459Z",
  "statuses": [
   "built",
   "partial",
@@ -8565,15 +8565,15 @@
    "area": "Kernel",
    "group": "Settings, logging, admin, accounts, profile, subscription (the six libraries)",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "built",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "lib-accounts"
+     "status": "built",
+     "where": "lib-lock"
     }
    },
    "capabilities": [],
@@ -8582,7 +8582,7 @@
     "u.bio"
    ],
    "modules": [
-    "lib-accounts"
+    "lib-lock"
    ],
    "files": [],
    "acceptance": [],
@@ -8595,7 +8595,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)",
    "source": "catalog",
    "history": [
     {
@@ -11599,6 +11599,278 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "lib.voice",
+   "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-voice + library.json; first used by apps/voicevault (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-voice"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.voice"
+   ],
+   "modules": [
+    "lib-voice"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Always-on wake word in a foreground service (lib.voice.wakeword)",
+    "Bundle with: Recognise the owner's voice (lib.voice.speakerid)",
+    "Bundle with: Web port of PhraseMatcher + VoiceCommands (Web Speech API) (lib.voice.web)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.wakeword",
+   "title": "Always-on wake word in a foreground service",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.wakeword"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.speakerid",
+   "title": "Recognise the owner's voice",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.speakerid"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.web",
+   "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.web"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.lock",
+   "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-lock + library.json; AxfActivity is now a FragmentActivity (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-lock"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.lock"
+   ],
+   "modules": [
+    "lib-lock"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Keystore keys that need the fingerprint for every decrypt (CryptoObject) (lib.lock.keybound)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "lib.lock.keybound",
+   "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.lock",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.lock"
+   ],
+   "catalog": [
+    "lib.lock.keybound"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
    "id": "ui.explorer",
    "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
    "area": "Kernel",
@@ -13121,15 +13393,15 @@
    "area": "Kernel",
    "group": "Device & platform capabilities",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "axf-platform-android"
+     "status": "partial",
+     "where": "lib-voice"
     }
    },
    "capabilities": [],
@@ -13138,7 +13410,7 @@
     "dv.audio"
    ],
    "modules": [
-    "axf-platform-android"
+    "lib-voice"
    ],
    "files": [],
    "acceptance": [],
@@ -13151,7 +13423,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet",
    "source": "catalog",
    "history": [
     {
@@ -20001,7 +20273,7 @@
    "area": "Demos later",
    "group": "Data, files, productivity",
    "kind": "feature",
-   "status": "planned",
+   "status": "partial",
    "priority": "P3",
    "wave": 3,
    "effort": "",
@@ -20012,7 +20284,9 @@
    "catalog": [
     "c.passwords"
    ],
-   "modules": [],
+   "modules": [
+    "apps/voicevault"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -20024,7 +20298,7 @@
     "demos",
     "lib"
    ],
-   "notes": "",
+   "notes": "Voice Vault: Keystore-encrypted vault, voice store/retrieve, clipboard auto-clear; TOTP not yet",
    "source": "catalog",
    "history": [
     {
@@ -20721,18 +20995,25 @@
    "area": "Demos later",
    "group": "Device, sensors, connectivity",
    "kind": "feature",
-   "status": "planned",
+   "status": "partial",
    "priority": "P3",
    "wave": 3,
    "effort": "",
    "summary": "",
-   "ports": {},
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-voice"
+    }
+   },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [
     "c.voice"
    ],
-   "modules": [],
+   "modules": [
+    "lib-voice"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -20744,7 +21025,7 @@
     "demos",
     "lib"
    ],
-   "notes": "",
+   "notes": "voice commands + user triggers built; gesture hooks not yet",
    "source": "catalog",
    "history": [
     {

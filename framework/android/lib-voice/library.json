@@ -1,0 +1,24 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.voice",
+  "module": "lib-voice",
+  "name": "Voice (speech in, prompts out, voice commands)",
+  "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+  "features": ["c.voice", "dv.audio"],
+  "dependsOn": [],
+  "manifestKey": "libraries.voice",
+  "params": [
+    { "key": "speakPrompts", "label": "Speak prompts by default", "type": "bool", "default": true },
+    { "key": "preferOffline", "label": "Prefer on-device recognition", "type": "bool", "default": true, "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one." }
+  ],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
+    "module": "VoiceModule(this)",
+    "import": "ai.amberx.axf.voice.VoiceModule",
+    "routes": ["voice-triggers"]
+  },
+  "placeholders": [
+    { "capability": "axf.voice.wakeword", "note": "Always-on wake word in a foreground service (not built; the app listens only while open)." },
+    { "capability": "axf.voice.speaker-id", "note": "Recognise the owner's voice (not built)." }
+  ]
+}

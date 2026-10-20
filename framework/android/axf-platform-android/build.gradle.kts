@@ -9,6 +9,8 @@ dependencies {
     api(project(":axf-assets"))
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.activity.compose)
+    // AxfActivity is a FragmentActivity so libraries can show BiometricPrompt and other fragment-hosted system sheets.
+    api(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.core.ktx)
 }

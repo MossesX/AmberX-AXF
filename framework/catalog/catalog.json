@@ -1578,6 +1578,40 @@
               ]
             },
             {
+              "id": "lib.voice",
+              "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+              "note": "framework/android/lib-voice + library.json; first used by apps/voicevault (Oct 20 2026, written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.voice.wakeword",
+                  "title": "Always-on wake word in a foreground service"
+                },
+                {
+                  "id": "lib.voice.speakerid",
+                  "title": "Recognise the owner's voice"
+                },
+                {
+                  "id": "lib.voice.web",
+                  "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)"
+                }
+              ]
+            },
+            {
+              "id": "lib.lock",
+              "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+              "note": "framework/android/lib-lock + library.json; AxfActivity is now a FragmentActivity (Oct 20 2026, written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.lock.keybound",
+                  "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)"
+                }
+              ]
+            },
+            {
               "id": "ui.explorer",
               "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
               "note": "axf-ui studio/ElementExplorer.kt; used by the console UI-library compare tabs",

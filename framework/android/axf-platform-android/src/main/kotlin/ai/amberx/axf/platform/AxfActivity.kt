@@ -3,20 +3,22 @@ package ai.amberx.axf.platform
 import android.os.Bundle
 import ai.amberx.axf.kernel.AxfKernel
 import ai.amberx.axf.ui.AxfRoot
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.fragment.app.FragmentActivity
 
 /**
  * The single activity of an AXF app. Enables edge-to-edge, binds the permission host, keeps the
  * runtime's window width in sync (AxfRoot measures it) and renders [Content] inside [AxfRoot].
+ * A FragmentActivity (still a ComponentActivity), so libraries can host BiometricPrompt and other
+ * fragment-based system sheets.
  *
  *   class MainActivity : AxfActivity() {
  *       @Composable override fun Content() { AppShell(views = myViews) }
  *   }
  */
-public abstract class AxfActivity : ComponentActivity() {
+public abstract class AxfActivity : FragmentActivity() {
     public val app: AxfApplication get() = application as AxfApplication
     public val kernel: AxfKernel get() = app.kernel
     public lateinit var permissionHost: PermissionHost

@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-19T15:45:01.195Z",
+  "generatedAt": "2026-10-20T15:49:01.438Z",
   "summary": {
     "foundations": {
       "built": 65,
@@ -12,12 +12,12 @@
       "coverage": 93
     },
     "kernel": {
-      "built": 73,
-      "partial": 5,
-      "placeholder": 98,
+      "built": 76,
+      "partial": 6,
+      "placeholder": 96,
       "planned": 0,
-      "total": 176,
-      "coverage": 41
+      "total": 178,
+      "coverage": 43
     },
     "console": {
       "built": 14,
@@ -37,9 +37,9 @@
     },
     "demos": {
       "built": 11,
-      "partial": 3,
+      "partial": 5,
       "placeholder": 4,
-      "planned": 65,
+      "planned": 63,
       "total": 83,
       "coverage": 13
     }
@@ -1448,10 +1448,10 @@
       "group": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
       "title": "Biometric + PIN/pattern lock, auto-lock timer",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "built",
       "wave": 2,
-      "module": "lib-accounts",
-      "notes": ""
+      "module": "lib-lock",
+      "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
     },
     {
       "id": "u.sessions",
@@ -2166,6 +2166,76 @@
       "notes": ""
     },
     {
+      "id": "lib.voice",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-voice",
+      "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+    },
+    {
+      "id": "lib.voice.wakeword",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.voice",
+      "title": "Always-on wake word in a foreground service",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.voice.speakerid",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.voice",
+      "title": "Recognise the owner's voice",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.voice.web",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.voice",
+      "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.lock",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-lock",
+      "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+    },
+    {
+      "id": "lib.lock.keybound",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.lock",
+      "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
       "id": "ui.explorer",
       "tab": "kernel",
       "group": "ui-library-every-customization-token",
@@ -2567,10 +2637,10 @@
       "group": "device-platform-capabilities",
       "title": "Audio recording, TTS, speech-to-text, voice commands, audio focus",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
-      "module": "axf-platform-android",
-      "notes": ""
+      "module": "lib-voice",
+      "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet"
     },
     {
       "id": "dv.sensors",
@@ -4388,10 +4458,10 @@
       "group": "data-files-productivity",
       "title": "Password vault (Keystore) + TOTP 2FA generator",
       "tag": "lib",
-      "status": "planned",
+      "status": "partial",
       "wave": 3,
-      "module": null,
-      "notes": ""
+      "module": "apps/voicevault",
+      "notes": "Voice Vault: Keystore-encrypted vault, voice store/retrieve, clipboard auto-clear; TOTP not yet"
     },
     {
       "id": "c.backup",
@@ -4586,10 +4656,10 @@
       "group": "device-sensors-connectivity",
       "title": "Voice commands + gesture hooks",
       "tag": "lib",
-      "status": "planned",
+      "status": "partial",
       "wave": 3,
-      "module": null,
-      "notes": ""
+      "module": "lib-voice",
+      "notes": "voice commands + user triggers built; gesture hooks not yet"
     },
     {
       "id": "c.pilot",

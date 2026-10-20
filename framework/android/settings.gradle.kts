@@ -33,6 +33,8 @@ include(":lib-accounts")
 include(":lib-profile")
 include(":lib-billing")
 include(":lib-browser")
+include(":lib-voice")
+include(":lib-lock")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")

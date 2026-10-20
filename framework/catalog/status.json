@@ -590,9 +590,10 @@
     "module": "lib-accounts"
   },
   "u.bio": {
-    "status": "placeholder",
+    "status": "built",
     "wave": 2,
-    "module": "lib-accounts"
+    "module": "lib-lock",
+    "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
   },
   "u.sessions": {
     "status": "placeholder",
@@ -793,7 +794,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-ui",
-    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
+    "notes": "Schema \u2192 form for settings kinds; conditional fields and wizards are wave 2."
   },
   "ui.dyn": {
     "status": "placeholder",
@@ -1062,9 +1063,10 @@
     "module": "axf-platform-android"
   },
   "dv.audio": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-platform-android"
+    "module": "lib-voice",
+    "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet"
   },
   "dv.sensors": {
     "status": "placeholder",
@@ -1843,9 +1845,10 @@
     "module": null
   },
   "c.passwords": {
-    "status": "planned",
+    "status": "partial",
     "wave": 3,
-    "module": null
+    "module": "apps/voicevault",
+    "notes": "Voice Vault: Keystore-encrypted vault, voice store/retrieve, clipboard auto-clear; TOTP not yet"
   },
   "c.backup": {
     "status": "planned",
@@ -1933,9 +1936,10 @@
     "module": null
   },
   "c.voice": {
-    "status": "planned",
+    "status": "partial",
     "wave": 3,
-    "module": null
+    "module": "lib-voice",
+    "notes": "voice commands + user triggers built; gesture hooks not yet"
   },
   "c.pilot": {
     "status": "planned",
@@ -2101,5 +2105,17 @@
     "status": "built",
     "wave": 1,
     "module": "app-console"
+  },
+  "lib.voice": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-voice",
+    "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+  },
+  "lib.lock": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-lock",
+    "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
   }
 }
