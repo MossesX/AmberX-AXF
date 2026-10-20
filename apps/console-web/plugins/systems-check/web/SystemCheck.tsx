@@ -45,7 +45,7 @@ export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve
 let snap = { ...st };
 const subs = new Set<() => void>();
 const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
-const useSys = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => snap, () => snap);
+export const useSys = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => snap, () => snap);
 
 async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
@@ -87,13 +87,15 @@ function replace(c: Check) {
 export const recheck = async (id: string) => { const c = await call<Check>(`check/${id}`, { method: 'POST' }); replace(c); return c; };
 const isIssue = (c: Check) => c.status === 'error' || c.status === 'warn';
 /** Issues, with host checks the VPS hasn't reported folded into the single "host report" item. */
-function issues(r: Report | null) {
+export function issues(r: Report | null) {
   if (!r) return [];
   const hostMissing = r.checks.some((c) => c.id === 'host-report' && c.status !== 'ok');
   return r.checks.filter((c) => isIssue(c) && !(hostMissing && c.dependsOn.includes('host-report') && c.status === 'unknown'));
 }
+/** A missing or refused key/password: it has a paste-it-here form. These get the Keys banner of their own. */
+export const isKeyIssue = (c: Check) => c.fix?.type === 'secrets';
 /** Dependency order (a check's dependsOn first), then each check's order. */
-function guidedOrder(list: Check[]) {
+export function guidedOrder(list: Check[]) {
   const ids = new Set(list.map((c) => c.id));
   const out: Check[] = []; const seen = new Set<string>();
   const visit = (c: Check, all: Map<string, Check>) => { if (seen.has(c.id)) return; seen.add(c.id); for (const d of c.dependsOn) { const dc = all.get(d); if (dc && ids.has(d)) visit(dc, all); } out.push(c); };
@@ -150,7 +152,7 @@ export function SystemBanner() {
   const s = useSys();
   const rt = useRuntime();
   const [open, setOpen] = useState(false);
-  const list = useMemo(() => issues(s.report), [s.report]);
+  const list = useMemo(() => issues(s.report).filter((c) => !isKeyIssue(c)), [s.report]);
   if (s.dismissed) return null;
   if (s.unauthorized) {
     return (
@@ -212,7 +214,7 @@ export function useSystemCheckOnLoad() {
 /* ---------------- bits ---------------- */
 
 const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error: 'Blocking', info: 'Info', unknown: 'Not checked' };
-function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
+export function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
 function RunBadge({ r }: { r?: Run }) {
@@ -220,7 +222,7 @@ function RunBadge({ r }: { r?: Run }) {
   return <span className={`axp-systems-check-run is-${r}`} role="status">{r === 'working' ? <span className="axp-systems-check-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
 }
 
-function FixPanel({ c }: { c: Check }) {
+export function FixPanel({ c }: { c: Check }) {
   const rt = useRuntime();
   const s = useSys();
   const [vals, setVals] = useState<Record<string, string>>({});
