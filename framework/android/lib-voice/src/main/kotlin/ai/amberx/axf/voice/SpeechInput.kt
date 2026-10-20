@@ -32,8 +32,10 @@ public data class ListenOptions(
     val language: String? = null,
     /** Ask for on-device recognition. With [secret] on API 31+ the on-device recognizer is used when present. */
     val preferOffline: Boolean = true,
-    /** Speech that should not leave the phone (passwords): on-device recognizer when available, never partial results. */
+    /** Speech that should not leave the phone (passwords): on-device recognizer only, never partial results. */
     val secret: Boolean = false,
+    /** Let [secret] speech fall back to the phone's normal (possibly online) recognizer when there is no on-device one. */
+    val allowOnlineSecret: Boolean = false,
     val maxResults: Int = 5,
     /** Silence (ms) that ends the utterance; null = recognizer default. */
     val endSilenceMs: Long? = null,
@@ -59,6 +61,7 @@ public class SpeechInput(private val context: Context) {
     public suspend fun listen(options: ListenOptions = ListenOptions()): Heard = mutex.withLock {
         withContext(Dispatchers.Main) {
             if (!available) return@withContext Heard.Failed(-1, "Speech recognition isn't available on this phone.")
+            if (options.secret && !onDeviceAvailable && !options.allowOnlineSecret) return@withContext Heard.Failed(NO_ON_DEVICE, "This phone has no on-device speech recognition, so secrets aren't spoken. Type it instead, or allow online recognition in Settings → Voice.")
             val recognizer = if (options.secret && onDeviceAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
                 else SpeechRecognizer.createSpeechRecognizer(context)
             try {
@@ -100,6 +103,8 @@ public class SpeechInput(private val context: Context) {
     }
 
     public companion object {
+        /** [Heard.Failed.code] when secret speech was refused because only an online recognizer exists. */
+        public const val NO_ON_DEVICE: Int = -2
         public fun describe(code: Int): String = when (code) {
             SpeechRecognizer.ERROR_AUDIO -> "Microphone error."
             SpeechRecognizer.ERROR_CLIENT -> "Recognizer stopped."

@@ -20,7 +20,10 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 
 /** One saved login. Lives in memory only while the vault is unlocked. */
-data class VaultEntry(val id: String, val site: String, val password: String, val updatedAt: Long)
+data class VaultEntry(val id: String, val site: String, val password: String, val updatedAt: Long) {
+    /** Never prints the password (logs, crash reports, state dumps). */
+    override fun toString(): String = "VaultEntry(id=$id, site=$site)"
+}
 
 /** The vault file can't be read with this phone's key (key reset, file damaged). */
 class VaultUnreadable(cause: Throwable) : Exception("The vault can't be opened on this phone.", cause)

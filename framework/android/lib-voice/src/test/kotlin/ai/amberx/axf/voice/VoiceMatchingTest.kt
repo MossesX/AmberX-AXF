@@ -1,7 +1,7 @@
 package ai.amberx.axf.voice
 
 import ai.amberx.axf.kernel.platform.MemoryKeyValueStore
-import kotlin.test.Test
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull

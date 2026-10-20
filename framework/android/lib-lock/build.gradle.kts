@@ -4,5 +4,6 @@ dependencies {
     api(project(":axf-kernel"))
     implementation(project(":axf-ui"))
     api(libs.androidx.biometric)
+    api(libs.androidx.fragment)
     testImplementation(libs.junit)
 }

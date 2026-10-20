@@ -18,7 +18,7 @@ import java.util.UUID
  * else by then it is left alone, and when it can't be read (app in the background) it is cleared.
  */
 class SecretClipboard(private val context: Context, private val scope: CoroutineScope) {
-    private val cm: ClipboardManager get() = context.getSystemService(ClipboardManager::class.java)
+    private val cm: ClipboardManager get() = requireNotNull(context.getSystemService(ClipboardManager::class.java))
     private var clearJob: Job? = null
     private var tag: String? = null
 

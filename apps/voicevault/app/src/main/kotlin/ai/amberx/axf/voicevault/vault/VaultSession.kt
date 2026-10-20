@@ -1,9 +1,12 @@
 package ai.amberx.axf.voicevault.vault
 
 import android.content.Context
+import android.speech.SpeechRecognizer
 import androidx.fragment.app.FragmentActivity
 import ai.amberx.axf.kernel.config.Config
+import ai.amberx.axf.kernel.platform.KeyValueStore
 import ai.amberx.axf.kernel.platform.SecureStore
+import ai.amberx.axf.kernel.result.AxfResult
 import ai.amberx.axf.lock.AppLock
 import ai.amberx.axf.lock.LockMode
 import ai.amberx.axf.lock.LockResult
@@ -13,6 +16,7 @@ import ai.amberx.axf.lock.message
 import ai.amberx.axf.voice.AxfVoice
 import ai.amberx.axf.voice.Heard
 import ai.amberx.axf.voice.PhraseMatcher
+import ai.amberx.axf.voice.SpeechInput
 import java.lang.ref.WeakReference
 import java.util.UUID
 import kotlinx.coroutines.CompletableDeferred
@@ -24,13 +28,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+
+/** Why the vault can't be used right now. */
+enum class BrokenReason {
+    /** vault.bin exists but can't be decrypted (Keystore key reset, file damaged). */
+    VAULT_UNREADABLE,
+    /** vault.bin exists but the unlock code is gone: never offer a new code for an old vault. */
+    CODE_MISSING,
+    /** The secure store couldn't be read. Retry; never treat it as "no code yet". */
+    STORAGE_ERROR,
+}
 
 /** Where the voice flow is. */
 sealed interface Stage {
-    /** First run: no unlock code yet. */
+    /** Still starting: settings and secure storage not read yet. */
+    data object Starting : Stage
+    /** First run: no unlock code and no vault yet. */
     data object Setup : Stage
     /** Listening for the unlock code. */
     data object Locked : Stage
@@ -43,13 +63,20 @@ sealed interface Stage {
     data class AskSite(val forStore: Boolean) : Stage
     data class AskPassword(val site: String) : Stage
     /** Both fields filled from speech; the user edits and taps Save. Not listening. */
-    data class Editing(val site: String, val password: String, val replacing: VaultEntry?) : Stage
+    data class Editing(val site: String, val password: String, val replacing: VaultEntry?) : Stage {
+        override fun toString(): String = "Editing(site=$site, replacing=${replacing?.id})"
+    }
     /** Banner at the top: say or tap Confirm to copy this entry's password. */
     data class Confirm(val entry: VaultEntry) : Stage
     /** Several sites sound alike: pick one. */
     data class Choose(val matches: List<VaultEntry>, val heard: String) : Stage
-    /** The vault file can't be decrypted on this phone. */
-    data object Broken : Stage
+    data class Broken(val reason: BrokenReason) : Stage
+}
+
+/** True for stages where the vault is open. */
+fun Stage.isUnlocked(): Boolean = when (this) {
+    Stage.Ready, is Stage.AskSite, is Stage.AskPassword, is Stage.Editing, is Stage.Confirm, is Stage.Choose -> true
+    else -> false
 }
 
 enum class Tone { INFO, OK, WARN, ERROR }
@@ -64,18 +91,19 @@ object Cmd {
     const val LOCK = "vault.lock"
 }
 
-/** App settings keys. */
+/** App settings / storage keys. */
 object Keys {
     const val CLIPBOARD = "voicevault.clipboardClear"
     const val HANDS_FREE = "voicevault.handsFree"
     const val IDLE = "voicevault.idleLock"
     const val UNLOCK_CODE = "voicevault.unlockCode"
+    const val CODE_LOCKOUT = "voicevault.codeLockout"
 }
 
 /**
  * The whole voice flow as one state machine. Entries live in memory only while unlocked and are
- * dropped on lock. Speech for the password and the unlock code is requested as `secret` (on-device
- * recognizer when the phone has one). Passwords are never spoken back, logged or put in notes.
+ * dropped on lock. Every doubtful case fails closed: unreadable storage, a vault without a code,
+ * an unavailable second step. Passwords are never spoken back, logged or put in notes.
  */
 class VaultSession(
     private val context: Context,
@@ -83,13 +111,21 @@ class VaultSession(
     private val voice: AxfVoice?,
     private val lock: AppLock?,
     private val secure: SecureStore?,
+    private val kv: KeyValueStore?,
+    /** The app has started every module (settings loaded), so the lock mode can be trusted. */
+    private val ready: StateFlow<Boolean>,
     private val config: () -> Config?,
 ) {
     private val store = VaultStore(context)
     private val clipboard = SecretClipboard(context, scope)
-    private val codeLockout = Lockout()
+    private val codeLockout = Lockout().also { l ->
+        kv?.get(Keys.CODE_LOCKOUT)?.split(':')?.let { p -> l.state = Lockout.State(p.getOrNull(0)?.toIntOrNull() ?: 0, p.getOrNull(1)?.toLongOrNull() ?: 0) }
+    }
+    private val writes = Mutex()
+    /** Bumped on every lock; a write that finishes after a lock must not reopen anything. */
+    @Volatile private var epoch = 0
 
-    private val _stage = MutableStateFlow<Stage>(Stage.Locked)
+    private val _stage = MutableStateFlow<Stage>(Stage.Starting)
     val stage: StateFlow<Stage> = _stage.asStateFlow()
     private val _entries = MutableStateFlow<List<VaultEntry>>(emptyList())
     val entries: StateFlow<List<VaultEntry>> = _entries.asStateFlow()
@@ -99,13 +135,14 @@ class VaultSession(
     /** True while the voice loop runs (the mic button shows it). */
     val listening: StateFlow<Boolean> = _listening.asStateFlow()
 
-    val unlocked: Boolean get() = _stage.value !in setOf(Stage.Setup, Stage.Locked, Stage.Verifying, Stage.Broken) && _stage.value !is Stage.PinEntry
+    val unlocked: Boolean get() = _stage.value.isUnlocked()
 
     private var activity: WeakReference<FragmentActivity>? = null
     private var visible = false
     private var foreground = true
     private var pendingSay: String? = null
     private var loop: Job? = null
+    private var awayLock: Job? = null
     private var spokenFor: Stage? = null
     private var pinAnswer: CompletableDeferred<String?>? = null
     private var lastActivity = System.currentTimeMillis()
@@ -117,13 +154,32 @@ class VaultSession(
     private val idleMinutes: Int get() = setting(Keys.IDLE)?.toIntOrNull() ?: 5
 
     init {
-        scope.launch { _stage.value = if (hasUnlockCode()) Stage.Locked else Stage.Setup }
+        scope.launch { refreshStart() }
         scope.launch {
             while (isActive) {
                 delay(30_000)
-                if (unlocked && foreground && idleMinutes > 0 && System.currentTimeMillis() - lastActivity > idleMinutes * 60_000L) lock("Locked after ${idleMinutes} min without use.")
+                if (unlocked && foreground && idleMinutes > 0 && System.currentTimeMillis() - lastActivity > idleMinutes * 60_000L) lock("Locked after $idleMinutes min without use.")
             }
         }
+    }
+
+    private sealed interface CodeState { data class Present(val hash: String) : CodeState; data object Missing : CodeState; data object Error : CodeState }
+
+    private suspend fun codeState(): CodeState = when (val r = secure?.get(Keys.UNLOCK_CODE)) {
+        null -> CodeState.Error
+        is AxfResult.Err -> CodeState.Error
+        is AxfResult.Ok -> r.value?.let { CodeState.Present(it) } ?: CodeState.Missing
+    }
+
+    /** Decides the starting stage. Setup only when there is neither a code nor a vault. */
+    suspend fun refreshStart() {
+        val vaultExists = withContext(Dispatchers.IO) { store.exists }
+        _stage.value = when (codeState()) {
+            is CodeState.Present -> Stage.Locked
+            CodeState.Missing -> if (vaultExists) Stage.Broken(BrokenReason.CODE_MISSING) else Stage.Setup
+            CodeState.Error -> Stage.Broken(BrokenReason.STORAGE_ERROR)
+        }
+        if (_stage.value == Stage.Locked && visible && handsFree) startListening()
     }
 
     /* ---------------- host hooks (MainActivity / HomeView) ---------------- */
@@ -131,8 +187,18 @@ class VaultSession(
     fun attach(a: FragmentActivity) { activity = WeakReference(a) }
     fun detach(a: FragmentActivity) { if (activity?.get() === a) activity = null }
 
-    fun onBackground(now: Long = System.currentTimeMillis()) { foreground = false; backgroundAt = now; stopListening(); voice?.speaker?.stop() }
+    fun onBackground(now: Long = System.currentTimeMillis()) {
+        foreground = false; backgroundAt = now
+        stopListening(); voice?.speaker?.stop()
+        if (!unlocked) return
+        val minutes = lock?.autoLockMinutes ?: 0
+        awayLock?.cancel()
+        if (minutes <= 0) lock("Locked while the app was away.")
+        else awayLock = scope.launch { delay(minutes * 60_000L); lock("Locked while the app was away.") }
+    }
+
     fun onForeground(now: Long = System.currentTimeMillis()) {
+        awayLock?.cancel(); awayLock = null
         val minutes = lock?.autoLockMinutes ?: 0
         if (unlocked && backgroundAt > 0 && now - backgroundAt >= minutes * 60_000L) lock("Locked while the app was away.")
         backgroundAt = 0
@@ -151,28 +217,29 @@ class VaultSession(
 
     /* ---------------- unlock code ---------------- */
 
-    suspend fun hasUnlockCode(): Boolean = secure?.get(Keys.UNLOCK_CODE)?.getOrNull() != null
-
-    /** Saves the unlock code (first run, or while unlocked). Returns an error or null. */
+    /** Saves the unlock code: on first run (no vault yet) or while unlocked. Returns an error or null. */
     suspend fun setUnlockCode(code: String): String? {
         val c = SpokenText.code(code)
         if (c.length < 6) return "Use at least 6 letters or numbers (two or more words works best)."
         if (voice?.commands?.match(listOf(c), threshold = 0.9) != null) return "That sounds like one of your voice triggers. Pick something else."
-        val wasSetup = _stage.value == Stage.Setup
-        if (!wasSetup && !unlocked) return "Unlock first."
+        val firstRun = _stage.value == Stage.Setup
+        if (firstRun) {
+            // Re-check: a vault or a code that appeared since means this is not a first run.
+            if (withContext(Dispatchers.IO) { store.exists } || codeState() !is CodeState.Missing) { refreshStart(); return "A vault already exists. Unlock it first." }
+        } else if (!unlocked) return "Unlock first."
         val s = secure ?: return "Secure storage isn't available."
         val hashed = withContext(Dispatchers.Default) { PinHasher.hash(c) }
         if (!s.put(Keys.UNLOCK_CODE, hashed).isOk) return "Couldn't save the unlock code."
-        if (wasSetup) { openVault(); say("Unlock code saved. Say store password or retrieve password.") }
+        if (firstRun) { openVault(); say("Unlock code saved.") }
         return null
     }
 
-    /** Typed fallback for the spoken unlock code (noisy rooms). */
+    /** Typed fallback for the spoken unlock code (noisy rooms, no on-device recognizer). */
     fun unlockTyped(code: String) { if (_stage.value == Stage.Locked) scope.launch { tryUnlock(listOf(code)) } }
 
     private suspend fun tryUnlock(heard: List<String>) {
         try { unlockSteps(heard) } finally {
-            // Left mid-check (screen closed, loop cancelled): never stay half-unlocked.
+            // Interrupted mid-check: never stay half-unlocked.
             if (_stage.value == Stage.Verifying || _stage.value is Stage.PinEntry) { pinAnswer = null; _stage.value = Stage.Locked }
         }
     }
@@ -180,35 +247,44 @@ class VaultSession(
     private suspend fun unlockSteps(heard: List<String>) {
         val now = System.currentTimeMillis()
         codeLockout.remainingMs(now).takeIf { it > 0 }?.let { show("Too many tries. Wait ${it / 1000 + 1} s.", Tone.WARN); return }
-        val stored = secure?.get(Keys.UNLOCK_CODE)?.getOrNull() ?: run { _stage.value = Stage.Setup; return }
+        val stored = when (val cs = codeState()) {
+            is CodeState.Present -> cs.hash
+            else -> { refreshStart(); return }
+        }
         _stage.value = Stage.Verifying
         val ok = withContext(Dispatchers.Default) { heard.map(SpokenText::code).distinct().take(3).any { it.isNotEmpty() && PinHasher.verify(it, stored) } }
         if (!ok) {
-            codeLockout.onFailure(now)
+            codeLockout.onFailure(now); saveCodeLockout()
             _stage.value = Stage.Locked
             show(if (codeLockout.remainingMs(now) > 0) "Too many tries. Wait ${codeLockout.remainingMs(now) / 1000 + 1} s." else "That's not the unlock code.", Tone.WARN)
             return
         }
-        codeLockout.onSuccess()
+        codeLockout.onSuccess(); saveCodeLockout()
+        // The lock mode is a saved setting: wait until settings have loaded before trusting it.
+        if (withTimeoutOrNull(10_000) { ready.first { it } } == null) { _stage.value = Stage.Locked; show("Still starting. Try again in a moment.", Tone.WARN); return }
         when (val r = secondStep()) {
             LockResult.Passed -> openVault()
             else -> { _stage.value = Stage.Locked; show(r.message() ?: "Not unlocked.", Tone.WARN) }
         }
     }
 
-    /** Runs the second step from Settings → Unlock. Misconfigured steps (no PIN set, no fingerprint enrolled) fall back with a warning. */
+    private fun saveCodeLockout() { kv?.put(Keys.CODE_LOCKOUT, "${codeLockout.state.failures}:${codeLockout.state.lockedUntil}") }
+
+    /** The second step from Settings → Unlock. Fails closed: only "voice code only" passes without it. */
     private suspend fun secondStep(): LockResult {
-        val l = lock ?: return LockResult.Passed
+        val l = lock ?: return LockResult.Unavailable("App lock isn't installed.")
         return when (l.mode) {
             LockMode.NONE -> LockResult.Passed
             LockMode.BIOMETRIC -> {
                 val a = activity?.get() ?: return LockResult.Unavailable("Open the app to use your fingerprint.")
                 val problem = l.biometricProblem(a)
-                if (problem != null) {
-                    if (l.hasPin()) pinStep(l) else { show("$problem Unlocked with the voice code only — set a PIN in Settings.", Tone.WARN); LockResult.Passed }
-                } else l.biometric(a, "Unlock Voice Vault", "Confirm it's you")
+                when {
+                    problem == null -> l.biometric(a, "Unlock Voice Vault", "Confirm it's you")
+                    l.hasPin() -> pinStep(l)
+                    else -> LockResult.Unavailable("$problem Use the PIN instead after setting one, or erase the vault.")
+                }
             }
-            LockMode.PIN -> if (l.hasPin()) pinStep(l) else { show("No PIN set. Unlocked with the voice code only — set one in Settings → Unlock.", Tone.WARN); LockResult.Passed }
+            LockMode.PIN -> if (l.hasPin()) pinStep(l) else LockResult.Unavailable("No PIN is set, so the vault can't be opened with a PIN.")
         }
     }
 
@@ -231,34 +307,46 @@ class VaultSession(
     fun submitPin(pin: String?) { pinAnswer?.complete(pin); pinAnswer = null }
 
     private suspend fun openVault() {
+        val myEpoch = epoch
         try {
-            _entries.value = withContext(Dispatchers.IO) { store.load() }
+            val loaded = writes.withLock { withContext(Dispatchers.IO) { store.load() } }
+            if (epoch != myEpoch) return
+            _entries.value = loaded
             _stage.value = Stage.Ready
             touch()
             show("Unlocked.", Tone.OK)
             if (visible && handsFree) startListening()
         } catch (e: VaultUnreadable) {
-            _entries.value = emptyList(); _stage.value = Stage.Broken
+            _entries.value = emptyList(); _stage.value = Stage.Broken(BrokenReason.VAULT_UNREADABLE)
             show(e.message ?: "The vault can't be opened.", Tone.ERROR)
         }
     }
 
-    fun lock(reason: String? = null) {
+    /** Locks now. [clearClipboard] also wipes a copied password (explicit "lock" only, so a paste in another app still works). */
+    fun lock(reason: String? = null, clearClipboard: Boolean = false) {
+        epoch++
+        awayLock?.cancel(); awayLock = null
         pinAnswer?.complete(null); pinAnswer = null
         _entries.value = emptyList()
-        _stage.value = Stage.Locked
+        if (clearClipboard) clipboard.clearNow()
+        if (_stage.value !is Stage.Broken && _stage.value != Stage.Setup && _stage.value != Stage.Starting) _stage.value = Stage.Locked
         spokenFor = null
         show(reason ?: "Locked.", Tone.INFO)
-        if (visible && handsFree) startListening()
+        if (visible && handsFree && foreground) startListening()
     }
 
-    /** Erases an unreadable vault (and its key) so a new one can start. The unlock code stays. */
-    fun eraseBrokenVault() {
-        if (_stage.value != Stage.Broken) return
+    /**
+     * Erases the vault file and its key, plus the unlock code when [alsoCode]. Destructive, never
+     * reveals anything: it is the way out of a broken vault or a forgotten code. Ends in Setup or Locked.
+     */
+    fun erase(alsoCode: Boolean) {
+        lock("Erasing…")
         scope.launch {
-            withContext(Dispatchers.IO) { store.erase() }
-            _entries.value = emptyList(); _stage.value = Stage.Ready
-            show("Started a new, empty vault.", Tone.OK)
+            writes.withLock { withContext(Dispatchers.IO) { store.erase() } }
+            if (alsoCode) secure?.remove(Keys.UNLOCK_CODE)
+            codeLockout.onSuccess(); saveCodeLockout()
+            refreshStart()
+            show(if (_stage.value == Stage.Setup) "Vault erased. Choose a new unlock code." else "Vault erased. Unlock to start a new one.", Tone.OK)
         }
     }
 
@@ -279,15 +367,24 @@ class VaultSession(
         val s = site.trim(); if (s.isEmpty()) return "Enter the site."
         if (password.isEmpty()) return "Enter the password."
         touch()
-        val now = System.currentTimeMillis()
-        val list = _entries.value
-        val same = list.firstOrNull { it.id == replacingId } ?: list.firstOrNull { PhraseMatcher.normalizeLabel(it.site) == PhraseMatcher.normalizeLabel(s) }
-        val next = if (same != null) list.map { if (it.id == same.id) it.copy(site = s, password = password, updatedAt = now) else it }
-            else list + VaultEntry(UUID.randomUUID().toString(), s, password, now)
+        val myEpoch = epoch
         scope.launch {
-            runCatching { withContext(Dispatchers.IO) { store.save(next.sortedBy { it.site.lowercase() }) } }
-                .onSuccess { _entries.value = next.sortedBy { it.site.lowercase() }; go(Stage.Ready); show(if (same != null) "Updated $s." else "Saved $s.", Tone.OK); say("Saved.") }
-                .onFailure { show("Couldn't save the vault.", Tone.ERROR) }
+            var updated = false
+            val ok = writes.withLock {
+                if (epoch != myEpoch || !unlocked) return@withLock false
+                val list = _entries.value
+                val same = list.firstOrNull { it.id == replacingId } ?: list.firstOrNull { PhraseMatcher.normalizeLabel(it.site) == PhraseMatcher.normalizeLabel(s) }
+                updated = same != null
+                val now = System.currentTimeMillis()
+                val next = (if (same != null) list.map { if (it.id == same.id) it.copy(site = s, password = password, updatedAt = now) else it }
+                    else list + VaultEntry(UUID.randomUUID().toString(), s, password, now)).sortedBy { it.site.lowercase() }
+                runCatching { withContext(Dispatchers.IO) { store.save(next) } }.isSuccess.also { saved ->
+                    if (saved && epoch == myEpoch) _entries.value = next
+                }
+            }
+            if (epoch != myEpoch || !unlocked) return@launch
+            if (ok) { go(Stage.Ready); show(if (updated) "Updated $s." else "Saved $s.", Tone.OK); say("Saved.") }
+            else show("Couldn't save the vault.", Tone.ERROR)
         }
         return null
     }
@@ -295,11 +392,16 @@ class VaultSession(
     fun delete(id: String) {
         if (!unlocked) return
         touch()
-        val next = _entries.value.filter { it.id != id }
+        val myEpoch = epoch
         scope.launch {
-            runCatching { withContext(Dispatchers.IO) { store.save(next) } }
-                .onSuccess { _entries.value = next; show("Deleted.", Tone.OK); if ((_stage.value as? Stage.Confirm)?.entry?.id == id) go(Stage.Ready) }
-                .onFailure { show("Couldn't save the vault.", Tone.ERROR) }
+            val ok = writes.withLock {
+                if (epoch != myEpoch || !unlocked) return@withLock false
+                val next = _entries.value.filter { it.id != id }
+                runCatching { withContext(Dispatchers.IO) { store.save(next) } }.isSuccess.also { saved -> if (saved && epoch == myEpoch) _entries.value = next }
+            }
+            if (epoch != myEpoch || !unlocked) return@launch
+            if (ok) { show("Deleted.", Tone.OK); if ((_stage.value as? Stage.Confirm)?.entry?.id == id) go(Stage.Ready) }
+            else show("Couldn't save the vault.", Tone.ERROR)
         }
     }
 
@@ -344,28 +446,33 @@ class VaultSession(
         is Stage.AskPassword -> Ask("Say the password for ${st.site}.", secret = true)
         is Stage.Confirm -> Ask("Copy the password for ${st.entry.site}? Say confirm or cancel.")
         is Stage.Choose -> Ask("Which one? ${st.matches.joinToString(", ") { it.site }}.")
-        else -> null // Setup, Verifying, PinEntry, Editing, Broken: taps only
+        else -> null // Starting, Setup, Verifying, PinEntry, Editing, Broken: taps only
     }
 
     private suspend fun runLoop() {
         val v = voice ?: return
         if (!v.ensureMic()) { show("Microphone permission is off. Allow it to use voice.", Tone.WARN); return }
         var silences = 0
+        var failures = 0
         while (currentCoroutineContext().isActive) {
             val st = _stage.value
             val ask = askFor(st) ?: return
             val prompt = listOfNotNull(pendingSay, ask.prompt.takeIf { spokenFor != st }).joinToString(" ").ifEmpty { null }
             pendingSay = null; spokenFor = st
             when (val h = v.ask(prompt, secret = ask.secret)) {
-                Heard.Silence -> {
-                    if (++silences >= MAX_SILENCES) { show("Stopped listening. Tap the mic to start again.", Tone.INFO); return }
-                }
+                Heard.Silence -> if (++silences >= MAX_SILENCES) { show("Stopped listening. Tap the mic to start again.", Tone.INFO); return }
                 is Heard.Failed -> {
+                    if (h.code == SpeechInput.NO_ON_DEVICE) {
+                        // Secrets are never sent to an online recognizer: switch to typing.
+                        if (st is Stage.AskPassword) { editNew(st.site); show("Type the password: this phone has no on-device speech recognition.", Tone.INFO) }
+                        else show("Type your unlock code below: this phone has no on-device speech recognition (or allow online recognition in Settings → Voice).", Tone.INFO)
+                        return
+                    }
                     show(h.message, Tone.WARN)
-                    if (h.code == -1 || h.code == android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS) return
+                    if (h.code == -1 || h.code == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS || ++failures >= MAX_FAILURES) return
                     delay(1_500)
                 }
-                is Heard.Text -> { silences = 0; if (_stage.value == st) handle(st, h.alternatives) }
+                is Heard.Text -> { silences = 0; failures = 0; if (_stage.value == st) handle(st, h.alternatives) }
             }
         }
     }
@@ -373,20 +480,18 @@ class VaultSession(
     private suspend fun handle(st: Stage, heard: List<String>) {
         val cmds = voice?.commands
         when (st) {
-            Stage.Locked -> tryUnlock(heard)
+            // Run the unlock outside the loop's job, so a fingerprint sheet pausing the screen can't cancel it.
+            Stage.Locked -> scope.launch { tryUnlock(heard) }.join()
             Stage.Ready -> when (cmds?.match(heard, listOf(Cmd.STORE, Cmd.RETRIEVE, Cmd.LOCK))?.commandId) {
                 Cmd.STORE -> startStore()
                 Cmd.RETRIEVE -> startRetrieve()
-                Cmd.LOCK -> lock()
+                Cmd.LOCK -> lock(clearClipboard = true)
                 else -> show("Heard “${heard.first()}”. Say a trigger from Settings → Voice triggers.", Tone.INFO)
             }
             is Stage.AskSite -> {
                 if (cmds?.match(heard, listOf(Cmd.CANCEL), 0.9) != null) { cancel(); return }
                 touch()
-                if (st.forStore) {
-                    val site = SpokenText.site(heard.first())
-                    go(Stage.AskPassword(site))
-                } else findSite(heard)
+                if (st.forStore) go(Stage.AskPassword(SpokenText.site(heard.first()))) else findSite(heard)
             }
             is Stage.AskPassword -> {
                 touch()
@@ -422,6 +527,7 @@ class VaultSession(
     private fun go(next: Stage) { _stage.value = next; if (next !is Stage.Editing) clearNoteIfInfo(); if (visible && handsFree && askFor(next) != null) startListening() }
     private fun clearNoteIfInfo() { if (_note.value?.tone == Tone.INFO) _note.value = null }
     private fun show(text: String, tone: Tone) { _note.value = Note(text, tone) }
+
     /** Short spoken confirmation; inside the voice loop it is said just before the next prompt. */
     private fun say(text: String) {
         val v = voice ?: return
@@ -429,5 +535,8 @@ class VaultSession(
         if (loop?.isActive == true) pendingSay = text else scope.launch { v.speaker.say(text, v.language) }
     }
 
-    private companion object { const val MAX_SILENCES = 6 }
+    private companion object {
+        const val MAX_SILENCES = 6
+        const val MAX_FAILURES = 3
+    }
 }

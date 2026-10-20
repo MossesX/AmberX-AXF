@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
@@ -95,7 +96,8 @@ public fun M3TextField(
                         value = value, onValueChange = onValueChange, enabled = enabled, singleLine = singleLine, minLines = minLines,
                         textStyle = textStyle, cursorBrush = SolidColor(c.accent),
                         visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
-                        keyboardOptions = keyboardOptions, keyboardActions = keyboardActions,
+                        // Secret fields: password keyboard, no autocorrect or learning (unless the caller chose its own options).
+                        keyboardOptions = if (secret && keyboardOptions == KeyboardOptions.Default) KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false) else keyboardOptions, keyboardActions = keyboardActions,
                         modifier = Modifier.fillMaxWidth().onFocusChanged { focused = it.isFocused },
                     )
                 }

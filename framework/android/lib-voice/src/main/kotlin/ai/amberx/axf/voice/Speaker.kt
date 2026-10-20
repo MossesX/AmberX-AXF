@@ -34,7 +34,10 @@ public class Speaker(private val context: Context) {
                 })
             }
         }
-        if (withTimeoutOrNull(4_000) { d.await() } == true) tts else null
+        if (withTimeoutOrNull(4_000) { d.await() } == true) tts else {
+            // Failed or slow start: forget it so the next prompt tries again.
+            runCatching { tts?.shutdown() }; tts = null; ready = null; null
+        }
     }
 
     /** Speaks [text] and waits until it is done (at most [maxMs]). Returns false when TTS isn't available. */

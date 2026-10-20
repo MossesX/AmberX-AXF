@@ -35,10 +35,11 @@ public sealed interface LockResult {
  * Keystore-backed secure store), fingerprint/face through BiometricPrompt, failed-try lockout and
  * the auto-lock delay. Apps call [authenticate] after their own first step.
  */
-public class AppLock internal constructor(private val secure: SecureStore?, private val kv: KeyValueStore?, private val config: () -> Config?) {
+public class AppLock internal constructor(private val secure: SecureStore?, private val kv: KeyValueStore?, private val defaultMode: LockMode = LockMode.NONE, private val config: () -> Config?) {
     private val lockout = Lockout().also { l -> kv?.get(LOCKOUT)?.split(':')?.let { p -> l.state = Lockout.State(p.getOrNull(0)?.toIntOrNull() ?: 0, p.getOrNull(1)?.toLongOrNull() ?: 0) } }
 
-    public val mode: LockMode get() = LockMode.of(config()?.string(MODE))
+    /** The saved choice, or the module default until settings have loaded. Callers should wait for the app to be ready before trusting it. */
+    public val mode: LockMode get() = LockMode.of(config()?.string(MODE) ?: defaultMode.id)
     /** Minutes until the app locks itself after being left; 0 = as soon as it goes to the background. */
     public val autoLockMinutes: Int get() = config()?.string(AUTO)?.toIntOrNull() ?: 0
 

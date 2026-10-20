@@ -39,7 +39,7 @@ public class LockModule(private val wording: LockWording = LockWording(), privat
         private set
 
     override fun register(ctx: ModuleContext) {
-        lock = AppLock(ctx.service(SecureStore::class), ctx.service(KeyValueStore::class)) { ctx.service(Config::class) }
+        lock = AppLock(ctx.service(SecureStore::class), ctx.service(KeyValueStore::class), defaultMode) { ctx.service(Config::class) }
         ctx.services.register(AppLock::class, lock, "axf.lock")
         ctx.services.register(LockModule::class, this, "android.biometric")
         ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec(ROUTE, "PIN", icon = "lock", module = id)))

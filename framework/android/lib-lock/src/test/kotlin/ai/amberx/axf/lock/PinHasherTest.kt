@@ -1,6 +1,6 @@
 package ai.amberx.axf.lock
 
-import kotlin.test.Test
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals

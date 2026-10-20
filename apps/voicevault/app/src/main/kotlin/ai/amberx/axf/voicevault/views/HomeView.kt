@@ -47,9 +47,12 @@ import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.icons.AxfIcon
 import ai.amberx.axf.ui.theme.Axf
 import ai.amberx.axf.voice.AxfVoice
+import ai.amberx.axf.voicevault.vault.BrokenReason
 import ai.amberx.axf.voicevault.vault.Cmd
+import ai.amberx.axf.voicevault.vault.isUnlocked
 import ai.amberx.axf.voicevault.vault.Stage
 import ai.amberx.axf.voicevault.vault.VaultSession
+import kotlinx.coroutines.launch
 
 /** The Voice screen: banner on top when a password is ready to copy, the mic, and the current step. */
 @Composable
@@ -108,7 +111,7 @@ private fun MicHeader(session: VaultSession, voice: AxfVoice?, stage: Stage) {
     val hearing by (voice?.input?.listening ?: remember { kotlinx.coroutines.flow.MutableStateFlow(false) }).collectAsState()
     val level by (voice?.input?.level ?: remember { kotlinx.coroutines.flow.MutableStateFlow(0f) }).collectAsState()
     val c = Axf.colors
-    val canListen = voice != null && stage !is Stage.Setup && stage !is Stage.Editing && stage !is Stage.PinEntry && stage !is Stage.Verifying && stage !is Stage.Broken
+    val canListen = voice != null && (stage == Stage.Locked || stage.isUnlocked()) && stage !is Stage.Editing
     val ring = Axf.space.borderWidth * (1f + level * 6f)
     Box(
         Modifier.size(Axf.space.touchTarget * 2.4f).background(if (listening) c.accentSoft else c.surface2, CircleShape)
@@ -122,6 +125,7 @@ private fun MicHeader(session: VaultSession, voice: AxfVoice?, stage: Stage) {
 }
 
 private fun title(stage: Stage): String = when (stage) {
+    Stage.Starting -> "Starting…"
     Stage.Setup -> "Set your unlock code"
     Stage.Locked -> "Locked"
     Stage.Verifying -> "Checking…"
@@ -132,7 +136,7 @@ private fun title(stage: Stage): String = when (stage) {
     is Stage.Editing -> if (stage.replacing != null) "Update ${stage.replacing.site}" else "Check and save"
     is Stage.Confirm -> "Copy password?"
     is Stage.Choose -> "Pick a site"
-    Stage.Broken -> "Vault can't be opened"
+    is Stage.Broken -> "Vault can't be opened"
 }
 
 private fun subtitle(stage: Stage, listening: Boolean, hearing: Boolean): String {
@@ -151,8 +155,9 @@ private fun subtitle(stage: Stage, listening: Boolean, hearing: Boolean): String
 private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
     val runtime = LocalAxfRuntime.current
     when (stage) {
+        Stage.Starting -> AxfLoadingState("Starting…")
         Stage.Setup -> UnlockCodeEditor(session, voice, setup = true)
-        Stage.Locked -> TypedCodeFallback(session)
+        Stage.Locked -> { TypedCodeFallback(session); ForgotCode(session) }
         Stage.Verifying -> AxfLoadingState("Checking…")
         is Stage.PinEntry -> PinPrompt("Enter your PIN", stage.previous, onSubmit = { session.submitPin(it) }, onCancel = { session.submitPin(null) })
         Stage.Ready -> {
@@ -168,7 +173,7 @@ private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
             }
             Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
                 AxfButton("Saved sites", { runtime.navigate("vault") }, tone = ButtonTone.GHOST, icon = "list")
-                AxfButton("Lock", { session.lock() }, tone = ButtonTone.GHOST, icon = "lock")
+                AxfButton("Lock", { session.lock(clearClipboard = true) }, tone = ButtonTone.GHOST, icon = "lock")
             }
         }
         is Stage.AskSite -> Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
@@ -181,7 +186,7 @@ private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
         }
         is Stage.Editing -> EditForm(session, stage)
         is Stage.Confirm, is Stage.Choose -> AxfText("Say confirm or cancel, or use the banner above.", muted = true)
-        Stage.Broken -> BrokenVault(session)
+        is Stage.Broken -> BrokenVault(session, stage.reason)
     }
 }
 
@@ -218,14 +223,37 @@ private fun TypedCodeFallback(session: VaultSession) {
 }
 
 @Composable
-private fun BrokenVault(session: VaultSession) {
+private fun BrokenVault(session: VaultSession, reason: BrokenReason) {
     var sure by remember { mutableStateOf(false) }
-    AxfCard(Modifier.fillMaxWidth(), title = "The vault file can't be decrypted", icon = "alert") {
-        AxfText("This happens when the phone's secure key was reset (for example after clearing app storage or restoring to a new phone). The saved passwords can't be recovered.", muted = true)
-        if (!sure) AxfButton("Erase and start a new vault", { sure = true }, tone = ButtonTone.DANGER, icon = "trash")
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val (title, text) = when (reason) {
+        BrokenReason.VAULT_UNREADABLE -> "The vault file can't be decrypted" to "The phone's secure key was reset (for example after clearing app storage or restoring to a new phone). The saved passwords can't be recovered."
+        BrokenReason.CODE_MISSING -> "The unlock code is missing" to "A vault exists but its unlock code is gone, so it can't be opened. For safety a new code can't be set for an old vault; erasing starts over."
+        BrokenReason.STORAGE_ERROR -> "Secure storage couldn't be read" to "Try again. If it keeps failing, erasing starts over with an empty vault."
+    }
+    AxfCard(Modifier.fillMaxWidth(), title = title, icon = "alert") {
+        AxfText(text, muted = true)
+        if (reason == BrokenReason.STORAGE_ERROR) AxfButton("Try again", { scope.launch { session.refreshStart() } }, tone = ButtonTone.PRIMARY, icon = "refresh")
+        if (!sure) AxfButton("Erase and start over", { sure = true }, tone = ButtonTone.DANGER, icon = "trash")
         else Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
-            AxfButton("Yes, erase it", { session.eraseBrokenVault() }, tone = ButtonTone.DANGER, icon = "trash")
+            AxfButton("Yes, erase everything", { session.erase(alsoCode = true) }, tone = ButtonTone.DANGER, icon = "trash")
             AxfButton("Keep it", { sure = false }, tone = ButtonTone.GHOST, icon = "x")
+        }
+    }
+}
+
+/** Forgot the code (or locked out of the second step): erase everything and start over. Reveals nothing. */
+@Composable
+private fun ForgotCode(session: VaultSession) {
+    var step by remember { mutableStateOf(0) }
+    when (step) {
+        0 -> AxfButton("Forgot the code?", { step = 1 }, tone = ButtonTone.GHOST, icon = "help")
+        else -> AxfCard(Modifier.fillMaxWidth(), title = "Erase and start over?", icon = "alert") {
+            AxfText("The vault can only be opened with your code (and second step). Erasing deletes every saved password for good.", muted = true)
+            Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
+                AxfButton("Erase everything", { session.erase(alsoCode = true); step = 0 }, tone = ButtonTone.DANGER, icon = "trash")
+                AxfButton("Cancel", { step = 0 }, tone = ButtonTone.GHOST, icon = "x")
+            }
         }
     }
 }

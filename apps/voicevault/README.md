@@ -15,10 +15,12 @@ Voice-driven password vault for Android, built on **AmberX AXF 0.2.0** (`android
 - Vault = AES-256-GCM with a non-exportable Android Keystore key, in `noBackupFilesDir/vault.bin` (never in cloud backups or device transfers), written atomically.
 - Entries are in memory only while unlocked; locking drops them. Locks when the app leaves the foreground (or after the delay in Settings → Unlock), after idle time (Settings → Voice Vault) and on "lock".
 - Unlock code and PIN: salted PBKDF2-HMAC-SHA256 (120k rounds) in the Keystore-backed secure store. Wrong codes and PINs lock out with a doubling delay.
-- Passwords and the unlock code are recognised with the **on-device** recognizer when the phone has one (Android 12+ with an offline language); otherwise the phone's speech service may use the network. Typing always works instead.
+- Passwords and the unlock code are only heard by the **on-device** recognizer (Android 12+ with an offline language). Without one you type them, unless you turn on Settings → Voice → Allow online recognition for secrets. Secret fields use a password keyboard with no learning or autocorrect.
 - Passwords are never spoken back, logged or shown in notes. Screens are excluded from screenshots and the recents preview (`FLAG_SECURE`).
-- Settings, saved sites and triggers open only while the vault is unlocked, so the second step can't be switched off from a locked phone.
-- Known limits: anyone who hears the unlock code can say it (use the fingerprint or PIN step); the fingerprint gates the app, the data key itself doesn't require it yet (`axf.lock.keybound` placeholder); listening happens only while the app is open (no always-on wake word yet).
+- Settings, saved sites and triggers open only while the vault is unlocked, so the second step can't be switched off from a locked phone. Picking PIN without a saved PIN, or fingerprint without a working sensor, is refused (it goes back to the previous choice).
+- Fails closed: unreadable secure storage, a vault whose code is missing, or an unavailable second step never opens the vault, and a new code can never be set for an existing vault. The way out is **Forgot the code? → Erase everything**, which deletes the vault and reveals nothing.
+- Wrong unlock codes and PINs lock out with a doubling delay that survives restarts. "Right away" auto-lock locks the moment the app leaves the screen.
+- Known limits: anyone who hears the unlock code can say it (use the fingerprint or PIN step); the fingerprint gates the app, the data key itself doesn't require it yet (`axf.lock.keybound` placeholder); if the app is killed before the clipboard timer, the copied password stays until something else is copied (a system-scheduled clear isn't built yet); listening happens only while the app is open (no always-on wake word yet).
 
 ## Build
 

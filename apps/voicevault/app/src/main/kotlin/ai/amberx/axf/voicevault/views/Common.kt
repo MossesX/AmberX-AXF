@@ -22,6 +22,7 @@ import ai.amberx.axf.voicevault.vault.Note
 import ai.amberx.axf.voicevault.vault.Stage
 import ai.amberx.axf.voicevault.vault.Tone
 import ai.amberx.axf.voicevault.vault.VaultSession
+import ai.amberx.axf.voicevault.vault.isUnlocked
 
 @Composable
 fun rememberSession(): VaultSession? {
@@ -34,9 +35,6 @@ fun rememberVoice(): AxfVoice? {
     val kernel = LocalAxfKernel.current
     return remember(kernel) { kernel?.services?.get<AxfVoice>() }
 }
-
-/** True for stages where the vault is open. */
-fun Stage.isUnlocked(): Boolean = this !is Stage.Setup && this !is Stage.Locked && this !is Stage.Verifying && this !is Stage.PinEntry && this !is Stage.Broken
 
 /** Shows [content] only while the vault is unlocked; otherwise a short "locked" card. */
 @Composable

@@ -13,10 +13,16 @@ import ai.amberx.axf.kernel.module.ExtensionPoints
 import ai.amberx.axf.kernel.module.ModuleContext
 import ai.amberx.axf.kernel.module.RouteContribution
 import ai.amberx.axf.kernel.module.SettingsContribution
+import ai.amberx.axf.kernel.platform.KeyValueStore
 import ai.amberx.axf.kernel.platform.SecureStore
+import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.kernel.runtime.AxfRuntime
 import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.lock.AppLock
+import ai.amberx.axf.lock.LockMode
+import ai.amberx.axf.lock.LockModule
+import ai.amberx.axf.settings.SettingsEngine
+import kotlinx.coroutines.launch
 import ai.amberx.axf.voice.AxfVoice
 import ai.amberx.axf.voice.VoiceCommand
 import ai.amberx.axf.voicevault.vault.Cmd
@@ -45,12 +51,13 @@ class AppModule(private val context: Context, private val scope: CoroutineScope)
             register(VoiceCommand(Cmd.CANCEL, "Cancel", listOf("cancel", "no", "never mind"), "Backs out of the current step.", GROUP, order = 40))
             register(VoiceCommand(Cmd.LOCK, "Lock", listOf("lock vault", "lock it", "lock"), "Locks the vault right away.", GROUP, order = 50))
         }
-        session = VaultSession(context, scope, voice, ctx.service(AppLock::class), ctx.service(SecureStore::class)) { ctx.service(Config::class) }
+        session = VaultSession(context, scope, voice, ctx.service(AppLock::class), ctx.service(SecureStore::class), ctx.service(KeyValueStore::class), (context as AxfApplication).ready) { ctx.service(Config::class) }
         ctx.services.register(VaultSession::class, session, "voicevault.session")
+        guardLockMode(ctx, runtime)
 
         for (r in listOf(RouteSpec("home", "Voice", icon = "mic", module = id), RouteSpec("vault", "Saved sites", icon = "lock", module = id), RouteSpec(UNLOCK_CODE_ROUTE, "Unlock code", icon = "shield", module = id)))
             ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(r))
-        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("vault.lock", ActionMeta("Lock now", module = id)) { _, _ -> session.lock(); runtime?.navigate("home") })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("vault.lock", ActionMeta("Lock now", module = id)) { _, _ -> session.lock(clearClipboard = true); runtime?.navigate("home") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About")) { _, _ ->
             runtime?.toast("Voice Vault on AmberX AXF 0.2.0. Passwords stay encrypted on this phone.", ToastKind.INFO, "About")
         })
@@ -61,6 +68,35 @@ class AppModule(private val context: Context, private val scope: CoroutineScope)
             SettingSpec(Keys.IDLE, "Lock when not used for", SettingKind.CHOICE, default = JsonPrimitive("5"), options = listOf("1" to "1 min", "5" to "5 min", "15" to "15 min", "0" to "Never"), icon = "clock"),
             SettingSpec("voicevault.lockNow", "Lock now", SettingKind.ACTION, target = "vault.lock", icon = "lock"),
         ))))
+    }
+
+    private var lastMode: LockMode? = null
+
+    override suspend fun start(ctx: ModuleContext) { lastMode = ctx.service(AppLock::class)?.mode }
+
+    /**
+     * Settings → Unlock can't pick a second step that would lock you out: PIN needs a saved PIN and
+     * fingerprint needs a working sensor. A bad pick goes back to the previous choice (never weaker).
+     */
+    private fun guardLockMode(ctx: ModuleContext, runtime: AxfRuntime?) {
+        val settings = ctx.service(SettingsEngine::class) ?: return
+        val lock = ctx.service(AppLock::class) ?: return
+        settings.onChange { key, value ->
+            if (key != AppLock.MODE) return@onChange
+            val mode = LockMode.of((value as? JsonPrimitive)?.content)
+            scope.launch {
+                val problem = when (mode) {
+                    LockMode.PIN -> if (lock.hasPin()) null else "Set a PIN first, then choose Voice code + PIN."
+                    LockMode.BIOMETRIC -> lock.biometricProblem(context)
+                    LockMode.NONE -> null
+                }
+                if (problem == null) { lastMode = mode; return@launch }
+                val back = lastMode ?: LockMode.NONE
+                settings.set(AppLock.MODE, JsonPrimitive(back.id))
+                runtime?.toast(problem, ToastKind.WARNING, "Unlock")
+                if (mode == LockMode.PIN) runtime?.navigate(LockModule.ROUTE)
+            }
+        }
     }
 
     companion object {
