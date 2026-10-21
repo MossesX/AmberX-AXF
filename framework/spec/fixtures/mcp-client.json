@@ -1,0 +1,2006 @@
+{
+  "version": "2025-06-18",
+  "supported": [
+    "2025-06-18",
+    "2025-03-26",
+    "2024-11-05"
+  ],
+  "sessionHeader": "mcp-session-id",
+  "versionHeader": "mcp-protocol-version",
+  "permissions": {
+    "MANAGE": "mcp.servers.manage",
+    "CALL": "mcp.call",
+    "WRITE": "mcp.call.write",
+    "DESTRUCTIVE": "mcp.call.destructive"
+  },
+  "initialize": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "amberx-axf",
+      "version": "0.2.0",
+      "title": "AmberX AXF MCP client"
+    }
+  },
+  "requests": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "tools/list"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": "x",
+      "method": "tools/call",
+      "params": {
+        "name": "t",
+        "arguments": {
+          "a": 1
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/initialized"
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/cancelled",
+      "params": {
+        "requestId": 3,
+        "reason": "user"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"ok\":true}}",
+      "parsed": [
+        {
+          "kind": "result",
+          "id": 1,
+          "result": {
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":\"a\",\"error\":{\"code\":-32601,\"message\":\"no such method\",\"data\":{\"m\":\"x\"}}}",
+      "parsed": [
+        {
+          "kind": "error",
+          "id": "a",
+          "error": {
+            "code": -32601,
+            "message": "no such method",
+            "data": {
+              "m": "x"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/progress\",\"params\":{\"progress\":1}}",
+      "parsed": [
+        {
+          "kind": "notification",
+          "method": "notifications/progress",
+          "params": {
+            "progress": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"sampling/createMessage\",\"params\":{}}",
+      "parsed": [
+        {
+          "kind": "request",
+          "id": 7,
+          "method": "sampling/createMessage",
+          "params": {}
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":null,\"error\":{\"code\":-32700,\"message\":\"parse error\"}}",
+      "parsed": [
+        {
+          "kind": "error",
+          "id": null,
+          "error": {
+            "code": -32700,
+            "message": "parse error"
+          }
+        }
+      ]
+    },
+    {
+      "text": "[{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":1},{\"jsonrpc\":\"2.0\",\"method\":\"n\"}]",
+      "parsed": [
+        {
+          "kind": "result",
+          "id": 1,
+          "result": 1
+        },
+        {
+          "kind": "notification",
+          "method": "n",
+          "params": {}
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"1.0\",\"id\":1,\"result\":1}",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "jsonrpc must be \"2.0\""
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":1}",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "neither a request, a notification nor a response"
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":{\"x\":1},\"method\":\"m\"}",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "id must be a string or number"
+        }
+      ]
+    },
+    {
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":\"x\",\"message\":\"m\"}}",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "error needs a numeric code and a message"
+        }
+      ]
+    },
+    {
+      "text": "not json",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "not valid JSON"
+        }
+      ]
+    },
+    {
+      "text": "[]",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "empty batch"
+        }
+      ]
+    },
+    {
+      "text": "42",
+      "parsed": [
+        {
+          "kind": "invalid",
+          "reason": "not an object"
+        }
+      ]
+    }
+  ],
+  "sse": [
+    {
+      "text": "event: message\ndata: {\"a\":1}\n\n",
+      "events": [
+        {
+          "event": "message",
+          "data": "{\"a\":1}"
+        }
+      ]
+    },
+    {
+      "text": "data: line1\ndata: line2\n\nid: 9\nretry: 250\nevent: ping\ndata: x\n\n",
+      "events": [
+        {
+          "event": "message",
+          "data": "line1\nline2"
+        },
+        {
+          "event": "ping",
+          "data": "x",
+          "id": "9",
+          "retry": 250
+        }
+      ]
+    },
+    {
+      "text": ": comment\r\ndata:no-space\r\n\r\ndata: tail-without-blank",
+      "events": [
+        {
+          "event": "message",
+          "data": "no-space"
+        },
+        {
+          "event": "message",
+          "data": "tail-without-blank"
+        }
+      ]
+    },
+    {
+      "text": "event: alone\n\ndata: {\"b\":2}\nid: bad\u0000id\n\n",
+      "events": [
+        {
+          "event": "message",
+          "data": "{\"b\":2}"
+        }
+      ]
+    },
+    {
+      "text": "data: one\rdata: two\r\r",
+      "events": [
+        {
+          "event": "message",
+          "data": "one\ntwo"
+        }
+      ]
+    },
+    {
+      "text": "retry: notanumber\ndata: r\n\n",
+      "events": [
+        {
+          "event": "message",
+          "data": "r"
+        }
+      ]
+    }
+  ],
+  "sseChunked": {
+    "chunks": [
+      "data: {\"a\":",
+      "1}\n",
+      "\ndata: {\"b\":2}\n\n"
+    ],
+    "events": [
+      {
+        "event": "message",
+        "data": "{\"a\":1}"
+      },
+      {
+        "event": "message",
+        "data": "{\"b\":2}"
+      }
+    ]
+  },
+  "headers": [
+    {
+      "options": {},
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json"
+      }
+    },
+    {
+      "options": {
+        "sessionId": "abc"
+      },
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "abc"
+      }
+    },
+    {
+      "options": {
+        "sessionId": "abc",
+        "protocolVersion": "2025-06-18"
+      },
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "abc",
+        "mcp-protocol-version": "2025-06-18"
+      }
+    },
+    {
+      "options": {
+        "method": "GET",
+        "sessionId": "s"
+      },
+      "headers": {
+        "accept": "text/event-stream",
+        "mcp-session-id": "s"
+      }
+    },
+    {
+      "options": {
+        "method": "DELETE",
+        "sessionId": "s",
+        "protocolVersion": "2025-03-26"
+      },
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "mcp-session-id": "s",
+        "mcp-protocol-version": "2025-03-26"
+      }
+    },
+    {
+      "options": {
+        "sessionId": null,
+        "protocolVersion": null
+      },
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "status": 200,
+      "contentType": "application/json",
+      "hadSession": false,
+      "kind": "json"
+    },
+    {
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "hadSession": true,
+      "kind": "json"
+    },
+    {
+      "status": 200,
+      "contentType": "text/event-stream",
+      "hadSession": true,
+      "kind": "sse"
+    },
+    {
+      "status": 202,
+      "contentType": null,
+      "hadSession": true,
+      "kind": "accepted"
+    },
+    {
+      "status": 404,
+      "contentType": "text/plain",
+      "hadSession": true,
+      "kind": "expired"
+    },
+    {
+      "status": 404,
+      "contentType": "text/plain",
+      "hadSession": false,
+      "kind": "error"
+    },
+    {
+      "status": 200,
+      "contentType": "text/html",
+      "hadSession": false,
+      "kind": "error"
+    },
+    {
+      "status": 200,
+      "contentType": null,
+      "hadSession": false,
+      "kind": "json"
+    },
+    {
+      "status": 500,
+      "contentType": "application/json",
+      "hadSession": true,
+      "kind": "error"
+    },
+    {
+      "status": 401,
+      "contentType": null,
+      "hadSession": false,
+      "kind": "error"
+    },
+    {
+      "status": 204,
+      "contentType": null,
+      "hadSession": false,
+      "kind": "json"
+    }
+  ],
+  "negotiate": [
+    {
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {
+            "listChanged": true
+          },
+          "resources": {}
+        },
+        "serverInfo": {
+          "name": "hub",
+          "version": "1.2",
+          "title": "axHub"
+        },
+        "instructions": "Be nice."
+      },
+      "outcome": {
+        "ok": true,
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {
+            "listChanged": true
+          },
+          "resources": {}
+        },
+        "serverInfo": {
+          "name": "hub",
+          "version": "1.2",
+          "title": "axHub"
+        },
+        "instructions": "Be nice."
+      }
+    },
+    {
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {},
+        "serverInfo": {
+          "name": "old"
+        }
+      },
+      "outcome": {
+        "ok": true,
+        "protocolVersion": "2024-11-05",
+        "capabilities": {},
+        "serverInfo": {
+          "name": "old",
+          "version": ""
+        },
+        "instructions": ""
+      }
+    },
+    {
+      "result": {
+        "protocolVersion": "2030-01-01",
+        "capabilities": {}
+      },
+      "outcome": {
+        "ok": false,
+        "error": {
+          "code": "invalid",
+          "message": "server protocol version 2030-01-01 is not supported (client speaks 2025-06-18, 2025-03-26, 2024-11-05)",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "result": {
+        "capabilities": {}
+      },
+      "outcome": {
+        "ok": false,
+        "error": {
+          "code": "invalid",
+          "message": "server protocol version (none) is not supported (client speaks 2025-06-18, 2025-03-26, 2024-11-05)",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "result": "nope",
+      "outcome": {
+        "ok": false,
+        "error": {
+          "code": "invalid",
+          "message": "initialize returned no result object",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "result": {
+        "protocolVersion": "2025-03-26",
+        "capabilities": {
+          "prompts": null,
+          "logging": {}
+        }
+      },
+      "outcome": {
+        "ok": true,
+        "protocolVersion": "2025-03-26",
+        "capabilities": {
+          "prompts": null,
+          "logging": {}
+        },
+        "serverInfo": null,
+        "instructions": ""
+      }
+    }
+  ],
+  "offers": [
+    {
+      "capabilities": {
+        "tools": {}
+      },
+      "tools": true,
+      "resources": false,
+      "prompts": false,
+      "logging": false
+    },
+    {
+      "capabilities": {
+        "tools": {
+          "listChanged": true
+        },
+        "resources": {},
+        "prompts": null
+      },
+      "tools": true,
+      "resources": true,
+      "prompts": false,
+      "logging": false
+    },
+    {
+      "capabilities": {},
+      "tools": false,
+      "resources": false,
+      "prompts": false,
+      "logging": false
+    },
+    {
+      "capabilities": null,
+      "tools": false,
+      "resources": false,
+      "prompts": false,
+      "logging": false
+    },
+    {
+      "capabilities": {
+        "logging": false
+      },
+      "tools": false,
+      "resources": false,
+      "prompts": false,
+      "logging": false
+    }
+  ],
+  "pageParams": [
+    {
+      "cursor": null,
+      "params": null
+    },
+    {
+      "cursor": "",
+      "params": null
+    },
+    {
+      "cursor": "c1",
+      "params": {
+        "cursor": "c1"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "pages": [
+        {
+          "items": [
+            "a",
+            "b"
+          ]
+        }
+      ],
+      "maxPages": 100,
+      "merged": {
+        "items": [
+          "a",
+          "b"
+        ],
+        "cursors": [],
+        "truncated": false,
+        "loop": false
+      }
+    },
+    {
+      "pages": [
+        {
+          "items": [
+            "a"
+          ],
+          "nextCursor": "c1"
+        },
+        {
+          "items": [
+            "b"
+          ],
+          "nextCursor": "c2"
+        },
+        {
+          "items": [
+            "c"
+          ]
+        }
+      ],
+      "maxPages": 100,
+      "merged": {
+        "items": [
+          "a",
+          "b",
+          "c"
+        ],
+        "cursors": [
+          "c1",
+          "c2"
+        ],
+        "truncated": false,
+        "loop": false
+      }
+    },
+    {
+      "pages": [
+        {
+          "items": [
+            "a"
+          ],
+          "nextCursor": "c1"
+        },
+        {
+          "items": [
+            "b"
+          ],
+          "nextCursor": "c1"
+        },
+        {
+          "items": [
+            "x"
+          ]
+        }
+      ],
+      "maxPages": 100,
+      "merged": {
+        "items": [
+          "a",
+          "b"
+        ],
+        "cursors": [
+          "c1"
+        ],
+        "truncated": false,
+        "loop": true
+      }
+    },
+    {
+      "pages": [
+        {
+          "items": [
+            "a"
+          ],
+          "nextCursor": "c1"
+        },
+        {
+          "items": [
+            "b"
+          ],
+          "nextCursor": ""
+        },
+        {
+          "items": [
+            "x"
+          ]
+        }
+      ],
+      "maxPages": 100,
+      "merged": {
+        "items": [
+          "a",
+          "b"
+        ],
+        "cursors": [
+          "c1"
+        ],
+        "truncated": false,
+        "loop": false
+      }
+    },
+    {
+      "pages": [
+        {
+          "items": []
+        }
+      ],
+      "maxPages": 100,
+      "merged": {
+        "items": [],
+        "cursors": [],
+        "truncated": false,
+        "loop": false
+      }
+    },
+    {
+      "pages": [
+        {
+          "items": [
+            "a"
+          ],
+          "nextCursor": "c1"
+        },
+        {
+          "items": [
+            "b"
+          ],
+          "nextCursor": "c2"
+        },
+        {
+          "items": [
+            "c"
+          ],
+          "nextCursor": "c3"
+        },
+        {
+          "items": [
+            "d"
+          ]
+        }
+      ],
+      "maxPages": 3,
+      "merged": {
+        "items": [
+          "a",
+          "b",
+          "c"
+        ],
+        "cursors": [
+          "c1",
+          "c2"
+        ],
+        "truncated": true,
+        "loop": false
+      }
+    }
+  ],
+  "rpcErrors": [
+    {
+      "error": {
+        "code": -32700,
+        "message": "err -32700"
+      },
+      "wire": {
+        "code": "invalid",
+        "message": "err -32700",
+        "retryable": false,
+        "details": {
+          "rpc": "-32700"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32600,
+        "message": "err -32600"
+      },
+      "wire": {
+        "code": "invalid",
+        "message": "err -32600",
+        "retryable": false,
+        "details": {
+          "rpc": "-32600"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32601,
+        "message": "err -32601"
+      },
+      "wire": {
+        "code": "not_found",
+        "message": "err -32601",
+        "retryable": false,
+        "details": {
+          "rpc": "-32601"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32602,
+        "message": "err -32602"
+      },
+      "wire": {
+        "code": "validation",
+        "message": "err -32602",
+        "retryable": false,
+        "details": {
+          "rpc": "-32602"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32603,
+        "message": "err -32603"
+      },
+      "wire": {
+        "code": "unexpected",
+        "message": "err -32603",
+        "retryable": false,
+        "details": {
+          "rpc": "-32603"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32002,
+        "message": "err -32002"
+      },
+      "wire": {
+        "code": "not_found",
+        "message": "err -32002",
+        "retryable": false,
+        "details": {
+          "rpc": "-32002"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32001,
+        "message": "err -32001"
+      },
+      "wire": {
+        "code": "timeout",
+        "message": "err -32001",
+        "retryable": false,
+        "details": {
+          "rpc": "-32001"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -32800,
+        "message": "err -32800"
+      },
+      "wire": {
+        "code": "cancelled",
+        "message": "err -32800",
+        "retryable": false,
+        "details": {
+          "rpc": "-32800"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": -1,
+        "message": "err -1"
+      },
+      "wire": {
+        "code": "unexpected",
+        "message": "err -1",
+        "retryable": false,
+        "details": {
+          "rpc": "-1"
+        }
+      }
+    },
+    {
+      "error": {
+        "code": 42,
+        "message": ""
+      },
+      "wire": {
+        "code": "unexpected",
+        "message": "JSON-RPC error 42",
+        "retryable": false,
+        "details": {
+          "rpc": "42"
+        }
+      }
+    }
+  ],
+  "httpErrors": [
+    {
+      "status": 400,
+      "wire": {
+        "code": "invalid",
+        "message": "HTTP 400",
+        "retryable": false,
+        "details": {
+          "http": "400"
+        }
+      }
+    },
+    {
+      "status": 401,
+      "wire": {
+        "code": "denied",
+        "message": "HTTP 401: the server refused the credentials",
+        "retryable": false,
+        "details": {
+          "http": "401"
+        }
+      }
+    },
+    {
+      "status": 403,
+      "wire": {
+        "code": "denied",
+        "message": "HTTP 403: the server refused the credentials",
+        "retryable": false,
+        "details": {
+          "http": "403"
+        }
+      }
+    },
+    {
+      "status": 404,
+      "wire": {
+        "code": "not_found",
+        "message": "HTTP 404: no MCP endpoint at that URL",
+        "retryable": false,
+        "details": {
+          "http": "404"
+        }
+      }
+    },
+    {
+      "status": 405,
+      "wire": {
+        "code": "not_implemented",
+        "message": "HTTP 405: the server does not offer that transport method",
+        "retryable": false,
+        "details": {
+          "http": "405"
+        }
+      }
+    },
+    {
+      "status": 408,
+      "wire": {
+        "code": "timeout",
+        "message": "HTTP 408",
+        "retryable": false,
+        "details": {
+          "http": "408"
+        }
+      }
+    },
+    {
+      "status": 409,
+      "wire": {
+        "code": "invalid",
+        "message": "HTTP 409",
+        "retryable": false,
+        "details": {
+          "http": "409"
+        }
+      }
+    },
+    {
+      "status": 429,
+      "wire": {
+        "code": "unavailable",
+        "message": "HTTP 429: try again later",
+        "retryable": true,
+        "details": {
+          "http": "429"
+        }
+      }
+    },
+    {
+      "status": 500,
+      "wire": {
+        "code": "unavailable",
+        "message": "HTTP 500",
+        "retryable": true,
+        "details": {
+          "http": "500"
+        }
+      }
+    },
+    {
+      "status": 502,
+      "wire": {
+        "code": "unavailable",
+        "message": "HTTP 502: try again later",
+        "retryable": true,
+        "details": {
+          "http": "502"
+        }
+      }
+    },
+    {
+      "status": 503,
+      "wire": {
+        "code": "unavailable",
+        "message": "HTTP 503: try again later",
+        "retryable": true,
+        "details": {
+          "http": "503"
+        }
+      }
+    },
+    {
+      "status": 504,
+      "wire": {
+        "code": "timeout",
+        "message": "HTTP 504",
+        "retryable": false,
+        "details": {
+          "http": "504"
+        }
+      }
+    },
+    {
+      "status": 302,
+      "wire": {
+        "code": "invalid",
+        "message": "HTTP 302: redirects are not followed (a credential must never travel to another address)",
+        "retryable": false,
+        "details": {
+          "http": "302"
+        }
+      }
+    },
+    {
+      "status": 200,
+      "wire": {
+        "code": "unexpected",
+        "message": "HTTP 200",
+        "retryable": false,
+        "details": {
+          "http": "200"
+        }
+      }
+    }
+  ],
+  "transportErrors": [
+    {
+      "kind": "timeout",
+      "message": "no answer within 30000 ms",
+      "wire": {
+        "code": "timeout",
+        "message": "no answer within 30000 ms",
+        "retryable": false
+      }
+    },
+    {
+      "kind": "cancelled",
+      "message": "cancelled",
+      "wire": {
+        "code": "cancelled",
+        "message": "cancelled",
+        "retryable": false
+      }
+    },
+    {
+      "kind": "network",
+      "message": "ECONNREFUSED",
+      "wire": {
+        "code": "unavailable",
+        "message": "ECONNREFUSED",
+        "retryable": true
+      }
+    },
+    {
+      "kind": "protocol",
+      "message": "bad framing",
+      "wire": {
+        "code": "invalid",
+        "message": "bad framing",
+        "retryable": false
+      }
+    }
+  ],
+  "effects": [
+    {
+      "annotations": null,
+      "strict": false,
+      "effect": "write"
+    },
+    {
+      "annotations": null,
+      "strict": true,
+      "effect": "destructive"
+    },
+    {
+      "annotations": {},
+      "strict": false,
+      "effect": "write"
+    },
+    {
+      "annotations": {},
+      "strict": true,
+      "effect": "destructive"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "strict": false,
+      "effect": "read"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "strict": true,
+      "effect": "read"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": true
+      },
+      "strict": false,
+      "effect": "read"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": true
+      },
+      "strict": true,
+      "effect": "read"
+    },
+    {
+      "annotations": {
+        "destructiveHint": true
+      },
+      "strict": false,
+      "effect": "destructive"
+    },
+    {
+      "annotations": {
+        "destructiveHint": true
+      },
+      "strict": true,
+      "effect": "destructive"
+    },
+    {
+      "annotations": {
+        "destructiveHint": false
+      },
+      "strict": false,
+      "effect": "write"
+    },
+    {
+      "annotations": {
+        "destructiveHint": false
+      },
+      "strict": true,
+      "effect": "write"
+    },
+    {
+      "annotations": {
+        "idempotentHint": true
+      },
+      "strict": false,
+      "effect": "write"
+    },
+    {
+      "annotations": {
+        "idempotentHint": true
+      },
+      "strict": true,
+      "effect": "destructive"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "strict": false,
+      "effect": "write"
+    },
+    {
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "strict": true,
+      "effect": "write"
+    }
+  ],
+  "gates": [
+    {
+      "granted": [
+        "*"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "*"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "*"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    },
+    {
+      "granted": [
+        "mcp.*"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "mcp.*"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "mcp.*"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call write tools (needs mcp.call.write)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.write"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call destructive tools (needs mcp.call.destructive)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.destructive"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call",
+        "mcp.call.write"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call",
+        "mcp.call.write"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call",
+        "mcp.call.write"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call destructive tools (needs mcp.call.destructive)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.destructive"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call.*"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call read tools (needs mcp.call)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call.*"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call.*"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    },
+    {
+      "granted": [],
+      "effect": "read",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call read tools (needs mcp.call)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call"
+          }
+        }
+      }
+    },
+    {
+      "granted": [],
+      "effect": "write",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call write tools (needs mcp.call.write)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.write"
+          }
+        }
+      }
+    },
+    {
+      "granted": [],
+      "effect": "destructive",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call destructive tools (needs mcp.call.destructive)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.destructive"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "other.*",
+        "mcp.call.destructive"
+      ],
+      "effect": "read",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call",
+        "confirm": false,
+        "effect": "read",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call read tools (needs mcp.call)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "other.*",
+        "mcp.call.destructive"
+      ],
+      "effect": "write",
+      "gate": {
+        "allowed": false,
+        "requires": "mcp.call.write",
+        "confirm": false,
+        "effect": "write",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call write tools (needs mcp.call.write)",
+          "retryable": false,
+          "details": {
+            "permission": "mcp.call.write"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "other.*",
+        "mcp.call.destructive"
+      ],
+      "effect": "destructive",
+      "gate": {
+        "allowed": true,
+        "requires": "mcp.call.destructive",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    }
+  ],
+  "mappedGates": [
+    {
+      "granted": [
+        "dev.tools"
+      ],
+      "effect": "read",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "dev.tools"
+      ],
+      "effect": "write",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "dev.tools"
+      ],
+      "effect": "destructive",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    },
+    {
+      "granted": [
+        "dev.*"
+      ],
+      "effect": "read",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "read"
+      }
+    },
+    {
+      "granted": [
+        "dev.*"
+      ],
+      "effect": "write",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "write"
+      }
+    },
+    {
+      "granted": [
+        "dev.*"
+      ],
+      "effect": "destructive",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": true,
+        "requires": "dev.tools",
+        "confirm": true,
+        "effect": "destructive"
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "read",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": false,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "read",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call read tools (needs dev.tools)",
+          "retryable": false,
+          "details": {
+            "permission": "dev.tools"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "write",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": false,
+        "requires": "dev.tools",
+        "confirm": false,
+        "effect": "write",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call write tools (needs dev.tools)",
+          "retryable": false,
+          "details": {
+            "permission": "dev.tools"
+          }
+        }
+      }
+    },
+    {
+      "granted": [
+        "mcp.call"
+      ],
+      "effect": "destructive",
+      "perms": {
+        "MANAGE": "dev.tools",
+        "CALL": "dev.tools",
+        "WRITE": "dev.tools",
+        "DESTRUCTIVE": "dev.tools"
+      },
+      "gate": {
+        "allowed": false,
+        "requires": "dev.tools",
+        "confirm": true,
+        "effect": "destructive",
+        "error": {
+          "code": "denied",
+          "message": "Your role can't call destructive tools (needs dev.tools)",
+          "retryable": false,
+          "details": {
+            "permission": "dev.tools"
+          }
+        }
+      }
+    }
+  ],
+  "contentText": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "text": "hello"
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        },
+        {
+          "type": "text",
+          "text": "b"
+        }
+      ],
+      "text": "a\n\nb"
+    },
+    {
+      "content": [
+        {
+          "type": "image",
+          "mimeType": "image/png",
+          "data": "AAAA"
+        }
+      ],
+      "text": "image (image/png) · 4 base64 chars"
+    },
+    {
+      "content": [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "file:///x",
+            "text": "body",
+            "mimeType": "text/plain"
+          }
+        }
+      ],
+      "text": "file:///x\nbody"
+    },
+    {
+      "content": [
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "file:///y",
+            "blob": "QUJD"
+          }
+        }
+      ],
+      "text": "file:///y\n(binary resource, 4 base64 chars)"
+    },
+    {
+      "content": [
+        {
+          "type": "resource_link",
+          "uri": "file:///z",
+          "mimeType": "text/plain"
+        }
+      ],
+      "text": "file:///z (text/plain)"
+    },
+    {
+      "content": [
+        {
+          "type": "audio",
+          "mimeType": "audio/wav",
+          "data": "AA"
+        },
+        {
+          "type": "resource",
+          "resource": {
+            "uri": "u"
+          }
+        }
+      ],
+      "text": "audio (audio/wav) · 2 base64 chars\n\nu\n(binary resource)"
+    },
+    {
+      "content": [],
+      "text": ""
+    },
+    {
+      "content": null,
+      "text": ""
+    }
+  ],
+  "serverIds": [
+    {
+      "name": "axHub",
+      "taken": [],
+      "id": "axhub"
+    },
+    {
+      "name": "axHub",
+      "taken": [
+        "axhub"
+      ],
+      "id": "axhub-2"
+    },
+    {
+      "name": "axHub",
+      "taken": [
+        "axhub",
+        "axhub-2"
+      ],
+      "id": "axhub-3"
+    },
+    {
+      "name": "  --Weird  Name!! ",
+      "taken": [],
+      "id": "weird-name"
+    },
+    {
+      "name": "",
+      "taken": [],
+      "id": "server"
+    },
+    {
+      "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "taken": [],
+      "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "name": "Ünïcode Server",
+      "taken": [],
+      "id": "n-code-server"
+    }
+  ],
+  "validate": [
+    {
+      "input": {
+        "name": "Hub",
+        "url": "https://example.com/mcp"
+      },
+      "problems": []
+    },
+    {
+      "input": {
+        "name": "",
+        "url": ""
+      },
+      "problems": [
+        "name is required",
+        "url is required"
+      ]
+    },
+    {
+      "input": {
+        "name": "x",
+        "url": "ftp://x"
+      },
+      "problems": [
+        "url must be an http(s) URL of a Streamable HTTP MCP endpoint, e.g. https://example.com/mcp"
+      ]
+    },
+    {
+      "input": {
+        "name": "x",
+        "url": "http://localhost:7090/mcp",
+        "id": "Bad Id",
+        "tokenEnv": "lower"
+      },
+      "problems": [
+        "id must be lowercase letters, digits and dashes",
+        "tokenEnv must be an environment variable name like AXHUB_TOKEN"
+      ]
+    },
+    {
+      "input": {
+        "name": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+        "url": "https://e.com/pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+      },
+      "problems": [
+        "name is too long (80 characters)",
+        "url is too long (500 characters)"
+      ]
+    },
+    {
+      "input": {
+        "name": "ok",
+        "url": "https://e.com",
+        "id": "ok-1",
+        "tokenEnv": "AXHUB_TOKEN"
+      },
+      "problems": []
+    }
+  ],
+  "skeletons": [
+    {
+      "schema": {
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "number",
+            "default": 3
+          }
+        },
+        "required": [
+          "a"
+        ]
+      },
+      "args": {
+        "a": "",
+        "b": 3
+      }
+    },
+    {
+      "schema": {
+        "properties": {
+          "s": {
+            "type": "string"
+          },
+          "i": {
+            "type": "integer"
+          },
+          "b": {
+            "type": "boolean"
+          },
+          "arr": {
+            "type": "array"
+          },
+          "o": {
+            "type": "object"
+          },
+          "e": {
+            "enum": [
+              "x",
+              "y"
+            ]
+          },
+          "m": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "s",
+          "i",
+          "b",
+          "arr",
+          "o",
+          "e",
+          "m"
+        ]
+      },
+      "args": {
+        "s": "",
+        "i": 0,
+        "b": false,
+        "arr": [],
+        "o": {},
+        "e": "x",
+        "m": 0
+      }
+    },
+    {
+      "schema": {
+        "properties": {
+          "opt": {
+            "type": "string"
+          }
+        }
+      },
+      "args": {}
+    },
+    {
+      "schema": null,
+      "args": {}
+    }
+  ]
+}

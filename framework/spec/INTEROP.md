@@ -71,7 +71,7 @@ Kernel flag: `axf.interop` (default on) starts contributed adapters with the ker
 
 ## Planned modules on top
 
-- **`lib-mcp`** — MCP server (actions → tools, `effect` → tool annotations, destructive → `confirmation_required`) and MCP client (a `RemoteServices` provider).
+- **`lib-mcp`** — MCP client **built (Oct 20 2026, Fable)**: the first `RemoteServices` provider (every registered MCP server is a remote service, its tools are `ActionDescriptor`s with `effect` from the tool annotations). Outbound calls go through the same default-deny idea in reverse: the local UAC role must hold `mcp.call` / `mcp.call.write` / `mcp.call.destructive` for the tool's effect, and a destructive tool is only called once a person confirmed (`confirmation_required` otherwise). Engine `ai.amberx.axf.kernel.mcp.McpEngine` = `core/engines/mcp.ts` = `axf_libs/mcp/engine.py`, fixture `spec/fixtures/mcp-client.json`. The MCP **server** half (actions → tools, `effect` → tool annotations, destructive → `confirmation_required`) is still a placeholder (`axf.mcp.server`).
 - **`axf-link`** (`axf-link@1`) — native AXF ⇄ AXF protocol: actions, asset exchange, UAC-aware calls, event subscriptions. Semantics here, transport-agnostic (Android IPC, websocket, via axHub).
 - **`lib-hub`** — axHub connector. Registers the app's `surface@1` with the hub and relays hub calls through the gate. The protocol it speaks is **defined by axHub**, not by AXF.
 - **`lib-hub-admin`** — a console tab that manages axHub through its public admin API.
