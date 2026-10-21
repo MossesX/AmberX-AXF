@@ -53,3 +53,6 @@
 - Console App tabs default to Console + Pilot + axHub. The AXHub phone app gets an Apps tab.
 - Stable signing so updates install over old ones: GitHub secret `ANDROID_DEBUG_KEYSTORE` (base64 of a debug keystore). Without it each CI runner signs differently.
 
+
+- Oct 20 2026: every rebuild (Fable rebuilds and all future ones) ends with a differences report in `_claude/memory/docs/rebuilds/<pending-id>.md` plus a summary of differences and improvements shown to Brett. Rule in `_claude/rules/RULES.md`.
+- Oct 20 2026: harvest plan — run the six overlapping Fable rebuilds first (banner-assets + widget-assets, plugin-manager, ai-assistant-plugin, agent-manager-plugin, lib-mcp, then build-pilot-agents), then harvest libraries, plugins and assets out of every AXF app (console web + Android, demo, Build Pilot, Voice Vault, AXHub) on Opus. PilotX/ShipX/ActiveX stay out.
