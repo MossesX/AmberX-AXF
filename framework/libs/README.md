@@ -53,3 +53,15 @@ log) and **Settings → MCP servers** (`mcp`, panel `mcp.servers`; `mcp.servers.
 `McpHost` (`libs/mcp/host.ts`): `localHost()` keeps records in localStorage and tokens in an `McpSecretStore` you supply
 (browser-only apps); the Dev Console passes a host that proxies to its server so tokens stay there.
 `createMcpLibrary({ host, envAuth, navLabel })`.
+
+## hub (`ai.amberx.axf.hub`)
+
+axHub connector, first slice (Opus, Oct 20 2026 harvest). A plain module (no UI): `libs/hub/hub.ts` has the hub address
+rules (`normalizeHub`, `hubOrigin`, `isHub`: https host only, links checked against that exact origin), hub URLs
+(`approvalsUrl`, `approvalUrl(base, id)` only for real ids, `loginUrl`, `accountUrl`, `appsUrl`), the approvals feed of axHub
+decision #85 (`fetchHubFeed`: the browser's own hub session, credentials included, redirects refused, reply capped at
+256 KB; `interpretFeed` → ok / signed-out / not-admin / unreachable, only items whose link points at the hub, links rebuilt
+from the id) and `seenPlan` (ring once per new approval). `libs/hub/index.ts` adds `HubWatcher` (polls while visible, on
+focus, one check at a time). Mirrored by the Kotlin `lib-hub` (`HubRules`); both replay `spec/fixtures/hub-approvals.json`.
+Self-test: `npx -y tsx framework/spec/check-hub.mts`. The console's approvals banner plugin runs on it. The hub protocol
+contract (AXPP) is a named placeholder (`HUB_PLACEHOLDERS`), parked for Fable.

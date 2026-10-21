@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-21T02:31:33.812Z",
+  "generatedAt": "2026-10-21T04:48:33.636Z",
   "items": [
     {
       "$axf": "library@1",
@@ -112,6 +112,58 @@
     },
     {
       "$axf": "library@1",
+      "id": "ai.amberx.axf.hub",
+      "module": "lib-hub",
+      "name": "axHub connector (first slice: approvals feed, hub address, locked web view)",
+      "description": "What axHub serves today, for any AXF app: hub address rules (https host only; links checked against that exact origin), hub URLs (approvals, one approval by id, sign-in, account, app catalog), the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session (web: the browser's cookie, credentials included; Android: the WebView cookie store) with redirects refused and the reply size-capped, mapped to ok / signed-out / not-admin / unreachable, seen-id tracking so each approval rings once, sign-out on the hub (CSRF form post), and on Android a web view locked to one origin plus hub APK downloads through the download manager. Web (framework/libs/hub) and Kotlin (lib-hub HubRules) replay one fixture, spec/fixtures/hub-approvals.json. The hub protocol contract (AXPP) is a named placeholder, parked for Fable.",
+      "features": [
+        "lib.hub"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.hub",
+      "params": [
+        {
+          "key": "base",
+          "label": "Hub address",
+          "type": "string",
+          "default": "https://axhub.amberxai.com",
+          "help": "https, host only (no path)"
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-hub:$axf\")",
+        "module": "HubModule()",
+        "import": "ai.amberx.axf.hub.HubModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-hub",
+          "note": "written without a compiler; CI compiles and runs :lib-hub:testDebugUnitTest (HubRules replayed the fixture with a local kotlinc)"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "libs/hub"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.hub.axpp",
+          "note": "The hub protocol contract (AXPP): typed calls, jobs and events between an AXF app and axHub. Parked for Fable; not designed here."
+        },
+        {
+          "capability": "axf.hub.push",
+          "note": "Hub-pushed approvals and events instead of polling the feed."
+        },
+        {
+          "capability": "axf.hub.admin-api",
+          "note": "The hub's admin API (services, jobs, audit, vault names, users, projects), hub step 4."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
       "id": "ai.amberx.axf.lock",
       "module": "lib-lock",
       "name": "App lock (fingerprint/face or PIN)",
@@ -210,6 +262,47 @@
         {
           "capability": "axf.mcp.elicitation",
           "note": "Server→client requests (sampling, elicitation) are ignored, not answered."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.notifications",
+      "module": "lib-notifications",
+      "name": "Notifications (channels, private lock-screen alerts)",
+      "description": "Android notifications with the privacy rules built in: channels (importance, lock-screen visibility, vibration, badge), canPost (POST_NOTIFICATIONS on Android 13+; every post checks it), canFullScreen (Android 14+ per-app opt-in), the quiet ongoing \"watching\" notification for a foreground service, high-priority alerts that are VISIBILITY_PRIVATE with a public version (the lock screen shows only e.g. \"Approval waiting\"), full screen only when asked and allowed, quiet notices, post/cancel by tag or id. Never shows the app over the lock screen. Hook for alert@1 deliveries (AlertNotifications.plan / AxfNotifications.deliverAlert, channel \"device\"). Fills the platform's android.notifications placeholder.",
+      "features": [
+        "dv.notif",
+        "lib.notifications"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.notifications",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-notifications:$axf\")",
+        "module": "NotificationsModule(this)",
+        "import": "ai.amberx.axf.notifications.NotificationsModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-notifications",
+          "note": "written without a compiler; CI compiles and runs :lib-notifications:testDebugUnitTest"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.notifications.alerts",
+          "note": "alert@1 deliveries posted as device notifications; the hook exists (AxfNotifications.deliverAlert), nothing subscribes AlertCenter yet."
+        },
+        {
+          "capability": "axf.notifications.push",
+          "note": "FCM / UnifiedPush / hub push."
+        },
+        {
+          "capability": "axf.notifications.schedule",
+          "note": "Scheduled notifications (with the work scheduler, x.work)."
         }
       ]
     },

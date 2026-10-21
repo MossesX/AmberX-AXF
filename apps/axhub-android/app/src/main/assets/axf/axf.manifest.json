@@ -107,7 +107,9 @@
       "ai.amberx.axf.logging",
       "ai.amberx.axf.devtools",
       "ai.amberx.axf.ui.windows",
-      "ai.amberx.axf.lock"
+      "ai.amberx.axf.lock",
+      "ai.amberx.axf.hub",
+      "ai.amberx.axf.notifications"
     ],
     "minSdk": 26,
     "targetSdk": 35
@@ -117,7 +119,13 @@
       "defaultMode": "none"
     },
     "$installed": [
-      "ai.amberx.axf.lock"
-    ]
+      "ai.amberx.axf.lock",
+      "ai.amberx.axf.hub",
+      "ai.amberx.axf.notifications"
+    ],
+    "hub": {
+      "base": "https://axhub.amberxai.com"
+    },
+    "notifications": {}
   }
 }

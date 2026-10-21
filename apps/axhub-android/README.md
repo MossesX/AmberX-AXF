@@ -17,6 +17,13 @@ Phone app for Brett's axHub, built on **AmberX AXF 0.2.0** (`android-compose` te
 - Optional app lock (Settings → Unlock: fingerprint or PIN, via lib-lock). If the lock can't run, **Sign out and reset** drops the hub session before turning it off.
 - Hub address must be plain https with no path.
 
+## Framework libraries it runs on
+
+- **lib-hub** (framework/android/lib-hub, harvested from this app Oct 20 2026): hub address rules, the approvals feed + status mapping, sign-out on the hub, watch settings + seen ids (`WatchPrefs`, kept in this app's original `axhub_watch` preferences file), `HubState`, the origin-locked web view and the Apps tab's downloads.
+- **lib-notifications** (framework/android/lib-notifications, harvested from this app): channels, permission checks, the ongoing "watching" notification, the private-lock-screen approval alert.
+- **lib-lock**: the app lock.
+- What stays in the app: `ApprovalWatchService` (the polling loop as a foreground service + boot restart), until the framework's work scheduler (`x.work`) can run it.
+
 ## Planned (routes and placeholders already in place)
 
 Services · Jobs · Audit log · Vault (names only) · Users · Projects · Devices, waiting on the hub's admin API (step 4), log viewer (step 7) and device agent (step 6). Placeholder capabilities: `axhub.admin-api`, `axhub.push` (hub-pushed alerts instead of checking), `axhub.agent`.

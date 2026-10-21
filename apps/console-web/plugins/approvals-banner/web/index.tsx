@@ -9,6 +9,10 @@
  *
  * Polls every 5 s while the page is visible, again on focus. Hiding it lasts until something new arrives.
  *
+ * Hub address rules, the feed read (credentials included, redirects refused, reply size-capped), the status mapping and
+ * every hub link come from the framework's lib-hub (`framework/libs/hub`, Oct 20 2026 harvest), the same rules the AXHub
+ * phone app uses; only items whose link points at the hub are kept, and links are rebuilt from the approval id.
+ *
  * Opens by itself (Oct 20 2026, axHub decision #87): each new request opens once in the `approvals.review` dialog, which
  * shows the hub's own approval page in a frame (the hub allows that only for the console's origin, set in
  * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
@@ -19,6 +23,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 
@@ -44,15 +49,15 @@ function autoOpen(pending: Pending[]) {
   openReview(next.id);
 }
 export function openReview(id: string) { reviewing = id; runtime?.openDialog('approvals.review', { id }); }
-const DEFAULT_HUB = 'https://axhub.amberxai.com';
+const DEFAULT_HUB = HUB_DEFAULT;
 
-interface Pending { id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string }
-type Status = 'idle' | 'ok' | 'signed-out' | 'not-admin' | 'unreachable';
+type Pending = HubApproval;
+type Status = 'idle' | HubFeedStatus;
 interface State { status: Status; hub: string; count: number; pending: Pending[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
 
 /* ---------------- a tiny store shared by the banner and the settings panel ---------------- */
 
-let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: `${DEFAULT_HUB}/auth/admin/approvals`, checkedAt: null, hiddenIds: '', error: '' };
+let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -62,8 +67,8 @@ async function hubUrl(): Promise<string> {
   try {
     const r = await fetch('/api/me', { cache: 'no-store', credentials: 'same-origin' });
     const j = (await r.json()) as { hub?: string };
-    const u = new URL(String(j.hub ?? ''));
-    if (u.protocol === 'https:' && !u.username && !u.password) return u.origin;
+    const hub = normalizeHub(j.hub);
+    if (hub) return hub;
   } catch { /* fall back */ }
   return DEFAULT_HUB;
 }
@@ -74,24 +79,10 @@ export async function checkNow(): Promise<void> {
   inflight = true;
   try {
     const hub = st.status === 'idle' ? await hubUrl() : st.hub;
-    let r: Response;
-    try {
-      r = await fetch(`${hub}/auth/admin/approvals.json`, { credentials: 'include', cache: 'no-store', redirect: 'error' });
-    } catch (e) {
-      return set({ hub, status: 'unreachable', error: (e as Error).message, checkedAt: new Date().toISOString(), count: 0, pending: [] });
-    }
-    if (r.status === 401) return set({ hub, status: 'signed-out', count: 0, pending: [], checkedAt: new Date().toISOString(), error: '' });
-    if (r.status === 403) return set({ hub, status: 'not-admin', count: 0, pending: [], checkedAt: new Date().toISOString(), error: '' });
-    if (!r.ok) return set({ hub, status: 'unreachable', error: `HTTP ${r.status}`, checkedAt: new Date().toISOString(), count: 0, pending: [] });
-    const j = (await r.json()) as { count?: number; pending?: Pending[]; approvalsUrl?: string };
-    // Only links back to the hub itself are used.
-    const sameHub = (u: unknown) => { try { return new URL(String(u)).origin === hub; } catch { return false; } };
-    const pending = (Array.isArray(j.pending) ? j.pending : []).filter((p) => p && typeof p.id === 'string' && sameHub(p.url));
-    set({
-      hub, status: 'ok', count: Math.max(0, Number(j.count) || 0), pending,
-      approvalsUrl: sameHub(j.approvalsUrl) ? String(j.approvalsUrl) : `${hub}/auth/admin/approvals`,
-      checkedAt: new Date().toISOString(), error: '',
-    });
+    // lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped, links checked.
+    const feed = await fetchHubFeed(hub);
+    const pending = feed.status === 'ok' ? feed.pending : [];
+    set({ hub, status: feed.status, count: feed.count, pending, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
     autoOpen(pending);
   } finally {
     inflight = false;
@@ -169,7 +160,7 @@ function ReviewDialog({ id }: { id: string }) {
   const s = useApprovals();
   const [decided, setDecided] = useState(false);
   const p = s.pending.find((x) => x.id === id);
-  const url = p?.url ?? `${s.hub}/auth/admin/approvals/${encodeURIComponent(id)}`;
+  const url = p?.url ?? approvalUrl(s.hub, id) ?? s.approvalsUrl;
   // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
   useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
   useEffect(() => {
@@ -228,7 +219,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.2.0',
+  version: '0.2.1',
   register(rt) {
     runtime = rt;
     start();

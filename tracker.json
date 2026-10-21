@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T02:31:33.810Z",
+  "generatedAt": "2026-10-21T04:48:33.633Z",
   "summary": {
     "foundations": {
       "built": 66,
@@ -12,12 +12,12 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 77,
+      "built": 79,
       "partial": 6,
       "placeholder": 95,
       "planned": 0,
-      "total": 178,
-      "coverage": 43
+      "total": 180,
+      "coverage": 44
     },
     "console": {
       "built": 14,
@@ -2236,6 +2236,64 @@
       "notes": ""
     },
     {
+      "id": "lib.hub",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-hub",
+      "notes": "First slice (Oct 20 2026 harvest, Opus): web framework/libs/hub + Android lib-hub, one fixture hub-approvals.json; AXHub app + console approvals-banner switched. AXPP parked for Fable. Kotlin written without a compiler (HubRules replayed the fixture with a local kotlinc)."
+    },
+    {
+      "id": "lib.hub.axpp",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.hub",
+      "title": "Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable)",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 3,
+      "module": "lib-hub",
+      "notes": "Capability placeholder axf.hub.axpp; parked for Fable"
+    },
+    {
+      "id": "lib.hub.push",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.hub",
+      "title": "Hub-pushed approvals and events instead of polling",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 3,
+      "module": "lib-hub",
+      "notes": "Capability placeholder axf.hub.push"
+    },
+    {
+      "id": "lib.notifications",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-notifications",
+      "notes": "Oct 20 2026 harvest from AXHub (Opus); fills android.notifications; written without a compiler (CI compiles)"
+    },
+    {
+      "id": "lib.notifications.alerts",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.notifications",
+      "title": "alert@1 deliveries as device notifications (hook built, not wired)",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "lib-notifications",
+      "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)"
+    },
+    {
       "id": "ui.explorer",
       "tab": "kernel",
       "group": "ui-library-every-customization-token",
@@ -2562,8 +2620,8 @@
       "tag": "lib",
       "status": "built",
       "wave": 1,
-      "module": "axf-platform-android",
-      "notes": ""
+      "module": "lib-notifications",
+      "notes": "Oct 20 2026: lib-notifications (channels, permission checks, ongoing + private-lock-screen alerts, tags); actions/progress/grouped/scheduled/bubbles not yet"
     },
     {
       "id": "dv.bg",

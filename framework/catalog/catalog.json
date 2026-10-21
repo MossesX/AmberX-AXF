@@ -1612,6 +1612,36 @@
               ]
             },
             {
+              "id": "lib.hub",
+              "title": "axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture",
+              "note": "framework/libs/hub + framework/android/lib-hub + library.json; fixture spec/fixtures/hub-approvals.json; harvested from apps/axhub-android and the console approvals-banner plugin (Oct 20 2026, Kotlin written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.hub.axpp",
+                  "title": "Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable)"
+                },
+                {
+                  "id": "lib.hub.push",
+                  "title": "Hub-pushed approvals and events instead of polling"
+                }
+              ]
+            },
+            {
+              "id": "lib.notifications",
+              "title": "Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder",
+              "note": "framework/android/lib-notifications + library.json; harvested from apps/axhub-android watch/Alerts.kt (Oct 20 2026, written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.notifications.alerts",
+                  "title": "alert@1 deliveries as device notifications (hook built, not wired)"
+                }
+              ]
+            },
+            {
               "id": "ui.explorer",
               "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
               "note": "axf-ui studio/ElementExplorer.kt; used by the console UI-library compare tabs",
