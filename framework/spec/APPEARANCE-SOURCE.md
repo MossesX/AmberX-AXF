@@ -113,9 +113,10 @@ The developer app shows the waiting screen and retries (1 s → 30 s). The conso
 a hub outage already blocks it at the proxy. **Emergency paths (unchanged, documented):**
 
 1. VPS shell (Moshi / SSH as root): fix or restart the hub (`docker ps`, Coolify).
-2. `AXF_WALL=off bash deploy/install-console.sh` reopens the console without the wall. The console still waits for
-   its appearance document; to run it on local settings while the hub is being repaired set `AXF_APPEARANCE_HUB=off`
-   in `.axf-console/env` (then back to unset / the hub), or run the console locally with the same variable.
+2. `AXF_WALL=off bash deploy/install-console.sh` reopens the console without the wall **and** turns the hub source
+   off (decision Oct 21 2026: a saved `.axf-console/wall` = `off` makes `/api/me` report `appearanceHub: "off"`), so
+   the console runs on its own local settings while the hub is repaired. `AXF_WALL=on` brings both back. An explicit
+   `AXF_APPEARANCE_HUB` always wins (`off`, or another hub).
 3. Build Pilot: `VITE_AXF_HUB` at build time; its server has no hub dependency.
 
 Security: the document is not an injection path (ids validated against the app's registry, values shape-checked,

@@ -167,7 +167,7 @@ if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
   WALL_ARGS=()
   if [ "$WALL" = "off" ]; then
     rm -f "$DIR/.axf-console/wall-waiting"
-    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on)"
+    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on); the console uses its local settings, not the hub's look, until then"
   else
     if [ "$WALL" != "on" ]; then
       # Switch it on only when the hub really can sign someone in, so a hub without accounts never locks you out.
