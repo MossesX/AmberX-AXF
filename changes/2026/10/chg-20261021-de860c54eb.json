@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261021-de860c54eb",
   "createdAt": "2026-10-21T17:11:28.428Z",
-  "updatedAt": "2026-10-21T17:17:54.609Z",
+  "updatedAt": "2026-10-21T17:25:11.398Z",
   "kind": "edit",
   "title": "Banners: off in the Console, always on in Patches; _ minimize buttons; all banners launch expanded",
   "asked": "Disable all banner plugins from console and enable them in patches so they are always there regardless what app you are in. Put a _ underneath the x on codebase changes to minimize banner. Replace the x with an _ for the 2 building banners and any error banners. All banners launch expanded",
@@ -35,14 +35,44 @@
     },
     {
       "text": "Codebase changes _ under the x + Build manager _ (after the running Build manager build finishes)",
-      "state": "queued"
+      "state": "done",
+      "startedAt": "2026-10-21T17:25:11.311Z",
+      "finishedAt": "2026-10-21T17:25:11.311Z"
     },
     {
       "text": "Tests, builds, CI, docs, PR",
-      "state": "queued"
+      "state": "running",
+      "startedAt": "2026-10-21T17:25:11.369Z"
     }
   ],
   "result": null,
   "closed": null,
-  "state": "running"
+  "state": "running",
+  "lastSeenAt": "2026-10-21T17:25:11.398Z",
+  "activity": "Android CI on PR #7",
+  "progress": 0.85,
+  "status": "running",
+  "buildRef": {
+    "kind": "other",
+    "id": "patches-banners"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-21T17:11:28.428Z",
+  "doing": "Android CI on PR #7",
+  "estimate": {
+    "minutes": 110,
+    "costUsd": 18
+  },
+  "costEstimated": true,
+  "branch": "feat/patches-banners",
+  "areas": [
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/bannerStrip.tsx",
+    "apps/patches",
+    "apps/console-web/plugins/activity/web",
+    "apps/console-web/plugins/systems-check/web",
+    "apps/console-web/plugins/approvals-banner/web",
+    "apps/console-web/plugins/codebase-changes/web",
+    "apps/console-web/plugins/build-manager/web"
+  ]
 }
