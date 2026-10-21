@@ -53,7 +53,7 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
   if (state.appearance && state.appearance.status !== 'ready') {
     return (
-      <div className="fx-frame">
+      <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
         <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>
       </div>
     );
@@ -61,13 +61,14 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
 
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
-    <div className="fx-frame">
+    {/* data-axf-embed (embed@1): the host app this one runs inside, for styles and plugins that adapt to it; absent standalone. */}
+    <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
     {/* Banners sit above everything, so they stay visible whatever app.frame.top / app.frame.cover show (Brett, Oct 21 2026):
         the banner asset (thin permanent bar; hidden slot or no banner asset = nothing), then the app.frame.banners slot
         (banners libraries contribute, stacked; scrolls inside itself when tall). */}
     <Banner />
     <FrameBanners />
-    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits below the banners (e.g. app tabs);
+    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits below the banners (a page-wide bar a plugin adds);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
     <Slot name="app.frame.top" />
     <div className="fx-shell">

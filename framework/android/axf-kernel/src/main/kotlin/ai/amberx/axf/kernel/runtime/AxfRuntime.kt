@@ -117,6 +117,8 @@ public class AxfRuntime(
     private val clock: AxfClock = SystemClock,
     private val random: Random = Random.Default,
     storageKey: String? = null,
+    /** The host app this one is embedded in (embed@1, EmbedEngine.detect), or null standalone. Fixed for the runtime's life. */
+    public val embedded: ai.amberx.axf.kernel.engine.Embed? = null,
 ) {
     private val key = storageKey ?: "axf:${manifest.appId}"
     public val loadErrors: MutableList<Pair<String, List<String>>> = mutableListOf()
@@ -517,14 +519,21 @@ public class AxfRuntime(
         }
     }
 
-    /** Every hidden slot (only hideable types: the chrome): the user's overrides over the app's defaults. */
-    public fun hiddenSlots(): List<String> = HideEngine.hiddenSlots(registry.types, hideOverrides(), defaultHiddenSlots())
+    /** Chrome the host app shows while this one is embedded (embed@1): hidden here whatever the user chose. */
+    public fun embedHiddenSlots(): List<String> = embedded?.hidden ?: emptyList()
+
+    /** Is this slot hidden because a host app shows it (embed@1)? Settings grey such a row out instead of offering a choice. */
+    public fun slotHiddenByHost(type: String): Boolean = type in embedHiddenSlots()
+
+    /** Every hidden slot (only hideable types: the chrome): the host's chrome (while embedded) over the user's overrides over the app's defaults. */
+    public fun hiddenSlots(): List<String> = HideEngine.hiddenSlots(registry.types, hideOverrides(), defaultHiddenSlots(), embedHiddenSlots())
 
     public fun slotHidden(type: String): Boolean = type in hiddenSlots()
 
     /** Hide or show a slot's chrome; ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
     public fun setSlotHidden(type: String, hidden: Boolean) {
         if (!HideEngine.hideable(registry.types, type) || slotHidden(type) == hidden) return
+        if (slotHiddenByHost(type)) { toast("${embedded?.host} shows the $type for this app while it runs inside it.", ToastKind.INFO, "Shown by the host app"); return }
         if (!can("assets.swap")) { toast("Your role cannot change the layout.", ToastKind.DANGER, "Permission denied"); return }
         val next = hideOverrides().toMutableMap()
         if (hidden == (type in defaultHiddenSlots())) next.remove(type) else next[type] = hidden

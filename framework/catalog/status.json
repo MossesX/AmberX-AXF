@@ -977,7 +977,8 @@
   "w.webview": {
     "status": "placeholder",
     "wave": 2,
-    "module": null
+    "module": null,
+    "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder"
   },
   "w.ai": {
     "status": "partial",
@@ -2237,5 +2238,17 @@
     "wave": 3,
     "module": "lib-work",
     "notes": "Capability placeholder axf.work.alarm"
+  },
+  "k.embed": {
+    "status": "built",
+    "wave": 2,
+    "module": "axf-kernel",
+    "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host"
+  },
+  "c.patches": {
+    "status": "built",
+    "wave": 3,
+    "module": "apps/patches",
+    "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)"
   }
 }

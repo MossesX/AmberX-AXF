@@ -1,0 +1,412 @@
+{
+  "token": "AXF-Embed",
+  "defaultHidden": [
+    "banner"
+  ],
+  "hosts": [
+    {
+      "input": "patches",
+      "host": "patches"
+    },
+    {
+      "input": "Patches",
+      "host": "patches"
+    },
+    {
+      "input": " patches ",
+      "host": "patches"
+    },
+    {
+      "input": "dev-console",
+      "host": "dev-console"
+    },
+    {
+      "input": "a",
+      "host": "a"
+    },
+    {
+      "input": "",
+      "host": null
+    },
+    {
+      "input": "-bad",
+      "host": null
+    },
+    {
+      "input": "bad id",
+      "host": null
+    },
+    {
+      "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "host": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "host": null
+    },
+    {
+      "input": "UPPER-9",
+      "host": "upper-9"
+    },
+    {
+      "input": null,
+      "host": null
+    },
+    {
+      "input": 12,
+      "host": null
+    }
+  ],
+  "hidden": [
+    {
+      "input": null,
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "input": "",
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "input": "banner",
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "input": "banner,toolbar",
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "input": "toolbar+banner",
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "input": "layout",
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "input": "banner,layout,nav-menu",
+      "hidden": [
+        "nav-menu",
+        "banner"
+      ]
+    },
+    {
+      "input": [
+        "toolbar",
+        "toolbar",
+        "Banner"
+      ],
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "input": " banner , toolbar ",
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "input": "none",
+      "hidden": []
+    },
+    {
+      "input": "banner,none",
+      "hidden": []
+    },
+    {
+      "input": [],
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "input": [
+        "nothing"
+      ],
+      "hidden": [
+        "banner"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "input": "",
+      "embed": null
+    },
+    {
+      "input": "?",
+      "embed": null
+    },
+    {
+      "input": "?x=1",
+      "embed": null
+    },
+    {
+      "input": "?axf-embed=patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-hide=banner,toolbar",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?a=b&axf-embed=Patches&axf-embed-hide=layout",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=bad%20id",
+      "embed": null
+    },
+    {
+      "input": "?axf-embed=",
+      "embed": null
+    },
+    {
+      "input": "axf-embed=patches&axf-embed-hide=toolbar",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed-hide=toolbar",
+      "embed": null
+    }
+  ],
+  "userAgents": [
+    {
+      "input": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/Bad_Host",
+      "embed": null
+    },
+    {
+      "input": "Mozilla/5.0 (AXF-Embed/dev-console; wv)",
+      "embed": {
+        "host": "dev-console",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 NotAXF-Embed/patches",
+      "embed": null
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches/none Chrome/130",
+      "embed": {
+        "host": "patches",
+        "hidden": []
+      }
+    },
+    {
+      "input": "Mozilla/5.0 Chrome/130",
+      "embed": null
+    },
+    {
+      "input": "",
+      "embed": null
+    }
+  ],
+  "detect": [
+    {
+      "search": "?axf-embed=patches",
+      "userAgent": "Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "search": "?x=1",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "search": "",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=bad%20id",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "search": "",
+      "userAgent": "Mozilla/5.0 AXF-Embed/patches/none Chrome/130",
+      "embed": {
+        "host": "patches",
+        "hidden": []
+      }
+    }
+  ],
+  "suffix": [
+    {
+      "host": "patches",
+      "hidden": null,
+      "suffix": "AXF-Embed/patches"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner"
+      ],
+      "suffix": "AXF-Embed/patches"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner",
+        "toolbar"
+      ],
+      "suffix": "AXF-Embed/patches/toolbar+banner"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "toolbar",
+        "banner",
+        "layout"
+      ],
+      "suffix": "AXF-Embed/patches/toolbar+banner"
+    },
+    {
+      "host": "dev-console",
+      "hidden": [],
+      "suffix": "AXF-Embed/dev-console"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "nothing"
+      ],
+      "suffix": "AXF-Embed/patches"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "none"
+      ],
+      "suffix": "AXF-Embed/patches/none"
+    }
+  ],
+  "urls": [
+    {
+      "url": "https://console.amberxai.com/",
+      "host": "patches",
+      "hidden": null,
+      "out": "https://console.amberxai.com/?axf-embed=patches"
+    },
+    {
+      "url": "https://console.amberxai.com/?x=1#view",
+      "host": "patches",
+      "hidden": null,
+      "out": "https://console.amberxai.com/?x=1&axf-embed=patches#view"
+    },
+    {
+      "url": "https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar",
+      "host": "patches",
+      "hidden": [
+        "banner"
+      ],
+      "out": "https://pilot.amberxai.com/app?axf-embed=patches"
+    },
+    {
+      "url": "https://axhub.amberxai.com/apps",
+      "host": "patches",
+      "hidden": [
+        "banner",
+        "toolbar"
+      ],
+      "out": "https://axhub.amberxai.com/apps?axf-embed=patches&axf-embed-hide=toolbar,banner"
+    },
+    {
+      "url": "https://h/p#only-hash",
+      "host": "patches",
+      "hidden": [
+        "layout"
+      ],
+      "out": "https://h/p?axf-embed=patches#only-hash"
+    }
+  ]
+}

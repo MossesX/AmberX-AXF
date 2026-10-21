@@ -96,7 +96,8 @@ class ConformanceTest {
         for (c in f.getValue("cases") as JsonArray) {
             val o = c.jsonObject.getValue("overrides").jsonObject.mapValues { it.value.jsonPrimitive.content.toBoolean() }
             val d = (c.jsonObject["defaults"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
-            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o, d), "hidden for $o with defaults $d")
+            val forced = (c.jsonObject["forced"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o, d, forced), "hidden for $o with defaults $d forced $forced")
         }
         // manifest.hidden cleaned: hideable types only, spec order, no repeats
         for ((k, v) in f.getValue("defaults").jsonObject) {

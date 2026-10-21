@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "patches-tabs",
+  "name": "Patches tabs",
+  "version": "1.0.0",
+  "description": "Patches: the banner, a row of tabs under it, and the app in the tab filling the rest. No menubar, toolbar, status bar or inspector; full width (web apps lay themselves out).",
+  "author": "AmberX AXF build engine",
+  "tags": ["patches", "tabs"],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": false,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0,
+    "mobile": {
+      "nav": "top-tabs",
+      "appBar": "none",
+      "showToolbar": false,
+      "fab": false,
+      "edgeToEdge": true,
+      "inspectorAsSheet": false
+    }
+  }
+}

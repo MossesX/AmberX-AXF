@@ -12,6 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
+import { DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -71,9 +72,42 @@ write('hide.json', {
     { overrides: {}, defaults: ['toolbar'], hidden: hiddenSlots({}, ['toolbar']) },
     { overrides: { toolbar: false }, defaults: ['toolbar'], hidden: hiddenSlots({ toolbar: false }, ['toolbar']) },
     { overrides: { banner: true }, defaults: ['toolbar', 'layout'], hidden: hiddenSlots({ banner: true }, ['toolbar', 'layout']) },
+    // Forced by a host app (embed@1): hidden over any override; non-hideable names in `forced` are ignored.
+    { overrides: { banner: false }, defaults: [], forced: ['banner'], hidden: hiddenSlots({ banner: false }, [], ['banner']) },
+    { overrides: {}, defaults: ['toolbar'], forced: ['banner', 'layout'], hidden: hiddenSlots({}, ['toolbar'], ['banner', 'layout']) },
+    { overrides: { toolbar: false }, defaults: ['toolbar'], forced: ['toolbar', 'app-menu'], hidden: hiddenSlots({ toolbar: false }, ['toolbar'], ['toolbar', 'app-menu']) },
   ],
   defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
+// Embed marker (core/engines/embed.ts): a host app's mark on the pages it embeds, from the query or the user agent; the hidden chrome it implies.
+{
+  const hosts = ['patches', 'Patches', ' patches ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
+  const hiddenInputs: (string | string[] | null)[] = [null, '', 'banner', 'banner,toolbar', 'toolbar+banner', 'layout', 'banner,layout,nav-menu', ['toolbar', 'toolbar', 'Banner'], ' banner , toolbar ', 'none', 'banner,none', [], ['nothing']];
+  const queries = ['', '?', '?x=1', '?axf-embed=patches', '?axf-embed=patches&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Patches&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=patches&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
+  const agents = [
+    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches',
+    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar',
+    'Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36',
+    'Mozilla/5.0 AXF-Embed/Bad_Host',
+    'Mozilla/5.0 (AXF-Embed/dev-console; wv)',
+    'Mozilla/5.0 NotAXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches/none Chrome/130',
+    'Mozilla/5.0 Chrome/130',
+    '',
+  ];
+  write('embed.json', {
+    token: EMBED_UA_TOKEN,
+    defaultHidden: DEFAULT_HIDDEN,
+    hosts: hosts.map((h) => ({ input: h, host: embedHost(h) })),
+    hidden: hiddenInputs.map((h) => ({ input: h, hidden: embedHidden(h) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQuery(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgent(ua) })),
+    // The query wins over the user agent; either alone counts; neither = standalone.
+    detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
+    suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
+    urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+  });
+}
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
 {
   const docs: Record<string, string> = {
@@ -850,6 +884,8 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },
       { case: 'context-menu-bad-items', raw: { $axf: 'asset@1', type: 'context-menu', id: 'bad-ctx', name: 'X', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: [{ id: 'a', provider: 'p', items: [] }], other: 'no' } } } },
     ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
+  });
+}
 // library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
 {
   const params: LibraryParam[] = [

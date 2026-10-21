@@ -860,6 +860,14 @@
               "suggests": []
             },
             {
+              "id": "k.embed",
+              "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
+              "note": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "k.appmenu",
               "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
               "note": "Web built (core/engines/appmenu.ts); Android twin deferred (port on hold, Oct 21 2026).",
@@ -3480,6 +3488,14 @@
               "title": "In-app browser / WebView running the web demo (axf.amberxai.com)",
               "note": "",
               "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.patches",
+              "title": "Patches: one banner, three tabs \u2014 the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+              "note": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
+              "tag": "app",
               "recommended": false,
               "suggests": []
             },

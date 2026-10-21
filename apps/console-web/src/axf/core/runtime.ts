@@ -13,6 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
+import { detectEmbed, type Embed } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -55,6 +56,12 @@ export interface AxfRuntimeOptions {
   assets: unknown[];
   /** localStorage key for persisting the user's hot-swap choices */
   storageKey?: string;
+  /**
+   * The embed this app runs in (embed@1, engines/embed.ts): a host app that shows some of its chrome (the banner by
+   * default). Omitted = detected from the page (`?axf-embed=` query, `AXF-Embed/` user agent) where there is one;
+   * `null` = standalone whatever the page says.
+   */
+  embed?: Embed | null;
 }
 
 /** Settings keys for roll overrides (values: true | false; absent = built-in default). */
@@ -189,6 +196,8 @@ export class AxfRuntime {
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
   private readonly badgeCounts = new Map<string, number>();
   readonly manifest: AxfManifest;
+  /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
+  readonly embedded: Embed | null;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -197,6 +206,7 @@ export class AxfRuntime {
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -819,16 +829,27 @@ export class AxfRuntime {
     return hideable(type) && this.hiddenSlots().includes(type);
   }
 
-  /** Every hidden slot: the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
+  /** Chrome the host app shows while this one is embedded (embed@1): hidden here whatever the user chose. */
+  embedHiddenSlots(): AssetType[] {
+    return (this.embedded?.hidden ?? []) as AssetType[];
+  }
+
+  /** Is this slot hidden because a host app shows it (embed@1)? Settings grey such a row out instead of offering a choice. */
+  slotHiddenByHost(type: AssetType): boolean {
+    return this.embedHiddenSlots().includes(type);
+  }
+
+  /** Every hidden slot: the host's chrome (while embedded) over the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
-    return hiddenSlots(o, this.defaultHiddenSlots()) as AssetType[];
+    return hiddenSlots(o, this.defaultHiddenSlots(), this.embedHiddenSlots()) as AssetType[];
   }
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
     if (!hideable(type) || this.slotHidden(type) === hidden) return;
+    if (this.slotHiddenByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
     if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
     else this.settings.set(HIDE_KEY(type), hidden);
@@ -1064,6 +1085,12 @@ export class AxfRuntime {
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
+}
+
+/** The embed marker on the current page (browser only; nothing elsewhere). */
+function detectPageEmbed(): Embed | null {
+  const g = globalThis as { location?: { search?: string }; navigator?: { userAgent?: string } };
+  try { return detectEmbed(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
 }
 
 export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
