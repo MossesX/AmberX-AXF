@@ -8,6 +8,7 @@ entries (it would conflict when two copies sync); `Store` keeps an in-memory ind
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import threading
@@ -27,7 +28,7 @@ RESULT_STATES = ("done", "failed", "partial", "cancelled")
 ID_RE = re.compile(r"^chg-(\d{8})-[0-9a-f]{6,16}$")
 LIMITS = {"title": 160, "asked": 600, "model": 40, "repos": 10, "steps": 100, "stepText": 300, "note": 1000, "summary": 4000,
           "commits": 50, "commitMsg": 200, "tests": 50, "testName": 120, "testValue": 60, "links": 20, "link": 500, "who": 80,
-          "bytes": 64 * 1024}
+          "areas": 40, "activity": 160, "bytes": 64 * 1024}
 
 _SECRET = re.compile(
     r"(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[abpr]-[A-Za-z0-9-]{10,}"
@@ -247,9 +248,216 @@ def normalize(raw: Any, now: str | None = None) -> tuple[dict[str, Any] | None, 
         else:
             e["closed"] = {"at": _iso_or(c.get("at"), now), "by": redact(c.get("by") if c.get("by") is not None else "unknown", LIMITS["who"]) or "unknown"}
     e["state"] = e["result"]["state"] if e["result"] else "running"
+    _norm_build(raw, e, errors)
     if len(json.dumps(e, separators=(",", ":"), ensure_ascii=False).encode()) > LIMITS["bytes"]:
         errors.append(f"an entry is at most {LIMITS['bytes'] // 1024} KB")
     return (None if errors else e), errors
+
+
+# ---------------------------------------------------------------- build stats (= normBuild in changes-core.mjs)
+
+BUILD_STATUSES = ("queued", "running", "done", "failed")
+VERIFY_STATES = ("pending", "running", "verified", "broken", "skipped")
+STALE_MS = 10 * 60_000
+_SURFACE = re.compile(r"^[a-z][a-z0-9-]{0,31}$")
+_REF_ID = re.compile(r"^[A-Za-z0-9._:/-]{1,120}$")
+_AREA = re.compile(r"^[A-Za-z0-9_.@/*+-]{1,200}$")
+_SOURCE = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
+_ACTUAL_INTS = ("inputTokens", "outputTokens", "cacheReadTokens", "cacheWriteTokens")
+_BUILD_KEYS = ("buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "parent", "activity",
+               "progress", "verify")
+
+
+def _num(v: Any) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
+def _jround(v: float, d: int = 0) -> float | int:
+    """Math.round(v * 10^d) / 10^d, the way changes-core.mjs rounds (half up, not banker's)."""
+    f = 10 ** d
+    r = math.floor(v * f + 0.5) / f
+    return int(r) if d == 0 else r
+
+
+def derive_status(result: Any, asked: Any = None) -> str:
+    if result:
+        return "failed" if result.get("state") in ("failed", "cancelled") else "done"
+    return "queued" if asked == "queued" else "running"
+
+
+def _js_str(v: Any) -> str:
+    return redact(v, 10_000) if not isinstance(v, str) else v
+
+
+def _norm_build(raw: dict[str, Any], e: dict[str, Any], errors: list[str]) -> None:
+    e["status"] = derive_status(e["result"], raw.get("status"))
+    if raw.get("status") is not None and str(raw["status"]) not in BUILD_STATUSES:
+        errors.append(f"status is one of {', '.join(BUILD_STATUSES)}")
+    r = raw.get("buildRef")
+    if r is not None:
+        if not _is_obj(r) or not _KIND.match(_js_str(r.get("kind") if r.get("kind") is not None else "")) or not _REF_ID.match(_js_str(r.get("id") if r.get("id") is not None else "")):
+            errors.append("buildRef is {kind, id} (kind a short word, id a plain id)")
+        else:
+            e["buildRef"] = {"kind": _js_str(r["kind"]), "id": _js_str(r["id"])}
+    s = raw.get("surface")
+    if s is not None and _js_str(s) != "":
+        if not _SURFACE.match(_js_str(s)):
+            errors.append("surface is a short lowercase word (vps-claude-code, claude-ai, …)")
+        else:
+            e["surface"] = _js_str(s)
+    for k in ("startedAt", "finishedAt", "lastSeenAt"):
+        if _iso_or(raw.get(k), None):
+            e[k] = raw[k]
+
+    def money(v: Any, what: str) -> Any:
+        if v is None:
+            return None
+        if not _num(v) or v < 0 or v > 100000:
+            errors.append(f"{what} is a number from 0 to 100000")
+            return None
+        return v
+
+    est = raw.get("estimate")
+    if est is not None:
+        if not _is_obj(est):
+            errors.append("estimate is {minutes, costUsd}")
+        else:
+            o: dict[str, Any] = {}
+            m = money(est.get("minutes"), "estimate.minutes")
+            if m is not None:
+                o["minutes"] = _jround(m)
+            c = money(est.get("costUsd"), "estimate.costUsd")
+            if c is not None:
+                o["costUsd"] = _jround(c, 4)
+            e["estimate"] = o
+    a = raw.get("actual")
+    if a is not None:
+        if not _is_obj(a):
+            errors.append("actual is {minutes, costUsd, inputTokens, outputTokens, cacheReadTokens, cacheWriteTokens, source}")
+        else:
+            o = {}
+            m = money(a.get("minutes"), "actual.minutes")
+            if m is not None:
+                o["minutes"] = _jround(m)
+            c = money(a.get("costUsd"), "actual.costUsd")
+            if c is not None:
+                o["costUsd"] = _jround(c, 4)
+            for k in _ACTUAL_INTS:
+                if a.get(k) is None:
+                    continue
+                n = _int_in(a[k], 0, 10_000_000_000)
+                if n is None:
+                    errors.append(f"actual.{k} is a whole number")
+                else:
+                    o[k] = n
+            src = a.get("source")
+            if src is not None and _js_str(src) != "":
+                if _SOURCE.match(_js_str(src)):
+                    o["source"] = _js_str(src)
+                else:
+                    errors.append("actual.source is a short word (transcript, manual, …)")
+            e["actual"] = o
+    ce = raw.get("costEstimated")
+    if ce is not None:
+        if not isinstance(ce, bool):
+            errors.append("costEstimated is true or false")
+        else:
+            e["costEstimated"] = ce
+    elif "estimate" in e or "actual" in e:
+        e["costEstimated"] = (e.get("actual") or {}).get("costUsd") is None
+    b = raw.get("branch")
+    if b is not None and _js_str(b) != "":
+        if _BRANCH.match(_js_str(b)) and ".." not in _js_str(b):
+            e["branch"] = _js_str(b)
+        else:
+            errors.append("branch is not a branch name")
+    areas = raw.get("areas")
+    if areas is not None:
+        if not isinstance(areas, list):
+            errors.append("areas is a list of paths")
+        else:
+            if len(areas) > LIMITS["areas"]:
+                errors.append(f"at most {LIMITS['areas']} areas")
+            out: list[str] = []
+            for x in areas[: LIMITS["areas"]]:
+                sx = "" if x is None else _js_str(x)
+                if not _AREA.match(sx) or ".." in sx.split("/") or sx.startswith("/"):
+                    errors.append(f'area "{redact(sx, 60)}" is a relative repo path')
+                elif sx not in out:
+                    out.append(sx)
+            e["areas"] = out
+    p = raw.get("parent")
+    if p is not None and _js_str(p) != "":
+        if ID_RE.match(_js_str(p)):
+            e["parent"] = _js_str(p)
+        else:
+            errors.append("parent is a change id")
+    act = raw.get("activity")
+    if act is not None and str(act).strip():
+        e["activity"] = redact(act, LIMITS["activity"])
+    pr = raw.get("progress")
+    if pr is not None:
+        if not _num(pr) or pr < 0 or pr > 1:
+            errors.append("progress is a number from 0 to 1")
+        else:
+            e["progress"] = _jround(pr, 3)
+    v = raw.get("verify")
+    if v is not None:
+        if not _is_obj(v) or _js_str(v.get("state") if v.get("state") is not None else "") not in VERIFY_STATES:
+            errors.append(f"verify is {{state: {'|'.join(VERIFY_STATES)}, at, summary, checks}}")
+        else:
+            o = {"state": _js_str(v["state"])}
+            if _iso_or(v.get("at"), None):
+                o["at"] = v["at"]
+            if v.get("summary") is not None and str(v["summary"]).strip():
+                o["summary"] = redact(v["summary"], LIMITS["note"], True)
+            ch = v.get("checks")
+            if ch is not None:
+                if not _is_obj(ch):
+                    errors.append("verify.checks is {name: pass|fail|skip}")
+                else:
+                    o["checks"] = {}
+                    for name in list(ch)[: LIMITS["tests"]]:
+                        sv = _js_str(ch[name])
+                        if sv not in ("pass", "fail", "skip"):
+                            errors.append(f'verify check "{redact(name, 40)}" is pass, fail or skip')
+                            continue
+                        key = redact(name, LIMITS["testName"])
+                        if key:
+                            o["checks"][key] = sv
+            e["verify"] = o
+
+
+def is_stale(e: dict[str, Any], now_ms: float | None = None) -> bool:
+    if (e.get("status") or derive_status(e.get("result"))) != "running":
+        return False
+    t = _parse_ms(e.get("lastSeenAt") or e.get("updatedAt") or "")
+    now_ms = time.time() * 1000 if now_ms is None else now_ms
+    return t is not None and now_ms - t > STALE_MS
+
+
+def _parse_ms(s: str) -> float | None:
+    try:
+        return datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp() * 1000
+    except (ValueError, TypeError):
+        return None
+
+
+def build_summary(e: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {"status": e.get("status") or derive_status(e.get("result"))}
+    for k in _BUILD_KEYS:
+        if e.get(k) is not None:
+            out[k] = e[k]
+    r = e.get("result") or {}
+    if r.get("branch") and "branch" not in out:
+        out["branch"] = r["branch"]
+    if r.get("commits"):
+        out["commits"] = [c["sha"] for c in r["commits"]][:10]
+    if r.get("links"):
+        out["links"] = r["links"]
+    if (e.get("who") or {}).get("host"):
+        out["host"] = e["who"]["host"]
+    return out
 
 
 def upsert_step(steps: list[dict[str, Any]], *, index: int | None = None, text: str | None = None, state: str | None = None,
@@ -292,6 +500,7 @@ def summary(e: dict[str, Any]) -> dict[str, Any]:
                   "running": next((s.get("text") for s in steps if s.get("state") == "running"), "")},
         "result": {"state": r.get("state"), "summary": (r.get("summary") or "")[:300]} if r else None,
         "closed": (e.get("closed") or {}).get("at") if e.get("closed") else None,
+        **build_summary(e),
     }
 
 
@@ -380,6 +589,16 @@ class Store:
             self._index = seen
             self._scanned = time.monotonic()
             return [v[2] for v in seen.values()]
+
+    def summaries(self) -> list[dict[str, Any]]:
+        """Every entry's summary (build stats included), newest first: what the Build manager indexes."""
+        return sorted(self._scan(), key=lambda s: (s.get("createdAt") or "", s["id"]), reverse=True)
+
+    def stamp(self) -> str:
+        """Changes whenever any entry file changes (mtimes + sizes): a cheap 'anything new?' for live polling."""
+        self._scan()
+        with self._lock:
+            return f"{len(self._index)}:{max((v[0] for v in self._index.values()), default=0)}:{sum(v[1] for v in self._index.values())}"
 
     def query(self, *, open_only: bool = False, closed_only: bool = False, kind: str = "", state: str = "", repo: str = "", q: str = "",
               date_from: str = "", date_to: str = "", cursor: str = "", limit: int = 50) -> dict[str, Any]:

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T10:20:04.160Z",
+ "updatedAt": "2026-10-21T16:02:06.419Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1069,8 +1069,8 @@
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.159Z",
-   "source": "chat",
-   "estimate": "1 d"
+   "estimate": "1 d",
+   "source": "chat"
   },
   {
    "id": "console-android-native-tabs",
@@ -1284,8 +1284,98 @@
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.160Z",
-   "source": "chat",
-   "estimate": "2.5 d"
+   "estimate": "2.5 d",
+   "source": "chat"
+  },
+  {
+   "id": "build-manager-history",
+   "title": "Build manager: global live tracking, Built history, search, Start build now",
+   "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Shared pricing file + cost from Claude Code transcript usage",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "changes.mjs: open/result/beat flags, PreToolUse progress, heartbeat, subagents, global hooks",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "claude.ai reporting via axhub.memory_write: doc + rules (shared + project) + one-line setup",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Build manager server: change-log feed, live/built index, hub events + polling",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Built history view: totals by model / week, filters, cost badges",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Search bar + Live shows change entries (elapsed vs estimate, cost, model) + banner",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Orchestrator core: dependency closure, overlap check, reorder, brief",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Orchestrator server: start route, vps.run approval + retries, verification",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Start build now: context menu + row button + approval link/alert",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Tests: build-manager + codebase-changes (fake axHub, dry run)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Checks: check-theme, console tsc + vite, menu-reach, plugin self-tests",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Docs, CLAUDE.md Status, PR, CI",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-21T16:02:06.336Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-21T16:02:06.419Z",
+   "source": "claude-code",
+   "estimate": "6.5 h"
   }
  ]
 }

@@ -75,6 +75,10 @@ if [[ "${1:-}" == "--install" ]]; then
     if [[ -f "$hub/clients/claude-code/claude-sync.mjs" ]]; then node "$hub/clients/claude-code/claude-sync.mjs" install; found=1; break; fi
   done
   [[ -n "$found" ]] || echo "Sync: clone MossesX/axHub to ~/axHub, then run: node ~/axHub/clients/claude-code/claude-sync.mjs install"
+  # Build manager reporting (Oct 21 2026): Claude Code hooks in ~/.claude/settings.json, so every session in every
+  # project on this machine reports its builds to axHub live (start, activity, steps, heartbeat, tokens + cost).
+  CHG="$AXF_ROOT/apps/console-web/plugins/codebase-changes/changes.mjs"
+  if [[ -f "$CHG" ]] && command -v node >/dev/null; then node "$CHG" hooks install || echo "Build reporting hooks: run node $CHG hooks install"; fi
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
   echo "Save an API key with: claude-pick --set-key   ·   bypass the menus with: command claude …"
   exit 0

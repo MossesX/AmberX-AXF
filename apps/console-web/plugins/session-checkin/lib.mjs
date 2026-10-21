@@ -267,7 +267,11 @@ export async function nextBuildStep(root) {
 
 export function baselineData() {
   const dir = join(PLUGIN_DIR, 'baseline');
-  return { pricing: readJson(join(dir, 'pricing.json'), { models: {} }), calibration: readJson(join(dir, 'calibration.json'), { runs: [], seed: {} }) };
+  // Prices: the framework's shared file (model-pricing@1, also used by the Codebase changes hooks and the Build
+  // manager), else this plugin's own baseline/pricing.json (older checkouts).
+  const shared = readJson(join(REPO_ROOT, 'framework', 'schemas', 'model-pricing.json'), null);
+  const pricing = shared?.models ? shared : readJson(join(dir, 'pricing.json'), { models: {} });
+  return { pricing, calibration: readJson(join(dir, 'calibration.json'), { runs: [], seed: {} }) };
 }
 
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };

@@ -24,7 +24,7 @@ export const KINDS = ['build', 'edit', 'remove', 'fix', 'other'];
 export const STEP_STATES = ['queued', 'running', 'done', 'failed', 'skipped'];
 export const RESULT_STATES = ['done', 'failed', 'partial', 'cancelled'];
 export const ID_RE = /^chg-(\d{8})-[0-9a-f]{6,16}$/;
-export const LIMITS = { title: 160, asked: 600, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, bytes: 64 * 1024 };
+export const LIMITS = { title: 160, asked: 600, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, areas: 40, activity: 160, bytes: 64 * 1024 };
 
 const SECRET = /(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[abpr]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{5,}|[Bb]earer\s+[A-Za-z0-9._~+/=-]{12,}|(?:token|secret|password|passwd|api[_-]?key|key)\s*[=:]\s*\S{6,})/gi;
 /** Hide anything that looks like a token or password, drop control characters, cut to `limit` (same rule as activity@1). */
@@ -169,8 +169,125 @@ export function normalize(raw, { now = nowIso() } = {}) {
     else e.closed = { at: isoOr(c.at, now), by: redact(c.by ?? 'unknown', LIMITS.who) || 'unknown' };
   }
   e.state = e.result ? e.result.state : 'running';
+  normBuild(raw, e, errors);
   if (Buffer.byteLength(JSON.stringify(e)) > LIMITS.bytes) errors.push(`an entry is at most ${LIMITS.bytes / 1024} KB`);
   return { entry: errors.length ? null : e, errors, draft: e };
+}
+
+/* ---------------- build stats (Oct 21 2026: the Build manager's live + Built views) ---------------- */
+
+/**
+ * Optional build fields, all backward compatible (an old entry gains only the derived `status`):
+ *   buildRef  {kind: pending|queue|plan|other|…, id}   the build it is about (pending id, queue epic, plan feature)
+ *   status    queued|running|done|failed  — derived: result done/partial → done, failed/cancelled → failed; without a
+ *             result `queued` when asked for, else running
+ *   surface   where it runs: vps-claude-code | claude-code | claude-ai | console-launch | subagent | backfill | … (open)
+ *   startedAt, finishedAt, lastSeenAt (heartbeat while running; a running entry not seen for 10 min shows "no word")
+ *   estimate  {minutes, costUsd}   actual {minutes, costUsd, inputTokens, outputTokens, cacheReadTokens, cacheWriteTokens, source}
+ *   costEstimated  true when the cost shown is the estimate (default: no actual.costUsd)
+ *   branch, areas[] (paths / folders it touches: the overlap check), parent (the entry a subagent reports under),
+ *   activity (what it is doing right now, short), progress 0..1, verify {state pending|running|verified|broken|skipped, at, summary, checks {name: pass|fail|skip}}
+ */
+export const BUILD_STATUSES = ['queued', 'running', 'done', 'failed'];
+export const VERIFY_STATES = ['pending', 'running', 'verified', 'broken', 'skipped'];
+export const STALE_MS = 10 * 60_000;
+const SURFACE_RE = /^[a-z][a-z0-9-]{0,31}$/;
+const REF_ID_RE = /^[A-Za-z0-9._:/-]{1,120}$/;
+const AREA_RE = /^[A-Za-z0-9_.@/*+-]{1,200}$/;
+const SOURCE_RE = /^[a-z][a-z0-9-]{0,23}$/;
+const num = (v) => typeof v === 'number' && Number.isFinite(v);
+const round = (v, d) => { const f = 10 ** d; return Math.round(v * f) / f; };
+const ACTUAL_INTS = ['inputTokens', 'outputTokens', 'cacheReadTokens', 'cacheWriteTokens'];
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+
+export function deriveStatus(result, asked) {
+  if (result) return ['failed', 'cancelled'].includes(result.state) ? 'failed' : 'done';
+  return asked === 'queued' ? 'queued' : 'running';
+}
+
+function normBuild(raw, e, errors) {
+  e.status = deriveStatus(e.result, raw.status);
+  if (raw.status != null && !BUILD_STATUSES.includes(String(raw.status))) errors.push(`status is one of ${BUILD_STATUSES.join(', ')}`);
+  if (raw.buildRef != null) {
+    const r = raw.buildRef;
+    if (!isObj(r) || !KIND_RE.test(String(r.kind ?? '')) || !REF_ID_RE.test(String(r.id ?? ''))) errors.push('buildRef is {kind, id} (kind a short word, id a plain id)');
+    else e.buildRef = { kind: String(r.kind), id: String(r.id) };
+  }
+  if (raw.surface != null && String(raw.surface) !== '') {
+    if (!SURFACE_RE.test(String(raw.surface))) errors.push('surface is a short lowercase word (vps-claude-code, claude-ai, …)');
+    else e.surface = String(raw.surface);
+  }
+  for (const k of ['startedAt', 'finishedAt', 'lastSeenAt']) if (isoOr(raw[k])) e[k] = raw[k];
+  const money = (v, what) => { if (v == null) return undefined; if (!num(v) || v < 0 || v > 100000) { errors.push(`${what} is a number from 0 to 100000`); return undefined; } return v; };
+  if (raw.estimate != null) {
+    if (!isObj(raw.estimate)) errors.push('estimate is {minutes, costUsd}');
+    else {
+      const o = {};
+      const m = money(raw.estimate.minutes, 'estimate.minutes'); if (m != null) o.minutes = Math.round(m);
+      const c = money(raw.estimate.costUsd, 'estimate.costUsd'); if (c != null) o.costUsd = round(c, 4);
+      e.estimate = o;
+    }
+  }
+  if (raw.actual != null) {
+    if (!isObj(raw.actual)) errors.push('actual is {minutes, costUsd, inputTokens, outputTokens, cacheReadTokens, cacheWriteTokens, source}');
+    else {
+      const a = raw.actual, o = {};
+      const m = money(a.minutes, 'actual.minutes'); if (m != null) o.minutes = Math.round(m);
+      const c = money(a.costUsd, 'actual.costUsd'); if (c != null) o.costUsd = round(c, 4);
+      for (const k of ACTUAL_INTS) { if (a[k] == null) continue; const n = numIn(a[k], 0, 10_000_000_000); if (n == null) errors.push(`actual.${k} is a whole number`); else o[k] = n; }
+      if (a.source != null && String(a.source) !== '') { if (SOURCE_RE.test(String(a.source))) o.source = String(a.source); else errors.push('actual.source is a short word (transcript, manual, …)'); }
+      e.actual = o;
+    }
+  }
+  if (raw.costEstimated != null) { if (typeof raw.costEstimated !== 'boolean') errors.push('costEstimated is true or false'); else e.costEstimated = raw.costEstimated; }
+  else if (e.estimate || e.actual) e.costEstimated = e.actual?.costUsd == null;
+  if (raw.branch != null && String(raw.branch) !== '') {
+    if (BRANCH_RE.test(String(raw.branch)) && !String(raw.branch).includes('..')) e.branch = String(raw.branch); else errors.push('branch is not a branch name');
+  }
+  if (raw.areas != null) {
+    if (!Array.isArray(raw.areas)) errors.push('areas is a list of paths');
+    else {
+      if (raw.areas.length > LIMITS.areas) errors.push(`at most ${LIMITS.areas} areas`);
+      const out = [];
+      for (const a of raw.areas.slice(0, LIMITS.areas)) {
+        const s = String(a ?? '');
+        if (!AREA_RE.test(s) || s.split('/').includes('..') || s.startsWith('/')) errors.push(`area "${redact(s, 60)}" is a relative repo path`);
+        else if (!out.includes(s)) out.push(s);
+      }
+      e.areas = out;
+    }
+  }
+  if (raw.parent != null && String(raw.parent) !== '') { if (ID_RE.test(String(raw.parent))) e.parent = String(raw.parent); else errors.push('parent is a change id'); }
+  if (raw.activity != null && String(raw.activity).trim()) e.activity = redact(raw.activity, LIMITS.activity);
+  if (raw.progress != null) { if (!num(raw.progress) || raw.progress < 0 || raw.progress > 1) errors.push('progress is a number from 0 to 1'); else e.progress = round(raw.progress, 3); }
+  if (raw.verify != null) {
+    const v = raw.verify;
+    if (!isObj(v) || !VERIFY_STATES.includes(String(v.state ?? ''))) errors.push(`verify is {state: ${VERIFY_STATES.join('|')}, at, summary, checks}`);
+    else {
+      const o = { state: String(v.state) };
+      if (isoOr(v.at)) o.at = v.at;
+      if (v.summary != null && String(v.summary).trim()) o.summary = redact(v.summary, LIMITS.note, true);
+      if (v.checks != null) {
+        if (!isObj(v.checks)) errors.push('verify.checks is {name: pass|fail|skip}');
+        else {
+          o.checks = {};
+          for (const name of Object.keys(v.checks).slice(0, LIMITS.tests)) {
+            const s = String(v.checks[name]);
+            if (!['pass', 'fail', 'skip'].includes(s)) { errors.push(`verify check "${redact(name, 40)}" is pass, fail or skip`); continue; }
+            const key = redact(name, LIMITS.testName); if (key) o.checks[key] = s;
+          }
+        }
+      }
+      e.verify = o;
+    }
+  }
+}
+
+/** Running entries not heard from for STALE_MS (lastSeenAt, else updatedAt) show "no word". */
+export function isStale(e, now = Date.now()) {
+  if ((e.status ?? deriveStatus(e.result)) !== 'running') return false;
+  const t = Date.parse(e.lastSeenAt || e.updatedAt || '');
+  return Number.isFinite(t) && now - t > STALE_MS;
 }
 
 /** Upsert one step: by index (0-based), else by matching text, else appended. Times stamped on state changes. */
@@ -199,7 +316,19 @@ export function summary(e) {
     steps: { total: steps.length, done: steps.filter((s) => s.state === 'done').length, failed: steps.filter((s) => s.state === 'failed').length, running: steps.find((s) => s.state === 'running')?.text ?? '' },
     result: e.result ? { state: e.result.state, summary: (e.result.summary ?? '').slice(0, 300) } : null,
     closed: e.closed ? e.closed.at : null,
+    ...buildSummary(e),
   };
+}
+
+/** The build-stats part of a summary (same keys in store.py). Only keys the entry has. */
+export function buildSummary(e) {
+  const out = { status: e.status ?? deriveStatus(e.result) };
+  for (const k of ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'activity']) if (e[k] != null) out[k] = e[k];
+  const br = e.result?.branch; if (br && !out.branch) out.branch = br;
+  if (e.result?.commits?.length) out.commits = e.result.commits.map((c) => c.sha).slice(0, 10);
+  if (e.result?.links && Object.keys(e.result.links).length) out.links = e.result.links;
+  if (e.who?.host) out.host = e.who.host;
+  return out;
 }
 
 /* ---------------- Claude Code prompt classifier ---------------- */

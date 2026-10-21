@@ -73,7 +73,7 @@ const hookDir = scratch('hook');
 const henv = baseEnv({ AXF_CHANGES_DIR: hookDir });
 const ev = (name, extra = {}) => JSON.stringify({ hook_event_name: name, session_id: 'sess-1234', cwd: HERE, ...extra });
 r = run(['hook'], henv, ev('UserPromptSubmit', { prompt: 'Add a codebase changes banner. token=abcdefghijkl' }));
-check(r.status === 0 && r.stdout.includes('[Codebase changes] Entry chg-'), 'a change prompt opens an entry and tells Claude its id');
+check(r.status === 0 && r.stdout.includes('Codebase changes] Entry chg-'), 'a change prompt opens an entry and tells Claude its id');
 const hid = r.stdout.match(/Entry (chg-\S+)/)[1];
 const he = new DirStore(hookDir).get(hid);
 check(he.kind === 'build' && he.asked.includes('[hidden]') && !he.asked.includes('abcdefghijkl') && he.who.session === 'sess-1234', 'the entry has the kind, the redacted request and the session');
@@ -164,5 +164,122 @@ run(['hooks', 'remove', '--settings', settings], baseEnv({}));
 s = JSON.parse(readFileSync(settings, 'utf8'));
 check(JSON.stringify(s) === JSON.stringify({ model: 'opus', hooks: { Stop: [{ hooks: [{ type: 'command', command: 'echo other' }] }] } }), 'remove leaves exactly what was there');
 check(JSON.stringify(withoutOurHooks(withOurHooks({}, '/x/changes.mjs'))) === '{}', 'with/without round-trips');
+
+console.log('build stats (Build manager)');
+const B0 = { id: 'chg-20261021-abcdef1234', title: 'x' };
+check(normalize(B0).entry.status === 'running' && !('estimate' in normalize(B0).entry), 'an old entry gains only the derived status');
+check(normalize({ ...B0, result: { state: 'partial', summary: '' } }).entry.status === 'done' && normalize({ ...B0, result: { state: 'cancelled', summary: '' } }).entry.status === 'failed', 'status follows the result (partial → done, cancelled → failed)');
+check(normalize({ ...B0, status: 'queued' }).entry.status === 'queued' && !normalize({ ...B0, status: 'weird' }).entry, 'queued can be asked for; unknown statuses are refused');
+const bs = normalize({ ...B0, buildRef: { kind: 'pending', id: 'lib-clone' }, surface: 'claude-ai', estimate: { minutes: 90.4, costUsd: 12.345678 }, areas: ['apps/x', 'apps/x', 'framework/core'], branch: 'feat/x', progress: 0.5, lastSeenAt: '2026-10-21T10:00:00.000Z' }).entry;
+check(bs.buildRef.id === 'lib-clone' && bs.estimate.minutes === 90 && bs.estimate.costUsd === 12.3457 && bs.areas.length === 2 && bs.costEstimated === true, 'build fields normalised (rounded, areas unique, costEstimated derived)');
+check(!normalize({ ...B0, areas: ['../etc'] }).entry && !normalize({ ...B0, areas: ['/abs'] }).entry && !normalize({ ...B0, estimate: { minutes: -1 } }).entry && !normalize({ ...B0, parent: 'x' }).entry, 'bad areas, negative numbers and bad parents are refused');
+check(normalize({ ...B0, actual: { costUsd: 3, inputTokens: 10, source: 'transcript' } }).entry.costEstimated === false, 'an actual cost makes costEstimated false');
+const { isStale, summary: sumOf } = await import('./changes-core.mjs');
+check(isStale({ status: 'running', lastSeenAt: new Date(Date.now() - 11 * 60000).toISOString() }) && !isStale({ status: 'running', lastSeenAt: new Date().toISOString() }) && !isStale({ status: 'done', lastSeenAt: '2020-01-01T00:00:00Z' }), 'running and not seen for 10 min = stale; finished never');
+check(sumOf(bs).buildRef.id === 'lib-clone' && sumOf(bs).status === 'running' && sumOf(bs).branch === 'feat/x', 'summaries carry the build stats');
+
+const pr = await import('../../../../framework/cli/model-pricing.mjs');
+check(pr.modelKey('claude-opus-5-5') === 'opus' && pr.modelKey('Fable') === 'fable' && pr.modelKey('gpt') === '', 'model ids map to price keys');
+check(pr.costUsd('opus', { input: 1e6, output: 1e6 }) === 24 && pr.costUsd('nope', { input: 1 }) === null, 'cost from tokens × the shared prices');
+check(pr.estimateCost('opus', 60) > 0 && pr.estimateCost('opus', 120) === Math.round(pr.estimateCost('opus', 60) * 2 * 10000) / 10000, 'estimate cost scales with minutes');
+const tr = [
+  { timestamp: '2026-10-21T10:00:00Z', message: { id: 'm1', model: 'claude-opus-5-5', usage: { input_tokens: 10, output_tokens: 5 } } },
+  { timestamp: '2026-10-21T10:00:01Z', message: { id: 'm1', model: 'claude-opus-5-5', usage: { input_tokens: 10, output_tokens: 50, cache_read_input_tokens: 100 } } },
+  { timestamp: '2026-10-21T09:00:00Z', message: { id: 'old', usage: { input_tokens: 999, output_tokens: 999 } } },
+  { type: 'user', message: { content: 'hi' } },
+].map((x) => JSON.stringify(x)).join('\n') + '\nnot json\n';
+const tu = pr.transcriptUsage(tr, { since: '2026-10-21T09:30:00Z' });
+check(tu.input === 10 && tu.output === 50 && tu.cacheRead === 100 && tu.messages === 1 && tu.model === 'claude-opus-5-5', 'transcript usage: each message once (last wins), lines before `since` skipped, junk ignored');
+
+const benv = baseEnv({ AXF_CHANGES_DIR: scratch('build') });
+r = run(['open', 'Built with stats', '--kind', 'build', '--ref', 'pending:lib-clone', '--model', 'opus', '--estimate-min', '45', '--areas', 'apps/a,framework/b', '--branch', 'feat/y', '--json'], benv);
+let be = JSON.parse(r.stdout);
+check(be.buildRef.kind === 'pending' && be.estimate.minutes === 45 && be.estimate.costUsd === pr.estimateCost('opus', 45) && be.costEstimated && be.areas.length === 2 && be.surface && be.who.host, 'open --ref --estimate-min --areas: estimate cost from the shared prices, surface + host recorded');
+r = run(['update', 'last', '--estimate-cost', '9.5', '--activity', 'Writing tests', '--json'], benv);
+be = JSON.parse(r.stdout);
+check(be.estimate.costUsd === 9.5 && be.estimate.minutes === 45 && be.activity === 'Writing tests' && be.lastSeenAt, 'update sets build stats and counts as a heartbeat');
+run(['step', 'last', 'one', '--state', 'done'], benv); run(['step', 'last', 'two', '--state', 'running'], benv);
+be = JSON.parse(run(['show', 'last', '--json'], benv).stdout);
+check(be.progress === 0.5 && be.activity === 'two', 'steps drive progress and the current activity');
+r = run(['result', 'last', '--state', 'done', '--summary', 'ok', '--input-tokens', '1000000', '--output-tokens', '1000000', '--json'], benv);
+be = JSON.parse(r.stdout);
+check(be.status === 'done' && be.actual.costUsd === 24 && be.actual.source === 'manual' && be.costEstimated === false && be.finishedAt && !be.activity && be.progress === 1, 'result with actual tokens: cost from prices, costEstimated false, finished');
+
+console.log('hook: live progress, subagents, transcript cost');
+const lenv = baseEnv({ AXF_CHANGES_DIR: scratch('live'), AXF_SURFACE: 'vps-claude-code' });
+const tfile = join(scratch('t'), 't.jsonl');
+const lev = (name, extra = {}) => JSON.stringify({ hook_event_name: name, session_id: 'sess-live', cwd: HERE, transcript_path: tfile, ...extra });
+writeFileSync(tfile, '');
+r = run(['hook'], lenv, lev('UserPromptSubmit', { prompt: 'Build the history view' }));
+const lid = r.stdout.match(/Entry (chg-\S+)/)[1];
+let le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
+check(le.surface === 'vps-claude-code' && le.status === 'running' && le.startedAt && le.lastSeenAt, 'the hook opens a live entry with surface, start and heartbeat');
+check(r.stdout.includes(`update ${lid} --ref`), 'and tells Claude how to record the estimate');
+run(['hook'], lenv, lev('PreToolUse', { tool_name: 'Task', tool_input: { description: 'review the diff', prompt: 'secret=abcdefghijk' } }));
+le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
+check(le.steps.some((s) => s.note === 'subagent' && s.state === 'running' && /review the diff/.test(s.text)) && le.activity.startsWith('Subagent'), 'a subagent shows as a running child step');
+run(['hook'], lenv, lev('PreToolUse', { tool_name: 'Bash', tool_input: { command: 'cat token=zzzzzzzzzz', description: 'run tests' } }));
+const le2 = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
+check(le2.activity === le.activity, 'plain tool calls are throttled (one write per 30 s)');
+check(!JSON.stringify(le2).includes('zzzzzzzzzz'), 'command arguments are never recorded');
+run(['hook'], lenv, lev('SubagentStop'));
+le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
+check(le.steps.find((s) => s.note === 'subagent').state === 'done', 'SubagentStop finishes the child step');
+writeFileSync(tfile, JSON.stringify({ timestamp: new Date().toISOString(), message: { id: 'a', model: 'claude-opus-5-5', usage: { input_tokens: 2000000, output_tokens: 100000 } } }) + '\n');
+run(['hook'], lenv, lev('Stop'));
+le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
+check(le.actual?.source === 'transcript' && le.actual.inputTokens === 2000000 && le.actual.costUsd === 10 && le.costEstimated === false && le.model.includes('opus') && !le.result, 'Stop fills actual tokens + cost from the transcript and keeps the entry running');
+check(le.activity === 'Waiting for the next message', 'and says it is waiting');
+
+console.log('axHub backend (fake hub over MCP)');
+const HUB_TOKEN = 'hub-token-abcdefghijklmnop';
+const files = new Map();
+const hubSeen = [];
+const hub = createServer((req, res) => {
+  let body = '';
+  req.on('data', (d) => { body += d; });
+  req.on('end', () => {
+    hubSeen.push(req.headers.authorization);
+    if (req.headers.authorization !== `Bearer ${HUB_TOKEN}`) { res.writeHead(401); return res.end(); }
+    const m = JSON.parse(body);
+    if (m.id === undefined) { res.writeHead(202); return res.end(); }
+    const reply = (result) => { res.writeHead(200, { 'content-type': 'application/json', 'mcp-session-id': 's1' }); res.end(JSON.stringify({ jsonrpc: '2.0', id: m.id, result })); };
+    if (m.method === 'initialize') return reply({ protocolVersion: '2025-06-18', capabilities: {} });
+    const { tool, arguments: a } = m.params.arguments;
+    const txt = (t, err) => reply({ content: [{ type: 'text', text: t }], ...(err ? { isError: true } : {}) });
+    if (a.project !== 'amberx-axf' || a.area !== 'data') return txt('{"error":{"message":"wrong place"}}', true);
+    if (tool === 'axhub.memory_write') { files.set(a.path, a.content); return txt(JSON.stringify({ saved: { path: a.path } })); }
+    if (tool === 'axhub.memory_read') return files.has(a.path) ? txt(files.get(a.path)) : txt('{"error":{"message":"not found"}}', true);
+    if (tool === 'axhub.memory_list') return txt(JSON.stringify({ files: [...files.keys()].map((p) => ({ path: p })) }));
+    return txt('{}', true);
+  });
+});
+await new Promise((res) => hub.listen(0, '127.0.0.1', res));
+const xenv = baseEnv({ AXHUB_TOKEN: HUB_TOKEN, AXHUB_URL: `http://127.0.0.1:${hub.address().port}/mcp` });
+r = await runAsync(['open', 'From another computer', '--kind', 'build', '--estimate-min', '20', '--model', 'sonnet'], xenv);
+const xid = r.stdout.trim();
+check(r.status === 0 && files.has(`changes/${relPath(xid).split(/[\\/]/).join('/')}`), 'with the hub token, entries go to axHub (amberx-axf / data / changes/<YYYY>/<MM>/<id>.json)');
+r = await runAsync(['step', xid, 'first', '--state', 'running'], xenv);
+check(JSON.parse(files.get(`changes/${relPath(xid).split(/[\\/]/).join('/')}`)).steps[0].state === 'running', 'steps update the hub copy');
+check((await runAsync(['where'], xenv)).stdout.startsWith('axHub'), 'where says axHub');
+check(hubSeen.every((a) => a === `Bearer ${HUB_TOKEN}`) && !r.stdout.includes(HUB_TOKEN) && !r.stderr.includes(HUB_TOKEN), 'the hub token is only a header, never printed');
+const tokFile = baseEnv({});
+const { mkdirSync: mk } = await import('node:fs');
+mk(join(tokFile.HOME, '.config', 'axhub'), { recursive: true });
+writeFileSync(join(tokFile.HOME, '.config', 'axhub', 'token'), HUB_TOKEN);
+r = await runAsync(['open', 'Token from claude-sync login'], { ...tokFile, AXHUB_URL: xenv.AXHUB_URL });
+check(r.status === 0 && files.size === 2, 'the token claude-sync login saved (~/.config/axhub/token) works too');
+r = await runAsync(['open', 'Hub off'], { ...xenv, AXF_CHANGES_HUB: 'off' });
+check(r.status === 0 && files.size === 2, 'AXF_CHANGES_HUB=off skips the hub');
+hub.close();
+r = await runAsync(['open', 'Hub down'], xenv);
+check(r.status === 0 && r.stdout.includes('local queue'), 'hub unreachable → queued, sent on later');
+check((await runAsync(['open', 'x'], { ...xenv, AXHUB_URL: 'http://example.com/mcp' })).status === 1, 'a non-https hub address is refused');
+
+console.log('global hooks');
+const gs = join(scratch('g'), 'settings.json');
+run(['hooks', 'install', '--settings', gs], baseEnv({}));
+const g = JSON.parse(readFileSync(gs, 'utf8'));
+check(['UserPromptSubmit', 'PreToolUse', 'SubagentStop', 'Notification', 'Stop', 'SessionEnd'].every((k) => g.hooks[k]?.length === 1), 'install registers every live event (prompt, tools, subagents, waiting, stop, end)');
 
 console.log(`\n${ok} checks passed`);
