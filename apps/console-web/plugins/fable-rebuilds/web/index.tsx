@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, getData, refresh, setFocus, park } from './api';
-import { FableChip, FableView, ReportDialog } from './ui';
+import { FableChip, FableView, OpusNow, ReportDialog } from './ui';
 import './fable-rebuilds.css';
 import { appMenu } from './menu';
 
@@ -65,7 +65,7 @@ export const plugin: AxfWebLibrary = {
     } }],
     'pending.item': [{ id: 'fable-rebuilds.pending', order: 30, render: (p) => {
       const it = p.item as { id: string; model: string } | undefined;
-      return it?.model === 'Fable' ? <FableChip rebuildId={it.id} label="Open in Fable rebuilds" /> : null;
+      return it?.model === 'Fable' ? <><FableChip rebuildId={it.id} label="Open in Fable rebuilds" /><OpusNow id={it.id} /></> : null;
     } }],
   },
   dialogs: {

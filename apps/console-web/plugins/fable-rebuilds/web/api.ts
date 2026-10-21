@@ -8,7 +8,7 @@ export interface Rebuild {
   id: string; title: string; detail: string; status: string; model: string; planId?: string; source?: string; createdAt: string; builtAt: string;
   notes: { text: string; at: string }[]; subPrompts: { text: string; at: string }[];
   replaces: { folder: string; name: string; uninstall: string } | null;
-  branch: string; report: boolean; android: boolean; log: string[]; brief: string;
+  isRebuild: boolean; rebuildListed: string; branch: string; report: boolean; android: boolean; log: string[]; brief: string;
 }
 export interface Data { items: Rebuild[]; counts: Record<string, number>; log: string[]; byPlugin: Record<string, string>; byPlan: Record<string, string> }
 
@@ -32,4 +32,10 @@ export async function park(body: { plugin?: string; planId?: string; title?: str
   await refresh();
   window.dispatchEvent(new CustomEvent('axf:pending-changed'));
   return r.item;
+}
+export async function opusNow(id: string) {
+  const r = await call<{ id: string; rebuildId: string; rebuildAdded: boolean }>('opus-now', { method: 'POST', body: JSON.stringify({ id }) });
+  await refresh();
+  window.dispatchEvent(new CustomEvent('axf:pending-changed'));
+  return r;
 }

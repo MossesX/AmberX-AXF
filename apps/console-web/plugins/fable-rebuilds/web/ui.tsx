@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { pendingPost } from '@console/api';
-import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
+import { call, getData, onData, opusNow, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
 
 const useData = () => useSyncExternalStore(onData, getData, getData);
 const STATUS: Record<string, string> = { pending: 'Pending', unsafe: 'Unsafe', broken: 'Broken', failed: 'Failed', complete: 'Rebuilt' };
@@ -126,5 +126,26 @@ export function FableChip({ rebuildId, park: parkBody, label }: { rebuildId?: st
     <button type="button" className="axp-fable__chip" disabled={busy} onClick={() => { setBusy(true); void park(parkBody).then((it) => { rt.toast(`Parked for Fable: ${it.title}`, 'success'); }, (e) => rt.toast((e as Error).message, 'danger')).finally(() => setBusy(false)); }}>
       <Icon name="sparkles" size={12} /> {busy ? 'Parking…' : 'Rebuild on Fable'}
     </button>
+  );
+}
+
+/** Pending builds row: a Fable-waiting build, built on Opus now; the Fable rebuild is queued unless it already is. */
+export function OpusNow({ id }: { id: string }) {
+  const rt = useRuntime();
+  const d = useData();
+  const [busy, setBusy] = useState(false);
+  const it = d?.items.find((x) => x.id === id);
+  if (!it || it.isRebuild || it.status === 'complete') return null;
+  const listed = it.rebuildListed;
+  const go = () => {
+    setBusy(true);
+    void opusNow(id).then((r) => rt.toast(r.rebuildAdded ? `Now on Opus. Fable rebuild added (${r.rebuildId}).` : `Now on Opus. Fable rebuild ${r.rebuildId} was already listed.`, 'success'),
+      (e) => rt.toast((e as Error).message, 'danger')).finally(() => setBusy(false));
+  };
+  return (
+    <div className="fx-row fx-row--wrap">
+      <Button tone="primary" icon="play" disabled={busy} onClick={go}>{busy ? 'Switching…' : listed ? 'Build on Opus' : 'Build on Opus now + Fable later'}</Button>
+      <span className="fx-muted fx-small">{listed ? `Fable rebuild already listed (${listed})` : 'Adds a Fable rebuild to the pending list'}</span>
+    </div>
   );
 }

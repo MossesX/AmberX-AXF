@@ -78,7 +78,24 @@ def _log_lines() -> list[str]:
         return []
 
 
-def _view(item: dict[str, Any], plugins: list[dict[str, Any]], log: list[str]) -> dict[str, Any]:
+def _is_rebuild(item: dict[str, Any]) -> bool:
+    return str(item.get("id", "")).endswith("-fable") or item.get("source") == "fable-rebuilds"
+
+
+def _listed_rebuild(item: dict[str, Any], all_items: list[dict[str, Any]]) -> str:
+    """The id of the Fable rebuild already on the pending list for this item ('' when none)."""
+    if _is_rebuild(item):
+        return ""
+    rid = f"{item['id']}-fable"[:64]
+    for o in all_items:
+        if o.get("id") == rid and o.get("model") == "Fable" and o.get("status") != "complete":
+            return rid
+        if item.get("planId") and o.get("planId") == item["planId"] and o is not item and _is_rebuild(o) and o.get("model") == "Fable" and o.get("status") != "complete":
+            return str(o["id"])
+    return ""
+
+
+def _view(item: dict[str, Any], plugins: list[dict[str, Any]], log: list[str], all_items: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     iid = item["id"]
     d = _rebuilds_dir()
     rep = _replaces(item, plugins)
@@ -92,7 +109,7 @@ def _view(item: dict[str, Any], plugins: list[dict[str, Any]], log: list[str]) -
         "", RULES.format(id=iid),
     ] if x is not None).strip()
     return {**{k: item.get(k) for k in ("id", "title", "detail", "status", "model", "planId", "notes", "subPrompts", "createdAt", "builtAt", "source")},
-            "replaces": rep, "branch": f"fable/{iid}", "report": (d / f"{iid}.md").is_file(), "android": (d / iid / "android.md").is_file(),
+            "replaces": rep, "isRebuild": _is_rebuild(item), "rebuildListed": _listed_rebuild(item, all_items or []), "branch": f"fable/{iid}", "report": (d / f"{iid}.md").is_file(), "android": (d / iid / "android.md").is_file(),
             "log": [ln for ln in log if f"| {iid} " in ln or f"|{iid}|" in ln or f" {iid} |" in ln][:5], "brief": brief}
 
 
@@ -101,7 +118,7 @@ def items() -> dict[str, Any]:
     st = engine("pending")
     plugins, log = _plugins(), _log_lines()
     fable = [i for i in st.get("items", []) if i.get("model") == "Fable"]
-    views = [_view(i, plugins, log) for i in fable]
+    views = [_view(i, plugins, log, st.get("items", [])) for i in fable]
     counts: dict[str, int] = {}
     for v in views:
         counts[v["status"]] = counts.get(v["status"], 0) + 1
@@ -144,3 +161,39 @@ def park(body: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(400, "say which plugin or plan feature")
     r = engine("pending-act", change=change)
     return {"ok": True, "item": r.get("item")}
+
+
+@router.post("/opus-now")
+def opus_now(body: dict[str, Any]) -> dict[str, Any]:
+    """Build a Fable-waiting item on Opus now: switch it to Opus and, unless a Fable rebuild is already listed, add one
+    ('<id>-fable', starting with the Opus version's uninstall). Returns what was done."""
+    iid = str(body.get("id") or "")
+    if not ID_RE.match(iid):
+        raise HTTPException(400, "bad id")
+    all_items = engine("pending").get("items", [])
+    item = next((i for i in all_items if i.get("id") == iid), None)
+    if not item:
+        raise HTTPException(404, "no such pending build")
+    if item.get("model") != "Fable":
+        raise HTTPException(409, "this build does not wait on Fable")
+    if item.get("status") == "complete":
+        raise HTTPException(409, "this build is already complete")
+    if _is_rebuild(item):
+        raise HTTPException(409, "this is the Fable rebuild itself; it is not built on Opus first")
+    listed = _listed_rebuild(item, all_items)
+    rid, added = listed, False
+    if not listed:
+        rid = f"{iid}-fable"[:64]
+        rep = _replaces(item, _plugins())
+        detail = (f"Fable rebuild of {item['title']} ({iid}), first built on Opus. "
+                  + ("Start by removing the Opus version: " + rep["uninstall"] + ". " if rep else
+                     "Start by removing or replacing the Opus version of this build. ")
+                  + "Keep what the Opus build got right; end with the differences report.")
+        change: dict[str, Any] = {"action": "add", "id": rid, "title": f"{item['title']}: Fable rebuild", "model": "Fable", "source": "fable-rebuilds", "detail": detail}
+        if item.get("planId"):
+            change["planId"] = item["planId"]
+        engine("pending-act", change=change)
+        added = True
+    engine("pending-act", change={"action": "update", "id": iid, "model": "Opus"})
+    engine("pending-act", change={"action": "note", "id": iid, "text": f"Built on Opus now (was waiting on Fable). Fable rebuild: {rid}" + (" (already listed)" if not added else " (added)")})
+    return {"ok": True, "id": iid, "rebuildId": rid, "rebuildAdded": added}
