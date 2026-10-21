@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers } from '../axf/react';
+import { Button, Chip, ChoiceGrid, Container, Icon, LibraryParamField, Markdown, Note, Section, SelectField, Slider, Switch, TextField, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers } from '../axf/react';
 import type { AssetType, AssetEnvelope } from '../axf/core';
 import { useStore } from '../store';
 import { UI_LIBRARIES } from './Libraries';
@@ -35,6 +35,9 @@ export const ELEMENTS: ElementSpec[] = [
     [p('thumb', 'Thumb', 'round / square / bar', 'slider', ['thumb'], 'enum', 0, 0, ['round', 'square', 'bar']), p('trackHeight', 'Track height', 'px', 'slider', ['trackHeight'], 'number', 2, 16)],
     [f('showValue', 'Show value', 'Value label next to the slider', 'slider', ['showValue']), f('ticks', 'Ticks', 'Tick marks along the track', 'slider', ['ticks'])]),
   E('TEXT_FIELD', 'Text field', 'Inputs', 'Single/multi-line input', [['surface', 'Field background'], ['border', 'Outline'], ['focus', 'Focus ring'], ['placeholder', 'Placeholder']], [...radius.slice(0, 1), p('borderWidth', 'Border width', 'px', 'style-theme', ['borderWidth'], 'number', 0, 4)]),
+  E('SELECT_FIELD', 'Select field', 'Inputs', 'Native drop-down inside a Field (label / help / error)', [['surface', 'Field background'], ['border', 'Outline'], ['danger', 'Error']], [...radius.slice(0, 1)]),
+  E('CHOICE_GRID', 'Choice grid', 'Inputs', 'Tappable cards: single (radio) or multiple (checkbox) choice', [['surface', 'Card'], ['border', 'Outline'], ['accent', 'Selected'], ['accentSoft', 'Selected fill']], [...radius.slice(1, 2), ...spacing]),
+  E('LIBRARY_PARAM', 'Library parameter', 'Inputs', 'A library@1 install parameter rendered by type (bool / choice / list / number / text)', [['accent', 'Switch on'], ['danger', 'Error']]),
   E('PASSWORD_FIELD', 'Password field', 'Inputs', 'Masked input with reveal', [['surface', 'Field background'], ['muted', 'Reveal icon']]),
   E('SEARCH_FIELD', 'Search field', 'Inputs', 'Toolbar search', [['surface2', 'Field background'], ['muted', 'Icon']]),
   E('CARD', 'Card / container', 'Containers', 'Card from the container asset', [['surface', 'Card fill'], ['border', 'Card border'], ['shadow', 'Shadow']],
@@ -43,6 +46,8 @@ export const ELEMENTS: ElementSpec[] = [
   E('LIST_ITEM', 'List item', 'Containers', 'Row with icon, title, subtitle, trailing', [['text', 'Title'], ['muted', 'Subtitle'], ['accentSoft', 'Selected']], spacing),
   E('SECTION_HEADER', 'Section header', 'Containers', 'Uppercase eyebrow', [['muted', 'Text'], ['accent', 'Accent variant']], type.slice(1)),
   E('BADGE', 'Badge', 'Containers', 'Small pill', [['surface3', 'Fill'], ['muted', 'Text']]),
+  E('SECTION', 'Section', 'Containers', 'Titled block without card chrome (heading row + aside)', [['text', 'Title'], ['muted', 'Aside']], spacing),
+  E('NOTE', 'Note', 'Containers', 'Info / warning / danger / success callout', [['accent', 'Info'], ['warning', 'Warning'], ['danger', 'Danger'], ['success', 'Success']], [alpha('opacityTint', 'Tint opacity', 'Strength of the callout background')]),
   E('DIVIDER', 'Divider', 'Containers', '1px rule', [['divider', 'Color']]),
   E('MENUBAR', 'Menubar', 'Navigation', 'App menu from the app-menu asset', [['surface', 'Bar'], ['text', 'Items'], ['accentSoft', 'Open menu']]),
   E('TOOLBAR', 'Toolbar', 'Navigation', 'Toolbar from the toolbar asset', [['toolbarBg', 'Bar'], ['muted', 'Icons']], [p('iconSize', 'Icon size', 'px', 'toolbar', ['iconSize'], 'number', 14, 28)], [f('labels', 'Labels', 'Text under icons', 'toolbar', ['showLabels'])]),
@@ -57,6 +62,7 @@ export const ELEMENTS: ElementSpec[] = [
   E('CHART', 'Chart', 'Data & media', 'Charts (library)', [['chart1', 'Series 1'], ['chart2', 'Series 2'], ['chart3', 'Series 3']]),
   E('MEDIA_PLAYER', 'Media player', 'Data & media', 'Video/audio player (library)', [['accent', 'Scrubber'], ['overlay', 'Controls overlay']]),
   E('MAP', 'Map', 'Data & media', 'Map view (library)', [['accent', 'Markers'], ['surface', 'Attribution']]),
+  E('MARKDOWN', 'Markdown', 'Data & media', 'Markdown rendered safely: headings, lists, tables, code with Copy, links', [['text', 'Body'], ['accent', 'Links'], ['surface', 'Code'], ['border', 'Quote rule']], type.slice(0, 1)),
 ];
 export const CATEGORIES = [...new Set(ELEMENTS.map((e) => e.category))];
 
@@ -178,7 +184,7 @@ function FlagRow({ f, available }: { f: FlagSpec; available: boolean }) {
   return (
     <div className="cx-row" title={`${f.tip || f.label} — ${f.type}.${f.path.join('.')} (default ${String(cur ?? 'off')})`}>
       <span className="fx-grow">{f.label} <span className="fx-muted fx-mono fx-small">{f.type}.{f.path.join('.')}</span></span>
-      <label className="cx-switch"><input type="checkbox" disabled={!available} checked={!!cur} onChange={(e) => edit(f.type, f.path, e.target.checked)} /><span /></label>
+      <Switch hideLabel label={f.label} disabled={!available} checked={!!cur} onChange={(on) => edit(f.type, f.path, on)} />
     </div>
   );
 }
@@ -192,22 +198,30 @@ export function ElementPreview({ kind }: { kind: string }) {
   const rt = useRuntime();
   useAxfState();
   const [v, setV] = useState(40);
+  const [on, setOn] = useState(true);
+  const [text, setText] = useState('');
+  const [pick, setPick] = useState('a');
   const body = (() => {
     switch (kind) {
       case 'BUTTON': return <div className="fx-row fx-row--wrap"><Button tone="primary" icon="zap">Primary</Button><Button>Neutral</Button><Button tone="danger" icon="trash">Danger</Button><Button tone="ghost">Ghost</Button></div>;
       case 'ICON_BUTTON': return <div className="fx-row"><button className="fx-iconbtn"><Icon name="settings" /></button><button className="fx-iconbtn is-active"><Icon name="star" /></button></div>;
-      case 'SWITCH': return <label className="cx-switch"><input type="checkbox" defaultChecked /><span /> On</label>;
+      case 'SWITCH': return <div className="fx-stack"><Switch label="Switch" hint="With a hint line" checked={on} onChange={setOn} /><Switch hideLabel label="Bare switch" text={on ? 'On' : 'Off'} checked={on} onChange={setOn} /><Switch label="Disabled" checked disabled onChange={() => undefined} /></div>;
       case 'CHECKBOX': return <label><input type="checkbox" defaultChecked /> Checked</label>;
       case 'CHIP': return <div className="fx-row fx-row--wrap"><Chip>neutral</Chip><Chip tone="accent">accent</Chip><Chip tone="success">success</Chip><Chip tone="warning">warning</Chip><Chip tone="danger">danger</Chip></div>;
       case 'SEGMENTED': return <div className="fx-row"><button className="fx-chip is-selected">One</button><button className="fx-chip">Two</button><button className="fx-chip">Three</button></div>;
       case 'SLIDER': return <Slider label="Volume" value={v} onChange={setV} unit="%" />;
-      case 'TEXT_FIELD': return <input className="fx-input" placeholder="Type here…" />;
+      case 'TEXT_FIELD': return <div className="fx-stack"><TextField label="Text field" value={text} onChange={setText} placeholder="Type here…" hint="Help text under the field" /><TextField label="With error" value="not valid" onChange={() => undefined} error="This value is not allowed." required /></div>;
+      case 'SELECT_FIELD': return <SelectField label="Select field" value={pick} onChange={setPick} options={[{ value: 'a', label: 'One' }, { value: 'b', label: 'Two' }, { value: 'c', label: 'Three' }]} hint="A native drop-down" />;
+      case 'CHOICE_GRID': return <ChoiceGrid label="Choice" choices={[{ id: 'a', title: 'First', text: 'A card with text', icon: 'zap' }, { id: 'b', title: 'Second', tag: 'tag' }, { id: 'c', title: 'Disabled', disabled: true }]} selected={[pick]} onToggle={setPick} />;
+      case 'LIBRARY_PARAM': return <div className="fx-stack"><LibraryParamField p={{ key: 'on', label: 'Bool parameter', type: 'bool', default: true, help: 'A bool renders as a switch' }} value={text === 'false' ? 'false' : 'true'} onChange={setText} /><LibraryParamField p={{ key: 'mode', label: 'Choice parameter', type: 'choice', choices: ['a', 'b', 'c'], default: 'a' }} value={pick} onChange={setPick} /><LibraryParamField p={{ key: 'n', label: 'Number parameter', type: 'number', min: 1, max: 12, default: 6 }} value={String(v)} onChange={(x) => setV(Number(x) || 0)} /></div>;
       case 'PASSWORD_FIELD': return <input className="fx-input" type="password" defaultValue="secret" />;
       case 'SEARCH_FIELD': return <div className="fx-search"><Icon name="search" /><input placeholder="Search" /></div>;
       case 'CARD': return <Container title="Card" icon="box"><p style={{ margin: 0 }}>Card body from the container asset.</p></Container>;
       case 'LIST_ITEM': return <div className="cx-item"><Icon name="file" /><div className="fx-grow">Title<div className="fx-muted fx-small">Subtitle</div></div><Chip>trailing</Chip></div>;
       case 'SECTION_HEADER': return <p className="fx-eyebrow">Section header</p>;
       case 'BADGE': return <span className="fx-badge">badge</span>;
+      case 'SECTION': return <Section title="Section title" aside={<span className="fx-muted fx-small">aside</span>}><p style={{ margin: 0 }}>Body of the section.</p></Section>;
+      case 'NOTE': return <div className="fx-stack"><Note>Info note (accent tint).</Note><Note tone="warning">Warning note.</Note><Note tone="danger">Danger note.</Note><Note tone="success">Success note.</Note></div>;
       case 'DIVIDER': return <hr />;
       case 'DIALOG': return <Button icon="external" onClick={() => rt.openDialog('about')}>Open a dialog</Button>;
       case 'TOAST': return <Button icon="bell" onClick={() => rt.toast('Hello from the preview', 'success', 'Toast')}>Show toast</Button>;
@@ -215,6 +229,7 @@ export function ElementPreview({ kind }: { kind: string }) {
       case 'EMPTY_STATE': return <div className="fx-empty">Nothing here yet</div>;
       case 'PROGRESS': return <div className="cx-progress"><span /></div>;
       case 'TABLE': return <table className="fx-table"><tbody><tr><th>Name</th><td>Value</td></tr><tr><th>Other</th><td>Value</td></tr></tbody></table>;
+      case 'MARKDOWN': return <Markdown text={'### Heading\nSome **bold**, _italic_ and `code`, a [link](https://amberxai.com).\n\n- one\n- two\n  - nested\n\n```ts\nconst x = 1;\n```'} />;
       case 'CHART': return <div className="cx-chart">{[40, 70, 55, 90, 30].map((h, i) => <span key={i} style={{ height: `${h}%`, background: ['var(--fx-accent)', 'var(--fx-info)', 'var(--fx-success)'][i % 3] }} />)}</div>;
       default: return <div className="fx-empty">{kind} — rendered by a library kit</div>;
     }

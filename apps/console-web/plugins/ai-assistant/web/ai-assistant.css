@@ -96,22 +96,7 @@
 .axp-ai-assistant__bars { display: flex; align-items: flex-end; gap: calc(var(--fx-space) * 0.25); height: 120px; padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
 .axp-ai-assistant__bar { flex: 1; min-width: 4px; border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; background: var(--fx-accent) }
 
-.axp-ai-assistant__md { overflow-wrap: anywhere; line-height: 1.55 }
-.axp-ai-assistant__md > :first-child { margin-top: 0 }
-.axp-ai-assistant__md > :last-child { margin-bottom: 0 }
-.axp-ai-assistant__md p, .axp-ai-assistant__md ul, .axp-ai-assistant__md ol, .axp-ai-assistant__md blockquote { margin: calc(var(--fx-space) * 0.5) 0 }
-.axp-ai-assistant__md h3, .axp-ai-assistant__md h4, .axp-ai-assistant__md h5 { margin: var(--fx-space) 0 calc(var(--fx-space) * 0.5) }
-.axp-ai-assistant__md ul, .axp-ai-assistant__md ol { padding-left: calc(var(--fx-space) * 2) }
-.axp-ai-assistant__md blockquote { padding-left: var(--fx-space); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-border); color: var(--fx-muted) }
-.axp-ai-assistant__md code { padding: 0 calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
-.axp-ai-assistant__md a { color: var(--fx-accent) }
-.axp-ai-assistant__nested { list-style: none }
-.axp-ai-assistant__tablewrap { overflow: auto }
-.axp-ai-assistant__code { border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); overflow: hidden; margin: calc(var(--fx-space) * 0.5) 0 }
-.axp-ai-assistant__code-head { display: flex; justify-content: space-between; align-items: center; padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
-.axp-ai-assistant__code-copy { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer }
-.axp-ai-assistant__code pre { margin: 0; padding: var(--fx-space); overflow: auto; font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14) }
-.axp-ai-assistant__code pre code { padding: 0; background: transparent }
+/* Replies render through the framework `Markdown` (`.fx-md`): headings, lists, tables, fenced code with Copy. */
 
 @media (max-width: 760px) {
   .axp-ai-assistant { grid-template-columns: minmax(0, 1fr) }

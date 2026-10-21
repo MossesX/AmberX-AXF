@@ -98,6 +98,7 @@ jobs:
           python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
           python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
           npx -y tsx framework/spec/check-plugin-inventory.mts
+          npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py
