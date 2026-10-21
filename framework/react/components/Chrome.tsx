@@ -97,7 +97,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
 
   return (
     <div className={`fx-toolbar fx-toolbar--${tb.data.variant}`} data-align={tb.data.align} role="toolbar">
-      {widgets.start.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key}><WidgetView type={w.type} id={w.id} /></span>)}
+      {widgets.start.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
       {tb.data.groups.map((g) => (
         <div key={g.id} className="fx-toolbar__group">
           {g.items.map((it) => {
@@ -122,7 +122,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           })}
         </div>
       ))}
-      {widgets.end.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key}><WidgetView type={w.type} id={w.id} /></span>)}
+      {widgets.end.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">

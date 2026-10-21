@@ -81,10 +81,37 @@ export function validateAsset(raw) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
+  const host = hostSpec(raw.type);
+  if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/* Widget hosts — mirrors hostSpec / validateHostAttachments in core/engines/widgets.ts (banner.attach, toolbar.widgets). */
+const WIDGET_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].widget === true);
+export function hostSpec(type) {
+  const t = spec.types[type];
+  if (!t) return undefined;
+  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? WIDGET_TYPES, sides: t.attach.sides ?? [] };
+  if (t.widgets) return { host: type, field: 'widgets', types: WIDGET_TYPES, sides: t.widgets.sides ?? [] };
+  return undefined;
+}
+export function validateHostAttachments(type, list) {
+  const h = hostSpec(type);
+  if (!h) return [];
+  if (!Array.isArray(list)) return [`data.${h.field} must be a list`];
+  const errors = [];
+  list.forEach((a, i) => {
+    const p = `data.${h.field}[${i}]`;
+    if (!isObj(a)) { errors.push(`${p} must be an object {type, id, at}`); return; }
+    if (typeof a.type !== 'string' || !h.types.includes(a.type)) errors.push(`${p}.type must be one of: ${h.types.join(', ')}`);
+    if (typeof a.id !== 'string' || !a.id) errors.push(`${p}.id must be an asset id`);
+    if (typeof a.at !== 'string' || !h.sides.includes(a.at)) errors.push(`${p}.at must be one of: ${h.sides.join(', ')}`);
+    if ('order' in a && (typeof a.order !== 'number' || !Number.isFinite(a.order))) errors.push(`${p}.order must be a number`);
+  });
+  return errors;
 }
 
 /** Layout slot contract — mirrors validateSlots in core/validate.ts. */

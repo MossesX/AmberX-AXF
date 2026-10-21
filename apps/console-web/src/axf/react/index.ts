@@ -5,7 +5,7 @@ export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList } from './components/MenuList';
 export { MenuBar, Toolbar, NavMenu, StatusBar } from './components/Chrome';
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
-export { WidgetView, SearchBarWidget } from './components/Widgets';
+export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';

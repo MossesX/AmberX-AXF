@@ -15,7 +15,7 @@ import { WindowManager } from './engines/windows';
 import { hideable, hiddenSlots } from './engines/hide';
 import { spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { Diagnostics } from './diagnostics';
@@ -277,56 +277,74 @@ export class AxfRuntime {
     return id ? this.registry.get(type, id) ?? null : null;
   }
 
-  /* ---------------- banner (core/engines/banner.ts) ---------------- */
+  /* ---------------- widget hosts (core/engines/widgets.ts): banner + toolbar ---------------- */
 
-  private bannerExtra: BannerAttachment[] = [];
+  /** Run-time attachments per host (`banner`, `toolbar`, any host a library registers). */
+  private readonly hostExtra = new Map<string, HostAttachment[]>();
   private bannerPopupTimer: ReturnType<typeof setTimeout> | null = null;
 
-  /** Attach an asset (badge, clock) to the banner at run time. Same type + id replaces the earlier one. Returns detach. */
-  attachToBanner(a: BannerAttachment & { origin: string }): () => void {
+  /**
+   * Attach an asset to a widget host at run time. The entry is checked against the host's spec (type, side, asset
+   * exists) so a bad call is reported in the terminal instead of silently vanishing; same type + id replaces the earlier
+   * one. Returns a detach function.
+   */
+  attachToHost(host: string, a: HostAttachment & { origin: string }): () => void {
     const key = attachmentKey(a.type, a.id);
-    this.bannerExtra = [...this.bannerExtra.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }];
+    const spec = hostSpec(host);
+    if (!spec) this.terminal.warn('widgets', `"${host}" is not a widget host (${hostSpecs().map((h) => h.host).join(', ') || 'none registered'}); ${key} from ${a.origin} will not show`);
+    else if (!spec.types.includes(a.type)) this.terminal.warn('widgets', `${host} doesn't take ${a.type} assets (${spec.types.join(', ')}); ${key} from ${a.origin} will not show`);
+    else if (!spec.sides.includes(a.at)) this.terminal.warn('widgets', `${host} has no "${a.at}" side (${spec.sides.join(', ')}); ${key} from ${a.origin} will not show`);
+    else if (!this.registry.has(a.type as AssetType, a.id)) this.terminal.warn('widgets', `${key} (attached to ${host} by ${a.origin}) is not registered; it shows once it is`);
+    const list = this.hostExtra.get(host) ?? [];
+    this.hostExtra.set(host, [...list.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }]);
     this.set({});
-    return () => this.detachFromBanner(key);
+    return () => this.detachFromHost(host, key);
   }
 
-  /** Remove run-time attachments by key (`type:id`) or by origin (a module / plugin id). */
-  detachFromBanner(keyOrOrigin: string): void {
-    const before = this.bannerExtra.length;
-    this.bannerExtra = this.bannerExtra.filter((x) => attachmentKey(x.type, x.id) !== keyOrOrigin && x.origin !== keyOrOrigin);
-    if (this.bannerExtra.length !== before) this.set({});
+  /** Remove run-time attachments from one host by key (`type:id`) or by origin (a module / plugin id). */
+  detachFromHost(host: string, keyOrOrigin: string): void {
+    const list = this.hostExtra.get(host);
+    if (!list) return;
+    const next = list.filter((x) => attachmentKey(x.type, x.id) !== keyOrOrigin && x.origin !== keyOrOrigin);
+    if (next.length !== list.length) { this.hostExtra.set(host, next); this.set({}); }
   }
+
+  /** Remove everything a module / plugin attached to any host (the console calls it when a plugin is disabled). */
+  detachAll(origin: string): void {
+    let changed = false;
+    for (const [host, list] of this.hostExtra) {
+      const next = list.filter((x) => x.origin !== origin);
+      if (next.length !== list.length) { this.hostExtra.set(host, next); changed = true; }
+    }
+    if (changed) this.set({});
+  }
+
+  /** Run-time attachments of a host (copies). */
+  hostAttachments(host: string): HostAttachment[] { return [...(this.hostExtra.get(host) ?? [])]; }
+
+  /** Attach an asset (badge, clock, search bar) to the banner at run time. Same type + id replaces the earlier one. Returns detach. */
+  attachToBanner(a: BannerAttachment & { origin: string }): () => void { return this.attachToHost('banner', a); }
+
+  /** Remove run-time banner attachments by key (`type:id`) or by origin (a module / plugin id). */
+  detachFromBanner(keyOrOrigin: string): void { this.detachFromHost('banner', keyOrOrigin); }
 
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
   banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
-    const placed = placeAttachments(b, b ? this.bannerExtra : [], (t, id) => this.registry.has(t as AssetType, id));
+    const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id));
     return { data: b, placed };
   }
 
-  /* ---------------- toolbar widgets (core/engines/widgets.ts) ---------------- */
-
-  private toolbarExtra: HostAttachment[] = [];
-
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
-  attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }): () => void {
-    const key = attachmentKey(a.type, a.id);
-    this.toolbarExtra = [...this.toolbarExtra.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }];
-    this.set({});
-    return () => this.detachFromToolbar(key);
-  }
+  attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }): () => void { return this.attachToHost('toolbar', a); }
 
   /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
-  detachFromToolbar(keyOrOrigin: string): void {
-    const before = this.toolbarExtra.length;
-    this.toolbarExtra = this.toolbarExtra.filter((x) => attachmentKey(x.type, x.id) !== keyOrOrigin && x.origin !== keyOrOrigin);
-    if (this.toolbarExtra.length !== before) this.set({});
-  }
+  detachFromToolbar(keyOrOrigin: string): void { this.detachFromHost('toolbar', keyOrOrigin); }
 
   /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
   toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
     const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.toolbarExtra, (t, id) => this.registry.has(t as AssetType, id));
+    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id));
   }
 
   /** Pop a short message out of a banner attachment for `ms` (default 5 s), e.g. a status badge on load. */
@@ -334,6 +352,12 @@ export class AxfRuntime {
     if (this.bannerPopupTimer) clearTimeout(this.bannerPopupTimer);
     this.set({ bannerPopup: { key, text, until: Date.now() + ms } });
     this.bannerPopupTimer = setTimeout(() => { this.bannerPopupTimer = null; this.set({ bannerPopup: null }); }, ms);
+  }
+
+  /** Close the banner popup early (the UI's dismiss, or a module replacing its badge). */
+  dismissBannerPopup(): void {
+    if (this.bannerPopupTimer) { clearTimeout(this.bannerPopupTimer); this.bannerPopupTimer = null; }
+    if (this.state.bannerPopup) this.set({ bannerPopup: null });
   }
 
   /** Hot-swap the active asset of a slot. `target` = asset id | "next" | "prev" | "random". */
