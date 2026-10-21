@@ -259,6 +259,26 @@ export function checkDesignedAssets(assets) {
   });
 }
 
+/** The hub's https origin (http only for localhost): a plain origin, no path, no credentials. */
+export function hubOrigin(raw) {
+  let u;
+  try { u = new URL(String(raw)); } catch { return null; }
+  const local = u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === '10.0.2.2';
+  if ((u.protocol !== 'https:' && !(local && u.protocol === 'http:')) || u.username || u.password || u.pathname !== '/' || u.search || u.hash) return null;
+  return u.origin;
+}
+
+/** Developer app flag (`--developer [hub]`, manifest `developer: { hub }`): true = the default hub; a string = that hub; off = none. */
+export const DEFAULT_HUB = 'https://axhub.amberxai.com';
+export function resolveDeveloper(v) {
+  if (v === undefined || v === null || v === false || v === 'off' || v === '') return null;
+  if (v === true || v === 'on') return { hub: DEFAULT_HUB };
+  const raw = typeof v === 'object' ? v.hub : v;
+  const hub = hubOrigin(raw);
+  if (!hub) throw new Error(`developer: the hub must be an https origin, e.g. ${DEFAULT_HUB}`);
+  return { hub };
+}
+
 /** Chrome hidden by default for a new app: the request's own list when given, else framework/app-defaults.json (+ the boilerplate's). */
 export function resolveHidden(hidden, bp) {
   const list = hidden !== undefined && hidden !== null ? hidden : [...(appDefaults.hidden ?? []), ...(bp?.hidden ?? [])];
@@ -267,7 +287,8 @@ export function resolveHidden(hidden, bp) {
   return [...new Set(list)];
 }
 
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, project = {}, log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, developer, project = {}, log = () => {} }) {
+  const dev = resolveDeveloper(developer);
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -325,6 +346,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     startView: bp?.screens?.[0]?.id ?? 'home',
     defaults: { ...defaults, ...(bp?.defaults ?? {}), ...picks },
     hidden: hiddenSlots,
+    ...(dev ? { developer: dev } : {}),
     options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
@@ -475,6 +497,7 @@ export function validateApp(dir) {
     }
     if (m.hidden !== undefined && (!Array.isArray(m.hidden) || m.hidden.some((t) => typeof t !== 'string'))) errors.push('manifest "hidden" must be a list of asset types');
     for (const t of Array.isArray(m.hidden) ? m.hidden : []) if (!spec.types[t]?.hideable) errors.push(`manifest hidden "${t}" is not a hideable type`);
+    if (m.developer !== undefined && (typeof m.developer !== 'object' || m.developer === null || !hubOrigin(m.developer.hub))) errors.push('manifest "developer" must be { hub: "https://…" } (a plain https origin)');
     if (m.framework?.version !== FRAMEWORK_VERSION) warnings.push(`app targets framework ${m.framework?.version}, engine is ${FRAMEWORK_VERSION}`);
   }
   const lPath = join(root, 'axf.lock.json');

@@ -39,6 +39,7 @@ dependencies {
     implementation("ai.amberx.axf:lib-logging:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     implementation("ai.amberx.axf:lib-lock:$axf")
+    implementation("ai.amberx.axf:lib-hub:$axf")
     testImplementation(libs.junit)
     // axf:modules []
 }

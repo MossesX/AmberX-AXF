@@ -13,6 +13,7 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
+import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
@@ -68,6 +69,34 @@ write('hide.json', {
   ],
   defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
+// Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
+{
+  const docs: Record<string, string> = {
+    full: JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'arctic-daylight', 'style-theme': 'glass-orbit', layout: 'focus-top', 'uac-policy': 'admin-only', toolbar: 'standard-icons' }, spacing: 'compact', hidden: { toolbar: true, 'color-theme': true, 'nav-menu': false }, palette: { scheme: 'light', bg: '#f2f5f8', accent: 'rgb(31,111,235)', fg: 'url(x)' }, updatedBy: 'axf-console', updatedAt: '2026-10-21T00:00:00Z' }),
+    'unknown-ids': JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'no-such-theme', layout: 'classic-ide', 'not-a-type': 'x', 'bad id!': 'y', toolbar: 'Bad Id' }, spacing: 'roomy', hidden: { toolbar: 'yes' } }),
+    'wrong-frame': JSON.stringify({ $axf: 'asset@1', slots: { layout: 'classic-ide' } }),
+    'not-json': '{oops',
+    empty: '',
+    'code-shaped': JSON.stringify({ $axf: 'appearance@1', slots: { layout: 'classic-ide' }, assets: [{ type: 'color-theme', id: 'evil', data: {} }], script: 'alert(1)' }),
+    'too-big': JSON.stringify({ $axf: 'appearance@1', pad: 'x'.repeat(20000) }),
+  };
+  const has = (t: string, id: string) => ['color-theme:arctic-daylight', 'style-theme:glass-orbit', 'layout:classic-ide', 'layout:focus-top', 'toolbar:standard-icons', 'uac-policy:admin-only'].includes(`${t}:${id}`);
+  const base = parseAppearance(docs.full);
+  write('appearance.json', {
+    slotTypes: appearanceSlotTypes(),
+    parsed: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, parseAppearance(v)])),
+    resolved: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, resolveAppearance(parseAppearance(v), has)])),
+    merged: {
+      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z'),
+      'hidden-clear': mergeAppearance(base, { hidden: { toolbar: null, 'app-menu': true } }, 'axf-console', '2026-10-21T01:00:00Z'),
+      'spacing-only-into-null': mergeAppearance(null, { spacing: 'regular' }, 'axhub-android', '2026-10-21T01:00:00Z'),
+      'keeps-other-apps-slots': mergeAppearance(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'pilot-only-type': 'thing', layout: 'focus-top' } })), { slots: { layout: 'classic-ide' } }, 'axf-console', '2026-10-21T01:00:00Z'),
+    },
+    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z')),
+    palette: Object.fromEntries(load('color-theme').map((a) => [a.id, paletteFromColorTheme(a.data)])),
+    retryMs: Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 20].map((n) => [n, appearanceRetryMs(n)])),
+  });
+}
 // Spacing choice (core/engines/spacing.ts): every style theme compiled under every choice; plus how stored values read.
 write('spacing.json', {
   default: SPACING_DEFAULT,

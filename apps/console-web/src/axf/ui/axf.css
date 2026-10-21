@@ -48,6 +48,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
+/* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
+.fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.fx-waiting { max-width: 36rem; margin: calc(var(--fx-space) * 4) auto; padding: 0 var(--fx-space); }
 
 /* ---------------- banner (core/engines/banner.ts) ---------------- */
 .fx-banner {

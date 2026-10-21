@@ -2118,5 +2118,11 @@
     "wave": 1,
     "module": "lib-lock",
     "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+  },
+  "f.appearance.source": {
+    "status": "built",
+    "wave": 2,
+    "module": "axf-kernel",
+    "note": "Oct 21 2026 (Fable): appearance@1 document engine on both ports (fixture appearance.json), runtime AppearanceSource (TS + Kotlin), web HubAppearanceSource + waiting screen, Android lib-hub (HubAppearanceSource, HubModule, HubSignInView). Developer apps: console web + Android, Build Pilot, AXHub app; axHub's own pages read the palette."
   }
 }

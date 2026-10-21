@@ -340,6 +340,12 @@ export interface AxfManifest {
   defaults: ActiveAssets;
   /** Chrome slots hidden by default (hideable types only, e.g. `["toolbar"]`); the user can still show them in Settings → Appearance. */
   hidden?: string[];
+  /**
+   * Developer app (Brett's decision, Oct 20 2026): its appearance and settings documents live on the axHub data
+   * server (`hub` = the hub's https origin); the app waits for the hub instead of running without it. Absent = an
+   * ordinary app with its own local settings. Templates read it and attach the hub appearance source.
+   */
+  developer?: { hub: string };
   structure?: { path: string; purpose: string }[];
 }
 
@@ -352,6 +358,8 @@ export interface Toast {
 
 export interface AxfState {
   active: ActiveAssets;
+  /** Developer apps: the appearance source's state (engines/appearance.ts); null = no source (ordinary app). */
+  appearance?: import('./engines/appearance').AppearanceSourceState | null;
   role: string;
   view: string;
   dialog: { id: string; props?: Record<string, unknown> } | null;

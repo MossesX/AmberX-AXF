@@ -116,7 +116,7 @@ function run() {
     case 'build-reorder': return reorderQueue({ order: b.order, by: b.by ?? 'console', log });
     case 'build-reprocess': return reprocessQueue({ apply: !!b.apply, by: b.by ?? 'console', log });
     case 'build-step': return stepQueue({ id: b.id, action: b.action, status: b.status, note: b.note, by: b.by ?? 'console', log });
-    case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
+    case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, developer: b.developer, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'build-options': return { options: describeOptions() };
     case 'app-defaults': return appDefaultsView();
     case 'framework-assets': return { template: b.template ?? null, assets: listFrameworkAssets(b.template) };

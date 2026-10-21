@@ -13,11 +13,12 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { spacingOf, type Spacing } from './engines/spacing';
+import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -125,6 +126,28 @@ export interface NavExtraSection {
   items: import('./types').NavItem[];
 }
 
+/**
+ * Where a developer app's appearance selection lives: the axHub data server (`shared/settings/appearance.json`,
+ * engines/appearance.ts). Off by default: an ordinary AXF app never attaches one. With one attached the runtime
+ * applies the document through its normal swap / settings paths, pushes every local change back (per key, last
+ * write wins), follows pushed changes live, and reports the source's state so the app can show its waiting screen
+ * while the hub is unreachable (a developer app doesn't run without the hub: no local fallback, no default theme).
+ * Web: `HubAppearanceSource` (react/hubAppearance.ts); Android: `HubAppearanceSource` in lib-hub.
+ */
+export interface AppearanceSource {
+  /** Current connection state (the runtime mirrors it into `state.appearance`). */
+  state(): AppearanceSourceState;
+  /** Called with the document (null = none saved yet) whenever it loads or changes, and with the state on every change. */
+  subscribe(listener: (ev: { doc: AppearanceDocument | null; version: string | null } | { state: AppearanceSourceState }) => void): () => void;
+  /** Start loading / watching. */
+  start(): void;
+  stop(): void;
+  /** Re-read now (the UI-editor rule: fresh on focus). */
+  refresh(): void;
+  /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
+  save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
+}
+
 export class AxfRuntime {
   readonly registry = new AssetRegistry();
   readonly actions = new ActionBus();
@@ -196,8 +219,112 @@ export class AxfRuntime {
       context: null,
       rev: 0,
       swaps: 0,
+      appearance: null,
     };
     this.registerBuiltinActions();
+  }
+
+  /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
+
+  private appearanceSource: AppearanceSource | null = null;
+  private appearanceOff: (() => void) | null = null;
+  /** true while the runtime applies a pushed document, so the change isn't echoed back to the source */
+  private applyingAppearance = false;
+  private lastAppearance: AppearanceDocument | null = null;
+
+  /**
+   * Make this a developer app: its appearance comes from the source (and goes back to it). Until the source is
+   * `ready` the app's UI shows the waiting screen (`state.appearance`). Only one source at a time.
+   */
+  attachAppearanceSource(source: AppearanceSource): void {
+    this.detachAppearanceSource();
+    this.appearanceSource = source;
+    this.appearanceOff = source.subscribe((ev) => {
+      if ('state' in ev) { this.set({ appearance: ev.state }); return; }
+      this.applyAppearance(ev.doc);
+    });
+    this.set({ appearance: source.state() });
+    source.start();
+  }
+
+  detachAppearanceSource(): void {
+    this.appearanceOff?.();
+    this.appearanceSource?.stop();
+    this.appearanceOff = null;
+    this.appearanceSource = null;
+    this.lastAppearance = null;
+    this.set({ appearance: null });
+  }
+
+  /** Is a source attached (developer app)? */
+  hasAppearanceSource(): boolean { return this.appearanceSource !== null; }
+
+  /** The hub the source talks to (shown on the waiting screen), when the source says. */
+  appearanceHub(): string | undefined { return (this.appearanceSource as { origin?: string } | null)?.origin; }
+
+  /** The source's state, or null when the app has none. */
+  appearanceState(): AppearanceSourceState | null { return this.state.appearance ?? null; }
+
+  /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
+  appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
+
+  /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
+  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+
+  /**
+   * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
+   * document's id when the app has that asset (unknown id = the default; never a crash); spacing and hidden slots go
+   * through the same settings keys the UI uses. Nothing here needs a permission: the document *is* the saved setting,
+   * the UAC gate sits on changing it (swap / setSpacing / setSlotHidden still decide who may).
+   */
+  private applyAppearance(doc: AppearanceDocument | null): void {
+    this.lastAppearance = doc;
+    const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
+    this.applyingAppearance = true;
+    try {
+      const active = { ...this.state.active };
+      for (const t of ASSET_TYPES) {
+        if (t === 'uac-policy') continue;
+        const want = r.slots[t] ?? this.manifest.defaults[t];
+        if (want && this.registry.has(t, want)) active[t] = want;
+        else if (!want && (OPTIONAL_TYPES as readonly string[]).includes(t)) active[t] = '';
+      }
+      for (const t of ASSET_TYPES) {
+        if (!hideable(t)) continue;
+        const v = r.hidden[t];
+        const cur = this.settings.get(HIDE_KEY(t));
+        if (v === undefined) { if (cur !== null) this.settings.clear(HIDE_KEY(t)); }
+        else if (cur !== v) this.settings.set(HIDE_KEY(t), v);
+      }
+      const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
+      if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
+      const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
+      this.set({ active, swaps: this.state.swaps + (changed ? 1 : 0) }, true);
+      if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
+      this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
+    } finally {
+      this.applyingAppearance = false;
+    }
+  }
+
+  /** Push a local change to the source (no-op without one, or while applying a pushed document). */
+  private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
+    if (!this.appearanceSource || this.applyingAppearance) return;
+    this.appearanceSource.save(change);
+  }
+
+  /** The palette the hub's own pages use, from this app's active colour theme. */
+  private appearancePalette(): AppearanceDocument['palette'] | undefined {
+    return paletteFromColorTheme(this.asset('color-theme').data as { scheme?: string; tokens?: Record<string, string> });
+  }
+
+  /** The document this app would write for its whole current look (Reset, or a first save). */
+  currentAppearance(): AppearanceDocument {
+    const slots: Record<string, string> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
+    const hidden: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
   }
 
   /* ---------------- store ---------------- */
@@ -265,6 +392,7 @@ export class AxfRuntime {
    * come back into focus, so they read current token values, never a stale copy. Returns what changed.
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
+    this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
     const settings = this.settings.reload();
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
@@ -453,15 +581,18 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
+    if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
     const active = { ...this.state.active };
+    const pushed: Record<string, string> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
-      if (t !== 'uac-policy' && this.registry.has(t, id)) active[t] = id;
+      if (t !== 'uac-policy' && this.registry.has(t, id)) { active[t] = id; pushed[t] = id; }
     }
     this.set({ active, swaps: this.state.swaps + 1 }, true);
+    if (Object.keys(pushed).length) this.pushAppearance({ slots: pushed, ...(pushed['color-theme'] ? { palette: this.appearancePalette() } : {}) });
   }
 
   /* ---------------- randomize rolls (engines/roll.ts) ---------------- */
@@ -546,6 +677,7 @@ export class AxfRuntime {
     if (hidden && type === 'context-menu') this.closeContext();
     this.terminal.ok('hot-swap', `${type} ${hidden ? 'hidden' : 'shown'}`);
     this.set({});
+    this.pushAppearance({ hidden: { [type]: hidden === this.defaultHiddenSlots().includes(type) ? null : hidden } });
   }
 
   /* ---------------- spacing (core/engines/spacing.ts) ---------------- */
@@ -559,6 +691,7 @@ export class AxfRuntime {
   setSpacing(s: Spacing): void {
     if (spacingOf(s) !== s || this.spacing() === s) return;
     this.settings.set(SPACING_KEY, s);
+    this.pushAppearance({ spacing: s });
   }
 
   /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
@@ -582,10 +715,15 @@ export class AxfRuntime {
       // signed in: the account keeps deciding the policy and role
       active['uac-policy'] = this.principal.policy;
       this.set({ active, role: this.principal.role, swaps: this.state.swaps + 1 }, true);
-      return;
+    } else {
+      const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
+      this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
     }
-    const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
-    this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
+    const hidden: Record<string, null> = {};
+    for (const t of ASSET_TYPES) if (hideable(t)) hidden[t] = null;
+    const slots: Record<string, string> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && active[t]) slots[t] = active[t];
+    this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {

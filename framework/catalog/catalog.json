@@ -310,6 +310,14 @@
               "tag": "lock",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.source",
+              "title": "Appearance source: developer apps take their appearance + settings documents from the axHub data server (appearance@1), waiting screen while the hub is unreachable",
+              "note": "core/engines/appearance.ts = kernel AppearanceEngine; web HubAppearanceSource, Android lib-hub; opt-in per app (manifest developer: { hub })",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },

@@ -242,14 +242,18 @@ def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
 def me(request: Request) -> dict[str, Any]:
     """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
     hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
+    # Developer app (decision Oct 20 2026): the look + settings come from the hub's data server. Same hub as the wall
+    # unless AXF_APPEARANCE_HUB says otherwise; "off" = no source (local development without a hub only: the console
+    # then runs on its own local settings, which is never the case on the VPS).
+    appearance_hub = os.environ.get("AXF_APPEARANCE_HUB", "").strip().rstrip("/") or hub
     c = wall.wall_caller(request.headers)
     if c:
-        return {"wall": True, "hub": hub, "user": c.public(), "admin": c.admin, "role": wall.ui_role(c),
+        return {"wall": True, "hub": hub, "appearanceHub": appearance_hub, "user": c.public(), "admin": c.admin, "role": wall.ui_role(c),
                 "themes": c.can(wall.THEMES_PERM), "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS),
                 "plugins": sorted(f for f in PLUGINS if wall.plugin_granted(c, f, WALL_USER_PLUGINS, USER_GRANTABLE_PLUGINS))}
     tok = current_token()
     via_token = bool(tok) and _token_ok(request, tok)
-    return {"wall": wall.trusted(), "hub": hub, "user": None, "admin": via_token or not tok, "role": "admin" if (via_token or not tok) else None,
+    return {"wall": wall.trusted(), "hub": hub, "appearanceHub": appearance_hub, "user": None, "admin": via_token or not tok, "role": "admin" if (via_token or not tok) else None,
             "themes": True, "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS), "plugins": sorted(PLUGINS)}
 
 

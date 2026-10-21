@@ -12,6 +12,7 @@ import ai.amberx.axf.axhubandroid.views.AppsView
 import ai.amberx.axf.axhubandroid.views.Gated
 import ai.amberx.axf.axhubandroid.views.HubAreaView
 import ai.amberx.axf.axhubandroid.views.HubPageView
+import ai.amberx.axf.axhubandroid.views.HubWebView
 import ai.amberx.axf.axhubandroid.views.SettingsView
 import ai.amberx.axf.axhubandroid.views.hubAreas
 import ai.amberx.axf.axhubandroid.watch.Alerts
@@ -46,6 +47,12 @@ class MainActivity : AxfActivity() {
     }
 
     override fun onStop() { gate.onLeave(); super.onStop() }
+
+    /** The waiting screen's "Sign in on the hub": the hub's sign-in page in the app's own locked web view; done once it leaves /auth/login. */
+    override val hubSignIn: @Composable (done: () -> Unit) -> Unit = { done ->
+        val base = WatchPrefs(this).base
+        HubWebView(base, HubAddress.login(base), onPage = { url -> if (!url.contains("/auth/login") && !url.contains("/auth/first")) done() })
+    }
 
     private fun handle(i: Intent?) {
         // Reopened from recents: the old alert's extras come back with it; don't act on them twice.
