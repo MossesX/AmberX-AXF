@@ -7,7 +7,9 @@ import { BehaviorPanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard
 import './ai-assistant.css';
 
 /*
- * AI assistant plugin (web part). Ported from xGallery's assistant and extended — see server/__init__.py.
+ * AI assistant plugin (web part, Fable rebuild). The chat UI is built on the framework's assistant contract
+ * (assistant@1, framework/core/assistant.ts: types, HttpAssistantClient, watchReply) so Build Pilot and other AXF apps
+ * can reuse the same core — see server/__init__.py for the engine.
  *  - view "ai-assistant": full-page chat (nav → Plugins → AI assistant)
  *  - dialog "ai-assistant.chat": the chat dialog, from anywhere (action ai-assistant.open, payload = optional prompt)
  *  - Settings → Plugins → AI assistant: setup wizard, providers, behaviour, prompts, usage, install & uninstall
@@ -36,8 +38,8 @@ function WizardIntro() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
-  version: '0.1.0',
-  provides: ['axf.ai-assistant'],
+  version: '0.2.0',
+  provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {
     rt.actions.register('ai-assistant.open', ([prompt]) => rt.openDialog('ai-assistant.chat', prompt ? { note: prompt } : {}), { label: 'Open the AI assistant' });
     // Generic, capability-style action other plugins use (never this folder's name):
@@ -53,7 +55,7 @@ export const plugin: AxfWebLibrary = {
     'ai-assistant.chat': {
       title: 'AI assistant',
       icon: 'sparkles',
-      render: (props, close) => <div className="axp-ai-assistant__dialog"><ChatPanel compact initialContext={(props as Ctx).note || (props as Ctx).view ? (props as Ctx) : undefined} onClose={close} start={(props as { start?: ChatStart }).start} /></div>,
+      render: (props, close) => <div className="axp-ai-assistant__dialog"><ChatPanel compact initialContext={(props as Ctx).note || (props as Ctx).view ? (props as Ctx) : undefined} onClose={close} start={(props as { start?: ChatStart }).start} openId={(props as { open?: string }).open} /></div>,
     },
   },
   nav: { label: 'Plugins', items: [{ id: 'ai-assistant', label: 'AI assistant', icon: 'sparkles', view: 'ai-assistant' }] },
@@ -75,7 +77,7 @@ function QuickOpen() {
   return (
     <div className="fx-row fx-row--wrap">
       <Button tone="primary" icon="sparkles" onClick={() => rt.openDialog('ai-assistant.chat')}>Open chat dialog</Button>
-      <span className="fx-small fx-muted">Also: nav → Plugins → AI assistant, or the action <code className="fx-mono">ai-assistant.open</code>.</span>
+      <span className="fx-small fx-muted">Also: nav → Plugins → AI assistant, the action <code className="fx-mono">ai-assistant.open</code>, or from any plugin <code className="fx-mono">ai.chat.start</code>.</span>
     </div>
   );
 }

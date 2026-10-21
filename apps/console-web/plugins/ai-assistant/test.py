@@ -161,7 +161,33 @@ def turn(cid, **body):
 print("ai-assistant self-test")
 st = c.get(f"{P}/status").json()
 check(st["needsSetup"] is True, "fresh install needs setup")
-check(len(c.get(f"{P}/catalog").json()["providers"]) >= 15, "catalog lists 15+ providers")
+cat = c.get(f"{P}/catalog").json()
+check(len(cat["providers"]) >= 15, "catalog lists 15+ providers")
+reg = json.load(open(HERE.parents[3] / "framework" / "schemas" / "ai-providers.json"))
+check([p["kind"] for p in cat["providers"]] == [p["kind"] for p in reg["providers"]] and reg["$axf"] == "ai-providers@1", "catalog comes from the shared framework registry (ai-providers@1)")
+check({"openai", "anthropic", "claude-cli"} <= set(cat["protocols"]), "protocols listed")
+ci = c.get(f"{P}/contract").json()
+check(ci["assistant"] == "assistant@1" and ci["liveSession"] == "live-session@1" and {h["id"] for h in ci["hosts"]} == {"local", "axhub"} and "ai.chat.start" in ci["actions"], "/contract describes what the assistant speaks")
+
+# --- assistant@1: the pure rules match the framework fixtures (framework/core/assistant.ts = contract.py = Kotlin)
+print("assistant@1 contract")
+ctr = sys.modules["axf_console_plugins.ai_assistant.contract"]
+afx = json.load(open(HERE.parents[3] / "framework" / "spec" / "fixtures" / "assistant.json"))
+check(all(ctr.redact_secrets(x["text"], True) == x["on"] and ctr.redact_secrets(x["text"], False) == x["off"] for x in afx["redact"]), "secret redaction matches the reference")
+def _norm(w):
+    return [{k: v for k, v in m.items()} for m in w]
+check(all(_norm(ctr.wire_history(afx["history"]["messages"], w["limit"])) == w["wire"] for w in afx["history"]["windows"]), "history window matches the reference for every limit")
+check(_norm(ctr.wire_history(afx["history"]["messages"][4:], 5)) == afx["history"]["orphanStart"], "orphaned tool results are never sent first")
+check(all(ctr.profile_chain(x["settings"].get("profileId"), x.get("agent"), x["def"], x["fallback"]) == x["chain"] for x in afx["chains"]), "profile fallback chain matches")
+check(all(ctr.permission_allows(x["perms"], x["perm"], x.get("admin", False)) == x["allowed"] for x in afx["permissions"]), "permission wildcards match")
+check(all(ctr.settings_allowed_for(x["admin"], lambda p, px=x["perms"]: ctr.permission_allows(px, p)) == x["keys"] for x in afx["settingsAllowed"]), "user-settable settings match")
+check(all(ctr.clamp_user_params(x["params"], x["admin"], x["canModels"]) == x["out"] for x in afx["clampParams"]), "user param clamps match")
+check(all(ctr.batch_title(x["text"], x["n"]) == x["title"] and ctr.title_from_text(x["text"]) == x["convTitle"] for x in afx["titles"]), "batch and conversation titles match")
+check(all(ctr.summarize_args(x["args"]) == x["summary"] for x in afx["summaries"]), "tool argument summaries match")
+check(all(ctr.owner_kind(x["kind"], afx.get("ownerKindsReserved") or ["session.open", "session.close", "turn.start", "turn.end", "wait", "resume", "interrupted"]) == x["owner"] for x in afx["ownerKinds"]), "owner kinds never pose as lifecycle kinds")
+frames, rest = ctr.parse_sse_text(afx["sse"]["text"])
+check(frames == afx["sse"]["frames"] and rest == afx["sse"]["rest"] and [ctr.frame_to_event(f) for f in frames] == afx["sse"]["events"], "SSE framing matches")
+check(all(ctr.reconnect_delay_ms(x["attempt"]) == x["delayMs"] for x in afx["reconnect"]), "reconnect backoff matches")
 
 r = c.post(f"{P}/profiles", json={"kind": "custom", "label": "Fake OA", "baseUrl": f"{BASE}/oa", "key": "sk-test-1234567890abcdefghij", "defaultModel": "fake-1"})
 check(r.status_code == 200 and r.json()["profile"]["hasKey"], "create OpenAI-compatible profile with a stored key")
@@ -216,6 +242,9 @@ js = c.get(f"{P}/conversations/{conv['id']}/export?format=json").json()
 imp = c.post(f"{P}/conversations/import", json=js).json()["conversation"]
 check(len(imp["messages"]) == len(js["messages"]), "import an exported conversation")
 check(len(c.get(f"{P}/conversations", params={"q": "again"}).json()["items"]) >= 1, "search conversations")
+c.patch(f"{P}/conversations/{conv['id']}", json={"tags": ["axf", "review"]})
+check(c.get(f"{P}/tags").json()["items"][:2] == ["axf", "review"] and [i["id"] for i in c.get(f"{P}/conversations", params={"tag": "review"}).json()["items"]] == [conv["id"]], "tags: listed and filterable")
+check(c.get(f"{P}/conversations/{conv['id']}/export?format=txt").text.startswith("You:"), "export plain text")
 
 
 class FakeAgents:
@@ -523,9 +552,63 @@ check(fresh.info(hc)["state"] == "idle" and fresh.get(hc).log.items[-1]["kind"] 
 gate2.put(1)
 check(c.post(f"{P}/sessions/{hc}/close").json()["closed"] and c.get(f"{P}/sessions/{hc}").json()["session"] is None, "close ends the session on purpose")
 check(not (mod._host.folder / f"{hc}.json").exists(), "closed session's log removed")
+# an interrupted reply keeps the text it had streamed (marked interrupted) so nothing the model said is lost
+gate4 = _q.Queue()
+def partial(cid, body, caller=None):  # noqa: E306
+    yield mod._sse("start", {"turnId": "t-part", "agent": None})
+    yield mod._sse("text", {"text": "half an answer"})
+    gate4.get(timeout=10)
+mod.run_turn = partial
+pc = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
+hang_up_after(f"{P}/conversations/{pc}/messages", b"half an answer")
+mod._host._save(mod._host.get(pc))
+fresh2 = sess.LocalHost(mod._host.folder)
+fresh2.on_interrupted = mod._keep_interrupted
+fresh2.load()
+pm = c.get(f"{P}/conversations/{pc}").json()["conversation"]["messages"]
+check(pm and pm[-1]["role"] == "assistant" and pm[-1]["meta"].get("interrupted") and pm[-1]["content"].startswith("half an answer"), "an interrupted reply keeps its streamed text in the conversation")
+fresh2.load()
+check(sum(1 for m in c.get(f"{P}/conversations/{pc}").json()["conversation"]["messages"] if m.get("meta", {}).get("interrupted")) == 1, "…only once")
+gate4.put(1)
+# open host registry: a module-provided host (axf.live-host@1) replaces the axHub placeholder
+class FakeHubHost(sess.SessionHost):
+    id, label, note = "axhub", "axHub (VPS hub)", "fake workers"
+    def __init__(self):
+        self.inner = sess.LocalHost(mod._host.folder / "hub")
+        self.inner._loaded = True
+    def available(self):
+        return True
+    def start_turn(self, *a, **k):
+        return self.inner.start_turn(*a, **k)
+    def tail(self, *a, **k):
+        return self.inner.tail(*a, **k)
+    def get(self, *a, **k):
+        return self.inner.get(*a, **k)
+    def info(self, sid):
+        return self.inner.info(sid)
+    def list(self, include_closed=False):
+        return self.inner.list(include_closed)
+fh = FakeHubHost()
+plugin_services.provide(sess.HOST_CAPABILITY, fh, "fake-hub")
+c.put(f"{P}/config", json={"sessionHost": "axhub"})
+check(c.get(f"{P}/sessions").json()["active"] == "axhub" and next(h for h in c.get(f"{P}/sessions").json()["hosts"] if h["id"] == "axhub")["available"], "a module's session host (axf.live-host@1) replaces the axHub placeholder")
+mod.run_turn = real_run_turn
+hub_c = c.post(f"{P}/conversations", json={}).json()["conversation"]["id"]
+ev_h = turn(hub_c, content="on the hub")
+check(any(e == "done" for e, _ in ev_h) and not any(e == "status" and "isn't available" in d["text"] for e, d in ev_h) and fh.inner.info(hub_c)["state"] == "idle", "a reply runs on the external host without a fallback notice")
+plugin_services.withdraw("fake-hub")
+mod.HOSTS.register(sess.AXHUB_PLACEHOLDER)
+c.put(f"{P}/config", json={"sessionHost": "local"})
+svc2 = plugin_services.get("axf.live-sessions@1")
+unreg = svc2.register_host(sess.PlaceholderHost("other", "Other", "declared only"))
+check(any(h["id"] == "other" and not h["available"] for h in svc2.hosts()), "axf.live-sessions@1 lets a module register a host")
+unreg()
+check(not any(h["id"] == "other" for h in svc2.hosts()), "…and unregister it")
 c.delete(f"{P}/conversations/{sc}")
 check(c.get(f"{P}/sessions/{sc}").json()["session"] is None, "deleting a conversation forgets its session")
 mod.run_turn = real_run_turn
+u2 = c.get(f"{P}/usage").json()
+check("users" in u2, "usage includes per-user totals for admins")
 _srv.should_exit = True
 
 # ---------------------------------------------------------------- hub users behind the wall
@@ -611,4 +694,8 @@ a = seen_args.get("args", [])
 den = a[a.index("--disallowedTools") + 1:] if "--disallowedTools" in a else []
 check(a and "--allowedTools" not in a and "Read" in den and "Grep" in den and seen_args["cwd"] != "/work/repo" and seen_args["env"].get("CLAUDE_CONFIG_DIR"), "Claude Code for plain-chat users: no file tools, empty folder, throwaway config")
 check(not _os.path.exists(seen_args["cwd"]), "the CLI's throwaway folder is removed")
+# lifecycle + migrations
+st_mod = sys.modules["axf_console_plugins.ai_assistant.store"]
+check(st_mod.load_config().get("schema") == st_mod.SCHEMA, "config carries the data schema version")
+check(json.load(open(HERE / "plugin.json"))["lifecycle"]["$axf"] == "plugin-lifecycle@1" and (HERE / "uninstall.mjs").exists() and (HERE / "install.mjs").exists() and (HERE / "hooks.mjs").exists(), "plugin-lifecycle@1 files present")
 print(f"all {ok} checks passed")

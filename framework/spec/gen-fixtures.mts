@@ -18,6 +18,7 @@ import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClo
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
+import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
@@ -318,5 +319,65 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     transitions,
     log: { limit: 5, appends, states, lastSeq: log.lastSeq, firstSeq: log.firstSeq, kept: log.all() },
     replays: queries.map((q) => ({ ...q, result: log.since(q.after, q.max) })),
+  });
+}
+
+// AI assistant (assistant@1): the pure rules every assistant host applies the same way — secret redaction, the history
+// window sent to a model, the profile fallback chain, user settings/params, permission wildcards, batch titles, tool
+// summaries, SSE framing and the live-reply fold. The provider registry is listed so a port can't drift from it.
+{
+  const redact = [
+    'my key is sk-proj-abcdefghijklmnopqrstuvwxyz123456 ok', 'token ghp_abcdefghijklmnopqrstuvwxyz0123456789ABCD here', 'AKIAABCDEFGHIJKLMNOP and AIzaSyA-abcdefghijklmnopqrstuvwxyz0123456',
+    'sk-ant-api03-abcdefghijklmnopqrstuvwxyz', 'nothing secret here', 'fc-0123456789abcdef0123456789abcdef', 'xai-abcdefghijklmnopqrstuvwxyz01',
+  ].map((text) => ({ text, on: redactSecrets(text, true), off: redactSecrets(text, false) }));
+  const msgs: Message[] = [
+    { id: 'm1', role: 'user', content: 'first', createdAt: 1 },
+    { id: 'm2', role: 'assistant', content: 'one', createdAt: 2 },
+    { id: 'm3', role: 'user', content: 'calc', createdAt: 3, images: [{ media_type: 'image/png', data: 'AAA' }] },
+    { id: 'm4', role: 'assistant', content: 'let me', createdAt: 4, toolCalls: [{ id: 'c1', name: 'calculator', arguments: { expression: '6*7' } }], meta: { step: true } },
+    { id: 'm5', role: 'tool', content: '42', createdAt: 5, toolCallId: 'c1', isError: false },
+    { id: 'm6', role: 'assistant', content: 'let me\n\nit is 42', createdAt: 6, meta: { lastRound: 'it is 42' } },
+    { id: 'm7', role: 'user', content: 'thanks', createdAt: 7 },
+    { id: 'm8', role: 'assistant', content: 'welcome', createdAt: 8, thinkingBlocks: [{ type: 'thinking', thinking: 't', signature: 's' }] },
+  ];
+  const history = [1, 2, 3, 40].map((limit) => ({ limit, wire: wireHistory(msgs, limit) }));
+  const orphan = wireHistory([msgs[4]!, msgs[5]!, msgs[6]!, msgs[7]!], 5);
+  const chains = [
+    { settings: { profileId: 'a' }, agent: 'b', def: 'c', fallback: ['c', 'd', 'a'] }, { settings: {}, agent: 'b', def: 'c', fallback: ['d'] },
+    { settings: {}, agent: undefined, def: 'c', fallback: [] }, { settings: {}, agent: undefined, def: '', fallback: [] }, { settings: { profileId: '' }, agent: '', def: 'c', fallback: ['c'] },
+  ].map((c) => ({ ...c, chain: profileChain(c.settings, c.agent, c.def, c.fallback) }));
+  const permsCases = [
+    { perms: ['assistant.tools'], perm: 'assistant.tools' }, { perms: ['assistant.tools'], perm: 'assistant.web' }, { perms: ['assistant.*'], perm: 'assistant.web' },
+    { perms: ['*'], perm: 'console.plugin.x' }, { perms: ['assistant.*'], perm: 'console.plugin.x' }, { perms: [], perm: 'assistant.tools', admin: true }, { perms: ['a.*'], perm: 'a.b.c' }, { perms: ['a.b'], perm: 'a' },
+  ].map((c) => ({ ...c, allowed: permissionAllows(c.perms, c.perm, !!c.admin) }));
+  const settingsCases = [
+    { admin: true, perms: [] }, { admin: false, perms: [] }, { admin: false, perms: ['assistant.agents'] }, { admin: false, perms: ['assistant.models'] }, { admin: false, perms: ['assistant.*'] },
+  ].map((c) => ({ ...c, keys: settingsAllowedFor(c.admin, (p) => permissionAllows(c.perms, p)) }));
+  const clamp = [
+    { params: { max_tokens: 100000, thinking: true, temperature: 0.5 }, admin: true, canModels: false }, { params: { max_tokens: 100000, thinking: true }, admin: false, canModels: false },
+    { params: { max_tokens: 100000, thinking: true }, admin: false, canModels: true }, { params: { max_tokens: 10 }, admin: false, canModels: false }, { params: { max_tokens: 'x' }, admin: false, canModels: true }, { params: {}, admin: false, canModels: false },
+  ].map((c) => ({ ...c, out: clampUserParams(c.params, c.admin, c.canModels) }));
+  const titles = [{ text: 'fix   the\nthing', n: 1 }, { text: '', n: 3 }, { text: 'x'.repeat(100), n: 2 }].map((c) => ({ ...c, title: batchTitle(c.text, n(c.n)), convTitle: titleFromText(c.text) }));
+  function n(x: number) { return x; }
+  const summaries = [{ path: '/a', command: 'ls' }, { command: 'rm -rf /' }, { foo: 1, bar: [1, 2] }, {}, { url: 'u'.repeat(200) }].map((args) => ({ args, summary: summarizeArgs(args) }));
+  const sseText = 'id: 3\nevent: text\ndata: {"text":"Hel"}\n\n: keep-alive\n\nevent: done\ndata: {"message":{"id":"m"},"title":"T"}\n\ndata: plain\n\nevent: text\ndata: {"text":"lo';
+  const sse = parseSseText(sseText);
+  const events: StreamEvent[] = [
+    { event: 'replay', data: { next: 0, gap: false, reset: true, more: false, state: 'running', lastSeq: 9 }, seq: undefined } as StreamEvent,
+    { event: 'start', data: { turnId: 't1', agent: { id: 'a', name: 'Mosses' } }, seq: 1 }, { event: 'text', data: { text: 'Hi ' }, seq: 2 }, { event: 'status', data: { text: 'Thinking on x' }, seq: 3 },
+    { event: 'tool', data: { phase: 'call', id: 'c1', name: 'repo_read', input: 'a.ts' }, seq: 4 }, { event: 'tool', data: { phase: 'result', id: 'c1', name: 'repo_read', ok: true, preview: 'x' }, seq: 5 },
+    { event: 'text', data: { text: 'there' }, seq: 6 }, { event: 'thinking', data: { text: 'hm' }, seq: 7 }, { event: 'done', data: { message: { id: 'm', role: 'assistant', content: 'Hi there', createdAt: 1 }, title: 'T' }, seq: 8 },
+  ];
+  const reply = emptyLiveReply('Connecting…');
+  const folds = events.map((e) => { applyStreamEvent(reply, e); return JSON.parse(JSON.stringify(reply)); });
+  const interrupted = applyStreamEvent(emptyLiveReply(), { event: 'interrupted', data: null, seq: 2 });
+  write('assistant.json', {
+    contract: 'assistant@1',
+    providers: PROVIDER_KINDS.map((p) => ({ kind: p.kind, protocol: p.protocol, keyEnv: p.keyEnv, auth: p.auth, baseUrl: p.baseUrl })),
+    redact, history: { messages: msgs, windows: history, orphanStart: orphan }, chains, permissions: permsCases, settingsAllowed: settingsCases, clampParams: clamp, titles, summaries,
+    ownerKinds: ['text', 'turn.start', 'session.close', 'done'].map((k) => ({ kind: k, owner: ownerKind(k, Object.values(LIVE_KINDS)) })),
+    sse: { text: sseText, frames: sse.frames, rest: sse.rest, events: sse.frames.map(frameToEvent) },
+    liveReply: { events, folds, interrupted },
+    reconnect: [1, 2, 3, 5, 8, 20].map((a) => ({ attempt: a, delayMs: reconnectDelayMs(a) })),
   });
 }

@@ -1,16 +1,20 @@
-"""Live sessions (live-session@1) — the AI assistant's local session host.
+"""Live sessions (live-session@1) — session hosts for the AI assistant.
 
-Every conversation is a live session owned by this server, not by the browser. A reply runs in its own thread and
-writes every event into the conversation's event log; the browser only *watches* that log. Closing the tab, the
-dialog or the phone app just detaches the viewer: the reply keeps going, and opening the chat again (on any device)
-replays what was missed and follows on. A session ends only when it is closed on purpose (or its conversation is
-deleted). A console restart while a reply is running marks that turn `interrupted`; the conversation itself is kept.
+Every conversation is a live session owned by its host, not by the browser. A reply runs in its own thread and writes
+every event into the conversation's event log; the browser only *watches* that log. Closing the tab, the dialog or the
+phone app just detaches the viewer: the reply keeps going, and opening the chat again (on any device) replays what was
+missed and follows on. A session ends only when it is closed on purpose (or its conversation is deleted). A console
+restart while a reply is running marks that turn `interrupted` (and the interrupted reply's text is kept in the
+conversation, see __init__.py); the session itself stays open.
 
 Same semantics as the kernel contract (framework/core/live-session.ts = Kotlin ai.amberx.axf.kernel.live), checked
 against framework/spec/fixtures/live-session.json by test.py. Spec: framework/spec/LIVE-SESSIONS.md.
 
-Hosts: `local` (this module, built) and `axhub` (session workers on the VPS hub, placeholder: choosing it falls back
-to local with a notice until the hub side exists).
+Hosts are an OPEN REGISTRY (`SessionHosts`, like the kernel's): `local` (this module, built) is registered on start;
+`axhub` is registered as a typed placeholder (`PlaceholderHost`: `available()` is False, every call answers
+NotImplemented) until axHub's session workers exist — a module providing capability `axf.live-host@1` through
+plugin_services (or calling `HOSTS.register`) replaces it without any change here. The chosen host is a setting
+(`sessionHost`); `SessionHosts.resolve()` falls back to the first available host with a notice.
 """
 from __future__ import annotations
 
@@ -22,17 +26,20 @@ from typing import Any, Callable, Iterator
 
 CONTRACT = "live-session@1"
 CAPABILITY = "axf.live-sessions"
+HOST_CAPABILITY = "axf.live-host@1"   # what a module provides (plugin_services) to add a session host
 STATES = ["idle", "running", "waiting", "closed"]
 KINDS = {"open": "session.open", "close": "session.close", "turnStart": "turn.start", "turnEnd": "turn.end",
          "wait": "wait", "resume": "resume", "interrupted": "interrupted"}
-HOSTS = [
-    {"id": "local", "label": "This console", "available": True,
-     "note": "Replies run on the console server and keep going when the browser closes."},
-    {"id": "axhub", "label": "axHub (VPS hub)", "available": False,
-     "note": "Not available yet: axHub's session workers aren't built. Chats run on this console until they are."},
-]
 LIMIT = 20_000          # events kept per session (text arrives in small pieces)
 HEARTBEAT_S = 15.0       # keep-alive comment while a viewer waits
+
+
+class NotImplementedHost(Exception):
+    """A declared host nobody has built yet (the placeholder mechanism)."""
+
+    def __init__(self, host_id: str) -> None:
+        super().__init__(f'session host "{host_id}" is declared but not built yet')
+        self.host = host_id
 
 
 def now_ms() -> int:
@@ -120,13 +127,14 @@ class Session:
         self.log = log
         self.viewers = 0
         self.thread: threading.Thread | None = None
+        self.owner: str = ""
 
     def info(self, host: str = "local") -> dict[str, Any]:
         with self.log.cond:
             turn_seq = next((e["seq"] for e in reversed(self.log.items) if e["kind"] == KINDS["turnStart"]), 0)
         return {"id": self.id, "kind": self.kind, "title": self.title, "state": self.state, "host": host,
                 "createdAt": self.created, "updatedAt": self.updated, "lastSeq": self.log.last, "viewers": self.viewers,
-                "meta": {"turnSeq": turn_seq}}
+                "meta": {"turnSeq": turn_seq, **({"owner": self.owner} if self.owner else {})}}
 
 
 def _parse_sse(chunk: str) -> tuple[str, Any] | None:
@@ -148,11 +156,62 @@ def sse(e: dict[str, Any]) -> str:
     return f"id: {e['seq']}\nevent: {e['kind']}\ndata: {json.dumps(e.get('data'), ensure_ascii=False)}\n\n"
 
 
-class LocalHost:
+# ---------------------------------------------------------------- hosts
+
+class SessionHost:
+    """What a host provides (the Python face of the kernel's SessionHost). Replies are produced by `start_turn`."""
+
+    id = "host"
+    label = "Host"
+    note = ""
+
+    def available(self) -> bool:
+        return False
+
+    def describe(self) -> dict[str, Any]:
+        return {"id": self.id, "label": self.label, "available": self.available(), "note": self.note}
+
+    def list(self, include_closed: bool = False) -> list[dict[str, Any]]:
+        raise NotImplementedHost(self.id)
+
+    def info(self, sid: str) -> dict[str, Any] | None:
+        raise NotImplementedHost(self.id)
+
+    def get(self, sid: str, title: str = "", create: bool = False) -> Session | None:
+        raise NotImplementedHost(self.id)
+
+    def start_turn(self, sid: str, title: str, produce: Callable[[], Iterator[str]], notice: str = "", owner: str = "") -> int:
+        raise NotImplementedHost(self.id)
+
+    def tail(self, sid: str, after: int, until_idle: bool = True, max_wait_s: float = 0) -> Iterator[str]:
+        raise NotImplementedHost(self.id)
+
+    def close(self, sid: str, stop: Callable[[], Any] | None = None) -> bool:
+        raise NotImplementedHost(self.id)
+
+    def forget(self, sid: str) -> None:
+        raise NotImplementedHost(self.id)
+
+    def running(self, sid: str) -> bool:
+        raise NotImplementedHost(self.id)
+
+
+class PlaceholderHost(SessionHost):
+    """A declared host that isn't built: never pretends to work."""
+
+    def __init__(self, host_id: str, label: str, note: str) -> None:
+        self.id, self.label, self.note = host_id, label, note
+
+    def available(self) -> bool:
+        return False
+
+
+class LocalHost(SessionHost):
     """Sessions in memory, logs saved to <data>/sessions/<id>.json when a turn ends and on lifecycle changes."""
 
     id = "local"
     label = "This console"
+    note = "Replies run on the console server and keep going when the browser closes."
 
     def __init__(self, folder: Path, limit: int = LIMIT) -> None:
         self.folder = folder
@@ -160,6 +219,10 @@ class LocalHost:
         self.lock = threading.RLock()
         self.sessions: dict[str, Session] = {}
         self._loaded = False
+        self.on_interrupted: Callable[[Session], None] | None = None  # __init__.py keeps the interrupted reply's text
+
+    def available(self) -> bool:
+        return True
 
     # ---------------------------------------------------------------- persistence
     def _path(self, sid: str) -> Path:
@@ -177,7 +240,7 @@ class LocalHost:
             tmp = p.with_suffix(".tmp")
             with s.log.cond:
                 events = list(s.log.items)
-            tmp.write_text(json.dumps({"$axf": CONTRACT, "id": s.id, "kind": s.kind, "title": s.title, "createdAt": s.created,
+            tmp.write_text(json.dumps({"$axf": CONTRACT, "id": s.id, "kind": s.kind, "title": s.title, "createdAt": s.created, "owner": s.owner,
                                        "updatedAt": s.updated, "state": s.state, "lastSeq": s.log.last, "events": events}, ensure_ascii=False))
             tmp.chmod(0o600)
             tmp.replace(p)
@@ -200,6 +263,7 @@ class LocalHost:
                     s = Session(str(raw["id"]), str(raw.get("kind") or "assistant.chat"), str(raw.get("title") or ""),
                                 int(raw.get("createdAt") or now_ms()), log, str(raw.get("state") or "idle"))
                     s.updated = int(raw.get("updatedAt") or s.created)
+                    s.owner = str(raw.get("owner") or "")
                 except (OSError, ValueError, KeyError, TypeError):
                     continue
                 if s.state == "closed":
@@ -207,6 +271,11 @@ class LocalHost:
                 self.sessions[s.id] = s
                 if s.state in ("running", "waiting"):
                     self._append(s, KINDS["interrupted"], {"reason": "The console restarted while this reply was running."})
+                    if self.on_interrupted:
+                        try:
+                            self.on_interrupted(s)
+                        except Exception:  # noqa: BLE001 — keeping partial text is a nicety
+                            pass
                     self._save(s)
 
     # ---------------------------------------------------------------- sessions
@@ -243,7 +312,7 @@ class LocalHost:
         with self.lock:
             return self._append(s, kind, data)
 
-    def start_turn(self, sid: str, title: str, produce: Callable[[], Iterator[str]], notice: str = "") -> int:
+    def start_turn(self, sid: str, title: str, produce: Callable[[], Iterator[str]], notice: str = "", owner: str = "") -> int:
         """Run `produce()` (an SSE-chunk generator) in its own thread, writing every event to the log.
         Returns the seq of the turn.start event; viewers follow from the event before it."""
         s = self.get(sid, title=title, create=True)
@@ -253,6 +322,8 @@ class LocalHost:
                 raise Busy("a reply is still running in this conversation — open it to watch, or stop it first")
             if title:
                 s.title = title
+            if owner:
+                s.owner = owner
             start = self._append(s, KINDS["turnStart"], {"at": now_ms()})
             if notice:
                 self._append(s, "status", {"text": notice})
@@ -321,7 +392,7 @@ class LocalHost:
             with self.lock:
                 s.viewers = max(0, s.viewers - 1)
 
-    def close(self, sid: str, stop: Callable[[], None] | None = None) -> bool:
+    def close(self, sid: str, stop: Callable[[], Any] | None = None) -> bool:
         """End the session on purpose: stop its reply, write session.close, forget its log."""
         s = self.get(sid)
         if s is None:
@@ -347,26 +418,87 @@ class LocalHost:
         return bool(s and s.state == "running" and s.thread and s.thread.is_alive())
 
 
+class SessionHosts:
+    """Hosts by id (open registry, like the kernel's SessionHosts). Modules add hosts; the chosen one is a setting."""
+
+    def __init__(self) -> None:
+        self._hosts: dict[str, SessionHost] = {}
+        self._lock = threading.Lock()
+
+    def register(self, h: SessionHost) -> Callable[[], None]:
+        with self._lock:
+            self._hosts[h.id] = h
+
+        def unregister() -> None:
+            with self._lock:
+                if self._hosts.get(h.id) is h:
+                    self._hosts.pop(h.id, None)
+        return unregister
+
+    def get(self, host_id: str) -> SessionHost | None:
+        with self._lock:
+            return self._hosts.get(host_id)
+
+    def list(self) -> list[SessionHost]:
+        with self._lock:
+            return list(self._hosts.values())
+
+    def describe(self) -> list[dict[str, Any]]:
+        out = []
+        for h in self.list():
+            try:
+                out.append(h.describe())
+            except Exception as e:  # noqa: BLE001 — a broken external host must not break the list
+                out.append({"id": h.id, "label": h.label, "available": False, "note": f"not reachable: {str(e)[:120]}"})
+        return out
+
+    def resolve(self, chosen: str) -> tuple[SessionHost, str]:
+        """The chosen host when it is available, else the first available one with a notice for the chat."""
+        want = self.get(chosen) if chosen else None
+        try:
+            if want and want.available():
+                return want, ""
+        except Exception:  # noqa: BLE001
+            pass
+        for h in self.list():
+            try:
+                if h.available():
+                    label = want.label if want else (chosen or "the chosen host")
+                    note = (want.note if want and want.note else "") or f"{label} isn't available"
+                    return h, f"{note} This reply runs on {h.label} (it still keeps going if you close the browser)."
+            except Exception:  # noqa: BLE001
+                continue
+        raise NotImplementedHost(chosen or "none")
+
+
+AXHUB_PLACEHOLDER = PlaceholderHost("axhub", "axHub (VPS hub)", "Not available yet: axHub's session workers aren't built. Chats run on this console until they are.")
+
+
 class LiveSessionsService:
-    """axf.live-sessions@1 for other plugins: read-only views of the assistant's sessions."""
+    """axf.live-sessions@1 for other plugins: read-only views of the assistant's sessions, plus host registration."""
 
     version = 1
     contract = CONTRACT
 
-    def __init__(self, host: LocalHost) -> None:
-        self._host = host
+    def __init__(self, hosts: SessionHosts, local: LocalHost) -> None:
+        self._hosts = hosts
+        self._local = local
 
     def hosts(self) -> list[dict[str, Any]]:
-        return [dict(h) for h in HOSTS]
+        return self._hosts.describe()
+
+    def register_host(self, host: SessionHost) -> Callable[[], None]:
+        """A module adds a session host (e.g. the axHub workers); returns the unregister function."""
+        return self._hosts.register(host)
 
     def list(self, include_closed: bool = False) -> list[dict[str, Any]]:
-        return self._host.list(include_closed)
+        return self._local.list(include_closed)
 
     def info(self, sid: str) -> dict[str, Any] | None:
-        return self._host.info(sid)
+        return self._local.info(sid)
 
     def events(self, sid: str, after: int = 0, max_events: int = 500) -> dict[str, Any]:
-        s = self._host.get(sid)
+        s = self._local.get(sid)
         if s is None:
             raise KeyError("no such session")
         return s.log.since(after, max_events)

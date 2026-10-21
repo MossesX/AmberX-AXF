@@ -1,10 +1,12 @@
 """AI providers for the assistant: one canonical chat format, three wire protocols.
 
-Protocols
+Provider kinds come from the framework registry framework/schemas/ai-providers.json (assistant@1, shared with the web
+core and the Kotlin kernel) plus any kinds in <dataDir>/providers.json. Each kind names a protocol:
   anthropic   Anthropic Messages API (streaming SSE, tools, vision)
   openai      OpenAI Chat Completions and every compatible API (OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek,
               OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI v1, Ollama, LM Studio, vLLM …)
   claude-cli  Claude Code's CLI on a Claude subscription (ported from xGallery's subscription backend)
+  <other>     registered by a module with `register_protocol(name, stream)` (open registry)
 
 Canonical message: {"role": "user"|"assistant"|"tool", "content": str, "images": [{"media_type","data"}],
                     "tool_calls": [{"id","name","arguments": dict}], "tool_call_id": str}
@@ -29,52 +31,53 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Callable, Iterator
 
-# ---------------------------------------------------------------- catalog
+# ---------------------------------------------------------------- catalog (assistant@1: framework/schemas/ai-providers.json)
 
-# Suggested models are starting points only: the wizard and settings fetch each provider's live model list.
-CATALOG: list[dict[str, Any]] = [
-    {"kind": "anthropic", "label": "Anthropic (Claude)", "protocol": "anthropic", "baseUrl": "https://api.anthropic.com", "keyEnv": "ANTHROPIC_API_KEY", "auth": "x-api-key",
-     "models": ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5", "claude-fable-5-1"], "keyUrl": "https://console.anthropic.com/settings/keys", "vision": True, "tools": True},
-    {"kind": "claude-code", "label": "Claude Code (subscription)", "protocol": "claude-cli", "baseUrl": "", "keyEnv": "CLAUDE_CODE_OAUTH_TOKEN", "auth": "oauth",
-     "models": ["claude-opus-5-5", "claude-sonnet-5-5"], "keyUrl": "https://docs.claude.com/en/docs/claude-code/setup", "vision": False, "tools": True,
-     "note": "Uses the `claude` CLI on the console server with a long-lived token from `claude setup-token`. Read-only repo tools are built in."},
-    {"kind": "openai", "label": "OpenAI", "protocol": "openai", "baseUrl": "https://api.openai.com/v1", "keyEnv": "OPENAI_API_KEY", "auth": "bearer",
-     "models": ["gpt-5", "gpt-5-mini", "gpt-4.1", "o4-mini"], "keyUrl": "https://platform.openai.com/api-keys", "vision": True, "tools": True},
-    {"kind": "xai", "label": "xAI Grok", "protocol": "openai", "baseUrl": "https://api.x.ai/v1", "keyEnv": "XAI_API_KEY", "auth": "bearer",
-     "models": ["grok-4", "grok-3", "grok-3-mini"], "keyUrl": "https://console.x.ai", "vision": True, "tools": True},
-    {"kind": "gemini", "label": "Google Gemini", "protocol": "openai", "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai", "keyEnv": "GEMINI_API_KEY", "auth": "bearer",
-     "models": ["gemini-2.5-pro", "gemini-2.5-flash"], "keyUrl": "https://aistudio.google.com/apikey", "vision": True, "tools": True},
-    {"kind": "mistral", "label": "Mistral", "protocol": "openai", "baseUrl": "https://api.mistral.ai/v1", "keyEnv": "MISTRAL_API_KEY", "auth": "bearer",
-     "models": ["mistral-large-latest", "codestral-latest", "mistral-small-latest"], "keyUrl": "https://console.mistral.ai/api-keys", "vision": True, "tools": True},
-    {"kind": "groq", "label": "Groq", "protocol": "openai", "baseUrl": "https://api.groq.com/openai/v1", "keyEnv": "GROQ_API_KEY", "auth": "bearer",
-     "models": ["llama-3.3-70b-versatile", "qwen/qwen3-32b"], "keyUrl": "https://console.groq.com/keys", "vision": False, "tools": True},
-    {"kind": "deepseek", "label": "DeepSeek", "protocol": "openai", "baseUrl": "https://api.deepseek.com/v1", "keyEnv": "DEEPSEEK_API_KEY", "auth": "bearer",
-     "models": ["deepseek-chat", "deepseek-reasoner"], "keyUrl": "https://platform.deepseek.com/api_keys", "vision": False, "tools": True},
-    {"kind": "openrouter", "label": "OpenRouter (hundreds of models)", "protocol": "openai", "baseUrl": "https://openrouter.ai/api/v1", "keyEnv": "OPENROUTER_API_KEY", "auth": "bearer",
-     "models": ["anthropic/claude-sonnet-5.5", "openai/gpt-5", "x-ai/grok-4", "google/gemini-2.5-pro"], "keyUrl": "https://openrouter.ai/keys", "vision": True, "tools": True,
-     "headers": {"HTTP-Referer": "https://console.amberxai.com", "X-Title": "AmberX AXF Assistant"}},
-    {"kind": "together", "label": "Together AI", "protocol": "openai", "baseUrl": "https://api.together.xyz/v1", "keyEnv": "TOGETHER_API_KEY", "auth": "bearer",
-     "models": ["meta-llama/Llama-3.3-70B-Instruct-Turbo"], "keyUrl": "https://api.together.ai/settings/api-keys", "vision": False, "tools": True},
-    {"kind": "fireworks", "label": "Fireworks AI", "protocol": "openai", "baseUrl": "https://api.fireworks.ai/inference/v1", "keyEnv": "FIREWORKS_API_KEY", "auth": "bearer",
-     "models": ["accounts/fireworks/models/llama-v3p3-70b-instruct"], "keyUrl": "https://fireworks.ai/account/api-keys", "vision": False, "tools": True},
-    {"kind": "perplexity", "label": "Perplexity (web-grounded)", "protocol": "openai", "baseUrl": "https://api.perplexity.ai", "keyEnv": "PERPLEXITY_API_KEY", "auth": "bearer",
-     "models": ["sonar-pro", "sonar", "sonar-reasoning"], "keyUrl": "https://www.perplexity.ai/settings/api", "vision": False, "tools": False, "noModelList": True},
-    {"kind": "cohere", "label": "Cohere", "protocol": "openai", "baseUrl": "https://api.cohere.ai/compatibility/v1", "keyEnv": "COHERE_API_KEY", "auth": "bearer",
-     "models": ["command-a-03-2025", "command-r-plus"], "keyUrl": "https://dashboard.cohere.com/api-keys", "vision": False, "tools": True},
-    {"kind": "cerebras", "label": "Cerebras", "protocol": "openai", "baseUrl": "https://api.cerebras.ai/v1", "keyEnv": "CEREBRAS_API_KEY", "auth": "bearer",
-     "models": ["llama-3.3-70b"], "keyUrl": "https://cloud.cerebras.ai", "vision": False, "tools": True},
-    {"kind": "azure-openai", "label": "Azure OpenAI", "protocol": "openai", "baseUrl": "https://YOUR-RESOURCE.openai.azure.com/openai/v1", "keyEnv": "AZURE_OPENAI_API_KEY", "auth": "api-key",
-     "models": [], "keyUrl": "https://portal.azure.com", "vision": True, "tools": True, "note": "Use your resource's OpenAI v1 endpoint; the model is your deployment name."},
-    {"kind": "ollama", "label": "Ollama (local / VPS)", "protocol": "openai", "baseUrl": "http://localhost:11434/v1", "keyEnv": "", "auth": "none",
-     "models": ["llama3.3", "qwen3", "mistral"], "keyUrl": "https://ollama.com/download", "vision": True, "tools": True, "local": True},
-    {"kind": "lmstudio", "label": "LM Studio", "protocol": "openai", "baseUrl": "http://localhost:1234/v1", "keyEnv": "", "auth": "none",
-     "models": [], "keyUrl": "https://lmstudio.ai", "vision": False, "tools": True, "local": True},
-    {"kind": "custom", "label": "Custom OpenAI-compatible (vLLM, llama.cpp, LocalAI …)", "protocol": "openai", "baseUrl": "http://localhost:8000/v1", "keyEnv": "", "auth": "bearer",
-     "models": [], "keyUrl": "", "vision": False, "tools": True},
-]
-BY_KIND = {c["kind"]: c for c in CATALOG}
+_SCHEMA = Path(__file__).resolve().parents[5] / "framework" / "schemas" / "ai-providers.json"
+
+
+def _load_registry() -> list[dict[str, Any]]:
+    try:
+        reg = json.loads(_SCHEMA.read_text())
+        base = [p for p in reg.get("providers", []) if isinstance(p, dict) and p.get("kind")]
+    except (OSError, ValueError):
+        base = []
+    try:
+        from . import store
+        extra = store.extra_provider_kinds()
+    except Exception:  # noqa: BLE001
+        extra = []
+    out: dict[str, dict[str, Any]] = {}
+    for p in [*base, *extra]:  # later kinds with the same id replace earlier ones (open registry)
+        out[str(p["kind"])] = p
+    return list(out.values())
+
+
+CATALOG: list[dict[str, Any]] = _load_registry()
+BY_KIND: dict[str, dict[str, Any]] = {c["kind"]: c for c in CATALOG}
+
+
+def reload_catalog() -> None:
+    """Re-read the registry (after providers.json in the data folder changed)."""
+    CATALOG[:] = _load_registry()
+    BY_KIND.clear()
+    BY_KIND.update({c["kind"]: c for c in CATALOG})
+
+
+def kind(k: str) -> dict[str, Any]:
+    return BY_KIND.get(k or "", {})
+
+
 TIMEOUT = float(os.environ.get("AXF_AI_TIMEOUT", "300"))
 _SSL = ssl.create_default_context()
+
+# Wire protocols by name (open registry): a module may register another with `register_protocol`.
+PROTOCOLS: dict[str, Callable[..., Iterator[dict[str, Any]]]] = {}
+
+
+def register_protocol(name: str, stream: Callable[..., Iterator[dict[str, Any]]]) -> None:
+    """stream(profile, messages, system, model, tools, params, cancel, **extra) -> provider events."""
+    PROTOCOLS[name] = stream
 
 
 class ProviderError(Exception):
@@ -263,7 +266,7 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
     earlier sessions' transcripts. Tools are [{name, description, parameters (JSON Schema)}]; tool execution is the caller's job.
     ``tool_runner(name, args) -> (ok, text)`` is for providers that run their own tool loop (the Claude Code CLI)."""
     proto = protocol_of(profile)
-    model = model or profile.get("defaultModel") or (BY_KIND.get(profile.get("kind", ""), {}).get("models") or [""])[0]
+    model = model or profile.get("defaultModel") or (kind(profile.get("kind", "")).get("models") or [""])[0]
     if not model:
         raise ProviderError("no model selected for this provider", 400)
     params = params or {}
@@ -271,8 +274,12 @@ def stream_chat(profile: dict[str, Any], messages: list[dict[str, Any]], *, syst
         yield from _stream_anthropic(profile, messages, system, model, tools, params, cancel)
     elif proto == "claude-cli":
         yield from _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=tools, tool_runner=tool_runner, read_files=read_files)
-    else:
+    elif proto == "openai":
         yield from _stream_openai(profile, messages, system, model, tools, params, cancel)
+    elif proto in PROTOCOLS:
+        yield from PROTOCOLS[proto](profile, messages, system, model, tools, params, cancel, cwd=cwd, tool_runner=tool_runner, read_files=read_files)
+    else:
+        raise ProviderError(f"no driver for protocol {proto}", 400)
 
 
 def _stream_anthropic(profile, messages, system, model, tools, params, cancel):
@@ -354,10 +361,10 @@ def _stream_openai(profile, messages, system, model, tools, params, cancel):
     if not key and auth not in ("none",) and not BY_KIND.get(profile.get("kind", ""), {}).get("local"):
         raise ProviderError("no API key: add one in the profile or set its environment variable", 400)
     body: dict[str, Any] = {"model": model, "messages": _to_openai(messages, system), "stream": True}
-    if profile.get("kind") not in ("perplexity",):
+    if not kind(profile.get("kind", "")).get("noStreamUsage"):
         body["stream_options"] = {"include_usage": True}
     if params.get("max_tokens"):
-        body["max_tokens" if profile.get("kind") not in ("openai", "azure-openai") else "max_completion_tokens"] = int(params["max_tokens"])
+        body[kind(profile.get("kind", "")).get("maxTokensField") or "max_tokens"] = int(params["max_tokens"])
     for k in ("temperature", "top_p", "presence_penalty", "frequency_penalty"):
         if params.get(k) is not None:
             body[k] = float(params[k])
@@ -637,7 +644,7 @@ def embed(profile: dict[str, Any], texts: list[str], model: str | None = None) -
     proto = protocol_of(profile)
     if proto != "openai":
         raise ProviderError("embeddings need an OpenAI-compatible provider (OpenAI, Ollama, Mistral, Together …)", 400)
-    model = model or profile.get("embedModel") or ("nomic-embed-text" if profile.get("kind") == "ollama" else "text-embedding-3-small")
+    model = model or profile.get("embedModel") or kind(profile.get("kind", "")).get("embedModel") or "text-embedding-3-small"
     with _open(f"{_base(profile)}/embeddings", _headers(profile, resolve_key(profile)), {"model": model, "input": texts[:64]}, timeout=60) as r:
         data = json.loads(r.read()).get("data", [])
     return [d.get("embedding", []) for d in sorted(data, key=lambda d: d.get("index", 0))]

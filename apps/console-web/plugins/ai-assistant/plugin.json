@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ai-assistant",
   "name": "AI assistant",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "AI assistant ported from xGallery and extended: Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio and any OpenAI-compatible server. Setup wizard in Settings → Plugins → AI assistant; settings dialog inside the chat. Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) can chat too, at /api/plugins/ai-assistant/app: plain chat by default, more through permissions on the hub's users page.",
+  "description": "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, any OpenAI-compatible server), setup wizard in Settings → Plugins → AI assistant, settings dialog inside the chat, live sessions on an open host registry, write-mode approval cards, the Claude Code MCP bridge. Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) chat at /api/plugins/ai-assistant/app with permissions from the hub's users page.",
   "targets": [
     "axf-console",
     "axf-web-app"
@@ -16,11 +16,14 @@
     "dialog:ai-assistant.chat",
     "settings-tab:ai-assistant",
     "action:ai-assistant.open",
+    "action:ai.chat.start",
     "service:axf.llm@1",
     "service:axf.live-sessions@1"
   ],
   "optional": [
-    "service:axf.agents@1"
+    "service:axf.agents@1",
+    "service:axf.containers@1",
+    "service:axf.live-host@1"
   ],
   "scopes": [
     "ROUTES",
@@ -28,8 +31,8 @@
   ],
   "enabledByDefault": true,
   "builtWith": {
-    "model": "opus",
-    "replacedBy": "pending item ai-assistant-plugin (Fable)"
+    "model": "fable",
+    "rebuiltFrom": "Opus build of Oct 18 2026 (pending item ai-assistant-plugin)"
   },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -51,12 +54,15 @@
       "CEREBRAS_API_KEY",
       "AZURE_OPENAI_API_KEY",
       "AXF_AI_ASSISTANT_DIR",
-      "AXF_AI_TIMEOUT"
+      "AXF_AI_TIMEOUT",
+      "AXF_AI_CLI_TIMEOUT",
+      "CLAUDE_BIN"
     ],
     "mentions": [
       "CLAUDE.md",
       "apps/console-web/plugins/README.md",
-      "framework/spec/LIVE-SESSIONS.md"
+      "framework/spec/LIVE-SESSIONS.md",
+      "framework/spec/ASSISTANT.md"
     ]
   },
   "wallUsers": true

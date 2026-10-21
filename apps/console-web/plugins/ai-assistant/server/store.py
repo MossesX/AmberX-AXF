@@ -3,7 +3,14 @@
     .axf-console/plugins/ai-assistant/        (AXF_AI_ASSISTANT_DIR overrides; 0700)
       config.json          settings + provider profiles (stored keys live only here, 0600; never sent to the browser)
       usage.json           calls and tokens per day / profile / model
-      conversations/<id>.json
+      usage-users.json     tokens per hub user per day (the per-user daily cap)
+      conversations/<id>.json   ai-conversation@1
+      sessions/<id>.json   live-session@1 event logs (sessions.py)
+      providers.json       optional: extra provider kinds (ai-providers@1 shape) merged over the framework registry
+
+Formats are unchanged from the Opus build (ai-assistant-config@1, ai-conversation@1), so nothing migrates today; the
+`migrate()` runner below is where a later format change goes (it stamps `schema` in config.json and runs the steps
+once, in order).
 """
 from __future__ import annotations
 
@@ -15,14 +22,18 @@ import threading
 import time
 from copy import deepcopy
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
+
+from . import contract
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AI_ASSISTANT_DIR", ROOT / ".axf-console" / "plugins" / "ai-assistant"))
 CONV = DATA / "conversations"
 _lock = threading.RLock()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,47}$")
+CONV_ID_RE = re.compile(r"^[a-z0-9-]{4,64}$")
 MASK = "••••••••"
+SCHEMA = 1  # data-folder schema version; bump with a migration step
 
 PERSONAS: dict[str, str] = {
     "professional": "Be precise, well structured and professional. Prefer short paragraphs and lists; use code blocks for code, commands and paths.",
@@ -35,6 +46,7 @@ PERSONAS: dict[str, str] = {
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "$axf": "ai-assistant-config@1",
+    "schema": SCHEMA,
     "setupComplete": False,
     "assistantName": "Amber",
     "persona": "professional",
@@ -54,6 +66,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "defaultAgent": "",
     "sessionHost": "local",
     "userDailyTokens": 50000,
+    "keepInterrupted": True,
     "suggestions": [
         "Explain how the theme engine compiles a color-theme asset",
         "Where are console plugins loaded, and how do I write one?",
@@ -73,7 +86,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
 def _write(path: Path, data: Any, private: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2))
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False))
     if private:
         os.chmod(tmp, 0o600)
     tmp.replace(path)
@@ -94,10 +107,41 @@ def new_id(prefix: str = "") -> str:
     return f"{prefix}{time.strftime('%y%m%d')}-{secrets.token_hex(4)}"
 
 
+# ---------------------------------------------------------------- migrations (format changes land here)
+
+# (from_schema, step): each step takes the raw config dict and the data folder and returns the new config dict.
+MIGRATIONS: list[tuple[int, Callable[[dict[str, Any], Path], dict[str, Any]]]] = []
+_migrated = False
+
+
+def migrate() -> int:
+    """Run pending migration steps once per process; returns the schema version in force."""
+    global _migrated
+    with _lock:
+        if _migrated:
+            return SCHEMA
+        _migrated = True
+        raw = _read(DATA / "config.json", None)
+        if not isinstance(raw, dict):
+            return SCHEMA
+        have = int(raw.get("schema") or 0)
+        changed = False
+        for frm, step in sorted(MIGRATIONS, key=lambda m: m[0]):
+            if have <= frm < SCHEMA:
+                raw = step(raw, DATA)
+                have = frm + 1
+                changed = True
+        if changed or raw.get("schema") != SCHEMA:
+            raw["schema"] = SCHEMA
+            _write(DATA / "config.json", raw, private=True)
+        return SCHEMA
+
+
 # ---------------------------------------------------------------- config + profiles
 
 def load_config() -> dict[str, Any]:
     with _lock:
+        migrate()
         raw = _read(DATA / "config.json", {})
         cfg = {**deepcopy(DEFAULT_CONFIG), **raw}
         cfg["params"] = {**DEFAULT_CONFIG["params"], **(raw.get("params") or {})}
@@ -107,17 +151,26 @@ def load_config() -> dict[str, Any]:
 
 def save_config(cfg: dict[str, Any]) -> None:
     with _lock:
+        cfg["schema"] = SCHEMA
         _write(DATA / "config.json", cfg, private=True)
+
+
+def extra_provider_kinds() -> list[dict[str, Any]]:
+    """App-added provider kinds (ai-providers@1 shape) from the data folder; merged over the framework registry."""
+    raw = _read(DATA / "providers.json", {})
+    items = raw.get("providers") if isinstance(raw, dict) else raw
+    return [p for p in (items or []) if isinstance(p, dict) and isinstance(p.get("kind"), str) and p.get("kind")]
 
 
 def public_profile(pid: str, p: dict[str, Any]) -> dict[str, Any]:
     from . import providers
     env = p.get("keyEnv") or ""
+    cat = providers.kind(p.get("kind", ""))
     return {
         "id": pid, "kind": p.get("kind", "custom"), "label": p.get("label") or pid, "baseUrl": p.get("baseUrl", ""),
-        "auth": p.get("auth") or providers.BY_KIND.get(p.get("kind", ""), {}).get("auth", "bearer"),
+        "auth": p.get("auth") or cat.get("auth", "bearer"),
         "keyEnv": env, "hasKey": bool(p.get("key")), "envPresent": bool(env and os.environ.get(env)),
-        "keyReady": bool(providers.resolve_key(p)) or providers.BY_KIND.get(p.get("kind", ""), {}).get("local", False) or p.get("auth") == "none",
+        "keyReady": bool(providers.resolve_key(p)) or bool(cat.get("local")) or p.get("auth") == "none",
         "defaultModel": p.get("defaultModel", ""), "models": p.get("models", []), "embedModel": p.get("embedModel", ""),
         "enabled": p.get("enabled", True) is not False, "headers": {k: MASK for k in (p.get("headers") or {})},
         "lastTest": p.get("lastTest"), "createdAt": p.get("createdAt"),
@@ -137,11 +190,11 @@ def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
         cfg = load_config()
         profiles = cfg.setdefault("profiles", {})
         kind = str(body.get("kind") or "custom")
-        if kind not in providers.BY_KIND:
+        cat = providers.kind(kind)
+        if not cat:
             raise ValueError(f"unknown provider kind {kind}")
         pid = str(body.get("id") or "").strip()
-        new = not pid
-        if new:
+        if not pid:
             base = re.sub(r"[^a-z0-9]+", "-", str(body.get("label") or kind).lower()).strip("-")[:40] or kind
             pid, n = base, 2
             while pid in profiles:
@@ -149,7 +202,6 @@ def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
         if not ID_RE.match(pid):
             raise ValueError("profile id must be lowercase letters, digits and dashes")
         old = profiles.get(pid, {})
-        cat = providers.BY_KIND[kind]
         env = str(body.get("keyEnv", old.get("keyEnv", cat.get("keyEnv", ""))) or "")
         if env and not re.match(r"^[A-Z_][A-Z0-9_]{0,63}$", env):
             raise ValueError("keyEnv must be an environment variable name like OPENAI_API_KEY")
@@ -227,8 +279,7 @@ def add_usage(pid: str, model: str, usage: dict[str, Any]) -> None:
         slot["calls"] += 1
         slot["input"] += int(usage.get("input", 0) or 0)
         slot["output"] += int(usage.get("output", 0) or 0)
-        days = sorted(u["days"])
-        for d in days[:-120]:
+        for d in sorted(u["days"])[:-120]:
             u["days"].pop(d, None)
         _write(DATA / "usage.json", u)
 
@@ -272,41 +323,101 @@ def user_tokens_today(user: str) -> int:
     return int((u.get("days", {}).get(time.strftime("%Y-%m-%d"), {}) or {}).get(user, 0))
 
 
+def user_usage_summary() -> list[dict[str, Any]]:
+    """Per-user token totals for today and the last 30 days (admins' usage panel)."""
+    u = _read(DATA / "usage-users.json", {"days": {}})
+    today = time.strftime("%Y-%m-%d")
+    out: dict[str, dict[str, int]] = {}
+    for day, users in sorted(u.get("days", {}).items())[-30:]:
+        for name, n in (users or {}).items():
+            slot = out.setdefault(name, {"today": 0, "month": 0})
+            slot["month"] += int(n or 0)
+            if day == today:
+                slot["today"] += int(n or 0)
+    return [{"user": k, **v} for k, v in sorted(out.items())]
+
+
 # ---------------------------------------------------------------- conversations
 
 def _cpath(cid: str) -> Path:
-    if not re.match(r"^[a-z0-9-]{4,64}$", cid):
+    if not CONV_ID_RE.match(cid or ""):
         raise KeyError(cid)
     return CONV / f"{cid}.json"
 
 
-def list_conversations(q: str = "", archived: bool = False, owner: str | None = None) -> list[dict[str, Any]]:
-    """owner=None lists everything (admins); otherwise only that hub user's conversations."""
+def _summary(c: dict[str, Any]) -> dict[str, Any]:
+    msgs = c.get("messages", [])
+    last = next((m for m in reversed(msgs) if m.get("role") in ("user", "assistant")), None)
+    return {"id": c["id"], "title": c.get("title", "New conversation"), "pinned": bool(c.get("pinned")), "archived": bool(c.get("archived")),
+            "tags": c.get("tags", []), "updatedAt": c.get("updatedAt"), "createdAt": c.get("createdAt"),
+            "messages": sum(1 for m in msgs if m.get("role") in ("user", "assistant")),
+            "agentId": (c.get("settings") or {}).get("agentId", ""), "owner": c.get("owner") or "", "preview": str((last or {}).get("content", ""))[:120]}
+
+
+# Listing re-reads only files that changed (mtime + size), so a big history stays cheap to list and search.
+_index: dict[str, tuple[tuple[int, int], dict[str, Any], str]] = {}
+
+
+def _scan() -> list[tuple[dict[str, Any], str]]:
+    """(summary, searchable text) for every conversation file, from the cache where unchanged."""
     out = []
     if not CONV.exists():
         return out
+    seen = set()
+    with _lock:
+        for f in CONV.glob("*.json"):
+            try:
+                st = f.stat()
+            except OSError:
+                continue
+            key = (int(st.st_mtime_ns), st.st_size)
+            seen.add(f.name)
+            hit = _index.get(f.name)
+            if hit and hit[0] == key:
+                out.append((hit[1], hit[2]))
+                continue
+            c = _read(f, None)
+            if not isinstance(c, dict) or not c.get("id"):
+                continue
+            text = (c.get("title", "") + "\n" + "\n".join(str(m.get("content", "")) for m in c.get("messages", []))).lower()
+            s = _summary(c)
+            _index[f.name] = (key, s, text)
+            out.append((s, text))
+        for gone in [k for k in _index if k not in seen]:
+            _index.pop(gone, None)
+    return out
+
+
+def list_conversations(q: str = "", archived: bool = False, owner: str | None = None, tag: str = "") -> list[dict[str, Any]]:
+    """owner=None lists everything (admins); otherwise only that hub user's conversations."""
     ql = q.lower().strip()
-    for f in CONV.glob("*.json"):
-        c = _read(f, None)
-        if not isinstance(c, dict):
+    out = []
+    for s, text in _scan():
+        if s["archived"] != archived:
             continue
-        if bool(c.get("archived")) != archived:
+        if owner is not None and s["owner"] != owner:
             continue
-        if owner is not None and c.get("owner") != owner:
+        if tag and tag not in s["tags"]:
             continue
-        if ql and ql not in c.get("title", "").lower() and not any(ql in str(m.get("content", "")).lower() for m in c.get("messages", [])):
+        if ql and ql not in text:
             continue
-        last = next((m for m in reversed(c.get("messages", [])) if m.get("role") in ("user", "assistant")), None)
-        out.append({"id": c["id"], "title": c.get("title", "New conversation"), "pinned": bool(c.get("pinned")), "archived": bool(c.get("archived")),
-                    "tags": c.get("tags", []), "updatedAt": c.get("updatedAt"), "createdAt": c.get("createdAt"),
-                    "messages": sum(1 for m in c.get("messages", []) if m.get("role") in ("user", "assistant")),
-                    "agentId": (c.get("settings") or {}).get("agentId", ""), "owner": c.get("owner") or "", "preview": str(last.get("content", ""))[:120] if last else ""})
+        out.append(dict(s))
     out.sort(key=lambda c: (not c["pinned"], -(c["updatedAt"] or 0)))
     return out
 
 
+def all_tags(owner: str | None = None) -> list[str]:
+    tags: dict[str, int] = {}
+    for s, _ in _scan():
+        if owner is not None and s["owner"] != owner:
+            continue
+        for t in s["tags"]:
+            tags[t] = tags.get(t, 0) + 1
+    return [t for t, _ in sorted(tags.items(), key=lambda kv: (-kv[1], kv[0]))]
+
+
 def create_conversation(settings: dict[str, Any] | None = None, title: str = "New conversation", owner: str | None = None) -> dict[str, Any]:
-    c = {"$axf": "ai-conversation@1", "id": new_id("c"), "title": title[:120], "createdAt": now_ms(), "updatedAt": now_ms(),
+    c = {"$axf": contract.CONVERSATION_CONTRACT, "id": new_id("c"), "title": title[:120], "createdAt": now_ms(), "updatedAt": now_ms(),
          "pinned": False, "archived": False, "tags": [], "settings": settings or {}, "messages": []}
     if owner:
         c["owner"] = owner  # a hub user's conversation (live-session / wall users); admins' have no owner
@@ -331,3 +442,4 @@ def delete_conversation(cid: str) -> None:
     if not p.exists():
         raise KeyError(cid)
     p.unlink()
+    _index.pop(p.name, None)
