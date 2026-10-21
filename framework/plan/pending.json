@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T03:59:00.743Z",
+ "updatedAt": "2026-10-21T10:20:04.160Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -329,7 +329,12 @@
    "detail": "Brett, Oct 20 2026: the Android console app needs Pilot and axHub tabs like the web console's App tabs plugin. Option A: every tab runs inside the app — Build Pilot (pilot.amberxai.com) and axHub (axhub.amberxai.com, Apps page + approvals) in locked-down in-app web views; nothing ever opens the phone's browser. Fable (the Compose AppShell gains the shared page slots the web shell has). Broken into small builds (sub prompts) so it can be worked on a little at a time; each sub prompt stands alone and leaves the app building.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.159Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "1. Compose AppShell page slots: `app.frame.top` (above the banner) and `app.frame.cover` (over the shell) as framework slots in `axf-ui` (`Slots.kt`, same names and contract as `framework/react/components/Slots.tsx`); kernel `ExtensionPoints` entry so modules contribute; fixture-free but unit-tested; wire the Android console showcase to render them.",
@@ -384,7 +389,7 @@
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.740Z",
+   "updatedAt": "2026-10-21T10:20:04.159Z",
    "source": "chat"
   },
   {
@@ -393,7 +398,12 @@
    "detail": "Brett, Oct 20 2026: option B — Build Pilot and the axHub admin pages running natively in the Android console app (Compose), no web views. This is the Android version of Build Pilot (roadmap) plus a native hub admin client, built as small Fable steps that each stand alone. Depends on the pending `axhub-agent-host` for sessions and on axHub's admin API (its step 4). Work on it a little at a time: every sub prompt ships something usable.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.160Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "1. Build Pilot contract on Kotlin: port `src/pilot/contract.ts` (pilot-plugin@1 manifest checks, `servesStack`, `pluginsFor`, `compose` merge + conflicts, `BuildRequest` incl. `hidden`/`assets`) to a pure-Kotlin `axf-pilot-core` with fixtures shared with the web (`spec/fixtures/pilot-contract.json` generated from the TS reference) — the Fable rebuild `build-pilot-contract` folds in here.",
@@ -458,7 +468,7 @@
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.743Z",
+   "updatedAt": "2026-10-21T10:20:04.160Z",
    "source": "chat"
   }
  ]
