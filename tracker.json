@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T04:47:30.360Z",
+  "generatedAt": "2026-10-21T10:24:46.292Z",
   "summary": {
     "foundations": {
       "built": 67,
@@ -13,8 +13,8 @@
     },
     "kernel": {
       "built": 77,
-      "partial": 6,
-      "placeholder": 95,
+      "partial": 7,
+      "placeholder": 94,
       "planned": 0,
       "total": 178,
       "coverage": 43
@@ -2439,9 +2439,9 @@
       "group": "navigation-data-network",
       "title": "GitHub client (repos, commits, actions, releases, issues)",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
-      "module": null,
+      "module": "axf_server.github",
       "notes": ""
     },
     {

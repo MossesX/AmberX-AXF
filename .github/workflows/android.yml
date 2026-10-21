@@ -31,6 +31,7 @@ jobs:
       - run: node framework/spec/check-project-fixtures.mjs          # JS validator = reference fixtures
       - run: node framework/spec/check-plugin-catalog.mjs            # plugin-catalog@1: pack, publish, verify, install guards
       - run: node framework/spec/check-axf-server.mjs                # wall-signature + plugin-package fixtures still match their references
+      - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -84,7 +85,8 @@ jobs:
           npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
           python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
           node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
-          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages
+          node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
+          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
           npx -y tsx framework/spec/check-plugin-inventory.mts
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py

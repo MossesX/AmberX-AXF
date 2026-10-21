@@ -947,9 +947,10 @@
     "module": null
   },
   "w.github": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "axf_server.github",
+    "note": "Oct 21 2026 (harvest lib-github, Opus): server-side GitHub REST helpers built for Python (framework/python/axf_server/github.py) and Node (framework/cli/github.mjs), one fixture (spec/fixtures/github.json); the console, its plugins, claude-project and the project wizard use them. Not yet: the Android port (lib-github), a demo app, uploads/GitHub App tokens/GraphQL (placeholders)."
   },
   "w.hostinger": {
     "status": "placeholder",

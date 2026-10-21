@@ -13,8 +13,10 @@ covered by `framework/python/axf_server/test.py`; the cross-language parts repla
     axf_server.credentials     0600 env-file credential store (KEY=value lines)
     axf_server.console_client  the Dev Console's token file (mtime cache) + server-to-server calls to its API
     axf_server.plugin_package  plugin-package@1 checks (the Python port of framework/cli/plugin-catalog.mjs)
+    axf_server.github          lib-github: GitHub REST client on HttpClient + pure rules (fixture github.json, Node twin
+                               framework/cli/github.mjs)
 
-Extension point: `axf_server.github` (lib-github) is built on `axf_server.http.HttpClient` — see that class.
+`axf_server.github` (lib-github) is built on `axf_server.http.HttpClient`.
 
 Import path: the package lives in `framework/python`; put that folder on `sys.path` (the console's
 `server/axf_framework.py` does it, the console image sets PYTHONPATH) and `import axf_server.<module>`.

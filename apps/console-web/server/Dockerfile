@@ -23,7 +23,7 @@ ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-con
 # repo copy above and with the host clone install-console.sh mounts over /axf; server/axf_framework.py adds the same
 # folder at import time, so tests and a bare `uvicorn main:app` work without this variable too.
 ENV PYTHONPATH=/axf/framework/python
-RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package"
+RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package, axf_server.github"
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
 # exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly

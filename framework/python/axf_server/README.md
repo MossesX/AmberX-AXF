@@ -11,6 +11,7 @@ through its contract bake. Self-test: `python3 framework/python/axf_server/test.
 | `http` | `request` (https only, plain http only to loopback / named hosts; `redirects="never"` or `"strip-auth"` with `auth_origins`; size cap; timeout; injectable transport), `get_json`, `post_json`, `target_ok`, `HttpClient` | `_NoRedirect`/`_NoAuthRedirect`/`_target_ok` copies, `main._gh`, systems-check `_http`, hostfix `_rpc` |
 | `credentials` | `CredStore`: 0600 env file of `KEY=value`, `set`/`clear`/`load_into_env`, line breaks refused | console `server/credentials.py` store |
 | `console_client` | `TokenFile` (the `AXF_TOKEN=` line, mtime cache, atomic rewrite), `ConsoleClient` (`call`, `raw`; never follows a redirect) | console `current_token`/`_write_token`, Build Pilot `console()`/`console_raw()`/`console_token()` |
+| `github` | lib-github (`x.lib.github`): `GitHubClient` on `HttpClient` (token only to the API origin, API calls never follow redirects, `download()` fetches GitHub's redirect without the token — https only, 5 hops —, size caps, scrubbed `GitHubError`), `repo_path`/`api_path` (checked names and parts), `valid_repo`/`parse_repo`, `next_link`, `run_state`, `token_allowed`, `redirect_step`, `git_env` (token to git via `GIT_CONFIG_*` only), `scrub`, `zip_member` (unzipped size cap). Node twin `framework/cli/github.mjs`; fixture `spec/fixtures/github.json` (`node framework/spec/check-github.mjs`) | console `app_ci._http`/`_api`/git header, `app_catalog._api`/`_http`, `main._gh`/`release_download`, `alerts._gh`, activity `_github_get`, systems-check's GitHub check; Node: `claude-project.mjs`, project-wizard `wizard.mjs`, `plugin-lifecycle.mjs` + session-checkin push auth |
 | `plugin_package` | plugin-package@1 checks = `framework/cli/plugin-catalog.mjs` (same messages and content hash; fixture `spec/fixtures/plugin-package.json`) | Build Pilot `server/plugin_install.py` checks |
 
 ## Using it
@@ -19,11 +20,9 @@ In the console: `import axf_framework` (server/axf_framework.py puts `framework/
 sets `PYTHONPATH=/axf/framework/python`), then `from axf_server import storage, http`. Plugins may import it
 (a framework import keeps plugin-lifecycle@1 clean); they never import each other.
 
-## Extension point: `axf_server.github` (lib-github, next)
+## lib-github (`axf_server.github`)
 
-Build it on `http.HttpClient`: base `https://api.github.com`, `auth=lambda: f"Bearer {token()}"`,
-`headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}`,
-`redirects="strip-auth"`, `auth_origins={"https://api.github.com"}` (artifact zips redirect to blob storage without
-the token). Paths stay on the base origin (`HttpClient.url` refuses another host). Then switch `app_ci._api`/`_http`,
-`app_catalog._api`, `alerts.AlertHub._gh`, `main._gh`/`release_download`, activity `_github_get` and systems-check's
-GitHub check to it.
+Built (Oct 21 2026). Use `GitHubClient(token_provider, user_agent=…)` for every GitHub REST call; never build an
+`https://api.github.com/…` request by hand or pass a URL from an API answer to plain `http.request` with the token.
+Placeholders: uploads.github.com (release assets), GitHub App installation tokens, GraphQL, ETag caching / rate-limit
+backoff, and an Android port (`framework/android/lib-github`, planned in `x.lib.github`).
