@@ -124,3 +124,20 @@
 .axp-ai-assistant__tagchip { cursor: pointer; border: var(--fx-border-w) solid transparent; font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14) }
 .axp-ai-assistant__tagchip.is-active { border-color: var(--fx-accent); color: var(--fx-accent) }
 .axp-ai-assistant__msg.is-interrupted .axp-ai-assistant__bubble { border-color: var(--fx-warning) }
+
+/* Activity icon in the title bars (activity.tsx): breathes while thinking, an accent arc orbits while working. */
+.axp-ai-assistant__h1 { display: flex; align-items: center; gap: var(--fx-space) }
+.axp-ai-assistant__mark { position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: 999px; color: var(--fx-text); transition: color var(--fx-motion) ease-out }
+.axp-ai-assistant__mark > svg { position: relative; z-index: 1 }
+.axp-ai-assistant__mark-ring { position: absolute; inset: 0; border-radius: 999px; border: calc(var(--fx-border-w) * 2) solid transparent; opacity: 0 }
+.axp-ai-assistant__mark.is-thinking, .axp-ai-assistant__mark.is-working { color: var(--fx-accent) }
+.axp-ai-assistant__mark.is-thinking > svg { animation: axp-ai-assistant-breathe 1.6s ease-in-out infinite }
+.axp-ai-assistant__mark.is-thinking .axp-ai-assistant__mark-ring { opacity: 1; background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); animation: axp-ai-assistant-halo 1.6s ease-in-out infinite }
+.axp-ai-assistant__mark.is-working .axp-ai-assistant__mark-ring { opacity: 1; border-top-color: var(--fx-accent); border-right-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); animation: axp-ai-assistant-orbit 0.9s linear infinite }
+@keyframes axp-ai-assistant-breathe { 50% { transform: scale(0.82); opacity: var(--fx-opacity-muted) } }
+@keyframes axp-ai-assistant-halo { 0%, 100% { transform: scale(0.7); opacity: 0 } 50% { transform: scale(1); opacity: 1 } }
+@keyframes axp-ai-assistant-orbit { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) {
+  .axp-ai-assistant__mark > svg, .axp-ai-assistant__mark-ring { animation: none !important }
+  .axp-ai-assistant__mark.is-working .axp-ai-assistant__mark-ring { border-color: var(--fx-accent) }
+}
