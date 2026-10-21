@@ -2,23 +2,28 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-manager",
   "name": "Build manager",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Everything that still needs building in one list: pending builds not complete, build-queue steps not done (rework included) and plan features nothing else covers, one row per build (linked by planId). Each row shows its source, model, status, time left (estimate minus done steps, or 'no estimate'), steps progress, a 'needs split' badge for builds over 30 minutes without steps, and its steps with estimates and ticks. Filters, sorts and time left per model (Fable / Opus / Sonnet). A live tracker shows what's building right now (activity feed + builds marked in progress) with elapsed vs estimate, and a compact banner shows while a build from the list runs or just finished.",
+  "description": "Everything about builds in one place. Remaining: pending items not complete, build-queue steps not done and plan features nothing else covers, one row per build, with model, status, time left, steps and 'needs split'; Start build now (row button + context menu) plans it (dependencies first, queue reordered, never on top of a running build or its folders), asks axHub vps.run (Brett approves) to run headless Claude Code on the VPS on its own branch, then checks nothing broke. Live: every build any session on any machine reported to axHub (VPS, other computers, claude.ai, console launches, subagents), in real time, with elapsed vs estimate, cost, model, where it runs and a 'no word' flag when a session goes quiet, plus the activity feed. Built: every finished build with time and cost (actual or estimated), totals by model and week, filters. One search bar across all three. Banner while something builds.",
   "targets": [
     "axf-console"
   ],
   "provides": [
-    "view:build-manager",
-    "banner:build-manager",
-    "settings-tab:build-manager",
+    "action:build-manager.built",
+    "action:build-manager.live",
     "action:build-manager.open",
-    "search:build-manager.items"
+    "action:build-manager.start",
+    "banner:build-manager",
+    "search:build-manager.items",
+    "search:build-manager.log",
+    "settings-tab:build-manager",
+    "view:build-manager"
   ],
   "optional": [
-    "service:axf.activity@1"
+    "service:axf.activity@1",
+    "service:axf.changes@1"
   ],
   "scopes": [
     "ROUTES"

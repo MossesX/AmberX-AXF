@@ -15,7 +15,7 @@ One line per machine (needs Node 18+ and a clone of AmberX-AXF; the hub token fr
 `AXHUB_TOKEN`, lets it write to axHub from anywhere):
 
 ```bash
-node ~/AmberX-AXF/apps/console-web/plugins/codebase-changes/changes.mjs hooks install   # user settings: every project
+node ~/AmberX-AXF/apps/console-web/plugins/codebase-changes/changes.mjs hooks install   # user settings: every project  <!-- axf-plugin:codebase-changes -->
 ```
 
 `deploy/claude-pick.sh --install` runs it too. The hooks (`~/.claude/settings.json`, all projects) open an entry when
@@ -24,7 +24,7 @@ steps, mark "waiting for you", and on Stop / SessionEnd fill in the **actual tok
 transcript (prices: `framework/schemas/model-pricing.json`). They never block Claude Code. Then, before building:
 
 ```bash
-C=~/AmberX-AXF/apps/console-web/plugins/codebase-changes/changes.mjs
+C=~/AmberX-AXF/apps/console-web/plugins/codebase-changes/changes.mjs  <!-- axf-plugin:codebase-changes -->
 node $C update <id> --ref pending:lib-clone --model opus --estimate-min 90 --areas "apps/console-web/plugins/x,framework/core/y" --branch feat/x
 node $C step <id> "Server routes" --state running      # … --state done
 node $C result <id> --state done --summary "…" --branch feat/x --commit abc1234 --link pr=https://github.com/…
@@ -79,5 +79,5 @@ and at the end. `if_version: "new"` on the first write; pass the version you rea
 - Heartbeat: rewrite with a new `lastSeenAt` at least every 10 minutes while working, or the Build manager shows "no word".
 - Never write tokens, keys or passwords into an entry.
 
-Validators: `apps/console-web/plugins/codebase-changes/changes-core.mjs` (Node) = `server/store.py` (Python), schema
+Validators: `apps/console-web/plugins/codebase-changes/changes-core.mjs` (Node) = `server/store.py` (Python), schema  <!-- axf-plugin:codebase-changes -->
 `schema/change-log.schema.json`. Check an entry: `node changes.mjs validate < entry.json`. <!-- axf-plugin:codebase-changes -->

@@ -141,4 +141,88 @@ ok(real.every((r) => !(r.source !== 'pending' && claimedIds.has(r.id))), 'real d
 ok(real.filter((r) => r.source === 'pending').length === pend.items.filter((i) => i.status !== 'complete').length, 'real data: every open pending item listed');
 const rt = m.totalsByModel(real);
 ok(Number.isFinite(rt.all.left) && rt.Fable.count + rt.Opus.count + rt.Sonnet.count === rt.all.count, `real data totals: Fable ${pc.formatMinutes(rt.Fable.left)}, Opus ${pc.formatMinutes(rt.Opus.left) || '0'}, Sonnet ${pc.formatMinutes(rt.Sonnet.left) || '0'}`);
+/* ---------- build log: Live + Built (history.mjs) ---------- */
+const hs = await import('./web/history.mjs');
+const iso = (t) => new Date(t).toISOString();
+const sums = [
+  { id: 'chg-20261021-aaaaaa0001', title: 'Running on the VPS', kind: 'build', model: 'claude-opus-5-5', state: 'running', status: 'running', createdAt: iso(now - 40 * 60_000), updatedAt: iso(now - 60_000),
+    startedAt: iso(now - 40 * 60_000), lastSeenAt: iso(now - 60_000), estimate: { minutes: 80, costUsd: 11.2 }, surface: 'vps-claude-code', host: 'vps1', buildRef: { kind: 'pending', id: 'p-steps' },
+    steps: { total: 4, done: 1, failed: 0, running: 'Server routes' }, activity: 'Editing server/__init__.py', areas: ['apps/console-web/plugins/x'], branch: 'feat/x', result: null, closed: null, repos: [], where: 'vps' },
+  { id: 'chg-20261021-aaaaaa0002', title: 'Gone quiet', kind: 'build', model: 'fable', state: 'running', status: 'running', createdAt: iso(now - 3 * 3600_000), updatedAt: iso(now - 30 * 60_000),
+    lastSeenAt: iso(now - 30 * 60_000), surface: 'claude-ai', steps: { total: 0, done: 0, failed: 0, running: '' }, result: null, closed: null, repos: [], where: '' },
+  { id: 'chg-20261020-aaaaaa0003', title: 'Built with tokens', kind: 'build', model: 'opus', state: 'done', status: 'done', createdAt: iso(now - 26 * 3600_000), updatedAt: iso(now - 24 * 3600_000),
+    startedAt: iso(now - 26 * 3600_000), finishedAt: iso(now - 24 * 3600_000), estimate: { minutes: 90, costUsd: 12.6 }, actual: { minutes: 120, costUsd: 9.87, inputTokens: 1000, outputTokens: 10, source: 'transcript' }, costEstimated: false,
+    surface: 'vps-claude-code', branch: 'feat/y', commits: ['abc1234'], links: { pr: 'https://github.com/MossesX/AmberX-AXF/pull/1' }, steps: { total: 2, done: 2, failed: 0, running: '' }, result: { state: 'done', summary: 'ok' }, closed: null, repos: ['MossesX/AmberX-AXF'], where: 'vps' },
+  { id: 'chg-20261015-aaaaaa0004', title: 'Backfilled kernel', kind: 'build', model: 'fable', state: 'done', status: 'done', createdAt: iso(now - 6 * 86400_000), updatedAt: iso(now - 6 * 86400_000),
+    finishedAt: iso(now - 6 * 86400_000), estimate: { minutes: 480, costUsd: 132 }, costEstimated: true, surface: 'backfill', steps: { total: 0, done: 0, failed: 0, running: '' }, result: { state: 'done', summary: '' }, closed: 'x', repos: [], where: 'backfill' },
+  { id: 'chg-20261021-aaaaaa0005', title: 'Just a question', kind: 'other', model: '', state: 'cancelled', createdAt: iso(now), updatedAt: iso(now), steps: { total: 0, done: 0, failed: 0, running: '' }, result: { state: 'cancelled', summary: 'no change' }, closed: null, repos: [], where: '' },
+  { id: 'chg-20261021-aaaaaa0006', title: 'Failed build', kind: 'fix', model: 'sonnet', state: 'failed', createdAt: iso(now - 2 * 3600_000), updatedAt: iso(now - 3600_000), steps: { total: 0, done: 0, failed: 0, running: '' }, result: { state: 'failed', summary: 'x' }, closed: null, repos: [], where: '' },
+];
+const lv = hs.liveFromChanges(sums, rows, now);
+ok(lv.length === 2 && lv.every((e) => e.changeId), 'Live: every running entry from any surface (VPS + claude.ai), nothing finished');
+const v0 = lv.find((e) => e.changeId.endsWith('0001'));
+ok(v0.row?.key === 'pending:p-steps' && v0.estimate === 80 && v0.elapsed === 40 * 60_000 && v0.costEstimate === 11.2 && v0.model === 'Opus' && v0.source === 'VPS' && v0.host === 'vps1', 'Live entry: linked by buildRef, elapsed vs estimate, cost, model, surface + host');
+ok(v0.currentStep === 'Editing server/__init__.py' && v0.progress === 0.25 && !v0.stale, 'current activity + step progress');
+ok(lv.find((e) => e.changeId.endsWith('0002')).stale && lv.find((e) => e.changeId.endsWith('0002')).activityState === 'stale', 'a session silent for 10+ min shows "no word" (stale), not running forever');
+const bt = hs.builtRows(sums);
+ok(bt.length === 3 && !bt.some((r) => r.title === 'Just a question') && bt[0].id.endsWith('0006'), 'Built: finished builds newest first; question-only entries left out');
+const b3 = bt.find((r) => r.id.endsWith('0003'));
+ok(b3.minutes === 120 && !b3.minutesEstimated && b3.cost === 9.87 && !b3.costEstimated && b3.commits[0] === 'abc1234' && b3.links.pr, 'actual time + cost win over the estimate; commits + links kept');
+const b4 = bt.find((r) => r.id.endsWith('0004'));
+ok(b4.minutes === 480 && b4.minutesEstimated && b4.cost === 132 && b4.costEstimated && b4.surface === 'backfill', 'backfill: estimated time + cost, flagged');
+const tt = hs.builtTotals(bt);
+ok(tt.all.count === 3 && Math.abs(tt.all.cost - 141.87) < 0.001 && tt.all.estimatedCost === 132 && tt.byModel.Fable.count === 1 && tt.byModel.Opus.cost === 9.87, 'totals overall + by model (estimated part counted)');
+ok(Object.keys(tt.byWeek).length >= 1 && /^\d{4}-W\d{2}$/.test(Object.keys(tt.byWeek)[0]), 'totals by ISO week');
+ok(hs.isoWeek(Date.parse('2026-10-21T12:00:00Z')) === '2026-W43' && hs.isoWeek(Date.parse('2026-01-01T12:00:00Z')) === '2026-W01', 'ISO weeks');
+ok(hs.filterBuilt(bt, { model: 'Fable' }).length === 1 && hs.filterBuilt(bt, { cost: 'actual' }).length === 1 && hs.filterBuilt(bt, { period: '7d' }, now).length === 3 && hs.filterBuilt(bt, { period: '7d' }, now + 2 * 86400_000).length === 2, 'Built filters: model, actual/estimated cost, period');
+ok(hs.matches('feat/y', b3) && hs.matches('OPUS built', b3) && !hs.matches('fable', b3) && hs.matches('', b3), 'search: every word, any field (branch, model, title), case-insensitive');
+ok(hs.matches('p-steps', rows.find((r) => r.key === 'pending:p-steps')) && hs.matches('vps1', v0) && hs.matches('server routes', v0), 'search covers remaining rows (id) and live entries (host, step)');
+ok(hs.money(9.876) === '$9.88' && hs.money(0.12) === '$0.120' && hs.money(132.4) === '$132' && hs.money(null) === '—', 'money format');
+
+/* ---------- Start build now (orchestrate.mjs) ---------- */
+const o = await import('./web/orchestrate.mjs');
+const feats2 = [
+  { id: 'x.base', kind: 'epic', title: 'Base', status: 'built' },
+  { id: 'x.mod', kind: 'epic', title: 'Modules', status: 'planned', model: 'fable', dependsOn: ['x.base'], files: ['framework/core/modules'] },
+  { id: 'x.plug', kind: 'epic', title: 'Plugins', status: 'planned', model: 'opus', dependsOn: ['x.mod'], files: ['apps/console-web/plugins'] },
+  { id: 'x.design', kind: 'epic', title: 'Designer', status: 'planned', model: 'opus', dependsOn: ['x.plug'] },
+  { id: 'x.loop1', kind: 'epic', title: 'Loop 1', status: 'planned', dependsOn: ['x.loop2'] },
+  { id: 'x.loop2', kind: 'epic', title: 'Loop 2', status: 'planned', dependsOn: ['x.loop1'] },
+  { id: 'x.free', kind: 'epic', title: 'Free', status: 'planned', model: 'sonnet', files: ['framework/libs/free'] },
+];
+const qs2 = { ...qc.emptyQueue(), order: ['x.base', 'x.free', 'x.design', 'x.loop1', 'x.loop2', 'x.plug', 'x.mod'], steps: {} };
+const rows2 = m.buildRows({ pending: [{ id: 'designer', title: 'Designer (pending)', model: 'Fable', status: 'pending', planId: 'x.design', subPrompts: [], estimate: '2 h' }], queue: qc.computeQueue(feats2, qs2), queueState: qs2, features: feats2 }, h);
+const byKey = (k) => rows2.find((r) => r.key === k);
+const byId2 = new Map(feats2.map((f) => [f.id, f]));
+const dc = o.dependencyClosure(['x.design'], byId2);
+ok(dc.order.join() === 'x.mod,x.plug' && !dc.cycles.length, 'dependency closure: unbuilt deps, deepest first; built ones skipped');
+ok(o.dependencyClosure(['x.loop1'], byId2).cycles.length === 1, 'a dependency cycle is broken and reported, never loops');
+let sp = o.planStart({ row: byKey('pending:designer'), rows: rows2, features: feats2, queue: qs2, running: [], reportCmd: 'node changes.mjs' });
+ok(sp.ok && sp.model === 'fable' && sp.branch === 'fable/designer', 'a Fable pending item stays Fable, on fable/<id>');
+ok(sp.deps.map((d) => d.id).join() === 'x.mod,x.plug', 'its dependencies are listed in build order');
+ok(sp.order && sp.order.indexOf('x.mod') < sp.order.indexOf('x.plug') && sp.order.indexOf('x.plug') < sp.order.indexOf('x.design') && sp.order[0] === 'x.base', 'the queue is reordered: deps right before it, built steps keep their place');
+ok(/Dependencies \(built first/.test(sp.brief) && /Do not touch/.test(sp.brief) && /changes\.mjs update last --ref pending:designer --model fable/.test(sp.brief) && /Never merge/.test(sp.brief), 'the brief: deps, do-not-touch list, reporting commands, never merge');
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [] });
+ok(sp.ok && sp.model === 'sonnet' && sp.branch === 'build/x-free' && sp.order === null && sp.areas.includes('framework/libs/free'), 'no deps → no reorder; model + areas from the plan');
+const runningE = (over) => ({ id: 'chg:x', changeId: 'chg-20261021-aaaaaa0009', title: 'Someone else', state: 'running', activityState: 'running', source: 'VPS', host: 'vps1', via: '', branch: '', areas: [], ...over });
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ via: 'queue:x.free' })] });
+ok(!sp.ok && /Already being built/.test(sp.refuse), 'never starts a build that is already running (same buildRef)');
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ branch: 'build/x-free' })] });
+ok(!sp.ok && sp.refuse, '…or one on its branch');
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ areas: ['framework/libs'] })] });
+ok(!sp.ok && /Wait/.test(sp.wait) && sp.clashes[0].paths[0] === 'framework/libs/free', 'overlapping folders with a running build → wait, naming who and where');
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ areas: ['framework/libsx', 'apps/other'] })] });
+ok(sp.ok && sp.dontTouch.includes('apps/other'), 'no overlap (libsx ≠ libs) → ok, and its folders go on the do-not-touch list');
+sp = o.planStart({ row: byKey('pending:designer'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ via: 'queue:x.mod' })] });
+ok(!sp.ok && /dependency/.test(sp.wait), 'a dependency being built right now → wait for it');
+sp = o.planStart({ row: byKey('queue:x.free'), rows: rows2, features: feats2, queue: qs2, running: [runningE({ areas: ['framework/libs'], activityState: 'stale' })] });
+ok(!sp.ok, 'a stale ("no word") build still blocks its folders (safe side)');
+ok(!o.planStart({ row: null }).ok, 'unknown build → refused');
+ok(o.overlaps(['apps/a/b'], ['apps/a']).length === 1 && o.overlaps(['apps/ab'], ['apps/a']).length === 0 && o.overlaps(['framework/core/*.ts'], ['framework/core/x.ts']).length === 1, 'overlap = same folder or inside it (on / boundaries; * = anything)');
+const vc = o.verifyChecks(['apps/console-web/plugins/build-manager', 'framework/core/x']).map((c) => c.name);
+ok(vc.includes('build-manager self-test (py)') && vc.includes('console build (tsc + vite)') && vc.includes('theme check') && vc.includes('menu reach') && vc.includes('framework assets'), 'verify checks follow the touched areas (plugin self-tests, console build, theme, menu reach, framework assets)');
+const cmd = o.launchCommand({ brief: "it's $(rm -rf /) `x`", branch: 'fable/designer', model: 'fable', changeId: 'chg-20261021-aaaaaa0009' });
+ok(!cmd.includes('rm -rf /') && cmd.includes(Buffer.from("it's $(rm -rf /) `x`").toString('base64')) && cmd.includes("worktree add -q -B 'fable/designer'") && cmd.includes('AXF_ADOPT_CHANGE=chg-20261021-aaaaaa0009') && cmd.includes('--model fable') && !/push|merge/.test(cmd), 'launch command: brief base64 (no injection), own worktree + branch, adopts the entry, never pushes/merges');
+ok(o.launchCommand({ brief: 'x', branch: '../../etc; rm', model: 'gpt', changeId: 'nope' }).includes("'build/unnamed'") && o.launchCommand({ brief: 'x', branch: 'a', model: 'gpt', changeId: 'nope' }).includes('--model opus') && !o.launchCommand({ brief: 'x', branch: 'a', model: 'opus', changeId: 'x; rm -rf' }).includes('x; rm'), 'bad branch / model / id never reach the shell');
+
 console.log(`all ${n} checks passed`);

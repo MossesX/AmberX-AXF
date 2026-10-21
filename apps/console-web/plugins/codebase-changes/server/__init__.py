@@ -225,6 +225,10 @@ class Service:
         """Changes whenever any entry changes (for cheap live polling)."""
         return store().stamp()
 
+    def cli(self) -> str:
+        """The recording CLI, relative to the repo (so other plugins can tell sessions how to report without naming it)."""
+        return str((Path(__file__).resolve().parents[1] / "changes.mjs").relative_to(cx.ROOT)) if str(Path(__file__)).startswith(str(cx.ROOT)) else "changes.mjs"
+
 
 plugin_services.provide(SELF, Service(), FOLDER)
 

@@ -329,6 +329,18 @@ export async function onHook(ev, b) {
   const sid = sid12(ev.session_id);
   const now = nowIso();
   if (ev.hook_event_name === 'UserPromptSubmit') {
+    // A session started for an existing entry (console "Start build now" sets AXF_ADOPT_CHANGE) reports on that entry.
+    const adopt = process.env.AXF_ADOPT_CHANGE;
+    if (adopt && ID_RE.test(adopt)) {
+      const e0 = await load(b, adopt);
+      if (e0 && !e0.result) {
+        const steps = (e0.steps ?? []).map((s, i) => (i === 0 && s.state === 'running' ? { ...s, state: 'done', finishedAt: now } : i === 1 && s.state === 'queued' ? { ...s, state: 'running', startedAt: now } : s));
+        await save(b, { ...e0, steps, status: 'running', lastSeenAt: now, activity: 'Started', who: { ...(e0.who ?? {}), session: sid.slice(0, 12), where: detectWhere(), host: hostname(), user: process.env.USER || '' }, updatedAt: now });
+        setLast(adopt);
+        if (sid) addSessionId(sid, adopt);
+        return hookContext(adopt, e0.kind);
+      }
+    }
     const c = classify(ev.prompt);
     if (!c.change) return '';
     const id = newId(`${sid}\n${ev.prompt}`);

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T16:02:06.419Z",
+ "updatedAt": "2026-10-21T16:24:01.047Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1298,22 +1298,30 @@
     {
      "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.830Z"
     },
     {
      "text": "Shared pricing file + cost from Claude Code transcript usage",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.910Z"
     },
     {
      "text": "changes.mjs: open/result/beat flags, PreToolUse progress, heartbeat, subagents, global hooks",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.978Z"
     },
     {
      "text": "claude.ai reporting via axhub.memory_write: doc + rules (shared + project) + one-line setup",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:01.047Z"
     },
     {
      "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
@@ -1373,9 +1381,9 @@
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T16:02:06.419Z",
-   "source": "claude-code",
-   "estimate": "6.5 h"
+   "updatedAt": "2026-10-21T16:24:01.047Z",
+   "estimate": "6.5 h",
+   "source": "claude-code"
   }
  ]
 }
