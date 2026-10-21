@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun UnlockCodeView() {
     val session = rememberService<VaultSession>() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
+    Column(Modifier.imePadding().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
         AxfPageHead("Unlock code", eyebrow = "Voice Vault", description = "The phrase you say to open the vault. Only a salted hash is kept, in the phone's secure storage.")
         UnlockCodeEditor(session, rememberService<AxfVoice>(), setup = false)
     }
@@ -58,11 +59,33 @@ fun UnlockCodeEditor(session: VaultSession, voice: AxfVoice?, setup: Boolean) {
     var note by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     var typed by remember { mutableStateOf("") }
     var typedAgain by remember { mutableStateOf("") }
+    var saving by remember { mutableStateOf(false) }
 
-    fun save(code: String) = scope.launch {
-        val err = session.setUnlockCode(code)
-        note = (err ?: "Unlock code saved.") to (err == null)
-        if (err == null) { first = null; options = emptyList(); typed = ""; typedAgain = "" }
+    fun save(code: String) {
+        if (saving) return
+        saving = true; note = null
+        scope.launch {
+            val err = session.setUnlockCode(code)
+            note = (err ?: "Unlock code saved.") to (err == null)
+            if (err == null) { first = null; options = emptyList(); typed = ""; typedAgain = "" }
+            saving = false
+        }
+    }
+
+    /** The always-visible button: saves what's ready, or says what's still missing. */
+    fun submit() {
+        if (mode == "say" && voice != null) {
+            val chosen = first
+            when {
+                chosen != null -> save(chosen)
+                options.isNotEmpty() -> note = "Tap the phrase you said, then save." to false
+                else -> note = "Tap Record and say your code first, or switch to Type it." to false
+            }
+        } else when {
+            typed.isBlank() || typedAgain.isBlank() -> note = "Type your code in both fields." to false
+            SpokenText.code(typed) != SpokenText.code(typedAgain) -> note = "The two codes don't match." to false
+            else -> save(typed)
+        }
     }
 
     fun listen(confirming: Boolean) {
@@ -97,7 +120,7 @@ fun UnlockCodeEditor(session: VaultSession, voice: AxfVoice?, setup: Boolean) {
                     AxfButton("Record again", { options = emptyList(); listen(false) }, tone = ButtonTone.GHOST, icon = "refresh", enabled = !busy)
                 }
                 else -> {
-                    AxfText("Now say “$first” again to confirm.", muted = true)
+                    AxfText("Say “$first” again to confirm, or tap ${if (setup) "Save and continue" else "Save code"}.", muted = true)
                     Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
                         AxfButton(if (busy) "Listening…" else "Say it again", { listen(true) }, tone = ButtonTone.PRIMARY, icon = "mic", enabled = !busy)
                         AxfButton("Start over", { first = null; options = emptyList() }, tone = ButtonTone.GHOST, icon = "x")
@@ -107,10 +130,13 @@ fun UnlockCodeEditor(session: VaultSession, voice: AxfVoice?, setup: Boolean) {
         } else {
             AxfTextField(typed, { typed = it }, Modifier.fillMaxWidth(), label = "Unlock code", secret = true)
             AxfTextField(typedAgain, { typedAgain = it }, Modifier.fillMaxWidth(), label = "Same code again", secret = true)
-            AxfButton("Save code", {
-                if (SpokenText.code(typed) != SpokenText.code(typedAgain)) note = "The two codes don't match." to false else save(typed)
-            }, tone = ButtonTone.PRIMARY, icon = "save", enabled = typed.isNotBlank() && typedAgain.isNotBlank())
         }
+        // Errors sit right above the button so they're on screen when it's tapped.
         note?.let { (t, ok) -> AxfText(t, color = if (ok) Axf.colors.success else Axf.colors.danger) }
+        AxfButton(
+            when { saving -> "Saving…"; setup -> "Save and continue"; else -> "Save code" },
+            { submit() }, Modifier.fillMaxWidth(), tone = ButtonTone.PRIMARY,
+            icon = if (setup) "chevron-right" else "save", enabled = !busy && !saving,
+        )
     }
 }
