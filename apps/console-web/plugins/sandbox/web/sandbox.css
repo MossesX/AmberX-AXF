@@ -1,0 +1,35 @@
+/* Sandbox plugin. Theme tokens only (framework/spec/THEMING.md); parts named axp-sandbox__*. */
+.axp-sandbox__lede { margin: 0 }
+.axp-sandbox__bar { display: flex; align-items: flex-end; gap: var(--fx-space); flex-wrap: wrap }
+.axp-sandbox__bar > .fx-field { flex: 1 1 14em; min-width: 0 }
+.axp-sandbox__grid { display: grid; gap: var(--fx-space); grid-template-columns: repeat(auto-fill, minmax(min(100%, 14em), 1fr)) }
+.axp-sandbox__split { display: grid; gap: var(--fx-space); grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) }
+@media (max-width: 860px) { .axp-sandbox__split { grid-template-columns: minmax(0, 1fr) } }
+.axp-sandbox__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.25) }
+.axp-sandbox__row {
+  all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6);
+  padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-sm); cursor: pointer; color: var(--fx-text);
+}
+.axp-sandbox__row:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent) }
+.axp-sandbox__row.is-active { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-sandbox__row:focus-visible, .axp-sandbox__crumb:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-sandbox__item {
+  display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); flex-wrap: wrap;
+  padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface)
+}
+.axp-sandbox__grow { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.axp-sandbox__title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-sandbox__crumbs { display: inline-flex; flex-wrap: wrap; align-items: center; min-width: 0 }
+.axp-sandbox__crumb { all: unset; cursor: pointer; color: var(--fx-accent) }
+.axp-sandbox__crumb:hover { text-decoration: underline }
+.axp-sandbox__code {
+  margin: 0; padding: var(--fx-space); max-height: 60vh; overflow: auto; white-space: pre; tab-size: 2;
+  font-family: var(--fx-font-mono); font-size: var(--fx-font-size); color: var(--fx-text);
+  background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm)
+}
+.axp-sandbox__meter { height: calc(var(--fx-space) * 0.5); border-radius: 999px; overflow: hidden; background: var(--fx-surface2) }
+.axp-sandbox__meter-fill { display: block; height: 100%; background: var(--fx-accent) }
+.axp-sandbox__confirm {
+  width: 9em; padding: calc(var(--fx-space) * 0.35) calc(var(--fx-space) * 0.5); font: inherit; font-family: var(--fx-font-mono);
+  color: var(--fx-text); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm)
+}

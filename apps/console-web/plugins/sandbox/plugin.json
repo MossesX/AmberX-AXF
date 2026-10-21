@@ -1,0 +1,39 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.sandbox",
+  "name": "Sandbox",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A shielded sandbox for anyone signed in to the console: read-only GitHub (through axHub, only read tools, only the repositories an admin opens), Build Pilot's designer steps over the framework catalog (a design is saved only as a sandbox file; nothing is built or published) and private editable files that stay until an admin clears them. Nothing outside the sandbox can be changed. Linked under Settings → Account & security → Your account; managed in Settings → Plugins → Sandbox.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:sandbox",
+    "settings-tab:sandbox"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "optional": [],
+  "enabledByDefault": true,
+  "wallUsers": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/sandbox",
+    "env": [
+      "AXHUB_URL",
+      "AXHUB_TOKEN",
+      "AXF_SANDBOX_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}

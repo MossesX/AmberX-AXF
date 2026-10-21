@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-0a08865916",
+  "createdAt": "2026-10-21T13:52:07.608Z",
+  "updatedAt": "2026-10-21T13:52:15.916Z",
+  "kind": "build",
+  "title": "Console sandbox: GitHub + Pilot tabs, shielded, admin-cleared files",
+  "asked": "",
+  "repos": [
+    "MossesX/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Server: shield, workspaces, axHub read-only GitHub, admin routes",
+      "state": "done",
+      "startedAt": "2026-10-21T13:52:15.351Z",
+      "finishedAt": "2026-10-21T13:52:15.351Z"
+    },
+    {
+      "text": "Web: GitHub, Pilot, Files tabs; account link; Sandbox management",
+      "state": "done",
+      "startedAt": "2026-10-21T13:52:15.460Z",
+      "finishedAt": "2026-10-21T13:52:15.460Z"
+    },
+    {
+      "text": "Lifecycle, docs, decision, self-test (94)",
+      "state": "done",
+      "startedAt": "2026-10-21T13:52:15.561Z",
+      "finishedAt": "2026-10-21T13:52:15.561Z"
+    },
+    {
+      "text": "Console typecheck + build (blocked in this session; CI runs it)",
+      "state": "skipped",
+      "startedAt": "2026-10-21T13:52:15.687Z",
+      "finishedAt": "2026-10-21T13:52:15.687Z"
+    },
+    {
+      "text": "Push to GitHub (needs push access)",
+      "state": "queued"
+    }
+  ],
+  "result": {
+    "state": "partial",
+    "summary": "Sandbox plugin built and tested on branch feat/console-sandbox; not pushed (no push access in this session); console tsc/vite not run here.",
+    "branch": "feat/console-sandbox",
+    "commits": [],
+    "tests": {
+      "sandbox test.py": {
+        "before": "0",
+        "after": "94"
+      },
+      "test_wall_users": {
+        "before": "56",
+        "after": "56"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial"
+}
