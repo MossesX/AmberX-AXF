@@ -94,13 +94,19 @@ object Cmd {
     const val CONFIRM = "vault.confirm"
     const val CANCEL = "vault.cancel"
     const val LOCK = "vault.lock"
+    /** The global trigger: heard while the app is in the background (or closed but running), it pops the app open. */
+    const val WAKE = "vault.wake"
 }
+
+/** One line of the "Listening for" list: what you can say right now. [phrases] empty = free speech (a site, a password). */
+data class ListenItem(val label: String, val phrases: List<String>, val note: String? = null)
 
 /** App settings / storage keys. */
 object Keys {
     const val CLIPBOARD = "voicevault.clipboardClear"
     const val HANDS_FREE = "voicevault.handsFree"
     const val SHOW_SPEECH = "voicevault.showSpeech"
+    const val BACKGROUND = "voicevault.background"
     const val IDLE = "voicevault.idleLock"
     const val UNLOCK_CODE = "voicevault.unlockCode"
     const val CODE_LOCKOUT = "voicevault.codeLockout"
@@ -150,6 +156,11 @@ class VaultSession(
     private val _heard = MutableStateFlow("")
     /** What's being said right now (live while talking), as it will be filled in: passwords without spaces. Cleared on each new step. */
     val heard: StateFlow<String> = _heard.asStateFlow()
+    private val _inApp = MutableStateFlow(false)
+    /** True while the app is on screen; the background listener pauses then (one microphone, one listener). */
+    val inApp: StateFlow<Boolean> = _inApp.asStateFlow()
+    /** lib-voice, for the background listener and the screen's phrase lists. */
+    val voiceInput: AxfVoice? get() = voice
 
     val unlocked: Boolean get() = _stage.value.isUnlocked()
 
@@ -167,6 +178,8 @@ class VaultSession(
     private val idleMinutes: Int get() = setting(Keys.IDLE)?.toIntOrNull() ?: 5
     /** Settings → Voice Vault → Show what you say (on by default): live transcript and passwords shown in plain text. */
     val showSpeech: Boolean get() = setting(Keys.SHOW_SPEECH)?.toBooleanStrictOrNull() ?: true
+    /** Settings → Voice Vault → Listen in the background (on by default): the global trigger is heard while the app isn't on screen. */
+    val backgroundOn: Boolean get() = setting(Keys.BACKGROUND)?.toBooleanStrictOrNull() ?: true
 
     init {
         // The gate locks on leaving / idle; the session then drops the entries.
@@ -192,6 +205,7 @@ class VaultSession(
 
     fun onBackground(now: Long = System.currentTimeMillis()) {
         foreground = false
+        _inApp.value = false
         stopListening(); voice?.speaker?.stop()
         gate.onLeave(now)
     }
@@ -199,6 +213,7 @@ class VaultSession(
     fun onForeground(now: Long = System.currentTimeMillis()) {
         gate.onReturn(now) // may lock (away too long); listening restarts when the screen shows again
         foreground = true
+        _inApp.value = true
     }
 
     /** The voice screen is showing; hands-free mode starts listening by itself. */
@@ -495,6 +510,7 @@ class VaultSession(
                 if (st.forStore) go(Stage.AskPassword(SpokenText.site(heard.first()))) else findSite(heard)
             }
             is Stage.AskPassword -> {
+                if (cmds?.match(heard, listOf(Cmd.CANCEL), 0.97) != null && heard.first().trim().split(' ').size <= 2) { cancel(); return }
                 touch()
                 val pw = SpokenText.password(heard.first())
                 val replacing = _entries.value.firstOrNull { PhraseMatcher.normalizeLabel(it.site) == PhraseMatcher.normalizeLabel(st.site) }
@@ -513,6 +529,24 @@ class VaultSession(
             else -> Unit
         }
     }
+
+    /** Exactly what can be said at [stage], for the screen's "Listening for" list (same commands [handle] matches). */
+    fun listeningFor(stage: Stage): List<ListenItem> {
+        val c = voice?.commands
+        fun cmd(id: String, note: String? = null): ListenItem? = c?.phrases(id)?.let { ListenItem(it.command.label, it.active, note) }
+        return when (stage) {
+            Stage.Locked -> listOf(ListenItem("Your unlock code", emptyList(), "The phrase you set in Settings → Unlock code. It's never shown."))
+            Stage.Ready -> listOfNotNull(cmd(Cmd.STORE), cmd(Cmd.RETRIEVE), cmd(Cmd.LOCK))
+            is Stage.AskSite -> listOfNotNull(ListenItem("The site", emptyList(), "Say it like “gmail dot com” or “bank of america”."), cmd(Cmd.CANCEL))
+            is Stage.AskPassword -> listOfNotNull(ListenItem("The password for ${stage.site}", emptyList(), "Say or spell it out. Every space is removed, and you check it before saving."), cmd(Cmd.CANCEL, "Only on its own"))
+            is Stage.Confirm -> listOfNotNull(cmd(Cmd.CONFIRM), cmd(Cmd.CANCEL))
+            is Stage.Choose -> listOfNotNull(ListenItem("One of these sites", stage.matches.map { it.site }), cmd(Cmd.CANCEL))
+            else -> emptyList()
+        }
+    }
+
+    /** The global trigger's phrases (Settings → Voice triggers → Global trigger). */
+    fun wakePhrases(): List<String> = voice?.commands?.phrases(Cmd.WAKE)?.active.orEmpty()
 
     private fun findSite(heard: List<String>) {
         val ranked = PhraseMatcher.ranked(heard, _entries.value, 0.72) { it.site }
