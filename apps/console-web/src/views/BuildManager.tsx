@@ -6,7 +6,7 @@ import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
 
 /*
- * Build manager: the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
+ * Build queue (nav: Build queue; the Build manager plugin lists everything still to build): the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
  * into a new order, after which the console prompts to reprocess (dependency order + rework check on built steps).
  * Completing a step marks the epic and its linked features built in the feature tracker; the feature tracker feeds
  * back (all features built → step complete). Both sync when the console starts.
@@ -149,7 +149,7 @@ export function BuildManager() {
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">Build manager · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
+          <p className="fx-eyebrow">Build queue · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
           <h1>Build queue</h1>
           <p className="fx-muted">Everything left in the plan, in the order it will be built. Drag steps to reorder; the console then checks dependencies and flags built steps that need rework. Each step names the model to build it with.</p>
         </div>

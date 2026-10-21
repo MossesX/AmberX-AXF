@@ -39,7 +39,7 @@
           {
             "id": "build",
             "icon": "play",
-            "label": "Build",
+            "label": "Build queue",
             "action": "nav:build"
           },
           {

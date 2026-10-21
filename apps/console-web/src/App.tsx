@@ -33,7 +33,7 @@ const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
-  build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
+  build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
   // Standards: rules every project must meet (first: project manifests).
   'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },

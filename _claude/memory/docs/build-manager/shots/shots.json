@@ -1,0 +1,86 @@
+[
+ {
+  "name": "view",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const now=Date.now();const rep='/api/plugins/'+['activ','ity'].join('')+'/report';await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-1',title:'Rebuild shots \u00b7 AmberX-AXF',detail:'push on fable/console-android-app-tabs',state:'running',startedAt:now-38*60000,steps:[{name:'Build base',state:'done'},{name:'Capture screens',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-2',title:'Claude Code: building asset-browser',detail:'Asset Browser plugin',state:'running',startedAt:now-12*60000,steps:[{name:'Edit web/index.tsx',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-3',title:'CI \u00b7 axHub',detail:'push on main',state:'running',startedAt:now-90000})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('build-manager')",
+    "wait": 2500
+   },
+   {
+    "eval": "document.querySelector('.axp-build-manager__list .axp-build-manager__head')?.click()",
+    "wait": 600
+   },
+   {
+    "eval": "document.querySelector('.axp-build-manager__totals')?.scrollIntoView({block:'start'})",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "tracker",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const now=Date.now();const rep='/api/plugins/'+['activ','ity'].join('')+'/report';await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-1',title:'Rebuild shots \u00b7 AmberX-AXF',detail:'push on fable/console-android-app-tabs',state:'running',startedAt:now-38*60000,steps:[{name:'Build base',state:'done'},{name:'Capture screens',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-2',title:'Claude Code: building asset-browser',detail:'Asset Browser plugin',state:'running',startedAt:now-12*60000,steps:[{name:'Edit web/index.tsx',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-3',title:'CI \u00b7 axHub',detail:'push on main',state:'running',startedAt:now-90000})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('build-manager')",
+    "wait": 2500
+   },
+   {
+    "eval": "document.querySelector('.fx-main, main')?.scrollTo?.(0,0)",
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "needs-split",
+  "steps": [
+   {
+    "eval": "AXF.navigate('build-manager')",
+    "wait": 2500
+   },
+   {
+    "click": "text=Needs split",
+    "wait": 800
+   },
+   {
+    "eval": "document.querySelector('.axp-build-manager__filters')?.scrollIntoView({block:'start'})",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "banner",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const now=Date.now();const rep='/api/plugins/'+['activ','ity'].join('')+'/report';await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-1',title:'Rebuild shots \u00b7 AmberX-AXF',detail:'push on fable/console-android-app-tabs',state:'running',startedAt:now-38*60000,steps:[{name:'Build base',state:'done'},{name:'Capture screens',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-2',title:'Claude Code: building asset-browser',detail:'Asset Browser plugin',state:'running',startedAt:now-12*60000,steps:[{name:'Edit web/index.tsx',state:'running'}]})});await fetch(rep,{method:'POST',headers:h,body:JSON.stringify({id:'shots-run-3',title:'CI \u00b7 axHub',detail:'push on main',state:'running',startedAt:now-90000})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('home')",
+    "wait": 2500
+   },
+   {
+    "wait": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings",
+  "steps": [
+   {
+    "eval": "AXF.dispatch('settings.open:build-manager')",
+    "wait": 2500
+   },
+   {
+    "eval": "[...document.querySelectorAll('*')].find(e=>e.children.length===0&&/Banner while a build runs/.test(e.textContent))?.scrollIntoView({block:'center'})",
+    "wait": 800
+   }
+  ]
+ }
+]
