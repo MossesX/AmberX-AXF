@@ -1,6 +1,8 @@
 package ai.amberx.axf.platform
 
 import android.os.Bundle
+import android.view.WindowManager
+import android.webkit.WebView
 import ai.amberx.axf.kernel.AxfKernel
 import ai.amberx.axf.ui.AxfRoot
 import androidx.activity.compose.setContent
@@ -17,6 +19,10 @@ import androidx.fragment.app.FragmentActivity
  *   class MainActivity : AxfActivity() {
  *       @Composable override fun Content() { AppShell(views = myViews) }
  *   }
+ *
+ * Apps holding secrets turn on [secureWindow] (override it, or set `android.secureWindow: true` in axf.manifest.json):
+ * the window gets FLAG_SECURE (no screenshots, screen recording or recents preview) and WebView debugging is
+ * switched off before any WebView exists.
  */
 public abstract class AxfActivity : FragmentActivity() {
     public val app: AxfApplication get() = application as AxfApplication
@@ -24,11 +30,22 @@ public abstract class AxfActivity : FragmentActivity() {
     public lateinit var permissionHost: PermissionHost
         private set
 
+    /**
+     * Secure window: FLAG_SECURE on this activity's window and WebView remote debugging off. Default: the manifest's
+     * `android.secureWindow` (false when absent). An app setting it in code overrides this.
+     */
+    protected open val secureWindow: Boolean get() = kernel.manifest.android?.secureWindow == true
+
     /** The app's shell, rendered inside [AxfRoot] (theme, locals and overlays are already provided). */
     @Composable
     protected abstract fun Content()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (secureWindow) {
+            // Before the first frame, so nothing is ever captured.
+            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+            runCatching { WebView.setWebContentsDebuggingEnabled(false) }
+        }
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         permissionHost = app.permissions.bind(this)

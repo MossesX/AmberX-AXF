@@ -33,7 +33,11 @@ public data class AxfManifest(
     val android: AndroidManifestInfo?,
     val raw: JsonObject,
 ) {
-    public data class AndroidManifestInfo(val applicationId: String, val scheme: String, val modules: List<String>, val minSdk: Int, val targetSdk: Int)
+    public data class AndroidManifestInfo(
+        val applicationId: String, val scheme: String, val modules: List<String>, val minSdk: Int, val targetSdk: Int,
+        /** FLAG_SECURE + WebView debugging off on the app's activity (`AxfActivity.secureWindow`); for apps holding secrets. */
+        val secureWindow: Boolean = false,
+    )
 
     public val isCompatible: Boolean get() = ai.amberx.axf.kernel.migrate.Semver.isCompatible(frameworkVersion, AxfVersion.FRAMEWORK)
 
@@ -51,7 +55,7 @@ public data class AxfManifest(
             defaults = o.strMap("defaults"),
             hidden = o.strList("hidden"),
             structure = o.objList("structure").map { StructureEntry(it.str("path"), it.str("purpose"), it.str("kind", "file"), it.bool("required")) },
-            android = o.obj("android")?.let { AndroidManifestInfo(it.str("applicationId", "ai.amberx.axf.app"), it.str("scheme", "axf"), it.strList("modules"), ai.amberx.axf.kernel.asset.int(it, "minSdk", 26), ai.amberx.axf.kernel.asset.int(it, "targetSdk", 35)) },
+            android = o.obj("android")?.let { AndroidManifestInfo(it.str("applicationId", "ai.amberx.axf.app"), it.str("scheme", "axf"), it.strList("modules"), ai.amberx.axf.kernel.asset.int(it, "minSdk", 26), ai.amberx.axf.kernel.asset.int(it, "targetSdk", 35), it.bool("secureWindow")) },
             raw = o,
         )
         public fun parse(text: String): AxfManifest? = text.parseJsonObject()?.let(::fromJson)
