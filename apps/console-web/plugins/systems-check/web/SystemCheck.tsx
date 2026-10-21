@@ -169,8 +169,33 @@ async function loadHostAuto() {
   hostAutoLoaded = true;
   try { const r = await call<{ commands: Record<string, string> }>('autofix'); hostAuto = new Set(Object.keys(r.commands)); emit(); } catch { hostAutoLoaded = false; }
 }
+/** Is Claude connected? (the plugin's AI connection test, `GET ai/state`, cached on the server for 5 minutes) */
+let claudeOk: boolean | null = null;
+let claudeLoading = false;
+function loadClaude() {
+  if (claudeOk !== null || claudeLoading) return;
+  claudeLoading = true;
+  call<{ ok: boolean }>('ai/state').then((x) => { claudeOk = !!x.ok; }, () => { claudeOk = false; }).finally(() => { claudeLoading = false; emit(); });
+}
+export const claudeConnected = () => { loadClaude(); return claudeOk === true; };
+
+/** With Claude connected, an issue no built-in fix covers goes to Mosses in the assistant: it gets the check's details
+ *  and works through approval cards (container changes) and axHub approvals (VPS commands) — nothing runs unapproved. */
+function claudeFix(c: Check, rt: ReturnType<typeof useRuntime>) {
+  const parts = [
+    `Fix this AXF Dev Console setup issue: **${c.title}** (${c.status}).`, c.summary,
+    c.details.length ? `Details:\n- ${c.details.join('\n- ')}` : '',
+    c.instructions.length ? `How it's fixed by hand:\n- ${c.instructions.join('\n- ')}` : '',
+    c.fix?.type === 'host' ? `Command for the VPS:\n\n    ${c.fix.command}\n\nRun VPS commands through axHub (vps.run) so Brett approves them first.` : '',
+    'Propose every change through approval cards; never change anything without approval. When done, say what you did so the check can be re-run.',
+  ].filter(Boolean);
+  rt.dispatch(`ai.chat.start:${encodeURIComponent(JSON.stringify({ agentId: 'coder', title: `Fix: ${c.title}`, message: parts.join('\n\n') }))}`);
+  st.runMsg = { ...st.runMsg, [c.id]: 'Handed to Claude: approve its changes in the chat' }; emit();
+}
+
 export const autoFixLabel = (c: Check) => {
   void loadHostAuto();
+  if (claudeConnected()) return 'Auto fix'; // Brett, Oct 20 2026: every issue gets Auto fix while Claude is connected
   return c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open'
     : c.fix?.type === 'host' ? (hostAuto.has(c.id) ? 'Auto fix' : 'Copy fix') : null;
 };
@@ -196,10 +221,11 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
 
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   const f = c.fix;
-  if (!f) return;
+  if (!f) { if (claudeConnected()) claudeFix(c, rt); return; }
   if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
   if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
   if (f.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
+  if (f.type !== 'action' && claudeConnected()) { claudeFix(c, rt); return; }
   if (f.type === 'host') {
     await navigator.clipboard?.writeText(f.command).then(() => rt.toast('Fix command copied: run it on the VPS (mosh or the console terminal)', 'info'), () => rt.toast(f.command, 'info'));
     return;
@@ -266,9 +292,7 @@ export function SystemBanner() {
         <ul className="axp-systems-check-banner__list">
           {list.some((c) => c.fix?.type === 'action') && (
             <li className="axp-systems-check-banner__fixall">
-              <Button tone="primary" icon="zap" disabled={list.some((c) => s.run[c.id] === 'working')} onClick={() => void (async () => { for (const c of list.filter((x) => x.fix?.type === 'action')) await autoFix(c, rt); })()}>
-                Auto fix all ({list.filter((c) => c.fix?.type === 'action').length})
-              </Button>
+              <ActBadge icon="zap" label={`Auto fix all (${list.filter((c) => c.fix?.type === 'action').length})`} disabled={list.some((c) => s.run[c.id] === 'working')} onClick={() => void (async () => { for (const c of list.filter((x) => x.fix?.type === 'action')) await autoFix(c, rt); })()} />
             </li>
           )}
           {guidedOrder(list).map((c) => {
@@ -281,8 +305,10 @@ export function SystemBanner() {
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
                   ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
                   : label
-                    ? <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>
-                    : <Button tone="primary" icon="zap" onClick={() => rt.openDialog('system-check', { focus: c.id })}>Fix…</Button>}
+                    ? <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />
+                    : claudeConnected()
+                      ? <ActBadge icon="zap" label="Auto fix" onClick={() => void autoFix(c, rt)} />
+                      : <ActBadge icon="settings" label="Fix…" onClick={() => rt.openDialog('system-check', { focus: c.id })} />}
               </li>
             );
           })}
@@ -308,6 +334,12 @@ const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'Warning', error:
 export function StatusDot({ s }: { s: Status }) { return <span className={`axp-systems-check-dot is-${s}`} title={STATUS_LABEL[s]} aria-label={STATUS_LABEL[s]} />; }
 function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{STATUS_LABEL[s]}</Chip>; }
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
+/** A small action badge (icon + a word) for the banner's drop-down rows: same height as the run badges. */
+function ActBadge({ icon, label, onClick, disabled, title }: { icon: string; label: string; onClick: () => void; disabled?: boolean; title?: string }) {
+  return <button type="button" className="axp-systems-check-act" disabled={disabled} title={title ?? label} onClick={onClick}><Icon name={icon} size={11} />{label}</button>;
+}
+const fixIcon = (c: Check) => (claudeConnected() ? 'zap' : c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
+
 function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
   return <span className={`axp-systems-check-run is-${r}`} role="status">{r === 'working' ? <span className="axp-systems-check-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;

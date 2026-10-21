@@ -99,3 +99,8 @@
 .axp-systems-check-banner__fixall { display: flex; justify-content: flex-end; padding-bottom: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-keyfix { gap: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-keyfix__steps { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
+.axp-systems-check-act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-systems-check-act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-systems-check-act:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: var(--fx-border-w) }
+.axp-systems-check-act:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
+.axp-systems-check-banner__li .axp-systems-check-run { font-size: calc(var(--fx-font-size) * 11 / 14); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6) }
