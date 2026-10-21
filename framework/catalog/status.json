@@ -2162,5 +2162,52 @@
     "wave": 2,
     "module": "lib-notifications",
     "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)"
+  },
+  "m.browser": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-browser",
+    "notes": "framework/android/lib-browser + library.json"
+  },
+  "m.editor": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.github": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.work": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.notifications": {
+    "status": "partial",
+    "wave": 2,
+    "module": "lib-notifications",
+    "notes": "lib-notifications built Oct 20 2026 (hub-notify harvest; feature lib.notifications): channels, permission checks, ongoing + private lock-screen alerts. Push (w.push, c.push) and scheduled notifications not built yet."
+  },
+  "m.sensors": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.files": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.charts": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.plugins": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
   }
 }

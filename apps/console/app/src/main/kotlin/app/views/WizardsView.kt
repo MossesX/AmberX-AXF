@@ -106,10 +106,10 @@ fun InstallWizardDialog(libraryId: String) {
         AxfText("project: ${project.ifBlank { "none open — set one from the inspector or Home" }} · manifest key ${lib.manifestKey} · module ${lib.module}", mono = true, muted = true)
         if (!summary) {
             val p = params[step]
-            AxfLibraryParamField(p, answers[p.key] ?: "", { answers[p.key] = it })
+            AxfLibraryParamField(p.asLibraryParam(), answers[p.key] ?: "", { answers[p.key] = it })
         } else {
             AxfSectionHeader("What the installer writes", accent = true)
-            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.gradle}\nApp.kt modules() += ${lib.moduleCtor}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
+            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.install?.gradle.orEmpty()}\nApp.kt modules() += ${lib.install?.module.orEmpty()}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
             CodeBlock(script)
             if (log.isNotBlank()) CodeBlock(log)
         }

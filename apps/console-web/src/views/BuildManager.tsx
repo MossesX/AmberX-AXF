@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import * as api from '../api';
+import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
 import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build-queue-core.mjs';
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
@@ -316,15 +317,13 @@ export function BuildSummaryCard() {
   );
 }
 
-/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one. */
+/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one (the API client library's TokenDialog). */
 export function TokenDialog({ close }: { close: () => void }) {
   const rt = useRuntime();
-  const [t, setT] = useState(api.getToken());
   return (
-    <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); api.setToken(t.trim()); rt.toast(t.trim() ? 'Console token saved in this browser' : 'Console token cleared', 'success'); close(); initBuildSync((m, l) => rt.terminal.log('build', m, l)); }}>
-      <p className="fx-muted" style={{ margin: 0 }}>Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp.</p>
-      <input className="fx-input fx-mono" type="password" autoComplete="off" value={t} onChange={(e) => setT(e.target.value)} placeholder="AXF_TOKEN" aria-label="Console token" />
-      <div className="fx-row" style={{ justifyContent: 'flex-end' }}><Button onClick={close}>Cancel</Button><Button tone="primary" icon="save" type="submit">Save</Button></div>
-    </form>
+    <ApiTokenDialog tokens={api.consoleTokens} close={close} placeholder="AXF_TOKEN" ariaLabel="Console token"
+      description="Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp."
+      savedToast="Console token saved in this browser" clearedToast="Console token cleared"
+      onChange={() => { initBuildSync((m, l) => rt.terminal.log('build', m, l)); }} />
   );
 }

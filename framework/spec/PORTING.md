@@ -13,7 +13,7 @@ A port is quick to write because almost everything is already shared and languag
 | axHub connector, first slice (hub address rules, hub URLs, approvals feed + status mapping, seen ids) | `framework/libs/hub/hub.ts` = `framework/android/lib-hub/.../HubRules.kt`; fixture `spec/fixtures/hub-approvals.json` |
 | Interop contracts (protocol-neutral) | `framework/spec/INTEROP.md` — action/event descriptors, exposure, call origins, `surface@1`, wire error codes, protocol adapters (`axf-kernel/.../interop`; **not yet mirrored in `framework/core`**) |
 | Build engine | `framework/cli/*.mjs` — `init`, `validate`, `new-asset`, `new-module`, `new-demo`, `dev`; a port adds a template folder with a `template.json` |
-| Feature catalog + tracker | `framework/catalog/*.json`, `tracker.json` — the console shows every port's status from the same data |
+| Feature catalog + tracker | `framework/catalog/*.json`, `tracker.json` — the console shows every port's status from the same data; typed models + parsers for catalog@1, status, tracker@1, library@1, libraries@1, boilerplate@1, boilerplates@1 in `core/catalog.ts` = Kotlin `ai.amberx.axf.kernel.catalog` (fixture `spec/fixtures/catalog.json`) |
 
 ## What a new port implements
 

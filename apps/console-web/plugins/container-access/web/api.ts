@@ -1,5 +1,5 @@
 /* Container access — web API layer. */
-import { pluginFetch } from '@console/plugins';
+import { pluginApi, pluginFetch } from '@console/plugins';
 import { readEventStream, type Batch, type BatchEvent } from '@console/changeBatch';
 
 export const FOLDER = 'container-access';
@@ -12,14 +12,8 @@ export interface Status { proxy: { ok: boolean; url: string; docker?: string; ap
 export interface Entry { name: string; type: 'dir' | 'file' | 'link'; size: number }
 export interface AuditEntry { at: number; op: string; actor?: { kind: string; id: string; name: string }; container?: { id: string; name: string }; path?: string; command?: string; ok?: boolean; error?: string; exitCode?: number | null; snapshot?: string; batch?: string; [k: string]: unknown }
 
-export async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Settings → Account & security).');
-  if (r.status === 404 && !j.detail) throw new Error('Container access is disabled or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+const api = pluginApi(FOLDER, 'Container access');
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 export const post = <T,>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) });
 export const put = <T,>(path: string, body: unknown) => call<T>(path, { method: 'PUT', body: JSON.stringify(body) });
 

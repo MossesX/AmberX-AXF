@@ -2,12 +2,15 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { useRuntime } from './axf/react';
 import * as api from './api';
 import { initBuildSync } from './views/BuildManager';
+import { libraryCards, type LibraryCard } from './axf/core/catalog';
 import type { Boilerplate, BoilerplateIndex, Catalog, DemoApp, InstallableLibrary, ModuleInfo, PortRecord, Status, Tracker } from './api';
 
 /** Everything the console tracks: repo data (catalog, tracker, libraries, boilerplates, modules) + local state (checked features, status overrides, open project, records). */
 export interface ConsoleStore {
   ready: boolean; backend: boolean;
   catalog: Catalog; tracker: Tracker; libraries: InstallableLibrary[]; boilerplateIndex: BoilerplateIndex; boilerplates: Boilerplate[]; modules: ModuleInfo[];
+  /** Framework libraries for the pickers, from the catalog + library.json + tracker (framework/core/catalog.ts libraryCards). */
+  libraryCards: LibraryCard[];
   checked: Set<string>; setChecked: (id: string, on: boolean) => void; isChecked: (id: string) => boolean;
   overrides: Record<string, Status>; setStatus: (id: string, s: Status) => void; status: (id: string) => Status;
   project: string; openProject: (dir: string) => void;
@@ -64,7 +67,7 @@ export function ConsoleStoreProvider({ children }: { children: ReactNode }) {
     const status = (id: string): Status => overrides[id] ?? tracker.items.find((i) => i.id === id)?.status ?? 'planned';
     const allBoilerplates = [...boilerplates.filter((b) => !custom.some((c) => c.id === b.id)), ...custom];
     return {
-      ready, backend, catalog, tracker, libraries, boilerplateIndex, boilerplates: allBoilerplates, modules,
+      ready, backend, catalog, tracker, libraries, boilerplateIndex, boilerplates: allBoilerplates, modules, libraryCards: libraryCards(catalog, libraries, tracker),
       checked, isChecked: (id) => checked.has(id),
       setChecked: (id, on) => { const n = new Set(checked); if (on) n.add(id); else n.delete(id); setCheckedState(n); api.writeLocal('checked', [...n]); },
       overrides, status,

@@ -1,0 +1,3787 @@
+{
+  "inputs": {
+    "$comment": "Inputs for spec/fixtures/catalog.json: a snapshot of the real framework files (Oct 21 2026: framework/catalog/catalog.json modules + lib items, status.json, tracker.json, libraries.json, boilerplates) plus a few hand-written lenient cases. Frozen on purpose, so the fixture only changes when the parsers change; refresh it by hand when the file shapes change.",
+    "catalog": {
+      "$axf": "catalog@1",
+      "frameworkVersion": "0.2.0",
+      "generatedAt": "2026-10-16T18:30:11.469Z",
+      "tabs": [
+        {
+          "id": "modules",
+          "label": "Modules",
+          "groups": [
+            {
+              "id": "framework-modules-framework-android",
+              "label": "Framework modules (framework/android/*)",
+              "items": [
+                {
+                  "id": "m.kernel",
+                  "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+                  "note": "ai.amberx.axf.kernel",
+                  "tag": "lock",
+                  "recommended": true,
+                  "suggests": []
+                },
+                {
+                  "id": "m.settings",
+                  "title": "lib-settings — settings schema registry + generated settings UI",
+                  "note": "ai.amberx.axf.settings",
+                  "tag": "core",
+                  "recommended": true,
+                  "suggests": [],
+                  "library": {
+                    "module": "lib-settings",
+                    "id": "ai.amberx.axf.settings",
+                    "label": "Settings",
+                    "description": "Schema-driven settings + generated UI",
+                    "features": [
+                      "s.settings",
+                      "s.prefs",
+                      "s.scopes",
+                      "s.secure",
+                      "s.searchable"
+                    ]
+                  }
+                },
+                {
+                  "id": "m.browser",
+                  "title": "lib-browser — Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+                  "note": "ai.amberx.axf.browser",
+                  "tag": "ph",
+                  "recommended": false,
+                  "suggests": [],
+                  "library": {
+                    "module": "lib-browser",
+                    "id": "ai.amberx.axf.browser",
+                    "label": "Library browser",
+                    "description": "Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+                    "features": [
+                      "lib.browser",
+                      "ui.windows",
+                      "ui.explorer"
+                    ]
+                  }
+                },
+                {
+                  "id": "m.media",
+                  "title": "lib-media — Media3 player, camera, audio (placeholder)",
+                  "note": "ai.amberx.axf.media",
+                  "tag": "ph",
+                  "recommended": false,
+                  "suggests": [],
+                  "library": {
+                    "module": "lib-media",
+                    "id": "ai.amberx.axf.media",
+                    "label": "Media",
+                    "description": "Video/audio playback, camera, streaming, PiP",
+                    "features": [
+                      "dv.media",
+                      "dv.stream",
+                      "dv.camera",
+                      "dv.audio",
+                      "c.video",
+                      "c.vpsstream",
+                      "c.camera",
+                      "c.music"
+                    ]
+                  }
+                },
+                {
+                  "id": "m.github",
+                  "title": "lib-github — Repos, commits, Actions, releases, tracker sync",
+                  "note": "ai.amberx.axf.github",
+                  "tag": "ph",
+                  "recommended": false,
+                  "suggests": [],
+                  "library": {
+                    "module": "lib-github",
+                    "id": "ai.amberx.axf.github",
+                    "label": "GitHub",
+                    "description": "Repos, commits, Actions, releases, tracker sync",
+                    "features": [
+                      "w.github",
+                      "c.github",
+                      "cx.github"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kernel",
+          "label": "Kernel",
+          "groups": [
+            {
+              "id": "ui-library-every-customization-token",
+              "label": "UI library — every customization token",
+              "items": [
+                {
+                  "id": "lib.voice",
+                  "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+                  "note": "framework/android/lib-voice + library.json; first used by apps/voicevault (Oct 20 2026, written without a compiler)",
+                  "tag": "lib",
+                  "recommended": true,
+                  "suggests": [
+                    {
+                      "id": "lib.voice.wakeword",
+                      "title": "Always-on wake word in a foreground service"
+                    },
+                    {
+                      "id": "lib.voice.speakerid",
+                      "title": "Recognise the owner's voice"
+                    },
+                    {
+                      "id": "lib.voice.web",
+                      "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)"
+                    }
+                  ]
+                },
+                {
+                  "id": "lib.lock",
+                  "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+                  "note": "framework/android/lib-lock + library.json; AxfActivity is now a FragmentActivity (Oct 20 2026, written without a compiler)",
+                  "tag": "lib",
+                  "recommended": true,
+                  "suggests": [
+                    {
+                      "id": "lib.lock.keybound",
+                      "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "status": {
+      "m.kernel": {
+        "status": "built",
+        "wave": 1,
+        "module": null
+      },
+      "m.settings": {
+        "status": "built",
+        "wave": 1,
+        "module": null
+      },
+      "m.browser": {
+        "status": "built",
+        "wave": 1,
+        "module": "lib-browser",
+        "notes": "framework/android/lib-browser + library.json"
+      },
+      "m.media": {
+        "status": "planned",
+        "wave": 2,
+        "module": null
+      },
+      "m.github": {
+        "status": "planned",
+        "wave": 2,
+        "module": null
+      },
+      "lib.voice": {
+        "status": "built",
+        "wave": 1,
+        "module": "lib-voice",
+        "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      "lib.lock": {
+        "status": "built",
+        "wave": 1,
+        "module": "lib-lock",
+        "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      "u.bio": {
+        "status": "built",
+        "wave": 2,
+        "module": "lib-lock",
+        "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      "w.mcp": {
+        "status": "partial",
+        "wave": 2,
+        "module": "lib-mcp",
+        "note": "Oct 20 2026 (Fable): MCP client library on all three ports (framework/libs/mcp, lib-mcp, axf_libs/mcp; engine fixture mcp-client.json). The MCP server half (expose app actions as tools) is still a placeholder (axf.mcp.server)."
+      },
+      "l.log": {
+        "status": "built",
+        "wave": 1,
+        "module": "lib-logging"
+      },
+      "x.legacy": {
+        "status": "BUILT",
+        "wave": "2",
+        "module": null,
+        "note": "old files said note"
+      },
+      "x.unknown": {
+        "status": "done"
+      }
+    },
+    "tracker": {
+      "$axf": "tracker@1",
+      "frameworkVersion": "0.2.0",
+      "generatedAt": "2026-10-21T02:31:33.810Z",
+      "summary": {
+        "modules": {
+          "built": 14,
+          "partial": 1,
+          "placeholder": 4,
+          "planned": 4,
+          "total": 23,
+          "coverage": 61
+        }
+      },
+      "items": [
+        {
+          "id": "f.interop.remote",
+          "tab": "foundations",
+          "group": "modules-extension-points-placeholders",
+          "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface — capability axf.remote",
+          "tag": "lock",
+          "status": "built",
+          "wave": 1,
+          "module": "lib-mcp",
+          "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
+        },
+        {
+          "id": "l.log",
+          "tab": "kernel",
+          "group": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
+          "title": "Logging engine: levels, tags, structured fields, ring buffer, file sink, remote sink",
+          "tag": "lib",
+          "status": "built",
+          "wave": 1,
+          "module": "lib-logging",
+          "notes": ""
+        },
+        {
+          "id": "u.bio",
+          "tab": "kernel",
+          "group": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
+          "title": "Biometric + PIN/pattern lock, auto-lock timer",
+          "tag": "lib",
+          "status": "built",
+          "wave": 2,
+          "module": "lib-lock",
+          "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+        },
+        {
+          "id": "lib.voice",
+          "tab": "kernel",
+          "group": "ui-library-every-customization-token",
+          "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+          "tag": "lib",
+          "status": "built",
+          "wave": 1,
+          "module": "lib-voice",
+          "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+        },
+        {
+          "id": "lib.voice.wakeword",
+          "tab": "kernel",
+          "group": "ui-library-every-customization-token",
+          "parent": "lib.voice",
+          "title": "Always-on wake word in a foreground service",
+          "tag": "suggested",
+          "status": "planned",
+          "wave": 3,
+          "module": null,
+          "notes": ""
+        },
+        {
+          "id": "lib.lock",
+          "tab": "kernel",
+          "group": "ui-library-every-customization-token",
+          "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+          "tag": "lib",
+          "status": "built",
+          "wave": 1,
+          "module": "lib-lock",
+          "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+        },
+        {
+          "id": "w.mcp",
+          "tab": "kernel",
+          "group": "navigation-data-network",
+          "title": "MCP client/server bridge",
+          "tag": "lib",
+          "status": "partial",
+          "wave": 2,
+          "module": "lib-mcp",
+          "notes": ""
+        },
+        {
+          "id": "dv.audio",
+          "tab": "kernel",
+          "group": "device-platform-capabilities",
+          "title": "Audio recording, TTS, speech-to-text, voice commands, audio focus",
+          "tag": "lib",
+          "status": "partial",
+          "wave": 2,
+          "module": "lib-voice",
+          "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet"
+        },
+        {
+          "id": "m.kernel",
+          "tab": "modules",
+          "group": "framework-modules-framework-android",
+          "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+          "tag": "lock",
+          "status": "built",
+          "wave": 1,
+          "module": null,
+          "notes": ""
+        },
+        {
+          "id": "m.settings",
+          "tab": "modules",
+          "group": "framework-modules-framework-android",
+          "title": "lib-settings — settings schema registry + generated settings UI",
+          "tag": "core",
+          "status": "built",
+          "wave": 1,
+          "module": null,
+          "notes": ""
+        },
+        {
+          "id": "m.media",
+          "tab": "modules",
+          "group": "framework-modules-framework-android",
+          "title": "lib-media — Media3 player, camera, audio (placeholder)",
+          "tag": "ph",
+          "status": "planned",
+          "wave": 2,
+          "module": null,
+          "notes": ""
+        },
+        {
+          "id": "c.voice",
+          "tab": "demos",
+          "group": "device-sensors-connectivity",
+          "title": "Voice commands + gesture hooks",
+          "tag": "lib",
+          "status": "partial",
+          "wave": 3,
+          "module": "lib-voice",
+          "notes": "voice commands + user triggers built; gesture hooks not yet"
+        }
+      ]
+    },
+    "libraries": {
+      "$axf": "libraries@1",
+      "generatedAt": "2026-10-21T02:31:33.812Z",
+      "items": [
+        {
+          "$axf": "library@1",
+          "id": "ai.amberx.axf.browser",
+          "module": "lib-browser",
+          "name": "Library browser (floating tab groups)",
+          "description": "Two-pane browser of any item set with multi-select and Compare: each selection opens as a tab in a floating group with undock, drag-and-drop, split (vertical/horizontal/four-way/grid), minimize to corners or a floating toolbar, tree/grid element explorer. Attaches to the tab groups an app declares in axf.manifest.json → libraries.browser.tabGroups.",
+          "features": [
+            "ui.windows",
+            "ui.explorer",
+            "cx.libpicker"
+          ],
+          "dependsOn": [
+            "ai.amberx.axf.ui.windows"
+          ],
+          "manifestKey": "libraries.browser",
+          "params": [
+            {
+              "key": "tabGroups",
+              "label": "Tab groups to attach to",
+              "type": "list",
+              "required": true,
+              "default": [
+                "library-browser"
+              ],
+              "help": "Ids of the tab groups this browser binds to; each gets a route and a Compare command."
+            },
+            {
+              "key": "itemKinds",
+              "label": "Item kinds",
+              "type": "list",
+              "required": true,
+              "default": [
+                "kit-preview",
+                "library-info"
+              ],
+              "help": "Tab kinds the browser may open; each kind needs a registered TabRenderer."
+            },
+            {
+              "key": "defaultWindowType",
+              "label": "Window type for comparisons",
+              "type": "choice",
+              "choices": [
+                "floating",
+                "dock",
+                "element"
+              ],
+              "default": "floating",
+              "required": true
+            },
+            {
+              "key": "toolbarDefault",
+              "label": "Toolbar on new windows",
+              "type": "choice",
+              "choices": [
+                "forced",
+                "on",
+                "off"
+              ],
+              "default": "forced",
+              "required": true,
+              "help": "forced = window schema rules; element windows start off."
+            },
+            {
+              "key": "allowGridView",
+              "label": "Allow grid view",
+              "type": "bool",
+              "default": true
+            },
+            {
+              "key": "compareLimit",
+              "label": "Max items per compare",
+              "type": "number",
+              "default": 6,
+              "min": 1,
+              "max": 12
+            },
+            {
+              "key": "panes",
+              "label": "Pane titles",
+              "type": "list",
+              "default": [
+                "Hot-swappable",
+                "Third-party / existing"
+              ],
+              "help": "Left / right pane headings."
+            },
+            {
+              "key": "minimizeCorner",
+              "label": "Default minimize corner",
+              "type": "choice",
+              "choices": [
+                "top-left",
+                "top-right",
+                "bottom-right",
+                "bottom-left"
+              ],
+              "default": "bottom-right"
+            }
+          ],
+          "install": {
+            "gradle": "implementation(\"ai.amberx.axf:lib-browser:$axf\")",
+            "module": "BrowserModule()",
+            "import": "ai.amberx.axf.browser.BrowserModule",
+            "routes": [
+              "browser"
+            ]
+          }
+        },
+        {
+          "$axf": "library@1",
+          "id": "ai.amberx.axf.lock",
+          "module": "lib-lock",
+          "name": "App lock (fingerprint/face or PIN)",
+          "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay. Settings group App lock (mode, auto-lock delay) and a set/change PIN screen (current PIN required to change). Fills the platform's android.biometric placeholder.",
+          "features": [
+            "u.bio"
+          ],
+          "dependsOn": [],
+          "manifestKey": "libraries.lock",
+          "params": [
+            {
+              "key": "defaultMode",
+              "label": "Default second step",
+              "type": "choice",
+              "choices": [
+                "none",
+                "biometric",
+                "pin"
+              ],
+              "default": "none",
+              "required": true
+            }
+          ],
+          "install": {
+            "gradle": "implementation(\"ai.amberx.axf:lib-lock:$axf\")",
+            "module": "LockModule()",
+            "import": "ai.amberx.axf.lock.LockModule",
+            "routes": [
+              "lock-pin"
+            ]
+          },
+          "placeholders": [
+            {
+              "capability": "axf.lock.keybound",
+              "note": "Keystore keys that need the fingerprint for every decrypt (CryptoObject). Not built: the lock gates the UI; data keys don't require auth yet."
+            }
+          ]
+        },
+        {
+          "$axf": "library@1",
+          "id": "ai.amberx.axf.mcp",
+          "module": "lib-mcp",
+          "name": "MCP client (connect to MCP servers)",
+          "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+          "features": [
+            "w.mcp",
+            "f.interop.remote"
+          ],
+          "dependsOn": [
+            "ai.amberx.axf.network"
+          ],
+          "manifestKey": "libraries.mcp",
+          "params": [
+            {
+              "key": "timeoutMs",
+              "label": "Call timeout (ms)",
+              "type": "number",
+              "default": 30000,
+              "min": 1000,
+              "max": 600000
+            }
+          ],
+          "install": {
+            "gradle": "implementation(\"ai.amberx.axf:lib-mcp:$axf\")",
+            "module": "McpModule()",
+            "import": "ai.amberx.axf.mcp.McpModule",
+            "routes": [
+              "mcp",
+              "mcp-servers"
+            ]
+          },
+          "ports": {
+            "android": {
+              "status": "scaffolded",
+              "dir": "android/lib-mcp",
+              "note": "written without a compiler; CI compiles and runs :lib-mcp:testDebugUnitTest"
+            },
+            "web": {
+              "status": "compiled",
+              "dir": "libs/mcp"
+            },
+            "python": {
+              "status": "compiled",
+              "dir": "python/axf_libs/mcp"
+            }
+          },
+          "placeholders": [
+            {
+              "capability": "axf.mcp.server",
+              "note": "MCP server side (expose the app's surface@1 actions as tools) — not built; the client half is this library."
+            },
+            {
+              "capability": "axf.mcp.oauth",
+              "note": "OAuth 2.1 authorization-code sign-in to MCP servers — not built; bearer tokens only."
+            },
+            {
+              "capability": "axf.mcp.elicitation",
+              "note": "Server→client requests (sampling, elicitation) are ignored, not answered."
+            }
+          ]
+        },
+        {
+          "$axf": "library@1",
+          "id": "ai.amberx.axf.voice",
+          "module": "lib-voice",
+          "name": "Voice (speech in, prompts out, voice commands)",
+          "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+          "features": [
+            "c.voice",
+            "dv.audio"
+          ],
+          "dependsOn": [],
+          "manifestKey": "libraries.voice",
+          "params": [
+            {
+              "key": "speakPrompts",
+              "label": "Speak prompts by default",
+              "type": "bool",
+              "default": true
+            },
+            {
+              "key": "preferOffline",
+              "label": "Prefer on-device recognition",
+              "type": "bool",
+              "default": true,
+              "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+            }
+          ],
+          "install": {
+            "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
+            "module": "VoiceModule(this)",
+            "import": "ai.amberx.axf.voice.VoiceModule",
+            "routes": [
+              "voice-triggers"
+            ]
+          },
+          "placeholders": [
+            {
+              "capability": "axf.voice.wakeword",
+              "note": "Always-on wake word in a foreground service (not built; the app listens only while open)."
+            },
+            {
+              "capability": "axf.voice.speaker-id",
+              "note": "Recognise the owner's voice (not built)."
+            }
+          ]
+        }
+      ]
+    },
+    "boilerplates": [
+      {
+        "$axf": "boilerplate@1",
+        "id": "dashboard",
+        "name": "Admin Dashboard",
+        "category": "business",
+        "description": "KPIs, charts, tables, roles and audit",
+        "features": [
+          "c.charts",
+          "i.admin",
+          "i.accounts"
+        ],
+        "screens": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "kind": "dashboard"
+          },
+          {
+            "id": "users",
+            "label": "Users",
+            "kind": "list-detail"
+          },
+          {
+            "id": "admin",
+            "label": "Admin",
+            "kind": "settings"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "kind": "settings"
+          }
+        ],
+        "modules": [
+          "ai.amberx.axf.admin",
+          "ai.amberx.axf.accounts"
+        ],
+        "defaults": {
+          "layout": "classic-ide",
+          "nav-menu": "sidebar-list"
+        },
+        "status": "planned",
+        "source": "amberx",
+        "libraries": [
+          {
+            "library": "browser",
+            "params": {
+              "tabGroups": [
+                "widgets"
+              ],
+              "panes": [
+                "Built-in widgets",
+                "Imported widgets"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "$axf": "boilerplate@1",
+        "id": "voice",
+        "name": "Voice Control",
+        "category": "assistant",
+        "description": "Hands-free control via voice + gestures",
+        "features": [
+          "c.voice",
+          "c.pilot"
+        ],
+        "screens": [
+          {
+            "id": "home",
+            "label": "Home",
+            "kind": "landing"
+          },
+          {
+            "id": "commands",
+            "label": "Commands",
+            "kind": "list-detail"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "kind": "settings"
+          }
+        ],
+        "modules": [
+          "ai.amberx.axf.platform"
+        ],
+        "defaults": {
+          "style-theme": "glass-orbit"
+        },
+        "status": "planned",
+        "source": "amberx"
+      },
+      {
+        "$axf": "boilerplate@1",
+        "id": "apiclient",
+        "name": "API Client",
+        "category": "devops",
+        "description": "REST + WebSocket tester with collections",
+        "features": [
+          "c.rest",
+          "c.json"
+        ],
+        "screens": [
+          {
+            "id": "collections",
+            "label": "Collections",
+            "kind": "list-detail"
+          },
+          {
+            "id": "request",
+            "label": "Request",
+            "kind": "editor"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "kind": "settings"
+          }
+        ],
+        "modules": [
+          "ai.amberx.axf.network"
+        ],
+        "defaults": {
+          "style-theme": "sharp-terminal"
+        },
+        "status": "planned",
+        "source": "amberx"
+      },
+      {
+        "$axf": "boilerplate@1",
+        "id": "lenient",
+        "name": "Lenient",
+        "features": "not-a-list",
+        "screens": [
+          {
+            "id": "home",
+            "label": "Home"
+          },
+          "junk"
+        ],
+        "libraries": [
+          "browser",
+          {
+            "library": "lock",
+            "params": {
+              "defaultMode": "pin"
+            }
+          },
+          {
+            "params": {}
+          },
+          7
+        ],
+        "defaults": {
+          "layout": "focus-top",
+          "bad": {
+            "x": 1
+          }
+        },
+        "screenshots": [
+          {
+            "file": "home.png",
+            "screen": "home",
+            "caption": "Home"
+          },
+          {
+            "caption": "no file"
+          }
+        ]
+      }
+    ],
+    "boilerplateIndex": {
+      "$axf": "boilerplates@1",
+      "categories": [
+        {
+          "id": "productivity",
+          "label": "Productivity"
+        },
+        {
+          "id": "media",
+          "label": "Media"
+        },
+        {
+          "id": "location",
+          "label": "Location"
+        }
+      ],
+      "items": [
+        {
+          "id": "dashboard",
+          "name": "Admin Dashboard",
+          "category": "business",
+          "description": "KPIs, charts, tables, roles and audit",
+          "features": 3,
+          "screens": 4,
+          "modules": [
+            "ai.amberx.axf.admin",
+            "ai.amberx.axf.accounts"
+          ],
+          "libraries": [
+            "browser"
+          ],
+          "status": "planned",
+          "source": "amberx"
+        },
+        {
+          "id": "showcase",
+          "name": "Framework Showcase",
+          "category": "starter",
+          "description": "Every studio view: assets, components, themes, layouts, roles, actions",
+          "features": 7,
+          "screens": 5,
+          "modules": [
+            "ai.amberx.axf.devtools"
+          ],
+          "libraries": [
+            "browser"
+          ],
+          "status": "planned",
+          "source": "amberx"
+        },
+        {
+          "id": "voice",
+          "name": "Voice Control",
+          "category": "assistant",
+          "description": "Hands-free control via voice + gestures",
+          "features": 2,
+          "screens": 3,
+          "modules": [
+            "ai.amberx.axf.platform"
+          ],
+          "libraries": [],
+          "status": "planned",
+          "source": "amberx"
+        }
+      ]
+    },
+    "lenient": {
+      "catalog": {
+        "tabs": [
+          {
+            "id": "t",
+            "groups": [
+              {
+                "id": "g",
+                "items": [
+                  {
+                    "id": "a",
+                    "title": "A",
+                    "recommended": "yes",
+                    "suggests": [
+                      {
+                        "id": "a.1"
+                      }
+                    ],
+                    "library": {
+                      "id": "no-module"
+                    }
+                  },
+                  {
+                    "id": "b",
+                    "title": "lib-x — X things",
+                    "note": "ai.amberx.axf.x",
+                    "library": {
+                      "module": "lib-x"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "library": {
+        "id": "ai.amberx.axf.thing",
+        "module": "lib-thing",
+        "params": [
+          {
+            "key": "n",
+            "type": "weird",
+            "min": "1"
+          },
+          {
+            "key": "m",
+            "type": "number",
+            "min": 1,
+            "max": 10,
+            "default": null,
+            "required": true
+          }
+        ],
+        "install": {
+          "routes": "x"
+        },
+        "ports": {
+          "web": {
+            "dir": "libs/thing"
+          }
+        }
+      }
+    }
+  },
+  "catalog": {
+    "frameworkVersion": "0.2.0",
+    "tabs": [
+      {
+        "id": "modules",
+        "label": "Modules",
+        "groups": [
+          {
+            "id": "framework-modules-framework-android",
+            "label": "Framework modules (framework/android/*)",
+            "items": [
+              {
+                "id": "m.kernel",
+                "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+                "note": "ai.amberx.axf.kernel",
+                "tag": "lock",
+                "recommended": true,
+                "suggests": [],
+                "tab": "modules",
+                "group": "framework-modules-framework-android"
+              },
+              {
+                "id": "m.settings",
+                "title": "lib-settings — settings schema registry + generated settings UI",
+                "note": "ai.amberx.axf.settings",
+                "tag": "core",
+                "recommended": true,
+                "suggests": [],
+                "tab": "modules",
+                "group": "framework-modules-framework-android",
+                "library": {
+                  "module": "lib-settings",
+                  "id": "ai.amberx.axf.settings",
+                  "label": "Settings",
+                  "description": "Schema-driven settings + generated UI",
+                  "features": [
+                    "s.settings",
+                    "s.prefs",
+                    "s.scopes",
+                    "s.secure",
+                    "s.searchable"
+                  ]
+                }
+              },
+              {
+                "id": "m.browser",
+                "title": "lib-browser — Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+                "note": "ai.amberx.axf.browser",
+                "tag": "ph",
+                "recommended": false,
+                "suggests": [],
+                "tab": "modules",
+                "group": "framework-modules-framework-android",
+                "library": {
+                  "module": "lib-browser",
+                  "id": "ai.amberx.axf.browser",
+                  "label": "Library browser",
+                  "description": "Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+                  "features": [
+                    "lib.browser",
+                    "ui.windows",
+                    "ui.explorer"
+                  ]
+                }
+              },
+              {
+                "id": "m.media",
+                "title": "lib-media — Media3 player, camera, audio (placeholder)",
+                "note": "ai.amberx.axf.media",
+                "tag": "ph",
+                "recommended": false,
+                "suggests": [],
+                "tab": "modules",
+                "group": "framework-modules-framework-android",
+                "library": {
+                  "module": "lib-media",
+                  "id": "ai.amberx.axf.media",
+                  "label": "Media",
+                  "description": "Video/audio playback, camera, streaming, PiP",
+                  "features": [
+                    "dv.media",
+                    "dv.stream",
+                    "dv.camera",
+                    "dv.audio",
+                    "c.video",
+                    "c.vpsstream",
+                    "c.camera",
+                    "c.music"
+                  ]
+                }
+              },
+              {
+                "id": "m.github",
+                "title": "lib-github — Repos, commits, Actions, releases, tracker sync",
+                "note": "ai.amberx.axf.github",
+                "tag": "ph",
+                "recommended": false,
+                "suggests": [],
+                "tab": "modules",
+                "group": "framework-modules-framework-android",
+                "library": {
+                  "module": "lib-github",
+                  "id": "ai.amberx.axf.github",
+                  "label": "GitHub",
+                  "description": "Repos, commits, Actions, releases, tracker sync",
+                  "features": [
+                    "w.github",
+                    "c.github",
+                    "cx.github"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "kernel",
+        "label": "Kernel",
+        "groups": [
+          {
+            "id": "ui-library-every-customization-token",
+            "label": "UI library — every customization token",
+            "items": [
+              {
+                "id": "lib.voice",
+                "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+                "note": "framework/android/lib-voice + library.json; first used by apps/voicevault (Oct 20 2026, written without a compiler)",
+                "tag": "lib",
+                "recommended": true,
+                "suggests": [
+                  {
+                    "id": "lib.voice.wakeword",
+                    "title": "Always-on wake word in a foreground service"
+                  },
+                  {
+                    "id": "lib.voice.speakerid",
+                    "title": "Recognise the owner's voice"
+                  },
+                  {
+                    "id": "lib.voice.web",
+                    "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)"
+                  }
+                ],
+                "tab": "kernel",
+                "group": "ui-library-every-customization-token"
+              },
+              {
+                "id": "lib.lock",
+                "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+                "note": "framework/android/lib-lock + library.json; AxfActivity is now a FragmentActivity (Oct 20 2026, written without a compiler)",
+                "tag": "lib",
+                "recommended": true,
+                "suggests": [
+                  {
+                    "id": "lib.lock.keybound",
+                    "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)"
+                  }
+                ],
+                "tab": "kernel",
+                "group": "ui-library-every-customization-token"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "generatedAt": "2026-10-16T18:30:11.469Z"
+  },
+  "status": {
+    "m.kernel": {
+      "status": "built",
+      "wave": 1,
+      "module": null,
+      "notes": ""
+    },
+    "m.settings": {
+      "status": "built",
+      "wave": 1,
+      "module": null,
+      "notes": ""
+    },
+    "m.browser": {
+      "status": "built",
+      "wave": 1,
+      "module": "lib-browser",
+      "notes": "framework/android/lib-browser + library.json"
+    },
+    "m.media": {
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    "m.github": {
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    "lib.voice": {
+      "status": "built",
+      "wave": 1,
+      "module": "lib-voice",
+      "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+    },
+    "lib.lock": {
+      "status": "built",
+      "wave": 1,
+      "module": "lib-lock",
+      "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+    },
+    "u.bio": {
+      "status": "built",
+      "wave": 2,
+      "module": "lib-lock",
+      "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+    },
+    "w.mcp": {
+      "status": "partial",
+      "wave": 2,
+      "module": "lib-mcp",
+      "notes": "Oct 20 2026 (Fable): MCP client library on all three ports (framework/libs/mcp, lib-mcp, axf_libs/mcp; engine fixture mcp-client.json). The MCP server half (expose app actions as tools) is still a placeholder (axf.mcp.server)."
+    },
+    "l.log": {
+      "status": "built",
+      "wave": 1,
+      "module": "lib-logging",
+      "notes": ""
+    },
+    "x.legacy": {
+      "status": "built",
+      "wave": 3,
+      "module": null,
+      "notes": "old files said note"
+    },
+    "x.unknown": {
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    }
+  },
+  "tracker": {
+    "generatedAt": "2026-10-21T02:31:33.810Z",
+    "summary": {
+      "modules": {
+        "built": 14,
+        "partial": 1,
+        "placeholder": 4,
+        "planned": 4,
+        "total": 23,
+        "coverage": 61
+      }
+    },
+    "items": [
+      {
+        "id": "f.interop.remote",
+        "tab": "foundations",
+        "group": "modules-extension-points-placeholders",
+        "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface — capability axf.remote",
+        "tag": "lock",
+        "status": "built",
+        "wave": 1,
+        "module": "lib-mcp",
+        "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
+      },
+      {
+        "id": "l.log",
+        "tab": "kernel",
+        "group": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
+        "title": "Logging engine: levels, tags, structured fields, ring buffer, file sink, remote sink",
+        "tag": "lib",
+        "status": "built",
+        "wave": 1,
+        "module": "lib-logging",
+        "notes": ""
+      },
+      {
+        "id": "u.bio",
+        "tab": "kernel",
+        "group": "settings-logging-admin-accounts-profile-subscription-the-six-libraries",
+        "title": "Biometric + PIN/pattern lock, auto-lock timer",
+        "tag": "lib",
+        "status": "built",
+        "wave": 2,
+        "module": "lib-lock",
+        "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      {
+        "id": "lib.voice",
+        "tab": "kernel",
+        "group": "ui-library-every-customization-token",
+        "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+        "tag": "lib",
+        "status": "built",
+        "wave": 1,
+        "module": "lib-voice",
+        "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      {
+        "id": "lib.voice.wakeword",
+        "tab": "kernel",
+        "group": "ui-library-every-customization-token",
+        "title": "Always-on wake word in a foreground service",
+        "tag": "suggested",
+        "status": "planned",
+        "wave": 3,
+        "module": null,
+        "notes": "",
+        "parent": "lib.voice"
+      },
+      {
+        "id": "lib.lock",
+        "tab": "kernel",
+        "group": "ui-library-every-customization-token",
+        "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+        "tag": "lib",
+        "status": "built",
+        "wave": 1,
+        "module": "lib-lock",
+        "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+      },
+      {
+        "id": "w.mcp",
+        "tab": "kernel",
+        "group": "navigation-data-network",
+        "title": "MCP client/server bridge",
+        "tag": "lib",
+        "status": "partial",
+        "wave": 2,
+        "module": "lib-mcp",
+        "notes": ""
+      },
+      {
+        "id": "dv.audio",
+        "tab": "kernel",
+        "group": "device-platform-capabilities",
+        "title": "Audio recording, TTS, speech-to-text, voice commands, audio focus",
+        "tag": "lib",
+        "status": "partial",
+        "wave": 2,
+        "module": "lib-voice",
+        "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet"
+      },
+      {
+        "id": "m.kernel",
+        "tab": "modules",
+        "group": "framework-modules-framework-android",
+        "title": "axf-kernel — pure Kotlin: envelope, registry, validate, engines, runtime, module system, extension points, placeholders",
+        "tag": "lock",
+        "status": "built",
+        "wave": 1,
+        "module": null,
+        "notes": ""
+      },
+      {
+        "id": "m.settings",
+        "tab": "modules",
+        "group": "framework-modules-framework-android",
+        "title": "lib-settings — settings schema registry + generated settings UI",
+        "tag": "core",
+        "status": "built",
+        "wave": 1,
+        "module": null,
+        "notes": ""
+      },
+      {
+        "id": "m.media",
+        "tab": "modules",
+        "group": "framework-modules-framework-android",
+        "title": "lib-media — Media3 player, camera, audio (placeholder)",
+        "tag": "ph",
+        "status": "planned",
+        "wave": 2,
+        "module": null,
+        "notes": ""
+      },
+      {
+        "id": "c.voice",
+        "tab": "demos",
+        "group": "device-sensors-connectivity",
+        "title": "Voice commands + gesture hooks",
+        "tag": "lib",
+        "status": "partial",
+        "wave": 3,
+        "module": "lib-voice",
+        "notes": "voice commands + user triggers built; gesture hooks not yet"
+      }
+    ],
+    "frameworkVersion": "0.2.0"
+  },
+  "libraries": {
+    "generatedAt": "2026-10-21T02:31:33.812Z",
+    "items": [
+      {
+        "id": "ai.amberx.axf.browser",
+        "module": "lib-browser",
+        "name": "Library browser (floating tab groups)",
+        "description": "Two-pane browser of any item set with multi-select and Compare: each selection opens as a tab in a floating group with undock, drag-and-drop, split (vertical/horizontal/four-way/grid), minimize to corners or a floating toolbar, tree/grid element explorer. Attaches to the tab groups an app declares in axf.manifest.json → libraries.browser.tabGroups.",
+        "features": [
+          "ui.windows",
+          "ui.explorer",
+          "cx.libpicker"
+        ],
+        "dependsOn": [
+          "ai.amberx.axf.ui.windows"
+        ],
+        "manifestKey": "libraries.browser",
+        "params": [
+          {
+            "key": "tabGroups",
+            "label": "Tab groups to attach to",
+            "type": "list",
+            "required": true,
+            "default": [
+              "library-browser"
+            ],
+            "help": "Ids of the tab groups this browser binds to; each gets a route and a Compare command."
+          },
+          {
+            "key": "itemKinds",
+            "label": "Item kinds",
+            "type": "list",
+            "required": true,
+            "default": [
+              "kit-preview",
+              "library-info"
+            ],
+            "help": "Tab kinds the browser may open; each kind needs a registered TabRenderer."
+          },
+          {
+            "key": "defaultWindowType",
+            "label": "Window type for comparisons",
+            "type": "choice",
+            "required": true,
+            "default": "floating",
+            "choices": [
+              "floating",
+              "dock",
+              "element"
+            ]
+          },
+          {
+            "key": "toolbarDefault",
+            "label": "Toolbar on new windows",
+            "type": "choice",
+            "required": true,
+            "default": "forced",
+            "help": "forced = window schema rules; element windows start off.",
+            "choices": [
+              "forced",
+              "on",
+              "off"
+            ]
+          },
+          {
+            "key": "allowGridView",
+            "label": "Allow grid view",
+            "type": "bool",
+            "default": true
+          },
+          {
+            "key": "compareLimit",
+            "label": "Max items per compare",
+            "type": "number",
+            "default": 6,
+            "min": 1,
+            "max": 12
+          },
+          {
+            "key": "panes",
+            "label": "Pane titles",
+            "type": "list",
+            "default": [
+              "Hot-swappable",
+              "Third-party / existing"
+            ],
+            "help": "Left / right pane headings."
+          },
+          {
+            "key": "minimizeCorner",
+            "label": "Default minimize corner",
+            "type": "choice",
+            "default": "bottom-right",
+            "choices": [
+              "top-left",
+              "top-right",
+              "bottom-right",
+              "bottom-left"
+            ]
+          }
+        ],
+        "install": {
+          "gradle": "implementation(\"ai.amberx.axf:lib-browser:$axf\")",
+          "module": "BrowserModule()",
+          "import": "ai.amberx.axf.browser.BrowserModule",
+          "routes": [
+            "browser"
+          ]
+        }
+      },
+      {
+        "id": "ai.amberx.axf.lock",
+        "module": "lib-lock",
+        "name": "App lock (fingerprint/face or PIN)",
+        "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay. Settings group App lock (mode, auto-lock delay) and a set/change PIN screen (current PIN required to change). Fills the platform's android.biometric placeholder.",
+        "features": [
+          "u.bio"
+        ],
+        "dependsOn": [],
+        "manifestKey": "libraries.lock",
+        "params": [
+          {
+            "key": "defaultMode",
+            "label": "Default second step",
+            "type": "choice",
+            "required": true,
+            "default": "none",
+            "choices": [
+              "none",
+              "biometric",
+              "pin"
+            ]
+          }
+        ],
+        "install": {
+          "gradle": "implementation(\"ai.amberx.axf:lib-lock:$axf\")",
+          "module": "LockModule()",
+          "import": "ai.amberx.axf.lock.LockModule",
+          "routes": [
+            "lock-pin"
+          ]
+        },
+        "placeholders": [
+          {
+            "capability": "axf.lock.keybound",
+            "note": "Keystore keys that need the fingerprint for every decrypt (CryptoObject). Not built: the lock gates the UI; data keys don't require auth yet."
+          }
+        ]
+      },
+      {
+        "id": "ai.amberx.axf.mcp",
+        "module": "lib-mcp",
+        "name": "MCP client (connect to MCP servers)",
+        "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+        "features": [
+          "w.mcp",
+          "f.interop.remote"
+        ],
+        "dependsOn": [
+          "ai.amberx.axf.network"
+        ],
+        "manifestKey": "libraries.mcp",
+        "params": [
+          {
+            "key": "timeoutMs",
+            "label": "Call timeout (ms)",
+            "type": "number",
+            "default": 30000,
+            "min": 1000,
+            "max": 600000
+          }
+        ],
+        "install": {
+          "gradle": "implementation(\"ai.amberx.axf:lib-mcp:$axf\")",
+          "module": "McpModule()",
+          "import": "ai.amberx.axf.mcp.McpModule",
+          "routes": [
+            "mcp",
+            "mcp-servers"
+          ]
+        },
+        "ports": {
+          "android": {
+            "status": "scaffolded",
+            "dir": "android/lib-mcp",
+            "note": "written without a compiler; CI compiles and runs :lib-mcp:testDebugUnitTest"
+          },
+          "web": {
+            "status": "compiled",
+            "dir": "libs/mcp"
+          },
+          "python": {
+            "status": "compiled",
+            "dir": "python/axf_libs/mcp"
+          }
+        },
+        "placeholders": [
+          {
+            "capability": "axf.mcp.server",
+            "note": "MCP server side (expose the app's surface@1 actions as tools) — not built; the client half is this library."
+          },
+          {
+            "capability": "axf.mcp.oauth",
+            "note": "OAuth 2.1 authorization-code sign-in to MCP servers — not built; bearer tokens only."
+          },
+          {
+            "capability": "axf.mcp.elicitation",
+            "note": "Server→client requests (sampling, elicitation) are ignored, not answered."
+          }
+        ]
+      },
+      {
+        "id": "ai.amberx.axf.voice",
+        "module": "lib-voice",
+        "name": "Voice (speech in, prompts out, voice commands)",
+        "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+        "features": [
+          "c.voice",
+          "dv.audio"
+        ],
+        "dependsOn": [],
+        "manifestKey": "libraries.voice",
+        "params": [
+          {
+            "key": "speakPrompts",
+            "label": "Speak prompts by default",
+            "type": "bool",
+            "default": true
+          },
+          {
+            "key": "preferOffline",
+            "label": "Prefer on-device recognition",
+            "type": "bool",
+            "default": true,
+            "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+          }
+        ],
+        "install": {
+          "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
+          "module": "VoiceModule(this)",
+          "import": "ai.amberx.axf.voice.VoiceModule",
+          "routes": [
+            "voice-triggers"
+          ]
+        },
+        "placeholders": [
+          {
+            "capability": "axf.voice.wakeword",
+            "note": "Always-on wake word in a foreground service (not built; the app listens only while open)."
+          },
+          {
+            "capability": "axf.voice.speaker-id",
+            "note": "Recognise the owner's voice (not built)."
+          }
+        ]
+      }
+    ]
+  },
+  "boilerplates": [
+    {
+      "id": "dashboard",
+      "name": "Admin Dashboard",
+      "category": "business",
+      "description": "KPIs, charts, tables, roles and audit",
+      "features": [
+        "c.charts",
+        "i.admin",
+        "i.accounts"
+      ],
+      "screens": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "kind": "dashboard"
+        },
+        {
+          "id": "users",
+          "label": "Users",
+          "kind": "list-detail"
+        },
+        {
+          "id": "admin",
+          "label": "Admin",
+          "kind": "settings"
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "kind": "settings"
+        }
+      ],
+      "modules": [
+        "ai.amberx.axf.admin",
+        "ai.amberx.axf.accounts"
+      ],
+      "defaults": {
+        "layout": "classic-ide",
+        "nav-menu": "sidebar-list"
+      },
+      "status": "planned",
+      "source": "amberx",
+      "libraries": [
+        {
+          "library": "browser",
+          "params": {
+            "tabGroups": [
+              "widgets"
+            ],
+            "panes": [
+              "Built-in widgets",
+              "Imported widgets"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "voice",
+      "name": "Voice Control",
+      "category": "assistant",
+      "description": "Hands-free control via voice + gestures",
+      "features": [
+        "c.voice",
+        "c.pilot"
+      ],
+      "screens": [
+        {
+          "id": "home",
+          "label": "Home",
+          "kind": "landing"
+        },
+        {
+          "id": "commands",
+          "label": "Commands",
+          "kind": "list-detail"
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "kind": "settings"
+        }
+      ],
+      "modules": [
+        "ai.amberx.axf.platform"
+      ],
+      "defaults": {
+        "style-theme": "glass-orbit"
+      },
+      "status": "planned",
+      "source": "amberx"
+    },
+    {
+      "id": "apiclient",
+      "name": "API Client",
+      "category": "devops",
+      "description": "REST + WebSocket tester with collections",
+      "features": [
+        "c.rest",
+        "c.json"
+      ],
+      "screens": [
+        {
+          "id": "collections",
+          "label": "Collections",
+          "kind": "list-detail"
+        },
+        {
+          "id": "request",
+          "label": "Request",
+          "kind": "editor"
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "kind": "settings"
+        }
+      ],
+      "modules": [
+        "ai.amberx.axf.network"
+      ],
+      "defaults": {
+        "style-theme": "sharp-terminal"
+      },
+      "status": "planned",
+      "source": "amberx"
+    },
+    {
+      "id": "lenient",
+      "name": "Lenient",
+      "category": "starter",
+      "description": "",
+      "features": [],
+      "screens": [
+        {
+          "id": "home",
+          "label": "Home",
+          "kind": "custom"
+        }
+      ],
+      "modules": [],
+      "defaults": {
+        "layout": "focus-top"
+      },
+      "status": "planned",
+      "source": "amberx",
+      "libraries": [
+        "browser",
+        {
+          "library": "lock",
+          "params": {
+            "defaultMode": "pin"
+          }
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "home.png",
+          "screen": "home",
+          "caption": "Home"
+        }
+      ]
+    }
+  ],
+  "boilerplateIndex": {
+    "categories": [
+      {
+        "id": "productivity",
+        "label": "Productivity"
+      },
+      {
+        "id": "media",
+        "label": "Media"
+      },
+      {
+        "id": "location",
+        "label": "Location"
+      }
+    ],
+    "items": [
+      {
+        "id": "dashboard",
+        "name": "Admin Dashboard",
+        "category": "business",
+        "description": "KPIs, charts, tables, roles and audit",
+        "status": "planned",
+        "source": "amberx",
+        "features": 3,
+        "screens": 4,
+        "modules": [
+          "ai.amberx.axf.admin",
+          "ai.amberx.axf.accounts"
+        ],
+        "libraries": [
+          "browser"
+        ]
+      },
+      {
+        "id": "showcase",
+        "name": "Framework Showcase",
+        "category": "starter",
+        "description": "Every studio view: assets, components, themes, layouts, roles, actions",
+        "status": "planned",
+        "source": "amberx",
+        "features": 7,
+        "screens": 5,
+        "modules": [
+          "ai.amberx.axf.devtools"
+        ],
+        "libraries": [
+          "browser"
+        ]
+      },
+      {
+        "id": "voice",
+        "name": "Voice Control",
+        "category": "assistant",
+        "description": "Hands-free control via voice + gestures",
+        "status": "planned",
+        "source": "amberx",
+        "features": 2,
+        "screens": 3,
+        "modules": [
+          "ai.amberx.axf.platform"
+        ],
+        "libraries": []
+      }
+    ]
+  },
+  "lenient": {
+    "catalog": {
+      "frameworkVersion": "0.2.0",
+      "tabs": [
+        {
+          "id": "t",
+          "label": "",
+          "groups": [
+            {
+              "id": "g",
+              "label": "",
+              "items": [
+                {
+                  "id": "a",
+                  "title": "A",
+                  "note": "",
+                  "tag": "",
+                  "recommended": false,
+                  "suggests": [
+                    {
+                      "id": "a.1",
+                      "title": ""
+                    }
+                  ],
+                  "tab": "t",
+                  "group": "g"
+                },
+                {
+                  "id": "b",
+                  "title": "lib-x — X things",
+                  "note": "ai.amberx.axf.x",
+                  "tag": "",
+                  "recommended": false,
+                  "suggests": [],
+                  "tab": "t",
+                  "group": "g",
+                  "library": {
+                    "module": "lib-x"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "library": {
+      "id": "ai.amberx.axf.thing",
+      "module": "lib-thing",
+      "name": "",
+      "description": "",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.thing",
+      "params": [
+        {
+          "key": "n",
+          "label": "",
+          "type": "text"
+        },
+        {
+          "key": "m",
+          "label": "",
+          "type": "number",
+          "required": true,
+          "min": 1,
+          "max": 10
+        }
+      ],
+      "install": {},
+      "ports": {
+        "web": {
+          "status": "",
+          "dir": "libs/thing"
+        }
+      }
+    },
+    "empty": {
+      "catalog": {
+        "frameworkVersion": "0.2.0",
+        "tabs": []
+      },
+      "tracker": {
+        "generatedAt": "",
+        "summary": {},
+        "items": []
+      },
+      "libraries": {
+        "generatedAt": "",
+        "items": []
+      },
+      "boilerplate": {
+        "id": "",
+        "name": "",
+        "category": "starter",
+        "description": "",
+        "features": [],
+        "screens": [],
+        "modules": [],
+        "defaults": {},
+        "status": "planned",
+        "source": "amberx"
+      }
+    }
+  },
+  "params": [
+    {
+      "param": {
+        "key": "tabGroups",
+        "label": "Tab groups to attach to",
+        "type": "list",
+        "required": true,
+        "default": [
+          "library-browser"
+        ],
+        "help": "Ids of the tab groups this browser binds to; each gets a route and a Compare command."
+      },
+      "defaultText": "library-browser",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": [
+            "yes"
+          ],
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": [
+            "off"
+          ],
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": [
+            "0"
+          ],
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": [
+            "6"
+          ],
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": [
+            "0.5"
+          ],
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": [
+            "13"
+          ],
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": [
+            "1e3"
+          ],
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": [
+            "0x10"
+          ],
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": [
+            "6d"
+          ],
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": [
+            "Infinity"
+          ],
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": [
+            "-2"
+          ],
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": [
+            "abc"
+          ],
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": [
+            "a",
+            "b",
+            "c"
+          ],
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": [
+            "pin"
+          ],
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": [
+            "none"
+          ],
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": [
+            "floating"
+          ],
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": [
+            "other"
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "itemKinds",
+        "label": "Item kinds",
+        "type": "list",
+        "required": true,
+        "default": [
+          "kit-preview",
+          "library-info"
+        ],
+        "help": "Tab kinds the browser may open; each kind needs a registered TabRenderer."
+      },
+      "defaultText": "kit-preview,library-info",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": [
+            "yes"
+          ],
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": [
+            "off"
+          ],
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": [
+            "0"
+          ],
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": [
+            "6"
+          ],
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": [
+            "0.5"
+          ],
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": [
+            "13"
+          ],
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": [
+            "1e3"
+          ],
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": [
+            "0x10"
+          ],
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": [
+            "6d"
+          ],
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": [
+            "Infinity"
+          ],
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": [
+            "-2"
+          ],
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": [
+            "abc"
+          ],
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": [
+            "a",
+            "b",
+            "c"
+          ],
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": [
+            "pin"
+          ],
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": [
+            "none"
+          ],
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": [
+            "floating"
+          ],
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": [
+            "other"
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "defaultWindowType",
+        "label": "Window type for comparisons",
+        "type": "choice",
+        "required": true,
+        "default": "floating",
+        "choices": [
+          "floating",
+          "dock",
+          "element"
+        ]
+      },
+      "defaultText": "floating",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": "yes",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "off",
+          "json": "off",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "0",
+          "json": "0",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "6",
+          "json": "6",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "0.5",
+          "json": "0.5",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "13",
+          "json": "13",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "1e3",
+          "json": "1e3",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "0x10",
+          "json": "0x10",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "6d",
+          "json": "6d",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "Infinity",
+          "json": "Infinity",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "-2",
+          "json": "-2",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "abc",
+          "json": "abc",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": "a, b,\nc",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "pin",
+          "json": "pin",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "none",
+          "json": "none",
+          "error": "One of floating, dock, element"
+        },
+        {
+          "text": "floating",
+          "json": "floating",
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": "other",
+          "error": "One of floating, dock, element"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "toolbarDefault",
+        "label": "Toolbar on new windows",
+        "type": "choice",
+        "required": true,
+        "default": "forced",
+        "help": "forced = window schema rules; element windows start off.",
+        "choices": [
+          "forced",
+          "on",
+          "off"
+        ]
+      },
+      "defaultText": "forced",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": "yes",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "off",
+          "json": "off",
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": "0",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "6",
+          "json": "6",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "0.5",
+          "json": "0.5",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "13",
+          "json": "13",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "1e3",
+          "json": "1e3",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "0x10",
+          "json": "0x10",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "6d",
+          "json": "6d",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "Infinity",
+          "json": "Infinity",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "-2",
+          "json": "-2",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "abc",
+          "json": "abc",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": "a, b,\nc",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "pin",
+          "json": "pin",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "none",
+          "json": "none",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "floating",
+          "json": "floating",
+          "error": "One of forced, on, off"
+        },
+        {
+          "text": "other",
+          "json": "other",
+          "error": "One of forced, on, off"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "allowGridView",
+        "label": "Allow grid view",
+        "type": "bool",
+        "default": true
+      },
+      "defaultText": "true",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": true,
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": false,
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "compareLimit",
+        "label": "Max items per compare",
+        "type": "number",
+        "default": 6,
+        "min": 1,
+        "max": 12
+      },
+      "defaultText": "6",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "off",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "0",
+          "json": 0,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "6",
+          "json": 6,
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": 0.5,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "13",
+          "json": 13,
+          "error": "Must be ≤ 12"
+        },
+        {
+          "text": "1e3",
+          "json": 1000,
+          "error": "Must be ≤ 12"
+        },
+        {
+          "text": "0x10",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "6d",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "Infinity",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "-2",
+          "json": -2,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "abc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "pin",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "none",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "floating",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "other",
+          "json": null,
+          "error": "Must be a number"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "panes",
+        "label": "Pane titles",
+        "type": "list",
+        "default": [
+          "Hot-swappable",
+          "Third-party / existing"
+        ],
+        "help": "Left / right pane headings."
+      },
+      "defaultText": "Hot-swappable,Third-party / existing",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": [
+            "yes"
+          ],
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": [
+            "off"
+          ],
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": [
+            "0"
+          ],
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": [
+            "6"
+          ],
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": [
+            "0.5"
+          ],
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": [
+            "13"
+          ],
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": [
+            "1e3"
+          ],
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": [
+            "0x10"
+          ],
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": [
+            "6d"
+          ],
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": [
+            "Infinity"
+          ],
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": [
+            "-2"
+          ],
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": [
+            "abc"
+          ],
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": [
+            "a",
+            "b",
+            "c"
+          ],
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": [
+            "pin"
+          ],
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": [
+            "none"
+          ],
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": [
+            "floating"
+          ],
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": [
+            "other"
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "minimizeCorner",
+        "label": "Default minimize corner",
+        "type": "choice",
+        "default": "bottom-right",
+        "choices": [
+          "top-left",
+          "top-right",
+          "bottom-right",
+          "bottom-left"
+        ]
+      },
+      "defaultText": "bottom-right",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": "yes",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "off",
+          "json": "off",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "0",
+          "json": "0",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "6",
+          "json": "6",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "0.5",
+          "json": "0.5",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "13",
+          "json": "13",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "1e3",
+          "json": "1e3",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "0x10",
+          "json": "0x10",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "6d",
+          "json": "6d",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "Infinity",
+          "json": "Infinity",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "-2",
+          "json": "-2",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "abc",
+          "json": "abc",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": "a, b,\nc",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "pin",
+          "json": "pin",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "none",
+          "json": "none",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "floating",
+          "json": "floating",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        },
+        {
+          "text": "other",
+          "json": "other",
+          "error": "One of top-left, top-right, bottom-right, bottom-left"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "defaultMode",
+        "label": "Default second step",
+        "type": "choice",
+        "required": true,
+        "default": "none",
+        "choices": [
+          "none",
+          "biometric",
+          "pin"
+        ]
+      },
+      "defaultText": "none",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": "yes",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "off",
+          "json": "off",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "0",
+          "json": "0",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "6",
+          "json": "6",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "0.5",
+          "json": "0.5",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "13",
+          "json": "13",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "1e3",
+          "json": "1e3",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "0x10",
+          "json": "0x10",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "6d",
+          "json": "6d",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "Infinity",
+          "json": "Infinity",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "-2",
+          "json": "-2",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "abc",
+          "json": "abc",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": "a, b,\nc",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "pin",
+          "json": "pin",
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": "none",
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": "floating",
+          "error": "One of none, biometric, pin"
+        },
+        {
+          "text": "other",
+          "json": "other",
+          "error": "One of none, biometric, pin"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "timeoutMs",
+        "label": "Call timeout (ms)",
+        "type": "number",
+        "default": 30000,
+        "min": 1000,
+        "max": 600000
+      },
+      "defaultText": "30000",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "off",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "0",
+          "json": 0,
+          "error": "Must be ≥ 1000"
+        },
+        {
+          "text": "6",
+          "json": 6,
+          "error": "Must be ≥ 1000"
+        },
+        {
+          "text": "0.5",
+          "json": 0.5,
+          "error": "Must be ≥ 1000"
+        },
+        {
+          "text": "13",
+          "json": 13,
+          "error": "Must be ≥ 1000"
+        },
+        {
+          "text": "1e3",
+          "json": 1000,
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "6d",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "Infinity",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "-2",
+          "json": -2,
+          "error": "Must be ≥ 1000"
+        },
+        {
+          "text": "abc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "pin",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "none",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "floating",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "other",
+          "json": null,
+          "error": "Must be a number"
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "speakPrompts",
+        "label": "Speak prompts by default",
+        "type": "bool",
+        "default": true
+      },
+      "defaultText": "true",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": true,
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": false,
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "preferOffline",
+        "label": "Prefer on-device recognition",
+        "type": "bool",
+        "default": true,
+        "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+      },
+      "defaultText": "true",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": true,
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": false,
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": false,
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "n",
+        "label": "",
+        "type": "text"
+      },
+      "defaultText": "",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": null
+        },
+        {
+          "text": "yes",
+          "json": "yes",
+          "error": null
+        },
+        {
+          "text": "off",
+          "json": "off",
+          "error": null
+        },
+        {
+          "text": "0",
+          "json": "0",
+          "error": null
+        },
+        {
+          "text": "6",
+          "json": "6",
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": "0.5",
+          "error": null
+        },
+        {
+          "text": "13",
+          "json": "13",
+          "error": null
+        },
+        {
+          "text": "1e3",
+          "json": "1e3",
+          "error": null
+        },
+        {
+          "text": "0x10",
+          "json": "0x10",
+          "error": null
+        },
+        {
+          "text": "6d",
+          "json": "6d",
+          "error": null
+        },
+        {
+          "text": "Infinity",
+          "json": "Infinity",
+          "error": null
+        },
+        {
+          "text": "-2",
+          "json": "-2",
+          "error": null
+        },
+        {
+          "text": "abc",
+          "json": "abc",
+          "error": null
+        },
+        {
+          "text": "a, b,\nc",
+          "json": "a, b,\nc",
+          "error": null
+        },
+        {
+          "text": "pin",
+          "json": "pin",
+          "error": null
+        },
+        {
+          "text": "none",
+          "json": "none",
+          "error": null
+        },
+        {
+          "text": "floating",
+          "json": "floating",
+          "error": null
+        },
+        {
+          "text": "other",
+          "json": "other",
+          "error": null
+        }
+      ]
+    },
+    {
+      "param": {
+        "key": "m",
+        "label": "",
+        "type": "number",
+        "required": true,
+        "min": 1,
+        "max": 10
+      },
+      "defaultText": "",
+      "answers": [
+        {
+          "text": "",
+          "json": null,
+          "error": "Required"
+        },
+        {
+          "text": " ",
+          "json": null,
+          "error": "Required"
+        },
+        {
+          "text": "yes",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "off",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "0",
+          "json": 0,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "6",
+          "json": 6,
+          "error": null
+        },
+        {
+          "text": "0.5",
+          "json": 0.5,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "13",
+          "json": 13,
+          "error": "Must be ≤ 10"
+        },
+        {
+          "text": "1e3",
+          "json": 1000,
+          "error": "Must be ≤ 10"
+        },
+        {
+          "text": "0x10",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "6d",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "Infinity",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "-2",
+          "json": -2,
+          "error": "Must be ≥ 1"
+        },
+        {
+          "text": "abc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "a, b,\nc",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "pin",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "none",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "floating",
+          "json": null,
+          "error": "Must be a number"
+        },
+        {
+          "text": "other",
+          "json": null,
+          "error": "Must be a number"
+        }
+      ]
+    }
+  ],
+  "libraryCards": [
+    {
+      "id": "settings",
+      "module": "ai.amberx.axf.settings",
+      "packageName": "lib-settings",
+      "label": "Settings",
+      "description": "Schema-driven settings + generated UI",
+      "features": [
+        "s.settings",
+        "s.prefs",
+        "s.scopes",
+        "s.secure",
+        "s.searchable"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "browser",
+      "module": "ai.amberx.axf.browser",
+      "packageName": "lib-browser",
+      "label": "Library browser",
+      "description": "Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+      "features": [
+        "lib.browser",
+        "ui.windows",
+        "ui.explorer",
+        "cx.libpicker"
+      ],
+      "installable": true,
+      "source": "catalog"
+    },
+    {
+      "id": "media",
+      "module": "ai.amberx.axf.media",
+      "packageName": "lib-media",
+      "label": "Media",
+      "description": "Video/audio playback, camera, streaming, PiP",
+      "features": [
+        "dv.media",
+        "dv.stream",
+        "dv.camera",
+        "dv.audio",
+        "c.video",
+        "c.vpsstream",
+        "c.camera",
+        "c.music"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "github",
+      "module": "ai.amberx.axf.github",
+      "packageName": "lib-github",
+      "label": "GitHub",
+      "description": "Repos, commits, Actions, releases, tracker sync",
+      "features": [
+        "w.github",
+        "c.github",
+        "cx.github"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "lock",
+      "module": "ai.amberx.axf.lock",
+      "packageName": "lib-lock",
+      "label": "App lock (fingerprint/face or PIN)",
+      "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay. Settings group App lock (mode, auto-lock delay) and a set/change PIN screen (current PIN required to change). Fills the platform's android.biometric placeholder.",
+      "features": [
+        "u.bio"
+      ],
+      "installable": true,
+      "source": "library"
+    },
+    {
+      "id": "mcp",
+      "module": "ai.amberx.axf.mcp",
+      "packageName": "lib-mcp",
+      "label": "MCP client (connect to MCP servers)",
+      "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+      "features": [
+        "w.mcp",
+        "f.interop.remote"
+      ],
+      "installable": true,
+      "source": "library"
+    },
+    {
+      "id": "voice",
+      "module": "ai.amberx.axf.voice",
+      "packageName": "lib-voice",
+      "label": "Voice (speech in, prompts out, voice commands)",
+      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+      "features": [
+        "c.voice",
+        "dv.audio"
+      ],
+      "installable": true,
+      "source": "library"
+    },
+    {
+      "id": "logging",
+      "module": "ai.amberx.axf.logging",
+      "packageName": "lib-logging",
+      "label": "lib-logging",
+      "description": "",
+      "features": [
+        "l.log"
+      ],
+      "installable": false,
+      "source": "tracker"
+    }
+  ],
+  "libraryCardsNoTracker": [
+    {
+      "id": "settings",
+      "module": "ai.amberx.axf.settings",
+      "packageName": "lib-settings",
+      "label": "Settings",
+      "description": "Schema-driven settings + generated UI",
+      "features": [
+        "s.settings",
+        "s.prefs",
+        "s.scopes",
+        "s.secure",
+        "s.searchable"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "browser",
+      "module": "ai.amberx.axf.browser",
+      "packageName": "lib-browser",
+      "label": "Library browser",
+      "description": "Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+      "features": [
+        "lib.browser",
+        "ui.windows",
+        "ui.explorer",
+        "cx.libpicker"
+      ],
+      "installable": true,
+      "source": "catalog"
+    },
+    {
+      "id": "media",
+      "module": "ai.amberx.axf.media",
+      "packageName": "lib-media",
+      "label": "Media",
+      "description": "Video/audio playback, camera, streaming, PiP",
+      "features": [
+        "dv.media",
+        "dv.stream",
+        "dv.camera",
+        "dv.audio",
+        "c.video",
+        "c.vpsstream",
+        "c.camera",
+        "c.music"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "github",
+      "module": "ai.amberx.axf.github",
+      "packageName": "lib-github",
+      "label": "GitHub",
+      "description": "Repos, commits, Actions, releases, tracker sync",
+      "features": [
+        "w.github",
+        "c.github",
+        "cx.github"
+      ],
+      "installable": false,
+      "source": "catalog"
+    },
+    {
+      "id": "lock",
+      "module": "ai.amberx.axf.lock",
+      "packageName": "lib-lock",
+      "label": "App lock (fingerprint/face or PIN)",
+      "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay. Settings group App lock (mode, auto-lock delay) and a set/change PIN screen (current PIN required to change). Fills the platform's android.biometric placeholder.",
+      "features": [
+        "u.bio"
+      ],
+      "installable": true,
+      "source": "library"
+    },
+    {
+      "id": "mcp",
+      "module": "ai.amberx.axf.mcp",
+      "packageName": "lib-mcp",
+      "label": "MCP client (connect to MCP servers)",
+      "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+      "features": [
+        "w.mcp",
+        "f.interop.remote"
+      ],
+      "installable": true,
+      "source": "library"
+    },
+    {
+      "id": "voice",
+      "module": "ai.amberx.axf.voice",
+      "packageName": "lib-voice",
+      "label": "Voice (speech in, prompts out, voice commands)",
+      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) so other ports can mirror it.",
+      "features": [
+        "c.voice",
+        "dv.audio"
+      ],
+      "installable": true,
+      "source": "library"
+    }
+  ]
+}

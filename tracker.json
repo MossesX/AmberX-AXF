@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T10:18:11.720Z",
+  "generatedAt": "2026-10-21T10:22:49.138Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -28,12 +28,12 @@
       "coverage": 78
     },
     "modules": {
-      "built": 14,
-      "partial": 1,
+      "built": 15,
+      "partial": 2,
       "placeholder": 4,
-      "planned": 4,
-      "total": 23,
-      "coverage": 61
+      "planned": 11,
+      "total": 32,
+      "coverage": 47
     },
     "demos": {
       "built": 11,
@@ -3807,6 +3807,17 @@
       "notes": ""
     },
     {
+      "id": "m.browser",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-browser — Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+      "tag": "ph",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-browser",
+      "notes": "framework/android/lib-browser + library.json"
+    },
+    {
       "id": "m.media",
       "tab": "modules",
       "group": "framework-modules-framework-android",
@@ -3829,6 +3840,17 @@
       "notes": ""
     },
     {
+      "id": "m.editor",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-editor — Rich text, markdown, code editor, diff",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
       "id": "m.ai",
       "tab": "modules",
       "group": "framework-modules-framework-android",
@@ -3844,6 +3866,83 @@
       "tab": "modules",
       "group": "framework-modules-framework-android",
       "title": "lib-vps — SSH/SFTP/REST client for the VPS",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.github",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-github — Repos, commits, Actions, releases, tracker sync",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.work",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-work — WorkManager scheduler, alarms, foreground services",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.notifications",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-notifications — Channels, actions, scheduled, FCM/self-hosted push",
+      "tag": "ph",
+      "status": "partial",
+      "wave": 2,
+      "module": "lib-notifications",
+      "notes": "lib-notifications built Oct 20 2026 (hub-notify harvest; feature lib.notifications): channels, permission checks, ongoing + private lock-screen alerts. Push (w.push, c.push) and scheduled notifications not built yet."
+    },
+    {
+      "id": "m.sensors",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-sensors — Sensors, BLE, NFC, Wi-Fi tools",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.files",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-files — File manager, transfer, backup, offline sync",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.charts",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-charts — Charts, data grids, dashboards",
+      "tag": "ph",
+      "status": "planned",
+      "wave": 2,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "m.plugins",
+      "tab": "modules",
+      "group": "framework-modules-framework-android",
+      "title": "lib-plugins — Plugin loader, packs, OTA asset packs, designer bridge",
       "tag": "ph",
       "status": "planned",
       "wave": 2,
