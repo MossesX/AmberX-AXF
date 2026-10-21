@@ -13,3 +13,11 @@
 .axp-approvals-banner__when { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: nowrap }
 @media (max-width: 720px) { .axp-approvals-banner__when { display: none } }
 .axp-approvals-review__frame { width: 100%; height: min(70vh, calc(var(--fx-row-h) * 24)); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+/* Mandatory review of postponed approvals (axHub decision #90): a blocking overlay above everything. */
+.axp-approvals-mandatory { z-index: 1000 }
+.axp-approvals-mandatory__panel { width: min(100%, calc(var(--fx-row-h) * 30)); max-height: calc(100vh - var(--fx-space) * 2); overflow: auto }
+.axp-approvals-mandatory__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75) }
+.axp-approvals-mandatory__item { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-approvals-mandatory__item.is-active { border-color: var(--fx-accent) }
+.axp-approvals-mandatory__what { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); min-width: 0 }
+.axp-approvals-mandatory__acts { gap: calc(var(--fx-space) * 0.5) }
