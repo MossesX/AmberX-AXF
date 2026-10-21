@@ -41,6 +41,7 @@ dependencies {
     implementation("ai.amberx.axf:lib-admin:$axf")
     implementation("ai.amberx.axf:lib-browser:$axf")
     implementation("ai.amberx.axf:lib-mcp:$axf")
+    implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     // axf:modules ["ai.amberx.axf.settings","ai.amberx.axf.logging","ai.amberx.axf.devtools","ai.amberx.axf.accounts","ai.amberx.axf.profile","ai.amberx.axf.billing","ai.amberx.axf.admin","ai.amberx.axf.mcp"]
 }

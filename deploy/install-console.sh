@@ -169,7 +169,7 @@ if axf_coolify_proxy_running; then
   WALL_ARGS=()
   if [ "$WALL" = "off" ]; then
     rm -f "$DIR/.axf-console/wall-waiting"
-    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on)"
+    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on); the console uses its local settings, not the hub's look, until then"
   elif [ "$WALL" = "on" ]; then
     rm -f "$DIR/.axf-console/wall-waiting"
     say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins, plus users for what an admin granted them); the console token still works on /api and /mcp"

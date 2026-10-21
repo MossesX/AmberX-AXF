@@ -2125,5 +2125,11 @@
     "wave": 1,
     "module": "axf_server",
     "note": "Oct 20 2026 (harvest, Opus): framework/python/axf_server (wall, storage, http, credentials, console_client, plugin_package); the console and its plugins use it; Build Pilot adopts it through scripts/bake-contracts.mjs. Next: axf_server.github (lib-github) on http.HttpClient."
+  },
+  "f.appearance.source": {
+    "status": "built",
+    "wave": 2,
+    "module": "axf-kernel",
+    "note": "Oct 21 2026 (Fable): appearance@1 document engine on both ports (fixture appearance.json), runtime AppearanceSource (TS + Kotlin), web HubAppearanceSource + waiting screen, Android lib-hub (HubAppearanceSource, HubModule, HubSignInView). Developer apps: console web + Android, Build Pilot, AXHub app; axHub's own pages read the palette."
   }
 }

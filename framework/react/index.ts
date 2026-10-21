@@ -21,3 +21,5 @@ export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, t
 export { Slot, SlotsProvider, useSlotFilled } from './components/Slots';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
+export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
+export { WaitingForHub } from './components/Waiting';

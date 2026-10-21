@@ -10,6 +10,7 @@ import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
 import { Slot } from './components/Slots';
+import { WaitingForHub } from './components/Waiting';
 
 export interface ViewDef {
   title: string;
@@ -48,6 +49,15 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(views, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
+
+  // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
+  if (state.appearance && state.appearance.status !== 'ready') {
+    return (
+      <div className="fx-frame">
+        <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>
+      </div>
+    );
+  }
 
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>

@@ -28,6 +28,9 @@ public abstract class AxfActivity : FragmentActivity() {
     @Composable
     protected abstract fun Content()
 
+    /** Developer apps: the hub sign-in UI the waiting screen shows on "Sign in on the hub" (null = no button). */
+    protected open val hubSignIn: (@Composable (done: () -> Unit) -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -35,8 +38,14 @@ public abstract class AxfActivity : FragmentActivity() {
         // Deep links (axf://<appId>/<path>) are handed to the router when axf-nav is installed.
         intent?.dataString?.let { kernel.runtime.dispatch("deeplink", it) }
         setContent {
-            AxfRoot(kernel = kernel) { Content() }
+            AxfRoot(kernel = kernel, hubSignIn = hubSignIn) { Content() }
         }
+    }
+
+    /** Developer apps re-read their settings from the hub on every resume (UI-editor rule: fresh on focus). */
+    override fun onResume() {
+        super.onResume()
+        if (kernel.runtime.hasAppearanceSource()) kernel.runtime.refreshFromSaved()
     }
 
     override fun onNewIntent(intent: android.content.Intent) {

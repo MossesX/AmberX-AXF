@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T06:03:10.611Z",
+ "generatedAt": "2026-10-21T06:04:09.775Z",
  "statuses": [
   "built",
   "partial",
@@ -4287,6 +4287,53 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "f.appearance.source",
+   "title": "Appearance source: developer apps take their appearance + settings documents from the axHub data server (appearance@1), waiting screen while the hub is unreachable",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "core/engines/appearance.ts = kernel AppearanceEngine; web HubAppearanceSource, Android lib-hub; opt-in per app (manifest developer: { hub })",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.source"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lib"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],

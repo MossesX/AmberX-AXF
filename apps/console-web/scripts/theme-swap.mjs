@@ -32,6 +32,9 @@ try {
   const page = await browser.newPage({ viewport: { width: 412, height: 900 } });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
+  // No console server here: answer /api/me ourselves with the appearance source off (the console is a developer app and
+  // would otherwise wait for axHub); the check is about the engines, not the hub.
+  await page.route('**/api/me', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ wall: false, hub: 'https://axhub.amberxai.com', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] }) }));
   await page.goto(`http://127.0.0.1:${PORT}/`);
   await page.waitForTimeout(1500);
   await page.getByRole('button', { name: 'Settings' }).first().click();

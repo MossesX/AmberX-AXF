@@ -1,14 +1,14 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T06:03:10.588Z",
+  "generatedAt": "2026-10-21T06:04:09.751Z",
   "summary": {
     "foundations": {
-      "built": 67,
+      "built": 68,
       "partial": 3,
       "placeholder": 1,
       "planned": 0,
-      "total": 71,
+      "total": 72,
       "coverage": 94
     },
     "kernel": {
@@ -440,6 +440,17 @@
       "wave": 1,
       "module": "lib-mcp",
       "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
+    },
+    {
+      "id": "f.appearance.source",
+      "tab": "foundations",
+      "group": "modules-extension-points-placeholders",
+      "title": "Appearance source: developer apps take their appearance + settings documents from the axHub data server (appearance@1), waiting screen while the hub is unreachable",
+      "tag": "lib",
+      "status": "built",
+      "wave": 2,
+      "module": "axf-kernel",
+      "notes": ""
     },
     {
       "id": "f.tokens",
