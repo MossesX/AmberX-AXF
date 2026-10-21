@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T12:02:10.988Z",
+ "updatedAt": "2026-10-20T22:30:00.000Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -154,7 +154,7 @@
    "title": "AI Assistant plugin (Fable rebuild)",
    "detail": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Opus version built Oct 18 2026 (web console only). Remove with the ai-assistant plugin's uninstall script (uninstall.mjs --all) before installing this one.",
@@ -163,6 +163,10 @@
     {
      "text": "Oct 18 2026 additions to rebuild too: write-mode badge and change-batch approval cards with undo, batch outcomes fed to the next turn, the Claude Code CLI MCP bridge (cli_bridge.py), and the ai.chat.start action.",
      "at": "2026-10-18T20:57:10.817Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/ai-assistant (report _claude/memory/docs/rebuilds/ai-assistant-plugin.md; self-test 111 → 137).",
+     "at": "2026-10-20T22:30:00.000Z"
     }
    ],
    "subPrompts": [
@@ -172,8 +176,8 @@
     }
    ],
    "createdAt": "2026-10-18T17:20:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T22:52:56.264Z",
+   "builtAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-10-20T22:30:00.000Z",
    "planId": "x.plugins.ai-assistant",
    "source": "chat"
   },
