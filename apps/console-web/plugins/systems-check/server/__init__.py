@@ -191,12 +191,79 @@ def ai_test() -> dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         msg = str(e).strip("'\"")[:300] or e.__class__.__name__
         cx.log("system", f"AI connection test failed: {msg}", "error")
+        _AI_STATE.update({"ok": False, "model": "", "error": msg, "at": time.time()})
         return {"ok": False, "error": msg, "agent": agent.get("name") or "Mosses", "ms": int((time.time() - started) * 1000)}
     text = str(out.get("text") or "").strip()
     res = {"ok": bool(text), "agent": agent.get("name") or "Mosses", "model": out.get("model") or "", "profile": out.get("profile") or "",
            "ms": int((time.time() - started) * 1000), "reply": text[:200], "error": "" if text else "the model answered with nothing"}
+    _AI_STATE.update({"ok": res["ok"], "model": res["model"], "error": res["error"], "at": time.time()})
     cx.log("system", f"AI connection test: {'ok' if res['ok'] else 'empty reply'} ({res['model'] or 'model unknown'}, {res['ms']} ms)", "ok" if res["ok"] else "warn")
     return res
+
+
+_AI_STATE: dict[str, Any] = {"ok": False, "model": "", "error": "not tested yet", "at": 0.0}
+AI_STATE_TTL = 300
+
+
+@router.get("/ai/state")
+def ai_state(refresh: bool = False) -> dict[str, Any]:
+    """Is Claude connected and working? The last connection test, re-run when older than 5 minutes (or on refresh).
+    Key Auto fix is only offered while this is ok."""
+    req = derive.requirement_status()
+    if not req["ok"]:
+        missing = [x for x, ok in (("the AI assistant", req["assistant"]["ok"]), ("the Mosses agent", req["mosses"]["ok"])) if not ok]
+        return {"ok": False, "model": "", "error": f"Claude isn't connected: install {' and '.join(missing)} first", "at": time.time()}
+    if refresh or time.time() - float(_AI_STATE["at"]) > AI_STATE_TTL:
+        ai_test()
+    return dict(_AI_STATE)
+
+
+# Where each key is made, pre-filled where the site allows it (GitHub fine-grained token template URL, decision: Oct 20 2026).
+def _create_page(key: str) -> str:
+    import os
+    import urllib.parse as up
+    if key == "GITHUB_TOKEN":
+        q = {"name": "AXF Dev Console", "description": "AmberX AXF Dev Console on the VPS: clone updates, CI downloads, Build Pilot APKs, plugin publishing",
+             "target_name": "MossesX", "expires_in": "90", "contents": "write", "actions": "write", "metadata": "read"}
+        return "https://github.com/settings/personal-access-tokens/new?" + up.urlencode(q)
+    if key == "ANTHROPIC_API_KEY":
+        return "https://console.anthropic.com/settings/keys"
+    if key == "HOSTINGER_API_TOKEN":
+        return "https://hpanel.hostinger.com/profile/api"
+    if key == "COOLIFY_TOKEN":
+        base = (os.environ.get("COOLIFY_URL") or "").rstrip("/")
+        return f"{base}/security/api-tokens" if re.match(r"^https?://[^\s/]+(:\d+)?$", base) else ""
+    if key == "AXHUB_TOKEN":
+        base = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
+        return base if re.match(r"^https://[^\s/]+$", base) else ""
+    return ""
+
+
+@router.post("/keys/{key}/guide")
+def key_guide(key: str) -> dict[str, Any]:
+    """Key Auto fix (Claude connected only): the page where this key is made (pre-filled when the site allows) plus
+    Claude's short steps for exactly this console's needs. The key itself is never fetched or made here: you paste it,
+    and the console tests it on save. axHub's vault is write-only, so the hub never hands keys out."""
+    meta = CREDENTIALS.get(key)
+    if not meta or not meta.get("secret"):
+        raise HTTPException(404, "not a key the console asks for")
+    st = ai_state()
+    if not st["ok"]:
+        raise HTTPException(409, st["error"] or "Claude isn't connected")
+    url = _create_page(key)
+    llm = plugin_services.get("axf.llm@1")
+    prompt = (f"Brett needs a {meta['label']} for the AmberX AXF Dev Console (it runs on his VPS). What it needs: {meta['help']} "
+              f"{'He will open this page: ' + url if url else 'There is no direct page for it.'} "
+              "Write 3 to 5 numbered steps, each under 20 words, for making it on his phone and pasting it into the console's field. "
+              "Plain words, no preamble, never ask him to share the key with anyone.")
+    try:
+        out = llm.complete([{"role": "user", "content": prompt}], system="You write short, exact setup steps.", params={"temperature": 0, "max_tokens": 300})
+    except Exception as e:  # noqa: BLE001
+        _AI_STATE.update({"ok": False, "error": str(e)[:300], "at": time.time()})
+        raise HTTPException(409, f"Claude isn't connected: {str(e)[:200]}") from None
+    steps = [ln.strip() for ln in str(out.get("text") or "").splitlines() if ln.strip()][:6]
+    cx.log("system", f"key Auto fix guide for {meta['label']}", "ok")
+    return {"key": key, "label": meta["label"], "url": url, "steps": steps, "model": out.get("model") or ""}
 
 
 @router.put("/settings")

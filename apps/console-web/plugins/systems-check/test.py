@@ -163,6 +163,9 @@ check(sorted(p["folder"] for p in a["requirements"]["mosses"]["providers"]) == _
       and all(p["tab"] for p in a["requirements"]["mosses"]["providers"]), "…and the agent manager, with its settings tab")
 check(c.put("/p/settings", json={"ai": {"systems": True}}).status_code == 409, "can't turn AI on while something's missing")
 check(c.post("/p/routine/run").status_code == 409, "no AI run while off")
+st = c.get("/p/ai/state").json()
+check(not st["ok"] and "isn't connected" in st["error"], "key Auto fix: Claude not connected without the assistant + Mosses")
+check(c.post("/p/keys/GITHUB_TOKEN/guide").status_code == 409, "key Auto fix refused while Claude isn't connected")
 
 REPLY = {"checks": [
     {"id": "coolify-url-set", "kind": "env", "params": {"name": "COOLIFY_URL"}, "title": "Coolify URL", "service": "coolify", "severity": "warn", "why": "redeploys need it"},
@@ -188,6 +191,8 @@ class FakeLlm:
             if getattr(self, "broken", False):
                 raise RuntimeError("401 invalid x-api-key")
             return {"text": "OK, Mosses here.", "model": "fake-1", "profile": "fake"}
+        if messages[-1]["content"].startswith("Brett needs a"):
+            return {"text": "1. Open the page\n2. Tap Generate token\n3. Copy it\n4. Paste it here", "model": "fake-1"}
         if messages[-1]["content"].startswith("You're running the systems check"):
             return {"text": "Aight boss, here's the routine:\n" + json.dumps(REPLY), "model": "fake-1", "profile": "fake"}
         return {"text": "## New\n- **Mosses** got container powers\n- Snapshots before every change", "model": "fake-1"}
@@ -209,7 +214,17 @@ check(t["ok"] and t["agent"] == "Mosses" and t["model"] == "fake-1" and t["reply
 llm.broken = True
 t = c.post("/p/ai/test").json()
 check(not t["ok"] and "invalid x-api-key" in t["error"], "AI test reports the provider's error")
+check(not c.get("/p/ai/state").json()["ok"], "AI state follows a failed test")
+check(c.post("/p/keys/GITHUB_TOKEN/guide").status_code == 409, "key Auto fix greyed out while Claude's connection fails")
 llm.broken = False
+st = c.get("/p/ai/state?refresh=true").json()
+check(st["ok"] and st["model"] == "fake-1", "AI state ok once Claude answers")
+g = c.post("/p/keys/GITHUB_TOKEN/guide").json()
+check(g["url"].startswith("https://github.com/settings/personal-access-tokens/new?") and "contents=write" in g["url"] and "actions=write" in g["url"] and "target_name=MossesX" in g["url"], "GitHub: pre-filled fine-grained token page")
+check(len(g["steps"]) == 4 and "Paste" in g["steps"][-1] and "Brett needs a GitHub token" in llm.calls[-1]["text"], "Claude writes the steps for this key")
+check(c.post("/p/keys/ANTHROPIC_API_KEY/guide").json()["url"] == "https://console.anthropic.com/settings/keys", "Anthropic key page")
+check(c.post("/p/keys/COOLIFY_URL/guide").status_code == 404 and c.post("/p/keys/NOPE/guide").status_code == 404, "only secret keys the console asks for")
+check(all("ghp_" not in str(x) and "sk-ant" not in str(x) for x in g.values()), "the guide never carries a key")
 check(c.put("/p/settings", json={"ai": {"systems": True, "whatsnew": True}}).status_code == 200, "AI switches turn on")
 rr = c.post("/p/routine/run").json()["routine"]
 kept = {x["id"] for x in rr["checks"]}
