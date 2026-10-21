@@ -125,3 +125,8 @@
   .axp-build-manager__field { flex: 1 1 calc(50% - var(--fx-space)) }
   .axp-build-manager__field select { min-width: 0; width: 100% }
 }
+/* Open-the-session icon next to the timer (session.ts): a round accent chip, muted when there's no window to open. */
+.axp-build-manager__session { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; flex: none; inline-size: calc(var(--fx-font-size) * 20 / 14); block-size: calc(var(--fx-font-size) * 20 / 14); border-radius: 999px; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-build-manager__session.is-muted { color: var(--fx-muted); background: var(--fx-surface2); border-color: var(--fx-border) }
+.axp-build-manager__session:hover { filter: brightness(1.08) }
+.axp-build-manager__session:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }

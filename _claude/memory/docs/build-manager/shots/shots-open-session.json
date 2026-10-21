@@ -1,0 +1,2 @@
+[{"name":"banner","steps":[{"eval":"AXF.navigate('home')","wait":4000}]},
+ {"name":"banner-tap","steps":[{"eval":"AXF.navigate('home')","wait":4000},{"click":".axp-build-manager__session","wait":1500}]}]

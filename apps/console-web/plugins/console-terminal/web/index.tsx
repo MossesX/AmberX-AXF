@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
-import { openFromContext } from './open';
+import { attachTmux, focusSession, openFromContext } from './open';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalTab } from './TerminalTab';
 import './terminal.css';
@@ -12,7 +12,8 @@ import { appMenu } from './menu';
  *  - tab kind `terminal` (floating window, tabs: container / console / VPS / Claude Code, + for more)
  *  - "Open terminal" on every right-click / long-press (runtime contextExtras key `*:terminal`); on a container or a
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
- *  - actions terminal.open[:<target>:<payload>], terminal.new
+ *  - actions terminal.open[:<target>:<payload>], terminal.new, terminal.attach:<tmux session> (VPS tab attached to it),
+ *    terminal.focus:<session id> (bring that tab forward); the Build manager's open-session icon uses the last two
  *  - Settings → Plugins → Terminal
  */
 export const plugin: AxfWebLibrary = {
@@ -24,6 +25,8 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('terminal.open', ([target, payload]) => openFromContext(rt, target, payload), { label: 'Open terminal', params: true });
     rt.actions.register('terminal.new', () => openFromContext(rt), { label: 'Open a terminal' });
+    rt.actions.register('terminal.attach', ([name]) => { attachTmux(rt, name); }, { label: 'Open a tmux session on the VPS', params: true });
+    rt.actions.register('terminal.focus', ([sid]) => { focusSession(rt, sid); }, { label: 'Show a terminal session', params: true });
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
   tabs: { terminal: (t) => <TerminalTab tab={t} /> },

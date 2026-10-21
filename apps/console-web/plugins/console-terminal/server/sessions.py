@@ -135,9 +135,25 @@ class TtyBackend:
 
 # ---------------------------------------------------------------- sessions
 
+TMUX_NAME = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
+
+
+def new_sid() -> str:
+    return "t" + secrets.token_hex(6)
+
+
+def tmux_remote(name: str) -> str:
+    """The remote command for a VPS tab attached to tmux session `name` (plain names only); a shell when it's gone."""
+    if not TMUX_NAME.match(name):
+        raise ValueError("tmux is a plain session name (letters, digits, . _ -)")
+    t = shlex.quote(f"={name}")  # "=name": that session exactly, never a prefix match
+    return (f"if tmux has-session -t {t} 2>/dev/null; then exec tmux attach -t {t}; "
+            f"else echo 'tmux session {name} is not running on this host'; exec \"${{SHELL:-bash}}\" -l; fi")
+
 class Session:
-    def __init__(self, kind: str, title: str, target: str, cwd: str, backend: Any, mosh: bool, badge: str | None = None, protected: bool = False):
-        self.id = "t" + secrets.token_hex(6)
+    def __init__(self, kind: str, title: str, target: str, cwd: str, backend: Any, mosh: bool, badge: str | None = None, protected: bool = False,
+                 sid: str | None = None):
+        self.id = sid or new_sid()
         self.kind, self.title, self.target, self.cwd, self.backend = kind, title, target, cwd, backend
         self.mosh, self.badge, self.protected = mosh, badge, protected
         self.created = self.last = self.last_input = time.time()
@@ -223,6 +239,11 @@ class Manager:
             raise ValueError("cwd is an absolute path")
         protected = False
         badge = None
+        sid = new_sid()
+        mine = {"AXF_TERM_SESSION": sid}  # a Claude Code started in this tab reports it (codebase-changes runner) so the banner can focus it
+        tmux = str(req.get("tmux") or "").strip()
+        if tmux and kind != "vps":
+            raise ValueError("tmux attaches only in a VPS tab (the tmux session runs on the host)")
         if kind == "console":
             d = Path(cwd) if cwd else cx.ROOT
             if d.is_file():
@@ -230,7 +251,7 @@ class Manager:
             if not d.is_dir():
                 d = cx.ROOT
             shell = "bash" if Path("/bin/bash").exists() or Path("/usr/bin/bash").exists() else "sh"
-            be = PtyBackend([shell, "-l"], str(d), clean_env(), cols, rows)
+            be = PtyBackend([shell, "-l"], str(d), clean_env(mine), cols, rows)
             title, target, cwd = "Console", "console", str(d)
         elif kind == "container":
             cs = plugin_services.get("axf.containers@1")
@@ -254,11 +275,13 @@ class Manager:
             if not vps.get("host") or not key.exists():
                 raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
             remote = f"cd -- {shlex.quote(cwd)} 2>/dev/null; exec \"${{SHELL:-bash}}\" -l" if cwd else "exec \"${SHELL:-bash}\" -l"
+            if tmux:
+                remote = tmux_remote(tmux)
             argv = ["ssh", "-tt", "-i", str(key), "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=accept-new",
                     "-o", f"UserKnownHostsFile={store.data_dir() / 'ssh' / 'known_hosts'}", "-o", "ServerAliveInterval=30", "-o", "BatchMode=yes",
                     "-p", str(vps.get("port") or 22), f"{vps.get('user') or 'root'}@{vps['host']}", remote]
             be = PtyBackend(argv, str(cx.ROOT), clean_env(), cols, rows)
-            title, target, badge = "VPS", vps["host"], "HOST ROOT"
+            title, target, badge = (f"tmux {tmux}" if tmux else "VPS"), vps["host"], "HOST ROOT"
         elif kind == "claude":
             exe = os.environ.get("CLAUDE_BIN", "claude")
             if not subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip():
@@ -266,7 +289,7 @@ class Manager:
             d = Path(cwd) if cwd else cx.ROOT
             if not d.is_dir():
                 d = cx.ROOT
-            extra = {"DISABLE_AUTOUPDATER": "1"}
+            extra = {"DISABLE_AUTOUPDATER": "1", **mine}
             tok = store.claude_token()
             if tok:
                 extra["CLAUDE_CODE_OAUTH_TOKEN"] = tok
@@ -274,7 +297,7 @@ class Manager:
             title, target, cwd = "Claude Code", "console", str(d)
         else:
             raise ValueError("kind is console, container, vps or claude")
-        s = Session(kind, title, target, cwd, be, mosh, badge, protected)
+        s = Session(kind, title, target, cwd, be, mosh, badge, protected, sid=sid)
         with self.lock:
             full = len(self.sessions) >= MAX_SESSIONS  # checked again here: two opens can race past the first check
             if not full:
@@ -286,7 +309,7 @@ class Manager:
             except Exception:  # noqa: BLE001
                 pass
             raise ValueError(f"at most {MAX_SESSIONS} terminals at once; close one first")
-        store.log({"op": "open", "id": s.id, "kind": kind, "target": target, "cwd": cwd, "protected": protected, "mosh": mosh})
+        store.log({"op": "open", "id": s.id, "kind": kind, "target": target, "cwd": cwd, "protected": protected, "mosh": mosh, **({"tmux": tmux} if tmux else {})})
         return s
 
     def close(self, sid: str, reason: str = "closed") -> None:

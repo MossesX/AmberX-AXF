@@ -7,7 +7,7 @@
  * done, failed, running}, result {state, summary} | null, closed, repos, where, and the build stats when recorded:
  * status, buildRef {kind, id}, surface, host, startedAt, finishedAt, lastSeenAt, estimate {minutes, costUsd},
  * actual {minutes, costUsd, inputTokens, outputTokens, source}, costEstimated, branch, areas, parent, progress,
- * doing, verify {state, …}, commits [sha], links {name: url|path}.
+ * doing, verify {state, …}, commits [sha], links {name: url|path}, runner {kind, label, url, tmux, terminal, host, app}.
  */
 
 export const STALE_MS = 10 * 60_000;
@@ -62,7 +62,7 @@ export function liveFromChanges(summaries, rows = [], now = Date.now()) {
       progress, row: rowFor(s, rows), via: s.buildRef ? `${s.buildRef.kind}:${s.buildRef.id}` : '', estimate: est, elapsed,
       currentStep: str(s.doing) || str(s.steps?.running), over: est && elapsed != null ? Math.max(0, Math.round(elapsed / 60000 - est)) : 0,
       costEstimate: s.estimate?.costUsd ?? null, costActual: s.actual?.costUsd ?? null, stepsDone, stepsTotal, stale,
-      lastSeenAt: ms(s.lastSeenAt) || ms(s.updatedAt), branch: str(s.branch), areas: s.areas ?? [], parent: str(s.parent),
+      lastSeenAt: ms(s.lastSeenAt) || ms(s.updatedAt), branch: str(s.branch), areas: s.areas ?? [], parent: str(s.parent), runner: s.runner && typeof s.runner === 'object' ? s.runner : null,
     });
   }
   return out.sort((a, b) => (a.parent ? 1 : 0) - (b.parent ? 1 : 0) || b.startedAt - a.startedAt);

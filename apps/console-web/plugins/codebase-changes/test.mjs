@@ -282,4 +282,22 @@ run(['hooks', 'install', '--settings', gs], baseEnv({}));
 const g = JSON.parse(readFileSync(gs, 'utf8'));
 check(['UserPromptSubmit', 'PreToolUse', 'SubagentStop', 'Notification', 'Stop', 'SessionEnd'].every((k) => g.hooks[k]?.length === 1), 'install registers every live event (prompt, tools, subagents, waiting, stop, end)');
 
+console.log('runner (what the banner opens)');
+{
+  const { detectRunner } = await import('./changes.mjs');
+  const { normRunner } = await import('./changes-core.mjs');
+  const d = (env, n = '') => detectRunner(env, () => n, 'srv1837178');
+  const web = d({ CLAUDE_CODE_REMOTE: 'true', CLAUDE_CODE_REMOTE_SESSION_ID: 'cse_018KvtWkM6ZcWqe6ykkpGRMW', CLAUDE_CODE_SESSION_ORIGIN: 'claude_ai_chat' });
+  check(web.kind === 'claude-web' && web.url === 'https://claude.ai/code/session_018KvtWkM6ZcWqe6ykkpGRMW' && web.label === 'claude.ai', 'Claude Code on the web → its claude.ai session link');
+  const tm = d({ TMUX: '/tmp/tmux-0/default,1,0', SSH_CONNECTION: '1 2 3 4' }, 'axf-claude');
+  check(tm.kind === 'tmux' && tm.tmux.session === 'axf-claude' && tm.host === 'srv1837178' && /Moshi/.test(tm.label), 'tmux over SSH/Moshi → the tmux session name and host');
+  const forced = d({ AXF_RUNNER_TMUX: 'axf-claude', AXF_RUNNER_APP: 'moshi', CLAUDE_CODE_REMOTE: 'true', CLAUDE_CODE_REMOTE_SESSION_ID: 'cse_abcdefgh' });
+  check(forced.kind === 'tmux' && forced.app === 'moshi', 'AXF_RUNNER_TMUX wins (docker exec from tmux: $TMUX does not reach the container)');
+  check(d({ AXF_TERM_SESSION: 't0123456789ab' }).terminal === 't0123456789ab', 'a console terminal tab → its session id');
+  check(d({ AXF_RUNNER_URL: 'https://evil.example/x' }).kind === 'terminal', 'a runner url off the allowed hosts is ignored');
+  check(d({ TMUX: 'x' }, 'bad;name').kind === 'terminal', 'a tmux name that is not plain is ignored');
+  const errs = [];
+  check(normRunner({ kind: 'tmux', tmux: { session: 'a b' } }, errs) && errs.length === 1, 'normRunner reports a bad tmux name');
+}
+
 console.log(`\n${ok} checks passed`);

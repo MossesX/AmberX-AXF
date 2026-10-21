@@ -6,7 +6,7 @@ console's own container), VPS (root on the host over SSH with a dedicated key, r
 interactive CLI session). Sessions live on the server (sessions.py) so Mosh mode survives dropped connections.
 
   GET  status | targets | sessions | log
-  POST sessions {kind, container?, cwd?, confirmProtected?, mosh?, cols, rows}
+  POST sessions {kind, container?, cwd?, confirmProtected?, mosh?, tmux? (vps: attach to that tmux session), cols, rows}
   POST sessions/{id}/mosh {on}       DELETE sessions/{id}
   WS   sessions/{id}/ws?ticket=…&have=<offset>
   GET/PUT settings      POST ssh/keygen {replace?}

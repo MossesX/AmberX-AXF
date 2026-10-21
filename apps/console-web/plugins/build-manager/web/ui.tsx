@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import { canOpen, openRunner, runnerIcon, runnerOf, runnerTitle } from './session';
+import type { Runner } from './history.mjs';
 import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
@@ -492,6 +494,26 @@ export function BuildManagerView() {
   );
 }
 
+/* ---------------- open the session (icon next to the timer) ---------------- */
+
+/** The small icon next to a build's timer: opens whatever runs the build, in focus (session.ts). Never bubbles to the row. */
+function SessionButton({ runner, name }: { runner: Runner | null; name: string }) {
+  const rt = useRuntime();
+  const open = canOpen(runner);
+  return (
+    <button type="button" className={`axp-build-manager__session${open ? '' : ' is-muted'}`} title={runnerTitle(runner)} aria-label={runnerTitle(runner)}
+      onClick={(ev) => { ev.stopPropagation(); openRunner(rt, runner, name); }} onKeyDown={(ev) => ev.stopPropagation()}>
+      <Icon name={runnerIcon(runner)} size={12} />
+    </button>
+  );
+}
+
+/** A clickable banner body that can hold buttons (a <button> can't contain the session icon). */
+const pressable = (go: () => void) => ({
+  role: 'button', tabIndex: 0, onClick: go,
+  onKeyDown: (ev: React.KeyboardEvent) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } },
+});
+
 /* ---------------- the banner ---------------- */
 
 export function BuildBanner() {
@@ -519,13 +541,14 @@ export function BuildBanner() {
     const more = running.length - 1 + live.filter((e) => !running.some((r) => r.row && r.row.key === e.row?.key)).length;
     return (
       <div className={`axp-build-manager-banner${first.stale ? ' is-failed' : ''}`} role="status" aria-live="polite">
-        <button type="button" className="axp-build-manager-banner__main" onClick={() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live')} title="Open the Build manager (Live)">
+        <div className="axp-build-manager-banner__main" {...pressable(() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live'))} title="Open the Build manager (Live)">
           <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
           <span className="axp-build-manager-banner__text">
             <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
             {full && <span className="axp-build-manager-banner__meta">
               <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
               <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
+              <SessionButton runner={runnerOf(first)} name={first.changeId} />
               {cost != null && <Badge icon="zap">{first.costActual == null ? '~' : ''}{money(cost)}</Badge>}
               {first.stepsTotal > 0 && <Badge icon="list">{first.stepsDone}/{first.stepsTotal}</Badge>}
               <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
@@ -534,7 +557,7 @@ export function BuildBanner() {
             {full && first.currentStep && <span className="axp-build-manager-banner__step">{first.currentStep}</span>}
             {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
           </span>
-        </button>
+        </div>
         {fold}
       </div>
     );
@@ -549,19 +572,20 @@ export function BuildBanner() {
   const summary = live.length ? `Building: ${first.row!.title}` : failed ? `Build failed: ${first.row!.title}` : `Built: ${first.row!.title}`;
   return (
     <div className={`axp-build-manager-banner${live.length ? '' : failed ? ' is-failed' : ' is-done'}`} role="status" aria-live="polite">
-      <button type="button" className="axp-build-manager-banner__main" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`)} title="Open the Build manager">
+      <div className="axp-build-manager-banner__main" {...pressable(() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`))} title="Open the Build manager">
         <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : failed ? 'x-circle' : 'check-circle'} size={16} /></span>
         <span className="axp-build-manager-banner__text">
           <strong>{summary}</strong>
           {full && <span className="axp-build-manager-banner__meta">
             <ModelChip model={first.row!.model} />
             <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
+            {live.length > 0 && <SessionButton runner={runnerOf(first)} name={first.id} />}
             {first.row!.stepsTotal > 0 && <Badge icon="list">{first.row!.stepsDone}/{first.row!.stepsTotal}</Badge>}
             {live.length > 1 && <Badge>+{live.length - 1} more</Badge>}
           </span>}
           {full && pct != null && <Bar value={pct} label="Build progress" />}
         </span>
-      </button>
+      </div>
       {fold}
     </div>
   );

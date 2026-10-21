@@ -422,6 +422,59 @@
           }
         }
       }
+    },
+    "runner": {
+      "description": "What the session runs in, so the Build manager banner can open it (normRunner in changes-core.mjs).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,23}$",
+          "description": "claude-web | console-tab | tmux | terminal | ide | headless | other (open)"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://(claude\\.ai|platform\\.claude\\.com|console\\.anthropic\\.com|github\\.com)(/|$)"
+        },
+        "tmux": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "session"
+          ],
+          "properties": {
+            "session": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+            },
+            "window": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999
+            }
+          }
+        },
+        "terminal": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]{1,40}$"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "app": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,23}$"
+        }
+      }
     }
   }
 }

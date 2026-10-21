@@ -159,6 +159,21 @@ build_bad = {
     "bad verify": {**build_good, "verify": {"state": "great"}},
     "bad verify check": {**build_good, "verify": {"state": "verified", "checks": {"x": "ok"}}},
 }
+# runner: what the session runs in (the Build manager banner opens it)
+runner_good = {**build_good, "runner": {"kind": "tmux", "label": "Moshi \x01 tmux  axf-claude", "tmux": {"session": "axf-claude", "window": 2}, "host": "srv1837178", "app": "moshi"}}
+e2, errs2 = store_mod.normalize(runner_good)
+check(e2 is not None and e2["runner"] == {"kind": "tmux", "label": "Moshi tmux axf-claude", "tmux": {"session": "axf-claude", "window": 2}, "host": "srv1837178", "app": "moshi"}, "runner kept, label cleaned")
+web = {**build_good, "runner": {"kind": "claude-web", "url": "https://claude.ai/code/session_018Kvt"}}
+check(store_mod.normalize(web)[0]["runner"]["url"] == "https://claude.ai/code/session_018Kvt", "a claude.ai session link is kept")
+check(store_mod.summary(store_mod.normalize(web)[0])["runner"]["kind"] == "claude-web", "the summary carries the runner")
+build_bad.update({
+    "runner url elsewhere": {**build_good, "runner": {"kind": "link", "url": "https://evil.example/x"}},
+    "runner url http": {**build_good, "runner": {"kind": "link", "url": "http://claude.ai/x"}},
+    "runner tmux name": {**build_good, "runner": {"kind": "tmux", "tmux": {"session": "a;rm -rf /"}}},
+    "runner terminal id": {**build_good, "runner": {"kind": "console-tab", "terminal": "../x"}},
+    "runner no kind": {**build_good, "runner": {"label": "x"}},
+})
+parity_extra = [runner_good, web]
 for name, raw in build_bad.items():
     e2, errs2 = store_mod.normalize(raw)
     check(e2 is None and errs2, f"refused: {name}")
@@ -166,7 +181,7 @@ bad_cases.update(build_bad)
 
 print("Python and Node validators agree")
 cases = [good, {**good, "title": "t" * 500}, build_good, {**build_good, "result": {"state": "cancelled", "summary": ""}, "status": "queued"},
-         {**build_good, "actual": {"costUsd": 0.12345}, "costEstimated": None}, *bad_cases.values()]
+         {**build_good, "actual": {"costUsd": 0.12345}, "costEstimated": None}, *parity_extra, *bad_cases.values()]
 for i, raw in enumerate(cases):
     r = subprocess.run(["node", str(HERE / "changes.mjs"), "validate"], input=json.dumps(raw), capture_output=True, text=True, timeout=20)
     js = json.loads(r.stdout)

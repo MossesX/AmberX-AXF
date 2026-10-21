@@ -85,6 +85,8 @@ with c.websocket_connect(f"/p/sessions/{s['id']}/ws?have=0") as ws:
     check(b"out-42" in out, "input runs and output streams")
     check(b"COUNT=0" in out, "no token, key or secret in the shell environment")
     check(b"HARMLESS=visible" in out, "ordinary environment kept")
+    ws.send_bytes(b"echo SID=${AXF_TERM_SESSION}:Z\n")
+    check(f"SID={s['id']}:Z".encode() in read_until(ws, f"{s['id']}:Z".encode()), "the tab's session id is in its environment (Build manager focuses it)")
 sess = sessions.MANAGER.get(s["id"])
 off = sess.offset
 with c.websocket_connect(f"/p/sessions/{s['id']}/ws?have={off}") as ws:
@@ -206,6 +208,13 @@ c.put("/p/settings", json={"vps": {"host": "127.0.0.1", "port": 1, "user": "root
 v = c.post("/p/sessions", json={"kind": "vps", "cwd": "/root"}).json()
 check(v["badge"] == "HOST ROOT" and v["target"] == "127.0.0.1", "VPS tab opens over ssh with the HOST ROOT badge")
 c.delete(f"/p/sessions/{v['id']}")
+t = c.post("/p/sessions", json={"kind": "vps", "tmux": "axf-claude"}).json()
+check(t.get("title") == "tmux axf-claude" and t["badge"] == "HOST ROOT", "a VPS tab can attach to a tmux session (Build manager's open-session icon)")
+c.delete(f"/p/sessions/{t['id']}")
+for bad in ("a;id", "-t x", "$(id)", "a b", "x" * 65):
+    check(c.post("/p/sessions", json={"kind": "vps", "tmux": bad}).status_code == 400, f"tmux name refused: {bad[:12]!r}")
+check(c.post("/p/sessions", json={"kind": "console", "tmux": "axf-claude"}).status_code == 400, "tmux only in a VPS tab")
+check("attach -t =axf-claude" in sessions.tmux_remote("axf-claude") and "has-session" in sessions.tmux_remote("axf-claude"), "attaches to that exact session, a shell when it's gone")
 
 # Claude Code tab with a fake CLI
 fake = Path(tempfile.mkdtemp()) / "claude"

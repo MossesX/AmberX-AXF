@@ -187,6 +187,10 @@ export function normalize(raw, { now = nowIso() } = {}) {
  *   costEstimated  true when the cost shown is the estimate (default: no actual.costUsd)
  *   branch, areas[] (paths / folders it touches: the overlap check), parent (the entry a subagent reports under),
  *   doing (what the session is doing right now, short), progress 0..1, verify {state pending|running|verified|broken|skipped, at, summary, checks {name: pass|fail|skip}}
+ *   runner    what the session runs in, so the Build manager banner can open it (Oct 21 2026): {kind, label?, url?,
+ *             tmux? {session, window?}, terminal?, host?, app?} — kind claude-web | console-tab | tmux | terminal |
+ *             ide | headless | other (open, a short word); url only https on RUNNER_URL_HOSTS; tmux.session a plain name;
+ *             terminal = a console terminal session id. See normRunner.
  */
 export const BUILD_STATUSES = ['queued', 'running', 'done', 'failed'];
 export const VERIFY_STATES = ['pending', 'running', 'verified', 'broken', 'skipped'];
@@ -199,6 +203,39 @@ const num = (v) => typeof v === 'number' && Number.isFinite(v);
 const round = (v, d) => { const f = 10 ** d; return Math.round(v * f) / f; };
 const ACTUAL_INTS = ['inputTokens', 'outputTokens', 'cacheReadTokens', 'cacheWriteTokens'];
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+
+/** Hosts a runner's url may point at: the banner opens it in a window, so nothing else is accepted. */
+export const RUNNER_URL_HOSTS = ['claude.ai', 'platform.claude.com', 'console.anthropic.com', 'github.com'];
+const RUNNER_NAME_RE = /^[A-Za-z0-9_.-]{1,64}$/;
+const RUNNER_TERM_RE = /^[A-Za-z0-9-]{1,40}$/;
+const RUNNER_LABEL_MAX = 60;
+const runnerLabel = (v) => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, RUNNER_LABEL_MAX);
+
+/** A runner {kind, label?, url?, tmux?, terminal?, host?, app?}, cleaned (= _norm_runner in store.py). undefined when absent or bad. */
+export function normRunner(v, errors = []) {
+  if (v == null) return undefined;
+  if (!isObj(v) || !SOURCE_RE.test(String(v.kind ?? ''))) { errors.push('runner is {kind, label, url, tmux, terminal, host, app} (kind a short word)'); return undefined; }
+  const o = { kind: String(v.kind) };
+  const label = runnerLabel(v.label); if (label) o.label = label;
+  if (v.url != null && String(v.url) !== '') {
+    const u = link(v.url);
+    let host = '';
+    try { host = u && /^https:/i.test(u) ? new URL(u).hostname.toLowerCase() : ''; } catch { host = ''; }
+    if (!host || !RUNNER_URL_HOSTS.includes(host)) errors.push(`runner.url is an https link on ${RUNNER_URL_HOSTS.join(', ')}`); else o.url = String(v.url).trim();
+  }
+  if (v.tmux != null) {
+    const t = v.tmux;
+    if (!isObj(t) || !RUNNER_NAME_RE.test(String(t.session ?? ''))) errors.push('runner.tmux is {session, window?} (session a plain name)');
+    else {
+      o.tmux = { session: String(t.session) };
+      if (t.window != null) { const w = numIn(t.window, 0, 999); if (w == null) errors.push('runner.tmux.window is a whole number 0-999'); else o.tmux.window = w; }
+    }
+  }
+  if (v.terminal != null && String(v.terminal) !== '') { if (RUNNER_TERM_RE.test(String(v.terminal))) o.terminal = String(v.terminal); else errors.push('runner.terminal is a console terminal session id'); }
+  if (v.host != null && String(v.host) !== '') { if (RUNNER_NAME_RE.test(String(v.host))) o.host = String(v.host); else errors.push('runner.host is a host name'); }
+  if (v.app != null && String(v.app) !== '') { if (SOURCE_RE.test(String(v.app))) o.app = String(v.app); else errors.push('runner.app is a short word (moshi, ssh, …)'); }
+  return o;
+}
 
 export function deriveStatus(result, asked) {
   if (result) return ['failed', 'cancelled'].includes(result.state) ? 'failed' : 'done';
@@ -281,6 +318,7 @@ function normBuild(raw, e, errors) {
       e.verify = o;
     }
   }
+  if (raw.runner != null) { const r = normRunner(raw.runner, errors); if (r) e.runner = r; }
 }
 
 /** Running entries not heard from for STALE_MS (lastSeenAt, else updatedAt) show "no word". */
@@ -323,7 +361,7 @@ export function summary(e) {
 /** The build-stats part of a summary (same keys in store.py). Only keys the entry has. */
 export function buildSummary(e) {
   const out = { status: e.status ?? deriveStatus(e.result) };
-  for (const k of ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing']) if (e[k] != null) out[k] = e[k];
+  for (const k of ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing', 'runner']) if (e[k] != null) out[k] = e[k];
   const br = e.result?.branch; if (br && !out.branch) out.branch = br;
   if (e.result?.commits?.length) out.commits = e.result.commits.map((c) => c.sha).slice(0, 10);
   if (e.result?.links && Object.keys(e.result.links).length) out.links = e.result.links;

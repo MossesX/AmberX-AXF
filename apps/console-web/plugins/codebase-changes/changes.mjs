@@ -42,7 +42,7 @@ import { homedir, hostname } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { classify, DirStore, ID_RE, newId, normalize, nowIso, redact, relPath, summary, titleFrom, upsertStep, RESULT_STATES, STEP_STATES, BUILD_STATUSES } from './changes-core.mjs';
+import { classify, DirStore, ID_RE, newId, normalize, nowIso, redact, relPath, summary, titleFrom, upsertStep, normRunner, RESULT_STATES, STEP_STATES, BUILD_STATUSES } from './changes-core.mjs';
 
 const SCRIPT = fileURLToPath(import.meta.url);
 const HERE = dirname(SCRIPT);
@@ -82,7 +82,7 @@ function dirBackend(root, label) {
     async list() { return s.all(); },
   };
 }
-const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing'];
+const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing', 'runner'];
 function apiBackend(base, token) {
   const u0 = new URL(base);
   if (u0.protocol !== 'https:' && !['localhost', '127.0.0.1', '[::1]'].includes(u0.hostname)) throw new Error('the console address must be https');
@@ -258,6 +258,43 @@ export function detectSurface(env = process.env) {
   return w === 'vps' ? 'vps-claude-code' : w === 'cloud' ? 'claude-code-cloud' : 'claude-code';
 }
 
+/**
+ * What this session runs in, so the Build manager banner can open it (runner, Oct 21 2026). Explicit env wins:
+ * AXF_RUNNER_URL (https, claude.ai/…), AXF_RUNNER_TMUX (a tmux session on the VPS, e.g. set by a launcher that runs
+ * `docker exec … claude` from tmux, where $TMUX doesn't reach the container), AXF_RUNNER_LABEL, AXF_RUNNER_APP.
+ * Otherwise: Claude Code on the web (session link), a console terminal tab (AXF_TERM_SESSION), tmux ($TMUX, name asked
+ * from tmux), an IDE, a plain SSH/Moshi or local terminal. `tmuxName` is injectable for tests. Checked by normRunner.
+ */
+export function detectRunner(env = process.env, tmuxName = currentTmuxName, host = hostname()) {
+  const ok = (r) => normRunner(r) ?? null;
+  const app = env.AXF_RUNNER_APP && /^[a-z][a-z0-9-]{0,23}$/.test(env.AXF_RUNNER_APP) ? env.AXF_RUNNER_APP : undefined;
+  const label = env.AXF_RUNNER_LABEL || undefined;
+  if (env.AXF_RUNNER_URL) { const r = ok({ kind: 'link', url: env.AXF_RUNNER_URL, label: label ?? 'Session', app }); if (r?.url) return r; }
+  if (env.AXF_RUNNER_TMUX) { const r = ok({ kind: 'tmux', tmux: { session: env.AXF_RUNNER_TMUX }, label: label ?? `tmux ${env.AXF_RUNNER_TMUX}`, app, host: env.AXF_RUNNER_HOST || undefined }); if (r?.tmux) return r; }
+  const cse = String(env.CLAUDE_CODE_REMOTE_SESSION_ID ?? '');
+  if ((env.CLAUDE_CODE_REMOTE === 'true' || env.CLAUDE_CODE_REMOTE === '1') && /^cse_[A-Za-z0-9]{6,64}$/.test(cse)) {
+    const fromChat = env.CLAUDE_CODE_SESSION_ORIGIN === 'claude_ai_chat';
+    return ok({ kind: 'claude-web', url: `https://claude.ai/code/session_${cse.slice(4)}`, label: label ?? (fromChat ? 'claude.ai' : 'Claude Code on the web'), app });
+  }
+  if (env.AXF_TERM_SESSION) { const r = ok({ kind: 'console-tab', terminal: env.AXF_TERM_SESSION, label: label ?? 'Console terminal', host, app }); if (r?.terminal) return r; }
+  if (env.TMUX) {
+    const name = tmuxName(env);
+    const via = env.SSH_CONNECTION || env.SSH_CLIENT ? 'SSH/Moshi · ' : '';
+    if (name) { const r = ok({ kind: 'tmux', tmux: { session: name }, label: label ?? `${via}tmux ${name}`, host, app }); if (r?.tmux) return r; }
+  }
+  if (env.TERM_PROGRAM === 'vscode' || env.VSCODE_PID) return ok({ kind: 'ide', label: label ?? 'VS Code', host, app });
+  if (/sdk|headless|github-action/i.test(String(env.CLAUDE_CODE_ENTRYPOINT ?? ''))) return ok({ kind: 'headless', label: label ?? 'Headless run', host, app });
+  if (env.SSH_CONNECTION || env.SSH_CLIENT) return ok({ kind: 'terminal', label: label ?? 'SSH/Moshi terminal', host, app });
+  return ok({ kind: 'terminal', label: label ?? 'Terminal', host, app });
+}
+function currentTmuxName() {
+  try {
+    const r = spawnSync('tmux', ['display-message', '-p', '#S'], { encoding: 'utf8', timeout: 800 });
+    const n = (r.stdout || '').trim();
+    return r.status === 0 && /^[A-Za-z0-9_.-]{1,64}$/.test(n) ? n : '';
+  } catch { return ''; }
+}
+
 /* ---------------- cost (shared prices: framework/schemas/model-pricing.json) ---------------- */
 
 let pricingMod = null;
@@ -335,7 +372,7 @@ export async function onHook(ev, b) {
       const e0 = await load(b, adopt);
       if (e0 && !e0.result) {
         const steps = (e0.steps ?? []).map((s, i) => (i === 0 && s.state === 'running' ? { ...s, state: 'done', finishedAt: now } : i === 1 && s.state === 'queued' ? { ...s, state: 'running', startedAt: now } : s));
-        await save(b, { ...e0, steps, status: 'running', lastSeenAt: now, doing: 'Started', who: { ...(e0.who ?? {}), session: sid.slice(0, 12), where: detectWhere(), host: hostname(), user: process.env.USER || '' }, updatedAt: now });
+        await save(b, { ...e0, steps, status: 'running', lastSeenAt: now, doing: 'Started', who: { ...(e0.who ?? {}), session: sid.slice(0, 12), where: detectWhere(), host: hostname(), user: process.env.USER || '' }, runner: detectRunner() ?? e0.runner, updatedAt: now });
         setLast(adopt);
         if (sid) addSessionId(sid, adopt);
         return hookContext(adopt, e0.kind);
@@ -353,7 +390,7 @@ export async function onHook(ev, b) {
         id, createdAt: now, updatedAt: now, kind: c.kind, title: titleFrom(ev.prompt), asked: redact(String(ev.prompt ?? '').replace(/\s+/g, ' '), 600),
         repos: repo ? [repo] : [], model: redact(model, 40),
         who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname() }, steps: [], result: null, closed: null,
-        status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: 'Starting',
+        status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: 'Starting', runner: detectRunner() ?? undefined,
         ...(process.env.AXF_PARENT_CHANGE && ID_RE.test(process.env.AXF_PARENT_CHANGE) ? { parent: process.env.AXF_PARENT_CHANGE } : {}),
       }, { create: true }));
     }

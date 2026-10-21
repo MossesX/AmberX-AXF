@@ -80,6 +80,11 @@ and at the end. `if_version: "new"` on the first write; pass the version you rea
   (about $0.14/min on Opus, $0.28/min on Fable, $0.07/min on Sonnet at the Oct 18 2026 prices).
 - Heartbeat: rewrite with a new `lastSeenAt` at least every 10 minutes while working, or the Build manager shows "no word".
 - Never write tokens, keys or passwords into an entry.
+- `runner` (optional, Oct 21 2026): what the session runs in, so the Build manager banner's open-session icon can open
+  it: `{kind, label?, url?, tmux?: {session, window?}, terminal?, host?, app?}`. The hooks fill it in by themselves;
+  a claude.ai chat can write `{"kind": "claude-web", "url": "https://claude.ai/code/session_…"}`. Urls only on
+  claude.ai, platform.claude.com, console.anthropic.com or github.com. Launchers that run `docker exec … claude` from
+  tmux set `AXF_RUNNER_TMUX=<tmux session>` (plus `AXF_RUNNER_APP=moshi`) so it points at the right tmux session.
 
 Validators: `apps/console-web/plugins/codebase-changes/changes-core.mjs` (Node) = `server/store.py` (Python), schema  <!-- axf-plugin:codebase-changes -->
 `schema/change-log.schema.json`. Check an entry: `node changes.mjs validate < entry.json`. <!-- axf-plugin:codebase-changes -->

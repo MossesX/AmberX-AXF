@@ -11,7 +11,8 @@ export const FOLDER = 'console-terminal';
 export const ID = 'ai.amberx.axf.console.terminal';
 
 export type Kind = 'console' | 'container' | 'vps' | 'claude';
-export interface Open { kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string }
+/** `tmux` (kind vps): attach to that tmux session on the host (the Build manager's open-session icon); plain names only. */
+export interface Open { kind: Kind; container?: string; cwd?: string; confirmProtected?: boolean; title?: string; tmux?: string }
 export interface SessionInfo { id: string; kind: Kind; title: string; target: string; cwd: string; mosh: boolean; badge: string | null; protected: boolean; createdAt: number; attached: number; closed: boolean }
 export interface Settings {
   idleMinutes: number; moshKeepMinutes: number; fontSize: number; copyOnSelect: boolean; pasteWarn: boolean; mouseDefault: boolean; moshDefault: boolean; user: string;

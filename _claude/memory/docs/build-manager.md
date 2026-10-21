@@ -77,6 +77,36 @@ Logic + tests: `web/history.mjs` (Live/Built/totals/filters/search), `web/orches
 launch command, verify checks); `test.mjs` 83, `test.py` 38 (fake axHub: approval + retries + alert link, rejection,
 dry run on real data, refusals, verify; never writes framework/plan).
 
+## Open the session (icon next to the timer, Oct 21 2026, Opus)
+
+Brett: "in the in-progress building banner put an icon next to the timer to open the session — whatever is running
+it (Claude Code, Moshi, Claude in the browser), the window with it in focus". The banner's timer badge is followed by
+a small round icon (`SessionButton` in `web/ui.tsx`, logic in `web/session.ts`). Tapping it never opens the Build
+manager (the banner body is now a `role=button` div so it can hold the icon).
+
+| What runs the build (change-log@1 `runner`) | Icon | Tap |
+| --- | --- | --- |
+| Claude Code on the web / a claude.ai chat (`url` claude.ai/code/session_…) | ↗ | that session in a named browser window, focused (a second tap reuses it) |
+| Claude Code in tmux on the VPS, e.g. from Moshi (`tmux.session`) | >_ | Terminal plugin `terminal.attach:<session>`: a VPS tab attached to that tmux session, or the open one focused |
+| Claude Code in a console terminal tab (`terminal` = session id) | >_ | Terminal plugin `terminal.focus:<id>`: that tab brought forward |
+| anything else (laptop terminal, IDE, headless) | ⓘ (muted) | a note saying where it runs |
+| activity-feed build with a link | ↗ | the link |
+
+Where `runner` comes from: the codebase-changes hooks (`detectRunner` in `changes.mjs`, validated by `normRunner` in
+`changes-core.mjs` = `_norm_runner` in `server/store.py`; urls only on claude.ai, platform.claude.com,
+console.anthropic.com, github.com; tmux names plain). Explicit env wins: `AXF_RUNNER_TMUX=<session>` (use it when
+tmux runs `docker exec … claude`, since `$TMUX` doesn't reach the container), `AXF_RUNNER_URL`, `AXF_RUNNER_LABEL`,
+`AXF_RUNNER_APP` (e.g. `moshi`). Console terminal tabs set `AXF_TERM_SESSION`; a VPS tab takes `tmux` in
+`POST /api/plugins/console-terminal/sessions` (kind vps only; it runs `tmux attach -t =<name>`, or a shell with a note
+when the session is gone). <!-- axf-plugin:build-manager -->
+
+<img src="build-manager/shots/open-session-phone.png" width="260"> <img src="build-manager/shots/open-session-tap-phone.png" width="260">
+
+![Banner with the open-session icon](build-manager/shots/open-session-desktop.png)
+![Tap: a VPS tab attached to the build's tmux session](build-manager/shots/open-session-tap-desktop.png)
+
+Shots: a running demo entry with a tmux runner, `AXF_APPEARANCE_HUB=off`, recipe `shots/shots-open-session.json`.
+
 ## Data and ticks
 
 - Logic: `web/merge.mjs` (pure; `buildRows`, `timing`, `totalsByModel`, `filterRows`, `sortRows`, `linkRow`, `liveEntries`), estimates parsed by pending-core's `estimateMinutes` / `formatMinutes`.

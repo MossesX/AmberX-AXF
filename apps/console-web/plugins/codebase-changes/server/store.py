@@ -265,7 +265,57 @@ _AREA = re.compile(r"^[A-Za-z0-9_.@/*+-]{1,200}$")
 _SOURCE = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
 _ACTUAL_INTS = ("inputTokens", "outputTokens", "cacheReadTokens", "cacheWriteTokens")
 _BUILD_KEYS = ("buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "parent", "doing",
-               "progress", "verify")
+               "progress", "verify", "runner")
+# what a session runs in (= normRunner / RUNNER_URL_HOSTS in changes-core.mjs): the banner opens it, so only these hosts
+RUNNER_URL_HOSTS = ("claude.ai", "platform.claude.com", "console.anthropic.com", "github.com")
+_RUNNER_NAME = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
+_RUNNER_TERM = re.compile(r"^[A-Za-z0-9-]{1,40}$")
+_RUNNER_CTRL = re.compile(r"[\x00-\x1f\x7f]")
+
+
+def _runner_label(v: Any) -> str:
+    return " ".join(_RUNNER_CTRL.sub(" ", "" if v is None else _js_str(v)).split())[:60]
+
+
+def _norm_runner(v: Any, errors: list[str]) -> dict[str, Any] | None:
+    """A runner {kind, label?, url?, tmux?, terminal?, host?, app?}, cleaned (= normRunner). None when absent or bad."""
+    if v is None:
+        return None
+    if not _is_obj(v) or not _SOURCE.match(_js_str(v.get("kind") if v.get("kind") is not None else "")):
+        errors.append("runner is {kind, label, url, tmux, terminal, host, app} (kind a short word)")
+        return None
+    o: dict[str, Any] = {"kind": _js_str(v["kind"])}
+    label = _runner_label(v.get("label"))
+    if label:
+        o["label"] = label
+    if v.get("url") is not None and _js_str(v["url"]) != "":
+        u = _link(v["url"])
+        host = (urlsplit(u).hostname or "").lower() if u and u.lower().startswith("https://") else ""
+        if not host or host not in RUNNER_URL_HOSTS:
+            errors.append(f"runner.url is an https link on {', '.join(RUNNER_URL_HOSTS)}")
+        else:
+            o["url"] = _js_str(v["url"]).strip()
+    t = v.get("tmux")
+    if t is not None:
+        if not _is_obj(t) or not _RUNNER_NAME.match(_js_str(t.get("session") if t.get("session") is not None else "")):
+            errors.append("runner.tmux is {session, window?} (session a plain name)")
+        else:
+            o["tmux"] = {"session": _js_str(t["session"])}
+            w = t.get("window")
+            if w is not None:
+                if isinstance(w, int) and not isinstance(w, bool) and 0 <= w <= 999:
+                    o["tmux"]["window"] = w
+                else:
+                    errors.append("runner.tmux.window is a whole number 0-999")
+    for k, rx, msg in (("terminal", _RUNNER_TERM, "runner.terminal is a console terminal session id"), ("host", _RUNNER_NAME, "runner.host is a host name"),
+                       ("app", _SOURCE, "runner.app is a short word (moshi, ssh, …)")):
+        x = v.get(k)
+        if x is not None and _js_str(x) != "":
+            if rx.match(_js_str(x)):
+                o[k] = _js_str(x)
+            else:
+                errors.append(msg)
+    return o
 
 
 def _num(v: Any) -> bool:
@@ -426,6 +476,9 @@ def _norm_build(raw: dict[str, Any], e: dict[str, Any], errors: list[str]) -> No
                         if key:
                             o["checks"][key] = sv
             e["verify"] = o
+    rn = _norm_runner(raw.get("runner"), errors)
+    if rn:
+        e["runner"] = rn
 
 
 def is_stale(e: dict[str, Any], now_ms: float | None = None) -> bool:

@@ -1,6 +1,9 @@
 // Types for history.mjs (the view imports it from TypeScript).
 import type { Row } from './merge.mjs';
 
+/** What a session runs in (change-log@1 `runner`): the banner's open-session icon uses it. */
+export interface Runner { kind: string; label?: string; url?: string; tmux?: { session: string; window?: number }; terminal?: string; host?: string; app?: string }
+
 export interface ChangeSummary {
   id: string; title: string; kind: string; model: string; state: string; createdAt: string; updatedAt: string;
   steps: { total: number; done: number; failed: number; running: string }; result: { state: string; summary: string } | null; closed: string | null;
@@ -8,13 +11,13 @@ export interface ChangeSummary {
   startedAt?: string; finishedAt?: string; lastSeenAt?: string; estimate?: { minutes?: number; costUsd?: number };
   actual?: { minutes?: number; costUsd?: number; inputTokens?: number; outputTokens?: number; source?: string }; costEstimated?: boolean;
   branch?: string; areas?: string[]; parent?: string; progress?: number; doing?: string; verify?: { state: string; summary?: string };
-  commits?: string[]; links?: Record<string, string>;
+  commits?: string[]; links?: Record<string, string>; runner?: Runner;
 }
 export interface ChangeLive {
   id: string; changeId: string; title: string; state: string; activityState: string; startedAt: number; finishedAt: number; url: string; source: string;
   surface: string; host: string; model: string; modelRaw: string; runningStep: string; doing: string; progress: number | null; row: Row | null; via: string;
   estimate: number | null; elapsed: number | null; currentStep: string; over: number; costEstimate: number | null; costActual: number | null;
-  stepsDone: number; stepsTotal: number; stale: boolean; lastSeenAt: number; branch: string; areas: string[]; parent: string;
+  stepsDone: number; stepsTotal: number; stale: boolean; lastSeenAt: number; branch: string; areas: string[]; parent: string; runner: Runner | null;
 }
 export interface BuiltRow {
   id: string; title: string; model: string; modelRaw: string; status: string; resultState: string; at: number; day: string; week: string; surface: string; host: string;
