@@ -123,16 +123,32 @@ def shrink(png: Path, width: int) -> None:
     subprocess.run([tool, str(png), "-resize", f"{width}x", "-strip", str(png)], check=False, timeout=60)
 
 
+LAUNCH_LOG: list[str] = []
+
+
 def launch(pkg: str) -> None:
     """Start the app's launcher activity directly (no dependence on the launcher app being responsive)."""
     try:
         out = adb("shell", "am", "start", "-W", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-p", pkg, timeout=60)
-        print(f"launch: {' '.join(str(out).split())[:200]}")
-    except (RuntimeError, subprocess.TimeoutExpired):
+        LAUNCH_LOG.append(" ".join(str(out).split())[:300])
+    except (RuntimeError, subprocess.TimeoutExpired) as e:
+        LAUNCH_LOG.append(f"am start failed: {str(e)[:200]}")
         try:
             adb("shell", "monkey", "-p", pkg, "-c", "android.intent.category.LAUNCHER", "1")
         except (RuntimeError, subprocess.TimeoutExpired):
             pass
+    print(f"launch: {LAUNCH_LOG[-1]}")
+
+
+def crash_lines(pkg: str) -> list[str]:
+    """The last crash lines logcat has for this app (AndroidRuntime), for the CI report."""
+    try:
+        log = str(adb("shell", "logcat", "-d", "-s", "AndroidRuntime:E", "-t", "400", timeout=30))
+    except (RuntimeError, subprocess.TimeoutExpired):
+        return []
+    lines = [ln.strip() for ln in log.splitlines() if ln.strip() and not ln.startswith("---")]
+    keep = [ln for ln in lines if pkg in ln or "Exception" in ln or "Caused by" in ln or "at ai.amberx" in ln]
+    return [ln[:220] for ln in keep[-25:]]
 
 
 def dismiss_anr(root: ET.Element | None) -> bool:
@@ -212,7 +228,8 @@ def main() -> int:
         focus = ""
     debug = {"focus": focus[:200], "packages": sorted({n.get("package", "") for n in nodes(root)})[:10],
              "texts": [t[:60] for t in texts(root)][:40],
-             "descs": [n.get("content-desc", "")[:60] for n in nodes(root) if n.get("content-desc")][:20]}
+             "descs": [n.get("content-desc", "")[:60] for n in nodes(root) if n.get("content-desc")][:20],
+             "launch": LAUNCH_LOG[-3:], "crash": crash_lines(a.package)}
     if a.start_shot:
         (out / "start.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
         shrink(out / "start.png", a.width)
