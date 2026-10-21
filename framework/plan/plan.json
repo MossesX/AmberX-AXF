@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-20T20:40:56.737Z",
+ "generatedAt": "2026-10-21T02:25:43.120Z",
  "statuses": [
   "built",
   "partial",
@@ -4252,15 +4252,15 @@
    "area": "Foundations",
    "group": "Modules, extension points, placeholders",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "built",
    "priority": "P1",
    "wave": 1,
    "effort": "",
    "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "axf-kernel"
+     "status": "built",
+     "where": "lib-mcp"
     }
    },
    "capabilities": [],
@@ -4269,7 +4269,7 @@
     "f.interop.remote"
    ],
    "modules": [
-    "axf-kernel"
+    "lib-mcp"
    ],
    "files": [],
    "acceptance": [],
@@ -4282,7 +4282,7 @@
     "foundations",
     "lock"
    ],
-   "notes": "contract + typed placeholder",
+   "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable",
    "source": "catalog",
    "history": [
     {
@@ -12809,18 +12809,25 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
-   "ports": {},
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-mcp"
+    }
+   },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [
     "w.mcp"
    ],
-   "modules": [],
+   "modules": [
+    "lib-mcp"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -21708,19 +21715,23 @@
    "title": "lib-mcp: MCP client (and server) library for every AXF app",
    "area": "Kernel & engines",
    "kind": "epic",
-   "status": "planned",
+   "status": "built",
    "priority": "P1",
    "wave": 2,
    "effort": "L",
    "summary": "Framework library so any AXF app (web + Android, later Python) can connect to MCP servers as a client: server registry, Streamable HTTP transport, tool/resource/prompt browsing, tool calls behind the kernel interop exposure rules, tokens in secure storage. The console MCP client plugin (apps/console-web/plugins/mcp-client) is the reference UI.",
    "ports": {
     "web": {
-     "status": "planned",
-     "where": "—"
+     "status": "built",
+     "where": "framework/libs/mcp (+ core/engines/mcp.ts)"
     },
     "android": {
-     "status": "planned",
-     "where": "lib-mcp"
+     "status": "built",
+     "where": "lib-mcp (+ kernel mcp/McpEngine.kt); written without a compiler"
+    },
+    "python": {
+     "status": "built",
+     "where": "framework/python/axf_libs/mcp"
     }
    },
    "capabilities": [],
@@ -21731,33 +21742,40 @@
    "modules": [
     "lib-mcp"
    ],
-   "files": [],
+   "files": [
+    "framework/core/engines/mcp.ts",
+    "framework/libs/mcp",
+    "framework/android/lib-mcp",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/mcp/McpEngine.kt",
+    "framework/python/axf_libs/mcp",
+    "framework/spec/fixtures/mcp-client.json",
+    "framework/spec/check-mcp.mts"
+   ],
    "acceptance": [
     {
      "text": "Same client contract on web and Android (conformance fixtures)",
-     "done": false
+     "done": true
     },
     {
      "text": "Tokens only in secure storage / server env",
-     "done": false
+     "done": true
     },
     {
      "text": "Remote tool calls respect UAC + interop exposure",
-     "done": false
+     "done": true
     }
    ],
    "warnings": [],
    "recommendations": [
-    "Port the console plugin server part (plugins/mcp-client/server) as the behaviour reference"
+    "The console MCP client plugin now runs on this library (server part on the Python client, web part on the library views)."
    ],
    "previews": [],
    "screenshots": [],
    "links": [],
    "tags": [
-    "pending",
-    "waits-on-fable"
+    "built-on-fable"
    ],
-   "notes": "",
+   "notes": "Fable rebuild Oct 20 2026 on branch fable/lib-mcp. MCP server side (expose actions as tools) stays a placeholder (axf.mcp.server).",
    "source": "user",
    "history": [
     {
@@ -21767,6 +21785,10 @@
     {
      "at": "2026-10-18T04:30:05.543Z",
      "text": "Added to the pending build list (waits on Fable)"
+    },
+    {
+     "at": "2026-10-20",
+     "text": "Built on Fable (rebuild of the Opus console plugin into a cross-port library: TS + Kotlin + Python, one fixture)"
     }
    ],
    "model": "fable",

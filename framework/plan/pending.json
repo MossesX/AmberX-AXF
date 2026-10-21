@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T12:02:10.988Z",
+ "updatedAt": "2026-10-21T02:19:21.624Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -96,12 +96,17 @@
    "title": "lib-mcp: MCP client library for every AXF app",
    "detail": "Framework library (web + Android, later Python) so any AXF app can be an MCP client: server registry, Streamable HTTP, browse tools/resources/prompts, call tools under the kernel interop exposure rules, tokens in secure storage. Reference: the console MCP client plugin (apps/console-web/plugins/mcp-client).",
    "model": "Fable",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/lib-mcp",
+     "at": "2026-10-21T02:19:21.624Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-18T04:30:05.551Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:30:05.551Z",
+   "builtAt": "2026-10-21T02:19:21.615Z",
+   "updatedAt": "2026-10-21T02:19:21.624Z",
    "planId": "x.lib.mcp",
    "source": "chat"
   },

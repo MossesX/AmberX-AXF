@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-20T20:40:56.716Z",
+  "generatedAt": "2026-10-21T02:25:43.103Z",
   "items": [
     {
       "$axf": "library@1",
@@ -147,6 +147,69 @@
         {
           "capability": "axf.lock.keybound",
           "note": "Keystore keys that need the fingerprint for every decrypt (CryptoObject). Not built: the lock gates the UI; data keys don't require auth yet."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.mcp",
+      "module": "lib-mcp",
+      "name": "MCP client (connect to MCP servers)",
+      "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+      "features": [
+        "w.mcp",
+        "f.interop.remote"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.network"
+      ],
+      "manifestKey": "libraries.mcp",
+      "params": [
+        {
+          "key": "timeoutMs",
+          "label": "Call timeout (ms)",
+          "type": "number",
+          "default": 30000,
+          "min": 1000,
+          "max": 600000
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-mcp:$axf\")",
+        "module": "McpModule()",
+        "import": "ai.amberx.axf.mcp.McpModule",
+        "routes": [
+          "mcp",
+          "mcp-servers"
+        ]
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-mcp",
+          "note": "written without a compiler; CI compiles and runs :lib-mcp:testDebugUnitTest"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "libs/mcp"
+        },
+        "python": {
+          "status": "compiled",
+          "dir": "python/axf_libs/mcp"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.mcp.server",
+          "note": "MCP server side (expose the app's surface@1 actions as tools) — not built; the client half is this library."
+        },
+        {
+          "capability": "axf.mcp.oauth",
+          "note": "OAuth 2.1 authorization-code sign-in to MCP servers — not built; bearer tokens only."
+        },
+        {
+          "capability": "axf.mcp.elicitation",
+          "note": "Server→client requests (sampling, elicitation) are ignored, not answered."
         }
       ]
     },

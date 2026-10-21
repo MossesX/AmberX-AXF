@@ -14,6 +14,9 @@ import ai.amberx.axf.console.views.ModulesView
 import ai.amberx.axf.console.views.TrackerView
 import ai.amberx.axf.devtools.DevtoolsScreen
 import ai.amberx.axf.logging.LogsScreen
+import ai.amberx.axf.mcp.McpModule
+import ai.amberx.axf.mcp.McpScreen
+import ai.amberx.axf.mcp.McpServersScreen
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.profile.ProfileScreen
 import ai.amberx.axf.settings.SettingsScreen
@@ -36,8 +39,9 @@ class MainActivity : AxfActivity() {
                 "roles" to { RolePanel() }, "actions" to { ActionConsole() }, "devtools" to { DevtoolsScreen() },
                 "settings" to { SettingsScreen() }, "logs" to { LogsScreen() },
                 "account" to { AccountScreen() }, "profile" to { ProfileScreen() }, "subscription" to { SubscriptionScreen() }, "admin" to { AdminScreen() },
+                McpModule.ROUTE to { McpScreen() }, McpModule.ROUTE_SERVERS to { McpServersScreen() },
             ),
-            viewTitles = ConsoleModule.ROUTES.associate { it.id to it.label } + mapOf("devtools" to "Developer tools", "settings" to "Settings", "logs" to "Logs", "account" to "Account", "profile" to "Profile", "subscription" to "Subscription", "admin" to "Administration"),
+            viewTitles = ConsoleModule.ROUTES.associate { it.id to it.label } + mapOf("devtools" to "Developer tools", "settings" to "Settings", "logs" to "Logs", "account" to "Account", "profile" to "Profile", "subscription" to "Subscription", "admin" to "Administration", McpModule.ROUTE to "MCP servers", McpModule.ROUTE_SERVERS to "Manage MCP servers"),
             inspector = { ConsoleInspector() },
         )
     }
