@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-00ace1289d",
+  "createdAt": "2026-10-21T12:32:58.708Z",
+  "updatedAt": "2026-10-21T12:33:06.612Z",
+  "kind": "build",
+  "title": "Console application menu reaches everything; toolbar + side nav hidden by default",
+  "asked": "",
+  "repos": [
+    "MossesX/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Fable: app-menu hook (contributions, live lists, merge engine, web only)",
+      "state": "done",
+      "startedAt": "2026-10-21T12:33:06.282Z",
+      "finishedAt": "2026-10-21T12:33:06.282Z"
+    },
+    {
+      "text": "Opus: console app-menu asset + every plugin's web/menu.ts + live lists",
+      "state": "done",
+      "startedAt": "2026-10-21T12:33:06.350Z",
+      "finishedAt": "2026-10-21T12:33:06.350Z"
+    },
+    {
+      "text": "Menu entries for codebase-changes, main-build-status, alerts-bell",
+      "state": "done",
+      "startedAt": "2026-10-21T12:33:06.420Z",
+      "finishedAt": "2026-10-21T12:33:06.420Z"
+    },
+    {
+      "text": "Theme-swap check opens Settings through the app menu",
+      "state": "done",
+      "startedAt": "2026-10-21T12:33:06.495Z",
+      "finishedAt": "2026-10-21T12:33:06.495Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "App menu with submenus and live lists reaches every page, nav and toolbar item, plus Pilot and axHub pages; console hides toolbar and side nav by default; reachability enforced in CI (menu-reach.mts).",
+    "branch": "feat/console-menu",
+    "commits": [
+      {
+        "sha": "56dfdc6"
+      },
+      {
+        "sha": "22d746c"
+      }
+    ],
+    "tests": {
+      "check-app-menu": {
+        "before": "0",
+        "after": "113"
+      },
+      "menu-reach": {
+        "before": "0",
+        "after": "168"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/console-menu.md"
+    }
+  },
+  "closed": null,
+  "state": "done"
+}
