@@ -228,9 +228,11 @@ export function SystemBanner() {
                 <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                 </button>
-                {label && (s.run[c.id] === 'working'
+                {s.run[c.id] === 'working'
                   ? <RunBadge r="working" />
-                  : <Button tone={c.fix?.type === 'action' ? 'primary' : 'ghost'} icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>)}
+                  : label
+                    ? <Button tone="primary" icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>
+                    : <Button tone="primary" icon="zap" onClick={() => rt.openDialog('system-check', { focus: c.id })}>Fix…</Button>}
               </li>
             );
           })}
@@ -284,7 +286,6 @@ export function FixPanel({ c }: { c: Check }) {
     setBusy(false);
   };
   const clear = async (key: string) => { setBusy(true); try { (await call<{ checks: Check[] }>('secret/clear', { method: 'POST', body: JSON.stringify({ key }) })).checks.forEach(replace); setMsg('Removed.'); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
-  const auto = async () => { setBusy(true); setMsg(''); try { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); replace(r.check); setMsg(r.message); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
   const again = async () => { setBusy(true); try { const n = await recheck(c.id); setMsg(n.status === 'ok' ? 'Passes now.' : n.summary); } catch (e) { setMsg((e as Error).message); } setBusy(false); };
   const f = c.fix;
   return (
@@ -306,7 +307,6 @@ export function FixPanel({ c }: { c: Check }) {
           <p className="fx-small fx-muted" style={{ margin: 0 }}>Saved on the console server only (owner-only file), never sent back to the browser or committed.</p>
         </form>
       )}
-      {f?.type === 'action' && <div className="fx-row fx-row--wrap"><Button tone="primary" icon="zap" disabled={busy} onClick={() => void auto()}>{busy ? 'Fixing…' : f.label}</Button></div>}
       {f?.type === 'host' && (
         <div className="axp-systems-check-fix__host">
           <p className="fx-small" style={{ margin: 0 }}>Run this on the VPS (mosh or ssh). The console can't change the host from its container.</p>
@@ -314,7 +314,10 @@ export function FixPanel({ c }: { c: Check }) {
         </div>
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
-      <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}</div>
+      <div className="fx-row fx-row--wrap">
+        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
+        <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
+      </div>
     </div>
   );
 }
