@@ -117,11 +117,12 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
   const [title, setTitle] = useState(it.title);
   const [detail, setDetail] = useState(it.detail);
   const [model, setModel] = useState<PendingModel>(it.model);
+  const [estimate, setEstimate] = useState(it.estimate ?? '');
   const date = core.shownDate(it);
-  const open = (m: Mode) => { setMode(m); setText(''); setTitle(it.title); setDetail(it.detail); setModel(it.model); };
+  const open = (m: Mode) => { setMode(m); setText(''); setTitle(it.title); setDetail(it.detail); setModel(it.model); setEstimate(it.estimate ?? ''); };
   const save = async () => {
     if (mode === 'note' || mode === 'sub') { if (text.trim() && (await act({ action: mode, id: it.id, text }))) setMode(null); }
-    else if (mode === 'edit') { if (await act({ action: 'update', id: it.id, title, detail, model })) setMode(null); }
+    else if (mode === 'edit') { if (await act({ action: 'update', id: it.id, title, detail, model, estimate })) setMode(null); }
   };
   const copy = () => {
     const brief = [`Pending build: ${it.title} (${it.id}) — waits on ${it.model}`, it.planId && `Plan epic: ${it.planId}`, it.detail && `\n${it.detail}`,
@@ -145,6 +146,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
         <span className={`pd-date ${date.label === 'Built' ? 'is-built' : ''}`} title={`Added ${fmtTime(it.createdAt)}${it.builtAt ? ` · built ${fmtTime(it.builtAt)}` : ''}`}><Icon name={date.label === 'Built' ? 'check-circle' : 'clock'} size={13} />{date.label} {fmtDate(date.at)}</span>
         {date.label === 'Built' && <span>Added {fmtDate(it.createdAt)}</span>}
         <span>Waits on {it.model}</span>
+        {core.itemEstimate(it) && <span className="pd-est" title={it.estimate ? 'Build time (estimate)' : 'Build time: the steps added up'}><Icon name="zap" size={13} />~{core.itemEstimate(it)}</span>}
         {it.planId && <span className="fx-mono">{it.planId}</span>}
       </div>
       {mode === 'edit' ? (
@@ -152,6 +154,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
           <label className="pd-field">Title<input className="fx-input" value={title} onChange={(e) => setTitle(e.target.value)} /></label>
           <label className="pd-field">Details<textarea className="fx-input" rows={4} value={detail} onChange={(e) => setDetail(e.target.value)} /></label>
           <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
         </div>
       ) : it.detail && <p className="pd-detail">{it.detail}</p>}
       {it.subPrompts.length > 0 && <Thread label="Sub prompts" list={it.subPrompts} mono />}
@@ -182,28 +185,30 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
   );
 }
 
-function Thread({ label, list, mono }: { label: string; list: { text: string; at: string }[]; mono?: boolean }) {
+function Thread({ label, list, mono }: { label: string; list: { text: string; at: string; estimate?: string }[]; mono?: boolean }) {
   return (
     <div className="pd-thread">
       <h3>{label}</h3>
-      {list.map((e, i) => <div key={i} className={`pd-entry ${mono ? 'is-mono' : ''}`}><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}
+      {list.map((e, i) => <div key={i} className={`pd-entry ${mono ? 'is-mono' : ''}`}><time dateTime={e.at}>{fmtDate(e.at)}{e.estimate && <span className="pd-est"> · ~{e.estimate}</span>}</time><p>{e.text}</p></div>)}
     </div>
   );
 }
 
-function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus }) => Promise<boolean> }) {
+function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus; estimate?: string }) => Promise<boolean> }) {
   const [title, setTitle] = useState('');
+  const [estimate, setEstimate] = useState('');
   const [detail, setDetail] = useState('');
   const [model, setModel] = useState<PendingModel>('Fable');
   const [status, setStatus] = useState<PendingStatus>('pending');
   return (
     <details className="pd-add">
       <summary>Add a build</summary>
-      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status }))) { setTitle(''); setDetail(''); } }}>
+      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status, estimate }))) { setTitle(''); setDetail(''); setEstimate(''); } }}>
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <div className="pd-two">
           <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
           <label className="pd-field">Status<select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value as PendingStatus)}>{core.STATUSES.map((s) => <option key={s} value={s}>{core.STATUS_LABEL[s]}</option>)}</select></label>
         </div>
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to list</Button></div>

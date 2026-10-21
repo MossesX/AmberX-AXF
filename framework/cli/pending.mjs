@@ -2,6 +2,7 @@
  * pending — reads and writes framework/plan/pending.json (pending@1) on top of plan/pending-core.mjs.
  *   node framework/cli/pending.mjs                 list (sorted by status)
  *   node framework/cli/pending.mjs --sort added    list sorted by date added (also: built)
+ *   node framework/cli/pending.mjs --steps         also list every sub prompt (step) with its build-time estimate
  * The console API and MCP server go through engine-rpc ops pending / pending-act.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -29,7 +30,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const s = loadPending();
   for (const it of core.sortItems(s.items, key)) {
     const d = core.shownDate(it);
-    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${it.title}  (${it.id})`);
+    const est = core.itemEstimate(it);
+    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${(est ? `~${est}` : '').padEnd(8)} ${it.title}  (${it.id})`);
+    if (process.argv.includes('--steps')) for (const [k, sp] of it.subPrompts.entries()) console.log(`    ${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
   }
   console.log(Object.entries(core.counts(s.items)).map(([k, n]) => `${k} ${n}`).join(' · '));
 }

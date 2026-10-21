@@ -34,7 +34,30 @@ export function iso(v) {
   const d = typeof v === 'number' ? new Date(v) : new Date(str(v));
   return Number.isNaN(d.getTime()) ? '' : d.toISOString();
 }
-const entries = (list) => (Array.isArray(list) ? list : []).map((e) => ({ text: str(e?.text), at: iso(e?.at) })).filter((e) => e.text);
+const entries = (list) => (Array.isArray(list) ? list : []).map((e) => ({ text: str(e?.text), at: iso(e?.at), ...(str(e?.estimate).trim() ? { estimate: str(e.estimate).trim() } : {}) })).filter((e) => e.text);
+
+/**
+ * Build-time estimates (Oct 20 2026): every item and every sub prompt may carry `estimate`, a short human string
+ * ("45 min", "2 h", "1.5 d"). `estimateMinutes` reads one; `itemEstimate` is the item's own, else the sum of its sub prompts'.
+ */
+export function estimateMinutes(text) {
+  const m = /^\s*~?\s*(\d+(?:[.,]\d+)?)\s*(min|mins|minute|minutes|m|h|hr|hrs|hour|hours|d|day|days)\b/i.exec(str(text));
+  if (!m) return null;
+  const n = Number(m[1].replace(',', '.'));
+  const u = m[2].toLowerCase();
+  return Math.round(n * (u.startsWith('d') ? 480 : u.startsWith('h') ? 60 : 1));
+}
+export function formatMinutes(min) {
+  if (min == null || !Number.isFinite(min) || min <= 0) return '';
+  if (min < 60) return `${min} min`;
+  if (min < 480) { const h = Math.round(min / 30) / 2; return `${h} h`; }
+  return `${Math.round(min / 240) / 2} d`;
+}
+export function itemEstimate(it) {
+  if (str(it?.estimate).trim()) return str(it.estimate).trim();
+  const subs = (it?.subPrompts ?? []).map((s) => estimateMinutes(s.estimate)).filter((n) => n != null);
+  return subs.length ? formatMinutes(subs.reduce((a, b) => a + b, 0)) : '';
+}
 export const slug = (s) => str(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) || 'build';
 
 /** Tolerant decode of one item (old files, the artifact's shape, hand edits). */
@@ -53,6 +76,7 @@ export function normalize(raw, now = new Date().toISOString()) {
     createdAt, builtAt,
     updatedAt: iso(raw?.updatedAt) || createdAt,
     ...(raw?.planId ? { planId: str(raw.planId) } : {}),
+    ...(str(raw?.estimate).trim() ? { estimate: str(raw.estimate).trim() } : {}),
     source: str(raw?.source) || 'console',
   };
 }
@@ -99,6 +123,8 @@ export function apply(state, a, now = new Date().toISOString()) {
         if (a.detail !== undefined) it.detail = str(a.detail);
         if (a.model !== undefined) { const m = MODELS.find((x) => x.toLowerCase() === str(a.model).toLowerCase()); if (!m) throw new Error(`model must be one of: ${MODELS.join(', ')}`); it.model = m; }
         if (a.planId !== undefined) { if (a.planId) it.planId = str(a.planId); else delete it.planId; }
+        if (a.estimate !== undefined) { if (str(a.estimate).trim()) it.estimate = str(a.estimate).trim(); else delete it.estimate; }
+        if (a.subEstimates !== undefined && Array.isArray(a.subEstimates)) it.subPrompts = it.subPrompts.map((sp, k) => { const e = str(a.subEstimates[k]).trim(); const { estimate: _e, ...rest } = sp; return e ? { ...rest, estimate: e } : rest; });
       }
       if (a.status !== undefined) it = setStatus(it, a.status);
       it.updatedAt = now;
@@ -108,7 +134,8 @@ export function apply(state, a, now = new Date().toISOString()) {
     case 'note': case 'sub': {
       const text = str(a.text).trim(); if (!text) throw new Error('text is required');
       const i = find(); const key = a.action === 'note' ? 'notes' : 'subPrompts';
-      const it = { ...s.items[i], [key]: [...s.items[i][key], { text, at: now }], updatedAt: now };
+      const est = str(a.estimate).trim();
+      const it = { ...s.items[i], [key]: [...s.items[i][key], { text, at: now, ...(est ? { estimate: est } : {}) }], updatedAt: now };
       const items = s.items.slice(); items[i] = it;
       return { state: touch(s, items, now), item: it, log: [`pending: ${a.action === 'note' ? 'note' : 'sub prompt'} added to ${it.id}`] };
     }
@@ -153,7 +180,8 @@ export function toArtifact(it) {
   const ms = (v) => (v ? Date.parse(v) : null);
   return {
     title: it.title, detail: it.detail, model: it.model, status: it.status,
-    notes: it.notes.map((n) => ({ text: n.text, at: ms(n.at) })), subPrompts: it.subPrompts.map((n) => ({ text: n.text, at: ms(n.at) })),
+    notes: it.notes.map((n) => ({ text: n.text, at: ms(n.at) })), subPrompts: it.subPrompts.map((n) => ({ text: n.text, at: ms(n.at), ...(n.estimate ? { estimate: n.estimate } : {}) })),
     createdAt: ms(it.createdAt), ...(it.builtAt ? { builtAt: ms(it.builtAt) } : {}), updatedAt: ms(it.updatedAt), ...(it.planId ? { planId: it.planId } : {}),
+    ...(it.estimate ? { estimate: it.estimate } : {}),
   };
 }

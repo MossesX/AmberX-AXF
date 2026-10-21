@@ -251,11 +251,15 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     @mcp.tool(annotations=WRITE)
     async def pending_change(action: Literal["add", "update", "status", "note", "sub", "remove"], id: str = "", title: str = "",
                              detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
-                             status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "") -> dict[str, Any]:
+                             status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "",
+                             estimate: str = "", sub_estimates: list[str] | None = None) -> dict[str, Any]:
         """Change the pending build list. add needs title (model defaults to Fable); status marks unsafe/complete/failed/broken (unsafe = parked, needs design or review before anyone builds it)
-        (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item."""
+        (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item. estimate = build time ("45 min", "2 h", "1.5 d") on the item
+        (add/update) or on a sub prompt (sub); sub_estimates (update) sets one per existing sub prompt in order ("" clears)."""
         change: dict[str, Any] = {"action": action, "source": "mcp"}
-        for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id)):
+        if sub_estimates is not None:
+            change["subEstimates"] = [str(x) for x in sub_estimates]
+        for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id), ("estimate", estimate)):
             if v:
                 change[k] = v
         if detail is not None:

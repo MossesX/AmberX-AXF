@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T03:58:03.814Z",
+ "updatedAt": "2026-10-21T03:59:00.743Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -13,7 +13,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T04:05:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T04:03:12.610Z",
+   "updatedAt": "2026-10-21T03:59:00.727Z",
+   "estimate": "6 h",
    "source": "artifact"
   },
   {
@@ -26,8 +27,9 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "updatedAt": "2026-10-21T03:59:00.729Z",
    "planId": "x.assets.designer",
+   "estimate": "2 d",
    "source": "plan"
   },
   {
@@ -40,8 +42,9 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "updatedAt": "2026-10-21T03:59:00.731Z",
    "planId": "x.assets.browser",
+   "estimate": "6 h",
    "source": "plan"
   },
   {
@@ -77,8 +80,9 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
+   "updatedAt": "2026-10-21T03:59:00.732Z",
    "planId": "x.assets.templates",
+   "estimate": "1 d",
    "source": "plan"
   },
   {
@@ -137,7 +141,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T16:13:56.087Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T16:13:56.087Z",
+   "updatedAt": "2026-10-21T03:59:00.734Z",
+   "estimate": "2 d",
    "source": "chat"
   },
   {
@@ -155,7 +160,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T16:13:56.090Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T17:20:23.926Z",
+   "updatedAt": "2026-10-21T03:59:00.736Z",
+   "estimate": "1 d",
    "source": "chat"
   },
   {
@@ -227,7 +233,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-18T20:15:46.216Z",
    "builtAt": "",
-   "updatedAt": "2026-10-18T20:15:46.216Z",
+   "updatedAt": "2026-10-21T03:59:00.737Z",
+   "estimate": "6 h",
    "source": "chat"
   },
   {
@@ -280,7 +287,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-19T11:40:14.809Z",
    "builtAt": "",
-   "updatedAt": "2026-10-19T11:40:14.809Z",
+   "updatedAt": "2026-10-21T03:59:00.738Z",
+   "estimate": "5 h",
    "source": "chat"
   },
   {
@@ -311,7 +319,8 @@
    "subPrompts": [],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:33:11.548Z",
+   "updatedAt": "2026-10-21T03:59:00.739Z",
+   "estimate": "2 d",
    "source": "chat"
   },
   {
@@ -324,48 +333,58 @@
    "subPrompts": [
     {
      "text": "1. Compose AppShell page slots: `app.frame.top` (above the banner) and `app.frame.cover` (over the shell) as framework slots in `axf-ui` (`Slots.kt`, same names and contract as `framework/react/components/Slots.tsx`); kernel `ExtensionPoints` entry so modules contribute; fixture-free but unit-tested; wire the Android console showcase to render them.",
-     "at": "2026-10-21T03:58:03.797Z"
+     "at": "2026-10-21T03:58:03.797Z",
+     "estimate": "1.5 h"
     },
     {
      "text": "2. `lib-apptabs` module skeleton (`framework/android/lib-apptabs`, id `ai.amberx.axf.apptabs`): settings group \"App tabs\" (tab list on/off, custom tabs), the same settings keys as the web plugin (`app-tabs.tabs|custom|active`) so a choice made on the web console applies on the phone once settings sync from axHub lands; action `app-tabs.show:<id>`; tab bar composable in slot `app.frame.top` (console tab = the app itself).",
-     "at": "2026-10-21T03:58:03.798Z"
+     "at": "2026-10-21T03:58:03.798Z",
+     "estimate": "2 h"
     },
     {
      "text": "3. Built-in tab list on Android: Console (self), Pilot (https://pilot.amberxai.com), axHub (https://axhub.amberxai.com/apps), Demo; plus project manifests built on/for AXF with `deploy.url` read from the bundled catalog; icons from the widget icon set.",
-     "at": "2026-10-21T03:58:03.799Z"
+     "at": "2026-10-21T03:58:03.799Z",
+     "estimate": "1 h"
     },
     {
      "text": "4. Locked-down web view composable `AxfWebTab`: allowed hosts only (own domains from the manifest / settings; any other link is refused with a toast — no outside browser), JavaScript on, no file access, no popups, no geolocation, mixed content blocked, `FLAG_SECURE` honoured, per-tab state kept while switching (one WebView per tab, lazily created, retained across recompositions).",
-     "at": "2026-10-21T03:58:03.800Z"
+     "at": "2026-10-21T03:58:03.800Z",
+     "estimate": "2 h"
     },
     {
      "text": "5. Hub session in the app: cookie jar scoped to the app (`CookieManager`, never backed up — `android:allowBackup` rules + `dataExtractionRules`), sign-in happens on the hub's own login page inside the tab (same as the AXHub app: no JS injection, no off-hub navigation), sign-out clears cookies for every tab; the console tab's own token stays in the SecureStore.",
-     "at": "2026-10-21T03:58:03.801Z"
+     "at": "2026-10-21T03:58:03.801Z",
+     "estimate": "2 h"
     },
     {
      "text": "6. Downloads: only axHub's Apps page APK links are allowed, handed to Android's DownloadManager with the hub cookie (as the AXHub app does); everything else is refused with a toast.",
-     "at": "2026-10-21T03:58:03.802Z"
+     "at": "2026-10-21T03:58:03.802Z",
+     "estimate": "1 h"
     },
     {
      "text": "7. Cover slot behaviour: active non-console tab fills `app.frame.cover` below the bar; back button goes back inside the web view first, then returns to the Console tab; pull-to-refresh; a \"Loading…\" bar and a plain error card (offline, 4xx/5xx, refused frame) with Retry.",
-     "at": "2026-10-21T03:58:03.802Z"
+     "at": "2026-10-21T03:58:03.802Z",
+     "estimate": "1.5 h"
     },
     {
      "text": "8. Settings → Plugins → App tabs on Android: pick tabs, add a custom tab (name + https address on an allowed host), order, reset; reuses the shared settings groups contract (`SettingsGroup`/`SettingSpec`), parent = Plugins.",
-     "at": "2026-10-21T03:58:03.803Z"
+     "at": "2026-10-21T03:58:03.803Z",
+     "estimate": "1.5 h"
     },
     {
      "text": "9. Install in the Android console showcase (`apps/console`) and the `android-compose` template (behind a template option `--app-tabs`, default off for new apps; on for the console), manifest module list, catalog `plugins.json` entry, status.json + tracker.",
-     "at": "2026-10-21T03:58:03.804Z"
+     "at": "2026-10-21T03:58:03.804Z",
+     "estimate": "1 h"
     },
     {
      "text": "10. Tests: `lib-apptabs` unit tests (allowed-host rule, settings key parity with the web plugin, tab list from manifests), Compose UI test for the bar + cover, CI job `:lib-apptabs:testDebugUnitTest`; rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-app-tabs.md`, Android screenshots via `rebuild-shots.yml` on branch `fable/console-android-app-tabs`.",
-     "at": "2026-10-21T03:58:03.805Z"
+     "at": "2026-10-21T03:58:03.805Z",
+     "estimate": "2 h"
     }
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:58:03.805Z",
+   "updatedAt": "2026-10-21T03:59:00.740Z",
    "source": "chat"
   },
   {
@@ -378,56 +397,68 @@
    "subPrompts": [
     {
      "text": "1. Build Pilot contract on Kotlin: port `src/pilot/contract.ts` (pilot-plugin@1 manifest checks, `servesStack`, `pluginsFor`, `compose` merge + conflicts, `BuildRequest` incl. `hidden`/`assets`) to a pure-Kotlin `axf-pilot-core` with fixtures shared with the web (`spec/fixtures/pilot-contract.json` generated from the TS reference) — the Fable rebuild `build-pilot-contract` folds in here.",
-     "at": "2026-10-21T03:58:03.807Z"
+     "at": "2026-10-21T03:58:03.807Z",
+     "estimate": "5 h"
     },
     {
      "text": "2. Pilot API client: Kotlin client for Build Pilot's server (`/api/projects`, `/api/catalog`, `/assemble`, `/build`, `/apk`, `/metering/me`) over axf-network, token in the SecureStore, hub-admin sign-in reused; typed models mirroring `server/main.py`'s shapes; unit tests against a fake server.",
-     "at": "2026-10-21T03:58:03.807Z"
+     "at": "2026-10-21T03:58:03.807Z",
+     "estimate": "3 h"
     },
     {
      "text": "3. Pilot plugin contract on Android: `pilot-plugin@1` web plugins have `web/index.tsx`; define the Android face (`android/` part: a Compose `steps` composable + the same `contribute`/`check` shape) and a loader that reads bundled plugin manifests; the designer runs only plugins that have an Android part (others are listed as web-only).",
-     "at": "2026-10-21T03:58:03.808Z"
+     "at": "2026-10-21T03:58:03.808Z",
+     "estimate": "4 h"
     },
     {
      "text": "4. Pilot screens, part 1: Home (stacks + projects), Designer shell (steps from plugins, autosave through the API), Build step (review, assemble with the agent, build, validate, history) — generic UI only.",
-     "at": "2026-10-21T03:58:03.809Z"
+     "at": "2026-10-21T03:58:03.809Z",
+     "estimate": "5 h"
     },
     {
      "text": "5. Pilot screens, part 2: Android parts for the bundled plugins one by one — `android-app` (App setup + boilerplate browser with screenshots), `look` (slot picks), `build-options`, `feature-manager` (FeatureList rows, Chrome section, Customize/Build now), `custom-features` (metered Claude).",
-     "at": "2026-10-21T03:58:03.809Z"
+     "at": "2026-10-21T03:58:03.809Z",
+     "estimate": "1.5 d"
     },
     {
      "text": "6. Designers on Android: Banner and Toolbar designers (`src/pilot/designers.tsx` equivalents) producing the same asset@1 documents; widget pickers from the engine's app defaults (`typeLabels`/`typeIcons`).",
-     "at": "2026-10-21T03:58:03.810Z"
+     "at": "2026-10-21T03:58:03.810Z",
+     "estimate": "5 h"
     },
     {
      "text": "7. Live preview on the phone: a floating phone-frame preview following the composed request (ScreenMock equivalent, theme compiled by the Kotlin theme engine), shrink to a pill, drag.",
-     "at": "2026-10-21T03:58:03.811Z"
+     "at": "2026-10-21T03:58:03.811Z",
+     "estimate": "4 h"
     },
     {
      "text": "8. APK builds from the phone: Build APK → poll → download through DownloadManager → install prompt; progress widget bound to a counter.",
-     "at": "2026-10-21T03:58:03.811Z"
+     "at": "2026-10-21T03:58:03.811Z",
+     "estimate": "3 h"
     },
     {
      "text": "9. axHub native client, part 1: hub admin API client (step-4 API on axHub: services, jobs, approvals, audit, users, projects) with the same session as the AXHub app; approvals list + single approval screen native (replacing the web view the AXHub app uses today), decide with the hub's CSRF rules through the API.",
-     "at": "2026-10-21T03:58:03.812Z"
+     "at": "2026-10-21T03:58:03.812Z",
+     "estimate": "5 h"
     },
     {
      "text": "10. axHub native client, part 2: services (list/describe/call with JSON args, destructive confirm), jobs, audit log viewer, vault names (write-only: set/rotate), users + permissions, projects tree browser (`axhub.memory_*`), Apps page (download APKs).",
-     "at": "2026-10-21T03:58:03.813Z"
+     "at": "2026-10-21T03:58:03.813Z",
+     "estimate": "1 d"
     },
     {
      "text": "11. Console Android tabs: a native tab bar (slot `app.frame.top` from `console-android-app-tabs` step 1) switching between Console, Pilot (native) and axHub (native); each tab keeps its own back stack; tab choice shared with the web console through settings-from-axHub.",
-     "at": "2026-10-21T03:58:03.814Z"
+     "at": "2026-10-21T03:58:03.814Z",
+     "estimate": "3 h"
     },
     {
      "text": "12. Tests + report: fixtures for the pilot contract on three ports, fake-server tests for both clients, Compose tests per screen group, CI jobs, rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-native-tabs.md`, screenshots via `rebuild-shots.yml`.",
-     "at": "2026-10-21T03:58:03.814Z"
+     "at": "2026-10-21T03:58:03.814Z",
+     "estimate": "4 h"
     }
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:58:03.814Z",
+   "updatedAt": "2026-10-21T03:59:00.743Z",
    "source": "chat"
   }
  ]
