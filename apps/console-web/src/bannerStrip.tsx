@@ -1,0 +1,149 @@
+/**
+ * Banners live in Patches, not in the console (Brett, Oct 21 2026): "disable all banner plugins from console and enable
+ * them in Patches so they are always there regardless what app you are in".
+ *
+ * - The console page itself shows no plugin banners by default (Settings → Plugins → Banners: "Show banners in the
+ *   console too" brings them back). The plugins stay installed: their servers, menus, views and settings keep working.
+ * - `?axf-strip=banners` is the banner strip: the same console app, but the page is only the plugin banners
+ *   (slot app.frame.banners), nothing else. Patches shows it in a web view above every tab, so the banners are on
+ *   screen whichever app (Console, Pilot, axHub) is in front.
+ * - The strip talks to Patches through `window.AxfPatchesStrip` (Patches' JS bridge, present only in its strip web
+ *   view): `height(px)` as the banners grow and shrink, `open("console")` when a banner asks for a console view or
+ *   dialog. What the banner asked for (an action a tap dispatches, a dialog, a view) goes to the Console tab over a
+ *   same-origin BroadcastChannel (storage event as a fallback); the Console tab runs it only while it is embedded in
+ *   Patches. Dialogs and views never open inside the strip (it is a few lines tall).
+ */
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { FrameBanners, useAxfState, useRuntime } from './axf/react';
+import type { AxfWebLibrary } from './axf/react/library';
+
+export const STRIP_QUERY = 'axf-strip';
+export const BANNERS_IN_CONSOLE = 'console.banners.inConsole';
+const RELAY_CHANNEL = 'axf-console-banner-actions';
+const RELAY_KEY = 'axf:banner-action';
+/** The host app the strip and the Console tab run in. */
+const PATCHES = 'patches';
+const MAX_ACTION = 300;
+
+interface StripBridge { height?: (px: number) => void; open?: (tab: string) => void }
+const bridge = (): StripBridge | null => (globalThis as unknown as { AxfPatchesStrip?: StripBridge }).AxfPatchesStrip ?? null;
+
+/** This page is the banner strip (`?axf-strip=banners`). Fixed for the page's life. */
+export const isBannerStrip = (() => {
+  try { return new URLSearchParams(globalThis.location?.search ?? '').get(STRIP_QUERY) === 'banners'; } catch { return false; }
+})();
+
+/** Whether the console page shows the plugin banners (off by default: they live in Patches). Live with the setting. */
+export function useBannersInConsole(): boolean {
+  const rt = useRuntime();
+  const read = () => { try { return rt.settings.get(BANNERS_IN_CONSOLE) === true; } catch { return false; } };
+  const [on, setOn] = useState(read);
+  useEffect(() => rt.settings.onChange(BANNERS_IN_CONSOLE, (v) => setOn(v === true)), [rt]);
+  return on;
+}
+
+/** What the strip hands to the Console tab: an action a tap dispatched, a dialog, or a view. */
+type Relayed = { kind: 'action'; action: string } | { kind: 'dialog'; id: string; props?: Record<string, unknown> } | { kind: 'view'; view: string };
+
+/** Sends what a banner asked for to the Console tab (same origin) and asks Patches to bring that tab to the front. */
+function relay(what: Relayed): void {
+  const msg = { ...what, at: Date.now() };
+  try { const ch = new BroadcastChannel(RELAY_CHANNEL); ch.postMessage(msg); ch.close(); } catch { /* no BroadcastChannel */ }
+  try { localStorage.setItem(RELAY_KEY, JSON.stringify(msg)); } catch { /* storage off */ }
+  try { bridge()?.open?.('console'); } catch { /* not in Patches */ }
+}
+
+const short = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= MAX_ACTION;
+
+/** Console side of the relay: runs what the strip sends, only while this console is a tab in Patches. */
+export function useBannerRelay(): void {
+  const rt = useRuntime();
+  useEffect(() => {
+    if (isBannerStrip || rt.embedded?.host !== PATCHES) return;
+    let last = 0;
+    const run = (raw: unknown) => {
+      const m = raw as { kind?: unknown; action?: unknown; id?: unknown; props?: unknown; view?: unknown; at?: unknown } | null;
+      if (!m || typeof m !== 'object') return;
+      const at = typeof m.at === 'number' ? m.at : 0;
+      if (at && at <= last) return; // the same message through both carriers
+      if (m.kind === 'action' && short(m.action)) rt.dispatch(m.action);
+      else if (m.kind === 'dialog' && short(m.id)) rt.openDialog(m.id, m.props && typeof m.props === 'object' ? (m.props as Record<string, unknown>) : undefined);
+      else if (m.kind === 'view' && short(m.view)) rt.navigate(m.view);
+      else return;
+      last = at || Date.now();
+    };
+    let ch: BroadcastChannel | null = null;
+    try { ch = new BroadcastChannel(RELAY_CHANNEL); ch.onmessage = (e) => run(e.data); } catch { ch = null; }
+    const onStorage = (e: StorageEvent) => { if (e.key === RELAY_KEY && e.newValue) { try { run(JSON.parse(e.newValue)); } catch { /* not ours */ } } };
+    globalThis.addEventListener('storage', onStorage);
+    return () => { ch?.close(); globalThis.removeEventListener('storage', onStorage); };
+  }, [rt]);
+}
+
+const patched = new WeakSet<object>();
+/**
+ * The strip page for its whole life: taps go to the Console tab (dispatches the libraries make while loading stay
+ * here); dialogs and views always go there, an approval opening by itself included, since the strip is too small.
+ */
+function patchStrip(rt: ReturnType<typeof useRuntime>): void {
+  if (patched.has(rt)) return;
+  patched.add(rt);
+  document.documentElement.classList.add('axf-strip-page');
+  type Fns = Pick<typeof rt, 'dispatch' | 'openDialog' | 'navigate'>;
+  const own = rt as unknown as Fns;
+  const dispatch = rt.dispatch.bind(rt) as (...a: unknown[]) => unknown;
+  const active = () => (navigator as unknown as { userActivation?: { isActive?: boolean } }).userActivation?.isActive === true;
+  own.dispatch = ((action: string, ...rest: unknown[]) => {
+    if (typeof action === 'string' && active()) { relay({ kind: 'action', action }); return; }
+    return dispatch(action, ...rest);
+  }) as Fns['dispatch'];
+  own.openDialog = ((id: string, props?: Record<string, unknown>) => { relay({ kind: 'dialog', id, props }); }) as Fns['openDialog'];
+  own.navigate = ((view: string) => { relay({ kind: 'view', view }); }) as Fns['navigate'];
+}
+
+/** The strip page: only the plugin banners. Reports its height to Patches as it changes. */
+export function BannerStrip() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const box = useRef<HTMLDivElement>(null);
+  // A developer app waits for axHub's look first; until then the strip stays empty (Patches shows the hub's waiting screen in the tabs).
+  const waiting = Boolean(state.appearance && state.appearance.status !== 'ready');
+  // Before any banner renders (their effects run before this component's), so nothing they open lands in the strip.
+  useState(() => { patchStrip(rt); return true; });
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    let sent = -1;
+    const report = () => {
+      const px = Math.ceil(el.getBoundingClientRect().height);
+      if (px === sent) return;
+      sent = px;
+      try { bridge()?.height?.(px); } catch { /* not in Patches */ }
+    };
+    report();
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(report) : null;
+    ro?.observe(el);
+    return () => ro?.disconnect();
+  }, [waiting]);
+  return (
+    <div ref={box} className="axf-banner-strip" data-axf-embed={rt.embedded?.host}>
+      {!waiting && <FrameBanners />}
+    </div>
+  );
+}
+
+/** Settings → Plugins → Banners: where the plugin banners show. */
+export const bannerStripSettings: AxfWebLibrary = {
+  id: 'ai.amberx.axf.console.banners',
+  label: 'Banners',
+  version: '0.1.0',
+  settings: [{
+    id: 'console.banners', label: 'Banners', icon: 'bell', tab: 'plugins', order: 5,
+    settings: [
+      {
+        key: BANNERS_IN_CONSOLE, label: 'Show banners in the console too', kind: 'toggle', default: false,
+        description: 'Plugin banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new) show in Patches, above every tab. On also shows them at the top of the console page.',
+      },
+    ],
+  }],
+};

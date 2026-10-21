@@ -38,10 +38,16 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
     private var runtime: AxfRuntime? = null
     /** Reload ticks per tab (a view reloads when its tick changes). */
     val reloads = kotlinx.coroutines.flow.MutableStateFlow<Map<String, Long>>(emptyMap())
+    /** Settings → Patches → "Banners above every tab" (default on): the Dev Console's plugin banners in [views.BannerStrip]. */
+    val bannersShown = kotlinx.coroutines.flow.MutableStateFlow(true)
 
     override fun register(ctx: ModuleContext) {
         runtime = ctx.service(AxfRuntime::class)
         settings = ctx.service(SettingsEngine::class)
+        settings?.let { s ->
+            bannersShown.value = s.bool(BANNERS_KEY, true)
+            s.onChange { key, _ -> if (key == BANNERS_KEY) bannersShown.value = s.bool(BANNERS_KEY, true) }
+        }
         for (t in TABS) ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec(t.id, t.label, icon = t.icon, module = id)))
 
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("patches.reload", ActionMeta("Reload the tab in front", module = id)) { _, _ ->
@@ -56,6 +62,7 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         })
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("patches", "Patches", "layers", id, order = 20, description = "The apps in the tabs. Addresses are https, host only; the hub's address comes from the app itself.", settings =
             TABS.filter { it.settingKey.isNotEmpty() }.map { t -> SettingSpec(t.settingKey, "${t.label} address", SettingKind.TEXT, "https only, no path", JsonPrimitive(t.defaultUrl), icon = t.icon) } + listOf(
+                SettingSpec(BANNERS_KEY, "Banners above every tab", SettingKind.TOGGLE, "The Dev Console's banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What's new), on screen whichever tab is open", JsonPrimitive(true), icon = "bell"),
                 SettingSpec("patches.reloadAction", "Reload the tab in front", SettingKind.ACTION, target = "patches.reload", icon = "refresh"),
                 SettingSpec("patches.openAction", "Open the tab in front in the browser", SettingKind.ACTION, target = "patches.open", icon = "external"),
             ))))
@@ -76,6 +83,8 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
     fun origins(tab: String): List<String> = listOfNotNull(url(tab)?.let { HubRules.origin(it) }, hub).distinct()
 
     companion object {
+        const val BANNERS_KEY: String = "patches.banners"
+
         /** The tabs, in order. The hub tab has no address setting: it is the app's own hub. */
         val TABS: List<PatchTab> = listOf(
             PatchTab("console", "Console", "terminal", "patches.console", "https://console.amberxai.com"),

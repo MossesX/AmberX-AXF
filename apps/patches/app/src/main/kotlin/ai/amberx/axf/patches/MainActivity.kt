@@ -1,11 +1,18 @@
 package ai.amberx.axf.patches
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import ai.amberx.axf.hub.HubSignInView
 import ai.amberx.axf.hub.WebAppHolder
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.devtools.PluginManagerScreen
 import ai.amberx.axf.ui.shell.AppShell
+import ai.amberx.axf.patches.views.BannerStrip
 import ai.amberx.axf.patches.views.TabView
 
 /**
@@ -13,6 +20,7 @@ import ai.amberx.axf.patches.views.TabView
  * shell renders the active layout asset: Patches' banner, the tab row (nav-menu `patches-tabs` as top tabs) and the tab
  * in front. The web views live in [WebAppHolder] for the activity's life, so switching tabs keeps every app loaded.
  * Every app ships the settings interface (lib-settings registers the `settings` view itself) and the Plugin Manager.
+ * Above it all sits the [BannerStrip]: the Dev Console's plugin banners, on screen whichever tab is in front.
  */
 class MainActivity : AxfActivity() {
     private val patches get() = application as App
@@ -32,10 +40,15 @@ class MainActivity : AxfActivity() {
         val module = patches.appModule
         val views = mutableMapOf<String, @Composable () -> Unit>("plugin-manager" to { PluginManagerScreen() })
         for (t in AppModule.TABS) views[t.id] = { TabView(holder, module, t.id) }
-        AppShell(
-            views = views,
-            viewTitles = AppModule.TABS.associate { it.id to it.label } + mapOf("plugin-manager" to "Plugin Manager"),
-            viewIcons = AppModule.TABS.associate { it.id to it.icon },
-        )
+        // The column takes the status bar, so AppShell's own status-bar padding (same insets, now consumed) adds nothing.
+        Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
+            BannerStrip(holder, module)
+            AppShell(
+                views = views,
+                modifier = Modifier.weight(1f),
+                viewTitles = AppModule.TABS.associate { it.id to it.label } + mapOf("plugin-manager" to "Plugin Manager"),
+                viewIcons = AppModule.TABS.associate { it.id to it.icon },
+            )
+        }
     }
 }

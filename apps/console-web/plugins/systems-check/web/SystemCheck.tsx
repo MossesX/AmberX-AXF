@@ -246,7 +246,8 @@ export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Prom
 export function SystemBanner() {
   const s = useSys();
   const rt = useRuntime();
-  const [open, setOpen] = useState(false);
+  // Launches expanded; "_" folds it to its one-line summary (Brett, Oct 21 2026: error banners minimize, they don't close).
+  const [open, setOpen] = useState(true);
   // Issues, plus anything just fixed: it stays (badge "Fixed") for FIXED_LINGER_MS so you see it worked, then leaves.
   const list = useMemo(() => {
     const open = issues(s.report).filter((c) => !isKeyIssue(c));
@@ -286,7 +287,7 @@ export function SystemBanner() {
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => { st.dismissed = true; emit(); }}><Icon name="x" size={16} /></button>
+        {open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>}
       </div>
       {open && (
         <ul className="axp-systems-check-banner__list">
