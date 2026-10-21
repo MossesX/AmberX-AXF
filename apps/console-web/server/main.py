@@ -231,7 +231,37 @@ def _appearance_hub(hub: str) -> str:
             return "off"
     except OSError:
         pass
+    if _hub_lacks_data_server(hub):
+        return "off"
     return hub
+
+
+_HUB_PROBE: dict[str, tuple[float, bool]] = {}
+
+
+def _hub_lacks_data_server(hub: str) -> bool:
+    """Rollout guard (Oct 21 2026): a hub that answers but predates the data server (its /healthz names no `data`) can't
+    hold the look yet, so the console uses its local settings instead of waiting forever. A hub that doesn't answer
+    still means "wait" (Brett's rule: developer apps don't run without the hub). Cached 60 s; https only, no redirects."""
+    now = time.time()
+    hit = _HUB_PROBE.get(hub)
+    if hit and now - hit[0] < 60:
+        return hit[1]
+    lacks = False
+    try:
+        import urllib.request
+        if hub.startswith("https://"):
+            class _NoRedirect(urllib.request.HTTPRedirectHandler):
+                def redirect_request(self, *a: Any, **k: Any) -> None:
+                    return None
+            opener = urllib.request.build_opener(_NoRedirect)
+            with opener.open(urllib.request.Request(hub.rstrip("/") + "/healthz", headers={"Accept": "application/json"}), timeout=3) as r:
+                body = json.loads(r.read(65536).decode("utf-8", "replace"))
+            lacks = isinstance(body, dict) and body.get("name") == "axHub" and "data" not in body
+    except Exception:
+        lacks = False
+    _HUB_PROBE[hub] = (now, lacks)
+    return lacks
 
 
 @app.get("/api/me")
