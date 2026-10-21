@@ -45,7 +45,7 @@ check(pm is not None and pm["replaces"] and pm["replaces"]["folder"] == "plugin-
 check(d["byPlugin"].get("plugin-manager") == "plugin-manager", "plugin → rebuild map for Plugin Manager rows")
 check(any(k == "x.assets.designer" for k in d["byPlan"]), "plan feature → rebuild map for Plan hooks")
 check(pm["branch"] == "fable/plugin-manager" and "fable/plugin-manager" in pm["brief"] and "uninstall.mjs --all" in pm["brief"] and "differences report" in pm["brief"], "brief carries the rules: uninstall first, branch, report")
-check(c.get("/p/report/plugin-manager").status_code == 404 and c.get("/p/report/..%2Fx").status_code == 404, "no report yet / bad id → 404")
+check(c.get("/p/report/no-such-rebuild").status_code == 404 and c.get("/p/report/..%2Fx").status_code == 404, "no report yet / bad id → 404")
 r = c.post("/p/park", json={"plugin": "theme-manager"})
 check(r.status_code == 200 and r.json()["item"]["model"] == "Fable" and "uninstall.mjs --all" in r.json()["item"]["detail"], "park a plugin rebuild")
 d2 = c.get("/p/items").json()

@@ -415,7 +415,9 @@ export function validateApp(dir) {
   const tpl = appTemplate(root);
   for (const e of tpl.structure) {
     const p = join(root, pkgPath(root, e.path));
-    if (!existsSync(p)) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
+    // Android sources may sit in the package folder (what init writes) or in the template's plain `app/` folder
+    // (apps made before init mapped it, e.g. the Android console): either is the same file.
+    if (!existsSync(p) && !existsSync(join(root, e.path))) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
   }
   const assets = loadAssets(join(root, tpl.assetsDir));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
