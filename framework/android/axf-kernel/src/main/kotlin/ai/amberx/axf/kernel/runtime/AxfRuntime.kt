@@ -270,57 +270,97 @@ public class AxfRuntime(
 
     /* ---------------- hidden slots (HideEngine; web: settings `axf.hide.<type>`) ---------------- */
 
-    /* ---------------- banner (BannerEngine; web: rt.attachToBanner / rt.banner / rt.showBannerPopup) ---------------- */
+    /**
+     * Bring a search entry into focus (web: SearchIndex.focus): the UI focuser goes first; the runtime fallback handles the
+     * basic kinds (navigate / dispatch / open / swap). Returns whether anything happened.
+     */
+    public fun focusSearch(entry: SearchEntry): Boolean {
+        if (search.focusWithUi(entry) == true) return true
+        val f = entry.focus
+        return when (f["kind"]) {
+            "view", "text" -> { val v = f["view"] ?: return false; navigate(v); true }
+            "action" -> f["spec"]?.let { dispatch(it).isOk } ?: false
+            "setting" -> { navigate("settings"); f["tab"]?.let { dispatch("settings.open:$it") }; true }
+            "dialog" -> { val id = f["id"] ?: return false; openDialog(id); true }
+            "asset" -> { val t = f["type"]; val id = f["id"]; t != null && id != null && swap(t, id) }
+            "window" -> { val id = f["id"] ?: return false; dispatch("windows.restore:$id").isOk }
+            else -> false
+        }
+    }
 
-    private var bannerExtra: List<BannerAttachment> = emptyList()
+    /* ---------------- widget hosts (WidgetEngine; web: rt.attachToHost / attachToBanner / attachToToolbar) ---------------- */
+
+    /** Run-time attachments per host (`banner`, `toolbar`, any host a library registers). */
+    private val hostExtra = LinkedHashMap<String, List<BannerAttachment>>()
 
     /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
     public fun assetOrNull(type: String): ai.amberx.axf.kernel.asset.AssetEnvelope? = asset(type)
 
-    /** Attach an asset (badge, clock) to the banner at run time; same type + id replaces the earlier one. Returns detach. */
-    public fun attachToBanner(a: BannerAttachment): () -> Unit {
-        bannerExtra = bannerExtra.filter { it.key != a.key } + a
+    /**
+     * Attach an asset to a widget host at run time. The entry is checked against the host's spec (type, side, asset
+     * exists) so a bad call is reported in the terminal instead of silently vanishing; same type + id replaces the
+     * earlier one. Returns a detach function.
+     */
+    public fun attachToHost(host: String, a: BannerAttachment): () -> Unit {
+        val spec = WidgetEngine.hostSpec(host)
+        val who = a.origin ?: "runtime"
+        when {
+            spec == null -> terminal.warn("widgets", "\"$host\" is not a widget host (${WidgetEngine.hostSpecs().joinToString { it.host }}); ${a.key} from $who will not show")
+            a.type !in spec.types -> terminal.warn("widgets", "$host doesn't take ${a.type} assets (${spec.types.joinToString()}); ${a.key} from $who will not show")
+            a.at !in spec.sides -> terminal.warn("widgets", "$host has no \"${a.at}\" side (${spec.sides.joinToString()}); ${a.key} from $who will not show")
+            !registry.has(a.type, a.id) -> terminal.warn("widgets", "${a.key} (attached to $host by $who) is not registered; it shows once it is")
+        }
+        hostExtra[host] = (hostExtra[host] ?: emptyList()).filter { it.key != a.key } + a
         set({ it })
-        return { detachFromBanner(a.key) }
+        return { detachFromHost(host, a.key) }
     }
 
-    /** Remove run-time attachments by key (`type:id`) or by origin (a module / plugin id). */
-    public fun detachFromBanner(keyOrOrigin: String) {
-        val next = bannerExtra.filter { it.key != keyOrOrigin && it.origin != keyOrOrigin }
-        if (next.size != bannerExtra.size) { bannerExtra = next; set({ it }) }
+    /** Remove run-time attachments from one host by key (`type:id`) or by origin (a module / plugin id). */
+    public fun detachFromHost(host: String, keyOrOrigin: String) {
+        val list = hostExtra[host] ?: return
+        val next = list.filter { it.key != keyOrOrigin && it.origin != keyOrOrigin }
+        if (next.size != list.size) { hostExtra[host] = next; set({ it }) }
     }
+
+    /** Remove everything a module attached to any host (call it when a module is disabled). */
+    public fun detachAll(origin: String) {
+        var changed = false
+        for ((host, list) in hostExtra.entries.toList()) {
+            val next = list.filter { it.origin != origin }
+            if (next.size != list.size) { hostExtra[host] = next; changed = true }
+        }
+        if (changed) set({ it })
+    }
+
+    /** Run-time attachments of a host. */
+    public fun hostAttachments(host: String): List<BannerAttachment> = hostExtra[host] ?: emptyList()
+
+    /** Attach an asset (badge, clock, search bar) to the banner at run time; same type + id replaces the earlier one. Returns detach. */
+    public fun attachToBanner(a: BannerAttachment): () -> Unit = attachToHost(BannerEngine.HOST, a)
+
+    /** Remove run-time banner attachments by key (`type:id`) or by origin (a module / plugin id). */
+    public fun detachFromBanner(keyOrOrigin: String): Unit = detachFromHost(BannerEngine.HOST, keyOrOrigin)
 
     /** The banner to draw: its data (null = no banner or hidden), its height and where every attachment goes. */
     public fun banner(): Triple<BannerData?, Int, Map<String, List<PlacedAttachment>>> {
         val b = if (slotHidden(AssetTypes.BANNER)) null else assetOrNull(AssetTypes.BANNER)?.let { BannerData.fromJson(it.data) }
-        return Triple(b, BannerEngine.height(b), BannerEngine.place(b, if (b != null) bannerExtra else emptyList()) { t, id -> registry.has(t, id) })
+        return Triple(b, BannerEngine.height(b), BannerEngine.place(b, if (b != null) hostAttachments(BannerEngine.HOST) else emptyList()) { t, id -> registry.has(t, id) })
     }
 
     /** Pop a short message out of a banner attachment; the UI layer calls [dismissBannerPopup] after its duration. */
     public fun showBannerPopup(key: String, text: String, durationMs: Long = 5000): Unit = set({ it.copy(bannerPopup = BannerPopup(key, text, durationMs)) })
     public fun dismissBannerPopup() { if (current.bannerPopup != null) set({ it.copy(bannerPopup = null) }) }
 
-    /* ---------------- toolbar widgets (WidgetEngine; web: rt.attachToToolbar / rt.toolbarWidgets) ---------------- */
-
-    private var toolbarExtra: List<BannerAttachment> = emptyList()
-
     /** Attach a widget (clock, search bar) to the toolbar's start or end at run time; same type + id replaces. Returns detach. */
-    public fun attachToToolbar(a: BannerAttachment): () -> Unit {
-        toolbarExtra = toolbarExtra.filter { it.key != a.key } + a
-        set({ it })
-        return { detachFromToolbar(a.key) }
-    }
+    public fun attachToToolbar(a: BannerAttachment): () -> Unit = attachToHost("toolbar", a)
 
     /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
-    public fun detachFromToolbar(keyOrOrigin: String) {
-        val next = toolbarExtra.filter { it.key != keyOrOrigin && it.origin != keyOrOrigin }
-        if (next.size != toolbarExtra.size) { toolbarExtra = next; set({ it }) }
-    }
+    public fun detachFromToolbar(keyOrOrigin: String): Unit = detachFromHost("toolbar", keyOrOrigin)
 
     /** Where the toolbar's widgets go (start / end); empty when there's no toolbar or it's hidden. */
     public fun toolbarWidgets(): Map<String, List<PlacedAttachment>> {
         val tb = if (slotHidden("toolbar")) null else asset("toolbar")?.data
-        return WidgetEngine.placeToolbar(tb, toolbarExtra) { t, id -> registry.has(t, id) }
+        return WidgetEngine.placeToolbar(tb, hostAttachments("toolbar")) { t, id -> registry.has(t, id) }
     }
 
     /* ---------------- spacing (SpacingEngine; web: settings `axf.appearance.spacing`) ---------------- */

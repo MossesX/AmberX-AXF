@@ -1,5 +1,6 @@
 import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
+import { hostSpec, validateHostAttachments } from './engines/widgets';
 
 export interface ValidationResult {
   ok: boolean;
@@ -72,6 +73,9 @@ export function validateAsset(raw: unknown): ValidationResult {
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
+  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+  const host = hostSpec(raw.type);
+  if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-20T23:59:00.000Z",
+ "updatedAt": "2026-10-21T02:20:39.200Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -226,17 +226,21 @@
    "title": "Banner, badge and clock asset types (Fable rebuild)",
    "detail": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Banner and add the Android Compose banner (not built on Opus). The Opus version is in the framework (Oct 18 2026); keep the asset types and fixtures (spec/fixtures/banner.json) stable for apps that already use them.",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Oct 18 2026: clock is now a widget (widget-assets); the banner also takes search-bar and its placement moved to the shared widget host engine.",
      "at": "2026-10-19T00:18:04.038Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
+     "at": "2026-10-20T22:30:00.000Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-18T22:30:06.842Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T00:18:04.038Z",
+   "builtAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-10-20T22:30:00.000Z",
    "source": "chat"
   },
   {
@@ -244,12 +248,17 @@
    "title": "Widget asset category + search bar (Fable rebuild)",
    "detail": "Widgets (\"widget\": true: clock, search-bar) attach to banners and toolbars through one host engine (engines/widgets.ts = Kotlin WidgetEngine.kt, fixtures widgets.json): banner.attach and toolbar.widgets (start/end), rt.attachToToolbar/detachFromToolbar/toolbarWidgets on both ports. search-bar asset type (placeholder, maxResults, width, kinds, shortcut) sits in the banner center and searches the whole console: views, settings, actions, assets, windows, dialogs, page words, plan features, tracker items, pending builds, plugins (console providers in consoleSearch.ts). Rebuild with an Android Compose banner + toolbar widgets + search UI. Builds on banner-assets.",
    "model": "Fable",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
+     "at": "2026-10-20T22:30:00.000Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-19T00:18:03.979Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T00:18:03.979Z",
+   "builtAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-10-20T22:30:00.000Z",
    "source": "chat"
   },
   {

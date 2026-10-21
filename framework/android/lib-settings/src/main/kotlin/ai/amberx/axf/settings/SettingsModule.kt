@@ -50,6 +50,19 @@ public class SettingsModule : BaseModule(ID, "Settings") {
         // The Spacing choice is the runtime's (it recompiles the theme); the setting mirrors it both ways.
         engine.onChange { k, v -> if (k == SPACING_KEY) runtime?.setSpacing(Spacing.of((v as? JsonPrimitive)?.content)) }
         ctx.extensions.onChange(ExtensionPoints.SETTINGS) { engine.refreshGroups(ctx) }
+        // The app-wide search finds settings groups and single settings (web: SearchIndex.settingsEntries); a pick opens
+        // Settings with the group's filter (settings.open:<group id>, read by SettingsScreen).
+        runtime?.search?.add("axf.settings") {
+            engine.groups.value.flatMap { g ->
+                listOf(ai.amberx.axf.kernel.engine.SearchEntry("settings-group:${g.id}", "setting", g.label, detail = "Settings › ${g.label}", icon = g.icon, keywords = listOfNotNull(g.description), focus = mapOf("kind" to "setting", "tab" to g.id))) +
+                    g.settings.filter { it.kind != SettingKind.SECTION }.map { sp ->
+                        ai.amberx.axf.kernel.engine.SearchEntry("setting:${sp.key}", "setting", sp.label, detail = "Settings › ${g.label}", icon = sp.icon ?: g.icon, keywords = listOfNotNull(sp.key, sp.description), requires = sp.requires, focus = mapOf("kind" to "setting", "tab" to g.id, "anchor" to "setting:${sp.key}"))
+                    }
+            }
+        }
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("settings.open", ActionMeta("Open settings group", module = id, params = true)) { a, _ ->
+            runtime?.navigate("settings"); engine.requestFocus(a.getOrNull(0), a.getOrNull(1))
+        })
     }
 
     override suspend fun init(ctx: ModuleContext) { engine.load() }
@@ -93,6 +106,11 @@ public class SettingsEngine {
     private val _values = MutableStateFlow<Map<String, JsonElement>>(emptyMap())
     public val values: StateFlow<Map<String, JsonElement>> get() = _values
     private val listeners = mutableListOf<(String, JsonElement) -> Unit>()
+    private val _focus = MutableStateFlow<Pair<String?, String?>?>(null)
+    /** (group id, setting key) the screen should scroll to and filter by (from search / `settings.open:<group>[:<key>]`). */
+    public val focusRequest: StateFlow<Pair<String?, String?>?> get() = _focus
+    public fun requestFocus(group: String?, key: String?) { _focus.value = if (group == null && key == null) null else group to key }
+    public fun clearFocus() { _focus.value = null }
 
     internal fun bind(c: ModuleContext) { ctx = c; refreshGroups(c) }
     internal fun refreshGroups(c: ModuleContext) { _groups.value = c.extensions.contributions(ExtensionPoints.SETTINGS).sortedBy { it.order }.map { it.value.group }.sortedBy { it.order } }

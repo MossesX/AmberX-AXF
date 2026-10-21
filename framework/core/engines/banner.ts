@@ -1,41 +1,53 @@
 /**
  * Banner engine — the thin permanent bar across the top of the screen (asset type `banner`) and the assets it holds.
  *
- * A banner shows the app logo and hosts *attachments*: assets of the attachable types (`badge`, `clock`) placed on its
- * left, center or right. They come from the banner asset's own `attach` list and from modules at run time
- * (`rt.attachToBanner`, e.g. a plugin's status badge); a run-time attachment with the same type + id replaces the asset's
- * own. Unknown types, bad sides and assets that don't exist are skipped, so a banner never breaks on a missing piece.
+ * A banner shows the app logo and hosts *attachments*: assets of the attachable types (badges and every widget: clock,
+ * search bar) placed on its left, center or right. They come from the banner asset's own `attach` list and from modules
+ * at run time (`rt.attachToBanner`, e.g. a plugin's status badge); a run-time attachment with the same type + id
+ * replaces the asset's own. Unknown types, bad sides and assets that don't exist are skipped, so a banner never breaks
+ * on a missing piece.
  *
- * Placement is the shared widget-host rule (engines/widgets.ts). Pure functions, mirrored by the Kotlin kernel
- * (engine/BannerEngine.kt); fixtures in spec/fixtures/banner.json.
+ * What the banner takes is declared once in schemas/asset-types.json (`banner.attach`) and read through the widget host
+ * engine (engines/widgets.ts), so the validators, this engine and every port agree. Pure functions, mirrored by the
+ * Kotlin kernel (engine/BannerEngine.kt); fixtures in spec/fixtures/banner.json.
  */
 import type { BadgeData, BannerData, BannerSide, ClockData } from '../types';
 import type { VarMap } from './theme';
-import { WIDGET_TYPES, attachmentKey, placeOnHost, type HostAttachment, type PlacedAttachment } from './widgets';
+import { attachmentKey, hostSpec, placeHost, type HostAttachment, type PlacedAttachment } from './widgets';
 
+const BANNER_HOST = hostSpec('banner');
 /** Types a banner can hold (asset-types.json → banner.attach.types): badges and every widget. */
-export const ATTACHABLE_TYPES = ['badge', ...WIDGET_TYPES] as const;
-export const BANNER_SIDES: readonly BannerSide[] = ['left', 'center', 'right'];
+export const ATTACHABLE_TYPES: readonly string[] = BANNER_HOST?.types ?? ['badge', 'clock', 'search-bar'];
+export const BANNER_SIDES: readonly BannerSide[] = (BANNER_HOST?.sides as BannerSide[] | undefined) ?? ['left', 'center', 'right'];
 export const BANNER_HEIGHT = { min: 16, max: 48, thin: 24 } as const;
+export const BANNER_SURFACES = ['flat', 'raised', 'accent'] as const;
 
 export interface BannerAttachment extends HostAttachment { at: BannerSide }
 export type { PlacedAttachment };
 export type PlacedBanner = Record<BannerSide, PlacedAttachment[]>;
 export { attachmentKey };
 
-const clampHeight = (h: unknown) => {
+/** Banner height in px (thin when missing or not a number; clamped to the allowed range). */
+export function bannerHeight(h: unknown): number {
   const n = typeof h === 'number' && Number.isFinite(h) ? Math.round(h) : BANNER_HEIGHT.thin;
   return Math.min(BANNER_HEIGHT.max, Math.max(BANNER_HEIGHT.min, n));
-};
+}
 
 /** CSS variables for the banner (height; 0px when there's no banner or it's hidden). */
 export function bannerVars(b: BannerData | null | undefined, hidden = false): VarMap {
-  return { '--fx-banner-h': b && !hidden ? `${clampHeight(b.height)}px` : '0px' };
+  return { '--fx-banner-h': b && !hidden ? `${bannerHeight(b.height)}px` : '0px' };
+}
+
+/** The surface a banner paints with (unknown values fall back to flat, so an old or hand-edited asset still draws). */
+export function bannerSurface(b: Pick<BannerData, 'surface'> | null | undefined): (typeof BANNER_SURFACES)[number] {
+  return (BANNER_SURFACES as readonly string[]).includes(b?.surface as string) ? (b!.surface as never) : 'flat';
 }
 
 /** Where every attachment goes (the banner as a host: badges and widgets, left / center / right). */
 export function placeAttachments(b: BannerData | null | undefined, extra: BannerAttachment[], has: (type: string, id: string) => boolean): PlacedBanner {
-  return placeOnHost(b?.attach, extra, has, ATTACHABLE_TYPES, BANNER_SIDES) as PlacedBanner;
+  const placed = placeHost('banner', b as Record<string, unknown> | null, extra, has, false);
+  // A banner always answers for its three sides, even when the host registry was replaced by a library.
+  return Object.fromEntries(BANNER_SIDES.map((s) => [s, placed[s] ?? []])) as PlacedBanner;
 }
 
 /** The theme token a badge tone paints with (`--fx-<token>`). */
@@ -62,3 +74,6 @@ export function formatClock(c: Pick<ClockData, 'format' | 'seconds' | 'date'>, t
   const date = c.date === 'short' ? md : c.date === 'weekday' ? `${DAYS[((t.weekday % 7) + 7) % 7]} ${md}` : '';
   return date ? `${date} ${time}` : time;
 }
+
+/** How often a clock needs redrawing (ms): every second with seconds shown, else aligned to the next minute by the UI. */
+export function clockTickMs(c: Pick<ClockData, 'seconds'>): number { return c.seconds ? 1000 : 60000; }

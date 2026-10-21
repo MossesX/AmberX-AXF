@@ -13,7 +13,7 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
-import { SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, placeToolbarWidgets } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -120,8 +120,29 @@ write('spacing.json', {
     'no-widgets-field': { toolbar: {}, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
     'no-toolbar': { toolbar: null, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
   } as const;
+  // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
+  const searchBars: Record<string, unknown> = {
+    everything: load('search-bar').find((a) => a.id === 'everything')!.data,
+    compact: load('search-bar').find((a) => a.id === 'compact')!.data,
+    empty: {},
+    'too-many': { placeholder: '', maxResults: 999, width: 'huge', kinds: ['view', 7, ''], shortcut: false },
+    'too-few': { placeholder: 'Go', maxResults: 0, width: 'wide', kinds: [] },
+    'not-numbers': { placeholder: 'x', maxResults: 'ten', width: 'compact', shortcut: 'no' },
+  };
+  const attachCases: Record<string, { host: string; list: unknown }> = {
+    'banner-ok': { host: 'banner', list: [{ type: 'badge', id: 'new', at: 'left' }, { type: 'clock', id: 'digital-12h', at: 'right', order: 2 }] },
+    'banner-not-a-list': { host: 'banner', list: { type: 'badge' } },
+    'banner-bad-entries': { host: 'banner', list: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: '', at: 'top' }, 'nope', { type: 'clock', id: 'c', at: 'center', order: 'first' }] },
+    'toolbar-ok': { host: 'toolbar', list: [{ type: 'search-bar', id: 'compact', at: 'end' }] },
+    'toolbar-badge-refused': { host: 'toolbar', list: [{ type: 'badge', id: 'new', at: 'start' }, { type: 'clock', id: 'digital-24h', at: 'left' }] },
+    'not-a-host': { host: 'button', list: [{ type: 'badge', id: 'new', at: 'left' }] },
+  };
   write('widgets.json', {
     widgetTypes: WIDGET_TYPES,
+    attachableTypes: ATTACHABLE_ASSET_TYPES,
+    hosts: hostSpecs(),
+    searchBarConfig: Object.fromEntries(Object.entries(searchBars).map(([k, d]) => [k, { data: d, config: searchBarConfig(d as never) }])),
+    attachValidation: Object.fromEntries(Object.entries(attachCases).map(([k, c]) => [k, { ...c, errors: validateHostAttachments(c.host, c.list) }])),
     toolbarSides: TOOLBAR_SIDES,
     searchBarWidth: SEARCH_BAR_WIDTH,
     exists: [...exists].sort(),
@@ -171,6 +192,9 @@ write('validation.json', [
   { case: 'slots-bad-type', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { toolbar: ['toolbar', 'ribbon'] } } } },
   { case: 'slots-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, slots: { menubar: ['app-menu', 'toolbar'], nav: [] } } } },
   { case: 'chrome-bad-enum', raw: { $axf: 'asset@1', type: 'toolbar', id: 'x', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, density: 'huge' } } },
+  { case: 'banner-attach-bad', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: 'new', at: 'top' }] } } },
+  { case: 'banner-attach-ok', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'search-bar', id: 'everything', at: 'center' }] } } },
+  { case: 'toolbar-widgets-bad', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'badge', id: 'new', at: 'start' }] } } },
 ].map((c) => ({ ...c, result: validateAsset(c.raw) })));
 // Randomize rolls: which slots a roll touches and which assets it may pick (context menus are opt-in).
 const rollCases: Record<string, { slots?: Record<string, boolean>; assets?: Record<string, boolean> }> = {

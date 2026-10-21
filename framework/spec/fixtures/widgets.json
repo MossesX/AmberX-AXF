@@ -3,6 +3,232 @@
     "clock",
     "search-bar"
   ],
+  "attachableTypes": [
+    "clock",
+    "search-bar",
+    "badge"
+  ],
+  "hosts": [
+    {
+      "host": "toolbar",
+      "field": "widgets",
+      "types": [
+        "clock",
+        "search-bar"
+      ],
+      "sides": [
+        "start",
+        "end"
+      ]
+    },
+    {
+      "host": "banner",
+      "field": "attach",
+      "types": [
+        "badge",
+        "clock",
+        "search-bar"
+      ],
+      "sides": [
+        "left",
+        "center",
+        "right"
+      ]
+    }
+  ],
+  "searchBarConfig": {
+    "everything": {
+      "data": {
+        "placeholder": "Search everything…",
+        "maxResults": 14,
+        "width": "regular",
+        "shortcut": true
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search everything…",
+        "maxResults": 14,
+        "width": 30,
+        "shortcut": true
+      }
+    },
+    "compact": {
+      "data": {
+        "placeholder": "Search…",
+        "maxResults": 10,
+        "width": "compact",
+        "shortcut": true
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 10,
+        "width": 18,
+        "shortcut": true
+      }
+    },
+    "empty": {
+      "data": {},
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 12,
+        "width": 30,
+        "shortcut": true
+      }
+    },
+    "too-many": {
+      "data": {
+        "placeholder": "",
+        "maxResults": 999,
+        "width": "huge",
+        "kinds": [
+          "view",
+          7,
+          ""
+        ],
+        "shortcut": false
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 50,
+        "width": 30,
+        "kinds": [
+          "view"
+        ],
+        "shortcut": false
+      }
+    },
+    "too-few": {
+      "data": {
+        "placeholder": "Go",
+        "maxResults": 0,
+        "width": "wide",
+        "kinds": []
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Go",
+        "maxResults": 1,
+        "width": 46,
+        "shortcut": true
+      }
+    },
+    "not-numbers": {
+      "data": {
+        "placeholder": "x",
+        "maxResults": "ten",
+        "width": "compact",
+        "shortcut": "no"
+      },
+      "config": {
+        "live": true,
+        "placeholder": "x",
+        "maxResults": 12,
+        "width": 18,
+        "shortcut": true
+      }
+    }
+  },
+  "attachValidation": {
+    "banner-ok": {
+      "host": "banner",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "left"
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "right",
+          "order": 2
+        }
+      ],
+      "errors": []
+    },
+    "banner-not-a-list": {
+      "host": "banner",
+      "list": {
+        "type": "badge"
+      },
+      "errors": [
+        "data.attach must be a list"
+      ]
+    },
+    "banner-bad-entries": {
+      "host": "banner",
+      "list": [
+        {
+          "type": "button",
+          "id": "x",
+          "at": "left"
+        },
+        {
+          "type": "badge",
+          "id": "",
+          "at": "top"
+        },
+        "nope",
+        {
+          "type": "clock",
+          "id": "c",
+          "at": "center",
+          "order": "first"
+        }
+      ],
+      "errors": [
+        "data.attach[0].type must be one of: badge, clock, search-bar",
+        "data.attach[1].id must be an asset id",
+        "data.attach[1].at must be one of: left, center, right",
+        "data.attach[2] must be an object {type, id, at}",
+        "data.attach[3].order must be a number"
+      ]
+    },
+    "toolbar-ok": {
+      "host": "toolbar",
+      "list": [
+        {
+          "type": "search-bar",
+          "id": "compact",
+          "at": "end"
+        }
+      ],
+      "errors": []
+    },
+    "toolbar-badge-refused": {
+      "host": "toolbar",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "start"
+        },
+        {
+          "type": "clock",
+          "id": "digital-24h",
+          "at": "left"
+        }
+      ],
+      "errors": [
+        "data.widgets[0].type must be one of: clock, search-bar",
+        "data.widgets[1].at must be one of: start, end"
+      ]
+    },
+    "not-a-host": {
+      "host": "button",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "left"
+        }
+      ],
+      "errors": []
+    }
+  },
   "toolbarSides": [
     "start",
     "end"

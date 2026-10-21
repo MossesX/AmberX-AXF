@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 
@@ -64,7 +65,11 @@ public fun AxfRoot(
     }
 
     AxfThemeProvider(compiled.theme, fonts) {
-        BoxWithConstraints(Modifier.fillMaxSize().background(LocalAxfTheme.current.colors.bg)) {
+        // Hardware keyboards: Ctrl/Cmd+K focuses the search bar (search-bar widget `shortcut`). "/" is left to the page: at the
+        // root we can't tell whether a text field has focus, and stealing a typed "/" would be worse than no shortcut.
+        BoxWithConstraints(Modifier.fillMaxSize().background(LocalAxfTheme.current.colors.bg).onPreviewKeyEvent { e ->
+            ai.amberx.axf.ui.components.SearchShortcuts.handles(e, typing = true) && ai.amberx.axf.ui.components.SearchShortcuts.trigger()
+        }) {
             val widthDp = maxWidth.value.toInt()
             LaunchedEffect(widthDp) { runtime.setWindowWidth(widthDp) }
             val layout = remember(compiled, widthDp) { compiled.layouts.getValue(LayoutEngine.windowClass(widthDp, compiled.layout)) }

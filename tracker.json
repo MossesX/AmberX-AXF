@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-20T20:40:56.714Z",
+  "generatedAt": "2026-10-21T02:20:46.933Z",
   "summary": {
     "foundations": {
       "built": 65,
@@ -12,8 +12,8 @@
       "coverage": 93
     },
     "kernel": {
-      "built": 76,
-      "partial": 6,
+      "built": 77,
+      "partial": 5,
       "placeholder": 96,
       "planned": 0,
       "total": 178,
@@ -1118,7 +1118,7 @@
       "group": "kernel-architecture-extension-safety",
       "title": "App-wide search/command palette engine",
       "tag": "lib",
-      "status": "partial",
+      "status": "built",
       "wave": 2,
       "module": "axf-kernel",
       "notes": ""
