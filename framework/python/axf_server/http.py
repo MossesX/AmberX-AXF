@@ -21,12 +21,8 @@ Rules (from the copies this replaced, the strictest of each):
   * A `transport` callable can replace the network in tests: (Request) → Response.
 
 Extension point — `HttpClient` keeps a base URL, default headers and a credential provider; `axf_server.github`
-(lib-github, built later) subclasses it:
-
-    class GitHubClient(HttpClient):
-        def __init__(self, token): super().__init__("https://api.github.com", auth=lambda: f"Bearer {token()}",
-                                                    headers={"Accept": "application/vnd.github+json"},
-                                                    auth_origins={"https://api.github.com"}, redirects="strip-auth")
+(lib-github) subclasses it as `GitHubClient` (token only to the API origin, no redirects on API calls, downloads
+follow GitHub's redirect without credentials). Use that for GitHub rather than calling `request` with a token.
 """
 from __future__ import annotations
 

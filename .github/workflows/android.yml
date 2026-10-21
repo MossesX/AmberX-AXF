@@ -36,6 +36,7 @@ jobs:
       - run: node framework/spec/check-build-steps.mjs              # small-steps rule: pending + build-queue step cores
       - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
       - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
+      - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -104,7 +105,8 @@ jobs:
           python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
           python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
           node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
-          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages
+          node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
+          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
           npx -y tsx framework/spec/check-plugin-inventory.mts
           npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
           npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)

@@ -9,6 +9,9 @@
 3. storage: modes 0600/0700 under any umask, atomic replace, no tmp files left, safe reads, JSONL rotation
 4. http: target rules, no redirects / credential-stripping redirects against a fake server, size cap, timeout, HttpClient
 5. credentials + console_client: env-file store, token file (mtime cache, reset survives), console calls
+6. github: replays framework/spec/fixtures/github.json (= framework/cli/github.mjs), client guards against a fake
+   transport (token only on the API origin, no redirects on API calls, downloads fetch redirects without credentials,
+   https only, hop limit, size caps, zip bombs, scrubbed errors), git env
 """
 from __future__ import annotations
 
@@ -27,11 +30,12 @@ import threading  # noqa: E402
 import time  # noqa: E402
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer  # noqa: E402
 from types import SimpleNamespace  # noqa: E402
+from typing import Callable  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 PY = HERE.parent
 sys.path.insert(0, str(PY))
-from axf_server import console_client, credentials, http, plugin_package, storage, wall  # noqa: E402
+from axf_server import console_client, credentials, github, http, plugin_package, storage, wall  # noqa: E402
 
 FIX = PY.parent / "spec" / "fixtures"
 n = 0
@@ -397,5 +401,194 @@ try:
         check("refused" in str(e), "plain http to another host refused")
 finally:
     srv.shutdown()
+
+# ---------------------------------------------------------------- 6. github
+
+GH = json.loads((FIX / "github.json").read_text())
+
+
+def _attempt(f: "Callable[[], object]") -> dict[str, object]:
+    try:
+        return {"out": f()}
+    except ValueError:
+        return {"error": True}
+
+
+for c in GH["validRepo"]:
+    check(github.valid_repo(c["input"]) == c["out"], f"github.valid_repo {c['input']!r}")
+for c in GH["parseRepo"]:
+    check(github.parse_repo(c["input"]) == c["out"], f"github.parse_repo {c['input']!r}")
+for c in GH["repoPath"]:
+    r = _attempt(lambda: github.repo_path(c["repo"], *c["parts"], query=c["query"]))
+    check(r == ({"error": True} if c.get("error") else {"out": c["out"]}), f"github.repo_path {c['repo']} {c['parts']}")
+for c in GH["apiPath"]:
+    r = _attempt(lambda: github.api_path(*c["parts"], query=c["query"]))
+    check(r == ({"error": True} if c.get("error") else {"out": c["out"]}), f"github.api_path {c['parts']}")
+for c in GH["nextLink"]:
+    check(github.next_link(c["header"]) == c["out"], f"github.next_link {c['header']!r}")
+for c in GH["runState"]:
+    check(github.run_state(c["status"], c["conclusion"]) == c["out"], f"github.run_state {c['status']}/{c['conclusion']}")
+for c in GH["tokenAllowed"]:
+    check(github.token_allowed(c["url"], c["base"]) == c["out"], f"github.token_allowed {c['url']}")
+for c in GH["redirectStep"]:
+    check(github.redirect_step(c["current"], c["location"], c["hop"]) == c["out"], f"github.redirect_step {c['location']!r} #{c['hop']}")
+for c in GH["gitAuthConfig"]:
+    check(github.git_auth_config(c["token"], c["base"]) == c["out"], f"github.git_auth_config {c['base']}")
+for c in GH["gitEnv"]:
+    check(github.git_env(c["token"], c["base"], c["env"]) == c["out"], f"github.git_env {c['base']} {c['env']}")
+for c in GH["scrub"]:
+    check(github.scrub(c["text"], c["secrets"]) == c["out"], f"github.scrub {c['text'][:30]!r}")
+
+# client guards against a fake transport
+import io as _io  # noqa: E402
+import subprocess  # noqa: E402
+import zipfile as _zip  # noqa: E402
+
+gh_seen: list[http.Request] = []
+
+
+def _zip_bytes(files: dict[str, bytes]) -> bytes:
+    b = _io.BytesIO()
+    with _zip.ZipFile(b, "w", _zip.ZIP_DEFLATED) as z:
+        for k, v in files.items():
+            z.writestr(k, v)
+    return b.getvalue()
+
+
+def gh_fake(q: http.Request) -> http.Response:
+    gh_seen.append(q)
+    u = q.url
+    if u == "https://api.github.com/user":
+        return http.Response(200, {}, b'{"login":"MossesX"}', u)
+    if u.endswith("/artifacts/1/zip"):
+        return http.Response(302, {"location": "https://blob.example/a1.zip?sig=x"}, b"", u)
+    if u.startswith("https://blob.example/a1.zip"):
+        return http.Response(200, {}, _zip_bytes({"app-debug.apk": b"PKAPK", "sub/other.apk": b"PKOTHER"}), u)
+    if u.endswith("/artifacts/2/zip"):
+        return http.Response(302, {"location": "http://blob.example/plain"}, b"", u)
+    if u.endswith("/artifacts/3/zip"):
+        return http.Response(302, {"location": "https://loop.example/0"}, b"", u)
+    if u.startswith("https://loop.example/"):
+        i = int(u.rsplit("/", 1)[1])
+        return http.Response(302, {"location": f"https://loop.example/{i + 1}"}, b"", u)
+    if u.endswith("/moved"):
+        return http.Response(301, {"location": "https://evil.example/x"}, b"", u)
+    if u.endswith("/bad"):
+        return http.Response(401, {}, b'{"message":"Bad credentials TOKEN-xyz789"}', u)
+    if "/pages" in u:
+        page = 2 if "page=2" in u else 3 if "page=3" in u else 1
+        nxt = {1: '<https://api.github.com/repos/o/r/pages?page=2>; rel="next"', 2: '<https://evil.example/pages?page=3>; rel="next"'}.get(page)
+        return http.Response(200, {"link": nxt} if nxt else {}, json.dumps({"items": [page * 10, page * 10 + 1]}).encode(), u)
+    if u.endswith("/jobs/9/logs"):
+        return http.Response(302, {"location": "https://logs.example/9.txt"}, b"", u)
+    if u == "https://logs.example/9.txt":
+        return http.Response(200, {}, b"e: boom\n", u)
+    return http.Response(404, {}, b'{"message":"Not Found"}', u)
+
+
+def _auth_of(q: http.Request) -> str | None:
+    return next((v for k, v in q.headers.items() if k.lower() == "authorization"), None)
+
+
+def _down(q: http.Request) -> http.Response:
+    raise http.HttpError("down")
+
+
+ghc = github.GitHubClient(lambda: "TOKEN-xyz789", transport=gh_fake, user_agent="axf-test")
+check(ghc.get("/user") == {"login": "MossesX"}, "github client get")
+check(_auth_of(gh_seen[-1]) == "Bearer TOKEN-xyz789" and gh_seen[-1].headers.get("X-GitHub-Api-Version") == github.API_VERSION, "bearer + api version header")
+check(ghc.get("https://api.github.com/user") == {"login": "MossesX"}, "absolute URL on the API origin allowed")
+for bad_url in ("https://evil.example/user", "http://api.github.com/user", "https://api.github.com.evil.example/user"):
+    k = len(gh_seen)
+    try:
+        ghc.get(bad_url)
+        check(False, f"refuses {bad_url}")
+    except github.GitHubError as e:
+        check(e.status == 0 and len(gh_seen) == k, f"refused before sending: {bad_url}")
+try:
+    ghc.get("/moved")
+    check(False, "redirect on an API call")
+except github.GitHubError as e:
+    check(e.status == 301 and not any(q.url.startswith("https://evil.example") for q in gh_seen), "API redirect is an error, never followed")
+try:
+    ghc.get("/bad")
+    check(False, "401")
+except github.GitHubError as e:
+    check(e.status == 401 and str(e) == "GitHub 401: Bad credentials ***", "GitHub's message kept, token scrubbed")
+blob = ghc.download(github.repo_path("o/r", "actions", "artifacts", 1, "zip"), max_bytes=1 << 20)
+check(_auth_of(gh_seen[-2]) == "Bearer TOKEN-xyz789" and gh_seen[-2].url.startswith("https://api.github.com/"), "download: token on the API request")
+check(_auth_of(gh_seen[-1]) is None and gh_seen[-1].url.startswith("https://blob.example/"), "download: redirect target fetched without the token")
+check(github.zip_member(blob, lambda nm: nm.endswith(".apk"), 1 << 20) == ("app-debug.apk", b"PKAPK"), "zip_member: top-level match first")
+check(ghc.download("https://api.github.com/repos/o/r/actions/artifacts/1/zip", max_bytes=1 << 20) == blob, "artifact URL from an answer (same origin) works")
+k = len(gh_seen)
+try:
+    ghc.download("https://evil.example/repos/o/r/actions/artifacts/1/zip", max_bytes=1 << 20)
+    check(False, "artifact URL elsewhere")
+except github.GitHubError:
+    check(len(gh_seen) == k, "artifact URL on another host refused (the token never goes there)")
+try:
+    ghc.download(github.repo_path("o/r", "actions", "artifacts", 2, "zip"), max_bytes=1 << 20)
+    check(False, "plain http redirect")
+except github.GitHubError as e:
+    check("https" in str(e) and not any(q.url.startswith("http://") for q in gh_seen), "redirect to plain http refused")
+k = len(gh_seen)
+try:
+    ghc.download(github.repo_path("o/r", "actions", "artifacts", 3, "zip"), max_bytes=1 << 20)
+    check(False, "redirect loop")
+except github.GitHubError as e:
+    check("too many" in str(e) and len(gh_seen) - k == 1 + github.MAX_REDIRECTS, "hop limit")
+try:
+    ghc.download(github.repo_path("o/r", "actions", "artifacts", 1, "zip"), max_bytes=10)
+    check(False, "download cap")
+except github.GitHubError as e:
+    check("larger" in str(e), "download size cap")
+check(ghc.job_log("o/r", 9) == "e: boom\n" and _auth_of(gh_seen[-1]) is None, "job log via redirect, no token on the log host")
+check(ghc.paginate("/repos/o/r/pages", "items") == [10, 11, 20, 21] and not any(q.url.startswith("https://evil.example") for q in gh_seen), "paginate stays on the API origin")
+check(ghc.paginate("/repos/o/r/pages", "items", max_items=3) == [10, 11, 20], "paginate max_items")
+bomb = _zip_bytes({"app.apk": b"\0" * 200_000})
+try:
+    github.zip_member(bomb, lambda nm: nm.endswith(".apk"), 1000)
+    check(False, "zip bomb")
+except github.GitHubError as e:
+    check("larger" in str(e), "zip_member caps the unzipped size")
+for junk, why in ((b"not a zip", "isn't a zip"), (_zip_bytes({"a.txt": b"x"}), "no matching")):
+    try:
+        github.zip_member(junk, lambda nm: nm.endswith(".apk"), 1000)
+        check(False, why)
+    except github.GitHubError as e:
+        check(why in str(e), f"zip_member: {why}")
+anon = github.GitHubClient("", transport=gh_fake)
+try:
+    anon.get("/user")
+    check(False, "no token")
+except github.GitHubError as e:
+    check("GITHUB_TOKEN" in str(e) and e.status == 0, "no token: refused with the hint")
+check(anon.get("/user", auth_required=False) == {"login": "MossesX"} and _auth_of(gh_seen[-1]) is None, "anonymous call without a token")
+for bad_base in ("http://10.0.0.1", "ftp://x", "https://api.github.com/?x=1"):
+    try:
+        github.GitHubClient("t", base_url=bad_base)
+        check(False, f"bad base {bad_base}")
+    except ValueError:
+        check(True, f"bad base refused: {bad_base}")
+local = github.GitHubClient("t", base_url="http://127.0.0.1:9", transport=lambda q: http.Response(200, {}, b"{}", q.url))
+check(local.get("/user") == {}, "loopback API base allowed (tests, GitHub Enterprise on this machine)")
+check(ghc.check_token("o/r")[0] == 404 and github.GitHubClient("t", transport=_down).check_token("o/r")[0] == 0, "check_token: status, 0 when not reached")
+try:
+    ghc.workflow_runs("../etc")
+    check(False, "bad repo")
+except ValueError:
+    check(True, "a bad repo never reaches a URL")
+os.environ.pop("GITHUB_API_URL", None)
+check(github.api_base_from_env() == github.API_BASE, "api base default")
+
+# git: the token reaches git through the environment, never argv or .git/config
+with tempfile.TemporaryDirectory() as td:
+    env = {**os.environ, **github.git_env("TOKEN-xyz789", env=os.environ)}
+    out = subprocess.run(["git", "config", "--get-urlmatch", "http.extraheader", "https://github.com/MossesX/x.git"], cwd=td, env=env, capture_output=True, text=True)
+    check(out.stdout.strip().startswith("Authorization: Basic "), "git sees the header for github.com")
+    out = subprocess.run(["git", "config", "--get-urlmatch", "http.extraheader", "https://evil.example/x.git"], cwd=td, env=env, capture_output=True, text=True)
+    check(out.returncode != 0 and not out.stdout.strip(), "git never sends it to another host")
+    out = subprocess.run(["git", "config", "--get", "http.followRedirects"], cwd=td, env=env, capture_output=True, text=True)
+    check(out.stdout.strip() == "false", "git follows no redirects with it")
 
 print(f"axf_server self-test ok: {n} checks")

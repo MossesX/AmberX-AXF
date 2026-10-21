@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T10:27:14.829Z",
+ "generatedAt": "2026-10-21T10:33:45.407Z",
  "statuses": [
   "built",
   "partial",
@@ -2371,6 +2371,10 @@
     {
      "at": "2026-10-17",
      "text": "Added to the plan"
+    },
+    {
+     "at": "2026-10-21",
+     "text": "Harvest lib-github (Opus): Python axf_server.github + Node framework/cli/github.mjs from 8 copies, fixture github.json; Android port and demo app still planned"
     }
    ],
    "model": "opus",
@@ -12893,7 +12897,7 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
@@ -12904,7 +12908,9 @@
    "catalog": [
     "w.github"
    ],
-   "modules": [],
+   "modules": [
+    "axf_server.github"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],

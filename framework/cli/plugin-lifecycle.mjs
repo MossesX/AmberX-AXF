@@ -28,6 +28,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { gitAuthEnv, scrub } from './github.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 export const PLUGINS_DIR = join(ROOT, 'apps/console-web/plugins');
@@ -307,7 +308,7 @@ function publishToSource(change, message, log, already) {
   if (!token) throw new Error('publishing needs GITHUB_TOKEN with Contents: write on the repo');
   const git = (args, o = {}) => {
     const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { encoding: 'utf8', timeout: 120000, cwd: o.cwd, env: { ...process.env, ...o.env, GIT_TERMINAL_PROMPT: '0' } });
-    if (r.status !== 0 && !o.ok) throw new Error(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ').replaceAll(token, '***')}`);
+    if (r.status !== 0 && !o.ok) throw new Error(scrub(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ')}`, [token]));
     return { ok: r.status === 0, out: (r.stdout || '').trim(), err: (r.stderr || '').trim() };
   };
   const m = git(['-C', ROOT, 'remote', 'get-url', 'origin']).out.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
@@ -317,10 +318,8 @@ function publishToSource(change, message, log, already) {
   if (!branch || branch === 'HEAD') throw new Error('publishing needs a checked-out branch (this clone is on a detached HEAD)');
   const url = process.env.AXF_LIFECYCLE_PUSH_URL || `https://github.com/${slug}.git`;
   const tmp = mkdtempSync(join(tmpdir(), 'axf-lifecycle-'));
-  const askpass = join(tmp, 'askpass.sh');
-  writeFileSync(askpass, '#!/bin/sh\ncase "$1" in Username*) echo x-access-token ;; *) printf %s "$AXF_GIT_PUSH_TOKEN" ;; esac\n');
-  chmodSync(askpass, 0o700);
-  const auth = { env: { GIT_ASKPASS: askpass, AXF_GIT_PUSH_TOKEN: token } };
+  // lib-github: the token reaches git only through GIT_CONFIG_* (header scoped to https://github.com/, no redirects)
+  const auth = { env: gitAuthEnv(token) };
   const wt = join(tmp, 'wt');
   try {
     git(['-C', ROOT, 'fetch', '-q', url, branch], auth);

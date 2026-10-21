@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
 # every plugin without each one touching sys.path; server/axf_framework.py adds the same folder at import time, so
 # tests and a bare `uvicorn main:app` work without this variable too.
 ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090 PYTHONPATH=/axf/framework/python
-RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package, axf.contracts.assistant, axf.contracts.agents"
+RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package, axf_server.github, axf.contracts.assistant, axf.contracts.agents"
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
 # exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly
