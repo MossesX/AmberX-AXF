@@ -169,25 +169,16 @@ check({"openai", "anthropic", "claude-cli"} <= set(cat["protocols"]), "protocols
 ci = c.get(f"{P}/contract").json()
 check(ci["assistant"] == "assistant@1" and ci["liveSession"] == "live-session@1" and {h["id"] for h in ci["hosts"]} == {"local", "axhub"} and "ai.chat.start" in ci["actions"], "/contract describes what the assistant speaks")
 
-# --- assistant@1: the pure rules match the framework fixtures (framework/core/assistant.ts = contract.py = Kotlin)
+# --- assistant@1: the plugin runs on the framework's Python contract (framework/python/axf/contracts/assistant.py);
+# the fixture replay itself lives in framework/python/axf/contracts/test.py (CI), one check here keeps it honest.
 print("assistant@1 contract")
-ctr = sys.modules["axf_console_plugins.ai_assistant.contract"]
+ctr = mod.contract
+check(ctr.__name__ == "axf.contracts.assistant" and mod.providers.__name__ == "axf.assistant_host.providers" and mod.sessions.__name__ == "axf.assistant_host.sessions",
+      "plugin imports the contract and host runtime from framework/python (no private copies)")
 afx = json.load(open(HERE.parents[3] / "framework" / "spec" / "fixtures" / "assistant.json"))
-check(all(ctr.redact_secrets(x["text"], True) == x["on"] and ctr.redact_secrets(x["text"], False) == x["off"] for x in afx["redact"]), "secret redaction matches the reference")
-def _norm(w):
-    return [{k: v for k, v in m.items()} for m in w]
-check(all(_norm(ctr.wire_history(afx["history"]["messages"], w["limit"])) == w["wire"] for w in afx["history"]["windows"]), "history window matches the reference for every limit")
-check(_norm(ctr.wire_history(afx["history"]["messages"][4:], 5)) == afx["history"]["orphanStart"], "orphaned tool results are never sent first")
-check(all(ctr.profile_chain(x["settings"].get("profileId"), x.get("agent"), x["def"], x["fallback"]) == x["chain"] for x in afx["chains"]), "profile fallback chain matches")
-check(all(ctr.permission_allows(x["perms"], x["perm"], x.get("admin", False)) == x["allowed"] for x in afx["permissions"]), "permission wildcards match")
-check(all(ctr.settings_allowed_for(x["admin"], lambda p, px=x["perms"]: ctr.permission_allows(px, p)) == x["keys"] for x in afx["settingsAllowed"]), "user-settable settings match")
-check(all(ctr.clamp_user_params(x["params"], x["admin"], x["canModels"]) == x["out"] for x in afx["clampParams"]), "user param clamps match")
-check(all(ctr.batch_title(x["text"], x["n"]) == x["title"] and ctr.title_from_text(x["text"]) == x["convTitle"] for x in afx["titles"]), "batch and conversation titles match")
-check(all(ctr.summarize_args(x["args"]) == x["summary"] for x in afx["summaries"]), "tool argument summaries match")
-check(all(ctr.owner_kind(x["kind"], afx.get("ownerKindsReserved") or ["session.open", "session.close", "turn.start", "turn.end", "wait", "resume", "interrupted"]) == x["owner"] for x in afx["ownerKinds"]), "owner kinds never pose as lifecycle kinds")
-frames, rest = ctr.parse_sse_text(afx["sse"]["text"])
-check(frames == afx["sse"]["frames"] and rest == afx["sse"]["rest"] and [ctr.frame_to_event(f) for f in frames] == afx["sse"]["events"], "SSE framing matches")
-check(all(ctr.reconnect_delay_ms(x["attempt"]) == x["delayMs"] for x in afx["reconnect"]), "reconnect backoff matches")
+check(not ctr.check_fixture(afx), "the framework contract replays spec/fixtures/assistant.json")
+check(mod.providers.HOST_LABEL == "the console server" and mod.providers.extra_kinds is sys.modules["axf_console_plugins.ai_assistant.store"].extra_provider_kinds and ".axf-console" in mod.providers.PRIVATE_DIRS,
+      "host hooks name the console (label, extra provider kinds, private folder)")
 
 r = c.post(f"{P}/profiles", json={"kind": "custom", "label": "Fake OA", "baseUrl": f"{BASE}/oa", "key": "sk-test-1234567890abcdefghij", "defaultModel": "fake-1"})
 check(r.status_code == 200 and r.json()["profile"]["hasKey"], "create OpenAI-compatible profile with a stored key")
@@ -200,9 +191,13 @@ check(c.get(f"{P}/profiles/{an}/models").json()["models"] == ["claude-test"], "a
 bad = c.post(f"{P}/profiles", json={"kind": "custom", "label": "Broken", "baseUrl": f"{BASE}/broken", "key": "x" * 24, "defaultModel": "m"}).json()["profile"]["id"]
 
 conv = c.post(f"{P}/conversations", json={}).json()["conversation"]
-ev = turn(conv["id"], content="hi there", context={"view": "home"})
+ev = turn(conv["id"], content="hi there", context={"view": "home", "extra": {"projectId": "apk-1", "custom": {"k": [1, 2]}, "bad key": 1}})
 texts = "".join(d["text"] for e, d in ev if e == "text")
 check(texts == "Hello from fake", "streamed text arrives in order")
+_cv = c.get(f"{P}/conversations/{conv['id']}").json()["conversation"]
+check(_cv["messages"][0]["meta"]["context"] == {"view": "home", "extra": {"projectId": "apk-1", "custom": {"k": [1, 2]}}}, "ChatContext.extra is normalised and stored with the message (unknown keys kept, bad keys dropped)")
+_sys = next(m["content"] for x in reversed(CALLS) for m in x["body"]["messages"] if m["role"] == "system")
+check("projectId: apk-1" in _sys and "view: home" in _sys and "custom" not in _sys, "well-known extra keys reach the model in the context line; a host's own keys stay out of it")
 done = [d for e, d in ev if e == "done"][0]
 check(done["message"]["meta"]["usage"] == {"input": 11, "output": 7}, "usage recorded on the message")
 check(CALLS[-1]["auth"] == "Bearer sk-test-1234567890abcdefghij", "bearer auth sent")
@@ -295,7 +290,7 @@ check(any(e == "error" and "budget" in d["message"] for e, d in ev), "daily toke
 check(c.delete(f"{P}/profiles/{bad}").status_code == 200, "delete profile")
 # --- regression checks from the security review
 import time as _t  # noqa: E402
-safety = sys.modules["axf_console_plugins.ai_assistant.safety"]
+safety = mod.tools.safety
 tools_mod = sys.modules["axf_console_plugins.ai_assistant.tools"]
 for bomb in ("((9**999)**999)**999", "2**" * 60 + "2", "9**9**9**9", "(10**4000)*(10**4000)"):
     t0 = _t.monotonic()
@@ -321,7 +316,7 @@ c.post(f"{P}/profiles", json={"id": r["id"], "kind": "custom", "headers": r["hea
 check(sys.modules["axf_console_plugins.ai_assistant.store"].load_config()["profiles"][r["id"]]["headers"]["x-goog-api-key"] == "supersecret", "saving masked headers keeps the stored value")
 c.put(f"{P}/config", json={"dailyTokenBudget": 0})
 CALLS.clear()
-list(sys.modules["axf_console_plugins.ai_assistant.providers"].stream_chat({"kind": "anthropic", "baseUrl": f"{BASE}/an", "key": "x" * 30}, [{"role": "user", "content": "hi"}], system="s", model="m", params={"thinking": True, "max_tokens": 4096, "thinking_budget": 4096}))
+list(mod.providers.stream_chat({"kind": "anthropic", "baseUrl": f"{BASE}/an", "key": "x" * 30}, [{"role": "user", "content": "hi"}], system="s", model="m", params={"thinking": True, "max_tokens": 4096, "thinking_budget": 4096}))
 b = CALLS[-1]["body"]
 check(b["thinking"]["budget_tokens"] < b["max_tokens"], "thinking budget stays below max_tokens")
 
@@ -443,7 +438,7 @@ check(bev and bev[0]["batch"]["items"][0]["path"] == "/app/b.ts", "CLI proposals
 check(not [x for x in _os.listdir(_tf.gettempdir()) if x.startswith("axf-bridge-")], "bridge folder removed after the turn")
 plugin_services.withdraw("fake-container-access")
 plugin_services.withdraw("fake-agent-manager")
-prov = sys.modules["axf_console_plugins.ai_assistant.providers"]
+prov = mod.providers
 os.environ.update({"COOLIFY_TOKEN": "c-secret", "HOSTINGER_API_TOKEN": "h", "AXHUB_TOKEN": "a", "AXF_TOKEN": "t", "SOME_PASSWORD": "p", "HARMLESS_SETTING": "ok"})
 ce = prov._cli_env()
 check(not any(k in ce for k in ("COOLIFY_TOKEN", "HOSTINGER_API_TOKEN", "AXHUB_TOKEN", "AXF_TOKEN", "SOME_PASSWORD")) and ce.get("HARMLESS_SETTING") == "ok" and "PATH" in ce,
@@ -454,17 +449,11 @@ check("Read(//proc/**)" in deny and "Read(//work/repo/.axf-console/**)" in deny 
 # ---------------------------------------------------------------- live sessions (live-session@1)
 print("live sessions")
 import time as _time  # noqa: E402
-sess = sys.modules["axf_console_plugins.ai_assistant.sessions"]
+sess = mod.sessions
+# The live-session@1 fixture replay (states, reducer, log, replays) lives in framework/python/axf/assistant_host/test.py.
 fx = json.load(open(HERE.parents[3] / "framework" / "spec" / "fixtures" / "live-session.json"))
 check(sess.STATES == fx["states"] and sess.KINDS == fx["kinds"], "states + reserved kinds match the kernel contract")
-check(all(sess.reduce(t["state"], t["kind"]) == t["next"] for t in fx["transitions"]), "state reducer matches the reference for every state × kind")
-lg, stt, sts = sess.EventLog(fx["log"]["limit"]), "idle", []
-for a in fx["log"]["appends"]:
-    lg.append(a["kind"], a.get("data"), a["at"])
-    stt = sess.reduce(stt, a["kind"])
-    sts.append(stt)
-check(sts == fx["log"]["states"] and lg.items == fx["log"]["kept"] and lg.last == fx["log"]["lastSeq"] and lg.first_seq == fx["log"]["firstSeq"], "event log appends + trims like the reference")
-check(all(lg.since(q["after"], q["max"]) == q["result"] for q in fx["replays"]), "event log replays (gap / reset / more) match the reference")
+check(mod._host.label == "This console" and mod._host.restart_reason.startswith("The console restarted") and "this console" in mod.HOSTS.get("axhub").note, "the console names its local host and the axHub placeholder")
 
 # a slow fake reply: the browser leaves after the first event, the reply still finishes on the server
 import queue as _q  # noqa: E402

@@ -1,6 +1,6 @@
 /*
  * AI assistant — assistant@1 (kernel contract, web reference). Same design as the Kotlin kernel's
- * `ai.amberx.axf.kernel.assistant` (Assistant.kt) and the console plugin's Python `contract.py`;
+ * `ai.amberx.axf.kernel.assistant` (Assistant.kt) and the Python port `framework/python/axf/contracts/assistant.py`;
  * conformance fixtures: spec/fixtures/assistant.json (gen-fixtures.mts).
  *
  * What every AXF app shares when it ships an assistant (the Dev Console today, Build Pilot next, Android later):
@@ -135,7 +135,94 @@ export interface Message {
   };
 }
 
-export interface ChatContext { view?: string; title?: string; selection?: string; note?: string }
+/**
+ * What the app attaches to a turn: the view it was sent from, its title, selected text, a note — plus `extra`, an
+ * open bag for host-specific context (Build Pilot's `projectId`, …). Well-known keys live in `CHAT_CONTEXT_KEYS`; any
+ * other key passes through untouched, so a host never needs a one-off field. `normalizeChatContext` is the rule every
+ * port applies before storing or using a context (sizes capped, bad shapes dropped).
+ */
+export interface ChatContext { view?: string; title?: string; selection?: string; note?: string; extra?: Record<string, unknown> }
+
+/** Well-known `extra` keys (documented in spec/ASSISTANT.md); hosts may add their own. */
+export const CHAT_CONTEXT_KEYS = {
+  /** id of the project the chat is about (Build Pilot); 1–64 chars */
+  projectId: 'projectId',
+  /** id of the app (`axf.manifest.json` name or project manifest name) the chat is about */
+  appId: 'appId',
+  /** path of the file the user is looking at, relative to the app */
+  path: 'path',
+  /** route/page id when `view` is not enough */
+  route: 'route',
+} as const;
+
+/** Size limits for a context (the same on every port, so a context can't be abused as a payload channel). */
+export const CHAT_CONTEXT_LIMITS = {
+  view: 200, title: 300, selection: 4000, note: 2000,
+  /** at most this many keys in `extra` */
+  extraKeys: 32,
+  /** each `extra` key: 1–64 characters, `[A-Za-z0-9_.-]` */
+  extraKey: 64,
+  /** a string value in `extra` is cut to this length */
+  extraString: 2000,
+  /** `extra` serialised as JSON may not exceed this many characters */
+  extraJson: 16_000,
+  /** nesting depth allowed inside an `extra` value (objects/arrays) */
+  extraDepth: 4,
+} as const;
+
+const EXTRA_KEY = /^[A-Za-z0-9_.-]{1,64}$/;
+
+function boundedValue(v: unknown, depth: number): unknown {
+  if (v === null || typeof v === 'boolean') return v;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+  if (typeof v === 'string') return v.slice(0, CHAT_CONTEXT_LIMITS.extraString);
+  if (depth >= CHAT_CONTEXT_LIMITS.extraDepth) return undefined;
+  if (Array.isArray(v)) {
+    const out: unknown[] = [];
+    for (const x of v.slice(0, CHAT_CONTEXT_LIMITS.extraKeys)) { const b = boundedValue(x, depth + 1); if (b !== undefined) out.push(b); }
+    return out;
+  }
+  if (typeof v === 'object') {
+    const out: Record<string, unknown> = {};
+    let n = 0;
+    for (const [k, x] of Object.entries(v as Record<string, unknown>)) {
+      if (!EXTRA_KEY.test(k)) continue;
+      const b = boundedValue(x, depth + 1);
+      if (b === undefined) continue;
+      out[k] = b;
+      if (++n >= CHAT_CONTEXT_LIMITS.extraKeys) break;
+    }
+    return out;
+  }
+  return undefined; // functions, symbols, bigints never travel
+}
+
+/**
+ * The context a host stores and uses: known fields cut to their limits, `extra` kept as an open bag with every key it
+ * came with (unknown keys preserved, in order) but bounded: key pattern, ≤ 32 keys, strings ≤ 2000, depth ≤ 4,
+ * ≤ 16 000 JSON characters in all (an oversized `extra` is dropped whole, never truncated into a different meaning).
+ * Returns null for anything that isn't an object or has nothing left.
+ */
+export function normalizeChatContext(raw: unknown): ChatContext | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  const out: ChatContext = {};
+  for (const k of ['view', 'title', 'selection', 'note'] as const) {
+    const v = r[k];
+    if (typeof v === 'string' && v) out[k] = v.slice(0, CHAT_CONTEXT_LIMITS[k]);
+  }
+  if (r.extra && typeof r.extra === 'object' && !Array.isArray(r.extra)) {
+    const extra = boundedValue(r.extra, 0) as Record<string, unknown>;
+    if (Object.keys(extra).length && JSON.stringify(extra).length <= CHAT_CONTEXT_LIMITS.extraJson) out.extra = extra;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+/** A well-known `extra` value as a string (empty when absent or not a string); what a host reads `projectId` with. */
+export function contextExtra(ctx: ChatContext | null | undefined, key: string): string {
+  const v = ctx?.extra?.[key];
+  return typeof v === 'string' ? v : '';
+}
 
 export interface ConversationSettings {
   profileId?: string; model?: string; temperature?: number; max_tokens?: number; top_p?: number;

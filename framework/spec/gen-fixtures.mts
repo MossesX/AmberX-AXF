@@ -19,7 +19,7 @@ import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
-import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
+import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
@@ -422,6 +422,24 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const reply = emptyLiveReply('Connecting…');
   const folds = events.map((e) => { applyStreamEvent(reply, e); return JSON.parse(JSON.stringify(reply)); });
   const interrupted = applyStreamEvent(emptyLiveReply(), { event: 'interrupted', data: null, seq: 2 });
+  // ChatContext: the open `extra` bag passes through (well-known + unknown keys, order kept) within shape/size limits.
+  const deep = (d: number): unknown => (d === 0 ? 'leaf' : { n: deep(d - 1) });
+  const chatContext: { case: string; raw: unknown }[] = [
+    { case: 'plain', raw: { view: 'designer', title: 'Pilot', selection: 'sel', note: 'n' } },
+    { case: 'projectId passes through', raw: { view: 'designer', extra: { projectId: 'apk-1' } } },
+    { case: 'unknown keys preserved in order', raw: { extra: { zeta: 1, projectId: 'p', alpha: { nested: [1, 'two', true, null] }, flag: false } } },
+    { case: 'bad extra keys dropped', raw: { extra: { 'ok.key-1_': 'x', 'bad key': 'y', '': 'z', ['k'.repeat(65)]: 'w' } } },
+    { case: 'strings cut, numbers and null kept', raw: { view: 'v'.repeat(300), selection: 's'.repeat(5000), extra: { long: 'L'.repeat(3000), none: null, n: 2.5, i: -3 } } }, // NaN/Infinity can't travel in JSON: each port tests that rule itself
+    { case: 'too many keys kept to 32', raw: { extra: Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`k${i}`, i])) } },
+    { case: 'too deep pruned', raw: { extra: { d: deep(6), shallow: deep(2) } } },
+    { case: 'oversized extra dropped whole', raw: { view: 'v', extra: Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`k${i}`, 'x'.repeat(1500)])) } },
+    { case: 'extra must be an object', raw: { view: 'v', extra: ['projectId'] } },
+    { case: 'empty strings and empty extra drop out', raw: { view: '', extra: {} } },
+    { case: 'not an object', raw: 'projectId=1' },
+    { case: 'null', raw: null },
+    { case: 'array', raw: [{ view: 'x' }] },
+    { case: 'non-string known fields ignored', raw: { view: 7, title: { a: 1 }, extra: { projectId: 42 } } },
+  ].map((c) => { const context = normalizeChatContext(c.raw); return { ...c, context, projectId: contextExtra(context, 'projectId') }; });
   write('assistant.json', {
     contract: 'assistant@1',
     providers: PROVIDER_KINDS.map((p) => ({ kind: p.kind, protocol: p.protocol, keyEnv: p.keyEnv, auth: p.auth, baseUrl: p.baseUrl })),
@@ -430,6 +448,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     sse: { text: sseText, frames: sse.frames, rest: sse.rest, events: sse.frames.map(frameToEvent) },
     liveReply: { events, folds, interrupted },
     reconnect: [1, 2, 3, 5, 8, 20].map((a) => ({ attempt: a, delayMs: reconnectDelayMs(a) })),
+    chatContext,
   });
 }
 

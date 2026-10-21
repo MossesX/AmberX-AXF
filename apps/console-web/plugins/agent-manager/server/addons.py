@@ -13,7 +13,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from . import contract, memory, store, toolkit, training
+from axf.contracts import agents as contract  # framework/python (sys.path set by the plugin __init__)
+
+from . import memory, store, toolkit, training
 
 BUNDLED = store.PLUGIN_DIR / "addons"
 IMPORTED = store.DATA / "addons"

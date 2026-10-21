@@ -11,7 +11,7 @@ export type {
   AgentRef, ChatContext as Ctx, ChatImage as Image, Conversation, ConversationSettings as ConvSettings, ConversationSummary as ConvSummary,
   LiveReply, Message, ProviderKind, ProviderProfile as Profile, StreamEvent, ToolLogEntry as ToolLog, TurnEvent, WriteMode,
 } from '@console/axf/core';
-export { applyStreamEvent, emptyLiveReply, watchReply } from '@console/axf/core';
+export { applyStreamEvent, contextExtra, emptyLiveReply, normalizeChatContext, watchReply } from '@console/axf/core';
 export type { LiveSessionInfo } from '@console/axf/core';
 export type Status = AssistantStatus;
 

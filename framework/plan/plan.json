@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T02:31:33.830Z",
+ "generatedAt": "2026-10-21T04:21:22.610Z",
  "statuses": [
   "built",
   "partial",
@@ -12768,7 +12768,7 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
@@ -12779,7 +12779,9 @@
    "catalog": [
     "w.ai"
    ],
-   "modules": [],
+   "modules": [
+    "python/axf/assistant_host"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -12791,7 +12793,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only).",
    "source": "catalog",
    "history": [
     {

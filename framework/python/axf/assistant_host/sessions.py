@@ -1,20 +1,22 @@
-"""Live sessions (live-session@1) — session hosts for the AI assistant.
+"""Live sessions (live-session@1) — the host side, for any Python assistant host (framework/python,
+`axf.assistant_host.sessions`; the console's ai-assistant plugin and Build Pilot's server run on it).
 
 Every conversation is a live session owned by its host, not by the browser. A reply runs in its own thread and writes
 every event into the conversation's event log; the browser only *watches* that log. Closing the tab, the dialog or the
 phone app just detaches the viewer: the reply keeps going, and opening the chat again (on any device) replays what was
-missed and follows on. A session ends only when it is closed on purpose (or its conversation is deleted). A console
-restart while a reply is running marks that turn `interrupted` (and the interrupted reply's text is kept in the
-conversation, see __init__.py); the session itself stays open.
+missed and follows on. A session ends only when it is closed on purpose (or its conversation is deleted). A host
+restart while a reply is running marks that turn `interrupted` (the host keeps the streamed text through
+`LocalHost.on_interrupted`); the session itself stays open.
 
 Same semantics as the kernel contract (framework/core/live-session.ts = Kotlin ai.amberx.axf.kernel.live), checked
-against framework/spec/fixtures/live-session.json by test.py. Spec: framework/spec/LIVE-SESSIONS.md.
+against framework/spec/fixtures/live-session.json by framework/python/axf/assistant_host/test.py.
+Spec: framework/spec/LIVE-SESSIONS.md.
 
-Hosts are an OPEN REGISTRY (`SessionHosts`, like the kernel's): `local` (this module, built) is registered on start;
-`axhub` is registered as a typed placeholder (`PlaceholderHost`: `available()` is False, every call answers
-NotImplemented) until axHub's session workers exist — a module providing capability `axf.live-host@1` through
-plugin_services (or calling `HOSTS.register`) replaces it without any change here. The chosen host is a setting
-(`sessionHost`); `SessionHosts.resolve()` falls back to the first available host with a notice.
+Hosts are an OPEN REGISTRY (`SessionHosts`, like the kernel's): `local` (`LocalHost`, built) is what a host registers
+on start; `axhub` is a typed placeholder (`axhub_placeholder()`: `available()` is False, every call answers
+NotImplemented) until axHub's session workers exist — a module providing a real `SessionHost` (console: capability
+`axf.live-host@1` through plugin_services, or `HOSTS.register`) replaces it without any change here. The chosen host
+is a setting (`sessionHost`); `SessionHosts.resolve()` falls back to the first available host with a notice.
 """
 from __future__ import annotations
 
@@ -26,7 +28,7 @@ from typing import Any, Callable, Iterator
 
 CONTRACT = "live-session@1"
 CAPABILITY = "axf.live-sessions"
-HOST_CAPABILITY = "axf.live-host@1"   # what a module provides (plugin_services) to add a session host
+HOST_CAPABILITY = "axf.live-host@1"   # what a module provides (console: plugin_services) to add a session host
 STATES = ["idle", "running", "waiting", "closed"]
 KINDS = {"open": "session.open", "close": "session.close", "turnStart": "turn.start", "turnEnd": "turn.end",
          "wait": "wait", "resume": "resume", "interrupted": "interrupted"}
@@ -207,19 +209,27 @@ class PlaceholderHost(SessionHost):
 
 
 class LocalHost(SessionHost):
-    """Sessions in memory, logs saved to <data>/sessions/<id>.json when a turn ends and on lifecycle changes."""
+    """Sessions in memory, logs saved to <folder>/<id>.json when a turn ends and on lifecycle changes.
+    `label`/`note`/`restart_reason` name the host for people ("This console", "Build Pilot server", …)."""
 
     id = "local"
-    label = "This console"
-    note = "Replies run on the console server and keep going when the browser closes."
+    label = "This server"
+    note = "Replies run on this server and keep going when the browser closes."
+    restart_reason = "The server restarted while this reply was running."
 
-    def __init__(self, folder: Path, limit: int = LIMIT) -> None:
+    def __init__(self, folder: Path, limit: int = LIMIT, *, label: str | None = None, note: str | None = None, restart_reason: str | None = None) -> None:
         self.folder = folder
         self.limit = limit
+        if label:
+            self.label = label
+        if note:
+            self.note = note
+        if restart_reason:
+            self.restart_reason = restart_reason
         self.lock = threading.RLock()
         self.sessions: dict[str, Session] = {}
         self._loaded = False
-        self.on_interrupted: Callable[[Session], None] | None = None  # __init__.py keeps the interrupted reply's text
+        self.on_interrupted: Callable[[Session], None] | None = None  # the host keeps the interrupted reply's text
 
     def available(self) -> bool:
         return True
@@ -270,7 +280,7 @@ class LocalHost(SessionHost):
                     continue
                 self.sessions[s.id] = s
                 if s.state in ("running", "waiting"):
-                    self._append(s, KINDS["interrupted"], {"reason": "The console restarted while this reply was running."})
+                    self._append(s, KINDS["interrupted"], {"reason": self.restart_reason})
                     if self.on_interrupted:
                         try:
                             self.on_interrupted(s)
@@ -471,11 +481,16 @@ class SessionHosts:
         raise NotImplementedHost(chosen or "none")
 
 
-AXHUB_PLACEHOLDER = PlaceholderHost("axhub", "axHub (VPS hub)", "Not available yet: axHub's session workers aren't built. Chats run on this console until they are.")
+def axhub_placeholder(runs_on: str = "this server") -> PlaceholderHost:
+    """The declared-but-unbuilt axHub host (session workers on the VPS, pending `axhub-agent-host`)."""
+    return PlaceholderHost("axhub", "axHub (VPS hub)", f"Not available yet: axHub's session workers aren't built. Chats run on {runs_on} until they are.")
+
+
+AXHUB_PLACEHOLDER = axhub_placeholder()
 
 
 class LiveSessionsService:
-    """axf.live-sessions@1 for other plugins: read-only views of the assistant's sessions, plus host registration."""
+    """axf.live-sessions@1 for other modules: read-only views of the assistant's sessions, plus host registration."""
 
     version = 1
     contract = CONTRACT

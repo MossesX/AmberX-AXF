@@ -19,7 +19,9 @@ import threading
 import time
 from typing import Any
 
-from . import contract, memory, store, toolkit
+from axf.contracts import agents as contract  # framework/python
+
+from . import memory, store, toolkit
 
 SOURCE_TYPES = contract.TRAINING_SOURCE_TYPES
 PERIOD = contract.SCHEDULE_SECONDS

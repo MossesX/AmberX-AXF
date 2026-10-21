@@ -1,10 +1,12 @@
 """agent-definition@1 — the Python port of framework/core/agents.ts (the reference) and the Kotlin kernel's
-ai.amberx.axf.kernel.agents. All three replay framework/spec/fixtures/agents.json (test.py checks this port).
+ai.amberx.axf.kernel.agents (framework/python, `axf.contracts.agents`). All three replay
+framework/spec/fixtures/agents.json (framework/python/axf/contracts/test.py checks this port). Hosts import it: the
+console's agent-manager plugin, Build Pilot's server (baked copy).
 
 Pure: validation + normalisation of every collection, the system-prompt composer, memory config resolution, the
 memory text engine (tokens, BM25, chunking, trimming), workflow template filling, router parsing, tool templates,
-and the add-on checks and risk rules. Nothing here touches a model, the network or storage — the rest of the plugin
-does, on top of this. Registries (memory types, tool kinds, source types, builtins) are open: the host passes what
+and the add-on checks and risk rules. Nothing here touches a model, the network or storage — a host does, on top of
+this. Registries (memory types, tool kinds, source types, builtins) are open: the host passes what
 it knows in a Context.
 """
 from __future__ import annotations

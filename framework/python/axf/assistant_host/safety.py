@@ -1,6 +1,6 @@
-"""Safety helpers: a bounded calculator and an SSRF-safe HTTP client.
-
-(The agent manager ships an identical copy so each plugin stays removable on its own.)
+"""Safety helpers for assistant and agent hosts: a bounded calculator and an SSRF-safe HTTP client
+(framework/python, `axf.assistant_host.safety`; one copy for the console's ai-assistant + agent-manager plugins and
+Build Pilot's server — reviewed independently, keep every guard).
 
 calc(expr)          arithmetic only; AST size, exponent and result size are capped, each operand evaluated once
 fetch(url, ...)     http(s) with the host resolved ONCE, the address checked (`is_global` unless allow_private) and the
@@ -67,6 +67,8 @@ def calc(expr: str) -> str:
 
 # ---------------------------------------------------------------- SSRF-safe fetch
 
+USER_AGENT = "AmberX-AXF/1"  # a host may set its own
+
 def _resolve(host: str, port: int, allow_private: bool) -> str:
     infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
     for info in infos:
@@ -108,7 +110,7 @@ def fetch(url: str, method: str = "GET", headers: dict[str, str] | None = None, 
         cls = _PinnedHTTPS if u.scheme == "https" else _PinnedHTTP
         conn = cls(u.hostname, ip, port, timeout=min(timeout, max(1.0, end - time.monotonic())))
         path = (u.path or "/") + (f"?{u.query}" if u.query else "")
-        h = {"user-agent": "AmberX-AXF/1", "accept-encoding": "identity", **(headers or {})}
+        h = {"user-agent": USER_AGENT, "accept-encoding": "identity", **(headers or {})}
         try:
             conn.request(method.upper(), path, body=body, headers=h)
             r = conn.getresponse()

@@ -24,7 +24,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from . import contract
+from axf.contracts import agents as contract  # framework/python
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AGENT_MANAGER_DIR", ROOT / ".axf-console" / "plugins" / "agent-manager"))
