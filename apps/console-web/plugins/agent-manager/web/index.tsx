@@ -16,7 +16,7 @@ import './agent-manager.css';
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Agent manager',
-  version: '0.1.0',
+  version: '0.2.0',
   provides: ['axf.agent-manager'],
   register(rt) {
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });
@@ -30,7 +30,7 @@ export const plugin: AxfWebLibrary = {
     },
   },
   nav: { label: 'Plugins', items: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', view: 'agent-manager' }] },
-  settingsTabs: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', order: 32, description: 'Wizards, add-on agents, models, training (Firecrawl) and memory defaults for the agent manager.' }],
+  settingsTabs: [{ id: 'agent-manager', label: 'Agent manager', icon: 'layers', order: 32, description: 'Wizards, add-on agents, models, training (Firecrawl), safety and memory defaults for the agent manager (agent-definition@1).' }],
   settingsPanels: [
     { id: 'agent-manager.wizards', tab: 'agent-manager', title: 'Wizards', icon: 'rocket', order: 10, render: () => <WizardsPanel /> },
     { id: 'agent-manager.addons', tab: 'agent-manager', title: 'Add-on agents', icon: 'package', order: 20, render: () => <div className="axp-agent-manager"><AddonsTab /></div> },

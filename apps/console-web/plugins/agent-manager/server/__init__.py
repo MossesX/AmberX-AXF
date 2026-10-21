@@ -2,7 +2,10 @@
 
 Create, edit, manage and orchestrate AI agents built from reusable parts — personas, lingo packs, skills, tools — each
 with its own persistent memory (type and settings per agent), trained from Firecrawl, web pages, the repo, pasted text
-and MCP servers. Add-on agents install as bundles (three ship with the plugin: coder, axf-expert, ai-expert).
+and MCP servers. Add-on agents install as bundles (three ship with the plugin: coder = Mosses, axf-expert, ai-expert).
+
+The definition format is the framework contract agent-definition@1 (framework/core/agents.ts; here server/contract.py;
+Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps load the same agents.
 
 Integration (plugin_services, capability names only — never another plugin's folder):
   provides  axf.agents@1  list_agents / get_agent / memory_context / run_tool / record_turn — the AI assistant uses it
@@ -11,17 +14,22 @@ Integration (plugin_services, capability names only — never another plugin's f
 """
 from __future__ import annotations
 
+import json
+import queue
+import threading
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 
 import plugin_services
 
-from . import containers, addons, engine, library, llm, memory, store, toolkit, training
+from . import addons, containers, contract, engine, library, llm, memory, store, toolkit, training
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
+VERSION = "0.2.0"
 
 
 def _err(e: Exception) -> HTTPException:
@@ -35,11 +43,13 @@ def _err(e: Exception) -> HTTPException:
 # ---------------------------------------------------------------- service: axf.agents@1
 
 class AgentsService:
+    """Capability `axf.agents@1` — the contract's AgentRuntime (core/agents.ts), as the AI assistant and the systems check call it."""
     version = 1
 
     def list_agents(self) -> list[dict[str, Any]]:
+        dangerous = store.dangerous_agents()
         return [{"id": a["id"], "name": a.get("name", a["id"]), "icon": a.get("icon", "user"), "description": a.get("description", ""), "origin": a.get("origin", "user"),
-                 "dangerous": a["id"] in store.load_settings()["safety"]["dangerousAgents"]}
+                 "dangerous": a["id"] in dangerous}
                 for a in sorted(store.items("agents").values(), key=lambda a: a.get("name", "").lower()) if a.get("enabled", True) is not False]
 
     def get_agent(self, agent_id: str) -> dict[str, Any] | None:
@@ -96,20 +106,36 @@ def _migrate_mosses() -> None:
         pass
 
 
+try:
+    store.migrate()
+except Exception:  # noqa: BLE001
+    pass
 _migrate_mosses()
 training.start_scheduler(lambda: plugin_services.get("axf.agents@1") is not None)
 
 
-# ---------------------------------------------------------------- status + settings
+# ---------------------------------------------------------------- status + settings + contract
 
 @router.get("/status")
 def status() -> dict[str, Any]:
     counts = {c: len(store.items(c)) for c in store.COLLECTIONS}
-    return {"counts": counts, "llm": llm.describe(), "assistant": plugin_services.get("axf.llm@1") is not None,
-            "firecrawl": bool(store.secret("firecrawl")), "trainingRunning": training.running(),
+    cont = containers.available()
+    return {"version": VERSION, "contract": contract.AGENT_CONTRACT, "counts": counts, "llm": llm.describe(), "assistant": plugin_services.get("axf.llm@1") is not None,
+            "firecrawl": bool(store.secret("firecrawl")), "trainingRunning": training.running(), "schedulerTick": training.last_tick,
             "addons": {"available": len(addons.bundles()), "installed": len(store.addon_records())},
-            "memoryTypes": list(memory.TYPES), "toolKinds": list(toolkit.KINDS), "builtins": {k: v["description"] for k, v in toolkit.BUILTINS.items()},
-            "sourceTypes": list(training.SOURCE_TYPES)}
+            "memoryTypes": list(memory.TYPES), "memoryKinds": list(memory.KINDS), "toolKinds": list(toolkit.KINDS),
+            "builtins": {k: v["description"] for k, v in toolkit.BUILTINS.items()}, "dangerousBuiltins": sorted(k for k, v in toolkit.BUILTINS.items() if v.get("dangerous") or k in containers.ALL),
+            "sourceTypes": list(training.SOURCE_TYPES), "workflowModes": list(contract.WORKFLOW_MODES), "services": {"containers": cont["containers"], "snapshots": cont["snapshots"]},
+            "safety": {"dangerousAgents": sorted(store.dangerous_agents())}}
+
+
+@router.get("/contract")
+def contract_info() -> dict[str, Any]:
+    """The definition contract this server implements, for apps that load the same agents (Build Pilot)."""
+    return {"$axf": contract.AGENT_CONTRACT, "collections": list(contract.COLLECTIONS), "addon": contract.AGENT_ADDON_TAG, "libraryItem": contract.AGENT_LIBRARY_ITEM_TAG,
+            "memory": contract.AGENT_MEMORY_TAG, "memoryTypes": list(contract.MEMORY_TYPES), "memoryKinds": list(contract.MEMORY_KINDS), "toolKinds": list(contract.TOOL_KINDS),
+            "workflowModes": list(contract.WORKFLOW_MODES), "sourceTypes": list(contract.TRAINING_SOURCE_TYPES), "schedules": list(contract.TRAINING_SCHEDULES),
+            "limits": contract.LIMITS, "builtins": {k: {"description": v["description"], "parameters": v["parameters"]} for k, v in toolkit.BUILTINS.items()}}
 
 
 @router.get("/settings")
@@ -133,7 +159,14 @@ def put_settings(body: dict[str, Any]) -> dict[str, Any]:
         d = body["defaults"]
         if d.get("memoryType") and d["memoryType"] not in memory.TYPES:
             raise HTTPException(400, "unknown memory type")
-        s["defaults"] = {**s["defaults"], **{k: d[k] for k in ("memoryType", "topK", "window", "maxItems") if k in d}}
+        nums = {}
+        for k in ("topK", "window", "maxItems"):
+            if k in d:
+                try:
+                    nums[k] = max(1, min(int(d[k]), 50_000))
+                except (TypeError, ValueError):
+                    raise HTTPException(400, f"{k} must be a number") from None
+        s["defaults"] = {**s["defaults"], **({"memoryType": d["memoryType"]} if d.get("memoryType") else {}), **nums}
     for k in ("preferAssistant", "scheduler"):
         if k in body:
             s[k] = bool(body[k])
@@ -164,48 +197,21 @@ def test_firecrawl(body: dict[str, Any] | None = None) -> dict[str, Any]:
 # ---------------------------------------------------------------- generic collections
 
 def _validate(coll: str, rec: dict[str, Any]) -> dict[str, Any]:
-    rec = {k: v for k, v in rec.items() if k not in ("createdAt", "updatedAt", "origin")}
-    if coll == "tools":
-        return toolkit.validate(rec)
     if coll == "training":
         return training.validate(rec)
-    if not str(rec.get("name") or "").strip():
-        raise ValueError("a name is required")
-    if coll == "agents":
-        m = rec.get("memory") or {}
-        if m.get("type") and m["type"] not in memory.TYPES:
-            raise ValueError(f"memory type must be one of {', '.join(memory.TYPES)}")
-        if m.get("record") and m["record"] not in ("episodes", "facts", "both", "off"):
-            raise ValueError("memory record is episodes, facts, both or off")
-        for f, c in (("skillIds", "skills"), ("lingoIds", "lingo"), ("toolIds", "tools"), ("delegates", "agents")):
-            have = store.items(c)
-            rec[f] = [x for x in rec.get(f) or [] if x in have and x != rec.get("id")]
-        if rec.get("personaId") and rec["personaId"] not in store.items("personas"):
-            rec["personaId"] = ""
-        # Voice slot: empty until a voice plugin provides voices (provider + voice id); `hint` describes the wanted voice.
-        v = rec.get("voice")
-        if v is not None and not isinstance(v, dict):
-            raise ValueError("voice is an object {provider, voiceId, hint} or null")
-        if isinstance(v, dict):
-            rec["voice"] = {k: str(v.get(k) or "")[:200] for k in ("provider", "voiceId", "hint")}
-    if coll == "personas" and rec.get("voiceSlot") is not None:
-        vs = rec["voiceSlot"]
-        if not isinstance(vs, dict):
-            raise ValueError("voiceSlot is an object {provider, voiceId, hint} or null")
-        rec["voiceSlot"] = {k: str(vs.get(k) or "")[:200] for k in ("provider", "voiceId", "hint")}
-    if coll == "workflows":
-        if (rec.get("mode") or "sequential") not in ("sequential", "parallel", "router", "critic"):
-            raise ValueError("mode is sequential, parallel, router or critic")
-        agents = store.items("agents")
-        for i, s in enumerate(rec.get("steps") or []):
-            s.setdefault("id", f"s{i + 1}")
-            if s.get("agentId") not in agents:
-                raise ValueError(f"step {s['id']}: unknown agent {s.get('agentId')}")
-    if coll in ("skills", "personas", "lingo"):
-        for f in ("triggers", "traits", "rules", "phrases", "avoid", "toolIds", "samples"):
-            if f in rec and isinstance(rec[f], str):
-                rec[f] = [x.strip() for x in rec[f].split("\n") if x.strip()]
-    return rec
+    v = contract.validate_item(coll, rec, toolkit.context())
+    if not v.ok:
+        raise ValueError(v.errors[0])
+    return v.item
+
+
+@router.post("/validate/{coll}")
+def validate_only(coll: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Dry run: the contract's errors, warnings and the normalised item, nothing saved (forms and wizards use it live)."""
+    if coll not in store.COLLECTIONS:
+        raise HTTPException(404, f"no collection {coll}")
+    v = contract.validate_item(coll, body, toolkit.context())
+    return {"ok": v.ok, "errors": v.errors, "warnings": v.warnings, "item": v.item}
 
 
 @router.get("/c/{coll}")
@@ -288,13 +294,13 @@ def item_fork(coll: str, iid: str, body: dict[str, Any]) -> dict[str, Any]:
 @router.get("/c/{coll}/{iid}/export")
 def item_export(coll: str, iid: str) -> dict[str, Any]:
     it = _lib(store.get, coll, iid)
-    return {"$axf": "agent-library-item@1", "collection": coll, "item": {k: v for k, v in it.items() if k not in ("createdAt", "updatedAt", "origin")}}
+    return {"$axf": contract.AGENT_LIBRARY_ITEM_TAG, "collection": coll, "item": {k: v for k, v in it.items() if k not in ("createdAt", "updatedAt", "origin")}}
 
 
 @router.post("/c/{coll}/import")
 def item_import(coll: str, body: dict[str, Any]) -> dict[str, Any]:
     raw = body.get("item") if isinstance(body.get("item"), dict) else body
-    if raw.get("$axf") == "agent-library-item@1":
+    if raw.get("$axf") == contract.AGENT_LIBRARY_ITEM_TAG:
         if raw.get("collection") != coll:
             raise HTTPException(400, f"that file is a {raw.get('collection')} item, not {coll}")
         raw = raw.get("item") or {}
@@ -323,13 +329,26 @@ def item_draft(coll: str, body: dict[str, Any]) -> dict[str, Any]:
     return _lib(library.draft, coll, str(body.get("text") or ""), expert)
 
 
+# ---------------------------------------------------------------- whole library export / import (agent-addon@1 of everything)
+
+@router.get("/export")
+def export_all() -> dict[str, Any]:
+    """Every user-made item as one agent-addon@1 bundle (add-on items stay with their add-on; no memory, no keys)."""
+    prov: dict[str, Any] = {}
+    for sec in contract.ADDON_SECTIONS:
+        prov[sec] = [{k: v for k, v in it.items() if k not in ("createdAt", "updatedAt", "origin", "log", "status", "lastRun", "lastAdded", "nextRun")}
+                     for it in store.items(sec).values() if it.get("origin", "user") == "user"]
+    return {"$axf": contract.AGENT_ADDON_TAG, "id": "library-export", "name": "Agent library export", "version": "1.0.0", "description": "Everything made in this console's agent manager.", "provides": prov}
+
+
 # ---------------------------------------------------------------- agents
 
 @router.get("/agents/{aid}/resolved")
 def resolved(aid: str) -> dict[str, Any]:
     try:
         c = engine.compose(aid)
-        return {"system": c["system"], "tools": [toolkit.spec(t) | {"kind": t["kind"]} for t in c["tools"]], "model": c["model"], "memory": c["memory"], "stats": memory.stats(c["memory"]["scope"])}
+        return {"system": c["system"], "tools": [toolkit.spec(t) | {"kind": t["kind"], "dangerous": toolkit.is_dangerous(t)} for t in c["tools"]], "model": c["model"], "memory": c["memory"],
+                "stats": memory.stats(c["memory"]["scope"]), "writeMode": c["writeMode"], "dropped": c["dropped"]}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
 
@@ -340,7 +359,7 @@ def playground(aid: str, body: dict[str, Any]) -> dict[str, Any]:
     try:
         hist = [m for m in (body.get("history") or []) if m.get("role") in ("user", "assistant")][-20:]
         r = engine.run_agent(aid, str(body.get("message") or ""), history=[{"role": m["role"], "content": str(m.get("content", ""))} for m in hist], use_memory=body.get("memory", True) is not False)
-        store.add_run({"kind": "playground", "agentId": aid, "input": str(body.get("message"))[:1000], "output": r["text"][:6000], "tools": r["tools"]})
+        store.add_run({"kind": "playground", "agentId": aid, "input": str(body.get("message"))[:1000], "output": r["text"][:6000], "tools": r["tools"], "ms": r.get("ms")})
         return r
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
@@ -421,6 +440,7 @@ def memory_list(aid: str, q: str = "", kind: str = "", limit: int = 200) -> dict
     try:
         scope = _scope(aid)
         mem = memory.load(scope)
+        limit = max(1, min(int(limit), 500))
         if q:
             items = memory.search(scope, q, min(limit, 50), "hybrid", (kind,) if kind else None)
         else:
@@ -435,7 +455,10 @@ def memory_add(aid: str, body: dict[str, Any]) -> dict[str, Any]:
     try:
         a = store.get("agents", aid)
         cfg = memory.config(a)
-        return {"items": memory.add(cfg["scope"], str(body.get("text") or ""), body.get("kind") or "note", body.get("tags") or [], source="manual",
+        kind = body.get("kind") or "note"
+        if kind not in ("fact", "note", "knowledge"):
+            raise ValueError("by hand you can add facts, notes and knowledge")
+        return {"items": memory.add(cfg["scope"], str(body.get("text") or ""), kind, body.get("tags") or [], source="manual",
                                     embed=cfg["type"] in ("vector", "hybrid"), embed_profile=cfg["embedProfile"], max_items=cfg["maxItems"])}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
@@ -465,12 +488,28 @@ def memory_clear(aid: str, body: dict[str, Any] | None = None) -> dict[str, Any]
     return {"cleared": scope}
 
 
+@router.get("/memory")
+def memory_scopes() -> dict[str, Any]:
+    """Every memory store (agents and shared scopes) with its size — the Memory tab's overview."""
+    agents = store.items("agents")
+    by_scope: dict[str, list[str]] = {}
+    for a in agents.values():
+        by_scope.setdefault(memory.config(a)["scope"], []).append(a["id"])
+    rows = []
+    for sc in sorted(set(memory.scopes()) | set(by_scope)):
+        st = memory.stats(sc)
+        rows.append({**st, "agents": by_scope.get(sc, []), "orphan": sc not in by_scope})
+    return {"items": rows}
+
+
 # ---------------------------------------------------------------- tools, training, workflows, runs
 
 @router.post("/tools/{tid}/test")
 def tool_test(tid: str, body: dict[str, Any]) -> dict[str, Any]:
     try:
         t = store.get("tools", tid)
+        if containers.is_container_tool(t) and (t.get("config") or {}).get("builtin") in containers.WRITE_TOOLS:
+            return {"ok": False, "output": "Change-proposing container tools only run inside an assistant chat, where Brett approves the batch. Nothing was changed."}
         out = toolkit.execute(t, body.get("args") or {}, {"agent": None, "scope": body.get("scope") or "", "depth": 0, "run_agent": engine.run_agent, "run_workflow": engine.run_workflow})
         return {"ok": True, "output": str(out)[:20_000]}
     except Exception as e:  # noqa: BLE001
@@ -495,6 +534,35 @@ def workflow_run(wid: str, body: dict[str, Any]) -> dict[str, Any]:
         return engine.run_workflow(wid, str(body.get("input") or ""))
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
+
+
+@router.post("/workflows/{wid}/run/stream")
+def workflow_run_stream(wid: str, body: dict[str, Any]) -> StreamingResponse:
+    """The same run as SSE: `step` / `step_done` while it works, then `done` {output, trace, runId} or `error`."""
+    try:
+        store.get("workflows", wid)
+    except KeyError as e:
+        raise _err(e) from None
+    q: queue.Queue[tuple[str, dict[str, Any]] | None] = queue.Queue()
+
+    def work() -> None:
+        try:
+            r = engine.run_workflow(wid, str(body.get("input") or ""), on_event=lambda k, d: q.put((k, d)))
+            q.put(("done", r))
+        except Exception as e:  # noqa: BLE001
+            q.put(("error", {"error": str(e)}))
+        q.put(None)
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def gen() -> Iterator[str]:
+        while True:
+            ev = q.get()
+            if ev is None:
+                return
+            yield f"event: {ev[0]}\ndata: {json.dumps(ev[1], ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(gen(), media_type="text/event-stream", headers={"cache-control": "no-store", "x-accel-buffering": "no"})
 
 
 @router.get("/runs")

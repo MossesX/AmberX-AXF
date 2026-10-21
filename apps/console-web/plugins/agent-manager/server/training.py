@@ -19,32 +19,23 @@ import threading
 import time
 from typing import Any
 
-from . import memory, store, toolkit
+from . import contract, memory, store, toolkit
 
-SOURCE_TYPES = ("firecrawl-scrape", "firecrawl-crawl", "firecrawl-search", "url", "repo", "text", "mcp-resource", "mcp-tool")
-PERIOD = {"hourly": 3600, "daily": 86400, "weekly": 7 * 86400}
+SOURCE_TYPES = contract.TRAINING_SOURCE_TYPES
+PERIOD = contract.SCHEDULE_SECONDS
 _running: set[str] = set()
 _lock = threading.Lock()
 
 
 def validate(job: dict[str, Any]) -> dict[str, Any]:
-    if not job.get("agentId"):
-        raise ValueError("a training job trains one agent: choose it")
-    store.get("agents", job["agentId"])
-    srcs = job.get("sources") or []
-    if not srcs:
-        raise ValueError("add at least one source")
-    for s in srcs:
-        if s.get("type") not in SOURCE_TYPES:
-            raise ValueError(f"unknown source type {s.get('type')}")
-    sched = job.get("schedule") or "manual"
-    if sched not in ("manual", *PERIOD):
-        raise ValueError("schedule is manual, hourly, daily or weekly")
-    return {**job, "schedule": sched, "chunkSize": max(300, min(int(job.get("chunkSize") or 1200), 6000)), "overlap": max(0, min(int(job.get("overlap") or 120), 1000)),
-            "replace": job.get("replace", True) is not False, "nextRun": _next(sched)}
+    """Contract validation (same rules on every port) + this host's schedule bookkeeping."""
+    v = contract.validate_item("training", job, contract.Context(known=store.known(), builtins=toolkit.BUILTINS))
+    if not v.ok:
+        raise ValueError(v.errors[0])
+    return {**v.item, "nextRun": next_run(v.item["schedule"])}
 
 
-def _next(sched: str, base: float | None = None) -> int | None:
+def next_run(sched: str, base: float | None = None) -> int | None:
     return int(((base or time.time()) + PERIOD[sched]) * 1000) if sched in PERIOD else None
 
 
@@ -121,14 +112,14 @@ def run(job_id: str) -> dict[str, Any]:
                 log(f"✗ {src.get('type')}: {str(e)[:240]}")
         status = "completed" if not errors else ("partial" if added else "failed")
         log(f"{status}: {added} knowledge chunks in {time.time() - started:.1f}s")
-        store.upsert("training", {"id": job_id, "status": status, "lastRun": store.now_ms(), "lastAdded": added, "nextRun": _next(job.get("schedule") or "manual"), "log": lines[-60:]})
+        store.upsert("training", {"id": job_id, "status": status, "lastRun": store.now_ms(), "lastAdded": added, "nextRun": next_run(job.get("schedule") or "manual"), "log": lines[-60:]})
         store.add_run({"kind": "training", "jobId": job_id, "agentId": job["agentId"], "status": status, "added": added, "log": lines[-60:]})
         return {"status": status, "added": added, "log": lines}
     except Exception as e:  # noqa: BLE001
         log(f"✗ {e}")
         try:
             j2 = store.items("training").get(job_id) or {}
-            store.upsert("training", {"id": job_id, "status": "failed", "lastRun": store.now_ms(), "log": lines[-60:], "nextRun": _next(j2.get("schedule") or "manual")})
+            store.upsert("training", {"id": job_id, "status": "failed", "lastRun": store.now_ms(), "log": lines[-60:], "nextRun": next_run(j2.get("schedule") or "manual")})
         except Exception:  # noqa: BLE001
             pass
         raise
@@ -154,6 +145,7 @@ def running() -> list[str]:
 # ---------------------------------------------------------------- scheduler
 
 _started = False
+last_tick: int = 0
 
 
 def start_scheduler(is_active) -> None:  # noqa: ANN001 — callable telling whether the plugin is enabled
@@ -166,6 +158,8 @@ def start_scheduler(is_active) -> None:  # noqa: ANN001 — callable telling whe
         while True:
             time.sleep(60)
             try:
+                global last_tick
+                last_tick = store.now_ms()
                 if not is_active() or not store.load_settings().get("scheduler", True):
                     continue
                 now = store.now_ms()

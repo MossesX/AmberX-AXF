@@ -22,11 +22,14 @@ export interface Training extends Base { agentId: string; sources: Source[]; chu
 export interface MemItem { id: string; kind: string; text: string; tags?: string[]; source?: string; createdAt: number; hits?: number; score?: number }
 export interface MemStats { scope: string; items: number; byKind: Record<string, number>; summary: boolean; vectors: number; bytes: number }
 export interface Status {
-  counts: Record<Coll, number>; assistant: boolean; firecrawl: boolean; trainingRunning: string[];
+  version: string; contract: string; counts: Record<Coll, number>; assistant: boolean; firecrawl: boolean; trainingRunning: string[]; schedulerTick: number;
   llm: { source: 'assistant' | 'own'; profiles: { id: string; label: string; defaultModel: string; ready?: boolean }[]; kind?: string; model?: string; ready?: boolean };
-  addons: { available: number; installed: number }; memoryTypes: string[]; toolKinds: string[]; builtins: Record<string, string>; sourceTypes: string[];
+  addons: { available: number; installed: number }; memoryTypes: string[]; memoryKinds: string[]; toolKinds: string[]; builtins: Record<string, string>; dangerousBuiltins: string[];
+  sourceTypes: string[]; workflowModes: string[]; services: { containers: boolean; snapshots: boolean }; safety: { dangerousAgents: string[] };
 }
-export interface Addon { id: string; name: string; version: string; description: string; author?: string; icon?: string; source: string; provides: Record<string, number>; installed: boolean; installedVersion?: string; updateAvailable?: boolean }
+export interface Addon { id: string; name: string; version: string; description: string; author?: string; icon?: string; source: string; provides: Record<string, number>; installed: boolean; installedVersion?: string; updateAvailable?: boolean; risks?: string[]; agents?: { id: string; name: string }[] }
+export interface Validation<T = Record<string, unknown>> { ok: boolean; errors: string[]; warnings: string[]; item: T }
+export interface MemScope extends MemStats { agents: string[]; orphan: boolean }
 export interface Run { id: string; at: number; kind: string; name?: string; agentId?: string; workflowId?: string; input?: string; output?: string; status?: string; added?: number; trace?: { step: string; agent: string; output: string; chosen?: string[] }[]; log?: string[]; tools?: { tool: string; ok: boolean; preview: string }[] }
 export interface Settings {
   llm: { kind: string; baseUrl: string; keyEnv: string; model: string; embedModel: string; hasKey: boolean; envPresent: boolean };
@@ -50,6 +53,37 @@ export const del = <T,>(path: string) => call<T>(path, { method: 'DELETE' });
 export const list = <T,>(c: Coll) => call<{ items: T[] }>(`c/${c}`).then((r) => r.items);
 export const save = <T,>(c: Coll, item: unknown) => post<{ item: T }>(`c/${c}`, item).then((r) => r.item);
 export const remove = (c: Coll, id: string) => del(`c/${c}/${id}`);
+/** Dry run through the contract validator (agent-definition@1): errors, warnings and the normalised item; nothing saved. */
+export const validate = <T,>(c: Coll, item: unknown) => post<Validation<T>>(`validate/${c}`, item);
+export const isDangerousTool = (t: { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status?: Status) =>
+  !!t.dangerous || (t.kind === 'builtin' && (status?.dangerousBuiltins ?? []).includes(String(t.config?.builtin ?? ''))) || String(t.config?.builtin ?? '').startsWith('container_');
+
+/** Streams a workflow run (SSE): step / step_done while it works, then done or error. Returns a stop function. */
+export function streamWorkflow(id: string, input: string, on: (event: string, data: Record<string, unknown>) => void): () => void {
+  const ac = new AbortController();
+  void (async () => {
+    try {
+      const r = await pluginFetch(FOLDER, `workflows/${id}/run/stream`, { method: 'POST', body: JSON.stringify({ input }), signal: ac.signal });
+      if (!r.ok || !r.body) { on('error', { error: r.status === 404 ? 'workflow not found' : `HTTP ${r.status}` }); return; }
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i: number;
+        while ((i = buf.indexOf('\n\n')) >= 0) {
+          const block = buf.slice(0, i); buf = buf.slice(i + 2);
+          const ev = /^event: (.+)$/m.exec(block)?.[1] ?? 'message';
+          const dl = block.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).join('\n');
+          try { on(ev, JSON.parse(dl || '{}') as Record<string, unknown>); } catch { on(ev, { raw: dl }); }
+        }
+      }
+    } catch (e) { if (!ac.signal.aborted) on('error', { error: (e as Error).message }); }
+  })();
+  return () => ac.abort();
+}
 
 /* A small cache of every collection, refreshed after writes, shared by all views and wizards. */
 export interface Cache { agents: Agent[]; skills: Skill[]; personas: Persona[]; lingo: Lingo[]; tools: Tool[]; workflows: Workflow[]; training: Training[] }

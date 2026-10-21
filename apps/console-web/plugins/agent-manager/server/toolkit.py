@@ -1,8 +1,8 @@
 """Agent tools: definitions (stored in tools.json) and the executor.
 
-Tool kinds
+Tool kinds (contract.TOOL_KINDS)
   builtin   repo_list · repo_read · repo_search · current_time · calculator · web_fetch · memory_search · memory_save ·
-            firecrawl_scrape · firecrawl_search            (config.builtin names which one)
+            firecrawl_scrape · firecrawl_search · container_* (containers.py)      (config.builtin names which one)
   http      call an HTTP API: method, url template ({{arg}}), headers (values may be "env:VAR"), JSON body template.
             Public hosts only unless config.allowPrivate (for services on the VPS you trust).
   mcp       call a tool on a Streamable-HTTP MCP server: config.url, config.tokenEnv, config.tool
@@ -10,8 +10,9 @@ Tool kinds
   agent     delegate a task to another agent: config.agentId
   workflow  run a workflow: config.workflowId (input = the "input" argument)
 Every tool has a function `name`, a `description` and JSON-Schema `parameters` — what the model sees.
-Nothing here runs shell commands or arbitrary code. Container tools (containers.py) only read, or *propose* changes
-that Brett approves on a card; they're dangerous tools, given only to agents allowed in Settings → Safety.
+Nothing here runs shell commands or arbitrary code. Container tools only read, or *propose* changes that Brett
+approves on a card; they're dangerous tools, given only to agents allowed in Settings → Safety.
+Builtins are an open registry: `register_builtin(name, spec, runner)` lets another module add one.
 """
 from __future__ import annotations
 
@@ -22,16 +23,16 @@ import os
 import re
 import time
 from pathlib import Path
-from typing import Any
-from urllib.parse import quote, urlparse
+from typing import Any, Callable
+from urllib.parse import urlparse
 
-from . import containers, safety, store
+from . import containers, contract, safety, store
 
 ROOT = store.ROOT
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
 _DENY_FILE = re.compile(r"(^\.env|\.pem$|\.key$|id_rsa|id_ed25519|secrets?\.(env|json|ya?ml)$|credentials\.json$|\.p12$|\.keystore$|\.jks$)", re.I)
-NAME_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]{0,63}$")
-KINDS = ("builtin", "http", "mcp", "prompt", "agent", "workflow")
+NAME_RE = contract.TOOL_NAME_RE
+KINDS = contract.TOOL_KINDS
 
 BUILTINS: dict[str, dict[str, Any]] = {
     "repo_list": {"description": "List files in the AmberX AXF repository (path and size). Use dir to narrow.", "parameters": {"type": "object", "properties": {"dir": {"type": "string"}}}},
@@ -46,11 +47,25 @@ BUILTINS: dict[str, dict[str, Any]] = {
     "firecrawl_search": {"description": "Search the web with Firecrawl and return the top results as Markdown.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer"}}, "required": ["query"]}},
 }
 BUILTINS.update(containers.ALL)
+_RUNNERS: dict[str, Callable[[dict[str, Any], dict[str, Any]], str]] = {}
+
+
+def register_builtin(name: str, spec: dict[str, Any], runner: Callable[[dict[str, Any], dict[str, Any]], str], dangerous: bool = False) -> None:
+    """Open registry: another module adds a builtin tool (spec = {description, parameters}); dangerous ones need Settings → Safety."""
+    if not NAME_RE.match(name):
+        raise ValueError("builtin names are function names")
+    BUILTINS[name] = {"description": str(spec.get("description", ""))[:1000], "parameters": spec.get("parameters") or {"type": "object", "properties": {}}, "dangerous": dangerous}
+    _RUNNERS[name] = runner
 
 
 def is_dangerous(rec: dict[str, Any]) -> bool:
     """Tools that touch containers, write or run commands. Only agents allowed in Settings → Safety get them."""
-    return containers.is_container_tool(rec) or bool(rec.get("dangerous"))
+    b = (rec.get("config") or {}).get("builtin") if rec.get("kind") == "builtin" else None
+    return containers.is_container_tool(rec) or bool(rec.get("dangerous")) or bool(b and BUILTINS.get(b, {}).get("dangerous"))
+
+
+def context() -> contract.Context:
+    return contract.Context(known=store.known(), builtins=BUILTINS)
 
 
 # ---------------------------------------------------------------- safe primitives
@@ -102,12 +117,7 @@ def calc(expr: str) -> str:
     return safety.calc(expr)
 
 
-def _fill(template: str, args: dict[str, Any], url: bool = False) -> str:
-    def rep(m):
-        v = args.get(m.group(1), "")
-        s = v if isinstance(v, str) else json.dumps(v)
-        return quote(s, safe="") if url else s
-    return re.sub(r"\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}", rep, template)
+_fill = contract.fill_tool_template
 
 
 # ---------------------------------------------------------------- Firecrawl
@@ -197,39 +207,10 @@ def mcp_call(url: str, token_env: str, tool: str | None = None, args: dict[str, 
 # ---------------------------------------------------------------- definitions → model-facing specs
 
 def validate(rec: dict[str, Any]) -> dict[str, Any]:
-    name = str(rec.get("name") or "").strip()
-    if not NAME_RE.match(name):
-        raise ValueError("tool name must be a function name: letters, digits, underscores (e.g. get_weather)")
-    kind = rec.get("kind") or "builtin"
-    if kind not in KINDS:
-        raise ValueError(f"tool kind must be one of {', '.join(KINDS)}")
-    cfg = dict(rec.get("config") or {})
-    params = rec.get("parameters") or {"type": "object", "properties": {}}
-    if kind == "builtin":
-        if cfg.get("builtin") not in BUILTINS:
-            raise ValueError(f"unknown builtin; choose one of {', '.join(BUILTINS)}")
-        params = rec.get("parameters") or BUILTINS[cfg["builtin"]]["parameters"]
-    if kind == "http":
-        if not re.match(r"^https?://", str(cfg.get("url", ""))):
-            raise ValueError("http tools need a URL starting with http:// or https://")
-        if str(cfg.get("method", "GET")).upper() not in ("GET", "POST", "PUT", "PATCH", "DELETE"):
-            raise ValueError("unsupported method")
-        for k, v in (cfg.get("headers") or {}).items():
-            if not isinstance(v, str):
-                raise ValueError("header values must be strings (use env:VAR for secrets)")
-            if not v.startswith("env:") and re.search(r"(?i)bearer\s+\S{12,}|sk-|key", v) and k.lower() in ("authorization", "x-api-key", "api-key"):
-                raise ValueError(f"put secrets in an environment variable: set header {k} to env:MY_VAR")
-    if kind == "mcp" and (not re.match(r"^https?://", str(cfg.get("url", ""))) or not cfg.get("tool")):
-        raise ValueError("mcp tools need a server URL and the remote tool name")
-    if kind == "prompt" and not str(cfg.get("template", "")).strip():
-        raise ValueError("prompt tools need a template")
-    if kind == "agent" and not cfg.get("agentId"):
-        raise ValueError("agent tools need the agent to delegate to")
-    if kind == "workflow" and not cfg.get("workflowId"):
-        raise ValueError("workflow tools need a workflow")
-    if not isinstance(params, dict) or params.get("type") != "object":
-        raise ValueError("parameters must be a JSON Schema object ({type: object, properties: {...}})")
-    return {**rec, "name": name, "kind": kind, "config": cfg, "parameters": params, "description": str(rec.get("description") or BUILTINS.get(cfg.get("builtin", ""), {}).get("description", ""))[:1000]}
+    v = contract.validate_item("tools", rec, context())
+    if not v.ok:
+        raise ValueError(v.errors[0])
+    return v.item
 
 
 def spec(tool: dict[str, Any]) -> dict[str, Any]:
@@ -238,11 +219,13 @@ def spec(tool: dict[str, Any]) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- execution
 
-def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> str:
-    """Run one tool. ctx: {agent, scope, depth, run_agent, run_workflow}."""
+def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> str:  # noqa: C901
+    """Run one tool. ctx: {agent, scope, depth, run_agent, run_workflow, stage?}."""
     kind, cfg, a = tool.get("kind"), tool.get("config") or {}, args or {}
     if kind == "builtin":
         b = cfg.get("builtin")
+        if b in _RUNNERS:
+            return str(_RUNNERS[b](a, ctx))
         if b == "repo_list":
             base = _safe_path(str(a.get("dir") or "."))
             out = []
@@ -282,7 +265,7 @@ def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> 
             if not scope:
                 raise ValueError("no memory scope")
             if b == "memory_search":
-                hits = memory.search(scope, str(a.get("query") or ""), int(a.get("limit") or 6), "hybrid")
+                hits = memory.search(scope, str(a.get("query") or ""), max(1, min(int(a.get("limit") or 6), 30)), "hybrid")
                 return "\n".join(f"- [{h['kind']}] {h['text'][:800]}" for h in hits) or "Nothing relevant in memory."
             agent = ctx.get("agent") or {}
             mc = memory.config(agent) if agent else {"type": "keyword", "embedProfile": "", "maxItems": 2000}
@@ -326,12 +309,13 @@ def execute(tool: dict[str, Any], args: dict[str, Any], ctx: dict[str, Any]) -> 
         from . import llm
         out = llm.complete([{"role": "user", "content": _fill(str(cfg["template"]), a)}], system=cfg.get("system") or None, model_cfg={"model": cfg.get("model") or "", "profile": cfg.get("profile") or "", "temperature": cfg.get("temperature")})
         return out["text"]
+    depth = int(ctx.get("depth") or 0)
     if kind == "agent":
-        if (ctx.get("depth") or 0) >= 3:
-            raise ValueError("delegation depth limit reached (3)")
-        return ctx["run_agent"](cfg["agentId"], str(a.get("task") or a.get("input") or json.dumps(a)), depth=(ctx.get("depth") or 0) + 1)["text"]
+        if depth >= contract.LIMITS["delegationDepth"]:
+            raise ValueError(f"delegation depth limit reached ({contract.LIMITS['delegationDepth']})")
+        return ctx["run_agent"](cfg["agentId"], str(a.get("task") or a.get("input") or json.dumps(a)), depth=depth + 1)["text"]
     if kind == "workflow":
-        if (ctx.get("depth") or 0) >= 3:
-            raise ValueError("delegation depth limit reached (3)")
-        return ctx["run_workflow"](cfg["workflowId"], str(a.get("input") or json.dumps(a)), depth=(ctx.get("depth") or 0) + 1)["output"]
+        if depth >= contract.LIMITS["delegationDepth"]:
+            raise ValueError(f"delegation depth limit reached ({contract.LIMITS['delegationDepth']})")
+        return ctx["run_workflow"](cfg["workflowId"], str(a.get("input") or json.dumps(a)), depth=depth + 1)["output"]
     raise ValueError(f"unknown tool kind {kind}")

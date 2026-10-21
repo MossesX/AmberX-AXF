@@ -2,13 +2,13 @@
  * The Agent manager view: tabs for agents (with playground, prompt preview, memory, export), skills, personas & lingo,
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Button, Chip, Icon, useEditorSync, useRuntime } from '@console/axf/react';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
 import {
-  MEMORY_HELP, call, del, download, fmtTime, post, refresh, remove, save,
-  type Addon, type Agent, type Cache, type Coll, type MemItem, type MemStats, type Run, type Status, type Training, type Workflow,
+  MEMORY_HELP, call, del, download, fmtTime, isDangerousTool, post, refresh, remove, save, streamWorkflow, validate,
+  type Addon, type Agent, type Cache, type Coll, type MemItem, type MemScope, type MemStats, type Run, type Status, type Training, type Validation, type Workflow,
 } from './api';
 
 type Tab = 'agents' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
@@ -24,6 +24,8 @@ export function AgentManagerView() {
   const [tab, setTab] = useState<Tab>('agents');
   const [err, setErr] = useState('');
   useEffect(() => { void refresh().catch((e: Error) => setErr(e.message)); }, []);
+  // UI-editor rule: whenever the view opens or comes back into focus, reload what is saved now (another tab may have saved).
+  useEditorSync({ onRefresh: () => { void refresh().catch(() => undefined); } });
   const wizard = (kind: string, agentId?: string) => rt.openDialog('agent-manager.wizard', { kind, agentId });
   return (
     <div className="axp-agent-manager fx-stack fx-stack--lg">
@@ -35,6 +37,7 @@ export function AgentManagerView() {
           <Button icon="star" onClick={() => wizard('skill')}>New skill</Button>
           <Button icon="zap" onClick={() => wizard('tool')}>New tool</Button>
           <Button icon="download" onClick={() => wizard('training')}>Training</Button>
+          <Button tone="ghost" icon="upload" title="Everything you made, as one agent-addon@1 bundle (no memory, no keys)" onClick={() => void call('export').then((b) => download('agent-library.addon.json', b))}>Export library</Button>
         </div>
       </header>
       {err && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{err}</div>}
@@ -43,7 +46,8 @@ export function AgentManagerView() {
           <Chip tone={status.llm.source === 'assistant' ? 'success' : status.llm.ready ? 'accent' : 'warning'}>{status.llm.source === 'assistant' ? 'models from the AI assistant' : status.llm.ready ? `own model: ${status.llm.model}` : 'no model set up'}</Chip>
           <Chip tone={status.firecrawl ? 'success' : undefined}>{status.firecrawl ? 'Firecrawl ready' : 'Firecrawl not set'}</Chip>
           {status.trainingRunning.length > 0 && <Chip tone="accent">training: {status.trainingRunning.join(', ')}</Chip>}
-          <span className="fx-small fx-muted">{status.counts.agents} agents · {status.counts.skills} skills · {status.counts.tools} tools · {status.addons.installed}/{status.addons.available} add-ons</span>
+          {status.services?.containers && <Chip tone={status.services.snapshots ? 'warning' : undefined}>{status.services.snapshots ? 'container write mode available' : 'containers: read only (no Snapshot Manager)'}</Chip>}
+          <span className="fx-small fx-muted">{status.counts.agents} agents · {status.counts.skills} skills · {status.counts.tools} tools · {status.addons.installed}/{status.addons.available} add-ons · {status.contract}</span>
         </div>
       )}
       <div className="axp-agent-manager__tabs" role="tablist">
@@ -70,7 +74,7 @@ export function AgentManagerView() {
 
 type Rec = Record<string, unknown> & { id?: string; name?: string; origin?: string };
 
-function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
+function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }: {
   coll: Coll; cache: Cache; status?: Status; render: (v: Rec, set: (v: Rec) => void) => ReactNode; extra?: (v: Rec) => ReactNode; wizardKind?: string; blank?: Rec;
 }) {
   const rt = useRuntime();
@@ -82,6 +86,7 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
   const [busy, setBusy] = useState(false);
   const [tag, setTag] = useState('');
   const [describe, setDescribe] = useState(false);
+  const check = useLiveCheck(coll, draft);
   const lib = LIB.includes(coll);
   const allTags = [...new Set(items.flatMap((i) => (i.tags as string[] | undefined) ?? []))].sort();
   const shown = items.filter((i) => (!q || JSON.stringify(i).toLowerCase().includes(q.toLowerCase())) && (!tag || ((i.tags as string[] | undefined) ?? []).includes(tag)));
@@ -111,7 +116,7 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
         {allTags.length > 0 && <div className="axp-agent-manager__picks">{allTags.map((t) => <button key={t} type="button" className={`axp-agent-manager__pick${tag === t ? ' is-active' : ''}`} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}</div>}
         {shown.map((it) => (
           <button key={String(it.id)} type="button" className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
-            <strong>{String(it.name ?? it.id)}{coll === 'tools' && (it.dangerous || String((it.config as { builtin?: string } | undefined)?.builtin ?? '').startsWith('container_')) ? <Chip tone="warning">dangerous</Chip> : null}</strong>
+            <strong>{String(it.name ?? it.id)}{coll === 'tools' && isDangerousTool(it as { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status) ? <Chip tone="warning">dangerous</Chip> : null}{it.forkedFrom ? <Chip>fork</Chip> : null}</strong>
             <span className="fx-small fx-muted">{String(it.description ?? it.role ?? it.kind ?? it.mode ?? (it as unknown as Training).status ?? '')}{it.origin && it.origin !== 'user' ? ` · ${String(it.origin).replace('addon:', 'add-on ')}` : ''}</span>
           </button>
         ))}
@@ -125,8 +130,9 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
             {render(draft, setDraft)}
             {lib && <Field label="Tags" hint="Comma-separated; filter the list by tag"><Text value={((draft.tags as string[] | undefined) ?? []).join(', ')} onChange={(t) => setDraft({ ...draft, tags: t.split(',').map((x) => x.trim()).filter(Boolean) })} /></Field>}
             {msg && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{msg}</div>}
+            <CheckNote check={check} />
             <div className="fx-row fx-row--wrap">
-              <Button tone="primary" icon="save" disabled={busy} onClick={() => void doSave()}>Save</Button>
+              <Button tone="primary" icon="save" disabled={busy || check?.ok === false} onClick={() => void doSave()}>Save</Button>
               {draft.id && <Button icon="trash" onClick={() => void doDelete()}>Delete</Button>}
               {lib && draft.id && <Button tone="ghost" icon="copy" onClick={() => void post<{ item: Rec }>(`c/${coll}/${draft.id}/duplicate`).then((r) => { void refresh(); open(r.item); rt.toast('Duplicated', 'success'); }, (e: Error) => setMsg(e.message))}>Duplicate</Button>}
               {lib && draft.id && <Button tone="ghost" icon="download" onClick={() => void call(`c/${coll}/${draft.id}/export`).then((b) => download(`${draft.id}.${coll.slice(0, -1)}.json`, b))}>Export</Button>}
@@ -137,6 +143,32 @@ function CollTab({ coll, cache, render, extra, wizardKind, blank = {} }: {
         )}
       </div>
     </section>
+  );
+}
+
+/* ---------------------------------------------------------------- live validation (agent-definition@1, dry run on the server) */
+
+/** Runs the contract validator on the draft as it changes (debounced); nothing is saved. */
+export function useLiveCheck(coll: Coll, draft: Record<string, unknown> | null): Validation | null {
+  const [check, setCheck] = useState<Validation | null>(null);
+  const seq = useRef(0);
+  const key = draft ? JSON.stringify(draft) : '';
+  useEffect(() => {
+    if (!draft || !(draft.name || draft.agentId)) { setCheck(null); return; }
+    const n = ++seq.current;
+    const t = setTimeout(() => { void validate<Record<string, unknown>>(coll, draft).then((r) => { if (seq.current === n) setCheck(r); }, () => { if (seq.current === n) setCheck(null); }); }, 350);
+    return () => clearTimeout(t);
+  }, [coll, key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return check;
+}
+
+export function CheckNote({ check }: { check: Validation | null }) {
+  if (!check || (check.ok && !check.warnings.length)) return null;
+  return (
+    <div className={`axp-agent-manager__note ${check.ok ? '' : 'is-warn'}`} role="status">
+      <Icon name={check.ok ? 'info' : 'alert'} size={14} />
+      <span>{[...check.errors, ...check.warnings.map((w) => `on save: ${w}`)].join(' · ')}</span>
+    </div>
   );
 }
 
@@ -249,7 +281,7 @@ function ImportButton({ coll, onDone }: { coll: Coll; onDone: (it: Rec) => void 
 
 /* ---------------------------------------------------------------- agents */
 
-interface Resolved { system: string; tools: { name: string; kind: string; description: string }[]; memory: { type: string; scope: string }; stats: MemStats }
+interface Resolved { system: string; tools: { name: string; kind: string; description: string; dangerous?: boolean }[]; memory: { type: string; scope: string }; stats: MemStats; writeMode?: boolean; dropped?: string[] }
 
 function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; wizard: (kind: string, agentId?: string) => void }) {
   const rt = useRuntime();
@@ -257,18 +289,23 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
   const [draft, setDraft] = useState<Partial<Agent> | null>(null);
   const [view, setView] = useState<'edit' | 'chat' | 'prompt'>('edit');
   const [msg, setMsg] = useState('');
+  const [q, setQ] = useState('');
+  const check = useLiveCheck('agents', draft as Record<string, unknown> | null);
+  const dangerous = new Set(status?.safety?.dangerousAgents ?? []);
   const open = (a: Agent) => { setSel(a.id); setDraft(structuredClone(a)); setMsg(''); };
   const doSave = async () => {
     if (!draft) return;
     try { const r = await save<Agent>('agents', draft); await refresh(); open(r); rt.toast('Agent saved', 'success'); } catch (e) { setMsg((e as Error).message); }
   };
+  const shown = cache.agents.filter((a) => !q || `${a.name} ${a.id} ${a.description ?? ''}`.toLowerCase().includes(q.toLowerCase()));
   return (
     <section className="axp-agent-manager__split">
       <div className="axp-agent-manager__list fx-stack">
         <div className="fx-row fx-row--wrap"><strong className="fx-grow">Agents ({cache.agents.length})</strong><Button icon="rocket" onClick={() => wizard('builder')}>Build</Button></div>
-        {cache.agents.map((a) => (
+        {cache.agents.length > 4 && <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter agents" aria-label="Filter agents" />}
+        {shown.map((a) => (
           <button key={a.id} type="button" className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
-            <strong><Icon name={a.icon || 'user'} size={13} /> {a.name}{a.enabled === false ? ' (off)' : ''}</strong>
+            <strong><Icon name={a.icon || 'user'} size={13} /> {a.name}{a.enabled === false ? ' (off)' : ''}{dangerous.has(a.id) && <Chip tone="warning">dangerous tools</Chip>}</strong>
             <span className="fx-small fx-muted">{a.memory?.type ?? 'hybrid'} memory · {(a.skillIds ?? []).length} skills{a.origin && a.origin !== 'user' ? ` · ${a.origin.replace('addon:', 'add-on ')}` : ''}</span>
           </button>
         ))}
@@ -288,11 +325,13 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
               <>
                 <AgentForm v={draft} set={setDraft} cache={cache} status={status} />
                 {msg && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{msg}</div>}
+                <CheckNote check={check} />
                 <div className="fx-row fx-row--wrap">
-                  <Button tone="primary" icon="save" onClick={() => void doSave()}>Save</Button>
+                  <Button tone="primary" icon="save" disabled={check?.ok === false} onClick={() => void doSave()}>Save</Button>
                   {draft.id && <Button icon="copy" onClick={() => void post<{ item: Agent }>(`agents/${draft.id}/clone`).then(async (r) => { await refresh(); open(r.item); })}>Clone</Button>}
                   {draft.id && <Button icon="download" onClick={() => void call(`agents/${draft.id}/export`).then((b) => download(`${draft.id}.agent-addon.json`, b))}>Export</Button>}
                   {draft.id && <Button icon="download" onClick={() => wizard('training', draft.id)}>Train…</Button>}
+                  {draft.id && <Button tone="ghost" icon="shield" title="Which agents get dangerous tools (Settings → Plugins → Agent manager → Safety)" onClick={() => rt.dispatch('settings.open:agent-manager')}>{dangerous.has(draft.id) ? 'Dangerous tools: allowed' : 'Dangerous tools: off'}</Button>}
                   {draft.id && <Button icon="trash" onClick={() => { if (confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); }}>Delete</Button>}
                 </div>
               </>
@@ -352,10 +391,11 @@ function PromptPreview({ id }: { id: string }) {
   if (!r) return <p className="fx-muted">Loading…</p>;
   return (
     <div className="fx-stack">
-      <div className="fx-row fx-row--wrap"><Chip tone="accent">{r.memory.type} memory</Chip><Chip>{r.stats.items} items</Chip><Chip>scope {r.memory.scope}</Chip></div>
+      <div className="fx-row fx-row--wrap"><Chip tone="accent">{r.memory.type} memory</Chip><Chip>{r.stats.items} items</Chip><Chip>scope {r.memory.scope}</Chip>{r.writeMode && <Chip tone="warning">write mode</Chip>}</div>
       <span className="fx-small fx-muted">{MEMORY_HELP[r.memory.type]}</span>
       <strong>Tools ({r.tools.length})</strong>
-      <div className="axp-agent-manager__picks">{r.tools.map((t) => <span key={t.name} className="fx-chip" title={t.description}>{t.name} · {t.kind}</span>)}</div>
+      <div className="axp-agent-manager__picks">{r.tools.map((t) => <span key={t.name} className={`fx-chip${t.dangerous ? ' fx-chip--warning' : ''}`} title={t.description}>{t.name} · {t.kind}{t.dangerous ? ' · dangerous' : ''}</span>)}</div>
+      {!!r.dropped?.length && <span className="fx-small fx-muted">Switched off by Settings → Safety: {r.dropped.join(', ')}</span>}
       <strong>System prompt</strong>
       <pre className="axp-agent-manager__out">{r.system}</pre>
     </div>
@@ -406,22 +446,36 @@ function TrainingRunner({ job }: { job: Training }) {
 function WorkflowRunner({ wf }: { wf: Workflow }) {
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
-  const [res, setRes] = useState<{ output: string; trace: { step: string; agent: string; output: string; chosen?: string[] }[] } | null>(null);
+  const [live, setLive] = useState<{ step: string; agent: string; done?: boolean; output?: string }[]>([]);
+  const [res, setRes] = useState<{ output: string; trace: { step: string; agent: string; output: string; chosen?: string[]; ms?: number }[]; ms?: number } | null>(null);
   const [err, setErr] = useState('');
-  const run = async () => {
-    setBusy(true); setErr(''); setRes(null);
-    try { setRes(await post(`workflows/${wf.id}/run`, { input })); } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  const stop = useRef<(() => void) | null>(null);
+  useEffect(() => () => stop.current?.(), []);
+  const run = () => {
+    setBusy(true); setErr(''); setRes(null); setLive([]);
+    stop.current = streamWorkflow(wf.id, input, (ev, d) => {
+      if (ev === 'step') setLive((l) => [...l, { step: String(d.step), agent: String(d.agent) }]);
+      else if (ev === 'step_done') setLive((l) => l.map((x) => (x.step === d.step && !x.done ? { ...x, done: true, output: String(d.output ?? '') } : x)));
+      else if (ev === 'done') { setRes(d as never); setBusy(false); }
+      else if (ev === 'error') { setErr(String(d.error ?? 'failed')); setBusy(false); }
+    });
   };
   return (
     <div className="axp-agent-manager__card fx-stack">
       <strong>Run</strong>
       <textarea className="fx-input" rows={3} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Input" aria-label="Workflow input" />
-      <div><Button tone="primary" icon="play" disabled={busy || !input.trim()} onClick={() => void run()}>{busy ? 'Running…' : 'Run workflow'}</Button></div>
+      <div className="fx-row fx-row--wrap">
+        <Button tone="primary" icon="play" disabled={busy || !input.trim()} onClick={run}>{busy ? 'Running…' : 'Run workflow'}</Button>
+        {busy && <Button icon="x" onClick={() => { stop.current?.(); setBusy(false); setErr('stopped'); }}>Stop watching</Button>}
+      </div>
+      {live.length > 0 && !res && (
+        <ol className="axp-agent-manager__steps">{live.map((l, i) => <li key={i} className={l.done ? 'is-done' : 'is-active'}><button type="button" disabled>{l.step} · {l.agent}{l.done ? ' ✓' : ' …'}</button></li>)}</ol>
+      )}
       {err && <p className="axp-agent-manager__bad">{err}</p>}
       {res && (
         <div className="fx-stack">
-          {res.trace.map((t, i) => <details key={i} className="axp-agent-manager__trace"><summary><span className="fx-mono">{t.step}</span> · {t.agent}{t.chosen ? ` → ${t.chosen.join(', ')}` : ''}</summary><pre className="axp-agent-manager__out">{t.output}</pre></details>)}
-          <strong>Output</strong>
+          {res.trace.map((t, i) => <details key={i} className="axp-agent-manager__trace"><summary><span className="fx-mono">{t.step}</span> · {t.agent}{t.chosen ? ` → ${t.chosen.join(', ')}` : ''}{t.ms ? ` · ${(t.ms / 1000).toFixed(1)}s` : ''}</summary><pre className="axp-agent-manager__out">{t.output}</pre></details>)}
+          <strong>Output{res.ms ? <span className="fx-small fx-muted"> · {(res.ms / 1000).toFixed(1)}s</span> : null}</strong>
           <pre className="axp-agent-manager__out">{res.output}</pre>
         </div>
       )}
@@ -439,7 +493,12 @@ function MemoryTab({ cache }: { cache: Cache }) {
   const [note, setNote] = useState('');
   const [summary, setSummary] = useState('');
   const [err, setErr] = useState('');
-  const load = () => { if (aid) void call<{ items: MemItem[]; summary: string; stats: MemStats; scope: string }>(`memory/${aid}?q=${encodeURIComponent(q)}&kind=${kind}`).then((d) => { setData(d); setSummary(d.summary); setErr(''); }, (e: Error) => setErr(e.message)); };
+  const [noteKind, setNoteKind] = useState('fact');
+  const [scopes, setScopes] = useState<MemScope[]>([]);
+  const load = () => {
+    if (aid) void call<{ items: MemItem[]; summary: string; stats: MemStats; scope: string }>(`memory/${aid}?q=${encodeURIComponent(q)}&kind=${kind}`).then((d) => { setData(d); setSummary(d.summary); setErr(''); }, (e: Error) => setErr(e.message));
+    void call<{ items: MemScope[] }>('memory').then((r) => setScopes(r.items), () => setScopes([]));
+  };
   useEffect(load, [aid, kind]);
   useEffect(() => { const t = setTimeout(load, 300); return () => clearTimeout(t); }, [q]);
   const agent = cache.agents.find((a) => a.id === aid);
@@ -466,7 +525,8 @@ function MemoryTab({ cache }: { cache: Cache }) {
           </details>
           <div className="axp-agent-manager__row">
             <input className="fx-input fx-grow" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a fact or note the agent should remember" aria-label="New memory" />
-            <Button icon="plus" disabled={!note.trim()} onClick={() => void post(`memory/${aid}`, { text: note, kind: 'fact' }).then(() => { setNote(''); load(); })}>Remember</Button>
+            <select className="fx-input axp-agent-manager__narrow" value={noteKind} onChange={(e) => setNoteKind(e.target.value)} aria-label="Kind of memory">{['fact', 'note', 'knowledge'].map((k) => <option key={k}>{k}</option>)}</select>
+            <Button icon="plus" disabled={!note.trim()} onClick={() => void post(`memory/${aid}`, { text: note, kind: noteKind }).then(() => { setNote(''); load(); })}>Remember</Button>
           </div>
           <div className="axp-agent-manager__mem">
             {data.items.map((m) => (
@@ -483,6 +543,17 @@ function MemoryTab({ cache }: { cache: Cache }) {
             <Button icon="trash" onClick={() => { if (confirm(`Erase all of ${agent?.name}'s memory?`)) void post(`memory/${aid}/clear`).then(load); }}>Erase all</Button>
           </div>
         </>
+      )}
+      {scopes.length > 0 && (
+        <details className="axp-agent-manager__card">
+          <summary><strong>All memory stores</strong> <span className="fx-small fx-muted">{scopes.length} — shared scopes show every agent that uses them</span></summary>
+          <ul className="axp-agent-manager__uses">
+            {scopes.map((s) => (
+              <li key={s.scope}><span className="fx-mono">{s.scope}</span><Chip>{s.items} items</Chip><span className="fx-small fx-muted">{Math.round(s.bytes / 1024)} KB · {s.agents.length ? s.agents.map((id) => cache.agents.find((a) => a.id === id)?.name ?? id).join(', ') : 'no agent uses it'}</span>
+                {s.orphan && <Chip tone="warning">orphan</Chip>}</li>
+            ))}
+          </ul>
+        </details>
       )}
     </div>
   );
@@ -523,7 +594,8 @@ export function AddonsTab() {
           <div key={a.id} className="axp-agent-manager__card fx-stack">
             <div className="fx-row fx-row--wrap"><Icon name={a.icon || 'package'} size={18} /><strong className="fx-grow">{a.name}</strong>{a.installed ? <Chip tone="success">installed</Chip> : <Chip>{a.source}</Chip>}{a.updateAvailable && <Chip tone="warning">update {a.version}</Chip>}</div>
             <p className="fx-small">{a.description}</p>
-            <span className="fx-small fx-muted">{Object.entries(a.provides).filter(([, n]) => n).map(([k, n]) => `${n} ${k}`).join(' · ')} · v{a.installedVersion ?? a.version}</span>
+            <span className="fx-small fx-muted">{a.agents?.length ? `agents: ${a.agents.map((x) => x.name).join(', ')} · ` : ''}{Object.entries(a.provides).filter(([, n]) => n).map(([k, n]) => `${n} ${k}`).join(' · ')} · v{a.installedVersion ?? a.version}</span>
+            {!!a.risks?.length && <span className="fx-small"><Icon name="alert" size={12} /> {a.risks.join('; ')}</span>}
             <div className="fx-row fx-row--wrap">
               {!a.installed && <Button tone="primary" icon="download" disabled={!!busy} onClick={() => void act(a.id, 'install')}>{busy === a.id ? 'Installing…' : 'Install'}</Button>}
               {a.updateAvailable && <Button tone="primary" icon="refresh" disabled={!!busy} onClick={() => void act(a.id, 'install')}>Update (keeps memory)</Button>}

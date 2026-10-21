@@ -16,7 +16,7 @@ import re
 import time
 from typing import Any
 
-from . import store
+from . import contract, store
 
 LIBRARY = ("skills", "tools", "personas", "lingo", "agents")
 KEEP = 30
@@ -137,20 +137,13 @@ def fork(coll: str, iid: str, agent_id: str) -> dict[str, Any]:
 
 
 def strip_risky(coll: str, item: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
-    """Imports lose what could reach your secrets or private network (like add-on imports)."""
-    item = json.loads(json.dumps(item))
-    warnings = []
-    if coll == "tools":
-        cfg = item.get("config") or {}
-        for k, v in list((cfg.get("headers") or {}).items()):
-            if isinstance(v, str) and v.startswith("env:"):
-                warnings.append(f"header {k} read environment variable {v[4:]}")
-                cfg["headers"].pop(k)
-        if cfg.pop("allowPrivate", None):
-            warnings.append("could call private/internal addresses")
-        if cfg.pop("tokenEnv", None):
-            warnings.append("sent an environment variable to its server")
-    return item, warnings
+    """Imports lose what could reach your secrets or private network (like add-on imports); contract rules."""
+    if coll != "tools":
+        return json.loads(json.dumps(item)), []
+    warnings = [w.replace("reads environment variable", "read environment variable").replace("may call", "could call").replace("sends an environment", "sent an environment")
+                for w in contract.tool_risks(item)]
+    warnings = [re.sub(r"^sends environment variable \S+ to .*$", "sent an environment variable to its server", w) for w in warnings]
+    return contract.strip_tool_risks(item), warnings
 
 
 DRAFT_SHAPES = {

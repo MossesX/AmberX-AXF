@@ -5,29 +5,26 @@ Sources: bundled in the plugin's addons/<id>/addon.json (removed with the plugin
 data folder's addons/). Installing records exactly what was created, so uninstalling an add-on removes all of it —
 entities, memory files and training jobs — and nothing else. Entity ids are taken from the bundle (namespace them
 with the add-on id, e.g. "coder.persona"), and an install never overwrites something the user made.
+Bundle checks, risk rules and export come from the contract (contract.py = core/agents.ts = Agents.kt).
 """
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 from typing import Any
 
-from . import memory, store, toolkit, training
+from . import contract, memory, store, toolkit, training
 
 BUNDLED = store.PLUGIN_DIR / "addons"
 IMPORTED = store.DATA / "addons"
-SECTIONS = ("personas", "lingo", "skills", "tools", "agents", "workflows", "training")
+SECTIONS = contract.ADDON_SECTIONS
 
 
-def _valid(b: dict[str, Any]) -> dict[str, Any]:
-    if not isinstance(b, dict) or b.get("$axf") != "agent-addon@1":
-        raise ValueError('not an agent add-on (expected "$axf": "agent-addon@1")')
-    if not re.match(r"^[a-z0-9][a-z0-9-]{1,47}$", str(b.get("id", ""))):
-        raise ValueError("add-on id must be lowercase letters, digits and dashes")
-    if not isinstance(b.get("provides"), dict):
-        raise ValueError("add-on has nothing in provides")
-    return b
+def _valid(b: Any) -> dict[str, Any]:
+    errors, bundle = contract.validate_addon(b)
+    if errors:
+        raise ValueError(errors[0])
+    return bundle  # type: ignore[return-value]
 
 
 def bundles() -> dict[str, tuple[dict[str, Any], str]]:
@@ -53,10 +50,11 @@ def listing() -> list[dict[str, Any]]:
         counts = {k: len(v) for k, v in b["provides"].items() if isinstance(v, list)}
         out.append({"id": aid, "name": b.get("name", aid), "version": b.get("version", "0"), "description": b.get("description", ""), "author": b.get("author", ""),
                     "icon": b.get("icon", "package"), "source": origin, "provides": counts, "installed": bool(r), "installedVersion": (r or {}).get("version"),
-                    "updateAvailable": bool(r) and r.get("version") != b.get("version"), "requires": b.get("requires", {})})
+                    "updateAvailable": bool(r) and r.get("version") != b.get("version"), "requires": b.get("requires", {}), "risks": contract.addon_risks(b),
+                    "agents": [{"id": a.get("id"), "name": a.get("name")} for a in b["provides"].get("agents") or []]})
     for aid, r in recs.items():
         if aid not in {x["id"] for x in out}:
-            out.append({"id": aid, "name": r.get("name", aid), "version": r.get("version"), "installed": True, "source": "missing", "provides": {}, "description": "Installed, but its bundle is gone — uninstall to clean up."})
+            out.append({"id": aid, "name": r.get("name", aid), "version": r.get("version"), "installed": True, "source": "missing", "provides": {}, "description": "Installed, but its bundle is gone — uninstall to clean up.", "risks": [], "agents": []})
     return sorted(out, key=lambda x: (not x["installed"], x["name"].lower()))
 
 
@@ -70,6 +68,11 @@ def install(aid: str, run_training: bool = True) -> dict[str, Any]:
     origin = f"addon:{aid}"
     created: dict[str, list[str]] = {k: [] for k in SECTIONS}
     skipped: list[str] = []
+    # References inside the bundle may point forward (a skill to a tool installed after it): validate against what exists plus what the bundle brings.
+    known = store.known()
+    for sec in SECTIONS:
+        known[sec] = set(known.get(sec, set())) | {str(r.get("id")) for r in bundle["provides"].get(sec) or [] if isinstance(r, dict) and r.get("id")}
+    ctx = contract.Context(known=known, builtins=toolkit.BUILTINS)
     for sec in SECTIONS:
         for rec in bundle["provides"].get(sec) or []:
             rid = rec.get("id")
@@ -77,10 +80,10 @@ def install(aid: str, run_training: bool = True) -> dict[str, Any]:
             if existing and existing.get("origin") != origin:
                 skipped.append(f"{sec}/{rid} (you already have one with that id)")
                 continue
-            if sec == "tools":
-                rec = toolkit.validate(rec)
-            if sec == "training":
-                rec = training.validate(rec)
+            v = contract.validate_item(sec, rec, ctx)
+            if not v.ok:
+                raise ValueError(f"{sec}/{rid}: {v.errors[0]}")
+            rec = v.item if sec != "training" else {**v.item, "nextRun": training.next_run(v.item["schedule"])}
             if sec == "agents":
                 scope = (rec.get("memory") or {}).get("scope") or rec.get("id")
                 taken = {memory.config(a)["scope"] for a in store.items("agents").values() if a.get("origin") != origin}
@@ -95,7 +98,10 @@ def install(aid: str, run_training: bool = True) -> dict[str, Any]:
         a = store.get("agents", agent_id)
         cfg = memory.config(a)
         for it in items:
-            memory.add_many(cfg["scope"], memory.chunk(it.get("text", ""), 1500, 100) if len(it.get("text", "")) > 1500 else [it.get("text", "")],
+            if not isinstance(it, dict):
+                continue
+            text = str(it.get("text", ""))
+            memory.add_many(cfg["scope"], memory.chunk(text, 1500, 100) if len(text) > 1500 else [text],
                             it.get("kind", "knowledge"), it.get("tags") or [], source=it.get("source") or f"add-on {aid}", job_id=f"addon:{aid}", max_items=max(cfg["maxItems"], 20_000))
             seeded += 1
     recs = store.addon_records()
@@ -132,6 +138,8 @@ def uninstall(aid: str, keep_memory: bool = False) -> dict[str, Any]:
                     if not users:
                         memory.clear(scope)
                 store.delete(sec, iid)
+                from . import library
+                library.drop_versions(sec, iid)
                 n += 1
         removed[sec] = n
     recs.pop(aid, None)
@@ -139,36 +147,7 @@ def uninstall(aid: str, keep_memory: bool = False) -> dict[str, Any]:
     return {"uninstalled": aid, "removed": removed, "memoryKept": keep_memory}
 
 
-def risky(b: dict[str, Any]) -> list[str]:
-    """What an add-on could do with your secrets or network: env-var headers, private addresses, MCP tokens."""
-    out = []
-    for t in (b.get("provides") or {}).get("tools") or []:
-        cfg = t.get("config") or {}
-        for k, v in (cfg.get("headers") or {}).items():
-            if isinstance(v, str) and v.startswith("env:"):
-                out.append(f"tool {t.get('name')}: header {k} reads environment variable {v[4:]}")
-        if cfg.get("allowPrivate"):
-            out.append(f"tool {t.get('name')}: may call private/internal addresses")
-        if cfg.get("tokenEnv"):
-            out.append(f"tool {t.get('name')}: sends environment variable {cfg['tokenEnv']} to {cfg.get('url')}")
-    for j in (b.get("provides") or {}).get("training") or []:
-        for src in j.get("sources") or []:
-            if src.get("tokenEnv"):
-                out.append(f"training {j.get('id')}: sends environment variable {src['tokenEnv']} to {src.get('url')}")
-    return out
-
-
-def _strip_risky(b: dict[str, Any]) -> dict[str, Any]:
-    b = json.loads(json.dumps(b))
-    for t in (b.get("provides") or {}).get("tools") or []:
-        cfg = t.get("config") or {}
-        cfg["headers"] = {k: v for k, v in (cfg.get("headers") or {}).items() if not (isinstance(v, str) and v.startswith("env:"))}
-        cfg.pop("allowPrivate", None)
-        cfg.pop("tokenEnv", None)
-    for j in (b.get("provides") or {}).get("training") or []:
-        for src in j.get("sources") or []:
-            src.pop("tokenEnv", None)
-    return b
+risky = contract.addon_risks
 
 
 def import_bundle(data: dict[str, Any] | None = None, url: str | None = None, trust: bool = False) -> dict[str, Any]:
@@ -182,7 +161,7 @@ def import_bundle(data: dict[str, Any] | None = None, url: str | None = None, tr
         raise ValueError(f"{b['id']} is a bundled add-on; imported add-ons need their own id")
     warnings = risky(b)
     if warnings and not trust:
-        b = _strip_risky(b)  # imported bundles don't get your secrets or private network unless you say so
+        b = contract.strip_addon_risks(b)  # imported bundles don't get your secrets or private network unless you say so
     IMPORTED.mkdir(parents=True, exist_ok=True, mode=0o700)
     (IMPORTED / f"{b['id']}.json").write_text(json.dumps(b, indent=2))
     return {"imported": b["id"], "name": b.get("name"), "warnings": warnings, "stripped": bool(warnings and not trust)}
@@ -198,14 +177,11 @@ def remove_imported(aid: str) -> None:
 def export_agent(agent_id: str) -> dict[str, Any]:
     """An agent and everything it uses as an agent-addon@1 bundle, ready to share or re-import."""
     a = store.get("agents", agent_id)
-    pick = lambda sec, ids: [{k: v for k, v in store.items(sec)[i].items() if k not in ("createdAt", "updatedAt", "origin")} for i in ids if i in store.items(sec)]  # noqa: E731
+    pick = lambda sec, ids: [store.items(sec)[i] for i in ids if i in store.items(sec)]  # noqa: E731
     skills = pick("skills", a.get("skillIds") or [])
     tool_ids = list(dict.fromkeys([*(a.get("toolIds") or []), *[t for s in skills for t in s.get("toolIds") or []]]))
     mem = memory.load(memory.config(a)["scope"])
-    return {"$axf": "agent-addon@1", "id": f"{agent_id}-export".replace(".", "-")[:48], "name": a.get("name"), "version": "1.0.0", "description": a.get("description", ""),
-            "provides": {"personas": pick("personas", [a["personaId"]] if a.get("personaId") else []), "lingo": pick("lingo", a.get("lingoIds") or []), "skills": skills,
-                         "tools": pick("tools", tool_ids), "agents": [{k: v for k, v in a.items() if k not in ("createdAt", "updatedAt", "origin")}],
-                         "memory": {agent_id: [{"kind": d["kind"], "text": d["text"], "tags": d.get("tags", []), "source": d.get("source", "")} for d in mem["items"] if d.get("kind") in ("fact", "knowledge", "note")][:2000]}}}
+    return contract.agent_to_addon(a, pick("personas", [a["personaId"]] if a.get("personaId") else []), pick("lingo", a.get("lingoIds") or []), skills, pick("tools", tool_ids), mem["items"])
 
 
 def bundled_path(aid: str) -> Path:
