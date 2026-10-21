@@ -31,7 +31,7 @@ CREDENTIALS: dict[str, dict[str, Any]] = {
     "HOSTINGER_API_TOKEN": {"label": "Hostinger API token", "secret": True, "pattern": r"^[A-Za-z0-9_\-\.|:=+/]{20,512}$",
                             "placeholder": "token from hPanel", "help": "hPanel → Profile → API → New token."},
     "COOLIFY_URL": {"label": "Coolify URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",
-                    "placeholder": "https://coolify.amberxai.com", "help": "The address of your Coolify dashboard."},
+                    "placeholder": "http://coolify:8080", "help": "http://coolify:8080 reaches Coolify inside the VPS (the token never leaves the server); or your dashboard's https address. Plain http to an IP isn't accepted."},
     "COOLIFY_TOKEN": {"label": "Coolify API token", "secret": True, "pattern": r"^\S{10,}$",
                       "placeholder": "token from Coolify", "help": "Coolify → Keys & Tokens → API tokens (root or write permission)."},
     "AXHUB_URL": {"label": "axHub URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",

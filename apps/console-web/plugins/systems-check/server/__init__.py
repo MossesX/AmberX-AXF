@@ -245,7 +245,8 @@ def _create_page(key: str) -> str:
         return "https://hpanel.hostinger.com/profile/api"
     if key == "COOLIFY_TOKEN":
         base = (os.environ.get("COOLIFY_URL") or "").rstrip("/")
-        return f"{base}/security/api-tokens" if re.match(r"^https?://[^\s/]+(:\d+)?$", base) else ""
+        # http://coolify:8080 only works inside the VPS, so there's no page to open from a phone for it.
+        return f"{base}/security/api-tokens" if re.match(r"^https?://[^\s/]+(:\d+)?$", base) and "//coolify:" not in base else ""
     if key == "AXHUB_TOKEN":
         base = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
         return base if re.match(r"^https://[^\s/]+$", base) else ""

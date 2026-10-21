@@ -25,6 +25,10 @@ from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core modul
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, http as axf_http
 
+# Coolify's own container on the VPS's shared Docker network (`coolify`, port 8080 inside): plain http stays on the
+# server, so it may carry the token. Any other http address is refused (Brett, Oct 21 2026).
+COOLIFY_INTERNAL_HOSTS = ("coolify",)
+
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
     "github_pat_docs": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
@@ -204,11 +208,11 @@ class SysCheck:
         url = os.environ.get("COOLIFY_URL", "").rstrip("/")
         tok = os.environ.get("COOLIFY_TOKEN", "")
         base = dict(fix=self.secret_fix("COOLIFY_URL", "COOLIFY_TOKEN"), links=[{"label": "Coolify API: authorization", "url": DOCS["coolify_api"]}],
-                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Enter your Coolify address and the token."], order=50)
+                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Coolify URL: http://coolify:8080 (private, inside the VPS) or your dashboard's https address; then the token."], order=50)
         if not url or not tok:
             return self.item("coolify", "coolify", "Coolify API", "warn", "Not set: deploys and app status from the console won't work.", **base)
-        if not axf_http.target_ok(url):  # the token is never sent over plain http to another machine (axf_server.http)
-            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https: use the https address of your Coolify dashboard so the token isn't sent in the clear.", **base)
+        if not axf_http.target_ok(url, COOLIFY_INTERNAL_HOSTS):  # never plain http to another machine (axf_server.http)
+            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https, so the token would cross the internet in the clear. Use http://coolify:8080 (Coolify's container on the VPS's own Docker network: the token never leaves the server) or your Coolify dashboard's https address.", **base)
         code, _, body = _http(f"{url}/api/v1/version", {"authorization": f"Bearer {tok}"})
         st = "ok" if code == 200 else "error" if code in (401, 403) else "unknown"
         return self.item("coolify", "coolify", "Coolify API", st, {"ok": f"Connected (Coolify {body.strip()[:20]}).", "error": f"Coolify refused the token ({code})."}.get(st, f"Couldn't reach {url} ({code or 'network'})."), **base)

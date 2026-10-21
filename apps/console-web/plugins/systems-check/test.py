@@ -284,6 +284,13 @@ plugin_services.withdraw("fake-agent-manager")
 check(not c.get("/p/ai").json()["effective"]["systems"], "removing Mosses switches AI off again")
 check(c.post("/p/ai/test").status_code == 409, "AI test refused again without Mosses")
 check(c.delete("/p/routine").json()["ok"] and c.get("/p/routine").json()["routine"] is None, "routine can be deleted")
+
+# Coolify address rules (Oct 21 2026): https anywhere, plain http only to Coolify's own container on the Docker network.
+_chk = sys.modules.get("axf_console_plugins.systems_check_test.checks")
+if _chk is not None:
+    from axf_server import http as _h
+    check(_h.target_ok("http://coolify:8080", _chk.COOLIFY_INTERNAL_HOSTS) and _h.target_ok("https://coolify.example.com", _chk.COOLIFY_INTERNAL_HOSTS)
+          and not _h.target_ok("http://31.97.13.252:8000", _chk.COOLIFY_INTERNAL_HOSTS), "Coolify URL: https or http://coolify only, never http to an IP")
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

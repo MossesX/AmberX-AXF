@@ -285,6 +285,9 @@ class ContainersService:
         url, tok = os.environ.get("COOLIFY_URL", "").rstrip("/"), os.environ.get("COOLIFY_TOKEN", "")
         if not url or not tok:
             raise PermissionError("set COOLIFY_URL and COOLIFY_TOKEN (Systems check → Coolify) to redeploy through Coolify")
+        from axf_server import http as axf_http  # framework/python is on the path (store.py imports axf_framework)
+        if not axf_http.target_ok(url, ("coolify",)):  # https, or Coolify's own container on the Docker network
+            raise PermissionError(f"{url} isn't https: use http://coolify:8080 or Coolify's https address so the token isn't sent in the clear")
         req = urllib.request.Request(f"{url}/api/v1/deploy?uuid={uuid}&force=false", headers={"Authorization": f"Bearer {tok}", "Accept": "application/json"})
         try:
             with urllib.request.urlopen(req, timeout=30) as r:  # noqa: S310 — admin-configured Coolify URL
