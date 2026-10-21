@@ -9,11 +9,27 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceError
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import ai.amberx.axf.ui.components.AxfButton
+import ai.amberx.axf.ui.components.AxfText
+import ai.amberx.axf.ui.components.ButtonTone
+import ai.amberx.axf.ui.theme.Axf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -61,62 +77,104 @@ public fun WebAppView(
     val allowed = remember(origins) { origins.mapNotNull { HubRules.normalize(it) } }
     var canGoBack by remember { mutableStateOf(false) }
     val entry = remember(holder, tab) { holder.entry(tab) }
-    AndroidView(
-        modifier = modifier.fillMaxSize(),
-        factory = { ctx ->
-            val view = holder.view(ctx, tab) { v ->
-                v.settings.apply {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                    allowFileAccess = false
-                    allowContentAccess = false
-                    mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-                    setSupportMultipleWindows(false)
-                    javaScriptCanOpenWindowsAutomatically = false
-                    safeBrowsingEnabled = true
-                    setGeolocationEnabled(false)
-                    cacheMode = WebSettings.LOAD_DEFAULT
-                    mediaPlaybackRequiresUserGesture = true
-                    userAgentString = userAgentString + " " + holder.userAgentSuffix
+    // The view as state, so the load below re-runs once it exists (the effect can run before the factory has made it).
+    var shown by remember { mutableStateOf<WebView?>(null) }
+    val loading by entry.loading.collectAsState()
+    val error by entry.error.collectAsState()
+    val pageUrl by entry.url.collectAsState()
+    fun load(v: WebView) {
+        if (allowed.none { HubRules.isHub(it, url) }) { entry.error.value = "This tab's address ($url) isn't one it may open."; return }
+        entry.reloaded = reload
+        entry.lastUrl = url
+        entry.error.value = null
+        v.loadUrl(url)
+    }
+    Box(modifier.fillMaxSize()) {
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { ctx ->
+                val view = holder.view(ctx, tab) { v ->
+                    v.settings.apply {
+                        javaScriptEnabled = true
+                        domStorageEnabled = true
+                        allowFileAccess = false
+                        allowContentAccess = false
+                        mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                        setSupportMultipleWindows(false)
+                        javaScriptCanOpenWindowsAutomatically = false
+                        safeBrowsingEnabled = true
+                        setGeolocationEnabled(false)
+                        cacheMode = WebSettings.LOAD_DEFAULT
+                        mediaPlaybackRequiresUserGesture = true
+                        userAgentString = userAgentString + " " + holder.userAgentSuffix
+                    }
+                    CookieManager.getInstance().setAcceptCookie(true)
+                    CookieManager.getInstance().setAcceptThirdPartyCookies(v, false)
+                    v.setDownloadListener { dl, _, _, _, _ -> if (onDownload != null && allowed.any { HubRules.isHub(it, dl) }) onDownload(ctx, dl) }
+                    v.webChromeClient = WebChromeClient()
+                    v.webViewClient = object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
+                            val target = request.url.toString()
+                            if (allowed.any { HubRules.isHub(it, target) }) return false
+                            val scheme = request.url.scheme?.lowercase()
+                            if (scheme == "https" || scheme == "http") runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                            return true
+                        }
+                        override fun onPageStarted(v: WebView, u: String?, favicon: Bitmap?) {
+                            if (u != null && allowed.none { HubRules.isHub(it, u) }) {
+                                v.stopLoading()
+                                entry.loading.value = false
+                                entry.error.value = "Stopped: the page went to ${HubRules.origin(u) ?: u}, which this tab may not show."
+                                return
+                            }
+                            entry.loading.value = true
+                            entry.error.value = null
+                        }
+                        override fun onPageFinished(v: WebView, u: String?) {
+                            CookieManager.getInstance().flush()
+                            canGoBack = v.canGoBack()
+                            entry.loading.value = false
+                            entry.url.value = u ?: ""
+                            if (u != null && allowed.any { HubRules.isHub(it, u) }) onPage(u)
+                        }
+                        override fun onReceivedError(v: WebView, request: WebResourceRequest, err: WebResourceError) {
+                            if (!request.isForMainFrame) return
+                            entry.loading.value = false
+                            entry.error.value = "Couldn't load ${HubRules.origin(request.url.toString()) ?: "the page"}: ${err.description} (${err.errorCode})."
+                        }
+                        override fun onReceivedHttpError(v: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+                            if (!request.isForMainFrame || response.statusCode < 500) return
+                            entry.error.value = "${HubRules.origin(request.url.toString()) ?: "The page"} answered ${response.statusCode}."
+                        }
+                    }
                 }
-                CookieManager.getInstance().setAcceptCookie(true)
-                CookieManager.getInstance().setAcceptThirdPartyCookies(v, false)
-                v.setDownloadListener { dl, _, _, _, _ -> if (onDownload != null && allowed.any { HubRules.isHub(it, dl) }) onDownload(ctx, dl) }
-                v.webChromeClient = WebChromeClient()
-                v.webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
-                        val target = request.url.toString()
-                        if (allowed.any { HubRules.isHub(it, target) }) return false
-                        val scheme = request.url.scheme?.lowercase()
-                        if (scheme == "https" || scheme == "http") runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
-                        return true
-                    }
-                    override fun onPageStarted(v: WebView, u: String?, favicon: Bitmap?) {
-                        if (u != null && allowed.none { HubRules.isHub(it, u) }) v.stopLoading()
-                        entry.loading.value = true
-                    }
-                    override fun onPageFinished(v: WebView, u: String?) {
-                        CookieManager.getInstance().flush()
-                        canGoBack = v.canGoBack()
-                        entry.loading.value = false
-                        entry.url.value = u ?: ""
-                        if (u != null && allowed.any { HubRules.isHub(it, u) }) onPage(u)
-                    }
-                }
+                // Reparent: the view may still sit in the tab that was in front a moment ago.
+                (view.parent as? ViewGroup)?.removeView(view)
+                canGoBack = view.canGoBack()
+                // First show: load right here, so nothing depends on when the effect below runs.
+                if (entry.lastUrl == null) load(view)
+                shown = view
+                view
+            },
+            // Detach only: the holder owns the view; it is destroyed with the holder, not when a tab leaves the screen.
+            onRelease = { (it.parent as? ViewGroup)?.removeView(it); shown = null },
+        )
+        // A later `reload` tick (the host's "Reload tab") or a new address loads the page again; so does a view that never got one.
+        LaunchedEffect(shown, url, reload) {
+            val v = shown ?: return@LaunchedEffect
+            if (reload != entry.reloaded || entry.lastUrl != url) load(v)
+        }
+        // Never a silent blank: loading before the first page, or the reason it failed with a way to try again.
+        val e = error
+        if (e != null) {
+            Column(Modifier.fillMaxSize().background(Axf.colors.bg).padding(24.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                AxfText(e)
+                Spacer(Modifier.height(12.dp))
+                AxfButton("Try again", { shown?.let { load(it) } }, tone = ButtonTone.PRIMARY, icon = "refresh")
             }
-            // Reparent: the view may still sit in the tab that was in front a moment ago.
-            (view.parent as? ViewGroup)?.removeView(view)
-            canGoBack = view.canGoBack()
-            view
-        },
-        // Detach only: the holder owns the view; it is destroyed with the holder, not when a tab leaves the screen.
-        onRelease = { (it.parent as? ViewGroup)?.removeView(it) },
-    )
-    // First show loads the page; a later `reload` tick loads it again (the host's "Reload tab"); the page must be on the list.
-    LaunchedEffect(entry, url, reload) {
-        if (allowed.none { HubRules.isHub(it, url) }) return@LaunchedEffect
-        val v = entry.view ?: return@LaunchedEffect
-        if (reload != entry.reloaded || v.url.isNullOrEmpty()) { entry.reloaded = reload; v.loadUrl(url) }
+        } else if (loading && pageUrl.isEmpty()) {
+            Box(Modifier.fillMaxSize().background(Axf.colors.bg), contentAlignment = Alignment.Center) { AxfText("Loading…", muted = true) }
+        }
     }
     BackHandler(enabled = canGoBack) { entry.view?.goBack() }
 }
@@ -125,6 +183,9 @@ public fun WebAppView(
 public class WebAppEntry internal constructor(public val tab: String) {
     internal var view: WebView? = null
     internal var reloaded: Long = Long.MIN_VALUE
+    internal var lastUrl: String? = null
+    /** Why the page isn't showing (load error, blocked redirect), or null. */
+    public val error: MutableStateFlow<String?> = MutableStateFlow(null)
     public val loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val url: MutableStateFlow<String> = MutableStateFlow("")
 }
@@ -162,7 +223,7 @@ public class WebAppHolder(
     }
 
     /** Loads the tab's page again (the host's Reload); nothing when the tab has no view yet. */
-    public fun reload(tab: String) { entries[tab]?.view?.reload() }
+    public fun reload(tab: String) { entries[tab]?.let { it.error.value = null; it.view?.reload() } }
 
     /** The page a tab shows now, or null. */
     public fun currentUrl(tab: String): String? = entries[tab]?.view?.url
