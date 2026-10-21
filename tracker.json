@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T02:31:33.810Z",
+  "generatedAt": "2026-10-21T04:21:22.590Z",
   "summary": {
     "foundations": {
       "built": 66,
@@ -13,8 +13,8 @@
     },
     "kernel": {
       "built": 77,
-      "partial": 6,
-      "placeholder": 95,
+      "partial": 7,
+      "placeholder": 94,
       "planned": 0,
       "total": 178,
       "coverage": 43
@@ -2483,10 +2483,10 @@
       "group": "navigation-data-network",
       "title": "AI assistant engine: Claude / OpenAI / Gemini / Groq providers, streaming, tools, subscription vs API key",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
-      "module": null,
-      "notes": ""
+      "module": "python/axf/assistant_host",
+      "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only)."
     },
     {
       "id": "w.mcp",

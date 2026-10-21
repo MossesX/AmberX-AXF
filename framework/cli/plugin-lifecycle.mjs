@@ -35,6 +35,7 @@ const STATE = resolve(process.env.AXF_STATE || join(ROOT, '.axf-console/state.js
 const BACKUPS = join(ROOT, '.axf-console/plugin-backups');
 const FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 const REBUILDS_DIR = join(ROOT, '_claude', 'memory', 'docs', 'rebuilds');
+const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
@@ -108,8 +109,8 @@ export function scanReferences(p) {
   const hits = [];
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
-    // Rebuild reports and their screenshots are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/')) continue;
+    // Rebuild and harvest reports (and their screenshots) are history: they describe a plugin version and must outlive it.
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/')) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop());

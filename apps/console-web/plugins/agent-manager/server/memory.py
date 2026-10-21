@@ -23,7 +23,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from . import contract, llm, store
+from axf.contracts import agents as contract  # framework/python
+
+from . import llm, store
 
 _lock = threading.RLock()
 TYPES = contract.MEMORY_TYPES

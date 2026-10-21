@@ -32,5 +32,5 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 | web | React + TypeScript (Vite) | built — reference engines |
 | android | Kotlin + Jetpack Compose | built (kernel) / in progress (UI, libraries, console app) |
 | react-next | Next.js + Node build-engine API | planned (shares `framework/core` + `framework/react` as-is) |
-| python | Python kernel + PyQt6 UI | planned |
+| python | Python kernel + PyQt6 UI | planned — contracts already ported in `framework/python/axf/contracts` (assistant@1, agent-definition@1) + the shared assistant host runtime `axf/assistant_host` (live-session@1 host, providers, safety) and `axf_libs/mcp`; every Python host (console plugins, Build Pilot) imports them |
 | desktop, ios, wear, tv, auto, web-component | — | placeholders in the port registry |

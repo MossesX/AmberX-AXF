@@ -24,7 +24,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Callable
 
-from . import contract
+from axf.contracts import assistant as contract
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AI_ASSISTANT_DIR", ROOT / ".axf-console" / "plugins" / "ai-assistant"))

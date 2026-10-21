@@ -972,9 +972,10 @@
     "module": null
   },
   "w.ai": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "python/axf/assistant_host",
+    "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only)."
   },
   "w.mcp": {
     "status": "partial",

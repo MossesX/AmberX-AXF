@@ -1,7 +1,9 @@
-"""AI providers for the assistant: one canonical chat format, three wire protocols.
+"""AI providers for any Python assistant host: one canonical chat format, three wire protocols (framework/python,
+`axf.assistant_host.providers`; the console's ai-assistant plugin and Build Pilot's server run on it).
 
 Provider kinds come from the framework registry framework/schemas/ai-providers.json (assistant@1, shared with the web
-core and the Kotlin kernel) plus any kinds in <dataDir>/providers.json. Each kind names a protocol:
+core and the Kotlin kernel) plus whatever the host's `extra_kinds()` hook returns (e.g. <dataDir>/providers.json).
+Each kind names a protocol:
   anthropic   Anthropic Messages API (streaming SSE, tools, vision)
   openai      OpenAI Chat Completions and every compatible API (OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek,
               OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI v1, Ollama, LM Studio, vLLM …)
@@ -13,7 +15,17 @@ Canonical message: {"role": "user"|"assistant"|"tool", "content": str, "images":
 Stream events:      {"type":"text","text"} · {"type":"tool_call","id","name","arguments"} · {"type":"usage","input","output"}
                     {"type":"stop","reason"} · {"type":"status","text"}
 
-Only the standard library is used (urllib), so the plugin adds no dependencies to the console image.
+Only the standard library is used (urllib), so a host adds no dependencies to its image.
+
+Host hooks (module attributes a host sets once at start; defaults are safe for any host):
+  extra_kinds            () -> list of ai-providers@1 kinds merged over the registry (open registry)
+  stored_secret_names    () -> names of environment variables the host loaded from its own credential store, removed
+                         from the Claude Code CLI's environment along with every secret-looking variable
+  PRIVATE_DIRS           folder names the CLI may never read (relative and absolute deny rules), e.g. ".axf-console"
+  PRIVATE_ROOTS          () -> extra absolute roots whose private folders are denied (the host's repo root)
+  ENV_PREFIXES_HIDDEN    env var prefixes dropped from the CLI's environment ("AXF_" + the host's own)
+  USER_AGENT             the user-agent header sent to providers
+  HOST_LABEL             how the host is named in error messages ("the console server", "the Build Pilot server")
 """
 from __future__ import annotations
 
@@ -33,7 +45,18 @@ from typing import Any, Callable, Iterator
 
 # ---------------------------------------------------------------- catalog (assistant@1: framework/schemas/ai-providers.json)
 
-_SCHEMA = Path(__file__).resolve().parents[5] / "framework" / "schemas" / "ai-providers.json"
+# framework/python/axf/assistant_host/providers.py → framework/schemas/ai-providers.json; AXF_PROVIDERS_FILE overrides
+# (a host that bakes the schema elsewhere, e.g. Build Pilot's src/axf/schemas/, points here).
+_SCHEMA = Path(os.environ.get("AXF_PROVIDERS_FILE") or Path(__file__).resolve().parents[3] / "schemas" / "ai-providers.json")
+
+# ---------------------------------------------------------------- host hooks (see the module docstring)
+extra_kinds: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731
+stored_secret_names: Callable[[], set[str]] = lambda: set()  # noqa: E731
+PRIVATE_DIRS: list[str] = [".axf-console"]
+PRIVATE_ROOTS: Callable[[], set[str]] = lambda: set()  # noqa: E731
+ENV_PREFIXES_HIDDEN: list[str] = ["AXF_"]
+USER_AGENT = "AmberX-AXF-Assistant/1"
+HOST_LABEL = "this server"
 
 
 def _load_registry() -> list[dict[str, Any]]:
@@ -43,8 +66,7 @@ def _load_registry() -> list[dict[str, Any]]:
     except (OSError, ValueError):
         base = []
     try:
-        from . import store
-        extra = store.extra_provider_kinds()
+        extra = [p for p in extra_kinds() if isinstance(p, dict) and isinstance(p.get("kind"), str) and p.get("kind")]
     except Exception:  # noqa: BLE001
         extra = []
     out: dict[str, dict[str, Any]] = {}
@@ -58,7 +80,7 @@ BY_KIND: dict[str, dict[str, Any]] = {c["kind"]: c for c in CATALOG}
 
 
 def reload_catalog() -> None:
-    """Re-read the registry (after providers.json in the data folder changed)."""
+    """Re-read the registry (after the host's extra kinds changed)."""
     CATALOG[:] = _load_registry()
     BY_KIND.clear()
     BY_KIND.update({c["kind"]: c for c in CATALOG})
@@ -101,7 +123,7 @@ def protocol_of(profile: dict[str, Any]) -> str:
 
 
 def _headers(profile: dict[str, Any], key: str) -> dict[str, str]:
-    h = {"content-type": "application/json", "user-agent": "AmberX-AXF-Assistant/1"}
+    h = {"content-type": "application/json", "user-agent": USER_AGENT}
     auth = profile.get("auth") or BY_KIND.get(profile.get("kind", ""), {}).get("auth", "bearer")
     if key:
         if auth == "x-api-key":
@@ -428,33 +450,39 @@ def cli_available() -> bool:
     return shutil.which(os.environ.get("CLAUDE_BIN", "claude")) is not None
 
 
-_CLI_DENY = [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS")
-             for pat in (".axf-console/**", "**/.axf-console/**", "**/.env", "**/.env.*", "**/*.pem", "**/*.key", "**/secrets.env", "**/credentials.json", "**/id_rsa*", "**/id_ed25519*", ".git/**")]
+_DENY_PATTERNS = ("**/.env", "**/.env.*", "**/*.pem", "**/*.key", "**/secrets.env", "**/credentials.json", "**/id_rsa*", "**/id_ed25519*", ".git/**")
+
+
+def _cli_deny() -> list[str]:
+    """Relative deny rules: the host's private folders anywhere under the working tree, env files, keys, git internals."""
+    pats = [p for d in PRIVATE_DIRS for p in (f"{d}/**", f"**/{d}/**")] + list(_DENY_PATTERNS)
+    return [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS") for pat in pats]
+
+
 _SECRETISH = re.compile(r"(TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIAL|PRIVATE|(^|_)KEY$|_KEY_|API_KEY|AUTH)", re.I)
 _ENV_KEEP = {"PATH", "HOME", "LANG", "LC_ALL", "LC_CTYPE", "TZ", "SHELL", "USER", "LOGNAME", "HOSTNAME", "PWD", "NODE_VERSION", "PYTHON_VERSION", "CLAUDE_BIN", "XDG_CONFIG_HOME"}
 
 
 def _cli_env() -> dict[str, str]:
-    """The console's environment minus every secret-looking variable and every stored credential (the core credential
-    store loads them into os.environ), so nothing the CLI reads (e.g. /proc/self/environ) holds the console's keys."""
+    """The host's environment minus every secret-looking variable, every credential the host says it loaded
+    (`stored_secret_names`) and every hidden prefix, so nothing the CLI reads (e.g. /proc/self/environ) holds a key."""
     try:
-        import credentials
-        stored = set((credentials.STORE.read() if credentials.STORE else {}).keys())
+        stored = set(stored_secret_names())
     except Exception:  # noqa: BLE001
         stored = set()
-    return {k: v for k, v in os.environ.items() if k in _ENV_KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith("AXF_"))}
+    hidden = tuple(ENV_PREFIXES_HIDDEN)
+    return {k: v for k, v in os.environ.items() if k in _ENV_KEEP or (not _SECRETISH.search(k) and k not in stored and not k.startswith(hidden))}
 
 
 def _cli_abs_deny(cwd: str | None) -> list[str]:
-    """Absolute-path deny rules (Claude Code's `//abs/path` form): process info, the console's private folder, keys."""
+    """Absolute-path deny rules (Claude Code's `//abs/path` form): process info, the host's private folders, keys."""
     roots = {os.path.abspath(cwd or os.getcwd())}
     try:
-        import console_context as cx
-        roots.add(str(cx.ROOT))
+        roots |= {os.path.abspath(str(r)) for r in PRIVATE_ROOTS()}
     except Exception:  # noqa: BLE001
         pass
     pats = ["//proc/**", "//sys/**", "//etc/shadow", "~/.ssh/**", "~/.anthropic-key", "~/.claude/.credentials.json", "~/.config/gh/**"]
-    pats += [f"/{r}/.axf-console/**" for r in sorted(roots)]
+    pats += [f"/{r}/{d}/**" for r in sorted(roots) for d in PRIVATE_DIRS]
     return [f"{tool}({pat})" for tool in ("Read", "Grep", "Glob", "LS") for pat in pats]
 
 
@@ -535,7 +563,7 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     if not token:
         raise ProviderError("no Claude Code token: run `claude setup-token` and paste it, or set CLAUDE_CODE_OAUTH_TOKEN", 400)
     if not cli_available():
-        raise ProviderError("the `claude` CLI is not installed on the console server", 400)
+        raise ProviderError(f"the `claude` CLI is not installed on {HOST_LABEL}", 400)
     if token.startswith("sk-ant-api"):
         raise ProviderError("this profile holds an Anthropic API key (sk-ant-api…). The subscription provider needs a Claude Code token: run `claude setup-token` on the VPS and paste the sk-ant-oat01-… token it prints. Put the API key in the “Anthropic (Claude)” provider instead", 400)
     # The CLI keeps no session for us here: earlier turns go in as a transcript, on stdin (no argv size limit).
@@ -543,10 +571,10 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     prompt = (f"Conversation so far:\n{history}\n\nUSER: " if history else "") + str(messages[-1].get("content", ""))
     args = [os.environ.get("CLAUDE_BIN", "claude"), "-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
             "--model", model, "--permission-mode", "default", "--allowedTools", "Read", "Grep", "Glob", "LS",
-            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *_CLI_DENY]
+            "--disallowedTools", "Edit", "Write", "MultiEdit", "NotebookEdit", "Bash", "WebFetch", *_cli_deny()]
     bridge = _Bridge(tools, tool_runner) if tools and tool_runner else None
     if bridge:
-        # The console's tools as an MCP server (same rules and approval cards as API providers); the CLI's own
+        # The host's tools as an MCP server (same rules and approval cards as API providers); the CLI's own
         # Edit/Write/Bash stay off.
         i = args.index("--disallowedTools")
         args[i:i] = ["mcp__axf"]

@@ -1,8 +1,9 @@
-"""MCP stdio server the Claude Code CLI starts for one chat turn: it hands the CLI the console's tools.
+"""MCP stdio server the Claude Code CLI starts for one chat turn: it hands the CLI the host's tools
+(framework/python, `axf.assistant_host.cli_bridge`; started by providers._Bridge, run as a script, never imported).
 
 The CLI's own Edit/Write/Bash stay off. Instead, the tools the assistant would give any provider (the agent's tools,
 including Mosses's container tools) are offered here, and every call is forwarded over a private unix socket to the
-console's turn engine, which runs it exactly as for API providers: same safety list, same staging into one approval
+host's turn engine, which runs it exactly as for API providers: same safety list, same staging into one approval
 card, same snapshot rule. No token or secret is involved: the socket lives in a 0700 temp folder for this turn only.
 
 Env: AXF_BRIDGE_SOCKET (socket path), AXF_BRIDGE_TOOLS (JSON file with [{name, description, parameters}]).

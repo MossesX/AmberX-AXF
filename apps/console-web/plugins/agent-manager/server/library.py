@@ -16,7 +16,9 @@ import re
 import time
 from typing import Any
 
-from . import contract, store
+from axf.contracts import agents as contract  # framework/python
+
+from . import store
 
 LIBRARY = ("skills", "tools", "personas", "lingo", "agents")
 KEEP = 30
