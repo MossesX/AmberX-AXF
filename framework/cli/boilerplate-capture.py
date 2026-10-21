@@ -114,6 +114,7 @@ def main() -> int:
     ap.add_argument("--boilerplate", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--width", type=int, default=540)
+    ap.add_argument("--start-shot", action="store_true", help="also save the first screen after launch as start.png (rebuild shots)")
     a = ap.parse_args()
     if not PKG.match(a.package):
         print(f"bad package id: {a.package}", file=sys.stderr)
@@ -149,6 +150,10 @@ def main() -> int:
 
     shots = []
     root = dump()
+    if a.start_shot:
+        (out / "start.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
+        shrink(out / "start.png", a.width)
+        shots.append({"screen": "start", "label": "Start", "kind": "start", "file": "start.png", "verified": True})
     for s in screens:
         before = digest(root)
         n = find(root, s["label"], a.package)
