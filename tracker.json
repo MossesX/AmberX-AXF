@@ -1,14 +1,14 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T02:31:33.810Z",
+  "generatedAt": "2026-10-21T04:47:30.360Z",
   "summary": {
     "foundations": {
-      "built": 66,
+      "built": 67,
       "partial": 3,
       "placeholder": 1,
       "planned": 0,
-      "total": 70,
+      "total": 71,
       "coverage": 94
     },
     "kernel": {
@@ -813,6 +813,17 @@
       "status": "built",
       "wave": 1,
       "module": "axf-kernel",
+      "notes": ""
+    },
+    {
+      "id": "f.pyserver",
+      "tab": "foundations",
+      "group": "observability-security-build",
+      "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
+      "tag": "lock",
+      "status": "built",
+      "wave": 1,
+      "module": "axf_server",
       "notes": ""
     },
     {
