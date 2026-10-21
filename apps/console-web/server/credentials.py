@@ -65,7 +65,7 @@ CREDENTIALS: dict[str, dict[str, Any]] = {
                      "placeholder": "github_pat_… or ghp_…", "help": "Fine-grained token for MossesX/AmberX-AXF: Contents read/write, Actions read."},
     "ANTHROPIC_API_KEY": {"label": "Anthropic API key", "secret": True, "pattern": r"^sk-ant-[A-Za-z0-9_\-]{20,}$",
                           "placeholder": "sk-ant-…", "help": "From console.anthropic.com → API keys. Used by API-key features and claude-pick's API mode."},
-    "HOSTINGER_API_TOKEN": {"label": "Hostinger API token", "secret": True, "pattern": r"^[A-Za-z0-9_\-\.]{20,}$",
+    "HOSTINGER_API_TOKEN": {"label": "Hostinger API token", "secret": True, "pattern": r"^[A-Za-z0-9_\-\.|:=+/]{20,512}$",
                             "placeholder": "token from hPanel", "help": "hPanel → Profile → API → New token."},
     "COOLIFY_URL": {"label": "Coolify URL", "secret": False, "pattern": r"^https?://[^\s/]+(:\d+)?/?$",
                     "placeholder": "https://coolify.amberxai.com", "help": "The address of your Coolify dashboard."},
