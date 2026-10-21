@@ -1,0 +1,1111 @@
+{
+  "contract": "assistant@1",
+  "providers": [
+    {
+      "kind": "anthropic",
+      "protocol": "anthropic",
+      "keyEnv": "ANTHROPIC_API_KEY",
+      "auth": "x-api-key",
+      "baseUrl": "https://api.anthropic.com"
+    },
+    {
+      "kind": "claude-code",
+      "protocol": "claude-cli",
+      "keyEnv": "CLAUDE_CODE_OAUTH_TOKEN",
+      "auth": "oauth",
+      "baseUrl": ""
+    },
+    {
+      "kind": "openai",
+      "protocol": "openai",
+      "keyEnv": "OPENAI_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.openai.com/v1"
+    },
+    {
+      "kind": "xai",
+      "protocol": "openai",
+      "keyEnv": "XAI_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.x.ai/v1"
+    },
+    {
+      "kind": "gemini",
+      "protocol": "openai",
+      "keyEnv": "GEMINI_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai"
+    },
+    {
+      "kind": "mistral",
+      "protocol": "openai",
+      "keyEnv": "MISTRAL_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.mistral.ai/v1"
+    },
+    {
+      "kind": "groq",
+      "protocol": "openai",
+      "keyEnv": "GROQ_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.groq.com/openai/v1"
+    },
+    {
+      "kind": "deepseek",
+      "protocol": "openai",
+      "keyEnv": "DEEPSEEK_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.deepseek.com/v1"
+    },
+    {
+      "kind": "openrouter",
+      "protocol": "openai",
+      "keyEnv": "OPENROUTER_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://openrouter.ai/api/v1"
+    },
+    {
+      "kind": "together",
+      "protocol": "openai",
+      "keyEnv": "TOGETHER_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.together.xyz/v1"
+    },
+    {
+      "kind": "fireworks",
+      "protocol": "openai",
+      "keyEnv": "FIREWORKS_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.fireworks.ai/inference/v1"
+    },
+    {
+      "kind": "perplexity",
+      "protocol": "openai",
+      "keyEnv": "PERPLEXITY_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.perplexity.ai"
+    },
+    {
+      "kind": "cohere",
+      "protocol": "openai",
+      "keyEnv": "COHERE_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.cohere.ai/compatibility/v1"
+    },
+    {
+      "kind": "cerebras",
+      "protocol": "openai",
+      "keyEnv": "CEREBRAS_API_KEY",
+      "auth": "bearer",
+      "baseUrl": "https://api.cerebras.ai/v1"
+    },
+    {
+      "kind": "azure-openai",
+      "protocol": "openai",
+      "keyEnv": "AZURE_OPENAI_API_KEY",
+      "auth": "api-key",
+      "baseUrl": "https://YOUR-RESOURCE.openai.azure.com/openai/v1"
+    },
+    {
+      "kind": "ollama",
+      "protocol": "openai",
+      "keyEnv": "",
+      "auth": "none",
+      "baseUrl": "http://localhost:11434/v1"
+    },
+    {
+      "kind": "lmstudio",
+      "protocol": "openai",
+      "keyEnv": "",
+      "auth": "none",
+      "baseUrl": "http://localhost:1234/v1"
+    },
+    {
+      "kind": "custom",
+      "protocol": "openai",
+      "keyEnv": "",
+      "auth": "bearer",
+      "baseUrl": "http://localhost:8000/v1"
+    }
+  ],
+  "redact": [
+    {
+      "text": "my key is sk-proj-abcdefghijklmnopqrstuvwxyz123456 ok",
+      "on": "my key is [redacted secret] ok",
+      "off": "my key is sk-proj-abcdefghijklmnopqrstuvwxyz123456 ok"
+    },
+    {
+      "text": "token ghp_abcdefghijklmnopqrstuvwxyz0123456789ABCD here",
+      "on": "token [redacted secret] here",
+      "off": "token ghp_abcdefghijklmnopqrstuvwxyz0123456789ABCD here"
+    },
+    {
+      "text": "AKIAABCDEFGHIJKLMNOP and AIzaSyA-abcdefghijklmnopqrstuvwxyz0123456",
+      "on": "[redacted secret] and [redacted secret]",
+      "off": "AKIAABCDEFGHIJKLMNOP and AIzaSyA-abcdefghijklmnopqrstuvwxyz0123456"
+    },
+    {
+      "text": "sk-ant-api03-abcdefghijklmnopqrstuvwxyz",
+      "on": "[redacted secret]",
+      "off": "sk-ant-api03-abcdefghijklmnopqrstuvwxyz"
+    },
+    {
+      "text": "nothing secret here",
+      "on": "nothing secret here",
+      "off": "nothing secret here"
+    },
+    {
+      "text": "fc-0123456789abcdef0123456789abcdef",
+      "on": "[redacted secret]",
+      "off": "fc-0123456789abcdef0123456789abcdef"
+    },
+    {
+      "text": "xai-abcdefghijklmnopqrstuvwxyz01",
+      "on": "[redacted secret]",
+      "off": "xai-abcdefghijklmnopqrstuvwxyz01"
+    }
+  ],
+  "history": {
+    "messages": [
+      {
+        "id": "m1",
+        "role": "user",
+        "content": "first",
+        "createdAt": 1
+      },
+      {
+        "id": "m2",
+        "role": "assistant",
+        "content": "one",
+        "createdAt": 2
+      },
+      {
+        "id": "m3",
+        "role": "user",
+        "content": "calc",
+        "createdAt": 3,
+        "images": [
+          {
+            "media_type": "image/png",
+            "data": "AAA"
+          }
+        ]
+      },
+      {
+        "id": "m4",
+        "role": "assistant",
+        "content": "let me",
+        "createdAt": 4,
+        "toolCalls": [
+          {
+            "id": "c1",
+            "name": "calculator",
+            "arguments": {
+              "expression": "6*7"
+            }
+          }
+        ],
+        "meta": {
+          "step": true
+        }
+      },
+      {
+        "id": "m5",
+        "role": "tool",
+        "content": "42",
+        "createdAt": 5,
+        "toolCallId": "c1",
+        "isError": false
+      },
+      {
+        "id": "m6",
+        "role": "assistant",
+        "content": "let me\n\nit is 42",
+        "createdAt": 6,
+        "meta": {
+          "lastRound": "it is 42"
+        }
+      },
+      {
+        "id": "m7",
+        "role": "user",
+        "content": "thanks",
+        "createdAt": 7
+      },
+      {
+        "id": "m8",
+        "role": "assistant",
+        "content": "welcome",
+        "createdAt": 8,
+        "thinkingBlocks": [
+          {
+            "type": "thinking",
+            "thinking": "t",
+            "signature": "s"
+          }
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "limit": 1,
+        "wire": [
+          {
+            "role": "user",
+            "content": "thanks"
+          },
+          {
+            "role": "assistant",
+            "content": "welcome",
+            "thinking_blocks": [
+              {
+                "type": "thinking",
+                "thinking": "t",
+                "signature": "s"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "limit": 2,
+        "wire": [
+          {
+            "role": "user",
+            "content": "calc",
+            "images": [
+              {
+                "media_type": "image/png",
+                "data": "AAA"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "let me",
+            "tool_calls": [
+              {
+                "id": "c1",
+                "name": "calculator",
+                "arguments": {
+                  "expression": "6*7"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "content": "42",
+            "tool_call_id": "c1",
+            "is_error": false
+          },
+          {
+            "role": "assistant",
+            "content": "it is 42"
+          },
+          {
+            "role": "user",
+            "content": "thanks"
+          },
+          {
+            "role": "assistant",
+            "content": "welcome",
+            "thinking_blocks": [
+              {
+                "type": "thinking",
+                "thinking": "t",
+                "signature": "s"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "limit": 3,
+        "wire": [
+          {
+            "role": "user",
+            "content": "first"
+          },
+          {
+            "role": "assistant",
+            "content": "one"
+          },
+          {
+            "role": "user",
+            "content": "calc",
+            "images": [
+              {
+                "media_type": "image/png",
+                "data": "AAA"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "let me",
+            "tool_calls": [
+              {
+                "id": "c1",
+                "name": "calculator",
+                "arguments": {
+                  "expression": "6*7"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "content": "42",
+            "tool_call_id": "c1",
+            "is_error": false
+          },
+          {
+            "role": "assistant",
+            "content": "it is 42"
+          },
+          {
+            "role": "user",
+            "content": "thanks"
+          },
+          {
+            "role": "assistant",
+            "content": "welcome",
+            "thinking_blocks": [
+              {
+                "type": "thinking",
+                "thinking": "t",
+                "signature": "s"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "limit": 40,
+        "wire": [
+          {
+            "role": "user",
+            "content": "first"
+          },
+          {
+            "role": "assistant",
+            "content": "one"
+          },
+          {
+            "role": "user",
+            "content": "calc",
+            "images": [
+              {
+                "media_type": "image/png",
+                "data": "AAA"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "let me",
+            "tool_calls": [
+              {
+                "id": "c1",
+                "name": "calculator",
+                "arguments": {
+                  "expression": "6*7"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "content": "42",
+            "tool_call_id": "c1",
+            "is_error": false
+          },
+          {
+            "role": "assistant",
+            "content": "it is 42"
+          },
+          {
+            "role": "user",
+            "content": "thanks"
+          },
+          {
+            "role": "assistant",
+            "content": "welcome",
+            "thinking_blocks": [
+              {
+                "type": "thinking",
+                "thinking": "t",
+                "signature": "s"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "orphanStart": [
+      {
+        "role": "assistant",
+        "content": "let me\n\nit is 42"
+      },
+      {
+        "role": "user",
+        "content": "thanks"
+      },
+      {
+        "role": "assistant",
+        "content": "welcome",
+        "thinking_blocks": [
+          {
+            "type": "thinking",
+            "thinking": "t",
+            "signature": "s"
+          }
+        ]
+      }
+    ]
+  },
+  "chains": [
+    {
+      "settings": {
+        "profileId": "a"
+      },
+      "agent": "b",
+      "def": "c",
+      "fallback": [
+        "c",
+        "d",
+        "a"
+      ],
+      "chain": [
+        "a",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "settings": {},
+      "agent": "b",
+      "def": "c",
+      "fallback": [
+        "d"
+      ],
+      "chain": [
+        "b",
+        "d"
+      ]
+    },
+    {
+      "settings": {},
+      "def": "c",
+      "fallback": [],
+      "chain": [
+        "c"
+      ]
+    },
+    {
+      "settings": {},
+      "def": "",
+      "fallback": [],
+      "chain": [
+        ""
+      ]
+    },
+    {
+      "settings": {
+        "profileId": ""
+      },
+      "agent": "",
+      "def": "c",
+      "fallback": [
+        "c"
+      ],
+      "chain": [
+        "c"
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "perms": [
+        "assistant.tools"
+      ],
+      "perm": "assistant.tools",
+      "allowed": true
+    },
+    {
+      "perms": [
+        "assistant.tools"
+      ],
+      "perm": "assistant.web",
+      "allowed": false
+    },
+    {
+      "perms": [
+        "assistant.*"
+      ],
+      "perm": "assistant.web",
+      "allowed": true
+    },
+    {
+      "perms": [
+        "*"
+      ],
+      "perm": "console.plugin.x",
+      "allowed": true
+    },
+    {
+      "perms": [
+        "assistant.*"
+      ],
+      "perm": "console.plugin.x",
+      "allowed": false
+    },
+    {
+      "perms": [],
+      "perm": "assistant.tools",
+      "admin": true,
+      "allowed": true
+    },
+    {
+      "perms": [
+        "a.*"
+      ],
+      "perm": "a.b.c",
+      "allowed": true
+    },
+    {
+      "perms": [
+        "a.b"
+      ],
+      "perm": "a",
+      "allowed": false
+    }
+  ],
+  "settingsAllowed": [
+    {
+      "admin": true,
+      "perms": [],
+      "keys": [
+        "profileId",
+        "model",
+        "temperature",
+        "max_tokens",
+        "top_p",
+        "systemPrompt",
+        "agentId",
+        "tools",
+        "thinking"
+      ]
+    },
+    {
+      "admin": false,
+      "perms": [],
+      "keys": [
+        "temperature",
+        "top_p",
+        "systemPrompt",
+        "tools"
+      ]
+    },
+    {
+      "admin": false,
+      "perms": [
+        "assistant.agents"
+      ],
+      "keys": [
+        "temperature",
+        "top_p",
+        "systemPrompt",
+        "tools",
+        "agentId"
+      ]
+    },
+    {
+      "admin": false,
+      "perms": [
+        "assistant.models"
+      ],
+      "keys": [
+        "temperature",
+        "top_p",
+        "systemPrompt",
+        "tools",
+        "profileId",
+        "model",
+        "max_tokens",
+        "thinking"
+      ]
+    },
+    {
+      "admin": false,
+      "perms": [
+        "assistant.*"
+      ],
+      "keys": [
+        "temperature",
+        "top_p",
+        "systemPrompt",
+        "tools",
+        "agentId",
+        "profileId",
+        "model",
+        "max_tokens",
+        "thinking"
+      ]
+    }
+  ],
+  "clampParams": [
+    {
+      "params": {
+        "max_tokens": 100000,
+        "thinking": true,
+        "temperature": 0.5
+      },
+      "admin": true,
+      "canModels": false,
+      "out": {
+        "max_tokens": 100000,
+        "thinking": true,
+        "temperature": 0.5
+      }
+    },
+    {
+      "params": {
+        "max_tokens": 100000,
+        "thinking": true
+      },
+      "admin": false,
+      "canModels": false,
+      "out": {
+        "max_tokens": 4096,
+        "thinking": false
+      }
+    },
+    {
+      "params": {
+        "max_tokens": 100000,
+        "thinking": true
+      },
+      "admin": false,
+      "canModels": true,
+      "out": {
+        "max_tokens": 16384,
+        "thinking": true
+      }
+    },
+    {
+      "params": {
+        "max_tokens": 10
+      },
+      "admin": false,
+      "canModels": false,
+      "out": {
+        "max_tokens": 256,
+        "thinking": false
+      }
+    },
+    {
+      "params": {
+        "max_tokens": "x"
+      },
+      "admin": false,
+      "canModels": true,
+      "out": {
+        "max_tokens": 4096
+      }
+    },
+    {
+      "params": {},
+      "admin": false,
+      "canModels": false,
+      "out": {
+        "max_tokens": 4096,
+        "thinking": false
+      }
+    }
+  ],
+  "titles": [
+    {
+      "text": "fix   the\nthing",
+      "n": 1,
+      "title": "1 change: fix the thing",
+      "convTitle": "fix the thing"
+    },
+    {
+      "text": "",
+      "n": 3,
+      "title": "3 changes",
+      "convTitle": ""
+    },
+    {
+      "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "n": 2,
+      "title": "2 changes: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…",
+      "convTitle": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  ],
+  "summaries": [
+    {
+      "args": {
+        "path": "/a",
+        "command": "ls"
+      },
+      "summary": "/a"
+    },
+    {
+      "args": {
+        "command": "rm -rf /"
+      },
+      "summary": "rm -rf /"
+    },
+    {
+      "args": {
+        "foo": 1,
+        "bar": [
+          1,
+          2
+        ]
+      },
+      "summary": "{\"foo\":1,\"bar\":[1,2]}"
+    },
+    {
+      "args": {},
+      "summary": ""
+    },
+    {
+      "args": {
+        "url": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+      },
+      "summary": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+    }
+  ],
+  "ownerKinds": [
+    {
+      "kind": "text",
+      "owner": "text"
+    },
+    {
+      "kind": "turn.start",
+      "owner": "owner.turn.start"
+    },
+    {
+      "kind": "session.close",
+      "owner": "owner.session.close"
+    },
+    {
+      "kind": "done",
+      "owner": "done"
+    }
+  ],
+  "sse": {
+    "text": "id: 3\nevent: text\ndata: {\"text\":\"Hel\"}\n\n: keep-alive\n\nevent: done\ndata: {\"message\":{\"id\":\"m\"},\"title\":\"T\"}\n\ndata: plain\n\nevent: text\ndata: {\"text\":\"lo",
+    "frames": [
+      {
+        "event": "text",
+        "data": "{\"text\":\"Hel\"}",
+        "id": 3
+      },
+      {
+        "event": "done",
+        "data": "{\"message\":{\"id\":\"m\"},\"title\":\"T\"}"
+      },
+      {
+        "event": "message",
+        "data": "plain"
+      }
+    ],
+    "rest": "event: text\ndata: {\"text\":\"lo",
+    "events": [
+      {
+        "event": "text",
+        "data": {
+          "text": "Hel"
+        },
+        "seq": 3
+      },
+      {
+        "event": "done",
+        "data": {
+          "message": {
+            "id": "m"
+          },
+          "title": "T"
+        }
+      },
+      {
+        "event": "message",
+        "data": "plain"
+      }
+    ]
+  },
+  "liveReply": {
+    "events": [
+      {
+        "event": "replay",
+        "data": {
+          "next": 0,
+          "gap": false,
+          "reset": true,
+          "more": false,
+          "state": "running",
+          "lastSeq": 9
+        }
+      },
+      {
+        "event": "start",
+        "data": {
+          "turnId": "t1",
+          "agent": {
+            "id": "a",
+            "name": "Mosses"
+          }
+        },
+        "seq": 1
+      },
+      {
+        "event": "text",
+        "data": {
+          "text": "Hi "
+        },
+        "seq": 2
+      },
+      {
+        "event": "status",
+        "data": {
+          "text": "Thinking on x"
+        },
+        "seq": 3
+      },
+      {
+        "event": "tool",
+        "data": {
+          "phase": "call",
+          "id": "c1",
+          "name": "repo_read",
+          "input": "a.ts"
+        },
+        "seq": 4
+      },
+      {
+        "event": "tool",
+        "data": {
+          "phase": "result",
+          "id": "c1",
+          "name": "repo_read",
+          "ok": true,
+          "preview": "x"
+        },
+        "seq": 5
+      },
+      {
+        "event": "text",
+        "data": {
+          "text": "there"
+        },
+        "seq": 6
+      },
+      {
+        "event": "thinking",
+        "data": {
+          "text": "hm"
+        },
+        "seq": 7
+      },
+      {
+        "event": "done",
+        "data": {
+          "message": {
+            "id": "m",
+            "role": "assistant",
+            "content": "Hi there",
+            "createdAt": 1
+          },
+          "title": "T"
+        },
+        "seq": 8
+      }
+    ],
+    "folds": [
+      {
+        "turnId": "",
+        "text": "",
+        "status": "Connecting…",
+        "thinking": "",
+        "error": "",
+        "agent": "",
+        "tools": [],
+        "lastSeq": 0,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "",
+        "status": "Connecting…",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [],
+        "lastSeq": 1,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi ",
+        "status": "Connecting…",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [],
+        "lastSeq": 2,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi ",
+        "status": "Thinking on x",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [],
+        "lastSeq": 3,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi \n\n",
+        "status": "Thinking on x",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [
+          {
+            "id": "c1",
+            "name": "repo_read",
+            "input": "a.ts",
+            "done": false
+          }
+        ],
+        "lastSeq": 4,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi \n\n",
+        "status": "Thinking on x",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [
+          {
+            "id": "c1",
+            "name": "repo_read",
+            "input": "a.ts",
+            "done": true,
+            "ok": true,
+            "preview": "x"
+          }
+        ],
+        "lastSeq": 5,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi \n\nthere",
+        "status": "Thinking on x",
+        "thinking": "",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [
+          {
+            "id": "c1",
+            "name": "repo_read",
+            "input": "a.ts",
+            "done": true,
+            "ok": true,
+            "preview": "x"
+          }
+        ],
+        "lastSeq": 6,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi \n\nthere",
+        "status": "Thinking on x",
+        "thinking": "hm",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [
+          {
+            "id": "c1",
+            "name": "repo_read",
+            "input": "a.ts",
+            "done": true,
+            "ok": true,
+            "preview": "x"
+          }
+        ],
+        "lastSeq": 7,
+        "done": false
+      },
+      {
+        "turnId": "t1",
+        "text": "Hi \n\nthere",
+        "status": "Thinking on x",
+        "thinking": "hm",
+        "error": "",
+        "agent": "Mosses",
+        "tools": [
+          {
+            "id": "c1",
+            "name": "repo_read",
+            "input": "a.ts",
+            "done": true,
+            "ok": true,
+            "preview": "x"
+          }
+        ],
+        "lastSeq": 8,
+        "done": true
+      }
+    ],
+    "interrupted": {
+      "turnId": "",
+      "text": "",
+      "status": "Connecting…",
+      "thinking": "",
+      "error": "The host restarted while this reply was running.",
+      "agent": "",
+      "tools": [],
+      "lastSeq": 2,
+      "done": true
+    }
+  },
+  "reconnect": [
+    {
+      "attempt": 1,
+      "delayMs": 1000
+    },
+    {
+      "attempt": 2,
+      "delayMs": 2000
+    },
+    {
+      "attempt": 3,
+      "delayMs": 4000
+    },
+    {
+      "attempt": 5,
+      "delayMs": 16000
+    },
+    {
+      "attempt": 8,
+      "delayMs": 30000
+    },
+    {
+      "attempt": 20,
+      "delayMs": 30000
+    }
+  ]
+}

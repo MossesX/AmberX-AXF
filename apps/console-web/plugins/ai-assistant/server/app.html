@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
+<meta name="robots" content="noindex">
+<title>Assistant</title>
+<style>
+/* Plain chat page for hub users. System colours only, so it follows the device's light/dark setting. */
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: Canvas; color: CanvasText; display: flex; flex-direction: column; }
+header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid GrayText; }
+header h1 { font-size: 17px; margin: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.muted { color: GrayText; font-size: 13px; }
+button { font: inherit; padding: 8px 12px; border-radius: 8px; border: 1px solid GrayText; background: ButtonFace; color: ButtonText; cursor: pointer; }
+button.primary { background: AccentColor; color: AccentColorText; border-color: AccentColor; }
+button:disabled { opacity: .5; }
+main { flex: 1; display: flex; min-height: 0; }
+aside { width: 260px; border-right: 1px solid GrayText; overflow: auto; padding: 8px; }
+aside ul { list-style: none; margin: 0; padding: 0; }
+aside li button { width: 100%; text-align: left; border: 0; background: transparent; color: CanvasText; padding: 10px 8px; border-radius: 8px; }
+aside li button.on { outline: 2px solid AccentColor; }
+#chat { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+#log { flex: 1; overflow: auto; padding: 12px; }
+.msg { max-width: 760px; margin: 0 auto 14px; }
+.msg .who { font-size: 13px; color: GrayText; margin-bottom: 2px; }
+.msg .body { white-space: pre-wrap; word-wrap: break-word; }
+.msg.user .body { background: color-mix(in srgb, AccentColor 14%, Canvas); padding: 8px 12px; border-radius: 12px; display: inline-block; }
+.msg pre { white-space: pre-wrap; background: color-mix(in srgb, CanvasText 8%, Canvas); padding: 8px; border-radius: 8px; overflow: auto; }
+.status { max-width: 760px; margin: 0 auto 10px; color: GrayText; font-size: 13px; }
+.err { max-width: 760px; margin: 0 auto 10px; color: Mark; background: color-mix(in srgb, Mark 15%, Canvas); padding: 8px 12px; border-radius: 8px; }
+form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid GrayText; }
+textarea { flex: 1; font: inherit; resize: none; min-height: 44px; max-height: 40vh; padding: 10px; border-radius: 10px; border: 1px solid GrayText; background: Field; color: FieldText; }
+#menu { display: none; }
+@media (max-width: 720px) {
+  aside { position: fixed; inset: 52px 0 0 0; width: auto; background: Canvas; z-index: 2; display: none; }
+  aside.open { display: block; }
+  #menu { display: inline-block; }
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="menu" type="button" aria-label="Conversations">☰</button>
+  <h1 id="title">Assistant</h1>
+  <span id="me" class="muted"></span>
+  <button id="new" type="button">New chat</button>
+</header>
+<main>
+  <aside id="list"><ul id="convs"></ul></aside>
+  <section id="chat">
+    <div id="log"><p class="status">Loading…</p></div>
+    <form id="form">
+      <textarea id="text" placeholder="Message" rows="1" required></textarea>
+      <button id="send" class="primary" type="submit">Send</button>
+    </form>
+  </section>
+</main>
+<script>
+(() => {
+  'use strict';
+  const base = location.pathname.replace(/\/app\/?$/, '');
+  let token = '';
+  try { token = localStorage.getItem('axf-console:token') || ''; } catch (_) { /* storage blocked */ }
+  const headers = (extra) => Object.assign({ 'content-type': 'application/json' }, token ? { authorization: 'Bearer ' + token } : {}, extra || {});
+  const api = async (path, init) => {
+    const r = await fetch(base + '/' + path, Object.assign({ credentials: 'same-origin', headers: headers() }, init || {}));
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : 'Request failed (' + r.status + ')');
+    return j;
+  };
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  // Text with ``` code blocks; everything escaped.
+  const render = (s) => esc(s).replace(/```[a-z0-9_-]*\n?([\s\S]*?)```/gi, (_, code) => '<pre>' + code + '</pre>');
+  let me = null, conv = null, busy = false, lastSeq = 0, abort = null;
+
+  const showList = async () => {
+    const r = await api('conversations');
+    $('convs').innerHTML = r.items.map((c) => '<li><button type="button" data-id="' + esc(c.id) + '"' + (conv && conv.id === c.id ? ' class="on"' : '') + '>' + esc(c.title) + '<div class="muted">' + esc(c.preview) + '</div></button></li>').join('') || '<li class="muted">No chats yet.</li>';
+  };
+  const paint = (live) => {
+    const msgs = (conv ? conv.messages : []).filter((m) => (m.role === 'user' || m.role === 'assistant') && !(m.meta && m.meta.step));
+    let html = msgs.map((m) => '<div class="msg ' + m.role + '"><div class="who">' + (m.role === 'user' ? 'You' : esc((m.meta && m.meta.agentName) || me.assistantName)) + '</div><div class="body">' + render(m.content) + '</div></div>').join('');
+    if (live) {
+      if (live.text) html += '<div class="msg assistant"><div class="who">' + esc(me.assistantName) + '</div><div class="body">' + render(live.text) + '</div></div>';
+      if (live.status) html += '<p class="status">' + esc(live.status) + '</p>';
+      if (live.error) html += '<p class="err">' + esc(live.error) + '</p>';
+    }
+    $('log').innerHTML = html || '<p class="status">Say hello. Your chats are private to your account.</p>';
+    $('log').scrollTop = $('log').scrollHeight;
+    $('title').textContent = conv ? conv.title : me.assistantName;
+  };
+  const open = async (id) => {
+    if (abort) abort.abort();
+    conv = (await api('conversations/' + encodeURIComponent(id))).conversation;
+    try { localStorage.setItem('axf-assistant:last', id); } catch (_) {}
+    paint(null); $('list').classList.remove('open'); showList();
+    const s = (await api('sessions/' + encodeURIComponent(id))).session;
+    if (s && s.state === 'running') { lastSeq = Math.max(0, ((s.meta && s.meta.turnSeq) || s.lastSeq) - 1); watch(null); }
+  };
+  // Read a server-sent event stream; every event carries a seq, so a dropped stream resumes from the last one.
+  const read = async (r, live) => {
+    if (!r.ok || !r.body) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error(j.detail || 'Request failed (' + r.status + ')'), { status: r.status }); }
+    const rd = r.body.getReader(); const dec = new TextDecoder(); let buf = '';
+    for (;;) {
+      const x = await rd.read(); if (x.done) break;
+      buf += dec.decode(x.value, { stream: true });
+      let i;
+      while ((i = buf.indexOf('\n\n')) >= 0) {
+        const chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+        let ev = 'message', data = '', seq = 0;
+        chunk.split('\n').forEach((l) => { if (l.startsWith('event:')) ev = l.slice(6).trim(); else if (l.startsWith('data:')) data += l.slice(5).trim(); else if (l.startsWith('id:')) seq = Number(l.slice(3)) || 0; });
+        if (seq) lastSeq = Math.max(lastSeq, seq);
+        let d = null; try { d = JSON.parse(data); } catch (_) { continue; }
+        if (ev === 'text') live.text += d.text;
+        else if (ev === 'status') live.status = d.text;
+        else if (ev === 'tool') live.status = d.phase === 'call' ? 'Using ' + d.name + '…' : live.status;
+        else if (ev === 'error') live.error = d.message;
+        else if (ev === 'interrupted') live.error = 'The reply was interrupted (the console restarted).';
+        else if (ev === 'replay' && d && d.reset) lastSeq = 0;
+        else continue;
+        paint(live);
+      }
+    }
+  };
+  const watch = async (first) => {
+    const live = { text: '', status: first ? 'Thinking…' : 'Following the running reply…', error: '' };
+    busy = true; $('send').textContent = 'Stop'; paint(live);
+    let step = first, tries = 0;
+    for (;;) {
+      abort = new AbortController();
+      try {
+        const r = step ? await step(abort.signal) : await fetch(base + '/sessions/' + encodeURIComponent(conv.id) + '/events?since=' + lastSeq, { credentials: 'same-origin', headers: headers(), signal: abort.signal });
+        await read(r, live);
+        const s = (await api('sessions/' + encodeURIComponent(conv.id))).session;
+        if (!s || s.state !== 'running') break;
+        step = null;
+      } catch (e) {
+        if (e.name === 'AbortError') break;
+        if (e.status && step) { live.error = e.message; break; }
+        if (++tries > 8) { live.error = 'Lost the connection. Your reply keeps running; reopen this chat to see it.'; break; }
+        live.status = 'Reconnecting…'; paint(live);
+        await new Promise((ok) => setTimeout(ok, Math.min(30000, 500 * 2 ** tries)));
+        step = null;
+      }
+    }
+    abort = null; busy = false; $('send').textContent = 'Send';
+    if (conv) conv = (await api('conversations/' + encodeURIComponent(conv.id))).conversation;
+    paint(live.error ? { text: '', status: '', error: live.error } : null); showList(); showMe();
+  };
+  const showMe = async () => {
+    me = Object.assign(me || {}, await api('me'));
+    $('me').textContent = me.user.name + (me.dailyTokens ? ' · ' + Math.max(0, me.dailyTokens - me.usedToday).toLocaleString() + ' tokens left today' : '');
+  };
+
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (busy) { if (conv) api('sessions/' + encodeURIComponent(conv.id) + '/stop', { method: 'POST', body: '{}' }).catch(() => {}); return; }
+    const text = $('text').value.trim(); if (!text) return;
+    try {
+      if (!conv) conv = (await api('conversations', { method: 'POST', body: '{}' })).conversation;
+      conv.messages.push({ role: 'user', content: text, meta: {} });
+      $('text').value = ''; lastSeq = 0;
+      const id = conv.id;
+      await watch((signal) => fetch(base + '/conversations/' + encodeURIComponent(id) + '/messages', { method: 'POST', credentials: 'same-origin', headers: headers(), body: JSON.stringify({ content: text }), signal }));
+    } catch (err) { paint({ text: '', status: '', error: err.message }); }
+  });
+  $('text').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && matchMedia('(pointer: fine)').matches) { e.preventDefault(); $('form').requestSubmit(); } });
+  $('new').addEventListener('click', () => { if (abort) abort.abort(); conv = null; paint(null); showList(); $('text').focus(); });
+  $('menu').addEventListener('click', () => $('list').classList.toggle('open'));
+  $('convs').addEventListener('click', (e) => { const b = e.target.closest('button[data-id]'); if (b) open(b.dataset.id).catch((err) => paint({ text: '', status: '', error: err.message })); });
+
+  (async () => {
+    try {
+      await showMe(); document.title = me.assistantName;
+      await showList();
+      let last = ''; try { last = localStorage.getItem('axf-assistant:last') || ''; } catch (_) {}
+      if (last) await open(last).catch(() => paint(null)); else paint(null);
+    } catch (err) {
+      $('log').innerHTML = '<p class="err">' + esc(err.message) + '</p><p class="status">Sign in to the hub first, then reload this page.</p>';
+    }
+  })();
+})();
+</script>
+</body>
+</html>
