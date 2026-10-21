@@ -52,7 +52,8 @@
   "x.plugins.manager",
   "x.assets.templates",
   "x.console.pending",
-  "x.lib.mcp"
+  "x.lib.mcp",
+  "x.lib.hub"
  ],
  "steps": {
   "x.kernel": {
@@ -224,10 +225,17 @@
    "completedAt": "2026-10-18T14:17:14.449Z",
    "completedBy": "feature-tracker",
    "deps": []
+  },
+  "x.lib.mcp": {
+   "completedAt": "2026-10-21T04:41:36.489Z",
+   "completedBy": "feature-tracker",
+   "deps": [
+    "x.plugins"
+   ]
   }
  },
  "dirty": true,
- "updatedAt": "2026-10-18T14:17:14.449Z",
+ "updatedAt": "2026-10-21T04:41:36.489Z",
  "history": [
   {
    "at": "2026-10-17T16:12:45.936Z",
@@ -262,6 +270,11 @@
   {
    "at": "2026-10-18T14:17:14.449Z",
    "by": "feature-tracker",
+   "text": "Synced with the feature tracker: 1 change(s)"
+  },
+  {
+   "at": "2026-10-21T04:41:36.489Z",
+   "by": "cli",
    "text": "Synced with the feature tracker: 1 change(s)"
   }
  ]

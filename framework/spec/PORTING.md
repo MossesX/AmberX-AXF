@@ -10,6 +10,7 @@ A port is quick to write because almost everything is already shared and languag
 | Engine behaviour (theme, layout, component style, UAC, context menu, actions, validation) | `framework/spec/fixtures/*.json` — golden outputs generated from the reference TypeScript engines |
 | Standard vocabularies | action ids (`StandardActions`), UAC permission ids, extension-point ids, route/settings/work/session/plugin contracts (`framework/android/axf-kernel/.../contract`, mirrored in `framework/core/types.ts`) |
 | Plugin inventory (`plugin-inventory@1`: dependencies, dependents, health, clashes, graph) | `framework/core/engines/plugins.ts` = `axf-kernel/.../plugins/PluginInventoryEngine.kt` = the console plugin's `server/engine.py`; fixture `spec/fixtures/plugin-inventory.json` |
+| axHub connector, first slice (hub address rules, hub URLs, approvals feed + status mapping, seen ids) | `framework/libs/hub/hub.ts` = `framework/android/lib-hub/.../HubRules.kt`; fixture `spec/fixtures/hub-approvals.json` |
 | Interop contracts (protocol-neutral) | `framework/spec/INTEROP.md` — action/event descriptors, exposure, call origins, `surface@1`, wire error codes, protocol adapters (`axf-kernel/.../interop`; **not yet mirrored in `framework/core`**) |
 | Build engine | `framework/cli/*.mjs` — `init`, `validate`, `new-asset`, `new-module`, `new-demo`, `dev`; a port adds a template folder with a `template.json` |
 | Feature catalog + tracker | `framework/catalog/*.json`, `tracker.json` — the console shows every port's status from the same data |

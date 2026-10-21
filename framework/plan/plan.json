@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T06:04:09.775Z",
+ "generatedAt": "2026-10-21T06:06:23.111Z",
  "statuses": [
   "built",
   "partial",
@@ -2388,8 +2388,8 @@
    "summary": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
    "ports": {
     "android": {
-     "status": "planned",
-     "where": "lib-notifications"
+     "status": "built",
+     "where": "lib-notifications; written without a compiler"
     },
     "web": {
      "status": "planned",
@@ -2407,10 +2407,16 @@
    ],
    "catalog": [
     "dv.notif",
+    "lib.notifications",
+    "lib.notifications.alerts",
     "w.push"
    ],
-   "modules": [],
-   "files": [],
+   "modules": [
+    "lib-notifications"
+   ],
+   "files": [
+    "framework/android/lib-notifications"
+   ],
    "acceptance": [],
    "warnings": [],
    "recommendations": [],
@@ -2418,7 +2424,7 @@
    "screenshots": [],
    "links": [],
    "tags": [],
-   "notes": "",
+   "notes": "Oct 20 2026 harvest (group hub-notify, Opus): lib-notifications from apps/axhub-android watch/Alerts.kt fills android.notifications; alert@1 hook built, push + scheduling + web/python still to do.",
    "source": "seed",
    "history": [
     {
@@ -2428,6 +2434,10 @@
     {
      "at": "2026-10-17T16:12:45.952Z",
      "text": "1/2 linked features built (feature tracker)"
+    },
+    {
+     "at": "2026-10-20",
+     "text": "Android lib-notifications built (harvest from AXHub)"
     }
    ],
    "model": "opus",
@@ -11960,6 +11970,234 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "lib.hub",
+   "title": "axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/libs/hub + framework/android/lib-hub + library.json; fixture spec/fixtures/hub-approvals.json; harvested from apps/axhub-android and the console approvals-banner plugin (Oct 20 2026, Kotlin written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-hub"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.hub"
+   ],
+   "modules": [
+    "lib-hub"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable) (lib.hub.axpp)",
+    "Bundle with: Hub-pushed approvals and events instead of polling (lib.hub.push)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "First slice (Oct 20 2026 harvest, Opus): web framework/libs/hub + Android lib-hub, one fixture hub-approvals.json; AXHub app + console approvals-banner switched. AXPP parked for Fable. Kotlin written without a compiler (HubRules replayed the fixture with a local kotlinc).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hub.axpp",
+   "title": "Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.hub",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.hub"
+   ],
+   "catalog": [
+    "lib.hub.axpp"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.hub.axpp; parked for Fable",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hub.push",
+   "title": "Hub-pushed approvals and events instead of polling",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.hub",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.hub"
+   ],
+   "catalog": [
+    "lib.hub.push"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.hub.push",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.notifications",
+   "title": "Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-notifications + library.json; harvested from apps/axhub-android watch/Alerts.kt (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-notifications"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.notifications"
+   ],
+   "modules": [
+    "lib-notifications"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: alert@1 deliveries as device notifications (hook built, not wired) (lib.notifications.alerts)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "Oct 20 2026 harvest from AXHub (Opus); fills android.notifications; written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.notifications.alerts",
+   "title": "alert@1 deliveries as device notifications (hook built, not wired)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.notifications",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "Suggested together with Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.notifications"
+   ],
+   "catalog": [
+    "lib.notifications.alerts"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "ui.explorer",
    "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
    "area": "Kernel",
@@ -13164,7 +13402,7 @@
    "ports": {
     "android": {
      "status": "built",
-     "where": "axf-platform-android"
+     "where": "lib-notifications"
     }
    },
    "capabilities": [],
@@ -13173,7 +13411,7 @@
     "dv.notif"
    ],
    "modules": [
-    "axf-platform-android"
+    "lib-notifications"
    ],
    "files": [],
    "acceptance": [],
@@ -13186,7 +13424,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "Oct 20 2026: lib-notifications (channels, permission checks, ongoing + private-lock-screen alerts, tags); actions/progress/grouped/scheduled/bubbles not yet",
    "source": "catalog",
    "history": [
     {
@@ -21885,6 +22123,87 @@
    "model": "fable",
    "modelEdited": true,
    "modelReason": "Cross-port library contract: Fable keeps every port consistent",
+   "edited": true
+  },
+  {
+   "id": "x.lib.hub",
+   "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Framework library so any AXF app (web + Android) talks to axHub. First slice (Opus, Oct 20 2026 harvest) = only what the hub serves today: hub address rules, hub URLs, the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen ids, sign-out on the hub, an origin-locked web view and hub APK downloads (Android). The hub protocol contract (AXPP) stays parked for Fable (placeholder axf.hub.axpp).",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/libs/hub"
+    },
+    "android": {
+     "status": "built",
+     "where": "lib-hub; written without a compiler"
+    },
+    "python": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [
+    "axf.hub"
+   ],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [
+    "lib.hub",
+    "lib.hub.axpp",
+    "lib.hub.push"
+   ],
+   "modules": [
+    "lib-hub"
+   ],
+   "files": [
+    "framework/libs/hub",
+    "framework/android/lib-hub",
+    "framework/spec/fixtures/hub-approvals.json",
+    "framework/spec/check-hub.mts"
+   ],
+   "acceptance": [
+    {
+     "text": "Same address rules, URLs, feed parsing and status mapping on web and Android (one fixture)",
+     "done": true
+    },
+    {
+     "text": "AXHub app and the console approvals banner use it; their private copies are gone",
+     "done": true
+    },
+    {
+     "text": "Hub protocol contract (AXPP)",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [
+    "AXPP is parked for Fable: design it as its own contract; lib-hub gains it as a new capability without renaming the first slice."
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "harvest"
+   ],
+   "notes": "Harvest Oct 20 2026 (group hub-notify, Opus): from apps/axhub-android hub/* + views/HubWebView.kt and apps/console-web/plugins/approvals-banner.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "First slice built on Opus (harvest group hub-notify); AXPP parked for Fable"
+    }
+   ],
+   "model": "opus",
+   "modelEdited": true,
+   "modelReason": "Security-adjacent (sessions, auth, web view origin lock): Opus 5.5",
    "edited": true
   },
   {

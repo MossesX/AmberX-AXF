@@ -4,18 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
-import ai.amberx.axf.axhubandroid.hub.HubAddress
-import ai.amberx.axf.axhubandroid.hub.HubState
-import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.views.ApprovalsView
 import ai.amberx.axf.axhubandroid.views.AppsView
 import ai.amberx.axf.axhubandroid.views.Gated
 import ai.amberx.axf.axhubandroid.views.HubAreaView
 import ai.amberx.axf.axhubandroid.views.HubPageView
-import ai.amberx.axf.axhubandroid.views.HubWebView
 import ai.amberx.axf.axhubandroid.views.SettingsView
 import ai.amberx.axf.axhubandroid.views.hubAreas
 import ai.amberx.axf.axhubandroid.watch.Alerts
+import ai.amberx.axf.axhubandroid.watch.hubPrefs
+import ai.amberx.axf.hub.HubRules
+import ai.amberx.axf.hub.LockedWebView
+import ai.amberx.axf.hub.HubState
 import ai.amberx.axf.lock.PinSetupScreen
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.ui.shell.AppShell
@@ -50,17 +50,17 @@ class MainActivity : AxfActivity() {
 
     /** The waiting screen's "Sign in on the hub": the hub's sign-in page in the app's own locked web view; done once it leaves /auth/login. */
     override val hubSignIn: @Composable (done: () -> Unit) -> Unit = { done ->
-        val base = WatchPrefs(this).base
-        HubWebView(base, HubAddress.login(base), onPage = { url -> if (!url.contains("/auth/login") && !url.contains("/auth/first")) done() })
+        val base = hubPrefs(this).base
+        LockedWebView(base, HubRules.loginUrl(base), onPage = { url -> if (!url.contains("/auth/login") && !url.contains("/auth/first")) done() })
     }
 
     private fun handle(i: Intent?) {
         // Reopened from recents: the old alert's extras come back with it; don't act on them twice.
         if (i == null || (i.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) return
-        val base = WatchPrefs(this).base
+        val base = hubPrefs(this).base
         val id = i.getStringExtra(Alerts.EXTRA_APPROVAL)
         when {
-            id != null -> HubAddress.approval(base, id)?.let { HubState.open(it); kernel.runtime.navigate("hub") }
+            id != null -> HubRules.approvalUrl(base, id)?.let { HubState.open(it); kernel.runtime.navigate("hub") }
             i.getBooleanExtra(Alerts.EXTRA_OPEN_LIST, false) -> kernel.runtime.navigate("home")
         }
         i.removeExtra(Alerts.EXTRA_APPROVAL); i.removeExtra(Alerts.EXTRA_OPEN_LIST)

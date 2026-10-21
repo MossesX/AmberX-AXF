@@ -1,13 +1,13 @@
 package ai.amberx.axf.axhubandroid
 
 import android.content.Context
-import ai.amberx.axf.axhubandroid.hub.HubAddress
-import ai.amberx.axf.axhubandroid.hub.HubClient
-import ai.amberx.axf.axhubandroid.hub.HubState
-import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.views.hubAreas
-import ai.amberx.axf.axhubandroid.views.signOutOfHub
 import ai.amberx.axf.axhubandroid.watch.ApprovalWatchService
+import ai.amberx.axf.axhubandroid.watch.hubPrefs
+import ai.amberx.axf.hub.HubClient
+import ai.amberx.axf.hub.HubRules
+import ai.amberx.axf.hub.HubState
+import ai.amberx.axf.hub.WebViewHubSession
 import ai.amberx.axf.kernel.contract.RouteSpec
 import ai.amberx.axf.kernel.contract.SettingKind
 import ai.amberx.axf.kernel.contract.SettingSpec
@@ -61,10 +61,10 @@ class AppLockGate {
     /** "Sign out and reset": the hub session goes first, then the lock is turned off. */
     suspend fun resetAfterSignOut() {
         val done = CompletableDeferred<Unit>()
-        base?.let { runCatching { HubClient.signOut(it) } } // ends the session on the hub too, not just on this phone
-        signOutOfHub { done.complete(Unit) }
+        base?.let { runCatching { HubClient.Default.signOut(it) } } // ends the session on the hub too, not just on this phone
+        WebViewHubSession.clear { done.complete(Unit) }
         done.await()
-        HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut)
+        HubState.signedOut(base ?: HubRules.DEFAULT)
         settings?.set(AppLock.MODE, JsonPrimitive(LockMode.NONE.id))
         unlock()
     }
@@ -78,7 +78,7 @@ class AppLockGate {
 class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhubandroid", "AXHub") {
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.lock")
     val gate: AppLockGate = AppLockGate()
-    private val prefs = WatchPrefs(context)
+    private val prefs = hubPrefs(context)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun register(ctx: ModuleContext) {
@@ -92,9 +92,9 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
 
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("axhub.signout", ActionMeta("Sign out of the hub", module = id)) { _, _ ->
             scope.launch {
-                val ended = runCatching { HubClient.signOut(prefs.base) }.getOrDefault(false)
-                signOutOfHub {
-                    HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut)
+                val ended = runCatching { HubClient.Default.signOut(prefs.base) }.getOrDefault(false)
+                WebViewHubSession.clear {
+                    HubState.signedOut(prefs.base)
                     runtime?.toast(if (ended) "Signed out of the hub." else "Signed out on this phone (the hub couldn't be reached to end the session there).", ToastKind.INFO, "AXHub")
                 }
             }
@@ -104,7 +104,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             runtime?.toast("AXHub on AmberX AXF 0.2.0. Approve and manage your axHub from this phone.", ToastKind.INFO, "About")
         })
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("axhub", "AXHub", "shield", id, order = 25, description = "Your hub and how approvals reach this phone.", settings = listOf(
-            SettingSpec(K_BASE, "Hub address", SettingKind.TEXT, "https only, no path", JsonPrimitive(HubAddress.DEFAULT), icon = "link"),
+            SettingSpec(K_BASE, "Hub address", SettingKind.TEXT, "https only, no path", JsonPrimitive(HubRules.DEFAULT), icon = "link"),
             SettingSpec(K_INTERVAL, "Check every", SettingKind.CHOICE, default = JsonPrimitive("30"), options = listOf("15" to "15 s", "30" to "30 s", "60" to "1 min", "300" to "5 min"), icon = "clock"),
             SettingSpec(K_FULL, "Full-screen alerts", SettingKind.TOGGLE, "Pop the approval up like an alarm when Android allows it", JsonPrimitive(true), icon = "bell"),
             SettingSpec("axhub.signoutAction", "Sign out of the hub", SettingKind.ACTION, target = "axhub.signout", icon = "logout"),
@@ -122,7 +122,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
     private fun mirror(key: String, v: String?, runtime: AxfRuntime?) {
         when (key) {
             K_BASE -> {
-                val ok = HubAddress.normalize(v)
+                val ok = HubRules.normalize(v)
                 if (ok == null) { if (v != null && runtime != null) runtime.toast("Hub address must be https with no path; kept ${prefs.base}.", ToastKind.WARNING, "AXHub") }
                 else if (ok != prefs.base) { prefs.base = ok; gate.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
             }
