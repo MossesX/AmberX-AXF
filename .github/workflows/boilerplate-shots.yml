@@ -92,6 +92,12 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: >-
             python3 framework/cli/boilerplate-capture.py --apk "$(ls apps/shots-${{ matrix.bp.id }}/app/build/outputs/apk/debug/*.apk | head -1)" --package "${{ env.APP_PKG }}" --boilerplate "framework/boilerplates/${{ matrix.bp.id }}/boilerplate.json" --out "shots/${{ matrix.bp.id }}"
+      - name: Report the captures
+        if: always()
+        run: |
+          f="shots/$BP_ID/result.json"
+          if [ -f "$f" ]; then node -e "const r=JSON.parse(require('fs').readFileSync('$f','utf8'));for(const s of r.shots)console.log('::notice title='+r.boilerplate+'::'+s.screen+' ('+s.label+') '+(s.verified?'verified':'NOT verified'))"; else echo "::warning title=$BP_ID::no result.json (capture didn't finish)"; fi
+          ls -la "shots/$BP_ID" 2>/dev/null | sed 's/^/::notice title=files::/' | head -20 || true
       - uses: actions/upload-artifact@v4
         with:
           name: shots-${{ matrix.bp.id }}
@@ -117,6 +123,7 @@ jobs:
           mkdir -p staged
           for d in captured/shots-*; do [ -d "$d" ] && mv "$d" "staged/${d#captured/shots-}"; done
           node framework/cli/boilerplate-shots.mjs apply staged | tee /tmp/report.txt
+          sed 's/^/::notice title=Filed::/' /tmp/report.txt
           echo '### Boilerplate screenshots' >> "$GITHUB_STEP_SUMMARY"; sed 's/^/- /' /tmp/report.txt >> "$GITHUB_STEP_SUMMARY"
       - name: Commit and push
         run: |
