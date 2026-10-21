@@ -1,0 +1,1151 @@
+{
+  "uaToken": "AXF-Embed-Take",
+  "ids": [
+    "settings",
+    "notifications"
+  ],
+  "takes": [
+    {
+      "input": null,
+      "takes": []
+    },
+    {
+      "input": "",
+      "takes": []
+    },
+    {
+      "input": "settings",
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": "notifications,settings",
+      "takes": [
+        "settings",
+        "notifications"
+      ]
+    },
+    {
+      "input": "settings+notifications",
+      "takes": [
+        "settings",
+        "notifications"
+      ]
+    },
+    {
+      "input": "Settings",
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": "nothing",
+      "takes": []
+    },
+    {
+      "input": "settings,none",
+      "takes": []
+    },
+    {
+      "input": [
+        "settings",
+        "settings"
+      ],
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": " notifications ",
+      "takes": [
+        "notifications"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "input": null,
+      "page": null
+    },
+    {
+      "input": "",
+      "page": null
+    },
+    {
+      "input": "settings",
+      "page": "settings"
+    },
+    {
+      "input": "SETTINGS",
+      "page": "settings"
+    },
+    {
+      "input": "notifications",
+      "page": null
+    },
+    {
+      "input": "nothing",
+      "page": null
+    },
+    {
+      "input": 3,
+      "page": null
+    }
+  ],
+  "queries": [
+    {
+      "input": "?axf-embed=patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings,notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=bogus",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-page=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-page=notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed-take=settings",
+      "embed": null
+    }
+  ],
+  "userAgents": [
+    {
+      "input": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed-Take/settings",
+      "embed": null
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    }
+  ],
+  "detect": [
+    {
+      "search": "?axf-embed=patches",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=patches&axf-embed-page=settings",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "search": "?axf-embed=patches&axf-embed-take=notifications",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      }
+    },
+    {
+      "search": "",
+      "userAgent": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=other",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "other",
+        "hidden": [
+          "banner"
+        ]
+      }
+    }
+  ],
+  "takenBy": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "app.settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.open",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "app.settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.open",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": null,
+      "fn": null
+    }
+  ],
+  "takenView": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "",
+      "fn": null
+    }
+  ],
+  "takenProvider": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "provider": "settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "provider": "views",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "provider": "settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "provider": "views",
+      "fn": null
+    }
+  ],
+  "suffix": [
+    {
+      "host": "patches",
+      "hidden": null,
+      "takes": [
+        "settings",
+        "notifications"
+      ],
+      "suffix": "AXF-Embed/patches AXF-Embed-Take/settings+notifications"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner"
+      ],
+      "takes": [],
+      "suffix": "AXF-Embed/patches"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner",
+        "toolbar"
+      ],
+      "takes": [
+        "settings"
+      ],
+      "suffix": "AXF-Embed/patches/toolbar+banner AXF-Embed-Take/settings"
+    },
+    {
+      "host": "patches",
+      "hidden": null,
+      "takes": [
+        "bogus"
+      ],
+      "suffix": "AXF-Embed/patches"
+    }
+  ],
+  "urls": [
+    {
+      "url": "https://console.amberxai.com/",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,notifications"
+    },
+    {
+      "url": "https://console.amberxai.com/?x=1#a",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings"
+        ],
+        "page": "settings"
+      },
+      "out": "https://console.amberxai.com/?x=1&axf-embed=patches&axf-embed-page=settings#a"
+    },
+    {
+      "url": "https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old",
+      "host": "patches",
+      "opts": {
+        "page": "settings"
+      },
+      "out": "https://pilot.amberxai.com/?axf-embed=patches&axf-embed-page=settings"
+    },
+    {
+      "url": "https://pilot.amberxai.com/",
+      "host": "patches",
+      "opts": {},
+      "out": "https://pilot.amberxai.com/?axf-embed=patches"
+    }
+  ],
+  "links": [
+    {
+      "link": "https://axhub.amberxai.com/apps",
+      "ok": true
+    },
+    {
+      "link": "http://x.example/",
+      "ok": false
+    },
+    {
+      "link": "view:alerts",
+      "ok": true
+    },
+    {
+      "link": "settings:appearance",
+      "ok": true
+    },
+    {
+      "link": "javascript:alert(1)",
+      "ok": false
+    },
+    {
+      "link": "https://u:p@h/",
+      "ok": false
+    },
+    {
+      "link": "view:",
+      "ok": false
+    },
+    {
+      "link": "",
+      "ok": false
+    }
+  ],
+  "messages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "appearance"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "appearance"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "bad tab!"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "  Build failed\n",
+        "body": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "tag": "ci:main",
+        "level": "error",
+        "link": "view:alerts"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Build failed",
+        "body": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "tag": "ci:main",
+        "level": "error",
+        "link": "view:alerts"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": ""
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Hi",
+        "level": "loud",
+        "link": "javascript:x",
+        "tag": "has space"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Hi"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "ready",
+        "app": "Console"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "ready",
+        "app": "console"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-tab",
+        "tab": "plugins"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-tab",
+        "tab": "plugins"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-tab"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@2",
+        "type": "open-settings"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "run-code",
+        "code": "x"
+      },
+      "message": null
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"open-settings\",\"tab\":\"about\"}",
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "about"
+      }
+    },
+    {
+      "input": "not json",
+      "message": null
+    },
+    {
+      "input": [
+        "array"
+      ],
+      "message": null
+    },
+    {
+      "input": null,
+      "message": null
+    }
+  ],
+  "settingsTab": [
+    {
+      "action": "settings.open:appearance",
+      "tab": "appearance"
+    },
+    {
+      "action": "settings.open",
+      "tab": null
+    },
+    {
+      "action": "app.settings",
+      "tab": null
+    },
+    {
+      "action": "settings.open:a b",
+      "tab": "a"
+    }
+  ]
+}

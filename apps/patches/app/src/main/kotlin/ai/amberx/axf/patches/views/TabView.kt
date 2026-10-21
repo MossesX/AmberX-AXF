@@ -28,6 +28,8 @@ fun TabView(holder: WebAppHolder, module: AppModule, tab: String) {
             reload = reloads[tab] ?: 0L,
             // Only the hub's app catalog downloads (APKs) are taken; everything else a page offers is ignored.
             onDownload = hubApkDownloads(module.hub),
+            // embed@1: the app asks Patches for its settings (its own hooks are gone in here) or hands over a notification.
+            onMessage = { m -> module.onMessage(tab, m) },
         )
     }
 }

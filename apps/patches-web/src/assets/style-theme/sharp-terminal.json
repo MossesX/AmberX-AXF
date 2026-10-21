@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "sharp-terminal",
+  "name": "Sharp Terminal",
+  "version": "1.0.0",
+  "description": "Square corners, mono headings, dense rows and hard offset shadows.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "fontFamily": "'IBM Plex Sans', system-ui, sans-serif",
+    "fontDisplay": "'IBM Plex Mono', ui-monospace, monospace",
+    "fontMono": "'IBM Plex Mono', ui-monospace, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 0,
+      "md": 2,
+      "lg": 3
+    },
+    "space": 7,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "none",
+      "md": "3px 3px 0 var(--fx-shadow)",
+      "lg": "6px 6px 0 var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 90,
+    "blur": 0,
+    "headingWeight": 600,
+    "tracking": 0,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.65,
+    "opacityHover": 0.1,
+    "opacityTint": 0.18,
+    "opacityScrim": 0.6,
+    "opacityGlass": 0.85,
+    "wrapGroups": false
+  }
+}

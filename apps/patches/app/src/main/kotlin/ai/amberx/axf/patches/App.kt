@@ -13,6 +13,10 @@ import ai.amberx.axf.ui.windows.WindowsModule
 import ai.amberx.axf.hub.HubModule
 import ai.amberx.axf.hub.HubRules
 import ai.amberx.axf.hub.cookieCredentials
+import ai.amberx.axf.notifications.NotificationsModule
+import ai.amberx.axf.work.WorkModule
+import ai.amberx.axf.patches.watch.PatchesAlerts
+import ai.amberx.axf.patches.watch.PatchesWatch
 
 /**
  * Patches — one banner, three tabs: the Dev Console, Build Pilot and axHub, each a web app in its own tab (embed@1 host).
@@ -26,8 +30,12 @@ class App : AxfApplication() {
 
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), PluginManagerModule(), WindowsModule(),
+        // Patches serves the phone's notifications for the Console, Pilot and axHub (Brett, Oct 21 2026): its channels, and
+        // one lib-work poll job for approvals + console alerts (foreground service, back-off and boot restart are the framework's).
+        NotificationsModule(this, PatchesAlerts.channelSpecs),
+        WorkModule(jobs = listOf(PatchesWatch.job(this))),
         appModule,
-    ) + developerModules() + AppModule.placeholders()
+    ) + developerModules() + AppModule.placeholders() + WorkModule.placeholders()
 
     /**
      * Developer app (manifest `developer: { hub }`, `axf init --developer`): look + settings from axHub's data server with

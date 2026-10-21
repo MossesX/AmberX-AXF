@@ -37,6 +37,8 @@ const BACKUPS = join(ROOT, '.axf-console/plugin-backups');
 const FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 const REBUILDS_DIR = join(ROOT, '_claude', 'memory', 'docs', 'rebuilds');
 const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
+// The Codebase changes log (change-log@1, one JSON per request) is history too: an entry names the folders a build touched.
+const CHANGES_DIR = join(ROOT, 'changes');
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
@@ -111,7 +113,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/')) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/')) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop());
