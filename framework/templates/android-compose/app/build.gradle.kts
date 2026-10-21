@@ -36,6 +36,7 @@ dependencies {
     implementation("ai.amberx.axf:axf-data:$axf")
     implementation("ai.amberx.axf:axf-network:$axf")
     implementation("ai.amberx.axf:lib-settings:$axf")
+    implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:lib-logging:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     // axf:modules {{AXF_MODULES}}

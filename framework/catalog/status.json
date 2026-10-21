@@ -423,9 +423,10 @@
     "module": "axf-platform-android"
   },
   "k.scheduler": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-kernel"
+    "module": "axf-kernel",
+    "notes": "Oct 21 2026 (Fable, harvest work-watcher): work@1 engine (poll jobs: interval bounds, per-outcome back-off fixed/exponential/interval, one-time notices, run conditions, state machine) in core/engines/work.ts = kernel work/WorkEngine; debounce/throttle/queues/priorities not yet"
   },
   "k.undo": {
     "status": "placeholder",
@@ -599,7 +600,7 @@
     "status": "built",
     "wave": 2,
     "module": "lib-lock",
-    "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+    "notes": "biometric + PIN lock, auto-lock gate (LockGate, Gated, AppShell viewGuard), lock-mode guard, persisted lockout, hashed secrets incl. spoken passphrases; Oct 20 2026 (harvest Oct 21 2026 from AXHub + Voice Vault), written without a compiler (CI compiles)"
   },
   "u.sessions": {
     "status": "placeholder",
@@ -953,9 +954,10 @@
     "module": null
   },
   "w.github": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "axf_server.github",
+    "note": "Oct 21 2026 (harvest lib-github, Opus): server-side GitHub REST helpers built for Python (framework/python/axf_server/github.py) and Node (framework/cli/github.mjs), one fixture (spec/fixtures/github.json); the console, its plugins, claude-project and the project wizard use them. Not yet: the Android port (lib-github), a demo app, uploads/GitHub App tokens/GraphQL (placeholders)."
   },
   "w.hostinger": {
     "status": "placeholder",
@@ -978,9 +980,10 @@
     "module": null
   },
   "w.ai": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "python/axf/assistant_host",
+    "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only)."
   },
   "w.mcp": {
     "status": "partial",
@@ -1017,7 +1020,8 @@
   "dv.notif": {
     "status": "built",
     "wave": 1,
-    "module": "axf-platform-android"
+    "module": "lib-notifications",
+    "notes": "Oct 20 2026: lib-notifications (channels, permission checks, ongoing + private-lock-screen alerts, tags); actions/progress/grouped/scheduled/bubbles not yet"
   },
   "dv.clip": {
     "status": "built",
@@ -1040,9 +1044,10 @@
     "module": "axf-platform-android"
   },
   "dv.bg": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-platform-android"
+    "module": "lib-work",
+    "notes": "Oct 21 2026: foreground poll service + boot restart (lib-work); WorkManager + alarms are placeholders (axf.work.manager, axf.work.alarm)"
   },
   "dv.loc": {
     "status": "placeholder",
@@ -1946,7 +1951,7 @@
     "status": "partial",
     "wave": 3,
     "module": "lib-voice",
-    "notes": "voice commands + user triggers built; gesture hooks not yet"
+    "notes": "voice commands + user triggers + SpokenText normalisers built; gesture hooks not yet"
   },
   "c.pilot": {
     "status": "planned",
@@ -2124,5 +2129,113 @@
     "wave": 1,
     "module": "lib-lock",
     "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+  },
+  "f.pyserver": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf_server",
+    "note": "Oct 20 2026 (harvest, Opus): framework/python/axf_server (wall, storage, http, credentials, console_client, plugin_package); the console and its plugins use it; Build Pilot adopts it through scripts/bake-contracts.mjs. Next: axf_server.github (lib-github) on http.HttpClient."
+  },
+  "f.appearance.source": {
+    "status": "built",
+    "wave": 2,
+    "module": "axf-kernel",
+    "note": "Oct 21 2026 (Fable): appearance@1 document engine on both ports (fixture appearance.json), runtime AppearanceSource (TS + Kotlin), web HubAppearanceSource + waiting screen, Android lib-hub (HubAppearanceSource, HubModule, HubSignInView). Developer apps: console web + Android, Build Pilot, AXHub app; axHub's own pages read the palette."
+  },
+  "lib.hub": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-hub",
+    "notes": "First slice (Oct 20 2026 harvest, Opus): web framework/libs/hub + Android lib-hub, one fixture hub-approvals.json; AXHub app + console approvals-banner switched. AXPP parked for Fable. Kotlin written without a compiler (HubRules replayed the fixture with a local kotlinc)."
+  },
+  "lib.hub.axpp": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-hub",
+    "notes": "Capability placeholder axf.hub.axpp; parked for Fable"
+  },
+  "lib.hub.push": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-hub",
+    "notes": "Capability placeholder axf.hub.push"
+  },
+  "lib.notifications": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-notifications",
+    "notes": "Oct 20 2026 harvest from AXHub (Opus); fills android.notifications; written without a compiler (CI compiles)"
+  },
+  "lib.notifications.alerts": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-notifications",
+    "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)"
+  },
+  "m.browser": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-browser",
+    "notes": "framework/android/lib-browser + library.json"
+  },
+  "m.editor": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.github": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.work": {
+    "status": "partial",
+    "wave": 2,
+    "module": "lib-work",
+    "notes": "lib-work built Oct 21 2026 (work-watcher harvest; feature lib.work): work@1 poll jobs on a foreground service with boot restart. WorkManager scheduler, alarms and chains (dv.bg, k.scheduler) are placeholders (lib.work.manager, lib.work.alarm)."
+  },
+  "m.notifications": {
+    "status": "partial",
+    "wave": 2,
+    "module": "lib-notifications",
+    "notes": "lib-notifications built Oct 20 2026 (hub-notify harvest; feature lib.notifications): channels, permission checks, ongoing + private lock-screen alerts. Push (w.push, c.push) and scheduled notifications not built yet."
+  },
+  "m.sensors": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.files": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.charts": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.plugins": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "lib.work": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-work",
+    "notes": "Oct 21 2026 harvest from AXHub ApprovalWatchService (Fable); fills android.work; engine fixture work.json replayed on web (check-work.mts) and Kotlin (WorkConformanceTest, local kotlinc); the Android host written without a compiler (CI compiles)"
+  },
+  "lib.work.manager": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.manager (the kernel's axf.work WorkScheduler contract on WorkManager)"
+  },
+  "lib.work.alarm": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.alarm"
   }
 }

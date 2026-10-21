@@ -1,4 +1,4 @@
-"""Console credential store (core): <repo>/.axf-console/secrets.env, 0600, git-ignored.
+"""Console credential store (core): <repo>/.axf-console/secrets.env, 0600, git-ignored (axf_server.credentials).
 
 Loaded into the API's environment when the console starts, so every feature (and every subprocess) sees the keys,
 whatever plugins are installed. The systems-check plugin is where you type them; values are never sent back to a
@@ -6,57 +6,20 @@ browser (only whether each one is set). Separate from the env file install-conso
 """
 from __future__ import annotations
 
-import os
-import re
 from pathlib import Path
 from typing import Any
 
-KEY_RE = re.compile(r"^[A-Z][A-Z0-9_]{1,63}$")
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server.credentials import KEY_RE, CredentialError, CredStore as _FrameworkCredStore  # noqa: F401
+
+HEADER = "# AXF Dev Console credentials (saved from the systems check). Never commit this file.\n"
 
 
-class CredStore:
+class CredStore(_FrameworkCredStore):
+    """The framework's 0600 env-file store (axf_server.credentials) with the console's header line."""
+
     def __init__(self, path: Path) -> None:
-        self.path = path
-
-    def read(self) -> dict[str, str]:
-        out: dict[str, str] = {}
-        try:
-            for line in self.path.read_text().splitlines():
-                if "=" in line and not line.lstrip().startswith("#"):
-                    k, v = line.split("=", 1)
-                    if KEY_RE.match(k.strip()):
-                        out[k.strip()] = v.strip()
-        except OSError:
-            pass
-        return out
-
-    def write(self, values: dict[str, str]) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = self.path.with_suffix(".tmp")
-        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-        with os.fdopen(fd, "w") as f:
-            f.write("# AXF Dev Console credentials (saved from the systems check). Never commit this file.\n")
-            for k in sorted(values):
-                f.write(f"{k}={values[k]}\n")
-        os.chmod(tmp, 0o600)
-        tmp.replace(self.path)
-
-    def set(self, key: str, value: str) -> None:
-        vals = self.read()
-        vals[key] = value
-        self.write(vals)
-        os.environ[key] = value
-
-    def clear(self, key: str) -> None:
-        vals = self.read()
-        vals.pop(key, None)
-        self.write(vals)
-        os.environ.pop(key, None)
-
-    def load_into_env(self) -> None:
-        for k, v in self.read().items():
-            if v:
-                os.environ[k] = v
+        super().__init__(path, header=HEADER)
 
 
 # What can be stored. `secret` values are masked everywhere; `pattern` is a light format check (never a guarantee).

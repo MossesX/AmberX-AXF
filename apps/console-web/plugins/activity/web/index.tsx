@@ -4,7 +4,8 @@
  * A banner at the top of every view while anything is in progress: GitHub Actions runs, the console's own update,
  * AI assistant replies, VPS Auto fix jobs, Claude Code sessions on the VPS and anything else that reports itself
  * (activity@1, server/feed.py). Tap it to expand every item; tap an item for all its details (what it's doing, steps,
- * time, who started it, the link). When everything finishes it says so for a few seconds, then goes away.
+ * time, who started it, the link). When everything finishes it says so for 20 s, counted from the moment the console
+ * is visible and focused (a build that ends while you're elsewhere waits for you), then goes away.
  *
  * Polls GET /api/plugins/activity/items every 4 s while the page is visible (and on focus). Hiding it with ✕ lasts
  * until something new starts.
@@ -63,6 +64,31 @@ function start() {
 }
 
 /* ---------------- time ---------------- */
+
+/**
+ * The "All done" / "Finished, with N failed" line counts its 20 s only while the console is on screen: the timer for a
+ * finished item starts the first time this tab is visible *and* focused after it finished, so a build that ends while
+ * you're in another tab or app is still waiting for you when you come back (Brett, Oct 21 2026).
+ */
+const seenAt = new Map<string, number>();
+const onScreen = () => document.visibilityState === 'visible' && document.hasFocus();
+function markSeen(items: Item[], now: number) {
+  if (!onScreen()) return;
+  for (const i of items) if (!seenAt.has(i.id)) seenAt.set(i.id, now);
+  for (const id of [...seenAt.keys()]) if (!items.some((i) => i.id === id)) seenAt.delete(id);
+}
+/** Re-render when the tab is shown, hidden, focused or blurred, so the timer starts the moment it becomes visible. */
+function useOnScreen() {
+  const [v, setV] = useState(onScreen);
+  useEffect(() => {
+    const upd = () => setV(onScreen());
+    globalThis.addEventListener('focus', upd);
+    globalThis.addEventListener('blur', upd);
+    document.addEventListener('visibilitychange', upd);
+    return () => { globalThis.removeEventListener('focus', upd); globalThis.removeEventListener('blur', upd); document.removeEventListener('visibilitychange', upd); };
+  }, []);
+  return v;
+}
 
 function useNow(on: boolean) {
   const [now, setNow] = useState(Date.now());
@@ -178,8 +204,12 @@ function ActivityBanner() {
   const items = s.feed?.items ?? [];
   const active = items.filter((i) => ACTIVE.has(i.state));
   const finished = items.filter((i) => !ACTIVE.has(i.state));
-  const now = useNow(active.length > 0 || s.open);
-  const justDone = finished.filter((i) => now - (i.finishedAt ?? i.updatedAt) < DONE_FLASH_MS);
+  const visible = useOnScreen();
+  const waiting = finished.some((i) => !seenAt.has(i.id) || Date.now() - (seenAt.get(i.id) ?? 0) < DONE_FLASH_MS);
+  const now = useNow(active.length > 0 || s.open || (visible && waiting));
+  // Everything the feed still lists as finished (it keeps them 10 min) counts until you've had it on screen for 20 s.
+  if (visible) markSeen(finished, now);
+  const justDone = finished.filter((i) => { const t = seenAt.get(i.id); return t === undefined || now - t < DONE_FLASH_MS; });
   const key = active.map((i) => i.id).join(',');
   if (!active.length && !justDone.length && !s.open) return null;
   if (key && key === s.hiddenFor) return null;
@@ -204,7 +234,7 @@ function ActivityBanner() {
           </span>
           {first && <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>}
         </button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until something new starts" title="Hide until something new starts" onClick={() => set({ hiddenFor: key || 'idle', open: false })}><Icon name="x" size={16} /></button>
+        <button type="button" className="fx-iconbtn" aria-label="Hide until something new starts" title="Hide until something new starts" onClick={() => { if (!key) for (const i of finished) seenAt.set(i.id, 0); set({ hiddenFor: key || 'idle', open: false }); }}><Icon name="x" size={16} /></button>
       </div>
       {s.open && (
         <div className="axp-activity__body">

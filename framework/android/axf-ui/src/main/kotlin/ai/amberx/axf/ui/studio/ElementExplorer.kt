@@ -10,12 +10,18 @@ import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfCheckbox
+import ai.amberx.axf.ui.components.AxfChoiceGrid
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfDivider
 import ai.amberx.axf.ui.components.AxfEmptyState
 import ai.amberx.axf.ui.components.AxfErrorState
 import ai.amberx.axf.ui.components.AxfIconButton
+import ai.amberx.axf.ui.components.AxfLibraryParamField
 import ai.amberx.axf.ui.components.AxfListItem
+import ai.amberx.axf.ui.components.AxfMarkdown
+import ai.amberx.axf.ui.components.AxfNote
+import ai.amberx.axf.ui.components.AxfSection
+import ai.amberx.axf.ui.components.AxfSelectField
 import ai.amberx.axf.ui.components.AxfLoadingState
 import ai.amberx.axf.ui.components.AxfSectionHeader
 import ai.amberx.axf.ui.components.AxfSegmented
@@ -24,6 +30,10 @@ import ai.amberx.axf.ui.components.AxfSwitch
 import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.AxfTextField
 import ai.amberx.axf.ui.components.ButtonTone
+import ai.amberx.axf.ui.components.Choice
+import ai.amberx.axf.ui.components.NoteTone
+import ai.amberx.axf.ui.components.SelectOption
+import ai.amberx.axf.kernel.library.LibraryParam
 import ai.amberx.axf.ui.components.axfContextMenu
 import ai.amberx.axf.ui.icons.AxfIcon
 import ai.amberx.axf.ui.kit.AxfUiKits
@@ -106,6 +116,9 @@ public val ELEMENTS: List<ElementSpec> = listOf(
         listOf(p("track", "Track height", "Track thickness (dp)", T.SLIDER, "track", min = 2f, max = 14f), p("thumbSize", "Thumb size", "Thumb diameter (dp)", T.SLIDER, "thumbSize", min = 10f, max = 32f), p("thumb", "Thumb shape", "circle / square / bar", T.SLIDER, "thumb", kind = "enum", options = listOf("circle", "square", "bar")), p("fill", "Fill", "solid / gradient / none", T.SLIDER, "fill", kind = "enum", options = listOf("solid", "gradient", "none")), p("showValue", "Show value", "always / hover / never", T.SLIDER, "showValue", kind = "enum", options = listOf("always", "hover", "never"))),
         listOf(f("ticks", "Ticks", "Tick marks along the track", T.SLIDER, "ticks"))),
     ElementSpec(ComponentKind.TEXT_FIELD, "Text field", "Inputs", "Single/multi-line input", listOf("bg" to "Field background", "border" to "Border", "accent" to "Focus border", "placeholder" to "Placeholder", "danger" to "Error"), radius.take(1) + type.take(1), emptyList()),
+    ElementSpec(ComponentKind.SELECT_FIELD, "Select field", "Inputs", "Drop-down inside a Field (label / help / error)", listOf("bg" to "Field background", "border" to "Border", "danger" to "Error"), radius.take(1), emptyList()),
+    ElementSpec(ComponentKind.CHOICE_GRID, "Choice grid", "Inputs", "Tappable cards: single (radio) or multiple (checkbox) choice", listOf("surface" to "Card", "border" to "Outline", "accent" to "Selected", "accentSoft" to "Selected fill"), radius.drop(1).take(1) + spacing, emptyList()),
+    ElementSpec(ComponentKind.LIBRARY_PARAM, "Library parameter", "Inputs", "A library@1 install parameter rendered by type (bool / choice / list / number / text)", listOf("accent" to "Switch on", "danger" to "Error"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.PASSWORD_FIELD, "Password field", "Inputs", "Masked input with reveal", listOf("bg" to "Background", "border" to "Border"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.SEARCH_FIELD, "Search field", "Inputs", "Toolbar search", listOf("bg" to "Background", "muted" to "Icon"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.CARD, "Card / container", "Containers", "Card from the container asset", listOf("surface" to "Card", "border" to "Border", "accent" to "Accent header", "glassTint" to "Glass tint", "shadow" to "Shadow"),
@@ -114,6 +127,8 @@ public val ELEMENTS: List<ElementSpec> = listOf(
     ElementSpec(ComponentKind.LIST_ITEM, "List item", "Containers", "Row with icon, title, subtitle, trailing", listOf("text" to "Title", "muted" to "Subtitle", "surface3" to "Selected"), spacing, emptyList()),
     ElementSpec(ComponentKind.SECTION_HEADER, "Section header", "Containers", "Uppercase eyebrow", listOf("muted" to "Text", "accent" to "Accent"), type.drop(1), emptyList()),
     ElementSpec(ComponentKind.BADGE, "Badge", "Containers", "Small pill", listOf("accent" to "Accent", "danger" to "Danger", "success" to "Success"), emptyList(), emptyList()),
+    ElementSpec(ComponentKind.SECTION, "Section", "Containers", "Titled block without card chrome (heading row + aside)", listOf("text" to "Title", "muted" to "Aside"), spacing, emptyList()),
+    ElementSpec(ComponentKind.NOTE, "Note", "Containers", "Info / warning / danger / success callout", listOf("accent" to "Info", "warning" to "Warning", "danger" to "Danger", "success" to "Success"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.DIVIDER, "Divider", "Containers", "1px rule", listOf("border" to "Line"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.MENUBAR, "Menubar", "Navigation", "App menu from the app-menu asset", listOf("surface" to "Bar", "text" to "Items", "accentSoft" to "Open menu"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.TOOLBAR, "Toolbar", "Navigation", "Toolbar from the toolbar asset", listOf("toolbarBg" to "Background", "muted" to "Icons"), listOf(p("variant", "Variant", "icons / icons-labels / labels", T.TOOLBAR, "variant", kind = "enum", options = listOf("icons", "icons-labels", "labels")), p("align", "Align", "start / center / spread", T.TOOLBAR, "align", kind = "enum", options = listOf("start", "center", "spread"))), listOf(f("showSearch", "Search box", "Show the search field", T.TOOLBAR, "showSearch"))),
@@ -128,6 +143,7 @@ public val ELEMENTS: List<ElementSpec> = listOf(
     ElementSpec(ComponentKind.CHART, "Chart", "Data & media", "Charts (library)", listOf("chart1" to "Series 1", "chart2" to "Series 2", "chart3" to "Series 3"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.MEDIA_PLAYER, "Media player", "Data & media", "Video/audio player (library)", listOf("surface3" to "Surface"), emptyList(), emptyList()),
     ElementSpec(ComponentKind.MAP, "Map", "Data & media", "Map view (library)", listOf("surface2" to "Surface"), emptyList(), emptyList()),
+    ElementSpec(ComponentKind.MARKDOWN, "Markdown", "Data & media", "Markdown rendered safely: headings, lists, tables, code with Copy, links", listOf("text" to "Body", "accent" to "Links", "surface" to "Code", "border" to "Quote rule"), type.take(1), emptyList()),
 )
 
 /** Long-press tooltip wrapper used on every explorer row. */
@@ -327,6 +343,16 @@ public fun ElementPreview(kind: ComponentKind) {
         ComponentKind.SLIDER -> AxfSlider("Slider", v, { v = it }, unit = "%")
         ComponentKind.TEXT_FIELD, ComponentKind.SEARCH_FIELD -> AxfTextField(text, { text = it }, Modifier.fillMaxWidth(), label = "Text field", leadingIcon = if (kind == ComponentKind.SEARCH_FIELD) "search" else null)
         ComponentKind.PASSWORD_FIELD -> AxfTextField("secret", {}, Modifier.fillMaxWidth(), label = "Password", secret = true)
+        ComponentKind.SELECT_FIELD -> AxfSelectField("Select field", seg, listOf(SelectOption("a", "One"), SelectOption("b", "Two"), SelectOption("c", "Three")), { seg = it }, hint = "A drop-down inside a field")
+        ComponentKind.CHOICE_GRID -> AxfChoiceGrid(listOf(Choice("a", "First", text = "A card with text", icon = "zap"), Choice("b", "Second", tag = "tag"), Choice("c", "Disabled", enabled = false)), setOf(seg), { seg = it }, label = "Choice")
+        ComponentKind.LIBRARY_PARAM -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            AxfLibraryParamField(LibraryParam("on", "Bool parameter", "bool", default = JsonPrimitive(true), help = "A bool renders as a switch"), if (on) "true" else "false", { on = it == "true" })
+            AxfLibraryParamField(LibraryParam("mode", "Choice parameter", "choice", choices = listOf("a", "b", "c"), default = JsonPrimitive("a")), seg, { seg = it })
+            AxfLibraryParamField(LibraryParam("n", "Number parameter", "number", min = 1.0, max = 12.0, default = JsonPrimitive(6)), v.toInt().toString(), { s -> s.toFloatOrNull()?.let { v = it } })
+        }
+        ComponentKind.SECTION -> AxfSection("Section title", aside = { AxfText("aside", muted = true) }) { AxfText("Body of the section.") }
+        ComponentKind.NOTE -> Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { AxfNote("Info note (accent tint)."); AxfNote("Warning note.", tone = NoteTone.WARNING); AxfNote("Danger note.", tone = NoteTone.DANGER); AxfNote("Success note.", tone = NoteTone.SUCCESS) }
+        ComponentKind.MARKDOWN -> AxfMarkdown("### Heading\nSome **bold**, _italic_ and `code`, a [link](https://amberxai.com).\n\n- one\n- two\n  - nested\n\n```kotlin\nval x = 1\n```")
         ComponentKind.CARD -> AxfCard(title = "Card", icon = "box", actions = { AxfBadge("new") }) { AxfText("Container asset: variant, header, padding, elevation.") }
         ComponentKind.LIST_ITEM -> Column { AxfListItem("List item", subtitle = "Subtitle", icon = "file", onClick = {}); AxfListItem("Selected", icon = "star", selected = true, onClick = {}) }
         ComponentKind.SECTION_HEADER -> AxfSectionHeader("Section header", accent = true)

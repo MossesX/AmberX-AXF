@@ -102,6 +102,8 @@ def post(path, body=None):
 
 print("agent-manager self-test")
 # --- contract: this port = the TS reference = the Kotlin kernel (one fixture) --------------------------------------
+check(am.contract.__name__ == "axf.contracts.agents" and sys.modules["axf_console_plugins.agent_manager.toolkit"].safety.__name__ == "axf.assistant_host.safety",
+      "plugin imports the contract and safety helpers from framework/python (no private copies)")
 fixture = json.loads((PLUGINS.parent.parent.parent / "framework" / "spec" / "fixtures" / "agents.json").read_text())
 mismatches = am.contract.check_fixture(fixture)
 check(not mismatches, f"agent-definition@1: Python port replays spec/fixtures/agents.json ({len(fixture['validation'])} validation cases, {len(fixture['compose'])} prompts, {len(fixture['addons'])} bundles)" + (f" — {mismatches[:3]}" if mismatches else ""))

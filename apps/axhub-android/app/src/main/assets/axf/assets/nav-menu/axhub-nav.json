@@ -1,0 +1,100 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "axhub-nav",
+  "name": "AXHub navigation",
+  "version": "0.1.0",
+  "description": "AXHub: approvals, the hub, planned hub areas, settings.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "boilerplate"
+  ],
+  "data": {
+    "style": "list",
+    "header": "AXHub",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Approvals",
+            "icon": "shield",
+            "view": "home"
+          },
+          {
+            "id": "hub",
+            "label": "Hub",
+            "icon": "external",
+            "view": "hub"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      },
+      {
+        "label": "Manage",
+        "items": [
+          {
+            "id": "services",
+            "label": "Services",
+            "icon": "layers",
+            "view": "services"
+          },
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "icon": "clock",
+            "view": "jobs"
+          },
+          {
+            "id": "audit",
+            "label": "Audit log",
+            "icon": "history",
+            "view": "audit"
+          },
+          {
+            "id": "vault",
+            "label": "Vault",
+            "icon": "lock",
+            "view": "vault"
+          },
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "users",
+            "view": "users"
+          },
+          {
+            "id": "projects",
+            "label": "Projects",
+            "icon": "folder",
+            "view": "projects"
+          },
+          {
+            "id": "devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "view": "devices"
+          }
+        ]
+      },
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "description": "AXHub: approvals, the hub, app downloads, planned hub areas, settings."
+  }
+}

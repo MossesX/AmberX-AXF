@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <!-- Secrets (Keystore-backed prefs) are never backed up; the kernel's own state and assets are. -->
+    <!-- Secrets (Keystore-backed prefs, incl. their key set) are never backed up; the kernel's own state and assets are. -->
     <exclude domain="sharedpref" path="axf.secure.xml" />
+    <!-- WebView cookies, storage and cache (signed-in sessions): never backed up. -->
+    <exclude domain="root" path="app_webview/" />
+    <!-- Encrypted files (KeystoreFileStore) live in noBackupFilesDir, which Android never backs up. -->
 </full-backup-content>

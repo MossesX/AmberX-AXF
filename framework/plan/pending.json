@@ -10,11 +10,87 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Design note first: write `_claude/memory/docs/named-assets.md` — the two tiers (element assets: button, slider, toggle, input, icon, label; parent assets: toolbar, menu, nav, app-menu, dialog, container, window), the id namespace rule (`<ns>.<type>.<name>`, e.g. `axf.button.save`), instance vs skin split, and which existing starter ids change. List every file the rule touches. No code.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "BRETT: review the design note. Decide (a) whether existing starter ids are renamed in place or aliased (old id keeps resolving), (b) whether element assets are required for every control or opt-in per app. Record both answers in the note and in `_claude/memory/decisions.md`.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Schema: in `framework/schemas/asset-types.json` add `\"tier\": \"element\" | \"parent\"` to every type and a top-level `idRule` (regex, documented) for namespaced ids; keep `optional: true` on new fields so old apps validate. Run `node framework/cli/axf.mjs schemas` and `axf validate --framework` — both must pass unchanged.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validator (web): `framework/core/validate.ts` → `validateAsset` warns (not errors, until the switch flips) when an id does not match `idRule`; add `assetTier(type)`. Add 4 cases to `framework/spec/fixtures/validation.json` (good namespaced id, bare id, element, parent). `npx -y tsx framework/spec/gen-fixtures.mts` then CI check.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validator (Kotlin + CLI): mirror the id rule in `framework/android/axf-kernel/.../asset/` validator and in the build-engine validator (`framework/cli/build-engine.mjs` validateAsset). Same fixture cases replayed by `ConformanceTest` (written without a compiler: check the \"CI build errors\" issue after push).",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Element asset types, part 1: add `toggle`, `input`, `icon` as `tier: element` types in `asset-types.json` (data shape: label, icon, action, state keys; skin = style-theme tokens only). One starter each under `framework/assets/<type>/`. `axf validate --framework` passes.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Element asset types, part 2: mark the existing `button`, `slider`, `label` as `tier: element`; add the instance/skin split to their spec (`data.instance` {label, icon, action, state} vs `data.skin` {style tokens}) with the old flat shape still accepted by `asEnvelope` normalisation. Fixture cases in `components.json`.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Parent slots: in `asset-types.json` give every parent type (toolbar, app-menu, nav-menu, context-menu, dialog, container, window) a `slots` block like `layout.slots` (named slots + accepted element types), reusing `compileSlots`/`regionAccepts` from `framework/core/engines/layout.ts`. Fixture cases in `layout-slots.json` for one parent.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Rebinding = hot-swap: `framework/core/runtime.ts` gets `bindSlot(parentType, parentId, slot, elementId)` / `unbindSlot` (stored like `attachToHost` in `widgets.ts`, settings key `axf.bind.<parent>.<slot>`); `swap()` of a parent keeps bindings whose types still fit. Unit cases in `widgets.json` → `bindings`.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin runtime parity: `AxfRuntime.bindSlot/unbindSlot` + KV `<key>:bind` in the kernel, same rules as the TS version, replaying the `bindings` fixture in `ConformanceTest`. Written without a compiler; push and read the CI issue.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Rename the 39 starter assets to namespaced ids (`axf.<type>.<name>`) with the alias map chosen in step 2 (`framework/assets/aliases.json`, read by `registry.ts` + Kotlin `AssetRegistry`): every app manifest and `framework/defaults.json` still resolve. `axf validate --framework` + `validate apps/demo` + console `npm run build` pass.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React layer: `framework/react/components/Controls.tsx` renders an element asset by id (`<AssetButton id>` etc.) reading instance + skin; a standalone element in a layout region renders through the same path. Element Explorer (`react/studio/Inspector.tsx`) shows tier + bindings.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Compose layer: `axf-ui/components/Buttons.kt`, `Slider.kt`, `Controls.kt` take an element asset id the same way; `ElementExplorer.kt` shows tier + bindings. Android console showcase renders one bound element in its toolbar.",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Flip the switch: `idRule` violations become errors for apps with `frameworkVersion` ≥ the new one (old apps keep warnings), `axf init` writes namespaced ids, templates updated. Run the CI template sweep locally (`axf init` for react-ts, next-ts, android-compose + validate).",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + close: `framework/spec/PORTING.md` section \"Named assets\"; CLAUDE.md Status bullet; decisions.md entry; mark the pending item complete and the plan feature built; differences report `_claude/memory/docs/rebuilds/named-asset-rule.md` (rule for rebuilds).",
+     "at": "2026-10-21T04:46:12.591Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T04:05:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.727Z",
-   "estimate": "6 h",
+   "updatedAt": "2026-10-21T04:46:12.591Z",
+   "estimate": "7.5 h",
    "source": "artifact"
   },
   {
@@ -24,12 +100,93 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-theme), id + label fields, Save/Cancel; `useEditorSync()` so it reloads values on focus (UI-editor rule). Saves nothing yet.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/asset-designer/validate` mirrors it with the CLI validator (`framework/core/project-check.mjs` pattern). Test in `test.py`.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered into the runtime on load like the theme-manager plugin does (`registry.register`, origin `asset-designer`). Built-in ids refused.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-preview-<type>` id. Reuses `MenuList.tsx` for the preview.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live preview through the React `Toolbar`.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "`drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/assets/drawer/amberx-side.json`, `framework/defaults.json` names it. Validators on all three ports accept it (Kotlin: `AssetTypeSpec` resource); fixture case in `layout-slots.json`.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the designer (same editor as nav-menu plus side/width/modal).",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appearance does.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, preview via `rt.swap`.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user can drop into an app's assets folder.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, status.json + tracker; Plugin Manager shows it.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows it on both ports; full editors stay web-only for now (noted as a placeholder capability `axf.designer`).",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-uninstall`).",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.designer` built via `build_step`, pending item complete.",
+     "at": "2026-10-21T04:46:12.592Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.729Z",
+   "updatedAt": "2026-10-21T04:46:12.592Z",
    "planId": "x.assets.designer",
-   "estimate": "2 d",
+   "estimate": "1 d",
    "source": "plan"
   },
   {
@@ -39,12 +196,63 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Plugin skeleton `apps/console-web/plugins/asset-browser` from `_template` (id `ai.amberx.axf.console.asset-browser`, lifecycle, install/uninstall, nav → Plugins → Asset browser, settings sub-tab). Lifecycle check + console build pass.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sources: server route `GET /api/plugins/asset-browser/sources` lists asset folders it may read: framework starters (`framework/assets`), every app under `apps/*/src/assets` or `app/src/main/assets/axf` (from `framework/cli/app-bundle.mjs list`), designed assets (asset-designer dataDir when present). Never follows symlinks; roots only.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Browse view: grid by type → source → asset, search box (reuses `consoleSearch.ts` provider pattern), type chips from `asset-types.json`, counts per source. Rows show id, label, origin, tier.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Preview: `AssetPreview.tsx` from `framework/react/studio` renders the selected asset in a card; for chrome types a live preview on an `ab-preview-<type>` swap like theme-manager; \"Apply here\" = `rt.swap(type, id)` after `registry.register`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Import: drop/paste JSON or pick a file → `validateAsset` → preview → install into a chosen target (console runtime, or an app folder through `POST /api/plugins/asset-browser/install {source, target, type, id}` that writes the file only inside allowed app asset folders; built-in ids refused; backups under the plugin dataDir).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Export: single asset or a pack (zip of asset@1 files + `pack.json`), served by `GET …/export?ids=`; packs are what the plugin runtime (`x.plugins`, PACK kind) will load later, so write the `pack@1` shape now in `framework/schemas/asset-pack.json`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hot-swap across apps: for apps running `axf dev` (`framework/cli/dev-server.mjs`), \"Push to device\" posts the asset to the dev server's folder so the HotReloader picks it up; list dev servers from settings (`axf.devServer`). Error card when none.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default + Android: enabled in console plugin defaults, `plugins.json` catalog entry, `plugins.mjs --check`; Android `axf-devtools` route `asset-browser` showing the bundled assets by type with Apply (uses `AssetRegistry` + `AxfRuntime.swap`), so Settings → Plugins lists it on both ports.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: `test.py` (sources never leave roots, import validation, built-in refusal, export pack shape), lifecycle check, CI line.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/asset-browser.md` + LOG.md + web screenshots, CLAUDE.md Status, plan `x.assets.browser` built, pending complete.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.731Z",
+   "updatedAt": "2026-10-21T04:46:12.593Z",
    "planId": "x.assets.browser",
-   "estimate": "6 h",
+   "estimate": "5 h",
    "source": "plan"
   },
   {
@@ -77,12 +285,83 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Template index: `framework/assets/templates/index.json` (`asset-templates@1`: id, type, label, tags, file) + loader `listAssetTemplates(type)` in `framework/cli/build-engine.mjs`; engine-rpc `asset-templates`, console `GET /api/asset-templates?type=`. Empty list works end to end.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation in CI: `framework/spec/check-asset-templates.mjs` loads every template, runs `validateAsset`, checks unique ids, ≥ 10 per covered type once a type is marked `complete` in the index, and that each type has a `default`. Wire into `android.yml` (node job).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "nav-menu ×10: side nav, bottom tabs, rail, grouped sections, icon-only, with badges, two-level, settings-first, admin, minimal. Each a valid `nav-menu` asset in `framework/assets/templates/nav-menu/`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "app-menu ×10 (file/edit/view style menus, single-page apps, tool apps…) + context-menu ×10 (text, list row, card, media, dev, file, link, minimal, with submenus, keyboard hints).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "toolbar ×10: editor, media, search-first, compact icons, labelled, split start/end with widgets, status-heavy (counters/progress), collapsible, roomy, minimal.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "layout ×10: dashboard, master-detail, sidebar-left/right, bottom-nav phone, kiosk, editor + inspector, chat, settings, full-bleed, three-pane. Each with `data.slots` where it narrows a region.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "drawer ×10 (needs `asset-designer` step 7's `drawer` type): left/right, modal/non-modal, wide/narrow, with header, grouped, icon rail, account-first, admin, minimal.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "color-theme ×10 light + ×10 dark (pairs): contrast-checked with `theme-manager/web/rollEngine.ts` checks run from a script; names in one family (`arctic-daylight` style). Each pair shares a `pair` tag.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "style-theme ×10: glass, flat, outlined, dense, roomy, rounded, square, hairline, soft, print. Numbers inside ranges known themes use; every opacity token present.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Defaults: `framework/defaults.json` + `framework/app-defaults.json` reviewed so every type has a default template id (new field `templates.default.<type>` read by `axf init` for \"start from a template\"); `axf init --template-set <id>` option registered in `build-options.json` only if it sets a token, else as an init argument.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Previews: `framework/cli/rebuild-shots.mjs`-style script `framework/cli/template-shots.mjs` renders each template in the demo app headless (phone + desktop) to `framework/assets/templates/<type>/shots/`; `index.json` entries get `shot`. Run once; commit shots ≤ 60 KB each (`framework/cli/shrink-shots.py`).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android: templates bundled into `axf-assets` as a resource folder so Compose previews (`ComponentGallery.kt`) and the future Android designer read the same files; `AssetTemplates` Kotlin loader + a unit test that every bundled template validates.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hooks: asset-designer \"Start from\" and Build Pilot's designers list templates by type (console `GET /api/asset-templates`); asset-browser shows a Templates source. Add the `templates` capability to `app-defaults` engine-rpc.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: regenerate fixtures touched (`gen-fixtures.mts`), CI green, report `_claude/memory/docs/rebuilds/asset-templates.md`, CLAUDE.md Status, plan `x.assets.templates` built, pending complete.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.732Z",
+   "updatedAt": "2026-10-21T04:46:12.593Z",
    "planId": "x.assets.templates",
-   "estimate": "1 d",
+   "estimate": "7 h",
    "source": "plan"
   },
   {
@@ -138,11 +417,92 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Spec first: `_claude/memory/docs/port-engine.md` — the two modes (bake / rebuild), the analysis report shape (`port-report@1`: stack, UI kit found, screens, chrome pieces → asset types, styles → tokens, libraries/plugins suggested, risk list), the staged codemod plan, and what `axf port` refuses (no manifest, dirty git tree). Read `framework/cli/ui-port.mjs` and `claude-project.mjs` first.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CLI entry: `framework/cli/port.mjs` + `axf port <dir> --mode bake|rebuild [--report-only] [--stage N]` in `axf.mjs`; `requireProject` gate; refuses without `--yes` when git is dirty; writes `port-report.json` next to the manifest. `--report-only` works on an empty folder (empty report).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Stack detection: reuse `claude-project.mjs` detection (react/next/android/python…), add UI-kit detection (MUI, Chakra, shadcn, Material3, Compose, Tailwind) by package.json / gradle deps; unit test with fixture folders under `framework/spec/fixtures/port/`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Analysis, screens + chrome: scan routes/screens (React Router / Next pages / Compose NavHost) and chrome components (app bar, drawer, bottom nav, menus, toolbars, dialogs) → candidate asset list with target type and confidence. Report section `pieces`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Analysis, styles → tokens: run `portSource` from `ui-port.mjs` in dry mode over the codebase to count colour/size literals and role usages; map to the token list from the theme engine; report `tokens` with unmapped literals. Cap files scanned (size + count) and skip node_modules/build.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Bake, stage 1: `axf init` into the existing project (template by stack) without overwriting app files (`src/axf/` + assets + manifest relation `built-on`), `axf.lock.json`; app still builds (the template guard allows an existing codebase). Checked with a fixture react app.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Bake, stage 2: themes — generate `color-theme` + `style-theme` assets from the detected palette (nearest tokens), apply the literal → `var(--fx-*)` codemod (`ui-port.mjs portSource`) to CSS/TSX/Kotlin files in place with a `.port-backup/`; `--stage 2` only; report lists every file changed.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Bake, stage 3: chrome — generate nav-menu / app-menu / toolbar / dialog assets from the detected pieces and swap the components for the framework ones (`AppShell` / Compose `AppShell`), old components kept under `legacy/` until removed; `--stage 3`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Rebuild mode: pick the closest boilerplate (`framework/boilerplates/index.json` tags vs detected features), `axf init --boilerplate` into `<dir>-axf` beside the old code, write `PORT-PLAN.md` with screen-by-screen mapping and the old file for each; report `rebuild.plan`.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Drivers: engine-rpc `port` / `port-report`, console `POST /api/port` + `GET /api/port/report?dir=`, MCP `app_port(dir, mode, stage)` (write, needs the console token); manifest `framework.relation` none → built-on when stage 1 runs (`project.mjs` validates).",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Console view: Plugins → **Port** (or Wizards view section): pick a folder from allowed roots (project-wizard's `AXF_WIZARD_ROOTS` rule), run the report, show pieces/tokens tables, run stages one at a time with the file list and a diff count; rebuild plan rendered as a checklist.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Pending items hook: `port-<name>` items (parked by claude-project) get a \"Run port\" button in Pending rows (slot `pending.item`) that opens the console view on that project; `claude-project` writes `x.port.engine: \"axf port\"` into the manifest.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "First real target, xGallery (MossesX/xGallery, React 19 + Express + SQLite): BRETT attaches the repo; run `--report-only`, review the report together, record the mode choice. No codemod yet.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "xGallery bake stage 1–2 on a branch in that repo (init + themes), app builds; note unmapped literals; push branch `axf-port` for Brett to look at on the phone.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: `framework/spec/check-port.mjs` over the fixture folders (detection, report shape, stage 1 idempotent, stage 2 backup + dry run, refusals: no manifest, dirty tree, symlinks); CI line.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/app-port-engine.md`, LOG.md, CLAUDE.md Status + `axf port` in Build/run/test, pending complete; decisions.md note on bake vs rebuild defaults.",
+     "at": "2026-10-21T04:46:12.593Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T16:13:56.087Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.734Z",
-   "estimate": "2 d",
+   "updatedAt": "2026-10-21T04:46:12.593Z",
+   "estimate": "1 d",
    "source": "chat"
   },
   {
@@ -157,11 +517,72 @@
      "at": "2026-10-18T17:20:23.926Z"
     }
    ],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "BRETT decides the two open questions before any code: (1) which data a clone copies by default (database snapshot + media? settings? sessions never), (2) whether users/members come along or the clone starts with the owner only. Write both into this item's notes and `_claude/memory/decisions.md`.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract `clone@1`: `framework/core/clone.ts` (TS reference) — `CloneRequest` {name, id, homes (github/vps/local like project-wizard), data: {database, media, settings, users}, stripSecrets: true}, `CloneReport`, pure validators (name/id rules from `claude-project.mjs`), exposure descriptor `clone.run` default-deny REMOTE (INTEROP.md). Fixture `spec/fixtures/clone.json` + `gen-fixtures`.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin mirror `ai.amberx.axf.kernel.clone` (same validators, `ConformanceTest` replay) + Python `framework/python/axf_libs/clone/contract.py` (used by server parts). Placeholder capability `axf.clone` declared in the kernel.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Library scaffold: `axf new-library clone --template service-provider --ports web,android,python` → `framework/libs/clone` (web `AxfWebLibrary` with a settings group \"Clone\", no own screen), `framework/android/lib-clone`, `framework/python/axf_libs/clone`; `axf compile-library clone` passes. Catalog `libraries.json` entry.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Data snapshot (server, Python): `axf_libs/clone/snapshot.py` — consistent copy of a SQLite db (`sqlite3 .backup`) and listed media folders into a temp dir, strip secret-looking files (reuse project-wizard's patterns), reset owner per the step-1 decision; unit test on a fixture db.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Homes + kit: reuse `apps/console-web/plugins/project-wizard/wizard.mjs` (`run`, `kit`, `link`) for GitHub/VPS/local homes, manifest, `_claude/`, Claude.ai kit; `clone` calls it with `source: folder` after the snapshot is unpacked into the new folder. One code path, no second copy of the wizard.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web side: `framework/libs/clone/client.ts` (`CloneClient` over the app's API, token via a credential provider like `libs/mcp`), Settings → Clone group (name, id, data toggles from the decision, homes), progress stream (SSE like project-wizard), done screen with links. Gate: `rt.uac` must hold `clone.run`.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android side: `lib-clone` `CloneModule` → Settings group + `CloneScreen` route `clone` calling the same API through axf-network; `AxfClone` registers the `axf.clone` provider; written without a compiler, CI `:lib-clone:testDebugUnitTest` with a fake server.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Console + MCP drivers: console plugin-free route `POST /api/clone` (admin only) running the Python engine; MCP `app_clone` (write, confirm required = destructive annotation); the console's own Settings → Plugins lists lib-clone like other libraries.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "xGallery hook: xGallery keeps its wizard; add a `clone` endpoint there that imports `axf_libs.clone` (or calls the console API) so its New project wizard's \"clone with data\" uses the library — only after Brett attaches MossesX/xGallery.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: `framework/spec/check-clone.mts` (fixtures, validators), Python `axf_libs/clone/test.py` (snapshot strips secrets, resets owner, refuses symlinks/outside roots), lifecycle not needed (library). CI lines.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/lib-clone.md`, LOG.md, CLAUDE.md Status, `libraries.json`/tracker, pending complete.",
+     "at": "2026-10-21T04:46:12.594Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T16:13:56.090Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.736Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-21T04:46:12.594Z",
+   "estimate": "6 h",
    "source": "chat"
   },
   {
@@ -230,11 +651,77 @@
    "model": "Fable",
    "status": "unsafe",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Design note, part 1 (no code): `_claude/memory/docs/plugin-conflicts.md` — what counts as a potential conflict beyond runtime diagnostics: routes (`/api/plugins/<f>/`), capability services (two providers of one `axf.x@1`), settings keys, asset ids, nav ids, CSS prefixes (`axp-*`), data dirs, Python module names. For each: how it is detected from `plugin.json` + the bundle + `plugin-inventory@1` facts, severity, false-positive risk.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Design note, part 2: patches. Proposal: a patch is an **overlay** (`.axf-console/patches/<id>/patch.json`, `plugin-patch@1`: target plugins, kind rename-route / remap-setting / alias-asset / disable-contribution, applied by the console at load, never touching a plugin folder); AI only proposes a patch document, a person approves it (change-batch card); removal backs up + offers one-tap reinstall. Risks and what is refused.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "BRETT reviews both notes and answers the three open questions (conflict kinds in scope, overlay approach yes/no, backup + reinstall on patch removal). Status stays `unsafe` until he says the design is approved; then `pending`. Record in decisions.md.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Conflict engine (pure): extend `framework/core/engines/plugins.ts` (`plugin-inventory@1`) with `potentialConflicts(records)` for the approved kinds, severity + fix hints; Kotlin `PluginInventoryEngine` + Python `plugin-manager/server/engine.py` mirror it; fixture cases in `spec/fixtures/plugin-inventory.json` → `conflicts` (`check-plugin-inventory.mts`, `test.py`, `PluginInventoryConformanceTest`).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Alerts source `conflicts`: `apps/console-web/server/alerts.py` raises one alert per conflict key (`conflict:<kind>:<a>:<b>`, warn, resolved when it disappears) from the engine output every poll; rule default: bell on. Test in `server/test_alerts.py`.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Conflict grid UI: plugin `apps/console-web/plugins/plugin-conflicts` (from `_template`) with a dialog `plugin-conflicts.grid` built on the Systems check grid component pattern (expandable rows: details, fix instructions, links); opened from the alert's link and from Plugin Manager rows. Read-only this step.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Row actions (a) Uninstall — pick which plugin, confirm by typing its folder, runs `plugin-lifecycle.mjs uninstall --all` through the existing `/api/plugin-lifecycle/<folder>/uninstall`; (b) Ignore — stored per conflict key in the plugin dataDir, hides the row and resolves the alert; both admin-only.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Patch overlay runtime: `server/patches.py` loads `plugin-patch@1` files, validates them against the schema (`framework/schemas/plugin-patch.json`), applies approved kinds at plugin load (route prefix rename, settings key remap, asset alias, contribution disable) in the loader, never writes into plugin folders; `GET /api/plugins/plugin-conflicts/patches`.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "(c) AI patch: \"Patch with AI\" asks Mosses through `axf.llm@1` for a patch document for this conflict (prompt includes the engine facts), validates it, shows it on a change-batch-style approval card; Apply writes the file and reloads plugins; refused when the assistant is off (409 with what is missing).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed add-ons list: dialog + Settings → Plugins → Add-ons listing plugins, libraries (`plugin-inventory`), modules, agent add-ons (`agent-addon@1` from `axf.agents@1` when present) and patches, each with installed date, what it touches, Remove. Patches show which plugins they patch.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Patch removal: Remove patch → backup (`.axf-console/plugin-backups/`) → uninstall every plugin it patched (lifecycle) → list them with one-tap Reinstall from the catalog (`plugin-catalog.mjs install`) when the step-3 decision says so. Audit line per action.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: plugin `test.py` (grid data, ignore, patch validation + refusals, removal cascade with fake lifecycle), engine fixtures, lifecycle check, CI lines.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/plugin-conflicts.md`, LOG.md, web screenshots, CLAUDE.md Status, rules line about patches never touching plugin folders, pending complete.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-18T20:15:46.216Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.737Z",
-   "estimate": "6 h",
+   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "estimate": "6.5 h",
    "source": "chat"
   },
   {
@@ -284,11 +771,57 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "Read first (Build-Pilot repo must be attached): `src/pilot/contract.ts`, `stacks.ts`, `tests/contract.test.ts`, the five Android/all-stack plugins, `server/assembly.py`. Write `_claude/memory/docs/rebuilds/build-pilot-contract.md` skeleton: what the Opus contract has, what the rebuild changes (stack scoping rules, step model, patch/compose/conflict rules, checks, pilot-project@1), what stays.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Types: rewrite `pilot-plugin@1` manifest + `PilotStep`, `BuildPatch`, `ComposeResult`, `PilotProject` (`pilot-project@1`) as a pure, port-neutral module `src/pilot/contract/types.ts` with no DOM/React imports; JSON Schema generated for both documents (`schemas/`). Old manifests still parse (versioned `$axf`).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Stack scoping: `servesStack(plugin, stack)` for one / several / `*`, stack registry open (`stacks.ts` reads `stacks.json`), `pluginsFor(stack)` ordered by `order` then id; unit tests incl. unknown stack refused.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Compose + merge: `compose(request, contributions)` merges patches in plugin order with the conflict rules (same key from two plugins → conflict unless `merge: append|deep|last`), reports every conflict with both sources; deterministic output snapshot test.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Checks: `check(project)` runs plugin `check()` hooks + built-in checks (manifest valid, slots pick assets that will ship — reuse AXF `checkSlotPicks` through the console API shape —, hidden slots hideable, build options known from `GET /api/build-options`); results typed `PilotCheck` with severity + fix.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixtures for every port: `tests/fixtures/pilot-contract.json` generated from the TS reference (servesStack, pluginsFor, compose incl. conflicts, check) so the Kotlin port (`console-android-native-tabs` step 1) and Python replay it; `tests/contract.test.ts` replays it too (stricter than the Opus tests).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Python mirror: `server/pilot_contract.py` replaying the fixture (used by `assembly.py`'s gate so the server never trusts the browser's compose); `server/test_server.py` kept passing.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Migrate the five plugins (`android-app`, `look`, `build-options`, `feature-manager`, `custom-features`) to the new types; a `pilot-project@1` loader with migration from the Opus format; the designer still builds an APK end to end (dispatch `pilot-apk.yml` once).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + close: plugin author guide section in Build-Pilot README, differences report finished, LOG.md line in AmberX-AXF, pending complete; AXF side: note in CLAUDE.md Status (Build Pilot hooks) if the console API shape changed (it should not).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-19T11:40:14.809Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.738Z",
-   "estimate": "5 h",
+   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "estimate": "4.5 h",
    "source": "chat"
   },
   {
@@ -316,11 +849,112 @@
    "model": "Fable",
    "status": "pending",
    "notes": [],
-   "subPrompts": [],
+   "subPrompts": [
+    {
+     "text": "BRETT attaches MossesX/axHub. Read its session/worker layout, decisions #70–#87 and the AXPP protocol doc; write `_claude/memory/docs/axhub-agent-host.md` design: host API (sessions, turns, events, agents, memory, permissions), where provider keys live (vault, write-only), what the AXF adapter translates. No code.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Protocol contract (AXF side, pure): `framework/core/live-session.ts` gains the wire shape for a remote host (`RemoteHostDescriptor`, event envelope with seq, resume cursor), fixtures in `spec/fixtures/live-session.json` → `remote`; Kotlin `ai.amberx.axf.kernel.live` + Python mirror replay them.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, session store: `sessions` table/collection (id, owner, agent, created, closed, cursor) + append-only event log keyed by seq (file or db per axHub's storage), with replay from a cursor; unit tests.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, turn runner: a worker that runs one turn for a session (provider call through axHub's existing LLM client or a new one using vault keys), streams events into the log, survives the browser going away; one running turn per session; stop/cancel.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, agents: `agent-definition@1` validator ported from `framework/core/agents.ts` (fixture `agents.json` replayed), agent registry per project in `/projects/<name>/_data/agents/`, per-agent memory using the memory engine rules from the contract.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, permissions: who may use which agent / open sessions / write mode, as hub user permissions (`agents.use.<id>`, `sessions.open`, `agents.write`) on the users page, enforced on every host route; admin bypass as elsewhere on the hub.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, host API: `/agents`, `/sessions`, `/sessions/{id}/turns` (POST = run), `/sessions/{id}/events?since=` (SSE + replay), `/sessions/{id}/stop|close`; approvals for destructive tool calls through the hub's approval screen (one-tap link rule). OpenAPI snippet in the design doc.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub, provider keys: turns use keys from the vault by name (`llm.<provider>`), never returned; `vault.set` from the console's Keys needed flow already exists — add the names to the systems-check key list on the AXF side later (step 15).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AXF adapter, web: `framework/libs/hub` (lib-hub, first slice exists) gets `AxhubLiveHost implements SessionHost` over the host API with the hub session cookie / token provider; registers through `axf.live-sessions@1.register_host()`; the console's AI assistant picks it when Settings → Assistant → Host = axHub.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AXF adapter, Android: `lib-hub` Kotlin `AxhubLiveHost` over axf-network (SSE reader from `lib-mcp`'s parser), registered in the kernel's live-session host registry; placeholder `axhub.agent` becomes real; written without a compiler, CI unit test with MockWebServer.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Console assistant on the hub host: `ai-assistant` plugin `server/sessions.py` host `axhub` stops being a `PlaceholderHost`: a thin proxy host that forwards to the hub API with the signed-in user's identity; reconnect/replay through the existing `watchReply` fold; `test.py` cases with a fake hub.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Build Pilot: `BP_AGENT=axhub` backend in `server/assembly.py` calling the hub host for the `pilot-assembler` agent; the assembly gate (`pilot-assembly@1`) still checks every op locally; manual mode untouched; `test_server.py` with a fake hub.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Phone apps: the AXHub Android app gets a Sessions tab (list, attach to a live reply, stop) on `lib-hub`'s host client; the Android console's assistant screen (when it exists) uses the same.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Migration: console sessions stored locally can be exported/imported into the hub (`POST /sessions/import` with the event log); one-time \"Move my sessions to axHub\" button in the assistant settings; no data loss on failure (import is additive).",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Systems check: new checks `axhub-agent-host` (host reachable, caller allowed) and the vault key names for providers in the Keys needed list; Auto fix opens the right pages.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Alerts + activity: hub sessions appear in the Activity banner source list (`axf.activity@1`), failed turns raise an alert via the hub → console alerts source `axhub`.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, AXF side: `check-live-session` fixture cases for the remote shape, lib-hub web unit tests (fake SSE), Android unit test, plugin `test.py` additions; CI lines in `android.yml`.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, axHub side: host API tests (permissions, replay from cursor, one turn per session, stop), agent validator fixture replay, vault key never returned.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Deploy: axHub redeploy on Coolify with the worker enabled (env for worker count), console `install-console.sh` passes `AXF_ASSISTANT_HOST=axhub` once the hub answers; BRETT approves the deploy and runs one turn from his phone.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: differences report `_claude/memory/docs/rebuilds/axhub-agent-host.md`, LOG.md, decisions.md (#88+ on the hub side), CLAUDE.md Status in both repos, pending complete.",
+     "at": "2026-10-21T04:46:12.595Z",
+     "estimate": "30 min"
+    }
+   ],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T03:59:00.739Z",
-   "estimate": "2 d",
+   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "estimate": "1.5 d",
    "source": "chat"
   },
   {
@@ -337,60 +971,106 @@
    ],
    "subPrompts": [
     {
-     "text": "1. Compose AppShell page slots: `app.frame.top` (above the banner) and `app.frame.cover` (over the shell) as framework slots in `axf-ui` (`Slots.kt`, same names and contract as `framework/react/components/Slots.tsx`); kernel `ExtensionPoints` entry so modules contribute; fixture-free but unit-tested; wire the Android console showcase to render them.",
-     "at": "2026-10-21T03:58:03.797Z",
-     "estimate": "1.5 h"
+     "text": "1a. Compose page slots, kernel side: add `ExtensionPoints.PAGE_SLOTS` (`axf.page-slots`, contribution {slot: \"app.frame.top\" | \"app.frame.cover\", order, content key}) in `axf-kernel/module/Extensions.kt`, same slot names as `framework/react/components/Slots.tsx`; unit test that contributions order like the web `installLibraries` does.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "2. `lib-apptabs` module skeleton (`framework/android/lib-apptabs`, id `ai.amberx.axf.apptabs`): settings group \"App tabs\" (tab list on/off, custom tabs), the same settings keys as the web plugin (`app-tabs.tabs|custom|active`) so a choice made on the web console applies on the phone once settings sync from axHub lands; action `app-tabs.show:<id>`; tab bar composable in slot `app.frame.top` (console tab = the app itself).",
-     "at": "2026-10-21T03:58:03.798Z",
-     "estimate": "2 h"
+     "text": "1b. Compose page slots, UI side: `axf-ui/.../Slots.kt` with `AxfSlot(name)` reading the registry and `AppShell` rendering `app.frame.top` above the banner and `app.frame.cover` over the shell (same positions as the web `AppShell.tsx`); Android console showcase contributes a debug label into each to prove it; compiles in CI.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "3. Built-in tab list on Android: Console (self), Pilot (https://pilot.amberxai.com), axHub (https://axhub.amberxai.com/apps), Demo; plus project manifests built on/for AXF with `deploy.url` read from the bundled catalog; icons from the widget icon set.",
-     "at": "2026-10-21T03:58:03.799Z",
-     "estimate": "1 h"
+     "text": "2a. `lib-apptabs` module skeleton: `framework/android/lib-apptabs` (id `ai.amberx.axf.apptabs`, `settings.gradle.kts` entry, `AppTabsModule` registering a settings group \"App tabs\" with the same keys as the web plugin `app-tabs.tabs|custom|active`); `:lib-apptabs:testDebugUnitTest` job with one test (keys match the web plugin's constants read from a shared JSON resource).",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "4. Locked-down web view composable `AxfWebTab`: allowed hosts only (own domains from the manifest / settings; any other link is refused with a toast — no outside browser), JavaScript on, no file access, no popups, no geolocation, mixed content blocked, `FLAG_SECURE` honoured, per-tab state kept while switching (one WebView per tab, lazily created, retained across recompositions).",
-     "at": "2026-10-21T03:58:03.800Z",
-     "estimate": "2 h"
+     "text": "2b. Tab bar composable `AxfAppTabBar` in slot `app.frame.top`: reads the tab list + active id from settings, console tab = the app itself, action `app-tabs.show:<id>` registered; tapping switches the active setting; no content yet.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "5. Hub session in the app: cookie jar scoped to the app (`CookieManager`, never backed up — `android:allowBackup` rules + `dataExtractionRules`), sign-in happens on the hub's own login page inside the tab (same as the AXHub app: no JS injection, no off-hub navigation), sign-out clears cookies for every tab; the console tab's own token stays in the SecureStore.",
-     "at": "2026-10-21T03:58:03.801Z",
-     "estimate": "2 h"
+     "text": "2c. Settings sync note: the module reads/writes only through `SettingsRegistry` so settings-from-axHub (decision Oct 20) applies once that lands; add the keys to `framework/android/lib-settings`'s shared-key list; unit test round-trip of `app-tabs.custom` JSON.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "6. Downloads: only axHub's Apps page APK links are allowed, handed to Android's DownloadManager with the hub cookie (as the AXHub app does); everything else is refused with a toast.",
-     "at": "2026-10-21T03:58:03.802Z",
-     "estimate": "1 h"
+     "text": "3a. Built-in tab list: Console (self), Pilot `https://pilot.amberxai.com`, axHub `https://axhub.amberxai.com/apps`, Demo, as a Kotlin list mirroring the web plugin's built-ins; icons from `axf-ui/icons`.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "7. Cover slot behaviour: active non-console tab fills `app.frame.cover` below the bar; back button goes back inside the web view first, then returns to the Console tab; pull-to-refresh; a \"Loading…\" bar and a plain error card (offline, 4xx/5xx, refused frame) with Retry.",
-     "at": "2026-10-21T03:58:03.802Z",
-     "estimate": "1.5 h"
+     "text": "3b. Manifest tabs: project manifests built on/for AXF with `deploy.url`, read from a bundled `catalog/projects.json` (generated by `sync-data.mjs` into the Android console assets), appended to the list; unit test with a fixture catalog.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "8. Settings → Plugins → App tabs on Android: pick tabs, add a custom tab (name + https address on an allowed host), order, reset; reuses the shared settings groups contract (`SettingsGroup`/`SettingSpec`), parent = Plugins.",
-     "at": "2026-10-21T03:58:03.803Z",
-     "estimate": "1.5 h"
+     "text": "4a. `AxfWebTab` web view composable, locked down: allowed hosts only (own domains from manifest/settings), refuse other links with a toast (never the outside browser), JavaScript on, file access off, popups off, geolocation off, mixed content blocked; unit test of the allow rule (pure function `hostAllowed`).",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "9. Install in the Android console showcase (`apps/console`) and the `android-compose` template (behind a template option `--app-tabs`, default off for new apps; on for the console), manifest module list, catalog `plugins.json` entry, status.json + tracker.",
-     "at": "2026-10-21T03:58:03.804Z",
-     "estimate": "1 h"
+     "text": "4b. `AxfWebTab` state: one WebView per tab, lazily created, retained across recompositions (`remember` + `AndroidView` holder keyed by tab id), `FLAG_SECURE` honoured from the activity; manual check on the emulator that switching tabs keeps scroll position.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     },
     {
-     "text": "10. Tests: `lib-apptabs` unit tests (allowed-host rule, settings key parity with the web plugin, tab list from manifests), Compose UI test for the bar + cover, CI job `:lib-apptabs:testDebugUnitTest`; rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-app-tabs.md`, Android screenshots via `rebuild-shots.yml` on branch `fable/console-android-app-tabs`.",
-     "at": "2026-10-21T03:58:03.805Z",
-     "estimate": "2 h"
+     "text": "5a. Hub session cookies: `CookieManager` scoped to the app, `android:allowBackup` rules + `dataExtractionRules` exclude the WebView data; sign-in happens on the hub's own login page inside the tab (no JS injection, no off-hub navigation).",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5b. Sign-out: a \"Sign out of hub\" setting clears cookies for every tab and reloads them; the console tab's own token stays in the SecureStore (untouched); unit test that sign-out does not clear SecureStore keys.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "6. Downloads: only axHub Apps page APK links, handed to `DownloadManager` with the hub cookie (as `apps/axhub-android` does); everything else refused with a toast; unit test of the link rule.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "7a. Cover slot: active non-console tab fills `app.frame.cover` below the bar; back button goes back inside the web view first, then returns to the Console tab (`BackHandler`).",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "7b. Loading + errors: pull-to-refresh, a \"Loading…\" bar, a plain error card (offline, 4xx/5xx, refused frame) with Retry, all from theme tokens; emulator check.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "8a. Settings → Plugins → App tabs: pick tabs (switch per built-in), order (up/down), reset; `SettingsGroup`/`SettingSpec` with parent = Plugins.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "8b. Custom tabs: add name + https address on an allowed host (validated with `hostAllowed`), remove; stored in `app-tabs.custom` with the web plugin's JSON shape.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "9. Install: `apps/console` manifest module list + `android-compose` template behind an init option `--app-tabs` (default off; on for the console) in `template.json`, catalog `plugins.json` entry, status.json + tracker (`tracker.mjs --check`).",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10a. Tests: `lib-apptabs` unit tests (allowed-host, link rule, settings parity, tab list from manifests) + Compose UI test for bar + cover; CI job line in `android.yml`.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10b. Report: rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-app-tabs.md`, push branch `fable/console-android-app-tabs` so `rebuild-shots.yml` captures Android before/after; pending complete.",
+     "at": "2026-10-21T04:46:12.596Z",
+     "estimate": "30 min"
     }
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.159Z",
-   "source": "chat"
+   "source": "chat",
+   "estimate": "1 d"
   },
   {
    "id": "console-android-native-tabs",
@@ -406,70 +1086,206 @@
    ],
    "subPrompts": [
     {
-     "text": "1. Build Pilot contract on Kotlin: port `src/pilot/contract.ts` (pilot-plugin@1 manifest checks, `servesStack`, `pluginsFor`, `compose` merge + conflicts, `BuildRequest` incl. `hidden`/`assets`) to a pure-Kotlin `axf-pilot-core` with fixtures shared with the web (`spec/fixtures/pilot-contract.json` generated from the TS reference) — the Fable rebuild `build-pilot-contract` folds in here.",
-     "at": "2026-10-21T03:58:03.807Z",
-     "estimate": "5 h"
+     "text": "1a. Pilot contract on Kotlin, types: `axf-pilot-core` pure-Kotlin module (`framework/android/axf-pilot-core`) with `PilotPluginManifest`, `PilotStep`, `BuildPatch`, `BuildRequest` (incl. `hidden`/`assets`) data classes mirroring Build-Pilot's `src/pilot/contract.ts` after its Fable rebuild (`build-pilot-contract`).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "2. Pilot API client: Kotlin client for Build Pilot's server (`/api/projects`, `/api/catalog`, `/assemble`, `/build`, `/apk`, `/metering/me`) over axf-network, token in the SecureStore, hub-admin sign-in reused; typed models mirroring `server/main.py`'s shapes; unit tests against a fake server.",
-     "at": "2026-10-21T03:58:03.807Z",
-     "estimate": "3 h"
+     "text": "1b. Manifest checks + `servesStack`/`pluginsFor` in Kotlin, replaying `spec/fixtures/pilot-contract.json` (copied from Build-Pilot's generated fixture into `framework/spec/fixtures/`).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "3. Pilot plugin contract on Android: `pilot-plugin@1` web plugins have `web/index.tsx`; define the Android face (`android/` part: a Compose `steps` composable + the same `contribute`/`check` shape) and a loader that reads bundled plugin manifests; the designer runs only plugins that have an Android part (others are listed as web-only).",
-     "at": "2026-10-21T03:58:03.808Z",
-     "estimate": "4 h"
+     "text": "1c. `compose` merge + conflict rules in Kotlin, same fixture section; `PilotContractConformanceTest` in CI (`:axf-pilot-core:test`).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "4. Pilot screens, part 1: Home (stacks + projects), Designer shell (steps from plugins, autosave through the API), Build step (review, assemble with the agent, build, validate, history) — generic UI only.",
-     "at": "2026-10-21T03:58:03.809Z",
-     "estimate": "5 h"
+     "text": "1d. Fixture sharing: a script in Build-Pilot (`npm run fixtures:export`) writes the fixture; AmberX-AXF CI fails if the copied fixture's hash differs from the one Build-Pilot publishes in its README (manual sync, documented).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "5. Pilot screens, part 2: Android parts for the bundled plugins one by one — `android-app` (App setup + boilerplate browser with screenshots), `look` (slot picks), `build-options`, `feature-manager` (FeatureList rows, Chrome section, Customize/Build now), `custom-features` (metered Claude).",
-     "at": "2026-10-21T03:58:03.809Z",
-     "estimate": "1.5 d"
+     "text": "2a. Pilot API client, models: Kotlin data classes for `/api/projects`, `/api/catalog`, `/assemble`, `/build`, `/apk`, `/metering/me` responses mirroring `server/main.py`; kotlinx.serialization, lenient unknown keys.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "6. Designers on Android: Banner and Toolbar designers (`src/pilot/designers.tsx` equivalents) producing the same asset@1 documents; widget pickers from the engine's app defaults (`typeLabels`/`typeIcons`).",
-     "at": "2026-10-21T03:58:03.810Z",
-     "estimate": "5 h"
+     "text": "2b. Pilot API client, transport: `PilotClient` over axf-network with the token from SecureStore and the hub-admin sign-in reused (cookie provider), timeouts, no redirects, typed errors.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "7. Live preview on the phone: a floating phone-frame preview following the composed request (ScreenMock equivalent, theme compiled by the Kotlin theme engine), shrink to a pill, drag.",
-     "at": "2026-10-21T03:58:03.811Z",
-     "estimate": "4 h"
+     "text": "2c. Pilot API client, tests: MockWebServer test per route (happy path, 401, 5xx, malformed JSON), token never logged; CI job line.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "8. APK builds from the phone: Build APK → poll → download through DownloadManager → install prompt; progress widget bound to a counter.",
-     "at": "2026-10-21T03:58:03.811Z",
-     "estimate": "3 h"
+     "text": "3a. Android plugin face: define the `android/` part of `pilot-plugin@1` (a Compose `steps` composable entry + the same `contribute`/`check` shape) as Kotlin interfaces in `axf-pilot-core`; manifest field `android: { module }`.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "9. axHub native client, part 1: hub admin API client (step-4 API on axHub: services, jobs, approvals, audit, users, projects) with the same session as the AXHub app; approvals list + single approval screen native (replacing the web view the AXHub app uses today), decide with the hub's CSRF rules through the API.",
-     "at": "2026-10-21T03:58:03.812Z",
-     "estimate": "5 h"
+     "text": "3b. Loader: reads bundled plugin manifests from assets, instantiates Android parts by registered factory (open registry), lists web-only plugins separately; unit test with two fake plugins (one Android, one web-only).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "10. axHub native client, part 2: services (list/describe/call with JSON args, destructive confirm), jobs, audit log viewer, vault names (write-only: set/rotate), users + permissions, projects tree browser (`axhub.memory_*`), Apps page (download APKs).",
-     "at": "2026-10-21T03:58:03.813Z",
-     "estimate": "1 d"
+     "text": "4a. Pilot Home screen: stacks + projects list from `PilotClient`, New project button, error/empty states from theme tokens.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "11. Console Android tabs: a native tab bar (slot `app.frame.top` from `console-android-app-tabs` step 1) switching between Console, Pilot (native) and axHub (native); each tab keeps its own back stack; tab choice shared with the web console through settings-from-axHub.",
-     "at": "2026-10-21T03:58:03.814Z",
-     "estimate": "3 h"
+     "text": "4b. Designer shell: steps from the loaded plugins in order, step navigation, autosave through the API (debounced), unsaved marker.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     },
     {
-     "text": "12. Tests + report: fixtures for the pilot contract on three ports, fake-server tests for both clients, Compose tests per screen group, CI jobs, rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-native-tabs.md`, screenshots via `rebuild-shots.yml`.",
-     "at": "2026-10-21T03:58:03.814Z",
-     "estimate": "4 h"
+     "text": "4c. Build step, part 1: review (composed request summary) + assemble with the agent (calls `/assemble`, shows ops, approve/deny).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "4d. Build step, part 2: build + validate (`/build`, `/validate`), history list, retry; generic UI only.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5a. `android-app` plugin Android part: App setup form (name, id, package) with validation parity to the web plugin.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5b. `android-app` boilerplate browser: list from the catalog with screenshots (`GET /api/boilerplates/<id>/screenshots/<file>` through the console), pick one.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5c. `look` plugin Android part: slot picks per type from `framework-assets` (engine-rpc through the console), preview chips.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5d. `build-options` plugin Android part: switches from `GET /api/build-options`, defaults off, descriptions.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5e. `feature-manager` Android part, 1: FeatureList rows (catalog features, grouped), search, selected set.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5f. `feature-manager` Android part, 2: Chrome section (banner/toolbar entries) + Customize/Build now actions wired to the designers (step 6) and the Build step.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "5g. `custom-features` Android part: metered Claude request form, usage from `/metering/me`, result list; refused when no key with a clear note.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "6a. Banner designer on Android: builds the same asset@1 `banner` document as `src/pilot/designers.tsx` (surface, logo, divider, attach list); widget picker from the engine's app defaults (`typeLabels`/`typeIcons` via the console API).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "6b. Toolbar designer on Android: items + widgets start/end + density/surface/collapsible, same asset@1 output; unit test that both designers emit documents that pass the Kotlin validator.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "7a. Live preview, frame: a floating phone-frame composable (window via `windows/` engine) rendering the composed request's theme through the Kotlin theme engine; shrink to a pill, drag (same as the web `ScreenMock` behaviour).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "7b. Live preview, content: nav/toolbar/banner from the picked assets, screens as placeholders with the boilerplate's screen kinds; updates on every designer change (debounced).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "8. APK builds from the phone: Build APK → poll `/apk` → download via `DownloadManager` → install prompt; progress widget bound to a counter (`counter`/`progress` widget kinds).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "9a. axHub admin client, models: Kotlin data classes for the hub's step-4 admin API (services, jobs, approvals, audit, users, projects) from its OpenAPI/JSON shapes; lenient parsing.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "9b. axHub admin client, transport + tests: `HubAdminClient` over axf-network sharing the AXHub app's session (cookie jar), CSRF header handling, no redirects; MockWebServer tests per route.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "9c. Approvals list screen native (replaces the web view the AXHub app uses today): list, filters, pull to refresh.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "9d. Single approval screen: details, Approve/Deny through the API with the hub's CSRF rules, PIN prompt when the hub asks, result toast; one-tap link rule honoured from notifications.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10a. Services: list/describe/call with a JSON args editor, destructive confirm card (same rule as lib-mcp's gate).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10b. Jobs: list, detail with progress, cancel.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10c. Audit log viewer: paged list, filter by user/tool, detail sheet.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10d. Vault names: list of names only, set/rotate (write-only; values never shown).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10e. Users + permissions: list, per-user permission switches (`console.*`, `agents.*`, `apps.download`), add user (temporary password flow as the hub does).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "10f. Projects tree browser over `axhub.memory_*` (read + edit text files with approval), Apps page (download APKs through `DownloadManager`).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "11a. Native tab bar in slot `app.frame.top` (from `console-android-app-tabs` step 1) switching Console / Pilot (native) / axHub (native), each with its own back stack (`NavHost` per tab).",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "11b. Tab choice shared with the web console through the `app-tabs.*` settings keys (settings-from-axHub when it lands); unit test of the mapping.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "12a. Tests: fake-server tests for both clients, Compose tests per screen group (Home/Designer/Build, plugin parts, designers, approvals, services), CI job lines.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "12b. Report: rebuild log line, differences report `_claude/memory/docs/rebuilds/console-android-native-tabs.md`, push `fable/console-android-native-tabs` for `rebuild-shots.yml` screenshots; pending complete.",
+     "at": "2026-10-21T04:46:12.597Z",
+     "estimate": "30 min"
     }
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.160Z",
-   "source": "chat"
+   "source": "chat",
+   "estimate": "2.5 d"
   }
  ]
 }

@@ -5,14 +5,13 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ActivityIcon, useReportActivity } from './activity';
-import { Markdown } from './markdown';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, post, statusStore, watchReply,
+  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
@@ -202,7 +201,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
-    const body: Record<string, unknown> = { content, images, context: ctx };
+    const body: Record<string, unknown> = { content, images, context: normalizeChatContext(ctx) ?? undefined };
     if (editing) body.editMessageId = editing;
     const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content, images, createdAt: Date.now(), meta: { context: ctx ?? null } };
     setText(''); setImages([]); setFiles([]); setEditing(''); setCtx(undefined);

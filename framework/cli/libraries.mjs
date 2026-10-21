@@ -110,14 +110,24 @@ export function installLibrary({ dir, library, params = {}, log = () => {} }) {
   // 1. manifest (+ in-APK copy)
   const m = readJson(mPath);
   setKey(m, lib.manifestKey ?? `libraries.${lib.module.replace(/^lib-/, '')}`, config);
-  m.android ??= {};
-  m.android.modules = [...new Set([...(m.android.modules ?? []), ...(lib.dependsOn ?? []), lib.id])];
+  // A library without an Android port (web-only, Python-only) is recorded in the manifest only: no Android module, Gradle or App.kt.
+  const androidPort = !lib.ports || Boolean(lib.ports.android);
+  if (androidPort) {
+    m.android ??= {};
+    m.android.modules = [...new Set([...(m.android.modules ?? []), ...(lib.dependsOn ?? []), lib.id])];
+  }
   m.libraries ??= {};
   m.libraries.$installed = [...new Set([...(m.libraries.$installed ?? []), lib.id])];
   writeJson(mPath, m); changed.push('axf.manifest.json');
   const inApk = join(root, 'app/src/main/assets/axf/axf.manifest.json');
   if (existsSync(dirname(inApk))) { writeJson(inApk, m); changed.push(relative(root, inApk)); }
   log(`• manifest: ${lib.manifestKey} = ${JSON.stringify(config)}`);
+
+  // Web-only (or Python-only) libraries: the manifest entry is the whole install; no Gradle / App.kt / Kotlin setup.
+  if (!androidPort) {
+    log(`• ${lib.module} has no Android port (${Object.keys(lib.ports).join(', ')}): manifest only`);
+    return { dir: root, library: lib.id, module: lib.module, config, changed, manifest: m, script: installScript(lib, config) };
+  }
 
   // 2. gradle
   const gradle = join(root, 'app/build.gradle.kts');

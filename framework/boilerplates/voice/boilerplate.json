@@ -3,20 +3,25 @@
   "id": "voice",
   "name": "Voice Control",
   "category": "assistant",
-  "description": "Hands-free control via voice + gestures",
+  "description": "Hands-free voice app: speech in, spoken prompts, voice commands users can retrigger, and an app lock (as in Voice Vault, apps/voicevault)",
   "features": [
     "c.voice",
-    "c.pilot"
+    "u.bio"
   ],
   "screens": [
     {
       "id": "home",
-      "label": "Home",
+      "label": "Voice",
       "kind": "landing"
     },
     {
-      "id": "commands",
-      "label": "Commands",
+      "id": "items",
+      "label": "Saved items",
+      "kind": "list-detail"
+    },
+    {
+      "id": "voice-triggers",
+      "label": "Voice triggers",
       "kind": "list-detail"
     },
     {
@@ -28,9 +33,24 @@
   "modules": [
     "ai.amberx.axf.platform"
   ],
+  "libraries": [
+    {
+      "library": "voice",
+      "params": {
+        "speakPrompts": true,
+        "preferOffline": true
+      }
+    },
+    {
+      "library": "lock",
+      "params": {
+        "defaultMode": "none"
+      }
+    }
+  ],
   "defaults": {
     "style-theme": "glass-orbit"
   },
-  "status": "planned",
+  "status": "built",
   "source": "amberx"
 }

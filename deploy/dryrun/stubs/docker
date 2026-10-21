@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Fake docker for the install-console dry-run harness: logs every call (one arg per line) to $HARNESS_LOG.
+# Behaviour controlled by HARNESS_COOLIFY (1 = coolify-proxy running), HARNESS_VOLUME (axhub-projects volume name or empty).
+{
+  echo "=== docker"
+  for a in "$@"; do printf '  [%s]\n' "$a"; done
+} >> "$HARNESS_LOG"
+case "$1" in
+  ps)
+    case "$*" in
+      "ps -aq --filter label=axf.plugin") exit 0;;
+      *"name=^"*) echo "axf-console is Up 3 seconds";;
+      *) if [ "${HARNESS_COOLIFY:-1}" = 1 ]; then echo coolify-proxy; fi;;
+    esac
+    ;;
+  inspect)
+    case "$*" in
+      *coolify-proxy*'{{$k}} {{end}}'*) echo "coolify bridge ";;
+      *coolify-proxy*) printf 'coolify\nbridge\n';;
+      *) echo "";;
+    esac
+    ;;
+  volume) [ -n "${HARNESS_VOLUME:-}" ] && echo "$HARNESS_VOLUME" ;;
+  network) exit 0 ;;
+  build) echo "sha256:fake" ;;
+  run)
+    # helper runs: `test -e …legacy-copied` → fail (nothing copied); others succeed silently
+    case "$*" in *"test -e"*) exit 1;; esac
+    exit 0 ;;
+  *) exit 0 ;;
+esac

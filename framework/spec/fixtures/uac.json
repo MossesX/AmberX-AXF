@@ -1,4 +1,63 @@
 {
+  "hub-accounts": {
+    "roles": {
+      "admin": [
+        "*"
+      ],
+      "themes": [
+        "assets.import",
+        "assets.swap"
+      ],
+      "user": []
+    },
+    "checks": [
+      {
+        "perm": "files.write",
+        "byRole": {
+          "admin": true,
+          "themes": false,
+          "user": false
+        }
+      },
+      {
+        "perm": "dev.deploy",
+        "byRole": {
+          "admin": true,
+          "themes": false,
+          "user": false
+        }
+      },
+      {
+        "perm": "assets.swap",
+        "byRole": {
+          "admin": true,
+          "themes": true,
+          "user": false
+        }
+      },
+      {
+        "perm": "uac.manage",
+        "byRole": {
+          "admin": true,
+          "themes": false,
+          "user": false
+        }
+      },
+      {
+        "perm": "anything.else",
+        "byRole": {
+          "admin": true,
+          "themes": false,
+          "user": false
+        }
+      }
+    ],
+    "gate": {
+      "admin": "allow",
+      "themes": "disable",
+      "user": "disable"
+    }
+  },
   "open-dev": {
     "roles": {
       "developer": [

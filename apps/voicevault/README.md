@@ -32,8 +32,8 @@ node ../../framework/cli/axf.mjs validate .
 | Path | Purpose |
 | --- | --- |
 | `app/src/main/kotlin/.../vault/VaultSession.kt` | The voice flow state machine (unlock → store / retrieve → confirm) |
-| `vault/VaultStore.kt` | Encrypted vault file + Keystore key |
-| `vault/SecretClipboard.kt` | Sensitive copy + auto-clear |
+| `vault/VaultStore.kt` | Vault JSON on the framework's `KeystoreFileStore` (axf-platform-android) |
+| framework | `SensitiveClipboard` (axf-platform-android), `SpokenText` (lib-voice), `LockGate` / `Gated` / lock-mode guard / `PersistedLockout` / `StoredSecret` (lib-lock), secure window (`android.secureWindow` in the manifest), settings view + About (lib-settings) |
 | `views/HomeView.kt` | Voice screen, top banner, edit form |
 | `views/VaultListView.kt`, `UnlockCodeView.kt` | Saved sites, unlock code |
 | `AppModule.kt` | Voice commands with default triggers, settings group, routes |

@@ -24,12 +24,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
       - run: node framework/cli/axf.mjs validate --framework
       - run: node framework/cli/tracker.mjs --check
       - run: node framework/cli/plugins.mjs --check
       - run: node framework/cli/project.mjs validate --all          # every project manifest (the build rule)
       - run: node framework/spec/check-project-fixtures.mjs          # JS validator = reference fixtures
       - run: node framework/spec/check-plugin-catalog.mjs            # plugin-catalog@1: pack, publish, verify, install guards
+      - run: node framework/spec/check-axf-server.mjs                # wall-signature + plugin-package fixtures still match their references
+      - run: node framework/spec/check-build-steps.mjs              # small-steps rule: pending + build-queue step cores
+      - run: node framework/cli/pending.mjs --check-steps            # warns (not fails) about open builds over 30 min without small steps
+      - run: node framework/cli/build-queue.mjs --check-steps        # same for the build queue (read-only)
+      - run: node framework/spec/check-github.mjs                    # lib-github: fixtures/github.json + Node client guards (= axf_server.github)
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -37,6 +44,15 @@ jobs:
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
         run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
+        run: |
+          set -e
+          for f in framework/deploy/*.sh deploy/install-console.sh framework/templates/web-fastapi-wall/deploy/install.sh; do bash -n "$f"; done
+          pip install --quiet shellcheck-py==0.10.0.1
+          shellcheck -x framework/deploy/*.sh
+          bash framework/deploy/test.sh
+      - name: Agent add-ons — every *.addon.json / addons/<id>/addon.json passes validateAddon (framework/core/agents.ts)
+        run: npx -y tsx framework/spec/check-addons.mts
       - name: Plugin lifecycle — plugins that follow plugin-lifecycle@1 have install/uninstall scripts and no stale references
         run: |
           set -e
@@ -44,8 +60,10 @@ jobs:
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e
-          for t in react-ts next-ts android-compose; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
+          for t in react-ts next-ts android-compose web-fastapi-wall; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
           (cd /tmp/sweep/t-next-ts && npm install --silent && npm run build)
+          # web + FastAPI behind the axHub wall: web build, server self-test, installer syntax + shellcheck (with the baked helpers)
+          (cd /tmp/sweep/t-web-fastapi-wall && npm install --silent && npm run build && pip install --quiet -r server/requirements.txt httpx && python3 server/test_server.py && bash -n deploy/install.sh && shellcheck -x deploy/install.sh)
           for b in $(node -e "console.log(require('./framework/boilerplates/index.json').items.map(i=>i.id).join(' '))"); do node framework/cli/axf.mjs init /tmp/sweep/b-$b --name "B $b" --template android-compose --boilerplate $b > /dev/null; done
           node framework/cli/axf.mjs install browser /tmp/sweep/t-android-compose --yes
           mkdir -p /tmp/fakelib && printf 'package x\nval c = Color(0xFF7C3AED)\nval s = MaterialTheme.colorScheme.surface\n' > /tmp/fakelib/A.kt
@@ -74,21 +92,41 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
-      - name: Alerts + MCP client — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
+      - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
-          pip install -r apps/console-web/server/requirements.txt httpx
-          (cd framework && npm install --no-audit --no-fund --silent)
-          npx -y tsx framework/spec/check-alerts.mts
-          npx -y tsx framework/spec/check-widgets.mts
-          npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
-          npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
-          python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
-          npx -y tsx framework/spec/check-plugin-inventory.mts
-          python apps/console-web/server/test_alerts.py
-          python apps/console-web/server/test_wall_users.py
-          python apps/console-web/server/test_app_ci.py
-          python apps/console-web/server/test_plugin_catalog.py
-          python apps/console-web/server/test_app_catalog.py
+          set -o pipefail
+          {
+            pip install -r apps/console-web/server/requirements.txt httpx
+            (cd framework && npm install --no-audit --no-fund --silent)
+            npx -y tsx framework/spec/check-alerts.mts
+            npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
+            npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
+            npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
+            npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
+            npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
+            python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
+            python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
+            python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
+            node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
+            node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
+            python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
+            npx -y tsx framework/spec/check-plugin-inventory.mts
+            npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
+            npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
+            python apps/console-web/server/test_alerts.py
+            python apps/console-web/server/test_wall_users.py
+            python apps/console-web/server/test_app_ci.py
+            python apps/console-web/server/test_plugin_catalog.py
+            python apps/console-web/server/test_app_catalog.py
+          } 2>&1 | tee /tmp/web-tests.log
+      - name: Report web/Python test failures to the "CI build errors" issue
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          { echo "### Web/Python tests failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'; tail -n 80 /tmp/web-tests.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||'; echo '```'; } > /tmp/web-report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/web-report.md; else gh issue comment "$N" --body-file /tmp/web-report.md; fi
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
@@ -178,9 +216,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
-      - name: Library unit tests (lib-voice, lib-lock, lib-mcp)
+      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
-        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
+        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault)
         working-directory: apps/voicevault
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}

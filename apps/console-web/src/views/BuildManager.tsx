@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import * as api from '../api';
+import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
 import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build-queue-core.mjs';
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
 
 /*
- * Build manager: the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
+ * Build queue (nav: Build queue; the Build manager plugin lists everything still to build): the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
  * into a new order, after which the console prompts to reprocess (dependency order + rework check on built steps).
  * Completing a step marks the epic and its linked features built in the feature tracker; the feature tracker feeds
  * back (all features built → step complete). Both sync when the console starts.
@@ -99,6 +100,7 @@ function brief(s: StepView) {
     s.features.length ? `\nFeatures in this step:\n${s.features.map((f) => `- ${f.id} [${f.status}] ${f.title} (${api.modelLabel(f.model)})`).join('\n')}` : '',
     s.acceptance.length ? `\nAcceptance:\n${s.acceptance.map((x) => `- [${x.done ? 'x' : ' '}] ${x.text}`).join('\n')}` : '',
     s.rework ? `\nRework needed:\n${s.rework.reasons.map((r) => `- ${r}`).join('\n')}` : '',
+    s.steps.length ? `\nSmall steps (${s.stepsDone}/${s.steps.length} done, ~${s.estimate}; tick each off with build_steps(id="${s.id}", index=N, done=true)):\n${s.steps.map((x, i) => `${x.done ? '[x]' : '[ ]'} ${i + 1}. ${x.estimate ? `(~${x.estimate}) ` : ''}${x.text}`).join('\n')}` : s.estimate ? `\nBuild time: ~${s.estimate}` : '',
     `\nWhen done, mark it built in the console's Build view or with the AXF MCP tool build_step(id="${s.id}", action="${s.rework ? 'resolve-rework' : 'complete'}").`,
   ].filter(Boolean).join('\n');
 }
@@ -148,7 +150,7 @@ export function BuildManager() {
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">Build manager · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
+          <p className="fx-eyebrow">Build queue · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
           <h1>Build queue</h1>
           <p className="fx-muted">Everything left in the plan, in the order it will be built. Drag steps to reorder; the console then checks dependencies and flags built steps that need rework. Each step names the model to build it with.</p>
         </div>
@@ -315,15 +317,13 @@ export function BuildSummaryCard() {
   );
 }
 
-/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one. */
+/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one (the API client library's TokenDialog). */
 export function TokenDialog({ close }: { close: () => void }) {
   const rt = useRuntime();
-  const [t, setT] = useState(api.getToken());
   return (
-    <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); api.setToken(t.trim()); rt.toast(t.trim() ? 'Console token saved in this browser' : 'Console token cleared', 'success'); close(); initBuildSync((m, l) => rt.terminal.log('build', m, l)); }}>
-      <p className="fx-muted" style={{ margin: 0 }}>Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp.</p>
-      <input className="fx-input fx-mono" type="password" autoComplete="off" value={t} onChange={(e) => setT(e.target.value)} placeholder="AXF_TOKEN" aria-label="Console token" />
-      <div className="fx-row" style={{ justifyContent: 'flex-end' }}><Button onClick={close}>Cancel</Button><Button tone="primary" icon="save" type="submit">Save</Button></div>
-    </form>
+    <ApiTokenDialog tokens={api.consoleTokens} close={close} placeholder="AXF_TOKEN" ariaLabel="Console token"
+      description="Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp."
+      savedToast="Console token saved in this browser" clearedToast="Console token cleared"
+      onChange={() => { initBuildSync((m, l) => rt.terminal.log('build', m, l)); }} />
   );
 }

@@ -73,10 +73,7 @@
 .axp-systems-check-new__body { display: flex; flex-direction: column; gap: var(--fx-space); padding-top: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) solid var(--fx-border); max-height: 60vh; overflow: auto }
 .axp-systems-check-new__summary { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-systems-check-new__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
-.axp-systems-check-md { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-systems-check-md__h { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-systems-check-md__p { margin: 0 }
-.axp-systems-check-md__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
+/* What's new summaries render through the framework `Markdown` (compact mode, `.fx-md--compact`). */
 .axp-systems-check-ai { display: flex; flex-direction: column; gap: var(--fx-space) }
 .axp-systems-check-switch { display: flex; gap: var(--fx-space); align-items: flex-start; padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-systems-check-switch.is-off { opacity: var(--fx-opacity-disabled) }

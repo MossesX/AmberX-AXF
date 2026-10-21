@@ -27,6 +27,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `theme-manager` — roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets), live preview, undo/redo, pins, hand edits; save rolls as asset@1 themes and manage them; settings tab "Themes". <!-- axf-plugin:theme-manager -->
 - `claude-badge` — tests the AI connection on every load and attaches a Claude badge asset to the banner (green "Powered by <model>" pop-out, or grey "AI unavailable"); settings tab "Claude badge". <!-- axf-plugin:claude-badge -->
 - `plugin-manager` — the Plugin Manager (Fable rebuild Oct 20 2026): every plugin's health, enable/disable, its UI and settings (opened or shown inline), logs, files, install & uninstall, and dependencies in detail (needs, providers, dependents, clashes) from the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = `server/engine.py` = Kotlin); views cards/table/detail/dependency graph/install in layouts Studio/Mission control/Terminal/Catalog; link in the default context menu; settings tab "Plugin Manager"; self-test `test.py`. <!-- axf-plugin:plugin-manager -->
+- `build-manager` — nav → Builds → Build manager: everything still to build (pending, build queue, plan; one row per build), time left, steps, needs split, totals per model, a live tracker (activity feed `axf.activity@1` + builds in progress) and a banner while a listed build runs; settings tab "Build manager"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:build-manager -->
 - `plugin-switches` — a pop-up dialog listing every plugin with an on/off switch; its own switch is greyed out; asks before switching off a plugin a running plugin needs; opened from the default context menu, action `plugin-switches.open`, search, or its settings tab "Plugin switches". <!-- axf-plugin:plugin-switches -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
@@ -92,6 +93,12 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   the console's own navigation; swapping the nav-menu asset keeps it.
 - **Server part:** loaded when the console API starts and mounted at `/api/plugins/<folder>/`. Call it from
   the web part with `pluginFetch(folder, path, init)`, which adds the console token.
+  For JSON calls use `pluginApi(folder, label)` (also from `@console/plugins`, Oct 2026): `const api = pluginApi(FOLDER, 'The x plugin')`
+  gives `api.call/post/put/patch/del/download/blob` with the console token and the standard messages (401 → "Console token
+  required (Settings → Account & security).", 404 without detail → "<label> is disabled or its server part is not running.",
+  otherwise the server's `detail`; errors are `ApiError` with `.status`). It's the framework's API client library
+  (`@console/axf/libs/apiclient`); don't copy a `call()` wrapper into a plugin. Event streams: `readSse(response, onFrame, signal)`
+  or `followSse(open, onFrame)` (reconnects with back-off) from `@console/axf/core/sse`.
 - **Enable / disable:** Framework → Plugins. A disabled plugin's tabs disappear and its server routes answer
   404. The choice is kept in the console state file. Plugins are enabled unless `"enabledByDefault": false`.
 - **Hub users (`"wallUsers": true`, Oct 18 2026):** behind axHub's sign-in wall the console trusts the wall's
@@ -105,6 +112,11 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   **every** route of the plugin is safe for a non-admin (the theme manager and the Claude badge are; anything that
   touches secrets, containers, files on the host, git or other services is not). Plugins without it stay admin-only
   whatever is granted. `wallUsers` plugins are open to every user and check each one themselves.
+- **Framework helpers for server parts (Oct 20 2026):** a plugin's Python may import the framework's shared server
+  package `axf_server` (`framework/python/axf_server`): `import axf_framework` (puts framework/python on the path),
+  then `from axf_server import storage, http` — private files (`storage.write_json/read_json/append_jsonl`: atomic,
+  0600, folders 0700) and outbound HTTP (`http.request`: https only, no redirects or credential-stripping ones, size
+  cap, timeout). Framework imports are fine under plugin-lifecycle@1; importing another plugin's folder never is.
 - **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
 
 ## Look and naming

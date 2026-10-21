@@ -18,7 +18,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable
 
-from . import containers, contract, llm, memory, store, toolkit
+from axf.contracts import agents as contract  # framework/python
+
+from . import containers, llm, memory, store, toolkit
 
 MEMORY_TOOLS = contract.MEMORY_TOOL_NAMES
 MAX_ROUNDS = 10

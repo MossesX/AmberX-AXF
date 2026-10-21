@@ -7,6 +7,8 @@
  * Folders starting with "_" are templates and never load.
  */
 import type { AxfWebLibrary } from './axf/react/library';
+import { authHeaders, createApiClient, STANDARD_MESSAGES, type ApiClient } from './axf/libs/apiclient';
+import { consoleTokens } from './api';
 
 export interface PluginManifest {
   $axf: 'plugin@1';
@@ -81,14 +83,42 @@ export async function fetchPluginStatus(): Promise<PluginStatus[] | null> {
   }
 }
 
+// Function declarations (hoisted) on purpose: the eager plugin glob above runs every plugin's web part before this
+// module's body, and plugins create their clients at load time.
+function pluginUrl(folder: string, path: string): string { return `/api/plugins/${folder}/${path.replace(/^\/+/, '')}`; }
+
 /** Fetch for a plugin's own server routes (/api/plugins/<folder>/...), with the console token. */
 export async function pluginFetch(folder: string, path: string, init: RequestInit = {}): Promise<Response> {
-  let token = '';
-  try { token = localStorage.getItem('axf-console:token') ?? ''; } catch { /* storage blocked */ }
-  const headers = new Headers(init.headers);
-  if (token) headers.set('authorization', `Bearer ${token}`);
-  if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
-  return fetch(`/api/plugins/${folder}/${path.replace(/^\/+/, '')}`, { ...init, headers, cache: 'no-store' });
+  return fetch(pluginUrl(folder, path), { ...init, headers: authHeaders(consoleTokens, init), cache: 'no-store' });
+}
+
+/** Where a plugin's 401 message sends people (the console token lives under Settings → Account & security). */
+export function tokenHome(): string { return 'Settings → Account & security'; }
+
+/**
+ * JSON client for a plugin's own server routes, with the standard messages: 401 → "Console token required (…).",
+ * 404 without detail → "<label> is disabled or its server part is not running.", otherwise the server's detail.
+ * `label` is the subject of that sentence ("The agent manager plugin", "Snapshot Manager"); `unavailable` replaces the sentence.
+ * The client is built on first use, so plugins may call this while the console is still loading.
+ */
+export function pluginApi(folder: string, label: string, opts: { tokenHome?: string; unavailable?: string } = {}): ApiClient {
+  let client: ApiClient | null = null;
+  const c = (): ApiClient => (client ??= createApiClient({
+    url: (path) => pluginUrl(folder, path),
+    tokens: consoleTokens,
+    fetch: (url, init) => fetch(url, init),
+    messages: { unauthorized: STANDARD_MESSAGES.unauthorized(opts.tokenHome ?? tokenHome()), unavailable: opts.unavailable ?? STANDARD_MESSAGES.unavailable(label) },
+  }));
+  return {
+    fetch: (path, init) => c().fetch(path, init),
+    call: (path, init) => c().call(path, init),
+    post: (path, body) => c().post(path, body),
+    put: (path, body) => c().put(path, body),
+    patch: (path, body) => c().patch(path, body),
+    del: (path) => c().del(path),
+    download: (path, name, init) => c().download(path, name, init),
+    blob: (path, init, accept) => c().blob(path, init, accept),
+  };
 }
 
 /** Fired on window when a plugin is enabled or disabled, so the shell re-installs plugins. */

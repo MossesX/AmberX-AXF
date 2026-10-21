@@ -10,58 +10,54 @@ import androidx.fragment.app.FragmentActivity
 import ai.amberx.axf.kernel.config.Config
 import ai.amberx.axf.kernel.platform.KeyValueStore
 import ai.amberx.axf.kernel.platform.SecureStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
-
-/** Second step after whatever the app uses first (a spoken code, a tap…). */
-public enum class LockMode(public val id: String) { NONE("none"), BIOMETRIC("biometric"), PIN("pin");
-    public companion object { public fun of(id: String?): LockMode = entries.firstOrNull { it.id == id } ?: NONE }
-}
-
-/** Outcome of one unlock attempt. */
-public sealed interface LockResult {
-    public data object Passed : LockResult
-    public data object Cancelled : LockResult
-    /** Wrong PIN; [triesLeft] before a lockout, or null once lockouts have begun. */
-    public data class Wrong(val triesLeft: Int?) : LockResult
-    public data class LockedOut(val remainingMs: Long) : LockResult
-    public data class Unavailable(val reason: String) : LockResult
-}
 
 /**
  * The `axf.lock` service: which second step is on, PIN storage and checks (hash only, in the
  * Keystore-backed secure store), fingerprint/face through BiometricPrompt, failed-try lockout and
  * the auto-lock delay. Apps call [authenticate] after their own first step.
  */
-public class AppLock internal constructor(private val secure: SecureStore?, private val kv: KeyValueStore?, private val defaultMode: LockMode = LockMode.NONE, private val config: () -> Config?) {
-    private val lockout = Lockout().also { l -> kv?.get(LOCKOUT)?.split(':')?.let { p -> l.state = Lockout.State(p.getOrNull(0)?.toIntOrNull() ?: 0, p.getOrNull(1)?.toLongOrNull() ?: 0) } }
+public class AppLock internal constructor(private val secure: SecureStore?, kv: KeyValueStore?, private val defaultMode: LockMode = LockMode.NONE, private val config: () -> Config?) {
+    /** Failed PINs, persisted in the KV store (`failures:lockedUntil`, the format used since the first build). */
+    private val lockout = PersistedLockout(kv, LOCKOUT)
+    private val pinSecret = StoredSecret(secure, PIN, SecretKind.PIN)
 
     /** The saved choice, or the module default until settings have loaded. Callers should wait for the app to be ready before trusting it. */
     public val mode: LockMode get() = LockMode.of(config()?.string(MODE) ?: defaultMode.id)
     /** Minutes until the app locks itself after being left; 0 = as soon as it goes to the background. */
     public val autoLockMinutes: Int get() = config()?.string(AUTO)?.toIntOrNull() ?: 0
 
-    public suspend fun hasPin(): Boolean = secure?.get(PIN)?.getOrNull() != null
+    public suspend fun hasPin(): Boolean = pinSecret.isSet()
 
     /** Saves a new PIN (4–12 digits). When one exists, [current] must match it. Returns an error message or null. */
     public suspend fun setPin(pin: String, current: String? = null): String? {
-        if (!pin.matches(Regex("\\d{4,12}"))) return "Use 4 to 12 digits."
-        val s = secure ?: return "Secure storage isn't available."
+        SecretKind.PIN.problem(pin)?.let { return it }
+        if (secure == null) return "Secure storage isn't available."
         if (hasPin()) when (val r = checkPin(current ?: "")) { LockResult.Passed -> {} ; is LockResult.LockedOut -> return "Too many tries. Wait ${r.remainingMs / 1000 + 1} s."; else -> return "Current PIN is wrong." }
-        val hashed = withContext(Dispatchers.Default) { PinHasher.hash(pin) }
-        return if (s.put(PIN, hashed).isOk) null else "Couldn't save the PIN."
+        return pinSecret.save(pin, failMessage = "Couldn't save the PIN.")
     }
 
     public suspend fun checkPin(pin: String, now: Long = System.currentTimeMillis()): LockResult {
         lockout.remainingMs(now).takeIf { it > 0 }?.let { return LockResult.LockedOut(it) }
-        val stored = secure?.get(PIN)?.getOrNull() ?: return LockResult.Unavailable("No PIN set.")
-        val ok = withContext(Dispatchers.Default) { PinHasher.verify(pin, stored) }
-        if (ok) { lockout.onSuccess(); saveLockout(); return LockResult.Passed }
-        lockout.onFailure(now); saveLockout()
-        val left = 5 - lockout.state.failures
-        return if (lockout.remainingMs(now) > 0) LockResult.LockedOut(lockout.remainingMs(now)) else LockResult.Wrong(left.takeIf { it > 0 })
+        val stored = (pinSecret.state() as? SecretState.Present)?.hash ?: return LockResult.Unavailable("No PIN set.")
+        if (pinSecret.matchesAny(listOf(pin), stored, max = 1)) { lockout.onSuccess(); return LockResult.Passed }
+        lockout.onFailure(now)
+        return if (lockout.remainingMs(now) > 0) LockResult.LockedOut(lockout.remainingMs(now)) else LockResult.Wrong(lockout.triesLeft)
+    }
+
+    /** Why [mode] can't be the second step right now (no PIN saved, no usable sensor), or null. [context] null = can't check the sensor: refused. */
+    public suspend fun modeProblem(mode: LockMode, context: Context?, pinNeeded: String = "Set a PIN first, then choose PIN."): String? =
+        LockModeGuard.problem(mode, hasPin(), sensorProblem(mode, context), pinNeeded)
+
+    private fun sensorProblem(mode: LockMode, context: Context?): String? = when {
+        mode != LockMode.BIOMETRIC -> null
+        context == null -> LockModeGuard.NO_CONTEXT
+        else -> biometricProblem(context)
     }
 
     /** Null when fingerprint/face can be used now, else why not. */
@@ -119,8 +115,6 @@ public class AppLock internal constructor(private val secure: SecureStore?, priv
         }
     }
 
-    private fun saveLockout() { kv?.put(LOCKOUT, "${lockout.state.failures}:${lockout.state.lockedUntil}") }
-
     public companion object {
         public const val MODE: String = "axf.lock.mode"
         public const val AUTO: String = "axf.lock.autoLock"
@@ -128,6 +122,18 @@ public class AppLock internal constructor(private val secure: SecureStore?, priv
         internal const val LOCKOUT: String = "axf.lock.lockout"
     }
 }
+
+/**
+ * A [LockGate] reading [lock]'s mode and auto-lock delay. [lock] null (lib-lock missing) gives a gate that never
+ * opens by itself and locks the moment the app is left: fails closed.
+ */
+public fun lockGate(
+    lock: AppLock?,
+    scope: CoroutineScope? = null,
+    firstStep: Boolean = false,
+    idleMinutes: () -> Int = { 0 },
+    ready: StateFlow<Boolean>? = null,
+): LockGate = LockGate({ lock?.mode }, { lock?.autoLockMinutes ?: 0 }, scope, firstStep, idleMinutes, ready)
 
 /** The FragmentActivity hosting this context (BiometricPrompt needs one), or null. */
 public fun Context.findFragmentActivity(): FragmentActivity? {

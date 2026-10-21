@@ -1,28 +1,28 @@
 package ai.amberx.axf.voicevault
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.compose.runtime.Composable
-import ai.amberx.axf.lock.PinSetupScreen
+import ai.amberx.axf.lock.GateWording
+import ai.amberx.axf.lock.Gated
+import ai.amberx.axf.lock.UnlockElsewhere
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.ui.shell.AppShell
 import ai.amberx.axf.voice.VoiceTriggersScreen
 import ai.amberx.axf.voicevault.views.HomeView
-import ai.amberx.axf.voicevault.views.SettingsView
 import ai.amberx.axf.voicevault.views.UnlockCodeView
-import ai.amberx.axf.voicevault.views.UnlockedOnly
 import ai.amberx.axf.voicevault.views.VaultListView
 
 /**
- * The single activity. Screens are kept out of screenshots and the recents preview (FLAG_SECURE),
- * the vault session hears about foreground/background for auto-lock, and every screen but Voice
- * needs the vault unlocked.
+ * The single activity. Screens are kept out of screenshots and the recents preview (`android.secureWindow` in
+ * axf.manifest.json, applied by AxfActivity), the vault session hears about foreground/background for auto-lock,
+ * and every screen but Voice (the app's and the libraries': settings, PIN, voice triggers) needs the vault unlocked.
  */
 class MainActivity : AxfActivity() {
     private val session get() = (application as App).appModule.session
+    private val locked = GateWording(title = "Vault is locked", message = "Unlock with your voice code on the Voice screen to see this.")
+    private val toVoice = UnlockElsewhere("home", "Go to Voice", "mic")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         super.onCreate(savedInstanceState)
         session.attach(this)
     }
@@ -33,13 +33,15 @@ class MainActivity : AxfActivity() {
 
     @Composable
     override fun Content() {
-        AppShell(views = mapOf(
-            "home" to { HomeView() },
-            "vault" to { UnlockedOnly { VaultListView() } },
-            "voice-triggers" to { UnlockedOnly { VoiceTriggersScreen() } },
-            "unlock-code" to { UnlockedOnly { UnlockCodeView() } },
-            "lock-pin" to { UnlockedOnly { PinSetupScreen() } },
-            "settings" to { UnlockedOnly { SettingsView() } },
-        ))
+        // settings (lib-settings) and lock-pin (lib-lock) come from the libraries; viewGuard locks them like the rest.
+        AppShell(
+            views = mapOf(
+                "home" to { HomeView() },
+                "vault" to { VaultListView() },
+                "voice-triggers" to { VoiceTriggersScreen() },
+                "unlock-code" to { UnlockCodeView() },
+            ),
+            viewGuard = { id, content -> if (id == "home") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },
+        )
     }
 }

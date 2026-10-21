@@ -35,6 +35,6 @@
 .axp-theme-manager__saved li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); overflow-wrap: anywhere }
 
 /* Show/Hide switch on hideable (chrome) types; a hidden type's rows grey out */
-.axp-theme-manager__hide { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin-left: auto; font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); cursor: pointer; white-space: nowrap }
-.axp-theme-manager__hide input { accent-color: var(--fx-accent) }
+/* The toggle is the framework `Switch` (bare, with its Shown / Hidden text); it sits at the row's end. */
+.axp-theme-manager__hide { margin-left: auto }
 .axp-theme-manager__row.is-off > .axp-theme-manager__tick, .axp-theme-manager__row.is-off > .axp-theme-manager__twisty, .axp-theme-manager__row.is-off > .axp-theme-manager__lock, .axp-theme-manager__row.is-off > .axp-theme-manager__only { opacity: var(--fx-opacity-disabled) }

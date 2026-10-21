@@ -37,6 +37,28 @@ Chip, Card) edit these live.
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
 the React controls (`Button`, `Chip`, `Container`, …) render through them.
 
+## Shared form controls (Oct 21 2026)
+
+Apps and plugins never hand-roll a switch, a labelled field, a choice grid, a callout or a Markdown renderer: the
+framework ships them on both ports with the same names, props and behaviour, and they size themselves from the style
+theme (`--fx-space`, `--fx-font-size`, `--fx-row-h`, radii), so the Spacing choice applies.
+
+| Web (`framework/react`, `.fx-*` in axf.css) | Compose (`axf-ui/components`) | What |
+| --- | --- | --- |
+| `Switch` (`.fx-switch`, `role="switch"` + `aria-checked`) | `AxfSwitch` | on/off with label + hint, or bare (`hideLabel`, `text`) |
+| `Field` (`.fx-field`) | `AxfField` | label / control / hint-or-error wrapper (`aria-describedby`, `role="alert"` error) |
+| `TextField` | `AxfTextField` | single- or multi-line input (`rows`), `mono`, `required`, `error` |
+| `SelectField` | `AxfSelectField` | drop-down inside a Field (`empty` adds a blank choice) |
+| `ChoiceGrid` (`.fx-choices`, radiogroup / group) | `AxfChoiceGrid` | tappable cards, single or `multiple` |
+| `Note` (`.fx-note`, tones info / warning / danger / success) | `AxfNote` | inline callout |
+| `Section` (`.fx-section`) | `AxfSection` | titled block without card chrome |
+| `Markdown` (`.fx-md`, `compact`) | `AxfMarkdown` | safe Markdown: elements only, http(s)/mailto links only |
+| `LibraryParamField` | `AxfLibraryParamField` | a library@1 parameter by type (`core/library.ts` = Kotlin `LibraryParams`) |
+
+None of them is a component-style engine input: they read the compiled tokens only (no asset of their own). A kit
+replaces them by overriding the corresponding `ComponentKind` (SWITCH, TEXT_FIELD, SELECT_FIELD, CHOICE_GRID,
+LIBRARY_PARAM, SECTION, NOTE, MARKDOWN). The web Components view and the Android Component gallery show every one.
+
 ## Plugin and library UIs
 
 Every library (`framework/libs/*`) and every app plugin (`apps/*/plugins/*`) that draws UI conforms to the

@@ -61,8 +61,8 @@ import kotlinx.coroutines.launch
  * The application shell: renders the fixed regions of the compiled layout for the current window class.
  * EXPANDED → desktop grid (menubar / toolbar / nav / main / inspector / status, in the layout asset's
  * positions); MEDIUM → rail + main; COMPACT → phone grid (menubar, toolbar, main, bottom tabs / drawer / top tabs,
- * inspector as a sheet). `views` maps view ids (nav-menu asset `view`) to composables; unknown views render
- * PlaceholderScreen. Modules inject extra content into regions via `ExtensionPoints.SHELL_REGIONS`.
+ * inspector as a sheet). `views` maps view ids (nav-menu asset `view`) to composables, merged over the views modules
+ * register (`AxfUiPoints.VIEWS`); unknown views render PlaceholderScreen; `viewGuard` wraps every one of them. Modules inject extra content into regions via `ExtensionPoints.SHELL_REGIONS`.
  * Above the grid sits the banner asset (AxfBanner: thin permanent bar; hidden slot or no banner = nothing), and the
  * shell feeds the kernel's search index with its views, dialogs and windows (AxfSearchHost) so the search-bar widget in
  * the banner or toolbar finds everything (web: AppShell → useSearchHost).
@@ -81,6 +81,13 @@ public fun AppShell(
     viewKeywords: Map<String, List<String>> = emptyMap(),
     /** dialogs this shell can open (for the search); AxfRoot's registered dialogs are found through the kernel when omitted */
     dialogs: Map<String, ai.amberx.axf.ui.DialogContribution> = emptyMap(),
+    /** false = only `views`; true (default) also shows the views modules register (`AxfUiPoints.VIEWS`: settings, lock-pin, …) */
+    moduleViews: Boolean = true,
+    /**
+     * Wraps every view the shell shows, the app's and the modules' (e.g. an app lock: `{ id, content -> Gated(gate) { content() } }`).
+     * One place, so a view a library adds later can't slip past it.
+     */
+    viewGuard: (@Composable (viewId: String, content: @Composable () -> Unit) -> Unit)? = null,
 ) {
     val runtime = LocalAxfRuntime.current
     val state = LocalAxfState.current
@@ -88,18 +95,28 @@ public fun AppShell(
     val layout = LocalAxfLayout.current
     val kernel = LocalAxfKernel.current
     val c = Axf.colors
+    val contributed = remember(kernel, compiled.rev, moduleViews) { if (moduleViews) kernel?.extensions?.get(ai.amberx.axf.ui.AxfUiPoints.VIEWS) ?: emptyList() else emptyList() }
+    val allViews: Map<String, @Composable () -> Unit> = remember(views, contributed) { contributed.associate { v -> v.id to v.content } + views }
+    val allTitles: Map<String, String> = remember(viewTitles, contributed) { contributed.associate { v -> v.id to v.title } + viewTitles }
+    val allIcons: Map<String, String> = remember(viewIcons, contributed) { contributed.mapNotNull { v -> v.icon?.let { v.id to it } }.toMap() + viewIcons }
     // Search host: views, dialogs and open windows join the kernel index (actions, assets, settings come from their owners).
     val searchHost = remember(runtime, kernel) { AxfSearchHost(runtime, kernel) }
     val allDialogs = remember(kernel, compiled.rev, dialogs) {
         (kernel?.extensions?.get(ExtensionPoints.DIALOGS)?.filterIsInstance<ai.amberx.axf.ui.DialogContribution>()?.associateBy { it.id } ?: emptyMap()) + ai.amberx.axf.ui.studio.builtinDialogs() + dialogs
     }
-    androidx.compose.runtime.DisposableEffect(searchHost, views.keys, viewTitles, viewIcons, viewKeywords, allDialogs) {
-        searchHost.install(views.keys.associateWith { viewTitles[it] ?: it }, viewIcons, viewKeywords, allDialogs)
+    androidx.compose.runtime.DisposableEffect(searchHost, allViews.keys, allTitles, allIcons, viewKeywords, allDialogs) {
+        searchHost.install(allViews.keys.associateWith { allTitles[it] ?: it }, allIcons, viewKeywords, allDialogs)
         onDispose { searchHost.uninstall() }
     }
     val regionExtras = remember(kernel, compiled.rev) { kernel?.extensions?.get(ExtensionPoints.SHELL_REGIONS)?.filterIsInstance<ShellRegionContribution>()?.groupBy { it.region } ?: emptyMap() }
-    val viewIds = remember(views) { views.keys }
-    val main: @Composable () -> Unit = { Box(Modifier.fillMaxSize()) { (views[state.view] ?: { PlaceholderScreen(viewTitles[state.view] ?: state.view) })() } }
+    val viewIds = remember(allViews) { allViews.keys }
+    val main: @Composable () -> Unit = {
+        Box(Modifier.fillMaxSize()) {
+            val id = state.view
+            val content: @Composable () -> Unit = allViews[id] ?: { PlaceholderScreen(allTitles[id] ?: id) }
+            if (viewGuard != null) viewGuard(id, content) else content()
+        }
+    }
     val hasRegion = { r: Region -> r in layout.regions }
     val inspectorContent: (@Composable () -> Unit)? = inspector ?: regionExtras[Region.INSPECTOR]?.let { list -> { AxfInspector { list.forEach { it.content() } } } }
 
@@ -109,8 +126,8 @@ public fun AppShell(
             AxfBanner(Modifier.fillMaxWidth())
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 when (layout.windowClass) {
-                    WindowClass.EXPANDED -> DesktopGrid(Modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
-                    WindowClass.MEDIUM, WindowClass.COMPACT -> PhoneGrid(Modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
+                    WindowClass.EXPANDED -> DesktopGrid(Modifier, layout, hasRegion, viewIds, allTitles, onSearch, main, inspectorContent, regionExtras, fab)
+                    WindowClass.MEDIUM, WindowClass.COMPACT -> PhoneGrid(Modifier, layout, hasRegion, viewIds, allTitles, onSearch, main, inspectorContent, regionExtras, fab)
                 }
             }
         }

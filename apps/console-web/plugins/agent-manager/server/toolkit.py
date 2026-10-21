@@ -26,7 +26,10 @@ from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import urlparse
 
-from . import containers, contract, safety, store
+from axf.assistant_host import safety  # framework/python
+from axf.contracts import agents as contract
+
+from . import containers, store
 
 ROOT = store.ROOT
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}

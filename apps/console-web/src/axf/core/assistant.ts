@@ -1,6 +1,6 @@
 /*
  * AI assistant — assistant@1 (kernel contract, web reference). Same design as the Kotlin kernel's
- * `ai.amberx.axf.kernel.assistant` (Assistant.kt) and the console plugin's Python `contract.py`;
+ * `ai.amberx.axf.kernel.assistant` (Assistant.kt) and the Python port `framework/python/axf/contracts/assistant.py`;
  * conformance fixtures: spec/fixtures/assistant.json (gen-fixtures.mts).
  *
  * What every AXF app shares when it ships an assistant (the Dev Console today, Build Pilot next, Android later):
@@ -19,6 +19,10 @@
  */
 import providerRegistry from '../schemas/ai-providers.json';
 import type { LiveReplay, LiveSessionInfo } from './live-session';
+import { readSse, type SseFrame } from './sse';
+
+/** SSE framing is shared (./sse); re-exported here so assistant@1 code keeps importing it from the contract. */
+export { parseSseBlock, parseSseText, sseLine, type SseFrame } from './sse';
 
 export const ASSISTANT_CONTRACT = 'assistant@1';
 export const CONVERSATION_CONTRACT = 'ai-conversation@1';
@@ -135,7 +139,94 @@ export interface Message {
   };
 }
 
-export interface ChatContext { view?: string; title?: string; selection?: string; note?: string }
+/**
+ * What the app attaches to a turn: the view it was sent from, its title, selected text, a note — plus `extra`, an
+ * open bag for host-specific context (Build Pilot's `projectId`, …). Well-known keys live in `CHAT_CONTEXT_KEYS`; any
+ * other key passes through untouched, so a host never needs a one-off field. `normalizeChatContext` is the rule every
+ * port applies before storing or using a context (sizes capped, bad shapes dropped).
+ */
+export interface ChatContext { view?: string; title?: string; selection?: string; note?: string; extra?: Record<string, unknown> }
+
+/** Well-known `extra` keys (documented in spec/ASSISTANT.md); hosts may add their own. */
+export const CHAT_CONTEXT_KEYS = {
+  /** id of the project the chat is about (Build Pilot); 1–64 chars */
+  projectId: 'projectId',
+  /** id of the app (`axf.manifest.json` name or project manifest name) the chat is about */
+  appId: 'appId',
+  /** path of the file the user is looking at, relative to the app */
+  path: 'path',
+  /** route/page id when `view` is not enough */
+  route: 'route',
+} as const;
+
+/** Size limits for a context (the same on every port, so a context can't be abused as a payload channel). */
+export const CHAT_CONTEXT_LIMITS = {
+  view: 200, title: 300, selection: 4000, note: 2000,
+  /** at most this many keys in `extra` */
+  extraKeys: 32,
+  /** each `extra` key: 1–64 characters, `[A-Za-z0-9_.-]` */
+  extraKey: 64,
+  /** a string value in `extra` is cut to this length */
+  extraString: 2000,
+  /** `extra` serialised as JSON may not exceed this many characters */
+  extraJson: 16_000,
+  /** nesting depth allowed inside an `extra` value (objects/arrays) */
+  extraDepth: 4,
+} as const;
+
+const EXTRA_KEY = /^[A-Za-z0-9_.-]{1,64}$/;
+
+function boundedValue(v: unknown, depth: number): unknown {
+  if (v === null || typeof v === 'boolean') return v;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+  if (typeof v === 'string') return v.slice(0, CHAT_CONTEXT_LIMITS.extraString);
+  if (depth >= CHAT_CONTEXT_LIMITS.extraDepth) return undefined;
+  if (Array.isArray(v)) {
+    const out: unknown[] = [];
+    for (const x of v.slice(0, CHAT_CONTEXT_LIMITS.extraKeys)) { const b = boundedValue(x, depth + 1); if (b !== undefined) out.push(b); }
+    return out;
+  }
+  if (typeof v === 'object') {
+    const out: Record<string, unknown> = {};
+    let n = 0;
+    for (const [k, x] of Object.entries(v as Record<string, unknown>)) {
+      if (!EXTRA_KEY.test(k)) continue;
+      const b = boundedValue(x, depth + 1);
+      if (b === undefined) continue;
+      out[k] = b;
+      if (++n >= CHAT_CONTEXT_LIMITS.extraKeys) break;
+    }
+    return out;
+  }
+  return undefined; // functions, symbols, bigints never travel
+}
+
+/**
+ * The context a host stores and uses: known fields cut to their limits, `extra` kept as an open bag with every key it
+ * came with (unknown keys preserved, in order) but bounded: key pattern, ≤ 32 keys, strings ≤ 2000, depth ≤ 4,
+ * ≤ 16 000 JSON characters in all (an oversized `extra` is dropped whole, never truncated into a different meaning).
+ * Returns null for anything that isn't an object or has nothing left.
+ */
+export function normalizeChatContext(raw: unknown): ChatContext | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  const out: ChatContext = {};
+  for (const k of ['view', 'title', 'selection', 'note'] as const) {
+    const v = r[k];
+    if (typeof v === 'string' && v) out[k] = v.slice(0, CHAT_CONTEXT_LIMITS[k]);
+  }
+  if (r.extra && typeof r.extra === 'object' && !Array.isArray(r.extra)) {
+    const extra = boundedValue(r.extra, 0) as Record<string, unknown>;
+    if (Object.keys(extra).length && JSON.stringify(extra).length <= CHAT_CONTEXT_LIMITS.extraJson) out.extra = extra;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+/** A well-known `extra` value as a string (empty when absent or not a string); what a host reads `projectId` with. */
+export function contextExtra(ctx: ChatContext | null | undefined, key: string): string {
+  const v = ctx?.extra?.[key];
+  return typeof v === 'string' ? v : '';
+}
 
 export interface ConversationSettings {
   profileId?: string; model?: string; temperature?: number; max_tokens?: number; top_p?: number;
@@ -289,36 +380,7 @@ export function ownerKind(kind: string, reserved: Iterable<string>): string {
 }
 
 // ---------------------------------------------------------------- SSE (what a host streams, what a client parses)
-
-export interface SseFrame { event: string; data: string; id?: number }
-
-/** One `event:`/`data:`/`id:` block → frame (data lines joined, comments skipped); null when the block carries no data. */
-export function parseSseBlock(block: string): SseFrame | null {
-  let event = 'message';
-  const data: string[] = [];
-  let id: number | undefined;
-  for (const line of block.split('\n')) {
-    if (line.startsWith(':')) continue;
-    if (line.startsWith('event:')) event = line.slice(6).trim();
-    else if (line.startsWith('data:')) data.push(line.slice(5).replace(/^ /, ''));
-    else if (line.startsWith('id:')) { const n = Number(line.slice(3).trim()); if (Number.isFinite(n) && n > 0) id = n; }
-  }
-  if (!data.length) return null;
-  return { event, data: data.join('\n'), ...(id === undefined ? {} : { id }) };
-}
-
-/** Frames out of a text with blank-line separators; `rest` is the unfinished tail to keep for the next chunk. */
-export function parseSseText(text: string): { frames: SseFrame[]; rest: string } {
-  const frames: SseFrame[] = [];
-  let buf = text.replace(/\r\n/g, '\n');
-  let i: number;
-  while ((i = buf.indexOf('\n\n')) >= 0) {
-    const f = parseSseBlock(buf.slice(0, i));
-    buf = buf.slice(i + 2);
-    if (f) frames.push(f);
-  }
-  return { frames, rest: buf };
-}
+// Framing (parseSseBlock / parseSseText / sseLine / SseFrame) lives in ./sse, shared by every AXF web app.
 
 /** A frame → stream event (data parsed as JSON when it is JSON). */
 export function frameToEvent(f: SseFrame): StreamEvent {
@@ -327,24 +389,9 @@ export function frameToEvent(f: SseFrame): StreamEvent {
   return { event: f.event, data, ...(f.id === undefined ? {} : { seq: f.id }) } as StreamEvent;
 }
 
-/** Serialise a turn event the way hosts stream it. */
-export function sseLine(event: string, data: unknown, id?: number): string {
-  return `${id ? `id: ${id}\n` : ''}event: ${event}\ndata: ${JSON.stringify(data ?? null)}\n\n`;
-}
-
-/** Read a streaming Response body as stream events until it ends. */
-export async function readSse(body: ReadableStream<Uint8Array>, onEvent: (e: StreamEvent) => void): Promise<void> {
-  const reader = body.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    const { frames, rest } = parseSseText(buf);
-    buf = rest;
-    for (const f of frames) onEvent(frameToEvent(f));
-  }
+/** Read a streaming Response body as stream events until it ends (an aborted fetch rejects with AbortError). */
+export async function readStreamEvents(body: ReadableStream<Uint8Array>, onEvent: (e: StreamEvent) => void): Promise<void> {
+  await readSse(body, (f) => onEvent(frameToEvent(f)));
 }
 
 // ---------------------------------------------------------------- client (what an app's chat UI talks to)
@@ -417,7 +464,7 @@ export class HttpAssistantClient implements AssistantClient {
       const j = (await r.json().catch(() => ({}))) as { detail?: string };
       throw new AssistantHttpError(j.detail ?? `request failed (${r.status})`, r.status);
     }
-    await readSse(r.body, onEvent);
+    await readStreamEvents(r.body, onEvent);
   }
 
   status() { return this.call<AssistantStatus>('status'); }

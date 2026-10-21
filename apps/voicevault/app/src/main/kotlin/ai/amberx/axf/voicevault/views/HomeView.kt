@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import ai.amberx.axf.lock.PinPrompt
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfEmptyState
@@ -57,8 +59,8 @@ import kotlinx.coroutines.launch
 /** The Voice screen: banner on top when a password is ready to copy, the mic, and the current step. */
 @Composable
 fun HomeView() {
-    val session = rememberSession() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
-    val voice = rememberVoice()
+    val session = rememberService<VaultSession>() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
+    val voice = rememberService<AxfVoice>()
     val stage by session.stage.collectAsState()
     val note by session.note.collectAsState()
     LifecycleResumeEffect(session) {
@@ -67,7 +69,7 @@ fun HomeView() {
     }
     Column(Modifier.fillMaxSize()) {
         CopyBanner(session, stage)
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two), horizontalAlignment = Alignment.CenterHorizontally) {
             MicHeader(session, voice, stage)
             NoteLine(note)
             StageBody(session, voice, stage)

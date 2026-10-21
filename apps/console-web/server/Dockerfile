@@ -18,7 +18,13 @@ ENV DISABLE_AUTOUPDATER=1 CLAUDE_BIN=claude
 RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
  && cp -r apps/console-web/dist /opt/axf-console-dist
 # install-console.sh mounts the host clone over /axf, hiding apps/console-web/dist; serve the copy outside it.
-ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
+# The framework's Python packages (framework/python: axf.contracts, axf.assistant_host, axf_server = shared server
+# helpers, axf_libs) are part of the image: they come with `COPY --from=web /axf /axf` above (repo root build context)
+# and with the host clone install-console.sh mounts over /axf. PYTHONPATH makes them importable from the server and
+# every plugin without each one touching sys.path; server/axf_framework.py adds the same folder at import time, so
+# tests and a bare `uvicorn main:app` work without this variable too.
+ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090 PYTHONPATH=/axf/framework/python
+RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package, axf_server.github, axf.contracts.assistant, axf.contracts.agents"
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
 # exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly

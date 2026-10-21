@@ -252,7 +252,7 @@ function walk(dir) {
 }
 
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
-const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
+const TEXT = /(\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml|sh|py|ya?ml)|(^|[\\/])Dockerfile)$/;
 
 /** Token values are free text (an app named "Notes & Todo"): escape them for the file they land in, so the generated
  * app still compiles. Android string resources: XML entities + Android's own quote rules; Kotlin/Java string literals:
@@ -268,7 +268,7 @@ const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
     // `src/main/kotlin/app/…` in a template lands at the app's real package path.
-    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
+    const rel = relative(src, file).replace(/^_(gitignore|dockerignore)$/, '.$1').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
     const target = join(dest, rel);
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
@@ -313,6 +313,26 @@ export function checkDesignedAssets(assets) {
   });
 }
 
+/** The hub's https origin (http only for localhost): a plain origin, no path, no credentials. */
+export function hubOrigin(raw) {
+  let u;
+  try { u = new URL(String(raw)); } catch { return null; }
+  const local = u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === '10.0.2.2';
+  if ((u.protocol !== 'https:' && !(local && u.protocol === 'http:')) || u.username || u.password || u.pathname !== '/' || u.search || u.hash) return null;
+  return u.origin;
+}
+
+/** Developer app flag (`--developer [hub]`, manifest `developer: { hub }`): true = the default hub; a string = that hub; off = none. */
+export const DEFAULT_HUB = 'https://axhub.amberxai.com';
+export function resolveDeveloper(v) {
+  if (v === undefined || v === null || v === false || v === 'off' || v === '') return null;
+  if (v === true || v === 'on') return { hub: DEFAULT_HUB };
+  const raw = typeof v === 'object' ? v.hub : v;
+  const hub = hubOrigin(raw);
+  if (!hub) throw new Error(`developer: the hub must be an https origin, e.g. ${DEFAULT_HUB}`);
+  return { hub };
+}
+
 /** Chrome hidden by default for a new app: the request's own list when given, else framework/app-defaults.json (+ the boilerplate's). */
 export function resolveHidden(hidden, bp) {
   const list = hidden !== undefined && hidden !== null ? hidden : [...(appDefaults.hidden ?? []), ...(bp?.hidden ?? [])];
@@ -321,7 +341,8 @@ export function resolveHidden(hidden, bp) {
   return [...new Set(list)];
 }
 
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, project = {}, log = () => {} }) {
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, developer, project = {}, log = () => {} }) {
+  const dev = resolveDeveloper(developer);
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -379,6 +400,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     startView: bp?.screens?.[0]?.id ?? 'home',
     defaults: { ...defaults, ...(bp?.defaults ?? {}), ...picks },
     hidden: hiddenSlots,
+    ...(dev ? { developer: dev } : {}),
     options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
@@ -529,6 +551,7 @@ export function validateApp(dir) {
     }
     if (m.hidden !== undefined && (!Array.isArray(m.hidden) || m.hidden.some((t) => typeof t !== 'string'))) errors.push('manifest "hidden" must be a list of asset types');
     for (const t of Array.isArray(m.hidden) ? m.hidden : []) if (!spec.types[t]?.hideable) errors.push(`manifest hidden "${t}" is not a hideable type`);
+    if (m.developer !== undefined && (typeof m.developer !== 'object' || m.developer === null || !hubOrigin(m.developer.hub))) errors.push('manifest "developer" must be { hub: "https://…" } (a plain https origin)');
     if (m.framework?.version !== FRAMEWORK_VERSION) warnings.push(`app targets framework ${m.framework?.version}, engine is ${FRAMEWORK_VERSION}`);
   }
   const lPath = join(root, 'axf.lock.json');
@@ -653,7 +676,10 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
+    const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
+    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };
   });
 }
 

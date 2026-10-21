@@ -23,6 +23,7 @@ import { createAlertsLibrary } from './axf/libs/alerts';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
+import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -32,7 +33,7 @@ const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
-  build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
+  build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
   // Standards: rules every project must meet (first: project manifests).
   'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },
@@ -80,7 +81,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
   }, [rt, status, loaded]);
   return { contributed };
 }
@@ -90,6 +91,8 @@ function Shell() {
   const drop = useUndockDrop();
   // Signed in through axHub's wall: the account decides the access role (themes, plugins); see src/account.tsx.
   useBindAccount();
+  // Developer app: the look + settings come from axHub's data server (src/hubAppearance.tsx); waits for the hub.
+  useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
   const allViews: ViewMap = {

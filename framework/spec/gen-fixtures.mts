@@ -13,18 +13,23 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
+import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
-import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
+import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
+import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
+import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
+import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -69,6 +74,34 @@ write('hide.json', {
   ],
   defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
+// Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
+{
+  const docs: Record<string, string> = {
+    full: JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'arctic-daylight', 'style-theme': 'glass-orbit', layout: 'focus-top', 'uac-policy': 'admin-only', toolbar: 'standard-icons' }, spacing: 'compact', hidden: { toolbar: true, 'color-theme': true, 'nav-menu': false }, palette: { scheme: 'light', bg: '#f2f5f8', accent: 'rgb(31,111,235)', fg: 'url(x)' }, updatedBy: 'axf-console', updatedAt: '2026-10-21T00:00:00Z' }),
+    'unknown-ids': JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'no-such-theme', layout: 'classic-ide', 'not-a-type': 'x', 'bad id!': 'y', toolbar: 'Bad Id' }, spacing: 'roomy', hidden: { toolbar: 'yes' } }),
+    'wrong-frame': JSON.stringify({ $axf: 'asset@1', slots: { layout: 'classic-ide' } }),
+    'not-json': '{oops',
+    empty: '',
+    'code-shaped': JSON.stringify({ $axf: 'appearance@1', slots: { layout: 'classic-ide' }, assets: [{ type: 'color-theme', id: 'evil', data: {} }], script: 'alert(1)' }),
+    'too-big': JSON.stringify({ $axf: 'appearance@1', pad: 'x'.repeat(20000) }),
+  };
+  const has = (t: string, id: string) => ['color-theme:arctic-daylight', 'style-theme:glass-orbit', 'layout:classic-ide', 'layout:focus-top', 'toolbar:standard-icons', 'uac-policy:admin-only'].includes(`${t}:${id}`);
+  const base = parseAppearance(docs.full);
+  write('appearance.json', {
+    slotTypes: appearanceSlotTypes(),
+    parsed: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, parseAppearance(v)])),
+    resolved: Object.fromEntries(Object.entries(docs).map(([k, v]) => [k, resolveAppearance(parseAppearance(v), has)])),
+    merged: {
+      'slot-over-full': mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z'),
+      'hidden-clear': mergeAppearance(base, { hidden: { toolbar: null, 'app-menu': true } }, 'axf-console', '2026-10-21T01:00:00Z'),
+      'spacing-only-into-null': mergeAppearance(null, { spacing: 'regular' }, 'axhub-android', '2026-10-21T01:00:00Z'),
+      'keeps-other-apps-slots': mergeAppearance(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'pilot-only-type': 'thing', layout: 'focus-top' } })), { slots: { layout: 'classic-ide' } }, 'axf-console', '2026-10-21T01:00:00Z'),
+    },
+    serialized: serializeAppearance(mergeAppearance(base, { slots: { 'color-theme': 'neon-tide' } }, 'build-pilot', '2026-10-21T01:00:00Z')),
+    palette: Object.fromEntries(load('color-theme').map((a) => [a.id, paletteFromColorTheme(a.data)])),
+    retryMs: Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 20].map((n) => [n, appearanceRetryMs(n)])),
+  });
+}
 // Spacing choice (core/engines/spacing.ts): every style theme compiled under every choice; plus how stored values read.
 write('spacing.json', {
   default: SPACING_DEFAULT,
@@ -423,6 +456,24 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const reply = emptyLiveReply('Connecting…');
   const folds = events.map((e) => { applyStreamEvent(reply, e); return JSON.parse(JSON.stringify(reply)); });
   const interrupted = applyStreamEvent(emptyLiveReply(), { event: 'interrupted', data: null, seq: 2 });
+  // ChatContext: the open `extra` bag passes through (well-known + unknown keys, order kept) within shape/size limits.
+  const deep = (d: number): unknown => (d === 0 ? 'leaf' : { n: deep(d - 1) });
+  const chatContext: { case: string; raw: unknown }[] = [
+    { case: 'plain', raw: { view: 'designer', title: 'Pilot', selection: 'sel', note: 'n' } },
+    { case: 'projectId passes through', raw: { view: 'designer', extra: { projectId: 'apk-1' } } },
+    { case: 'unknown keys preserved in order', raw: { extra: { zeta: 1, projectId: 'p', alpha: { nested: [1, 'two', true, null] }, flag: false } } },
+    { case: 'bad extra keys dropped', raw: { extra: { 'ok.key-1_': 'x', 'bad key': 'y', '': 'z', ['k'.repeat(65)]: 'w' } } },
+    { case: 'strings cut, numbers and null kept', raw: { view: 'v'.repeat(300), selection: 's'.repeat(5000), extra: { long: 'L'.repeat(3000), none: null, n: 2.5, i: -3 } } }, // NaN/Infinity can't travel in JSON: each port tests that rule itself
+    { case: 'too many keys kept to 32', raw: { extra: Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`k${i}`, i])) } },
+    { case: 'too deep pruned', raw: { extra: { d: deep(6), shallow: deep(2) } } },
+    { case: 'oversized extra dropped whole', raw: { view: 'v', extra: Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`k${i}`, 'x'.repeat(1500)])) } },
+    { case: 'extra must be an object', raw: { view: 'v', extra: ['projectId'] } },
+    { case: 'empty strings and empty extra drop out', raw: { view: '', extra: {} } },
+    { case: 'not an object', raw: 'projectId=1' },
+    { case: 'null', raw: null },
+    { case: 'array', raw: [{ view: 'x' }] },
+    { case: 'non-string known fields ignored', raw: { view: 7, title: { a: 1 }, extra: { projectId: 42 } } },
+  ].map((c) => { const context = normalizeChatContext(c.raw); return { ...c, context, projectId: contextExtra(context, 'projectId') }; });
   write('assistant.json', {
     contract: 'assistant@1',
     providers: PROVIDER_KINDS.map((p) => ({ kind: p.kind, protocol: p.protocol, keyEnv: p.keyEnv, auth: p.auth, baseUrl: p.baseUrl })),
@@ -431,6 +482,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     sse: { text: sseText, frames: sse.frames, rest: sse.rest, events: sse.frames.map(frameToEvent) },
     liveReply: { events, folds, interrupted },
     reconnect: [1, 2, 3, 5, 8, 20].map((a) => ({ attempt: a, delayMs: reconnectDelayMs(a) })),
+    chatContext,
   });
 }
 
@@ -798,5 +850,283 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },
       { case: 'context-menu-bad-items', raw: { $axf: 'asset@1', type: 'context-menu', id: 'bad-ctx', name: 'X', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: [{ id: 'a', provider: 'p', items: [] }], other: 'no' } } } },
     ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
+// library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
+{
+  const params: LibraryParam[] = [
+    { key: 'name', label: 'Name', type: 'text', required: true },
+    { key: 'title', label: 'Title', type: 'text', default: 'Hello' },
+    { key: 'tags', label: 'Tags', type: 'list', default: ['a', 'b'] },
+    { key: 'on', label: 'On', type: 'bool', default: true },
+    { key: 'off', label: 'Off', type: 'bool' },
+    { key: 'count', label: 'Count', type: 'number', min: 1, max: 12, default: 6 },
+    { key: 'ratio', label: 'Ratio', type: 'number', min: 0.5 },
+    { key: 'mode', label: 'Mode', type: 'choice', choices: ['a', 'b', 'c'], default: 'a' },
+    { key: 'free', label: 'Free choice', type: 'choice', required: true },
+  ];
+  const texts = ['', '  ', 'x', 'Hello', 'a, b ,,c', 'yes', 'Y', 'ON', '1', 'no', '0', 'true', '6', '0', '13', '2.5', '0.25', 'abc', 'a', 'd', 'one\ntwo'];
+  write('library-params.json', {
+    types: [...LIBRARY_PARAM_TYPES],
+    trueWords: [...PARAM_TRUE_WORDS],
+    defaults: paramDefaults(params),
+    cases: params.flatMap((p) => texts.map((text) => ({ key: p.key, text, defaultText: paramDefaultText(p), bool: p.type === 'bool' ? paramBool(p, text) : undefined, json: paramToJson(p, text) ?? null, error: paramError(p, text) }))),
+    params,
+  });
+}
+
+/* lib-hub first slice (libs/hub/hub.ts = Kotlin lib-hub HubRules): address rules, URLs, the approvals feed, seen ids. */
+{
+  const B = HUB_DEFAULT;
+  const ID1 = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';
+  const ID2 = '0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b';
+  const ID3 = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d';
+  const normalize = [
+    ' https://AXHUB.amberxai.com/ ', '\t https://axhub.amberxai.com \n', '\u00a0https://axhub.amberxai.com', 'https://axhub.amberxai.com', 'https://axhub.amberxai.com///', 'https://axhub.amberxai.com:443', 'https://hub.example.test:8443',
+    'HTTPS://Hub.Example.Test', 'http://axhub.amberxai.com', 'https://axhub.amberxai.com/evil', 'https://user@axhub.amberxai.com', 'https://user:pw@axhub.amberxai.com',
+    'https://axhub.amberxai.com?x=1', 'https://axhub.amberxai.com#frag', 'https://axhub.amberxai.com\\evil', 'https://', 'https://:443', 'https://axhub.amberxai.com:0',
+    'https://axhub.amberxai.com:65536', 'https://axhub.amberxai.com:44a', 'https://[::1]', 'https://exa mple.com', 'https://bücher.example', 'https://a..b', 'https://.a.b', 'not a url', '', 'ftp://axhub.amberxai.com', 'hTTps://axhub.amberxai.com', 'https\u212a://x', 'https://axhub.amberxai.com\u212a',
+  ];
+  const isHubCases = [
+    `${B}/auth/login`, `${B}`, `${B}/`, `${B}?x=1`, `${B}#a`, 'https://AXHUB.AMBERXAI.COM/auth', 'https://axhub.amberxai.com:443/auth/admin/approvals',
+    'https://axhub.amberxai.com.evil.example/auth', 'https://evil.example/https://axhub.amberxai.com', 'http://axhub.amberxai.com/auth', 'https://axhub.amberxai.com:8443/auth',
+    'https://user@axhub.amberxai.com/auth', 'https://axhub.amberxai.com@evil.example/', 'https://evil.example\\@axhub.amberxai.com', '//axhub.amberxai.com/auth', '/auth/login', 'javascript:alert(1)', '',
+  ];
+  const ids = [ID1, ID1.toUpperCase(), '../../auth/logout', `${ID1}/x`, 'dfe44a5d15ab47bf81289843d37cd6ec', '', 'x'.repeat(36)];
+  const returnPaths = ['/auth/admin/approvals', '/apps', '/auth/admin/approvals/' + ID1, '//evil.example', 'https://evil.example', '/a/../../x', '/a b', ''];
+  const apk = [
+    `${B}/apps/download/voice-vault/voice-vault-0.1.0-b12.apk`, `${B}/apps/download/voice-vault/voice-vault.apk?x=1`, `${B}/apps/download/voice-vault/voice-vault.apk#a`,
+    `${B}/apps/download/Voice/voice.apk`, `${B}/apps/download/voice-vault/../evil.apk`, `${B}/apps/download/voice-vault/evil.exe`, `${B}/apps/voice.apk`,
+    'https://evil.example/apps/download/voice-vault/voice-vault.apk', `http://axhub.amberxai.com/apps/download/x/x.apk`, `${B}/apps/download/x/.hidden.apk`, `${B}?x=/apps/download/a/b.apk`, `${B}#/apps/download/a/b.apk`, 'HTTPS://AXHUB.AMBERXAI.COM/apps/download/a/b.apk',
+  ];
+  const csrf = ['<form><input type="hidden" name="csrf" value="abc123-XYZ"></form>', '<input name="csrf" value="">', '<p>no form</p>', ''];
+  const item = (id: string, extra: Record<string, unknown> = {}) => ({ id, tool: 'vps.run', summary: `vps.run with arguments {"command":"docker ps"}`, createdAt: '2026-10-20T10:00:00.000Z', expiresAt: '2026-10-20T10:30:00.000Z', url: `${B}/auth/admin/approvals/${id}`, ...extra });
+  const big = (n: number) => 'x'.repeat(n);
+  const feeds: [string, number, string][] = [
+    ['ok-one', 200, JSON.stringify({ signedIn: true, admin: true, count: 1, approvalsUrl: `${B}/auth/admin/approvals`, pending: [item(ID1)] })],
+    ['ok-empty', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [] })],
+    ['ok-count-more-than-items', 200, JSON.stringify({ signedIn: true, admin: true, count: 25, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-missing', 200, JSON.stringify({ signedIn: true, admin: true, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-too-small', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [item(ID1)] })],
+    ['ok-count-negative-or-fraction', 200, JSON.stringify({ count: -3.7, pending: [] })],
+    ['ok-count-string', 200, JSON.stringify({ count: '5', pending: [item(ID1)] })],
+    ['ok-foreign-link-dropped', 200, JSON.stringify({ count: 3, pending: [item(ID1), item(ID2, { url: `https://evil.example/auth/admin/approvals/${ID2}` }), item(ID3, { url: `http://axhub.amberxai.com/auth/admin/approvals/${ID3}` })] })],
+    ['ok-missing-link-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1, { url: undefined }), item(ID2, { url: null })] })],
+    ['ok-link-rebuilt-from-id', 200, JSON.stringify({ count: 1, pending: [item(ID1, { url: `${B}/auth/logout?next=${ID1}` })] })],
+    ['ok-bad-ids-dropped', 200, JSON.stringify({ count: 4, pending: [item('../../auth/logout'), item(ID1.toUpperCase()), { tool: 'x' }, 'str', null, [1], item(ID2)] })],
+    ['ok-duplicates-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1), item(ID1, { tool: 'other' })] })],
+    ['ok-fields-defaulted-and-capped', 200, JSON.stringify({ count: 1, pending: [{ id: ID1, url: `${B}/auth/admin/approvals/${ID1}`, tool: 5, summary: big(900), createdAt: big(100) }, item(ID2, { tool: big(300), summary: null })] })],
+    ['ok-too-many-items', 200, JSON.stringify({ count: 60, pending: Array.from({ length: 60 }, (_, i) => item(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)) })],
+    ['ok-pending-not-array', 200, JSON.stringify({ count: 2, pending: { id: ID1 } })],
+    ['body-signed-out', 200, JSON.stringify({ signedIn: false, approvalsUrl: `${B}/auth/admin/approvals` })],
+    ['body-not-admin', 200, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-401', 401, JSON.stringify({ signedIn: false })],
+    ['status-403', 403, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-403-origin-refused', 403, JSON.stringify({ error: { code: 'denied', message: 'Not allowed from this site.' } })],
+    ['status-500', 500, 'oops'],
+    ['status-302', 302, ''],
+    ['not-json', 200, '<html>sign in</html>'],
+    ['json-array', 200, '[1,2]'],
+    ['json-null', 200, 'null'],
+    ['json-string', 200, '"x"'],
+  ];
+  const seen: [string[], string[]][] = [
+    [[], [ID1]],
+    [[ID1], [ID1, ID2]],
+    [[ID1, ID2], [ID2]],
+    [[ID1], []],
+    [[ID1, ID1], [ID2, ID2]],
+    [Array.from({ length: HUB_SEEN_CAP }, (_, i) => `id-${i}`), ['id-5', 'new-1']],
+  ];
+  write('hub-approvals.json', {
+    default: B,
+    paths: HUB_PATHS,
+    limits: { feedMaxBytes: HUB_FEED_MAX_BYTES, feedMaxItems: HUB_FEED_MAX_ITEMS, seenCap: HUB_SEEN_CAP, fieldCaps: HUB_FIELD_CAPS },
+    statuses: HUB_FEED_STATUSES,
+    messages: HUB_MESSAGES,
+    normalize: normalize.map((raw) => ({ raw, hub: normalizeHub(raw) })),
+    origin: [...normalize, ...isHubCases].map((url) => ({ url, origin: hubOrigin(url) })),
+    isHub: isHubCases.map((url) => ({ base: B, url, isHub: isHub(B, url) })),
+    urls: { base: B, approvals: approvalsUrl(B), apps: appsUrl(B), account: accountUrl(B), logout: logoutUrl(B), feed: feedUrl(B), login: loginUrl(B) },
+    approval: ids.map((id) => ({ base: B, id, url: approvalUrl(B, id) })),
+    login: returnPaths.map((path) => ({ base: B, path, url: loginUrl(B, path) })),
+    apk: apk.map((url) => ({ base: B, url, name: apkDownloadName(B, url) })),
+    csrf: csrf.map((html) => ({ html, token: csrfFromPage(html) })),
+    feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
+    unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
+    seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
+  });
+}
+
+// catalog@1 / status / tracker@1 / library@1 / libraries@1 / boilerplate@1 / boilerplates@1 (core/catalog.ts = Kotlin kernel.catalog).
+// Inputs are a frozen snapshot of the real files (spec/catalog-samples.json), so this fixture moves only when the parsers do.
+{
+  const s = JSON.parse(readFileSync(join(root, 'spec/catalog-samples.json'), 'utf8'));
+  const catalog = parseCatalog(s.catalog);
+  const libraries = parseLibrariesIndex(s.libraries);
+  const tracker = parseTracker(s.tracker);
+  const params = [...libraries.items.flatMap((l) => l.params), ...parseLibrary(s.lenient.library).params];
+  const answers = ['', ' ', 'yes', 'off', '0', '6', '0.5', '13', '1e3', '0x10', '6d', 'Infinity', '-2', 'abc', 'a, b,\nc', 'pin', 'none', 'floating', 'other'];
+  write('catalog.json', {
+    inputs: s,
+    catalog, status: parseStatusMap(s.status), tracker, libraries,
+    boilerplates: s.boilerplates.map(parseBoilerplate), boilerplateIndex: parseBoilerplateIndex(s.boilerplateIndex),
+    lenient: { catalog: parseCatalog(s.lenient.catalog), library: parseLibrary(s.lenient.library), empty: { catalog: parseCatalog(null), tracker: parseTracker('x'), libraries: parseLibrariesIndex([]), boilerplate: parseBoilerplate(7) } },
+    params: params.map((p) => ({ param: p, defaultText: paramDefaultText(p), answers: answers.map((text) => ({ text, json: paramToJson(p, text) ?? null, error: paramError(p, text) })) })),
+    libraryCards: libraryCards(catalog, libraries.items, tracker),
+    libraryCardsNoTracker: libraryCards(catalog, libraries.items, null),
+  });
+}
+
+// Work engine (work@1, core/engines/work.ts): job kinds, spec validation, interval clamping, conditions, delay rules and
+// the job state machine replayed over scenarios (the AXHub approval watcher is the first). Kotlin: WorkConformanceTest.
+{
+  const approvals = {
+    id: 'axhub.approvals', kind: 'poll', label: 'Watch axHub approvals', module: 'ai.amberx.axf.axhubandroid',
+    interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 300_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' }, endsSpell: true },
+      'signed-out': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      'not-admin': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      unreachable: { delay: { kind: 'interval' } },
+    },
+    conditions: [{ flag: 'watching' }],
+    foreground: true, restartOnBoot: true,
+  };
+  const backoff = {
+    id: 'demo.backoff', kind: 'poll',
+    interval: { defaultMs: 10_000, minMs: 1_000, maxMs: 60_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' } },
+      error: { delay: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } },
+      fatal: { delay: { kind: 'interval' }, stop: true },
+      '*': { delay: { kind: 'fixed', ms: 5_000 }, notice: 'odd' },
+    },
+    conditions: [],
+    foreground: false, restartOnBoot: false,
+  };
+  const okSpec = (raw: unknown) => { const r = validateJobSpec(raw); if (!r.ok || !r.spec) throw new Error(`fixture spec invalid: ${r.errors.join('; ')}`); return r.spec; };
+  const A = okSpec(approvals);
+  const D = okSpec(backoff);
+  const invalid: [string, unknown][] = [
+    ['not-object', 'poll'],
+    ['bad-id', { ...approvals, id: 'Axhub Approvals' }],
+    ['unknown-kind', { ...approvals, kind: 'cron' }],
+    ['placeholder-kind', { ...approvals, kind: 'alarm' }],
+    ['no-interval', { ...approvals, interval: undefined }],
+    ['interval-min-zero', { ...approvals, interval: { defaultMs: 30_000, minMs: 0, maxMs: 300_000 } }],
+    ['interval-max-below-min', { ...approvals, interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 10_000 } }],
+    ['interval-default-outside', { ...approvals, interval: { defaultMs: 5_000, minMs: 15_000, maxMs: 300_000 } }],
+    ['outcomes-missing', { ...approvals, outcomes: undefined }],
+    ['delay-unknown', { ...approvals, outcomes: { ok: { delay: { kind: 'random' } } } }],
+    ['fixed-no-ms', { ...approvals, outcomes: { ok: { delay: { kind: 'fixed' } } } }],
+    ['exponential-max-below-base', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 5_000, maxMs: 1_000 } } } }],
+    ['exponential-factor-below-one', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 1_000, maxMs: 5_000, factor: 0.5 } } } }],
+    ['notice-empty', { ...approvals, outcomes: { ok: { delay: { kind: 'interval' }, notice: '' } } }],
+    ['condition-no-flag', { ...approvals, conditions: [{ equals: true }] }],
+    ['condition-unknown-kind', { ...approvals, conditions: [{ kind: 'battery', flag: 'charging' }] }],
+    ['foreground-not-boolean', { ...approvals, foreground: 'yes' }],
+    ['minimal-ok', { id: 'x', kind: 'poll', interval: { defaultMs: 1, minMs: 1, maxMs: 1 }, outcomes: {} }],
+    ['equals-false-ok', { ...approvals, conditions: [{ flag: 'paused', equals: false }] }],
+  ];
+  const clamp = [-1, 0, 14_999, 15_000, 30_000, 299_999, 300_000, 300_001, 12.7, Number.NaN, 'abc', null];
+  const flagsCases: Record<string, boolean>[] = [{}, { watching: true }, { watching: false }, { watching: true, other: false }];
+  const delays: { rule: DelayRule; intervalMs: number; streak: number }[] = [
+    { rule: { kind: 'interval' }, intervalMs: 30_000, streak: 3 },
+    { rule: { kind: 'fixed', ms: 300_000 }, intervalMs: 30_000, streak: 1 },
+    ...[0, 1, 2, 3, 4, 5, 9].map((streak) => ({ rule: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } as DelayRule, intervalMs: 10_000, streak })),
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 3, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 1, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+  ];
+  type Ev = { event: JobEvent; flags?: Record<string, boolean> };
+  const on = { watching: true };
+  const off = { watching: false };
+  const scenarios: { name: string; spec: JobSpec; intervalMs?: number; events: Ev[] }[] = [
+    { name: 'approvals: ok, signed out once, not-admin keeps quiet, back to ok, check now, stop', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'not-admin' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'check-now' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'stop' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+    ] },
+    { name: 'approvals: watching off blocks start, turned off while sleeping, off at wake', spec: A, events: [
+      { event: { type: 'start' }, flags: off },
+      { event: { type: 'start' }, flags: {} },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: off },
+      { event: { type: 'check-now' }, flags: off },
+    ] },
+    { name: 'approvals: start while running is a no-op, start with checkNow restarts, interval changes clamp and apply at the next sleep', spec: A, intervalMs: 60_000, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start', checkNow: true }, flags: on },
+      { event: { type: 'interval', ms: 5_000 }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'interval', ms: 900_000 }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'flags' }, flags: on },
+    ] },
+    { name: 'approvals: host refused the foreground start; boot restart only when watching', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'host-refused' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+    ] },
+    { name: 'backoff: exponential streak resets on another outcome, fallback rule with a notice, stop outcome', spec: D, events: [
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'ok' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'fatal' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+    ] },
+  ];
+  write('work.json', {
+    contract: WORK_CONTRACT,
+    pollCapability: WORK_POLL_CAPABILITY,
+    kinds: workKinds(),
+    placeholders: WORK_PLACEHOLDERS,
+    delayKinds: DELAY_KINDS,
+    conditionKinds: CONDITION_KINDS,
+    phases: JOB_PHASES,
+    eventTypes: JOB_EVENT_TYPES,
+    effects: JOB_EFFECTS,
+    stopReasons: STOP_REASONS,
+    fallbackOutcome: FALLBACK_OUTCOME,
+    defaultBackoffFactor: DEFAULT_BACKOFF_FACTOR,
+    specs: { approvals: A, backoff: D },
+    validate: invalid.map(([name, raw]) => ({ name, raw: raw === undefined ? null : raw, result: validateJobSpec(raw) })),
+    clamp: clamp.map((ms) => ({ ms: typeof ms === 'number' && Number.isNaN(ms) ? 'NaN' : ms, clamped: clampInterval(A.interval, ms) })),
+    conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
+    delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
+    scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
   });
 }

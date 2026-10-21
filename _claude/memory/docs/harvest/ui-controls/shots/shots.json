@@ -1,0 +1,11 @@
+[
+ { "name": "components-controls", "steps": [ { "search": "Components", "wait": 2000 } ], "fullPage": true },
+ { "name": "components-inputs", "steps": [ { "search": "Components", "wait": 1500 }, { "click": "button.fx-chip:has-text('Inputs')", "wait": 1200 } ], "fullPage": true },
+ { "name": "components-containers", "steps": [ { "search": "Components", "wait": 1500 }, { "click": "button.fx-chip:has-text('Containers')", "wait": 1200 } ], "fullPage": true },
+ { "name": "components-data", "steps": [ { "search": "Components", "wait": 1500 }, { "click": "button.fx-chip:has-text('Data & media')", "wait": 1200 } ], "fullPage": true },
+ { "name": "plugin-switches", "steps": [ { "eval": "window.__axfConsole && document.dispatchEvent(new Event('noop'))", "wait": 200 }, { "search": "Plugin switches", "wait": 2500 } ] },
+ { "name": "theme-manager", "steps": [ { "search": "Theme manager", "wait": 2500 } ] },
+ { "name": "install-wizard", "steps": [ { "search": "Libraries", "wait": 2000 }, { "click": "button:has-text('Install') >> nth=0", "wait": 1500 } ] },
+ { "name": "settings-appearance", "steps": [ { "search": "Settings", "wait": 2500 } ], "fullPage": true },
+ { "name": "boilerplates", "steps": [ { "search": "Boilerplates", "wait": 2500 } ] }
+]

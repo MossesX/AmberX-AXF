@@ -39,6 +39,10 @@ else
   say "Cloning into $DIR"; git clone -q --branch "$BRANCH" "$REPO" "$DIR"
 fi
 mkdir -p "$DIR/.axf-console"
+# Shared deploy helpers (Coolify run + labels, the axHub wall, auto-update): framework/deploy/axf-deploy.sh, from the
+# clone just updated. Functions only; nothing runs until called below.
+# shellcheck source=framework/deploy/axf-deploy.sh
+. "$DIR/framework/deploy/axf-deploy.sh"
 
 # ---- 2. secrets ----
 # A token passed on the command line (AXF_TOKEN=… bash install-console.sh) replaces the saved one; otherwise the saved
@@ -149,80 +153,47 @@ for d in /etc/axf/plugins/*/; do
 done
 
 # ---- 4. container ----
-docker stop -t 15 "$NAME" >/dev/null 2>&1 || true  # clean shutdown first (alerts: no false "unclean restart")
-docker rm -f "$NAME" >/dev/null 2>&1 || true
+axf_stop_container "$NAME"  # clean shutdown first (alerts: no false "unclean restart")
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$DIR":/axf "${DATA_ARGS[@]}" -e AXF_ROOT=/axf -e AXF_STATE=/axf/.axf-console/state.json -e AXF_TOKEN="$AXF_TOKEN" -e GITHUB_TOKEN="$GITHUB_TOKEN" -e PORT="$PORT" -e AXF_GITHUB_REPO=MossesX/AmberX-AXF "${PLUGIN_ARGS[@]}")
-if docker ps --format '{{.Names}}' | grep -qx coolify-proxy; then
+if axf_coolify_proxy_running; then
   say "Coolify proxy detected — publishing https://$DOMAIN behind Traefik"
-  NET="$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' | tr ' ' '\n' | grep -x coolify || true)"
-  NET="${NET:-$(docker inspect coolify-proxy --format '{{range $k, $v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}' | head -n1)}"
+  NET="$(axf_coolify_network)"
   R="axfconsole"
   # ---- 6. the wall (axHub sign-in, decision #77 in axHub) ----
   WALLF="$DIR/.axf-console/wall"
-  [ -n "${AXF_WALL:-}" ] && { echo "$AXF_WALL" > "$WALLF"; chmod 600 "$WALLF"; }
+  axf_save_choice "$WALLF" "${AXF_WALL:-}"
   # "off" = no wall; "on" = always walled (written after the first time the hub could sign someone in, so a hub
   # outage blocks the console instead of opening it); nothing saved yet = wait until the hub is ready.
-  WALL="$(cat "$WALLF" 2>/dev/null || echo auto)"
   WALL_HUB="${AXF_WALL_HUB:-https://axhub.amberxai.com}"
+  WALL="$(axf_wall_mode "$WALLF" "$WALL_HUB")"
   WALL_ARGS=()
   if [ "$WALL" = "off" ]; then
     rm -f "$DIR/.axf-console/wall-waiting"
-    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on)"
+    say "Sign-in wall OFF (AXF_WALL=on bash install-console.sh turns it back on); the console uses its local settings, not the hub's look, until then"
+  elif [ "$WALL" = "on" ]; then
+    rm -f "$DIR/.axf-console/wall-waiting"
+    say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins, plus users for what an admin granted them); the console token still works on /api and /mcp"
+    say "  locked out because the hub is down? AXF_WALL=off bash $DIR/deploy/install-console.sh"
+    # Plugins whose plugin.json says "wallUsers": true are open to every signed-in hub user (the plugin limits them);
+    # everything else on the console needs a hub admin. The console trusts the wall's headers only with AXF_TRUST_WALL=1.
+    USER_PATHS="$(axf_wall_plugin_user_paths "$DIR/apps/console-web/plugins")"
+    # Signed-in hub *users* (not just admins) may open the whole console; the console itself decides what each
+    # one may do (server/wall.py: page + read-only data + plugins an admin granted). AXF_WALL_USERS=off = admins only.
+    axf_save_choice "$DIR/.axf-console/wall-users" "${AXF_WALL_USERS:-}"
+    [ "$(cat "$DIR/.axf-console/wall-users" 2>/dev/null || echo on)" = "off" ] || USER_PATHS="/"
+    # The hub signs who is signed in (X-Auth-Sig) with a secret both sides share, so nothing that reaches the console
+    # without the proxy can claim to be signed in. Generated once here; copy it to the axHub app as AXHUB_WALL_SECRET.
+    WSECF="$DIR/.axf-console/wall-secret"
+    [ "$(axf_wall_secret "$WSECF" "${AXF_WALL_SECRET:-}")" = created ] && say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
+    say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
+    WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" -e "AXF_WALL_HUB=$WALL_HUB")
+    axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
+    [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
   else
-    if [ "$WALL" != "on" ]; then
-      # Switch it on only when the hub really can sign someone in, so a hub without accounts never locks you out.
-      LOGIN="$(curl -fsS --max-time 10 "$WALL_HUB/auth/login" 2>/dev/null || true)"
-      if echo "$LOGIN" | grep -q 'action="/auth/login"' && ! echo "$LOGIN" | grep -q 'No accounts yet'; then
-        WALL=on; echo on > "$WALLF"; chmod 600 "$WALLF"
-      fi
-    fi
-    if [ "$WALL" = "on" ]; then
-      rm -f "$DIR/.axf-console/wall-waiting"
-      say "Sign-in wall ON: browsers sign in at $WALL_HUB first (admins, plus users for what an admin granted them); the console token still works on /api and /mcp"
-      say "  locked out because the hub is down? AXF_WALL=off bash $DIR/deploy/install-console.sh"
-      # Plugins whose plugin.json says "wallUsers": true are open to every signed-in hub user (the plugin limits them);
-      # everything else on the console needs a hub admin. The console trusts the wall's headers only with AXF_TRUST_WALL=1.
-      USER_PATHS="$(cd "$DIR/apps/console-web/plugins" 2>/dev/null && for f in */plugin.json; do
-        d="${f%/plugin.json}"; case "$d" in _*) continue;; esac
-        if grep -Eq '"wallUsers"[[:space:]]*:[[:space:]]*true' "$f"; then printf '/api/plugins/%s/%%2C' "$d"; fi; done; true)"  # %2C = "," (kept out of the label's own list syntax)
-      USER_PATHS="${USER_PATHS%\%2C}"
-      # Signed-in hub *users* (not just admins) may open the whole console; the console itself decides what each
-      # one may do (server/wall.py: page + read-only data + plugins an admin granted). AXF_WALL_USERS=off = admins only.
-      [ -n "${AXF_WALL_USERS:-}" ] && { echo "$AXF_WALL_USERS" > "$DIR/.axf-console/wall-users"; chmod 600 "$DIR/.axf-console/wall-users"; }
-      [ "$(cat "$DIR/.axf-console/wall-users" 2>/dev/null || echo on)" = "off" ] || USER_PATHS="/"
-      WALL_ADDR="$WALL_HUB/auth/verify${USER_PATHS:+?user_paths=$USER_PATHS}"
-      # The hub signs who is signed in (X-Auth-Sig) with a secret both sides share, so nothing that reaches the console
-      # without the proxy can claim to be signed in. Generated once here; copy it to the axHub app as AXHUB_WALL_SECRET.
-      WSECF="$DIR/.axf-console/wall-secret"
-      [ -n "${AXF_WALL_SECRET:-}" ] && { printf '%s' "$AXF_WALL_SECRET" > "$WSECF"; chmod 600 "$WSECF"; }
-      if [ ! -s "$WSECF" ]; then
-        (umask 077; openssl rand -hex 32 2>/dev/null > "$WSECF" || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n' > "$WSECF")
-        say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
-      fi
-      say "  until AXHUB_WALL_SECRET on the hub matches $WSECF, signed-in browsers still need the console token and hub users can't chat"
-      WALL_ARGS=(-e AXF_TRUST_WALL=1 -e "AXF_WALL_SECRET=$(cat "$WSECF")" -e "AXF_WALL_HUB=$WALL_HUB" \
-        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-User=" \
-        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Role=" \
-        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Perms=" \
-        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Via=" \
-        -l "traefik.http.middlewares.$R-strip.headers.customrequestheaders.X-Auth-Sig=" \
-        -l "traefik.http.middlewares.$R-wall.forwardauth.address=$WALL_ADDR" \
-        -l "traefik.http.middlewares.$R-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Perms,X-Auth-Via,X-Auth-Sig" \
-        -l "traefik.http.routers.$R.middlewares=$R-strip,$R-wall")
-      [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
-    else
-      touch "$DIR/.axf-console/wall-waiting"
-      say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"
-    fi
+    touch "$DIR/.axf-console/wall-waiting"
+    say "Sign-in wall waiting: $WALL_HUB has no sign-in yet (redeploy axHub and set AXHUB_ADMIN_PASSWORD); the 5-minute update turns it on"
   fi
-  docker run "${COMMON[@]}" --network "$NET" "${WALL_ARGS[@]}" \
-    -l traefik.enable=true -l "traefik.docker.network=$NET" \
-    -l "traefik.http.routers.$R-http.rule=Host(\`$DOMAIN\`)" -l "traefik.http.routers.$R-http.entrypoints=http" \
-    -l "traefik.http.routers.$R-http.middlewares=$R-https" -l "traefik.http.middlewares.$R-https.redirectscheme.scheme=https" \
-    -l "traefik.http.routers.$R.rule=Host(\`$DOMAIN\`)" -l "traefik.http.routers.$R.entrypoints=https" \
-    -l "traefik.http.routers.$R.tls=true" -l "traefik.http.routers.$R.tls.certresolver=letsencrypt" \
-    -l "traefik.http.services.$R.loadbalancer.server.port=$PORT" \
-    "$NAME:latest" >/dev/null
+  axf_coolify_run "$R" "$DOMAIN" "$PORT" "$NET" "$NAME:latest" "${COMMON[@]}" --network "$NET" "${WALL_ARGS[@]}"
   URL="https://$DOMAIN"
 else
   say "No Coolify proxy — exposing port $PORT directly (put a reverse proxy with HTTPS in front before using the terminal remotely)"
@@ -233,30 +204,15 @@ fi
 [ -f "$CA_HOST" ] && NAME="$NAME" bash "$CA_HOST" attach  # axf-plugin:container-access
 
 # ---- 5. auto-update ----
-cat > /usr/local/bin/axf-console-update <<UPD
-#!/usr/bin/env bash
-# One block, so bash reads it all before running: install-console.sh rewrites this file while it runs.
-{
-set -e
-cd "$DIR"
-before=\$(git rev-parse HEAD); git fetch -q origin $BRANCH && git reset -q --hard origin/$BRANCH
-[ "\$before" = "\$(git rev-parse HEAD)" ] && [ ! -f "$DIR/.axf-console/wall-waiting" ] && exit 0  # also re-run while the sign-in wall waits for the hub
-# The console's Activity banner reads this while the update runs (activity@1, source "update"). No secrets in it.
-st="$DIR/.axf-console/update-status.json"; after=\$(git rev-parse HEAD); t0=\$(date +%s)
-printf '{"state":"building","from":"%s","to":"%s","startedAt":%s}\n' "\$before" "\$after" "\$t0" > "\$st.tmp" && mv -f "\$st.tmp" "\$st"
-state=done
-GITHUB_TOKEN="$GITHUB_TOKEN" DOMAIN="$DOMAIN" NAME="$NAME" DIR="$DIR" PORT="$PORT" bash "$DIR/deploy/install-console.sh" >> /var/log/axf-console-update.log 2>&1 || state=failed
-printf '{"state":"%s","from":"%s","to":"%s","startedAt":%s,"finishedAt":%s}\n' "\$state" "\$before" "\$after" "\$t0" "\$(date +%s)" > "\$st.tmp" && mv -f "\$st.tmp" "\$st"
-[ "\$state" = done ]
-exit
-}
-UPD
-chmod +x /usr/local/bin/axf-console-update
-echo "*/5 * * * * root /usr/local/bin/axf-console-update" > /etc/cron.d/axf-console
-chmod 644 /etc/cron.d/axf-console
+# Pull main every 5 minutes; re-run this installer when it changed, and also while the sign-in wall waits for the hub.
+# Progress goes to update-status.json for the console's Activity banner. The script is root-only (0700): it carries
+# GITHUB_TOKEN for the re-run.
+axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
+  "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
+  "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
+axf_cron_file axf-console "*/5 * * * * root /usr/local/bin/axf-console-update"
 # Host report for the console's systems check (mosh, Claude Code, cron, Docker…): every 15 minutes, report only.
-echo "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1" > /etc/cron.d/axf-doctor
-chmod 644 /etc/cron.d/axf-doctor
+axf_cron_file axf-doctor "*/15 * * * * root DIR=$DIR NAME=$NAME bash $DIR/deploy/console-doctor.sh --report >/dev/null 2>&1"
 DIR="$DIR" NAME="$NAME" bash "$DIR/deploy/console-doctor.sh" --report </dev/null || true
 
 sleep 3
