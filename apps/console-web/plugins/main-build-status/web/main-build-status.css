@@ -1,0 +1,13 @@
+/* Main build status: the run dialog and settings rows. The banner widget itself is the framework's `status` widget. Theme tokens only. */
+.axp-main-build-status__run { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-main-build-status__dot { display: inline-block; width: calc(var(--fx-font-size) * 0.6); height: calc(var(--fx-font-size) * 0.6); border-radius: 999px; background: var(--fx-muted) }
+.axp-main-build-status__dot[data-tone='success'] { background: var(--fx-success) }
+.axp-main-build-status__dot[data-tone='danger'] { background: var(--fx-danger) }
+.axp-main-build-status__dot[data-tone='accent'] { background: var(--fx-accent) }
+.axp-main-build-status__title { margin: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-main-build-status__meta { margin: 0; overflow-wrap: anywhere }
+.axp-main-build-status__jobs { margin: 0; padding-left: calc(var(--fx-space) * 1.25) }
+.axp-main-build-status__go { align-self: flex-start; text-decoration: none; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-main-build-status__watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 10), 1fr)); gap: calc(var(--fx-space) * 0.5); align-items: end; padding-bottom: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border) }
+/* Phones: the banner's right side is crowded (day/night, clock, this, the alerts bell); keep just the coloured dot here. */
+@media (max-width: 480px) { .fx-banner__item[data-axf-origin='ai.amberx.axf.console.main-build-status'] .fx-widget-status > span:not(.fx-widget-status__dot) { display: none } }

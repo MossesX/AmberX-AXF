@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberxai.com/schemas/change-log@1.json",
+  "title": "change-log@1 — one Codebase changes entry",
+  "description": "One request Claude was asked to build, edit, remove or fix something: what was asked, its steps and its result. Stored one file per entry at changes/<YYYY>/<MM>/<id>.json in the shared data folder (the hub's /projects/amberx-axf/_data). The validators in changes-core.mjs (normalize) and server/store.py (normalize) are the source of truth: they also cut long text and hide secret-looking values.",
+  "type": "object",
+  "required": ["$axf", "id", "createdAt", "updatedAt", "kind", "title", "state", "steps", "result", "closed"],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": { "const": "change-log@1" },
+    "id": { "type": "string", "pattern": "^chg-\\d{8}-[0-9a-f]{6,16}$" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "kind": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,23}$", "description": "Open set; known: build, edit, remove, fix, other." },
+    "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "asked": { "type": "string", "maxLength": 600, "description": "What was asked, cut short, secrets hidden." },
+    "repos": { "type": "array", "maxItems": 10, "items": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,39}/[A-Za-z0-9_.-]{1,100}$" } },
+    "model": { "type": "string", "maxLength": 40 },
+    "who": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "session": { "type": "string", "maxLength": 80 },
+        "where": { "type": "string", "maxLength": 80, "description": "vps, cloud, local, …" },
+        "user": { "type": "string", "maxLength": 80 },
+        "host": { "type": "string", "maxLength": 80 }
+      }
+    },
+    "state": { "enum": ["running", "done", "failed", "partial", "cancelled"], "description": "Derived: the result's state, else running." },
+    "steps": {
+      "type": "array", "maxItems": 100,
+      "items": {
+        "type": "object", "required": ["text", "state"], "additionalProperties": false,
+        "properties": {
+          "text": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "state": { "enum": ["queued", "running", "done", "failed", "skipped"] },
+          "startedAt": { "type": "string", "format": "date-time" },
+          "finishedAt": { "type": "string", "format": "date-time" },
+          "note": { "type": "string", "maxLength": 1000 }
+        }
+      }
+    },
+    "result": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object", "required": ["state", "summary"], "additionalProperties": false,
+          "properties": {
+            "state": { "enum": ["done", "failed", "partial", "cancelled"] },
+            "summary": { "type": "string", "maxLength": 4000 },
+            "branch": { "type": "string", "pattern": "^[A-Za-z0-9._/-]{1,120}$" },
+            "commits": { "type": "array", "maxItems": 50, "items": { "type": "object", "required": ["sha"], "additionalProperties": false, "properties": { "sha": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" }, "message": { "type": "string", "maxLength": 200 } } } },
+            "filesChanged": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+            "tests": { "type": "object", "maxProperties": 50, "additionalProperties": { "type": "object", "additionalProperties": false, "properties": { "before": { "type": "string", "maxLength": 60 }, "after": { "type": "string", "maxLength": 60 }, "state": { "enum": ["pass", "fail", "skip"] } } } },
+            "links": { "type": "object", "maxProperties": 20, "propertyNames": { "pattern": "^[a-z][a-z0-9-]{0,23}$" }, "additionalProperties": { "type": "string", "maxLength": 500, "description": "An https URL or a repo path." } }
+          }
+        }
+      ]
+    },
+    "closed": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "object", "required": ["at", "by"], "additionalProperties": false, "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } }
+      ],
+      "description": "Dismissed from the banner (everywhere)."
+    }
+  }
+}

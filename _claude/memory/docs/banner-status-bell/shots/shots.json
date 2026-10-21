@@ -1,0 +1,14 @@
+[
+ {"name": "banner", "steps": [
+   {"eval": "AXF.setBadge('alerts.unread', 3)", "wait": 300},
+   {"eval": "AXF.swap('toolbar','console-search')", "wait": 800},
+   {"eval": "window.scrollTo(0,0)", "wait": 400}
+ ]},
+ {"name": "build-run", "steps": [
+   {"eval": "AXF.swap('toolbar','console-search')", "wait": 600},
+   {"eval": "AXF.dispatch('main-build-status.open')", "wait": 1500}
+ ]},
+ {"name": "settings", "steps": [
+   {"eval": "AXF.dispatch('settings.open:alerts-bell')", "wait": 1500}
+ ]}
+]
