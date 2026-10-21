@@ -1,6 +1,6 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { createMcpLibrary, type McpCallResult, type McpConnected, type McpHost, type McpLogRow, type McpPromptResult, type McpResourceContents, type McpServerInput, type McpServerRecord, type McpSession } from '@console/axf/libs/mcp';
-import { pluginFetch } from '@console/plugins';
+import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 
 /*
@@ -14,14 +14,9 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 const FOLDER = 'mcp-client';
 const ID = 'ai.amberx.axf.console.mcp-client';
 
-async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Home → Console token).');
-  if (r.status === 404 && !j.detail) throw new Error('The MCP client plugin is disabled or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+// Same messages as before (its 401 points at Home → Console token).
+const api = pluginApi(FOLDER, 'The MCP client plugin', { tokenHome: 'Home → Console token' });
+const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 const post = <T,>(path: string, body: unknown) => call<T>(path, { method: 'POST', body: JSON.stringify(body) });
 
 /** What the server's connect route returns (the library's McpConnected, with the Opus field names kept). */

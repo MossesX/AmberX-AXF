@@ -53,3 +53,18 @@ log) and **Settings → MCP servers** (`mcp`, panel `mcp.servers`; `mcp.servers.
 `McpHost` (`libs/mcp/host.ts`): `localHost()` keeps records in localStorage and tokens in an `McpSecretStore` you supply
 (browser-only apps); the Dev Console passes a host that proxies to its server so tokens stay there.
 `createMcpLibrary({ host, envAuth, navLabel })`.
+
+## apiclient (`ai.amberx.axf.apiclient`)
+
+The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
+and Build Pilot). Core in `libs/apiclient/client.ts` (no React): `createTokenStore({ key, event? })` keeps the app's token in
+localStorage (every access in try/catch, a change event on window, `subscribe` also follows other tabs);
+`createApiClient({ url, tokens, messages })` gives Bearer `call` / `post` / `put` / `patch` / `del`, `fetch` (raw Response),
+`download(path, fallbackName)` (Content-Disposition name, plain names only) and `blob(path, init, accept)`. Failures are
+`ApiError(message, status)`: 401 → `messages.unauthorized`, 404 without `detail` → `messages.unavailable`, a fetch that
+never reached the server → `messages.unreachable` (status 0), otherwise the server's string `detail`
+(`STANDARD_MESSAGES.unauthorized(where)` / `.unavailable(what)` word the console's). `<TokenDialog tokens close … />` /
+`tokenDialog({ title, tokens, … })` is the paste/change/forget dialog, framework controls and `fx-*` classes only. The token
+only ever travels in the Authorization header. Server-Sent Events are in `core/sse.ts` (`readSse`, `followSse` with
+2 s → 60 s back-off, `parseSseText` shared with assistant@1). Self-test: `npx -y tsx framework/spec/check-web-client.mts`.
+The `apiclient` boilerplate installs it (web-only library: `axf install` records it in the manifest, no Gradle/App.kt).

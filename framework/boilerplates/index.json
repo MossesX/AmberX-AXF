@@ -67,7 +67,9 @@
       "modules": [
         "ai.amberx.axf.network"
       ],
-      "libraries": [],
+      "libraries": [
+        "apiclient"
+      ],
       "status": "planned",
       "source": "amberx"
     },

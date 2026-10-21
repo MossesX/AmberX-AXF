@@ -91,6 +91,12 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   the console's own navigation; swapping the nav-menu asset keeps it.
 - **Server part:** loaded when the console API starts and mounted at `/api/plugins/<folder>/`. Call it from
   the web part with `pluginFetch(folder, path, init)`, which adds the console token.
+  For JSON calls use `pluginApi(folder, label)` (also from `@console/plugins`, Oct 2026): `const api = pluginApi(FOLDER, 'The x plugin')`
+  gives `api.call/post/put/patch/del/download/blob` with the console token and the standard messages (401 → "Console token
+  required (Settings → Account & security).", 404 without detail → "<label> is disabled or its server part is not running.",
+  otherwise the server's `detail`; errors are `ApiError` with `.status`). It's the framework's API client library
+  (`@console/axf/libs/apiclient`); don't copy a `call()` wrapper into a plugin. Event streams: `readSse(response, onFrame, signal)`
+  or `followSse(open, onFrame)` (reconnects with back-off) from `@console/axf/core/sse`.
 - **Enable / disable:** Framework → Plugins. A disabled plugin's tabs disappear and its server routes answer
   404. The choice is kept in the console state file. Plugins are enabled unless `"enabledByDefault": false`.
 - **Hub users (`"wallUsers": true`, Oct 18 2026):** behind axHub's sign-in wall the console trusts the wall's
