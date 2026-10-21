@@ -18,7 +18,7 @@ import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
-import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
+import { queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
@@ -121,6 +121,7 @@ function run() {
     case 'build-reorder': return reorderQueue({ order: b.order, by: b.by ?? 'console', log });
     case 'build-reprocess': return reprocessQueue({ apply: !!b.apply, by: b.by ?? 'console', log });
     case 'build-step': return stepQueue({ id: b.id, action: b.action, status: b.status, note: b.note, by: b.by ?? 'console', log });
+    case 'build-steps': { const { by, ...edit } = b; return stepsQueue({ ...edit, by: by ?? 'console', log }); } // estimate + small steps of one queue step (Oct 21 2026)
     case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'build-options': return { options: describeOptions() };
     case 'app-defaults': return appDefaultsView();

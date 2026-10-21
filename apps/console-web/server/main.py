@@ -466,6 +466,13 @@ async def build_step(request: Request) -> Any:
     return ok_or_500(engine("build-step", "build", **await _body(request)))
 
 
+@app.post("/api/build-queue/steps", dependencies=[Depends(auth)])
+async def build_steps(request: Request) -> Any:
+    """Build-time estimate + small steps of one queue step (small-steps rule, Oct 21 2026):
+    {id, estimate?} | {id, steps: [{text, estimate?, done?}]} | {id, add: {text, estimate?}} | {id, index, done?|text?|stepEstimate?} | {id, removeIndex}."""
+    return ok_or_500(engine("build-steps", "build", **await _body(request)))
+
+
 def _project_name() -> str:
     """The repo's project name from project.manifest.json (its folder in the hub's /projects)."""
     try:

@@ -17,6 +17,7 @@ start/stop, secrets. Every write goes through an engine op that validates its in
 from __future__ import annotations
 
 import json
+import re
 import os
 import subprocess
 import sys
@@ -40,6 +41,8 @@ WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHin
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
 Start with `overview`, then `build_next` to see what to build next and which model should build it.
 Before starting any build, check `pending_list`: builds parked until their model (usually Fable) is available.
+Builds over 30 minutes are split into steps of 30 minutes or less: `pending_steps` / `build_queue` list them, and you tick
+one off with `pending_change(action="step", …)` or `build_steps(index=…, done=True)` as you finish it.
 Model policy (top three models only): Fable 5.1 where the work needs the strongest reasoning (kernel internals,
 porting, cross-port contracts, heavy refactors); Opus 5.5 for everything else; Sonnet 5.5 only where it is clearly
 enough. Security-adjacent work (servers, shells, auth, deploy) stays on Opus.
@@ -53,11 +56,30 @@ def _compact(f: dict[str, Any]) -> dict[str, Any]:
     return {k: f[k] for k in keys if f.get(k) not in (None, "")}
 
 
-def _step(s: dict[str, Any], features: bool = True) -> dict[str, Any]:
-    out = {k: s.get(k) for k in ("position", "id", "title", "state", "status", "model", "modelLabel", "modelReason", "ready", "progress", "violations", "rework", "completedAt")}
+def _minutes(text: Any) -> int:
+    """Minutes in an estimate string ("45 min", "2 h", "1.5 d"); 0 when it isn't one (mirrors pending-core estimateMinutes)."""
+    m = re.match(r"^\s*~?\s*(\d+(?:[.,]\d+)?)\s*(min|mins|minute|minutes|m|h|hr|hrs|hour|hours|d|day|days)\b", str(text or ""), re.I)
+    if not m:
+        return 0
+    n = float(m.group(1).replace(",", "."))
+    u = m.group(2).lower()
+    return round(n * (480 if u.startswith("d") else 60 if u.startswith("h") else 1))
+
+
+def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[str, Any]:
+    out = {k: s.get(k) for k in ("position", "id", "title", "state", "status", "model", "modelLabel", "modelReason", "ready", "progress", "violations", "rework", "completedAt",
+                                 "estimate", "stepsDone", "minutesLeft", "needsSplit")}
     out["deps"] = [f"{d['id']} ({d['status']})" for d in s.get("deps", [])]
     if features:
         out["features"] = [f"{f['id']} [{f['status']}, {f.get('model', 'opus')}] {f['title']}" for f in s.get("features", [])]
+    small = s.get("steps") or []
+    if steps and small:
+        # the small steps (≤ 30 min each) a big step is worked on in — tick them off with build_steps(index=…, done=True)
+        out["steps"] = [{"index": i, "text": x.get("text"), "estimate": x.get("estimate"), "done": bool(x.get("done")), "doneAt": x.get("doneAt")} for i, x in enumerate(small)]
+    elif steps:
+        out["steps"] = len(small)
+    if s.get("needsSplit") and s.get("splitReasons"):
+        out["splitReasons"] = s["splitReasons"]
     return out
 
 
@@ -171,8 +193,9 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         violations (runs before an unfinished dependency) and rework flags."""
         v = (await run("build-queue"))["view"]
         steps = [s for s in v["steps"] if include_done or s["state"] not in ("done",)]
-        return {"next": v["next"], "counts": v["counts"], "remainingByModel": v["byModel"], "needsReprocess": v["dirty"] or v["violations"] > 0,
-                "steps": [_step(s, features=False) | {"features": len(s["features"])} for s in steps]}
+        return {"next": v["next"], "counts": v["counts"], "remainingByModel": v["byModel"], "minutesLeftByModel": v.get("minutesLeftByModel", {}),
+                "unsplit": v.get("unsplit", []), "needsReprocess": v["dirty"] or v["violations"] > 0,
+                "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps]}
 
     @mcp.tool(annotations=READ)
     async def build_next() -> dict[str, Any]:
@@ -227,6 +250,35 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         return {"step": _step(s) if s else None, "next": v["next"], "rework": [x["id"] for x in v["steps"] if x.get("rework")]}
 
     @mcp.tool(annotations=WRITE)
+    async def build_steps(id: str, estimate: str | None = None, steps: list[dict[str, Any]] | None = None, add_text: str = "", add_estimate: str = "",
+                          index: int | None = None, done: bool | None = None, text: str = "", step_estimate: str | None = None,
+                          remove_index: int | None = None) -> dict[str, Any]:
+        """Build-time estimate and small steps of one build-queue step (rule: a build over 30 minutes is split into steps of
+        30 minutes or less, each with its own estimate). estimate sets the step's build time ("45 min", "2 h", "1.5 d"; "" clears).
+        steps replaces the small-step list ([{text, estimate?, done?}]); add_text (+ add_estimate) appends one; index with
+        done=true/false ticks one off (text / step_estimate reword or re-estimate it); remove_index drops one. Indexes are 0-based."""
+        edit: dict[str, Any] = {"id": id, "by": "mcp"}
+        if estimate is not None:
+            edit["estimate"] = estimate
+        if steps is not None:
+            edit["steps"] = steps
+        if add_text:
+            edit["add"] = {"text": add_text, "estimate": add_estimate}
+        if index is not None:
+            edit["index"] = index
+            if done is not None:
+                edit["done"] = done
+            if text:
+                edit["text"] = text
+            if step_estimate is not None:
+                edit["stepEstimate"] = step_estimate
+        if remove_index is not None:
+            edit["removeIndex"] = remove_index
+        v = (await run("build-steps", **edit))["view"]
+        s = next((x for x in v["steps"] if x["id"] == id), None)
+        return {"step": _step(s) if s else None, "unsplit": v.get("unsplit", [])}
+
+    @mcp.tool(annotations=WRITE)
     async def build_sync() -> dict[str, Any]:
         """Sync the feature tracker and the build queue both ways (the console does this when it starts)."""
         r = await run("build-sync", by="mcp")
@@ -249,23 +301,47 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         return {"artifact": r.get("artifact"), "count": len(items), "items": items}
 
     @mcp.tool(annotations=WRITE)
-    async def pending_change(action: Literal["add", "update", "status", "note", "sub", "remove"], id: str = "", title: str = "",
+    async def pending_change(action: Literal["add", "update", "status", "note", "sub", "step", "remove"], id: str = "", title: str = "",
                              detail: str | None = None, model: Literal["", "Fable", "Opus", "Sonnet"] = "",
                              status: Literal["", "pending", "unsafe", "complete", "failed", "broken"] = "", text: str = "", plan_id: str = "",
-                             estimate: str = "", sub_estimates: list[str] | None = None) -> dict[str, Any]:
+                             estimate: str | None = None, sub_estimates: list[str] | None = None, index: int | None = None, done: bool | None = None) -> dict[str, Any]:
         """Change the pending build list. add needs title (model defaults to Fable); status marks unsafe/complete/failed/broken (unsafe = parked, needs design or review before anyone builds it)
         (complete stamps the built date); note and sub (sub prompt) need text; remove deletes the item. estimate = build time ("45 min", "2 h", "1.5 d") on the item
-        (add/update) or on a sub prompt (sub); sub_estimates (update) sets one per existing sub prompt in order ("" clears)."""
+        (add/update) or on a sub prompt (sub); sub_estimates (update) sets one per existing sub prompt in order ("" clears).
+        Sub prompts are the item's steps (rule: a build over 30 minutes is split into steps of 30 minutes or less, each with its own estimate):
+        step with index (0-based) ticks one off (done=true/false) and may reword it (text) or re-estimate it (estimate, "" clears)."""
         change: dict[str, Any] = {"action": action, "source": "mcp"}
         if sub_estimates is not None:
             change["subEstimates"] = [str(x) for x in sub_estimates]
-        for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id), ("estimate", estimate)):
+        for k, v in (("id", id), ("title", title), ("model", model), ("status", status), ("text", text), ("planId", plan_id)):
             if v:
                 change[k] = v
+        if estimate is not None and (estimate or action == "step"):
+            change["estimate"] = estimate
         if detail is not None:
             change["detail"] = detail
+        if index is not None:
+            change["index"] = index
+        if done is not None:
+            change["done"] = done
         r = await run("pending-act", change=change)
         return {"item": r.get("item"), "log": r.get("log", [])}
+
+    @mcp.tool(annotations=READ)
+    async def pending_steps(id: str) -> dict[str, Any]:
+        """One pending build with its steps (sub prompts) numbered for pending_change(action="step", index=…): each step's text,
+        estimate and whether it's done, plus the time left. Use it to pick the next small step of a parked build."""
+        r = await run("pending")
+        it = next((i for i in r.get("items", []) if i.get("id") == id), None)
+        if not it:
+            raise ToolError(f'No pending build "{id}". Use pending_list to find ids.')
+        steps = it.get("subPrompts") or []
+        total = sum(_minutes(s.get("estimate")) for s in steps)
+        left = sum(_minutes(s.get("estimate")) for s in steps if not s.get("done"))
+        return {"id": it["id"], "title": it["title"], "model": it.get("model"), "status": it.get("status"), "estimate": it.get("estimate"),
+                "stepsDone": sum(1 for s in steps if s.get("done")), "minutesTotal": total, "minutesLeft": left,
+                "next": next((i for i, s in enumerate(steps) if not s.get("done")), None),
+                "steps": [{"index": i, "text": s.get("text"), "estimate": s.get("estimate"), "done": bool(s.get("done")), "doneAt": s.get("doneAt")} for i, s in enumerate(steps)]}
 
     # ------------------------------------------------------------------ Standards: project manifests
 

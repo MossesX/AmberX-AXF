@@ -99,6 +99,7 @@ function brief(s: StepView) {
     s.features.length ? `\nFeatures in this step:\n${s.features.map((f) => `- ${f.id} [${f.status}] ${f.title} (${api.modelLabel(f.model)})`).join('\n')}` : '',
     s.acceptance.length ? `\nAcceptance:\n${s.acceptance.map((x) => `- [${x.done ? 'x' : ' '}] ${x.text}`).join('\n')}` : '',
     s.rework ? `\nRework needed:\n${s.rework.reasons.map((r) => `- ${r}`).join('\n')}` : '',
+    s.steps.length ? `\nSmall steps (${s.stepsDone}/${s.steps.length} done, ~${s.estimate}; tick each off with build_steps(id="${s.id}", index=N, done=true)):\n${s.steps.map((x, i) => `${x.done ? '[x]' : '[ ]'} ${i + 1}. ${x.estimate ? `(~${x.estimate}) ` : ''}${x.text}`).join('\n')}` : s.estimate ? `\nBuild time: ~${s.estimate}` : '',
     `\nWhen done, mark it built in the console's Build view or with the AXF MCP tool build_step(id="${s.id}", action="${s.rework ? 'resolve-rework' : 'complete'}").`,
   ].filter(Boolean).join('\n');
 }

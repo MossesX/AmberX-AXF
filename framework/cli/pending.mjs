@@ -2,7 +2,11 @@
  * pending — reads and writes framework/plan/pending.json (pending@1) on top of plan/pending-core.mjs.
  *   node framework/cli/pending.mjs                 list (sorted by status)
  *   node framework/cli/pending.mjs --sort added    list sorted by date added (also: built)
- *   node framework/cli/pending.mjs --steps         also list every sub prompt (step) with its build-time estimate
+ *   node framework/cli/pending.mjs --steps         also list every sub prompt (step) with its build-time estimate and ✓ when done
+ *   node framework/cli/pending.mjs --check-steps   small-steps rule (Oct 21 2026): list open builds over 30 min that have no
+ *                                                  steps, a step over 30 min or a step without an estimate. Warns, exit 0
+ *                                                  (add --strict to fail). Runs in CI.
+ *   node framework/cli/pending.mjs --json          the whole state as JSON
  * The console API and MCP server go through engine-rpc ops pending / pending-act.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -24,15 +28,36 @@ export function actPending(action, now = new Date().toISOString()) {
   return r;
 }
 
+const OPEN = (it) => it.status !== 'complete';
+
+/** Open items that break the small-steps rule. */
+export function unsplitPending(state = loadPending()) {
+  return state.items.filter(OPEN).map((it) => ({ it, check: core.splitCheck(it) })).filter((x) => x.check.needsSplit).map(({ it, check }) => ({ id: it.id, title: it.title, model: it.model, estimate: core.itemEstimate(it), reasons: check.reasons }));
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const i = process.argv.indexOf('--sort');
   const key = i > 0 ? process.argv[i + 1] : 'status';
   const s = loadPending();
+  if (process.argv.includes('--json')) { console.log(JSON.stringify(s, null, 1)); process.exit(0); }
+  if (process.argv.includes('--check-steps')) {
+    const bad = unsplitPending(s);
+    const open = s.items.filter(OPEN);
+    const left = {};
+    for (const it of open) { const p = core.stepsProgress(it); left[it.model] = (left[it.model] ?? 0) + p.minutesLeft; }
+    console.log(`pending: ${open.length} open build(s) · time left ${Object.entries(left).map(([m, n]) => `${m} ${core.formatMinutes(n) || '0 min'}`).join(' · ')}`);
+    for (const b of bad) console.log(`  ⚠ ${b.id} (${b.model}, ~${b.estimate || '?'}): ${b.reasons.join('; ')}`);
+    if (!bad.length) console.log('  every open build over 30 min is split into steps of 30 min or less');
+    else console.log(`  ${bad.length} build(s) break the small-steps rule (builds over 30 min are split into steps of ≤ 30 min, each with an estimate)`);
+    process.exit(bad.length && process.argv.includes('--strict') ? 1 : 0);
+  }
   for (const it of core.sortItems(s.items, key)) {
     const d = core.shownDate(it);
     const est = core.itemEstimate(it);
-    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${(est ? `~${est}` : '').padEnd(8)} ${it.title}  (${it.id})`);
-    if (process.argv.includes('--steps')) for (const [k, sp] of it.subPrompts.entries()) console.log(`    ${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
+    const p = core.stepsProgress(it);
+    const prog = p.total ? ` [${p.done}/${p.total} steps${p.minutesLeft ? `, ${core.formatMinutes(p.minutesLeft)} left` : ''}]` : '';
+    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${(est ? `~${est}` : '').padEnd(8)} ${it.title}  (${it.id})${prog}`);
+    if (process.argv.includes('--steps')) for (const [k, sp] of it.subPrompts.entries()) console.log(`    ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
   }
   console.log(Object.entries(core.counts(s.items)).map(([k, n]) => `${k} ${n}`).join(' · '));
 }
