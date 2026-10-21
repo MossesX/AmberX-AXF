@@ -6,12 +6,15 @@ import ai.amberx.axf.kernel.asset.parseJsonObject
 import ai.amberx.axf.kernel.asset.str
 import ai.amberx.axf.kernel.asset.strList
 import ai.amberx.axf.kernel.assistant.AssistantRules
+import ai.amberx.axf.kernel.assistant.ChatContextKeys
+import ai.amberx.axf.kernel.assistant.ChatContextRules
 import ai.amberx.axf.kernel.assistant.LiveReply
 import ai.amberx.axf.kernel.assistant.Message
 import ai.amberx.axf.kernel.assistant.ProviderRegistry
 import ai.amberx.axf.kernel.assistant.Sse
 import ai.amberx.axf.kernel.assistant.StreamEvent
 import ai.amberx.axf.kernel.live.LiveKinds
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.doubleOrNull
@@ -111,5 +114,29 @@ class AssistantConformanceTest {
         val inter = lr.getValue("interrupted").jsonObject
         val r2 = LiveReply().apply(StreamEvent(LiveKinds.INTERRUPTED, null, 2))
         assertEquals(inter.str("error"), r2.error); assertTrue(r2.done); assertEquals(2L, r2.lastSeq)
+    }
+
+    @Test fun `chat context and its extra bag normalise like the reference`() {
+        for (c in f.objList("chatContext")) {
+            val got = ChatContextRules.normalize(c["raw"])
+            val exp = c["context"]
+            val label = c.str("case")
+            if (exp == null || exp is JsonNull) {
+                assertEquals(null, got, label)
+                continue
+            }
+            val e = exp.jsonObject
+            val g = got ?: error("$label: expected a context, got null")
+            assertEquals(e["view"]?.jsonPrimitive?.content, g.view, "$label view")
+            assertEquals(e["title"]?.jsonPrimitive?.content, g.title, "$label title")
+            assertEquals(e["selection"]?.jsonPrimitive?.content, g.selection, "$label selection")
+            assertEquals(e["note"]?.jsonPrimitive?.content, g.note, "$label note")
+            assertEquals(e["extra"]?.jsonObject, g.extra, "$label extra")
+            assertEquals(e.keys.toList(), g.toJson().keys.toList(), "$label field order")
+            assertEquals(c.str("projectId"), g.extraString(ChatContextKeys.PROJECT_ID), "$label projectId")
+        }
+        // NaN and Infinity can't travel in JSON, so the fixture can't carry them: the rule is checked here directly.
+        val nan = ChatContextRules.normalize(JsonObject(mapOf("extra" to JsonObject(mapOf("nan" to JsonPrimitive(Double.NaN), "n" to JsonPrimitive(1))))))
+        assertEquals(JsonObject(mapOf("n" to JsonPrimitive(1))), nan?.extra)
     }
 }
