@@ -111,6 +111,43 @@ check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved b
 check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
 c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
 
+# Auto fix for VPS checks: only commands from the table, sent to axHub's vps.run, run once approved there
+hf = sys.modules.get(spec.name + ".hostfix")
+check(hf is not None, "hostfix module loaded with the plugin")
+calls = []
+def fake_call(states):
+    def f(tool, args, conf=None):
+        calls.append((tool, args["command"], conf))
+        st_ = states.pop(0)
+        if st_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if st_ == "reject": raise hf.HubError("The user rejected this call.")
+        return {"ok": "$ cmd\nexit 0 · 10 ms\n"}
+    return f
+os.environ["AXHUB_TOKEN"] = "hub-token-for-test"
+rechecked = []
+jobs = hf.Jobs(lambda cid: rechecked.append(cid), fake_call(["confirm", "confirm", "ok"]), poll_s=0.01)
+jobs.start("host-mosh-ports")
+for _ in range(200):
+    if (jobs.get("host-mosh-ports") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+j = jobs.get("host-mosh-ports")
+check(j["state"] == "done" and rechecked == ["host-mosh-ports"], "approved on the hub → ran, then re-checked")
+check(calls[0] == ("vps.run", "ufw allow 60000:61000/udp && bash /opt/axf/deploy/console-doctor.sh --report", None) and calls[-1][2], "the exact table command, then the same call with the approval id")
+jobs2 = hf.Jobs(lambda cid: None, fake_call(["confirm", "reject"]), poll_s=0.01)
+jobs2.start("host-mosh")
+for _ in range(200):
+    if (jobs2.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(jobs2.get("host-mosh")["state"] == "failed" and "Rejected" in jobs2.get("host-mosh")["message"], "rejected on the hub → nothing runs")
+try:
+    jobs.start("host-moshi-key"); refused = False
+except hf.HubError:
+    refused = True
+check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
+check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
+del os.environ["AXHUB_TOKEN"]
+check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
+
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()
 check(not a["requirements"]["ok"] and not a["effective"]["systems"], "AI greyed out with nothing installed")

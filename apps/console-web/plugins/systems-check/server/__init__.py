@@ -13,6 +13,7 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST check/{id}                   re-run one check
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
+  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command through axHub's vps.run (approval pops up)
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
@@ -33,7 +34,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import derive, routine, store, whatsnew
+from . import derive, hostfix, routine, store, whatsnew
 from .checks import HOST_SCRIPT, SERVICES, SysCheck
 
 router = APIRouter()
@@ -296,3 +297,27 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
     except Exception:  # noqa: BLE001
         raise HTTPException(400, "head isn't a commit on the console's branch") from None
     return {"seen": store.save_whats_new_seen(h, _plugin_versions(), who)}
+
+
+# ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
+
+HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate())
+
+
+@router.get("/autofix")
+def autofix_list() -> dict[str, Any]:
+    """Which host checks Auto fix can run (and their exact commands), and every job's state."""
+    return {"commands": {k: hostfix.command(k) for k in hostfix.FIX_COMMANDS}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
+
+
+@router.post("/autofix/{cid}")
+def autofix_start(cid: str) -> dict[str, Any]:
+    if not HOSTFIX.allowed(cid):
+        raise HTTPException(400, "This one needs you at the machine: follow its steps.")
+    try:
+        job = HOSTFIX.start(cid)
+    except hostfix.HubError as e:
+        raise HTTPException(409, str(e)) from None
+    cx.log("system", f"Auto fix {cid}: asked axHub to run its fix (needs your approval)", "info")
+    return job
+
