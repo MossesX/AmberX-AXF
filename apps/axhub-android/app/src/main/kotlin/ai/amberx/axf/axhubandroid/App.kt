@@ -12,6 +12,8 @@ import ai.amberx.axf.hub.cookieCredentials
 import ai.amberx.axf.axhubandroid.watch.hubPrefs
 import ai.amberx.axf.notifications.NotificationsModule
 import ai.amberx.axf.axhubandroid.watch.Alerts
+import ai.amberx.axf.axhubandroid.watch.ApprovalWatch
+import ai.amberx.axf.work.WorkModule
 import ai.amberx.axf.nav.NavModule
 import ai.amberx.axf.network.NetworkModule
 import ai.amberx.axf.data.DataModule
@@ -36,6 +38,8 @@ class App : AxfApplication() {
         // library); the app waits for the hub rather than running without it.
         HubModule(hub = hubPrefs(this).base, credentials = cookieCredentials { hubPrefs(this).base }),
         NotificationsModule(this, Alerts.channelSpecs),
+        // lib-work: the approval watcher is a registered poll job; the foreground service, back-off and boot restart are the framework's.
+        WorkModule(jobs = listOf(ApprovalWatch.job(this))),
         appModule,
-    ) + AppModule.placeholders()
+    ) + AppModule.placeholders() + WorkModule.placeholders()
 }

@@ -423,9 +423,10 @@
     "module": "axf-platform-android"
   },
   "k.scheduler": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-kernel"
+    "module": "axf-kernel",
+    "notes": "Oct 21 2026 (Fable, harvest work-watcher): work@1 engine (poll jobs: interval bounds, per-outcome back-off fixed/exponential/interval, one-time notices, run conditions, state machine) in core/engines/work.ts = kernel work/WorkEngine; debounce/throttle/queues/priorities not yet"
   },
   "k.undo": {
     "status": "placeholder",
@@ -1037,9 +1038,10 @@
     "module": "axf-platform-android"
   },
   "dv.bg": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-platform-android"
+    "module": "lib-work",
+    "notes": "Oct 21 2026: foreground poll service + boot restart (lib-work); WorkManager + alarms are placeholders (axf.work.manager, axf.work.alarm)"
   },
   "dv.loc": {
     "status": "placeholder",
@@ -2181,9 +2183,10 @@
     "module": null
   },
   "m.work": {
-    "status": "planned",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "lib-work",
+    "notes": "lib-work built Oct 21 2026 (work-watcher harvest; feature lib.work): work@1 poll jobs on a foreground service with boot restart. WorkManager scheduler, alarms and chains (dv.bg, k.scheduler) are placeholders (lib.work.manager, lib.work.alarm)."
   },
   "m.notifications": {
     "status": "partial",
@@ -2210,5 +2213,23 @@
     "status": "planned",
     "wave": 2,
     "module": null
+  },
+  "lib.work": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-work",
+    "notes": "Oct 21 2026 harvest from AXHub ApprovalWatchService (Fable); fills android.work; engine fixture work.json replayed on web (check-work.mts) and Kotlin (WorkConformanceTest, local kotlinc); the Android host written without a compiler (CI compiles)"
+  },
+  "lib.work.manager": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.manager (the kernel's axf.work WorkScheduler contract on WorkManager)"
+  },
+  "lib.work.alarm": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.alarm"
   }
 }

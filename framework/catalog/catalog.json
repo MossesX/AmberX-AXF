@@ -1658,6 +1658,23 @@
               ]
             },
             {
+              "id": "lib.work",
+              "title": "Work library: poll jobs (work@1) hosted by a foreground service (specialUse) with STOP / CHECK_NOW / INTERVAL commands, quiet stop when Android refuses a background start, START_STICKY, boot + update restart, running-state flows, ongoing notification through lib-notifications; the job's decisions (interval bounds, per-outcome back-off, one-time notices, run conditions) are data run by the kernel's WorkEngine state machine; fills the platform's android.work placeholder",
+              "note": "framework/core/engines/work.ts = ai.amberx.axf.kernel.work.WorkEngine (fixture spec/fixtures/work.json) + framework/android/lib-work + library.json; harvested from apps/axhub-android watch/ApprovalWatchService.kt (Oct 21 2026, Fable; Kotlin engine + conformance replayed with a local kotlinc, the Android host written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "lib.work.manager",
+                  "title": "The kernel's WorkScheduler (axf.work) on WorkManager: constrained periodic work, 15 min minimum (placeholder axf.work.manager)"
+                },
+                {
+                  "id": "lib.work.alarm",
+                  "title": "Wall-clock alarms (placeholder axf.work.alarm)"
+                }
+              ]
+            },
+            {
               "id": "ui.explorer",
               "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
               "note": "axf-ui studio/ElementExplorer.kt; used by the console UI-library compare tabs",
@@ -2871,6 +2888,7 @@
                 "description": "WorkManager scheduler, alarms, foreground services",
                 "features": [
                   "dv.bg",
+                  "lib.work",
                   "k.scheduler"
                 ]
               }

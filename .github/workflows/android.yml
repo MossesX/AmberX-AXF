@@ -101,6 +101,7 @@ jobs:
           npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
           npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
           npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
+          npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
           python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
           python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
           python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
@@ -204,9 +205,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
-      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications)
+      - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
-        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
+        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault)
         working-directory: apps/voicevault
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}
