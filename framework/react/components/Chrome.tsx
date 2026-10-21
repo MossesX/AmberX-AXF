@@ -1,9 +1,9 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
-import { MenuList } from './MenuList';
+import { AppMenuDropdown } from './AppMenu';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
@@ -12,12 +12,14 @@ import { WidgetView } from './Widgets';
 
 export function MenuBar() {
   const rt = useRuntime();
-  const menu = useAsset('app-menu');
+  useAsset('app-menu');
   const state = useAxfState();
   const [open, setOpen] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const policy = rt.asset('uac-policy').data;
   const role = policy.roles.find((r) => r.id === state.role);
+  // The compiled menu: the asset's menus + every contribution + live lists, gated for the current role (core/engines/appmenu.ts).
+  const menus = rt.appMenu().menus;
 
   useEffect(() => {
     if (!open) return;
@@ -28,30 +30,36 @@ export function MenuBar() {
     return () => window.removeEventListener('pointerdown', close);
   }, [open]);
 
+  // Left / Right move between menus while one is open (a submenu list handles its own arrows first).
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!open || !menus.length) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const i = menus.findIndex((m) => m.id === open);
+    const next = menus[(i + (e.key === 'ArrowRight' ? 1 : -1) + menus.length) % menus.length];
+    if (next) { e.preventDefault(); setOpen(next.id); }
+  };
+
   return (
-    <div className="fx-menubar" ref={ref} role="menubar">
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
         <span className="fx-brand__mark" aria-hidden="true" />
         <span className="fx-brand__name">{rt.manifest.app.name}</span>
       </div>
       <div className="fx-menubar__menus">
-        {menu.data.menus.map((m) => (
+        {menus.map((m) => (
           <div key={m.id} className="fx-menubar__item">
             <button
               type="button"
               className={`fx-menubar__btn ${open === m.id ? 'is-open' : ''}`}
               aria-haspopup="menu"
               aria-expanded={open === m.id}
+              data-axf-menu-btn={m.id}
               onClick={() => setOpen((o) => (o === m.id ? null : m.id))}
               onMouseEnter={() => open && setOpen(m.id)}
             >
               {m.label}
             </button>
-            {open === m.id && (
-              <div className="fx-dropdown fx-popover">
-                <MenuList items={m.items} onDone={() => setOpen(null)} />
-              </div>
-            )}
+            {open === m.id && <AppMenuDropdown key={m.id} menu={m} onDone={() => setOpen(null)} />}
           </div>
         ))}
       </div>

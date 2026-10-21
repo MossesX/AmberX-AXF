@@ -443,6 +443,12 @@
     "wave": 2,
     "module": "axf-kernel"
   },
+  "k.appmenu": {
+    "status": "partial",
+    "wave": 2,
+    "module": "axf-kernel",
+    "note": "Web engine + React renderer built (Fable, Oct 21 2026); Android twin deferred while the Android port is on hold."
+  },
   "k.shortcuts": {
     "status": "placeholder",
     "wave": 2,

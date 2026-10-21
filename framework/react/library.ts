@@ -3,7 +3,8 @@
  * dialogs, tab renderers and actions; apps list their libraries and merge what they contribute into AppShell.
  * Libraries generated from framework/library-templates implement this.
  */
-import type { AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { AppMenuContribution } from '../core/engines/appmenu';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -38,6 +39,14 @@ export interface AxfWebLibrary {
    * context-menu asset's items and removed with the library, so a plugin's link never outlives the plugin.
    */
   contextMenu?: { id: string; target?: string; order?: number; items: MenuEntry[] }[];
+  /**
+   * Application-menu items (core/engines/appmenu.ts): items or whole submenus into a named top-level menu (created when
+   * missing) or under an item path, with placement, UAC `requires`, badges, check marks and live lists (`provider`).
+   * Removed with the library (`rt.removeAppMenuItems(id)`), so a disabled plugin's entries go with it.
+   */
+  appMenu?: Omit<AppMenuContribution, 'module'>[];
+  /** Live lists for the application menu (`rt.registerAppMenuProvider`), keyed by provider id; removed with the library. */
+  appMenuProviders?: Record<string, AppMenuProvider | AppMenuProvider['items']>;
   /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
@@ -84,6 +93,7 @@ export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
       views, dialogs, settingsTabs: tabs,
       settingsCount: (l.settingsPanels ?? []).filter((x) => tabIds.has(x.tab)).length + (l.settings ?? []).filter((g) => tabIds.has(g.tab ?? '')).length,
       contextItems: (l.contextMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
+      appMenuItems: (l.appMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
     },
   };
 }
@@ -105,6 +115,8 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const [name, defs] of Object.entries(l.slots ?? {})) for (const d of defs) { const list = (slots[name] ??= []); if (!list.some((x) => x.id === d.id)) list.push(d); }
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
     for (const c of l.contextMenu ?? []) rt.addContextItems({ ...c, module: l.id });
+    for (const [id, p] of Object.entries(l.appMenuProviders ?? {})) rt.registerAppMenuProvider(id, typeof p === 'function' ? { items: p, module: l.id } : { module: l.id, ...p });
+    for (const c of l.appMenu ?? []) rt.addAppMenuItems({ ...c, module: l.id });
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });

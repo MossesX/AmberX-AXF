@@ -18,6 +18,7 @@ import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, typ
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -30,6 +31,7 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type MenuItem,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -99,6 +101,20 @@ export interface ContextContribution {
 }
 
 /**
+ * A live list for the application menu (`rt.registerAppMenuProvider`): called when its submenu opens, it returns
+ * the items to show (sync or async; the web renderer shows a loading row meanwhile). `max` caps the list before a
+ * More… entry that runs `moreAction`. (Android twin deferred: port on hold, Oct 21 2026.)
+ */
+export interface AppMenuProvider {
+  items: () => MenuItem[] | Promise<MenuItem[]>;
+  max?: number;
+  moreAction?: string;
+  moreLabel?: string;
+  /** the module that registered it (`removeAppMenuItems(module)` also drops its providers) */
+  module?: string;
+}
+
+/**
  * A library installed with `installLibraries` (web) — what the settings library's Plugins tab and the plugin
  * inventory engine (`engines/plugins.ts`) read. Everything a library declared, so the inventory can resolve
  * `dependsOn` → `plugin:<id>` and `provides` → `service:<capability>` the same way on every port.
@@ -115,7 +131,7 @@ export interface InstalledLibrary {
   /** Contribution ids (`view:x`, `dialog:x`, `settings-tab:x`), so two libraries contributing one id are reported. */
   contributes?: string[];
   /** The library's nav items / views / dialogs / settings tabs, for "Open" and "Settings" in the Plugin Manager. */
-  ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number };
+  ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number; /** app-menu items it contributes (engines/appmenu.ts) */ appMenuItems?: number };
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */
@@ -222,6 +238,7 @@ export class AxfRuntime {
       appearance: null,
     };
     this.registerBuiltinActions();
+    this.registerBuiltinAppMenuProviders();
   }
 
   /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
@@ -364,6 +381,147 @@ export class AxfRuntime {
 
   removeNavSection(id: string): void {
     if (this.navSections.delete(id)) this.set({});
+  }
+
+  /* ---------------- application menu: contributions + live lists (core/engines/appmenu.ts) ---------------- */
+
+  /** App-menu contributions (`AxfWebLibrary.appMenu`), keyed by id, removable per module. */
+  private readonly appMenuContributions = new Map<string, AppMenuContribution>();
+  /** Live-list providers by id (open registry; the built-in ones are registered in the constructor). */
+  private readonly appMenuProviders = new Map<string, AppMenuProvider>();
+  private appMenuCache: { rev: number; active: string; merged: MergedAppMenu; reported: number } | null = null;
+
+  /** Add or replace a contribution (same id replaces). The app-menu asset stays untouched, so swapping it keeps them. */
+  addAppMenuItems(c: AppMenuContribution): void {
+    this.appMenuContributions.set(c.id, c);
+    this.appMenuCache = null;
+    this.set({});
+  }
+
+  /** Remove every contribution and provider of a module (a plugin was disabled or removed), or one contribution by id. */
+  removeAppMenuItems(moduleOrId: string): void {
+    let changed = this.appMenuContributions.delete(moduleOrId);
+    for (const [id, c] of this.appMenuContributions) if (c.module === moduleOrId) { this.appMenuContributions.delete(id); changed = true; }
+    for (const [id, p] of this.appMenuProviders) if (p.module === moduleOrId) { this.appMenuProviders.delete(id); changed = true; }
+    if (changed) { this.appMenuCache = null; this.set({}); }
+  }
+
+  /** Every contribution, in the order added. */
+  appMenuContributed(): AppMenuContribution[] { return [...this.appMenuContributions.values()]; }
+
+  /** Register (or replace) a live list; an item with `provider: id` shows it. Returns a remover. */
+  registerAppMenuProvider(id: string, provider: AppMenuProvider | AppMenuProvider['items']): () => void {
+    const p: AppMenuProvider = typeof provider === 'function' ? { items: provider } : provider;
+    this.appMenuProviders.set(id, p);
+    this.appMenuCache = null;
+    this.set({});
+    return () => { if (this.appMenuProviders.get(id) === p) this.unregisterAppMenuProvider(id); };
+  }
+
+  unregisterAppMenuProvider(id: string): void {
+    if (this.appMenuProviders.delete(id)) { this.appMenuCache = null; this.set({}); }
+  }
+
+  /** Registered live-list ids. */
+  appMenuProviderIds(): string[] { return [...this.appMenuProviders.keys()]; }
+
+  /** What compiling the menu needs from this runtime (the fixtures feed the engine the same shape). */
+  private appMenuEnv(): AppMenuEnv {
+    return {
+      gate: (r) => this.gate(r),
+      counter: (n) => this.badge(n),
+      setting: (k) => this.settings.get(k),
+      hidden: (t) => this.slotHidden(t as AssetType),
+      providers: this.appMenuProviderIds(),
+    };
+  }
+
+  /**
+   * The application menu to draw: the active asset's menus merged with every contribution, gated for the current role,
+   * badges and check marks resolved, live lists marked (`provider`) and filled on open with `loadAppMenuProvider`.
+   * Conflicts (one id from two modules) are reported once through `diagnostics`, like context items.
+   */
+  appMenu(): CompiledAppMenu {
+    const asset = this.asset('app-menu').data;
+    const active = this.state.active['app-menu'];
+    let cache = this.appMenuCache;
+    if (!cache || cache.active !== active) {
+      const merged = mergeAppMenu(asset, this.appMenuContributed());
+      cache = { rev: this.state.rev, active, merged, reported: 0 };
+      this.appMenuCache = cache;
+    }
+    for (; cache.reported < cache.merged.conflicts.length; cache.reported++) {
+      const c = cache.merged.conflicts[cache.reported]!;
+      this.diagnostics.report({ kind: 'contribution-conflict', what: c.what, id: c.id, was: c.was, now: c.now });
+      this.terminal.warn('menus', `${c.what} "${c.id}": ${c.now} replaced the one from ${c.was}`);
+    }
+    const out = compileAppMenu(cache.merged, this.appMenuEnv());
+    for (const n of out.notes) if (!this.appMenuNoted.has(n)) { this.appMenuNoted.add(n); this.terminal.warn('menus', n); }
+    return out;
+  }
+  private readonly appMenuNoted = new Set<string>();
+
+  /** Ask a live list for its items (compiled, capped with More…). Rejects when the provider throws. */
+  async loadAppMenuProvider(id: string, opts: Partial<ProviderOptions> = {}): Promise<CompiledMenuItem[]> {
+    const p = this.appMenuProviders.get(id);
+    if (!p) return [];
+    const items = await p.items();
+    return compileProviderItems(items, this.appMenuEnv(), { id, max: p.max, moreAction: p.moreAction, moreLabel: p.moreLabel, ...opts });
+  }
+
+  /** Contributed menu items with an action, for the search index (kind `menu`). */
+  appMenuSearchEntries(): MenuSearchEntry[] {
+    const listed = new Set(this.actions.list().filter(({ meta }) => !meta.stub && !meta.params && meta.searchable !== false).map(({ id }) => id));
+    return appMenuSearchEntries(this.appMenu(), listed);
+  }
+
+  /** Built-in live lists every app gets: views, toolbar, nav, settings, windows, dialogs, chrome (visibility toggles). */
+  private registerBuiltinAppMenuProviders() {
+    const fromSearch = (kinds: string[], icon: string, action: (f: Record<string, string>) => string | undefined) => (): MenuItem[] =>
+      this.search.entries().filter((e) => kinds.includes(e.kind)).map((e) => {
+        const f = e.focus as Record<string, string>;
+        const spec = action(f);
+        return { id: e.id, label: e.label, icon: e.icon ?? icon, ...(spec ? { action: spec } : {}), ...(e.requires ? { requires: e.requires } : {}) };
+      }).filter((i) => i.action);
+    // Every registered view (so hiding the nav loses nothing); the nav-menu's own tree; the toolbar's items and widget actions.
+    this.registerAppMenuProvider('views', { items: fromSearch(['view'], 'layout', (f) => (f.view ? `nav:${f.view}` : undefined)), max: 40, module: 'axf' });
+    this.registerAppMenuProvider('nav', {
+      module: 'axf', max: 40,
+      items: () => {
+        const nav = this.asset('nav-menu').data;
+        const sections = [...nav.sections.map((s) => ({ label: s.label, items: s.items })), ...this.navExtras.map((s) => ({ label: s.label, items: s.items }))];
+        const out: MenuItem[] = [];
+        sections.forEach((s, i) => {
+          if (!s.items.length) return;
+          if (out.length) out.push({ id: `nav-sep-${i}`, separator: true });
+          for (const it of s.items) out.push({ id: `nav:${it.view}`, label: it.label, icon: it.icon, action: `nav:${it.view}`, ...(it.requires ? { requires: it.requires } : {}), ...(it.badge ? { badge: it.badge } : {}) });
+        });
+        return out;
+      },
+    });
+    this.registerAppMenuProvider('toolbar', {
+      module: 'axf', max: 40,
+      items: () => {
+        const tb = this.asset('toolbar').data;
+        const out: MenuItem[] = [];
+        tb.groups.forEach((g, i) => {
+          if (!g.items.length) return;
+          if (out.length) out.push({ id: `toolbar-sep-${i}`, separator: true });
+          for (const it of g.items) out.push({ id: `toolbar:${it.id}`, label: it.label, icon: it.icon, action: it.action, ...(it.requires ? { requires: it.requires } : {}), ...(it.badge ? { badge: it.badge } : {}) });
+        });
+        // Widget actions (action-button widgets on the toolbar, its own or attached at run time).
+        const widgets = [...(tb.widgets ?? []), ...this.hostAttachments('toolbar')];
+        for (const w of widgets) {
+          const a = this.registry.get(w.type as AssetType, w.id) as { data?: { action?: string; label?: string; icon?: string } } | undefined;
+          if (a?.data?.action) out.push({ id: `toolbar-widget:${w.type}:${w.id}`, label: a.data.label ?? (a as { name?: string }).name ?? w.id, icon: a.data.icon ?? 'zap', action: a.data.action });
+        }
+        return out;
+      },
+    });
+    this.registerAppMenuProvider('settings', { items: fromSearch(['settings-tab'], 'settings', (f) => (f.tab ? `settings.open:${f.tab}` : undefined)), max: 30, module: 'axf' });
+    this.registerAppMenuProvider('windows', { items: fromSearch(['window'], 'monitor', (f) => (f.id ? `windows.restore:${f.id}` : undefined)), max: 20, module: 'axf' });
+    this.registerAppMenuProvider('dialogs', { items: fromSearch(['dialog'], 'box', (f) => (f.id ? `dialog:${f.id}` : undefined)), max: 30, module: 'axf' });
+    this.registerAppMenuProvider('chrome', { items: () => chromeToggleItems(), module: 'axf' });
   }
 
   /* ---------------- contributed context-menu items ---------------- */
@@ -873,8 +1031,9 @@ export class AxfRuntime {
       if (type && id && (ASSET_TYPES as readonly string[]).includes(type)) this.setRollAsset(type as AssetType, id, onOff(v));
     }, { label: 'Include an asset in randomize rolls', requires: 'assets.swap', params: true });
     // Hidden slots from code, menus or MCP: slot.hide:<type>:on|off
+    // slot.hide:<type>:on|off|toggle (the menu's chrome toggles use `toggle`)
     a.register('slot.hide', ([type, v]) => {
-      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
+      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v === 'toggle' ? !this.slotHidden(type as AssetType) : v !== 'off');
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
     a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
