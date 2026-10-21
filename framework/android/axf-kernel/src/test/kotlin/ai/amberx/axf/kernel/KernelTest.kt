@@ -43,7 +43,7 @@ class KernelTest {
         assertTrue(kernel.runtime.compiled.value.layouts.getValue(WindowClass.COMPACT).cssColumns == "minmax(0, 1fr)")
     }
 
-    @Test fun `widget hosts: attach, replace, detach, warn`() = runTest {
+    @Test fun `widget hosts attach replace detach and warn`() = runTest {
         val kernel = AxfKernel.builder(manifest).assets(assets()).build()
         kernel.start()
         val rt = kernel.runtime
