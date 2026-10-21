@@ -26,9 +26,9 @@ Build Pilot next, Android later) shares one contract; the chat engine lives in a
   `reconnectDelayMs` (1 s, 2 s, 4 s … 30 s, 8 attempts), SSE `parseSseText` / `frameToEvent` / `sseLine`,
   `applyStreamEvent` (the live-reply fold).
 - **Client:** `AssistantClient` (status, conversations CRUD, fork, deleteMessage, `send`, `follow`, `session`, `stop`,
-  `closeSession`) — transport-agnostic; `HttpAssistantClient` speaks the reference HTTP + SSE API (the console plugin's
-  routes under `/api/plugins/ai-assistant/`). `watchReply` runs a reply as a live session: `send` only watches,
-  reattach by seq after drops, aborting detaches without stopping anything.
+  `closeSession`) — transport-agnostic; `HttpAssistantClient` speaks the reference HTTP + SSE API. `watchReply` runs a
+  reply as a live session: `send` only watches, reattach by seq after drops, aborting detaches without stopping anything.
+- Reference API today: the console plugin's routes under `/api/plugins/ai-assistant/`. <!-- axf-plugin:ai-assistant -->
 - **Capabilities:** the engine provides `axf.llm@1` (`profiles()`, `complete()`, `embed()`) and `axf.live-sessions@1`;
   hosts come from `live-session@1` (`framework/spec/LIVE-SESSIONS.md`).
 
