@@ -74,6 +74,9 @@ public abstract class AxfApplication : Application() {
             .platform(platform(manifest))
             .modules(AndroidPlatformModule(permissions), AssetsModule(this), *modules().toTypedArray())
         kernel = configure(builder).build()
+        // Secure window apps: WebView remote debugging off for the whole process, before any service or screen
+        // touches a WebView (AxfActivity sets FLAG_SECURE on its window).
+        if (manifest.android?.secureWindow == true) runCatching { android.webkit.WebView.setWebContentsDebuggingEnabled(false) }
         appScope.launch {
             kernel.start()
             _ready.value = true

@@ -24,9 +24,10 @@ class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
         VoiceModule(this),
-        LockModule(LockWording(
+        LockModule(this, LockWording(
             groupLabel = "Unlock", groupDescription = "What it takes to open the vault after your voice code.",
             modeLabel = "After the voice code", none = "Voice code only", biometric = "Voice code + fingerprint", pin = "Voice code + PIN",
+            pinNeeded = "Set a PIN first, then choose Voice code + PIN.",
         )),
         appModule,
     )

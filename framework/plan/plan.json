@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T06:06:23.111Z",
+ "generatedAt": "2026-10-21T10:18:11.744Z",
  "statuses": [
   "built",
   "partial",
@@ -8694,7 +8694,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)",
+   "notes": "biometric + PIN lock, auto-lock gate (LockGate, Gated, AppShell viewGuard), lock-mode guard, persisted lockout, hashed secrets incl. spoken passphrases; Oct 20 2026 (harvest Oct 21 2026 from AXHub + Voice Vault), written without a compiler (CI compiles)",
    "source": "catalog",
    "history": [
     {
@@ -21361,7 +21361,7 @@
     "demos",
     "lib"
    ],
-   "notes": "voice commands + user triggers built; gesture hooks not yet",
+   "notes": "voice commands + user triggers + SpokenText normalisers built; gesture hooks not yet",
    "source": "catalog",
    "history": [
     {

@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T06:06:23.087Z",
+  "generatedAt": "2026-10-21T10:18:11.720Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -1473,7 +1473,7 @@
       "status": "built",
       "wave": 2,
       "module": "lib-lock",
-      "notes": "biometric + PIN lock, auto-lock timer; Oct 20 2026, written without a compiler (CI compiles)"
+      "notes": "biometric + PIN lock, auto-lock gate (LockGate, Gated, AppShell viewGuard), lock-mode guard, persisted lockout, hashed secrets incl. spoken passphrases; Oct 20 2026 (harvest Oct 21 2026 from AXHub + Voice Vault), written without a compiler (CI compiles)"
     },
     {
       "id": "u.sessions",
@@ -4739,7 +4739,7 @@
       "status": "partial",
       "wave": 3,
       "module": "lib-voice",
-      "notes": "voice commands + user triggers built; gesture hooks not yet"
+      "notes": "voice commands + user triggers + SpokenText normalisers built; gesture hooks not yet"
     },
     {
       "id": "c.pilot",

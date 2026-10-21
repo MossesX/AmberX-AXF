@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import ai.amberx.axf.ui.components.AxfButton
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfEmptyState
@@ -28,17 +29,17 @@ import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.theme.Axf
 import ai.amberx.axf.voice.AxfVoice
 import ai.amberx.axf.voice.Heard
-import ai.amberx.axf.voicevault.vault.SpokenText
+import ai.amberx.axf.voice.SpokenText
 import ai.amberx.axf.voicevault.vault.VaultSession
 import kotlinx.coroutines.launch
 
 /** Settings → Voice Vault → Unlock code (vault must be unlocked). */
 @Composable
 fun UnlockCodeView() {
-    val session = rememberSession() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
+    val session = rememberService<VaultSession>() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
         AxfPageHead("Unlock code", eyebrow = "Voice Vault", description = "The phrase you say to open the vault. Only a salted hash is kept, in the phone's secure storage.")
-        UnlockCodeEditor(session, rememberVoice(), setup = false)
+        UnlockCodeEditor(session, rememberService<AxfVoice>(), setup = false)
     }
 }
 

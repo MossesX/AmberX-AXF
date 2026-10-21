@@ -33,8 +33,8 @@ import ai.amberx.axf.hub.HubRules
 import ai.amberx.axf.hub.HubState
 import ai.amberx.axf.hub.WatchPrefs
 import ai.amberx.axf.kernel.platform.PermissionGateway
-import ai.amberx.axf.ui.LocalAxfKernel
 import ai.amberx.axf.ui.LocalAxfRuntime
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
@@ -97,7 +97,7 @@ fun ApprovalsView() {
 @Composable
 private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
     val ctx = LocalContext.current
-    val kernel = LocalAxfKernel.current
+    val permissions = rememberService<PermissionGateway>()
     val scope = rememberCoroutineScope()
     var tick by remember { mutableIntStateOf(0) }
     val canPost = remember(tick) { Alerts.canPost(ctx) }
@@ -113,7 +113,7 @@ private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
         if (!canPost) {
             AxfText("Notifications are off, so alerts can't show.", color = Axf.colors.warning)
             AxfButton("Allow notifications", {
-                if (Build.VERSION.SDK_INT >= 33) scope.launch { kernel?.services?.get<PermissionGateway>()?.request(listOf(Manifest.permission.POST_NOTIFICATIONS), "AXHub alerts you when an approval is waiting."); tick++ }
+                if (Build.VERSION.SDK_INT >= 33) scope.launch { permissions?.request(listOf(Manifest.permission.POST_NOTIFICATIONS), "AXHub alerts you when an approval is waiting."); tick++ }
             }, tone = ButtonTone.PRIMARY, icon = "bell")
         }
         if (canPost && prefs.fullScreen && !canFull) {

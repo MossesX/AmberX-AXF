@@ -4,6 +4,7 @@ import ai.amberx.axf.kernel.contract.SettingsGroup
 import ai.amberx.axf.kernel.contract.SettingsTab
 import ai.amberx.axf.kernel.plugins.PluginInventoryHost
 import ai.amberx.axf.ui.LocalAxfKernel
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfChip
@@ -61,8 +62,7 @@ public object SettingsTabs {
 
 @Composable
 public fun SettingsScreen(modifier: Modifier = Modifier, title: String = "Settings", extraTabs: List<SettingsTab> = emptyList()) {
-    val kernel = LocalAxfKernel.current
-    val engine = remember(kernel) { kernel?.services?.get<SettingsEngine>() }
+    val engine = rememberService<SettingsEngine>()
     if (engine == null) { AxfEmptyState("Settings unavailable", message = "SettingsModule is not installed."); return }
     val groups by engine.groups.collectAsState()
     val values by engine.values.collectAsState()

@@ -14,7 +14,8 @@ Phone app for Brett's axHub, built on **AmberX AXF 0.2.0** (`android-compose` te
 - The web view only shows the hub's address (https, exact host); any other link opens in the phone's browser and redirects elsewhere are stopped. No JavaScript, file or content access, or mixed content.
 - The app never approves through an API; approving happens on the hub's own page, so the hub's Origin + CSRF checks apply.
 - Never shows over the lock screen; the lock screen only says "Approval waiting". Screens are kept out of screenshots and recents.
-- Optional app lock (Settings → Unlock: fingerprint or PIN, via lib-lock). If the lock can't run, **Sign out and reset** drops the hub session before turning it off.
+- Optional app lock (Settings → Unlock: fingerprint or PIN, via lib-lock's `LockGate` + `Gated` around every view). Picking PIN without a saved PIN, or fingerprint without a working sensor, is refused (lib-lock's mode guard). If the lock can't run, **Sign out and reset** drops the hub session before turning it off.
+- Secure window (`android.secureWindow` in `axf.manifest.json`): FLAG_SECURE and WebView debugging off, applied by the framework.
 - Hub address must be plain https with no path.
 
 ## Framework libraries it runs on

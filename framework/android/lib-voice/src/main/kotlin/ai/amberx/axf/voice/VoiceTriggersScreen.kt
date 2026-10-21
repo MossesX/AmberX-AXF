@@ -20,7 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import ai.amberx.axf.ui.LocalAxfKernel
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfEmptyState
 import ai.amberx.axf.ui.components.AxfPageHead
 import ai.amberx.axf.ui.components.AxfText
@@ -43,8 +43,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 public fun VoiceTriggersScreen(modifier: Modifier = Modifier, title: String = "Voice triggers") {
-    val kernel = LocalAxfKernel.current
-    val voice = remember(kernel) { kernel?.services?.get<AxfVoice>() }
+    val voice = rememberService<AxfVoice>()
     if (voice == null) { AxfEmptyState("Voice unavailable", message = "VoiceModule is not installed.", icon = "mic"); return }
     val commands by voice.commands.commands.collectAsState()
     val version by voice.commands.version.collectAsState()
