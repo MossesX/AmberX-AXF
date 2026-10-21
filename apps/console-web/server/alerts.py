@@ -31,7 +31,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http, storage
+from axf_server import github, http as axf_http, storage
 
 # ---------------------------------------------------------------- engine (mirror of core/engines/alerts.ts)
 
@@ -151,7 +151,6 @@ SOURCES: list[dict[str, str]] = [
 ]
 SOURCE_IDS = {s["id"] for s in SOURCES}
 SOURCE_RE = re.compile(r"^[a-z][a-z0-9._-]{0,39}$")
-REPO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$")
 
 
 def _now() -> int:
@@ -222,11 +221,13 @@ class AlertHub:
         self.f_run = data_dir / "alerts-run.json"
         self.log = log
         self.github_token = github_token
-        self.github_api = (github_api or os.environ.get("GITHUB_API_URL") or "https://api.github.com").rstrip("/")
+        self.github_api = (github_api or github.api_base_from_env()).rstrip("/")
+        # lib-github: token only to this API origin, redirects never followed, scrubbed errors
+        self.gh = github.GitHubClient(lambda: self.github_token(), base_url=self.github_api, user_agent="axf-console-alerts", timeout=15)
         self.systems = systems
         self.pending_file = pending_file
         self.plugins = plugins if plugins is not None else {}
-        self.default_repos = [r for r in (default_repos or []) if REPO_RE.match(r)]
+        self.default_repos = [r for r in (default_repos or []) if github.valid_repo(r)]
         self.lock = threading.RLock()
         loaded = _read_json(self.f_alerts, [])
         self.items: list[dict[str, Any]] = trim_alerts([a for a in (loaded if isinstance(loaded, list) else []) if _valid_alert(a)])
@@ -256,7 +257,7 @@ class AlertHub:
                      "details": bool(c.get("ntfy", {}).get("details", False))},
             "webpush": {"enabled": bool(c.get("webpush", {}).get("enabled", False))},
             "sources": {s: bool(c.get("sources", {}).get(s, True)) for s in SOURCE_IDS},
-            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and REPO_RE.match(r)],
+            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and github.valid_repo(r)],
             "publicUrl": c.get("publicUrl") or os.environ.get("AXF_PUBLIC_URL", ""),
             "pollSeconds": max(60, min(int(c.get("pollSeconds", 180) or 180), 3600)),
         }
@@ -315,7 +316,7 @@ class AlertHub:
                         src[k] = bool(v)
                 c["sources"] = src
             if isinstance(patch.get("repos"), list):
-                bad = [r for r in patch["repos"] if not isinstance(r, str) or not REPO_RE.match(r)]
+                bad = [r for r in patch["repos"] if not isinstance(r, str) or not github.valid_repo(r)]
                 if bad:
                     raise HTTPException(400, f"repos must look like owner/name: {bad[:3]}")
                 c["repos"] = list(dict.fromkeys(patch["repos"]))[:30]
@@ -503,15 +504,12 @@ class AlertHub:
     # ---- sources
 
     def _gh(self, path: str) -> Any:
-        tok = self.github_token()
-        if not tok:
+        if not self.github_token():
             raise RuntimeError("no GitHub token")
-        hdrs = {"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-alerts"}
-        # fixed API host; redirects not followed (they'd carry the token); https only (loopback http for tests)
-        r = axf_http.request("GET", f"{self.github_api}{path}", headers=hdrs, timeout=15)
-        if not r.ok:
-            raise RuntimeError(f"GitHub answered {r.status}")
-        return r.json()
+        try:
+            return self.gh.get(path)
+        except github.GitHubError as e:
+            raise RuntimeError(f"GitHub answered {e.status}" if e.status else str(e)) from None
 
     def poll_github(self) -> None:
         cfg = self.config()
@@ -521,7 +519,7 @@ class AlertHub:
         seen = self._seen_runs or set()
         for repo in cfg["repos"]:
             try:
-                runs = self._gh(f"/repos/{repo}/actions/runs?per_page=30&status=completed").get("workflow_runs", [])
+                runs = self._gh(github.repo_path(repo, "actions", "runs", query={"per_page": 30, "status": "completed"})).get("workflow_runs", [])
             except Exception as e:  # noqa: BLE001 — one repo failing doesn't stop the others
                 self.log("alerts", f"GitHub {repo}: {str(e)[:120]}", "warn")
                 continue
@@ -537,7 +535,7 @@ class AlertHub:
                 rid = int(run.get("id") or 0)
                 fresh = rid not in seen
                 seen.add(rid)
-                if run.get("conclusion") in ("failure", "timed_out", "startup_failure"):
+                if run.get("conclusion") in github.FAILURE_CONCLUSIONS:
                     # once per failing run: a dismissed alert stays gone until the next failing run
                     if fresh:
                         self.raise_alert({"source": source, "severity": "error", "key": key, "title": f"{name} failed on {branch} ({repo})",

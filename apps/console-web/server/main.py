@@ -46,7 +46,7 @@ import hmac as _hmac  # noqa: E402
 
 import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
 import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
-from axf_server import http as axf_http, storage  # noqa: E402
+from axf_server import github, storage  # noqa: E402
 from axf_server.console_client import TokenFile  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -747,10 +747,15 @@ async def shell(ws: WebSocket) -> None:
 _releases_cache: dict[str, Any] = {"at": 0.0, "data": None}
 
 
-def _gh(url: str) -> Any:
-    """GitHub API GET (axf_server.http: https only, redirects never followed, so the token never leaves api.github.com)."""
-    hdrs = {"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {_gh_token()}"} if _gh_token() else {})}
-    return axf_http.request("GET", url, headers=hdrs, timeout=20).raise_for_status().json()
+# lib-github: token only to api.github.com (an `artifacts_url` elsewhere is refused), API redirects never followed,
+# artifact zips follow GitHub's redirect without the token (https only, 5 hops), size caps.
+GH = github.GitHubClient(_gh_token, user_agent="axf-console", timeout=20)
+RELEASE_MAX = 500 * 1024 * 1024
+
+
+def _gh(path: str) -> Any:
+    """GitHub API GET; anonymous when no token is set (public repos)."""
+    return GH.get(path, auth_required=False)
 
 
 @app.get("/api/releases")
@@ -759,7 +764,7 @@ def releases() -> dict[str, Any]:
     if time.time() - _releases_cache["at"] < 60 and _releases_cache["data"]:
         return _releases_cache["data"]
     try:
-        runs = _gh(f"https://api.github.com/repos/{GITHUB_REPO}/actions/workflows/android.yml/runs?status=success&per_page=1")["workflow_runs"]
+        runs = _gh(github.repo_path(GITHUB_REPO, "actions", "workflows", "android.yml", "runs", query={"status": "success", "per_page": 1}))["workflow_runs"]
         if not runs:
             return {"ok": False, "error": "no successful run yet"}
         run = runs[0]
@@ -778,17 +783,23 @@ def release_download(artifact_id: int, name: str) -> Response:
     """Proxies a CI artifact (GitHub requires a token for artifact zips); single-file artifacts like the APK are unzipped."""
     if not _gh_token():
         raise HTTPException(403, "set GITHUB_TOKEN on the API to download CI artifacts directly; otherwise use the run page")
-    # GitHub answers with a redirect to blob storage: follow it, but the token stays on api.github.com.
-    r = axf_http.request("GET", f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {_gh_token()}", "user-agent": "axf-console"},
-                         timeout=120, max_bytes=500 * 1024 * 1024, redirects="strip-auth", auth_origins={"https://api.github.com"})
-    if not r.ok:
-        raise HTTPException(502, f"GitHub answered {r.status} for that artifact")
-    blob = r.body
-    z = zipfile.ZipFile(BytesIO(blob))
+    # GitHub answers with a redirect to blob storage: lib-github follows it without the token.
+    try:
+        blob = GH.download(github.repo_path(GITHUB_REPO, "actions", "artifacts", artifact_id, "zip"), max_bytes=RELEASE_MAX, timeout=120)
+    except github.GitHubError as e:
+        raise HTTPException(502, f"GitHub answered {e.status or 'nothing'} for that artifact") from None
+    try:
+        z = zipfile.ZipFile(BytesIO(blob))
+    except zipfile.BadZipFile:
+        raise HTTPException(502, "that artifact isn't a zip") from None
     files = [n for n in z.namelist() if not n.endswith("/")]
     if len(files) == 1:
         fname = files[0].split("/")[-1]
-        return Response(z.read(files[0]), media_type="application/vnd.android.package-archive" if fname.endswith(".apk") else "application/octet-stream", headers={"content-disposition": f'attachment; filename="{fname}"'})
+        try:
+            _n, data = github.zip_member(blob, lambda n: n == files[0], RELEASE_MAX)  # unzipped size capped too
+        except github.GitHubError as e:
+            raise HTTPException(502, str(e)) from None
+        return Response(data, media_type="application/vnd.android.package-archive" if fname.endswith(".apk") else "application/octet-stream", headers={"content-disposition": f'attachment; filename="{fname}"'})
     return Response(blob, media_type="application/zip", headers={"content-disposition": f'attachment; filename="{name}.zip"'})
 
 

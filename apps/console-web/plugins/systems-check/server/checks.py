@@ -23,7 +23,7 @@ from typing import Any, Callable
 from fastapi import HTTPException  # noqa: E402 — raised by fixes and run_one (was used without an import)
 from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core module (server/credentials.py)
 import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http
+from axf_server import github, http as axf_http
 
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
@@ -153,7 +153,10 @@ class SysCheck:
                                   "Permissions: Contents → Read and write, Actions → Read, Metadata → Read.", "Paste it here; it is saved on the server only."], order=10)
         if not tok:
             return self.item("github-token", "github", "GitHub token", "warn", "Not set: CI downloads (APK, Maven) and publishing settings to every clone won't work.", **base)
-        code, hdr, _ = _http(f"https://api.github.com/repos/{self.repo}", {"authorization": f"Bearer {tok}", "accept": "application/vnd.github+json"})
+        if not github.valid_repo(self.repo):
+            return self.item("github-token", "github", "GitHub token", "error", f"AXF_GITHUB_REPO isn't owner/name ({self.repo[:60]!r}).", **base)
+        # lib-github: token to api.github.com only, no redirects, 4 KB read, 7 s
+        code, hdr = github.GitHubClient(tok, user_agent="axf-console-syscheck").check_token(self.repo, timeout=7)
         if code == 200:
             scopes = hdr.get("x-oauth-scopes")
             note = f"classic token, scopes: {scopes}" if scopes else "fine-grained token (write access is confirmed on its first push)"
