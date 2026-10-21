@@ -60,6 +60,26 @@ AmberX Framework and axHub projects". Built together (same who/prompt/cost plumb
   it ran / app or device / model / source / day, filters, search; each session expands to its system facts, totals and
   every prompt (tap for tokens, cost, tools, files, change entries, features, reply).
 
+## Backfill (Oct 21 2026)
+
+- **Claude Code:** 35 transcripts copied from the VPS host (24), `axf-console` (5), `xgallery-app` (4) and
+  `gizmox-web-green` (2), ingested inside the console (`ingest-dir … --host srv1837178 [--container <name>]`).
+- **claude.ai (AmberX Framework project):** 35 chats read with `read_conversation`, cut to the inbox shape and
+  redacted (passwords, keys, server addresses), written to `sessions/archive-inbox/backfill-amberx-chats-*.json`.
+  Four long chats were read only in part (the hourly read limit): `7e281613` (turns 126–130, 171–198), `efb40b47`
+  (106–158), `d4428401` (59–78), `d08d1345` (from 24); they carry `partial` and can be re-read and re-written later
+  (same chat id = the record is replaced).
+- **axHub project chats:** not reachable from this project; paste the prompt below into a chat there.
+
+## Screenshots (sample data)
+
+| Activity | Sessions | Session opened | Cost by build |
+|---|---|---|---|
+| ![](session-archive/shots/activity-phone.png) | ![](session-archive/shots/sessions-phone.png) | ![](session-archive/shots/session-open-phone.png) | ![](session-archive/shots/costs-phone.png) |
+
+Desktop: [activity](session-archive/shots/activity-desktop.png), [sessions](session-archive/shots/sessions-desktop.png),
+[session](session-archive/shots/session-open-desktop.png), [costs](session-archive/shots/costs-desktop.png).
+
 ## claude.ai sessions: record a chat (inbox)
 
 Any claude.ai chat (any project) records itself or others it can read with `axhub.memory_write`:
