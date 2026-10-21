@@ -130,8 +130,10 @@ class Jobs:
         with self.lock:
             return [dict(j) for j in self.jobs.values()]
 
-    def start(self, cid: str, cmd: str | None) -> dict[str, Any]:
-        """``cmd`` comes from fixplan.plan() on the server's own check report, never from a request."""
+    def start(self, cid: str, cmd: str | None = None) -> dict[str, Any]:
+        """``cmd`` comes from fixplan.plan() on the server's own check report, never from a request (left out: the
+        host table's command for that check, as before Oct 21 2026)."""
+        cmd = cmd or command(cid)
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
         _hub()  # fail fast without a token
