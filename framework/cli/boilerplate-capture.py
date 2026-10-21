@@ -150,6 +150,14 @@ def main() -> int:
 
     shots = []
     root = dump()
+    # What was on screen when capture started (shown in the CI report when a screen can't be verified).
+    try:
+        focus = next((ln.strip() for ln in str(adb("shell", "dumpsys", "window", timeout=30)).splitlines() if "mCurrentFocus" in ln), "")
+    except (RuntimeError, subprocess.TimeoutExpired):
+        focus = ""
+    debug = {"focus": focus[:200], "packages": sorted({n.get("package", "") for n in nodes(root)})[:10],
+             "texts": [t[:60] for t in texts(root)][:40],
+             "descs": [n.get("content-desc", "")[:60] for n in nodes(root) if n.get("content-desc")][:20]}
     if a.start_shot:
         (out / "start.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
         shrink(out / "start.png", a.width)
@@ -171,7 +179,7 @@ def main() -> int:
         shots.append({"screen": s["id"], "label": s["label"], "kind": s.get("kind", ""), "file": file, "verified": bool(verified)})
         print(f"{'✓' if verified else '?'} {bp.get('id')}/{s['id']} ({s['label']})")
 
-    (out / "result.json").write_text(json.dumps({"$axf": "boilerplate-shots@1", "boilerplate": bp.get("id"), "package": a.package, "shots": shots}, indent=2) + "\n")
+    (out / "result.json").write_text(json.dumps({"$axf": "boilerplate-shots@1", "boilerplate": bp.get("id"), "package": a.package, "shots": shots, "debug": debug}, indent=2) + "\n")
     adb("shell", "am", "force-stop", a.package)
     return 0
 

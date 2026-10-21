@@ -96,7 +96,7 @@ jobs:
         if: always()
         run: |
           f="shots/$BP_ID/result.json"
-          if [ -f "$f" ]; then node -e "const r=JSON.parse(require('fs').readFileSync('$f','utf8'));for(const s of r.shots)console.log('::notice title='+r.boilerplate+'::'+s.screen+' ('+s.label+') '+(s.verified?'verified':'NOT verified'))"; else echo "::warning title=$BP_ID::no result.json (capture didn't finish)"; fi
+          if [ -f "$f" ]; then node -e "const r=JSON.parse(require('fs').readFileSync('$f','utf8'));for(const s of r.shots)console.log('::notice title='+r.boilerplate+'::'+s.screen+' ('+s.label+') '+(s.verified?'verified':'NOT verified'));if(r.debug)console.log('::notice title=on screen::'+JSON.stringify(r.debug).slice(0,3500))"; else echo "::warning title=$BP_ID::no result.json (capture didn't finish)"; fi
           ls -la "shots/$BP_ID" 2>/dev/null | sed 's/^/::notice title=files::/' | head -20 || true
       - uses: actions/upload-artifact@v4
         with:
