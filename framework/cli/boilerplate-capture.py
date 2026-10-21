@@ -126,7 +126,8 @@ def shrink(png: Path, width: int) -> None:
 def launch(pkg: str) -> None:
     """Start the app's launcher activity directly (no dependence on the launcher app being responsive)."""
     try:
-        adb("shell", "am", "start", "-W", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-p", pkg, timeout=60)
+        out = adb("shell", "am", "start", "-W", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-p", pkg, timeout=60)
+        print(f"launch: {' '.join(str(out).split())[:200]}")
     except (RuntimeError, subprocess.TimeoutExpired):
         try:
             adb("shell", "monkey", "-p", pkg, "-c", "android.intent.category.LAUNCHER", "1")
@@ -138,7 +139,7 @@ def dismiss_anr(root: ET.Element | None) -> bool:
     """Close an "isn't responding" dialog if one is on screen; True when one was."""
     if not any("isn't responding" in t or "is not responding" in t for t in texts(root)):
         return False
-    for label in ("Wait", "Close app", "OK"):
+    for label in ("Close app", "Wait", "OK"):
         for n in nodes(root):
             if n.get("text") == label and tap(n):
                 time.sleep(1.5)
@@ -176,6 +177,16 @@ def main() -> int:
         except RuntimeError:
             pass
     adb("install", "-r", "-g", a.apk, timeout=240)
+    # Let the system finish its post-boot work before the app competes with it (a busy launcher ANRs on slow runners).
+    for _ in range(60):
+        try:
+            if str(adb("shell", "getprop", "sys.boot_completed", timeout=15)).strip() == "1":
+                break
+        except (RuntimeError, subprocess.TimeoutExpired):
+            pass
+        time.sleep(2)
+    time.sleep(15)
+    dismiss_anr(dump())
     launch(a.package)
 
     # Wait for the app's shell (past any landing/loading screen): some screen label appears. A cold emulator may
