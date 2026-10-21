@@ -23,27 +23,31 @@ Before = `333f607dc412`, after = `e9865fa1096d` — [run](https://github.com/Mos
 
 ## axhub-android
 
+This app sets FLAG_SECURE (screens can't be captured, by design), so its captures came back empty.
+
 | Screen | Before | After |
 |---|---|---|
-| Start | ✓ <img src="shots/android/before/axhub-android/start.png" width="220"> | ✓ <img src="shots/android/after/axhub-android/start.png" width="220"> |
-| Approvals | ? <img src="shots/android/before/axhub-android/home.png" width="220"> | ? <img src="shots/android/after/axhub-android/home.png" width="220"> |
-| Hub | ? <img src="shots/android/before/axhub-android/hub.png" width="220"> | ? <img src="shots/android/after/axhub-android/hub.png" width="220"> |
-| Apps | ? <img src="shots/android/before/axhub-android/apps.png" width="220"> | ? <img src="shots/android/after/axhub-android/apps.png" width="220"> |
-| Services | ? <img src="shots/android/before/axhub-android/services.png" width="220"> | ? <img src="shots/android/after/axhub-android/services.png" width="220"> |
-| Jobs | ? <img src="shots/android/before/axhub-android/jobs.png" width="220"> | ? <img src="shots/android/after/axhub-android/jobs.png" width="220"> |
-| Audit log | ? <img src="shots/android/before/axhub-android/audit.png" width="220"> | ? <img src="shots/android/after/axhub-android/audit.png" width="220"> |
-| Vault | ? <img src="shots/android/before/axhub-android/vault.png" width="220"> | ? <img src="shots/android/after/axhub-android/vault.png" width="220"> |
-| Users | ? <img src="shots/android/before/axhub-android/users.png" width="220"> | ? <img src="shots/android/after/axhub-android/users.png" width="220"> |
-| Projects | ? <img src="shots/android/before/axhub-android/projects.png" width="220"> | ? <img src="shots/android/after/axhub-android/projects.png" width="220"> |
-| Devices | ? <img src="shots/android/before/axhub-android/devices.png" width="220"> | ? <img src="shots/android/after/axhub-android/devices.png" width="220"> |
-| Settings | ? <img src="shots/android/before/axhub-android/settings.png" width="220"> | ? <img src="shots/android/after/axhub-android/settings.png" width="220"> |
+| Start | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Approvals | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Hub | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Apps | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Services | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Jobs | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Audit log | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Vault | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Users | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Projects | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Devices | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Settings | 🔒 blocks screenshots | 🔒 blocks screenshots |
 
 ## voice-vault
 
+This app sets FLAG_SECURE (screens can't be captured, by design), so its captures came back empty.
+
 | Screen | Before | After |
 |---|---|---|
-| Start | ✓ <img src="shots/android/before/voice-vault/start.png" width="220"> | ✓ <img src="shots/android/after/voice-vault/start.png" width="220"> |
-| Voice | ? <img src="shots/android/before/voice-vault/home.png" width="220"> | ? <img src="shots/android/after/voice-vault/home.png" width="220"> |
-| Saved sites | ? <img src="shots/android/before/voice-vault/vault.png" width="220"> | ? <img src="shots/android/after/voice-vault/vault.png" width="220"> |
-| Voice triggers | ? <img src="shots/android/before/voice-vault/voice-triggers.png" width="220"> | ? <img src="shots/android/after/voice-vault/voice-triggers.png" width="220"> |
-| Settings | ? <img src="shots/android/before/voice-vault/settings.png" width="220"> | ? <img src="shots/android/after/voice-vault/settings.png" width="220"> |
+| Start | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Voice | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Saved sites | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Voice triggers | 🔒 blocks screenshots | 🔒 blocks screenshots |
+| Settings | 🔒 blocks screenshots | 🔒 blocks screenshots |

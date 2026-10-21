@@ -83,6 +83,22 @@ def tap(n: ET.Element) -> bool:
     return True
 
 
+def bottom_bar_item(root: ET.Element | None, pkg: str, index: int, count: int) -> ET.Element | None:
+    """Fallback when a nav label is cut off ("F…"): the index-th clickable item of this app's bottom bar, left to
+    right, when the bar has at least as many items as the screen list (nav-menu order = bar order)."""
+    rows = []
+    sizes = [center(n) for n in nodes(root) if n.get("package") == pkg]
+    height = max((c[1] for c in sizes if c), default=0)
+    if not height:
+        return None
+    for n in nodes(root):
+        c = center(n)
+        if n.get("package") == pkg and n.get("clickable") == "true" and c and c[1] > height * 0.88:
+            rows.append((c[0], n))
+    rows.sort(key=lambda r: r[0])
+    return rows[index][1] if len(rows) >= count and index < len(rows) else None
+
+
 def open_drawer(root: ET.Element | None, pkg: str) -> bool:
     for n in nodes(root):
         if n.get("package") == pkg and n.get("content-desc") in ("Open navigation", "Menu", "Open drawer"):
@@ -162,9 +178,9 @@ def main() -> int:
         (out / "start.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
         shrink(out / "start.png", a.width)
         shots.append({"screen": "start", "label": "Start", "kind": "start", "file": "start.png", "verified": True})
-    for s in screens:
+    for i, s in enumerate(screens):
         before = digest(root)
-        n = find(root, s["label"], a.package)
+        n = find(root, s["label"], a.package) or bottom_bar_item(root, a.package, i, len(screens))
         if n is None and open_drawer(root, a.package):
             root = settle(1.2)
             n = find(root, s["label"], a.package)
@@ -172,7 +188,8 @@ def main() -> int:
         root = settle(2.0)
         here = texts(root)
         placeholder = any(f"Boilerplate screen ({s.get('kind', '')})" in t for t in here)
-        verified = tapped and s["label"] in here and (placeholder or digest(root) != before or s is screens[0])
+        changed = digest(root) != before
+        verified = tapped and (s["label"] in here or changed) and (placeholder or changed or s is screens[0])
         file = f"{s['id']}.png"
         (out / file).write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
         shrink(out / file, a.width)

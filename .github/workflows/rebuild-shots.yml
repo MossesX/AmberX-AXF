@@ -25,6 +25,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: rebuild-shots-${{ github.event.inputs.head || github.ref }}
@@ -106,22 +107,37 @@ jobs:
         with: { gradle-version: '8.14.3' }
       - name: Framework modules → mavenLocal
         working-directory: framework/android
-        run: gradle assembleDebug publishToMavenLocal --no-daemon --continue 2>&1 | tail -30
+        run: gradle assembleDebug publishToMavenLocal --no-daemon --continue 2>&1 | tee /tmp/build-framework.log | tail -30
       - name: Build the affected apps
         env: { APPS: '${{ needs.plan.outputs.apps }}' }
         run: |
+          set -o pipefail
           mkdir -p out
+          : > /tmp/build-apps.log
           for d in $(node -e 'for (const a of JSON.parse(process.env.APPS)) console.log(a.dir)'); do
             [ -d "$d" ] || { echo "::notice::$d does not exist on the ${{ matrix.side }} side"; continue; }
-            echo "== $d"
-            (cd "$d" && gradle :app:assembleDebug --no-daemon 2>&1 | tail -15) || { echo "::warning::$d did not build on the ${{ matrix.side }} side"; continue; }
-            name=$(node -e "const m=require('./$d/project.manifest.json');console.log(m.name)")
+            echo "== $d" | tee -a /tmp/build-apps.log
+            if ! (cd "$d" && gradle :app:assembleDebug --no-daemon 2>&1 | tee -a /tmp/build-apps.log | tail -15); then
+              echo "::warning::$d did not build on the ${{ matrix.side }} side"; echo "$d" >> /tmp/failed-apps; continue
+            fi
+            name=$(node -e "console.log(require('./$d/project.manifest.json').name)")
             apk=$(ls "$d"/app/build/outputs/apk/debug/*.apk | head -1)
             cp "$apk" "out/$name.apk"
             node framework/cli/app-screens.mjs "$d" --out "out/$name.screens.json"
-            node -e "const m=require('./$d/axf.manifest.json');console.log(m.android.applicationId)" > "out/$name.package"
+            node -e "console.log(require('./$d/axf.manifest.json').android.applicationId)" > "out/$name.package"
           done
           ls -la out
+      - name: Report compile errors to the "CI build errors" issue (readable without downloading logs)
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}', SIDE: '${{ matrix.side }}', BRANCH: '${{ needs.plan.outputs.branch }}' }
+        run: |
+          [ -s /tmp/failed-apps ] || grep -qE "^e: |FAILED|What went wrong" /tmp/build-framework.log 2>/dev/null || exit 0
+          { echo "### Rebuild screenshots: build errors on \`$BRANCH\` ($SIDE side) — $(git rev-parse --short HEAD)"; echo
+            echo "Apps that didn't build: $(tr '\n' ' ' < /tmp/failed-apps 2>/dev/null)"; echo; echo '```'
+            grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/[^/]*/[^/]*/||' | sort -u | head -150
+            echo '```'; } > /tmp/report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
         with:
           name: rapks-${{ matrix.side }}
@@ -190,7 +206,9 @@ jobs:
           BASE: ${{ needs.plan.outputs.base }}
           HEAD_SHA: ${{ needs.plan.outputs.head }}
           RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: node framework/cli/rebuild-android-shots.mjs captured "_claude/memory/docs/rebuilds/$ITEM" --base "$BASE" --head "$HEAD_SHA" --run "$RUN" | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          node framework/cli/rebuild-android-shots.mjs captured "_claude/memory/docs/rebuilds/$ITEM" --base "$BASE" --head "$HEAD_SHA" --run "$RUN" | tee -a "$GITHUB_STEP_SUMMARY"
+          pip install --quiet pillow && python3 framework/cli/shrink-shots.py "_claude/memory/docs/rebuilds/$ITEM/shots/android" || true
       - name: Commit to the rebuild branch
         env: { ITEM: '${{ needs.plan.outputs.item }}', BRANCH: '${{ needs.plan.outputs.branch }}' }
         run: |

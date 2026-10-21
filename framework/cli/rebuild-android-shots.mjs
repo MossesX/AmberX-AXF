@@ -24,6 +24,7 @@ const projects = new Set();
 for (const side of SIDES) for (const p of ls(join(cap, side))) if (isDir(join(cap, side, p))) projects.add(p);
 const shotsRoot = join(out, 'shots', 'android');
 const results = {};
+const blocked = new Set();
 for (const side of SIDES) {
   for (const p of projects) {
     const src = join(cap, side, p);
@@ -31,7 +32,8 @@ for (const side of SIDES) {
     const dst = join(shotsRoot, side, p);
     rmSync(dst, { recursive: true, force: true });
     mkdirSync(dst, { recursive: true });
-    for (const f of ls(src)) if (/\.png$/i.test(f)) copyFileSync(join(src, f), join(dst, f));
+    // An empty capture means the app blocks screenshots (FLAG_SECURE): don't file a broken image, note it instead.
+    for (const f of ls(src)) if (/\.png$/i.test(f)) { if (statSync(join(src, f)).size > 0) copyFileSync(join(src, f), join(dst, f)); else blocked.add(`${side}/${p}`); }
     let r = { shots: [] };
     try { r = JSON.parse(readFileSync(join(src, 'result.json'), 'utf8')); } catch { /* no result */ }
     results[`${side}/${p}`] = new Map((r.shots ?? []).filter((s) => SAFE.test(String(s.file ?? ''))).map((s) => [String(s.screen), s]));
@@ -50,14 +52,17 @@ const summary = [];
 for (const p of [...projects].sort()) {
   const b = results[`before/${p}`] ?? new Map(), a = results[`after/${p}`] ?? new Map();
   const screens = [...new Set([...b.keys(), ...a.keys()])];
-  lines.push(`## ${p}`, '', '| Screen | Before | After |', '|---|---|---|');
+  lines.push(`## ${p}`, '');
+  if (blocked.has(`before/${p}`) || blocked.has(`after/${p}`)) lines.push('This app sets FLAG_SECURE (screens can\'t be captured, by design), so its captures came back empty.', '');
+  lines.push('| Screen | Before | After |', '|---|---|---|');
   let changed = 0;
   for (const s of screens) {
     const cell = (side, m) => {
       const x = m.get(s);
       if (!x) return '—';
       const f = join(shotsRoot, side, p, x.file);
-      return existsSync(f) ? `${x.verified ? '✓' : '?'} <img src="${rel(f)}" width="220">` : '—';
+      if (existsSync(f)) return `${x.verified ? '✓' : '?'} <img src="${rel(f)}" width="220">`;
+      return blocked.has(`${side}/${p}`) ? '🔒 blocks screenshots' : '—';
     };
     const label = (a.get(s) ?? b.get(s))?.label ?? s;
     lines.push(`| ${label} | ${cell('before', b)} | ${cell('after', a)} |`);

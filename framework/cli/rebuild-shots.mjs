@@ -13,7 +13,8 @@
 // (PLAYWRIGHT_BROWSERS_PATH). Android screenshots come from CI (see _claude/rules/RULES.md, rebuild log).
 import { spawn, execSync } from 'node:child_process';
 import { mkdirSync, readFileSync, mkdtempSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import net from 'node:net';
@@ -72,4 +73,6 @@ try {
   }
 } finally { await browser.close(); stop(); }
 console.log(saved.join('\n'));
+// Keep the repo light: scale + palette-compress what was just captured (no-op without Pillow).
+try { execSync(`python3 ${JSON.stringify(join(dirname(fileURLToPath(import.meta.url)), 'shrink-shots.py'))} ${JSON.stringify(join(resolve(args.out), label))}`, { stdio: 'inherit' }); } catch { /* shrinking is best effort */ }
 if (!existsSync(join(resolve(args.out), label))) process.exit(1);
