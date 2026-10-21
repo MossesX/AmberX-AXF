@@ -45,7 +45,7 @@ export class HubWatcher {
   constructor(opts: HubWatcherOptions = {}) {
     this.opts = opts;
     const hub = normalizeHub(opts.hub) ?? HUB_DEFAULT;
-    this.state = { phase: 'idle', hub, status: 'unreachable', count: 0, pending: [], approvalsUrl: approvalsUrl(hub), error: '', checkedAt: null };
+    this.state = { phase: 'idle', hub, status: 'unreachable', count: 0, pending: [], approvalsUrl: approvalsUrl(hub), error: '', checkedAt: null, postponed: [], postponedCount: 0, reviewCount: 0 };
   }
 
   subscribe = (f: () => void): (() => void) => { this.subs.add(f); return () => { this.subs.delete(f); }; };

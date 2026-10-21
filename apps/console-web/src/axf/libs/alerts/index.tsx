@@ -143,9 +143,9 @@ class AlertsStore {
 
 const stores = new WeakMap<AxfRuntime, AlertsStore>();
 /** The alerts store of a runtime (after the library registered), for apps that want to raise alerts from code. */
-export function alertsOf(rt: AxfRuntime): { raise(input: AlertInput): Promise<void>; list(): Alert[] } | null {
+export function alertsOf(rt: AxfRuntime): { raise(input: AlertInput): Promise<void>; resolve(keys: string[]): Promise<void>; list(): Alert[] } | null {
   const s = stores.get(rt);
-  return s ? { raise: (i) => s.raise(i), list: () => s.list } : null;
+  return s ? { raise: (i) => s.raise(i), resolve: (keys) => s.act(() => s.transport.resolve(keys)), list: () => s.list } : null;
 }
 
 function useStore(): AlertsStore {

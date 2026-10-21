@@ -28,7 +28,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
-import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, HUB_POSTPONE, HUB_POSTPONED_CAPS, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, postponedNeedsReview, postponedSlot, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -948,6 +948,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
   });
 }
+
 // library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
 {
   const params: LibraryParam[] = [
@@ -1025,6 +1026,29 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ['json-array', 200, '[1,2]'],
     ['json-null', 200, 'null'],
     ['json-string', 200, '"x"'],
+    // axHub decision #90: postponed requests ride along, never counted as waiting
+    ['ok-postponed', 200, JSON.stringify({ signedIn: true, admin: true, count: 1, pending: [item(ID1)], postponedCount: 2, reviewCount: 1, postponed: [
+      item(ID2, { status: 'postponed', reviewRequired: true, postponed: { kind: 'time', waitingFor: 'until Tue, 21 Oct 2026 14:00 UTC', until: '2026-10-21T14:00:00.000Z', since: '2026-10-21T10:00:00.000Z', firstSince: '2026-10-21T10:00:00.000Z', nextCheck: '2026-10-21T12:05:00.000Z', lastReminder: '2026-10-21T12:00:00.000Z', remindAt: '2026-10-21T12:30:00.000Z', reminders: 4 } }),
+      item(ID3, { status: 'postponed', reviewRequired: false, postponed: { kind: 'url-ok', waitingFor: 'status.example.com answers', since: '2026-10-21T11:40:00.000Z', nextCheck: '2026-10-21T11:45:00.000Z', remindAt: '2026-10-21T12:10:00.000Z', reminders: 0 } }),
+    ] })],
+    ['ok-postponed-links-and-ids-checked', 200, JSON.stringify({ count: 1, pending: [item(ID1)], postponed: [
+      item(ID1, { postponed: { kind: 'time' } }), item(ID2, { url: `https://evil.example/auth/admin/approvals/${ID2}` }), item('../x'), null, 'str', item(ID3), item(ID3),
+    ] })],
+    ['ok-postponed-fields-defaulted-and-capped', 200, JSON.stringify({ count: 0, pending: [], postponedCount: '9', reviewCount: -1, postponed: [
+      item(ID2, { tool: 7, reviewRequired: 'yes', postponed: { kind: big(80), waitingFor: big(400), since: big(100), reminders: 'many' } }),
+      item(ID3, { postponed: [1, 2], reviewRequired: true }),
+    ] })],
+    ['ok-postponed-not-array', 200, JSON.stringify({ count: 0, pending: [], postponed: { id: ID2 }, postponedCount: 3 })],
+  ];
+  const slots: [string, number][] = [
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:00:00.000Z')],
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:29:59.999Z')],
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:30:00.000Z')],
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T11:59:59.000Z')],
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T12:00:00.000Z')],
+    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T09:00:00.000Z')],
+    ['', Date.parse('2026-10-21T12:00:00.000Z')],
+    ['not a time', Date.parse('2026-10-21T12:00:00.000Z')],
   ];
   const seen: [string[], string[]][] = [
     [[], [ID1]],
@@ -1051,6 +1075,13 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
     unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
     seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
+    // web only until the Android twin (deferred, spec/PORTING.md); Kotlin's replay ignores these keys
+    postponed: {
+      timing: HUB_POSTPONE,
+      caps: HUB_POSTPONED_CAPS,
+      slots: slots.map(([since, now]) => ({ since, now, slot: postponedSlot({ since }, now) })),
+      review: [...slots.map(([since, now]) => ({ since, reviewRequired: false, now })), { since: '', reviewRequired: true, now: 0 }].map((c) => ({ ...c, needsReview: postponedNeedsReview(c, c.now) })),
+    },
   });
 }
 

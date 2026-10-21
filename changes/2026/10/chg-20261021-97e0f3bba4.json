@@ -1,0 +1,89 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-97e0f3bba4",
+  "createdAt": "2026-10-21T15:12:05.750Z",
+  "updatedAt": "2026-10-21T15:12:13.351Z",
+  "kind": "build",
+  "title": "Approvals grid on axHub + postponed reminders and mandatory review in the console",
+  "asked": "",
+  "repos": [
+    "MossesX/axHub",
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "axHub: statuses + state machine (postponed, ignored, revoked)",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:12.885Z",
+      "finishedAt": "2026-10-21T15:12:12.885Z"
+    },
+    {
+      "text": "axHub: storage list/count/replace (compare-and-set)/expireDue on memory + SQLite",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:12.949Z",
+      "finishedAt": "2026-10-21T15:12:12.949Z"
+    },
+    {
+      "text": "axHub: approvals grid, single page, postpone prompt, actions with CSRF/Origin/revision",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:13.012Z",
+      "finishedAt": "2026-10-21T15:12:13.012Z"
+    },
+    {
+      "text": "axHub: condition registry (time, service-healthy, job-done, SSRF-safe url-ok) + monitor + reminders",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:13.097Z",
+      "finishedAt": "2026-10-21T15:12:13.097Z"
+    },
+    {
+      "text": "axHub: feed postponed[], decision #90, docs, tests (351)",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:13.159Z",
+      "finishedAt": "2026-10-21T15:12:13.159Z"
+    },
+    {
+      "text": "AXF: lib-hub parser + fixtures + check-hub; PORTING gap",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:13.222Z",
+      "finishedAt": "2026-10-21T15:12:13.222Z"
+    },
+    {
+      "text": "AXF: approvals-banner 0.3.0 reminders (alert@1) + mandatory review; tests",
+      "state": "done",
+      "startedAt": "2026-10-21T15:12:13.286Z",
+      "finishedAt": "2026-10-21T15:12:13.286Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "axHub approvals grid with Approve/Decline/Postpone/Ignore/Revoke/Reopen, postpone by time or condition, 5-min monitor, 30-min reminders, 2-h review; console alerts every 30 min for postponed items and a blocking review after 2 h",
+    "branch": "feat/approvals-reminders",
+    "commits": [
+      {
+        "sha": "2687233"
+      }
+    ],
+    "tests": {
+      "axHub pnpm test": {
+        "before": "321",
+        "after": "351"
+      },
+      "check-hub": {
+        "before": "208",
+        "after": "215"
+      },
+      "approvals-banner test.py": {
+        "before": "0",
+        "after": "13"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done"
+}

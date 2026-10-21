@@ -639,7 +639,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -652,7 +655,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -682,7 +688,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -712,7 +721,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -734,7 +746,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -747,7 +762,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -769,7 +787,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -791,7 +812,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -804,7 +828,10 @@
         "count": 2,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -826,7 +853,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -848,7 +878,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -870,7 +903,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -900,7 +936,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1314,7 +1353,10 @@
           }
         ],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1327,7 +1369,10 @@
         "count": 2,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1340,7 +1385,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1353,7 +1401,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1366,7 +1417,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1379,7 +1433,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1392,7 +1449,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": ""
+        "error": "",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1405,7 +1465,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub answered 500."
+        "error": "The hub answered 500.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1418,7 +1481,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub answered 302."
+        "error": "The hub answered 302.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1431,7 +1497,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub sent something unexpected."
+        "error": "The hub sent something unexpected.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1444,7 +1513,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub sent something unexpected."
+        "error": "The hub sent something unexpected.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1457,7 +1529,10 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub sent something unexpected."
+        "error": "The hub sent something unexpected.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
       }
     },
     {
@@ -1470,7 +1545,180 @@
         "count": 0,
         "pending": [],
         "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-        "error": "The hub sent something unexpected."
+        "error": "The hub sent something unexpected.",
+        "postponed": [],
+        "postponedCount": 0,
+        "reviewCount": 0
+      }
+    },
+    {
+      "name": "ok-postponed",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"count\":1,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}],\"postponedCount\":2,\"reviewCount\":1,\"postponed\":[{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"status\":\"postponed\",\"reviewRequired\":true,\"postponed\":{\"kind\":\"time\",\"waitingFor\":\"until Tue, 21 Oct 2026 14:00 UTC\",\"until\":\"2026-10-21T14:00:00.000Z\",\"since\":\"2026-10-21T10:00:00.000Z\",\"firstSince\":\"2026-10-21T10:00:00.000Z\",\"nextCheck\":\"2026-10-21T12:05:00.000Z\",\"lastReminder\":\"2026-10-21T12:00:00.000Z\",\"remindAt\":\"2026-10-21T12:30:00.000Z\",\"reminders\":4}},{\"id\":\"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"status\":\"postponed\",\"reviewRequired\":false,\"postponed\":{\"kind\":\"url-ok\",\"waitingFor\":\"status.example.com answers\",\"since\":\"2026-10-21T11:40:00.000Z\",\"nextCheck\":\"2026-10-21T11:45:00.000Z\",\"remindAt\":\"2026-10-21T12:10:00.000Z\",\"reminders\":0}}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "",
+        "postponed": [
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "kind": "time",
+            "waitingFor": "until Tue, 21 Oct 2026 14:00 UTC",
+            "until": "2026-10-21T14:00:00.000Z",
+            "since": "2026-10-21T10:00:00.000Z",
+            "nextCheck": "2026-10-21T12:05:00.000Z",
+            "lastReminder": "2026-10-21T12:00:00.000Z",
+            "remindAt": "2026-10-21T12:30:00.000Z",
+            "reminders": 4,
+            "reviewRequired": true
+          },
+          {
+            "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "kind": "url-ok",
+            "waitingFor": "status.example.com answers",
+            "until": "",
+            "since": "2026-10-21T11:40:00.000Z",
+            "nextCheck": "2026-10-21T11:45:00.000Z",
+            "lastReminder": "",
+            "remindAt": "2026-10-21T12:10:00.000Z",
+            "reminders": 0,
+            "reviewRequired": false
+          }
+        ],
+        "postponedCount": 2,
+        "reviewCount": 1
+      }
+    },
+    {
+      "name": "ok-postponed-links-and-ids-checked",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":1,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}],\"postponed\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"postponed\":{\"kind\":\"time\"}},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://evil.example/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"},{\"id\":\"../x\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/../x\"},null,\"str\",{\"id\":\"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\"},{\"id\":\"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "",
+        "postponed": [
+          {
+            "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "kind": "",
+            "waitingFor": "",
+            "until": "",
+            "since": "",
+            "nextCheck": "",
+            "lastReminder": "",
+            "remindAt": "",
+            "reminders": 0,
+            "reviewRequired": false
+          }
+        ],
+        "postponedCount": 1,
+        "reviewCount": 0
+      }
+    },
+    {
+      "name": "ok-postponed-fields-defaulted-and-capped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":0,\"pending\":[],\"postponedCount\":\"9\",\"reviewCount\":-1,\"postponed\":[{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":7,\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"reviewRequired\":\"yes\",\"postponed\":{\"kind\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"waitingFor\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"since\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"reminders\":\"many\"}},{\"id\":\"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"postponed\":[1,2],\"reviewRequired\":true}]}",
+      "feed": {
+        "status": "ok",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "",
+        "postponed": [
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "call",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "kind": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "waitingFor": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "until": "",
+            "since": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "nextCheck": "",
+            "lastReminder": "",
+            "remindAt": "",
+            "reminders": 0,
+            "reviewRequired": false
+          },
+          {
+            "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+            "kind": "",
+            "waitingFor": "",
+            "until": "",
+            "since": "",
+            "nextCheck": "",
+            "lastReminder": "",
+            "remindAt": "",
+            "reminders": 0,
+            "reviewRequired": true
+          }
+        ],
+        "postponedCount": 2,
+        "reviewCount": 1
+      }
+    },
+    {
+      "name": "ok-postponed-not-array",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":0,\"pending\":[],\"postponed\":{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"},\"postponedCount\":3}",
+      "feed": {
+        "status": "ok",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "",
+        "postponed": [],
+        "postponedCount": 3,
+        "reviewCount": 0
       }
     }
   ],
@@ -1482,7 +1730,10 @@
       "count": 0,
       "pending": [],
       "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
-      "error": "Reply too large."
+      "error": "Reply too large.",
+      "postponed": [],
+      "postponedCount": 0,
+      "reviewCount": 0
     }
   },
   "seen": [
@@ -1990,5 +2241,114 @@
         ]
       }
     }
-  ]
+  ],
+  "postponed": {
+    "timing": {
+      "remindMs": 1800000,
+      "reviewMs": 7200000,
+      "checkMs": 300000
+    },
+    "caps": {
+      "kind": 40,
+      "waitingFor": 160
+    },
+    "slots": [
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792576800000,
+        "slot": 0
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792578599999,
+        "slot": 0
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792578600000,
+        "slot": 1
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792583999000,
+        "slot": 3
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792584000000,
+        "slot": 4
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "now": 1792573200000,
+        "slot": 0
+      },
+      {
+        "since": "",
+        "now": 1792584000000,
+        "slot": -1
+      },
+      {
+        "since": "not a time",
+        "now": 1792584000000,
+        "slot": -1
+      }
+    ],
+    "review": [
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792576800000,
+        "needsReview": false
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792578599999,
+        "needsReview": false
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792578600000,
+        "needsReview": false
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792583999000,
+        "needsReview": false
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792584000000,
+        "needsReview": true
+      },
+      {
+        "since": "2026-10-21T10:00:00.000Z",
+        "reviewRequired": false,
+        "now": 1792573200000,
+        "needsReview": false
+      },
+      {
+        "since": "",
+        "reviewRequired": false,
+        "now": 1792584000000,
+        "needsReview": false
+      },
+      {
+        "since": "not a time",
+        "reviewRequired": false,
+        "now": 1792584000000,
+        "needsReview": false
+      },
+      {
+        "since": "",
+        "reviewRequired": true,
+        "now": 0,
+        "needsReview": true
+      }
+    ]
+  }
 }

@@ -2,16 +2,17 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.approvals-banner",
   "name": "Approvals banner",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner at the top of the console whenever axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). Shows how many and what they are; Review opens the request on the hub, where you approve or reject it. Only for admins signed in to axHub; it never approves anything itself.",
+  "description": "A banner at the top of the console whenever axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). Shows how many and what they are; Review opens the request on the hub, where you approve or reject it. Postponed requests raise an alert every 30 minutes and, after 2 hours, a review you must finish before going on. Only for admins signed in to axHub; it never approves anything itself.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "banner:approvals",
+    "banner:approvals-review",
     "settings-tab:approvals-banner"
   ],
   "optional": [],
