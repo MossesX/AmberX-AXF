@@ -1,0 +1,363 @@
+{
+  "$axf": "wall-signature-fixture@1",
+  "scheme": "X-Auth-Sig = \"v1.<ts>.<hex HMAC-SHA256(secret, v1|<ts>|<user>|<role>|<perms>|<host lowercased>)>\", |now - ts| ≤ 120 s, secret ≥ 32 characters",
+  "secret": "s3cret-shared-with-axhub-0123456789abcdef",
+  "now": 1790000000,
+  "maxAgeS": 120,
+  "minSecret": 32,
+  "cases": [
+    {
+      "name": "valid user",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": true
+    },
+    {
+      "name": "valid admin",
+      "sig": "v1.1790000000.51fa18106e114d0219046a7f95c8dec3f16c1d348a08d892a89f7130085c6375",
+      "user": "admin",
+      "role": "admin",
+      "perms": "*",
+      "host": "console.amberxai.com",
+      "expect": true
+    },
+    {
+      "name": "host compared lowercased (header in capitals)",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "Console.AmberXAI.com",
+      "expect": true
+    },
+    {
+      "name": "empty perms",
+      "sig": "v1.1790000000.070a47dc816e98c5f63b75fdc40be993089280f4100e603607e846c13147face",
+      "user": "conrad",
+      "role": "user",
+      "perms": "",
+      "host": "console.amberxai.com",
+      "expect": true
+    },
+    {
+      "name": "120 s old is still fresh",
+      "sig": "v1.1789999880.33772fed938eea319214115482ea9b787389ec7ab4aa51af538973c94d7f3267",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": true
+    },
+    {
+      "name": "stale: 121 s old",
+      "sig": "v1.1789999879.cdb669e5d00b37a97df424ba05bf73f1577c7826620978d32e1516fc1a51e559",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "from the future: 121 s ahead",
+      "sig": "v1.1790000121.c81668fca79437cc00dd627ee6836b688bc13ee27e42ad2ebcca01282b5bfd5e",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "wrong host (signed for another site)",
+      "sig": "v1.1790000000.008a9aeeb202e8cf47d43cae9897de0d95ff3a3a12fbfaa5688b267e20aee02e",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "tampered perms",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat,console.plugin.sample-terminal",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "tampered role (user → admin)",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "admin",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "tampered user",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "admin",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "wrong secret",
+      "sig": "v1.1790000000.d1ddd61e025a2c53bc5c4ba71c98fa4305afbe67239723feef965ae477fbf69a",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "version other than v1",
+      "sig": "v2.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "non-numeric timestamp",
+      "sig": "v1.17x9.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "short mac",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "upper-case hex is not the signature",
+      "sig": "v1.1790000000.4EBE1580F9C464A3108EA81A3A029F7A226909479C7F6B59F02B16EDFDCE0E82",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "extra part",
+      "sig": "v1.1790000000.4ebe1580f9c464a3108ea81a3a029f7a226909479c7f6b59f02b16edfdce0e82.x",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "empty signature",
+      "sig": "",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    },
+    {
+      "name": "a secret under 32 characters verifies nothing",
+      "secret": "too-short-secret",
+      "sig": "v1.1790000000.105070a2c5fe2b5b15ecc76f30b2d3cd3601b0154eeff844b947e1c17a1cab7b",
+      "user": "conrad",
+      "role": "user",
+      "perms": "console.themes,assistant.chat",
+      "host": "console.amberxai.com",
+      "expect": false
+    }
+  ],
+  "callers": [
+    {
+      "name": "signed user",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "console.themes, Assistant.Chat ,bad perm!,console.plugin.sample-plugin",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.117509bf32d33ab0d8e664b88136cece43dcc8f5b00ef4f5b830425b34e2941c"
+      },
+      "expect": {
+        "name": "conrad",
+        "role": "user",
+        "perms": [
+          "assistant.chat",
+          "console.plugin.sample-plugin",
+          "console.themes"
+        ],
+        "via": "session"
+      }
+    },
+    {
+      "name": "signed admin: perms become *",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "admin",
+        "x-auth-role": "admin",
+        "x-auth-perms": "console.themes",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.8b6bdfca03af6552a0f0f47f622b56679cf30934ea26ae25a4a28fdcb092d3ad"
+      },
+      "expect": {
+        "name": "admin",
+        "role": "admin",
+        "perms": [
+          "*"
+        ],
+        "via": "session"
+      }
+    },
+    {
+      "name": "name and role are lowercased after the check",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "Conrad",
+        "x-auth-role": "User",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.60879e61454f9eb38270a177c85e085ddb99b689b4fb506830d5ab2b7d95f12a"
+      },
+      "expect": {
+        "name": "conrad",
+        "role": "user",
+        "perms": [],
+        "via": "session"
+      }
+    },
+    {
+      "name": "wall not trusted (TRUST_WALL unset)",
+      "env": {
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.070a47dc816e98c5f63b75fdc40be993089280f4100e603607e846c13147face"
+      },
+      "expect": null
+    },
+    {
+      "name": "secret too short",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "short"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.070a47dc816e98c5f63b75fdc40be993089280f4100e603607e846c13147face"
+      },
+      "expect": null
+    },
+    {
+      "name": "not a browser session (x-auth-via token)",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "token",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.070a47dc816e98c5f63b75fdc40be993089280f4100e603607e846c13147face"
+      },
+      "expect": null
+    },
+    {
+      "name": "unsigned headers",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com"
+      },
+      "expect": null
+    },
+    {
+      "name": "name too short",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "c",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.64fc79f210113fc15fb0cda6f85083efc6bb91135b7ecfdc9285ef1c11a70460"
+      },
+      "expect": null
+    },
+    {
+      "name": "unknown role",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "root",
+        "x-auth-perms": "",
+        "host": "console.amberxai.com",
+        "x-auth-sig": "v1.1790000000.98bff1ea2903f351b5b766aaf6f41b1b8d22147cea3d0e8f9613f548d69fd1ae"
+      },
+      "expect": null
+    },
+    {
+      "name": "signed for another host",
+      "env": {
+        "TRUST_WALL": "1",
+        "WALL_SECRET": "s3cret-shared-with-axhub-0123456789abcdef"
+      },
+      "headers": {
+        "x-auth-via": "session",
+        "x-auth-user": "conrad",
+        "x-auth-role": "user",
+        "x-auth-perms": "",
+        "host": "evil.example",
+        "x-auth-sig": "v1.1790000000.070a47dc816e98c5f63b75fdc40be993089280f4100e603607e846c13147face"
+      },
+      "expect": null
+    }
+  ]
+}

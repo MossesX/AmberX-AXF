@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T04:21:22.610Z",
+ "generatedAt": "2026-10-21T06:03:10.611Z",
  "statuses": [
   "built",
   "partial",
@@ -5875,6 +5875,48 @@
    ],
    "model": "fable",
    "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "f.pyserver",
+   "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
+   "area": "Foundations",
+   "group": "Observability, security, build",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.pyserver"
+   ],
+   "modules": [
+    "axf_server"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "k.assets",

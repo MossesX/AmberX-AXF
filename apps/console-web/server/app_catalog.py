@@ -20,7 +20,6 @@ import io
 import json
 import os
 import re
-import tempfile
 import threading
 import time
 import zipfile
@@ -28,6 +27,8 @@ from pathlib import Path
 from typing import Any, Callable
 
 import app_ci
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 KEEP = 3
 MAX_BUNDLE = app_ci.MAX_APK  # the download helper caps reads at this size
@@ -66,10 +67,8 @@ class AppCatalog:
         p = self.index_path()
         if not p or not p.exists():
             return {"$axf": "app-catalog@1", "apps": [], "updatedAt": None}
-        try:
-            return json.loads(p.read_text())
-        except (OSError, ValueError):
-            return {"$axf": "app-catalog@1", "apps": [], "updatedAt": None, "damaged": True}
+        cat = storage.read_json(p, None)
+        return cat if isinstance(cat, dict) else {"$axf": "app-catalog@1", "apps": [], "updatedAt": None, "damaged": True}
 
     def status(self) -> dict[str, Any]:
         cat = self.read()
@@ -160,11 +159,7 @@ class AppCatalog:
             _chmod(target_dir, 0o2775)
             target = target_dir / name
             if not target.exists():
-                fd, tmp = tempfile.mkstemp(dir=target_dir, prefix=".tmp-", suffix=".apk")
-                with os.fdopen(fd, "wb") as f:
-                    f.write(data)
-                _chmod(Path(tmp), 0o664)
-                os.replace(tmp, target)
+                storage.write_bytes(target, data, mode=0o664, dir_mode=None)  # atomic; shared with axHub
             entry = {"version": version, "build": build, "versionCode": a.get("versionCode") if isinstance(a.get("versionCode"), int) else build,
                      "file": f"apks/{project}/{name}", "size": len(data), "sha256": sha, "builtAt": run.get("updated_at") or bundle.get("builtAt"),
                      "commit": (run.get("head_sha") or "")[:12], "runUrl": run.get("html_url")}
@@ -191,12 +186,8 @@ class AppCatalog:
         assert self.folder
         self.folder.mkdir(parents=True, exist_ok=True)
         _chmod(self.folder, 0o2775)
-        fd, tmp = tempfile.mkstemp(dir=self.folder, prefix=".tmp-", suffix=".json")
-        with os.fdopen(fd, "w") as f:
-            json.dump(cat, f, indent=2)
-            f.write("\n")
-        _chmod(Path(tmp), 0o664)
-        os.replace(tmp, self.folder / "catalog.json")
+        # shared with axHub (group-readable on purpose): atomic, 0664, folder mode set above (axf_server.storage)
+        storage.write_json(self.folder / "catalog.json", cat, trailing_newline=True, mode=0o664, dir_mode=None)
 
     # ---------- background ----------
     def start(self, every: int = 600) -> None:
@@ -230,4 +221,8 @@ def _now() -> str:
 
 
 def _http(method: str, url: str, headers: dict[str, str], body: bytes | None) -> tuple[int, dict[str, str], bytes]:
-    return app_ci._http(method, url, headers, body)
+    """GitHub request through axf_server.http (token only on api.github.com, size cap); errors as CatalogError."""
+    try:
+        return app_ci._http(method, url, headers, body)
+    except app_ci.CiError as e:
+        raise CatalogError(str(e)) from None

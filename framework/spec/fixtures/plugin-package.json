@@ -1,0 +1,1067 @@
+{
+  "$axf": "plugin-package-fixture@1",
+  "reference": "framework/cli/plugin-catalog.mjs verifyPackage (Python port: framework/python/axf_server/plugin_package.py)",
+  "limits": {
+    "files": 600,
+    "fileBytes": 2097152,
+    "totalBytes": 8388608,
+    "pathChars": 200
+  },
+  "kinds": {
+    "console": {
+      "label": "Dev Console plugin",
+      "manifest": "plugin@1",
+      "allow": null
+    },
+    "pilot": {
+      "label": "Build Pilot plugin",
+      "manifest": "pilot-plugin@1",
+      "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
+    }
+  },
+  "pathProblems": [
+    {
+      "kind": "console",
+      "path": "plugin.json",
+      "expect": ""
+    },
+    {
+      "kind": "pilot",
+      "path": "plugin.json",
+      "expect": ""
+    },
+    {
+      "kind": "console",
+      "path": "web/a b.ts",
+      "expect": "web/a b.ts: \"a b.ts\" is not allowed in a plugin path"
+    },
+    {
+      "kind": "pilot",
+      "path": "web/a b.ts",
+      "expect": "web/a b.ts: \"a b.ts\" is not allowed in a plugin path"
+    },
+    {
+      "kind": "console",
+      "path": "web/ok-1_2@3+4.ts",
+      "expect": ""
+    },
+    {
+      "kind": "pilot",
+      "path": "web/ok-1_2@3+4.ts",
+      "expect": ""
+    },
+    {
+      "kind": "console",
+      "path": "dist/x.js",
+      "expect": "dist/x.js: dist is never shipped"
+    },
+    {
+      "kind": "pilot",
+      "path": "dist/x.js",
+      "expect": "dist/x.js: dist is never shipped"
+    },
+    {
+      "kind": "console",
+      "path": "a//b",
+      "expect": "a//b: \"\" is not allowed in a plugin path"
+    },
+    {
+      "kind": "pilot",
+      "path": "a//b",
+      "expect": "a//b: \"\" is not allowed in a plugin path"
+    },
+    {
+      "kind": "console",
+      "path": "",
+      "expect": "empty path"
+    },
+    {
+      "kind": "pilot",
+      "path": "",
+      "expect": "empty path"
+    },
+    {
+      "kind": "console",
+      "path": "web/app.KEY",
+      "expect": "web/app.KEY: looks like a secret and is never shipped"
+    },
+    {
+      "kind": "pilot",
+      "path": "web/app.KEY",
+      "expect": "web/app.KEY: looks like a secret and is never shipped"
+    },
+    {
+      "kind": "console",
+      "path": "README.md",
+      "expect": ""
+    },
+    {
+      "kind": "pilot",
+      "path": "README.md",
+      "expect": ""
+    }
+  ],
+  "cases": [
+    {
+      "name": "valid pilot plugin",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          }
+        ]
+      },
+      "expect": {
+        "ok": true,
+        "id": "ai.amberx.pilot.extra-steps",
+        "name": "Extra steps",
+        "version": "1.2.0",
+        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "bytes": 139
+      }
+    },
+    {
+      "name": "valid console plugin with a server part and binary bytes",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "eA=="
+          },
+          {
+            "path": "server/__init__.py",
+            "b64": "AP+ACg=="
+          },
+          {
+            "path": "assets/logo.svg",
+            "b64": "PHN2Zy8+"
+          }
+        ]
+      },
+      "expect": {
+        "ok": true,
+        "id": "ai.amberx.axf.console.hello-world",
+        "name": "Hello world",
+        "version": "1.0.0",
+        "sha256": "a591795c337ae135eb67e4c90374d10c31b9e0c27f4e0ad137d846f06a5392e4",
+        "bytes": 110
+      }
+    },
+    {
+      "name": "hash order follows UTF-16 code units (capitals before lower case, _ between)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "web/zed.ts",
+            "b64": "eg=="
+          },
+          {
+            "path": "web/Alpha.ts",
+            "b64": "QQ=="
+          },
+          {
+            "path": "web/_x.ts",
+            "b64": "Xw=="
+          },
+          {
+            "path": "web/a/z.ts",
+            "b64": "eg=="
+          },
+          {
+            "path": "README.md",
+            "b64": "cg=="
+          },
+          {
+            "path": "web/a-b.ts",
+            "b64": "LQ=="
+          },
+          {
+            "path": "web/a.b.ts",
+            "b64": "Lg=="
+          },
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": true,
+        "id": "ai.amberx.axf.console.hello-world",
+        "name": "Hello world",
+        "version": "1.0.0",
+        "sha256": "46f0661c17afacc7261a95055617a26843af5cb580e2e6f62988828b568802b9",
+        "bytes": 106
+      }
+    },
+    {
+      "name": "matching sha256 in the package",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          }
+        ],
+        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740"
+      },
+      "expect": {
+        "ok": true,
+        "id": "ai.amberx.pilot.extra-steps",
+        "name": "Extra steps",
+        "version": "1.2.0",
+        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "bytes": 139
+      }
+    },
+    {
+      "name": "sha256 in the package does not match",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          }
+        ],
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expect": {
+        "ok": false,
+        "error": "content hash does not match the files (damaged or altered package)"
+      }
+    },
+    {
+      "name": "catalog entry hash does not match",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          }
+        ]
+      },
+      "expectSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "expect": {
+        "ok": false,
+        "error": "package does not match the catalog entry (damaged or altered)"
+      }
+    },
+    {
+      "name": "catalog entry hash matches",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          }
+        ]
+      },
+      "expectSha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+      "expect": {
+        "ok": true,
+        "id": "ai.amberx.pilot.extra-steps",
+        "name": "Extra steps",
+        "version": "1.2.0",
+        "sha256": "1734dd08d82c3d2f7531893bbb021ef4f58de59d9df1524252d88962f9cea740",
+        "bytes": 139
+      }
+    },
+    {
+      "name": "secret-looking file (.env)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": ".env",
+            "b64": "WD0x"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": ".env: \".env\" is not allowed in a plugin path"
+      }
+    },
+    {
+      "name": "secret-looking file (key.pem deep inside)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "server/certs/key.pem",
+            "b64": "aw=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "server/certs/key.pem: looks like a secret and is never shipped"
+      }
+    },
+    {
+      "name": "secrets.env",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "secrets.env",
+            "b64": "WD0x"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "secrets.env: looks like a secret and is never shipped"
+      }
+    },
+    {
+      "name": "credentials.json",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "server/credentials.json",
+            "b64": "e30="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "server/credentials.json: looks like a secret and is never shipped"
+      }
+    },
+    {
+      "name": "ssh key",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "id_ed25519",
+            "b64": "aw=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "id_ed25519: looks like a secret and is never shipped"
+      }
+    },
+    {
+      "name": "path climbing out (..)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "../outside.txt",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "../outside.txt: \"..\" is not allowed in a plugin path"
+      }
+    },
+    {
+      "name": "dot segment",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/./a.ts",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web/./a.ts: \".\" is not allowed in a plugin path"
+      }
+    },
+    {
+      "name": "dot-file",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/.hidden",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web/.hidden: \".hidden\" is not allowed in a plugin path"
+      }
+    },
+    {
+      "name": "absolute path",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "/etc/passwd",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "/etc/passwd: not a plain relative path"
+      }
+    },
+    {
+      "name": "backslash",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web\\a.ts",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web\\a.ts: not a plain relative path"
+      }
+    },
+    {
+      "name": "node_modules never shipped",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "node_modules/x/index.js",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "node_modules/x/index.js: node_modules is never shipped"
+      }
+    },
+    {
+      "name": "__pycache__ never shipped",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "server/__pycache__/a.pyc",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "server/__pycache__/a.pyc: __pycache__ is never shipped"
+      }
+    },
+    {
+      "name": "non-ASCII segment",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/ünï.txt",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web/ünï.txt: \"ünï.txt\" is not allowed in a plugin path"
+      }
+    },
+    {
+      "name": "path over 200 characters",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…: path too long"
+      }
+    },
+    {
+      "name": "pilot plugins carry web files only",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGlsb3QtcGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "README.md",
+            "b64": "IyBFeHRyYSBzdGVwcwo="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "ZXhwb3J0IGNvbnN0IHBsdWdpbiA9IHt9Owo="
+          },
+          {
+            "path": "server/__init__.py",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "server/__init__.py: a Build Pilot plugin may only carry ^(plugin\\.json|README\\.md|web\\/.+)$"
+      }
+    },
+    {
+      "name": "listed twice (any case)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/A.ts",
+            "b64": "MQ=="
+          },
+          {
+            "path": "web/a.ts",
+            "b64": "Mg=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web/a.ts: listed twice"
+      }
+    },
+    {
+      "name": "both a file and a folder",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web",
+            "b64": "eA=="
+          },
+          {
+            "path": "web/a.ts",
+            "b64": "eQ=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "web is both a file and a folder"
+      }
+    },
+    {
+      "name": "no plugin.json",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "web/index.tsx",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "package has no plugin.json"
+      }
+    },
+    {
+      "name": "plugin.json not JSON",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "e25vcGU="
+          },
+          {
+            "path": "web/index.tsx",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json is not valid JSON; package has no plugin.json"
+      }
+    },
+    {
+      "name": "plugin.json not an object",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "WzEsMl0="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json is not an object"
+      }
+    },
+    {
+      "name": "wrong manifest tag for the kind",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "web/x.ts",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json must be pilot-plugin@1 (got \"plugin@1\")"
+      }
+    },
+    {
+      "name": "manifest tag missing",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "pilot",
+        "folder": "extra-steps",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyJpZCI6ImFpLmFtYmVyeC5waWxvdC5leHRyYS1zdGVwcyIsIm5hbWUiOiJFeHRyYSBzdGVwcyIsInZlcnNpb24iOiIxLjIuMCJ9"
+          },
+          {
+            "path": "web/x.ts",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json must be pilot-plugin@1 (got undefined)"
+      }
+    },
+    {
+      "name": "bad id, empty name, bad version",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IkhlbGxvIiwibmFtZSI6IiAgIiwidmVyc2lvbiI6IjEuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin); plugin.json needs a name (≤ 80 characters); plugin.json needs a version like 1.2.3"
+      }
+    },
+    {
+      "name": "manifest folder differs",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImZvbGRlciI6Im90aGVyIn0="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "plugin.json folder \"other\" differs from \"hello-world\""
+      }
+    },
+    {
+      "name": "package version differs from plugin.json",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/x.ts",
+            "b64": "eA=="
+          }
+        ],
+        "version": "9.9.9"
+      },
+      "expect": {
+        "ok": false,
+        "error": "package version differs from plugin.json"
+      }
+    },
+    {
+      "name": "package id differs from plugin.json",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/x.ts",
+            "b64": "eA=="
+          }
+        ],
+        "id": "ai.amberx.other"
+      },
+      "expect": {
+        "ok": false,
+        "error": "package id differs from plugin.json"
+      }
+    },
+    {
+      "name": "malformed file entry (b64 with spaces)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          },
+          {
+            "path": "web/x.ts",
+            "b64": "eA== "
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "a file entry is malformed"
+      }
+    },
+    {
+      "name": "several problems at once (all reported, in order)",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IngiLCJuYW1lIjoibiIsInZlcnNpb24iOiJ2In0="
+          },
+          {
+            "path": "../a",
+            "b64": "eA=="
+          },
+          {
+            "path": ".env",
+            "b64": "eA=="
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "../a: \"..\" is not allowed in a plugin path; .env: \".env\" is not allowed in a plugin path; plugin.json id must be a dotted lowercase id (e.g. ai.amberx.pilot.my-plugin); plugin.json needs a version like 1.2.3"
+      }
+    },
+    {
+      "name": "unknown kind",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "desktop",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "unknown plugin kind \"desktop\" (known: console, pilot)"
+      }
+    },
+    {
+      "name": "kind missing",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "folder": "hello-world",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "unknown plugin kind \"undefined\" (known: console, pilot)"
+      }
+    },
+    {
+      "name": "bad folder name",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "Hello_World",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "\"Hello_World\" is not a plugin folder name (lowercase letters, digits, dashes)"
+      }
+    },
+    {
+      "name": "folder missing",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "files": [
+          {
+            "path": "plugin.json",
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+          }
+        ]
+      },
+      "expect": {
+        "ok": false,
+        "error": "\"undefined\" is not a plugin folder name (lowercase letters, digits, dashes)"
+      }
+    },
+    {
+      "name": "not a package",
+      "pkg": {
+        "$axf": "plugin@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": []
+      },
+      "expect": {
+        "ok": false,
+        "error": "not a plugin-package@1 package"
+      }
+    },
+    {
+      "name": "no files",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": []
+      },
+      "expect": {
+        "ok": false,
+        "error": "package has no files"
+      }
+    },
+    {
+      "name": "files is not a list",
+      "pkg": {
+        "$axf": "plugin-package@1",
+        "kind": "console",
+        "folder": "hello-world",
+        "files": {}
+      },
+      "expect": {
+        "ok": false,
+        "error": "package has no files"
+      }
+    }
+  ]
+}

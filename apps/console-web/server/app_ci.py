@@ -22,17 +22,19 @@ import re
 import subprocess
 import tempfile
 import time
-import urllib.error
-import urllib.request
 import zipfile
 from pathlib import Path
 from typing import Any, Callable
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import http as axf_http, storage
 
 WORKFLOW = "pilot-apk.yml"
 APP_DIR_RE = re.compile(r"^apps/[a-z0-9][a-z0-9-]{0,63}$")
 # Framework paths an engine op may have changed on this server (new libraries); published with the app.
 FRAMEWORK_PATHS = ("framework/android", "framework/libs", "framework/python/axf_libs", "framework/catalog/libraries.json")
 MAX_APK = 200 * 1024 * 1024
+GITHUB_AUTH_ORIGINS = frozenset({"https://api.github.com"})  # the only origin the token is sent to
 
 
 class CiError(Exception):
@@ -108,16 +110,11 @@ class AppCi:
         return self.state / f"{app_dir.split('/', 1)[1]}.json"
 
     def _record(self, app_dir: str) -> dict[str, Any]:
-        try:
-            return json.loads(self._record_path(app_dir).read_text())
-        except (OSError, ValueError):
-            return {}
+        rec = storage.read_json(self._record_path(app_dir), {})
+        return rec if isinstance(rec, dict) else {}
 
     def _save(self, app_dir: str, rec: dict[str, Any]) -> None:
-        self.state.mkdir(parents=True, exist_ok=True, mode=0o700)
-        p = self._record_path(app_dir)
-        p.write_text(json.dumps(rec, indent=2))
-        os.chmod(p, 0o600)
+        storage.write_json(self._record_path(app_dir), rec)  # atomic, 0600, folder 0700
 
     # ------------------------------------------------------------ publish + start
     def changed_framework_files(self) -> list[str]:
@@ -211,33 +208,18 @@ class AppCi:
             if not name:
                 raise CiError("the artifact has no .apk")
             data = z.read(name)
-        self.state.mkdir(parents=True, exist_ok=True, mode=0o700)
-        tmp = path.with_suffix(".tmp")
-        tmp.write_bytes(data)
-        os.chmod(tmp, 0o600)
-        tmp.replace(path)
+        storage.write_bytes(path, data)  # atomic, 0600, folder 0700
         return path
 
 
-class _NoAuthRedirect(urllib.request.HTTPRedirectHandler):
-    """Follow GitHub's redirects to blob storage without carrying the token there."""
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[override]
-        new = super().redirect_request(req, fp, code, msg, headers, newurl)
-        if new is not None and not newurl.startswith("https://api.github.com/"):
-            for h in list(new.headers):
-                if h.lower() == "authorization":
-                    del new.headers[h]
-            new.unredirected_hdrs.pop("Authorization", None)
-        return new
-
-
-def _http(method: str, url: str, headers: dict[str, str], body: bytes | None) -> tuple[int, dict[str, str], bytes]:
-    req = urllib.request.Request(url, data=body, method=method, headers={**headers, **({"Content-Type": "application/json"} if body else {})})
-    opener = urllib.request.build_opener(_NoAuthRedirect)
+def _http(method: str, url: str, headers: dict[str, str], body: bytes | None, transport: axf_http.Transport | None = None) -> tuple[int, dict[str, str], bytes]:
+    """GitHub request (axf_server.http): follows GitHub's redirects to blob storage without carrying the token there
+    (credentials kept only on api.github.com), https only, at most MAX_APK bytes."""
     try:
-        with opener.open(req, timeout=120) as r:
-            return r.status, dict(r.headers), r.read(MAX_APK + 1)
-    except urllib.error.HTTPError as e:
-        return e.code, dict(e.headers or {}), e.read(65536)
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise CiError(f"GitHub not reachable: {getattr(e, 'reason', e)}") from None
+        r = axf_http.request(method, url, headers={**headers, **({"Content-Type": "application/json"} if body else {})}, body=body, timeout=120,
+                             max_bytes=MAX_APK, redirects="strip-auth", auth_origins=GITHUB_AUTH_ORIGINS, transport=transport)
+    except axf_http.ResponseTooLarge:
+        raise CiError("download too large") from None
+    except axf_http.HttpError as e:
+        raise CiError(f"GitHub not reachable: {e}") from None
+    return r.status, r.headers, r.body

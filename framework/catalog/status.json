@@ -2119,5 +2119,11 @@
     "wave": 1,
     "module": "lib-lock",
     "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+  },
+  "f.pyserver": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf_server",
+    "note": "Oct 20 2026 (harvest, Opus): framework/python/axf_server (wall, storage, http, credentials, console_client, plugin_package); the console and its plugins use it; Build Pilot adopts it through scripts/bake-contracts.mjs. Next: axf_server.github (lib-github) on http.HttpClient."
   }
 }

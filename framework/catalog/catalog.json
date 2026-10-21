@@ -600,6 +600,14 @@
               "tag": "lock",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "f.pyserver",
+              "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
+              "note": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
