@@ -97,3 +97,5 @@
 .axp-systems-check-banner__li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-banner__li > .axp-systems-check-banner__item { flex: 1; min-width: 0 }
 .axp-systems-check-banner__fixall { display: flex; justify-content: flex-end; padding-bottom: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-keyfix { gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-keyfix__steps { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }

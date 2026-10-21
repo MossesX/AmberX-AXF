@@ -286,6 +286,32 @@ def boilerplate_items() -> Any:
     return engine("boilerplate-items")
 
 
+BP_SHOT_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
+
+
+def boilerplate_shot(bid: str, name: str) -> Path | None:
+    """A boilerplate screenshot (boilerplate@1 `screenshots[].file`): framework/boilerplates/<id>/screenshots/<name>.
+    Plain names and raster images only (no SVG: it can carry script), never a link or anything outside that folder."""
+    import re
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", bid) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,99}", name) or ".." in name:
+        return None
+    if Path(name).suffix.lower() not in BP_SHOT_TYPES:
+        return None
+    base = (ROOT / "framework" / "boilerplates" / bid / "screenshots").resolve()
+    f = base / name
+    if f.is_symlink() or not f.is_file() or f.resolve().parent != base or f.stat().st_size > 5_000_000:
+        return None
+    return f
+
+
+@app.get("/api/boilerplates/{bid}/screenshots/{name}")
+def boilerplate_screenshot(bid: str, name: str) -> Any:
+    f = boilerplate_shot(bid, name)
+    if f is None:
+        raise HTTPException(404, "no such screenshot")
+    return FileResponse(f, media_type=BP_SHOT_TYPES[f.suffix.lower()], headers={"cache-control": "private, max-age=300", "x-content-type-options": "nosniff"})
+
+
 @app.get("/api/plugin-index")
 def plugin_index() -> Any:
     """framework/catalog/plugins.json (plugin-index@1): planned framework plugins. Built ones come from their manifests."""
