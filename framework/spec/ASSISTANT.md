@@ -23,7 +23,7 @@ Build Pilot next, Android later) shares one contract; the chat engine lives in a
 - **Pure rules** (fixture-checked on every port): `redactSecrets`, `wireHistory(msgs, limit)`, `profileChain`,
   `settingsAllowedFor(admin, can)`, `permissionAllows` (`a.b.*`, `*`), `clampUserParams` (256…4096, …16384 with
   `assistant.models`; thinking off without it), `batchTitle`, `summarizeArgs`, `titleFromText`, `ownerKind`,
-  `reconnectDelayMs` (1 s, 2 s, 4 s … 30 s, 8 attempts), SSE `parseSseText` / `frameToEvent` / `sseLine`,
+  `reconnectDelayMs` (1 s, 2 s, 4 s … 30 s, 8 attempts), SSE `parseSseText` / `frameToEvent` / `sseLine` (framing lives in `core/sse.ts` since Oct 2026, shared by every web app; re-exported here unchanged),
   `applyStreamEvent` (the live-reply fold).
 - **Client:** `AssistantClient` (status, conversations CRUD, fork, deleteMessage, `send`, `follow`, `session`, `stop`,
   `closeSession`) — transport-agnostic; `HttpAssistantClient` speaks the reference HTTP + SSE API. `watchReply` runs a

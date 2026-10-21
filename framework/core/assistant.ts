@@ -19,6 +19,10 @@
  */
 import providerRegistry from '../schemas/ai-providers.json';
 import type { LiveReplay, LiveSessionInfo } from './live-session';
+import { readSse, type SseFrame } from './sse';
+
+/** SSE framing is shared (./sse); re-exported here so assistant@1 code keeps importing it from the contract. */
+export { parseSseBlock, parseSseText, sseLine, type SseFrame } from './sse';
 
 export const ASSISTANT_CONTRACT = 'assistant@1';
 export const CONVERSATION_CONTRACT = 'ai-conversation@1';
@@ -289,36 +293,7 @@ export function ownerKind(kind: string, reserved: Iterable<string>): string {
 }
 
 // ---------------------------------------------------------------- SSE (what a host streams, what a client parses)
-
-export interface SseFrame { event: string; data: string; id?: number }
-
-/** One `event:`/`data:`/`id:` block → frame (data lines joined, comments skipped); null when the block carries no data. */
-export function parseSseBlock(block: string): SseFrame | null {
-  let event = 'message';
-  const data: string[] = [];
-  let id: number | undefined;
-  for (const line of block.split('\n')) {
-    if (line.startsWith(':')) continue;
-    if (line.startsWith('event:')) event = line.slice(6).trim();
-    else if (line.startsWith('data:')) data.push(line.slice(5).replace(/^ /, ''));
-    else if (line.startsWith('id:')) { const n = Number(line.slice(3).trim()); if (Number.isFinite(n) && n > 0) id = n; }
-  }
-  if (!data.length) return null;
-  return { event, data: data.join('\n'), ...(id === undefined ? {} : { id }) };
-}
-
-/** Frames out of a text with blank-line separators; `rest` is the unfinished tail to keep for the next chunk. */
-export function parseSseText(text: string): { frames: SseFrame[]; rest: string } {
-  const frames: SseFrame[] = [];
-  let buf = text.replace(/\r\n/g, '\n');
-  let i: number;
-  while ((i = buf.indexOf('\n\n')) >= 0) {
-    const f = parseSseBlock(buf.slice(0, i));
-    buf = buf.slice(i + 2);
-    if (f) frames.push(f);
-  }
-  return { frames, rest: buf };
-}
+// Framing (parseSseBlock / parseSseText / sseLine / SseFrame) lives in ./sse, shared by every AXF web app.
 
 /** A frame → stream event (data parsed as JSON when it is JSON). */
 export function frameToEvent(f: SseFrame): StreamEvent {
@@ -327,24 +302,9 @@ export function frameToEvent(f: SseFrame): StreamEvent {
   return { event: f.event, data, ...(f.id === undefined ? {} : { seq: f.id }) } as StreamEvent;
 }
 
-/** Serialise a turn event the way hosts stream it. */
-export function sseLine(event: string, data: unknown, id?: number): string {
-  return `${id ? `id: ${id}\n` : ''}event: ${event}\ndata: ${JSON.stringify(data ?? null)}\n\n`;
-}
-
-/** Read a streaming Response body as stream events until it ends. */
-export async function readSse(body: ReadableStream<Uint8Array>, onEvent: (e: StreamEvent) => void): Promise<void> {
-  const reader = body.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    const { frames, rest } = parseSseText(buf);
-    buf = rest;
-    for (const f of frames) onEvent(frameToEvent(f));
-  }
+/** Read a streaming Response body as stream events until it ends (an aborted fetch rejects with AbortError). */
+export async function readStreamEvents(body: ReadableStream<Uint8Array>, onEvent: (e: StreamEvent) => void): Promise<void> {
+  await readSse(body, (f) => onEvent(frameToEvent(f)));
 }
 
 // ---------------------------------------------------------------- client (what an app's chat UI talks to)
@@ -417,7 +377,7 @@ export class HttpAssistantClient implements AssistantClient {
       const j = (await r.json().catch(() => ({}))) as { detail?: string };
       throw new AssistantHttpError(j.detail ?? `request failed (${r.status})`, r.status);
     }
-    await readSse(r.body, onEvent);
+    await readStreamEvents(r.body, onEvent);
   }
 
   status() { return this.call<AssistantStatus>('status'); }
