@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-20T20:40:56.737Z",
+ "generatedAt": "2026-10-21T02:20:46.959Z",
  "statuses": [
   "built",
   "partial",
@@ -7151,14 +7151,14 @@
    "area": "Kernel",
    "group": "Kernel architecture & extension safety",
    "kind": "feature",
-   "status": "partial",
+   "status": "built",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "partial",
+     "status": "built",
      "where": "axf-kernel"
     }
    },

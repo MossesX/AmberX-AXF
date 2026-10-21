@@ -1,274 +1,283 @@
 {
- "$axf": "pending@1",
- "updatedAt": "2026-10-19T12:02:10.988Z",
- "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
- "items": [
-  {
-   "id": "named-asset-rule",
-   "title": "Every UI element is a named asset",
-   "detail": "Apply the rule across schemas/asset-types.json, the web and Android ports, the 39 starter assets and the conformance fixtures.\n\n- Two tiers: element assets (button, slider, toggle, input, icon, label...) and parent assets (toolbar, menu, nav, app menu, dialog, container, window). A standalone element in a layout is its own named asset; groups only exist inside a parent asset.\n- Namespaced ids for every asset (e.g. axf.button.save, axf.toolbar.editor); layouts and parents reference ids.\n- Split instance (label, icon, action, state) from skin (style asset + theme tokens).\n- Slots with type contracts in layout regions and parents; hot-swap and drag-and-drop = rebinding a slot to a compatible asset id.\n- Kernel unchanged (open type registry).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:05:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:03:12.610Z",
-   "source": "artifact"
-  },
-  {
-   "id": "asset-designer",
-   "title": "Asset Designer plugin (no-code)",
-   "detail": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a drawer asset type. Installed by default.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
-   "planId": "x.assets.designer",
-   "source": "plan"
-  },
-  {
-   "id": "asset-browser",
-   "title": "Asset Browser plugin",
-   "detail": "Browse, preview, import, export and hot-swap assets across apps built on AXF. Installed by default.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
-   "planId": "x.assets.browser",
-   "source": "plan"
-  },
-  {
-   "id": "plugin-manager",
-   "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
-   "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugin `plugin-manager` (web console only: four views cards/table/detail/dependency graph in four layouts Studio/Mission control/Terminal/Catalog, default context-menu link, dependencies in detail, opens each plugin's UI and settings, logs, files, install & uninstall). Remove it first with its uninstall script (uninstall.mjs --all --publish), then build the cross-port version following plugin-lifecycle@1 (Android kernel + every app the build engine compiles), keeping the UI-editor rules (last save wins per key; reload current values on open/load/focus).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
+  "$axf": "pending@1",
+  "updatedAt": "2026-10-21T02:20:39.200Z",
+  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+  "items": [
     {
-     "text": "Opus console plugin `plugin-manager` built Oct 18 2026. Remove with its uninstall.mjs --all before installing the Fable build.",
-     "at": "2026-10-18T20:45:00.000Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T20:45:00.000Z",
-   "planId": "x.plugins.manager",
-   "source": "plan"
-  },
-  {
-   "id": "asset-templates",
-   "title": "Asset templates: 10+ per type + defaults",
-   "detail": "At least 10 editable templates/boilerplates for every asset type the designer covers, plus a default asset per type.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:10:00.000Z",
-   "planId": "x.assets.templates",
-   "source": "plan"
-  },
-  {
-   "id": "pending-list-manager",
-   "title": "Pending build list manager (console)",
-   "detail": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
-   "model": "Opus",
-   "status": "complete",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "2026-10-18T04:21:56.128Z",
-   "updatedAt": "2026-10-18T04:21:56.128Z",
-   "planId": "x.console.pending",
-   "source": "plan"
-  },
-  {
-   "id": "lib-mcp",
-   "title": "lib-mcp: MCP client library for every AXF app",
-   "detail": "Framework library (web + Android, later Python) so any AXF app can be an MCP client: server registry, Streamable HTTP, browse tools/resources/prompts, call tools under the kernel interop exposure rules, tokens in secure storage. Reference: the console MCP client plugin (apps/console-web/plugins/mcp-client).",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T04:30:05.551Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T04:30:05.551Z",
-   "planId": "x.lib.mcp",
-   "source": "chat"
-  },
-  {
-   "id": "claude-pick-api-key",
-   "title": "claude-pick.sh: choose plan or API key at launch",
-   "detail": "On the VPS, deploy/claude-pick.sh asks at launch whether Claude Code uses the Claude plan login or an Anthropic API key (billed per use). Key read from ~/.anthropic-key (0600), never the repo; export ANTHROPIC_API_KEY only for that launch; option to save/replace/remove the key; show which is active. Plan is the default. Note: claude.ai connectors and /schedule are unavailable while the API key is active.",
-   "model": "Fable",
-   "status": "complete",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T06:06:35.214Z",
-   "builtAt": "2026-10-18T06:07:53.368Z",
-   "updatedAt": "2026-10-18T06:07:53.368Z",
-   "source": "console"
-  },
-  {
-   "id": "app-port-engine",
-   "title": "Port engine: bring a non-AXF app onto AmberX AXF (bake or rebuild)",
-   "detail": "Runs the ports that claude-project parks (pending items port-<name>, manifest x.port, plan in the project at _claude/memory/docs/port-to-axf.md). Brett chose: ask each time between the two ways.\n\n- bake: keep the codebase, run axf init into it (react-ts / next-ts / android-compose), then move its look and chrome into asset@1 assets step by step (colour/style themes, menus, toolbars, nav, dialogs, layout with region slots); UI reads engine tokens only (THEMING.md). Old styles go as each piece moves.\n- rebuild: new AXF app from the closest boilerplate (axf boilerplates), old code kept alongside as reference, rebuilt feature by feature on assets/libraries/plugins.\n\nDeliver: axf port <dir> --mode bake|rebuild (analysis report: what maps to which asset types, libraries, plugins; then staged codemods like ui-port.mjs does for UI kits), console + MCP drivers, manifest relation none -> built-on when it starts, fixtures/tests. First real targets: xGallery (MossesX/xGallery, React 19 + Express + SQLite) and whatever claude-project parks.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T16:13:56.087Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T16:13:56.087Z",
-   "source": "chat"
-  },
-  {
-   "id": "lib-clone",
-   "title": "lib-clone: any AXF app clones its own install with current data",
-   "detail": "Turn xGallery's New project wizard (MossesX/xGallery: server/src/routes/newproject.ts, src/pages/dev/newproject/NewProjectWizard.tsx, kit/new-project.mjs) into an AXF library so every app built on AXF can clone its install into a new project. Brett: keep the xGallery wizard as is and make it a library for AXF.\n\nWhat the xGallery wizard does today (reuse the design): renamed copy from the kit, GitHub repo, per-project deploy key installed on the VPS + Actions secrets (VPS_SSH_KEY, ADMIN_PASSWORD, HOSTINGER_API_TOKEN), Hostinger DNS for site + dev panel, Claude GitHub app access, push main, wait for the site deploy, push panel, wait, first-session prompt; resumable, no secrets stored.\n\nNew for the library: clone WITH current data (database snapshot + media/files, consistent copy, secrets and sessions stripped, owner reset), the copy gets its own project.manifest.json + _claude/ (claude-project), cross-port contract (web + Android) for the clone action exposed through the interop gate (default-deny), a settings tab (plugin manager rules: no own settings screen), console + MCP drivers. Open questions for Brett at build time: which data is copied by default, and whether the clone keeps users/members.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app → GitHub/VPS/local homes → manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
-     "at": "2026-10-18T17:20:23.926Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T16:13:56.090Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T17:20:23.926Z",
-   "source": "chat"
-  },
-  {
-   "id": "ai-assistant-plugin",
-   "title": "AI Assistant plugin (Fable rebuild)",
-   "detail": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Opus version built Oct 18 2026 (web console only). Remove with the ai-assistant plugin's uninstall script (uninstall.mjs --all) before installing this one.",
-     "at": "2026-10-18T17:20:00.000Z"
+      "id": "named-asset-rule",
+      "title": "Every UI element is a named asset",
+      "detail": "Apply the rule across schemas/asset-types.json, the web and Android ports, the 39 starter assets and the conformance fixtures.\n\n- Two tiers: element assets (button, slider, toggle, input, icon, label...) and parent assets (toolbar, menu, nav, app menu, dialog, container, window). A standalone element in a layout is its own named asset; groups only exist inside a parent asset.\n- Namespaced ids for every asset (e.g. axf.button.save, axf.toolbar.editor); layouts and parents reference ids.\n- Split instance (label, icon, action, state) from skin (style asset + theme tokens).\n- Slots with type contracts in layout regions and parents; hot-swap and drag-and-drop = rebinding a slot to a compatible asset id.\n- Kernel unchanged (open type registry).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:05:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T04:03:12.610Z",
+      "source": "artifact"
     },
     {
-     "text": "Oct 18 2026 additions to rebuild too: write-mode badge and change-batch approval cards with undo, batch outcomes fed to the next turn, the Claude Code CLI MCP bridge (cli_bridge.py), and the ai.chat.start action.",
-     "at": "2026-10-18T20:57:10.817Z"
-    }
-   ],
-   "subPrompts": [
-    {
-     "text": "Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end only when closed on purpose. Implement SessionHost from framework/core/live-session.ts / Kotlin ai.amberx.axf.kernel.live on every port, keep axf.live-sessions@1, add the axHub host (session workers on the VPS) when axHub builds them, and resume interrupted turns if possible. Spec: framework/spec/LIVE-SESSIONS.md.",
-     "at": "2026-10-18T22:52:56.264Z"
-    }
-   ],
-   "createdAt": "2026-10-18T17:20:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T22:52:56.264Z",
-   "planId": "x.plugins.ai-assistant",
-   "source": "chat"
-  },
-  {
-   "id": "agent-manager-plugin",
-   "title": "AI Agent Manager plugin (Fable rebuild)",
-   "detail": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, AmberX AXF framework expert, AI capabilities expert. The Opus version is in apps/console-web/plugins/agent-manager (web console only): remove it first with its uninstall script, then build this one following plugin-lifecycle@1, and port to Android + other ports.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
-    {
-     "text": "Opus version built Oct 18 2026 (web console only). Remove with the agent-manager plugin's uninstall script (uninstall.mjs --all) before installing this one.",
-     "at": "2026-10-18T17:20:00.000Z"
+      "id": "asset-designer",
+      "title": "Asset Designer plugin (no-code)",
+      "detail": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a drawer asset type. Installed by default.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:10:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T04:10:00.000Z",
+      "planId": "x.assets.designer",
+      "source": "plan"
     },
     {
-     "text": "Oct 18 2026 additions to rebuild too: Mosses (coder add-on v2: persona, container tools through approval cards, Settings → Safety for dangerous tools, voice slot) and the library (used by, fork per agent, duplicate, export/import, versions with diff + rollback, plain-English drafts, dangerous marking).",
-     "at": "2026-10-18T20:57:10.737Z"
-    }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T17:20:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T20:57:10.737Z",
-   "planId": "x.plugins.agent-manager",
-   "source": "chat"
-  },
-  {
-   "id": "plugin-conflicts",
-   "title": "Plugin conflict alarm + tracked AI patches + installed add-ons list",
-   "detail": "Brett, Oct 18 2026 (parked as unsafe: AI patching and cascading uninstalls need design and review before anyone builds it):\n\n1. When a plugin could potentially conflict with another plugin, raise a developer alarm (alerts library, source conflicts) shown as an expandable row grid like the Systems check grid: same kinds of details per row, fix instructions and external links.\n2. Each conflict row has 3 badges/actions: (a) uninstall a plugin - choose which one; (b) ignore; (c) use AI to patch the conflict. The patch must NOT alter any plugin source.\n3. Patches are tracked and listed in an Installed add-ons list that covers plugins, add-ons, modules, libraries and patches. Installing a patch is tracked and the patch can be removed.\n4. Removing a patch uninstalls every conflicting plugin it patched; those plugins must then be reinstalled.\n\nBuilds on: alerts library (conflicts source, diagnostics: same asset id / setting key / settings tab from two named modules; plugins:dup ids on the server), plugin-lifecycle@1 (install/uninstall scripts, backups), plugin-manager (Fable, pending), agent manager add-ons (agent-addon@1 install/uninstall tracking), axf.llm@1 for the AI patch.\nOpen questions for Brett at build time: what counts as a potential conflict beyond the runtime diagnostics (routes, capability services, settings keys, assets, nav ids, CSS prefixes, data dirs?); where patches live (an overlay layer the console applies at load, never the plugin folder); whether removing a patch should back up the plugins first and offer one-tap reinstall.",
-   "model": "Fable",
-   "status": "unsafe",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T20:15:46.216Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T20:15:46.216Z",
-   "source": "chat"
-  },
-  {
-   "id": "banner-assets",
-   "title": "Banner, badge and clock asset types (Fable rebuild)",
-   "detail": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Banner and add the Android Compose banner (not built on Opus). The Opus version is in the framework (Oct 18 2026); keep the asset types and fixtures (spec/fixtures/banner.json) stable for apps that already use them.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [
+      "id": "asset-browser",
+      "title": "Asset Browser plugin",
+      "detail": "Browse, preview, import, export and hot-swap assets across apps built on AXF. Installed by default.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:10:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T04:10:00.000Z",
+      "planId": "x.assets.browser",
+      "source": "plan"
+    },
     {
-     "text": "Oct 18 2026: clock is now a widget (widget-assets); the banner also takes search-bar and its placement moved to the shared widget host engine.",
-     "at": "2026-10-19T00:18:04.038Z"
+      "id": "plugin-manager",
+      "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
+      "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugin `plugin-manager` (web console only: four views cards/table/detail/dependency graph in four layouts Studio/Mission control/Terminal/Catalog, default context-menu link, dependencies in detail, opens each plugin's UI and settings, logs, files, install & uninstall). Remove it first with its uninstall script (uninstall.mjs --all --publish), then build the cross-port version following plugin-lifecycle@1 (Android kernel + every app the build engine compiles), keeping the UI-editor rules (last save wins per key; reload current values on open/load/focus).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Opus console plugin `plugin-manager` built Oct 18 2026. Remove with its uninstall.mjs --all before installing the Fable build.",
+          "at": "2026-10-18T20:45:00.000Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:10:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T20:45:00.000Z",
+      "planId": "x.plugins.manager",
+      "source": "plan"
+    },
+    {
+      "id": "asset-templates",
+      "title": "Asset templates: 10+ per type + defaults",
+      "detail": "At least 10 editable templates/boilerplates for every asset type the designer covers, plus a default asset per type.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:10:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T04:10:00.000Z",
+      "planId": "x.assets.templates",
+      "source": "plan"
+    },
+    {
+      "id": "pending-list-manager",
+      "title": "Pending build list manager (console)",
+      "detail": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
+      "model": "Opus",
+      "status": "complete",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:10:00.000Z",
+      "builtAt": "2026-10-18T04:21:56.128Z",
+      "updatedAt": "2026-10-18T04:21:56.128Z",
+      "planId": "x.console.pending",
+      "source": "plan"
+    },
+    {
+      "id": "lib-mcp",
+      "title": "lib-mcp: MCP client library for every AXF app",
+      "detail": "Framework library (web + Android, later Python) so any AXF app can be an MCP client: server registry, Streamable HTTP, browse tools/resources/prompts, call tools under the kernel interop exposure rules, tokens in secure storage. Reference: the console MCP client plugin (apps/console-web/plugins/mcp-client).",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T04:30:05.551Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T04:30:05.551Z",
+      "planId": "x.lib.mcp",
+      "source": "chat"
+    },
+    {
+      "id": "claude-pick-api-key",
+      "title": "claude-pick.sh: choose plan or API key at launch",
+      "detail": "On the VPS, deploy/claude-pick.sh asks at launch whether Claude Code uses the Claude plan login or an Anthropic API key (billed per use). Key read from ~/.anthropic-key (0600), never the repo; export ANTHROPIC_API_KEY only for that launch; option to save/replace/remove the key; show which is active. Plan is the default. Note: claude.ai connectors and /schedule are unavailable while the API key is active.",
+      "model": "Fable",
+      "status": "complete",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T06:06:35.214Z",
+      "builtAt": "2026-10-18T06:07:53.368Z",
+      "updatedAt": "2026-10-18T06:07:53.368Z",
+      "source": "console"
+    },
+    {
+      "id": "app-port-engine",
+      "title": "Port engine: bring a non-AXF app onto AmberX AXF (bake or rebuild)",
+      "detail": "Runs the ports that claude-project parks (pending items port-<name>, manifest x.port, plan in the project at _claude/memory/docs/port-to-axf.md). Brett chose: ask each time between the two ways.\n\n- bake: keep the codebase, run axf init into it (react-ts / next-ts / android-compose), then move its look and chrome into asset@1 assets step by step (colour/style themes, menus, toolbars, nav, dialogs, layout with region slots); UI reads engine tokens only (THEMING.md). Old styles go as each piece moves.\n- rebuild: new AXF app from the closest boilerplate (axf boilerplates), old code kept alongside as reference, rebuilt feature by feature on assets/libraries/plugins.\n\nDeliver: axf port <dir> --mode bake|rebuild (analysis report: what maps to which asset types, libraries, plugins; then staged codemods like ui-port.mjs does for UI kits), console + MCP drivers, manifest relation none -> built-on when it starts, fixtures/tests. First real targets: xGallery (MossesX/xGallery, React 19 + Express + SQLite) and whatever claude-project parks.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T16:13:56.087Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T16:13:56.087Z",
+      "source": "chat"
+    },
+    {
+      "id": "lib-clone",
+      "title": "lib-clone: any AXF app clones its own install with current data",
+      "detail": "Turn xGallery's New project wizard (MossesX/xGallery: server/src/routes/newproject.ts, src/pages/dev/newproject/NewProjectWizard.tsx, kit/new-project.mjs) into an AXF library so every app built on AXF can clone its install into a new project. Brett: keep the xGallery wizard as is and make it a library for AXF.\n\nWhat the xGallery wizard does today (reuse the design): renamed copy from the kit, GitHub repo, per-project deploy key installed on the VPS + Actions secrets (VPS_SSH_KEY, ADMIN_PASSWORD, HOSTINGER_API_TOKEN), Hostinger DNS for site + dev panel, Claude GitHub app access, push main, wait for the site deploy, push panel, wait, first-session prompt; resumable, no secrets stored.\n\nNew for the library: clone WITH current data (database snapshot + media/files, consistent copy, secrets and sessions stripped, owner reset), the copy gets its own project.manifest.json + _claude/ (claude-project), cross-port contract (web + Android) for the clone action exposed through the interop gate (default-deny), a settings tab (plugin manager rules: no own settings screen), console + MCP drivers. Open questions for Brett at build time: which data is copied by default, and whether the clone keeps users/members.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Oct 18 2026: the project-creation half is built as the console plugin project-wizard (Opus): repo/folder/new AXF app \u2192 GitHub/VPS/local homes \u2192 manifest, _claude/, Claude.ai project kit, all on claude-project. lib-clone still covers the cross-port library and cloning an install WITH its data; reuse wizard.mjs for the homes and kit.",
+          "at": "2026-10-18T17:20:23.926Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T16:13:56.090Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T17:20:23.926Z",
+      "source": "chat"
+    },
+    {
+      "id": "ai-assistant-plugin",
+      "title": "AI Assistant plugin (Fable rebuild)",
+      "detail": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings tab, settings dialog from the chat dialog, far more features than xGallery. Integrates with the Agent Manager when both installed (pick the active agent). The Opus version is in apps/console-web/plugins/ai-assistant (web console only): remove it first with its uninstall script (uninstall.mjs --all --publish), then build this one following plugin-lifecycle@1, and port to Android + other ports.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Opus version built Oct 18 2026 (web console only). Remove with the ai-assistant plugin's uninstall script (uninstall.mjs --all) before installing this one.",
+          "at": "2026-10-18T17:20:00.000Z"
+        },
+        {
+          "text": "Oct 18 2026 additions to rebuild too: write-mode badge and change-batch approval cards with undo, batch outcomes fed to the next turn, the Claude Code CLI MCP bridge (cli_bridge.py), and the ai.chat.start action.",
+          "at": "2026-10-18T20:57:10.817Z"
+        }
+      ],
+      "subPrompts": [
+        {
+          "text": "Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end only when closed on purpose. Implement SessionHost from framework/core/live-session.ts / Kotlin ai.amberx.axf.kernel.live on every port, keep axf.live-sessions@1, add the axHub host (session workers on the VPS) when axHub builds them, and resume interrupted turns if possible. Spec: framework/spec/LIVE-SESSIONS.md.",
+          "at": "2026-10-18T22:52:56.264Z"
+        }
+      ],
+      "createdAt": "2026-10-18T17:20:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T22:52:56.264Z",
+      "planId": "x.plugins.ai-assistant",
+      "source": "chat"
+    },
+    {
+      "id": "agent-manager-plugin",
+      "title": "AI Agent Manager plugin (Fable rebuild)",
+      "detail": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, AmberX AXF framework expert, AI capabilities expert. The Opus version is in apps/console-web/plugins/agent-manager (web console only): remove it first with its uninstall script, then build this one following plugin-lifecycle@1, and port to Android + other ports.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [
+        {
+          "text": "Opus version built Oct 18 2026 (web console only). Remove with the agent-manager plugin's uninstall script (uninstall.mjs --all) before installing this one.",
+          "at": "2026-10-18T17:20:00.000Z"
+        },
+        {
+          "text": "Oct 18 2026 additions to rebuild too: Mosses (coder add-on v2: persona, container tools through approval cards, Settings \u2192 Safety for dangerous tools, voice slot) and the library (used by, fork per agent, duplicate, export/import, versions with diff + rollback, plain-English drafts, dangerous marking).",
+          "at": "2026-10-18T20:57:10.737Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T17:20:00.000Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T20:57:10.737Z",
+      "planId": "x.plugins.agent-manager",
+      "source": "chat"
+    },
+    {
+      "id": "plugin-conflicts",
+      "title": "Plugin conflict alarm + tracked AI patches + installed add-ons list",
+      "detail": "Brett, Oct 18 2026 (parked as unsafe: AI patching and cascading uninstalls need design and review before anyone builds it):\n\n1. When a plugin could potentially conflict with another plugin, raise a developer alarm (alerts library, source conflicts) shown as an expandable row grid like the Systems check grid: same kinds of details per row, fix instructions and external links.\n2. Each conflict row has 3 badges/actions: (a) uninstall a plugin - choose which one; (b) ignore; (c) use AI to patch the conflict. The patch must NOT alter any plugin source.\n3. Patches are tracked and listed in an Installed add-ons list that covers plugins, add-ons, modules, libraries and patches. Installing a patch is tracked and the patch can be removed.\n4. Removing a patch uninstalls every conflicting plugin it patched; those plugins must then be reinstalled.\n\nBuilds on: alerts library (conflicts source, diagnostics: same asset id / setting key / settings tab from two named modules; plugins:dup ids on the server), plugin-lifecycle@1 (install/uninstall scripts, backups), plugin-manager (Fable, pending), agent manager add-ons (agent-addon@1 install/uninstall tracking), axf.llm@1 for the AI patch.\nOpen questions for Brett at build time: what counts as a potential conflict beyond the runtime diagnostics (routes, capability services, settings keys, assets, nav ids, CSS prefixes, data dirs?); where patches live (an overlay layer the console applies at load, never the plugin folder); whether removing a patch should back up the plugins first and offer one-tap reinstall.",
+      "model": "Fable",
+      "status": "unsafe",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T20:15:46.216Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-18T20:15:46.216Z",
+      "source": "chat"
+    },
+    {
+      "id": "banner-assets",
+      "title": "Banner, badge and clock asset types (Fable rebuild)",
+      "detail": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Banner and add the Android Compose banner (not built on Opus). The Opus version is in the framework (Oct 18 2026); keep the asset types and fixtures (spec/fixtures/banner.json) stable for apps that already use them.",
+      "model": "Fable",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Oct 18 2026: clock is now a widget (widget-assets); the banner also takes search-bar and its placement moved to the shared widget host engine.",
+          "at": "2026-10-19T00:18:04.038Z"
+        },
+        {
+          "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
+          "at": "2026-10-20T22:30:00.000Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-18T22:30:06.842Z",
+      "builtAt": "2026-10-20T22:30:00.000Z",
+      "updatedAt": "2026-10-20T22:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "widget-assets",
+      "title": "Widget asset category + search bar (Fable rebuild)",
+      "detail": "Widgets (\"widget\": true: clock, search-bar) attach to banners and toolbars through one host engine (engines/widgets.ts = Kotlin WidgetEngine.kt, fixtures widgets.json): banner.attach and toolbar.widgets (start/end), rt.attachToToolbar/detachFromToolbar/toolbarWidgets on both ports. search-bar asset type (placeholder, maxResults, width, kinds, shortcut) sits in the banner center and searches the whole console: views, settings, actions, assets, windows, dialogs, page words, plan features, tracker items, pending builds, plugins (console providers in consoleSearch.ts). Rebuild with an Android Compose banner + toolbar widgets + search UI. Builds on banner-assets.",
+      "model": "Fable",
+      "status": "complete",
+      "notes": [
+        {
+          "text": "Fable rebuild done Oct 20 2026 on branch fable/banner-widgets",
+          "at": "2026-10-20T22:30:00.000Z"
+        }
+      ],
+      "subPrompts": [],
+      "createdAt": "2026-10-19T00:18:03.979Z",
+      "builtAt": "2026-10-20T22:30:00.000Z",
+      "updatedAt": "2026-10-20T22:30:00.000Z",
+      "source": "chat"
+    },
+    {
+      "id": "build-pilot-contract",
+      "title": "Build Pilot plugin contract (Fable rebuild)",
+      "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-19T11:40:14.809Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-19T11:40:14.809Z",
+      "source": "chat"
+    },
+    {
+      "id": "build-pilot-agents",
+      "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
+      "detail": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplates, assets and build options, or build NEW AXF libraries (approved by a person). Rule: all assembly of apps goes through the agent. Also rebuild the Opus feature manager plugin (plugins/feature-manager, built Oct 19 2026) and the gate (pilot-assembly@1, server/assembly.py); keep server/test_server.py passing or replace it with stricter tests.",
+      "model": "Fable",
+      "status": "pending",
+      "notes": [],
+      "subPrompts": [],
+      "createdAt": "2026-10-19T12:02:10.988Z",
+      "builtAt": "",
+      "updatedAt": "2026-10-19T12:02:10.988Z",
+      "source": "chat"
     }
-   ],
-   "subPrompts": [],
-   "createdAt": "2026-10-18T22:30:06.842Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T00:18:04.038Z",
-   "source": "chat"
-  },
-  {
-   "id": "widget-assets",
-   "title": "Widget asset category + search bar (Fable rebuild)",
-   "detail": "Widgets (\"widget\": true: clock, search-bar) attach to banners and toolbars through one host engine (engines/widgets.ts = Kotlin WidgetEngine.kt, fixtures widgets.json): banner.attach and toolbar.widgets (start/end), rt.attachToToolbar/detachFromToolbar/toolbarWidgets on both ports. search-bar asset type (placeholder, maxResults, width, kinds, shortcut) sits in the banner center and searches the whole console: views, settings, actions, assets, windows, dialogs, page words, plan features, tracker items, pending builds, plugins (console providers in consoleSearch.ts). Rebuild with an Android Compose banner + toolbar widgets + search UI. Builds on banner-assets.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-19T00:18:03.979Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T00:18:03.979Z",
-   "source": "chat"
-  },
-  {
-   "id": "build-pilot-contract",
-   "title": "Build Pilot plugin contract (Fable rebuild)",
-   "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-19T11:40:14.809Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T11:40:14.809Z",
-   "source": "chat"
-  },
-  {
-   "id": "build-pilot-agents",
-   "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
-   "detail": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplates, assets and build options, or build NEW AXF libraries (approved by a person). Rule: all assembly of apps goes through the agent. Also rebuild the Opus feature manager plugin (plugins/feature-manager, built Oct 19 2026) and the gate (pilot-assembly@1, server/assembly.py); keep server/test_server.py passing or replace it with stricter tests.",
-   "model": "Fable",
-   "status": "pending",
-   "notes": [],
-   "subPrompts": [],
-   "createdAt": "2026-10-19T12:02:10.988Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-19T12:02:10.988Z",
-   "source": "chat"
-  }
- ]
+  ]
 }

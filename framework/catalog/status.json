@@ -438,7 +438,7 @@
     "module": "axf-kernel"
   },
   "k.search": {
-    "status": "partial",
+    "status": "built",
     "wave": 2,
     "module": "axf-kernel"
   },
