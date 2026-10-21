@@ -181,6 +181,12 @@
             "label": "Account",
             "icon": "user",
             "action": "nav:account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
           }
         ]
       },

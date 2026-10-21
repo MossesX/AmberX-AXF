@@ -95,6 +95,26 @@ export interface ContextContribution {
   items: import('./engines/windows').MenuEntry[];
 }
 
+/**
+ * A library installed with `installLibraries` (web) — what the settings library's Plugins tab and the plugin
+ * inventory engine (`engines/plugins.ts`) read. Everything a library declared, so the inventory can resolve
+ * `dependsOn` → `plugin:<id>` and `provides` → `service:<capability>` the same way on every port.
+ */
+export interface InstalledLibrary {
+  id: string;
+  label: string;
+  version: string;
+  template?: string;
+  dependsOn?: string[];
+  provides?: string[];
+  /** Kinds of values it edits (theme / style / layout / manager / builder), for the UI-editor clash rule. */
+  uiEditor?: string[];
+  /** Contribution ids (`view:x`, `dialog:x`, `settings-tab:x`), so two libraries contributing one id are reported. */
+  contributes?: string[];
+  /** The library's nav items / views / dialogs / settings tabs, for "Open" and "Settings" in the Plugin Manager. */
+  ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number };
+}
+
 /** A nav section a library or plugin contributes; items point at views it registers. */
 export interface NavExtraSection {
   /** Usually the contributing library's id. */
@@ -122,7 +142,7 @@ export class AxfRuntime {
   /** Search index the toolbar's live search reads (engines/search.ts); anyone can add providers. */
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
-  readonly libraries: { id: string; label: string; version: string; template?: string }[] = [];
+  readonly libraries: InstalledLibrary[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */

@@ -12,6 +12,7 @@ import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type Reac
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
+import { runtimeInventory } from '../../react/pluginRecords';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -274,16 +275,38 @@ function AccessPanel() {
   );
 }
 
+/**
+ * Every installed library with its health, straight from the plugin inventory engine (plugin-inventory@1), so every app
+ * ships a plugin list in Settings → Plugins. Each row opens the library's settings tab when it has one, or the Plugin
+ * Manager (`plugin-manager.open:<id>`) when that plugin is installed (same on Android: `InstalledModulesPanel`).
+ */
 function LibrariesPanel() {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  if (!rt.libraries.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  const inv = useMemo(() => runtimeInventory(rt), [rt, rt.libraries.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const manager = Boolean(rt.actions.get('plugin-manager.open'));
+  if (!inv.items.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  const tone = (h: string) => (h === 'ok' ? 'success' : h === 'partial' ? 'warning' : h === 'off' ? undefined : 'danger');
   return (
-    <ul className="axf-settings__list">
-      {rt.libraries.map((l) => (
-        <li key={l.id}><strong>{l.label}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></li>
-      ))}
-    </ul>
+    <div className="fx-stack">
+      {manager && <div className="fx-row fx-row--wrap"><Button icon="package" onClick={() => rt.dispatch('plugin-manager.open')}>Open the Plugin Manager</Button></div>}
+      <ul className="axf-settings__list">
+        {inv.items.map((l) => {
+          const lib = rt.libraries.find((x) => x.id === l.id);
+          const tab = lib?.ui?.settingsTabs[0];
+          return (
+            <li key={l.id} className="fx-row fx-row--wrap">
+              <span className="fx-grow"><strong>{l.name}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+              <Chip tone={tone(l.health)}>{l.health === 'ok' ? 'healthy' : l.health}</Chip>
+              {l.dependents.length > 0 && <Chip>used by {l.dependents.length}</Chip>}
+              {tab && <Button tone="ghost" icon="settings" onClick={() => rt.dispatch(`settings.open:${tab.id}`)}>Settings</Button>}
+              {manager && <Button tone="ghost" icon="package" onClick={() => rt.dispatch(`plugin-manager.open:${l.folder}`)}>Details</Button>}
+            </li>
+          );
+        })}
+      </ul>
+      {inv.conflicts.length > 0 && <p className="fx-muted axf-settings__hint">{inv.conflicts.length} clash{inv.conflicts.length > 1 ? 'es' : ''}: {inv.conflicts.map((c) => c.id).join(', ')}</p>}
+    </div>
   );
 }
 
@@ -487,7 +510,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
-    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],
 };

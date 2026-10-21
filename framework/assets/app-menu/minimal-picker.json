@@ -40,6 +40,12 @@
             "action": "nav:account"
           },
           {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
             "id": "s1",
             "separator": true
           },

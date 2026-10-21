@@ -44,6 +44,8 @@ class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Cons
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("install", "Install library", "download") { st -> ai.amberx.axf.console.views.InstallWizardDialog(st.props["library"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("uiimport", "Import UI library", "download") { st -> ai.amberx.axf.console.views.UiImportWizardDialog(st.props["source"] ?: "") })
         ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution("project", "Open project", "folder") { _ -> ai.amberx.axf.console.views.OpenProjectDialog() })
+        // Plugin Manager in a window (action plugin-manager.window), same as the web console's dialog.
+        ctx.extensions.contribute(ExtensionPoints.DIALOGS, id, DialogContribution(ai.amberx.axf.devtools.PluginManagerModule.DIALOG, "Plugin Manager", "package") { _ -> ai.amberx.axf.devtools.PluginManagerScreen(embedded = true) })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.openProject", ActionMeta("Open project", module = id)) { _, _ -> runtime?.openDialog("project") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.install", ActionMeta("Install library", module = id)) { a, _ -> runtime?.openDialog("install", mapOf("library" to a.getOrElse(0) { "" })) })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.importUi", ActionMeta("Import UI library", module = id)) { a, _ -> runtime?.openDialog("uiimport", mapOf("source" to a.getOrElse(0) { "" })) })

@@ -79,6 +79,7 @@ jobs:
           pip install -r apps/console-web/server/requirements.txt httpx
           (cd framework && npm install --no-audit --no-fund --silent)
           npx -y tsx framework/spec/check-alerts.mts
+          npx -y tsx framework/spec/check-plugin-inventory.mts
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py

@@ -13,6 +13,7 @@ import ai.amberx.axf.console.views.LibrariesView
 import ai.amberx.axf.console.views.ModulesView
 import ai.amberx.axf.console.views.TrackerView
 import ai.amberx.axf.devtools.DevtoolsScreen
+import ai.amberx.axf.devtools.PluginManagerScreen
 import ai.amberx.axf.logging.LogsScreen
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.profile.ProfileScreen
@@ -34,10 +35,10 @@ class MainActivity : AxfActivity() {
                 "demos" to { DemosView() }, "modules" to { ModulesView() }, "boilerplates" to { BoilerplatesView() },
                 "assets" to { AssetGallery() }, "components" to { ComponentGallery() }, "designer" to { ThemeDesigner() }, "layouts" to { LayoutGallery() },
                 "roles" to { RolePanel() }, "actions" to { ActionConsole() }, "devtools" to { DevtoolsScreen() },
-                "settings" to { SettingsScreen() }, "logs" to { LogsScreen() },
+                "settings" to { SettingsScreen() }, "logs" to { LogsScreen() }, "plugin-manager" to { PluginManagerScreen() },
                 "account" to { AccountScreen() }, "profile" to { ProfileScreen() }, "subscription" to { SubscriptionScreen() }, "admin" to { AdminScreen() },
             ),
-            viewTitles = ConsoleModule.ROUTES.associate { it.id to it.label } + mapOf("devtools" to "Developer tools", "settings" to "Settings", "logs" to "Logs", "account" to "Account", "profile" to "Profile", "subscription" to "Subscription", "admin" to "Administration"),
+            viewTitles = ConsoleModule.ROUTES.associate { it.id to it.label } + mapOf("devtools" to "Developer tools", "settings" to "Settings", "logs" to "Logs", "plugin-manager" to "Plugin Manager", "account" to "Account", "profile" to "Profile", "subscription" to "Subscription", "admin" to "Administration"),
             inspector = { ConsoleInspector() },
         )
     }

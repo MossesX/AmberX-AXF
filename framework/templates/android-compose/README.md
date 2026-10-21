@@ -19,5 +19,6 @@ framework changes are picked up immediately. To depend on a published framework 
 | `app/src/main/kotlin/app/App.kt` | Builds and starts the kernel (`AxfApplication`) |
 | `app/src/main/kotlin/app/MainActivity.kt` | Single activity: `AxfRoot` + `AppShell` + views |
 | `app/src/main/kotlin/app/AppModule.kt` | Routes, actions, settings, dialogs for this app |
+| `lib-settings` + `axf-devtools` (`PluginManagerModule`) | The settings interface every app ships (`settings` view: Appearance, General, **Plugins** with every module's health, About) and the Plugin Manager (`plugin-manager` view, long-press menu). Plugins add settings groups under Settings → Plugins, never a screen of their own |
 
 Validate conformance at any time: `node ../../framework/cli/axf.mjs validate .`

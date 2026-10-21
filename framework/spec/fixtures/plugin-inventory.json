@@ -1,0 +1,1412 @@
+{
+  "frame": "plugin-inventory@1",
+  "healths": [
+    "ok",
+    "partial",
+    "off",
+    "blocked",
+    "error"
+  ],
+  "dependencyLabels": {
+    "ok": "satisfied",
+    "missing": "missing",
+    "disabled": "provider off",
+    "optional-missing": "not installed",
+    "set": "set",
+    "unset": "not set",
+    "granted": "granted",
+    "declared": "declared",
+    "unsupported": "unsupported",
+    "error": "error",
+    "not loaded": "not loaded"
+  },
+  "context": {
+    "apiLevels": [
+      1
+    ],
+    "target": "axf-console",
+    "live": [
+      {
+        "name": "axf.llm@1",
+        "folder": "llm",
+        "enabled": true
+      },
+      {
+        "name": "axf.agents@1",
+        "folder": "agents",
+        "enabled": true
+      },
+      {
+        "name": "axf.live@1",
+        "folder": "livehost",
+        "enabled": true
+      }
+    ]
+  },
+  "records": [
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [
+        "service:axf.llm@1",
+        "view:llm"
+      ],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [
+        "theme"
+      ],
+      "scopes": [
+        "ROUTES"
+      ],
+      "enabled": true,
+      "error": null,
+      "serverPart": true,
+      "server": "loaded",
+      "env": [
+        {
+          "name": "LLM_KEY",
+          "set": true
+        },
+        {
+          "name": "LLM_OTHER",
+          "set": false
+        }
+      ],
+      "dataDir": ".axf-console/plugins/llm",
+      "dataDirProblem": null,
+      "services": [
+        "axf.llm@1"
+      ],
+      "folder": "llm",
+      "id": "ai.test.llm",
+      "name": "Llm"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [
+        "service:axf.agents@1"
+      ],
+      "requires": [
+        "service:axf.llm@1"
+      ],
+      "optional": [
+        "service:axf.search@1"
+      ],
+      "uiEditor": [],
+      "scopes": [
+        "ROUTES",
+        "NETWORK"
+      ],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [
+        "axf.agents@1"
+      ],
+      "folder": "agents",
+      "id": "ai.test.agents",
+      "name": "Agents"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [],
+      "requires": [
+        "service:axf.off@1"
+      ],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "needs-off",
+      "id": "ai.test.needsoff",
+      "name": "Needs Off"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [
+        "service:axf.off@1"
+      ],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [
+        "theme"
+      ],
+      "scopes": [],
+      "enabled": false,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "off-provider",
+      "id": "ai.test.offprovider",
+      "name": "Off Provider"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 7,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [],
+      "requires": [
+        "service:axf.nobody@1"
+      ],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "missing",
+      "id": "ai.test.missing",
+      "name": "Missing"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [
+        "view:same"
+      ],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": ".axf-console/plugins/dup-a",
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "dup-a",
+      "id": "ai.test.dupa",
+      "name": "Dup A"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [
+        "view:same"
+      ],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": ".axf-console/plugins/dup-a",
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "dup-b",
+      "id": "ai.test.dupb",
+      "name": "Dup B"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "twin",
+      "id": "ai.test.agents",
+      "name": "Twin"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "android"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "wrong-target",
+      "id": "ai.test.wrong",
+      "name": "Wrong Target"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "*"
+      ],
+      "provides": [],
+      "requires": [
+        "plugin:ai.test.llm"
+      ],
+      "optional": [
+        "plugin:ai.test.nobody",
+        "module:x"
+      ],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "by-id",
+      "id": "ai.test.byid",
+      "name": "By Id"
+    },
+    {
+      "version": "",
+      "apiLevel": null,
+      "targets": [],
+      "provides": [],
+      "requires": [],
+      "optional": [],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": "plugin.json unreadable",
+      "serverPart": true,
+      "server": "error",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "broken",
+      "id": "ai.test.broken",
+      "name": "Broken"
+    },
+    {
+      "version": "1.0.0",
+      "apiLevel": 1,
+      "targets": [
+        "axf-console"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.live@1"
+      ],
+      "uiEditor": [],
+      "scopes": [],
+      "enabled": true,
+      "error": null,
+      "serverPart": false,
+      "server": "none",
+      "env": [],
+      "dataDir": null,
+      "dataDirProblem": null,
+      "services": [],
+      "folder": "live-only-user",
+      "id": "ai.test.liveuser",
+      "name": "Live User"
+    }
+  ],
+  "inventory": {
+    "items": [
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [
+          "service:axf.llm@1",
+          "view:llm"
+        ],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [
+          "theme"
+        ],
+        "scopes": [
+          "ROUTES"
+        ],
+        "enabled": true,
+        "error": null,
+        "serverPart": true,
+        "server": "loaded",
+        "env": [
+          {
+            "name": "LLM_KEY",
+            "set": true
+          },
+          {
+            "name": "LLM_OTHER",
+            "set": false
+          }
+        ],
+        "dataDir": ".axf-console/plugins/llm",
+        "dataDirProblem": null,
+        "services": [
+          "axf.llm@1"
+        ],
+        "folder": "llm",
+        "id": "ai.test.llm",
+        "name": "Llm",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "env",
+            "name": "LLM_KEY",
+            "required": false,
+            "status": "set",
+            "detail": "Llm reads LLM_KEY from the host's environment (Settings → Connections or the systems check can set it)."
+          },
+          {
+            "kind": "env",
+            "name": "LLM_OTHER",
+            "required": false,
+            "status": "unset",
+            "detail": "Llm reads LLM_OTHER from the host's environment (Settings → Connections or the systems check can set it)."
+          },
+          {
+            "kind": "scope",
+            "name": "ROUTES",
+            "required": true,
+            "status": "granted",
+            "detail": "adds server routes under /api/plugins/<folder>/ (console token on every method, 404 while disabled)"
+          },
+          {
+            "kind": "core",
+            "name": "console API",
+            "required": true,
+            "status": "ok",
+            "detail": "Its server part runs inside the console API and is mounted at /api/plugins/llm/."
+          }
+        ],
+        "dependents": [
+          {
+            "folder": "agents",
+            "name": "Agents",
+            "service": "axf.llm@1",
+            "required": true,
+            "enabled": true
+          },
+          {
+            "folder": "by-id",
+            "name": "By Id",
+            "service": "plugin:ai.test.llm",
+            "required": true,
+            "enabled": true
+          }
+        ],
+        "health": "partial",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [
+          "service:axf.agents@1"
+        ],
+        "requires": [
+          "service:axf.llm@1"
+        ],
+        "optional": [
+          "service:axf.search@1"
+        ],
+        "uiEditor": [],
+        "scopes": [
+          "ROUTES",
+          "NETWORK"
+        ],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [
+          "axf.agents@1"
+        ],
+        "folder": "agents",
+        "id": "ai.test.agents",
+        "name": "Agents",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "service",
+            "name": "axf.llm@1",
+            "required": true,
+            "status": "ok",
+            "providers": [
+              {
+                "folder": "llm",
+                "name": "Llm",
+                "enabled": true,
+                "live": true
+              }
+            ],
+            "detail": "Provided by Llm."
+          },
+          {
+            "kind": "service",
+            "name": "axf.search@1",
+            "required": false,
+            "status": "optional-missing",
+            "providers": [],
+            "detail": "Optional: the plugin works without it; the features that use it stay hidden or greyed out."
+          },
+          {
+            "kind": "scope",
+            "name": "ROUTES",
+            "required": true,
+            "status": "granted",
+            "detail": "adds server routes under /api/plugins/<folder>/ (console token on every method, 404 while disabled)"
+          },
+          {
+            "kind": "scope",
+            "name": "NETWORK",
+            "required": true,
+            "status": "granted",
+            "detail": "makes outbound network calls from the console server"
+          }
+        ],
+        "dependents": [],
+        "health": "partial",
+        "conflicts": [
+          "plugin-id:ai.test.agents"
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [],
+        "requires": [
+          "service:axf.off@1"
+        ],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "needs-off",
+        "id": "ai.test.needsoff",
+        "name": "Needs Off",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "service",
+            "name": "axf.off@1",
+            "required": true,
+            "status": "disabled",
+            "providers": [
+              {
+                "folder": "off-provider",
+                "name": "Off Provider",
+                "enabled": false,
+                "live": false
+              }
+            ],
+            "detail": "Provided by Off Provider, which is switched off. Enable it or this plugin can't work."
+          }
+        ],
+        "dependents": [],
+        "health": "blocked",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [
+          "service:axf.off@1"
+        ],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [
+          "theme"
+        ],
+        "scopes": [],
+        "enabled": false,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "off-provider",
+        "id": "ai.test.offprovider",
+        "name": "Off Provider",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          }
+        ],
+        "dependents": [
+          {
+            "folder": "needs-off",
+            "name": "Needs Off",
+            "service": "axf.off@1",
+            "required": true,
+            "enabled": true
+          }
+        ],
+        "health": "off",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 7,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [],
+        "requires": [
+          "service:axf.nobody@1"
+        ],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "missing",
+        "id": "ai.test.missing",
+        "name": "Missing",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 7",
+            "required": true,
+            "status": "unsupported",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "service",
+            "name": "axf.nobody@1",
+            "required": true,
+            "status": "missing",
+            "providers": [],
+            "detail": "No installed plugin provides it, so this plugin can't do its job until one is installed."
+          }
+        ],
+        "dependents": [],
+        "health": "blocked",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [
+          "view:same"
+        ],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": ".axf-console/plugins/dup-a",
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "dup-a",
+        "id": "ai.test.dupa",
+        "name": "Dup A",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          }
+        ],
+        "dependents": [],
+        "health": "ok",
+        "conflicts": [
+          "contribution:view:same",
+          "data-dir:.axf-console/plugins/dup-a"
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [
+          "view:same"
+        ],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": ".axf-console/plugins/dup-a",
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "dup-b",
+        "id": "ai.test.dupb",
+        "name": "Dup B",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          }
+        ],
+        "dependents": [],
+        "health": "ok",
+        "conflicts": [
+          "contribution:view:same",
+          "data-dir:.axf-console/plugins/dup-a"
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "twin",
+        "id": "ai.test.agents",
+        "name": "Twin",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          }
+        ],
+        "dependents": [],
+        "health": "ok",
+        "conflicts": [
+          "plugin-id:ai.test.agents"
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "android"
+        ],
+        "provides": [],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "wrong-target",
+        "id": "ai.test.wrong",
+        "name": "Wrong Target",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "framework",
+            "name": "target axf-console",
+            "required": true,
+            "status": "unsupported",
+            "detail": "plugin.json \"targets\" must include \"axf-console\" for this host to load it."
+          }
+        ],
+        "dependents": [],
+        "health": "blocked",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "*"
+        ],
+        "provides": [],
+        "requires": [
+          "plugin:ai.test.llm"
+        ],
+        "optional": [
+          "plugin:ai.test.nobody",
+          "module:x"
+        ],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "by-id",
+        "id": "ai.test.byid",
+        "name": "By Id",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "plugin",
+            "name": "ai.test.llm",
+            "required": true,
+            "status": "ok",
+            "detail": "Installed: Llm.",
+            "providers": [
+              {
+                "folder": "llm",
+                "name": "Llm",
+                "enabled": true,
+                "live": true
+              }
+            ]
+          },
+          {
+            "kind": "plugin",
+            "name": "ai.test.nobody",
+            "required": false,
+            "status": "optional-missing",
+            "detail": "Optional: the plugin works without it; the features that use it stay hidden or greyed out.",
+            "providers": []
+          },
+          {
+            "kind": "other",
+            "name": "module:x",
+            "required": false,
+            "status": "declared",
+            "detail": "Declared in the manifest; the host doesn't check this kind of dependency yet."
+          }
+        ],
+        "dependents": [],
+        "health": "partial",
+        "conflicts": []
+      },
+      {
+        "version": "",
+        "apiLevel": null,
+        "targets": [],
+        "provides": [],
+        "requires": [],
+        "optional": [],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": "plugin.json unreadable",
+        "serverPart": true,
+        "server": "error",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "broken",
+        "id": "ai.test.broken",
+        "name": "Broken",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level ?",
+            "required": true,
+            "status": "unsupported",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "core",
+            "name": "console API",
+            "required": true,
+            "status": "error",
+            "detail": "Its server part runs inside the console API and is mounted at /api/plugins/broken/."
+          }
+        ],
+        "dependents": [],
+        "health": "error",
+        "conflicts": []
+      },
+      {
+        "version": "1.0.0",
+        "apiLevel": 1,
+        "targets": [
+          "axf-console"
+        ],
+        "provides": [],
+        "requires": [],
+        "optional": [
+          "service:axf.live@1"
+        ],
+        "uiEditor": [],
+        "scopes": [],
+        "enabled": true,
+        "error": null,
+        "serverPart": false,
+        "server": "none",
+        "env": [],
+        "dataDir": null,
+        "dataDirProblem": null,
+        "services": [],
+        "folder": "live-only-user",
+        "id": "ai.test.liveuser",
+        "name": "Live User",
+        "dependencies": [
+          {
+            "kind": "framework",
+            "name": "plugin@1 API level 1",
+            "required": true,
+            "status": "ok",
+            "detail": "The host runs plugin@1 API level 1."
+          },
+          {
+            "kind": "service",
+            "name": "axf.live@1",
+            "required": false,
+            "status": "ok",
+            "providers": [
+              {
+                "folder": "livehost",
+                "name": "livehost",
+                "enabled": true,
+                "live": true
+              }
+            ],
+            "detail": "Provided by livehost."
+          }
+        ],
+        "dependents": [],
+        "health": "ok",
+        "conflicts": []
+      }
+    ],
+    "conflicts": [
+      {
+        "id": "plugin-id:ai.test.agents",
+        "kind": "plugin-id",
+        "key": "ai.test.agents",
+        "folders": [
+          "agents",
+          "twin"
+        ],
+        "detail": "Two plugins declare the same id; the host can't tell them apart.",
+        "severity": "error"
+      },
+      {
+        "id": "contribution:view:same",
+        "kind": "contribution",
+        "key": "view:same",
+        "folders": [
+          "dup-a",
+          "dup-b"
+        ],
+        "detail": "Two plugins contribute the same id; the last one installed replaces the other's.",
+        "severity": "warn"
+      },
+      {
+        "id": "data-dir:.axf-console/plugins/dup-a",
+        "kind": "data-dir",
+        "key": ".axf-console/plugins/dup-a",
+        "folders": [
+          "dup-a",
+          "dup-b"
+        ],
+        "detail": "Two plugins share a data folder; uninstalling one would delete the other's data.",
+        "severity": "error"
+      }
+    ],
+    "counts": {
+      "total": 12,
+      "enabled": 11,
+      "errors": 1,
+      "missingDeps": 2,
+      "conflicts": 3,
+      "editors": 2
+    }
+  },
+  "enabledOffProvider": {
+    "items": [
+      {
+        "folder": "llm",
+        "health": "partial",
+        "conflicts": [
+          "ui-editor:theme"
+        ]
+      },
+      {
+        "folder": "agents",
+        "health": "partial",
+        "conflicts": [
+          "plugin-id:ai.test.agents"
+        ]
+      },
+      {
+        "folder": "needs-off",
+        "health": "ok",
+        "conflicts": []
+      },
+      {
+        "folder": "off-provider",
+        "health": "ok",
+        "conflicts": [
+          "ui-editor:theme"
+        ]
+      },
+      {
+        "folder": "missing",
+        "health": "blocked",
+        "conflicts": []
+      },
+      {
+        "folder": "dup-a",
+        "health": "ok",
+        "conflicts": [
+          "contribution:view:same",
+          "data-dir:.axf-console/plugins/dup-a"
+        ]
+      },
+      {
+        "folder": "dup-b",
+        "health": "ok",
+        "conflicts": [
+          "contribution:view:same",
+          "data-dir:.axf-console/plugins/dup-a"
+        ]
+      },
+      {
+        "folder": "twin",
+        "health": "ok",
+        "conflicts": [
+          "plugin-id:ai.test.agents"
+        ]
+      },
+      {
+        "folder": "wrong-target",
+        "health": "blocked",
+        "conflicts": []
+      },
+      {
+        "folder": "by-id",
+        "health": "partial",
+        "conflicts": []
+      },
+      {
+        "folder": "broken",
+        "health": "error",
+        "conflicts": []
+      },
+      {
+        "folder": "live-only-user",
+        "health": "ok",
+        "conflicts": []
+      }
+    ],
+    "conflicts": [
+      {
+        "id": "plugin-id:ai.test.agents",
+        "kind": "plugin-id",
+        "key": "ai.test.agents",
+        "folders": [
+          "agents",
+          "twin"
+        ],
+        "detail": "Two plugins declare the same id; the host can't tell them apart.",
+        "severity": "error"
+      },
+      {
+        "id": "contribution:view:same",
+        "kind": "contribution",
+        "key": "view:same",
+        "folders": [
+          "dup-a",
+          "dup-b"
+        ],
+        "detail": "Two plugins contribute the same id; the last one installed replaces the other's.",
+        "severity": "warn"
+      },
+      {
+        "id": "data-dir:.axf-console/plugins/dup-a",
+        "kind": "data-dir",
+        "key": ".axf-console/plugins/dup-a",
+        "folders": [
+          "dup-a",
+          "dup-b"
+        ],
+        "detail": "Two plugins share a data folder; uninstalling one would delete the other's data.",
+        "severity": "error"
+      },
+      {
+        "id": "ui-editor:theme",
+        "kind": "ui-editor",
+        "key": "theme",
+        "folders": [
+          "llm",
+          "off-provider"
+        ],
+        "detail": "More than one enabled plugin edits these values. Allowed: the last save wins, and each editor reloads current values when it opens or regains focus.",
+        "severity": "info"
+      }
+    ],
+    "counts": {
+      "total": 12,
+      "enabled": 12,
+      "errors": 1,
+      "missingDeps": 1,
+      "conflicts": 4,
+      "editors": 2
+    }
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "p:needs-off",
+        "kind": "plugin",
+        "label": "Needs Off",
+        "column": 0,
+        "row": 0,
+        "folder": "needs-off",
+        "providers": 0
+      },
+      {
+        "id": "p:missing",
+        "kind": "plugin",
+        "label": "Missing",
+        "column": 0,
+        "row": 2,
+        "folder": "missing",
+        "providers": 0
+      },
+      {
+        "id": "p:live-only-user",
+        "kind": "plugin",
+        "label": "Live User",
+        "column": 0,
+        "row": 4,
+        "folder": "live-only-user",
+        "providers": 0
+      },
+      {
+        "id": "p:dup-a",
+        "kind": "plugin",
+        "label": "Dup A",
+        "column": 0,
+        "row": 7,
+        "folder": "dup-a",
+        "providers": 0
+      },
+      {
+        "id": "p:dup-b",
+        "kind": "plugin",
+        "label": "Dup B",
+        "column": 0,
+        "row": 9,
+        "folder": "dup-b",
+        "providers": 0
+      },
+      {
+        "id": "p:twin",
+        "kind": "plugin",
+        "label": "Twin",
+        "column": 0,
+        "row": 11,
+        "folder": "twin",
+        "providers": 0
+      },
+      {
+        "id": "p:wrong-target",
+        "kind": "plugin",
+        "label": "Wrong Target",
+        "column": 0,
+        "row": 13,
+        "folder": "wrong-target",
+        "providers": 0
+      },
+      {
+        "id": "p:by-id",
+        "kind": "plugin",
+        "label": "By Id",
+        "column": 0,
+        "row": 15,
+        "folder": "by-id",
+        "providers": 0
+      },
+      {
+        "id": "p:broken",
+        "kind": "plugin",
+        "label": "Broken",
+        "column": 0,
+        "row": 17,
+        "folder": "broken",
+        "providers": 0
+      },
+      {
+        "id": "s:axf.agents@1",
+        "kind": "service",
+        "label": "axf.agents@1",
+        "column": 1,
+        "row": 0,
+        "missing": false,
+        "providers": 1
+      },
+      {
+        "id": "s:axf.live@1",
+        "kind": "service",
+        "label": "axf.live@1",
+        "column": 1,
+        "row": 2,
+        "missing": false,
+        "providers": 0
+      },
+      {
+        "id": "s:axf.llm@1",
+        "kind": "service",
+        "label": "axf.llm@1",
+        "column": 1,
+        "row": 4,
+        "missing": false,
+        "providers": 1
+      },
+      {
+        "id": "s:axf.nobody@1",
+        "kind": "service",
+        "label": "axf.nobody@1",
+        "column": 1,
+        "row": 6,
+        "missing": true,
+        "providers": 0
+      },
+      {
+        "id": "s:axf.off@1",
+        "kind": "service",
+        "label": "axf.off@1",
+        "column": 1,
+        "row": 8,
+        "missing": false,
+        "providers": 1
+      },
+      {
+        "id": "s:axf.search@1",
+        "kind": "service",
+        "label": "axf.search@1",
+        "column": 1,
+        "row": 10,
+        "missing": true,
+        "providers": 0
+      },
+      {
+        "id": "p:llm",
+        "kind": "plugin",
+        "label": "Llm",
+        "column": 2,
+        "row": 0,
+        "folder": "llm",
+        "providers": 0
+      },
+      {
+        "id": "p:agents",
+        "kind": "plugin",
+        "label": "Agents",
+        "column": 2,
+        "row": 2,
+        "folder": "agents",
+        "providers": 0
+      },
+      {
+        "id": "p:off-provider",
+        "kind": "plugin",
+        "label": "Off Provider",
+        "column": 2,
+        "row": 4,
+        "folder": "off-provider",
+        "providers": 0
+      }
+    ],
+    "edges": [
+      {
+        "from": "p:llm",
+        "to": "s:axf.llm@1",
+        "kind": "provides",
+        "broken": false
+      },
+      {
+        "from": "p:agents",
+        "to": "s:axf.agents@1",
+        "kind": "provides",
+        "broken": false
+      },
+      {
+        "from": "p:agents",
+        "to": "s:axf.llm@1",
+        "kind": "requires",
+        "broken": false
+      },
+      {
+        "from": "p:agents",
+        "to": "s:axf.search@1",
+        "kind": "optional",
+        "broken": true
+      },
+      {
+        "from": "p:needs-off",
+        "to": "s:axf.off@1",
+        "kind": "requires",
+        "broken": true
+      },
+      {
+        "from": "p:off-provider",
+        "to": "s:axf.off@1",
+        "kind": "provides",
+        "broken": true
+      },
+      {
+        "from": "p:missing",
+        "to": "s:axf.nobody@1",
+        "kind": "requires",
+        "broken": true
+      },
+      {
+        "from": "p:live-only-user",
+        "to": "s:axf.live@1",
+        "kind": "optional",
+        "broken": false
+      }
+    ],
+    "rows": 19
+  }
+}

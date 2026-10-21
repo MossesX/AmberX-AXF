@@ -82,6 +82,8 @@ export const STANDARD_ACTIONS: Record<string, ActionMeta> = {
   'run.deploy': { label: 'Deploy', requires: 'dev.deploy' },
   'dev.console': { label: 'Developer console', requires: 'dev.tools' },
   'help.about': { label: 'About' },
+  // Every app ships the settings interface (lib-settings registers the real handler; Kotlin ActionBus has the same stub).
+  'app.settings': { label: 'Settings' },
   'help.docs': { label: 'Documentation' },
   'view.shortcuts': { label: 'Keyboard shortcuts' },
 };

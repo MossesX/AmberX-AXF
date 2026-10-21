@@ -3,6 +3,7 @@ package {{APPLICATION_ID}}
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.devtools.DevtoolsModule
+import ai.amberx.axf.devtools.PluginManagerModule
 import ai.amberx.axf.logging.LoggingModule
 import ai.amberx.axf.nav.NavModule
 import ai.amberx.axf.network.NetworkModule
@@ -17,7 +18,7 @@ import ai.amberx.axf.ui.windows.WindowsModule
  */
 class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
-        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
+        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), PluginManagerModule(), WindowsModule(),
         AppModule(),
     )
 }

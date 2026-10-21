@@ -3,7 +3,7 @@
  * dialogs, tab renderers and actions; apps list their libraries and merge what they contribute into AppShell.
  * Libraries generated from framework/library-templates implement this.
  */
-import type { AxfRuntime, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -18,6 +18,8 @@ export interface AxfWebLibrary {
   template?: string;
   dependsOn?: string[];
   provides?: string[];
+  /** Kinds of values it edits (theme / style / layout / manager / builder): the UI-editor rule applies (last save wins, fresh on focus). */
+  uiEditor?: string[];
   /** register actions, terminal lines, services on window.AXF… — called once, in dependency order */
   register?(rt: AxfRuntime): void;
   views?: ViewMap;
@@ -65,6 +67,27 @@ export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[
   return { ordered: out, missing: [...missing] };
 }
 
+/** What the runtime remembers about an installed library (`rt.libraries`): declarations + the UI it offers. */
+export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
+  const tabs = (l.settingsTabs ?? []).map((t) => ({ id: t.id, label: t.label }));
+  const tabIds = new Set(tabs.map((t) => t.id));
+  const views = Object.entries(l.views ?? {}).map(([id, v]) => ({ id, title: v.title, icon: v.icon }));
+  const dialogs = Object.entries(l.dialogs ?? {}).map(([id, d]) => ({ id, title: String((d as { title?: unknown }).title ?? id) }));
+  return {
+    id: l.id, label: l.label, version: l.version,
+    ...(l.template ? { template: l.template } : {}),
+    ...(l.dependsOn?.length ? { dependsOn: [...l.dependsOn] } : {}),
+    ...(l.provides?.length ? { provides: [...l.provides] } : {}),
+    ...(l.uiEditor?.length ? { uiEditor: [...l.uiEditor] } : {}),
+    contributes: [...views.map((v) => `view:${v.id}`), ...dialogs.map((d) => `dialog:${d.id}`), ...tabs.map((t) => `settings-tab:${t.id}`)],
+    ui: {
+      views, dialogs, settingsTabs: tabs,
+      settingsCount: (l.settingsPanels ?? []).filter((x) => tabIds.has(x.tab)).length + (l.settings ?? []).filter((g) => tabIds.has(g.tab ?? '')).length,
+      contextItems: (l.contextMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
+    },
+  };
+}
+
 /** Register every library with the runtime and merge their views / dialogs / tab renderers for AppShell. */
 export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; banners: BannerDef[]; slots: Record<string, SlotDef[]>; missing: string[] } {
   const { ordered, missing } = orderLibraries(libs);
@@ -85,7 +108,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
-    if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push({ id: l.id, label: l.label, version: l.version, ...(l.template ? { template: l.template } : {}) });
+    if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);

@@ -15,7 +15,12 @@ Account & security, Connections, Plugins, About. Other libraries and plugins add
 `AxfWebLibrary`: `settings` (groups of `SettingSpec`, rendered as controls), `settingsPanels` (custom UI) or
 `settingsTabs` (new tabs). The contract lives in `framework/core/settings.ts` (same shape as the Android
 `SettingsGroup` / `SettingSpec`); values persist per app in localStorage, `secret` values never do.
-Install it with `installLibraries(rt, [settingsLibrary, ...])`; open it with `app.settings` or `settings.open:<tab>`.
+Install it with `installLibraries(rt, [settingsLibrary, ...])`; open it with `app.settings` or `settings.open:<tab>`. Every
+`axf init` app ships it (the templates install it in `App.tsx`; the starter nav and app menus have a Settings entry). The
+**Plugins** tab lists every installed library with its health, dependents and clashes from the plugin inventory engine
+(`framework/core/engines/plugins.ts`, plugin-inventory@1, via `framework/react/pluginRecords.ts`), and opens the Plugin
+Manager when that plugin is installed. Plugins never ship a settings screen of their own: they add groups, panels or
+sub-tabs under Plugins.
 
 ## alerts (`ai.amberx.axf.alerts`)
 

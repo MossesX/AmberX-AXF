@@ -5,6 +5,7 @@ import ai.amberx.axf.admin.AdminModule
 import ai.amberx.axf.billing.BillingModule
 import ai.amberx.axf.data.DataModule
 import ai.amberx.axf.devtools.DevtoolsModule
+import ai.amberx.axf.devtools.PluginManagerModule
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.logging.LoggingModule
 import ai.amberx.axf.nav.NavModule
@@ -19,7 +20,7 @@ import ai.amberx.axf.ui.windows.WindowsModule
 /** AXF Dev Console — the first app on the Android port; it builds the framework while tracking it. */
 class App : AxfApplication() {
     override fun modules(): List<AxfModule> = listOf(
-        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
+        DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), PluginManagerModule(), WindowsModule(),
         AccountsModule(), ProfileModule(), BillingModule(), AdminModule(), BrowserModule(),
         ConsoleModule(this),
     ) + AndroidPlatformModule.placeholders()
