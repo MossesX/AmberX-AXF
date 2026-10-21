@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T02:23:02.695Z",
+ "updatedAt": "2026-10-21T03:33:11.548Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -294,6 +294,19 @@
    "createdAt": "2026-10-19T12:02:10.988Z",
    "builtAt": "",
    "updatedAt": "2026-10-19T12:02:10.988Z",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-agent-host",
+   "title": "Agents + assistant sessions hosted on axHub (one host for every app)",
+   "detail": "Brett, Oct 20 2026: agents (Build Pilot's pilot-assembler, Mosses and every agent-definition@1 agent) and AI assistant live sessions should run on axHub, not inside each app. Build Pilot, the Dev Console and the phone apps become clients.\n\n- axHub gets an agent + session host: runs turns, owns live-session@1 event logs (sessions survive app restarts and browser closes), per-agent memory, provider keys in axHub's vault, hub permissions for who may use which agent.\n- Apps plug in through what the Fable rebuilds left open: the live-session host registry (`axf.live-host@1` / `register_host`, today a typed `axhub` placeholder in the console and Build Pilot), Build Pilot's assembly backend (BP_AGENT=local|console|off → add `axhub`), and the kernel placeholders `axf.agents`, `axhub.agent`.\n- axHub never depends on AXF (decision): the host speaks the contracts over its API (AXPP), with an AXF adapter on the AXF side (lib-hub).\n- The assembly gate (pilot-assembly@1) stays in Build Pilot: axHub only proposes ops; Build Pilot checks and builds. Manual mode unaffected.\n- Needs the axHub repo (MossesX/axHub) attached.\n\nUntil then: Build Pilot runs its agent locally (Fable rebuild Oct 20 2026), the console's assistant hosts its own sessions.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-21T03:33:11.548Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-21T03:33:11.548Z",
    "source": "chat"
   }
  ]
