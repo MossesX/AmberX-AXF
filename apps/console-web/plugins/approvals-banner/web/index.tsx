@@ -7,10 +7,16 @@
  * anyone else (or a console opened with just the console token) sees nothing. The banner never approves: Review opens
  * the request on the hub's own page, where Approve/Reject live.
  *
- * Polls every 20 s while the page is visible, again on focus and when the hub tab is closed (window focus). Hiding it
- * lasts until something new arrives.
+ * Polls every 5 s while the page is visible, again on focus. Hiding it lasts until something new arrives.
+ *
+ * Opens by itself (Oct 20 2026, axHub decision #87): each new request opens once in the `approvals.review` dialog, which
+ * shows the hub's own approval page in a frame (the hub allows that only for the console's origin, set in
+ * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
+ * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
+ * themselves" can be switched off in its settings (per browser).
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -18,7 +24,26 @@ import './approvals-banner.css';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
-const POLL_MS = 20_000;
+const POLL_MS = 5_000;
+const AUTO_KEY = 'approvals-banner.autoOpen';
+const OPENED_KEY = 'approvals-banner.opened';
+let runtime: AxfRuntime | null = null;
+/** Per-browser conveniences; storage can be missing or throw, so everything falls back to defaults. */
+const load = (k: string) => { try { return globalThis.localStorage?.getItem(k) ?? null; } catch { return null; } };
+const save = (k: string, v: string) => { try { globalThis.localStorage?.setItem(k, v); } catch { /* fine */ } };
+export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
+const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
+let reviewing: string | null = null;
+/** Open each new request once, in the console, unless switched off or one is already on screen. */
+function autoOpen(pending: Pending[]) {
+  if (!runtime || !autoOpenOn() || reviewing) return;
+  const next = pending.find((p) => !opened.has(p.id));
+  if (!next) return;
+  opened.add(next.id);
+  save(OPENED_KEY, [...opened].slice(-50).join(','));
+  openReview(next.id);
+}
+export function openReview(id: string) { reviewing = id; runtime?.openDialog('approvals.review', { id }); }
 const DEFAULT_HUB = 'https://axhub.amberxai.com';
 
 interface Pending { id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string }
@@ -67,6 +92,7 @@ export async function checkNow(): Promise<void> {
       approvalsUrl: sameHub(j.approvalsUrl) ? String(j.approvalsUrl) : `${hub}/auth/admin/approvals`,
       checkedAt: new Date().toISOString(), error: '',
     });
+    autoOpen(pending);
   } finally {
     inflight = false;
   }
@@ -115,20 +141,19 @@ function ApprovalsBanner() {
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
-        <a className="fx-btn fx-btn--primary axp-approvals-banner__go" href={review} target="_blank" rel="noopener noreferrer">
-          <Icon name="external" size={14} /> Review
-        </a>
+        {first ? <Button tone="primary" icon="shield" onClick={() => openReview(first.id)}>Review</Button>
+          : <a className="fx-btn fx-btn--primary axp-approvals-banner__go" href={review} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> Review</a>}
         <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={() => set({ hiddenIds: ids })}><Icon name="x" size={16} /></button>
       </div>
       {open && (
         <ul className="axp-approvals-banner__list">
           {s.pending.map((p) => (
             <li key={p.id}>
-              <a className="axp-approvals-banner__item" href={p.url} target="_blank" rel="noopener noreferrer">
+              <button type="button" className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
                 <span className="axp-approvals-banner__tool">{p.tool}</span>
                 <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
                 <span className="axp-approvals-banner__when">{ago(p.createdAt)}</span>
-              </a>
+              </button>
             </li>
           ))}
           {s.count > s.pending.length && <li className="fx-muted fx-small">…and {s.count - s.pending.length} more on the hub.</li>}
@@ -138,7 +163,43 @@ function ApprovalsBanner() {
   );
 }
 
+/* ---------------- the review dialog: the hub's own page, in a frame ---------------- */
+
+function ReviewDialog({ id }: { id: string }) {
+  const s = useApprovals();
+  const [decided, setDecided] = useState(false);
+  const p = s.pending.find((x) => x.id === id);
+  const url = p?.url ?? `${s.hub}/auth/admin/approvals/${encodeURIComponent(id)}`;
+  // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
+  useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
+  useEffect(() => {
+    if (s.status !== 'ok' || p) return;
+    setDecided(true);
+    const t = setTimeout(() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }, 2_500);
+    return () => clearTimeout(t);
+  }, [s.status, s.checkedAt, p, id]);
+  return (
+    <div className="fx-stack axp-approvals-review">
+      {decided && <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> Decided. Closing…</p>}
+      <iframe className="axp-approvals-review__frame" title="Approval on axHub" src={url} sandbox="allow-forms allow-same-origin" referrerPolicy="no-referrer" />
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>
+        This is axHub's own page: Approve or Reject runs there. Blank? <a href={url} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>
+      </p>
+    </div>
+  );
+}
+
 /* ---------------- settings ---------------- */
+
+function AutoOpenSwitch() {
+  const [on, setOn] = useState(autoOpenOn());
+  return (
+    <label className="fx-row" style={{ alignItems: 'flex-start' }}>
+      <input type="checkbox" checked={on} onChange={(e) => { save(AUTO_KEY, e.target.checked ? 'on' : 'off'); setOn(e.target.checked); }} />
+      <span><strong>Open new approvals by themselves</strong><br /><span className="fx-small fx-muted">Each new request pops up here once, showing the hub's approval page, so you can approve without leaving the console. This browser only.</span></span>
+    </label>
+  );
+}
 
 function StatusPanel() {
   const s = useApprovals();
@@ -152,8 +213,9 @@ function StatusPanel() {
   };
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>A banner at the top of the console while axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). Review opens the request on the hub; you approve or reject it there.</p>
+      <p style={{ margin: 0 }}>A banner at the top of the console while axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). New requests open here by themselves, on the hub's own page; you approve or reject them there.</p>
       <p className="fx-small" style={{ margin: 0 }}><strong>{line[s.status]}</strong>{s.checkedAt ? <span className="fx-muted"> · checked {ago(s.checkedAt)} · every {POLL_MS / 1000} s while the console is open</span> : null}</p>
+      <AutoOpenSwitch />
       <div className="fx-row fx-row--wrap">
         <Button tone="primary" icon="refresh" onClick={() => void checkNow()}>Check now</Button>
         <a className="fx-btn fx-btn--neutral" style={{ textDecoration: 'none' }} href={s.approvalsUrl} target="_blank" rel="noopener noreferrer">Open the approvals page</a>
@@ -166,12 +228,17 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.1.0',
+  version: '0.2.0',
   register(rt) {
+    runtime = rt;
+    start();
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
   },
   banners: [{ id: 'approvals', order: 5, render: () => <ApprovalsBanner /> }],
+  dialogs: {
+    'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
+  },
   settingsTabs: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' }],
   settingsPanels: [
     { id: 'approvals-banner.status', tab: 'approvals-banner', title: 'Approvals', icon: 'shield', order: 5, render: () => <StatusPanel /> },
