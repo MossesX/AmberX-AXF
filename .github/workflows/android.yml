@@ -30,6 +30,7 @@ jobs:
       - run: node framework/cli/project.mjs validate --all          # every project manifest (the build rule)
       - run: node framework/spec/check-project-fixtures.mjs          # JS validator = reference fixtures
       - run: node framework/spec/check-plugin-catalog.mjs            # plugin-catalog@1: pack, publish, verify, install guards
+      - run: node framework/spec/check-axf-server.mjs                # wall-signature + plugin-package fixtures still match their references
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
@@ -74,7 +75,7 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
-      - name: Alerts + MCP client — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
+      - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           (cd framework && npm install --no-audit --no-fund --silent)
@@ -82,6 +83,8 @@ jobs:
           npx -y tsx framework/spec/check-widgets.mts
           npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
           python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
+          node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
+          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages
           npx -y tsx framework/spec/check-plugin-inventory.mts
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
