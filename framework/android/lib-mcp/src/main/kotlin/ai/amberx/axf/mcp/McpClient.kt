@@ -219,7 +219,7 @@ public class McpClient(
 
     private fun matches(m: McpMessage, id: Int): Boolean = when (m) {
         is McpMessage.Result -> m.id.content == id.toString()
-        is McpMessage.Error -> m.id == null || m.id.content == id.toString()
+        is McpMessage.Error -> m.id.let { it == null || it.content == id.toString() }
         else -> false
     }
 
