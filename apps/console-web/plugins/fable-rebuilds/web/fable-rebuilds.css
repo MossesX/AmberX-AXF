@@ -1,0 +1,26 @@
+/* Fable rebuilds. Theme tokens only (axp- prefix, shared is-* states). */
+.axp-fable { display: flex; flex-direction: column; gap: var(--fx-space) }
+.axp-fable__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.35) }
+.axp-fable__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
+.axp-fable__row + .axp-fable__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-fable__hit { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); cursor: pointer }
+.axp-fable__hit:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-fable__main { display: flex; flex-direction: column; flex: 1; min-width: 0 }
+.axp-fable__title { font-weight: 600; overflow-wrap: anywhere }
+.axp-fable__meta { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); overflow-wrap: anywhere }
+.axp-fable__flags { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.35); color: var(--fx-muted) }
+.axp-fable__badge, .axp-fable__chip { flex: none; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); padding: 0 calc(var(--fx-space) * 0.5); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-fable__chip { font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14); padding: calc(var(--fx-space) * 0.2) calc(var(--fx-space) * 0.6); cursor: pointer; align-self: flex-start }
+.axp-fable__chip:hover:not(:disabled) { border-color: var(--fx-accent); color: var(--fx-text) }
+.axp-fable__chip:disabled { opacity: var(--fx-opacity-disabled) }
+.axp-fable__badge.is-pending, .axp-fable__chip.is-pending { background: var(--fx-accent-soft); color: var(--fx-accent); border-color: var(--fx-accent) }
+.axp-fable__badge.is-unsafe, .axp-fable__chip.is-unsafe { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-warning); border-color: var(--fx-warning) }
+.axp-fable__badge.is-complete, .axp-fable__chip.is-complete { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-success); border-color: var(--fx-success) }
+.axp-fable__badge.is-failed, .axp-fable__badge.is-broken { color: var(--fx-danger); border-color: var(--fx-danger) }
+.axp-fable__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); padding: 0 calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.75) }
+.axp-fable__detail { margin: 0; white-space: pre-wrap; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-fable__kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.35) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-fable__kv dt { color: var(--fx-muted) }
+.axp-fable__kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
+.axp-fable__report { margin: 0; max-height: 60vh; overflow: auto; padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-fable__logline { overflow-wrap: anywhere }
