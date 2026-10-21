@@ -16,7 +16,6 @@ Installed plugins: `mcp-client` (connects the console to other MCP servers; sett
 Claude project with its homes on GitHub / the VPS / a local git folder and a Claude.ai project kit; settings tab
 "Project wizard"; engine `wizard.mjs` on top of `framework/cli/claude-project.mjs`, self-test `test.mjs`).
 
-- `ai-assistant` — AI assistant ported from xGallery (many providers, setup wizard, chat dialog + in-chat settings, provides `axf.llm@1`, chats as agents via `axf.agents@1`; settings tab "AI assistant"; self-test `test.py`). <!-- axf-plugin:ai-assistant -->
 - `agent-manager` — agents from personas, lingo, skills and tools with per-agent persistent memory, wizards, training (Firecrawl, URLs, repo, MCP), workflows, add-on agents (Mosses = `coder`, axf-expert, ai-expert); provides `axf.agents@1`; settings tab "Agent manager"; self-test `test.py`. <!-- axf-plugin:agent-manager -->
 - `container-access` — the master switch for reaching other VPS containers through a locked-down Docker socket proxy (`deploy/haproxy.cfg`, started by `deploy/install-console.sh`), server-side protected list, audit log and approval-gated change batches; provides `axf.containers@1`; settings tab "Container access". <!-- axf-plugin:container-access -->
 - `snapshot-manager` — snapshots of container files before every approved change, diff, one-step restore (itself undoable), retention 30 days / 5 GB; provides `axf.snapshots@1`; settings tab "Snapshots". <!-- axf-plugin:snapshot-manager -->

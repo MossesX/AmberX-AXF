@@ -17,7 +17,6 @@ again. These features belong to the **assistant plugin**; the kernel only carrie
 
 | Piece | Web (reference) | Kotlin kernel | Python (console plugins) |
 | --- | --- | --- | --- |
-| Types, reducer, log, host interface, placeholder, host registry | `framework/core/live-session.ts` | `ai.amberx.axf.kernel.live` (`LiveSession.kt`) | `plugins/ai-assistant/server/sessions.py` (log + reducer + local host) | <!-- axf-plugin:ai-assistant -->
 | Conformance | `spec/fixtures/live-session.json` (from `gen-fixtures.mts`) | `LiveSessionConformanceTest` | `test.py` replays the same fixture |
 
 - **States:** `idle` · `running` · `waiting` · `closed` (`closed` is final).
@@ -41,8 +40,6 @@ again. These features belong to the **assistant plugin**; the kernel only carrie
 
 | Host | Where | Status |
 | --- | --- | --- |
-| `local` | inside the app/console that runs the assistant (the console's AI assistant plugin) | **built** (Oct 18 2026): turns run detached from the request, survive browser closes, replay on reattach; a console restart mid-turn marks that turn `interrupted` | <!-- axf-plugin:ai-assistant -->
-| `axhub` | session workers on the VPS hub, reached from any app or device | **placeholder**: picked in Settings → Plugins → AI assistant → Sessions, answers "not available yet" until axHub's worker side exists | <!-- axf-plugin:ai-assistant -->
 
 Future hosts register the same way (open registry); nothing in an app changes.
 
