@@ -24,8 +24,8 @@ type Answer = 'done' | 'skip' | 'stop' | 'ok';
 interface Prompt { id: string; index: number; total: number; note: string }
 
 /* ---------------- shared store (banner + dialog) ---------------- */
-const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null; aiBusy: boolean; aiError: string } =
-  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null, aiBusy: false, aiError: '' };
+const st: { report: Report | null; loading: boolean; error: string; unauthorized: boolean; run: Record<string, Run>; runMsg: Record<string, string>; fixing: boolean; dismissed: boolean; prompt: Prompt | null; aiBusy: boolean; aiError: string; fixedUntil: Record<string, number> } =
+  { report: null, loading: false, error: '', unauthorized: false, run: {}, runMsg: {}, fixing: false, dismissed: false, prompt: null, aiBusy: false, aiError: '', fixedUntil: {} };
 /** Checks Mosses wrote (the AI routine) run with ids `routine:<id>`; everything else comes from reading the codebase. */
 export const isAiCheck = (c: Check) => c.id.startsWith('routine:');
 /**
@@ -45,6 +45,18 @@ export function answerPrompt(a: Answer) { const r = promptResolve; promptResolve
 let snap = { ...st };
 const subs = new Set<() => void>();
 const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
+/** How long a fixed item stays in the banner's drop-down showing "Fixed" before it leaves (Brett, Oct 20 2026). */
+export const FIXED_LINGER_MS = 3000;
+/** Mark a check fixed: it keeps its row (with the Fixed badge) for FIXED_LINGER_MS, then drops out of the banner. */
+function markFixed(id: string) {
+  st.fixedUntil = { ...st.fixedUntil, [id]: Date.now() + FIXED_LINGER_MS };
+  setTimeout(() => {
+    if ((st.fixedUntil[id] ?? 0) > Date.now()) return; // fixed again since: its own timer clears it
+    const { [id]: _gone, ...rest } = st.fixedUntil; st.fixedUntil = rest;
+    if (st.run[id] === 'done') { const { [id]: _r, ...run } = st.run; st.run = run; const { [id]: _m, ...msg } = st.runMsg; st.runMsg = msg; }
+    emit();
+  }, FIXED_LINGER_MS + 50);
+}
 export const useSys = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => snap, () => snap);
 
 export async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -113,7 +125,7 @@ export async function fixAll() {
   if (st.fixing || !st.report) return;
   const queue = guidedOrder(issues(st.report));
   st.fixing = true; st.prompt = null; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
-  const set = (id: string, r: Run, msg?: string) => { st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; emit(); };
+  const set = (id: string, r: Run, msg?: string) => { st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; if (r === 'done') markFixed(id); emit(); };
   const passes = (c: Check) => c.status === 'ok' || c.status === 'info';
   let stopped = false;
   for (let k = 0; k < queue.length && !stopped; k++) {
@@ -176,7 +188,7 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
       const all = await call<{ jobs: Record<string, HostJob | null> }>('autofix');
       j = all.jobs[c.id] ?? j;
     }
-    st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; emit();
+    st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; if (j.state === 'done') markFixed(c.id); emit();
     rt.toast(`${c.title}: ${j.message}`, j.state === 'done' ? 'success' : 'warning');
     await loadSystemCheck(true);
   } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
@@ -197,6 +209,7 @@ export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Prom
     const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' });
     replace(r.check);
     st.run[c.id] = r.check.status === 'ok' || r.check.status === 'info' ? 'done' : 'failed'; st.runMsg[c.id] = r.message;
+    if (st.run[c.id] === 'done') markFixed(c.id);
     rt.toast(`${c.title}: ${r.message}`, st.run[c.id] === 'done' ? 'success' : 'warning');
   } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
   emit();
@@ -208,7 +221,14 @@ export function SystemBanner() {
   const s = useSys();
   const rt = useRuntime();
   const [open, setOpen] = useState(false);
-  const list = useMemo(() => issues(s.report).filter((c) => !isKeyIssue(c)), [s.report]);
+  // Issues, plus anything just fixed: it stays (badge "Fixed") for FIXED_LINGER_MS so you see it worked, then leaves.
+  const list = useMemo(() => {
+    const open = issues(s.report).filter((c) => !isKeyIssue(c));
+    const ids = new Set(open.map((c) => c.id));
+    const fixed = (s.report?.checks ?? []).filter((c) => s.fixedUntil[c.id] && !ids.has(c.id) && !isKeyIssue(c));
+    return [...open, ...fixed];
+  }, [s.report, s.fixedUntil]);
+  const openCount = list.filter((c) => !s.fixedUntil[c.id] || isIssue(c)).length;
   if (s.dismissed) return null;
   if (s.unauthorized) {
     return (
@@ -236,7 +256,7 @@ export function SystemBanner() {
       <div className="axp-systems-check-banner__row">
         <Icon name="alert" />
         <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
+          {openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
@@ -258,8 +278,8 @@ export function SystemBanner() {
                 <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                 </button>
-                {s.run[c.id] === 'working' || s.run[c.id] === 'waiting'
-                  ? <RunBadge r={s.run[c.id]} />
+                {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
+                  ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
                   : label
                     ? <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>
                     : <Button tone="primary" icon="zap" onClick={() => rt.openDialog('system-check', { focus: c.id })}>Fix…</Button>}
