@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T02:31:33.830Z",
+ "generatedAt": "2026-10-21T06:00:14.936Z",
  "statuses": [
   "built",
   "partial",
@@ -17625,6 +17625,53 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "m.browser",
+   "title": "lib-browser — Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "ai.amberx.axf.browser",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-browser"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.browser"
+   ],
+   "modules": [
+    "lib-browser"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "framework/android/lib-browser + library.json",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "m.media",
    "title": "lib-media — Media3 player, camera, audio (placeholder)",
    "area": "Modules",
@@ -17705,6 +17752,46 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "m.editor",
+   "title": "lib-editor — Rich text, markdown, code editor, diff",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.editor",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.editor"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
    "id": "m.ai",
    "title": "lib-ai — AI providers, streaming, tools",
    "area": "Modules",
@@ -17783,6 +17870,286 @@
    ],
    "model": "opus",
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "m.github",
+   "title": "lib-github — Repos, commits, Actions, releases, tracker sync",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.github",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.github"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.work",
+   "title": "lib-work — WorkManager scheduler, alarms, foreground services",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.work",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.work"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "m.notifications",
+   "title": "lib-notifications — Channels, actions, scheduled, FCM/self-hosted push",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.notifications",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.notifications"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.sensors",
+   "title": "lib-sensors — Sensors, BLE, NFC, Wi-Fi tools",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.sensors",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.sensors"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.files",
+   "title": "lib-files — File manager, transfer, backup, offline sync",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.files",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.files"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.charts",
+   "title": "lib-charts — Charts, data grids, dashboards",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.charts",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.charts"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.plugins",
+   "title": "lib-plugins — Plugin loader, packs, OTA asset packs, designer bridge",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.plugins",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.plugins"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "m.devtools",

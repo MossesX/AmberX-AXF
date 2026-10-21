@@ -84,11 +84,11 @@ fun ParamField(p: LibraryParam, value: String, onChange: (String) -> Unit) {
         "bool" -> AxfSwitch(value.ifBlank { p.defaultText }.lowercase() in setOf("true", "yes", "on", "1"), { onChange(it.toString()) }, label = p.label, description = p.help)
         "choice" -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             AxfText(p.label); p.help?.let { AxfText(it, muted = true) }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for (c in p.choices) AxfChip(c, selected = value.ifBlank { p.defaultText } == c, onClick = { onChange(c) }) }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for (c in p.choices.orEmpty()) AxfChip(c, selected = value.ifBlank { p.defaultText } == c, onClick = { onChange(c) }) }
         }
         else -> AxfTextField(value, onChange, Modifier.fillMaxWidth(), label = p.label + if (p.required) " *" else "", placeholder = p.defaultText.ifBlank { p.help }, monospace = p.type == "list", singleLine = p.type != "list", minLines = if (p.type == "list") 2 else 1, error = err)
     }
-    if (p.help != null && p.type !in setOf("bool", "choice")) AxfText(p.help, muted = true)
+    p.help?.let { h -> if (p.type !in setOf("bool", "choice")) AxfText(h, muted = true) }
 }
 
 /**
@@ -125,7 +125,7 @@ fun InstallWizardDialog(libraryId: String) {
             ParamField(p, answers[p.key] ?: "", { answers[p.key] = it })
         } else {
             AxfSectionHeader("What the installer writes", accent = true)
-            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.gradle}\nApp.kt modules() += ${lib.moduleCtor}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
+            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.install?.gradle.orEmpty()}\nApp.kt modules() += ${lib.install?.module.orEmpty()}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
             CodeBlock(script)
             if (log.isNotBlank()) CodeBlock(log)
         }

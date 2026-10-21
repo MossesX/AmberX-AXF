@@ -21,6 +21,8 @@ export * from './terminal';
 export * from './options';
 export * from './project';
 export * from './live-session';
+export * from './sse';
+export * from './catalog';
 export * from './assistant';
 export * from './agents';
 export * from './engines/plugins';

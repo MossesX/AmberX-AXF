@@ -83,6 +83,7 @@ jobs:
           npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
           python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
           npx -y tsx framework/spec/check-plugin-inventory.mts
+          npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py

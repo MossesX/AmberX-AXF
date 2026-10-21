@@ -2118,5 +2118,51 @@
     "wave": 1,
     "module": "lib-lock",
     "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)"
+  },
+  "m.browser": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-browser",
+    "notes": "framework/android/lib-browser + library.json"
+  },
+  "m.editor": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.github": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.work": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.notifications": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.sensors": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.files": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.charts": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
+  },
+  "m.plugins": {
+    "status": "planned",
+    "wave": 2,
+    "module": null
   }
 }

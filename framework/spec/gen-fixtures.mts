@@ -24,6 +24,7 @@ import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPEND
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
+import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -670,5 +671,25 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
     enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
     graph: pluginGraph(inventory.items, ctx.live),
+  });
+}
+
+// catalog@1 / status / tracker@1 / library@1 / libraries@1 / boilerplate@1 / boilerplates@1 (core/catalog.ts = Kotlin kernel.catalog).
+// Inputs are a frozen snapshot of the real files (spec/catalog-samples.json), so this fixture moves only when the parsers do.
+{
+  const s = JSON.parse(readFileSync(join(root, 'spec/catalog-samples.json'), 'utf8'));
+  const catalog = parseCatalog(s.catalog);
+  const libraries = parseLibrariesIndex(s.libraries);
+  const tracker = parseTracker(s.tracker);
+  const params = [...libraries.items.flatMap((l) => l.params), ...parseLibrary(s.lenient.library).params];
+  const answers = ['', ' ', 'yes', 'off', '0', '6', '0.5', '13', '1e3', '0x10', '6d', 'Infinity', '-2', 'abc', 'a, b,\nc', 'pin', 'none', 'floating', 'other'];
+  write('catalog.json', {
+    inputs: s,
+    catalog, status: parseStatusMap(s.status), tracker, libraries,
+    boilerplates: s.boilerplates.map(parseBoilerplate), boilerplateIndex: parseBoilerplateIndex(s.boilerplateIndex),
+    lenient: { catalog: parseCatalog(s.lenient.catalog), library: parseLibrary(s.lenient.library), empty: { catalog: parseCatalog(null), tracker: parseTracker('x'), libraries: parseLibrariesIndex([]), boilerplate: parseBoilerplate(7) } },
+    params: params.map((p) => ({ param: p, defaultText: paramDefaultText(p), answers: answers.map((text) => ({ text, json: paramToJson(p, text) ?? null, error: paramError(p, text) })) })),
+    libraryCards: libraryCards(catalog, libraries.items, tracker),
+    libraryCardsNoTracker: libraryCards(catalog, libraries.items, null),
   });
 }
