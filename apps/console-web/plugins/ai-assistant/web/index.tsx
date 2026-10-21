@@ -6,6 +6,7 @@ import { ActivityIcon } from './activity';
 import { ChatPanel, type ChatStart, useStatus } from './chat';
 import { BehaviorPanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard, UsagePanel } from './settings';
 import './ai-assistant.css';
+import { appMenu } from './menu';
 
 /*
  * AI assistant plugin (web part, Fable rebuild). The chat UI is built on the framework's assistant contract
@@ -40,6 +41,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
   version: '0.2.0',
+  appMenu,
   provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {
     rt.actions.register('ai-assistant.open', ([prompt]) => rt.openDialog('ai-assistant.chat', prompt ? { note: prompt } : {}), { label: 'Open the AI assistant' });

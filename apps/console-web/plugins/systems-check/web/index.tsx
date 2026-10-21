@@ -5,6 +5,7 @@ import { SystemBanner, SystemCheckDialog, loadSystemCheck } from './SystemCheck'
 import { KeysBanner, KeysDialog } from './KeysBanner';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
 import { AiPanel, BannersPanel, RoutinePanel } from './panels';
+import { appMenu } from './menu';
 
 /*
  * Systems check plugin (web part): the banners at the top of every view (keys needed, systems check, What's new), the
@@ -30,6 +31,7 @@ export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.systems-check',
   label: 'Systems check',
   version: '0.2.0',
+  appMenu,
   provides: ['axf.systems-check'],
   register(rt) {
     startOnce();

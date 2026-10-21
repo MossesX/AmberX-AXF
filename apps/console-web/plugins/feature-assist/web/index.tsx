@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, featureBuilt, getStatus, knownFeature, refreshStatus } from './api';
 import { BuildDialog, DescribeBox, FeatureActions, StatusPanel } from './ui';
 import './feature-assist.css';
+import { appMenu } from './menu';
 
 /*
  * Feature assistant (web part), all through the Plan view's extension points:
@@ -15,6 +16,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Feature assistant',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.feature-assist'],
   register(rt) {
     void refreshStatus();

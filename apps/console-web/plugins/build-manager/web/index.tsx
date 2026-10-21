@@ -18,6 +18,7 @@ import { SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES } from './merge.mjs';
 import { FOLDER, ID, KEYS, VERSION, fmt, getStore, loadList, setFocus, start } from './store';
 import { BuildBanner, BuildManagerView, SettingsSummary } from './ui';
 import './build-manager.css';
+import { appMenu, REMAINING } from './menu';
 
 const VIEW = 'build-manager';
 
@@ -38,6 +39,16 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Build manager',
   version: VERSION,
+  appMenu,
+  appMenuProviders: {
+    [REMAINING]: {
+      max: 12, moreAction: 'nav:build-manager', moreLabel: 'The whole Build manager…',
+      items: async () => {
+        if (!getStore().loaded) await loadList();
+        return getStore().rows.map((r) => ({ id: `build:${r.key}`, label: `${r.title} · ${r.model}${r.left == null ? '' : ` · ${fmt(r.left)} left`}`, icon: r.needsSplit ? 'alert' : 'play', action: `build-manager.open:${encodeURIComponent(r.key)}` }));
+      },
+    },
+  },
   provides: ['axf.build-manager'],
   register(rt) {
     start(rt);

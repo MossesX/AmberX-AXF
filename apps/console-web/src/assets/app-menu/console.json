@@ -1,0 +1,210 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "console",
+  "name": "Console",
+  "version": "1.0.0",
+  "description": "The Dev Console's application menu: reaches every page, build list, framework part, plugin, app and toolbar or navigation item, so the toolbar and side navigation can stay hidden. Plugins add their own entries; live lists fill when a submenu opens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "console",
+    "dev",
+    "live"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "console",
+        "label": "Console",
+        "order": 10,
+        "items": [
+          { "id": "home", "label": "Home", "icon": "home", "action": "nav:home", "order": 10 },
+          { "id": "search", "label": "Search everything…", "icon": "search", "action": "console.search", "order": 11 },
+          { "id": "alerts", "label": "Alerts", "icon": "bell", "action": "alerts.open", "badge": "alerts.unread", "order": 12 },
+          { "id": "s1", "separator": true, "order": 20 },
+          { "id": "settings", "label": "Settings", "icon": "settings", "action": "app.settings", "order": 21 },
+          { "id": "settings-pages", "label": "Settings pages", "icon": "sliders", "provider": "settings", "order": 22 },
+          { "id": "account", "label": "Account", "icon": "shield", "action": "nav:account", "order": 23 },
+          { "id": "s2", "separator": true, "order": 30 },
+          { "id": "terminal", "label": "Output terminal", "icon": "terminal", "action": "terminal.open", "order": 31 },
+          { "id": "refresh", "label": "Reload data", "icon": "refresh", "action": "console.refresh", "order": 33 },
+          { "id": "open-project", "label": "Open project…", "icon": "folder", "action": "console.openProject", "order": 34 },
+          { "id": "save", "label": "Save", "icon": "save", "action": "file.save", "shortcut": "Ctrl+S", "requires": "files.write", "order": 35 },
+          { "id": "s3", "separator": true, "order": 80 },
+          { "id": "about", "label": "About the console", "icon": "info", "action": "help.about", "order": 81 }
+        ]
+      },
+      {
+        "id": "builds",
+        "label": "Builds",
+        "order": 20,
+        "items": [
+          { "id": "pending", "label": "Pending builds", "icon": "clock", "action": "nav:pending", "badge": "pending.open", "order": 10 },
+          { "id": "pending-open", "label": "Open pending items", "icon": "list", "provider": "console.pending", "order": 11 },
+          { "id": "queue", "label": "Build queue", "icon": "play", "action": "nav:build", "order": 12 },
+          { "id": "queue-left", "label": "Queue steps left", "icon": "list", "provider": "console.queue", "order": 13 },
+          { "id": "s1", "separator": true, "order": 20 },
+          { "id": "plan", "label": "Plan", "icon": "layers", "action": "nav:plan", "order": 30 },
+          { "id": "tracker", "label": "Tracker", "icon": "check-circle", "action": "nav:tracker", "order": 31 },
+          { "id": "s2", "separator": true, "order": 40 },
+          { "id": "export-plan", "label": "Copy build plan", "icon": "copy", "action": "console.exportPlan", "order": 41 },
+          { "id": "export-status", "label": "Copy status.json", "icon": "copy", "action": "console.exportStatus", "order": 42 },
+          { "id": "build", "label": "Build a library or app…", "icon": "hammer", "action": "run.build", "shortcut": "Alt+B", "requires": "dev.tools", "order": 43 }
+        ]
+      },
+      {
+        "id": "framework",
+        "label": "Framework",
+        "order": 30,
+        "items": [
+          {
+            "id": "features", "label": "Features", "icon": "check-circle", "order": 10,
+            "items": [
+              { "id": "catalog", "label": "Catalog", "icon": "list", "action": "nav:catalog" },
+              { "id": "tracker", "label": "Tracker", "icon": "check-circle", "action": "nav:tracker" },
+              { "id": "plan", "label": "Plan", "icon": "layers", "action": "nav:plan" },
+              { "id": "s1", "separator": true },
+              { "id": "unbuilt", "label": "Not built yet", "icon": "list", "provider": "console.features" }
+            ]
+          },
+          {
+            "id": "libraries", "label": "Libraries", "icon": "box", "order": 11,
+            "items": [
+              { "id": "all", "label": "All libraries", "icon": "box", "action": "nav:libraries" },
+              { "id": "install", "label": "Install a library…", "icon": "download", "action": "console.install", "requires": "dev.tools" },
+              { "id": "import-ui", "label": "Import a UI library…", "icon": "upload", "action": "console.importUi", "requires": "dev.tools" },
+              { "id": "s1", "separator": true },
+              { "id": "list", "label": "Library list", "icon": "list", "provider": "console.libraries" }
+            ]
+          },
+          {
+            "id": "modules", "label": "Modules", "icon": "package", "order": 12,
+            "items": [
+              { "id": "all", "label": "Modules & packages", "icon": "package", "action": "nav:modules" },
+              { "id": "demos", "label": "Demos", "icon": "smartphone", "action": "nav:demos" },
+              { "id": "s1", "separator": true },
+              { "id": "list", "label": "Module list", "icon": "list", "provider": "console.modules" }
+            ]
+          },
+          {
+            "id": "boilerplates", "label": "Boilerplates", "icon": "layout", "order": 13,
+            "items": [
+              { "id": "all", "label": "All boilerplates", "icon": "layout", "action": "nav:boilerplates" },
+              { "id": "s1", "separator": true },
+              { "id": "list", "label": "Boilerplate list", "icon": "list", "provider": "console.boilerplates" }
+            ]
+          },
+          { "id": "s1", "separator": true, "order": 20 },
+          { "id": "assets", "label": "Assets", "icon": "palette", "action": "nav:assets", "order": 21 },
+          { "id": "components", "label": "Components", "icon": "grid", "action": "nav:components", "order": 22 },
+          { "id": "import-asset", "label": "Import an asset…", "icon": "upload", "action": "dialog:import-asset", "requires": "assets.import", "order": 23 },
+          {
+            "id": "layouts", "label": "Layouts", "icon": "layout", "order": 24,
+            "items": [
+              { "id": "next", "label": "Next layout", "icon": "layout", "action": "swap:layout:next", "shortcut": "Alt+L" },
+              { "id": "s1", "separator": true },
+              { "id": "focus-top", "label": "Focus top", "icon": "layout", "action": "swap:layout:focus-top" },
+              { "id": "classic-ide", "label": "Classic IDE", "icon": "layout", "action": "swap:layout:classic-ide" },
+              { "id": "studio-dock", "label": "Studio dock", "icon": "layout", "action": "swap:layout:studio-dock" }
+            ]
+          },
+          { "id": "s2", "separator": true, "order": 30 },
+          {
+            "id": "standards", "label": "Standards", "icon": "shield", "order": 31,
+            "items": [
+              { "id": "projects", "label": "Projects", "icon": "folder", "action": "nav:standards-projects" },
+              { "id": "rules", "label": "Manifest rules", "icon": "shield", "action": "nav:standards-rules" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "plugins",
+        "label": "Plugins",
+        "order": 40,
+        "items": [
+          { "id": "s1", "separator": true, "order": 20 },
+          { "id": "s2", "separator": true, "order": 85 },
+          { "id": "all", "label": "All plugins", "icon": "package", "provider": "console.plugins", "order": 90 },
+          { "id": "settings", "label": "Plugin settings", "icon": "settings", "action": "settings.open:plugins", "order": 91 }
+        ]
+      },
+      {
+        "id": "apps",
+        "label": "Apps",
+        "order": 50,
+        "items": [
+          {
+            "id": "pilot", "label": "Build Pilot", "icon": "rocket", "order": 10,
+            "items": [
+              { "id": "open", "label": "Open Pilot in a new tab", "icon": "external", "action": "console.open:pilot", "order": 50 }
+            ]
+          },
+          {
+            "id": "axhub", "label": "axHub", "icon": "layers", "order": 11,
+            "items": [
+              { "id": "approvals", "label": "Approvals", "icon": "shield", "action": "console.open:axhub-approvals", "order": 20 },
+              { "id": "apps", "label": "App catalog", "icon": "download", "action": "console.open:axhub-apps", "order": 21 },
+              { "id": "users", "label": "Users", "icon": "user", "action": "console.open:axhub-users", "order": 22 },
+              { "id": "account", "label": "Your hub account", "icon": "key", "action": "console.open:axhub-account", "order": 23 },
+              { "id": "s1", "separator": true, "order": 40 },
+              { "id": "open", "label": "Open axHub in a new tab", "icon": "external", "action": "console.open:axhub", "order": 50 }
+            ]
+          },
+          {
+            "id": "demo", "label": "Demo site", "icon": "smartphone", "order": 12,
+            "items": [
+              { "id": "open", "label": "Open the demo in a new tab", "icon": "external", "action": "console.open:demo", "order": 50 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "order": 60,
+        "items": [
+          { "id": "s1", "separator": true, "order": 10 },
+          {
+            "id": "look", "label": "Look", "icon": "palette", "order": 20,
+            "items": [
+              { "id": "next-color", "label": "Next color theme", "icon": "palette", "action": "swap:color-theme:next", "shortcut": "Alt+C", "order": 10 },
+              { "id": "next-style", "label": "Next style theme", "icon": "type", "action": "swap:style-theme:next", "shortcut": "Alt+S", "order": 11 },
+              { "id": "next-layout", "label": "Next layout", "icon": "layout", "action": "swap:layout:next", "order": 12 },
+              { "id": "s1", "separator": true, "order": 20 },
+              { "id": "random", "label": "Randomize", "icon": "shuffle", "action": "assets.random", "shortcut": "Alt+R", "requires": "assets.swap", "order": 21 },
+              { "id": "reset", "label": "Reset to defaults", "icon": "refresh", "action": "assets.reset", "order": 22 }
+            ]
+          },
+          {
+            "id": "spacing", "label": "Spacing", "icon": "sliders", "order": 21,
+            "items": [
+              { "id": "tight", "label": "Super tight", "icon": "minus", "action": "spacing:tight", "requires": "assets.swap" },
+              { "id": "compact", "label": "Compact", "icon": "menu", "action": "spacing:compact", "requires": "assets.swap" },
+              { "id": "regular", "label": "Regular", "icon": "list", "action": "spacing:regular", "requires": "assets.swap" }
+            ]
+          },
+          { "id": "appearance", "label": "Appearance settings", "icon": "settings", "action": "settings.open:appearance", "order": 22 },
+          { "id": "s2", "separator": true, "order": 30 },
+          { "id": "pages", "label": "Every page", "icon": "layout", "provider": "views", "order": 31 },
+          { "id": "nav", "label": "Navigation items", "icon": "menu", "provider": "nav", "order": 32 },
+          { "id": "toolbar", "label": "Toolbar items", "icon": "zap", "provider": "toolbar", "order": 33 },
+          { "id": "windows", "label": "Windows", "icon": "monitor", "provider": "windows", "order": 34 },
+          { "id": "dialogs", "label": "Dialogs", "icon": "box", "provider": "dialogs", "order": 35 }
+        ]
+      },
+      {
+        "id": "help",
+        "label": "Help",
+        "order": 70,
+        "items": [
+          { "id": "shortcuts", "label": "Keyboard shortcuts", "icon": "keyboard", "action": "view.shortcuts", "shortcut": "Alt+K", "order": 10 },
+          { "id": "docs", "label": "Documentation", "icon": "file", "action": "help.docs", "order": 11 },
+          { "id": "plugin-guide", "label": "Plugin guide", "icon": "code", "action": "console.open:plugin-guide", "order": 12 },
+          { "id": "s1", "separator": true, "order": 80 },
+          { "id": "about", "label": "About", "icon": "info", "action": "help.about", "order": 81 }
+        ]
+      }
+    ]
+  }
+}

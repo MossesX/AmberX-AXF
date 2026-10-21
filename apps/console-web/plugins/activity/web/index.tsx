@@ -17,6 +17,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './activity.css';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
@@ -304,6 +305,7 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Activity',
   version: VERSION,
+  appMenu,
   register(rt) {
     runtime = rt;
     start();

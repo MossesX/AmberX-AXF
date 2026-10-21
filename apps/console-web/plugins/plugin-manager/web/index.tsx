@@ -17,6 +17,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { PluginManager } from './PluginManager';
 import { KEYS, LAYOUTS, VIEWS } from './prefs';
 import { FOLDER } from './model';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.plugin-manager';
 
@@ -28,6 +29,7 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Plugin Manager',
   version: '0.2.0',
+  appMenu,
   uiEditor: ['manager'], // = plugin.json uiEditor: the UI-editor rule (last save wins per key, fresh on focus) applies
   register(rt) {
     rt.actions.register('plugin-manager.open', ([folder]) => {
@@ -42,6 +44,8 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Plugin Manager in a window' });
     rt.actions.register('plugin-manager.layout', ([id]) => { if (LAYOUTS.some((l) => l.id === id)) rt.settings.set(KEYS.layout, id!); }, { label: 'Plugin Manager layout', params: true });
     rt.actions.register('plugin-manager.view', ([id]) => { if (VIEWS.some((v) => v.id === id)) rt.settings.set(KEYS.view, id!); }, { label: 'Plugin Manager view', params: true });
+    // The Install view (plugin catalog on axHub) in one step, for the app menu and search.
+    rt.actions.register('plugin-manager.install', () => { rt.settings.set(KEYS.view, 'install'); rt.navigate('plugin-manager'); }, { label: 'Install plugins from the catalog' });
   },
   views: {
     'plugin-manager': { title: 'Plugin Manager', icon: 'package', keywords: ['plugins', 'extensions', 'dependencies', 'enable', 'disable', 'uninstall'], render: () => <PluginManager /> },

@@ -10,11 +10,13 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { loadProjects } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BUILT_IN, DEFAULT_TABS, LATER_DEFAULTS, encodeCustom, fromManifests, isHome, mergeApps, parseCustom, safeUrl, slug, tabsFor, type AppDef } from './apps';
 import './app-tabs.css';
+import { appMenu, TABS } from './menu';
 
 const ID = 'ai.amberx.axf.console.app-tabs';
 const FOLDER = 'app-tabs';
@@ -23,6 +25,10 @@ const SEEN_KEY = 'app-tabs.seenDefaults';
 const here = () => globalThis.location?.origin ?? '';
 
 /* ---------------- shared state: the app list and the saved choices ---------------- */
+
+let runtime: AxfRuntime | null = null;
+const savedTabs = (rt: AxfRuntime): string[] | null => { const t = rt.settings.get(KEYS.tabs); return Array.isArray(t) ? t.filter((x): x is string => typeof x === 'string') : null; };
+const knownApps = (rt: AxfRuntime): AppDef[] => mergeApps(BUILT_IN, manifestApps, parseCustom(rt.settings.get(KEYS.custom)));
 
 let manifestApps: AppDef[] = [];
 let manifestsLoaded: Promise<void> | null = null;
@@ -206,8 +212,27 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'App tabs',
   version: '0.1.0',
+  appMenu,
+  appMenuProviders: {
+    [TABS]: {
+      items: async () => {
+        if (runtime) await loadManifestApps();
+        const rt = runtime;
+        if (!rt) return [];
+        return tabsFor(knownApps(rt), savedTabs(rt), here()).map((a) => ({ id: `tab:${a.id}`, label: a.name, icon: a.icon, action: `app-tabs.show:${a.id}` }));
+      },
+    },
+  },
   register(rt) {
-    rt.actions.register('app-tabs.show', (args) => { const id = args?.[0]; if (id) rt.settings.set(KEYS.active, id); }, { label: 'Switch app tab', searchable: false });
+    runtime = rt;
+    // app-tabs.show:<id> — a known app not yet on the tab bar is added to it first (the app menu's "Show … in a tab").
+    rt.actions.register('app-tabs.show', (args) => {
+      const id = args?.[0];
+      if (!id) return;
+      const chosen = savedTabs(rt) ?? [...DEFAULT_TABS];
+      if (!chosen.includes(id) && knownApps(rt).some((a) => a.id === id && !isHome(a, here()))) rt.settings.set(KEYS.tabs, [...chosen, id]);
+      rt.settings.set(KEYS.active, id);
+    }, { label: 'Switch app tab', searchable: false });
     rt.actions.register('app-tabs.settings', () => rt.dispatch('settings.open:app-tabs'), { label: 'App tabs settings' });
   },
   slots: {
