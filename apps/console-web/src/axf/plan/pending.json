@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T16:26:19.992Z",
+ "updatedAt": "2026-10-21T16:56:55.399Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1292,11 +1292,15 @@
    "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
    "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
      "at": ""
+    },
+    {
+     "text": "Built Oct 21 2026 on Fable: branch fable/patches-wrapper, PR #5; Android CI green (kernel tests incl. EmbedConformanceTest, lib-hub, patches-debug.apk 20.6 MB). Report _claude/memory/docs/rebuilds/patches-wrapper.md.",
+     "at": "2026-10-21T16:56:48.036Z"
     }
    ],
    "subPrompts": [
@@ -1331,32 +1335,42 @@
     {
      "text": "3a. Patches app scaffold: `axf init apps/patches` (android-compose, developer app: look + settings from axHub, hub library), app id `patches`, package `ai.amberx.axf.patches`, project manifest (repo `MossesX/patches` reserved), own layout asset `patches-tabs` (top tabs, no menubar/toolbar/status, full width), nav asset `patches-tabs` with the three tabs, manifest hides toolbar/app-menu.",
      "at": "",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.831Z"
     },
     {
      "text": "3b. lib-hub `WebAppView`: a full web-app WebView (JavaScript + DOM storage on, cache allowed, origin allowlist with the hub origin for the sign-in wall, no file/content access, no mixed content, downloads to the hub app catalog handler), user agent suffix from `EmbedEngine.userAgentSuffix(\"patches\")`, `WebAppHolder` that keeps one WebView per tab alive across tab switches (reparented, never destroyed until the activity goes), back button = page history.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.885Z"
     },
     {
      "text": "3c. Patches views: three routes (console / pilot / axhub) each rendering the holder's WebView for that tab; the Patches banner (logo, day/night switch, clock, settings button) is the one banner; hub sign-in via the developer-app waiting screen (shared cookie store = one session for every tab); Settings → Patches group: hub address, each tab's URL, reload tab, open in the phone's browser.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.942Z"
     },
     {
      "text": "4. Wiring: CI (`android.yml` builds every app `app-bundle.mjs list --android` finds → `patches-debug.apk` + app catalog entry), `project.manifest.json` validated (`axf project validate --all`), `framework/catalog` + tracker, CLAUDE.md status, rules note (Android hold exception for Patches), PORTING.md, decisions.md.",
      "at": "",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.990Z"
     },
     {
      "text": "5. Proof: web checks (`check-embed`, `check-widgets`, `check-appearance`, `check-app-menu`, `check-hub`, `axf validate --framework`, console typecheck), before/after web screenshots (console with and without the tab group; console embedded = no banner), push `fable/patches-wrapper` (Android shots by `rebuild-shots.yml`), differences report `_claude/memory/docs/rebuilds/patches-wrapper.md`, LOG.md line, change-log result.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:55.399Z"
     }
    ],
    "createdAt": "2026-10-21T16:26:16.023Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-21T16:26:19.992Z",
+   "builtAt": "2026-10-21T16:56:48.038Z",
+   "updatedAt": "2026-10-21T16:56:55.399Z",
    "planId": "x.app.patches",
    "source": "chat"
   }
