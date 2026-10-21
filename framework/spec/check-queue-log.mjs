@@ -86,7 +86,7 @@ check(rec.models.includes('claude-sonnet-4-6') && rec.prompts[1].model === 'clau
 console.log('session-archive: chats, features, cost record');
 const chat = sa.fromChat({ id: 'c1', title: 'Hub auth', project: 'axhub', messages: [{ role: 'human', text: 'hi', chars: 4000 }, { role: 'assistant', text: 'x', chars: 8000, toolChars: 4000 }, { role: 'human', text: 'next chg-20261021-cccccccccc' }, { role: 'assistant', text: 'ok' }] }, { pricing: { costUsd } });
 check(chat.id === 'ai-c1' && chat.source === 'claude-ai' && chat.totals.costEstimated && chat.totals.prompts === 2, 'a chat is estimated, two prompts');
-check(chat.prompts[1].tokens.input > chat.prompts[0].tokens.input, 'each turn re-reads the chat so far');
+check(chat.prompts[1].tokens.cacheRead > 0 && chat.prompts[0].tokens.cacheRead === 0, 'each later turn re-reads the chat so far (as cached input)');
 check(chat.prompts[0].tokens.output === 3000, 'full lengths (chars, toolChars) drive the estimate');
 const cat = [{ key: 'plugin:build-manager', id: 'build-manager', paths: ['apps/console-web/plugins/build-manager'] }, { key: 'pending:lib-mcp', id: 'lib-mcp', paths: [] }];
 sa.attachFeatures(rec, cat, { 'chg-20261021-aaaaaaaaaa': 'other:thing' });

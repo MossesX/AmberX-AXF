@@ -20,7 +20,7 @@
 export const SOURCES = ['claude-code', 'claude-ai', 'other'];
 export const LIMITS = { prompt: 600, output: 300, title: 120, files: 400, prompts: 2000 };
 /** How a claude.ai chat's tokens are estimated (no counts exist): ~4 characters a token, each turn re-reads the chat so far plus a fixed overhead (system prompt, tools, project files). */
-export const CHAT_HEURISTIC = { charsPerToken: 4, overheadTokens: 12000, model: 'claude-opus' };
+export const CHAT_HEURISTIC = { charsPerToken: 4, overheadTokens: 12000, model: 'claude-opus' }; // re-read context is priced as cache reads (claude.ai caches the chat between turns)
 
 const str = (v) => (typeof v === 'string' ? v : v == null ? '' : String(v));
 const clip = (v, n) => { const s = str(v).replace(/\s+/g, ' ').trim(); return s.length > n ? `${s.slice(0, n - 1)}…` : s; };
@@ -221,7 +221,9 @@ export function fromChat(chat, ctx = {}) {
     // `chars` = the full length when the text was cut short for storage (a backfill reads the whole chat but keeps 600 characters)
     const inTok = Math.ceil((Number(m.chars) || str(m.text).length) / h.charsPerToken);
     const outTok = Math.ceil(((Number(reply?.chars) || str(reply?.text).length) + (Number(reply?.toolChars) || 0)) / h.charsPerToken);
-    const tokens = { input: h.overheadTokens + context + inTok, output: outTok, cacheRead: 0, cacheWrite: 0, thinking: 0 };
+    // the chat so far is cached between turns: re-reading it is a cache read; the new message (and, on the first turn, the overhead) is input; what this turn adds is written to the cache
+    const first = prompts.length === 0;
+    const tokens = { input: inTok + (first ? h.overheadTokens : 0), output: outTok, cacheRead: first ? 0 : h.overheadTokens + context, cacheWrite: inTok + outTok + (first ? h.overheadTokens : 0), thinking: 0 };
     const c = price(model, tokens);
     prompts.push({ i: prompts.length + 1, at: str(m.at), kind: 'prompt', text: redact(m.text), model, tokens, costUsd: c == null ? 0 : r4(c), costEstimated: true,
       seconds: m.at && reply?.at ? Math.max(0, Math.round((ms(reply.at) - ms(m.at)) / 1000)) : 0, tools: { ...(reply?.tools ?? {}) }, commands: 0,
@@ -235,7 +237,7 @@ export function fromChat(chat, ctx = {}) {
     minutes: chat.startedAt && chat.endedAt ? Math.max(0, Math.round((ms(chat.endedAt) - ms(chat.startedAt)) / 60000)) : 0,
     system: { host: 'claude.ai', container: '', app: str(chat.app) || 'claude.ai', appVersion: '', entrypoint: 'claude.ai', surface: 'claude-ai', device: str(chat.device) || 'phone or browser', via: '', os: '', cwd: '', repo: '', branch: '', url: str(chat.url) },
     user: str(chat.user) || 'Brett', models: [model], prompts, files: [...new Set(prompts.flatMap((p) => p.files))], changeIds: [...new Set(prompts.flatMap((p) => p.changeIds))],
-    features: [], subagents: 0, costSource: 'estimated from text', notes: [`Tokens estimated: ${h.charsPerToken} characters a token, ${h.overheadTokens} tokens of overhead a turn, each turn re-reads the chat so far.`],
+    features: [], subagents: 0, costSource: 'estimated from text', notes: [...(chat.partial ? [`Partly read: ${clip(chat.partial, 200)}`] : []), `Tokens estimated: ${h.charsPerToken} characters a token, ${h.overheadTokens} tokens of overhead; each turn re-reads the chat so far as cached input.`],
   };
   rec.totals = totalsOf(rec, null);
   return rec;

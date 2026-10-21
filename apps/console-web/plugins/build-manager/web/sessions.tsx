@@ -18,6 +18,7 @@ const DAYS = [[1, 'Today'], [7, '7 days'], [30, '30 days'], [90, '90 days'], [0,
 const GROUPS = [['project', 'Project'], ['surface', 'Where it ran'], ['app', 'App / device'], ['model', 'Model'], ['source', 'Source'], ['day', 'Day']] as const;
 const SURFACE_ICON: Record<string, string> = { 'claude-ai': 'smartphone', 'claude-code-cloud': 'cloud', 'vps-claude-code': 'terminal', 'claude-code': 'terminal', headless: 'box', ide: 'code', desktop: 'monitor' };
 
+const KV_LABEL: Record<string, string> = { host: 'Host', container: 'Container', app: 'App', appVersion: 'Version', entrypoint: 'Entry point', surface: 'Where it ran', device: 'Device', via: 'How he got there', os: 'System', cwd: 'Folder', repo: 'Repo', branch: 'Branch', url: 'Link' };
 const num = (n: number | undefined) => (n == null ? '—' : n >= 1e9 ? `${(n / 1e9).toFixed(1)}B` : n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(1)}k` : String(n));
 const when = (iso: string) => { const d = new Date(iso); return Number.isFinite(d.getTime()) ? d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'; };
 const mins = (m: number) => (m >= 60 ? `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m` : `${m}m`);
@@ -78,12 +79,12 @@ function SessionDetail({ id, onChange, onFeature }: { id: string; onChange: (id:
   return (
     <div className="axp-build-manager__s-body">
       <dl className="axp-build-manager__kv">
-        {sys.map(([k, v]) => <div key={k}><dt>{k === 'via' ? 'how' : k}</dt><dd>{k === 'url' ? <a href={String(v)} target="_blank" rel="noopener noreferrer">{String(v)}</a> : String(v)}</dd></div>)}
-        <div><dt>user</dt><dd>{r.user}</dd></div>
-        <div><dt>models</dt><dd>{r.models.map(shortModel).join(', ') || '—'}</dd></div>
-        <div><dt>tokens</dt><dd>in {num(t.input)} · out {num(t.output)} · cache {num(t.cacheRead)} / {num(t.cacheWrite)}</dd></div>
-        <div><dt>cost</dt><dd>{cost(t.costUsd, t.costEstimated)}{t.reportedUsd != null ? ` (Claude Code reported ${money(t.reportedUsd)})` : ''} · {r.costSource}</dd></div>
-        <div><dt>tools</dt><dd>{t.toolCalls} calls · {t.commands} commands · {t.filesTouched} files · {r.subagents} subagent lines</dd></div>
+        {sys.map(([k, v]) => <div key={k}><dt>{KV_LABEL[k] ?? k}</dt><dd>{k === 'url' ? <a href={String(v)} target="_blank" rel="noopener noreferrer">{String(v)}</a> : String(v)}</dd></div>)}
+        <div><dt>User</dt><dd>{r.user}</dd></div>
+        <div><dt>Models</dt><dd>{r.models.map(shortModel).join(', ') || '—'}</dd></div>
+        <div><dt>Tokens</dt><dd>in {num(t.input)} · out {num(t.output)} · cache {num(t.cacheRead)} / {num(t.cacheWrite)}</dd></div>
+        <div><dt>Cost</dt><dd>{cost(t.costUsd, t.costEstimated)}{t.reportedUsd != null ? ` (Claude Code reported ${money(t.reportedUsd)})` : ''} · {r.costSource}</dd></div>
+        <div><dt>Tools</dt><dd>{t.toolCalls} calls · {t.commands} commands · {t.filesTouched} files · {r.subagents} subagent lines</dd></div>
       </dl>
       {r.notes?.length > 0 && <p className="fx-small fx-muted">{r.notes.join(' ')}</p>}
       <div className="axp-build-manager__chips">
