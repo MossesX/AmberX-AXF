@@ -311,7 +311,7 @@ public object McpEngine {
 
     public fun argumentSkeleton(schema: JsonObject?): JsonObject = buildJsonObject {
         val props = schema?.get("properties").obj() ?: return@buildJsonObject
-        val required = (schema["required"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.content } ?: emptyList()
+        val required = (schema?.get("required") as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.content } ?: emptyList()
         for ((k, pe) in props) {
             val p = pe.obj() ?: continue
             if ("default" in p) { put(k, p["default"]!!); continue }
