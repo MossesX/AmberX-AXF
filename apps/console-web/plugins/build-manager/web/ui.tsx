@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import { ActivityView } from './activity';
+import { SessionsView } from './sessions';
 import { canOpen, openRunner, runnerIcon, runnerOf, runnerTitle } from './session';
 import type { Runner } from './history.mjs';
 import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
@@ -392,15 +394,17 @@ function Totals({ rows }: { rows: Row[] }) {
   );
 }
 
-type Tab = 'remaining' | 'live' | 'built';
+type Tab = 'remaining' | 'live' | 'built' | 'activity' | 'sessions';
 const TAB_KEY = 'axp-build-manager:tab';
-const readTab = (): Tab => { try { const t = localStorage.getItem(TAB_KEY); return t === 'live' || t === 'built' ? t : 'remaining'; } catch { return 'remaining'; } };
+const readTab = (): Tab => { try { const t = localStorage.getItem(TAB_KEY); return t === 'live' || t === 'built' || t === 'activity' || t === 'sessions' ? t : 'remaining'; } catch { return 'remaining'; } };
 
 export function BuildManagerView() {
   const s = useStore();
   const [tab, setTab0] = useState<Tab>(readTab);
   const setTab = (t: Tab) => { setTab0(t); try { localStorage.setItem(TAB_KEY, t); } catch { /* private window */ } };
   const [query, setQuery] = useState('');
+  const [logCount, setLogCount] = useState<number | null>(null);
+  const [archiveCount, setArchiveCount] = useState<number | null>(null);
   const { sessions, activity } = useLive();
   const liveCount = sessions.length + activity.length;
   const builtCount = useMemo(() => builtRows(s.changes).length, [s.changes]);
@@ -448,15 +452,17 @@ export function BuildManagerView() {
       </div>
 
       <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
-        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle']] as const).map(([id, label, n, icon]) => (
+        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['activity', 'Activity', logCount, 'shuffle'], ['sessions', 'Sessions', archiveCount, 'type']] as const).map(([id, label, n, icon]) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id} className={`axp-build-manager__tab${tab === id ? ' is-on' : ''}${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
-            <Icon name={icon} size={12} />{label} <span className="axp-build-manager__tab-n">{hits ? `${hits[id]}/${n}` : n}</span>
+            <Icon name={icon} size={12} />{label} {n != null && <span className="axp-build-manager__tab-n">{hits && id in hits ? `${hits[id as keyof typeof hits]}/${n}` : n}</span>}
           </button>
         ))}
       </div>
 
       {tab === 'live' && <LiveTracker query={query} />}
       {tab === 'built' && <BuiltView query={query} />}
+      {tab === 'activity' && <ActivityView query={query} onCount={setLogCount} />}
+      {tab === 'sessions' && <SessionsView query={query} onCount={setArchiveCount} />}
       {tab === 'remaining' && liveCount > 0 && !query && <LiveTracker compact />}
       {tab === 'remaining' && <>
       <Totals rows={base} />

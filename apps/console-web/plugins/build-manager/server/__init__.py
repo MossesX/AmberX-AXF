@@ -140,6 +140,69 @@ async def events(request: Request) -> StreamingResponse:
     return StreamingResponse(gen(), media_type="text/event-stream", headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
+# ---------------------------------------------------------------- queue activity log + session archive (read-only, plus "add the why")
+
+_LIST = re.compile(r"^[a-z0-9:._,-]{0,400}$")
+_TEXT = re.compile(r"^[^\x00-\x1f]{0,200}$")
+
+
+def _q(v: str | None, rx: re.Pattern[str] = _TEXT) -> str:
+    v = (v or "").strip()
+    if not rx.match(v):
+        raise HTTPException(400, "bad filter")
+    return v
+
+
+def _rpc_or_502(op: str, **args: Any) -> dict[str, Any]:
+    r = _engine(op, **args)
+    if not r.get("ok"):
+        raise HTTPException(502, r.get("error") or f"{op} failed")
+    r.pop("ok", None)
+    r.pop("log", None)
+    return r
+
+
+@router.get("/queue-log")
+def queue_log(days: int = 30, kinds: str = "", groups: str = "", ops: str = "", item: str = "", kind: str = "", who: str = "", source: str = "",
+              since: str = "", until: str = "", change: str = "", q: str = "", limit: int = 300) -> dict[str, Any]:
+    """queue-log@1 events (pending list, build queue, plan): every add, removal, move, status, step, note — who, where, why, prompt."""
+    split = lambda v: [x for x in _q(v, _LIST).split(",") if x]  # noqa: E731
+    return _rpc_or_502("queue-log", days=max(1, min(days, 3650)), kinds=split(kinds), groups=split(groups), ops=split(ops), item=_q(item), kind=_q(kind, _LIST),
+                       who=_q(who), source=_q(source, _LIST), since=_q(since), until=_q(until), changeId=_q(change, _LIST), q=_q(q), limit=max(1, min(limit, 5000)))
+
+
+@router.post("/queue-log/why")
+async def queue_log_why(request: Request) -> dict[str, Any]:
+    """Add the why to a logged change afterwards: {id, reason}."""
+    b = await request.json()
+    if not isinstance(b, dict) or not isinstance(b.get("id"), str) or not isinstance(b.get("reason"), str) or not b["reason"].strip():
+        raise HTTPException(400, "send {id, reason}")
+    who = getattr(request.state, "axf_user", None)
+    return _rpc_or_502("queue-log-why", id=b["id"][:60], reason=b["reason"][:400], by=getattr(who, "name", None) or "console")
+
+
+@router.get("/sessions")
+def sessions(project: str = "", source: str = "", surface: str = "", host: str = "", model: str = "", since: str = "", until: str = "", minCost: float = 0,
+             change: str = "", feature: str = "", q: str = "", limit: int = 200) -> dict[str, Any]:
+    """session-archive@1 summaries (every project) with totals by project, source, surface, app, model and day."""
+    return _rpc_or_502("session-archive", project=_q(project, _LIST), source=_q(source, _LIST), surface=_q(surface, _LIST), host=_q(host), model=_q(model),
+                       since=_q(since), until=_q(until), minCost=max(0.0, minCost), change=_q(change, _LIST), feature=_q(feature), q=_q(q), limit=max(1, min(limit, 5000)))
+
+
+@router.get("/sessions/{sid}")
+def session_one(sid: str) -> dict[str, Any]:
+    """One archived session with every prompt: tokens, cost, tools, files, changes and features it touched."""
+    if not re.fullmatch(r"(cc|ai)-[A-Za-z0-9-]{1,60}", sid):
+        raise HTTPException(400, "bad session id")
+    return _rpc_or_502("session-show", id=sid)
+
+
+@router.get("/costs")
+def costs(project: str = "", since: str = "") -> dict[str, Any]:
+    """The cost record: what each build and change entry cost, from the sessions' prompts (actual where counted, else estimated)."""
+    return _rpc_or_502("session-costs", project=_q(project, _LIST), since=_q(since))
+
+
 # ---------------------------------------------------------------- Start build now
 
 def _node(script: str, payload: dict[str, Any], timeout: int = 60) -> dict[str, Any]:

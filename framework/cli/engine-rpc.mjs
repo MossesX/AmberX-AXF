@@ -21,6 +21,8 @@ import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './
 import { queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { dataPath } from './persist.mjs';
+import { view as sessionView, show as sessionShow, costs as sessionCosts } from './session-archive.mjs';
+import { setLogContext, view as queueLogView, addReason as queueLogWhy, sweep as queueLogSweep } from './queue-log.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
 const syncAfter = () => { try { syncBuildQueue({ by: 'feature-tracker', log: (m) => log(`build queue: ${m}`) }); } catch (e) { log(`build queue sync failed: ${e.message}`); } };
 
@@ -35,6 +37,9 @@ const raw = argJson ?? (op && process.argv.length === 3 ? '{}' : readStdin() || 
 const req = JSON.parse(raw);
 const b = { ...req, op: op ?? req.op };
 const lines = [];
+// queue-log@1: who / why for any write this op makes to the pending list, the build queue or the plan
+setLogContext({ op: b.op, by: typeof b.by === 'string' ? b.by : '', reason: [b.reason, b.why, b.change?.reason, b.change?.why].find((x) => typeof x === 'string' && x.trim()) ?? '',
+  changeId: [b.changeId, b.change?.changeId].find((x) => typeof x === 'string') ?? '' });
 /** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers (Build Pilot). */
 function appDefaultsView() {
   const types = assetSpec.types;
@@ -110,6 +115,12 @@ function run() {
       return { dir: r.rel, manifest: r.manifest, validation: r.validation };
     }
     case 'pending': return loadPending();
+    case 'queue-log': { queueLogSweep(); return queueLogView(b); }   // filters: days, kinds[], ops[], groups[], item, kind, who, source, since, until, changeId, q, limit
+    case 'queue-log-why': return { batch: queueLogWhy(b.id, b.reason, b.by ?? 'console') };
+    case 'queue-log-sweep': return { batches: queueLogSweep() };
+    case 'session-archive': return sessionView(b);   // filters: project, source, surface, host, model, since, until, minCost, change, feature, q, limit
+    case 'session-show': { const r = sessionShow(b.id); if (!r) throw new Error(`no session ${b.id}`); return { session: r }; }
+    case 'session-costs': return sessionCosts(b);    // project, since
     case 'pending-act': { const r = actPending(b.change ?? {}); r.log.forEach(log); return { state: r.state, item: r.item }; }
     case 'plan': return loadPlan();
     case 'plan-rebuild': { const p = buildPlan(); log(`plan rebuilt: ${p.features.length} features`); return { count: p.features.length }; }

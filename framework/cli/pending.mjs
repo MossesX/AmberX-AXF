@@ -14,12 +14,14 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
 import { dataPath } from './persist.mjs';
+import { logged } from './queue-log.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PENDING = dataPath('framework/plan/pending.json');
 
 export function loadPending() { return core.normalizeState(existsSync(PENDING) ? JSON.parse(readFileSync(PENDING, 'utf8')) : core.emptyPending()); }
-export function savePending(s) { writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n'); }
+/** Every write goes through the queue log (queue-log@1). */
+export function savePending(s) { logged('pending', s, () => writeFileSync(PENDING, JSON.stringify(s, null, 1) + '\n')); }
 
 /** Apply one action (see pending-core apply) and save. */
 export function actPending(action, now = new Date().toISOString()) {

@@ -170,7 +170,11 @@ def engine(op: str, channel: str = "engine", **args: Any) -> dict[str, Any]:
     """Run one build-engine op through framework/cli/engine-rpc.mjs and mirror its log onto the terminal."""
     if not RPC.exists():
         raise HTTPException(500, f"build engine not found at {RPC} (set AXF_ROOT)")
-    proc = subprocess.run(["node", str(RPC), op, json.dumps(args)], cwd=ROOT, capture_output=True, text=True, timeout=600)
+    # queue-log@1: writes to the pending list / build queue / plan are logged with where they came from (the MCP server
+    # calls with channel "mcp", everything else is the console); a request's `reason` travels in args
+    env = {**os.environ, "AXF_QUEUE_SURFACE": "mcp" if channel == "mcp" else os.environ.get("AXF_QUEUE_SURFACE", "console"),
+           "AXF_QUEUE_BY": os.environ.get("AXF_QUEUE_BY", "MCP client" if channel == "mcp" else "console")}
+    proc = subprocess.run(["node", str(RPC), op, json.dumps(args)], cwd=ROOT, capture_output=True, text=True, timeout=600, env=env)
     out = proc.stdout.strip().splitlines()
     try:
         result = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-800:] or "no output"}

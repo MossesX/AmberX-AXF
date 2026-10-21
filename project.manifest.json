@@ -41,6 +41,7 @@
       "framework/plan/plan.json",
       "framework/plan/build-queue.json",
       "framework/plan/media/",
+      "framework/plan/queue-log/",
       "framework/catalog/status.json",
       "framework/catalog/libraries.json",
       "framework/schemas/project-rules.json",

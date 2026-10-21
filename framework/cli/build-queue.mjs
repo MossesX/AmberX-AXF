@@ -18,12 +18,14 @@ import { fileURLToPath } from 'node:url';
 import { loadPlan, setStatuses } from './plan.mjs';
 import * as core from '../plan/build-queue-core.mjs';
 import { dataPath } from './persist.mjs';
+import { logged } from './queue-log.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUEUE = dataPath('framework/plan/build-queue.json');
 
 export const loadQueueState = () => (existsSync(QUEUE) ? JSON.parse(readFileSync(QUEUE, 'utf8')) : null);
-const saveQueueState = (q) => writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n');
+/** Every write goes through the queue log (queue-log@1). */
+const saveQueueState = (q) => logged('queue', q, () => writeFileSync(QUEUE, JSON.stringify(q, null, 1) + '\n'));
 
 /** Write plan status changes, then re-sync (completions recorded, rework flagged) and save. */
 function commit(changes, q, by, log) {

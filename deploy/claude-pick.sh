@@ -79,6 +79,9 @@ if [[ "${1:-}" == "--install" ]]; then
   # project on this machine reports its builds to axHub live (start, activity, steps, heartbeat, tokens + cost).
   CHG="$AXF_ROOT/apps/console-web/plugins/codebase-changes/changes.mjs"  # <!-- axf-plugin:codebase-changes -->
   if [[ -f "$CHG" ]] && command -v node >/dev/null; then node "$CHG" hooks install || echo "Build reporting hooks: run node $CHG hooks install"; fi
+  # session archive (session-archive@1): every Claude Code session on this machine is archived on Stop / SessionEnd
+  SA="$AXF_ROOT/framework/cli/session-archive.mjs"
+  if [[ -f "$SA" ]] && command -v node >/dev/null; then node "$SA" hooks install || echo "Session archive hook: run node $SA hooks install"; fi
   echo "Installed. Open a new shell (or: source ~/.bashrc), then run: claude"
   echo "Save an API key with: claude-pick --set-key   ·   bypass the menus with: command claude …"
   exit 0
