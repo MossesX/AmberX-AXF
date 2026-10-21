@@ -844,6 +844,14 @@
               "suggests": []
             },
             {
+              "id": "k.appmenu",
+              "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
+              "note": "Web built (core/engines/appmenu.ts); Android twin deferred (port on hold, Oct 21 2026).",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "k.shortcuts",
               "title": "Keyboard shortcut engine (hardware keyboard, tablets, Chromebook)",
               "note": "",

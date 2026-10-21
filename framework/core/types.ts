@@ -67,6 +67,17 @@ export interface MenuItem {
   requires?: string;
   items?: MenuItem[];
   separator?: boolean;
+  /* ---- optional fields (asset-types.json → menuItems; engines/appmenu.ts) ---- */
+  /** id of a live-list provider (`rt.registerAppMenuProvider`): the item becomes a submenu filled on open */
+  provider?: string;
+  /** name of a runtime counter shown as a badge (e.g. `alerts.unread`); hidden at 0 */
+  badge?: string;
+  /** check-mark binding: `setting:<key>` | `counter:<name>` | `slot:<type>` (shown) | `hidden:<type>` */
+  checked?: string;
+  /** placement among siblings (default 100); `before` / `after` name a sibling id */
+  order?: number;
+  before?: string;
+  after?: string;
 }
 
 /* ---------- themes ---------- */
@@ -139,7 +150,7 @@ export type ChromeSurface = 'flat' | 'raised' | 'glass';
 /* ---------- navigation ---------- */
 
 export interface AppMenuData {
-  menus: { id: string; label: string; items: MenuItem[] }[];
+  menus: { id: string; label: string; items: MenuItem[]; /** placement (default 100), see engines/appmenu.ts */ order?: number }[];
   density?: ChromeDensity;
   surface?: ChromeSurface;
 }

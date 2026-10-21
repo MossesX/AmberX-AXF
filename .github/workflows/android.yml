@@ -80,6 +80,7 @@ jobs:
           (cd framework && npm install --no-audit --no-fund --silent)
           npx -y tsx framework/spec/check-alerts.mts
           npx -y tsx framework/spec/check-widgets.mts
+          npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
           npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
           python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
           npx -y tsx framework/spec/check-plugin-inventory.mts

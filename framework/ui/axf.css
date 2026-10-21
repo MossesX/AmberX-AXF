@@ -233,6 +233,30 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__label { flex: 1; white-space: nowrap; }
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: 4px 6px; }
 .fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: 4px; }
+/* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
+.fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
+.fx-menu__item.is-checked { color: var(--fx-text); }
+.fx-menu__chevron { color: var(--fx-muted); }
+.fx-menu__badge {
+  min-width: 18px; padding: 0 6px; border-radius: 999px; text-align: center;
+  background: var(--fx-accent); color: var(--fx-accent-text); font-size: 0.72em; font-weight: 700; line-height: 18px;
+}
+.fx-menu__row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.88em; color: var(--fx-muted); }
+.fx-menu__error { color: var(--fx-danger); }
+.fx-menu__spinner {
+  width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--fx-border); border-top-color: var(--fx-accent);
+  animation: fx-spin calc(var(--fx-motion) * 4) linear infinite;
+}
+@keyframes fx-spin { to { transform: rotate(360deg); } }
+.fx-menu__back {
+  width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent;
+  padding: 6px 8px; margin-bottom: 4px; font-size: 0.93em; font-weight: 600; color: var(--fx-text);
+  border-bottom: var(--fx-border-w) solid var(--fx-border); border-radius: 0;
+}
+.fx-menu__back:hover { color: var(--fx-accent); }
+.fx-dropdown--phone { max-height: 70vh; overflow-y: auto; }
+.fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
 
 /* context-menu asset variants */
 .fx-ctx { position: fixed; min-width: 220px; padding: 4px; z-index: 80; animation: fx-pop 120ms ease both; }

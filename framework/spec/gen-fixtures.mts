@@ -22,6 +22,7 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -688,5 +689,114 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
     enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
     graph: pluginGraph(inventory.items, ctx.live),
+  });
+}
+
+// Application menu (core/engines/appmenu.ts): asset menus + run-time contributions + live lists → one compiled tree.
+// Every port merges, places, gates, resolves badges / check marks and prunes exactly like this.
+{
+  const standardPolicy = load('uac-policy').find((p) => p.id === 'standard').data;
+  const developer = load('app-menu').find((a) => a.id === 'developer').data;
+  const asset = {
+    menus: [
+      { id: 'file', label: 'File', items: [
+        { id: 'new', label: 'New file', icon: 'plus', action: 'file.new', shortcut: 'Alt+N' },
+        { id: 'save', label: 'Save', icon: 'save', action: 'file.save', requires: 'files.write' },
+        { id: 's1', separator: true },
+        { id: 'exports', label: 'Export', icon: 'share', items: [{ id: 'json', label: 'As JSON', action: 'file.export:json' }] },
+        { id: 'admin-only', label: 'Wipe', action: 'file.wipe', requires: 'uac.manage' },
+      ] },
+      { id: 'view', label: 'View', order: 50, items: [
+        { id: 'reload', label: 'Reload', action: 'view.reload' },
+        { id: 'legacy-list', label: 'Legacy list', provider: 'nobody-registered' },
+        { id: 'deep', label: 'Deep', items: [{ id: 'd2', label: 'D2', items: [{ id: 'd3', label: 'D3', items: [{ id: 'd4', label: 'D4', items: [{ id: 'd5', label: 'D5', action: 'deep.five' }] }] }] }] },
+      ] },
+      { id: 'empty', label: 'Empty', items: [{ id: 'hidden-sub', label: 'Hidden', items: [{ id: 'x', label: 'X', action: 'x', requires: 'uac.manage' }] }] },
+    ],
+  };
+  const contributions: AppMenuContribution[] = [
+    // new top-level menu, created with its label and order, under an item path that is created too
+    { id: 'builds.pending', module: 'builds', menu: 'builds', menuLabel: 'Builds', menuOrder: 60, path: [{ id: 'manager', label: 'Build manager', icon: 'hammer' }], items: [
+      { id: 'pending', label: 'Pending builds', icon: 'clock', action: 'nav:pending', badge: 'builds.pending' },
+      { id: 'queue', label: 'Build queue', icon: 'list', action: 'nav:build-queue' },
+    ] },
+    // live lists in that menu, plus a check-bound item
+    { id: 'builds.lists', module: 'builds', menu: 'builds', items: [
+      { id: 'sep', separator: true },
+      { id: 'features', label: 'Features', icon: 'star', provider: 'features' },
+      { id: 'auto', label: 'Auto build', action: 'builds.auto:toggle', checked: 'setting:builds.auto' },
+    ] },
+    // placement: before / after a sibling and explicit order in the asset's File menu; replaces the asset's Save (no conflict)
+    { id: 'files.extra', module: 'files', menu: 'file', items: [
+      { id: 'open', label: 'Open…', icon: 'folder', action: 'file.open', before: 'save' },
+      { id: 'recent', label: 'Recent', provider: 'recent', after: 'open' },
+      { id: 'first', label: 'First', action: 'file.first', order: 1 },
+      { id: 'save', label: 'Save (plugin)', icon: 'save', action: 'files.save' },
+    ] },
+    // under the asset's existing Export submenu
+    { id: 'files.export', module: 'files', menu: 'file', path: ['exports'], items: [{ id: 'csv', label: 'As CSV', action: 'file.export:csv' }] },
+    // two modules, one id in the View menu: the later wins and a conflict is reported; same module twice is silent
+    { id: 'a.view', module: 'mod-a', menu: 'view', items: [{ id: 'theme', label: 'Theme (A)', action: 'a.theme' }] },
+    { id: 'b.view', module: 'mod-b', menu: 'view', items: [{ id: 'theme', label: 'Theme (B)', action: 'b.theme' }] },
+    { id: 'b.view2', module: 'mod-b', menu: 'view', items: [{ id: 'theme', label: 'Theme (B2)', action: 'b.theme2' }] },
+    // chrome visibility toggles and the role-gated Account (dropped for guests), both in View
+    { id: 'view.chrome', module: 'axf', menu: 'view', order: 200, items: [{ id: 'sep', separator: true }, ...chromeToggleItems(['toolbar', 'nav-menu', 'banner']), { id: 'sep2', separator: true }, { id: 'hidden-state', label: 'Toolbar hidden?', action: 'noop', checked: 'hidden:toolbar' }] },
+    // no menu named: lands in the default menu; a counter-bound check; ordered ahead of everything
+    { id: 'help.about', module: 'help', order: 1, items: [{ id: 'about', label: 'About', icon: 'info', action: 'dialog:about', checked: 'counter:about.seen' }, { id: 'alerts', label: 'Alerts', action: 'alerts.open', badge: 'alerts.unread' }] },
+    // a path step that is a live list: items go beside it
+    { id: 'files.recent-extra', module: 'files', menu: 'file', path: ['recent'], items: [{ id: 'clear-recent', label: 'Clear recent', action: 'file.recent.clear' }] },
+    // a bad binding and unknown kinds resolve to no check
+    { id: 'bad.checks', module: 'help', menu: 'more', items: [{ id: 'bad1', label: 'Bad 1', action: 'noop', checked: 'nope:x' }, { id: 'bad2', label: 'Bad 2', action: 'noop', checked: 'setting:' }] },
+  ];
+  const merged = mergeAppMenu(asset, contributions);
+  const hidePolicy = { ...standardPolicy, gating: 'hide' };
+  const envFor = (role: string, hidden: string[] = ['toolbar'], settings: Record<string, unknown> = { 'builds.auto': 'true' }, counters: Record<string, number> = { 'builds.pending': 3, 'alerts.unread': 0, 'about.seen': 1 }, policy = standardPolicy): AppMenuEnv => {
+    const granted = resolvePermissions(policy, role);
+    return { gate: (r) => gateFor(policy, granted, r), counter: (n) => counters[n] ?? 0, setting: (k) => settings[k], hidden: (t) => hidden.includes(t), providers: ['features', 'recent'] };
+  };
+  const roles = standardPolicy.roles.map((r: { id: string }) => r.id) as string[];
+  const providerItems = [
+    { id: 'f1', label: 'Feature 1', action: 'nav:f1' }, { id: 'f2', label: 'Feature 2', action: 'nav:f2', requires: 'uac.manage' }, { id: 'f3', label: 'Feature 3', action: 'nav:f3' },
+    { id: 'f4', label: 'Feature 4', action: 'nav:f4', badge: 'builds.pending' }, { id: 'f5', label: 'Feature 5', action: 'nav:f5' }, { id: 'sep', separator: true }, { id: 'f6', label: 'Feature 6', action: 'nav:f6' },
+  ];
+  write('app-menu.json', {
+    spec: { maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: CHECKED_KINDS, itemFields: MENU_ITEM_FIELDS, defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN },
+    titles: Object.fromEntries(['pending-builds', 'build_queue', 'a.b.c', 'x', '', '--'].map((id) => [id, titleFromId(id)])),
+    truthy: Object.fromEntries(([true, false, 0, 1, -2, '', 'false', 'FALSE', '0', 'off', 'no', 'yes', 'x', ' on '] as const).map((v) => [JSON.stringify(v), truthy(v)])),
+    checked: Object.fromEntries(['setting:a', 'counter:c', 'slot:toolbar', 'hidden:toolbar', 'slot:nav-menu', 'nope:x', 'setting:', ':x', 'plain', ''].map((b) => [b, { parsed: parseChecked(b), resolved: resolveChecked(b, { counter: (n) => (n === 'c' ? 2 : 0), setting: (k) => (k === 'a' ? 'yes' : undefined), hidden: (t) => t === 'toolbar' }) }])),
+    asset,
+    contributions,
+    merged,
+    compiled: Object.fromEntries(roles.map((r) => [r, compileAppMenu(merged, envFor(r))])),
+    // the toolbar shown + the auto setting off: check marks flip
+    compiledShown: compileAppMenu(merged, envFor('admin', [], { 'builds.auto': 'off' })),
+    // the same policy gating by hiding: denied items vanish and the submenus / menus left empty go with them
+    compiledHideGate: Object.fromEntries(roles.map((r) => [r, compileAppMenu(merged, envFor(r, ['toolbar'], { 'builds.auto': 'true' }, { 'builds.pending': 3, 'alerts.unread': 0, 'about.seen': 1 }, hidePolicy))])),
+    // a depth cap of 2 cuts the Export and Deep submenus
+    compiledDepth2: compileAppMenu(merged, { ...envFor('admin'), maxDepth: 2 }),
+    // the real developer asset with no contributions passes through unchanged (ids, order) for every role
+    developer: Object.fromEntries(roles.map((r) => [r, buildAppMenu(developer, [], envFor(r, []))])),
+    providers: {
+      'cap-3-more-action': compileProviderItems(providerItems, envFor('admin'), { id: 'features', max: 3, moreAction: 'nav:features' }),
+      'cap-3-no-action': compileProviderItems(providerItems, envFor('admin'), { id: 'features', max: 3 }),
+      'fits-guest': compileProviderItems(providerItems, envFor('guest'), { id: 'features', max: 12 }),
+      'fits-exactly': compileProviderItems(providerItems.slice(0, 3), envFor('admin'), { id: 'features', max: 3 }),
+    },
+    chrome: { types: chromeToggleTypes(), all: chromeToggleTypes(true), items: chromeToggleItems(), labelled: chromeToggleItems(['toolbar', 'color-theme', 'nav-menu'], { toolbar: 'Top toolbar' }) },
+    search: { entries: appMenuSearchEntries(compileAppMenu(merged, envFor('admin')), new Set(['file.first'])) },
+    validation: Object.entries({
+      'ok-fields': [{ id: 'a', provider: 'p' }, { id: 'b', badge: 'n', checked: 'slot:toolbar', order: 5, before: 'a' }],
+      'bad-strings': [{ id: 'a', provider: '' }, { id: 'b', badge: 3 }, { id: 'c', before: '' }, { id: 'd', after: 1 }],
+      'bad-checked': [{ id: 'a', checked: 'nope:x' }, { id: 'b', checked: 'setting:' }, { id: 'c', checked: 7 }],
+      'bad-order': [{ id: 'a', order: 'first' }],
+      'provider-and-items': [{ id: 'a', provider: 'p', items: [] }],
+      'too-deep': [{ id: 'a', items: [{ id: 'b', items: [{ id: 'c', items: [{ id: 'd', items: [{ id: 'e' }] }] }] }] }],
+      'not-a-list': 'x',
+      'not-objects': [1, null],
+    }).map(([k, items]) => ({ case: k, items, errors: validateMenuItems(items, 'data.menus[0].items') })),
+    assets: [
+      { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },
+      { case: 'context-menu-bad-items', raw: { $axf: 'asset@1', type: 'context-menu', id: 'bad-ctx', name: 'X', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: [{ id: 'a', provider: 'p', items: [] }], other: 'no' } } } },
+    ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
   });
 }

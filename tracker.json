@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T02:31:33.810Z",
+  "generatedAt": "2026-10-21T10:58:34.123Z",
   "summary": {
     "foundations": {
       "built": 66,
@@ -13,10 +13,10 @@
     },
     "kernel": {
       "built": 77,
-      "partial": 6,
+      "partial": 7,
       "placeholder": 95,
       "planned": 0,
-      "total": 178,
+      "total": 179,
       "coverage": 43
     },
     "console": {
@@ -1119,6 +1119,17 @@
       "title": "App-wide search/command palette engine",
       "tag": "lib",
       "status": "built",
+      "wave": 2,
+      "module": "axf-kernel",
+      "notes": ""
+    },
+    {
+      "id": "k.appmenu",
+      "tab": "kernel",
+      "group": "kernel-architecture-extension-safety",
+      "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
+      "tag": "core",
+      "status": "partial",
       "wave": 2,
       "module": "axf-kernel",
       "notes": ""
