@@ -221,3 +221,6 @@
 .cl-copy { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: 0; border: 0; background: transparent; color: var(--fx-accent); font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14); cursor: pointer; text-decoration: underline; text-underline-offset: 2px }
 .cl-copy:hover { color: var(--fx-text) }
 .pd-est { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-accent); font-variant-numeric: tabular-nums }
+.pd-split { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-warning); font-weight: 500 }
+.pd-tick { margin: calc(var(--fx-space) * 0.25) 0 0; flex: 0 0 auto; accent-color: var(--fx-accent) }
+.pd-entry.is-done p { color: var(--fx-muted); text-decoration: line-through; text-decoration-color: var(--fx-border) }
