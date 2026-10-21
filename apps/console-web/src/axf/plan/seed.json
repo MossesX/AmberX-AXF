@@ -1,0 +1,2491 @@
+{
+ "$axf": "plan-seed@1",
+ "features": [
+  {
+   "id": "x.kernel",
+   "title": "Kernel (pure Kotlin + TypeScript core)",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "XL",
+   "summary": "The framework core every app gets: asset registry, engines, runtime state, actions, module system. Pure Kotlin on Android (no Android imports, KMP-ready); framework/core on the web.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/core"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [
+    "Hot-swappable assets for every visual slot",
+    "Runtime state with persistence of the user's choices",
+    "Kernel API level 1 with semver + deprecations",
+    "Explicit-API, KMP-ready Kotlin"
+   ],
+   "dependsOn": [
+    "x.assets",
+    "x.engines"
+   ],
+   "catalog": [],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [
+    "framework/android/axf-kernel",
+    "framework/core"
+   ],
+   "acceptance": [
+    {
+     "text": "Compiles with explicit API strict",
+     "done": true
+    },
+    {
+     "text": "KernelTest + ConformanceTest pass (7/7)",
+     "done": true
+    },
+    {
+     "text": "Compiled in CI on every push",
+     "done": true
+    },
+    {
+     "text": "Python port passes the same fixtures",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [
+    "Keep the kernel free of Android imports so a Kotlin Multiplatform desktop port stays possible",
+    "Bump API_LEVEL only for breaking contract changes; add capabilities instead"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [
+    {
+     "label": "Kernel source",
+     "url": "https://github.com/MossesX/AmberX-AXF/blob/main/framework/android/axf-kernel"
+    },
+    {
+     "label": "CI runs",
+     "url": "https://github.com/MossesX/AmberX-AXF/actions/workflows/android.yml"
+    }
+   ],
+   "tags": [
+    "foundation"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-16",
+     "text": "Ported from the web core to Kotlin"
+    },
+    {
+     "at": "2026-10-16",
+     "text": "First real compile: 0 kernel errors; fixed JS number formatting for conformance"
+    },
+    {
+     "at": "2026-10-17",
+     "text": "Verified green in CI"
+    }
+   ]
+  },
+  {
+   "id": "x.assets",
+   "title": "Asset system (asset@1, 13 core types, open registry)",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Every visual is a JSON asset (color theme, style theme, layout, menus, toolbar, nav, context menu, dialog, popup, button, slider, container, UAC policy). Ports read the same files; new types register at runtime.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel/asset"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/core"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [
+    "Validation shared by every port (schemas/asset-types.json)",
+    "Import/export single assets and bundles",
+    "Android-only optional types (ui-kit, window, screen-template, icon/string/image/font/motion packs\u2026)",
+    "Swap, randomize, reset"
+   ],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/schemas",
+    "framework/assets",
+    "framework/android/assets"
+   ],
+   "acceptance": [
+    {
+     "text": "41 shared assets validate",
+     "done": true
+    },
+    {
+     "text": "Android port loads every shared asset",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundation"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.engines",
+   "title": "Engines: theme, layout, component styles, UAC, context menu, actions",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Compile assets into tokens and behaviour: theme tokens (core + extended), layouts per window class, component styles, role-based access, context menus per target, action bus with interceptors.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel/engine"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/core/engines"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.assets"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Theme CSS variables match the reference engine byte for byte",
+     "done": true
+    },
+    {
+     "text": "Layouts compile for COMPACT / MEDIUM / EXPANDED",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundation"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.conformance",
+   "title": "Porting spec + conformance fixtures",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "M",
+   "summary": "framework/spec: PORTING.md plus generated fixtures every port must reproduce exactly (theme vars, layouts, component styles, UAC). The Android kernel passes them.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "ConformanceTest"
+    },
+    "web": {
+     "status": "built",
+     "where": "gen-fixtures.mts (reference)"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/spec"
+   ],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Run the fixtures first when starting the Python port \u2014 they define \"done\" for each engine"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "porting"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.modules",
+   "title": "Module system: modules, extension points, services, placeholders",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel/module"
+    },
+    "web": {
+     "status": "partial",
+     "where": "framework/react/library.ts"
+    },
+    "python": {
+     "status": "partial",
+     "where": "framework/python/axf/library.py"
+    }
+   },
+   "capabilities": [
+    "20 extension points (routes, actions, settings, dialogs, ui-kits, workers, plugin sources\u2026)",
+    "Typed service registry",
+    "Topological start order",
+    "Add modules without rebuilding the kernel"
+   ],
+   "dependsOn": [
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "Web port: AxfWebLibrary contract + installLibraries (dependency order, merged views/dialogs/tabs); no extension points or placeholders yet"
+    },
+    {
+     "level": "info",
+     "text": "Python port: Library contract + MemoryKernel stand-in until the kernel is ported"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundation",
+    "extensibility"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.state",
+   "title": "State, data cache, events, flags, config, migrations",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    },
+    "web": {
+     "status": "partial",
+     "where": "runtime store only"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "Web port has the runtime store but not QueryClient / flags / migrations"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.windows",
+   "title": "Windowing engine: tab groups, floating windows, split, minimize",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Window schema (types, toolbar rules), tab groups that undock to floating windows, drag tabs between groups and windows, split vertical / horizontal / four-way / custom grid with even distribution (5 \u2192 3+2), minimize to corner title bars (stacked or lined) or a floating toolbar at the cursor, window settings dialog, tree \u2194 grid mode.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel contract/Windows.kt + axf-ui windows"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/core/engines/windows.ts + framework/react/windows"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "Divider dragging (split weights) and saved window layouts are suggested follow-ups"
+    }
+   ],
+   "recommendations": [
+    "Persist window layouts per app (ui.windows.persist)"
+   ],
+   "previews": [
+    {
+     "kind": "route",
+     "ref": "libraries",
+     "label": "UI libraries \u2192 Compare"
+    }
+   ],
+   "screenshots": [
+    {
+     "src": "media/console-compare-windows.jpg",
+     "caption": "Compare window: 3 libraries split 2+1, grid view in the top group"
+    }
+   ],
+   "links": [],
+   "tags": [
+    "ui"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.terminal",
+   "title": "Output terminal",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "One append-only log every install, import, hot swap and kit fallback writes to; auto-scrolling pane as a floating window, dock tab or dialog; follows the console API live over SSE.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "runtime.terminal + OutputTerminalPane"
+    },
+    "web": {
+     "status": "built",
+     "where": "core/terminal.ts + OutputTerminal.tsx"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.windows"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/console-output-terminal.jpg",
+     "caption": "Output terminal docked in the console"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.uikits",
+   "title": "UI-kit switching + fallback",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Every component is an abstract kind; the active ui-kit asset picks which library renders it. Kinds a kit lacks fall back to the default AmberX kit and are noted on the output terminal.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "Material3Kit, UnstyledKit, dispatchers"
+    },
+    "web": {
+     "status": "partial",
+     "where": "single built-in kit"
+    },
+    "python": {
+     "status": "planned",
+     "where": "Qt Widgets kit"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.engines",
+    "x.terminal"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Web port renders one kit only \u2014 MUI / shadcn / Chakra kits are planned"
+    }
+   ],
+   "recommendations": [],
+   "previews": [
+    {
+     "kind": "element",
+     "ref": "BUTTON",
+     "label": "Button in the active kit"
+    },
+    {
+     "kind": "element",
+     "ref": "CHIP",
+     "label": "Chips"
+    }
+   ],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.plugins",
+   "title": "Plugin runtime (deliver features after install)",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "placeholder",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "plugin@1 manifest, scopes, action macros and a PluginLoader contract exist; loading plugins at runtime is a placeholder.",
+   "ports": {
+    "android": {
+     "status": "placeholder",
+     "where": "axf.plugins"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.modules"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "On Android, plugins can only deliver assets, packs, scripts and macros after install \u2014 not compiled code"
+    }
+   ],
+   "recommendations": [
+    "Start with asset packs and action macros downloaded from the console API; they need no code loading"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.work",
+   "title": "Background work scheduler",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "placeholder",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "M",
+   "summary": "WorkSpec / Worker / WorkRegistry contracts and a placeholder scheduler. Real implementation is WorkManager on Android.",
+   "ports": {
+    "android": {
+     "status": "placeholder",
+     "where": "axf.work"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.modules"
+   ],
+   "catalog": [
+    "k.scheduler",
+    "dv.bg"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.session",
+   "title": "Session, principal, audit log",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P2",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Session/Principal/SessionProvider contracts and an AuditLog service; accounts library uses a mock auth provider.",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "contract/Session.kt + lib-accounts (mock)"
+    },
+    "web": {
+     "status": "partial",
+     "where": "AccountView"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "No real sign-in provider yet"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.android.modules",
+   "title": "Android framework modules",
+   "area": "Android port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "XL",
+   "summary": "axf-platform-android, axf-assets, axf-ui (Compose components, kits, element explorer, windows), axf-nav, axf-data, axf-network, axf-devtools, axf-testing. Published as ai.amberx.axf:<module>:0.2.0.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "framework/android"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [
+    "axf-platform-android",
+    "axf-assets",
+    "axf-ui",
+    "axf-nav",
+    "axf-data",
+    "axf-network",
+    "axf-devtools",
+    "axf-testing"
+   ],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "All modules compile in CI",
+     "done": true
+    },
+    {
+     "text": "Published to GitHub Packages",
+     "done": true
+    },
+    {
+     "text": "Run on a real device",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Compiled and tested in CI but never opened on a real phone"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [
+    {
+     "label": "Packages",
+     "url": "https://github.com/MossesX/AmberX-AXF/packages"
+    }
+   ],
+   "tags": [
+    "android"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "First real Android compile: 16 errors over 3 rounds, all fixed; green since 66c9e04"
+    }
+   ]
+  },
+  {
+   "id": "x.libs.core",
+   "title": "Libraries: settings, logging, admin, accounts, profile, billing",
+   "area": "Android port",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "XL",
+   "summary": "The six libraries the console and apps build on. Settings and logging are complete; accounts and billing run on mock providers.",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-settings, lib-logging, lib-admin, lib-accounts, lib-profile, lib-billing"
+    },
+    "web": {
+     "status": "partial",
+     "where": "AccountView only"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules"
+   ],
+   "catalog": [
+    "s.settings",
+    "l.log",
+    "a.admin",
+    "u.accounts",
+    "p.profile",
+    "b.subs"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Accounts and billing use mock providers \u2014 no real sign-in or Play Billing yet"
+    }
+   ],
+   "recommendations": [
+    "Add the real providers as separate libraries so apps choose them per platform"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.libs.browser",
+   "title": "Library browser (installable)",
+   "area": "Android port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "Floating tab-group browser as a library: two panes, multi-select, Compare \u2192 floating windows; binds to tab groups named in the app manifest; installed by a wizard.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-browser"
+    },
+    "web": {
+     "status": "built",
+     "where": "console UI libraries tab"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.windows",
+    "x.engine.install"
+   ],
+   "catalog": [
+    "lib.browser"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/console-compare-windows.jpg",
+     "caption": "Compare in floating windows"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.android.showcase",
+   "title": "Android showcase app (apps/console)",
+   "area": "Android port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "The first Android app: the console views on the Android port (tracker, catalog, libraries, boilerplates, element explorer). Builds a ~20 MB debug APK in CI.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "apps/console"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.libs.core"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "APK builds in CI",
+     "done": true
+    },
+    {
+     "text": "Installed and opened on the S26",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Never run on a device \u2014 download console-debug.apk from the latest green run and try it"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [
+    {
+     "label": "CI artifacts",
+     "url": "https://github.com/MossesX/AmberX-AXF/actions/workflows/android.yml"
+    }
+   ],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.web.core",
+   "title": "Web port: core + React components",
+   "area": "Web port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "L",
+   "summary": "framework/core + framework/react + framework/ui/axf.css: the original port, plain React 18 + TypeScript, no router.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/core, framework/react, framework/ui"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.web.templates",
+   "title": "Web templates: react-ts (Vite) and next-ts (Next.js 15)",
+   "area": "Web port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "axf init creates either a Vite SPA or a Next.js App Router app (static export by default) with the framework baked in.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/templates/react-ts, next-ts"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.web.core"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Both templates build in CI",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/next-ts-app.jpg",
+     "caption": "App created from next-ts, running"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.web.demo",
+   "title": "Web demo site",
+   "area": "Web port",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "S",
+   "summary": "apps/demo, published by CI to the site branch and served from the VPS.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "apps/demo"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.web.core",
+    "x.deploy.site"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Moving from xaf to axf.amberxai.com needs install.sh re-run on the VPS; then delete the xaf DNS record"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [
+    {
+     "label": "axf.amberxai.com",
+     "url": "https://axf.amberxai.com"
+    }
+   ],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.python.port",
+   "title": "Python / PyQt6 port",
+   "area": "Python port",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "XL",
+   "summary": "Port the kernel engines to Python, pass the conformance fixtures, add a PyQt6 UI layer, a Qt Widgets kit and a pyqt6 app template.",
+   "ports": {
+    "python": {
+     "status": "planned",
+     "where": "framework/python"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.conformance",
+    "x.kernel"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Engines pass all fixtures in framework/spec/fixtures",
+     "done": false
+    },
+    {
+     "text": "PyQt6 shell renders the shared assets",
+     "done": false
+    },
+    {
+     "text": "axf init --template pyqt6",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [
+    "Port engines in fixture order: theme \u2192 layout \u2192 components \u2192 UAC",
+    "Use dataclasses mirroring the Kotlin models"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "porting"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.engine.cli",
+   "title": "Build engine CLI",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "L",
+   "summary": "axf init / validate / list / new-asset / schemas / templates / new-module / new-demo / modules / boilerplates / dev / serve.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/cli"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/build-engine.mjs"
+   ],
+   "acceptance": [
+    {
+     "text": "CI sweep: every template + 16 boilerplates init and validate",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.engine.install",
+   "title": "Library installer + interactive wizard",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "Libraries ship a library.json (params, manifest key, install steps); axf install asks for the parameters and writes manifest, gradle, App.kt and typed <Name>Setup.kt. Also runs at pre-build via --libraries / boilerplate libraries.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/cli/libraries.mjs"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.engine.cli"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/console-install-wizard.jpg",
+     "caption": "Install wizard in the console"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.engine.uiport",
+   "title": "Import third-party UI libraries \u2192 AmberX kits",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "axf import-ui clones (git/local) or records (maven/npm) a library, rewrites literals and Material/MUI roles to AXF tokens, saves kit-<id> + its ui-kit asset and applies it to the open project.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "kit-<id> modules"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/cli/ui-port.mjs"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.uikits",
+    "x.engine.install"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "The token codemod handles common Compose / MUI / CSS patterns only; untested on a real third-party library"
+    },
+    {
+     "level": "info",
+     "text": "Generated kits keep the default components until overrides are written"
+    }
+   ],
+   "recommendations": [
+    "Try it on Compose Cupertino first and review tokens.map.json"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.engine.dev",
+   "title": "Live reload (axf dev) + device hot reload",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "HotReloader"
+    },
+    "web": {
+     "status": "built",
+     "where": "dev-server.mjs"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.engine.cli"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Never tried end to end with a phone"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.librarytemplates",
+   "title": "Library templates (build, port, compile new libraries)",
+   "area": "Build engine",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Boilerplates for libraries: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank \u2014 generating Android, web and Python ports, compiling each, and porting a library to another port from its library.json.",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "framework/library-templates/*/android \u2192 lib-<slug>"
+    },
+    "web": {
+     "status": "built",
+     "where": "framework/libs/<slug>"
+    },
+    "python": {
+     "status": "built",
+     "where": "framework/python/axf_libs/<slug>"
+    }
+   },
+   "capabilities": [
+    "8 templates: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank",
+    "Generate any mix of Android / web / Python ports from one set of parameters",
+    "axf compile-library: Gradle (or CI) for Android, tsc for web, compileall + import smoke test for Python",
+    "axf port-library: add a missing port later from the library's template",
+    "Console: Libraries \u2192 Library templates (gallery, wizard, compile and port buttons)"
+   ],
+   "dependsOn": [
+    "x.engine.install",
+    "x.modules"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Every template generates and compiles for web and Python",
+     "done": true
+    },
+    {
+     "text": "Every template generates for Android and compiles in CI",
+     "done": true
+    },
+    {
+     "text": "A real library (e.g. GPS tracker) built from a template and run on a device",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "Android compile needs the Android SDK; locally it reports \"ci\" and GitHub Actions compiles it"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Built: 8 templates \u00d7 3 ports, CLI, API routes, console tab; web + Python verified, Android in CI"
+    }
+   ]
+  },
+  {
+   "id": "x.console.web",
+   "title": "Web Dev Console (React/TS)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "XL",
+   "summary": "apps/console-web: Home, Tracker, Catalog, Libraries (framework + UI), Boilerplates, Plan, Demos, Modules, Components, Assets, output terminal, floating windows.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "apps/console-web"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.web.core",
+    "x.windows"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Not deployed yet \u2014 run deploy/install-console.sh on the VPS"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/console-home.jpg",
+     "caption": "Home"
+    },
+    {
+     "src": "media/console-boilerplates.jpg",
+     "caption": "Boilerplates with live preview"
+    }
+   ],
+   "links": [
+    {
+     "label": "console.amberxai.com",
+     "url": "https://console.amberxai.com"
+    }
+   ],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.api",
+   "title": "Console API (Python FastAPI)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "Runs the build engine for the console (init, install, import-ui, status edits, boilerplates, plan), streams the terminal over SSE, manages dev servers, serves the console and panel.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "apps/console-web/server"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.engine.cli"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Smoke-tested in CI (init + install through the engine)",
+     "done": true
+    },
+    {
+     "text": "Running on the VPS",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.plan",
+   "title": "Planning section",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "L",
+   "summary": "This view: every framework feature with capabilities, ports, dependencies, acceptance, screenshots, previews, warnings, recommendations and history; list and board views; auto warnings for blocked dependencies and port gaps.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "apps/console-web/src/views/Plan.tsx"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.console.web",
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/plan-section.jpg",
+     "caption": "Plan: epics list + feature detail"
+    },
+    {
+     "src": "media/plan-board.jpg",
+     "caption": "Plan: board view"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added and loaded with the catalog plus framework epics"
+    }
+   ]
+  },
+  {
+   "id": "x.console.panel",
+   "title": "Server control panel",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "Dev servers start/stop with logs, CI downloads (APK, Maven, console dist), command catalog, live output and a terminal into the console container.",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "deploy/panel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "The terminal is a shell inside the console container, not the VPS host"
+    },
+    {
+     "level": "warn",
+     "text": "The claude.ai copy is read-only \u2014 use console.amberxai.com/panel"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [
+    {
+     "src": "media/server-panel.jpg",
+     "caption": "Server panel running against the API"
+    }
+   ],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.build",
+   "title": "Build manager (build queue)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The plan's epics as an ordered build queue: drag to reorder, reprocess to restore dependency order, rework flags on built steps whose dependencies changed, a suggested model per step and per feature (Fable 5.1 / Opus 5.5 / Sonnet 5.5), and two-way status sync with the feature tracker on every console start.",
+   "ports": {},
+   "capabilities": [
+    "Queue of 44+ steps with linked catalog features",
+    "Drag-and-drop reorder + reprocess prompt (moves with reasons, cycle detection)",
+    "Rework detection: dependency rebuilt, reopened, or changed",
+    "Suggested model per step/feature (top three models only)",
+    "Complete a step \u2192 epic + features built; all features built \u2192 step complete",
+    "Same logic in the browser, the API, the CLI and MCP"
+   ],
+   "dependsOn": [
+    "x.console.plan",
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "framework/plan/build-queue-core.mjs",
+    "framework/cli/build-queue.mjs",
+    "apps/console-web/src/views/BuildManager.tsx"
+   ],
+   "acceptance": [
+    {
+     "text": "Reorder \u2192 reprocess prompt",
+     "done": true
+    },
+    {
+     "text": "Complete \u2192 features built",
+     "done": true
+    },
+    {
+     "text": "Sync on console start",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "planning"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.mcp",
+   "title": "MCP server (Model Context Protocol)",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "M",
+   "summary": "The console API as MCP tools for Claude: plan search/edit, build queue (next, reorder, reprocess, complete), catalog status, libraries, templates, app init/validate, terminal. Remote at console.amberxai.com/mcp (streamable HTTP, Bearer AXF_TOKEN) or local over stdio via .mcp.json.",
+   "ports": {},
+   "capabilities": [
+    "24 tools + 2 resources + a build-next-step prompt",
+    "Same engine ops as the console, mirrored to its terminal",
+    "No shell or arbitrary file access",
+    "Token-gated remote endpoint; stdio for local clones"
+   ],
+   "dependsOn": [
+    "x.console.api",
+    "x.console.build"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [
+    "apps/console-web/server/mcp_server.py",
+    ".mcp.json"
+   ],
+   "acceptance": [
+    {
+     "text": "tools/list + tools/call over HTTP",
+     "done": true
+    },
+    {
+     "text": "stdio from a clone",
+     "done": true
+    },
+    {
+     "text": "Smoke test in CI",
+     "done": true
+    },
+    {
+     "text": "Live on console.amberxai.com",
+     "done": false
+    }
+   ],
+   "warnings": [
+    {
+     "level": "info",
+     "text": "claude.ai custom connectors expect OAuth; Claude Code and Claude Desktop work with the bearer header today"
+    }
+   ],
+   "recommendations": [
+    "claude mcp add --transport http axf https://console.amberxai.com/mcp --header \"Authorization: Bearer $AXF_TOKEN\""
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "console",
+    "mcp",
+    "api"
+   ],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.console.repo",
+   "title": "Console in its own private repo",
+   "area": "Dev Console",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "M",
+   "summary": "Split apps/console-web into a private repo that depends on a tagged framework version.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "x.console.web"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "User: not yet.",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.ci",
+   "title": "CI: build, test, publish",
+   "area": "Deploy & CI",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "M",
+   "summary": "GitHub Actions: build-engine sweep, kernel tests, every Android module, showcase APK, Maven repo artifact + GitHub Packages, web console + Python API smoke, next-ts build; compile errors posted to an issue.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [
+    {
+     "text": "Green on main",
+     "done": true
+    }
+   ],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [
+    {
+     "label": "Workflow",
+     "url": "https://github.com/MossesX/AmberX-AXF/actions/workflows/android.yml"
+    }
+   ],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.deploy.console",
+   "title": "Console deployment (install-console.sh)",
+   "area": "Deploy & CI",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P0",
+   "wave": 1,
+   "effort": "S",
+   "summary": "One command on the VPS builds the console + API + panel container behind Coolify Traefik with HTTPS at console.amberxai.com, prints AXF_TOKEN and auto-updates every 5 minutes.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "x.console.api"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "error",
+     "text": "Not run on the VPS yet \u2014 console.amberxai.com serves nothing"
+    },
+    {
+     "level": "warn",
+     "text": "Docker image never built (no Docker daemon in the build sandbox)"
+    }
+   ],
+   "recommendations": [
+    "Run: curl -fsSL https://raw.githubusercontent.com/MossesX/AmberX-AXF/main/deploy/install-console.sh | bash"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.deploy.site",
+   "title": "Demo site deployment",
+   "area": "Deploy & CI",
+   "kind": "epic",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "S",
+   "summary": "CI publishes apps/demo to the site branch; the VPS pulls it every 2 minutes behind Traefik.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [
+    {
+     "level": "warn",
+     "text": "Domain rename to axf.amberxai.com pending on the VPS"
+    }
+   ],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.showcase.packs",
+   "title": "10 layouts, 10 light/dark theme pairs, 10 style packs",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "The showcase asset packs the first app was originally scoped for.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "x.assets"
+   ],
+   "catalog": [],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.media",
+   "title": "Library: Media (video, audio, streaming, camera)",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-media with a demo app; covers dv.media, dv.stream, c.video, c.vpsstream.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-media"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "dv.media",
+    "dv.stream",
+    "c.video",
+    "c.vpsstream"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.location",
+   "title": "Library: Location (GPS, maps, trails)",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-location with a demo app; covers dv.loc, dv.maps, c.gps.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-location"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "dv.loc",
+    "dv.maps",
+    "c.gps"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.editor",
+   "title": "Library: Editors (rich text, markdown, code)",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-editor with a demo app; covers ui.editor, c.texteditor.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-editor"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "ui.editor",
+    "c.texteditor"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.ai",
+   "title": "Library: AI assistant (Claude, MCP)",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-ai with a demo app; covers w.ai, w.mcp, c.ai.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-ai"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "w.ai",
+    "w.mcp",
+    "c.ai"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.vps",
+   "title": "Library: VPS & deploy",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-vps with a demo app; covers w.vps, w.coolify, c.deploy.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-vps"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "w.vps",
+    "w.coolify",
+    "c.deploy"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.github",
+   "title": "Library: GitHub",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-github with a demo app; covers w.github, cx.github.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-github"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "w.github",
+    "cx.github"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.notifications",
+   "title": "Library: Notifications & push",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-notifications"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "dv.notif",
+    "w.push"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.sensors",
+   "title": "Library: Sensors & connectivity",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-sensors with a demo app; covers dv.sensors, dv.ble, dv.nfc.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-sensors"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "dv.sensors",
+    "dv.ble",
+    "dv.nfc"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.files",
+   "title": "Library: Files & sync",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-files with a demo app; covers d.files, d.sync.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-files"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "d.files",
+    "d.sync"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  },
+  {
+   "id": "x.lib.charts",
+   "title": "Library: Charts & tables",
+   "area": "Showcase",
+   "kind": "epic",
+   "status": "planned",
+   "priority": "P2",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Library lib-charts with a demo app; covers ui.charts, ui.tables.",
+   "ports": {
+    "android": {
+     "status": "planned",
+     "where": "lib-charts"
+    },
+    "web": {
+     "status": "planned",
+     "where": "\u2014"
+    },
+    "python": {
+     "status": "planned",
+     "where": "\u2014"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [
+    "x.android.modules",
+    "x.librarytemplates"
+   ],
+   "catalog": [
+    "ui.charts",
+    "ui.tables"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [],
+   "notes": "",
+   "source": "seed",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Added to the plan"
+    }
+   ]
+  }
+ ]
+}

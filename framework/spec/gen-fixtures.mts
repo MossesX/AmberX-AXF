@@ -13,7 +13,7 @@ import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
-import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
@@ -117,7 +117,7 @@ write('spacing.json', {
 }
 // Widgets (core/engines/widgets.ts): the toolbar as a widget host (start / end), widgets only.
 {
-  const exists = new Set([...load('clock').map((a) => `clock:${a.id}`), ...load('search-bar').map((a) => `search-bar:${a.id}`), ...load('badge').map((a) => `badge:${a.id}`)]);
+  const exists = new Set(ATTACHABLE_ASSET_TYPES.flatMap((t) => load(t as never).map((a) => `${t}:${a.id}`)));
   const has = (t: string, id: string) => exists.has(`${t}:${id}`);
   const cases = {
     'none': { toolbar: { widgets: [] }, extra: [] },
@@ -126,7 +126,24 @@ write('spacing.json', {
     'badges-are-not-widgets': { toolbar: { widgets: [{ type: 'badge', id: 'new', at: 'start' }, { type: 'search-bar', id: 'missing', at: 'end' }, { type: 'clock', id: 'digital-24h', at: 'left' }] }, extra: [] },
     'no-widgets-field': { toolbar: {}, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
     'no-toolbar': { toolbar: null, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
+    'widget-kinds': { toolbar: { widgets: [{ type: 'logo', id: 'wordmark', at: 'start' }, { type: 'spacer', id: 'push', at: 'start' }, { type: 'counter', id: 'alerts', at: 'end' }, { type: 'theme-switch', id: 'day-night', at: 'end', order: -1 }, { type: 'badge', id: 'new', at: 'end' }] }, extra: [{ type: 'avatar', id: 'account', at: 'end', origin: 'account' }] },
   } as const;
+  // Widget kinds (Oct 20 2026): the pure rules logo, counter, status, progress, avatar, link, spacer and theme switch draw from.
+  const kinds = {
+    tones: WIDGET_TONES,
+    tone: Object.fromEntries(['neutral', 'success', 'warning', 'danger', 'accent', 'muted', 'loud', '', 7, null].map((t) => [String(t), { in: t, out: widgetTone(t as never), accentFallback: widgetTone(t as never, 'accent') }])),
+    counter: [[0, 99, true], [0, 99, false], [0, undefined, undefined], [7, 99, true], [99, 99, true], [100, 99, true], [1234, 999, true], [5, 0, true], [5, -3, false], [3.9, 99, true], [-2, 99, false], ['x', 99, true], [12, 'y', true], [12, 1, true]].map(([n, max, hide]) => ({ n, max, hideAtZero: hide, text: counterText(n, max, hide) })),
+    status: [0, 1, -1, 2.5, 'x', null].map((n) => ({ n, on: statusOn(n) })),
+    progress: [[0, 100], [50, 100], [100, 100], [150, 100], [-5, 100], [1, 3], [2, 3], [7, 0], [7, -1], ['x', 10], [7, 'y'], [0.4, 100], [0.5, 100]].map(([n, max]) => ({ n, max, percent: progressPercent(n, max) })),
+    initials: ['Brett', 'Brett Mosses', 'brett m', '  Ada   Lovelace  ', 'x', '', '   ', 'Jean-Luc Picard de la Rue', 7, null].map((name) => ({ name, initials: avatarInitials(name) })),
+    link: ['https://amberxai.com', 'http://localhost:8080/x', ' https://a.b/c?d=1#e ', 'mailto:brett@example.com', 'tel:+1 (555) 010-0100', 'javascript:alert(1)', 'ftp://x.y', 'amberxai.com', 'https://', 'mailto:nope', 'tel:12', '', 7].map((href) => ({ href, out: linkHref(href) })),
+    image: ['https://x.y/logo.png', 'http://x.y/l.webp', '/logo.svg', './img/logo.png', 'data:image/png;base64,iVBORw0KGgo=', 'data:text/html;base64,PGI+', 'javascript:x', 'logo.png', '', 7].map((src) => ({ src, out: imageSrc(src) })),
+    spacer: SPACER_UNITS,
+    logo: LOGO_SIZE,
+    avatar: AVATAR_SIZE,
+    progressWidth: PROGRESS_WIDTH,
+    themeSwitch: [['arctic-daylight', 'arctic-daylight', 'amber-ember'], ['amber-ember', 'arctic-daylight', 'amber-ember'], ['neon-tide', 'arctic-daylight', 'amber-ember'], [undefined, 'a', 'b']].map(([active, light, dark]) => ({ active, light, dark, next: themeSwitchNext(active, light, dark) })),
+  };
   // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
   const searchBars: Record<string, unknown> = {
     everything: load('search-bar').find((a) => a.id === 'everything')!.data,
@@ -154,6 +171,7 @@ write('spacing.json', {
     searchBarWidth: SEARCH_BAR_WIDTH,
     exists: [...exists].sort(),
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
+    kinds,
   });
 }
 write('components.json', {

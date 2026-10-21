@@ -31,6 +31,17 @@
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
     "badge": "new"
   },
   "hidden": [

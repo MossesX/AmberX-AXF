@@ -20,6 +20,8 @@ import ai.amberx.axf.kernel.asset.AssetEnvelope
 import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 import ai.amberx.axf.kernel.engine.WindowClass
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
@@ -178,6 +180,31 @@ class ConformanceTest {
             val o = c.jsonObject
             assertEquals((o.getValue("errors") as JsonArray).map { it.jsonPrimitive.content }, W.validateHostAttachments(o.getValue("host").jsonPrimitive.content, o["list"]), "attach validation $name")
         }
+        // Widget kinds (Oct 20 2026): logo, counter, status, progress, avatar, link, image, spacer, theme switch rules.
+        val k = f.getValue("kinds").jsonObject
+        fun num(e: JsonElement?): Double? = (e as? JsonPrimitive)?.takeUnless { it.isString || it.content == "null" }?.doubleOrNull
+        fun strOrNull(e: JsonElement?): String? = (e as? JsonPrimitive)?.takeIf { it.isString }?.content
+        assertEquals((k.getValue("tones") as JsonArray).map { it.jsonPrimitive.content }, W.WIDGET_TONES, "widget tones")
+        for ((name, c) in k.getValue("tone").jsonObject) {
+            val o = c.jsonObject
+            assertEquals(o.getValue("out").jsonPrimitive.content, W.widgetTone(strOrNull(o["in"])), "tone $name")
+            assertEquals(o.getValue("accentFallback").jsonPrimitive.content, W.widgetTone(strOrNull(o["in"]), "accent"), "tone fallback $name")
+        }
+        for (c in k.getValue("counter") as JsonArray) {
+            val o = c.jsonObject
+            val hide = (o["hideAtZero"] as? JsonPrimitive)?.takeUnless { it.isString }?.content?.toBooleanStrictOrNull() ?: true
+            assertEquals(o.getValue("text").jsonPrimitive.content, W.counterText(num(o["n"]), if ("max" in o) num(o["max"]) else 99.0, hide), "counter $o")
+        }
+        for (c in k.getValue("status") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("on").jsonPrimitive.content.toBoolean(), W.statusOn(num(o["n"])), "status $o") }
+        for (c in k.getValue("progress") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("percent").jsonPrimitive.content.toInt(), W.progressPercent(num(o["n"]), num(o["max"])), "progress $o") }
+        for (c in k.getValue("initials") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("initials").jsonPrimitive.content, W.avatarInitials(strOrNull(o["name"])), "initials $o") }
+        for (c in k.getValue("link") as JsonArray) { val o = c.jsonObject; assertEquals(strOrNull(o["out"]), W.linkHref(strOrNull(o["href"])), "link $o") }
+        for (c in k.getValue("image") as JsonArray) { val o = c.jsonObject; assertEquals(strOrNull(o["out"]), W.imageSrc(strOrNull(o["src"])), "image $o") }
+        for ((size, n) in k.getValue("spacer").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.SPACER_UNITS[size], "spacer $size")
+        for ((size, n) in k.getValue("avatar").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.AVATAR_SIZE[size], "avatar $size")
+        for ((w, n) in k.getValue("progressWidth").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.PROGRESS_WIDTH[w], "progress width $w")
+        for ((size, v) in k.getValue("logo").jsonObject) { val o = v.jsonObject; assertEquals(W.LogoSize(o.getValue("scale").jsonPrimitive.content.toDouble(), o.getValue("px").jsonPrimitive.content.toInt()), W.LOGO_SIZE[size], "logo $size") }
+        for (c in k.getValue("themeSwitch") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("next").jsonPrimitive.content, W.themeSwitchNext(strOrNull(o["active"]), o.getValue("light").jsonPrimitive.content, o.getValue("dark").jsonPrimitive.content), "theme switch $o") }
     }
 
     @Test fun `asset validation matches the reference engine`() {

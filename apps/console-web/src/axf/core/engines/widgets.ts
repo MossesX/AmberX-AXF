@@ -1,5 +1,6 @@
 /**
- * Widget engine — widgets (asset types with "widget": true: clock, search bar) and the hosts that hold them.
+ * Widget engine — widgets (asset types with "widget": true: clock, search bar, logo, button, label, status, counter,
+ * progress, avatar, link, theme switch, spacer, divider) and the hosts that hold them.
  *
  * A *host* is any chrome asset with a list of attached assets. The framework ships two, both declared in
  * schemas/asset-types.json (so a port, a validator and this engine all read one definition):
@@ -40,9 +41,10 @@ export function hostSpec(host: string): HostSpec | undefined { return hostRegist
 export function hostSpecs(): HostSpec[] { return [...hostRegistry.values()]; }
 export function isHost(type: string): boolean { return hostRegistry.has(type); }
 
-// Framework hosts, read from the spec: `attach` blocks name their types; `widgets` blocks take every widget type.
+// Framework hosts, read from the spec: an `attach` block names its types (default: every attachable type); a `widgets`
+// block takes every widget type.
 for (const [t, s] of Object.entries(TYPES)) {
-  if (s.attach) registerHost({ host: t, field: 'attach', types: s.attach.types ?? [...WIDGET_TYPES], sides: s.attach.sides ?? [] });
+  if (s.attach) registerHost({ host: t, field: 'attach', types: s.attach.types ?? [...ATTACHABLE_ASSET_TYPES], sides: s.attach.sides ?? [] });
   if (s.widgets) registerHost({ host: t, field: 'widgets', types: [...WIDGET_TYPES], sides: s.widgets.sides ?? [] });
 }
 
@@ -138,4 +140,59 @@ export function searchBarConfig(d: { placeholder?: unknown; maxResults?: unknown
     ...(kinds && kinds.length ? { kinds } : {}),
     shortcut: d?.shortcut !== false,
   };
+}
+
+/* ---------------- widget kinds: the pure rules every port draws from (fixtures: widgets.json → kinds) ---------------- */
+
+export const WIDGET_TONES = ['neutral', 'success', 'warning', 'danger', 'accent', 'muted'] as const;
+export type WidgetTone = typeof WIDGET_TONES[number];
+/** A tone from asset data, `fallback` when it isn't one of the six. */
+export function widgetTone(t: unknown, fallback: WidgetTone = 'neutral'): WidgetTone { return (WIDGET_TONES as readonly string[]).includes(t as string) ? (t as WidgetTone) : fallback; }
+
+/** Counter widget text: "" when hidden at zero, the number, or `max+` past the cap (max defaults to 99, min 1). */
+export function counterText(n: unknown, max: unknown = 99, hideAtZero: unknown = true): string {
+  const v = typeof n === 'number' && Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+  const cap = typeof max === 'number' && Number.isFinite(max) && max >= 1 ? Math.floor(max) : 99;
+  if (v === 0 && hideAtZero !== false) return '';
+  return v > cap ? `${cap}+` : String(v);
+}
+/** Status widget: on while the bound counter is above zero. */
+export const statusOn = (count: unknown): boolean => typeof count === 'number' && Number.isFinite(count) && count > 0;
+/** Progress widget: whole percent 0–100 of `n` over `max` (max ≤ 0 or not a number → 0). */
+export function progressPercent(n: unknown, max: unknown): number {
+  const v = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+  const m = typeof max === 'number' && Number.isFinite(max) && max > 0 ? max : 0;
+  if (!m) return 0;
+  return Math.min(100, Math.max(0, Math.round((v / m) * 100)));
+}
+/** Avatar initials: the first letter of the first two words, upper-cased; a lone word gives its first two letters; empty → "?". */
+export function avatarInitials(name: unknown): string {
+  const words = (typeof name === 'string' ? name : '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '?';
+  if (words.length === 1) return words[0]!.slice(0, 2).toUpperCase();
+  return (words[0]![0]! + words[words.length - 1]![0]!).toUpperCase();
+}
+/** Link widget: the address it may open (https, http, mailto, tel; trimmed), else null (the widget is not drawn). */
+export function linkHref(href: unknown): string | null {
+  const h = typeof href === 'string' ? href.trim() : '';
+  return /^(https?:\/\/[^\s/?#]+[^\s]*|mailto:[^\s@]+@[^\s]+|tel:\+?[0-9().\- ]{3,})$/i.test(h) ? h : null;
+}
+/** Spacer widget: gap in multiples of the space token; -1 = flex (push what follows to the other end). */
+export const SPACER_UNITS: Record<'small' | 'regular' | 'large' | 'flex', number> = { small: 1, regular: 2, large: 4, flex: -1 };
+export function spacerUnits(size: unknown): number { return SPACER_UNITS[size as keyof typeof SPACER_UNITS] ?? SPACER_UNITS.regular; }
+/** Logo widget size: font scale for text/icon logos and the image height in px. */
+export const LOGO_SIZE: Record<'small' | 'regular' | 'large', { scale: number; px: number }> = { small: { scale: 0.85, px: 16 }, regular: { scale: 1, px: 20 }, large: { scale: 1.25, px: 28 } };
+export function logoSize(size: unknown): { scale: number; px: number } { return LOGO_SIZE[size as keyof typeof LOGO_SIZE] ?? LOGO_SIZE.regular; }
+/** Avatar widget size in px. */
+export const AVATAR_SIZE: Record<'small' | 'regular' | 'large', number> = { small: 18, regular: 24, large: 32 };
+export function avatarSize(size: unknown): number { return AVATAR_SIZE[size as keyof typeof AVATAR_SIZE] ?? AVATAR_SIZE.regular; }
+/** Progress widget width in multiples of the space token. */
+export const PROGRESS_WIDTH: Record<'compact' | 'regular' | 'wide', number> = { compact: 8, regular: 14, wide: 24 };
+export function progressWidth(w: unknown): number { return PROGRESS_WIDTH[w as keyof typeof PROGRESS_WIDTH] ?? PROGRESS_WIDTH.regular; }
+/** Theme switch: the color theme to swap to from the active one (dark while light is active or neither; light while dark is). */
+export function themeSwitchNext(active: unknown, light: unknown, dark: unknown): string { return active === dark ? String(light) : String(dark); }
+/** Image address a logo/avatar may show: https, http, data:image or an app path (starts with / or ./), else null. */
+export function imageSrc(src: unknown): string | null {
+  const s = typeof src === 'string' ? src.trim() : '';
+  return /^(https?:\/\/[^\s]+|data:image\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+|\.?\/[^\s]*)$/i.test(s) ? s : null;
 }

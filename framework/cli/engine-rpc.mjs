@@ -39,12 +39,17 @@ const lines = [];
 function appDefaultsView() {
   const types = assetSpec.types;
   const widgetTypes = Object.keys(types).filter((t) => types[t].widget === true);
+  const attachableTypes = Object.keys(types).filter((t) => types[t].attachable === true);
   const hosts = {};
   for (const [t, ts] of Object.entries(types)) {
-    if (ts.attach) hosts[t] = { field: 'attach', types: ts.attach.types ?? [], sides: ts.attach.sides ?? [] };
+    // Same rule as the engines: an `attach` block without `types` takes every attachable type, `widgets` every widget type.
+    if (ts.attach) hosts[t] = { field: 'attach', types: ts.attach.types ?? attachableTypes, sides: ts.attach.sides ?? [] };
     else if (ts.widgets) hosts[t] = { field: 'widgets', types: widgetTypes, sides: ts.widgets.sides ?? [] };
   }
   return { $axf: 'app-defaults@1', hidden: appDefaults.hidden ?? [], hideable: Object.keys(types).filter((t) => types[t].hideable), hosts,
+    widgets: widgetTypes, attachable: attachableTypes,
+    typeLabels: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.label).map(([t, ts]) => [t, ts.label])),
+    typeIcons: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.icon).map(([t, ts]) => [t, ts.icon])),
     enums: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.enums).map(([t, ts]) => [t, ts.enums])) };
 }
 

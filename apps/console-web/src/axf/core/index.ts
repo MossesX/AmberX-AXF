@@ -13,7 +13,7 @@ export * from './engines/roll';
 export * from './engines/hide';
 export * from './engines/spacing';
 export * from './engines/banner';
-export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, placeToolbarWidgets, validateHostAttachments, searchBarConfig, type HostAttachment, type HostSpec, type SearchBarConfig } from './engines/widgets';
+export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
 export * from './engines/search';
 export * from './engines/alerts';
 export * from './diagnostics';

@@ -93,10 +93,11 @@ export function validateAsset(raw) {
 
 /* Widget hosts — mirrors hostSpec / validateHostAttachments in core/engines/widgets.ts (banner.attach, toolbar.widgets). */
 const WIDGET_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].widget === true);
+const ATTACHABLE_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].attachable === true);
 export function hostSpec(type) {
   const t = spec.types[type];
   if (!t) return undefined;
-  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? WIDGET_TYPES, sides: t.attach.sides ?? [] };
+  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? ATTACHABLE_TYPES, sides: t.attach.sides ?? [] };
   if (t.widgets) return { host: type, field: 'widgets', types: WIDGET_TYPES, sides: t.widgets.sides ?? [] };
   return undefined;
 }
