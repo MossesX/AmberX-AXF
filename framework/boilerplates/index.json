@@ -264,14 +264,17 @@
       "id": "voice",
       "name": "Voice Control",
       "category": "assistant",
-      "description": "Hands-free control via voice + gestures",
+      "description": "Hands-free voice app: speech in, spoken prompts, voice commands users can retrigger, and an app lock (as in Voice Vault, apps/voicevault)",
       "features": 2,
-      "screens": 3,
+      "screens": 4,
       "modules": [
         "ai.amberx.axf.platform"
       ],
-      "libraries": [],
-      "status": "planned",
+      "libraries": [
+        "voice",
+        "lock"
+      ],
+      "status": "built",
       "source": "amberx"
     }
   ]
