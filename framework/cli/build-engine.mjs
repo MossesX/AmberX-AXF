@@ -198,7 +198,7 @@ function walk(dir) {
 }
 
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
-const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
+const TEXT = /(\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml|sh|py|ya?ml)|(^|[\\/])Dockerfile)$/;
 
 /** Token values are free text (an app named "Notes & Todo"): escape them for the file they land in, so the generated
  * app still compiles. Android string resources: XML entities + Android's own quote rules; Kotlin/Java string literals:
@@ -214,7 +214,7 @@ const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
     // `src/main/kotlin/app/…` in a template lands at the app's real package path.
-    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
+    const rel = relative(src, file).replace(/^_(gitignore|dockerignore)$/, '.$1').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
     const target = join(dest, rel);
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
