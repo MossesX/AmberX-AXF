@@ -24,49 +24,34 @@ import ai.amberx.axf.kernel.module.SettingsContribution
 import ai.amberx.axf.kernel.runtime.AxfRuntime
 import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.lock.AppLock
+import ai.amberx.axf.lock.LockGate
 import ai.amberx.axf.lock.LockMode
+import ai.amberx.axf.lock.lockGate
+import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.settings.SettingsEngine
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
- * App lock for AXHub: starts locked, opens only after Settings → Unlock's step (or right away when that is
- * "Nothing more"), and locks again after the chosen time away.
+ * "Sign out and reset" (the escape on AXHub's locked screen): the hub session goes first, on the hub and on this
+ * phone, and only then is the lock turned off, so nothing it protected is exposed.
  */
-class AppLockGate {
-    private val _unlocked = MutableStateFlow(false)
-    val unlocked: StateFlow<Boolean> = _unlocked.asStateFlow()
-    private var leftAt = 0L
-    internal var lock: AppLock? = null
+class HubReset(private val prefs: WatchPrefs) {
     internal var settings: SettingsEngine? = null
-    internal var base: String? = null
+    internal var gate: LockGate? = null
 
-    fun unlock() { _unlocked.value = true }
-    fun lockNow() { _unlocked.value = false }
-    fun onLeave(now: Long = System.currentTimeMillis()) { leftAt = now }
-    /** Called once settings have loaded (app ready) and on every return to the app. */
-    fun onReturn(now: Long = System.currentTimeMillis()) {
-        val l = lock ?: return // no lock service: stay locked (fail closed); "Sign out and reset" is the way out
-        if (l.mode == LockMode.NONE) { unlock(); return }
-        if (leftAt > 0 && now - leftAt >= l.autoLockMinutes * 60_000L) lockNow()
-        leftAt = 0
-    }
-    /** "Sign out and reset": the hub session goes first, then the lock is turned off. */
-    suspend fun resetAfterSignOut() {
+    suspend fun signOutAndReset() {
         val done = CompletableDeferred<Unit>()
-        base?.let { runCatching { HubClient.signOut(it) } } // ends the session on the hub too, not just on this phone
+        runCatching { HubClient.signOut(prefs.base) } // ends the session on the hub too, not just on this phone
         signOutOfHub { done.complete(Unit) }
         done.await()
         HubState.update(ai.amberx.axf.axhubandroid.hub.Feed.SignedOut)
         settings?.set(AppLock.MODE, JsonPrimitive(LockMode.NONE.id))
-        unlock()
+        gate?.unlock()
     }
 }
 
@@ -77,15 +62,18 @@ class AppLockGate {
  */
 class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhubandroid", "AXHub") {
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.lock")
-    val gate: AppLockGate = AppLockGate()
     private val prefs = WatchPrefs(context)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    /** App lock (lib-lock): starts locked; "Nothing more" opens it; a missing lock service keeps it shut (fails closed). */
+    lateinit var gate: LockGate
+        private set
+    val reset: HubReset = HubReset(prefs)
 
     override fun register(ctx: ModuleContext) {
         val runtime = ctx.service(AxfRuntime::class)
-        gate.lock = ctx.service(AppLock::class)
-        gate.settings = ctx.service(SettingsEngine::class)
-        gate.base = prefs.base
+        gate = lockGate(ctx.service(AppLock::class), scope, ready = (context as AxfApplication).ready)
+        reset.gate = gate
+        reset.settings = ctx.service(SettingsEngine::class)
         val routes = listOf(RouteSpec("home", "Approvals", icon = "shield", module = id), RouteSpec("hub", "Hub", icon = "external", module = id), RouteSpec("apps", "Apps", icon = "download", module = id)) +
             hubAreas.map { RouteSpec(it.route, it.title, icon = it.icon, module = id, group = "Manage") }
         routes.forEach { ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(it)) }
@@ -100,9 +88,6 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             }
         })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("axhub.lock", ActionMeta("Lock AXHub", module = id)) { _, _ -> gate.lockNow() })
-        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About")) { _, _ ->
-            runtime?.toast("AXHub on AmberX AXF 0.2.0. Approve and manage your axHub from this phone.", ToastKind.INFO, "About")
-        })
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("axhub", "AXHub", "shield", id, order = 25, description = "Your hub and how approvals reach this phone.", settings = listOf(
             SettingSpec(K_BASE, "Hub address", SettingKind.TEXT, "https only, no path", JsonPrimitive(HubAddress.DEFAULT), icon = "link"),
             SettingSpec(K_INTERVAL, "Check every", SettingKind.CHOICE, default = JsonPrimitive("30"), options = listOf("15" to "15 s", "30" to "30 s", "60" to "1 min", "300" to "5 min"), icon = "clock"),
@@ -124,7 +109,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             K_BASE -> {
                 val ok = HubAddress.normalize(v)
                 if (ok == null) { if (v != null && runtime != null) runtime.toast("Hub address must be https with no path; kept ${prefs.base}.", ToastKind.WARNING, "AXHub") }
-                else if (ok != prefs.base) { prefs.base = ok; gate.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
+                else if (ok != prefs.base) { prefs.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
             }
             K_INTERVAL -> v?.toIntOrNull()?.let { prefs.intervalSec = it }
             K_FULL -> v?.toBooleanStrictOrNull()?.let { prefs.fullScreen = it }

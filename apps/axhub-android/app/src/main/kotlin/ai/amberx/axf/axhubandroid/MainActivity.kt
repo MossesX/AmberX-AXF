@@ -2,20 +2,18 @@ package ai.amberx.axf.axhubandroid
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.compose.runtime.Composable
 import ai.amberx.axf.axhubandroid.hub.HubAddress
 import ai.amberx.axf.axhubandroid.hub.HubState
 import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.views.ApprovalsView
 import ai.amberx.axf.axhubandroid.views.AppsView
-import ai.amberx.axf.axhubandroid.views.Gated
 import ai.amberx.axf.axhubandroid.views.HubAreaView
 import ai.amberx.axf.axhubandroid.views.HubPageView
-import ai.amberx.axf.axhubandroid.views.SettingsView
 import ai.amberx.axf.axhubandroid.views.hubAreas
 import ai.amberx.axf.axhubandroid.watch.Alerts
-import ai.amberx.axf.lock.PinSetupScreen
+import ai.amberx.axf.lock.GateWording
+import ai.amberx.axf.lock.Gated
 import ai.amberx.axf.platform.AxfActivity
 import ai.amberx.axf.ui.shell.AppShell
 import kotlinx.coroutines.flow.first
@@ -23,15 +21,23 @@ import kotlinx.coroutines.launch
 
 /**
  * The single activity. A tapped approval alert lands here and opens that approval's hub page. Screens stay
- * out of screenshots/recents (FLAG_SECURE), and the activity never shows over the lock screen, so an
- * approval can't be made from a locked phone.
+ * out of screenshots/recents and WebView debugging is off (`android.secureWindow` in axf.manifest.json, applied
+ * by AxfActivity), and the activity never shows over the lock screen, so an approval can't be made from a
+ * locked phone. Every view, the app's and the libraries' (settings, PIN), sits behind the app lock.
  */
 class MainActivity : AxfActivity() {
     private val axhub get() = application as App
     private val gate get() = axhub.appModule.gate
+    private val wording = GateWording(
+        title = "AXHub is locked", message = "Unlock to see approvals and your hub.",
+        biometricTitle = "Unlock AXHub", biometricSubtitle = "Your hub admin session is in this app",
+        pinTitle = "Enter your AXHub PIN", noPin = "No PIN is set for AXHub.",
+        noLock = "The lock isn't available, so AXHub stays locked. Use Sign out and reset below.",
+        resetMessage = "Sign out of the hub on this phone and turn the lock off. You'll sign in to the hub again.",
+        resetButton = "Sign out and reset", resetConfirm = "Yes, sign out and reset",
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         super.onCreate(savedInstanceState)
         Alerts.channels(this)
         handle(intent)
@@ -61,14 +67,13 @@ class MainActivity : AxfActivity() {
 
     @Composable
     override fun Content() {
+        // settings and lock-pin come from lib-settings / lib-lock; viewGuard locks them too.
         val views = mutableMapOf<String, @Composable () -> Unit>(
-            "home" to { Gated(gate) { ApprovalsView() } },
-            "hub" to { Gated(gate) { HubPageView() } },
-            "apps" to { Gated(gate) { AppsView() } },
-            "settings" to { Gated(gate) { SettingsView() } },
-            "lock-pin" to { Gated(gate) { PinSetupScreen() } },
+            "home" to { ApprovalsView() },
+            "hub" to { HubPageView() },
+            "apps" to { AppsView() },
         )
-        hubAreas.forEach { a -> views[a.route] = { Gated(gate) { HubAreaView(a) } } }
-        AppShell(views = views)
+        hubAreas.forEach { a -> views[a.route] = { HubAreaView(a) } }
+        AppShell(views = views, viewGuard = { _, content -> Gated(gate, wording, onReset = { axhub.appModule.reset.signOutAndReset() }) { content() } })
     }
 }

@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import ai.amberx.axf.lock.PinPrompt
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfEmptyState
@@ -57,8 +58,8 @@ import kotlinx.coroutines.launch
 /** The Voice screen: banner on top when a password is ready to copy, the mic, and the current step. */
 @Composable
 fun HomeView() {
-    val session = rememberSession() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
-    val voice = rememberVoice()
+    val session = rememberService<VaultSession>() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
+    val voice = rememberService<AxfVoice>()
     val stage by session.stage.collectAsState()
     val note by session.note.collectAsState()
     LifecycleResumeEffect(session) {

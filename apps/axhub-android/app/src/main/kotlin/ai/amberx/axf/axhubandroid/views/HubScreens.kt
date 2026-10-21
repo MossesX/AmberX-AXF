@@ -22,11 +22,9 @@ import ai.amberx.axf.axhubandroid.hub.HubClient
 import ai.amberx.axf.axhubandroid.hub.HubState
 import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.watch.Alerts
-import ai.amberx.axf.settings.SettingsScreen
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
-import ai.amberx.axf.ui.components.AxfPageHead
 import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.components.PlaceholderScreen
@@ -98,14 +96,5 @@ fun HubAreaView(area: HubArea) {
             AxfText("The hub's own pages already cover approvals, your account and users (admins).", muted = true)
             AxfButton("Open the hub", { HubState.open("$base/auth/account"); runtime.navigate("hub") }, icon = "external")
         }
-    }
-}
-
-/** Generated settings (AXHub, Unlock, Appearance, General, About). */
-@Composable
-fun SettingsView() {
-    Column(Modifier.fillMaxSize()) {
-        AxfPageHead("Settings", modifier = Modifier.padding(horizontal = Axf.space.two))
-        SettingsScreen()
     }
 }

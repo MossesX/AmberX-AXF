@@ -3,7 +3,8 @@
   "app": {
     "id": "voice-vault",
     "name": "Voice Vault",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "about": "Passwords stay encrypted on this phone."
   },
   "framework": {
     "version": "0.2.0",
@@ -120,7 +121,8 @@
       "ai.amberx.axf.lock"
     ],
     "minSdk": 26,
-    "targetSdk": 35
+    "targetSdk": 35,
+    "secureWindow": true
   },
   "libraries": {
     "voice": {

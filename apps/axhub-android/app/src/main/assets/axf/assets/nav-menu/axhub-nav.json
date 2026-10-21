@@ -1,7 +1,7 @@
 {
   "$axf": "asset@1",
   "type": "nav-menu",
-  "id": "blank-nav",
+  "id": "axhub-nav",
   "name": "AXHub navigation",
   "version": "0.1.0",
   "description": "AXHub: approvals, the hub, planned hub areas, settings.",
