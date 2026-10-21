@@ -32,13 +32,15 @@ public data class ListenOptions(
     val language: String? = null,
     /** Ask for on-device recognition. With [secret] on API 31+ the on-device recognizer is used when present. */
     val preferOffline: Boolean = true,
-    /** Speech that should not leave the phone (passwords): on-device recognizer only, never partial results. */
+    /** Speech that should not leave the phone (passwords): on-device recognizer only. */
     val secret: Boolean = false,
     /** Let [secret] speech fall back to the phone's normal (possibly online) recognizer when there is no on-device one. */
     val allowOnlineSecret: Boolean = false,
     val maxResults: Int = 5,
     /** Silence (ms) that ends the utterance; null = recognizer default. */
     val endSilenceMs: Long? = null,
+    /** Called on the main thread with the text heard so far, while the person is still talking (live transcript). Null = no partial results. */
+    val onPartial: ((String) -> Unit)? = null,
 )
 
 /**
@@ -81,13 +83,16 @@ public class SpeechInput(private val context: Context) {
                             val list = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).orEmpty().map { it.trim() }.filter { it.isNotEmpty() }
                             finish(if (list.isEmpty()) Heard.Silence else Heard.Text(list))
                         }
-                        override fun onPartialResults(partialResults: Bundle?) {}
+                        override fun onPartialResults(partialResults: Bundle?) {
+                            val text = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()?.trim().orEmpty()
+                            if (text.isNotEmpty()) options.onPartial?.invoke(text)
+                        }
                         override fun onEvent(eventType: Int, params: Bundle?) {}
                     })
                     val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                         putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                         putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, options.maxResults)
-                        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
+                        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, options.onPartial != null)
                         putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.packageName)
                         if (options.preferOffline || options.secret) putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
                         options.language?.takeIf { it.isNotBlank() && it != "system" }?.let { putExtra(RecognizerIntent.EXTRA_LANGUAGE, it) }

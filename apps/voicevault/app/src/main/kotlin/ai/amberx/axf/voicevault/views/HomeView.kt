@@ -124,6 +124,19 @@ private fun MicHeader(session: VaultSession, voice: AxfVoice?, stage: Stage) {
     ) { AxfIcon(if (stage.isUnlocked()) "unlock" else if (listening) "mic" else "lock", size = Axf.space.touchTarget, tint = if (listening) c.accent else c.muted) }
     AxfHeading(title(stage), level = 2)
     AxfText(subtitle(stage, listening, hearing), muted = true, style = Axf.type.bodyMedium.copy(textAlign = TextAlign.Center))
+    LiveTranscript(session)
+}
+
+/** What's being said, live, in plain text (Settings → Show what you say; on by default). */
+@Composable
+private fun LiveTranscript(session: VaultSession) {
+    val heard by session.heard.collectAsState()
+    if (heard.isEmpty()) return
+    val shown = if (session.showSpeech) heard else "•".repeat(heard.length)
+    AxfCard(Modifier.fillMaxWidth()) {
+        AxfText("Hearing", muted = true, style = Axf.type.labelMedium)
+        AxfText(shown, style = Axf.type.code.copy(textAlign = TextAlign.Center), modifier = Modifier.fillMaxWidth())
+    }
 }
 
 private fun title(stage: Stage): String = when (stage) {
@@ -196,7 +209,7 @@ private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
 private fun EditForm(session: VaultSession, stage: Stage.Editing) {
     var site by remember(stage) { mutableStateOf(stage.site) }
     var password by remember(stage) { mutableStateOf(stage.password) }
-    var show by remember(stage) { mutableStateOf(false) }
+    var show by remember(stage) { mutableStateOf(session.showSpeech) }
     var error by remember(stage) { mutableStateOf<String?>(null) }
     AxfCard(Modifier.fillMaxWidth(), title = if (stage.replacing != null) "Update saved password" else "New password", icon = "lock") {
         AxfTextField(site, { site = it; error = null }, Modifier.fillMaxWidth(), label = "Site", leadingIcon = "link")

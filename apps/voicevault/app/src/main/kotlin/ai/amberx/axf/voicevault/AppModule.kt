@@ -55,6 +55,7 @@ class AppModule(private val context: Context, private val scope: CoroutineScope)
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("voicevault", "Voice Vault", "lock", id, order = 25, description = "How the vault listens and handles copied passwords.", settings = listOf(
             SettingSpec(UNLOCK_CODE_ROUTE, "Unlock code", SettingKind.LINK, "Record or type the phrase that opens the vault", target = UNLOCK_CODE_ROUTE, icon = "shield"),
             SettingSpec(Keys.HANDS_FREE, "Hands-free", SettingKind.TOGGLE, "Listen by itself while the Voice screen is open (off = tap the mic)", JsonPrimitive(true), icon = "mic"),
+            SettingSpec(Keys.SHOW_SPEECH, "Show what you say", SettingKind.TOGGLE, "Show your words live while you talk, and passwords in plain text (off = hidden as dots)", JsonPrimitive(true), icon = "eye"),
             SettingSpec(Keys.CLIPBOARD, "Clear copied password after", SettingKind.CHOICE, default = JsonPrimitive("30"), options = listOf("15" to "15 s", "30" to "30 s", "60" to "1 min", "0" to "Never"), icon = "copy"),
             SettingSpec(Keys.IDLE, "Lock when not used for", SettingKind.CHOICE, default = JsonPrimitive("5"), options = listOf("1" to "1 min", "5" to "5 min", "15" to "15 min", "0" to "Never"), icon = "clock"),
             SettingSpec("voicevault.lockNow", "Lock now", SettingKind.ACTION, target = "vault.lock", icon = "lock"),

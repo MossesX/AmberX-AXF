@@ -100,6 +100,7 @@ object Cmd {
 object Keys {
     const val CLIPBOARD = "voicevault.clipboardClear"
     const val HANDS_FREE = "voicevault.handsFree"
+    const val SHOW_SPEECH = "voicevault.showSpeech"
     const val IDLE = "voicevault.idleLock"
     const val UNLOCK_CODE = "voicevault.unlockCode"
     const val CODE_LOCKOUT = "voicevault.codeLockout"
@@ -146,6 +147,9 @@ class VaultSession(
     private val _listening = MutableStateFlow(false)
     /** True while the voice loop runs (the mic button shows it). */
     val listening: StateFlow<Boolean> = _listening.asStateFlow()
+    private val _heard = MutableStateFlow("")
+    /** What's being said right now (live while talking), as it will be filled in: passwords without spaces. Cleared on each new step. */
+    val heard: StateFlow<String> = _heard.asStateFlow()
 
     val unlocked: Boolean get() = _stage.value.isUnlocked()
 
@@ -161,6 +165,8 @@ class VaultSession(
     private val clearAfterSec: Int get() = setting(Keys.CLIPBOARD)?.toIntOrNull() ?: 30
     private val handsFree: Boolean get() = setting(Keys.HANDS_FREE)?.toBooleanStrictOrNull() ?: true
     private val idleMinutes: Int get() = setting(Keys.IDLE)?.toIntOrNull() ?: 5
+    /** Settings → Voice Vault → Show what you say (on by default): live transcript and passwords shown in plain text. */
+    val showSpeech: Boolean get() = setting(Keys.SHOW_SPEECH)?.toBooleanStrictOrNull() ?: true
 
     init {
         // The gate locks on leaving / idle; the session then drops the entries.
@@ -452,7 +458,9 @@ class VaultSession(
             val ask = askFor(st) ?: return
             val prompt = listOfNotNull(pendingSay, ask.prompt.takeIf { spokenFor != st }).joinToString(" ").ifEmpty { null }
             pendingSay = null; spokenFor = st
-            when (val h = v.ask(prompt, secret = ask.secret)) {
+            _heard.value = ""
+            val shown = { t: String -> if (st is Stage.AskPassword) SpokenText.password(t) else t }
+            when (val h = v.ask(prompt, secret = ask.secret, onPartial = { if (_stage.value == st) _heard.value = shown(it) })) {
                 Heard.Silence -> if (++silences >= MAX_SILENCES) { show("Stopped listening. Tap the mic to start again.", Tone.INFO); return }
                 is Heard.Failed -> {
                     if (h.code == SpeechInput.NO_ON_DEVICE) {
@@ -465,7 +473,7 @@ class VaultSession(
                     if (h.code == -1 || h.code == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS || ++failures >= MAX_FAILURES) return
                     delay(1_500)
                 }
-                is Heard.Text -> { silences = 0; failures = 0; if (_stage.value == st) handle(st, h.alternatives) }
+                is Heard.Text -> { silences = 0; failures = 0; if (_stage.value == st) { _heard.value = shown(h.alternatives.first()); handle(st, h.alternatives) } }
             }
         }
     }
@@ -517,7 +525,7 @@ class VaultSession(
 
     /* ---------------- helpers ---------------- */
 
-    private fun go(next: Stage) { _stage.value = next; if (next !is Stage.Editing) clearNoteIfInfo(); if (visible && handsFree && askFor(next) != null) startListening() }
+    private fun go(next: Stage) { _heard.value = ""; _stage.value = next; if (next !is Stage.Editing) clearNoteIfInfo(); if (visible && handsFree && askFor(next) != null) startListening() }
     private fun clearNoteIfInfo() { if (_note.value?.tone == Tone.INFO) _note.value = null }
     private fun show(text: String, tone: Tone) { _note.value = Note(text, tone) }
 

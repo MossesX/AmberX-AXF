@@ -15,7 +15,8 @@ class SpokenTextTest {
     }
 
     @Test fun passwordsKeptAsHeard() {
-        assertEquals("Hunter Two!", SpokenText.password("  Hunter Two!  "))
+        assertEquals("HunterTwo!", SpokenText.password("  Hunter Two!  "))
+        assertEquals("ab12cd", SpokenText.password("ab 12\tcd"))
     }
 
     @Test fun codesIgnorePunctuationAndCase() {
