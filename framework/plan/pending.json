@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T16:43:14.029Z",
+ "updatedAt": "2026-10-21T17:11:28.623Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1333,7 +1333,9 @@
     {
      "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.541Z"
     },
     {
      "text": "Build manager server: change-log feed, live/built index, hub events + polling",
@@ -1394,12 +1396,14 @@
     {
      "text": "Docs, CLAUDE.md Status, PR, CI",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.623Z"
     }
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T16:43:14.029Z",
+   "updatedAt": "2026-10-21T17:11:28.623Z",
    "estimate": "6.5 h",
    "source": "claude-code"
   }

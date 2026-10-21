@@ -94,6 +94,7 @@
 .axp-build-manager__search { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted) }
 .axp-build-manager__search:focus-within { border-color: var(--fx-focus) }
 .axp-build-manager__search input { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; outline: none; padding-left: 0; padding-right: 0 }
+.axp-build-manager__search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none }
 .axp-build-manager__tabs { display: flex; gap: calc(var(--fx-space) * 0.3); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-x: auto }
 .axp-build-manager__tab { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.75); cursor: pointer; font-weight: 600; color: var(--fx-muted); border-bottom: calc(var(--fx-border-w) * 2) solid transparent; margin-bottom: calc(var(--fx-border-w) * -1); white-space: nowrap }
 .axp-build-manager__tab.is-on { color: var(--fx-accent); border-bottom-color: var(--fx-accent) }
