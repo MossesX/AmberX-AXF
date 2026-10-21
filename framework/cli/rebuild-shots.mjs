@@ -23,7 +23,7 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((a, v, i, all) => (
 if (!args.repo || !args.out || !args.shots) { console.error('usage: rebuild-shots --repo <checkout> --out <dir> --shots <shots.json> [--label after]'); process.exit(2); }
 const repo = resolve(args.repo), web = join(repo, 'apps/console-web'), label = args.label || 'after';
 const shots = JSON.parse(readFileSync(args.shots, 'utf8'));
-const VIEWPORTS = { phone: { width: 412, height: 915, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desktop: { width: 1366, height: 860, deviceScaleFactor: 1 } };
+const VIEWPORTS = { phone: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, desktop: { viewport: { width: 1366, height: 860 }, deviceScaleFactor: 1 } };
 
 const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const waitFor = async (url, ms = 90000) => { const end = Date.now() + ms; while (Date.now() < end) { try { const r = await fetch(url); if (r.status < 500) return; } catch { /* not up */ } await new Promise((r) => setTimeout(r, 500)); } throw new Error(`timeout waiting for ${url}`); };
