@@ -22,7 +22,7 @@ import ai.amberx.axf.hub.cookieCredentials
 class App : AxfApplication() {
     /** The hub's address: manifest `developer.hub` (https host only), else lib-hub's default. */
     val hub: String by lazy { manifest().developer?.hub?.let { HubRules.normalize(it) } ?: HubRules.DEFAULT }
-    val appModule: AppModule by lazy { AppModule(this, hub = { hub }) }
+    val appModule: AppModule by lazy { AppModule(this, hubAddress = { hub }) }
 
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), PluginManagerModule(), WindowsModule(),
