@@ -1,27 +1,44 @@
-/*
- * Dependency-free Markdown for assistant replies (ported from xGallery, extended): headings, lists (nested by indent),
- * task items, quotes, tables, rules, fenced code with a copy button, inline code, bold, italic, strike, links.
- * Builds React elements only — model output is never injected as HTML. Links open only for http(s)/mailto.
+/**
+ * Dependency-free Markdown for any AXF web app (harvested Oct 21 2026 from the console's ai-assistant renderer, which
+ * came from xGallery; the systems-check subset renderer is the `compact` mode). Headings, lists (nested by indent,
+ * `-`/`*`/`+`/`•`/numbered), task items, quotes, tables, rules, fenced code with a copy button, inline code, bold,
+ * italic, strike, links and bare URLs.
+ *
+ * Safe by construction: it builds React elements only — text is never injected as HTML, raw HTML tags stay text,
+ * and a link is rendered only for http(s) / mailto targets (anything else becomes plain text). Links open in a new
+ * tab with `rel="noopener noreferrer"`. Styled by `.fx-md` in `framework/ui/axf.css` (theme tokens only).
  */
 import { Fragment, useState, type ReactNode } from 'react';
-import { Icon } from '@console/axf/react';
+import { Icon } from './Icon';
 
-export function Markdown({ text }: { text: string }) {
-  return <div className="axp-ai-assistant__md">{blocks(text)}</div>;
+export interface MarkdownProps {
+  text: string;
+  /** Tighter spacing, smaller type, headings capped at h4: for summaries in banners and cards. */
+  compact?: boolean;
+  className?: string;
+}
+
+export function Markdown({ text, compact, className }: MarkdownProps) {
+  return <div className={`fx-md ${compact ? 'fx-md--compact' : ''} ${className ?? ''}`}>{blocks(text)}</div>;
+}
+
+/** Links the renderer will follow; everything else is shown as text. */
+export function safeHref(href: string): string | undefined {
+  return /^(https?:|mailto:)/i.test(href.trim()) ? href.trim() : undefined;
 }
 
 function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const [copied, setCopied] = useState(false);
   const copy = () => { void navigator.clipboard?.writeText(code).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1200); }); };
   return (
-    <div className="axp-ai-assistant__code">
-      <div className="axp-ai-assistant__code-head"><span className="fx-mono">{lang || 'code'}</span><button type="button" className="axp-ai-assistant__code-copy" onClick={copy}><Icon name={copied ? 'check' : 'copy'} size={12} />{copied ? 'Copied' : 'Copy'}</button></div>
+    <div className="fx-md__code">
+      <div className="fx-md__code-head"><span className="fx-mono">{lang || 'code'}</span><button type="button" className="fx-md__code-copy" aria-label={copied ? 'Copied' : 'Copy code'} onClick={copy}><Icon name={copied ? 'check' : 'copy'} size={12} />{copied ? 'Copied' : 'Copy'}</button></div>
       <pre><code>{code}</code></pre>
     </div>
   );
 }
 
-const LIST = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+const LIST = /^(\s*)([-*+•]|\d+[.)])\s+(.*)$/;
 
 function blocks(src: string): ReactNode[] {
   const lines = src.replace(/\r\n/g, '\n').split('\n');
@@ -55,7 +72,7 @@ function blocks(src: string): ReactNode[] {
       const rows: string[][] = [];
       while (i < lines.length && /^\s*\|.*\|\s*$/.test(at(i))) rows.push(row(at(i++)));
       out.push(
-        <div key={key++} className="axp-ai-assistant__tablewrap"><table className="fx-table"><thead><tr>{head.map((c, j) => <th key={j}>{inline(c)}</th>)}</tr></thead>
+        <div key={key++} className="fx-md__tablewrap"><table className="fx-table"><thead><tr>{head.map((c, j) => <th key={j}>{inline(c)}</th>)}</tr></thead>
           <tbody>{rows.map((r, ri) => <tr key={ri}>{r.map((c, j) => <td key={j}>{inline(c)}</td>)}</tr>)}</tbody></table></div>,
       );
       continue;
@@ -95,20 +112,16 @@ function list(items: { depth: number; ordered: boolean; text: string }[], start:
   while (i < items.length && it(i).depth >= depth) {
     if (it(i).depth > depth) {
       const sub = list(items, i, it(i).depth);
-      lis.push(<li key={`s${i}`} className="axp-ai-assistant__nested">{sub.node}</li>);
+      lis.push(<li key={`s${i}`} className="fx-md__nested">{sub.node}</li>);
       i = sub.next;
       continue;
     }
     const task = /^\[( |x|X)\]\s+(.*)$/.exec(it(i).text);
-    lis.push(<li key={i}>{task ? <><input type="checkbox" checked={task[1] !== ' '} readOnly aria-label="task" /> {inline(task[2] ?? '')}</> : inline(it(i).text)}</li>);
+    lis.push(<li key={i}>{task ? <><input type="checkbox" checked={task[1] !== ' '} readOnly aria-label={task[1] !== ' ' ? 'done' : 'to do'} /> {inline(task[2] ?? '')}</> : inline(it(i).text)}</li>);
     i++;
   }
   const L = ordered ? 'ol' : 'ul';
   return { node: <L>{lis}</L>, next: i };
-}
-
-function safeHref(href: string): string | undefined {
-  return /^(https?:|mailto:)/i.test(href.trim()) ? href.trim() : undefined;
 }
 
 function inline(s: string): ReactNode[] {

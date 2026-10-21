@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -140,10 +140,8 @@ export function ThemeManager() {
           {n.leaf && <button type="button" className={`${P}__lock ${lockedLeaf ? 'is-on' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
           {!n.leaf && !narrow && <button type="button" className={`${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
           {top && !n.leaf && hideable(n.type) && (
-            <label className={`${P}__hide`} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}>
-              <input type="checkbox" role="switch" aria-label={`Show ${n.label}`} checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(e) => rt.setSlotHidden(n.type as AssetType, !e.target.checked)} />
-              <span>{off ? 'Hidden' : 'Shown'}</span>
-            </label>
+            <Switch hideLabel className={`${P}__hide`} label={`Show ${n.label}`} text={off ? 'Hidden' : 'Shown'} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}
+              checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(on) => rt.setSlotHidden(n.type as AssetType, !on)} />
           )}
         </div>
         {!narrow && isOpen && n.children.length > 0 && <ul className={`${P}__tree`}>{n.children.map((c) => <Row key={c.id} n={c} depth={depth + 1} />)}</ul>}

@@ -19,7 +19,8 @@ export interface Tracker { generatedAt: string; summary: Record<string, Record<s
 export interface BoilerplateScreen { id: string; label: string; kind: string }
 export interface Boilerplate { id: string; name: string; category: string; description: string; features: string[]; screens: BoilerplateScreen[]; modules: string[]; libraries?: ({ library: string; params?: Record<string, unknown> } | string)[]; defaults: Record<string, string>; status: string; source: string }
 export interface BoilerplateIndex { categories: { id: string; label: string }[]; items: { id: string; name: string; category: string; description: string; status: string; source: string }[] }
-export interface LibraryParam { key: string; label: string; type: 'text' | 'list' | 'bool' | 'number' | 'choice'; required?: boolean; default?: unknown; help?: string; choices?: string[]; min?: number; max?: number }
+import type { LibraryParam } from './axf/core/library';
+export type { LibraryParam };
 export interface InstallableLibrary { id: string; module: string; name: string; description: string; features: string[]; dependsOn: string[]; manifestKey: string; params: LibraryParam[]; install?: { gradle?: string; module?: string; import?: string }; port?: { source?: { kind: string; url?: string; coordinate?: string; path?: string }; version?: string; covers?: string[]; ported?: boolean } }
 export interface ModuleInfo { name: string; kind: string; description: string }
 export interface EngineResult { ok: boolean; log?: string[]; error?: string; [k: string]: unknown }
@@ -88,24 +89,8 @@ export interface DemoApp { id: string; library: string; name: string; template: 
 /* ---------------- helpers ---------------- */
 
 export const statusTone = (s: Status): 'success' | 'accent' | 'warning' | 'danger' | undefined => (s === 'built' ? 'success' : s === 'partial' ? 'accent' : s === 'placeholder' ? 'warning' : undefined);
-export const paramDefaultText = (p: LibraryParam) => (p.default == null ? '' : Array.isArray(p.default) ? p.default.join(',') : String(p.default));
-export function paramToJson(p: LibraryParam, text: string): unknown {
-  const t = text.trim();
-  if (!t) return undefined;
-  switch (p.type) {
-    case 'bool': return /^(true|yes|y|on|1)$/i.test(t);
-    case 'number': return Number(t);
-    case 'list': return t.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
-    default: return t;
-  }
-}
-export function paramError(p: LibraryParam, text: string): string | null {
-  const t = text.trim();
-  if (!t) return p.required && p.default == null ? 'Required' : null;
-  if (p.type === 'number') { const n = Number(t); if (Number.isNaN(n)) return 'Must be a number'; if (p.min != null && n < p.min) return `Must be ≥ ${p.min}`; if (p.max != null && n > p.max) return `Must be ≤ ${p.max}`; }
-  if (p.type === 'choice' && p.choices?.length && !p.choices.includes(t)) return `One of ${p.choices.join(', ')}`;
-  return null;
-}
+/** library@1 parameter helpers live in the framework (`core/library.ts`): the wizard and `LibraryParamField` share them. */
+export { paramDefaultText, paramToJson, paramError } from './axf/core/library';
 
 /* ---------------- plan (framework/plan/plan.json) ---------------- */
 

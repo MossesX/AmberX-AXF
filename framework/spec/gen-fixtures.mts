@@ -22,6 +22,7 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -670,5 +671,28 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
     enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
     graph: pluginGraph(inventory.items, ctx.live),
+  });
+}
+
+// library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
+{
+  const params: LibraryParam[] = [
+    { key: 'name', label: 'Name', type: 'text', required: true },
+    { key: 'title', label: 'Title', type: 'text', default: 'Hello' },
+    { key: 'tags', label: 'Tags', type: 'list', default: ['a', 'b'] },
+    { key: 'on', label: 'On', type: 'bool', default: true },
+    { key: 'off', label: 'Off', type: 'bool' },
+    { key: 'count', label: 'Count', type: 'number', min: 1, max: 12, default: 6 },
+    { key: 'ratio', label: 'Ratio', type: 'number', min: 0.5 },
+    { key: 'mode', label: 'Mode', type: 'choice', choices: ['a', 'b', 'c'], default: 'a' },
+    { key: 'free', label: 'Free choice', type: 'choice', required: true },
+  ];
+  const texts = ['', '  ', 'x', 'Hello', 'a, b ,,c', 'yes', 'Y', 'ON', '1', 'no', '0', 'true', '6', '0', '13', '2.5', '0.25', 'abc', 'a', 'd', 'one\ntwo'];
+  write('library-params.json', {
+    types: [...LIBRARY_PARAM_TYPES],
+    trueWords: [...PARAM_TRUE_WORDS],
+    defaults: paramDefaults(params),
+    cases: params.flatMap((p) => texts.map((text) => ({ key: p.key, text, defaultText: paramDefaultText(p), bool: p.type === 'bool' ? paramBool(p, text) : undefined, json: paramToJson(p, text) ?? null, error: paramError(p, text) }))),
+    params,
   });
 }

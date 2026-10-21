@@ -15,7 +15,6 @@ import ai.amberx.axf.kernel.asset.strOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -51,26 +50,8 @@ data class BoilerplateCategory(val id: String, val label: String)
 /** A library install or UI-library import the console ran (or recorded for Claude Code when no build engine is configured). kind: install | ui-import */
 data class PortRecord(val id: String, val kind: String, val name: String, val source: String, val project: String, val status: String, val createdAt: String, val log: String = "")
 
-/** One parameter a library's install wizard asks for (framework/android/<module>/library.json → params[]). */
-data class LibraryParam(val key: String, val label: String, val type: String, val required: Boolean, val default: JsonElement?, val help: String?, val choices: List<String>, val min: Double?, val max: Double?) {
-    val defaultText: String get() = when (val d = default) { null -> ""; is JsonPrimitive -> d.content; is kotlinx.serialization.json.JsonArray -> d.joinToString(",") { (it as? JsonPrimitive)?.content ?: it.toString() }; else -> d.toString() }
-    /** Wizard answer (text) → typed JSON the installer expects. */
-    fun toJson(text: String): JsonElement? = when (type) {
-        "bool" -> JsonPrimitive(text.trim().lowercase() in setOf("true", "yes", "y", "on", "1"))
-        "number" -> text.trim().toDoubleOrNull()?.let { if (it % 1.0 == 0.0) JsonPrimitive(it.toInt()) else JsonPrimitive(it) }
-        "list" -> kotlinx.serialization.json.JsonArray(text.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.map { JsonPrimitive(it) })
-        else -> text.takeIf { it.isNotBlank() }?.let { JsonPrimitive(it) }
-    }
-    fun validate(text: String): String? {
-        if (text.isBlank()) return if (required && default == null) "Required" else null
-        return when (type) {
-            "number" -> { val n = text.trim().toDoubleOrNull() ?: return "Must be a number"; if (min != null && n < min) "Must be ≥ ${min.toInt()}" else if (max != null && n > max) "Must be ≤ ${max.toInt()}" else null }
-            "choice" -> if (choices.isNotEmpty() && text !in choices) "One of ${choices.joinToString()}" else null
-            else -> null
-        }
-    }
-    companion object { fun fromJson(o: JsonObject) = LibraryParam(o.str("key"), o.str("label"), o.str("type", "text"), o.bool("required"), o["default"], o.strOrNull("help"), o.strList("choices"), o["min"]?.let { (it as? JsonPrimitive)?.content?.toDoubleOrNull() }, o["max"]?.let { (it as? JsonPrimitive)?.content?.toDoubleOrNull() }) }
-}
+/** One parameter a library's install wizard asks for: the kernel's library@1 contract (`ai.amberx.axf.kernel.library.LibraryParam`). */
+typealias LibraryParam = ai.amberx.axf.kernel.library.LibraryParam
 
 /** An installable library (library@1): what `axf install <id>` / the console wizard configure. */
 data class InstallableLibrary(val id: String, val module: String, val name: String, val description: String, val features: List<String>, val dependsOn: List<String>, val manifestKey: String, val params: List<LibraryParam>, val gradle: String, val moduleCtor: String, val import: String) {

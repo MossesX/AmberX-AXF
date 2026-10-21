@@ -10,7 +10,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Container, Icon, Slider, Switch, useAsset, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -65,12 +65,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
     case 'section':
       return <h3 className="axf-settings__section">{spec.label}</h3>;
     case 'toggle':
-      control = (
-        <label className="axf-settings__switch">
-          <input type="checkbox" checked={value === true} disabled={locked} onChange={(e) => set(e.target.checked)} />
-          <span>{value === true ? 'On' : 'Off'}</span>
-        </label>
-      );
+      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => set(on)} />;
       break;
     case 'slider':
       return (
@@ -231,10 +226,7 @@ function RollAssetsPanel() {
               <span className="fx-muted axf-settings__hint fx-mono">{a.id}{overridden ? ' · changed here' : ''}</span>
             </div>
             <div className="axf-settings__control fx-row fx-row--wrap">
-              <label className="axf-settings__switch">
-                <input type="checkbox" checked={on} disabled={locked || hidden} onChange={(e) => rt.setRollAsset(type, a.id, e.target.checked)} aria-label={`Include ${a.name} in rolls`} />
-                <span>{on ? 'In rolls' : 'Not in rolls'}</span>
-              </label>
+              <Switch hideLabel className="axf-settings__switch" label={`Include ${a.name} in rolls`} text={on ? 'In rolls' : 'Not in rolls'} checked={on} disabled={locked || hidden} onChange={(v) => rt.setRollAsset(type, a.id, v)} />
               {overridden && <Button tone="ghost" icon="refresh" disabled={locked || hidden} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
             </div>
           </div>
@@ -425,7 +417,7 @@ const CSS = `
 .axf-settings__offnote{margin:calc(var(--fx-space)*.25) 0 0}
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
-.axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}
+.axf-settings__switch{gap:var(--fx-space)}
 .axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
 .axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
 .axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}

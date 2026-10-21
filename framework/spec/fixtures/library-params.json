@@ -1,0 +1,1500 @@
+{
+  "types": [
+    "text",
+    "list",
+    "bool",
+    "number",
+    "choice"
+  ],
+  "trueWords": [
+    "true",
+    "yes",
+    "y",
+    "on",
+    "1"
+  ],
+  "defaults": {
+    "name": "",
+    "title": "Hello",
+    "tags": "a,b",
+    "on": "true",
+    "off": "",
+    "count": "6",
+    "ratio": "",
+    "mode": "a",
+    "free": ""
+  },
+  "cases": [
+    {
+      "key": "name",
+      "text": "",
+      "defaultText": "",
+      "json": null,
+      "error": "Required"
+    },
+    {
+      "key": "name",
+      "text": "  ",
+      "defaultText": "",
+      "json": null,
+      "error": "Required"
+    },
+    {
+      "key": "name",
+      "text": "x",
+      "defaultText": "",
+      "json": "x",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "Hello",
+      "defaultText": "",
+      "json": "Hello",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "a, b ,,c",
+      "defaultText": "",
+      "json": "a, b ,,c",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "yes",
+      "defaultText": "",
+      "json": "yes",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "Y",
+      "defaultText": "",
+      "json": "Y",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "ON",
+      "defaultText": "",
+      "json": "ON",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "1",
+      "defaultText": "",
+      "json": "1",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "no",
+      "defaultText": "",
+      "json": "no",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "0",
+      "defaultText": "",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "true",
+      "defaultText": "",
+      "json": "true",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "6",
+      "defaultText": "",
+      "json": "6",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "0",
+      "defaultText": "",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "13",
+      "defaultText": "",
+      "json": "13",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "2.5",
+      "defaultText": "",
+      "json": "2.5",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "0.25",
+      "defaultText": "",
+      "json": "0.25",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "abc",
+      "defaultText": "",
+      "json": "abc",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "a",
+      "defaultText": "",
+      "json": "a",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "d",
+      "defaultText": "",
+      "json": "d",
+      "error": null
+    },
+    {
+      "key": "name",
+      "text": "one\ntwo",
+      "defaultText": "",
+      "json": "one\ntwo",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "",
+      "defaultText": "Hello",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "  ",
+      "defaultText": "Hello",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "x",
+      "defaultText": "Hello",
+      "json": "x",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "Hello",
+      "defaultText": "Hello",
+      "json": "Hello",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "a, b ,,c",
+      "defaultText": "Hello",
+      "json": "a, b ,,c",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "yes",
+      "defaultText": "Hello",
+      "json": "yes",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "Y",
+      "defaultText": "Hello",
+      "json": "Y",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "ON",
+      "defaultText": "Hello",
+      "json": "ON",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "1",
+      "defaultText": "Hello",
+      "json": "1",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "no",
+      "defaultText": "Hello",
+      "json": "no",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "0",
+      "defaultText": "Hello",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "true",
+      "defaultText": "Hello",
+      "json": "true",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "6",
+      "defaultText": "Hello",
+      "json": "6",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "0",
+      "defaultText": "Hello",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "13",
+      "defaultText": "Hello",
+      "json": "13",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "2.5",
+      "defaultText": "Hello",
+      "json": "2.5",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "0.25",
+      "defaultText": "Hello",
+      "json": "0.25",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "abc",
+      "defaultText": "Hello",
+      "json": "abc",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "a",
+      "defaultText": "Hello",
+      "json": "a",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "d",
+      "defaultText": "Hello",
+      "json": "d",
+      "error": null
+    },
+    {
+      "key": "title",
+      "text": "one\ntwo",
+      "defaultText": "Hello",
+      "json": "one\ntwo",
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "",
+      "defaultText": "a,b",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "  ",
+      "defaultText": "a,b",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "x",
+      "defaultText": "a,b",
+      "json": [
+        "x"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "Hello",
+      "defaultText": "a,b",
+      "json": [
+        "Hello"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "a, b ,,c",
+      "defaultText": "a,b",
+      "json": [
+        "a",
+        "b",
+        "c"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "yes",
+      "defaultText": "a,b",
+      "json": [
+        "yes"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "Y",
+      "defaultText": "a,b",
+      "json": [
+        "Y"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "ON",
+      "defaultText": "a,b",
+      "json": [
+        "ON"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "1",
+      "defaultText": "a,b",
+      "json": [
+        "1"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "no",
+      "defaultText": "a,b",
+      "json": [
+        "no"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "0",
+      "defaultText": "a,b",
+      "json": [
+        "0"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "true",
+      "defaultText": "a,b",
+      "json": [
+        "true"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "6",
+      "defaultText": "a,b",
+      "json": [
+        "6"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "0",
+      "defaultText": "a,b",
+      "json": [
+        "0"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "13",
+      "defaultText": "a,b",
+      "json": [
+        "13"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "2.5",
+      "defaultText": "a,b",
+      "json": [
+        "2.5"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "0.25",
+      "defaultText": "a,b",
+      "json": [
+        "0.25"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "abc",
+      "defaultText": "a,b",
+      "json": [
+        "abc"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "a",
+      "defaultText": "a,b",
+      "json": [
+        "a"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "d",
+      "defaultText": "a,b",
+      "json": [
+        "d"
+      ],
+      "error": null
+    },
+    {
+      "key": "tags",
+      "text": "one\ntwo",
+      "defaultText": "a,b",
+      "json": [
+        "one",
+        "two"
+      ],
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "",
+      "defaultText": "true",
+      "bool": true,
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "  ",
+      "defaultText": "true",
+      "bool": true,
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "x",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "Hello",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "a, b ,,c",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "yes",
+      "defaultText": "true",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "Y",
+      "defaultText": "true",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "ON",
+      "defaultText": "true",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "1",
+      "defaultText": "true",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "no",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "0",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "true",
+      "defaultText": "true",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "6",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "0",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "13",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "2.5",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "0.25",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "abc",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "a",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "d",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "on",
+      "text": "one\ntwo",
+      "defaultText": "true",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "",
+      "defaultText": "",
+      "bool": false,
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "  ",
+      "defaultText": "",
+      "bool": false,
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "x",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "Hello",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "a, b ,,c",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "yes",
+      "defaultText": "",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "Y",
+      "defaultText": "",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "ON",
+      "defaultText": "",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "1",
+      "defaultText": "",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "no",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "0",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "true",
+      "defaultText": "",
+      "bool": true,
+      "json": true,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "6",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "0",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "13",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "2.5",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "0.25",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "abc",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "a",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "d",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "off",
+      "text": "one\ntwo",
+      "defaultText": "",
+      "bool": false,
+      "json": false,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "",
+      "defaultText": "6",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "  ",
+      "defaultText": "6",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "x",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "Hello",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "a, b ,,c",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "yes",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "Y",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "ON",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "1",
+      "defaultText": "6",
+      "json": 1,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "no",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "0",
+      "defaultText": "6",
+      "json": 0,
+      "error": "Must be ≥ 1"
+    },
+    {
+      "key": "count",
+      "text": "true",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "6",
+      "defaultText": "6",
+      "json": 6,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "0",
+      "defaultText": "6",
+      "json": 0,
+      "error": "Must be ≥ 1"
+    },
+    {
+      "key": "count",
+      "text": "13",
+      "defaultText": "6",
+      "json": 13,
+      "error": "Must be ≤ 12"
+    },
+    {
+      "key": "count",
+      "text": "2.5",
+      "defaultText": "6",
+      "json": 2.5,
+      "error": null
+    },
+    {
+      "key": "count",
+      "text": "0.25",
+      "defaultText": "6",
+      "json": 0.25,
+      "error": "Must be ≥ 1"
+    },
+    {
+      "key": "count",
+      "text": "abc",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "a",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "d",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "count",
+      "text": "one\ntwo",
+      "defaultText": "6",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "",
+      "defaultText": "",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "  ",
+      "defaultText": "",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "x",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "Hello",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "a, b ,,c",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "yes",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "Y",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "ON",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "1",
+      "defaultText": "",
+      "json": 1,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "no",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "0",
+      "defaultText": "",
+      "json": 0,
+      "error": "Must be ≥ 0.5"
+    },
+    {
+      "key": "ratio",
+      "text": "true",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "6",
+      "defaultText": "",
+      "json": 6,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "0",
+      "defaultText": "",
+      "json": 0,
+      "error": "Must be ≥ 0.5"
+    },
+    {
+      "key": "ratio",
+      "text": "13",
+      "defaultText": "",
+      "json": 13,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "2.5",
+      "defaultText": "",
+      "json": 2.5,
+      "error": null
+    },
+    {
+      "key": "ratio",
+      "text": "0.25",
+      "defaultText": "",
+      "json": 0.25,
+      "error": "Must be ≥ 0.5"
+    },
+    {
+      "key": "ratio",
+      "text": "abc",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "a",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "d",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "ratio",
+      "text": "one\ntwo",
+      "defaultText": "",
+      "json": null,
+      "error": "Must be a number"
+    },
+    {
+      "key": "mode",
+      "text": "",
+      "defaultText": "a",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "mode",
+      "text": "  ",
+      "defaultText": "a",
+      "json": null,
+      "error": null
+    },
+    {
+      "key": "mode",
+      "text": "x",
+      "defaultText": "a",
+      "json": "x",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "Hello",
+      "defaultText": "a",
+      "json": "Hello",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "a, b ,,c",
+      "defaultText": "a",
+      "json": "a, b ,,c",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "yes",
+      "defaultText": "a",
+      "json": "yes",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "Y",
+      "defaultText": "a",
+      "json": "Y",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "ON",
+      "defaultText": "a",
+      "json": "ON",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "1",
+      "defaultText": "a",
+      "json": "1",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "no",
+      "defaultText": "a",
+      "json": "no",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "0",
+      "defaultText": "a",
+      "json": "0",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "true",
+      "defaultText": "a",
+      "json": "true",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "6",
+      "defaultText": "a",
+      "json": "6",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "0",
+      "defaultText": "a",
+      "json": "0",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "13",
+      "defaultText": "a",
+      "json": "13",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "2.5",
+      "defaultText": "a",
+      "json": "2.5",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "0.25",
+      "defaultText": "a",
+      "json": "0.25",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "abc",
+      "defaultText": "a",
+      "json": "abc",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "a",
+      "defaultText": "a",
+      "json": "a",
+      "error": null
+    },
+    {
+      "key": "mode",
+      "text": "d",
+      "defaultText": "a",
+      "json": "d",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "mode",
+      "text": "one\ntwo",
+      "defaultText": "a",
+      "json": "one\ntwo",
+      "error": "One of a, b, c"
+    },
+    {
+      "key": "free",
+      "text": "",
+      "defaultText": "",
+      "json": null,
+      "error": "Required"
+    },
+    {
+      "key": "free",
+      "text": "  ",
+      "defaultText": "",
+      "json": null,
+      "error": "Required"
+    },
+    {
+      "key": "free",
+      "text": "x",
+      "defaultText": "",
+      "json": "x",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "Hello",
+      "defaultText": "",
+      "json": "Hello",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "a, b ,,c",
+      "defaultText": "",
+      "json": "a, b ,,c",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "yes",
+      "defaultText": "",
+      "json": "yes",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "Y",
+      "defaultText": "",
+      "json": "Y",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "ON",
+      "defaultText": "",
+      "json": "ON",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "1",
+      "defaultText": "",
+      "json": "1",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "no",
+      "defaultText": "",
+      "json": "no",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "0",
+      "defaultText": "",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "true",
+      "defaultText": "",
+      "json": "true",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "6",
+      "defaultText": "",
+      "json": "6",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "0",
+      "defaultText": "",
+      "json": "0",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "13",
+      "defaultText": "",
+      "json": "13",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "2.5",
+      "defaultText": "",
+      "json": "2.5",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "0.25",
+      "defaultText": "",
+      "json": "0.25",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "abc",
+      "defaultText": "",
+      "json": "abc",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "a",
+      "defaultText": "",
+      "json": "a",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "d",
+      "defaultText": "",
+      "json": "d",
+      "error": null
+    },
+    {
+      "key": "free",
+      "text": "one\ntwo",
+      "defaultText": "",
+      "json": "one\ntwo",
+      "error": null
+    }
+  ],
+  "params": [
+    {
+      "key": "name",
+      "label": "Name",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "title",
+      "label": "Title",
+      "type": "text",
+      "default": "Hello"
+    },
+    {
+      "key": "tags",
+      "label": "Tags",
+      "type": "list",
+      "default": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "key": "on",
+      "label": "On",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "key": "off",
+      "label": "Off",
+      "type": "bool"
+    },
+    {
+      "key": "count",
+      "label": "Count",
+      "type": "number",
+      "min": 1,
+      "max": 12,
+      "default": 6
+    },
+    {
+      "key": "ratio",
+      "label": "Ratio",
+      "type": "number",
+      "min": 0.5
+    },
+    {
+      "key": "mode",
+      "label": "Mode",
+      "type": "choice",
+      "choices": [
+        "a",
+        "b",
+        "c"
+      ],
+      "default": "a"
+    },
+    {
+      "key": "free",
+      "label": "Free choice",
+      "type": "choice",
+      "required": true
+    }
+  ]
+}
