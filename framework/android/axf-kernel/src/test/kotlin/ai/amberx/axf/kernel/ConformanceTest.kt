@@ -203,7 +203,7 @@ class ConformanceTest {
         for ((size, n) in k.getValue("spacer").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.SPACER_UNITS[size], "spacer $size")
         for ((size, n) in k.getValue("avatar").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.AVATAR_SIZE[size], "avatar $size")
         for ((w, n) in k.getValue("progressWidth").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.PROGRESS_WIDTH[w], "progress width $w")
-        for ((size, v) in k.getValue("logo").jsonObject) { val o = v.jsonObject; assertEquals(W.LogoSize(o.getValue("scale").jsonPrimitive.content.toDouble(), o.getValue("px").jsonPrimitive.content.toInt()), W.LOGO_SIZE[size], "logo $size") }
+        for ((size, v) in k.getValue("logo").jsonObject) { val o = v.jsonObject; assertEquals(ai.amberx.axf.kernel.engine.WidgetEngine.LogoSize(o.getValue("scale").jsonPrimitive.content.toDouble(), o.getValue("px").jsonPrimitive.content.toInt()), W.LOGO_SIZE[size], "logo $size") }
         for (c in k.getValue("themeSwitch") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("next").jsonPrimitive.content, W.themeSwitchNext(strOrNull(o["active"]), o.getValue("light").jsonPrimitive.content, o.getValue("dark").jsonPrimitive.content), "theme switch $o") }
     }
 
