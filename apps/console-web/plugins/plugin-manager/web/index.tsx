@@ -1,6 +1,11 @@
 /**
  * Plugin Manager console plugin (ai.amberx.axf.console.plugin-manager).
  *
+ * Fable rebuild (Oct 20 2026) of the Opus plugin: same id, folder, actions, settings keys and every view / layout,
+ * now on the framework's plugin inventory engine (plugin-inventory@1, `core/engines/plugins.ts` = Python
+ * `server/engine.py` = Kotlin `PluginInventoryEngine`), which every AXF app's Settings → Plugins tab and the Android
+ * Plugin Manager share.
+ *
  * Opened from the default context menu (right-click / long-press anywhere → Plugin Manager), nav → Plugins →
  * Plugin Manager, the action `plugin-manager.open`, or Settings → Plugins → Plugin Manager. The menu link, nav entry
  * and settings tab are runtime contributions (AxfWebLibrary.contextMenu / nav / settingsTabs): no asset is edited,
@@ -22,7 +27,8 @@ const select = (folder?: string) => {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Plugin Manager',
-  version: '0.1.0',
+  version: '0.2.0',
+  uiEditor: ['manager'], // = plugin.json uiEditor: the UI-editor rule (last save wins per key, fresh on focus) applies
   register(rt) {
     rt.actions.register('plugin-manager.open', ([folder]) => {
       if (folder) rt.settings.set(KEYS.selected, folder);

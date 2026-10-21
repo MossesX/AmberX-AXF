@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T02:20:39.200Z",
+ "updatedAt": "2026-10-21T02:23:02.695Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -49,17 +49,21 @@
    "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
    "detail": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugin `plugin-manager` (web console only: four views cards/table/detail/dependency graph in four layouts Studio/Mission control/Terminal/Catalog, default context-menu link, dependencies in detail, opens each plugin's UI and settings, logs, files, install & uninstall). Remove it first with its uninstall script (uninstall.mjs --all --publish), then build the cross-port version following plugin-lifecycle@1 (Android kernel + every app the build engine compiles), keeping the UI-editor rules (last save wins per key; reload current values on open/load/focus).",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Opus console plugin `plugin-manager` built Oct 18 2026. Remove with its uninstall.mjs --all before installing the Fable build.",
      "at": "2026-10-18T20:45:00.000Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/plugin-manager. Differences report: _claude/memory/docs/rebuilds/plugin-manager.md",
+     "at": "2026-10-21T02:23:02.695Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T20:45:00.000Z",
+   "builtAt": "2026-10-21T02:23:02.695Z",
+   "updatedAt": "2026-10-21T02:23:02.695Z",
    "planId": "x.plugins.manager",
    "source": "plan"
   },

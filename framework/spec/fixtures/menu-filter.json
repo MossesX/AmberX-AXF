@@ -32,7 +32,8 @@
           "go-home",
           "go-components",
           "go-assets",
-          "go-account"
+          "go-account",
+          "settings"
         ]
       },
       {
@@ -75,7 +76,8 @@
           "go-home",
           "go-components",
           "go-assets",
-          "go-account"
+          "go-account",
+          "settings"
         ]
       },
       {
@@ -118,7 +120,8 @@
           "go-home",
           "go-components",
           "go-assets",
-          "go-account"
+          "go-account",
+          "settings"
         ]
       },
       {
@@ -139,6 +142,7 @@
           "go-components",
           "go-assets",
           "go-account",
+          "settings",
           "s1",
           "shortcuts",
           "about"
@@ -164,6 +168,7 @@
           "go-components",
           "go-assets",
           "go-account",
+          "settings",
           "s1",
           "shortcuts",
           "about"
@@ -189,6 +194,7 @@
           "go-components",
           "go-assets",
           "go-account",
+          "settings",
           "s1",
           "shortcuts",
           "about"
@@ -241,6 +247,7 @@
           "next-layout",
           "random",
           "reset",
+          "settings",
           "s1",
           "shortcuts"
         ]
@@ -286,6 +293,7 @@
           "next-layout",
           "random",
           "reset",
+          "settings",
           "s1",
           "shortcuts"
         ]
@@ -331,6 +339,7 @@
           "next-layout",
           "random",
           "reset",
+          "settings",
           "s1",
           "shortcuts"
         ]

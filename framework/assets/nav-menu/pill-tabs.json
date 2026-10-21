@@ -35,6 +35,12 @@
             "label": "Roles",
             "icon": "user",
             "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
           }
         ]
       }

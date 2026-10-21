@@ -23,3 +23,4 @@ export * from './project';
 export * from './live-session';
 export * from './assistant';
 export * from './agents';
+export * from './engines/plugins';

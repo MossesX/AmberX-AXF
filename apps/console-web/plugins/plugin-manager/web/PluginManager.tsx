@@ -1,14 +1,15 @@
 /**
- * The Plugin Manager. Five views (cards, table, detail, dependency graph, install from the catalog) inside four layouts that are built
- * differently, not just recoloured: Studio (rail + drawer), Mission control (status tiles + signals column),
+ * The Plugin Manager (Fable rebuild, Oct 20 2026). Five views (cards, table, detail, dependency graph, install from the
+ * catalog) inside four layouts that are built differently, not just recoloured: Studio (rail + drawer), Mission control (status tiles + signals column),
  * Terminal (monospace with a command line) and Catalog (store shelves + product page). Everything is theme tokens,
- * so every colour / style theme still applies to every layout.
+ * so every colour / style theme still applies to every layout. The model (dependencies, dependents, health, clashes,
+ * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
-import { HEALTH_LABEL, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
+import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
 import { FILTERS, LAYOUTS, SORTS, usePrefs, VIEWS, type FilterId, type LayoutId, type Prefs, type SortId, type ViewId } from './prefs';
 import { CardsView, GraphView, MasterDetailView, TableView, type ViewProps } from './views';
 import { InstallView } from './InstallView';
@@ -16,7 +17,6 @@ import './plugin-manager.css';
 
 const FILTER_LABEL: Record<FilterId, string> = { all: 'All', enabled: 'Running', off: 'Switched off', problems: 'Needs attention', editors: 'UI editors' };
 const SORT_LABEL: Record<SortId, string> = { name: 'Name', health: 'Health', size: 'Size', deps: 'Most used' };
-const HEALTH_RANK = { error: 0, blocked: 1, partial: 2, off: 3, ok: 4 } as const;
 
 const matches = (r: PluginRow, f: FilterId) =>
   f === 'all' ? true : f === 'enabled' ? r.enabled : f === 'off' ? !r.enabled : f === 'editors' ? r.uiEditor.length > 0

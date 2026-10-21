@@ -20,6 +20,10 @@ import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DE
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
+  });
+}
+
+import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
@@ -629,5 +633,39 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     serverIds: ids.map(([name, taken]) => ({ name, taken, id: serverIdFor(name, taken) })),
     validate: inputs.map((input) => ({ input, problems: validateServerInput(input) })),
     skeletons: skeletons.map((schema) => ({ schema, args: argumentSkeleton(schema as never) })),
+  });
+}
+
+// Plugin inventory (plugin-inventory@1): dependency resolution (service / plugin / env / scope / framework / core),
+// dependents, health, clashes and the graph layout. Every port's Plugin Manager must agree on all of it.
+{
+  const records = [
+    pluginRecord({ folder: 'llm', id: 'ai.test.llm', name: 'Llm', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], provides: ['service:axf.llm@1', 'view:llm'], uiEditor: ['theme'], scopes: ['ROUTES'], serverPart: true, server: 'loaded', env: [{ name: 'LLM_KEY', set: true }, { name: 'LLM_OTHER', set: false }], dataDir: '.axf-console/plugins/llm', services: ['axf.llm@1'] }),
+    pluginRecord({ folder: 'agents', id: 'ai.test.agents', name: 'Agents', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], requires: ['service:axf.llm@1'], optional: ['service:axf.search@1'], provides: ['service:axf.agents@1'], scopes: ['ROUTES', 'NETWORK'], services: ['axf.agents@1'] }),
+    pluginRecord({ folder: 'needs-off', id: 'ai.test.needsoff', name: 'Needs Off', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], requires: ['service:axf.off@1'] }),
+    pluginRecord({ folder: 'off-provider', id: 'ai.test.offprovider', name: 'Off Provider', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], provides: ['service:axf.off@1'], uiEditor: ['theme'], enabled: false }),
+    pluginRecord({ folder: 'missing', id: 'ai.test.missing', name: 'Missing', version: '1.0.0', apiLevel: 7, targets: ['axf-console'], requires: ['service:axf.nobody@1'] }),
+    pluginRecord({ folder: 'dup-a', id: 'ai.test.dupa', name: 'Dup A', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], provides: ['view:same'], dataDir: '.axf-console/plugins/dup-a' }),
+    pluginRecord({ folder: 'dup-b', id: 'ai.test.dupb', name: 'Dup B', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], provides: ['view:same'], dataDir: '.axf-console/plugins/dup-a' }),
+    pluginRecord({ folder: 'twin', id: 'ai.test.agents', name: 'Twin', version: '1.0.0', apiLevel: 1, targets: ['axf-console'] }),
+    pluginRecord({ folder: 'wrong-target', id: 'ai.test.wrong', name: 'Wrong Target', version: '1.0.0', apiLevel: 1, targets: ['android'] }),
+    pluginRecord({ folder: 'by-id', id: 'ai.test.byid', name: 'By Id', version: '1.0.0', apiLevel: 1, targets: ['*'], requires: ['plugin:ai.test.llm'], optional: ['plugin:ai.test.nobody', 'module:x'] }),
+    pluginRecord({ folder: 'broken', id: 'ai.test.broken', name: 'Broken', version: '', apiLevel: null, error: 'plugin.json unreadable', serverPart: true, server: 'error' }),
+    pluginRecord({ folder: 'live-only-user', id: 'ai.test.liveuser', name: 'Live User', version: '1.0.0', apiLevel: 1, targets: ['axf-console'], optional: ['service:axf.live@1'] }),
+  ];
+  const ctx: InventoryContext = { apiLevels: [1], target: 'axf-console', live: [{ name: 'axf.llm@1', folder: 'llm', enabled: true }, { name: 'axf.agents@1', folder: 'agents', enabled: true }, { name: 'axf.live@1', folder: 'livehost', enabled: true }] };
+  const inventory = buildPluginInventory(records, ctx);
+  const on = records.map((r) => (r.folder === 'off-provider' ? { ...r, enabled: true } : r));
+  const inventoryOn = buildPluginInventory(on, ctx);
+  write('plugin-inventory.json', {
+    frame: PLUGIN_INVENTORY_FRAME,
+    healths: PLUGIN_HEALTHS,
+    dependencyLabels: DEPENDENCY_LABEL,
+    context: ctx,
+    records,
+    inventory,
+    // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
+    enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
+    graph: pluginGraph(inventory.items, ctx.live),
   });
 }
