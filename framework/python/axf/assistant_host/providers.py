@@ -562,10 +562,10 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     token = resolve_key(profile)
     if not token:
         raise ProviderError("no Claude Code token: run `claude setup-token` and paste it, or set CLAUDE_CODE_OAUTH_TOKEN", 400)
-    if not cli_available():
-        raise ProviderError(f"the `claude` CLI is not installed on {HOST_LABEL}", 400)
     if token.startswith("sk-ant-api"):
         raise ProviderError("this profile holds an Anthropic API key (sk-ant-api…). The subscription provider needs a Claude Code token: run `claude setup-token` on the VPS and paste the sk-ant-oat01-… token it prints. Put the API key in the “Anthropic (Claude)” provider instead", 400)
+    if not cli_available():
+        raise ProviderError(f"the `claude` CLI is not installed on {HOST_LABEL}", 400)
     # The CLI keeps no session for us here: earlier turns go in as a transcript, on stdin (no argv size limit).
     history = "\n\n".join(f"{m['role'].upper()}: {m.get('content', '')}" for m in messages[:-1] if m.get("role") in ("user", "assistant"))
     prompt = (f"Conversation so far:\n{history}\n\nUSER: " if history else "") + str(messages[-1].get("content", ""))
