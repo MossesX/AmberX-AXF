@@ -163,7 +163,10 @@ def read_source(src: str) -> str:
 
 def after(base: str, uuid: str, what: str, service: bool) -> str:
     if what == "deploy" and not service:
-        code, data = api("GET", f"/deploy?uuid={urllib.parse.quote(uuid)}&force=false")
+        # Newer Coolify takes POST here (GET answers 405 "This endpoint has changed to a POST request"); older ones GET.
+        code, data = api("POST", f"/deploy?uuid={urllib.parse.quote(uuid)}&force=false")
+        if code in (404, 405):
+            code, data = api("GET", f"/deploy?uuid={urllib.parse.quote(uuid)}&force=false")
         _ok(code, "redeploy", data)
         return "redeploy started"
     code, data = api("POST", f"{base}/restart")
