@@ -129,6 +129,10 @@ class Jobs:
             j = self.jobs.get(cid)
             return dict(j) if j else None
 
+    def all(self) -> list[dict[str, Any]]:
+        with self.lock:
+            return [dict(j) for j in self.jobs.values()]
+
     def start(self, cid: str) -> dict[str, Any]:
         cmd = command(cid)
         if not cmd:
@@ -144,7 +148,7 @@ class Jobs:
 
     def _set(self, cid: str, **kw: Any) -> None:
         with self.lock:
-            self.jobs[cid].update(kw)
+            self.jobs[cid].update(kw, updatedAt=time.time())
 
     def _run(self, cid: str, cmd: str) -> None:
         args = {"command": cmd, "timeout_seconds": 600}

@@ -235,11 +235,21 @@ fi
 # ---- 5. auto-update ----
 cat > /usr/local/bin/axf-console-update <<UPD
 #!/usr/bin/env bash
+# One block, so bash reads it all before running: install-console.sh rewrites this file while it runs.
+{
 set -e
 cd "$DIR"
 before=\$(git rev-parse HEAD); git fetch -q origin $BRANCH && git reset -q --hard origin/$BRANCH
 [ "\$before" = "\$(git rev-parse HEAD)" ] && [ ! -f "$DIR/.axf-console/wall-waiting" ] && exit 0  # also re-run while the sign-in wall waits for the hub
-GITHUB_TOKEN="$GITHUB_TOKEN" DOMAIN="$DOMAIN" NAME="$NAME" DIR="$DIR" PORT="$PORT" bash "$DIR/deploy/install-console.sh" >> /var/log/axf-console-update.log 2>&1
+# The console's Activity banner reads this while the update runs (activity@1, source "update"). No secrets in it.
+st="$DIR/.axf-console/update-status.json"; after=\$(git rev-parse HEAD); t0=\$(date +%s)
+printf '{"state":"building","from":"%s","to":"%s","startedAt":%s}\n' "\$before" "\$after" "\$t0" > "\$st.tmp" && mv -f "\$st.tmp" "\$st"
+state=done
+GITHUB_TOKEN="$GITHUB_TOKEN" DOMAIN="$DOMAIN" NAME="$NAME" DIR="$DIR" PORT="$PORT" bash "$DIR/deploy/install-console.sh" >> /var/log/axf-console-update.log 2>&1 || state=failed
+printf '{"state":"%s","from":"%s","to":"%s","startedAt":%s,"finishedAt":%s}\n' "\$state" "\$before" "\$after" "\$t0" "\$(date +%s)" > "\$st.tmp" && mv -f "\$st.tmp" "\$st"
+[ "\$state" = done ]
+exit
+}
 UPD
 chmod +x /usr/local/bin/axf-console-update
 echo "*/5 * * * * root /usr/local/bin/axf-console-update" > /etc/cron.d/axf-console

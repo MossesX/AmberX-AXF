@@ -52,6 +52,19 @@ class Service:
         self.core = SysCheck(cx.ROOT, cx.current_token, cx.persist_root, cx.PLUGINS, cx.log, cx.GITHUB_REPO)
         self._cache: tuple[float, list[dict[str, Any]]] | None = None
 
+    def activity(self) -> list[dict[str, Any]]:
+        """Work in progress for any activity feed (read through this service, no plugin named): VPS Auto fix jobs."""
+        labels = {i.get("id"): i.get("label") or i.get("title") for i in (self._cache[1] if self._cache else [])}
+        out = []
+        for j in HOSTFIX.all():
+            state = {"asking": "running", "waiting": "waiting", "running": "running", "done": "done", "failed": "failed"}.get(j.get("state"), "running")
+            out.append({"id": f"syscheck:autofix:{j['id']}", "kind": "fix", "state": state,
+                        "title": f"VPS Auto fix: {labels.get(j['id']) or j['id']}",
+                        "detail": f"{j.get('message', '')}\n$ {j.get('command', '')}".strip(),
+                        "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
+                        "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
+        return out
+
     def run_all(self, force: bool = False) -> list[dict[str, Any]]:
         if self._cache and not force and time.time() - self._cache[0] < 60:
             return self._cache[1]
