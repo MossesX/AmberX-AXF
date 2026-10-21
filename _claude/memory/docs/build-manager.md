@@ -39,7 +39,7 @@ manager" on Pending builds rows (`axf-pending-item`) and Plan features (`axf-pla
 - Logic: `web/merge.mjs` (pure; `buildRows`, `timing`, `totalsByModel`, `filterRows`, `sortRows`, `linkRow`, `liveEntries`), estimates parsed by pending-core's `estimateMinutes` / `formatMinutes`.
 - Server part (read-only, console token, 404 when off, never on MCP): `GET /api/plugins/build-manager/live` = the activity feed's running + recently finished items, or `{available: false}` without it. The build list comes from the console's own `/api/pending`, `/api/build-queue`, `/api/plan` (works offline from the page's snapshot). <!-- axf-plugin:build-manager -->
 - No data of its own (dataDir stays empty); preferences are browser settings `build-manager.banner|sort|sources`.
-- **Step ticks** call `POST /api/pending {action: 'step', id, index, done}` and `POST /api/build-queue/step {id, action: 'step', index, done}`. Neither core has a `step` action on this branch yet (a Fable branch adds the fields in parallel), so ticks render **read-only** with a note. The plugin probes the shared cores on a throwaway state and switches ticks on by itself once the action exists. If the Fable branch names the action or its fields differently, adjust `probeTicks`/`tickStep` in `web/store.ts`.
+- **Step ticks** call `POST /api/pending {action: 'step', id, index, done}` (pending-core `apply`) and `POST /api/build-queue/steps {id, index, done}` (build-queue-core `stepsAction`), both from the small-steps build (`fable/split-steps`); aligned at the wave-2 integration (`tickRequest` / `probeTicks` in `web/merge.mjs`, tested in `test.mjs`). The plugin still probes the shared cores on a throwaway state, so a console without those actions shows ticks read-only instead of failing.
 
 ## Tests
 

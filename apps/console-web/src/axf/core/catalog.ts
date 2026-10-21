@@ -44,8 +44,8 @@ export interface Tracker { frameworkVersion?: string; generatedAt: string; summa
 
 /* ================================================================== library@1 + libraries@1 */
 
-export type LibraryParamType = 'text' | 'list' | 'bool' | 'number' | 'choice';
-export interface LibraryParam { key: string; label: string; type: LibraryParamType; required?: boolean; default?: unknown; help?: string; choices?: string[]; min?: number; max?: number }
+import type { LibraryParam, LibraryParamType } from './library';
+export type { LibraryParam, LibraryParamType } from './library';
 export interface LibraryInstall { gradle?: string; module?: string; import?: string; routes?: string[] }
 export interface LibraryPort { status: string; dir?: string; note?: string; checkedAt?: string }
 export interface LibraryPlaceholder { capability: string; note: string }
@@ -257,43 +257,11 @@ export function parseBoilerplateIndex(json: unknown): BoilerplateIndex {
   };
 }
 
-/* ================================================================== library install parameters (both consoles' wizards) */
+/* ================================================================== library install parameters (both consoles' wizards)
+ * One source: library@1 parameters live in core/library.ts (= Kotlin kernel.library.LibraryParams, fixture
+ * library-params.json); re-exported here so catalog users keep one import. */
 
-/** Numbers as people write them: 6, 0.5 (never 6.0). */
-const fmtNum = (n: number): string => String(n);
-/** Plain decimal numbers only (no hex, no Infinity), the same on every port. */
-const DECIMAL = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/;
-const parseDecimal = (t: string): number | undefined => (DECIMAL.test(t) ? Number(t) : undefined);
-const defaultToText = (v: unknown): string => (v == null ? '' : Array.isArray(v) ? v.map((x) => (typeof x === 'object' && x !== null ? JSON.stringify(x) : String(x))).join(',') : typeof v === 'object' ? JSON.stringify(v) : typeof v === 'number' ? fmtNum(v) : String(v));
-
-/** The parameter's default as wizard text (lists comma-joined). */
-export const paramDefaultText = (p: LibraryParam): string => defaultToText(p.default);
-
-/** A wizard answer (text) → the typed JSON the installer expects; `undefined` when blank or not a number. */
-export function paramToJson(p: LibraryParam, text: string): unknown {
-  const t = text.trim();
-  if (!t) return undefined;
-  switch (p.type) {
-    case 'bool': return /^(true|yes|y|on|1)$/i.test(t);
-    case 'number': { const n = parseDecimal(t); return n !== undefined && Number.isFinite(n) ? n : undefined; }
-    case 'list': return t.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
-    default: return t;
-  }
-}
-
-/** Why a wizard answer is refused, or null. */
-export function paramError(p: LibraryParam, text: string): string | null {
-  const t = text.trim();
-  if (!t) return p.required && p.default == null ? 'Required' : null;
-  if (p.type === 'number') {
-    const n = parseDecimal(t);
-    if (n === undefined || !Number.isFinite(n)) return 'Must be a number';
-    if (p.min != null && n < p.min) return `Must be ≥ ${fmtNum(p.min)}`;
-    if (p.max != null && n > p.max) return `Must be ≤ ${fmtNum(p.max)}`;
-  }
-  if (p.type === 'choice' && p.choices?.length && !p.choices.includes(t)) return `One of ${p.choices.join(', ')}`;
-  return null;
-}
+export { paramDefaultText, paramToJson, paramError } from './library';
 
 /* ================================================================== catalog-driven library list */
 

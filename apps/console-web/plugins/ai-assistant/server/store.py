@@ -158,7 +158,7 @@ def extra_provider_kinds() -> list[dict[str, Any]]:
 
 
 def public_profile(pid: str, p: dict[str, Any]) -> dict[str, Any]:
-    from . import providers
+    from axf.assistant_host import providers
     env = p.get("keyEnv") or ""
     cat = providers.kind(p.get("kind", ""))
     return {
@@ -180,7 +180,7 @@ def public_config(cfg: dict[str, Any] | None = None) -> dict[str, Any]:
 
 
 def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
-    from . import providers
+    from axf.assistant_host import providers
     with _lock:
         cfg = load_config()
         profiles = cfg.setdefault("profiles", {})

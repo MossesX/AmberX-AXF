@@ -4,6 +4,7 @@
  * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
 
+// Same order as framework/schemas/asset-types.json (the Kotlin registry's order), so lists derived from it match across ports.
 export const ASSET_TYPES = [
   'color-theme',
   'style-theme',
@@ -20,8 +21,8 @@ export const ASSET_TYPES = [
   'banner',
   'clock',
   'search-bar',
-  'logo',
   'action-button',
+  'logo',
   'label',
   'status',
   'counter',

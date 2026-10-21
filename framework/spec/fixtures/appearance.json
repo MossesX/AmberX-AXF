@@ -15,6 +15,17 @@
     "banner",
     "clock",
     "search-bar",
+    "action-button",
+    "logo",
+    "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
+    "link",
+    "theme-switch",
+    "spacer",
+    "divider",
     "badge"
   ],
   "parsed": {

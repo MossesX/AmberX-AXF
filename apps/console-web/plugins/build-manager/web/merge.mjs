@@ -236,3 +236,37 @@ function entry(e, now) {
 
 /** Is this entry about something on the build list (the banner shows only those)? */
 export const onBuildList = (e) => !!e.row;
+
+/* ---------- step ticks (small-steps rule: pending sub prompts + build-queue steps) ---------- */
+
+/**
+ * The console route and body that tick one step of a row, or null for rows without tickable steps.
+ * Pending: `POST /api/pending {action:'step', id, index, done}` (pending-core `apply`).
+ * Queue: `POST /api/build-queue/steps {id, index, done}` (build-queue-core `stepsAction`; `/build-queue/step` is the
+ * epic start/complete/reopen route, not the small steps).
+ */
+export function tickRequest(row, index, done) {
+  if (row?.source === 'pending') return { path: 'pending', body: { action: 'step', id: row.id, index, done: !!done } };
+  if (row?.source === 'queue') return { path: 'build-queue/steps', body: { id: row.id, index, done: !!done } };
+  return null;
+}
+
+/**
+ * Whether the shared cores this console ships can tick steps, tried on a throwaway state (so an older console that
+ * lacks the step actions shows ticks read-only instead of failing). Pass the pending and build-queue cores.
+ */
+export function probeTicks(pendingCore, queueCore) {
+  let pending = false, queue = false;
+  try {
+    const s = { $axf: 'pending@1', updatedAt: '', artifact: '', items: [{ id: 'probe', title: 'probe', subPrompts: [{ text: 'a', at: '' }] }] };
+    const r = pendingCore.apply(s, { action: 'step', id: 'probe', index: 0, done: true });
+    pending = r?.item?.subPrompts?.[0]?.done === true;
+  } catch { pending = false; }
+  try {
+    const f = [{ id: 'probe', title: 'probe', kind: 'epic', status: 'planned' }];
+    const qs = { ...queueCore.emptyQueue(), steps: { probe: { steps: [{ text: 'a' }] } } };
+    const q = queueCore.stepsAction(f, qs, { id: 'probe', index: 0, done: true });
+    queue = q?.steps?.probe?.steps?.[0]?.done === true;
+  } catch { queue = false; }
+  return { canTickPending: pending, canTickQueue: queue };
+}

@@ -35,3 +35,5 @@ export function statusesOf(rows: Row[]): { value: string; label: string }[];
 export function linkRow(item: ActivityItem, rows: Row[]): { row: Row; via: string } | null;
 export function liveEntries(activity: ActivityItem[], rows: Row[], now?: number): LiveEntry[];
 export function onBuildList(e: LiveEntry): boolean;
+export function tickRequest(row: Pick<Row, 'source' | 'id'>, index: number, done: boolean): { path: 'pending' | 'build-queue/steps'; body: Record<string, unknown> } | null;
+export function probeTicks(pendingCore: unknown, queueCore: unknown): { canTickPending: boolean; canTickQueue: boolean };

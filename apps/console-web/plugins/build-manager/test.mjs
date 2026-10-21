@@ -111,6 +111,25 @@ const live3 = m.liveEntries([], rowsB, now);
 ok(live3.length === 1 && live3[0].row.key === 'queue:x.b' && live3[0].elapsed === 2 * 3600_000, 'an epic marked in progress shows as live, elapsed since "Build started"');
 ok(m.liveEntries([{ ...act[0], detail: 'push on fable/x-b' }], rowsB, now).filter((e) => e.row?.key === 'queue:x.b').length === 1, 'a linked run replaces the plain in-progress entry (no duplicate)');
 
+/* ---------- step ticks: the routes the console really has (split-steps cores) ---------- */
+const tp = m.tickRequest({ source: 'pending', id: 'asset-designer' }, 2, true);
+ok(tp.path === 'pending' && tp.body.action === 'step' && tp.body.id === 'asset-designer' && tp.body.index === 2 && tp.body.done === true, 'pending tick → POST /api/pending {action:step, id, index, done}');
+const tq = m.tickRequest({ source: 'queue', id: 'x.state' }, 0, false);
+ok(tq.path === 'build-queue/steps' && tq.body.id === 'x.state' && tq.body.index === 0 && tq.body.done === false && !('action' in tq.body), 'queue tick → POST /api/build-queue/steps {id, index, done} (stepsAction shape)');
+ok(m.tickRequest({ source: 'plan', id: 'f.x' }, 0, true) === null, 'plan features have nothing to tick');
+const probe = m.probeTicks(pc, qc);
+ok(probe.canTickPending && probe.canTickQueue, 'both shared cores tick steps (ticks on, not read-only)');
+ok(!m.probeTicks({ apply() { throw new Error('unknown action'); } }, { emptyQueue: qc.emptyQueue, stepsAction() { throw new Error('nope'); } }).canTickQueue, 'an older core without the step actions → read-only');
+{
+  // the bodies the view sends really tick on the cores behind those routes
+  const pst = pc.apply(pc.normalizeState({ $axf: 'pending@1', updatedAt: '', artifact: '', items: [{ id: 'p1', title: 'P', subPrompts: [{ text: 'a', at: '' }, { text: 'b', at: '' }] }] }), m.tickRequest({ source: 'pending', id: 'p1' }, 1, true).body);
+  ok(pst.item.subPrompts[1].done === true && !pst.item.subPrompts[0].done, 'pending core applies the tick body');
+  const feats = [{ id: 'x.e', title: 'E', kind: 'epic', status: 'planned' }];
+  const q0 = { ...qc.emptyQueue(), steps: { 'x.e': { steps: [{ text: 'a' }, { text: 'b' }] } } };
+  const q1 = qc.stepsAction(feats, q0, m.tickRequest({ source: 'queue', id: 'x.e' }, 0, true).body);
+  ok(q1.steps['x.e'].steps[0].done === true && !q1.steps['x.e'].steps[1].done, 'build-queue core applies the tick body');
+}
+
 /* ---------- the real data ---------- */
 const read = (f) => JSON.parse(readFileSync(join(REPO, 'framework/plan', f), 'utf8'));
 const plan = read('plan.json'); const qs = read('build-queue.json'); const pend = pc.normalizeState(read('pending.json'));

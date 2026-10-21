@@ -9,8 +9,8 @@ import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import * as queueCore from '@console/axf/plan/build-queue-core.mjs';
-import type { QFeature, QueueState } from '@console/axf/plan/build-queue-core.mjs';
-import { buildRows, liveEntries, SOURCES, type ActivityItem, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import type { QFeature } from '@console/axf/plan/build-queue-core.mjs';
+import { buildRows, liveEntries, probeTicks as probe, SOURCES, tickRequest, type ActivityItem, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
 
 export const FOLDER = 'build-manager';
 export const ID = 'ai.amberx.axf.console.build-manager';
@@ -53,24 +53,10 @@ export const takeFocus = () => { const f = st.focus; if (f) st = { ...st, focus:
 export const hideBanner = (key: string) => set({ hiddenFor: key });
 
 /**
- * Step ticks write through the console's own routes, but only once the engines know a `step` action (a Fable branch
- * adds it in parallel). Probed against the shared cores on a throwaway state, so the ticks switch on by themselves.
+ * Step ticks write through the console's own routes (pending list: `step` action; build queue: `/build-queue/steps`).
+ * Probed against the shared cores this console ships, so an older console shows them read-only instead of failing.
  */
-function probeTicks() {
-  let p = false, q = false;
-  try {
-    const s = { $axf: 'pending@1', updatedAt: '', artifact: '', items: [{ id: 'probe', title: 'probe', subPrompts: [{ text: 'a', at: '' }] }] };
-    const r = pendingCore.apply(s as never, { action: 'step', id: 'probe', index: 0, done: true } as never);
-    p = (r.item?.subPrompts?.[0] as { done?: boolean } | undefined)?.done === true;
-  } catch { p = false; }
-  try {
-    const f = [{ id: 'probe', title: 'probe', kind: 'epic', status: 'planned' }] as QFeature[];
-    const qs = { ...queueCore.emptyQueue(), steps: { probe: { steps: [{ text: 'a' }] } } } as unknown as QueueState;
-    const r = queueCore.stepAction(f, qs, { id: 'probe', action: 'step' as never, index: 0, done: true } as never);
-    q = ((r.queue.steps.probe as { steps?: { done?: boolean }[] } | undefined)?.steps?.[0]?.done) === true;
-  } catch { q = false; }
-  return { canTickPending: p, canTickQueue: q };
-}
+const probeTicks = () => probe(pendingCore, queueCore);
 
 let loading = false;
 export async function loadList(): Promise<void> {
@@ -147,16 +133,13 @@ export function start(runtime: AxfRuntime) {
 
 export async function tickStep(row: Row, index: number, done: boolean): Promise<string | null> {
   try {
-    if (row.source === 'pending') {
-      if (!st.canTickPending) return 'Ticking steps needs the pending list’s step action (not on this console yet).';
-      const r = await api.pendingPost({ action: 'step', id: row.id, index, done } as never);
-      if (!r.ok) return r.error ?? 'failed';
-      globalThis.dispatchEvent(new CustomEvent('axf:pending-changed'));
-    } else if (row.source === 'queue') {
-      if (!st.canTickQueue) return 'Ticking steps needs the build queue’s step action (not on this console yet).';
-      const r = await api.buildPost('step', { id: row.id, action: 'step', index, done });
-      if (!r.ok) return r.error ?? 'failed';
-    } else return 'Plan features have no steps to tick.';
+    const req = tickRequest(row, index, done);
+    if (!req) return 'Plan features have no steps to tick.';
+    if (row.source === 'pending' && !st.canTickPending) return 'Ticking steps needs the pending list’s step action (not on this console yet).';
+    if (row.source === 'queue' && !st.canTickQueue) return 'Ticking steps needs the build queue’s steps action (not on this console yet).';
+    const r = await api.post(req.path, req.body);
+    if (!r.ok) return r.error ?? 'failed';
+    globalThis.dispatchEvent(new CustomEvent(row.source === 'pending' ? 'axf:pending-changed' : 'axf:plan-changed'));
     await loadList();
     return null;
   } catch (e) { return (e as Error).message; }
