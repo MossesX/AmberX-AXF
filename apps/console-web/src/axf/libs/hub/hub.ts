@@ -9,11 +9,7 @@
  *  - **the approvals feed** `GET /auth/admin/approvals.json` (axHub decision #85): read with the browser's own hub session
  *    cookie (credentials included, redirects refused, reply size capped), mapped to ok / signed-out / not-admin /
  *    unreachable; only items whose link points at the hub are kept, and every link the app uses is built here;
- *  - **seen-id tracking** for "ring once per new approval";
- *  - **postponed requests** (axHub decision #90, web only for now): the feed's `postponed[]` with the same id/link
- *    rules, never counted as waiting; reminder slots (every 30 min) and the 2-hour review rule. The Kotlin twin is a
- *    deferred gap (`spec/PORTING.md`, Android on hold): Kotlin ignores these fields, so both ports still agree on
- *    `pending` / `count`.
+ *  - **seen-id tracking** for "ring once per new approval".
  *
  * The same rules are the Kotlin `ai.amberx.axf.hub.HubRules` (framework/android/lib-hub); both replay
  * `framework/spec/fixtures/hub-approvals.json` (generated from this file by `spec/gen-fixtures.mts`).
@@ -122,8 +118,6 @@ export const feedUrl = (base: string) => `${base}${HUB_PATHS.feed}`;
 export const isApprovalId = (id: unknown): id is string => typeof id === 'string' && APPROVAL_ID.test(id);
 /** The hub's single-request page; ids are checked so nothing else can be built into the link. */
 export const approvalUrl = (base: string, id: unknown): string | null => (isApprovalId(id) ? `${approvalsUrl(base)}/${id}` : null);
-/** The hub's postpone page for one request (axHub decision #90): pick a time or a condition. */
-export const postponeUrl = (base: string, id: unknown): string | null => { const u = approvalUrl(base, id); return u ? `${u}/postpone` : null; };
 /** The hub's sign-in page, returning to `returnPath` afterwards (a plain path on the hub; anything else → the approvals list). */
 export function loginUrl(base: string, returnPath: string = HUB_PATHS.approvals): string {
   const rd = RETURN_PATH.test(returnPath) && !returnPath.startsWith('//') && !returnPath.includes('..') ? returnPath : HUB_PATHS.approvals;
@@ -153,50 +147,17 @@ export const HUB_FEED_STATUSES: readonly HubFeedStatus[] = ['ok', 'signed-out', 
 /** One call waiting for approval, as the hub's feed lists it; `url` is always built here from the id. */
 export interface HubApproval { id: string; tool: string; summary: string; createdAt: string; expiresAt: string; url: string }
 
-/**
- * A request the owner postponed on the hub (axHub decision #90): it waits for a time or a condition, the hub checks it
- * every 5 minutes and puts it back to pending when it holds (never approves). Times are ISO strings ('' when absent).
- */
-export interface HubPostponed extends HubApproval {
-  /** Condition kind (`time`, `service-healthy`, `job-done`, `url-ok`, …; an open set). */
-  kind: string;
-  /** What it waits for, in a few words, written by the hub (a URL is reduced to its host). */
-  waitingFor: string;
-  /** For `time`: when it comes back. */
-  until: string;
-  /** When this postponement started. */
-  since: string;
-  nextCheck: string;
-  lastReminder: string;
-  /** When the hub reminds next (every 30 minutes while postponed). */
-  remindAt: string;
-  reminders: number;
-  /** Postponed 2 hours or more: the owner must review it. */
-  reviewRequired: boolean;
-}
-
 export interface HubFeed {
   status: HubFeedStatus;
-  /** Calls waiting for a decision (pending only, as before decision #90). */
   count: number;
   pending: HubApproval[];
   approvalsUrl: string;
   /** Why it is unreachable ('' otherwise). */
   error: string;
-  /** Postponed requests (decision #90; empty from a hub that predates it). Never counted as waiting. */
-  postponed: HubPostponed[];
-  postponedCount: number;
-  /** Postponed requests that need a review now (postponed ≥ 2 h). */
-  reviewCount: number;
 }
 
-/** Timing the hub uses for postponed requests (axHub decision #90). */
-export const HUB_POSTPONE = { remindMs: 30 * 60_000, reviewMs: 2 * 60 * 60_000, checkMs: 5 * 60_000 } as const;
-export const HUB_POSTPONED_CAPS = { kind: 40, waitingFor: 160 } as const;
-
 const str = (o: Record<string, unknown>, k: string): string | null => (typeof o[k] === 'string' ? (o[k] as string) : null);
-const empty = (base: string, status: HubFeedStatus, error = ''): HubFeed => ({ status, count: 0, pending: [], approvalsUrl: approvalsUrl(base), error, postponed: [], postponedCount: 0, reviewCount: 0 });
-const count = (v: unknown, atLeast: number): number => Math.max(typeof v === 'number' && Number.isFinite(v) ? Math.min(1_000_000, Math.max(0, Math.floor(v))) : atLeast, atLeast);
+const empty = (base: string, status: HubFeedStatus, error = ''): HubFeed => ({ status, count: 0, pending: [], approvalsUrl: approvalsUrl(base), error });
 
 /** A feed outcome for a transport failure (network error, refused redirect, oversized reply). */
 export const unreachableFeed = (base: string, error: string = HUB_MESSAGES.unreachable): HubFeed => empty(base, 'unreachable', error);
@@ -238,60 +199,7 @@ export function interpretFeed(base: string, status: number, body: string): HubFe
     });
   }
   const c = typeof j.count === 'number' && Number.isFinite(j.count) ? Math.min(1_000_000, Math.max(0, Math.floor(j.count))) : pending.length;
-  // Postponed requests (decision #90): same id + hub-link rules; never mixed into `pending` / `count`.
-  const postponed: HubPostponed[] = [];
-  const pids = new Set<string>();
-  for (const e of Array.isArray(j.postponed) ? j.postponed : []) {
-    if (postponed.length >= HUB_FEED_MAX_ITEMS) break;
-    if (!e || typeof e !== 'object' || Array.isArray(e)) continue;
-    const p = e as Record<string, unknown>;
-    const id = str(p, 'id');
-    const url = id === null ? null : approvalUrl(base, id);
-    if (id === null || url === null || pids.has(id) || ids.has(id)) continue;
-    if (!isHub(base, p.url)) continue;
-    const info = p.postponed && typeof p.postponed === 'object' && !Array.isArray(p.postponed) ? (p.postponed as Record<string, unknown>) : {};
-    const time = (k: string) => (str(info, k) ?? '').slice(0, HUB_FIELD_CAPS.time);
-    pids.add(id);
-    postponed.push({
-      id,
-      tool: (str(p, 'tool') ?? 'call').slice(0, HUB_FIELD_CAPS.tool),
-      summary: (str(p, 'summary') ?? '').slice(0, HUB_FIELD_CAPS.summary),
-      createdAt: (str(p, 'createdAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
-      expiresAt: (str(p, 'expiresAt') ?? '').slice(0, HUB_FIELD_CAPS.time),
-      url,
-      kind: (str(info, 'kind') ?? '').slice(0, HUB_POSTPONED_CAPS.kind),
-      waitingFor: (str(info, 'waitingFor') ?? '').slice(0, HUB_POSTPONED_CAPS.waitingFor),
-      until: time('until'),
-      since: time('since'),
-      nextCheck: time('nextCheck'),
-      lastReminder: time('lastReminder'),
-      remindAt: time('remindAt'),
-      reminders: count(info.reminders, 0),
-      reviewRequired: p.reviewRequired === true,
-    });
-  }
-  const reviews = postponed.filter((x) => x.reviewRequired).length;
-  return {
-    status: 'ok', count: Math.max(c, pending.length), pending, approvalsUrl: approvalsUrl(base), error: '',
-    postponed, postponedCount: count(j.postponedCount, postponed.length), reviewCount: count(j.reviewCount, reviews),
-  };
-}
-
-/**
- * Which 30-minute reminder slot a postponed request is in at `nowMs` (0 = the first half hour, no reminder yet), from its
- * `since`; -1 when `since` is missing or unreadable. The console raises one alert per slot ≥ 1.
- */
-export function postponedSlot(p: Pick<HubPostponed, 'since'>, nowMs: number): number {
-  const t = Date.parse(p.since);
-  if (!p.since || !Number.isFinite(t) || !Number.isFinite(nowMs)) return -1;
-  return Math.max(0, Math.floor((nowMs - t) / HUB_POSTPONE.remindMs));
-}
-
-/** True when a postponed request needs a review at `nowMs`: the hub says so, or it has been postponed 2 hours. */
-export function postponedNeedsReview(p: Pick<HubPostponed, 'since' | 'reviewRequired'>, nowMs: number): boolean {
-  if (p.reviewRequired) return true;
-  const t = Date.parse(p.since);
-  return !!p.since && Number.isFinite(t) && nowMs - t >= HUB_POSTPONE.reviewMs;
+  return { status: 'ok', count: Math.max(c, pending.length), pending, approvalsUrl: approvalsUrl(base), error: '' };
 }
 
 /* ---------------------------------------------------------------- ring once per new approval */

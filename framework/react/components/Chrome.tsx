@@ -122,7 +122,6 @@ export function Toolbar({ views }: { views: ViewMap }) {
           {g.items.map((it) => {
             const gate = rt.gate(it.requires);
             if (gate === 'hide') return null;
-            if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
             const count = it.badge ? rt.badge(it.badge) : 0;
             return (
               <button
@@ -169,7 +168,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {[...nav.data.sections, ...rt.navExtras].map((sec, i) => {
-        const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
+        const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide');
         if (!items.length) return null;
         return (
           <div key={i} className="fx-nav__section">

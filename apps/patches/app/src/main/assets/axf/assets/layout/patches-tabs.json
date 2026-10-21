@@ -4,16 +4,13 @@
   "id": "patches-tabs",
   "name": "Patches tabs",
   "version": "1.0.0",
-  "description": "Patches: the banner, the application menu (Settings, the apps, the tab in front), a row of tabs under it, and the app in the tab filling the rest. No toolbar, status bar or inspector; full width (web apps lay themselves out).",
+  "description": "Patches: the banner, a row of tabs under it, and the app in the tab filling the rest. No menubar, toolbar, status bar or inspector; full width (web apps lay themselves out).",
   "author": "AmberX AXF build engine",
-  "tags": [
-    "patches",
-    "tabs"
-  ],
+  "tags": ["patches", "tabs"],
   "data": {
     "nav": "top",
     "navWidth": 0,
-    "showMenubar": true,
+    "showMenubar": false,
     "showToolbar": false,
     "toolbarPosition": "top",
     "showStatusbar": false,

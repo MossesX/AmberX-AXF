@@ -6,10 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.view.ViewGroup
-import android.os.Handler
-import android.os.Looper
 import android.webkit.CookieManager
-import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceError
@@ -44,8 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 import ai.amberx.axf.kernel.engine.EmbedEngine
-import ai.amberx.axf.kernel.engine.EmbedMessage
-import ai.amberx.axf.kernel.engine.EmbedTakes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,12 +73,6 @@ public fun WebAppView(
     reload: Long = 0L,
     onDownload: ((context: Context, url: String) -> Unit)? = null,
     onPage: (String) -> Unit = {},
-    /**
-     * Messages the page sends its host (embed@1: "open my settings", "show this notification"), through the JS bridge
-     * `AxfEmbedHost.post(json)`. Checked ([EmbedTakes.parseMessage]) and believed only while the page shown is on
-     * [origins]; delivered on the main thread. Null = no bridge at all.
-     */
-    onMessage: ((EmbedMessage) -> Unit)? = null,
 ) {
     val allowed = remember(origins) { origins.mapNotNull { HubRules.normalize(it) } }
     var canGoBack by remember { mutableStateOf(false) }
@@ -122,7 +111,6 @@ public fun WebAppView(
                     CookieManager.getInstance().setAcceptCookie(true)
                     CookieManager.getInstance().setAcceptThirdPartyCookies(v, false)
                     v.setDownloadListener { dl, _, _, _, _ -> if (onDownload != null && allowed.any { HubRules.isHub(it, dl) }) onDownload(ctx, dl) }
-                    if (onMessage != null) v.addJavascriptInterface(EmbedHostBridge(v, allowed, onMessage), "AxfEmbedHost")
                     v.webChromeClient = WebChromeClient()
                     v.webViewClient = object : WebViewClient() {
                         override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
@@ -191,24 +179,6 @@ public fun WebAppView(
     BackHandler(enabled = canGoBack) { entry.view?.goBack() }
 }
 
-/**
- * The JS bridge a page calls to reach its host (`AxfEmbedHost.post(json)`, embed@1). Runs on WebView's binder thread:
- * hops to the main thread, checks the page in front is still one of the tab's origins (a page that navigated away
- * can't speak for the app), parses and caps the message, then hands it over. Nothing else is exposed to the page.
- */
-internal class EmbedHostBridge(private val view: WebView, private val allowed: List<String>, private val deliver: (EmbedMessage) -> Unit) {
-    private val main = Handler(Looper.getMainLooper())
-    @JavascriptInterface
-    fun post(json: String?) {
-        if (json == null || json.length > 4000) return
-        main.post {
-            val here = view.url ?: return@post
-            if (allowed.none { HubRules.isHub(it, here) }) return@post
-            EmbedTakes.parseMessage(json)?.let(deliver)
-        }
-    }
-}
-
 /** Live state of one tab's web view, for the host's banner / settings (loading dot, current page). */
 public class WebAppEntry internal constructor(public val tab: String) {
     internal var view: WebView? = null
@@ -232,11 +202,9 @@ public class WebAppHolder(
     public val host: String,
     hide: List<String> = EmbedEngine.DEFAULT_HIDDEN,
     types: AssetTypeRegistry = AssetTypeRegistry.builtin(),
-    /** app functions the host takes over from the apps (embed@1 `takes`: `settings`, `notifications`) */
-    takes: List<String> = emptyList(),
 ) {
-    /** `AXF-Embed/<host>[/<types>]` (+ ` AXF-Embed-Take/<fn>+<fn>`), appended to each view's user agent. */
-    public val userAgentSuffix: String = EmbedTakes.userAgentSuffix(types, host, hide, takes)
+    /** `AXF-Embed/<host>[/<types>]`, appended to each view's user agent. */
+    public val userAgentSuffix: String = EmbedEngine.userAgentSuffix(types, host, hide)
     private val entries = LinkedHashMap<String, WebAppEntry>()
     private val _tabs = MutableStateFlow<List<String>>(emptyList())
     /** Tabs that have a live web view (in the order they were first shown). */
@@ -256,15 +224,6 @@ public class WebAppHolder(
 
     /** Loads the tab's page again (the host's Reload); nothing when the tab has no view yet. */
     public fun reload(tab: String) { entries[tab]?.let { it.error.value = null; it.view?.reload() } }
-
-    /**
-     * Sends the page in a tab a message from its host (embed@1, e.g. [EmbedTakes.openTab] to a settings page): the page's
-     * `AxfEmbedGuest.receive(json)`; nothing when the tab has no view or the page doesn't listen.
-     */
-    public fun send(tab: String, json: String) {
-        val v = entries[tab]?.view ?: return
-        v.evaluateJavascript("window.AxfEmbedGuest&&window.AxfEmbedGuest.receive(" + org.json.JSONObject.quote(json) + ")", null)
-    }
 
     /** The page a tab shows now, or null. */
     public fun currentUrl(tab: String): String? = entries[tab]?.view?.url

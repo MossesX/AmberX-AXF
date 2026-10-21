@@ -178,12 +178,5 @@ export function WidgetView({ type, id, host }: { type: string; id: string; host?
   const a = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   const R = renderers.get(type);
   if (!a || !R) return null;
-  // A widget whose tap is a hook the host app took over (embed@1 takes): an action button goes, others lose the tap.
-  const d = a.data as { action?: unknown; link?: unknown } | null;
-  if (rt.embedded?.takes?.length && d && typeof d === 'object') {
-    const taken = (v: unknown) => typeof v === 'string' && rt.takenByHost({ action: v });
-    if (taken(d.action)) { if (type === 'action-button') return null; return <R data={{ ...d, action: undefined }} id={id} host={host} />; }
-    if (taken(d.link)) return <R data={{ ...d, link: undefined }} id={id} host={host} />;
-  }
   return <R data={a.data} id={id} host={host} />;
 }

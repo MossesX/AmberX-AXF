@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
     <application
         android:name=".App"
@@ -14,8 +13,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTop">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,12 +25,5 @@
                 <data android:scheme="axf" android:host="${axfAppId}" />
             </intent-filter>
         </activity>
-        <!-- Patches serves the phone's notifications for the Console, Pilot and axHub: the framework's work service (lib-work)
-             runs its watcher while "Serve all notifications" is on; the special-use subtype is the app's own words for Play review. -->
-        <service android:name="ai.amberx.axf.work.PollService">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Watches the user's own self-hosted hub and dev console for approvals and alerts and notifies them" />
-        </service>
     </application>
 </manifest>

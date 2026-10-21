@@ -32,11 +32,10 @@ interface Item { id: string; source: string; kind: string; title: string; detail
 interface Feed { items: Item[]; active: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }> }
 interface Job { name: string; state: State; startedAt?: number; finishedAt?: number; url?: string; steps: Step[] }
 interface Detail { id: string; jobs?: Job[]; progress?: number | null }
-/** `open` = the banner is expanded (it launches expanded; "_" folds it to one line); `pinned` = shown on request (action) even when idle. */
-interface Store { feed: Feed | null; error: string; hiddenFor: string; open: boolean; pinned: boolean }
+interface Store { feed: Feed | null; error: string; hiddenFor: string; open: boolean }
 
 let runtime: AxfRuntime | null = null;
-let st: Store = { feed: null, error: '', hiddenFor: '', open: true, pinned: false };
+let st: Store = { feed: null, error: '', hiddenFor: '', open: false };
 const subs = new Set<() => void>();
 const set = (p: Partial<Store>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 const useStore = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -208,14 +207,14 @@ function ActivityBanner() {
   const finished = items.filter((i) => !ACTIVE.has(i.state));
   const visible = useOnScreen();
   const waiting = finished.some((i) => !seenAt.has(i.id) || Date.now() - (seenAt.get(i.id) ?? 0) < DONE_FLASH_MS);
-  const now = useNow(active.length > 0 || s.pinned || (visible && waiting));
+  const now = useNow(active.length > 0 || s.open || (visible && waiting));
   // Everything the feed still lists as finished (it keeps them 10 min) counts until you've had it on screen for 20 s.
   if (visible) markSeen(finished, now);
   const justDone = finished.filter((i) => { const t = seenAt.get(i.id); return t === undefined || now - t < DONE_FLASH_MS; });
   const key = active.map((i) => i.id).join(',');
-  if (!active.length && !justDone.length && !s.pinned) return null;
+  if (!active.length && !justDone.length && !s.open) return null;
   if (key && key === s.hiddenFor) return null;
-  if (!active.length && !justDone.length && s.pinned && !finished.length) return null;
+  if (!active.length && !justDone.length && s.open && !finished.length) return null;
 
   const failed = (active.length ? [] : justDone).some((i) => i.state === 'failed' || i.state === 'stale');
   const first = active[0];
@@ -236,8 +235,7 @@ function ActivityBanner() {
           </span>
           {first && <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>}
         </button>
-        {/* "_" minimizes (folds the banner to its one-line summary; tap the summary to expand it again). It never hides the banner (Brett, Oct 21 2026). */}
-        {s.open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => set({ open: false })}><Icon name="minimize" size={16} /></button>}
+        <button type="button" className="fx-iconbtn" aria-label="Hide until something new starts" title="Hide until something new starts" onClick={() => { if (!key) for (const i of finished) seenAt.set(i.id, 0); set({ hiddenFor: key || 'idle', open: false }); }}><Icon name="x" size={16} /></button>
       </div>
       {s.open && (
         <div className="axp-activity__body">
@@ -311,7 +309,7 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     runtime = rt;
     start();
-    rt.actions.register('activity.open', () => { set({ open: true, pinned: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
+    rt.actions.register('activity.open', () => { set({ open: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
     rt.actions.register('activity.check', () => void refresh(), { label: 'Check activity now' });
   },
   banners: [{ id: 'activity', order: 4, render: () => <ActivityBanner /> }],

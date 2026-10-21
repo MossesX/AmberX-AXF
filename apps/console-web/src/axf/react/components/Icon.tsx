@@ -59,8 +59,6 @@ const PATHS: Record<string, string> = {
   package: 'M16.5 9.4 7.5 4.2M21 16V8l-9-5-9 5v8l9 5zM3.3 7 12 12l8.7-5M12 22V12',
   external: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3',
   minus: 'M5 12h14',
-  /** the underscore of a window's minimize button (banners: "_" folds them to one line) */
-  minimize: 'M6 18h12',
   more: 'M5 12h.01M12 12h.01M19 12h.01',
   hammer: 'M14 4l6 6-2 2-6-6zM4 20l8-8 2 2-8 8z',
   list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',

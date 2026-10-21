@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -79,63 +79,5 @@ Object.defineProperty(globalThis, 'location', { configurable: true, value: { sea
 eq(make(undefined).embedded, { host: 'dev-console', hidden: ['banner'] }, 'page query wins');
 delete (globalThis as { location?: unknown }).location;
 if (navDesc) Object.defineProperty(globalThis, 'navigator', navDesc); else delete (globalThis as { navigator?: unknown }).navigator;
-
-
-/* ---------- 4. embed-takes.json: what a host takes over, page mode, messages ---------- */
-const t = JSON.parse(readFileSync(new URL('./fixtures/embed-takes.json', import.meta.url), 'utf8'));
-eq(EMBED_TAKE_UA_TOKEN, t.uaToken, 'take token');
-eq(embedTakeIds(), t.ids, 'take ids');
-for (const c of t.takes) eq(embedTakes(c.input), c.takes, `takes ${JSON.stringify(c.input)}`);
-for (const c of t.pages) eq(embedPage(c.input), c.page, `page ${JSON.stringify(c.input)}`);
-for (const c of t.queries) eq(embedFromQueryFull(c.input), c.embed, `full query ${c.input}`);
-for (const c of t.userAgents) eq(embedFromUserAgentFull(c.input), c.embed, `full ua ${c.input}`);
-for (const c of t.detect) eq(detectEmbedFull(c.search, c.userAgent), c.embed, `full detect ${c.search}`);
-for (const c of t.takenBy) eq(embedTakenBy(c.embed, c.action), c.fn, `takenBy ${JSON.stringify(c.embed.takes)} ${c.action}`);
-for (const c of t.takenView) eq(embedTakenView(c.embed, c.view), c.fn, `takenView ${c.view}`);
-for (const c of t.takenProvider) eq(embedTakenProvider(c.embed, c.provider), c.fn, `takenProvider ${c.provider}`);
-for (const c of t.suffix) eq(userAgentSuffixFull(c.host, c.hidden ?? undefined, c.takes), c.suffix, `full suffix ${JSON.stringify(c)}`);
-for (const c of t.urls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `full url ${c.url}`);
-for (const c of t.links) eq(embedLinkOk(c.link), c.ok, `link ${c.link}`);
-for (const c of t.messages) eq(parseEmbedMessage(c.input), c.message, `message ${JSON.stringify(c.input).slice(0, 60)}`);
-for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
-// Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
-for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);
-
-/* ---------- 5. runtime: settings taken by the host ---------- */
-{
-  const posted: unknown[] = [];
-  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
-  let ran = 0;
-  const taken = make({ host: 'patches', hidden: ['banner'], takes: ['settings'] });
-  taken.actions.register('app.settings', () => { ran++; }, { label: 'Settings' });
-  taken.actions.register('settings.open', () => { ran++; }, { label: 'Open a settings tab', params: true });
-  eq(taken.hostTakes('settings'), true, 'takes: settings');
-  eq(taken.hostTakes('notifications'), false, 'takes: not notifications');
-  eq(taken.takenByHost({ action: 'app.settings' }), true, 'taken: app.settings');
-  eq(taken.takenByHost({ action: 'alerts.open' }), false, 'taken: other actions kept');
-  eq(taken.takenByHost({ view: 'settings' }), true, 'taken: settings view');
-  eq(taken.takenByHost({ provider: 'settings' }), true, 'taken: settings live list');
-  taken.dispatch('app.settings');
-  taken.dispatch('settings.open:appearance');
-  taken.navigate('settings');
-  eq(ran, 0, 'taken hooks never run here');
-  eq(posted, [{ $axf: 'embed@1', type: 'open-settings' }, { $axf: 'embed@1', type: 'open-settings', tab: 'appearance' }, { $axf: 'embed@1', type: 'open-settings' }], 'taken hooks asked the host');
-  eq(taken.getState().view === 'settings', false, 'view did not change');
-  // The app menu drops every settings hook (items + the settings live list); other items stay.
-  const menu = JSON.stringify(taken.appMenu());
-  eq(/"action":"(app\.settings|settings\.open[^"]*)"/.test(menu), false, 'app menu: no settings items');
-  eq(/"provider":"settings"/.test(menu), false, 'app menu: no settings live list');
-  const solo2 = make(null);
-  eq(/"action":"app\.settings"/.test(JSON.stringify(solo2.appMenu())), true, 'standalone app menu keeps Settings');
-  // Page mode: the settings page itself opens its tabs (settings is never taken on its own page).
-  const pageRt = make({ host: 'patches', hidden: ['banner'], takes: ['notifications'], page: 'settings' });
-  let opened = '';
-  pageRt.actions.register('settings.open', ([tab]) => { opened = String(tab); }, { label: 'Open', params: true });
-  pageRt.dispatch('settings.open:about');
-  eq(opened, 'about', 'page mode: own tabs open');
-  (globalThis as unknown as { AxfEmbedGuest?: { receive: (j: string) => void } }).AxfEmbedGuest!.receive('{"$axf":"embed@1","type":"open-tab","tab":"plugins"}');
-  eq(opened, 'plugins', 'page mode: host opens a tab through the bridge');
-  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
-}
 
 console.log(`check-embed: ${checks} checks passed`);

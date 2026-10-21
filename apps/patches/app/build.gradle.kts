@@ -38,8 +38,6 @@ dependencies {
     implementation("ai.amberx.axf:lib-settings:$axf")
     implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:lib-logging:$axf")
-    implementation("ai.amberx.axf:lib-notifications:$axf")
-    implementation("ai.amberx.axf:lib-work:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     // axf:modules []
 }

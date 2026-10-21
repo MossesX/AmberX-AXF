@@ -13,7 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMessage } from './engines/embed';
+import { detectEmbed, type Embed } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -207,7 +207,6 @@ export class AxfRuntime {
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
-    if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -444,7 +443,6 @@ export class AxfRuntime {
       setting: (k) => this.settings.get(k),
       hidden: (t) => this.slotHidden(t as AssetType),
       providers: this.appMenuProviderIds(),
-      taken: (it) => this.takenByHost(it),
     };
   }
 
@@ -955,8 +953,6 @@ export class AxfRuntime {
   /* ---------------- views & overlays ---------------- */
 
   navigate(view: string) {
-    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
-    if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
     this.set({ view, context: null });
   }
 
@@ -991,62 +987,7 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
-    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
-    if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
-  }
-
-  /* ---------------- embed@1: what the host takes over ---------------- */
-
-  /** Does the host this app runs in take this function over (`settings`, `notifications`)? */
-  hostTakes(fn: string): boolean { return embedTakesFn(this.embedded, fn); }
-
-  /**
-   * Is this action / view / live list a hook the host took over? Chrome drops such hooks (app menu, toolbar, nav,
-   * context menu, banner widgets), so the app shows none of its own hooks for a function the host does for it.
-   */
-  takenByHost(what: { action?: string; view?: string; provider?: string }): boolean {
-    return !!(embedTakenBy(this.embedded, what.action) || embedTakenView(this.embedded, what.view) || embedTakenProvider(this.embedded, what.provider));
-  }
-
-  /** Send a message to the host (Android: its `AxfEmbedHost` bridge; web: the parent frame). False when there's no host. */
-  postToHost(msg: EmbedMessage): boolean {
-    if (!this.embedded) return false;
-    const g = globalThis as unknown as { AxfEmbedHost?: { post?: (json: string) => void }; parent?: { postMessage?: (m: unknown, o: string) => void }; window?: unknown };
-    try {
-      if (typeof g.AxfEmbedHost?.post === 'function') { g.AxfEmbedHost.post(JSON.stringify(msg)); return true; }
-      // The message only asks the host to do something it would do anyway; its content is checked on arrival.
-      if (g.parent && g.parent !== (globalThis as unknown) && typeof g.parent.postMessage === 'function') { g.parent.postMessage(msg, '*'); return true; }
-    } catch { /* no host to reach */ }
-    return false;
-  }
-
-  /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
-  private askHost(spec: string): boolean {
-    const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
-    if (fn === 'settings') {
-      const tab = settingsTabOf(spec);
-      if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
-    }
-    this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
-    return false;
-  }
-
-  /** Messages from the host: a settings page opens the tab the host asks for. Web only; Android hosts evaluate the same. */
-  private listenToHost(): void {
-    const handle = (raw: unknown) => {
-      const m = parseEmbedMessage(raw);
-      if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
-    };
-    // Android hosts can't post into the page; they call this instead (evaluateJavascript).
-    (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
-    const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
-    if (typeof g.addEventListener !== 'function') return;
-    g.addEventListener('message', (e) => {
-      // Only the frame this app runs in may ask; anything else (other frames, the page itself) is ignored.
-      if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
-      handle(e.data);
-    });
   }
 
   /* ---------------- rendering ---------------- */
@@ -1149,7 +1090,7 @@ export class AxfRuntime {
 /** The embed marker on the current page (browser only; nothing elsewhere). */
 function detectPageEmbed(): Embed | null {
   const g = globalThis as { location?: { search?: string }; navigator?: { userAgent?: string } };
-  try { return detectEmbedFull(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
+  try { return detectEmbed(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
 }
 
 export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {

@@ -12,7 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -28,7 +28,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
-import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, HUB_POSTPONE, HUB_POSTPONED_CAPS, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, postponedNeedsReview, postponedSlot, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -106,68 +106,6 @@ write('hide.json', {
     detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
     suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
     urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
-  });
-}
-// What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
-{
-  const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
-  const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
-  const queries = [
-    '?axf-embed=patches',
-    '?axf-embed=patches&axf-embed-take=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications',
-    '?axf-embed=patches&axf-embed-take=bogus',
-    '?axf-embed=patches&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
-    '?axf-embed=patches&axf-embed-page=notifications',
-    '?axf-embed-take=settings',
-  ];
-  const agents = [
-    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
-    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
-    'Mozilla/5.0 AXF-Embed-Take/settings',
-    'Mozilla/5.0 AXF-Embed/patches',
-  ];
-  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
-  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', '', null];
-  write('embed-takes.json', {
-    uaToken: EMBED_TAKE_UA_TOKEN,
-    ids: embedTakeIds(),
-    takes: takeInputs.map((t) => ({ input: t, takes: embedTakes(t) })),
-    pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
-    queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
-    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
-    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
-    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
-    takenView: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'home', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
-    takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
-    suffix: [['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
-    urls: [
-      ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
-      ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
-      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
-      ['https://pilot.amberxai.com/', {}],
-    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
-    links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
-    messages: [
-      { $axf: 'embed@1', type: 'open-settings' },
-      { $axf: 'embed@1', type: 'open-settings', tab: 'appearance' },
-      { $axf: 'embed@1', type: 'open-settings', tab: 'bad tab!' },
-      { $axf: 'embed@1', type: 'notify', title: '  Build failed\n', body: 'x'.repeat(600), tag: 'ci:main', level: 'error', link: 'view:alerts' },
-      { $axf: 'embed@1', type: 'notify', title: '' },
-      { $axf: 'embed@1', type: 'notify', title: 'Hi', level: 'loud', link: 'javascript:x', tag: 'has space' },
-      { $axf: 'embed@1', type: 'ready', app: 'Console' },
-      { $axf: 'embed@1', type: 'open-tab', tab: 'plugins' },
-      { $axf: 'embed@1', type: 'open-tab' },
-      { $axf: 'embed@2', type: 'open-settings' },
-      { $axf: 'embed@1', type: 'run-code', code: 'x' },
-      '{"$axf":"embed@1","type":"open-settings","tab":"about"}',
-      'not json',
-      ['array'],
-      null,
-    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
-    settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
   });
 }
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
@@ -948,7 +886,6 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
   });
 }
-
 // library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
 {
   const params: LibraryParam[] = [
@@ -1026,29 +963,6 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ['json-array', 200, '[1,2]'],
     ['json-null', 200, 'null'],
     ['json-string', 200, '"x"'],
-    // axHub decision #90: postponed requests ride along, never counted as waiting
-    ['ok-postponed', 200, JSON.stringify({ signedIn: true, admin: true, count: 1, pending: [item(ID1)], postponedCount: 2, reviewCount: 1, postponed: [
-      item(ID2, { status: 'postponed', reviewRequired: true, postponed: { kind: 'time', waitingFor: 'until Tue, 21 Oct 2026 14:00 UTC', until: '2026-10-21T14:00:00.000Z', since: '2026-10-21T10:00:00.000Z', firstSince: '2026-10-21T10:00:00.000Z', nextCheck: '2026-10-21T12:05:00.000Z', lastReminder: '2026-10-21T12:00:00.000Z', remindAt: '2026-10-21T12:30:00.000Z', reminders: 4 } }),
-      item(ID3, { status: 'postponed', reviewRequired: false, postponed: { kind: 'url-ok', waitingFor: 'status.example.com answers', since: '2026-10-21T11:40:00.000Z', nextCheck: '2026-10-21T11:45:00.000Z', remindAt: '2026-10-21T12:10:00.000Z', reminders: 0 } }),
-    ] })],
-    ['ok-postponed-links-and-ids-checked', 200, JSON.stringify({ count: 1, pending: [item(ID1)], postponed: [
-      item(ID1, { postponed: { kind: 'time' } }), item(ID2, { url: `https://evil.example/auth/admin/approvals/${ID2}` }), item('../x'), null, 'str', item(ID3), item(ID3),
-    ] })],
-    ['ok-postponed-fields-defaulted-and-capped', 200, JSON.stringify({ count: 0, pending: [], postponedCount: '9', reviewCount: -1, postponed: [
-      item(ID2, { tool: 7, reviewRequired: 'yes', postponed: { kind: big(80), waitingFor: big(400), since: big(100), reminders: 'many' } }),
-      item(ID3, { postponed: [1, 2], reviewRequired: true }),
-    ] })],
-    ['ok-postponed-not-array', 200, JSON.stringify({ count: 0, pending: [], postponed: { id: ID2 }, postponedCount: 3 })],
-  ];
-  const slots: [string, number][] = [
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:00:00.000Z')],
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:29:59.999Z')],
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T10:30:00.000Z')],
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T11:59:59.000Z')],
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T12:00:00.000Z')],
-    ['2026-10-21T10:00:00.000Z', Date.parse('2026-10-21T09:00:00.000Z')],
-    ['', Date.parse('2026-10-21T12:00:00.000Z')],
-    ['not a time', Date.parse('2026-10-21T12:00:00.000Z')],
   ];
   const seen: [string[], string[]][] = [
     [[], [ID1]],
@@ -1075,13 +989,6 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
     unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
     seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
-    // web only until the Android twin (deferred, spec/PORTING.md); Kotlin's replay ignores these keys
-    postponed: {
-      timing: HUB_POSTPONE,
-      caps: HUB_POSTPONED_CAPS,
-      slots: slots.map(([since, now]) => ({ since, now, slot: postponedSlot({ since }, now) })),
-      review: [...slots.map(([since, now]) => ({ since, reviewRequired: false, now })), { since: '', reviewRequired: true, now: 0 }].map((c) => ({ ...c, needsReview: postponedNeedsReview(c, c.now) })),
-    },
   });
 }
 

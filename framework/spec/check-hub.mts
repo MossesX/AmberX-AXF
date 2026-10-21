@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import {
   HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP,
   accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, fetchHubFeed, hubOrigin, interpretFeed, isHub,
-  loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed, HUB_POSTPONE, HUB_POSTPONED_CAPS, postponedNeedsReview, postponedSlot, postponeUrl,
+  loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed,
 } from '../libs/hub/hub';
 // tsx loads these as CommonJS, where `export *` re-exports aren't visible to named imports: take the watcher from index directly
 import { HubWatcher } from '../libs/hub/index';
@@ -37,18 +37,6 @@ for (const c of f.csrf) eq(csrfFromPage(c.html), c.token, `csrf ${c.html}`);
 for (const c of f.feeds) eq(interpretFeed(c.base, c.status, c.body), c.feed, `feed ${c.name}`);
 eq(unreachableFeed(f.unreachable.base, f.unreachable.error), f.unreachable.feed, 'unreachable');
 for (const c of f.seen) eq(seenPlan(c.seen, c.current), c.plan, `seen ${c.current}`);
-// postponed requests (axHub decision #90; web only, Kotlin twin deferred)
-for (const c of f.approval) eq(postponeUrl(c.base, c.id), c.url === null ? null : `${c.url}/postpone`, `postpone url ${c.id}`);
-eq({ timing: HUB_POSTPONE, caps: HUB_POSTPONED_CAPS }, { timing: f.postponed.timing, caps: f.postponed.caps }, 'postponed timing + caps');
-for (const c of f.postponed.slots) eq(postponedSlot({ since: c.since }, c.now), c.slot, `slot ${c.since} @ ${c.now}`);
-for (const c of f.postponed.review) eq(postponedNeedsReview(c, c.now), c.needsReview, `review ${c.since} @ ${c.now}`);
-{
-  const p = f.feeds.find((x: { name: string }) => x.name === 'ok-postponed').feed;
-  eq([p.count, p.pending.length, p.postponed.length, p.postponedCount, p.reviewCount], [1, 1, 2, 2, 1], 'postponed never counted as waiting');
-  eq([p.postponed[0].reviewRequired, p.postponed[0].kind, p.postponed[1].waitingFor], [true, 'time', 'status.example.com answers'], 'postponed fields');
-  const q = f.feeds.find((x: { name: string }) => x.name === 'ok-postponed-links-and-ids-checked').feed;
-  eq(q.postponed.map((x: { id: string }) => x.id), ['a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'], 'postponed: no foreign links, bad ids, duplicates or ids already pending');
-}
 
 /* ---------- 2. the client against a fake fetch ---------- */
 const ID = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';

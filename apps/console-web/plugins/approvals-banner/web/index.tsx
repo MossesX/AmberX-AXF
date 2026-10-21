@@ -18,29 +18,15 @@
  * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
  * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
  * themselves" can be switched off in its settings (per browser).
- *
- * Postponed requests (Oct 21 2026, axHub decision #90): the feed also lists requests Brett postponed on the hub (until a
- * time or a condition; the hub checks every 5 minutes and puts them back to pending, never approving). Every 30
- * minutes one stays postponed, this plugin raises an alert (alert@1, source `approvals`) so the bell, ntfy and web push
- * deliver it; after 2 hours postponed the console shows a **mandatory review** that can't be closed: for each such
- * request Approve, Decline, Postpone again or Revoke, each opening the hub's own page for it (in a frame, or a new tab
- * when framing is refused). It goes away only once the hub no longer lists a request as needing review, so the choice
- * really is made on the hub. Pure planning in `reminders.mjs` (tested by `test.mjs`).
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { Button, Icon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { createPortal } from 'react-dom';
-import {
-  HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, postponeUrl, postponedNeedsReview, postponedSlot,
-  type HubApproval, type HubFeedStatus, type HubPostponed,
-} from '@console/axf/libs/hub/hub';
-import { alertsOf } from '@console/axf/libs/alerts';
+import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
-import { REVIEW_CHOICES, age, reminderPlan, reviewState, type ReminderItem, type ReviewChoice } from './reminders.mjs';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -54,12 +40,9 @@ const save = (k: string, v: string) => { try { globalThis.localStorage?.setItem(
 export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
 const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
 let reviewing: string | null = null;
-const REMINDED_KEY = 'approvals-banner.reminded';
-const CHOICES_KEY = 'approvals-banner.review-choices';
-const readJson = <T,>(k: string, fallback: T): T => { try { const v = JSON.parse(load(k) ?? 'null') as unknown; return v && typeof v === 'object' && !Array.isArray(v) ? (v as T) : fallback; } catch { return fallback; } };
-/** Open each new request once, in the console, unless switched off, one is already on screen or a review is due. */
+/** Open each new request once, in the console, unless switched off or one is already on screen. */
 function autoOpen(pending: Pending[]) {
-  if (!runtime || !autoOpenOn() || reviewing || st.reviewItems.length) return;
+  if (!runtime || !autoOpenOn() || reviewing) return;
   const next = pending.find((p) => !opened.has(p.id));
   if (!next) return;
   opened.add(next.id);
@@ -71,18 +54,11 @@ const DEFAULT_HUB = HUB_DEFAULT;
 
 type Pending = HubApproval;
 type Status = 'idle' | HubFeedStatus;
-/** A postponed request with what this browser computes from it (reminder slot, minutes postponed, review due). */
-type Postponed = HubPostponed & ReminderItem;
-interface State {
-  status: Status; hub: string; count: number; pending: Pending[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string;
-  postponed: Postponed[]; postponedCount: number;
-  /** Postponed requests that need the mandatory review now. */
-  reviewItems: Postponed[];
-}
+interface State { status: Status; hub: string; count: number; pending: Pending[]; approvalsUrl: string; checkedAt: string | null; hiddenIds: string; error: string }
 
 /* ---------------- a tiny store shared by the banner and the settings panel ---------------- */
 
-let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '', postponed: [], postponedCount: 0, reviewItems: [] };
+let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count : 0); subs.forEach((f) => f()); };
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -107,34 +83,11 @@ export async function checkNow(): Promise<void> {
     // lib-hub: the browser's own hub session (credentials included), redirects refused, reply capped, links checked.
     const feed = await fetchHubFeed(hub);
     const pending = feed.status === 'ok' ? feed.pending : [];
-    const now = Date.now();
-    const postponed: Postponed[] = (feed.status === 'ok' ? feed.postponed : []).map((p) => ({
-      ...p,
-      slot: postponedSlot(p, now),
-      minutes: p.since && Number.isFinite(Date.parse(p.since)) ? Math.max(0, (now - Date.parse(p.since)) / 60_000) : 0,
-      review: postponedNeedsReview(p, now),
-    }));
-    set({
-      hub, status: feed.status, count: feed.count, pending, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error,
-      postponed, postponedCount: feed.status === 'ok' ? feed.postponedCount : 0, reviewItems: postponed.filter((p) => p.review),
-    });
-    // Reminders only from a real answer: signed out / unreachable says nothing about the postponed requests.
-    if (feed.status === 'ok') await remind(postponed);
+    set({ hub, status: feed.status, count: feed.count, pending, approvalsUrl: feed.approvalsUrl, checkedAt: new Date().toISOString(), error: feed.error });
     autoOpen(pending);
   } finally {
     inflight = false;
   }
-}
-
-/** Raise this half hour's alert for each postponed request (once per browser) and resolve the one before. */
-async function remind(postponed: Postponed[]): Promise<void> {
-  const alerts = runtime ? alertsOf(runtime) : null;
-  const remembered = readJson<Record<string, number>>(REMINDED_KEY, {});
-  const plan = reminderPlan(postponed, remembered);
-  if (!alerts) return; // the alerts library isn't installed: nothing to deliver through (remembered stays as it was)
-  for (const a of plan.raise) await alerts.raise(a);
-  if (plan.resolve.length) await alerts.resolve(plan.resolve);
-  save(REMINDED_KEY, JSON.stringify(plan.next));
 }
 
 let started = false;
@@ -152,7 +105,7 @@ const ago = (iso: string) => {
   return s < 60 ? `${s} s ago` : s < 3600 ? `${Math.round(s / 60)} min ago` : `${Math.round(s / 3600)} h ago`;
 };
 /** The command (or arguments) out of the hub's summary, for one short line. */
-const shortSummary = (p: Pick<Pending, 'summary'>) => {
+const shortSummary = (p: Pending) => {
   const m = /"command":"((?:[^"\\]|\\.)*)"/.exec(p.summary);
   const name = /"name":"([^"\\]{1,60})"/.exec(p.summary)?.[1];
   const target = /"target":"([^"\\]{1,120})"/.exec(p.summary)?.[1];
@@ -164,7 +117,7 @@ const shortSummary = (p: Pick<Pending, 'summary'>) => {
 
 function ApprovalsBanner() {
   const s = useApprovals();
-  const [open, setOpen] = useState(true); // every banner launches expanded (Brett, Oct 21 2026)
+  const [open, setOpen] = useState(false);
   useEffect(() => { start(); }, []);
   if (s.status !== 'ok' || s.count === 0) return null;
   const ids = s.pending.map((p) => p.id).join(',');
@@ -176,7 +129,7 @@ function ApprovalsBanner() {
       <div className="axp-approvals-banner__row">
         <Icon name="shield" />
         <button type="button" className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub{s.postponedCount ? ` · ${s.postponedCount} postponed` : ''}
+          {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
@@ -196,15 +149,6 @@ function ApprovalsBanner() {
             </li>
           ))}
           {s.count > s.pending.length && <li className="fx-muted fx-small">…and {s.count - s.pending.length} more on the hub.</li>}
-          {s.postponed.map((p) => (
-            <li key={p.id}>
-              <a className="axp-approvals-banner__item" href={p.url} target="_blank" rel="noopener noreferrer">
-                <span className="axp-approvals-banner__tool">{p.tool}</span>
-                <span className="axp-approvals-banner__cmd">postponed {age(p.minutes)}{p.waitingFor ? ` · waiting for ${p.waitingFor}` : ''}</span>
-                <span className="axp-approvals-banner__when">{p.review ? 'review now' : 'postponed'}</span>
-              </a>
-            </li>
-          ))}
         </ul>
       )}
     </div>
@@ -237,77 +181,6 @@ function ReviewDialog({ id }: { id: string }) {
   );
 }
 
-/* ---------------- the mandatory review (postponed ≥ 2 h) ---------------- */
-
-const useChoices = () => {
-  const [choices, setChoices] = useState<Record<string, string>>(() => readJson<Record<string, string>>(CHOICES_KEY, {}));
-  const pick = (id: string, choice: string) => setChoices((c) => { const n = { ...c, [id]: choice }; save(CHOICES_KEY, JSON.stringify(n)); return n; });
-  return [choices, pick] as const;
-};
-
-/**
- * A blocking overlay (no close button, Escape does nothing) while any postponed request needs a review. Each choice opens
- * the hub's own page for that request; the overlay leaves only when the hub no longer lists a request as needing review.
- */
-function MandatoryReview() {
-  const s = useApprovals();
-  const [choices, pick] = useChoices();
-  const [openId, setOpenId] = useState<string | null>(null);
-  useEffect(() => { start(); }, []);
-  const review = reviewState(s.reviewItems, choices);
-  // forget choices for requests that were reviewed (or left) on the hub
-  useEffect(() => { if (s.status === 'ok') save(CHOICES_KEY, JSON.stringify(review.choices)); }, [s.checkedAt]); // eslint-disable-line react-hooks/exhaustive-deps
-  // check fast while it is up, so a choice made on the hub clears it within seconds
-  useEffect(() => { if (!review.blocking) return; const t = setInterval(() => void checkNow(), 3_000); return () => clearInterval(t); }, [review.blocking]);
-  if (s.status !== 'ok' || !review.blocking || typeof document === 'undefined') return null;
-  const shown = review.rows.find((r) => r.id === openId && r.choice) ?? review.rows.find((r) => r.choice);
-  const frameUrl = (r: (typeof review.rows)[number]) => (REVIEW_CHOICES.find((c) => c.id === r.choice)?.page === 'postpone' ? postponeUrl(s.hub, r.id) : approvalUrl(s.hub, r.id)) ?? s.approvalsUrl;
-  return createPortal(
-    <div className="fx-backdrop axp-approvals-mandatory" onKeyDown={(e) => { if (e.key === 'Escape') e.stopPropagation(); }}>
-      <div className="fx-dialog axp-approvals-mandatory__panel" role="alertdialog" aria-modal="true" aria-labelledby="axp-approvals-mandatory-title" tabIndex={-1}>
-        <header className="fx-dialog__head">
-          <Icon name="shield" size={18} />
-          <h2 id="axp-approvals-mandatory-title">Review postponed approvals</h2>
-        </header>
-        <div className="fx-dialog__body fx-stack">
-          <p style={{ margin: 0 }}>
-            {review.rows.length === 1 ? 'This call has' : `These ${review.rows.length} calls have`} been postponed for 2 hours or more. Choose for each one before you go on; the choice runs on axHub's own page.
-          </p>
-          <ul className="axp-approvals-mandatory__list">
-            {review.rows.map((r) => (
-              <li key={r.id} className={`axp-approvals-mandatory__item${shown?.id === r.id ? ' is-active' : ''}`}>
-                <div className="axp-approvals-mandatory__what">
-                  <span className="axp-approvals-banner__tool">{r.tool}</span>
-                  <span className="axp-approvals-banner__cmd">{shortSummary(r)}</span>
-                  <span className="fx-small fx-muted">Postponed {age(r.minutes)}{r.waitingFor ? ` · waiting for ${r.waitingFor}` : ''}</span>
-                </div>
-                <div className="fx-row fx-row--wrap axp-approvals-mandatory__acts">
-                  {REVIEW_CHOICES.map((c: ReviewChoice) => (
-                    <Button key={c.id} tone={r.choice === c.id ? 'primary' : 'neutral'} onClick={() => { pick(r.id, c.id); setOpenId(r.id); }}>{c.label}</Button>
-                  ))}
-                </div>
-                <p className="fx-small" style={{ margin: 0 }} role="status">
-                  {r.choice ? <><Icon name="arrow-right" size={12} /> {REVIEW_CHOICES.find((c) => c.id === r.choice)?.hint} This clears once the hub has it.</> : <span className="fx-muted">Waiting for your choice.</span>}
-                </p>
-              </li>
-            ))}
-          </ul>
-          {shown && (
-            <>
-              <iframe key={`${shown.id}:${shown.choice}`} className="axp-approvals-review__frame" title="Postponed approval on axHub" src={frameUrl(shown)} sandbox="allow-forms allow-same-origin" referrerPolicy="no-referrer" />
-              <p className="fx-small fx-muted" style={{ margin: 0 }}>
-                Blank? <a href={frameUrl(shown)} target="_blank" rel="noopener noreferrer">Open it on the hub <Icon name="external" size={12} /></a>, then come back here.
-              </p>
-            </>
-          )}
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>{review.chosen} of {review.rows.length} chosen · checks the hub every few seconds.</p>
-        </div>
-      </div>
-    </div>,
-    document.body,
-  );
-}
-
 /* ---------------- settings ---------------- */
 
 function AutoOpenSwitch() {
@@ -334,8 +207,6 @@ function StatusPanel() {
     <div className="fx-stack">
       <p style={{ margin: 0 }}>A banner at the top of the console while axHub has calls waiting for your approval (shell commands, deploys and anything else set to confirm). New requests open here by themselves, on the hub's own page; you approve or reject them there.</p>
       <p className="fx-small" style={{ margin: 0 }}><strong>{line[s.status]}</strong>{s.checkedAt ? <span className="fx-muted"> · checked {ago(s.checkedAt)} · every {POLL_MS / 1000} s while the console is open</span> : null}</p>
-      {s.status === 'ok' && <p className="fx-small" style={{ margin: 0 }}>{s.postponedCount ? `${s.postponedCount} postponed${s.reviewItems.length ? `, ${s.reviewItems.length} needing your review` : ''}.` : 'Nothing is postponed.'}</p>}
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>Postponed requests: an alert every 30 minutes while one stays postponed (source <code>approvals</code> in Settings → Alerts decides which reach your phone), and after 2 hours the console asks you to review each one before you go on.</p>
       <AutoOpenSwitch />
       <div className="fx-row fx-row--wrap">
         <Button tone="primary" icon="refresh" onClick={() => void checkNow()}>Check now</Button>
@@ -349,7 +220,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.3.0',
+  version: '0.2.1',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -369,11 +240,7 @@ export const plugin: AxfWebLibrary = {
     // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
     rt.actions.register('approvals.review', ([id]) => { if (id && st.pending.some((x) => x.id === id)) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
-  banners: [
-    { id: 'approvals', order: 5, render: () => <ApprovalsBanner /> },
-    // renders nothing until a postponed request needs a review; then a blocking overlay (portalled to the page body)
-    { id: 'approvals-review', order: 5.1, render: () => <MandatoryReview /> },
-  ],
+  banners: [{ id: 'approvals', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
   },
