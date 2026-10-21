@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.main-build-status",
+  "name": "Main build status",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A dot on the banner, next to the clock, with the last CI result of the main branch of MossesX/AmberX-AXF (workflow “Android framework + console”): green “main ✓ 2m ago”, red “main ✗”, accent while it runs, grey when unknown. Tap it for the run title, commit, time and failed jobs, with a link to the run on GitHub. Repository, branch and workflow are settings (more than one may be watched). Built from the framework's status widget; the console server reads GitHub with its own token, which never reaches the browser.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "asset:status/main-build",
+    "banner:right",
+    "settings-tab:main-build-status"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/main-build-status",
+    "env": [
+      "AXF_MAIN_BUILD_STATUS_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}
