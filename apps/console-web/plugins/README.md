@@ -49,7 +49,7 @@ the console rebuilds with it). From a terminal: `node framework/cli/plugin-catal
 version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
-Page-level slots (React shell): `app.frame.top` renders above everything, `app.frame.cover` after the shell (e.g. the app-tabs plugin's tab bar and app frames). <!-- axf-plugin:app-tabs -->
+Page-level slots (React shell), top to bottom: the banner asset, `app.frame.banners` (every `AxfWebLibrary.banners` entry lands here in the console, so banners sit above the app tabs and stay visible while another app is open), `app.frame.top` (e.g. the app-tabs plugin's tab bar), the layout, then `app.frame.cover` after the shell (the app frames, starting where the tab bar ends: `--axp-app-tabs-bottom`). <!-- axf-plugin:app-tabs -->
 
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 

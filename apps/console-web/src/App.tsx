@@ -1,6 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AccountView, AppShell, AssetStudio, FRAME_BANNERS_SLOT, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -102,16 +102,17 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
-  // Banners plugins contribute (e.g. the systems check and What's new) sit at the top of every view.
+  // Banners plugins contribute (e.g. the systems check and What's new) sit above the app tab group, at the top of the
+  // page (slot app.frame.banners), so they stay in view whichever app tab is open (Brett, Oct 21 2026).
   const banners = plugins.contributed.banners;
-  const withBanner: ViewMap = banners.length
-    ? Object.fromEntries(Object.entries(allViews).map(([id, v]) => [id, { ...v, render: () => <>{banners.map((b) => <Fragment key={b.id}>{b.render()}</Fragment>)}{v.render()}</> }]))
-    : allViews;
+  const slots = useMemo(() => banners.length
+    ? { ...plugins.contributed.slots, [FRAME_BANNERS_SLOT]: [...(plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...banners.map((b) => ({ id: b.id, order: b.order, render: () => b.render() }))] }
+    : plugins.contributed.slots, [banners, plugins.contributed.slots]);
   return (
     <div {...drop} style={{ display: 'contents' }}>
-      <SlotsProvider slots={plugins.contributed.slots}>
+      <SlotsProvider slots={slots}>
       <AppShell
-        views={withBanner}
+        views={allViews}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />

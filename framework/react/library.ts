@@ -47,7 +47,7 @@ export interface AxfWebLibrary {
   appMenu?: Omit<AppMenuContribution, 'module'>[];
   /** Live lists for the application menu (`rt.registerAppMenuProvider`), keyed by provider id; removed with the library. */
   appMenuProviders?: Record<string, AppMenuProvider | AppMenuProvider['items']>;
-  /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
+  /** Banners the app shows at the top of the page, above app tabs (slot `app.frame.banners`; e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
   slots?: Record<string, SlotDef[]>;

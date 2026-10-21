@@ -1,14 +1,14 @@
 /**
  * App tabs console plugin (ai.amberx.axf.console.app-tabs).
  *
- * A tab group across the whole page (framework slot `app.frame.top`, above the banner): one tab per AmberX app picked
+ * A tab group across the whole page (framework slot `app.frame.top`, below the banners): one tab per AmberX app picked
  * in Settings → Plugins → App tabs, Console, Pilot and axHub by default. The console's own tab shows the console; any other
  * tab covers the page below the tab bar (slot `app.frame.cover`) with that app in a frame. A frame stays loaded once
  * opened, so switching back and forth keeps its state. Apps: built-in list + project manifests with a deploy.url +
  * ones added in settings (https only). Choices are settings (`app-tabs.tabs`, `app-tabs.custom`, `app-tabs.active`),
  * so they follow the UI-editor rule (fresh on focus, last save wins). No server part.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
@@ -84,11 +84,38 @@ function useAppTabs() {
 
 /* ---------------- the tab bar (app.frame.top) ---------------- */
 
+/**
+ * Banners sit above the tab bar and come and go, so the cover can't start at a fixed height: publish where the bar
+ * ends as `--axp-app-tabs-bottom` on the page frame (the cover is inside it). Follows the bar and everything above it.
+ */
+function useBarBottom(shown: boolean) {
+  const ref = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const bar = ref.current;
+    const frame = bar?.parentElement;
+    if (!bar || !frame) return;
+    const set = () => frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom))}px`);
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(set) : null;
+    const watchAbove = () => {
+      ro?.disconnect();
+      for (let el: Element | null = bar; el; el = el.previousElementSibling) ro?.observe(el);
+      set();
+    };
+    const mo = typeof MutationObserver === 'function' ? new MutationObserver(watchAbove) : null;
+    mo?.observe(frame, { childList: true });
+    watchAbove();
+    globalThis.addEventListener?.('resize', set);
+    return () => { ro?.disconnect(); mo?.disconnect(); globalThis.removeEventListener?.('resize', set); frame.style.removeProperty('--axp-app-tabs-bottom'); };
+  }, [shown]);
+  return ref;
+}
+
 function TabBar() {
   const t = useAppTabs();
+  const ref = useBarBottom(t.tabs.length > 0);
   if (t.tabs.length < 1) return null;
   return (
-    <nav className="axp-app-tabs" aria-label="Apps" data-fx-ctx-ignore="">
+    <nav ref={ref} className="axp-app-tabs" aria-label="Apps" data-fx-ctx-ignore="">
       <div className="axp-app-tabs__list" role="tablist">
         {t.tabs.map((a) => {
           const on = a === t.active;

@@ -19,7 +19,7 @@ export { builtinDialogs } from './studio/builtinDialogs';
 export { FloatingWindowsHost, DockArea, PaneView, TabGroupView, WindowToolbar, TabRenderersProvider, useWindowManager, useWindowState, useWindowSpec, windowDialogs, type TabRenderer, type TabRenderers } from './windows/WindowHost';
 export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
-export { Slot, SlotsProvider, useSlotFilled } from './components/Slots';
+export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';

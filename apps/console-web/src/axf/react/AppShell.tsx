@@ -9,7 +9,7 @@ import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShor
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
-import { Slot } from './components/Slots';
+import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
 
 export interface ViewDef {
@@ -62,11 +62,14 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
     <div className="fx-frame">
-    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits above everything (e.g. app tabs);
+    {/* Banners sit above everything, so they stay visible whatever app.frame.top / app.frame.cover show (Brett, Oct 21 2026):
+        the banner asset (thin permanent bar; hidden slot or no banner asset = nothing), then the app.frame.banners slot
+        (banners libraries contribute, stacked; scrolls inside itself when tall). */}
+    <Banner />
+    <FrameBanners />
+    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits below the banners (e.g. app tabs);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
     <Slot name="app.frame.top" />
-    {/* Banner asset: thin permanent bar above the layout (hidden slot or no banner asset = nothing) */}
-    <Banner />
     <div className="fx-shell">
       {showMenubar && (
         <div className="fx-region" style={{ gridArea: 'menubar' }}>
