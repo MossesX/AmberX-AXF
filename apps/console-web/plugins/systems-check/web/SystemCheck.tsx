@@ -237,8 +237,6 @@ export function SystemBanner() {
         <Icon name="alert" />
         <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
-          {list.some((c) => !isAiCheck(c)) && <SourceBadge ai={false} title={`${list.filter((c) => !isAiCheck(c)).length} found without AI (codebase and settings)`} />}
-          {list.some(isAiCheck) && <SourceBadge ai title={`${list.filter(isAiCheck).length} found by checks Mosses wrote (AI)`} />}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
