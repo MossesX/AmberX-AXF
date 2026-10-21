@@ -14,9 +14,9 @@ export interface SessionRecord {
 export interface SessionSummary { id: string; source: string; project: string; title: string; startedAt: string; endedAt: string; minutes: number; system: SessionSystem; user: string; models: string[]; totals: SessionTotals; changeIds: string[]; features: string[]; files: number; firstPrompt: string; costSource: string; subagents: number }
 export interface Group { sessions: number; prompts: number; costUsd: number }
 export interface Aggregate { totals: { sessions: number; prompts: number; costUsd: number; estimatedUsd: number; input: number; output: number }; groups: Record<'project' | 'source' | 'surface' | 'app' | 'model' | 'day', Record<string, Group>> }
-export interface CostBuild { build: string; title: string; changes: string[]; sessions: string[]; prompts: number; costUsd: number; costEstimatedUsd: number; estimateUsd: number | null; overUsd: number | null }
-export interface CostChange { change: string; title: string; build: string; sessions: string[]; prompts: number; costUsd: number; costEstimatedUsd: number; estimateUsd: number | null; estimateMinutes: number | null; tokens: Omit<Tokens, 'thinking'>; first: string; last: string }
-export interface CostRecordResult { builds: CostBuild[]; changes: CostChange[]; totals: { sessions: number; costUsd: number; estimatedUsd: number; linkedUsd: number } }
+export interface CostBuild { build: string; title: string; changes: string[]; sessions: string[]; prompts: number; costUsd: number; costEstimatedUsd: number; estimateUsd: number | null; overUsd: number | null; fromLog: number }
+export interface CostChange { change: string; title: string; build: string; sessions: string[]; prompts: number; costUsd: number; costEstimatedUsd: number; estimateUsd: number | null; estimateMinutes: number | null; tokens: Omit<Tokens, 'thinking'>; first: string; last: string; source: 'sessions' | 'build-log' }
+export interface CostRecordResult { builds: CostBuild[]; changes: CostChange[]; totals: { sessions: number; fromLogUsd: number; costUsd: number; estimatedUsd: number; linkedUsd: number } }
 export const SOURCES: string[];
 export const LIMITS: Record<string, number>;
 export const CHAT_HEURISTIC: { charsPerToken: number; overheadTokens: number; model: string };

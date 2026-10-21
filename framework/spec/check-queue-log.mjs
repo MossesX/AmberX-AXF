@@ -96,6 +96,8 @@ const thing = cr.builds.find((b) => b.build === 'other:thing');
 check(thing && thing.prompts === 2 && thing.costUsd === sa.totalsOf(rec).costUsd, 'a later prompt without its own entry carries to the last one named');
 check(thing.overUsd > 0, 'cost against the estimate');
 check(cr.builds.some((b) => b.build === '(not linked)'), 'unlinked prompts are a bucket of their own');
+const cr2 = sa.costRecord([], { 'chg-20261001-dddddddddd': { title: 'Old', buildRef: { kind: 'pending', id: 'old' }, estimate: { costUsd: 12 } } });
+check(cr2.builds[0].build === 'pending:old' && cr2.builds[0].costUsd === 12 && cr2.changes[0].source === 'build-log' && cr2.totals.fromLogUsd === 12, 'build-log entries without sessions count with their estimate');
 const sums = sa.aggregate([sa.summary(rec), sa.summary(chat)]);
 check(sums.totals.sessions === 2 && sums.groups.project.axhub.sessions === 1 && sums.totals.estimatedUsd === chat.totals.costUsd, 'aggregate by project, estimated part');
 check(sa.filterSessions([sa.summary(rec), sa.summary(chat)], { q: 'moshi' }).length === 1, 'search covers how it was reached');

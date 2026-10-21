@@ -104,7 +104,7 @@ function CostsView({ project, onChange }: { project: string; onChange: (id: stri
   if (!c) return <div className="fx-empty">Working out the costs…</div>;
   return (
     <section aria-label="Cost record">
-      <p className="fx-small fx-muted">Each prompt's cost goes to the build entries it worked on (else the last one its session named), and each entry's to its build. {money(c.totals.linkedUsd)} of {money(c.totals.costUsd)} is linked to a build{c.totals.estimatedUsd ? `; ${money(c.totals.estimatedUsd)} is estimated from chat text` : ''}.</p>
+      <p className="fx-small fx-muted">Each prompt's cost goes to the build entries it worked on (else the last one its session named), and each entry's to its build. {money(c.totals.linkedUsd)} of {money(c.totals.costUsd)} is linked to a build{c.totals.fromLogUsd ? ` (${money(c.totals.fromLogUsd)} from build-log entries no archived session covers)` : ''}{c.totals.estimatedUsd ? `; ${money(c.totals.estimatedUsd)} is estimated from chat text` : ''}.</p>
       <ul className="axp-build-manager__list">
         {c.builds.map((b) => (
           <li key={b.build} className="axp-build-manager__row">
@@ -115,6 +115,7 @@ function CostsView({ project, onChange }: { project: string; onChange: (id: stri
                 {b.estimateUsd != null && <Badge tone={b.overUsd != null && b.overUsd > 0 ? 'warn' : 'ok'} title="Against the estimate on its build entries">est {money(b.estimateUsd)} ({b.overUsd != null && b.overUsd > 0 ? '+' : ''}{money(b.overUsd)})</Badge>}
                 <Badge tone="muted">{b.prompts} prompts · {b.sessions.length} sessions</Badge>
                 {b.build !== '(not linked)' && <Badge tone="muted">{b.build}</Badge>}
+                {b.fromLog > 0 && <Badge tone="muted" title="No archived session worked on it: the build log's own actual cost, else its estimate">from the build log</Badge>}
               </span>
             </button>
             {open === b.build && (

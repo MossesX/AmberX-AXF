@@ -273,7 +273,8 @@ export function attachFeatures(rec, catalog, changeRefs) {
  * What every build cost, from the sessions: each prompt's cost goes to the change entries it names (else the last one
  * the session named before it, else "not linked"), and a change entry's cost goes to its build (buildRef).
  * `changes`: change id → {title, buildRef?: {kind,id}, estimate?: {costUsd, minutes}}.
- * Returns {builds: [...], changes: [...], unlinked: {...}, totals}.
+ * Entries no archived session worked on count with their own actual cost, else their estimate (source 'build-log').
+ * Returns {builds: [...], changes: [...], totals}.
  */
 export function costRecord(sessions, changes = {}) {
   const byChange = new Map();
@@ -294,23 +295,31 @@ export function costRecord(sessions, changes = {}) {
       for (const id of to) add(id, s, p, 1 / to.length);
     }
   }
+  // build-log entries no archived session worked on still count: their own actual cost, else their estimate
+  for (const [id, c] of Object.entries(changes ?? {})) {
+    if (byChange.has(id) || !c) continue;
+    const v = c.actual?.costUsd ?? c.estimate?.costUsd;
+    if (v == null) continue;
+    byChange.set(id, { change: id, sessions: new Set(), prompts: 0, costUsd: v, estimatedPart: c.actual?.costUsd == null ? v : 0, tokens: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, first: '', last: '', fromLog: true });
+  }
   const changeRows = [...byChange.values()].map((r) => {
     const c = changes[r.change] ?? {};
     const ref = c.buildRef ? `${c.buildRef.kind}:${c.buildRef.id}` : '';
     return { change: r.change, title: str(c.title) || (r.change === '(not linked)' ? 'Prompts not linked to a build' : r.change), build: ref, sessions: [...r.sessions], prompts: Math.round(r.prompts * 100) / 100,
-      costUsd: r4(r.costUsd), costEstimatedUsd: r4(r.estimatedPart), estimateUsd: c.estimate?.costUsd ?? null, estimateMinutes: c.estimate?.minutes ?? null, tokens: r.tokens, first: r.first, last: r.last };
+      costUsd: r4(r.costUsd), costEstimatedUsd: r4(r.estimatedPart), estimateUsd: c.estimate?.costUsd ?? null, estimateMinutes: c.estimate?.minutes ?? null, tokens: r.tokens, first: r.first, last: r.last, source: r.fromLog ? 'build-log' : 'sessions' };
   }).sort((a, b) => b.costUsd - a.costUsd);
   const builds = new Map();
   for (const r of changeRows) {
     const key = r.build || (r.change === '(not linked)' ? '(not linked)' : `change:${r.change}`);
-    const b = builds.get(key) ?? { build: key, title: r.build ? '' : r.title, changes: [], sessions: new Set(), prompts: 0, costUsd: 0, costEstimatedUsd: 0, estimateUsd: 0, hasEstimate: false };
+    const b = builds.get(key) ?? { build: key, title: r.build ? '' : r.title, changes: [], sessions: new Set(), prompts: 0, costUsd: 0, costEstimatedUsd: 0, estimateUsd: 0, hasEstimate: false, fromLog: 0 };
+    if (r.source === 'build-log') b.fromLog++;
     b.changes.push(r.change); r.sessions.forEach((x) => b.sessions.add(x)); b.prompts += r.prompts; b.costUsd += r.costUsd; b.costEstimatedUsd += r.costEstimatedUsd;
     if (r.estimateUsd != null) { b.estimateUsd += r.estimateUsd; b.hasEstimate = true; }
     if (!b.title) b.title = r.title;
     builds.set(key, b);
   }
   const buildRows = [...builds.values()].map((b) => ({ ...b, sessions: [...b.sessions], prompts: Math.round(b.prompts * 100) / 100, costUsd: r4(b.costUsd), costEstimatedUsd: r4(b.costEstimatedUsd), estimateUsd: b.hasEstimate ? r4(b.estimateUsd) : null, overUsd: b.hasEstimate ? r4(b.costUsd - b.estimateUsd) : null })).sort((a, b) => b.costUsd - a.costUsd);
-  const totals = { sessions: (sessions ?? []).length, costUsd: r4(buildRows.reduce((a, b) => a + b.costUsd, 0)), estimatedUsd: r4(buildRows.reduce((a, b) => a + b.costEstimatedUsd, 0)), linkedUsd: r4(buildRows.filter((b) => b.build !== '(not linked)').reduce((a, b) => a + b.costUsd, 0)) };
+  const totals = { sessions: (sessions ?? []).length, fromLogUsd: r4(changeRows.filter((r) => r.source === 'build-log').reduce((a, r) => a + r.costUsd, 0)), costUsd: r4(buildRows.reduce((a, b) => a + b.costUsd, 0)), estimatedUsd: r4(buildRows.reduce((a, b) => a + b.costEstimatedUsd, 0)), linkedUsd: r4(buildRows.filter((b) => b.build !== '(not linked)').reduce((a, b) => a + b.costUsd, 0)) };
   return { builds: buildRows, changes: changeRows, totals };
 }
 
