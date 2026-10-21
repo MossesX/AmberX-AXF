@@ -25,6 +25,7 @@ import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -754,5 +755,160 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
     unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
     seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
+  });
+}
+
+// Work engine (work@1, core/engines/work.ts): job kinds, spec validation, interval clamping, conditions, delay rules and
+// the job state machine replayed over scenarios (the AXHub approval watcher is the first). Kotlin: WorkConformanceTest.
+{
+  const approvals = {
+    id: 'axhub.approvals', kind: 'poll', label: 'Watch axHub approvals', module: 'ai.amberx.axf.axhubandroid',
+    interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 300_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' }, endsSpell: true },
+      'signed-out': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      'not-admin': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      unreachable: { delay: { kind: 'interval' } },
+    },
+    conditions: [{ flag: 'watching' }],
+    foreground: true, restartOnBoot: true,
+  };
+  const backoff = {
+    id: 'demo.backoff', kind: 'poll',
+    interval: { defaultMs: 10_000, minMs: 1_000, maxMs: 60_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' } },
+      error: { delay: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } },
+      fatal: { delay: { kind: 'interval' }, stop: true },
+      '*': { delay: { kind: 'fixed', ms: 5_000 }, notice: 'odd' },
+    },
+    conditions: [],
+    foreground: false, restartOnBoot: false,
+  };
+  const okSpec = (raw: unknown) => { const r = validateJobSpec(raw); if (!r.ok || !r.spec) throw new Error(`fixture spec invalid: ${r.errors.join('; ')}`); return r.spec; };
+  const A = okSpec(approvals);
+  const D = okSpec(backoff);
+  const invalid: [string, unknown][] = [
+    ['not-object', 'poll'],
+    ['bad-id', { ...approvals, id: 'Axhub Approvals' }],
+    ['unknown-kind', { ...approvals, kind: 'cron' }],
+    ['placeholder-kind', { ...approvals, kind: 'alarm' }],
+    ['no-interval', { ...approvals, interval: undefined }],
+    ['interval-min-zero', { ...approvals, interval: { defaultMs: 30_000, minMs: 0, maxMs: 300_000 } }],
+    ['interval-max-below-min', { ...approvals, interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 10_000 } }],
+    ['interval-default-outside', { ...approvals, interval: { defaultMs: 5_000, minMs: 15_000, maxMs: 300_000 } }],
+    ['outcomes-missing', { ...approvals, outcomes: undefined }],
+    ['delay-unknown', { ...approvals, outcomes: { ok: { delay: { kind: 'random' } } } }],
+    ['fixed-no-ms', { ...approvals, outcomes: { ok: { delay: { kind: 'fixed' } } } }],
+    ['exponential-max-below-base', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 5_000, maxMs: 1_000 } } } }],
+    ['exponential-factor-below-one', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 1_000, maxMs: 5_000, factor: 0.5 } } } }],
+    ['notice-empty', { ...approvals, outcomes: { ok: { delay: { kind: 'interval' }, notice: '' } } }],
+    ['condition-no-flag', { ...approvals, conditions: [{ equals: true }] }],
+    ['condition-unknown-kind', { ...approvals, conditions: [{ kind: 'battery', flag: 'charging' }] }],
+    ['foreground-not-boolean', { ...approvals, foreground: 'yes' }],
+    ['minimal-ok', { id: 'x', kind: 'poll', interval: { defaultMs: 1, minMs: 1, maxMs: 1 }, outcomes: {} }],
+    ['equals-false-ok', { ...approvals, conditions: [{ flag: 'paused', equals: false }] }],
+  ];
+  const clamp = [-1, 0, 14_999, 15_000, 30_000, 299_999, 300_000, 300_001, 12.7, Number.NaN, 'abc', null];
+  const flagsCases: Record<string, boolean>[] = [{}, { watching: true }, { watching: false }, { watching: true, other: false }];
+  const delays: { rule: DelayRule; intervalMs: number; streak: number }[] = [
+    { rule: { kind: 'interval' }, intervalMs: 30_000, streak: 3 },
+    { rule: { kind: 'fixed', ms: 300_000 }, intervalMs: 30_000, streak: 1 },
+    ...[0, 1, 2, 3, 4, 5, 9].map((streak) => ({ rule: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } as DelayRule, intervalMs: 10_000, streak })),
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 3, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 1, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+  ];
+  type Ev = { event: JobEvent; flags?: Record<string, boolean> };
+  const on = { watching: true };
+  const off = { watching: false };
+  const scenarios: { name: string; spec: JobSpec; intervalMs?: number; events: Ev[] }[] = [
+    { name: 'approvals: ok, signed out once, not-admin keeps quiet, back to ok, check now, stop', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'not-admin' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'check-now' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'stop' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+    ] },
+    { name: 'approvals: watching off blocks start, turned off while sleeping, off at wake', spec: A, events: [
+      { event: { type: 'start' }, flags: off },
+      { event: { type: 'start' }, flags: {} },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: off },
+      { event: { type: 'check-now' }, flags: off },
+    ] },
+    { name: 'approvals: start while running is a no-op, start with checkNow restarts, interval changes clamp and apply at the next sleep', spec: A, intervalMs: 60_000, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start', checkNow: true }, flags: on },
+      { event: { type: 'interval', ms: 5_000 }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'interval', ms: 900_000 }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'flags' }, flags: on },
+    ] },
+    { name: 'approvals: host refused the foreground start; boot restart only when watching', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'host-refused' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+    ] },
+    { name: 'backoff: exponential streak resets on another outcome, fallback rule with a notice, stop outcome', spec: D, events: [
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'ok' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'fatal' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+    ] },
+  ];
+  write('work.json', {
+    contract: WORK_CONTRACT,
+    pollCapability: WORK_POLL_CAPABILITY,
+    kinds: workKinds(),
+    placeholders: WORK_PLACEHOLDERS,
+    delayKinds: DELAY_KINDS,
+    conditionKinds: CONDITION_KINDS,
+    phases: JOB_PHASES,
+    eventTypes: JOB_EVENT_TYPES,
+    effects: JOB_EFFECTS,
+    stopReasons: STOP_REASONS,
+    fallbackOutcome: FALLBACK_OUTCOME,
+    defaultBackoffFactor: DEFAULT_BACKOFF_FACTOR,
+    specs: { approvals: A, backoff: D },
+    validate: invalid.map(([name, raw]) => ({ name, raw: raw === undefined ? null : raw, result: validateJobSpec(raw) })),
+    clamp: clamp.map((ms) => ({ ms: typeof ms === 'number' && Number.isNaN(ms) ? 'NaN' : ms, clamped: clampInterval(A.interval, ms) })),
+    conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
+    delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
+    scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
   });
 }

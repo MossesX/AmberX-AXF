@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T04:48:33.633Z",
+  "generatedAt": "2026-10-21T10:28:02.803Z",
   "summary": {
     "foundations": {
       "built": 66,
@@ -12,11 +12,11 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 79,
-      "partial": 6,
-      "placeholder": 95,
+      "built": 80,
+      "partial": 8,
+      "placeholder": 93,
       "planned": 0,
-      "total": 180,
+      "total": 181,
       "coverage": 44
     },
     "console": {
@@ -1085,10 +1085,10 @@
       "group": "kernel-architecture-extension-safety",
       "title": "Task scheduler (debounce, throttle, retry/backoff, queues, priorities)",
       "tag": "core",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
       "module": "axf-kernel",
-      "notes": ""
+      "notes": "Oct 21 2026 (Fable, harvest work-watcher): work@1 engine (poll jobs: interval bounds, per-outcome back-off fixed/exponential/interval, one-time notices, run conditions, state machine) in core/engines/work.ts = kernel work/WorkEngine; debounce/throttle/queues/priorities not yet"
     },
     {
       "id": "k.undo",
@@ -2294,6 +2294,41 @@
       "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)"
     },
     {
+      "id": "lib.work",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Work library: poll jobs (work@1) hosted by a foreground service (specialUse) with STOP / CHECK_NOW / INTERVAL commands, quiet stop when Android refuses a background start, START_STICKY, boot + update restart, running-state flows, ongoing notification through lib-notifications; the job's decisions (interval bounds, per-outcome back-off, one-time notices, run conditions) are data run by the kernel's WorkEngine state machine; fills the platform's android.work placeholder",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-work",
+      "notes": "Oct 21 2026 harvest from AXHub ApprovalWatchService (Fable); fills android.work; engine fixture work.json replayed on web (check-work.mts) and Kotlin (WorkConformanceTest, local kotlinc); the Android host written without a compiler (CI compiles)"
+    },
+    {
+      "id": "lib.work.manager",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.work",
+      "title": "The kernel's WorkScheduler (axf.work) on WorkManager: constrained periodic work, 15 min minimum (placeholder axf.work.manager)",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 3,
+      "module": "lib-work",
+      "notes": "Capability placeholder axf.work.manager (the kernel's axf.work WorkScheduler contract on WorkManager)"
+    },
+    {
+      "id": "lib.work.alarm",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.work",
+      "title": "Wall-clock alarms (placeholder axf.work.alarm)",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 3,
+      "module": "lib-work",
+      "notes": "Capability placeholder axf.work.alarm"
+    },
+    {
       "id": "ui.explorer",
       "tab": "kernel",
       "group": "ui-library-every-customization-token",
@@ -2629,10 +2664,10 @@
       "group": "device-platform-capabilities",
       "title": "Background work (WorkManager), alarms, foreground services",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
-      "module": "axf-platform-android",
-      "notes": ""
+      "module": "lib-work",
+      "notes": "Oct 21 2026: foreground poll service + boot restart (lib-work); WorkManager + alarms are placeholders (axf.work.manager, axf.work.alarm)"
     },
     {
       "id": "dv.loc",

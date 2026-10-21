@@ -423,9 +423,10 @@
     "module": "axf-platform-android"
   },
   "k.scheduler": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-kernel"
+    "module": "axf-kernel",
+    "notes": "Oct 21 2026 (Fable, harvest work-watcher): work@1 engine (poll jobs: interval bounds, per-outcome back-off fixed/exponential/interval, one-time notices, run conditions, state machine) in core/engines/work.ts = kernel work/WorkEngine; debounce/throttle/queues/priorities not yet"
   },
   "k.undo": {
     "status": "placeholder",
@@ -1035,9 +1036,10 @@
     "module": "axf-platform-android"
   },
   "dv.bg": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": "axf-platform-android"
+    "module": "lib-work",
+    "notes": "Oct 21 2026: foreground poll service + boot restart (lib-work); WorkManager + alarms are placeholders (axf.work.manager, axf.work.alarm)"
   },
   "dv.loc": {
     "status": "placeholder",
@@ -2149,5 +2151,23 @@
     "wave": 2,
     "module": "lib-notifications",
     "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)"
+  },
+  "lib.work": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-work",
+    "notes": "Oct 21 2026 harvest from AXHub ApprovalWatchService (Fable); fills android.work; engine fixture work.json replayed on web (check-work.mts) and Kotlin (WorkConformanceTest, local kotlinc); the Android host written without a compiler (CI compiles)"
+  },
+  "lib.work.manager": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.manager (the kernel's axf.work WorkScheduler contract on WorkManager)"
+  },
+  "lib.work.alarm": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-work",
+    "notes": "Capability placeholder axf.work.alarm"
   }
 }

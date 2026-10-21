@@ -2,7 +2,7 @@ package ai.amberx.axf.axhubandroid
 
 import android.content.Context
 import ai.amberx.axf.axhubandroid.views.hubAreas
-import ai.amberx.axf.axhubandroid.watch.ApprovalWatchService
+import ai.amberx.axf.axhubandroid.watch.ApprovalWatch
 import ai.amberx.axf.axhubandroid.watch.hubPrefs
 import ai.amberx.axf.hub.HubClient
 import ai.amberx.axf.hub.HubRules
@@ -72,8 +72,8 @@ class AppLockGate {
 
 /**
  * AXHub's own module: approvals (home), the hub's pages in the app, the AXHub settings group, and the
- * planned hub areas as routes. The watcher's settings are mirrored into [WatchPrefs] so the service and
- * the boot receiver can read them without the kernel.
+ * planned hub areas as routes. The watcher's settings are mirrored into [WatchPrefs] so the framework's work
+ * service and boot receiver can read them without the kernel.
  */
 class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhubandroid", "AXHub") {
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.lock")
@@ -124,9 +124,9 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             K_BASE -> {
                 val ok = HubRules.normalize(v)
                 if (ok == null) { if (v != null && runtime != null) runtime.toast("Hub address must be https with no path; kept ${prefs.base}.", ToastKind.WARNING, "AXHub") }
-                else if (ok != prefs.base) { prefs.base = ok; gate.base = ok; if (prefs.watching) ApprovalWatchService.start(context, checkNow = true) }
+                else if (ok != prefs.base) { prefs.base = ok; gate.base = ok; if (prefs.watching) ApprovalWatch.start(context, checkNow = true) }
             }
-            K_INTERVAL -> v?.toIntOrNull()?.let { prefs.intervalSec = it }
+            K_INTERVAL -> v?.toIntOrNull()?.let { prefs.intervalSec = it; ApprovalWatch.setInterval(context, prefs.intervalSec) }
             K_FULL -> v?.toBooleanStrictOrNull()?.let { prefs.fullScreen = it }
         }
     }

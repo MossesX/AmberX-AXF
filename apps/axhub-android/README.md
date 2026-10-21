@@ -22,7 +22,8 @@ Phone app for Brett's axHub, built on **AmberX AXF 0.2.0** (`android-compose` te
 - **lib-hub** (framework/android/lib-hub, harvested from this app Oct 20 2026): hub address rules, the approvals feed + status mapping, sign-out on the hub, watch settings + seen ids (`WatchPrefs`, kept in this app's original `axhub_watch` preferences file), `HubState`, the origin-locked web view and the Apps tab's downloads.
 - **lib-notifications** (framework/android/lib-notifications, harvested from this app): channels, permission checks, the ongoing "watching" notification, the private-lock-screen approval alert.
 - **lib-lock**: the app lock.
-- What stays in the app: `ApprovalWatchService` (the polling loop as a foreground service + boot restart), until the framework's work scheduler (`x.work`) can run it.
+- **lib-work** (framework/android/lib-work, harvested from this app's `ApprovalWatchService` + `WatchBootReceiver` Oct 21 2026): the foreground service, STOP / CHECK_NOW / INTERVAL commands, 5-minute back-off while signed out, the one-time sign-in notice, stop when watching is off and the boot/update restart. The app only registers `watch/ApprovalWatch.kt`: a job spec (data, the same one the framework fixture `spec/fixtures/work.json` replays) and a body that checks the feed once through lib-hub and alerts through lib-notifications.
+- What stays in the app: `Alerts.kt` (its channel ids, wording, intents) and `ApprovalWatch.kt` (the job spec + one check).
 
 ## Planned (routes and placeholders already in place)
 

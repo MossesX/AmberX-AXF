@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import ai.amberx.axf.axhubandroid.watch.Alerts
-import ai.amberx.axf.axhubandroid.watch.ApprovalWatchService
+import ai.amberx.axf.axhubandroid.watch.ApprovalWatch
 import ai.amberx.axf.axhubandroid.watch.hubPrefs
 import ai.amberx.axf.hub.HubClient
 import ai.amberx.axf.hub.HubFeedStatus
@@ -104,9 +104,9 @@ private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
     val canFull = remember(tick) { Alerts.canFullScreen(ctx) }
     LifecycleResumeEffect(Unit) { tick++; onPauseOrDispose { } }
     val feed by HubState.feed.collectAsState()
-    LaunchedEffect(Unit) { if (prefs.watching && !running) ApprovalWatchService.start(ctx) }
+    LaunchedEffect(Unit) { if (prefs.watching && !running) ApprovalWatch.start(ctx) }
     // First successful sign-in turns watching on, unless the user already chose.
-    LaunchedEffect(feed) { if (feed?.status == HubFeedStatus.OK && !prefs.watchingChosen) { prefs.watching = true; ApprovalWatchService.start(ctx); tick++ } }
+    LaunchedEffect(feed) { if (feed?.status == HubFeedStatus.OK && !prefs.watchingChosen) { prefs.watching = true; ApprovalWatch.start(ctx); tick++ } }
 
     AxfCard(Modifier.fillMaxWidth(), title = if (running) "Watching for approvals" else "Not watching", icon = "bell") {
         AxfText(if (running) "AXHub checks the hub every ${prefs.intervalSec} s and alerts you the moment something needs approval." else "Turn watching on to get an alert for every new approval.", muted = true)
@@ -124,9 +124,9 @@ private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
         }
         Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             if (running) {
-                AxfButton("Check now", { ApprovalWatchService.start(ctx, checkNow = true) }, icon = "refresh")
-                AxfButton("Stop watching", { prefs.watching = false; ApprovalWatchService.stop(ctx); tick++ }, tone = ButtonTone.GHOST, icon = "pause")
-            } else AxfButton("Start watching", { prefs.watching = true; ApprovalWatchService.start(ctx); tick++ }, tone = ButtonTone.PRIMARY, icon = "play")
+                AxfButton("Check now", { ApprovalWatch.start(ctx, checkNow = true) }, icon = "refresh")
+                AxfButton("Stop watching", { prefs.watching = false; ApprovalWatch.stop(ctx); tick++ }, tone = ButtonTone.GHOST, icon = "pause")
+            } else AxfButton("Start watching", { prefs.watching = true; ApprovalWatch.start(ctx); tick++ }, tone = ButtonTone.PRIMARY, icon = "play")
         }
     }
 }
