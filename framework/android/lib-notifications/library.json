@@ -1,0 +1,25 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.notifications",
+  "module": "lib-notifications",
+  "name": "Notifications (channels, private lock-screen alerts)",
+  "description": "Android notifications with the privacy rules built in: channels (importance, lock-screen visibility, vibration, badge), canPost (POST_NOTIFICATIONS on Android 13+; every post checks it), canFullScreen (Android 14+ per-app opt-in), the quiet ongoing \"watching\" notification for a foreground service, high-priority alerts that are VISIBILITY_PRIVATE with a public version (the lock screen shows only e.g. \"Approval waiting\"), full screen only when asked and allowed, quiet notices, post/cancel by tag or id. Never shows the app over the lock screen. Hook for alert@1 deliveries (AlertNotifications.plan / AxfNotifications.deliverAlert, channel \"device\"). Fills the platform's android.notifications placeholder.",
+  "features": ["dv.notif", "lib.notifications"],
+  "dependsOn": [],
+  "manifestKey": "libraries.notifications",
+  "params": [],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-notifications:$axf\")",
+    "module": "NotificationsModule(this)",
+    "import": "ai.amberx.axf.notifications.NotificationsModule",
+    "routes": []
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-notifications", "note": "written without a compiler; CI compiles and runs :lib-notifications:testDebugUnitTest" }
+  },
+  "placeholders": [
+    { "capability": "axf.notifications.alerts", "note": "alert@1 deliveries posted as device notifications; the hook exists (AxfNotifications.deliverAlert), nothing subscribes AlertCenter yet." },
+    { "capability": "axf.notifications.push", "note": "FCM / UnifiedPush / hub push." },
+    { "capability": "axf.notifications.schedule", "note": "Scheduled notifications (with the work scheduler, x.work)." }
+  ]
+}

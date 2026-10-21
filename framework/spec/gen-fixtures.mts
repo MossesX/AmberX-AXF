@@ -24,6 +24,7 @@ import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPEND
 import { ASSET_TYPES } from '../core/types';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
+import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -670,5 +671,88 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
     enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
     graph: pluginGraph(inventory.items, ctx.live),
+  });
+}
+
+/* lib-hub first slice (libs/hub/hub.ts = Kotlin lib-hub HubRules): address rules, URLs, the approvals feed, seen ids. */
+{
+  const B = HUB_DEFAULT;
+  const ID1 = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';
+  const ID2 = '0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b';
+  const ID3 = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d';
+  const normalize = [
+    ' https://AXHUB.amberxai.com/ ', '\t https://axhub.amberxai.com \n', '\u00a0https://axhub.amberxai.com', 'https://axhub.amberxai.com', 'https://axhub.amberxai.com///', 'https://axhub.amberxai.com:443', 'https://hub.example.test:8443',
+    'HTTPS://Hub.Example.Test', 'http://axhub.amberxai.com', 'https://axhub.amberxai.com/evil', 'https://user@axhub.amberxai.com', 'https://user:pw@axhub.amberxai.com',
+    'https://axhub.amberxai.com?x=1', 'https://axhub.amberxai.com#frag', 'https://axhub.amberxai.com\\evil', 'https://', 'https://:443', 'https://axhub.amberxai.com:0',
+    'https://axhub.amberxai.com:65536', 'https://axhub.amberxai.com:44a', 'https://[::1]', 'https://exa mple.com', 'https://bücher.example', 'https://a..b', 'https://.a.b', 'not a url', '', 'ftp://axhub.amberxai.com', 'hTTps://axhub.amberxai.com', 'https\u212a://x', 'https://axhub.amberxai.com\u212a',
+  ];
+  const isHubCases = [
+    `${B}/auth/login`, `${B}`, `${B}/`, `${B}?x=1`, `${B}#a`, 'https://AXHUB.AMBERXAI.COM/auth', 'https://axhub.amberxai.com:443/auth/admin/approvals',
+    'https://axhub.amberxai.com.evil.example/auth', 'https://evil.example/https://axhub.amberxai.com', 'http://axhub.amberxai.com/auth', 'https://axhub.amberxai.com:8443/auth',
+    'https://user@axhub.amberxai.com/auth', 'https://axhub.amberxai.com@evil.example/', 'https://evil.example\\@axhub.amberxai.com', '//axhub.amberxai.com/auth', '/auth/login', 'javascript:alert(1)', '',
+  ];
+  const ids = [ID1, ID1.toUpperCase(), '../../auth/logout', `${ID1}/x`, 'dfe44a5d15ab47bf81289843d37cd6ec', '', 'x'.repeat(36)];
+  const returnPaths = ['/auth/admin/approvals', '/apps', '/auth/admin/approvals/' + ID1, '//evil.example', 'https://evil.example', '/a/../../x', '/a b', ''];
+  const apk = [
+    `${B}/apps/download/voice-vault/voice-vault-0.1.0-b12.apk`, `${B}/apps/download/voice-vault/voice-vault.apk?x=1`, `${B}/apps/download/voice-vault/voice-vault.apk#a`,
+    `${B}/apps/download/Voice/voice.apk`, `${B}/apps/download/voice-vault/../evil.apk`, `${B}/apps/download/voice-vault/evil.exe`, `${B}/apps/voice.apk`,
+    'https://evil.example/apps/download/voice-vault/voice-vault.apk', `http://axhub.amberxai.com/apps/download/x/x.apk`, `${B}/apps/download/x/.hidden.apk`, `${B}?x=/apps/download/a/b.apk`, `${B}#/apps/download/a/b.apk`, 'HTTPS://AXHUB.AMBERXAI.COM/apps/download/a/b.apk',
+  ];
+  const csrf = ['<form><input type="hidden" name="csrf" value="abc123-XYZ"></form>', '<input name="csrf" value="">', '<p>no form</p>', ''];
+  const item = (id: string, extra: Record<string, unknown> = {}) => ({ id, tool: 'vps.run', summary: `vps.run with arguments {"command":"docker ps"}`, createdAt: '2026-10-20T10:00:00.000Z', expiresAt: '2026-10-20T10:30:00.000Z', url: `${B}/auth/admin/approvals/${id}`, ...extra });
+  const big = (n: number) => 'x'.repeat(n);
+  const feeds: [string, number, string][] = [
+    ['ok-one', 200, JSON.stringify({ signedIn: true, admin: true, count: 1, approvalsUrl: `${B}/auth/admin/approvals`, pending: [item(ID1)] })],
+    ['ok-empty', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [] })],
+    ['ok-count-more-than-items', 200, JSON.stringify({ signedIn: true, admin: true, count: 25, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-missing', 200, JSON.stringify({ signedIn: true, admin: true, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-too-small', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [item(ID1)] })],
+    ['ok-count-negative-or-fraction', 200, JSON.stringify({ count: -3.7, pending: [] })],
+    ['ok-count-string', 200, JSON.stringify({ count: '5', pending: [item(ID1)] })],
+    ['ok-foreign-link-dropped', 200, JSON.stringify({ count: 3, pending: [item(ID1), item(ID2, { url: `https://evil.example/auth/admin/approvals/${ID2}` }), item(ID3, { url: `http://axhub.amberxai.com/auth/admin/approvals/${ID3}` })] })],
+    ['ok-missing-link-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1, { url: undefined }), item(ID2, { url: null })] })],
+    ['ok-link-rebuilt-from-id', 200, JSON.stringify({ count: 1, pending: [item(ID1, { url: `${B}/auth/logout?next=${ID1}` })] })],
+    ['ok-bad-ids-dropped', 200, JSON.stringify({ count: 4, pending: [item('../../auth/logout'), item(ID1.toUpperCase()), { tool: 'x' }, 'str', null, [1], item(ID2)] })],
+    ['ok-duplicates-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1), item(ID1, { tool: 'other' })] })],
+    ['ok-fields-defaulted-and-capped', 200, JSON.stringify({ count: 1, pending: [{ id: ID1, url: `${B}/auth/admin/approvals/${ID1}`, tool: 5, summary: big(900), createdAt: big(100) }, item(ID2, { tool: big(300), summary: null })] })],
+    ['ok-too-many-items', 200, JSON.stringify({ count: 60, pending: Array.from({ length: 60 }, (_, i) => item(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)) })],
+    ['ok-pending-not-array', 200, JSON.stringify({ count: 2, pending: { id: ID1 } })],
+    ['body-signed-out', 200, JSON.stringify({ signedIn: false, approvalsUrl: `${B}/auth/admin/approvals` })],
+    ['body-not-admin', 200, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-401', 401, JSON.stringify({ signedIn: false })],
+    ['status-403', 403, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-403-origin-refused', 403, JSON.stringify({ error: { code: 'denied', message: 'Not allowed from this site.' } })],
+    ['status-500', 500, 'oops'],
+    ['status-302', 302, ''],
+    ['not-json', 200, '<html>sign in</html>'],
+    ['json-array', 200, '[1,2]'],
+    ['json-null', 200, 'null'],
+    ['json-string', 200, '"x"'],
+  ];
+  const seen: [string[], string[]][] = [
+    [[], [ID1]],
+    [[ID1], [ID1, ID2]],
+    [[ID1, ID2], [ID2]],
+    [[ID1], []],
+    [[ID1, ID1], [ID2, ID2]],
+    [Array.from({ length: HUB_SEEN_CAP }, (_, i) => `id-${i}`), ['id-5', 'new-1']],
+  ];
+  write('hub-approvals.json', {
+    default: B,
+    paths: HUB_PATHS,
+    limits: { feedMaxBytes: HUB_FEED_MAX_BYTES, feedMaxItems: HUB_FEED_MAX_ITEMS, seenCap: HUB_SEEN_CAP, fieldCaps: HUB_FIELD_CAPS },
+    statuses: HUB_FEED_STATUSES,
+    messages: HUB_MESSAGES,
+    normalize: normalize.map((raw) => ({ raw, hub: normalizeHub(raw) })),
+    origin: [...normalize, ...isHubCases].map((url) => ({ url, origin: hubOrigin(url) })),
+    isHub: isHubCases.map((url) => ({ base: B, url, isHub: isHub(B, url) })),
+    urls: { base: B, approvals: approvalsUrl(B), apps: appsUrl(B), account: accountUrl(B), logout: logoutUrl(B), feed: feedUrl(B), login: loginUrl(B) },
+    approval: ids.map((id) => ({ base: B, id, url: approvalUrl(B, id) })),
+    login: returnPaths.map((path) => ({ base: B, path, url: loginUrl(B, path) })),
+    apk: apk.map((url) => ({ base: B, url, name: apkDownloadName(B, url) })),
+    csrf: csrf.map((html) => ({ html, token: csrfFromPage(html) })),
+    feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
+    unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
+    seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
   });
 }
