@@ -73,7 +73,8 @@ jobs:
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/apk.log | tail -20; exit ${PIPESTATUS[0]}
       - name: Compiler errors
         if: failure()
-        run: grep -hE "^e: |error:|What went wrong|FAILED|Unresolved reference" /tmp/apk.log | sort -u | head -60 || true
+        run: |
+          grep -hE "^e: |error:|What went wrong|FAILED|Unresolved reference" /tmp/apk.log | sort -u | head -60 || true
       - name: Enable KVM (hardware acceleration for the emulator)
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -89,7 +90,8 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: python3 framework/cli/boilerplate-capture.py --apk "$(ls apps/shots-${{ matrix.bp.id }}/app/build/outputs/apk/debug/*.apk | head -1)" --package "${{ env.APP_PKG }}" --boilerplate "framework/boilerplates/${{ matrix.bp.id }}/boilerplate.json" --out "shots/${{ matrix.bp.id }}"
+          script: >-
+            python3 framework/cli/boilerplate-capture.py --apk "$(ls apps/shots-${{ matrix.bp.id }}/app/build/outputs/apk/debug/*.apk | head -1)" --package "${{ env.APP_PKG }}" --boilerplate "framework/boilerplates/${{ matrix.bp.id }}/boilerplate.json" --out "shots/${{ matrix.bp.id }}"
       - uses: actions/upload-artifact@v4
         with:
           name: shots-${{ matrix.bp.id }}
