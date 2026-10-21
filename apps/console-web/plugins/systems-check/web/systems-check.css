@@ -94,3 +94,6 @@
 .axp-systems-check-aitest dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.25) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-systems-check-aitest dt { color: var(--fx-muted) }
 .axp-systems-check-aitest dd { margin: 0; overflow-wrap: anywhere }
+.axp-systems-check-banner__li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-banner__li > .axp-systems-check-banner__item { flex: 1; min-width: 0 }
+.axp-systems-check-banner__fixall { display: flex; justify-content: flex-end; padding-bottom: calc(var(--fx-space) * 0.5) }

@@ -146,6 +146,30 @@ export async function fixAll() {
   st.fixing = false; st.prompt = null; promptResolve = null; emit();
 }
 
+/* ---------------- Auto fix (banner drop-down) ---------------- */
+
+/** What Auto fix does for a check, or null when it needs you (a VPS command is copied instead). */
+export const autoFixLabel = (c: Check) => c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open' : c.fix?.type === 'host' ? 'Copy fix' : null;
+
+export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+  const f = c.fix;
+  if (!f) return;
+  if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
+  if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
+  if (f.type === 'host') {
+    await navigator.clipboard?.writeText(f.command).then(() => rt.toast('Fix command copied: run it on the VPS (mosh or the console terminal)', 'info'), () => rt.toast(f.command, 'info'));
+    return;
+  }
+  st.run[c.id] = 'working'; st.runMsg[c.id] = ''; emit();
+  try {
+    const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' });
+    replace(r.check);
+    st.run[c.id] = r.check.status === 'ok' || r.check.status === 'info' ? 'done' : 'failed'; st.runMsg[c.id] = r.message;
+    rt.toast(`${c.title}: ${r.message}`, st.run[c.id] === 'done' ? 'success' : 'warning');
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+  emit();
+}
+
 /* ---------------- banner ---------------- */
 
 export function SystemBanner() {
@@ -190,11 +214,26 @@ export function SystemBanner() {
       </div>
       {open && (
         <ul className="axp-systems-check-banner__list">
-          {guidedOrder(list).map((c) => (
-            <li key={c.id}><button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
-              <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{c.summary}</span>
-            </button></li>
-          ))}
+          {list.some((c) => c.fix?.type === 'action') && (
+            <li className="axp-systems-check-banner__fixall">
+              <Button tone="primary" icon="zap" disabled={list.some((c) => s.run[c.id] === 'working')} onClick={() => void (async () => { for (const c of list.filter((x) => x.fix?.type === 'action')) await autoFix(c, rt); })()}>
+                Auto fix all ({list.filter((c) => c.fix?.type === 'action').length})
+              </Button>
+            </li>
+          )}
+          {guidedOrder(list).map((c) => {
+            const label = autoFixLabel(c);
+            return (
+              <li key={c.id} className="axp-systems-check-banner__li">
+                <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+                  <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
+                </button>
+                {label && (s.run[c.id] === 'working'
+                  ? <RunBadge r="working" />
+                  : <Button tone={c.fix?.type === 'action' ? 'primary' : 'ghost'} icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>)}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
