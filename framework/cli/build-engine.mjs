@@ -171,6 +171,17 @@ function walk(dir) {
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
 const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
 
+/** Token values are free text (an app named "Notes & Todo"): escape them for the file they land in, so the generated
+ * app still compiles. Android string resources: XML entities + Android's own quote rules; Kotlin/Java string literals:
+ * backslash, quote and `$` (template strings); JSON is written by the engine itself, not through tokens. */
+export function tokenEscaper(file) {
+  if (/\.xml$/i.test(file)) return (v) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/^@/, '\\@').replace(/^\?/, '\\?');
+  if (/\.(kt|kts|java)$/i.test(file)) return (v) => v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/\r?\n/g, ' ');
+  return (v) => v;
+}
+
+const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
+
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
     // `src/main/kotlin/app/…` in a template lands at the app's real package path.
@@ -179,7 +190,8 @@ function copyTemplate(src, dest, tokens) {
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
       let text = readFileSync(file, 'utf8');
-      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, v);
+      const esc = tokenEscaper(file);
+      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, esc(String(v)));
       writeFileSync(target, text);
     } else cpSync(file, target);
   }
@@ -551,7 +563,7 @@ function applyBoilerplate(dest, tpl, bp, log) {
     for (const s of bp.screens ?? []) {
       const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View';
       if (existsSync(join(viewsDir, `${cls}.kt`))) continue;
-      writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${s.label}", message = "Boilerplate screen (${s.kind}). Build it here.")\n}\n`);
+      writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${ktStr(s.label)}", message = "Boilerplate screen (${ktStr(s.kind)}). Build it here.")\n}\n`);
     }
     const screens = (bp.screens ?? []).map((s) => { const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View'; return `"${s.id}" to { ${cls}() }`; });
     const main = join(dest, pkgPath(dest, 'app/src/main/kotlin/app/MainActivity.kt'));

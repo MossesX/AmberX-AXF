@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '../axf/react';
+import { Button, Icon, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import type { PendingAction, PendingItem, PendingModel, PendingSort, PendingState, PendingStatus } from '../axf/plan/pending-core.mjs';
@@ -130,11 +130,12 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
     navigator.clipboard?.writeText(brief).then(() => rt.toast(`Brief for "${it.title}" copied`, 'success'), () => rt.toast('Clipboard blocked', 'warning'));
   };
   return (
-    <article className={`pd-card is-${it.status}`} role="listitem">
+    <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
         <button className={`pd-badge is-${it.status}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
       </div>
+      <Slot name="pending.item" props={{ item: it }} />
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
           {core.STATUSES.map((s) => <button key={s} className={`pd-badge is-${s}`} disabled={busy || s === it.status} onClick={async () => { if (await act({ action: 'status', id: it.id, status: s })) setStatusOpen(false); }}>{core.STATUS_LABEL[s]}</button>)}

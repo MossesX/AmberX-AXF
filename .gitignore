@@ -14,3 +14,6 @@ projects/*/_claude/shared/
 # Session check-in (plugin): per-clone install + settings backups
 .claude/*.local.json
 .claude/*.bak
+
+# Boilerplate screenshot runs generate these in CI (boilerplate-shots.yml); never commit them
+apps/shots-*/

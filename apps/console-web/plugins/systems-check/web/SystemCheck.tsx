@@ -47,7 +47,7 @@ const subs = new Set<() => void>();
 const emit = () => { snap = { ...st }; subs.forEach((f) => f()); };
 export const useSys = () => useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => snap, () => snap);
 
-async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   const t = api.getToken();
   if (t) headers.set('authorization', `Bearer ${t}`);
@@ -149,13 +149,45 @@ export async function fixAll() {
 /* ---------------- Auto fix (banner drop-down) ---------------- */
 
 /** What Auto fix does for a check, or null when it needs you (a VPS command is copied instead). */
-export const autoFixLabel = (c: Check) => c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open' : c.fix?.type === 'host' ? 'Copy fix' : null;
+/** VPS checks Auto fix can run through axHub (filled from the server; the rest copy their command). */
+let hostAuto = new Set<string>();
+let hostAutoLoaded = false;
+async function loadHostAuto() {
+  if (hostAutoLoaded) return;
+  hostAutoLoaded = true;
+  try { const r = await call<{ commands: Record<string, string> }>('autofix'); hostAuto = new Set(Object.keys(r.commands)); emit(); } catch { hostAutoLoaded = false; }
+}
+export const autoFixLabel = (c: Check) => {
+  void loadHostAuto();
+  return c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open'
+    : c.fix?.type === 'host' ? (hostAuto.has(c.id) ? 'Auto fix' : 'Copy fix') : null;
+};
+
+interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
+/** VPS fix: the hub runs the check's exact command once you approve it in the pop-up; we follow the job here. */
+async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Asking axHub…'; emit();
+  try {
+    let j = await call<HostJob>(`autofix/${c.id}`, { method: 'POST' });
+    const until = Date.now() + 31 * 60_000;
+    while ((j.state === 'asking' || j.state === 'waiting' || j.state === 'running') && Date.now() < until) {
+      st.run[c.id] = j.state === 'waiting' ? 'waiting' : 'working'; st.runMsg[c.id] = j.message; emit();
+      await new Promise((r) => setTimeout(r, 3000));
+      const all = await call<{ jobs: Record<string, HostJob | null> }>('autofix');
+      j = all.jobs[c.id] ?? j;
+    }
+    st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; emit();
+    rt.toast(`${c.title}: ${j.message}`, j.state === 'done' ? 'success' : 'warning');
+    await loadSystemCheck(true);
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+}
 
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   const f = c.fix;
   if (!f) return;
   if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
   if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
+  if (f.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
   if (f.type === 'host') {
     await navigator.clipboard?.writeText(f.command).then(() => rt.toast('Fix command copied: run it on the VPS (mosh or the console terminal)', 'info'), () => rt.toast(f.command, 'info'));
     return;
@@ -205,8 +237,6 @@ export function SystemBanner() {
         <Icon name="alert" />
         <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {list.length} setup issue{list.length === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured
-          {list.some((c) => !isAiCheck(c)) && <SourceBadge ai={false} title={`${list.filter((c) => !isAiCheck(c)).length} found without AI (codebase and settings)`} />}
-          {list.some(isAiCheck) && <SourceBadge ai title={`${list.filter(isAiCheck).length} found by checks Mosses wrote (AI)`} />}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
@@ -228,10 +258,10 @@ export function SystemBanner() {
                 <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                 </button>
-                {s.run[c.id] === 'working'
-                  ? <RunBadge r="working" />
+                {s.run[c.id] === 'working' || s.run[c.id] === 'waiting'
+                  ? <RunBadge r={s.run[c.id]} />
                   : label
-                    ? <Button tone="primary" icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>
+                    ? <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} onClick={() => void autoFix(c, rt)}>{label}</Button>
                     : <Button tone="primary" icon="zap" onClick={() => rt.openDialog('system-check', { focus: c.id })}>Fix…</Button>}
               </li>
             );
@@ -315,7 +345,7 @@ export function FixPanel({ c }: { c: Check }) {
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
-        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
+        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
       </div>
     </div>
