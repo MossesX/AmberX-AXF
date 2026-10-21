@@ -94,28 +94,38 @@ jobs:
           node scripts/theme-swap.mjs
       - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
-          pip install -r apps/console-web/server/requirements.txt httpx
-          (cd framework && npm install --no-audit --no-fund --silent)
-          npx -y tsx framework/spec/check-alerts.mts
-          npx -y tsx framework/spec/check-widgets.mts
-          npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
-          npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
-          npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
-          npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
-          python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
-          python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
-          python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
-          node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
-          node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
-          python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
-          npx -y tsx framework/spec/check-plugin-inventory.mts
-          npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
-          npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
-          python apps/console-web/server/test_alerts.py
-          python apps/console-web/server/test_wall_users.py
-          python apps/console-web/server/test_app_ci.py
-          python apps/console-web/server/test_plugin_catalog.py
-          python apps/console-web/server/test_app_catalog.py
+          set -o pipefail
+          {
+            pip install -r apps/console-web/server/requirements.txt httpx
+            (cd framework && npm install --no-audit --no-fund --silent)
+            npx -y tsx framework/spec/check-alerts.mts
+            npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
+            npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
+            npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
+            npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
+            python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
+            python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
+            python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
+            node framework/spec/check-axf-server.mjs                  # axf_server fixtures: wall signature + plugin-package@1 (= plugin-catalog.mjs)
+            node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
+            python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
+            npx -y tsx framework/spec/check-plugin-inventory.mts
+            npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
+            npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
+            python apps/console-web/server/test_alerts.py
+            python apps/console-web/server/test_wall_users.py
+            python apps/console-web/server/test_app_ci.py
+            python apps/console-web/server/test_plugin_catalog.py
+            python apps/console-web/server/test_app_catalog.py
+          } 2>&1 | tee /tmp/web-tests.log
+      - name: Report web/Python test failures to the "CI build errors" issue
+        if: failure()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          { echo "### Web/Python tests failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'; tail -n 80 /tmp/web-tests.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||'; echo '```'; } > /tmp/web-report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/web-report.md; else gh issue comment "$N" --body-file /tmp/web-report.md; fi
       - name: Plugin Python self-tests (every plugins/*/test.py; found by glob so removing a plugin never breaks CI)
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
