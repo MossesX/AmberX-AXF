@@ -11,6 +11,7 @@ export * from './engines/actions';
 export * from './engines/windows';
 export * from './engines/roll';
 export * from './engines/hide';
+export * from './engines/embed';
 export * from './engines/spacing';
 export * from './engines/appearance';
 export * from './engines/banner';

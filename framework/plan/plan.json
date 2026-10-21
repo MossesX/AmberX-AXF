@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T12:05:25.499Z",
+ "generatedAt": "2026-10-21T16:35:41.989Z",
  "statuses": [
   "built",
   "partial",
@@ -7300,6 +7300,53 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "k.embed",
+   "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
+   "area": "Kernel",
+   "group": "Kernel architecture & extension safety",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "",
+   "summary": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "k.embed"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "k.appmenu",
    "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
    "area": "Kernel",
@@ -13271,7 +13318,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder",
    "source": "catalog",
    "history": [
     {
@@ -20891,6 +20938,48 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "c.patches",
+   "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+   "area": "Demos later",
+   "group": "Dev, server and AI",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "c.patches"
+   ],
+   "modules": [
+    "apps/patches"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "demos",
+    "app"
+   ],
+   "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],

@@ -146,15 +146,17 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   const options = rt.registry.list(type);
   const canHide = hideable(type);
   const hidden = rt.slotHidden(type);
+  // embed@1: a host app (Patches) shows this chrome for the app; the choice is the host's until the app runs on its own.
+  const byHost = rt.slotHiddenByHost(type);
   const pick = (v: string) => {
     if (v === HIDDEN) return rt.setSlotHidden(type, true);
     if (hidden) rt.setSlotHidden(type, false);
     if (v !== state.active[type]) rt.swap(type, v);
   };
   return (
-    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || byHost || options.length + (canHide ? 1 : 0) < 2} title={byHost ? `Shown by ${rt.embedded?.host} while this app runs inside it` : undefined} onChange={(e) => pick(e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-      {canHide && <option value={HIDDEN}>Hidden</option>}
+      {canHide && <option value={HIDDEN}>{byHost ? `Shown by ${rt.embedded?.host}` : 'Hidden'}</option>}
     </select>
   );
 }

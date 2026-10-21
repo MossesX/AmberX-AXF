@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T04:46:12.597Z",
+ "updatedAt": "2026-10-21T16:26:19.992Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -963,7 +963,12 @@
    "detail": "Brett, Oct 20 2026: the Android console app needs Pilot and axHub tabs like the web console's App tabs plugin. Option A: every tab runs inside the app — Build Pilot (pilot.amberxai.com) and axHub (axhub.amberxai.com, Apps page + approvals) in locked-down in-app web views; nothing ever opens the phone's browser. Fable (the Compose AppShell gains the shared page slots the web shell has). Broken into small builds (sub prompts) so it can be worked on a little at a time; each sub prompt stands alone and leaves the app building.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.159Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "1a. Compose page slots, kernel side: add `ExtensionPoints.PAGE_SLOTS` (`axf.page-slots`, contribution {slot: \"app.frame.top\" | \"app.frame.cover\", order, content key}) in `axf-kernel/module/Extensions.kt`, same slot names as `framework/react/components/Slots.tsx`; unit test that contributions order like the web `installLibraries` does.",
@@ -1063,7 +1068,7 @@
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.596Z",
+   "updatedAt": "2026-10-21T10:20:04.159Z",
    "estimate": "1 d",
    "source": "chat"
   },
@@ -1073,7 +1078,12 @@
    "detail": "Brett, Oct 20 2026: option B — Build Pilot and the axHub admin pages running natively in the Android console app (Compose), no web views. This is the Android version of Build Pilot (roadmap) plus a native hub admin client, built as small Fable steps that each stand alone. Depends on the pending `axhub-agent-host` for sessions and on axHub's admin API (its step 4). Work on it a little at a time: every sub prompt ships something usable.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "ON HOLD (Brett, Oct 21 2026): don't build the console or Build Pilot Android apps any more — Brett will finish them himself later. Never start this item (or any step of it) unless he says so.",
+     "at": "2026-10-21T10:20:04.160Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "1a. Pilot contract on Kotlin, types: `axf-pilot-core` pure-Kotlin module (`framework/android/axf-pilot-core`) with `PilotPluginManifest`, `PilotStep`, `BuildPatch`, `BuildRequest` (incl. `hidden`/`assets`) data classes mirroring Build-Pilot's `src/pilot/contract.ts` after its Fable rebuild (`build-pilot-contract`).",
@@ -1273,9 +1283,82 @@
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.597Z",
-   "source": "chat",
-   "estimate": "2.5 d"
+   "updatedAt": "2026-10-21T10:20:04.160Z",
+   "estimate": "2.5 d",
+   "source": "chat"
+  },
+  {
+   "id": "patches-wrapper",
+   "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
+   "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
+     "at": ""
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "1a. Framework embed@1 (web reference): `core/engines/embed.ts` — the marker a host app puts on the pages it embeds (query `?axf-embed=<host>[&axf-embed-hide=…]`, user agent `AXF-Embed/<host>[/<types>]`), host id rules, hidden-chrome cleaning (hideable types only, default banner, `none`), host helpers `userAgentSuffix` / `embedUrl`; fixture `spec/fixtures/embed.json`.",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.835Z"
+    },
+    {
+     "text": "1b. Hide engine forced layer + runtime (web): `hiddenSlots(overrides, defaults, forced)`; `AxfRuntime.embedded` (detected from the page or passed), `embedHiddenSlots`, `slotHiddenByHost`, `setSlotHidden` refuses host-shown chrome with a toast and never writes an override; `AppShell` marks `.fx-frame[data-axf-embed]`; lib-settings greys the slot picker out (\"Shown by <host>\"); `spec/check-embed.mts` in CI.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.894Z"
+    },
+    {
+     "text": "1c. Kotlin twins: `EmbedEngine` (same fixture), `HideEngine.hiddenSlots(…, forced)`, `AxfRuntime(embedded = …)` + `slotHiddenByHost`, Compose settings chips greyed; `EmbedConformanceTest` + the hide fixture's forced cases in `ConformanceTest`.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.942Z"
+    },
+    {
+     "text": "2. Dev Console: remove the App tabs plugin cleanly (`uninstall.mjs --all`, lifecycle check clean), strip its doc lines, keep the `app.frame.top` / `app.frame.cover` slots for other plugins; the console stands alone with its own banner.",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.992Z"
+    },
+    {
+     "text": "3a. Patches app scaffold: `axf init apps/patches` (android-compose, developer app: look + settings from axHub, hub library), app id `patches`, package `ai.amberx.axf.patches`, project manifest (repo `MossesX/patches` reserved), own layout asset `patches-tabs` (top tabs, no menubar/toolbar/status, full width), nav asset `patches-tabs` with the three tabs, manifest hides toolbar/app-menu.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "3b. lib-hub `WebAppView`: a full web-app WebView (JavaScript + DOM storage on, cache allowed, origin allowlist with the hub origin for the sign-in wall, no file/content access, no mixed content, downloads to the hub app catalog handler), user agent suffix from `EmbedEngine.userAgentSuffix(\"patches\")`, `WebAppHolder` that keeps one WebView per tab alive across tab switches (reparented, never destroyed until the activity goes), back button = page history.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "3c. Patches views: three routes (console / pilot / axhub) each rendering the holder's WebView for that tab; the Patches banner (logo, day/night switch, clock, settings button) is the one banner; hub sign-in via the developer-app waiting screen (shared cookie store = one session for every tab); Settings → Patches group: hub address, each tab's URL, reload tab, open in the phone's browser.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "4. Wiring: CI (`android.yml` builds every app `app-bundle.mjs list --android` finds → `patches-debug.apk` + app catalog entry), `project.manifest.json` validated (`axf project validate --all`), `framework/catalog` + tracker, CLAUDE.md status, rules note (Android hold exception for Patches), PORTING.md, decisions.md.",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "5. Proof: web checks (`check-embed`, `check-widgets`, `check-appearance`, `check-app-menu`, `check-hub`, `axf validate --framework`, console typecheck), before/after web screenshots (console with and without the tab group; console embedded = no banner), push `fable/patches-wrapper` (Android shots by `rebuild-shots.yml`), differences report `_claude/memory/docs/rebuilds/patches-wrapper.md`, LOG.md line, change-log result.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-21T16:26:16.023Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-21T16:26:19.992Z",
+   "planId": "x.app.patches",
+   "source": "chat"
   }
  ]
 }

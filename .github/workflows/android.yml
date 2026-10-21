@@ -105,6 +105,7 @@ jobs:
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
+            npx -y tsx framework/spec/check-embed.mts                  # embed@1: embed.json + hide.json forced cases (same files as Kotlin) + runtime forced layer
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
@@ -254,6 +255,10 @@ jobs:
         with:
           name: axhub-debug.apk
           path: apps/axhub-android/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: patches-debug.apk
+          path: apps/patches/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: app-apks

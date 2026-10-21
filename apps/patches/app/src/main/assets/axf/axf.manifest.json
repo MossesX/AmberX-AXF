@@ -1,0 +1,152 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "patches",
+    "name": "Patches",
+    "version": "0.1.0",
+    "about": "The Dev Console, Build Pilot and axHub in one app: one banner, three tabs."
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-compose"
+  },
+  "initializedAt": "2026-10-21T16:16:49.193Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "console",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "patches-tabs",
+    "app-menu": "standard-desktop",
+    "toolbar": "standard-icons",
+    "nav-menu": "patches-tabs",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "banner": "patches",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar",
+    "app-menu"
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  },
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Framework version + template the app was initialized from (Android apps depend on published framework modules, nothing is baked)."
+    },
+    {
+      "path": "settings.gradle.kts",
+      "purpose": "Includes the framework as a composite build (framework/android) and shares its version catalog."
+    },
+    {
+      "path": "app/src/main/assets/axf/axf.manifest.json",
+      "purpose": "Copy of the manifest shipped inside the APK; the kernel reads it at startup."
+    },
+    {
+      "path": "app/src/main/assets/axf/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type (same JSON as every other port)."
+    },
+    {
+      "path": "app/src/main/kotlin/ai/amberx/axf/patches/App.kt",
+      "purpose": "Application class: builds the kernel from the manifest, assets and modules."
+    },
+    {
+      "path": "app/src/main/kotlin/ai/amberx/axf/patches/MainActivity.kt",
+      "purpose": "The single activity: AxfRoot + AppShell + the app's views."
+    },
+    {
+      "path": "app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+      "purpose": "The app's own AxfModule: routes, actions, settings, dialogs."
+    },
+    {
+      "path": "app/src/main/kotlin/ai/amberx/axf/patches/views",
+      "purpose": "Composable views registered with the shell."
+    },
+    {
+      "path": "app/src/main/kotlin/ai/amberx/axf/patches/views/TabView.kt",
+      "purpose": "One tab's content: that app's web view out of the activity's WebAppHolder (embed@1 host side)."
+    }
+  ],
+  "android": {
+    "applicationId": "ai.amberx.axf.patches",
+    "scheme": "axf",
+    "modules": [
+      "ai.amberx.axf.hub"
+    ],
+    "minSdk": 26,
+    "targetSdk": 35,
+    "secureWindow": false
+  },
+  "libraries": {
+    "hub": {
+      "base": "https://axhub.amberxai.com"
+    },
+    "$installed": [
+      "ai.amberx.axf.hub"
+    ]
+  },
+  "boilerplate": {
+    "id": "patches",
+    "name": "Patches (web tabs)",
+    "category": "developer",
+    "screens": [
+      {
+        "id": "console",
+        "label": "Console",
+        "kind": "web"
+      },
+      {
+        "id": "pilot",
+        "label": "Pilot",
+        "kind": "web"
+      },
+      {
+        "id": "axhub",
+        "label": "axHub",
+        "kind": "web"
+      },
+      {
+        "id": "settings",
+        "label": "Settings",
+        "kind": "settings"
+      }
+    ],
+    "features": [
+      "embed-host"
+    ]
+  }
+}
