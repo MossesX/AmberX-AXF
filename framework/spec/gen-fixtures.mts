@@ -12,7 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -106,6 +106,68 @@ write('hide.json', {
     detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
     suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
     urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+  });
+}
+// What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
+{
+  const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
+  const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
+  const queries = [
+    '?axf-embed=patches',
+    '?axf-embed=patches&axf-embed-take=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications',
+    '?axf-embed=patches&axf-embed-take=bogus',
+    '?axf-embed=patches&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-page=notifications',
+    '?axf-embed-take=settings',
+  ];
+  const agents = [
+    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
+    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
+    'Mozilla/5.0 AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches',
+  ];
+  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
+  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', '', null];
+  write('embed-takes.json', {
+    uaToken: EMBED_TAKE_UA_TOKEN,
+    ids: embedTakeIds(),
+    takes: takeInputs.map((t) => ({ input: t, takes: embedTakes(t) })),
+    pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
+    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
+    takenView: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'home', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
+    takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
+    suffix: [['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    urls: [
+      ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
+      ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
+      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
+      ['https://pilot.amberxai.com/', {}],
+    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
+    messages: [
+      { $axf: 'embed@1', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'appearance' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'bad tab!' },
+      { $axf: 'embed@1', type: 'notify', title: '  Build failed\n', body: 'x'.repeat(600), tag: 'ci:main', level: 'error', link: 'view:alerts' },
+      { $axf: 'embed@1', type: 'notify', title: '' },
+      { $axf: 'embed@1', type: 'notify', title: 'Hi', level: 'loud', link: 'javascript:x', tag: 'has space' },
+      { $axf: 'embed@1', type: 'ready', app: 'Console' },
+      { $axf: 'embed@1', type: 'open-tab', tab: 'plugins' },
+      { $axf: 'embed@1', type: 'open-tab' },
+      { $axf: 'embed@2', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'run-code', code: 'x' },
+      '{"$axf":"embed@1","type":"open-settings","tab":"about"}',
+      'not json',
+      ['array'],
+      null,
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
   });
 }
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.

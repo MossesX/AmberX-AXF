@@ -23,7 +23,18 @@ const PATCHES = 'patches';
 const MAX_ACTION = 300;
 
 interface StripBridge { height?: (px: number) => void; open?: (tab: string) => void }
-const bridge = (): StripBridge | null => (globalThis as unknown as { AxfPatchesStrip?: StripBridge }).AxfPatchesStrip ?? null;
+/**
+ * Patches on Android gives the strip a JS bridge (`AxfPatchesStrip`); Patches on the web shows it in a frame and
+ * listens for `patches-strip@1` messages instead (apps/patches-web). Either way the strip only reports its height and
+ * asks for the Console tab.
+ */
+const bridge = (): StripBridge | null => {
+  const g = globalThis as unknown as { AxfPatchesStrip?: StripBridge; parent?: Window };
+  if (g.AxfPatchesStrip) return g.AxfPatchesStrip;
+  if (!g.parent || g.parent === (globalThis as unknown)) return null;
+  const post = (m: Record<string, unknown>) => { try { g.parent!.postMessage({ $axf: 'patches-strip@1', ...m }, '*'); } catch { /* no host */ } };
+  return { height: (px) => post({ type: 'height', px }), open: (tab) => post({ type: 'open', tab }) };
+};
 
 /** This page is the banner strip (`?axf-strip=banners`). Fixed for the page's life. */
 export const isBannerStrip = (() => {

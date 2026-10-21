@@ -53,6 +53,10 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-frame-banners:empty { display: none; }
 /* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
 .fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
+/* Kept views (AppShell `keep`): stay mounted while hidden; a kept view fills the main region. */
+.fx-main__inner--kept[hidden] { display: none !important; }
+/* Page mode (embed@1 `page`): one view of the app on its own inside a host (e.g. its settings in Patches). */
+.fx-shell--page { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
 .fx-waiting { max-width: 36rem; margin: calc(var(--fx-space) * 4) auto; padding: 0 var(--fx-space); }
 
 /* ---------------- banner (core/engines/banner.ts) ---------------- */

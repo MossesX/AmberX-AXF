@@ -1,0 +1,124 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "patches-web",
+    "name": "Patches",
+    "version": "0.1.0",
+    "about": "The Dev Console, Build Pilot and axHub in one page: one banner, three tabs, one settings with a tab per app."
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "web-fastapi-wall"
+  },
+  "initializedAt": "2026-10-21T18:09:10.110Z",
+  "targets": [
+    "web",
+    "server"
+  ],
+  "startView": "console",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "patches-tabs",
+    "app-menu": "patches",
+    "toolbar": "standard-icons",
+    "nav-menu": "patches-tabs",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "banner": "patches",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  },
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Framework version + template, with a hash of every baked file (src/axf, including the deploy helpers)."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "The baked framework runtime (engines, React layer, CSS, schemas, libraries) and src/axf/deploy: the shared deploy helpers (axf-deploy@1) the installer sources."
+    },
+    {
+      "path": "src/axf/deploy/axf-deploy.sh",
+      "purpose": "Shared deploy helpers: Coolify run + router labels, axHub wall labels, wall secret, auto-update. Re-bake instead of editing."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "src/views",
+      "purpose": "The app's views; nav assets reference them by id."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Binds this app's handlers to the standard action vocabulary."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "The app's dialogs (id \u2192 component)."
+    },
+    {
+      "path": "src/api.ts",
+      "purpose": "Browser client for the app's own API (/api): same-origin, token from this browser only when there is no wall."
+    },
+    {
+      "path": "server/main.py",
+      "purpose": "FastAPI app: /api routes behind the app token or a signed-in hub admin, serves the built web app (dist/)."
+    },
+    {
+      "path": "server/wall.py",
+      "purpose": "Who is calling behind axHub's wall: signed X-Auth-* headers (HMAC, 120 s, this host), admin/user, same-origin writes."
+    },
+    {
+      "path": "server/test_server.py",
+      "purpose": "Server self-test: token, wall signature, admin vs user, cross-site writes, static files."
+    },
+    {
+      "path": "Dockerfile",
+      "purpose": "One image: Node builds the web app, Python serves it with the API (runs as uid 1000)."
+    },
+    {
+      "path": "deploy/install.sh",
+      "purpose": "VPS installer (root): clone/update, token, image, Coolify + Traefik + the wall, 5-minute auto-update. Sources src/axf/deploy/axf-deploy.sh."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files."
+    }
+  ]
+}

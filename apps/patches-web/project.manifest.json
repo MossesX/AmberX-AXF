@@ -1,0 +1,37 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "patches-web",
+  "displayName": "Patches",
+  "description": "Patches web: the Dev Console, Build Pilot and axHub in one page, one banner, one settings",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "web",
+    "server"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "web-fastapi-wall",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "patches-web",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/patches-web"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-21"
+}

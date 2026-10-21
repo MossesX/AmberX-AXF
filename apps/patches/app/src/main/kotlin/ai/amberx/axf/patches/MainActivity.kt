@@ -24,8 +24,38 @@ import ai.amberx.axf.patches.views.TabView
  */
 class MainActivity : AxfActivity() {
     private val patches get() = application as App
-    /** One web view per tab; `patches` is the embed id the apps inside see (`AXF-Embed/patches`). */
-    private val holder: WebAppHolder by lazy { WebAppHolder("patches") }
+    /**
+     * One web view per tab; `patches` is the embed id the apps inside see (`AXF-Embed/patches`), and Patches takes their
+     * settings and notifications over (`AXF-Embed-Take/settings+notifications`): their own settings hooks disappear, and
+     * what they ask for arrives here (the combined settings, the phone's notifications).
+     */
+    private val holder: WebAppHolder by lazy { WebAppHolder("patches", takes = AppModule.TAKES) }
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Patches serves the phone's notifications: ask once for the permission (Android 13+), then start watching.
+        if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        openFrom(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Foreground services may only start while the app is in front.
+        patches.appModule.syncWatch()
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        openFrom(intent)
+    }
+
+    /** A tapped notification names the tab to show (approvals → axHub, console alerts → Console). */
+    private fun openFrom(intent: android.content.Intent?) {
+        val tab = intent?.getStringExtra(ai.amberx.axf.patches.watch.PatchesAlerts.EXTRA_TAB) ?: return
+        if (AppModule.TABS.any { it.id == tab }) runCatching { patches.kernel.runtime.navigate(tab) }
+    }
 
     /** The waiting screen's "Sign in on the hub": the hub's own sign-in page; the session it leaves is every tab's session. */
     override val hubSignIn: @Composable (done: () -> Unit) -> Unit = { done -> HubSignInView(patches.appModule.hub, done = done) }
@@ -40,13 +70,15 @@ class MainActivity : AxfActivity() {
         val module = patches.appModule
         val views = mutableMapOf<String, @Composable () -> Unit>("plugin-manager" to { PluginManagerScreen() })
         for (t in AppModule.TABS) views[t.id] = { TabView(holder, module, t.id) }
+        // The combined settings (Patches · Console · Pilot · axHub) replaces the settings screen lib-settings registers.
+        views["settings"] = { ai.amberx.axf.patches.views.CombinedSettings(holder, module) }
         // The column takes the status bar, so AppShell's own status-bar padding (same insets, now consumed) adds nothing.
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
             BannerStrip(holder, module)
             AppShell(
                 views = views,
                 modifier = Modifier.weight(1f),
-                viewTitles = AppModule.TABS.associate { it.id to it.label } + mapOf("plugin-manager" to "Plugin Manager"),
+                viewTitles = AppModule.TABS.associate { it.id to it.label } + mapOf("plugin-manager" to "Plugin Manager", "settings" to "Settings"),
                 viewIcons = AppModule.TABS.associate { it.id to it.icon },
             )
         }
