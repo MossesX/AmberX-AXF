@@ -4,7 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Container, Icon, Note, SelectField, Switch, TextField, ChoiceGrid, useRuntime } from '@console/axf/react';
-import { api, errText, fmtAgo, fmtBytes, gh, type FileText, type GhFile, type Me, type PilotCatalog, type SbFile } from './api';
+import { api, errText, fmtAgo, fmtBytes, gh, type FileText, type GhOp, type GhFile, type Me, type PilotCatalog, type SbFile } from './api';
 
 type Tab = 'github' | 'pilot' | 'files';
 
@@ -159,7 +159,7 @@ function toRows(sub: GhSub, data: unknown): Row[] {
   const arr = Array.isArray(data) ? data : (data && typeof data === 'object' && Array.isArray((data as { workflow_runs?: unknown[] }).workflow_runs)) ? (data as { workflow_runs: unknown[] }).workflow_runs : [];
   return (arr as Record<string, any>[]).map((x, i): Row => { // eslint-disable-line @typescript-eslint/no-explicit-any
     switch (sub) {
-      case 'commits': return { key: String(x.sha ?? i), title: String(x.commit?.message ?? '').split('\n')[0], meta: `${String(x.sha ?? '').slice(0, 7)} · ${x.commit?.author?.name ?? ''} · ${fmtAgo(x.commit?.author?.date)}`, link: ghLink(x.html_url) };
+      case 'commits': return { key: String(x.sha ?? i), title: String(x.commit?.message ?? '').split('\n')[0] ?? '', meta: `${String(x.sha ?? '').slice(0, 7)} · ${x.commit?.author?.name ?? ''} · ${fmtAgo(x.commit?.author?.date)}`, link: ghLink(x.html_url) };
       case 'branches': return { key: String(x.name), title: String(x.name), meta: `${String(x.commit?.sha ?? '').slice(0, 7)}${x.protected ? ' · protected' : ''}`, link: null, branch: String(x.name) };
       case 'pulls': return { key: String(x.number), title: `#${x.number} ${x.title ?? ''}`, meta: `${x.user?.login ?? ''} · ${x.head?.ref ?? ''} → ${x.base?.ref ?? ''} · ${fmtAgo(x.updated_at)}`, link: ghLink(x.html_url), badge: x.draft ? 'draft' : x.state, tone: x.state === 'open' ? 'success' : undefined };
       case 'issues': return { key: String(x.number), title: `#${x.number} ${x.title ?? ''}`, meta: `${x.pull_request ? 'pull request · ' : ''}${x.user?.login ?? ''} · ${fmtAgo(x.updated_at)}`, link: ghLink(x.html_url), badge: x.state, tone: x.state === 'open' ? 'success' : undefined };
@@ -182,7 +182,7 @@ function RepoList({ repo, sub, gitRef, onPickBranch }: { repo: string; sub: GhSu
     if (sub === 'commits' && gitRef) args.ref = gitRef;
     if (sub === 'runs' && gitRef) args.branch = gitRef;
     if (sub === 'pulls' || sub === 'issues') args.state = state;
-    gh<unknown>(sub, repo, args).then((d) => setRows(toRows(sub, d)), (e) => setErr(errText(e)));
+    gh<unknown>(sub as GhOp, repo, args).then((d) => setRows(toRows(sub, d)), (e) => setErr(errText(e)));
   }, [repo, sub, gitRef, state, page]);
   return (
     <Container title={{ commits: 'Commits', branches: 'Branches', pulls: 'Pull requests', issues: 'Issues', runs: 'Actions runs', releases: 'Releases', files: '' }[sub]} icon="list"
@@ -235,7 +235,7 @@ const slugName = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
 
 const blank = (cat: PilotCatalog | null): SandboxDesign => ({
   $axf: 'sandbox-design@1', name: 'My app', template: cat && 'react-ts' in cat.templates ? 'react-ts' : Object.keys(cat?.templates ?? {})[0] ?? '',
-  boilerplate: '', slots: Object.fromEntries(LOOK_TYPES.filter((t) => cat?.defaults?.[t]).map((t) => [t, cat!.defaults[t]])),
+  boilerplate: '', slots: Object.fromEntries(LOOK_TYPES.filter((t) => cat?.defaults?.[t]).map((t) => [t, cat!.defaults[t] ?? ''])),
   libraries: [], options: Object.fromEntries(Object.entries(cat?.buildOptions ?? {}).map(([k, o]) => [k, o.default === true])), notes: '',
 });
 
@@ -301,7 +301,7 @@ function PilotTab({ files, onSaved }: { files: SbFile[]; onSaved: (p: string) =>
           <div className="axp-sandbox__grid">
             {LOOK_TYPES.filter((t) => cat.assets[t]?.length).map((t) => (
               <SelectField key={t} label={t} value={d.slots[t] ?? ''} empty="(framework default)" onChange={(v) => set({ slots: { ...d.slots, [t]: v } })}
-                options={cat.assets[t].map((a) => ({ value: a.id, label: a.name ?? a.id }))} />
+                options={(cat.assets[t] ?? []).map((a) => ({ value: a.id, label: a.name ?? a.id }))} />
             ))}
           </div>
         </Container>
@@ -332,8 +332,8 @@ function PilotTab({ files, onSaved }: { files: SbFile[]; onSaved: (p: string) =>
         </Container>
       )}
       <div className="fx-row">
-        <Button tone="ghost" icon="chevron-left" disabled={at <= 0} onClick={() => setStep(STEPS[at - 1][0])}>Back</Button>
-        <Button tone="ghost" icon="chevron-right" disabled={at >= STEPS.length - 1} onClick={() => setStep(STEPS[at + 1][0])}>Next</Button>
+        <Button tone="ghost" icon="chevron-left" disabled={at <= 0} onClick={() => { const s = STEPS[at - 1]; if (s) setStep(s[0]); }}>Back</Button>
+        <Button tone="ghost" icon="chevron-right" disabled={at >= STEPS.length - 1} onClick={() => { const s = STEPS[at + 1]; if (s) setStep(s[0]); }}>Next</Button>
       </div>
     </div>
   );
