@@ -35,6 +35,7 @@ include(":lib-billing")
 include(":lib-browser")
 include(":lib-voice")
 include(":lib-lock")
+include(":lib-mcp")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")

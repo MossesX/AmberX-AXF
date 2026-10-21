@@ -2,13 +2,35 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.mcp-client",
   "name": "MCP client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Connect the console to other MCP servers (Streamable HTTP): browse their tools, resources and prompts, call tools, and keep a call log. Servers are managed in Settings → Plugins → MCP servers.",
-  "targets": ["axf-console"],
-  "provides": ["view:mcp-client", "settings-tab:mcp"],
-  "scopes": ["ROUTES", "NETWORK"],
-  "enabledByDefault": true
+  "description": "Connect the console to other MCP servers (Streamable HTTP) through the framework's MCP client library (ai.amberx.axf.mcp): browse their tools, resources and prompts, call tools, and keep a call log. Servers are managed in Settings \u2192 Plugins \u2192 MCP servers; tokens stay on the console server.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:mcp",
+    "settings-tab:mcp"
+  ],
+  "scopes": [
+    "ROUTES",
+    "NETWORK"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/mcp-client",
+    "env": [
+      "AXF_MCP_SERVERS",
+      "AXF_MCP_TIMEOUT"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md",
+      "_claude/memory/docs/rebuilds/lib-mcp.md"
+    ]
+  }
 }

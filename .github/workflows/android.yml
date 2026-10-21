@@ -74,12 +74,14 @@ jobs:
           npm i --no-save --no-audit --no-fund playwright@1.56.0
           npx playwright install --with-deps chromium
           node scripts/theme-swap.mjs
-      - name: Alerts — engine matches the fixture (TS, Python), conflict detection, console alert server, web push encryption
+      - name: Alerts + MCP client — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           (cd framework && npm install --no-audit --no-fund --silent)
           npx -y tsx framework/spec/check-alerts.mts
           npx -y tsx framework/spec/check-widgets.mts
+          npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
+          python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
           python apps/console-web/server/test_alerts.py
           python apps/console-web/server/test_wall_users.py
           python apps/console-web/server/test_app_ci.py
@@ -174,9 +176,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
-      - name: Library unit tests (lib-voice, lib-lock)
+      - name: Library unit tests (lib-voice, lib-lock, lib-mcp)
         working-directory: framework/android
-        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
+        run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault)
         working-directory: apps/voicevault
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}

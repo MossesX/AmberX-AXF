@@ -31,3 +31,20 @@ page crashes. Where alerts live is a transport: `localTransport()` (this browser
 (the Dev Console's talks to `/api/alerts`). Web push needs the service worker served as a real file:
 `alertsServiceWorker()` from `./alerts/vite-plugin.mjs` + `createAlertsLibrary({ transport, serviceWorkerUrl: '/alerts-sw.js' })`.
 Self-test: `npx -y tsx framework/spec/check-alerts.mts`.
+
+## mcp (`ai.amberx.axf.mcp`)
+
+MCP client for any AXF app (Fable, Oct 20 2026). Protocol core: `core/engines/mcp.ts` (pure: JSON-RPC framing, SSE
+parsing, Streamable HTTP rules, pagination, wire-error mapping, tool effects + the outbound call gate) and
+`libs/mcp/client.ts` (`McpClient` over an `McpTransport` the host implements, so UI code never holds a token:
+initialize/negotiate, session id, lists with pagination, tools/call with JSON or SSE replies, resources/read,
+prompts/get, forgotten-session retry, cancel, timeouts, DELETE on close). Mirrored by the Kotlin kernel's
+`ai.amberx.axf.kernel.mcp.McpEngine` + `lib-mcp`, and Python `axf_libs/mcp`; all three replay
+`spec/fixtures/mcp-client.json`. Self-test: `npx -y tsx framework/spec/check-mcp.mts`.
+
+The library adds the **MCP servers** view (nav, action `mcp.open`: connect, browse tools/resources/prompts, call tools
+with JSON args — write tools need `mcp.call.write`, destructive ones `mcp.call.destructive` and a confirmation — call
+log) and **Settings → MCP servers** (`mcp`, panel `mcp.servers`; `mcp.servers.manage` to edit). What it talks to is an
+`McpHost` (`libs/mcp/host.ts`): `localHost()` keeps records in localStorage and tokens in an `McpSecretStore` you supply
+(browser-only apps); the Dev Console passes a host that proxies to its server so tokens stay there.
+`createMcpLibrary({ host, envAuth, navLabel })`.

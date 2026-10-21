@@ -1,20 +1,20 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T02:20:46.933Z",
+  "generatedAt": "2026-10-21T02:30:16.805Z",
   "summary": {
     "foundations": {
-      "built": 65,
+      "built": 66,
       "partial": 3,
-      "placeholder": 2,
+      "placeholder": 1,
       "planned": 0,
       "total": 70,
-      "coverage": 93
+      "coverage": 94
     },
     "kernel": {
       "built": 77,
-      "partial": 5,
-      "placeholder": 96,
+      "partial": 6,
+      "placeholder": 95,
       "planned": 0,
       "total": 178,
       "coverage": 43
@@ -436,10 +436,10 @@
       "group": "modules-extension-points-placeholders",
       "title": "Outbound RemoteServices: app code calls MCP servers / axHub services / other apps through one interface — capability axf.remote",
       "tag": "lock",
-      "status": "placeholder",
+      "status": "built",
       "wave": 1,
-      "module": "axf-kernel",
-      "notes": "contract + typed placeholder"
+      "module": "lib-mcp",
+      "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
     },
     {
       "id": "f.tokens",
@@ -2494,9 +2494,9 @@
       "group": "navigation-data-network",
       "title": "MCP client/server bridge",
       "tag": "lib",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
-      "module": null,
+      "module": "lib-mcp",
       "notes": ""
     },
     {

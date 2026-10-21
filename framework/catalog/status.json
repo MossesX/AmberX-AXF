@@ -977,9 +977,10 @@
     "module": null
   },
   "w.mcp": {
-    "status": "placeholder",
+    "status": "partial",
     "wave": 2,
-    "module": null
+    "module": "lib-mcp",
+    "note": "Oct 20 2026 (Fable): MCP client library on all three ports (framework/libs/mcp, lib-mcp, axf_libs/mcp; engine fixture mcp-client.json). The MCP server half (expose app actions as tools) is still a placeholder (axf.mcp.server)."
   },
   "w.push": {
     "status": "partial",
@@ -2091,10 +2092,10 @@
     "notes": "contract + typed placeholder"
   },
   "f.interop.remote": {
-    "status": "placeholder",
+    "status": "built",
     "wave": 1,
-    "module": "axf-kernel",
-    "notes": "contract + typed placeholder"
+    "module": "lib-mcp",
+    "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) \u2014 Oct 20 2026, Fable"
   },
   "k.roll": {
     "status": "built",

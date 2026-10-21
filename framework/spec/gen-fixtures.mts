@@ -17,6 +17,7 @@ import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, 
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
+import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { ASSET_TYPES } from '../core/types';
@@ -511,5 +512,122 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     toolTemplates: toolTemplates.map((c) => ({ ...c, filled: fillToolTemplate(c.template, c.args, c.url) })),
     addons: Object.entries(bundles).map(([name, raw]) => { const v = validateAddon(raw); return { case: name, raw, ok: v.ok, errors: v.errors, risks: v.bundle ? addonRisks(v.bundle) : null, stripped: v.bundle ? stripAddonRisks(v.bundle as AddonBundle) : null }; }),
     export: exportCase,
+  });
+}
+
+// MCP client (mcp-client@1, core/engines/mcp.ts): JSON-RPC framing, SSE parsing, Streamable HTTP rules, pagination,
+// error mapping, tool effects + the outbound call gate, text rendering, server ids and validation. Replayed by
+// framework/spec/check-mcp.mts (TS), the Kotlin McpConformanceTest and framework/python/axf_libs/mcp/test.py.
+{
+  const messages = [
+    '{"jsonrpc":"2.0","id":1,"result":{"ok":true}}',
+    '{"jsonrpc":"2.0","id":"a","error":{"code":-32601,"message":"no such method","data":{"m":"x"}}}',
+    '{"jsonrpc":"2.0","method":"notifications/progress","params":{"progress":1}}',
+    '{"jsonrpc":"2.0","id":7,"method":"sampling/createMessage","params":{}}',
+    '{"jsonrpc":"2.0","id":null,"error":{"code":-32700,"message":"parse error"}}',
+    '[{"jsonrpc":"2.0","id":1,"result":1},{"jsonrpc":"2.0","method":"n"}]',
+    '{"jsonrpc":"1.0","id":1,"result":1}',
+    '{"jsonrpc":"2.0","id":1}',
+    '{"jsonrpc":"2.0","id":{"x":1},"method":"m"}',
+    '{"jsonrpc":"2.0","id":1,"error":{"code":"x","message":"m"}}',
+    'not json',
+    '[]',
+    '42',
+  ];
+  const sse = [
+    'event: message\ndata: {"a":1}\n\n',
+    'data: line1\ndata: line2\n\nid: 9\nretry: 250\nevent: ping\ndata: x\n\n',
+    ': comment\r\ndata:no-space\r\n\r\ndata: tail-without-blank',
+    'event: alone\n\ndata: {"b":2}\nid: bad\u0000id\n\n',
+    'data: one\rdata: two\r\r',
+    'retry: notanumber\ndata: r\n\n',
+  ];
+  const chunked = ['data: {"a":', '1}\n', '\ndata: {"b":2}\n\n'];
+  const chunkParser = new SseParser();
+  const chunkEvents = chunked.flatMap((c) => chunkParser.feed(c));
+  chunkEvents.push(...chunkParser.end());
+  const headers = [
+    {}, { sessionId: 'abc' }, { sessionId: 'abc', protocolVersion: '2025-06-18' }, { method: 'GET' as const, sessionId: 's' }, { method: 'DELETE' as const, sessionId: 's', protocolVersion: '2025-03-26' }, { sessionId: null, protocolVersion: null },
+  ];
+  const responses = [
+    [200, 'application/json', false], [200, 'application/json; charset=utf-8', true], [200, 'text/event-stream', true], [202, undefined, true], [404, 'text/plain', true], [404, 'text/plain', false],
+    [200, 'text/html', false], [200, undefined, false], [500, 'application/json', true], [401, undefined, false], [204, undefined, false],
+  ] as const;
+  const negotiations = [
+    { protocolVersion: '2025-06-18', capabilities: { tools: { listChanged: true }, resources: {} }, serverInfo: { name: 'hub', version: '1.2', title: 'axHub' }, instructions: 'Be nice.' },
+    { protocolVersion: '2024-11-05', capabilities: {}, serverInfo: { name: 'old' } },
+    { protocolVersion: '2030-01-01', capabilities: {} },
+    { capabilities: {} },
+    'nope',
+    { protocolVersion: '2025-03-26', capabilities: { prompts: null, logging: {} } },
+  ];
+  const capsCases = [{ tools: {} }, { tools: { listChanged: true }, resources: {}, prompts: null }, {}, null, { logging: false }];
+  const pageSets = [
+    [{ items: ['a', 'b'] }],
+    [{ items: ['a'], nextCursor: 'c1' }, { items: ['b'], nextCursor: 'c2' }, { items: ['c'] }],
+    [{ items: ['a'], nextCursor: 'c1' }, { items: ['b'], nextCursor: 'c1' }, { items: ['x'] }],
+    [{ items: ['a'], nextCursor: 'c1' }, { items: ['b'], nextCursor: '' }, { items: ['x'] }],
+    [{ items: [] }],
+    [{ items: ['a'], nextCursor: 'c1' }, { items: ['b'], nextCursor: 'c2' }, { items: ['c'], nextCursor: 'c3' }, { items: ['d'] }],
+  ];
+  const rpcErrors = [-32700, -32600, -32601, -32602, -32603, -32002, -32001, -32800, -1, 42].map((code) => ({ code, message: code === 42 ? '' : `err ${code}` }));
+  const httpErrors = [400, 401, 403, 404, 405, 408, 409, 429, 500, 502, 503, 504, 302, 200];
+  const transportErrors = [['timeout', 'no answer within 30000 ms'], ['cancelled', 'cancelled'], ['network', 'ECONNREFUSED'], ['protocol', 'bad framing']] as const;
+  const annotations = [null, {}, { readOnlyHint: true }, { readOnlyHint: true, destructiveHint: true }, { destructiveHint: true }, { destructiveHint: false }, { idempotentHint: true }, { readOnlyHint: false, destructiveHint: false }];
+  const roles = [['*'], ['mcp.*'], ['mcp.call'], ['mcp.call', 'mcp.call.write'], ['mcp.call.*'], [], ['other.*', 'mcp.call.destructive']];
+  const contents = [
+    [{ type: 'text', text: 'hello' }],
+    [{ type: 'text', text: 'a' }, { type: 'text', text: 'b' }],
+    [{ type: 'image', mimeType: 'image/png', data: 'AAAA' }],
+    [{ type: 'resource', resource: { uri: 'file:///x', text: 'body', mimeType: 'text/plain' } }],
+    [{ type: 'resource', resource: { uri: 'file:///y', blob: 'QUJD' } }],
+    [{ type: 'resource_link', uri: 'file:///z', mimeType: 'text/plain' }],
+    [{ type: 'audio', mimeType: 'audio/wav', data: 'AA' }, { type: 'resource', resource: { uri: 'u' } }],
+    [],
+    null,
+  ];
+  const ids = [['axHub', []], ['axHub', ['axhub']], ['axHub', ['axhub', 'axhub-2']], ['  --Weird  Name!! ', []], ['', []], ['x'.repeat(60), []], ['Ünïcode Server', []]] as const;
+  const inputs = [
+    { name: 'Hub', url: 'https://example.com/mcp' },
+    { name: '', url: '' },
+    { name: 'x', url: 'ftp://x' },
+    { name: 'x', url: 'http://localhost:7090/mcp', id: 'Bad Id', tokenEnv: 'lower' },
+    { name: 'y'.repeat(81), url: 'https://e.com/' + 'p'.repeat(500) },
+    { name: 'ok', url: 'https://e.com', id: 'ok-1', tokenEnv: 'AXHUB_TOKEN' },
+  ];
+  const skeletons = [
+    { properties: { a: { type: 'string' }, b: { type: 'number', default: 3 } }, required: ['a'] },
+    { properties: { s: { type: 'string' }, i: { type: 'integer' }, b: { type: 'boolean' }, arr: { type: 'array' }, o: { type: 'object' }, e: { enum: ['x', 'y'] }, m: { type: ['number', 'null'] } }, required: ['s', 'i', 'b', 'arr', 'o', 'e', 'm'] },
+    { properties: { opt: { type: 'string' } } },
+    null,
+  ];
+  write('mcp-client.json', {
+    version: MCP_PROTOCOL_VERSION,
+    supported: MCP_SUPPORTED_VERSIONS,
+    sessionHeader: MCP_SESSION_HEADER,
+    versionHeader: MCP_VERSION_HEADER,
+    permissions: MCP_PERMISSIONS,
+    initialize: initializeParams(),
+    requests: [rpcRequest(1, 'tools/list'), rpcRequest('x', 'tools/call', { name: 't', arguments: { a: 1 } }), rpcNotification('notifications/initialized'), rpcNotification('notifications/cancelled', { requestId: 3, reason: 'user' })],
+    messages: messages.map((text) => ({ text, parsed: parseMessages(text) })),
+    sse: sse.map((text) => ({ text, events: parseSse(text) })),
+    sseChunked: { chunks: chunked, events: chunkEvents },
+    headers: headers.map((o) => ({ options: o, headers: mcpHeaders(o) })),
+    responses: responses.map(([status, contentType, hadSession]) => ({ status, contentType: contentType ?? null, hadSession, kind: classifyResponse(status, contentType, hadSession) })),
+    negotiate: negotiations.map((result) => ({ result, outcome: negotiate(result) })),
+    offers: capsCases.map((capabilities) => ({ capabilities, tools: offers(capabilities, 'tools'), resources: offers(capabilities, 'resources'), prompts: offers(capabilities, 'prompts'), logging: offers(capabilities, 'logging') })),
+    pageParams: [null, '', 'c1'].map((c) => ({ cursor: c, params: pageParams(c) ?? null })),
+    pages: pageSets.map((pages, i) => ({ pages, maxPages: i === 5 ? 3 : 100, merged: mergePages(pages, i === 5 ? 3 : 100) })),
+    rpcErrors: rpcErrors.map((e) => ({ error: e, wire: errorFromRpc(e) })),
+    httpErrors: httpErrors.map((status) => ({ status, wire: errorFromHttp(status) })),
+    transportErrors: transportErrors.map(([kind, message]) => ({ kind, message, wire: errorFromTransport(kind, message) })),
+    effects: annotations.flatMap((a) => [false, true].map((strict) => ({ annotations: a, strict, effect: toolEffect(a, strict) }))),
+    gates: roles.flatMap((granted) => (['read', 'write', 'destructive'] as const).map((effect) => ({ granted, effect, gate: callGate(effect, granted) }))),
+    // a host mapping the four permissions onto its own policy (the Dev Console: everything = dev.tools)
+    mappedGates: [['dev.tools'], ['dev.*'], ['mcp.call']].flatMap((granted) => (['read', 'write', 'destructive'] as const).map((effect) => ({ granted, effect, perms: { MANAGE: 'dev.tools', CALL: 'dev.tools', WRITE: 'dev.tools', DESTRUCTIVE: 'dev.tools' }, gate: callGate(effect, granted, { MANAGE: 'dev.tools', CALL: 'dev.tools', WRITE: 'dev.tools', DESTRUCTIVE: 'dev.tools' }) }))),
+    contentText: contents.map((content) => ({ content, text: contentText(content) })),
+    serverIds: ids.map(([name, taken]) => ({ name, taken, id: serverIdFor(name, taken) })),
+    validate: inputs.map((input) => ({ input, problems: validateServerInput(input) })),
+    skeletons: skeletons.map((schema) => ({ schema, args: argumentSkeleton(schema as never) })),
   });
 }
