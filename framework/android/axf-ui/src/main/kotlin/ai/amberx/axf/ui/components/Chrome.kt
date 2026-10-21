@@ -169,6 +169,13 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
     val tb = compiled.toolbar
     val widgets = runtime.toolbarWidgets()
     var q by remember { mutableStateOf("") }
+    // `collapsible` toolbars fold to a thin handle; the fold is remembered per device (runtime.toolbarCollapsed()).
+    if (tb.collapsible && runtime.toolbarCollapsed()) {
+        Row(modifier.fillMaxWidth().background(c.surface2).padding(horizontal = theme.spacing.oneHalf), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+            ai.amberx.axf.ui.kit.AxfIconButton("chevron-down", "Unfold the toolbar", { runtime.setToolbarCollapsed(false) }, size = theme.spacing.rowHeight * 0.6f, iconSize = 14.dp)
+        }
+        return
+    }
 
     fun runSearch() {
         val needle = q.trim().lowercase()
@@ -240,6 +247,7 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
                 )
             }
         }
+        if (tb.collapsible) ai.amberx.axf.ui.kit.AxfIconButton("chevron-up", "Fold the toolbar", { runtime.setToolbarCollapsed(true) }, iconSize = 14.dp)
     }
 }
 

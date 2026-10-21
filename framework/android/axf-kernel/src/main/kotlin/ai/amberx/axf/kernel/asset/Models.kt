@@ -193,7 +193,9 @@ public data class ToolbarItem(val id: String, val icon: String, val label: Strin
 public data class Toolbar(val variant: ToolbarVariant, val align: Align, val groups: List<Group>, val showSearch: Boolean, /** window id/kind this toolbar is attached to; "main" by default */ val window: String = "main",
     val density: ChromeDensity = ChromeDensity.REGULAR, val surface: ChromeSurface = ChromeSurface.FLAT, /** rule between item groups */ val divider: Boolean = true,
     /** `data.search` with `live: true`: the live search box (web `ToolbarSearch`); null = the classic submit-to-jump box */
-    val liveSearch: ai.amberx.axf.kernel.engine.SearchBarConfig? = null) {
+    val liveSearch: ai.amberx.axf.kernel.engine.SearchBarConfig? = null,
+    /** a chevron at the end folds the toolbar to a thin handle and back; remembered per device */
+    val collapsible: Boolean = false) {
     public data class Group(val id: String, val items: List<ToolbarItem>)
     public companion object {
         public fun fromJson(o: JsonObject): Toolbar = Toolbar(
@@ -202,6 +204,7 @@ public data class Toolbar(val variant: ToolbarVariant, val align: Align, val gro
             o.bool("showSearch"), o.str("window", "main"),
             ChromeDensity.parse(o.strOrNull("density")), ChromeSurface.parse(o.strOrNull("surface")), o.bool("divider", true),
             o.obj("search")?.takeIf { it.bool("live", false) }?.let { ai.amberx.axf.kernel.engine.WidgetEngine.searchBarConfig(it) },
+            o.bool("collapsible", false),
         )
     }
 }

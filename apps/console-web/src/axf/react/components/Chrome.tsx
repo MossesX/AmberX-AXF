@@ -72,6 +72,17 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
+  // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
+  const collapsible = tb.data.collapsible === true;
+  const collapsed = rt.toolbarCollapsed();
+  const fold = (on: boolean) => rt.setToolbarCollapsed(on);
+  if (collapsible && collapsed) {
+    return (
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)">
+        <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+      </div>
+    );
+  }
 
   // Search doubles as a mini command palette: jump to a view or hot-swap an asset by name.
   const run = (e: FormEvent) => {
@@ -130,9 +141,11 @@ export function Toolbar({ views }: { views: ViewMap }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
         </form>
       )}
+      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
+
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
 

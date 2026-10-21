@@ -52,6 +52,8 @@ export function templateInfo(id) {
   };
 }
 export const defaults = readJson(join(FRAMEWORK_DIR, 'defaults.json'));
+/** Non-slot defaults for every new app (framework/app-defaults.json, app-defaults@1): `hidden` = chrome hidden by default. */
+export const appDefaults = (() => { const f = join(FRAMEWORK_DIR, 'app-defaults.json'); return existsSync(f) ? readJson(f) : { hidden: [] }; })();
 export const FRAMEWORK_VERSION = spec.frameworkVersion;
 
 /** Directories of the framework that the react-ts template bakes into every new app (template.json → bake). */
@@ -145,15 +147,15 @@ export function listFrameworkAssets(template) {
 }
 
 /** Default-asset picks for `init` ({ type: id }): every pick must name an asset the new app will actually ship. */
-export function checkSlotPicks(slots, template) {
+export function checkSlotPicks(slots, template, designed = []) {
   if (!slots || typeof slots !== 'object' || Array.isArray(slots)) throw new Error('slots must be an object of { assetType: assetId }');
   const known = listFrameworkAssets(template);
   const out = {};
   for (const [type, id] of Object.entries(slots)) {
     if (id === undefined || id === null || id === '') continue;
     if (typeof id !== 'string') throw new Error(`slots.${type} must be an asset id`);
-    if (!known[type]) throw new Error(`slots: unknown asset type "${type}"`);
-    if (!known[type].some((a) => a.id === id)) throw new Error(`slots: no ${type} asset "${id}"`);
+    if (!known[type] && !spec.types[type]) throw new Error(`slots: unknown asset type "${type}"`);
+    if (!(known[type] ?? []).some((a) => a.id === id) && !designed.some((a) => a.type === type && a.id === id)) throw new Error(`slots: no ${type} asset "${id}"`);
     out[type] = id;
   }
   return out;
@@ -236,7 +238,36 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, project = {}, log = () => {} }) {
+/**
+ * Designed assets an app ships with (Build Pilot's banner / toolbar designers, …): asset@1 documents written into the
+ * app's own assets folder before the slot picks are checked, so a pick may name one of them. Each is validated like a
+ * framework asset; ids must not collide with a framework starter of the same type.
+ */
+export function checkDesignedAssets(assets) {
+  if (assets === undefined || assets === null) return [];
+  if (!Array.isArray(assets) || assets.length > 40) throw new Error('assets must be a list of up to 40 asset@1 documents');
+  const seen = new Set();
+  return assets.map((raw, i) => {
+    const r = validateAsset(raw);
+    if (!r.ok) throw new Error(`assets[${i}]: ${r.errors.join('; ')}`);
+    const key = `${raw.type}/${raw.id}`;
+    if (seen.has(key)) throw new Error(`assets[${i}]: ${key} is listed twice`);
+    seen.add(key);
+    if (existsSync(join(FRAMEWORK_DIR, 'assets', raw.type, `${raw.id}.json`))) throw new Error(`assets[${i}]: ${key} is a framework starter; give the designed asset its own id`);
+    if (JSON.stringify(raw).length > 200_000) throw new Error(`assets[${i}]: ${key} is over 200 KB`);
+    return raw;
+  });
+}
+
+/** Chrome hidden by default for a new app: the request's own list when given, else framework/app-defaults.json (+ the boilerplate's). */
+export function resolveHidden(hidden, bp) {
+  const list = hidden !== undefined && hidden !== null ? hidden : [...(appDefaults.hidden ?? []), ...(bp?.hidden ?? [])];
+  if (!Array.isArray(list) || list.some((t) => typeof t !== 'string')) throw new Error('hidden must be a list of asset types');
+  for (const t of list) if (!spec.types[t]?.hideable) throw new Error(`hidden: "${t}" is not a hideable type (${Object.keys(spec.types).filter((k) => spec.types[k].hideable).join(', ')})`);
+  return [...new Set(list)];
+}
+
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, project = {}, log = () => {} }) {
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -245,7 +276,9 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   targets ??= tpl.targets;
   const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
   const bp = boilerplate ? loadBoilerplate(boilerplate) : null;
-  const picks = checkSlotPicks(slots, template);
+  const designed = checkDesignedAssets(designedAssets);
+  const hiddenSlots = resolveHidden(hidden, bp);
+  const picks = checkSlotPicks(slots, template, designed);
   if (bp) { modules = [...new Set([...modules, ...(bp.modules ?? [])])]; libraries = [...(bp.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)), ...libraries]; }
   const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
@@ -268,6 +301,14 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   if (bad.length) throw new Error(`Framework assets failed validation:\n${bad.map((b) => `  ${b.file}: ${b.result.errors.join('; ')}`).join('\n')}`);
   cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, tpl.assetsDir), { recursive: true });
   for (const extra of tpl.extraAssets) if (existsSync(join(FRAMEWORK_DIR, extra))) cpSync(join(FRAMEWORK_DIR, extra), join(dest, tpl.assetsDir), { recursive: true });
+  if (designed.length) {
+    log(`• writing ${designed.length} designed asset(s)`);
+    for (const a of designed) {
+      const d = join(dest, tpl.assetsDir, a.type);
+      mkdirSync(d, { recursive: true });
+      writeFileSync(join(d, `${a.id}.json`), JSON.stringify(a, null, 2) + '\n');
+    }
+  }
 
   // Build options (--wrap-groups …): every option is written at its default unless given, so new builds
   // start from the registry defaults even when the framework's own starter assets differ.
@@ -283,6 +324,7 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     targets,
     startView: bp?.screens?.[0]?.id ?? 'home',
     defaults: { ...defaults, ...(bp?.defaults ?? {}), ...picks },
+    hidden: hiddenSlots,
     options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
@@ -431,6 +473,8 @@ export function validateApp(dir) {
     for (const [t, id] of Object.entries(m.defaults ?? {})) {
       if (!byType[t]?.has(id)) errors.push(`manifest default ${t} → "${id}" does not exist`);
     }
+    if (m.hidden !== undefined && (!Array.isArray(m.hidden) || m.hidden.some((t) => typeof t !== 'string'))) errors.push('manifest "hidden" must be a list of asset types');
+    for (const t of Array.isArray(m.hidden) ? m.hidden : []) if (!spec.types[t]?.hideable) errors.push(`manifest hidden "${t}" is not a hideable type`);
     if (m.framework?.version !== FRAMEWORK_VERSION) warnings.push(`app targets framework ${m.framework?.version}, engine is ${FRAMEWORK_VERSION}`);
   }
   const lPath = join(root, 'axf.lock.json');

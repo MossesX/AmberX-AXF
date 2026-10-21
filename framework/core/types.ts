@@ -157,6 +157,8 @@ export interface ToolbarData {
   search?: ToolbarSearch;
   /** widget assets (clock, search bar) at the toolbar's start or end (core/engines/widgets.ts) */
   widgets?: ToolbarWidget[];
+  /** a chevron at the end folds the toolbar to a thin handle and back (default false); remembered per device */
+  collapsible?: boolean;
 }
 
 /** Toolbar search behaviour. Results come from the runtime's search index (engines/search.ts). */
@@ -336,6 +338,8 @@ export interface AxfManifest {
   targets: string[];
   startView?: string;
   defaults: ActiveAssets;
+  /** Chrome slots hidden by default (hideable types only, e.g. `["toolbar"]`); the user can still show them in Settings → Appearance. */
+  hidden?: string[];
   structure?: { path: string; purpose: string }[];
 }
 

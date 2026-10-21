@@ -25,6 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import ai.amberx.axf.ui.windows.WindowPointer
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 
@@ -67,8 +70,18 @@ public fun AxfRoot(
     AxfThemeProvider(compiled.theme, fonts) {
         // Hardware keyboards: Ctrl/Cmd+K focuses the search bar (search-bar widget `shortcut`). "/" is left to the page: at the
         // root we can't tell whether a text field has focus, and stealing a typed "/" would be worse than no shortcut.
+        // The window manager's pointer position (minimize-to-cursor) is observed here, on the root, in the Initial pass
+        // and never consumed, so every child still gets its taps. (A full-size sibling Box in FloatingWindowsHost used
+        // to do this, and a topmost sibling with any pointer input takes every touch: every app looked frozen.)
         BoxWithConstraints(Modifier.fillMaxSize().background(LocalAxfTheme.current.colors.bg).onPreviewKeyEvent { e ->
             ai.amberx.axf.ui.components.SearchShortcuts.handles(e, typing = true) && ai.amberx.axf.ui.components.SearchShortcuts.trigger()
+        }.pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val e = awaitPointerEvent(PointerEventPass.Initial)
+                    e.changes.firstOrNull()?.position?.let { WindowPointer.x = it.x; WindowPointer.y = it.y }
+                }
+            }
         }) {
             val widthDp = maxWidth.value.toInt()
             LaunchedEffect(widthDp) { runtime.setWindowWidth(widthDp) }

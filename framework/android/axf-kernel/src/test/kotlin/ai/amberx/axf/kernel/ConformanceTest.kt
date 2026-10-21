@@ -93,7 +93,13 @@ class ConformanceTest {
         assertEquals((f.getValue("hideable") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hideableTypes(types), "hideable types")
         for (c in f.getValue("cases") as JsonArray) {
             val o = c.jsonObject.getValue("overrides").jsonObject.mapValues { it.value.jsonPrimitive.content.toBoolean() }
-            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o), "hidden for $o")
+            val d = (c.jsonObject["defaults"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o, d), "hidden for $o with defaults $d")
+        }
+        // manifest.hidden cleaned: hideable types only, spec order, no repeats
+        for ((k, v) in f.getValue("defaults").jsonObject) {
+            val input = if (k == "(none)") emptyList() else k.split(",")
+            assertEquals((v as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.defaultHidden(types, input), "defaultHidden($input)")
         }
     }
 
@@ -210,7 +216,7 @@ class ConformanceTest {
         }
         fun attrsOf(t: Toolbar? = null, n: NavMenu? = null, a: AppMenu? = null): Map<String, String> {
             val m = mutableMapOf<String, String>()
-            t?.let { val s = ComponentStyleEngine.toolbar(it, st); m["data-fx-toolbar"] = s.variant.name.lowercase().replace('_', '-'); m["data-fx-toolbar-surface"] = s.surface.name.lowercase(); m["data-fx-toolbar-divider"] = if (s.divider) "on" else "off" }
+            t?.let { val s = ComponentStyleEngine.toolbar(it, st); m["data-fx-toolbar"] = s.variant.name.lowercase().replace('_', '-'); m["data-fx-toolbar-surface"] = s.surface.name.lowercase(); m["data-fx-toolbar-divider"] = if (s.divider) "on" else "off"; m["data-fx-toolbar-collapsible"] = if (s.collapsible) "on" else "off" }
             n?.let { val s = ComponentStyleEngine.navMenu(it); m["data-fx-nav"] = s.style.name.lowercase(); m["data-fx-nav-indicator"] = s.indicator.name.lowercase(); m["data-fx-nav-icons"] = if (s.showIcons) "on" else "off" }
             a?.let { m["data-fx-menubar"] = ComponentStyleEngine.appMenu(it, st).surface.name.lowercase() }
             return m

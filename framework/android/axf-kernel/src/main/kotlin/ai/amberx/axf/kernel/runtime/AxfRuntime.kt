@@ -378,23 +378,45 @@ public class AxfRuntime(
         set({ it }, recompile = true)
     }
 
+    /* ---------------- collapsible toolbar (asset `collapsible: true`; web setting axf.toolbar.collapsed) ---------------- */
+    private val toolbarCollapsedKey get() = "$key:toolbar-collapsed"
+
+    /** Is a collapsible toolbar folded to its handle on this device? */
+    public fun toolbarCollapsed(): Boolean = compiled.value.toolbar.collapsible && store.get(toolbarCollapsedKey) == "1"
+
+    public fun setToolbarCollapsed(on: Boolean) {
+        if (on) store.put(toolbarCollapsedKey, "1") else store.remove(toolbarCollapsedKey)
+        set({ it })
+    }
+
     private val hideKey get() = "$key:hide"
 
-    /** Every hidden slot (only hideable types: the chrome). */
-    public fun hiddenSlots(): List<String> {
-        val arr = store.get(hideKey)?.let { ai.amberx.axf.kernel.asset.AxfJson.runCatching { parseToJsonElement(it) as kotlinx.serialization.json.JsonArray }.getOrNull() } ?: return emptyList()
-        val set = arr.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.content }.associateWith { true }
-        return HideEngine.hiddenSlots(registry.types, set)
+    /** Slots the app hides by default (`manifest.hidden`); the user's choice wins over it. */
+    public fun defaultHiddenSlots(): List<String> = HideEngine.defaultHidden(registry.types, manifest.hidden)
+
+    /** The user's hide overrides (type -> hidden). Stored as a JSON object; the older JSON array (a list of hidden types) still reads. */
+    private fun hideOverrides(): Map<String, Boolean> {
+        val el = store.get(hideKey)?.let { ai.amberx.axf.kernel.asset.AxfJson.runCatching { parseToJsonElement(it) }.getOrNull() } ?: return emptyMap()
+        return when (el) {
+            is kotlinx.serialization.json.JsonArray -> el.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.content }.associateWith { true }
+            is kotlinx.serialization.json.JsonObject -> el.mapNotNull { (k, v) -> (v as? kotlinx.serialization.json.JsonPrimitive)?.content?.toBooleanStrictOrNull()?.let { k to it } }.toMap()
+            else -> emptyMap()
+        }
     }
+
+    /** Every hidden slot (only hideable types: the chrome): the user's overrides over the app's defaults. */
+    public fun hiddenSlots(): List<String> = HideEngine.hiddenSlots(registry.types, hideOverrides(), defaultHiddenSlots())
 
     public fun slotHidden(type: String): Boolean = type in hiddenSlots()
 
-    /** Hide or show a slot's chrome; ignored for types that aren't hideable. */
+    /** Hide or show a slot's chrome; ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
     public fun setSlotHidden(type: String, hidden: Boolean) {
         if (!HideEngine.hideable(registry.types, type) || slotHidden(type) == hidden) return
         if (!can("assets.swap")) { toast("Your role cannot change the layout.", ToastKind.DANGER, "Permission denied"); return }
-        val next = if (hidden) hiddenSlots() + type else hiddenSlots() - type
-        store.put(hideKey, kotlinx.serialization.json.JsonArray(next.map { kotlinx.serialization.json.JsonPrimitive(it) }).toString())
+        val next = hideOverrides().toMutableMap()
+        if (hidden == (type in defaultHiddenSlots())) next.remove(type) else next[type] = hidden
+        if (next.isEmpty()) store.remove(hideKey)
+        else store.put(hideKey, kotlinx.serialization.json.JsonObject(next.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }).toString())
         terminal.ok("hot-swap", "$type ${if (hidden) "hidden" else "shown"}")
         set({ s -> if (hidden && type == AssetTypes.CONTEXT_MENU) s.copy(context = null) else s }, recompile = true)
     }

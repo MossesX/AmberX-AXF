@@ -197,7 +197,8 @@
       "attrs": {
         "data-fx-toolbar": "icons-labels",
         "data-fx-toolbar-surface": "flat",
-        "data-fx-toolbar-divider": "on"
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
       }
     },
     "standard-icons": {
@@ -208,7 +209,8 @@
       "attrs": {
         "data-fx-toolbar": "icons",
         "data-fx-toolbar-surface": "flat",
-        "data-fx-toolbar-divider": "on"
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
       }
     },
     "text-commands": {
@@ -219,7 +221,8 @@
       "attrs": {
         "data-fx-toolbar": "labels",
         "data-fx-toolbar-surface": "flat",
-        "data-fx-toolbar-divider": "on"
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
       }
     }
   },
@@ -290,7 +293,8 @@
       "attrs": {
         "data-fx-toolbar": "labels",
         "data-fx-toolbar-surface": "glass",
-        "data-fx-toolbar-divider": "off"
+        "data-fx-toolbar-divider": "off",
+        "data-fx-toolbar-collapsible": "off"
       }
     },
     "toolbar-roomy-raised": {
@@ -301,7 +305,20 @@
       "attrs": {
         "data-fx-toolbar": "icons",
         "data-fx-toolbar-surface": "raised",
-        "data-fx-toolbar-divider": "on"
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
+      }
+    },
+    "toolbar-collapsible": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 4px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "on"
       }
     },
     "nav-compact-fill": {

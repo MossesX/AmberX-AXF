@@ -11,7 +11,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
-import { hiddenSlots, hideableTypes } from '../core/engines/hide';
+import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
@@ -61,7 +61,12 @@ write('hide.json', {
     { overrides: {}, hidden: hiddenSlots({}) },
     { overrides: { toolbar: true, 'nav-menu': false }, hidden: hiddenSlots({ toolbar: true, 'nav-menu': false }) },
     { overrides: { 'color-theme': true, layout: true, 'context-menu': true }, hidden: hiddenSlots({ 'color-theme': true, layout: true, 'context-menu': true }) },
+    // App defaults (manifest.hidden): hidden until the user shows them; an override wins either way; non-hideable defaults are ignored.
+    { overrides: {}, defaults: ['toolbar'], hidden: hiddenSlots({}, ['toolbar']) },
+    { overrides: { toolbar: false }, defaults: ['toolbar'], hidden: hiddenSlots({ toolbar: false }, ['toolbar']) },
+    { overrides: { banner: true }, defaults: ['toolbar', 'layout'], hidden: hiddenSlots({ banner: true }, ['toolbar', 'layout']) },
   ],
+  defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
 // Spacing choice (core/engines/spacing.ts): every style theme compiled under every choice; plus how stored values read.
 write('spacing.json', {
@@ -165,6 +170,7 @@ write('components.json', {
   'chrome-cases': {
     'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),
     'toolbar-roomy-raised': toolbarStyle({ variant: 'icons', align: 'center', groups: [], showSearch: true, density: 'roomy', surface: 'raised' }),
+    'toolbar-collapsible': toolbarStyle({ variant: 'icons', align: 'start', groups: [], showSearch: false, collapsible: true }),
     'nav-compact-fill': navMenuStyle({ style: 'pills', sections: [], density: 'compact', indicator: 'fill', showIcons: false }),
     'nav-roomy-none': navMenuStyle({ style: 'list', sections: [], density: 'roomy', indicator: 'none' }),
     'menu-compact-glass': appMenuStyle({ menus: [], density: 'compact', surface: 'glass' }),

@@ -224,6 +224,10 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar[data-align='center'] { justify-content: center; }
 .fx-toolbar[data-align='spread'] { justify-content: space-between; }
 .fx-toolbar__group { display: flex; gap: 2px; padding-right: var(--fx-space); border-right: var(--fx-border-w) solid var(--fx-border); }
+/* collapsible toolbar (asset `collapsible: true`): a chevron at the end folds it to a thin handle */
+.fx-toolbar__fold { margin-left: auto; flex: none; }
+.fx-toolbar.is-collapsed { padding-top: 0; padding-bottom: 0; min-height: 0; justify-content: flex-end; }
+.fx-toolbar.is-collapsed .fx-toolbar__fold { height: calc(var(--fx-row-h) * 0.6); }
 .fx-toolbar__group:last-of-type { border-right: 0; }
 .fx-toolbtn {
   display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;

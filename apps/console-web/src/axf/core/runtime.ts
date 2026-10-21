@@ -12,7 +12,7 @@ import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
-import { hideable, hiddenSlots } from './engines/hide';
+import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -59,6 +59,8 @@ export const ROLL_SLOT_KEY = (type: string) => `axf.roll.slot.${type}`;
 export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${type}.${id}`;
 /** Hidden slot override (Settings → Appearance → Assets → Hidden); only hideable types (core/engines/hide.ts). */
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
+/** Per-device fold state of a `collapsible` toolbar (same key on Android). */
+export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
 
@@ -503,26 +505,44 @@ export class AxfRuntime {
     else this.settings.set(ROLL_ASSET_KEY(type, id), on);
   }
 
+  /* ---------------- collapsible toolbar (asset `collapsible: true`) ---------------- */
+
+  /** Is a collapsible toolbar folded to its handle on this device? (setting `axf.toolbar.collapsed`, same key on Android) */
+  toolbarCollapsed(): boolean {
+    return this.asset('toolbar').data.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
+  }
+
+  setToolbarCollapsed(on: boolean): void {
+    if (on) this.settings.set(TOOLBAR_COLLAPSED_KEY, true);
+    else this.settings.clear(TOOLBAR_COLLAPSED_KEY);
+    this.set({});
+  }
+
   /* ---------------- hidden slots (core/engines/hide.ts) ---------------- */
+
+  /** Slots the app hides by default (`manifest.hidden`); the user's choice in Settings → Appearance wins over it. */
+  defaultHiddenSlots(): AssetType[] {
+    return defaultHidden(this.manifest.hidden) as AssetType[];
+  }
 
   /** Is this slot hidden? Only hideable types (the chrome) can be. */
   slotHidden(type: AssetType): boolean {
-    return hideable(type) && this.settings.get(HIDE_KEY(type)) === true;
+    return hideable(type) && this.hiddenSlots().includes(type);
   }
 
-  /** Every hidden slot. */
+  /** Every hidden slot: the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
-    const o: Record<string, boolean> = {};
-    for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) === true) o[t] = true;
-    return hiddenSlots(o) as AssetType[];
+    const o: Record<string, boolean | undefined> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
+    return hiddenSlots(o, this.defaultHiddenSlots()) as AssetType[];
   }
 
-  /** Hide or show a slot's chrome. Ignored for types that aren't hideable. */
+  /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
     if (!hideable(type) || this.slotHidden(type) === hidden) return;
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
-    if (hidden) this.settings.set(HIDE_KEY(type), true);
-    else this.settings.clear(HIDE_KEY(type));
+    if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
+    else this.settings.set(HIDE_KEY(type), hidden);
     if (hidden && type === 'context-menu') this.closeContext();
     this.terminal.ok('hot-swap', `${type} ${hidden ? 'hidden' : 'shown'}`);
     this.set({});

@@ -26,6 +26,8 @@ public data class AxfManifest(
     val startView: String,
     /** default asset per slot — every app starts from the same set, so apps left on defaults look identical */
     val defaults: Map<String, String>,
+    /** chrome slots hidden by default (hideable types only, e.g. ["toolbar"]); the user can still show them in Settings */
+    val hidden: List<String> = emptyList(),
     val structure: List<StructureEntry>,
     /** Android: application id, min/target sdk, module list, deep-link scheme */
     val android: AndroidManifestInfo?,
@@ -47,6 +49,7 @@ public data class AxfManifest(
             targets = o.strList("targets"),
             startView = o.str("startView", "home"),
             defaults = o.strMap("defaults"),
+            hidden = o.strList("hidden"),
             structure = o.objList("structure").map { StructureEntry(it.str("path"), it.str("purpose"), it.str("kind", "file"), it.bool("required")) },
             android = o.obj("android")?.let { AndroidManifestInfo(it.str("applicationId", "ai.amberx.axf.app"), it.str("scheme", "axf"), it.strList("modules"), ai.amberx.axf.kernel.asset.int(it, "minSdk", 26), ai.amberx.axf.kernel.asset.int(it, "targetSdk", 35)) },
             raw = o,

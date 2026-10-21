@@ -15,7 +15,7 @@
   ],
   "startView": "home",
   "defaults": {
-    "color-theme": "amber-ember",
+    "color-theme": "arctic-daylight",
     "style-theme": "glass-orbit",
     "layout": "classic-ide",
     "app-menu": "standard-desktop",
@@ -33,6 +33,9 @@
     "badge": "new",
     "uac-policy": "standard"
   },
+  "hidden": [
+    "toolbar"
+  ],
   "options": {
     "wrap-groups": false
   },

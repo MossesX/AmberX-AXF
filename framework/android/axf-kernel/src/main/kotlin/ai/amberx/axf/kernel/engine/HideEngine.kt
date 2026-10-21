@@ -15,7 +15,15 @@ public object HideEngine {
     /** Every hideable type, in spec order. */
     public fun hideableTypes(types: AssetTypeRegistry): List<String> = types.ids().filter { hideable(types, it) }
 
-    /** The hidden slots given runtime overrides (type -> hidden); non-hideable types never hide. */
-    public fun hiddenSlots(types: AssetTypeRegistry, overrides: Map<String, Boolean>): List<String> =
-        hideableTypes(types).filter { overrides[it] == true }
+    /**
+     * The hidden slots given runtime overrides (type -> hidden) and the app's defaults (`manifest.hidden`: hidden until
+     * the user shows them). An override wins either way (true hides, false shows); with no override the default
+     * decides. Non-hideable types never hide, whatever either says.
+     */
+    public fun hiddenSlots(types: AssetTypeRegistry, overrides: Map<String, Boolean>, defaults: List<String> = emptyList()): List<String> =
+        hideableTypes(types).filter { t -> overrides[t]?.let { it } ?: (t in defaults) }
+
+    /** The app's default hidden slots, cleaned: hideable types only, in spec order, no repeats. */
+    public fun defaultHidden(types: AssetTypeRegistry, manifestHidden: List<String>): List<String> =
+        hideableTypes(types).filter { it in manifestHidden }
 }
