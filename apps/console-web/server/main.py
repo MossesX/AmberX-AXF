@@ -332,6 +332,12 @@ def templates() -> Any:
     return engine("templates")
 
 
+@app.get("/api/app-defaults")
+def app_defaults() -> Any:
+    """framework/app-defaults.json (app-defaults@1) + what the chrome can do (hideable types, widget hosts, enums): for designers."""
+    return engine("app-defaults")
+
+
 @app.get("/api/build-options")
 def build_options() -> Any:
     """The build options registry (--switches): what `init` accepts as `options`."""

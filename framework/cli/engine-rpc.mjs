@@ -13,7 +13,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { describeOptions } from './build-options.mjs';
-import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listFrameworkAssets, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp } from './build-engine.mjs';
+import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listFrameworkAssets, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp, appDefaults, spec as assetSpec } from './build-engine.mjs';
 import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.mjs';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
@@ -35,6 +35,19 @@ const raw = argJson ?? (op && process.argv.length === 3 ? '{}' : readStdin() || 
 const req = JSON.parse(raw);
 const b = { ...req, op: op ?? req.op };
 const lines = [];
+/** What a new app starts with besides its slots (framework/app-defaults.json) plus what the chrome can do: for designers (Build Pilot). */
+function appDefaultsView() {
+  const types = assetSpec.types;
+  const widgetTypes = Object.keys(types).filter((t) => types[t].widget === true);
+  const hosts = {};
+  for (const [t, ts] of Object.entries(types)) {
+    if (ts.attach) hosts[t] = { field: 'attach', types: ts.attach.types ?? [], sides: ts.attach.sides ?? [] };
+    else if (ts.widgets) hosts[t] = { field: 'widgets', types: widgetTypes, sides: ts.widgets.sides ?? [] };
+  }
+  return { $axf: 'app-defaults@1', hidden: appDefaults.hidden ?? [], hideable: Object.keys(types).filter((t) => types[t].hideable), hosts,
+    enums: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.enums).map(([t, ts]) => [t, ts.enums])) };
+}
+
 const log = (m) => lines.push(m);
 
 function run() {
@@ -105,6 +118,7 @@ function run() {
     case 'build-step': return stepQueue({ id: b.id, action: b.action, status: b.status, note: b.note, by: b.by ?? 'console', log });
     case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'build-options': return { options: describeOptions() };
+    case 'app-defaults': return appDefaultsView();
     case 'framework-assets': return { template: b.template ?? null, assets: listFrameworkAssets(b.template) };
     case 'options': { const r = appOptions({ dir: b.framework ? '.' : safeDir(b.dir ?? '.'), framework: !!b.framework, options: b.options ?? {}, log }); return r; }
     case 'validate': return { dir: b.dir, report: validateApp(safeDir(b.dir)) };

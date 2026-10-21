@@ -132,7 +132,7 @@ def plugin_perm(folder: str) -> str:
 # GET routes any signed-in user may read (framework catalog data, no secrets, no host details).
 USER_READ_PATHS = frozenset({
     "/api/health", "/api/me", "/api/catalog", "/api/tracker", "/api/libraries", "/api/boilerplates",
-    "/api/boilerplates/items", "/api/plugin-index", "/api/modules", "/api/templates", "/api/ported-kits",
+    "/api/boilerplates/items", "/api/app-defaults", "/api/plugin-index", "/api/modules", "/api/templates", "/api/ported-kits",
     "/api/library-templates", "/api/plan", "/api/pending", "/api/build-queue", "/api/plugins",
 })
 
