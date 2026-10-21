@@ -25,7 +25,7 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
-import { BannerStrip, bannerStripSettings, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
+import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -83,7 +83,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, bannerStripSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
   }, [rt, status, loaded]);
   return { contributed };
 }
@@ -103,10 +103,10 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
-  // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) live in Patches, above
-  // every tab (Brett, Oct 21 2026): the console page shows them only with Settings → Plugins → Banners → "Show banners in
-  // the console too"; the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx) is only them. The console's own
-  // banners (the menu rescue note) stay on the console page. They sit above the page (slot app.frame.banners).
+  // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
+  // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
+  // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which
+  // is only them (Brett, Oct 21 2026). The console's own banners (the menu rescue note) stay on the console page.
   const inConsole = useBannersInConsole();
   useBannerRelay();
   const consoleOwn = useMemo(() => new Set((menuLibrary.banners ?? []).map((b) => b.id)), []);

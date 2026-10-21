@@ -1,0 +1,30 @@
+[
+ {
+  "name": "standalone",
+  "path": "/",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id:'chg-20261021-5ee0000201',title:'Console as before standalone',kind:'edit',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},steps:[{text:'Restore App tabs',state:'running'}]})});})()",
+    "wait": 2000
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 5000
+   }
+  ]
+ },
+ {
+  "name": "in-patches",
+  "path": "/?axf-embed=patches",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id:'chg-20261021-5ee0000201',title:'Console as before standalone',kind:'edit',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},steps:[{text:'Restore App tabs',state:'running'}]})});})()",
+    "wait": 2000
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 5000
+   }
+  ]
+ }
+]

@@ -4,11 +4,15 @@ Brett: "Disable all banner plugins from console and enable them in Patches so th
 app you are in. Put a _ underneath the x on codebase changes to minimize banner. Replace the x with an _ for the 2
 building banners and any error banners. All banners launch expanded."
 
+Follow-up the same day: "Keep console the way it was unless running inside Patches, then remove tab group and let
+Patches control tabs."
+
 ## How it works
-- **Console page:** plugin banners (codebase changes, build manager, activity, approvals, systems check, keys,
-  What's new) no longer render on the console page. The plugins stay installed (servers, menus, views, settings
-  untouched). Switch back: Settings → Plugins → Banners → **Show banners in the console too** (`console.banners.inConsole`,
-  default off). The console's own menu-rescue note still shows on the console page.
+- **Console on its own:** exactly as before — plugin banners on its page and the App tabs bar (Console / Pilot /
+  axHub). The App tabs plugin removed with Patches is back (0.2.0).
+- **Console as a tab in Patches** (embed@1 marker in the user agent): no plugin banners on the page and no tab group
+  (App tabs contributes no bar, cover or Apps-menu tab entries inside any host app). Patches runs the tabs and shows
+  the banners in its strip. The console's own menu-rescue note still shows.
 - **Banner strip:** `https://console.amberxai.com/?axf-strip=banners` is the same console app rendering only the
   plugin banners (`src/bannerStrip.tsx`). It waits for axHub's look like the rest of the console.
 - **Patches:** `views/BannerStrip.kt`: a web view above the banner and tab row (all tabs), loaded once the Console

@@ -1,9 +1,8 @@
 /**
- * Banners live in Patches, not in the console (Brett, Oct 21 2026): "disable all banner plugins from console and enable
- * them in Patches so they are always there regardless what app you are in".
+ * Banners in Patches (Brett, Oct 21 2026): standalone, the console shows its plugin banners as it always did. Inside
+ * Patches the console tab shows none of them ("keep console the way it was unless running inside Patches"); Patches
+ * shows them above every tab instead, through this banner strip.
  *
- * - The console page itself shows no plugin banners by default (Settings → Plugins → Banners: "Show banners in the
- *   console too" brings them back). The plugins stay installed: their servers, menus, views and settings keep working.
  * - `?axf-strip=banners` is the banner strip: the same console app, but the page is only the plugin banners
  *   (slot app.frame.banners), nothing else. Patches shows it in a web view above every tab, so the banners are on
  *   screen whichever app (Console, Pilot, axHub) is in front.
@@ -15,10 +14,8 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FrameBanners, useAxfState, useRuntime } from './axf/react';
-import type { AxfWebLibrary } from './axf/react/library';
 
 export const STRIP_QUERY = 'axf-strip';
-export const BANNERS_IN_CONSOLE = 'console.banners.inConsole';
 const RELAY_CHANNEL = 'axf-console-banner-actions';
 const RELAY_KEY = 'axf:banner-action';
 /** The host app the strip and the Console tab run in. */
@@ -33,13 +30,10 @@ export const isBannerStrip = (() => {
   try { return new URLSearchParams(globalThis.location?.search ?? '').get(STRIP_QUERY) === 'banners'; } catch { return false; }
 })();
 
-/** Whether the console page shows the plugin banners (off by default: they live in Patches). Live with the setting. */
+/** Whether the console page shows the plugin banners: yes on its own, no as a tab in Patches (Patches' strip shows them). */
 export function useBannersInConsole(): boolean {
   const rt = useRuntime();
-  const read = () => { try { return rt.settings.get(BANNERS_IN_CONSOLE) === true; } catch { return false; } };
-  const [on, setOn] = useState(read);
-  useEffect(() => rt.settings.onChange(BANNERS_IN_CONSOLE, (v) => setOn(v === true)), [rt]);
-  return on;
+  return rt.embedded?.host !== PATCHES;
 }
 
 /** What the strip hands to the Console tab: an action a tap dispatched, a dialog, or a view. */
@@ -131,19 +125,3 @@ export function BannerStrip() {
     </div>
   );
 }
-
-/** Settings → Plugins → Banners: where the plugin banners show. */
-export const bannerStripSettings: AxfWebLibrary = {
-  id: 'ai.amberx.axf.console.banners',
-  label: 'Banners',
-  version: '0.1.0',
-  settings: [{
-    id: 'console.banners', label: 'Banners', icon: 'bell', tab: 'plugins', order: 5,
-    settings: [
-      {
-        key: BANNERS_IN_CONSOLE, label: 'Show banners in the console too', kind: 'toggle', default: false,
-        description: 'Plugin banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new) show in Patches, above every tab. On also shows them at the top of the console page.',
-      },
-    ],
-  }],
-};
