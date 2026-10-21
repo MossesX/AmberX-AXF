@@ -7,6 +7,7 @@ import { Button, Note, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AdminPanel } from './Admin';
+import { appMenu } from './menu';
 import { FOLDER, api, fmtBytes, type Me } from './api';
 import { SandboxView } from './SandboxView';
 import './sandbox.css';
@@ -45,12 +46,7 @@ export const plugin: AxfWebLibrary = {
   },
   views: { [VIEW]: { title: 'Sandbox', icon: 'box', keywords: ['sandbox', 'try', 'safe', 'github', 'pilot', 'read-only'], render: () => <SandboxView /> } },
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Sandbox', icon: 'box', view: VIEW }] },
-  appMenu: [{
-    id: 'sandbox.menu', menu: 'tools', menuLabel: 'Tools', items: [
-      { id: 'sandbox.open', label: 'Sandbox', icon: 'box', action: 'sandbox.open' },
-      { id: 'sandbox.manage', label: 'Sandbox management', icon: 'settings', action: 'sandbox.manage', requires: 'sandbox.manage' },
-    ],
-  }],
+  appMenu, // web/menu.ts: its entries in the console's application menu
   contextMenu: [{ id: 'sandbox.ctx', target: 'default', order: 80, items: [{ id: 'sandbox.ctx.open', label: 'Open the sandbox', icon: 'box', action: 'sandbox.open' }] }],
   settingsTabs: [{ id: 'sandbox', label: 'Sandbox', icon: 'box', order: 90, parent: 'plugins' }],
   settingsPanels: [
