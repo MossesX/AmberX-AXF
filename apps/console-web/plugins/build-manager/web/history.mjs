@@ -7,7 +7,7 @@
  * done, failed, running}, result {state, summary} | null, closed, repos, where, and the build stats when recorded:
  * status, buildRef {kind, id}, surface, host, startedAt, finishedAt, lastSeenAt, estimate {minutes, costUsd},
  * actual {minutes, costUsd, inputTokens, outputTokens, source}, costEstimated, branch, areas, parent, progress,
- * activity, verify {state, …}, commits [sha], links {name: url|path}.
+ * doing, verify {state, …}, commits [sha], links {name: url|path}.
  */
 
 export const STALE_MS = 10 * 60_000;
@@ -58,9 +58,9 @@ export function liveFromChanges(summaries, rows = [], now = Date.now()) {
     out.push({
       id: `chg:${s.id}`, changeId: s.id, title: str(s.title), state: st, activityState: stale ? 'stale' : st === 'queued' ? 'queued' : 'running',
       startedAt: started, finishedAt: 0, url: '', source: SURFACE_LABEL[s.surface] ?? str(s.surface || s.where || 'session'),
-      surface: str(s.surface), host: str(s.host), model: modelOf(s.model), modelRaw: str(s.model), runningStep: str(s.steps?.running), activity: str(s.activity),
+      surface: str(s.surface), host: str(s.host), model: modelOf(s.model), modelRaw: str(s.model), runningStep: str(s.steps?.running), doing: str(s.doing),
       progress, row: rowFor(s, rows), via: s.buildRef ? `${s.buildRef.kind}:${s.buildRef.id}` : '', estimate: est, elapsed,
-      currentStep: str(s.activity) || str(s.steps?.running), over: est && elapsed != null ? Math.max(0, Math.round(elapsed / 60000 - est)) : 0,
+      currentStep: str(s.doing) || str(s.steps?.running), over: est && elapsed != null ? Math.max(0, Math.round(elapsed / 60000 - est)) : 0,
       costEstimate: s.estimate?.costUsd ?? null, costActual: s.actual?.costUsd ?? null, stepsDone, stepsTotal, stale,
       lastSeenAt: ms(s.lastSeenAt) || ms(s.updatedAt), branch: str(s.branch), areas: s.areas ?? [], parent: str(s.parent),
     });
@@ -126,7 +126,7 @@ export function filterBuilt(rows, { model = '', period = 'all', cost = '', surfa
 
 /** Lower-cased words; every word of the query must appear somewhere in the item's text. */
 export function searchText(x) {
-  return [x.title, x.id, x.key, x.detail, x.model, x.modelRaw, x.branch, x.planId, x.status, x.statusLabel, x.summary, x.surface, x.host, x.changeId, x.source, x.activity, x.runningStep, x.currentStep, x.day,
+  return [x.title, x.id, x.key, x.detail, x.model, x.modelRaw, x.branch, x.planId, x.status, x.statusLabel, x.summary, x.surface, x.host, x.changeId, x.source, x.doing, x.runningStep, x.currentStep, x.day,
     ...(x.aliases ?? []), ...(x.steps ?? []).map?.((s) => s?.text ?? '') ?? [], ...(x.ref ? [x.ref.id] : []), ...(x.row ? [x.row.title, x.row.id] : [])].map(str).join(' \n ').toLowerCase();
 }
 export function matches(query, x) {

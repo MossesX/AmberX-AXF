@@ -57,7 +57,7 @@ and at the end. `if_version: "new"` on the first write; pass the version you rea
   "buildRef": { "kind": "pending", "id": "lib-clone" },
   "startedAt": "2026-10-21T16:00:00.000Z",
   "lastSeenAt": "2026-10-21T16:00:00.000Z",
-  "activity": "Writing the design note",
+  "doing": "Writing the design note",
   "estimate": { "minutes": 45, "costUsd": 6.3 },
   "costEstimated": true,
   "branch": "feat/x",

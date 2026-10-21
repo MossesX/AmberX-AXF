@@ -50,7 +50,7 @@ function git(args) {
 export function commitsFor(paths, { first = false } = {}) {
   const ps = paths.filter((p) => existsSync(join(REPO, p)));
   if (!ps.length) return [];
-  const out = git(['log', '--reverse', '--format=%h%x09%aI%x09%s', ...(first ? ['--diff-filter=A'] : []), '--', ...ps]);
+  const out = git(['log', '--reverse', '--format=%h%x09%aI%x09%s', ...(first ? ['--diff-filter=A'] : []), HISTORY_REF(), '--', ...ps]);
   return out.split('\n').filter(Boolean).map((l) => { const [sha, at, ...s] = l.split('\t'); return { sha, at, subject: s.join('\t') }; });
 }
 /** Commits whose subject mentions a word (case-insensitive), oldest first. */
@@ -60,6 +60,8 @@ function commitsMentioning(word) {
   return out.split('\n').filter(Boolean).map((l) => { const [sha, at, ...s] = l.split('\t'); return { sha, at, subject: s.join('\t') }; });
 }
 const firstCommit = () => commitsFor(['.'])[0];
+/** What was built = what is on main (a feature branch's own commits are not history yet). AXF_BACKFILL_REF overrides. */
+function HISTORY_REF() { const r = process.env.AXF_BACKFILL_REF || 'origin/main'; return git(['rev-parse', '--verify', '-q', r]).trim() ? r : 'HEAD'; }
 
 /** "Oct 18 2026" / "2026-10-18" → ISO noon UTC that day (Eastern daytime), or ''. */
 export function dayIso(text) {
@@ -92,7 +94,7 @@ function entry({ key, title, model, at, finishedAt, minutes, ref, branch, commit
     $axf: 'change-log@1', id: idFor(key, fin), createdAt: start, updatedAt: fin, kind: 'build', title: title.slice(0, 160),
     asked: `Backfilled from ${source} (built before builds reported themselves).`, repos: [REPO_NAME], model,
     who: { where: 'backfill', host: 'backfill' }, steps: steps.slice(0, 30).map((s) => ({ text: String(s.text ?? s).slice(0, 300), state: 'done' })),
-    result: { state: 'done', summary: summary.slice(0, 4000) || title, ...(branch ? { branch } : {}), commits: commits.slice(-20).map((c) => ({ sha: c.sha, message: c.subject.slice(0, 200) })), links },
+    result: { state: 'done', summary: summary.replace(/\s+/g, ' ').slice(0, 300) || title, ...(branch ? { branch } : {}), commits: commits.slice(-6).map((c) => ({ sha: c.sha, message: c.subject.slice(0, 200) })), links },
     closed: { at: fin, by: 'backfill' },
     status: 'done', surface: 'backfill', startedAt: start, finishedAt: fin, buildRef: ref,
     estimate: { minutes, ...(cost != null ? { costUsd: cost } : {}) }, costEstimated: true,

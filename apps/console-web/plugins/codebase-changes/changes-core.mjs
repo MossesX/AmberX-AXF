@@ -24,7 +24,7 @@ export const KINDS = ['build', 'edit', 'remove', 'fix', 'other'];
 export const STEP_STATES = ['queued', 'running', 'done', 'failed', 'skipped'];
 export const RESULT_STATES = ['done', 'failed', 'partial', 'cancelled'];
 export const ID_RE = /^chg-(\d{8})-[0-9a-f]{6,16}$/;
-export const LIMITS = { title: 160, asked: 600, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, areas: 40, activity: 160, bytes: 64 * 1024 };
+export const LIMITS = { title: 160, asked: 600, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, areas: 40, doing: 160, bytes: 64 * 1024 };
 
 const SECRET = /(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[abpr]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{5,}|[Bb]earer\s+[A-Za-z0-9._~+/=-]{12,}|(?:token|secret|password|passwd|api[_-]?key|key)\s*[=:]\s*\S{6,})/gi;
 /** Hide anything that looks like a token or password, drop control characters, cut to `limit` (same rule as activity@1). */
@@ -186,7 +186,7 @@ export function normalize(raw, { now = nowIso() } = {}) {
  *   estimate  {minutes, costUsd}   actual {minutes, costUsd, inputTokens, outputTokens, cacheReadTokens, cacheWriteTokens, source}
  *   costEstimated  true when the cost shown is the estimate (default: no actual.costUsd)
  *   branch, areas[] (paths / folders it touches: the overlap check), parent (the entry a subagent reports under),
- *   activity (what it is doing right now, short), progress 0..1, verify {state pending|running|verified|broken|skipped, at, summary, checks {name: pass|fail|skip}}
+ *   doing (what the session is doing right now, short), progress 0..1, verify {state pending|running|verified|broken|skipped, at, summary, checks {name: pass|fail|skip}}
  */
 export const BUILD_STATUSES = ['queued', 'running', 'done', 'failed'];
 export const VERIFY_STATES = ['pending', 'running', 'verified', 'broken', 'skipped'];
@@ -258,7 +258,7 @@ function normBuild(raw, e, errors) {
     }
   }
   if (raw.parent != null && String(raw.parent) !== '') { if (ID_RE.test(String(raw.parent))) e.parent = String(raw.parent); else errors.push('parent is a change id'); }
-  if (raw.activity != null && String(raw.activity).trim()) e.activity = redact(raw.activity, LIMITS.activity);
+  if (raw.doing != null && String(raw.doing).trim()) e.doing = redact(raw.doing, LIMITS.doing);
   if (raw.progress != null) { if (!num(raw.progress) || raw.progress < 0 || raw.progress > 1) errors.push('progress is a number from 0 to 1'); else e.progress = round(raw.progress, 3); }
   if (raw.verify != null) {
     const v = raw.verify;
@@ -323,7 +323,7 @@ export function summary(e) {
 /** The build-stats part of a summary (same keys in store.py). Only keys the entry has. */
 export function buildSummary(e) {
   const out = { status: e.status ?? deriveStatus(e.result) };
-  for (const k of ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'activity']) if (e[k] != null) out[k] = e[k];
+  for (const k of ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing']) if (e[k] != null) out[k] = e[k];
   const br = e.result?.branch; if (br && !out.branch) out.branch = br;
   if (e.result?.commits?.length) out.commits = e.result.commits.map((c) => c.sha).slice(0, 10);
   if (e.result?.links && Object.keys(e.result.links).length) out.links = e.result.links;

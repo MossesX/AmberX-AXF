@@ -7,12 +7,12 @@ export interface ChangeSummary {
   repos: string[]; where: string; status?: string; buildRef?: { kind: string; id: string }; surface?: string; host?: string;
   startedAt?: string; finishedAt?: string; lastSeenAt?: string; estimate?: { minutes?: number; costUsd?: number };
   actual?: { minutes?: number; costUsd?: number; inputTokens?: number; outputTokens?: number; source?: string }; costEstimated?: boolean;
-  branch?: string; areas?: string[]; parent?: string; progress?: number; activity?: string; verify?: { state: string; summary?: string };
+  branch?: string; areas?: string[]; parent?: string; progress?: number; doing?: string; verify?: { state: string; summary?: string };
   commits?: string[]; links?: Record<string, string>;
 }
 export interface ChangeLive {
   id: string; changeId: string; title: string; state: string; activityState: string; startedAt: number; finishedAt: number; url: string; source: string;
-  surface: string; host: string; model: string; modelRaw: string; runningStep: string; activity: string; progress: number | null; row: Row | null; via: string;
+  surface: string; host: string; model: string; modelRaw: string; runningStep: string; doing: string; progress: number | null; row: Row | null; via: string;
   estimate: number | null; elapsed: number | null; currentStep: string; over: number; costEstimate: number | null; costActual: number | null;
   stepsDone: number; stepsTotal: number; stale: boolean; lastSeenAt: number; branch: string; areas: string[]; parent: string;
 }

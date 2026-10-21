@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-91c75d9221",
+  "createdAt": "2026-10-18T14:00:00.000Z",
+  "updatedAt": "2026-10-18T16:00:00.000Z",
+  "kind": "build",
+  "title": "Hidden slots",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "chrome types are `\"hideable\": true` in `asset-types.json` (app-menu, toolbar, nav-menu, context-menu; themes, layouts, controls and the policy never). Settings → Appearance → Assets gives those drop-downs a **Hidden** choice (Android: a Hidden chip). Engine `core/engines/hide.ts` = Kotlin `engine/Hi",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "hidden-slots"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T14:00:00.000Z",
+  "finishedAt": "2026-10-18T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

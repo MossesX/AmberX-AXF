@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-3f878291f9",
+  "createdAt": "2026-10-18T18:10:02.000Z",
+  "updatedAt": "2026-10-18T21:10:02.000Z",
+  "kind": "build",
+  "title": "Terminal plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/console-terminal` (`ai.amberx.axf.console.terminal`). Floating window (tab kind `terminal`) with tabs: Container (root shell via `axf.containers@1` exec TTY; protected ones after a confirm, badge PROTECTED), Console (the console's container), VPS (root on the host over SSH",
+    "commits": [
+      {
+        "sha": "1fb42fb",
+        "message": "Add the Terminal plugin: floating terminal tabs for containers, the console, the VPS host and Claude Code, Open terminal on every right-click, mouse mode, copy/paste, Mosh mode with server-kept sessio"
+      },
+      {
+        "sha": "f6a1e40",
+        "message": "Independent review fixes: Claude Code CLI gets no secrets and can't read /proc or the console's private folder; exact base hashes for big files, explicit accept for changes the card can't show, comman"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T21:10:02.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "console-terminal"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T18:10:02.000Z",
+  "finishedAt": "2026-10-18T21:10:02.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/console-terminal"
+  ]
+}

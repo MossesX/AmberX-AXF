@@ -135,12 +135,12 @@ print("build stats (Build manager)")
 build_good = {**good, "result": None, "status": "running", "buildRef": {"kind": "pending", "id": "lib-clone"}, "surface": "claude-ai",
               "startedAt": "2026-10-21T10:00:00.000Z", "lastSeenAt": "2026-10-21T10:05:00.000Z", "estimate": {"minutes": 90.5, "costUsd": 12.345678},
               "actual": {"minutes": 3, "inputTokens": 100, "outputTokens": 5, "source": "transcript"}, "branch": "feat/x",
-              "areas": ["apps/x", "apps/x", "framework/core/*.ts"], "parent": "chg-20261021-abcdef1234", "progress": 0.33333, "activity": "Editing x token=abcdefghijk",
+              "areas": ["apps/x", "apps/x", "framework/core/*.ts"], "parent": "chg-20261021-abcdef1234", "progress": 0.33333, "doing": "Editing x token=abcdefghijk",
               "verify": {"state": "broken", "at": "2026-10-21T11:00:00.000Z", "summary": "tsc failed", "checks": {"tsc": "fail", "vite": "pass"}}}
 be, berrs = store_mod.normalize(build_good)
 check(be is not None and not berrs, "a build entry passes")
 check(be["estimate"] == {"minutes": 91, "costUsd": 12.3457} and be["areas"] == ["apps/x", "framework/core/*.ts"] and be["costEstimated"] is True, "rounded like JS, areas unique, costEstimated derived")
-check("[hidden]" in be["activity"] and be["status"] == "running" and be["progress"] == 0.333, "activity redacted; status + progress")
+check("[hidden]" in be["doing"] and be["status"] == "running" and be["progress"] == 0.333, "doing redacted; status + progress")
 check(store_mod.normalize(good)[0]["status"] == "done" and "estimate" not in store_mod.normalize(good)[0], "an old entry only gains the derived status")
 check(store_mod.is_stale({"status": "running", "lastSeenAt": "2020-01-01T00:00:00.000Z"}) and not store_mod.is_stale({"status": "done", "lastSeenAt": "2020-01-01T00:00:00.000Z"}), "stale = running and not seen for 10 min")
 check(store_mod.summary(be)["buildRef"]["id"] == "lib-clone" and store_mod.summary(be)["verify"]["state"] == "broken", "summaries carry build stats")

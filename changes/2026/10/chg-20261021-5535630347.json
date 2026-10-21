@@ -83,5 +83,20 @@
     }
   },
   "closed": null,
-  "state": "done"
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "codebase-changes"
+  },
+  "startedAt": "2026-10-21T11:58:59.216Z",
+  "finishedAt": "2026-10-21T11:58:59.712Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/codebase-changes"
+  ]
 }

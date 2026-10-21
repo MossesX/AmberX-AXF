@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://amberxai.com/schemas/change-log@1.json",
   "title": "change-log@1 — one Codebase changes entry",
-  "description": "One request Claude was asked to build, edit, remove or fix something: what was asked, its steps and its result. Stored one file per entry at changes/<YYYY>/<MM>/<id>.json in the shared data folder (the hub's /projects/amberx-axf/_data). The validators in changes-core.mjs (normalize) and server/store.py (normalize) are the source of truth: they also cut long text and hide secret-looking values. Build stats (Oct 21 2026, all optional): buildRef, status, surface, startedAt/finishedAt/lastSeenAt, estimate, actual, costEstimated, branch, areas, parent, progress, verify.",
+  "description": "One request Claude was asked to build, edit, remove or fix something: what was asked, its steps and its result. Stored one file per entry at changes/<YYYY>/<MM>/<id>.json in the shared data folder (the hub's /projects/amberx-axf/_data). The validators in changes-core.mjs (normalize) and server/store.py (normalize) are the source of truth: they also cut long text and hide secret-looking values. Build stats (Oct 21 2026, all optional): buildRef, status, surface, startedAt/finishedAt/lastSeenAt, estimate, actual, costEstimated, branch, areas, parent, doing, progress, verify.",
   "type": "object",
   "required": [
     "$axf",
@@ -376,6 +376,11 @@
       "type": "string",
       "pattern": "^chg-\\d{8}-[0-9a-f]{6,16}$",
       "description": "The entry a subagent reports under."
+    },
+    "doing": {
+      "type": "string",
+      "maxLength": 160,
+      "description": "What the session is doing right now (short; the hooks fill it from the current step or tool)."
     },
     "progress": {
       "type": "number",

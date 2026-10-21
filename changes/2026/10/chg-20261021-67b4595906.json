@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-67b4595906",
+  "createdAt": "2026-10-21T01:50:46.000Z",
+  "updatedAt": "2026-10-21T03:50:46.000Z",
+  "kind": "build",
+  "title": "App defaults: the console's light look, no top toolbar",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`framework/defaults.json` → `color-theme: arctic-daylight`, `style-theme: glass-orbit`; new **`framework/app-defaults.json`** (`app-defaults@1`) holds the non-slot defaults: `hidden: [\"toolbar\"]`. **`manifest.hidden`** (both ports: `AxfManifest.hidden`, TS `AxfManifest.hidden`) = chrome slots hidden",
+    "commits": [
+      {
+        "sha": "84bea6a",
+        "message": "Fix frozen Android apps; light theme + no toolbar by default; collapsible toolbar; designed assets at init"
+      },
+      {
+        "sha": "6949cc2",
+        "message": "Widget kinds: eleven attachable widget types for banners and toolbars"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T03:50:46.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "app-defaults-the-console-s-light-look-no-top-toolbar"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:50:46.000Z",
+  "finishedAt": "2026-10-21T03:50:46.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/defaults.json",
+    "framework/app-defaults.json"
+  ]
+}

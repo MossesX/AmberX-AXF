@@ -261,7 +261,7 @@ class Jobs:
                 link = f"{HUB_APPROVALS}/{conf}" if re.match(r"^[0-9A-Za-z-]{8,64}$", conf or "") else HUB_APPROVALS
                 self._set(key, state="waiting", confirmationId=conf, approvalUrl=link, message="Approve it on axHub (the approval page shows the whole command).")
                 self.alert({"title": f"Approve: start build {key}", "link": link, "key": key})
-                _update_change(change_id, {"status": "queued", "activity": "Waiting for Brett's approval on axHub"})
+                _update_change(change_id, {"status": "queued", "doing": "Waiting for Brett's approval on axHub"})
                 for i, d in enumerate(retry_delays()):
                     self.sleep(d)
                     self._set(key, attempts=i + 1)
@@ -284,7 +284,7 @@ class Jobs:
             self._set(key, state="launched" if ok else "failed", output=out[-2000:],
                       message="Running on the VPS: it reports itself in Live." if ok else "The VPS command failed: see the output.")
             if ok:
-                _update_change(change_id, {"status": "running", "activity": "Launched on the VPS (headless Claude Code)"})
+                _update_change(change_id, {"status": "running", "doing": "Launched on the VPS (headless Claude Code)"})
             else:
                 _finish_change(change_id, "failed", "Launch failed on the VPS.")
         except Exception as e:  # noqa: BLE001

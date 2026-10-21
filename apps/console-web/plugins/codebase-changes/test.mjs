@@ -195,15 +195,15 @@ const benv = baseEnv({ AXF_CHANGES_DIR: scratch('build') });
 r = run(['open', 'Built with stats', '--kind', 'build', '--ref', 'pending:lib-clone', '--model', 'opus', '--estimate-min', '45', '--areas', 'apps/a,framework/b', '--branch', 'feat/y', '--json'], benv);
 let be = JSON.parse(r.stdout);
 check(be.buildRef.kind === 'pending' && be.estimate.minutes === 45 && be.estimate.costUsd === pr.estimateCost('opus', 45) && be.costEstimated && be.areas.length === 2 && be.surface && be.who.host, 'open --ref --estimate-min --areas: estimate cost from the shared prices, surface + host recorded');
-r = run(['update', 'last', '--estimate-cost', '9.5', '--activity', 'Writing tests', '--json'], benv);
+r = run(['update', 'last', '--estimate-cost', '9.5', '--doing', 'Writing tests', '--json'], benv);
 be = JSON.parse(r.stdout);
-check(be.estimate.costUsd === 9.5 && be.estimate.minutes === 45 && be.activity === 'Writing tests' && be.lastSeenAt, 'update sets build stats and counts as a heartbeat');
+check(be.estimate.costUsd === 9.5 && be.estimate.minutes === 45 && be.doing === 'Writing tests' && be.lastSeenAt, 'update sets build stats and counts as a heartbeat');
 run(['step', 'last', 'one', '--state', 'done'], benv); run(['step', 'last', 'two', '--state', 'running'], benv);
 be = JSON.parse(run(['show', 'last', '--json'], benv).stdout);
-check(be.progress === 0.5 && be.activity === 'two', 'steps drive progress and the current activity');
+check(be.progress === 0.5 && be.doing === 'two', 'steps drive progress and the current activity');
 r = run(['result', 'last', '--state', 'done', '--summary', 'ok', '--input-tokens', '1000000', '--output-tokens', '1000000', '--json'], benv);
 be = JSON.parse(r.stdout);
-check(be.status === 'done' && be.actual.costUsd === 24 && be.actual.source === 'manual' && be.costEstimated === false && be.finishedAt && !be.activity && be.progress === 1, 'result with actual tokens: cost from prices, costEstimated false, finished');
+check(be.status === 'done' && be.actual.costUsd === 24 && be.actual.source === 'manual' && be.costEstimated === false && be.finishedAt && !be.doing && be.progress === 1, 'result with actual tokens: cost from prices, costEstimated false, finished');
 
 console.log('hook: live progress, subagents, transcript cost');
 const lenv = baseEnv({ AXF_CHANGES_DIR: scratch('live'), AXF_SURFACE: 'vps-claude-code' });
@@ -217,10 +217,10 @@ check(le.surface === 'vps-claude-code' && le.status === 'running' && le.startedA
 check(r.stdout.includes(`update ${lid} --ref`), 'and tells Claude how to record the estimate');
 run(['hook'], lenv, lev('PreToolUse', { tool_name: 'Task', tool_input: { description: 'review the diff', prompt: 'secret=abcdefghijk' } }));
 le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
-check(le.steps.some((s) => s.note === 'subagent' && s.state === 'running' && /review the diff/.test(s.text)) && le.activity.startsWith('Subagent'), 'a subagent shows as a running child step');
+check(le.steps.some((s) => s.note === 'subagent' && s.state === 'running' && /review the diff/.test(s.text)) && le.doing.startsWith('Subagent'), 'a subagent shows as a running child step');
 run(['hook'], lenv, lev('PreToolUse', { tool_name: 'Bash', tool_input: { command: 'cat token=zzzzzzzzzz', description: 'run tests' } }));
 const le2 = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
-check(le2.activity === le.activity, 'plain tool calls are throttled (one write per 30 s)');
+check(le2.doing === le.doing, 'plain tool calls are throttled (one write per 30 s)');
 check(!JSON.stringify(le2).includes('zzzzzzzzzz'), 'command arguments are never recorded');
 run(['hook'], lenv, lev('SubagentStop'));
 le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
@@ -229,7 +229,7 @@ writeFileSync(tfile, JSON.stringify({ timestamp: new Date().toISOString(), messa
 run(['hook'], lenv, lev('Stop'));
 le = new DirStore(lenv.AXF_CHANGES_DIR).get(lid);
 check(le.actual?.source === 'transcript' && le.actual.inputTokens === 2000000 && le.actual.costUsd === 10 && le.costEstimated === false && le.model.includes('opus') && !le.result, 'Stop fills actual tokens + cost from the transcript and keeps the entry running');
-check(le.activity === 'Waiting for the next message', 'and says it is waiting');
+check(le.doing === 'Waiting for the next message', 'and says it is waiting');
 
 console.log('axHub backend (fake hub over MCP)');
 const HUB_TOKEN = 'hub-token-abcdefghijklmnop';

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T16:24:01.047Z",
+ "updatedAt": "2026-10-21T16:43:14.029Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1326,7 +1326,9 @@
     {
      "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.177Z"
     },
     {
      "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
@@ -1336,42 +1338,58 @@
     {
      "text": "Build manager server: change-log feed, live/built index, hub events + polling",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.274Z"
     },
     {
      "text": "Built history view: totals by model / week, filters, cost badges",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.438Z"
     },
     {
      "text": "Search bar + Live shows change entries (elapsed vs estimate, cost, model) + banner",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.546Z"
     },
     {
      "text": "Orchestrator core: dependency closure, overlap check, reorder, brief",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.625Z"
     },
     {
      "text": "Orchestrator server: start route, vps.run approval + retries, verification",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.792Z"
     },
     {
      "text": "Start build now: context menu + row button + approval link/alert",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "25 min"
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.877Z"
     },
     {
      "text": "Tests: build-manager + codebase-changes (fake axHub, dry run)",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.954Z"
     },
     {
      "text": "Checks: check-theme, console tsc + vite, menu-reach, plugin self-tests",
      "at": "2026-10-21T16:02:06.419Z",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:14.029Z"
     },
     {
      "text": "Docs, CLAUDE.md Status, PR, CI",
@@ -1381,7 +1399,7 @@
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T16:24:01.047Z",
+   "updatedAt": "2026-10-21T16:43:14.029Z",
    "estimate": "6.5 h",
    "source": "claude-code"
   }

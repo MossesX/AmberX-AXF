@@ -38,7 +38,7 @@ router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 SELF = "axf.changes@1"
 MAX_BODY = 128 * 1024
-BUILD_KEYS = {"status", "buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "activity",
+BUILD_KEYS = {"status", "buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "doing",
               "parent", "progress", "verify"}
 ENTRY_KEYS = {"$axf", "id", "createdAt", "updatedAt", "kind", "title", "asked", "repos", "model", "who", "steps", "result", "closed", "state"} | BUILD_KEYS
 PATCH_KEYS = {"title", "kind", "asked", "repos", "model", "who", "steps", "step", "result", "beat"} | BUILD_KEYS

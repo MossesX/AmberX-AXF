@@ -147,7 +147,7 @@ const iso = (t) => new Date(t).toISOString();
 const sums = [
   { id: 'chg-20261021-aaaaaa0001', title: 'Running on the VPS', kind: 'build', model: 'claude-opus-5-5', state: 'running', status: 'running', createdAt: iso(now - 40 * 60_000), updatedAt: iso(now - 60_000),
     startedAt: iso(now - 40 * 60_000), lastSeenAt: iso(now - 60_000), estimate: { minutes: 80, costUsd: 11.2 }, surface: 'vps-claude-code', host: 'vps1', buildRef: { kind: 'pending', id: 'p-steps' },
-    steps: { total: 4, done: 1, failed: 0, running: 'Server routes' }, activity: 'Editing server/__init__.py', areas: ['apps/console-web/plugins/x'], branch: 'feat/x', result: null, closed: null, repos: [], where: 'vps' },
+    steps: { total: 4, done: 1, failed: 0, running: 'Server routes' }, doing: 'Editing server/__init__.py', areas: ['apps/console-web/plugins/x'], branch: 'feat/x', result: null, closed: null, repos: [], where: 'vps' },
   { id: 'chg-20261021-aaaaaa0002', title: 'Gone quiet', kind: 'build', model: 'fable', state: 'running', status: 'running', createdAt: iso(now - 3 * 3600_000), updatedAt: iso(now - 30 * 60_000),
     lastSeenAt: iso(now - 30 * 60_000), surface: 'claude-ai', steps: { total: 0, done: 0, failed: 0, running: '' }, result: null, closed: null, repos: [], where: '' },
   { id: 'chg-20261020-aaaaaa0003', title: 'Built with tokens', kind: 'build', model: 'opus', state: 'done', status: 'done', createdAt: iso(now - 26 * 3600_000), updatedAt: iso(now - 24 * 3600_000),

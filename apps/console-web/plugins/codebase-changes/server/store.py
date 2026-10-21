@@ -28,7 +28,7 @@ RESULT_STATES = ("done", "failed", "partial", "cancelled")
 ID_RE = re.compile(r"^chg-(\d{8})-[0-9a-f]{6,16}$")
 LIMITS = {"title": 160, "asked": 600, "model": 40, "repos": 10, "steps": 100, "stepText": 300, "note": 1000, "summary": 4000,
           "commits": 50, "commitMsg": 200, "tests": 50, "testName": 120, "testValue": 60, "links": 20, "link": 500, "who": 80,
-          "areas": 40, "activity": 160, "bytes": 64 * 1024}
+          "areas": 40, "doing": 160, "bytes": 64 * 1024}
 
 _SECRET = re.compile(
     r"(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[abpr]-[A-Za-z0-9-]{10,}"
@@ -264,7 +264,7 @@ _REF_ID = re.compile(r"^[A-Za-z0-9._:/-]{1,120}$")
 _AREA = re.compile(r"^[A-Za-z0-9_.@/*+-]{1,200}$")
 _SOURCE = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
 _ACTUAL_INTS = ("inputTokens", "outputTokens", "cacheReadTokens", "cacheWriteTokens")
-_BUILD_KEYS = ("buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "parent", "activity",
+_BUILD_KEYS = ("buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "parent", "doing",
                "progress", "verify")
 
 
@@ -392,9 +392,9 @@ def _norm_build(raw: dict[str, Any], e: dict[str, Any], errors: list[str]) -> No
             e["parent"] = _js_str(p)
         else:
             errors.append("parent is a change id")
-    act = raw.get("activity")
+    act = raw.get("doing")
     if act is not None and str(act).strip():
-        e["activity"] = redact(act, LIMITS["activity"])
+        e["doing"] = redact(act, LIMITS["doing"])
     pr = raw.get("progress")
     if pr is not None:
         if not _num(pr) or pr < 0 or pr > 1:

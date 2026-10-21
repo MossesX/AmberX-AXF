@@ -7,8 +7,8 @@
  *                         build stats (Build manager): [--ref pending:<id>|queue:<epic>|plan:<feature>] [--estimate-min N]
  *                         [--estimate-cost USD (default: minutes × the model's price heuristic)] [--areas "path/a,path/b"]
  *                         [--branch b] [--surface s] [--parent <change id>] [--status queued|running]
- *   node changes.mjs update <id|last> [the build-stat flags above] [--activity "…"] [--progress 0..1]
- *   node changes.mjs beat <id|last> [--activity "…"]          heartbeat: still working (the hooks do this by themselves)
+ *   node changes.mjs update <id|last> [the build-stat flags above] [--doing "…"] [--progress 0..1]
+ *   node changes.mjs beat <id|last> [--doing "…"]          heartbeat: still working (the hooks do this by themselves)
  *   node changes.mjs step <id|last> "<text>" [--state queued|running|done|failed|skipped] [--index n] [--note "…"]
  *   node changes.mjs result <id|last> --state done|failed|partial|cancelled --summary "…" [--branch b] [--commit sha]…
  *                         [--files N] [--test "name=before→after" | "name=pass"]… [--link report=path|https://…]…
@@ -82,7 +82,7 @@ function dirBackend(root, label) {
     async list() { return s.all(); },
   };
 }
-const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'activity'];
+const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing'];
 function apiBackend(base, token) {
   const u0 = new URL(base);
   if (u0.protocol !== 'https:' && !['localhost', '127.0.0.1', '[::1]'].includes(u0.hostname)) throw new Error('the console address must be https');
@@ -335,7 +335,7 @@ export async function onHook(ev, b) {
       const e0 = await load(b, adopt);
       if (e0 && !e0.result) {
         const steps = (e0.steps ?? []).map((s, i) => (i === 0 && s.state === 'running' ? { ...s, state: 'done', finishedAt: now } : i === 1 && s.state === 'queued' ? { ...s, state: 'running', startedAt: now } : s));
-        await save(b, { ...e0, steps, status: 'running', lastSeenAt: now, activity: 'Started', who: { ...(e0.who ?? {}), session: sid.slice(0, 12), where: detectWhere(), host: hostname(), user: process.env.USER || '' }, updatedAt: now });
+        await save(b, { ...e0, steps, status: 'running', lastSeenAt: now, doing: 'Started', who: { ...(e0.who ?? {}), session: sid.slice(0, 12), where: detectWhere(), host: hostname(), user: process.env.USER || '' }, updatedAt: now });
         setLast(adopt);
         if (sid) addSessionId(sid, adopt);
         return hookContext(adopt, e0.kind);
@@ -353,7 +353,7 @@ export async function onHook(ev, b) {
         id, createdAt: now, updatedAt: now, kind: c.kind, title: titleFrom(ev.prompt), asked: redact(String(ev.prompt ?? '').replace(/\s+/g, ' '), 600),
         repos: repo ? [repo] : [], model: redact(model, 40),
         who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname() }, steps: [], result: null, closed: null,
-        status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, activity: 'Starting',
+        status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: 'Starting',
         ...(process.env.AXF_PARENT_CHANGE && ID_RE.test(process.env.AXF_PARENT_CHANGE) ? { parent: process.env.AXF_PARENT_CHANGE } : {}),
       }, { create: true }));
     }
@@ -368,14 +368,14 @@ export async function onHook(ev, b) {
     const sub = ev.hook_event_name === 'PreToolUse' && /^(Task|Agent)$/.test(String(ev.tool_name ?? ''));
     const subEnd = ev.hook_event_name === 'SubagentStop';
     if (!sub && !subEnd && Date.now() - ss.beat < BEAT_MS) return '';
-    const activity = ev.hook_event_name === 'Notification' ? 'Waiting for you' : subEnd ? 'Subagent finished' : toolActivity(ev);
+    const doing = ev.hook_event_name === 'Notification' ? 'Waiting for you' : subEnd ? 'Subagent finished' : toolActivity(ev);
     for (const id of ss.ids) {
       const e = await load(b, id);
       if (!e || e.result) continue;
       let steps = e.steps ?? [];
-      if (sub) steps = upsertStep(steps, { text: redact(activity, 300), state: 'running', note: 'subagent' }, now);
+      if (sub) steps = upsertStep(steps, { text: redact(doing, 300), state: 'running', note: 'subagent' }, now);
       if (subEnd) { const k = steps.map((s) => s.note === 'subagent' && s.state === 'running').lastIndexOf(true); if (k >= 0) steps = upsertStep(steps, { index: k, state: 'done' }, now); }
-      await save(b, { ...e, steps, activity, lastSeenAt: now, updatedAt: now });
+      await save(b, { ...e, steps, doing, lastSeenAt: now, updatedAt: now });
     }
     saveSessionState(sid, { ...ss, beat: Date.now() });
     return '';
@@ -402,7 +402,7 @@ export async function onHook(ev, b) {
       next.costEstimated = next.actual.costUsd == null;
       changed = true;
     }
-    if (!result) { next.lastSeenAt = now; next.activity = end ? 'Session ended' : 'Waiting for the next message'; changed = true; }
+    if (!result) { next.lastSeenAt = now; next.doing = end ? 'Session ended' : 'Waiting for the next message'; changed = true; }
     if (result && !e.finishedAt) { next.finishedAt = now; changed = true; }
     const mins = minutesBetween(next.startedAt || next.createdAt, next.finishedAt || now);
     if (mins != null && next.actual?.source === 'transcript') next.actual.minutes = mins;
@@ -503,7 +503,7 @@ const numFlag = (v, what) => { if (v === undefined) return undefined; const n = 
 
 /**
  * Build stats from flags (open / update / result): --ref, --model, --estimate-min, --estimate-cost, --areas "a,b",
- * --branch, --surface, --parent, --status queued|running, --activity, --progress 0..1, and the actual numbers
+ * --branch, --surface, --parent, --status queued|running, --doing, --progress 0..1, and the actual numbers
  * --minutes, --cost, --input-tokens, --output-tokens, --cache-read-tokens, --cache-write-tokens.
  * Without --estimate-cost the cost is estimated from the minutes and the model's prices (model-pricing@1).
  */
@@ -513,7 +513,7 @@ export async function buildFlags(flags, e = {}) {
   if (str(flags.model)) o.model = flags.model;
   if (str(flags.surface)) o.surface = flags.surface;
   if (str(flags.parent)) o.parent = flags.parent;
-  if (str(flags.activity)) o.activity = flags.activity;
+  if (str(flags.doing)) o.doing = flags.doing;
   if (str(flags.status)) { if (!BUILD_STATUSES.includes(flags.status)) throw new Error(`--status is one of ${BUILD_STATUSES.join(', ')}`); o.status = flags.status; }
   if (flags.progress !== undefined) o.progress = numFlag(flags.progress, 'progress');
   if (str(flags.areas)) o.areas = [...new Set([...(e.areas ?? []), ...flags.areas.split(',').map((x) => x.trim()).filter(Boolean)])];
@@ -599,13 +599,13 @@ async function main() {
       if (flags.json) return out(r.entry);
       return console.log(`${id}${r.queued ? `  (${r.where})` : ''}`);
     }
-    case 'update': { // build stats on an open entry: --ref --model --estimate-min --estimate-cost --areas --branch --activity --progress …
+    case 'update': { // build stats on an open entry: --ref --model --estimate-min --estimate-cost --areas --branch --doing --progress …
       const id = resolveId(pos[0]);
       return out(await change(id, async (e) => ({ ...e, ...(await buildFlags(flags, e)), ...(str(flags.branch) ? { branch: flags.branch } : {}), ...(e.result ? {} : { lastSeenAt: now }) })));
     }
     case 'beat': { // heartbeat: still working (optionally what on)
       const id = resolveId(pos[0]);
-      return out(await change(id, (e) => ({ ...e, lastSeenAt: now, ...(str(flags.activity) ? { activity: flags.activity } : {}) })));
+      return out(await change(id, (e) => ({ ...e, lastSeenAt: now, ...(str(flags.doing) ? { doing: flags.doing } : {}) })));
     }
     case 'step': {
       const id = resolveId(pos[0]); const text = pos.slice(1).join(' ');
@@ -616,7 +616,7 @@ async function main() {
         const steps = upsertStep(e.steps, { index, text: text || undefined, state: state || (index === undefined ? 'running' : undefined), note: str(flags.note) }, now);
         const run = steps.find((s) => s.state === 'running');
         const fin = steps.filter((s) => ['done', 'skipped'].includes(s.state)).length;
-        return { ...e, steps, ...(e.result ? {} : { lastSeenAt: now, activity: run ? redact(run.text, 160) : e.activity, ...(steps.length ? { progress: Math.round((fin / steps.length) * 1000) / 1000 } : {}) }) };
+        return { ...e, steps, ...(e.result ? {} : { lastSeenAt: now, doing: run ? redact(run.text, 160) : e.doing, ...(steps.length ? { progress: Math.round((fin / steps.length) * 1000) / 1000 } : {}) }) };
       }));
     }
     case 'result': {
@@ -627,7 +627,7 @@ async function main() {
       const build = await buildFlags(flags, cur ?? {});
       return out(await change(id, (e0) => {
         const e = { ...e0, ...build, finishedAt: e0.finishedAt || now };
-        delete e.activity;
+        delete e.doing;
         if (!e.actual?.minutes && minutesBetween(e.startedAt || e.createdAt, now) != null && e.actual) e.actual = { ...e.actual, minutes: minutesBetween(e.startedAt || e.createdAt, now) };
         if (state === 'done' || state === 'partial') e.progress = 1;
         const prev = e.result ?? {};

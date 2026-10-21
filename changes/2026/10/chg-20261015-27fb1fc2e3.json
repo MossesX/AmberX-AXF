@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261015-27fb1fc2e3",
+  "createdAt": "2026-10-15T14:47:47.000Z",
+  "updatedAt": "2026-10-15T16:47:47.000Z",
+  "kind": "build",
+  "title": "Server control panel",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Dev servers start/stop with logs, CI downloads (APK, Maven, console dist), command catalog, live output and a terminal into the console container. (built before the build queue existed; date = the first commits)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-15T16:47:47.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.console.panel"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-15T14:47:47.000Z",
+  "finishedAt": "2026-10-15T16:47:47.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

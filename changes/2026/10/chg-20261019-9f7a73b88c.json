@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-9f7a73b88c",
+  "createdAt": "2026-10-19T08:16:14.000Z",
+  "updatedAt": "2026-10-19T11:16:14.000Z",
+  "kind": "build",
+  "title": "Plugin switches plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/plugin-switches` (`ai.amberx.axf.console.plugin-switches`). Dialog `plugin-switches`: a plain list of every plugin (`GET /api/plugins`) with an on/off switch each (console route `POST /api/plugins/<folder>/enabled`, so admin/console token only); its own row is greyed out an",
+    "commits": [
+      {
+        "sha": "249f846",
+        "message": "Add Plugin switches plugin: pop-up list of every plugin with on/off switches"
+      },
+      {
+        "sha": "6f774b9",
+        "message": "Drop Fable rebuilds that aren't needed"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T11:16:14.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "plugin-switches"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-19T08:16:14.000Z",
+  "finishedAt": "2026-10-19T11:16:14.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/plugin-switches"
+  ]
+}
