@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-19T12:02:10.988Z",
+ "updatedAt": "2026-10-20T23:59:00.000Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -182,7 +182,7 @@
    "title": "AI Agent Manager plugin (Fable rebuild)",
    "detail": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, AmberX AXF framework expert, AI capabilities expert. The Opus version is in apps/console-web/plugins/agent-manager (web console only): remove it first with its uninstall script, then build this one following plugin-lifecycle@1, and port to Android + other ports.",
    "model": "Fable",
-   "status": "pending",
+   "status": "complete",
    "notes": [
     {
      "text": "Opus version built Oct 18 2026 (web console only). Remove with the agent-manager plugin's uninstall script (uninstall.mjs --all) before installing this one.",
@@ -191,12 +191,16 @@
     {
      "text": "Oct 18 2026 additions to rebuild too: Mosses (coder add-on v2: persona, container tools through approval cards, Settings → Safety for dangerous tools, voice slot) and the library (used by, fork per agent, duplicate, export/import, versions with diff + rollback, plain-English drafts, dangerous marking).",
      "at": "2026-10-18T20:57:10.737Z"
+    },
+    {
+     "text": "Fable rebuild done Oct 20 2026 on branch fable/agent-manager: agent-definition@1 framework contract (TS + Kotlin + Python, one fixture), 116 self-test checks (was 92); report _claude/memory/docs/rebuilds/agent-manager-plugin.md",
+     "at": "2026-10-20T23:59:00.000Z"
     }
    ],
    "subPrompts": [],
    "createdAt": "2026-10-18T17:20:00.000Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-18T20:57:10.737Z",
+   "builtAt": "2026-10-20T23:59:00.000Z",
+   "updatedAt": "2026-10-20T23:59:00.000Z",
    "planId": "x.plugins.agent-manager",
    "source": "chat"
   },

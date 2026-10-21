@@ -21,3 +21,4 @@ export * from './terminal';
 export * from './options';
 export * from './project';
 export * from './live-session';
+export * from './agents';
