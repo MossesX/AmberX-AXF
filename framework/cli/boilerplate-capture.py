@@ -123,6 +123,29 @@ def shrink(png: Path, width: int) -> None:
     subprocess.run([tool, str(png), "-resize", f"{width}x", "-strip", str(png)], check=False, timeout=60)
 
 
+def launch(pkg: str) -> None:
+    """Start the app's launcher activity directly (no dependence on the launcher app being responsive)."""
+    try:
+        adb("shell", "am", "start", "-W", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-p", pkg, timeout=60)
+    except (RuntimeError, subprocess.TimeoutExpired):
+        try:
+            adb("shell", "monkey", "-p", pkg, "-c", "android.intent.category.LAUNCHER", "1")
+        except (RuntimeError, subprocess.TimeoutExpired):
+            pass
+
+
+def dismiss_anr(root: ET.Element | None) -> bool:
+    """Close an "isn't responding" dialog if one is on screen; True when one was."""
+    if not any("isn't responding" in t or "is not responding" in t for t in texts(root)):
+        return False
+    for label in ("Wait", "Close app", "OK"):
+        for n in nodes(root):
+            if n.get("text") == label and tap(n):
+                time.sleep(1.5)
+                return True
+    return True
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--apk", required=True)
@@ -153,15 +176,20 @@ def main() -> int:
         except RuntimeError:
             pass
     adb("install", "-r", "-g", a.apk, timeout=240)
-    adb("shell", "monkey", "-p", a.package, "-c", "android.intent.category.LAUNCHER", "1")
+    launch(a.package)
 
-    # Wait for the app's shell (past any landing/loading screen): some screen label appears.
+    # Wait for the app's shell (past any landing/loading screen): some screen label appears. A cold emulator may
+    # show "<something> isn't responding" (the launcher, usually): dismiss it and launch the app again.
     labels = [s["label"] for s in screens]
     root = None
-    for _ in range(40):
+    for i in range(60):
         root = settle(1.5)
         if any(find(root, l, a.package) is not None for l in labels):
             break
+        if dismiss_anr(root):
+            launch(a.package)
+        elif i % 10 == 9 and a.package not in {n.get("package", "") for n in nodes(root)}:
+            launch(a.package)
     time.sleep(2)
 
     shots = []
