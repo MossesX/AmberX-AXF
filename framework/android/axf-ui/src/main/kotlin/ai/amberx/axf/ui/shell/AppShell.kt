@@ -11,8 +11,11 @@ import ai.amberx.axf.ui.LocalAxfLayout
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.LocalAxfState
 import ai.amberx.axf.ui.ShellRegionContribution
+import ai.amberx.axf.ui.components.AxfBanner
 import ai.amberx.axf.ui.components.AxfIconButton
 import ai.amberx.axf.ui.components.AxfInspector
+import ai.amberx.axf.ui.components.AxfSearchHost
+import ai.amberx.axf.ui.components.LocalAxfSearchHost
 import ai.amberx.axf.ui.components.AxfMenubar
 import ai.amberx.axf.ui.components.AxfNav
 import ai.amberx.axf.ui.components.AxfStatusBar
@@ -60,6 +63,9 @@ import kotlinx.coroutines.launch
  * positions); MEDIUM → rail + main; COMPACT → phone grid (menubar, toolbar, main, bottom tabs / drawer / top tabs,
  * inspector as a sheet). `views` maps view ids (nav-menu asset `view`) to composables; unknown views render
  * PlaceholderScreen. Modules inject extra content into regions via `ExtensionPoints.SHELL_REGIONS`.
+ * Above the grid sits the banner asset (AxfBanner: thin permanent bar; hidden slot or no banner = nothing), and the
+ * shell feeds the kernel's search index with its views, dialogs and windows (AxfSearchHost) so the search-bar widget in
+ * the banner or toolbar finds everything (web: AppShell → useSearchHost).
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +76,11 @@ public fun AppShell(
     inspector: (@Composable () -> Unit)? = null,
     fab: (@Composable () -> Unit)? = null,
     onSearch: ((String) -> Boolean)? = null,
+    /** icons / extra keywords the search finds views by (web: ViewDef.icon / keywords) */
+    viewIcons: Map<String, String> = emptyMap(),
+    viewKeywords: Map<String, List<String>> = emptyMap(),
+    /** dialogs this shell can open (for the search); AxfRoot's registered dialogs are found through the kernel when omitted */
+    dialogs: Map<String, ai.amberx.axf.ui.DialogContribution> = emptyMap(),
 ) {
     val runtime = LocalAxfRuntime.current
     val state = LocalAxfState.current
@@ -77,15 +88,32 @@ public fun AppShell(
     val layout = LocalAxfLayout.current
     val kernel = LocalAxfKernel.current
     val c = Axf.colors
+    // Search host: views, dialogs and open windows join the kernel index (actions, assets, settings come from their owners).
+    val searchHost = remember(runtime, kernel) { AxfSearchHost(runtime, kernel) }
+    val allDialogs = remember(kernel, compiled.rev, dialogs) {
+        (kernel?.extensions?.get(ExtensionPoints.DIALOGS)?.filterIsInstance<ai.amberx.axf.ui.DialogContribution>()?.associateBy { it.id } ?: emptyMap()) + ai.amberx.axf.ui.studio.builtinDialogs() + dialogs
+    }
+    androidx.compose.runtime.DisposableEffect(searchHost, views.keys, viewTitles, viewIcons, viewKeywords, allDialogs) {
+        searchHost.install(views.keys.associateWith { viewTitles[it] ?: it }, viewIcons, viewKeywords, allDialogs)
+        onDispose { searchHost.uninstall() }
+    }
     val regionExtras = remember(kernel, compiled.rev) { kernel?.extensions?.get(ExtensionPoints.SHELL_REGIONS)?.filterIsInstance<ShellRegionContribution>()?.groupBy { it.region } ?: emptyMap() }
     val viewIds = remember(views) { views.keys }
     val main: @Composable () -> Unit = { Box(Modifier.fillMaxSize()) { (views[state.view] ?: { PlaceholderScreen(viewTitles[state.view] ?: state.view) })() } }
     val hasRegion = { r: Region -> r in layout.regions }
     val inspectorContent: (@Composable () -> Unit)? = inspector ?: regionExtras[Region.INSPECTOR]?.let { list -> { AxfInspector { list.forEach { it.content() } } } }
 
-    when (layout.windowClass) {
-        WindowClass.EXPANDED -> DesktopGrid(modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
-        WindowClass.MEDIUM, WindowClass.COMPACT -> PhoneGrid(modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
+    androidx.compose.runtime.CompositionLocalProvider(LocalAxfSearchHost provides searchHost) {
+        Column(modifier.fillMaxSize().background(c.bg).windowInsetsPadding(WindowInsets.statusBars)) {
+            // Banner asset: thin permanent bar above the layout (hidden slot or no banner asset = nothing).
+            AxfBanner(Modifier.fillMaxWidth())
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                when (layout.windowClass) {
+                    WindowClass.EXPANDED -> DesktopGrid(Modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
+                    WindowClass.MEDIUM, WindowClass.COMPACT -> PhoneGrid(Modifier, layout, hasRegion, viewIds, viewTitles, onSearch, main, inspectorContent, regionExtras, fab)
+                }
+            }
+        }
     }
 }
 
@@ -96,7 +124,7 @@ private fun DesktopGrid(
 ) {
     val c = Axf.colors
     val l = LocalAxfCompiled.current.layout
-    Column(modifier.fillMaxSize().background(c.bg).windowInsetsPadding(WindowInsets.statusBars)) {
+    Column(modifier.fillMaxSize().background(c.bg)) {
         for (row in layout.rows) {
             when (row.region) {
                 Region.MENUBAR -> AxfMenubar(Modifier.fillMaxWidth())
@@ -135,7 +163,7 @@ private fun PhoneGrid(
     val drawer = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val body: @Composable () -> Unit = {
-        Column(modifier.fillMaxSize().background(c.bg).windowInsetsPadding(WindowInsets.statusBars)) {
+        Column(modifier.fillMaxSize().background(c.bg)) {
             for (row in layout.rows) {
                 when (row.region) {
                     Region.MENUBAR -> AxfMenubar(Modifier.fillMaxWidth(), compact = true)

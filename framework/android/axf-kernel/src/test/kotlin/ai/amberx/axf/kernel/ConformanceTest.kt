@@ -153,6 +153,39 @@ class ConformanceTest {
         }
         val bar = ai.amberx.axf.kernel.engine.SearchBarData.fromJson(asset("search-bar", "everything"))
         assertEquals("regular", bar.width, "search bar width field")
+        // Fable rebuild (Oct 20 2026): host registry, attachable types, search bar config and attachment validation.
+        assertEquals((f.getValue("attachableTypes") as JsonArray).map { it.jsonPrimitive.content }.toSet(), W.ATTACHABLE_TYPES.toSet(), "attachable types")
+        val hosts = (f.getValue("hosts") as JsonArray).map { h -> val o = h.jsonObject; ai.amberx.axf.kernel.engine.HostSpec(o.getValue("host").jsonPrimitive.content, o.getValue("field").jsonPrimitive.content, (o.getValue("types") as JsonArray).map { it.jsonPrimitive.content }, (o.getValue("sides") as JsonArray).map { it.jsonPrimitive.content }) }
+        AssetTypeRegistry.builtin() // loads the spec's hosts into the registry (same as the kernel does)
+        for (h in hosts) assertEquals(h, W.hostSpec(h.host), "host ${h.host}")
+        for ((name, c) in f.getValue("searchBarConfig").jsonObject) {
+            val o = c.jsonObject
+            val want = o.getValue("config").jsonObject
+            val got = W.searchBarConfig(o["data"] as? JsonObject)
+            assertEquals(want.getValue("placeholder").jsonPrimitive.content, got.placeholder, "search config $name placeholder")
+            assertEquals(want.getValue("maxResults").jsonPrimitive.content.toInt(), got.maxResults, "search config $name maxResults")
+            assertEquals(want.getValue("width").jsonPrimitive.content.toInt(), got.width, "search config $name width")
+            assertEquals((want["kinds"] as? JsonArray)?.map { it.jsonPrimitive.content }, got.kinds, "search config $name kinds")
+            assertEquals(want.getValue("shortcut").jsonPrimitive.content.toBoolean(), got.shortcut, "search config $name shortcut")
+        }
+        for ((name, c) in f.getValue("attachValidation").jsonObject) {
+            val o = c.jsonObject
+            assertEquals((o.getValue("errors") as JsonArray).map { it.jsonPrimitive.content }, W.validateHostAttachments(o.getValue("host").jsonPrimitive.content, o["list"]), "attach validation $name")
+        }
+    }
+
+    @Test fun `asset validation matches the reference engine`() {
+        val v = ai.amberx.axf.kernel.asset.AssetValidator(AssetTypeRegistry.builtin())
+        val cases = File(fixtures, "validation.json").readText().let { ai.amberx.axf.kernel.asset.AxfJson.parseToJsonElement(it) as JsonArray }
+        for (c in cases) {
+            val o = c.jsonObject
+            val want = o.getValue("result").jsonObject
+            val got = v.validate(o.getValue("raw").jsonObject)
+            assertEquals(want.getValue("ok").jsonPrimitive.content.toBoolean(), got.ok, "validate ${o.getValue("case").jsonPrimitive.content} ok")
+            // the host attachment and slot messages are shared word for word; the envelope ones differ by port ($axf frame list)
+            val wantErrors = (want.getValue("errors") as JsonArray).map { it.jsonPrimitive.content }.filter { it.startsWith("data.") }
+            assertEquals(wantErrors, got.errors.filter { it.startsWith("data.") }, "validate ${o.getValue("case").jsonPrimitive.content} data errors")
+        }
     }
 
     @Test fun `spacing choice matches the reference engine`() {

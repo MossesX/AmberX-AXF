@@ -140,6 +140,8 @@ public class AssetTypeRegistry {
         val types = json.obj("types") ?: return 0
         var n = 0
         for ((id, v) in types) { (v as? JsonObject)?.let { register(AssetTypeSpec.fromJson(id, it, owner, optional)); n++ } }
+        // Widget hosts the spec declares (`attach` / `widgets` blocks) join the WidgetEngine's host registry.
+        ai.amberx.axf.kernel.engine.WidgetEngine.loadHosts(this, json)
         return n
     }
 

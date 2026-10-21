@@ -12,9 +12,11 @@ import kotlinx.serialization.json.doubleOrNull
 /**
  * Banner engine (asset type `banner`): the thin permanent bar across the top of the screen and the assets it holds.
  * Same rules as the web reference engine (framework/core/engines/banner.ts); fixtures in spec/fixtures/banner.json.
- * A banner shows the app logo and hosts attachments of the attachable types (badge and every widget: clock, search bar) on its left, center or right,
- * from the asset's own `attach` list and from modules at run time; a run-time attachment with the same type + id replaces
- * the asset's own. Unknown types, bad sides and assets that don't exist are skipped.
+ * A banner shows the app logo and hosts attachments of the attachable types (badge and every widget: clock, search bar)
+ * on its left, center or right, from the asset's own `attach` list and from modules at run time; a run-time attachment
+ * with the same type + id replaces the asset's own. Unknown types, bad sides and assets that don't exist are skipped.
+ * What the banner takes is the `banner` host of [WidgetEngine] (declared once in asset-types.json), so the validator,
+ * this engine and the web port agree.
  */
 public data class BannerAttachment(val type: String, val id: String, val at: String, val order: Double? = null, val origin: String? = null) {
     val key: String get() = BannerEngine.key(type, id)
@@ -51,8 +53,10 @@ public data class BadgeData(val icon: String, val label: String, val tone: Strin
 public data class ClockParts(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int)
 
 public object BannerEngine {
-    public val ATTACHABLE: List<String> = listOf("badge") + WidgetEngine.WIDGET_TYPES
-    public val SIDES: List<String> = listOf("left", "center", "right")
+    public const val HOST: String = "banner"
+    public val ATTACHABLE: List<String> get() = WidgetEngine.hostSpec(HOST)?.types ?: listOf("badge") + WidgetEngine.WIDGET_TYPES
+    public val SIDES: List<String> get() = WidgetEngine.hostSpec(HOST)?.sides ?: listOf("left", "center", "right")
+    public val SURFACES: List<String> = listOf("flat", "raised", "accent")
     public const val HEIGHT_MIN: Int = 16
     public const val HEIGHT_MAX: Int = 48
     public const val HEIGHT_THIN: Int = 24
@@ -70,9 +74,18 @@ public object BannerEngine {
     /** Same `--fx-banner-h` variable the web port emits. */
     public fun vars(b: BannerData?, hidden: Boolean = false): Map<String, String> = mapOf("--fx-banner-h" to "${height(b, hidden)}px")
 
-    /** Where every attachment goes. [has] says whether that asset exists. */
-    public fun place(b: BannerData?, extra: List<BannerAttachment>, has: (String, String) -> Boolean): Map<String, List<PlacedAttachment>> =
-        WidgetEngine.placeOnHost(b?.attach, extra, has, ATTACHABLE, SIDES)
+    /** Where every attachment goes. [has] says whether that asset exists. A banner always answers for its three sides. */
+    public fun place(b: BannerData?, extra: List<BannerAttachment>, has: (String, String) -> Boolean): Map<String, List<PlacedAttachment>> {
+        val h = WidgetEngine.hostSpec(HOST)
+        val placed = if (h == null) emptyMap() else WidgetEngine.placeOnHost(b?.attach, extra, has, h.types, h.sides)
+        return SIDES.associateWith { placed[it] ?: emptyList() }
+    }
+
+    /** The surface a banner paints with (unknown values fall back to flat, so an old or hand-edited asset still draws). */
+    public fun surface(b: BannerData?): String = b?.surface?.takeIf { it in SURFACES } ?: "flat"
+
+    /** How often a clock needs redrawing (ms): every second with seconds shown, else on the minute. */
+    public fun clockTickMs(c: ClockData): Long = if (c.seconds) 1000L else 60000L
 
     public fun toneToken(tone: String): String = TONE_TOKEN[tone] ?: "text"
 

@@ -27,7 +27,11 @@
     "button": "rounded-solid",
     "slider": "classic-round",
     "container": "soft-card",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "badge": "new"
   },
   "structure": [
     {

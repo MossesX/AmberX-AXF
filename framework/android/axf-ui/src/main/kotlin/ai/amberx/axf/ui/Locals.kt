@@ -63,6 +63,8 @@ public data class DialogContribution(
     val id: String,
     val title: String,
     val icon: String? = null,
+    /** false keeps it out of the app-wide search (web: `DialogDef.searchable`) */
+    val searchable: Boolean = true,
     val content: @Composable (DialogState) -> Unit,
 )
 

@@ -39,6 +39,8 @@ class MainActivity : AxfActivity() {
             ),
             viewTitles = ConsoleModule.ROUTES.associate { it.id to it.label } + mapOf("devtools" to "Developer tools", "settings" to "Settings", "logs" to "Logs", "account" to "Account", "profile" to "Profile", "subscription" to "Subscription", "admin" to "Administration"),
             inspector = { ConsoleInspector() },
+            viewIcons = ConsoleModule.ROUTES.associate { it.id to it.icon },
+            viewKeywords = mapOf("tracker" to listOf("status", "coverage", "built"), "catalog" to listOf("features", "suggestions"), "assets" to listOf("themes", "swap"), "settings" to listOf("preferences", "appearance")),
         )
     }
 }

@@ -25,10 +25,12 @@ public data class SearchHit(val entry: SearchEntry, val score: Double, val locke
 public fun interface SearchProvider { public fun entries(): List<SearchEntry> }
 
 public object SearchEngine {
-    public val KIND_LABELS: Map<String, String> = mapOf(
+    /** Labels shown next to results per kind; open (web: `Object.assign(SEARCH_KIND_LABELS, …)`): [labelKind] adds a module's own. */
+    public val KIND_LABELS: MutableMap<String, String> = linkedMapOf(
         "view" to "Page", "action" to "Action", "setting" to "Setting", "settings-tab" to "Settings",
         "dialog" to "Dialog", "asset" to "Asset", "window" to "Window", "text" to "On page",
     )
+    public fun labelKind(kind: String, label: String) { KIND_LABELS[kind] = label }
 
     private fun norm(s: String): String = Normalizer.normalize(s.lowercase(), Normalizer.Form.NFKD).replace(Regex("[\\u0300-\\u036f]"), "")
 
@@ -58,9 +60,18 @@ public object SearchEngine {
     public fun score(e: SearchEntry, query: String): Double = score(e.label, e.detail, e.keywords, e.kind, query)
 }
 
+/** The UI layer installs one to navigate, scroll and highlight; false = let the runtime fallback handle it (web: SearchFocuser). */
+public fun interface SearchFocuser { public fun focus(entry: SearchEntry): Boolean }
+
 /** Providers by id (re-adding replaces). [gate] maps a permission to ALLOW / DISABLE / HIDE (the runtime's UAC gate). */
 public class SearchIndex(private val gate: (String?) -> Gate) {
     private val providers = LinkedHashMap<String, SearchProvider>()
+    private var focuser: SearchFocuser? = null
+
+    /** Install (or clear) the UI focuser. */
+    public fun setFocuser(f: SearchFocuser?) { focuser = f }
+    /** The installed focuser's answer, or null when none is installed (the runtime then falls back; see AxfRuntime.focusSearch). */
+    public fun focusWithUi(entry: SearchEntry): Boolean? = focuser?.focus(entry)
 
     public fun add(id: String, provider: SearchProvider): () -> Unit {
         providers[id] = provider
@@ -85,7 +96,13 @@ public class SearchIndex(private val gate: (String?) -> Gate) {
                 if (s > 0) SearchHit(e, s, g == Gate.DISABLE) else null
             }
             .sortedWith(compareByDescending<SearchHit> { it.score }.thenBy { it.entry.label })
-            .take(limit)
             .toList()
+            .let { hits ->
+                // Words on a page that name something already listed add nothing (same rule as search.ts).
+                val named = hits.filter { it.entry.kind != "text" }.map { norm(it.entry.label) }.toSet()
+                hits.filter { it.entry.kind != "text" || norm(it.entry.label) !in named }
+            }
+            .take(limit)
     }
+    private fun norm(s: String): String = Normalizer.normalize(s.lowercase(), Normalizer.Form.NFKD).replace(Regex("[\\u0300-\\u036f]"), "")
 }

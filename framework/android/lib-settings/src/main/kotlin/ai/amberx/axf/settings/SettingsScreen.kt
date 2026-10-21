@@ -30,7 +30,18 @@ public fun SettingsScreen(modifier: Modifier = Modifier, title: String = "Settin
     val values by engine.values.collectAsState()
     val scope = rememberCoroutineScope()
     var filter by remember { mutableStateOf("") }
-    LazyColumn(modifier.fillMaxWidth(), contentPadding = PaddingValues(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.oneHalf)) {
+    val focus by engine.focusRequest.collectAsState()
+    val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+    // A search pick (settings.open:<group>[:<key>]) scrolls to the group and filters to the setting, then clears itself.
+    androidx.compose.runtime.LaunchedEffect(focus, groups) {
+        val f = focus ?: return@LaunchedEffect
+        val (group, key) = f
+        val gi = groups.indexOfFirst { it.id == group || (key != null && it.settings.any { s -> s.key == key }) }
+        if (key != null) filter = groups.getOrNull(gi)?.settings?.firstOrNull { it.key == key }?.label ?: ""
+        if (gi >= 0) listState.animateScrollToItem(gi + 2)
+        engine.clearFocus()
+    }
+    LazyColumn(modifier.fillMaxWidth(), state = listState, contentPadding = PaddingValues(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.oneHalf)) {
         item { AxfPageHead(title, eyebrow = "${groups.size} groups", description = "Generated from the settings schema every module contributes.") }
         item { AxfTextField(filter, { filter = it }, Modifier.fillMaxWidth(), placeholder = "Search settings…", leadingIcon = "search") }
         for (g in groups) item(key = g.id) { SettingsGroupView(g, values, { k, v -> scope.launch { engine.set(k, v) } }, filter = filter) }

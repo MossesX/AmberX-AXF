@@ -43,6 +43,43 @@ class KernelTest {
         assertTrue(kernel.runtime.compiled.value.layouts.getValue(WindowClass.COMPACT).cssColumns == "minmax(0, 1fr)")
     }
 
+    @Test fun `widget hosts: attach, replace, detach, warn`() = runTest {
+        val kernel = AxfKernel.builder(manifest).assets(assets()).build()
+        kernel.start()
+        val rt = kernel.runtime
+        val (_, h, placed) = rt.banner()
+        assertEquals(24, h)
+        assertEquals(listOf("search-bar:everything"), placed.getValue("center").map { it.key })
+        assertEquals(listOf("clock:digital-12h"), placed.getValue("right").map { it.key })
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("badge", "new", "left", 5.0, "p1"))
+        assertEquals(listOf("badge:new@p1"), rt.banner().third.getValue("left").map { "${it.key}@${it.origin}" })
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("badge", "new", "right", null, "p2"))
+        assertEquals(0, rt.banner().third.getValue("left").size, "same type+id replaces")
+        assertEquals(listOf("clock:digital-12h", "badge:new"), rt.banner().third.getValue("right").map { it.key }, "asset clock (10) before runtime badge (1000)")
+        rt.detachFromBanner("p2")
+        assertEquals(listOf("clock:digital-12h"), rt.banner().third.getValue("right").map { it.key })
+        val warnsBefore = rt.terminal.lines.value.count { it.channel == "widgets" }
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("button", "rounded-solid", "left", null, "p3"))
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("badge", "new", "top", null, "p3"))
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("badge", "missing", "left", null, "p3"))
+        rt.attachToHost("ribbon", ai.amberx.axf.kernel.engine.BannerAttachment("badge", "new", "left", null, "p3"))
+        assertEquals(4, rt.terminal.lines.value.count { it.channel == "widgets" } - warnsBefore, "one warning per bad call")
+        assertEquals(0, rt.banner().third.getValue("left").size, "bad attachments never show")
+        rt.attachToToolbar(ai.amberx.axf.kernel.engine.BannerAttachment("clock", "digital-24h", "end", null, "p4"))
+        rt.attachToBanner(ai.amberx.axf.kernel.engine.BannerAttachment("badge", "new", "left", null, "p4"))
+        assertEquals(listOf("clock:digital-24h"), rt.toolbarWidgets().getValue("end").map { it.key })
+        rt.detachAll("p4")
+        assertEquals(0, rt.toolbarWidgets().getValue("end").size + rt.banner().third.getValue("left").size, "detachAll clears every host")
+        rt.setSlotHidden(AssetTypes.BANNER, true)
+        assertEquals(null, rt.banner().first, "hidden banner has no data")
+        assertEquals(0, rt.banner().second, "hidden banner has no height")
+        rt.setSlotHidden(AssetTypes.BANNER, false)
+        rt.showBannerPopup("badge:new", "hi")
+        assertEquals("hi", rt.current.bannerPopup?.text)
+        rt.dismissBannerPopup()
+        assertEquals(null, rt.current.bannerPopup)
+    }
+
     @Test fun `uac gating and action bus`() = runTest {
         val kernel = AxfKernel.builder(manifest).assets(assets()).build()
         kernel.start()

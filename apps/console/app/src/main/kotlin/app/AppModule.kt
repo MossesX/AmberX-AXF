@@ -51,6 +51,9 @@ class ConsoleModule(private val context: Context) : BaseModule(ID, "AXF Dev Cons
         ctx.service(ai.amberx.axf.browser.BrowserModule::class)?.register("library-browser") {
             ai.amberx.axf.console.views.THIRD_PARTY_UI.map { l -> ai.amberx.axf.browser.BrowserItem(l.id, l.name, if (l.kitId != null) 0 else 1, "${l.vendor} · ${l.stack}", l.status, if (l.kitId != null) "kit-preview" else "library-info", l.kitId ?: l.id, if (l.kitId != null) "grid" else "box") }
         }
+        // Console search providers (the Android twin of apps/console-web/src/consoleSearch.ts): framework features in the
+        // tracker and catalog features join the banner's search bar next to views, settings, actions, assets and dialogs.
+        ConsoleSearch.install(runtime, repo)
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About", module = id)) { _, _ -> runtime?.openDialog("about") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.docs", ActionMeta("Documentation", module = id)) { _, _ -> runtime?.toast("Docs: framework/android/README.md and framework/spec/PORTING.md in the repo.", ToastKind.INFO, "Documentation") })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("console.exportPlan", ActionMeta("Export build plan", module = id)) { _, c -> (c.extras["clipboard"] as? (String) -> Unit)?.invoke(repo.exportPlan()); runtime?.toast("Build plan copied — paste it into Claude Code.", ToastKind.SUCCESS, "Exported") })
