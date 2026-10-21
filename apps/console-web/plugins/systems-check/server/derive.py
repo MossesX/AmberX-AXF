@@ -2,7 +2,8 @@
 
   * every console plugin (apps/console-web/plugins/*/plugin.json): its server loaded, the capability services it
     `requires` are provided, its data folder is private, and its own declared self-checks (hooks.mjs → checks(ctx),
-    run through framework/cli/plugin-lifecycle.mjs checks <folder>);
+    run through framework/cli/plugin-lifecycle.mjs checks <folder>; a failing one may name a terminal fix that
+    Auto fix runs once Brett approves it);
   * every project manifest in the repo (framework/cli/project.mjs validate --all);
   * the shared data files the root manifest declares (data.shared) exist where the console reads them.
 
@@ -12,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import stat
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
@@ -84,6 +86,8 @@ def derive(item: Callable[..., Check]) -> list[Check]:
                 details.append(f"data {data_dir} ({oct(mode)})")
                 if mode & 0o077 and status == "ok":
                     status, summary = "warn", f"data folder {data_dir} is readable by other users ({oct(mode)}); chmod 700 it"
+                    if re.match(r"^[A-Za-z0-9._/-]+$", data_dir) and ".." not in data_dir.split("/") and not data_dir.startswith("/"):
+                        fix = {"type": "host", "command": f"chmod 700 /opt/axf/{data_dir}"}  # Auto fix (approved on axHub)
         res.append(item(cid, "plugins", f"{name} plugin", status, summary, details=details, fix=fix, order=71))
         if m.get("hasHooks"):
             try:
@@ -94,7 +98,7 @@ def derive(item: Callable[..., Check]) -> list[Check]:
                                         fix=fix, order=72))
                         continue
                     res.append(item(f"{cid}:{c['id']}", "plugins", f"{name}: {c['id'].replace('-', ' ')}", "ok" if c["ok"] else "warn",
-                                    c.get("detail") or ("ok" if c["ok"] else "failed"), fix=fix, order=72))
+                                    c.get("detail") or ("ok" if c["ok"] else "failed"), fix=c.get("fix") if isinstance(c.get("fix"), dict) else fix, order=72))
             except Exception as e:  # noqa: BLE001
                 res.append(item(f"{cid}:checks", "plugins", f"{name}: self-checks", "unknown", f"couldn't run its declared checks: {str(e)[:160]}", order=72))
         return res

@@ -1,0 +1,20 @@
+{
+  "$axf": "coolify-expect@1",
+  "note": "What each Coolify app must have. The systems check reads the apps through the Coolify API (console's COOLIFY_URL + COOLIFY_TOKEN) and Auto fix sets what's wrong through deploy/coolify-fix.py on the VPS, approved on axHub. Override this file with .axf-console/plugins/systems-check/coolify-expect.json. Rules: equals (exact), includes (every listed item is in the list value; sep picks ',' or ' '), sameAs (equals a secret the VPS holds; never shown).",
+  "apps": [
+    {
+      "name": "axHub",
+      "match": ["axhub"],
+      "service": "axhub",
+      "then": "deploy",
+      "env": [
+        { "key": "PORT", "equals": "8080" },
+        { "key": "AXHUB_COOKIE_DOMAIN", "equals": ".amberxai.com", "why": "the hub's sign-in works across every amberxai.com app" },
+        { "key": "AXHUB_DATA_ORIGINS", "includes": ["https://console.amberxai.com", "https://pilot.amberxai.com"], "why": "the console and Build Pilot read the look and settings from the hub (appearance@1)" },
+        { "key": "AXHUB_APPROVALS_FRAME_ANCESTORS", "includes": ["https://console.amberxai.com"], "why": "approvals open inside the console" },
+        { "key": "AXHUB_APPS_FRAME_ANCESTORS", "includes": ["https://console.amberxai.com"], "why": "the console's axHub tab shows the app catalog" },
+        { "key": "AXHUB_WALL_SECRET", "sameAs": "console-wall-secret", "why": "signed-in hub users reach the console (it must match the console's wall secret)" }
+      ]
+    }
+  ]
+}

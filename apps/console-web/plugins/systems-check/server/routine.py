@@ -12,6 +12,10 @@ written, with no model. Nothing an AI writes is ever executed as code: only thes
   service  {name}                      a capability service is provided (e.g. axf.containers@1)
   plugin   {folder}                    a console plugin is loaded and enabled
   http     {url, expect?}              an https URL on a public host answers with an expected status (default 2xx/3xx)
+
+A check may also carry a ``fix`` (Oct 21 2026, Brett: Auto fix fixes anything a terminal can): {type: host, command}
+or {type: container, container, command | restart: true}. It is never run by the check: Auto fix shows it to Brett
+on axHub as an AI-written command (``source: ai``) and runs it only once he approves that exact text.
 """
 from __future__ import annotations
 
@@ -43,6 +47,26 @@ Check = dict[str, Any]
 
 def _rel_ok(p: str) -> bool:
     return bool(p) and not p.startswith(("/", "~")) and ".." not in Path(p).parts and len(p) < 300
+
+
+FIX_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
+
+
+def _fix(raw: Any) -> dict[str, Any] | None:
+    """A proposed fix, kept only in the two terminal shapes; anything else is dropped (the check stays)."""
+    if not isinstance(raw, dict):
+        return None
+    cmd = str(raw.get("command") or "").strip()
+    if len(cmd) > 500 or any(ch in cmd for ch in "\r\n\0"):
+        return None
+    if raw.get("type") == "host" and cmd:
+        return {"type": "host", "command": cmd}
+    if raw.get("type") == "container" and FIX_NAME_RE.match(str(raw.get("container") or "")):
+        if raw.get("restart") is True:
+            return {"type": "container", "container": raw["container"], "restart": True}
+        if cmd:
+            return {"type": "container", "container": raw["container"], "command": cmd}
+    return None
 
 
 def validate(raw: Any) -> tuple[list[dict[str, Any]], list[str]]:
@@ -82,6 +106,8 @@ def validate(raw: Any) -> tuple[list[dict[str, Any]], list[str]]:
                     "title": str(c.get("title") or cid)[:120], "service": str(c.get("service") or "routine")[:30],
                     "severity": c.get("severity") if c.get("severity") in SEVERITIES else "warn",
                     "why": str(c.get("why") or "")[:300], "instructions": [str(x)[:300] for x in (c.get("instructions") or [])][:5]})
+        if _fix(c.get("fix")):
+            out[-1]["fix"] = _fix(c.get("fix"))
         if len(out) >= 60:
             break
     return out, problems
@@ -175,7 +201,8 @@ def run_one(d: dict[str, Any], item: Callable[..., Check]) -> Check:
         summary = f"couldn't run: {str(e)[:160]}"
     status = "ok" if ok else {"error": "error", "warn": "warn", "info": "info"}[sev]
     return item(f"routine:{d['id']}", d["service"] if d["service"] in store.SERVICE_IDS else "routine", d["title"], status, summary,
-                details=[x for x in [d.get("why"), f"{kind} {json.dumps(p)}"] if x], instructions=d.get("instructions") or [], order=90)
+                details=[x for x in [d.get("why"), f"{kind} {json.dumps(p)}"] if x], instructions=d.get("instructions") or [], order=90,
+                fix=_fix(d.get("fix")) if not ok else None)
 
 
 def run_saved(item: Callable[..., Check]) -> list[Check]:
@@ -228,9 +255,12 @@ isn't set, a capability a feature depends on, a file a deploy needs, a public en
 Answer with ONLY a JSON object, no prose:
 {"checks": [{"id": "kebab-id", "kind": "env|file|json|service|plugin|http", "params": {...}, "title": "short title",
   "service": "console|github|claude|vps|coolify|axhub|data|plugins|routine", "severity": "error|warn|info",
-  "why": "one plain sentence", "instructions": ["how Brett fixes it"]}]}
+  "why": "one plain sentence", "instructions": ["how Brett fixes it"],
+  "fix": {"type": "host", "command": "one non-interactive shell command for the VPS"} (optional)}]}
 params per kind: env {name} · file {path (repo-relative), mode?} · json {path, key (dot path)} ·
 service {name, e.g. axf.containers@1} · plugin {folder} · http {url (https, public), expect? [codes]}.
+fix (optional): {type: host, command} runs on the VPS as root, or {type: container, container, command | restart: true};
+Brett approves every fix command before it runs, so keep it one short non-interactive command, never a secret value.
 At most 25 checks. Never include secret values. Prefer checks that are true when things are set up right."""
 
 

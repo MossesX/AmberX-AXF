@@ -23,6 +23,24 @@ stay when this plugin is uninstalled.
 Changes since this browser last opened the console: commits on the console's clone and plugins added, updated or
 removed. **Got it** marks them seen (kept in this browser's localStorage). Can be switched off in the settings tab.
 
+## Auto fix: anything a terminal can fix (Oct 21 2026)
+Every issue whose fix is a command gets **Auto fix**: on the VPS host, inside a container (`docker exec` / `docker
+restart`), or a Coolify API change. `server/fixplan.py` builds the command on the server from the check report (never
+from the browser), axHub's `vps.run` asks Brett to approve that exact text, then the job runs it and re-checks.
+- Fix kinds are an open registry (`fixplan.register_kind`): `host`, `container`, `coolify`. A check names its fix
+  (`fix: {type: host, command}` …); plugins can do the same from `hooks.mjs → checks()` and Mosses's routine checks
+  can propose one (shown as AI-written, still approved).
+- Host doctor checks use `server/hostfix.py → FIX_COMMANDS` (non-interactive commands; now also claude-sync, session
+  check-in, the host report). The doctor's interactive `--fix` mode is never sent.
+- **Coolify app checks** (`server/coolify.py`): what each app needs is data, `server/coolify-expect.json`
+  (coolify-expect@1; override in the data folder). Today: axHub's `PORT`, `AXHUB_COOKIE_DOMAIN`, `AXHUB_DATA_ORIGINS`,
+  both frame-ancestor lists and `AXHUB_WALL_SECRET` (must match the console's wall secret; compared by digest, never
+  shown). The fix runs `python3 /opt/axf/deploy/coolify-fix.py --app <uuid> env-set … env-from … deploy` on the VPS
+  (Coolify token from the console's credential file; secret values read on the VPS, never in the command).
+- Stays manual, with the reason shown: Claude and GitHub sign-ins, the Moshi key (fingerprint), a new console token,
+  the axhub-projects volume (Coolify's API can't add one).
+- Never `docker exec` into Coolify or a database (restart is allowed).
+
 ## AI switches
 Two switches: **Use AI for the systems check** and **Use AI for What's new**. They need the **AI assistant**
 (`axf.llm@1`) and **Mosses** (`axf.agents@1` + the `coder` add-on agent). When either is missing the switches are
@@ -36,7 +54,7 @@ greyed out, with what's missing and a link to install or set it up (found by cap
   shows when AI is off.
 
 ## Routes (`/api/plugins/systems-check/`, console token)
-`GET check[?force=1]`, `POST check/{id}`, `POST secret`, `POST secret/clear`, `POST fix/{id}`, `GET ai`,
+`GET check[?force=1]`, `POST check/{id}`, `POST secret`, `POST secret/clear`, `POST fix/{id}`, `GET autofix` (plans + jobs + what stays manual), `POST autofix/{id}`, `GET ai`,
 `PUT settings`, `GET|DELETE routine`, `POST routine/run`, `GET whats-new[?summary=1]` (changes since the shared seen point, `canClear`), `POST whats-new/seen {head}` (admins only: console token or hub admin; clears it for everyone).
 Provides `axf.syscheck@1` (`run_all`) for the console's alerts.
 

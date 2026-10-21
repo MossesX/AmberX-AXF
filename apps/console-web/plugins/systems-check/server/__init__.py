@@ -13,7 +13,8 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST check/{id}                   re-run one check
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
-  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command through axHub's vps.run (approval pops up)
+  POST autofix/{id} | GET autofix   Auto fix any issue a terminal can fix (host, container, Coolify API): the command
+                                    fixplan.py builds from the report, run by axHub's vps.run after Brett approves it
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
@@ -34,7 +35,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import derive, hostfix, routine, store, whatsnew
+from . import coolify, derive, fixplan, hostfix, routine, store, whatsnew
 from .checks import HOST_SCRIPT, SERVICES, SysCheck
 
 router = APIRouter()
@@ -51,6 +52,7 @@ class Service:
     def __init__(self) -> None:
         self.core = SysCheck(cx.ROOT, cx.current_token, cx.persist_root, cx.PLUGINS, cx.log, cx.GITHUB_REPO)
         self._cache: tuple[float, list[dict[str, Any]]] | None = None
+        self.plans: dict[str, dict[str, Any]] = {}
 
     def activity(self) -> list[dict[str, Any]]:
         """Work in progress for any activity feed (read through this service, no plugin named): VPS Auto fix jobs."""
@@ -59,7 +61,7 @@ class Service:
         for j in HOSTFIX.all():
             state = {"asking": "running", "waiting": "waiting", "running": "running", "done": "done", "failed": "failed"}.get(j.get("state"), "running")
             out.append({"id": f"syscheck:autofix:{j['id']}", "kind": "fix", "state": state,
-                        "title": f"VPS Auto fix: {labels.get(j['id']) or j['id']}",
+                        "title": f"Auto fix: {labels.get(j['id']) or j['id']}",
                         "detail": f"{j.get('message', '')}\n$ {j.get('command', '')}".strip(),
                         "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
                         "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
@@ -73,14 +75,22 @@ class Service:
             items += derive.derive(self.core.item)
         except Exception as e:  # noqa: BLE001
             items.append(self.core.item("derived", "plugins", "Codebase checks", "unknown", f"couldn't read the codebase: {str(e)[:160]}", order=70))
+        try:
+            items += coolify.checks(self.core.item)
+        except Exception as e:  # noqa: BLE001
+            items.append(self.core.item("coolify-apps", "coolify", "Coolify apps", "unknown", f"couldn't check the apps: {str(e)[:160]}", order=51))
         items += routine.run_saved(self.core.item)
         items.sort(key=lambda c: (c["order"], c["id"]))
+        self.plans = fixplan.annotate(items)
         self._cache = (time.time(), items)
         return items
 
     def run_one(self, cid: str) -> dict[str, Any]:
         if cid in self.core.checks:
-            return self.core.run_one(cid)
+            c = self.core.run_one(cid)
+            p = fixplan.annotate([c])
+            self.plans.update(p)
+            return c
         hit = next((c for c in self.run_all(force=True) if c["id"] == cid), None)
         if not hit:
             raise KeyError(f"no check {cid}")
@@ -380,25 +390,42 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
     return {"seen": store.save_whats_new_seen(h, _plugin_versions(), who)}
 
 
-# ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
+# ---------------------------------------------------------------- Auto fix through axHub (any terminal)
 
 HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate())
 
 
+def _plan_for(cid: str) -> dict[str, Any] | None:
+    """The plan from the server's own report (refreshed once if the check isn't in it)."""
+    SVC.run_all()
+    if cid not in SVC.plans:
+        try:
+            SVC.run_one(cid)
+        except (KeyError, HTTPException):
+            return None
+    return SVC.plans.get(cid)
+
+
 @router.get("/autofix")
 def autofix_list() -> dict[str, Any]:
-    """Which host checks Auto fix can run (and their exact commands), and every job's state."""
-    return {"commands": {k: hostfix.command(k) for k in hostfix.FIX_COMMANDS}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
+    """Every check Auto fix can run (its exact command and which terminal: host, container, coolify), and every job."""
+    SVC.run_all()  # cached 60 s; refreshes the plans
+    return {"commands": {k: p["command"] for k, p in SVC.plans.items()}, "plans": SVC.plans,
+            "manual": dict(fixplan.MANUAL), "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
 
 
-@router.post("/autofix/{cid}")
+@router.post("/autofix/{cid:path}")
 def autofix_start(cid: str) -> dict[str, Any]:
-    if not HOSTFIX.allowed(cid):
-        raise HTTPException(400, "This one needs you at the machine: follow its steps.")
+    if cid in fixplan.MANUAL:
+        raise HTTPException(400, fixplan.MANUAL[cid])
+    p = _plan_for(cid)
+    if not p:
+        raise HTTPException(400, "No command can fix this one: follow its steps.")
+    if p.get("status") == "ok":
+        raise HTTPException(409, "Already fine: nothing to fix.")
     try:
-        job = HOSTFIX.start(cid)
+        job = HOSTFIX.start(cid, p["command"])
     except hostfix.HubError as e:
         raise HTTPException(409, str(e)) from None
-    cx.log("system", f"Auto fix {cid}: asked axHub to run its fix (needs your approval)", "info")
-    return job
-
+    cx.log("system", f"Auto fix {cid} ({p['kind']}): asked axHub to run its fix (needs your approval)", "info")
+    return {**job, "kind": p["kind"], "source": p["source"]}

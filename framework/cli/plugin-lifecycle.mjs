@@ -17,7 +17,7 @@
  *  3. The only other trace is its enabled flag in the console state file (state.json → plugins.<folder>).
  *  4. Documentation lines outside the folder that mention it end with the marker `axf-plugin:<folder>` (in a comment)
  *     and their files are listed in `lifecycle.mentions`; uninstall --code strips those lines.
- *  5. Optional hooks in <folder>/hooks.mjs: onInstall(ctx), onUninstall(ctx), checks(ctx) → [{ id, ok, detail }].
+ *  5. Optional hooks in <folder>/hooks.mjs: onInstall(ctx), onUninstall(ctx), checks(ctx) → [{ id, ok, detail, fix? }].
  *     `checks` are the plugin's declared self-checks: run after install, by `checks <folder>`, and by the systems check.
  *  6. The plugin ships install.mjs + uninstall.mjs (thin wrappers around this file) and shows the shared lifecycle panel
  *     in its settings tab.
@@ -201,7 +201,10 @@ export async function runChecks(folder) {
   const h = await hooks(p);
   if (!h.checks) return { folder, checks: [], declared: false };
   const raw = await h.checks(ctxFor(p, () => {}));
-  const checks = (Array.isArray(raw) ? raw : []).slice(0, 50).map((c) => ({ id: String(c?.id ?? '').slice(0, 64), ok: c?.ok !== false, detail: String(c?.detail ?? '').slice(0, 500) })).filter((c) => /^[a-z0-9][a-z0-9._-]*$/i.test(c.id));
+  // A check may name a terminal fix (host / container / coolify, Oct 21 2026): the systems check's Auto fix shows it to
+  // Brett on axHub and runs it only once approved. Plain JSON only, size-capped; the systems check validates the shape.
+  const fixOf = (f) => (f && typeof f === 'object' && ['host', 'container', 'coolify'].includes(f.type) && JSON.stringify(f).length <= 2000 ? JSON.parse(JSON.stringify(f)) : undefined);
+  const checks = (Array.isArray(raw) ? raw : []).slice(0, 50).map((c) => ({ id: String(c?.id ?? '').slice(0, 64), ok: c?.ok !== false, detail: String(c?.detail ?? '').slice(0, 500), ...(c?.ok === false && fixOf(c?.fix) ? { fix: fixOf(c.fix) } : {}) })).filter((c) => /^[a-z0-9][a-z0-9._-]*$/i.test(c.id));
   return { folder, checks, declared: true };
 }
 

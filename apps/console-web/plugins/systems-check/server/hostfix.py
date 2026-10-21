@@ -1,12 +1,13 @@
-"""Auto fix for VPS host checks, through axHub (Oct 20 2026).
+"""Auto fix through axHub's vps.run (Oct 20 2026; any terminal since Oct 21 2026).
 
-The console can't change the host from its container. For the host checks listed in FIX_COMMANDS, Auto fix asks
-axHub to run that check's exact, fixed command on the VPS with the hub's `vps.run` tool. `vps.run` always needs
-Brett's approval on the hub, and the approval page shows the whole command: it pops up in the console by itself
-(approvals banner), he approves or rejects it, and this job sends the same call again with the confirmation id and
-reports the result. Nothing runs on the host without that approval, and only commands from this table are ever sent.
+The console can't change the host from its container, so Auto fix asks axHub to run the fix command on the VPS with
+the hub's `vps.run` tool. `vps.run` always needs Brett's approval on the hub, and the approval page shows the whole
+command: it pops up in the console by itself (approvals banner), he approves or rejects it, and this job sends the same
+call again with the confirmation id and reports the result. Nothing runs on the host without that approval.
 
-Checks that need him at the machine (sign-ins, the Moshi key's fingerprint, a Coolify volume) are not here.
+Which command: `fixplan.py` builds it on the server from the check report (this file's FIX_COMMANDS for the host
+doctor's checks, else the check's own host / container / Coolify fix). A browser only names the check.
+
 Needs AXHUB_URL + AXHUB_TOKEN (Keys banner → axHub connection). One job per check at a time; jobs live in memory.
 """
 from __future__ import annotations
@@ -32,13 +33,21 @@ FIX_COMMANDS: dict[str, str] = {
     "host-claude-cli": "curl -fsSL https://claude.ai/install.sh | bash",
     "host-docker": "bash /opt/axf/deploy/install-console.sh",
     "host-update-cron": "bash /opt/axf/deploy/install-console.sh",
+    # Oct 21 2026: every doctor check a command can fix without a person at the terminal
+    "host-report": "true",
+    "host-claude-sync": "{ test -f /root/axHub/clients/claude-code/claude-sync.mjs || git clone -q https://github.com/MossesX/axHub /root/axHub; } && node /root/axHub/clients/claude-code/claude-sync.mjs install",
+    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"local\",\"dir\":\"/opt/axf\"}'",
 }
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 
 
+def with_report(cmd: str) -> str:
+    return cmd if cmd.endswith(_REPORT) else f"{cmd} && {_REPORT}"
+
+
 def command(cid: str) -> str | None:
     c = FIX_COMMANDS.get(cid)
-    return f"{c} && {_REPORT}" if c else None
+    return with_report(c) if c else None
 
 
 class HubError(Exception):
@@ -112,10 +121,6 @@ class Jobs:
         self.jobs: dict[str, dict[str, Any]] = {}
         self.lock = threading.Lock()
 
-    @staticmethod
-    def allowed(cid: str) -> bool:
-        return cid in FIX_COMMANDS
-
     def get(self, cid: str) -> dict[str, Any] | None:
         with self.lock:
             j = self.jobs.get(cid)
@@ -125,8 +130,8 @@ class Jobs:
         with self.lock:
             return [dict(j) for j in self.jobs.values()]
 
-    def start(self, cid: str) -> dict[str, Any]:
-        cmd = command(cid)
+    def start(self, cid: str, cmd: str | None) -> dict[str, Any]:
+        """``cmd`` comes from fixplan.plan() on the server's own check report, never from a request."""
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
         _hub()  # fail fast without a token

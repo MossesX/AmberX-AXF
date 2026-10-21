@@ -126,7 +126,7 @@ def fake_call(states):
 os.environ["AXHUB_TOKEN"] = "hub-token-for-test"
 rechecked = []
 jobs = hf.Jobs(lambda cid: rechecked.append(cid), fake_call(["confirm", "confirm", "ok"]), poll_s=0.01)
-jobs.start("host-mosh-ports")
+jobs.start("host-mosh-ports", hf.command("host-mosh-ports"))
 for _ in range(200):
     if (jobs.get("host-mosh-ports") or {}).get("state") in ("done", "failed"): break
     time.sleep(0.01)
@@ -134,16 +134,16 @@ j = jobs.get("host-mosh-ports")
 check(j["state"] == "done" and rechecked == ["host-mosh-ports"], "approved on the hub → ran, then re-checked")
 check(calls[0] == ("vps.run", "ufw allow 60000:61000/udp && bash /opt/axf/deploy/console-doctor.sh --report", None) and calls[-1][2], "the exact table command, then the same call with the approval id")
 jobs2 = hf.Jobs(lambda cid: None, fake_call(["confirm", "reject"]), poll_s=0.01)
-jobs2.start("host-mosh")
+jobs2.start("host-mosh", hf.command("host-mosh"))
 for _ in range(200):
     if (jobs2.get("host-mosh") or {}).get("state") in ("done", "failed"): break
     time.sleep(0.01)
 check(jobs2.get("host-mosh")["state"] == "failed" and "Rejected" in jobs2.get("host-mosh")["message"], "rejected on the hub → nothing runs")
 try:
-    jobs.start("host-moshi-key"); refused = False
+    jobs.start("host-moshi-key", None); refused = False
 except hf.HubError:
     refused = True
-check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
+check(refused, "a check with no planned command is refused (the job never takes text from a request)")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
 check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
@@ -291,6 +291,157 @@ if _chk is not None:
     from axf_server import http as _h
     check(_h.target_ok("http://coolify:8080", _chk.COOLIFY_INTERNAL_HOSTS) and _h.target_ok("https://coolify.example.com", _chk.COOLIFY_INTERNAL_HOSTS)
           and not _h.target_ok("http://31.97.13.252:8000", _chk.COOLIFY_INTERNAL_HOSTS), "Coolify URL: https or http://coolify only, never http to an IP")
+# ---------------------------------------------------------------- Auto fix: anything a terminal can fix (Oct 21 2026)
+fp = sys.modules[spec.name + ".fixplan"]
+cf = sys.modules[spec.name + ".coolify"]
+p_ = fp.plan({"id": "host-mosh", "fix": {"type": "host", "command": "anything"}})
+check(p_ and p_["command"].startswith("DEBIAN_FRONTEND=noninteractive apt-get install") and p_["source"] == "table", "host checks use the table's non-interactive command")
+check(fp.plan({"id": "host-claude-sync", "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-claude-sync"}})["command"].startswith("{ test -f /root/axHub"),
+      "claude-sync is fixable now (clone + install, no prompt)")
+check(fp.plan({"id": "host-x", "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-x"}}) is None, "interactive doctor --fix commands are never planned (Copy fix stays)")
+check(all(fp.plan({"id": m, "fix": {"type": "host", "command": "true"}}) is None for m in ("host-claude-login", "moshi-key", "console-token", "host-git-auth")),
+      "sign-ins, the Moshi key and the console token stay with Brett")
+p_ = fp.plan({"id": "some-check", "fix": {"type": "host", "command": "systemctl restart cron"}})
+check(p_["kind"] == "host" and p_["command"] == "systemctl restart cron && bash /opt/axf/deploy/console-doctor.sh --report", "any check's host command is planned, then the host report refreshes")
+p_ = fp.plan({"id": "c1", "fix": {"type": "container", "container": "axhub-app", "command": "rm -f /tmp/x; echo 'hi'"}})
+check(p_["command"].startswith("docker exec axhub-app sh -lc 'rm -f /tmp/x; echo '\"'\"'hi'\"'\"''"), "container commands run with docker exec, quoted")
+check(fp.plan({"id": "c2", "fix": {"type": "container", "container": "coolify-db", "command": "psql"}}) is None
+      and fp.plan({"id": "c3", "fix": {"type": "container", "container": "coolify-db", "restart": True}})["command"].startswith("docker restart coolify-db"),
+      "never exec into Coolify or a database; restarting one is still allowed (approved)")
+check(fp.plan({"id": "c4", "fix": {"type": "container", "container": "a;b", "restart": True}}) is None, "bad container names refused")
+p_ = fp.plan({"id": "coolify-app:axhub", "fix": {"type": "coolify", "app": "abc123", "appKind": "service", "ops": [
+    {"action": "env-set", "key": "PORT", "value": "8080"}, {"action": "env-from", "key": "AXHUB_WALL_SECRET", "source": "console-wall-secret"}, {"action": "env-unset", "key": "OLD"}], "then": "deploy"}})
+check(p_["kind"] == "coolify" and p_["command"].startswith("python3 /opt/axf/deploy/coolify-fix.py --app abc123 --service env-set PORT=8080 env-from AXHUB_WALL_SECRET=console-wall-secret env-unset OLD deploy"),
+      "Coolify fixes become one coolify-fix.py command (uuid, service flag, ops, redeploy)")
+check(fp.plan({"id": "x", "fix": {"type": "coolify", "app": "a", "ops": [{"action": "env-set", "key": "K", "value": "it's; rm"}]}}) is None
+      and fp.plan({"id": "x", "fix": {"type": "coolify", "app": "a", "ops": [{"action": "env-from", "key": "K", "source": "/etc/shadow"}]}}) is None
+      and fp.plan({"id": "x", "fix": {"type": "coolify", "app": "a", "ops": [{"action": "env-set", "key": "bad key", "value": "1"}]}}) is None,
+      "Coolify values must be plain text, secrets only from known VPS sources, keys checked")
+check(fp.plan({"id": "routine:x", "fix": {"type": "host", "command": "true"}})["source"] == "ai", "commands Mosses wrote are marked AI")
+fp.register_kind("test-kind", lambda f: "echo extension")
+check(fp.plan({"id": "y", "fix": {"type": "test-kind"}})["command"].startswith("echo extension"), "fix kinds are an open registry")
+fp.KINDS.pop("test-kind")
+items_ = [{"id": "github-token", "status": "warn", "fix": {"type": "secrets", "fields": []}}, {"id": "zz", "status": "warn", "fix": {"type": "container", "container": "app1", "restart": True}},
+          {"id": "host-claude-login", "status": "warn", "fix": {"type": "host", "command": "x"}}]
+pl_ = fp.annotate(items_)
+check(items_[0]["fix"]["type"] == "secrets" and items_[1]["fix"]["type"] == "host" and items_[1]["fix"]["kind"] == "container" and items_[1]["fix"]["auto"]
+      and set(pl_) == {"zz"} and items_[2].get("manual"), "annotate: keys stay keys, terminal fixes show as host fixes the banner runs, manual ones say why")
+check(fp.plan(items_[1])["command"] == pl_["zz"]["command"], "re-planning an annotated check gives the same command (no doubled report)")
+
+# Coolify app checks: expectations are data; secrets compared by digest, never shown
+app_ = {"name": "axHub", "env": [{"key": "PORT", "equals": "8080"}, {"key": "AXHUB_DATA_ORIGINS", "includes": ["https://a.example", "https://b.example"]},
+                                 {"key": "AXHUB_WALL_SECRET", "sameAs": "console-wall-secret"}]}
+os.environ["AXF_WALL_SECRET"] = "wall-secret-value-123"
+pr_, ops_, _ = cf.evaluate(app_, {"PORT": "8080", "AXHUB_DATA_ORIGINS": "https://a.example", "AXHUB_WALL_SECRET": "other"})
+check(len(pr_) == 2 and ops_[0] == {"action": "env-set", "key": "AXHUB_DATA_ORIGINS", "value": "https://a.example,https://b.example"}
+      and ops_[1] == {"action": "env-from", "key": "AXHUB_WALL_SECRET", "source": "console-wall-secret"}, "includes adds what's missing; a different secret is fixed from the VPS copy")
+check(not any("wall-secret-value" in x or "other" in x for x in pr_), "secret values never appear in the report")
+pr_, ops_, _ = cf.evaluate(app_, {"PORT": "8080", "AXHUB_DATA_ORIGINS": "https://b.example https://a.example", "AXHUB_WALL_SECRET": "wall-secret-value-123"})
+check(pr_ == [] and ops_ == [], "everything right (space-separated lists too) → nothing to fix")
+del os.environ["AXF_WALL_SECRET"]
+_, ops_, notes_ = cf.evaluate(app_, {"PORT": "1"})
+check(ops_[0]["value"] == "8080" and any("skipped" in n for n in notes_) and len(ops_) == 2, "wrong value set back; sameAs skipped when the console has no secret")
+check(cf.expectations()[0]["name"] == "axHub", "default expectations ship with the plugin")
+
+# A fake Coolify on loopback: the check, the route's plan, and deploy/coolify-fix.py against it
+import http.server, threading, socketserver  # noqa: E401,E402
+SEEN: list = []
+STATE = {"envs": [{"uuid": "e1", "key": "PORT", "value": "3000", "is_preview": False}, {"uuid": "e2", "key": "OLD", "value": "1", "is_preview": False}]}
+class FakeCoolify(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def _send(self, code, body):
+        b = json.dumps(body).encode(); self.send_response(code); self.send_header("content-type", "application/json"); self.send_header("content-length", str(len(b))); self.end_headers(); self.wfile.write(b)
+    def _auth(self):
+        if self.headers.get("authorization") != "Bearer cool-token": self._send(401, {"message": "no"}); return False
+        return True
+    def do_GET(self):
+        if not self._auth(): return
+        SEEN.append(("GET", self.path))
+        if self.path == "/api/v1/applications": return self._send(200, [{"uuid": "u-axhub", "name": "axHub"}, {"uuid": "u-other", "name": "Other"}])
+        if self.path == "/api/v1/services": return self._send(200, [])
+        if self.path == "/api/v1/applications/u-axhub/envs": return self._send(200, STATE["envs"])
+        if self.path.startswith("/api/v1/deploy?uuid=u-axhub"): return self._send(200, {"deployments": [{"message": "queued"}]})
+        if self.path == "/api/v1/redirect": self.send_response(302); self.send_header("location", "https://evil.example/"); self.end_headers(); return
+        self._send(404, {"message": "nope"})
+    def do_POST(self):
+        if not self._auth(): return
+        body = json.loads(self.rfile.read(int(self.headers.get("content-length", 0))) or b"{}")
+        SEEN.append(("POST", self.path, body))
+        if self.path == "/api/v1/applications/u-axhub/envs":
+            if "is_build_time" in body: return self._send(422, {"message": "unknown field"})
+            STATE["envs"].append({"uuid": "e" + str(len(STATE["envs"]) + 1), **body}); return self._send(201, {"uuid": "new"})
+        self._send(404, {})
+    def do_PATCH(self):
+        if not self._auth(): return
+        body = json.loads(self.rfile.read(int(self.headers.get("content-length", 0))) or b"{}")
+        SEEN.append(("PATCH", self.path, body))
+        for e in STATE["envs"]:
+            if e["key"] == body["key"]: e["value"] = body["value"]
+        self._send(201, {"uuid": "x"})
+    def do_DELETE(self):
+        if not self._auth(): return
+        SEEN.append(("DELETE", self.path))
+        STATE["envs"] = [e for e in STATE["envs"] if not self.path.endswith("/" + e["uuid"])]
+        self._send(200, {"message": "deleted"})
+srv = socketserver.ThreadingTCPServer(("127.0.0.1", 0), FakeCoolify); srv.daemon_threads = True
+threading.Thread(target=srv.serve_forever, daemon=True).start()
+base_ = f"http://127.0.0.1:{srv.server_address[1]}"
+os.environ.update({"COOLIFY_URL": base_, "COOLIFY_TOKEN": "cool-token"})
+cf._cache = None
+got_ = cf.checks(mod.SVC.core.item)
+ax_ = next(x for x in got_ if x["id"] == "coolify-app:axhub")
+check(ax_["status"] == "warn" and ax_["fix"]["type"] == "coolify" and ax_["fix"]["app"] == "u-axhub" and any("PORT is wrong" in d for d in ax_["details"]),
+      "Coolify app check: reads the app's variables and plans the fix by uuid")
+mod.SVC.invalidate()
+al_ = c.get("/p/autofix").json()
+check(al_["plans"].get("coolify-app:axhub", {}).get("kind") == "coolify" and "coolify-fix.py --app u-axhub" in al_["commands"]["coolify-app:axhub"]
+      and "host-claude-login" in al_["manual"], "GET autofix lists the Coolify fix with its exact command, and what stays manual")
+check(c.post("/p/autofix/coolify-app:axhub").status_code == 409, "a planned Coolify fix still needs the axHub token (approval on the hub)")
+check(c.post("/p/autofix/console-token").status_code == 400 and c.post("/p/autofix/host-moshi-key").status_code == 400 and c.post("/p/autofix/no-such-check").status_code == 400, "manual and unknown checks are refused")
+rep_ = c.get("/p/check?force=1").json()
+row_ = next(x for x in rep_["checks"] if x["id"] == "coolify-app:axhub")
+check(row_["fix"]["type"] == "host" and row_["fix"]["kind"] == "coolify" and row_["fix"]["auto"], "the banner gets it as a host-type fix (so the existing Auto fix button runs it)")
+
+tmp_axf = Path(tempfile.mkdtemp(prefix="axf-cf-"))
+(tmp_axf / ".axf-console").mkdir()
+(tmp_axf / ".axf-console" / "wall-secret").write_text("vps-wall-secret-xyz\n")
+(tmp_axf / ".axf-console" / "secrets.env").write_text("COOLIFY_TOKEN=cool-token\nCOOLIFY_URL=http://coolify:8080\n")
+def cfix(*args, env=None):
+    e = {**{k: v for k, v in os.environ.items() if not k.startswith("COOLIFY_")}, "AXF_DIR": str(tmp_axf), "COOLIFY_HOST_URL": base_, **(env or {})}
+    return subprocess.run([sys.executable, str(REPO / "deploy" / "coolify-fix.py"), *args], capture_output=True, text=True, timeout=60, env=e)
+SEEN.clear()
+r_ = cfix("--app", "u-axhub", "env-set", "PORT=8080", "env-from", "AXHUB_WALL_SECRET=console-wall-secret", "env-unset", "OLD", "deploy")
+envs_ = {e["key"]: e.get("value") for e in STATE["envs"]}
+check(r_.returncode == 0 and envs_.get("PORT") == "8080" and envs_.get("AXHUB_WALL_SECRET") == "vps-wall-secret-xyz" and "OLD" not in envs_,
+      "coolify-fix.py: updates, creates (retrying without the build flag), removes")
+check(any(x[0] == "GET" and x[1].startswith("/api/v1/deploy?uuid=u-axhub") for x in SEEN), "then redeploys the app")
+check("vps-wall-secret-xyz" not in r_.stdout + r_.stderr and "cool-token" not in r_.stdout + r_.stderr, "never prints a secret value or the token")
+SEEN.clear()
+r_ = cfix("--app", "axHub", "env-set", "PORT=8080", "deploy")
+check(r_.returncode == 0 and "already set" in r_.stdout and "no deploy" in r_.stdout and not any(x[0] == "GET" and "/deploy" in x[1] for x in SEEN),
+      "by name too; nothing changed → no redeploy")
+r_ = cfix("--app", "axHub", "env-set", "PORT=1", env={"COOLIFY_HOST_URL": "http://10.0.0.5:8000"})
+check(r_.returncode == 1 and "refusing plain http" in r_.stderr, "plain http only to this machine")
+r_ = cfix("--app", "axHub", "env-from", "X=/etc/shadow")
+check(r_.returncode == 1 and "unknown secret source" in r_.stderr, "env-from only reads known sources")
+r_ = cfix("--app", "axHub", "env-set", "PORT=1", env={"COOLIFY_TOKEN": "wrong"})
+check(r_.returncode == 1 and "401" in r_.stderr and "permissions" in r_.stderr, "a refused token says so")
+r_ = cfix("--app", "nope", "restart")
+check(r_.returncode == 1 and "no single application" in r_.stderr, "an unknown app is refused")
+srv.shutdown()
+for k in ("COOLIFY_URL", "COOLIFY_TOKEN"):
+    os.environ.pop(k, None)
+mod.SVC.invalidate(); cf._cache = None
+
+# AI routine checks may propose a fix; it's validated and only ever shown for approval
+rt_ = sys.modules[spec.name + ".routine"]
+v_, _ = rt_.validate([{"id": "a-check", "kind": "env", "params": {"name": "SOME_VAR"}, "fix": {"type": "host", "command": "touch /tmp/ok"}},
+                      {"id": "b-check", "kind": "env", "params": {"name": "SOME_VAR"}, "fix": {"type": "host", "command": "a\nb"}},
+                      {"id": "c-check", "kind": "env", "params": {"name": "SOME_VAR"}, "fix": {"type": "python", "code": "x"}}])
+check(v_[0].get("fix") == {"type": "host", "command": "touch /tmp/ok"} and "fix" not in v_[1] and "fix" not in v_[2], "routine fixes: one-line host/container commands only")
+row_ = rt_.run_one(v_[0], mod.SVC.core.item)
+check(row_["status"] == "warn" and fp.plan(row_)["source"] == "ai", "a failing AI check offers its fix, marked AI")
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")
