@@ -6,6 +6,7 @@ export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
 export { MenuList } from './components/MenuList';
 export { MenuBar, Toolbar, NavMenu, StatusBar } from './components/Chrome';
+export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from './components/AppMenu';
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';

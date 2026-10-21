@@ -187,7 +187,9 @@
       },
       "optional_fields": {
         "density": "compact | regular (default) | roomy — menubar height",
-        "surface": "flat (default) | raised | glass"
+        "surface": "flat (default) | raised | glass",
+        "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
+        "items[].provider|badge|checked|order|before|after": "see menuItems"
       },
       "hideable": true
     },
@@ -977,5 +979,25 @@
   },
   "attachDefaults": {
     "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+  },
+  "menuItems": {
+    "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More… entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",
+    "optional_fields": {
+      "provider": "string — id of a registered live-list provider",
+      "badge": "string — runtime counter name",
+      "checked": "string — setting:<key> | counter:<name> | slot:<type> | hidden:<type>",
+      "order": "number — placement among siblings (default 100)",
+      "before": "string — sibling id to go before",
+      "after": "string — sibling id to go after"
+    },
+    "checkedKinds": [
+      "setting",
+      "counter",
+      "slot",
+      "hidden"
+    ],
+    "maxDepth": 4,
+    "providerMax": 12,
+    "defaultOrder": 100
   }
 }

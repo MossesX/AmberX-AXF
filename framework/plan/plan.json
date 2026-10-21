@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-21T10:35:04.696Z",
+ "generatedAt": "2026-10-21T11:41:04.714Z",
  "statuses": [
   "built",
   "partial",
@@ -7293,6 +7293,53 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "k.appmenu",
+   "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
+   "area": "Kernel",
+   "group": "Kernel architecture & extension safety",
+   "kind": "feature",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "",
+   "summary": "Web built (core/engines/appmenu.ts); Android twin deferred (port on hold, Oct 21 2026).",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "k.appmenu"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "core"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],

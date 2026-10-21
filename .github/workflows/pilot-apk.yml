@@ -43,6 +43,11 @@ jobs:
         run: node framework/cli/axf.mjs validate "$APP_DIR"
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
+      - name: Stable debug signing key (secret ANDROID_DEBUG_KEYSTORE, base64), so updates install without uninstalling
+        env: { KS: '${{ secrets.ANDROID_DEBUG_KEYSTORE }}' }
+        run: |
+          if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore && echo "using the stable debug key"
+          else echo "::warning::ANDROID_DEBUG_KEYSTORE is not set: APKs are signed with a fresh key, so installing an update needs an uninstall first"; fi
       - name: Android SDK (API 35 + build-tools)
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
