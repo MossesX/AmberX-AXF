@@ -27,9 +27,11 @@ import re
 import threading
 import time
 import urllib.parse
-import urllib.request
 from pathlib import Path
 from typing import Any, Callable
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import http as axf_http, storage
 
 ACTIVE = ("queued", "running", "waiting")
 FINISHED = ("done", "failed", "cancelled", "stale")
@@ -144,11 +146,6 @@ def _gh_state(status: str, conclusion: str | None) -> str:
     return "failed"
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *a: Any, **k: Any) -> None:  # the token must never follow a redirect
-        return None
-
-
 class Feed:
     def __init__(self, data_dir: Path, root: Path, default_repos: list[str] | None = None,
                  github_token: Callable[[], str] = lambda: os.environ.get("GITHUB_TOKEN", ""),
@@ -164,7 +161,6 @@ class Feed:
         self.live_sessions = live_sessions
         self.now = now
         self._gh_get = github_get or self._github_get
-        self._opener = urllib.request.build_opener(_NoRedirect)
         self._lock = threading.Lock()
         self._gh_cache: tuple[float, list[dict[str, Any]], list[str]] | None = None
         self._detail_cache: dict[str, tuple[float, dict[str, Any]]] = {}
@@ -207,10 +203,7 @@ class Feed:
                 except (TypeError, ValueError):
                     raise ValueError(f"{k} must be a number of seconds") from None
         self.dir.mkdir(parents=True, exist_ok=True)
-        tmp = self.dir / "config.json.tmp"
-        tmp.write_text(json.dumps(c, indent=2))
-        os.chmod(tmp, 0o600)
-        tmp.replace(self.dir / "config.json")
+        storage.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         self._gh_cache = None
         return c
 
@@ -248,10 +241,7 @@ class Feed:
         p = self._report_path(it["id"])
         if not p.exists() and len(files) >= MAX_REPORTS:
             raise ValueError("too many reported items; finish some first")
-        tmp = p.with_suffix(".tmp")
-        tmp.write_text(json.dumps(it))
-        os.chmod(tmp, 0o600)
-        tmp.replace(p)
+        storage.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         return it
 
     def finish(self, iid: str, state: str = "done", detail: str | None = None) -> dict[str, Any] | None:
@@ -307,11 +297,13 @@ class Feed:
         tok = self.github_token()
         if not tok:
             raise RuntimeError("no GitHub token")
-        req = urllib.request.Request(f"https://api.github.com{path}", headers={
-            "Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-activity"})
-        with self._opener.open(req, timeout=12) as r:
-            return json.loads(r.read(4_000_000).decode())
+        headers = {"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json",
+                   "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-activity"}
+        # axf_server.http: https only, the token never follows a redirect, 4 MB cap
+        r = axf_http.request("GET", f"https://api.github.com{path}", headers=headers, timeout=12, max_bytes=4_000_000)
+        if not r.ok:
+            raise RuntimeError(f"GitHub answered {r.status}")
+        return r.json()
 
     def _github(self, cfg: dict[str, Any], now: int) -> tuple[list[dict[str, Any]], list[str]]:
         if self._gh_cache and self.now() - self._gh_cache[0] < 20:

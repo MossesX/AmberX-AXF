@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 import console_context as cx
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 _lock = threading.RLock()
 
@@ -21,12 +23,7 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_suffix(p.suffix + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=1)
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, p)
+    storage.write_json(p, data, indent=1)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "moshKeepMinutes": 30, "fontSize": 14, "copyOnSelect": False,
@@ -35,9 +32,8 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
 
 
 def settings() -> dict[str, Any]:
-    try:
-        raw = json.loads((data_dir() / "settings.json").read_text("utf-8"))
-    except (OSError, ValueError):
+    raw = storage.read_json(data_dir() / "settings.json", {})
+    if not isinstance(raw, dict):
         raw = {}
     out = {**DEFAULTS, **raw, "vps": {**DEFAULTS["vps"], **(raw.get("vps") or {})}}
     out["sshKey"] = ssh_key().exists()
@@ -79,10 +75,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             elif not re.match(r"^sk-ant-oat01-[A-Za-z0-9_-]{20,}$", tok):
                 raise ValueError("that isn't a Claude Code token (run `claude setup-token`; it starts with sk-ant-oat01-)")
             else:
-                f.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-                fd = os.open(f, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-                with os.fdopen(fd, "w") as fh:
-                    fh.write(tok)
+                storage.write_text(f, tok)  # atomic, 0600
         _write(data_dir() / "settings.json", s)
         return settings()
 
@@ -128,12 +121,7 @@ def log(entry: dict[str, Any]) -> None:
     e = {"at": int(time.time() * 1000), **entry}
     p = data_dir() / "sessions.jsonl"
     with _lock:
-        p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        if p.exists() and p.stat().st_size > 2_000_000:
-            os.replace(p, p.with_suffix(".1.jsonl"))
-        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
-        with os.fdopen(fd, "a", encoding="utf-8") as f:
-            f.write(json.dumps(e) + "\n")
+        storage.append_jsonl(p, e, rotate_at=2_000_000)
 
 
 def read_log(limit: int = 200) -> list[dict[str, Any]]:

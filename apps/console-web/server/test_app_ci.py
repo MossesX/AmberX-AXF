@@ -143,12 +143,28 @@ try:
 except app_ci.CiError as e:
     check("no token refused", "GITHUB_TOKEN" in str(e))
 
-# the redirect handler drops the token off-site
-h = app_ci._NoAuthRedirect()
-import urllib.request  # noqa: E402
-req = urllib.request.Request("https://api.github.com/x", headers={"Authorization": "Bearer s"})
-new = h.redirect_request(req, None, 302, "Found", {}, "https://blob.example/zip")
-check("token dropped on redirect", new is not None and not new.has_header("Authorization"))
+# GitHub's redirect to blob storage is followed, but the token stays on api.github.com (axf_server.http)
+import axf_framework  # noqa: E402,F401
+from axf_server import http as axf_http  # noqa: E402
+seen: list[tuple[str, dict]] = []
+
+
+def _fake_transport(req: "axf_http.Request") -> "axf_http.Response":
+    seen.append((req.url, dict(req.headers)))
+    if req.url.startswith("https://api.github.com/"):
+        return axf_http.Response(302, {"location": "https://blob.example/zip"}, b"", req.url)
+    return axf_http.Response(200, {}, b"PKzip", req.url)
+
+
+code, _h, raw = app_ci._http("GET", "https://api.github.com/x", {"Authorization": "Bearer s"}, None, transport=_fake_transport)
+check("redirect followed to blob storage", code == 200 and raw == b"PKzip" and len(seen) == 2)
+check("token sent to api.github.com", seen[0][1].get("Authorization") == "Bearer s")
+check("token dropped on redirect", not any(k.lower() == "authorization" for k in seen[1][1]))
+try:
+    app_ci._http("GET", "http://api.github.com/x", {"Authorization": "Bearer s"}, None, transport=_fake_transport)
+    check("plain http refused", False)
+except app_ci.CiError as e:
+    check("plain http refused", "refused" in str(e))
 
 print(f"app-ci self-test: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)

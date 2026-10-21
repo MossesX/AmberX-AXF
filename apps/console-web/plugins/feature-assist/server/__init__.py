@@ -26,6 +26,8 @@ from fastapi import APIRouter, HTTPException
 
 import console_context as cx
 import plugin_services
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 router = APIRouter()
 EXPERT = os.environ.get("AXF_FEATURE_EXPERT", "axf-expert")
@@ -42,10 +44,7 @@ def data_dir() -> Path:
 def _log(entry: dict[str, Any]) -> None:
     p = data_dir() / "builds.jsonl"
     with _lock:
-        p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
-        with os.fdopen(fd, "a", encoding="utf-8") as f:
-            f.write(json.dumps({"at": int(time.time() * 1000), **entry}) + "\n")
+        storage.append_jsonl(p, {"at": int(time.time() * 1000), **entry})  # 0600, folder 0700 (axf_server.storage)
 
 
 def _builds() -> list[dict[str, Any]]:

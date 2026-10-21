@@ -31,7 +31,6 @@ import select
 import signal
 import struct
 import termios
-import urllib.request
 import zipfile
 from io import BytesIO
 from contextlib import asynccontextmanager
@@ -45,7 +44,10 @@ from fastapi.staticfiles import StaticFiles
 
 import hmac as _hmac  # noqa: E402
 
-import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall)
+import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
+import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
+from axf_server import http as axf_http, storage  # noqa: E402
+from axf_server.console_client import TokenFile  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
@@ -54,38 +56,18 @@ STATE = Path(os.environ.get("AXF_STATE", ROOT / ".axf-console" / "state.json"))
 # The console token. The saved env file (AXF_TOKEN_FILE, default .axf-console/env, written by install-console.sh and by
 # a reset) wins over the AXF_TOKEN environment variable, so a reset from the panel survives container restarts.
 TOKEN_FILE = Path(os.environ.get("AXF_TOKEN_FILE", ROOT / ".axf-console" / "env"))
-_token_cache: dict[str, Any] = {"mtime": None, "value": os.environ.get("AXF_TOKEN", "")}
+_TOKEN = TokenFile(TOKEN_FILE, fallback=os.environ.get("AXF_TOKEN", ""), allow_bare=False)  # axf_server.console_client
 _shells: set[WebSocket] = set()
 
 
 def current_token() -> str:
     """The token every protected route checks; re-read whenever the env file changes."""
-    try:
-        m = TOKEN_FILE.stat().st_mtime_ns
-    except OSError:
-        return _token_cache["value"]
-    if m != _token_cache["mtime"]:
-        try:
-            for line in TOKEN_FILE.read_text().splitlines():
-                if line.startswith("AXF_TOKEN=") and line[10:].strip():
-                    _token_cache["value"] = line[10:].strip()
-        except OSError:
-            pass
-        _token_cache["mtime"] = m
-    return _token_cache["value"]
+    return _TOKEN()
 
 
 def _write_token(new: str) -> None:
     """Replace AXF_TOKEN in the env file (other lines kept), owner-only, atomically."""
-    lines = TOKEN_FILE.read_text().splitlines() if TOKEN_FILE.is_file() else []
-    lines = [l for l in lines if not l.startswith("AXF_TOKEN=")]
-    TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = TOKEN_FILE.with_name(TOKEN_FILE.name + ".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as fh:
-        fh.write("\n".join([f"AXF_TOKEN={new}", *lines]) + "\n")
-    os.replace(tmp, TOKEN_FILE)
-    _token_cache.update(value=new, mtime=TOKEN_FILE.stat().st_mtime_ns)
+    _TOKEN.write(new)
 # The built console. The image keeps a copy outside /axf because install-console.sh mounts the host clone
 # over /axf (dist/ is git-ignored, so the mount would hide the build). Prefer the repo build when it exists.
 DIST = HERE.parent / "dist"
@@ -161,16 +143,14 @@ _subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
 
 def _load_state() -> None:
-    if STATE.exists():
-        try:
-            _state.update(json.loads(STATE.read_text()))
-        except json.JSONDecodeError:
-            pass
+    saved = storage.read_json(STATE, {})
+    if isinstance(saved, dict):
+        _state.update(saved)
 
 
 def _save_state() -> None:
-    STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps({"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, indent=2))
+    # atomic + 0600 (axf_server.storage); the folder keeps its mode (.axf-console is made by the installer)
+    storage.write_json(STATE, {"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, dir_mode=None if STATE.parent.is_dir() else storage.PRIVATE_DIR)
 
 
 def log(channel: str, text: str, level: str = "info") -> None:
@@ -768,9 +748,9 @@ _releases_cache: dict[str, Any] = {"at": 0.0, "data": None}
 
 
 def _gh(url: str) -> Any:
-    req = urllib.request.Request(url, headers={"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {_gh_token()}"} if _gh_token() else {})})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        return json.loads(r.read().decode())
+    """GitHub API GET (axf_server.http: https only, redirects never followed, so the token never leaves api.github.com)."""
+    hdrs = {"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {_gh_token()}"} if _gh_token() else {})}
+    return axf_http.request("GET", url, headers=hdrs, timeout=20).raise_for_status().json()
 
 
 @app.get("/api/releases")
@@ -798,9 +778,12 @@ def release_download(artifact_id: int, name: str) -> Response:
     """Proxies a CI artifact (GitHub requires a token for artifact zips); single-file artifacts like the APK are unzipped."""
     if not _gh_token():
         raise HTTPException(403, "set GITHUB_TOKEN on the API to download CI artifacts directly; otherwise use the run page")
-    req = urllib.request.Request(f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {_gh_token()}", "user-agent": "axf-console"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        blob = r.read()
+    # GitHub answers with a redirect to blob storage: follow it, but the token stays on api.github.com.
+    r = axf_http.request("GET", f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {_gh_token()}", "user-agent": "axf-console"},
+                         timeout=120, max_bytes=500 * 1024 * 1024, redirects="strip-auth", auth_origins={"https://api.github.com"})
+    if not r.ok:
+        raise HTTPException(502, f"GitHub answered {r.status} for that artifact")
+    blob = r.body
     z = zipfile.ZipFile(BytesIO(blob))
     files = [n for n in z.namelist() if not n.endswith("/")]
     if len(files) == 1:

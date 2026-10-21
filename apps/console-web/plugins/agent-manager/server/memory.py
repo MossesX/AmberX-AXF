@@ -23,6 +23,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
+
 from . import contract, llm, store
 
 _lock = threading.RLock()
@@ -54,10 +57,7 @@ def load(scope: str) -> dict[str, Any]:
 def save(scope: str, mem: dict[str, Any]) -> None:
     with _lock:
         p = _path(scope)
-        p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        tmp = p.with_suffix(".tmp")
-        tmp.write_text(json.dumps(mem, ensure_ascii=False))
-        tmp.replace(p)
+        storage.write_json(p, mem, indent=None, ensure_ascii=False)  # atomic, 0600 (axf_server.storage)
 
 
 tokens = contract.tokens

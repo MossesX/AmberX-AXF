@@ -19,6 +19,11 @@ RUN pip install --no-cache-dir -r apps/console-web/server/requirements.txt \
  && cp -r apps/console-web/dist /opt/axf-console-dist
 # install-console.sh mounts the host clone over /axf, hiding apps/console-web/dist; serve the copy outside it.
 ENV AXF_CONSOLE_DIST=/opt/axf-console-dist AXF_ROOT=/axf AXF_STATE=/axf/.axf-console/state.json PORT=7090
+# The framework's Python packages (framework/python: axf_server = shared server helpers, axf_libs, axf) ship with the
+# repo copy above and with the host clone install-console.sh mounts over /axf; server/axf_framework.py adds the same
+# folder at import time, so tests and a bare `uvicorn main:app` work without this variable too.
+ENV PYTHONPATH=/axf/framework/python
+RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_server.credentials, axf_server.console_client, axf_server.plugin_package"
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
 # exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly

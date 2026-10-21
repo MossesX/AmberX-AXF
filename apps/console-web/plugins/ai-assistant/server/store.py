@@ -14,7 +14,6 @@ once, in order).
 """
 from __future__ import annotations
 
-import json
 import os
 import re
 import secrets
@@ -23,6 +22,9 @@ import time
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Callable
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 from . import contract
 
@@ -83,20 +85,14 @@ DEFAULT_CONFIG: dict[str, Any] = {
 }
 
 
-def _write(path: Path, data: Any, private: bool = False) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False))
-    if private:
-        os.chmod(tmp, 0o600)
-    tmp.replace(path)
+def _write(path: Path, data: Any, private: bool = True) -> None:
+    """Atomic, 0600, folder 0700 (axf_server.storage). Every file is private now (conversations and usage were 0644
+    in a 0700 folder before); `private` is kept for callers."""
+    storage.write_json(path, data, ensure_ascii=False)
 
 
 def _read(path: Path, default: Any) -> Any:
-    try:
-        return json.loads(path.read_text())
-    except (OSError, ValueError):
-        return deepcopy(default)
+    return storage.read_json(path, default)  # a deep copy of the default when missing or damaged
 
 
 def now_ms() -> int:

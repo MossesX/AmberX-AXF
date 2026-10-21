@@ -15,14 +15,15 @@ import socket
 import stat
 import subprocess
 import time
-import urllib.error
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable
 
 
-from credentials import CREDENTIALS, CredStore  # noqa: E402 — core module (server/credentials.py)
+from fastapi import HTTPException  # noqa: E402 — raised by fixes and run_one (was used without an import)
+from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core module (server/credentials.py)
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import http as axf_http
 
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
@@ -52,14 +53,13 @@ HOST_SCRIPT = "bash /opt/axf/deploy/console-doctor.sh"
 
 
 def _http(url: str, headers: dict[str, str] | None = None, method: str = "GET", body: bytes | None = None, timeout: float = 7) -> tuple[int, dict[str, str], str]:
-    req = urllib.request.Request(url, data=body, method=method, headers={"user-agent": "axf-console-syscheck", **(headers or {})})
+    """One check request (axf_server.http): https only (plain http only to this machine), redirects never followed (the
+    keys being checked must not travel to another host; a 3xx is the answer), 4 KB read. Network trouble → (0, {}, why)."""
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return r.status, {k.lower(): v for k, v in r.headers.items()}, r.read(4000).decode("utf-8", "replace")
-    except urllib.error.HTTPError as e:
-        return e.code, {k.lower(): v for k, v in (e.headers or {}).items()}, ""
-    except Exception as e:  # noqa: BLE001 — network trouble is a result, not a crash
+        r = axf_http.request(method, url, headers={"user-agent": "axf-console-syscheck", **(headers or {})}, body=body, timeout=timeout, max_bytes=4000, truncate=True)
+    except axf_http.HttpError as e:
         return 0, {}, str(e)[:200]
+    return r.status, r.headers, r.text() if r.ok else ""
 
 
 # ---------------------------------------------------------------- checks
@@ -204,6 +204,8 @@ class SysCheck:
                     instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Enter your Coolify address and the token."], order=50)
         if not url or not tok:
             return self.item("coolify", "coolify", "Coolify API", "warn", "Not set: deploys and app status from the console won't work.", **base)
+        if not axf_http.target_ok(url):  # the token is never sent over plain http to another machine (axf_server.http)
+            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https: use the https address of your Coolify dashboard so the token isn't sent in the clear.", **base)
         code, _, body = _http(f"{url}/api/v1/version", {"authorization": f"Bearer {tok}"})
         st = "ok" if code == 200 else "error" if code in (401, 403) else "unknown"
         return self.item("coolify", "coolify", "Coolify API", st, {"ok": f"Connected (Coolify {body.strip()[:20]}).", "error": f"Coolify refused the token ({code})."}.get(st, f"Couldn't reach {url} ({code or 'network'})."), **base)

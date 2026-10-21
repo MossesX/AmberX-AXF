@@ -16,10 +16,11 @@ import os
 import re
 import threading
 import time
-import urllib.error
-import urllib.request
 import uuid
 from typing import Any, Callable
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import http as axf_http
 
 # Each fix ends by refreshing the host report, so the console sees the result at once (not after the 15-minute cron).
 _REPORT = "bash /opt/axf/deploy/console-doctor.sh --report"
@@ -54,29 +55,20 @@ def _hub() -> tuple[str, str]:
     return url, tok
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *a: Any, **k: Any) -> None:  # never follow: the token must not go anywhere else
-        return None
-
-
-_OPENER = urllib.request.build_opener(_NoRedirect)
-
-
 def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
     body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
     headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
     if session:
         headers["mcp-session-id"] = session
-    req = urllib.request.Request(f"{url}/mcp", data=body, headers=headers, method="POST")
-    try:
-        with _OPENER.open(req, timeout=timeout) as r:
-            sid = r.headers.get("mcp-session-id") or session
-            raw = r.read(2_000_000).decode("utf-8", "replace")
-            ctype = r.headers.get("content-type", "")
-    except urllib.error.HTTPError as e:
-        raise HubError(f"axHub answered {e.code}" + (" (check the axHub token)" if e.code in (401, 403) else "")) from None
-    except Exception as e:  # noqa: BLE001
+    try:  # axf_server.http: https only (checked in _hub too), never follows a redirect: the token must not go anywhere else
+        r = axf_http.request("POST", f"{url}/mcp", headers=headers, body=body, timeout=timeout, max_bytes=2_000_000, truncate=True)
+    except axf_http.HttpError as e:
         raise HubError(f"Couldn't reach axHub ({type(e).__name__})") from None
+    if not r.ok:
+        raise HubError(f"axHub answered {r.status}" + (" (check the axHub token)" if r.status in (401, 403) else ""))
+    sid = r.headers.get("mcp-session-id") or session
+    raw = r.text()
+    ctype = r.headers.get("content-type", "")
     if "text/event-stream" in ctype:
         msgs = [json.loads(line[5:].strip()) for line in raw.splitlines() if line.startswith("data:") and line[5:].strip()]
         msg = next((m for m in reversed(msgs) if "result" in m or "error" in m), {})

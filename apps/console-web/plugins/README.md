@@ -104,6 +104,11 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
   **every** route of the plugin is safe for a non-admin (the theme manager and the Claude badge are; anything that
   touches secrets, containers, files on the host, git or other services is not). Plugins without it stay admin-only
   whatever is granted. `wallUsers` plugins are open to every user and check each one themselves.
+- **Framework helpers for server parts (Oct 20 2026):** a plugin's Python may import the framework's shared server
+  package `axf_server` (`framework/python/axf_server`): `import axf_framework` (puts framework/python on the path),
+  then `from axf_server import storage, http` — private files (`storage.write_json/read_json/append_jsonl`: atomic,
+  0600, folders 0700) and outbound HTTP (`http.request`: https only, no redirects or credential-stripping ones, size
+  cap, timeout). Framework imports are fine under plugin-lifecycle@1; importing another plugin's folder never is.
 - **Errors:** a plugin that fails to load is listed with its error on the Plugins page; the console keeps running.
 
 ## Look and naming
