@@ -10,6 +10,7 @@
  *   node framework/cli/session-archive.mjs ingest <transcript.jsonl>… [--host h] [--container c] [--via moshi] [--user u]
  *   node framework/cli/session-archive.mjs ingest-dir <dir> [same flags]        every *.jsonl under it (~/.claude/projects)
  *   node framework/cli/session-archive.mjs ingest-chat < chat.json             a claude.ai chat (fromChat shape) or {chats: [...]}
+ *   node framework/cli/session-archive.mjs ingest-inbox                         chats claude.ai sessions wrote to sessions/archive-inbox/
  *   node framework/cli/session-archive.mjs show <id> | costs [--json] | --json [filters]
  *   node framework/cli/session-archive.mjs hooks install|remove|status [--settings file]   Claude Code Stop/SessionEnd → ingest
  *
@@ -133,6 +134,31 @@ export function ingestChats(input) {
   return chats.filter((c) => c && (c.id || c.url)).map((c) => save(fromChat(c, { pricing })));
 }
 
+/* ---------------- inbox (claude.ai chats in any project record themselves) ---------------- */
+
+export const INBOX_REL = 'sessions/archive-inbox/';
+/**
+ * Chats written by claude.ai sessions (they have no shell): one JSON per chat in fromChat's shape, written with
+ * axhub.memory_write (project amberx-axf, area data, path sessions/archive-inbox/<chat id>.json). Each is turned into
+ * a session record; the inbox file is then replaced by a one-line receipt so it isn't read twice.
+ */
+export function ingestInbox() {
+  const dir = process.env.AXF_SESSION_INBOX_DIR || dataPath(INBOX_REL);
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.json'))) {
+    const p = join(dir, f);
+    const j = readJson(p, null);
+    if (!j || j.$axf === 'session-inbox-receipt@1') continue;
+    try {
+      const recs = ingestChats(j);
+      out.push(...recs);
+      writeAtomic(p, { $axf: 'session-inbox-receipt@1', ids: recs.map((r) => r.id), at: new Date().toISOString() });
+    } catch (e) { out.push({ id: f, error: e.message }); }
+  }
+  return out;
+}
+
 /* ---------------- read ---------------- */
 
 export function loadAll() {
@@ -144,6 +170,7 @@ export function loadAll() {
   return out.sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1));
 }
 export function view(f = {}) {
+  try { ingestInbox(); } catch { /* the archive still lists */ }
   const all = loadAll().map(summary);
   const list = filterSessions(all, f);
   const limit = Math.min(Math.max(Number(f.limit) || 200, 1), 5000);
@@ -197,6 +224,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   else if (cmd === 'ingest') for (const f of pos) { const r = ingestTranscript(f, flags); console.log(r ? `${r.id}: ${r.prompts} prompt(s), ${money(r.costUsd)}` : `${f}: nothing to archive`); }
   else if (cmd === 'ingest-dir') { const r = ingestDir(pos[0] ?? join(homedir(), '.claude', 'projects'), flags); console.log(`${r.done.length} session(s) archived, ${r.skipped.length} skipped`); if (argv.includes('--json')) console.log(JSON.stringify(r)); }
   else if (cmd === 'ingest-chat') { const chunks = []; for await (const c of process.stdin) chunks.push(c); const r = ingestChats(JSON.parse(Buffer.concat(chunks).toString('utf8'))); console.log(`${r.length} chat(s) archived`); }
+  else if (cmd === 'ingest-inbox') { const r = ingestInbox(); console.log(`${r.length} chat(s) taken from the inbox`); }
   else if (cmd === 'show') console.log(JSON.stringify(show(pos[0]), null, 1));
   else if (cmd === 'costs') { const c = costs({ project: flag('project') }); if (argv.includes('--json')) console.log(JSON.stringify(c, null, 1)); else { for (const b of c.builds) console.log(`${money(b.costUsd).padStart(9)}  ${b.build}  ${b.title}  (${b.prompts} prompts, ${b.sessions.length} sessions${b.estimateUsd != null ? `, estimate ${money(b.estimateUsd)}` : ''})`); console.log(`total ${money(c.totals.costUsd)}, linked to builds ${money(c.totals.linkedUsd)}`); } }
   else if (cmd === 'hooks') {

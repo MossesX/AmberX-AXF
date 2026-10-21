@@ -204,7 +204,8 @@ export function totalsOf(rec, reported = rec.totals?.reportedUsd ?? null) {
 
 /**
  * A claude.ai chat → a session record with estimated tokens. `chat`: {id, url, title, project, startedAt, endedAt,
- * model?, device?, app?, user?, messages: [{role: human|assistant, at?, text, tools?: {name: n}, files?: []}]}.
+ * model?, device?, app?, user?, messages: [{role: human|assistant, at?, text, chars?, toolChars?, tools?: {name: n}, files?: []}]}.
+ * chars = the message's full length when `text` was cut; toolChars = tool output the reply read (counts as input next turn).
  */
 export function fromChat(chat, ctx = {}) {
   const price = ctx.pricing?.costUsd ?? (() => null);
@@ -217,8 +218,9 @@ export function fromChat(chat, ctx = {}) {
     const m = msgs[k];
     if (m?.role !== 'human' && m?.role !== 'user') continue;
     const reply = msgs.slice(k + 1).find((x) => x?.role === 'assistant');
-    const inTok = Math.ceil(str(m.text).length / h.charsPerToken);
-    const outTok = Math.ceil(str(reply?.text).length / h.charsPerToken);
+    // `chars` = the full length when the text was cut short for storage (a backfill reads the whole chat but keeps 600 characters)
+    const inTok = Math.ceil((Number(m.chars) || str(m.text).length) / h.charsPerToken);
+    const outTok = Math.ceil(((Number(reply?.chars) || str(reply?.text).length) + (Number(reply?.toolChars) || 0)) / h.charsPerToken);
     const tokens = { input: h.overheadTokens + context + inTok, output: outTok, cacheRead: 0, cacheWrite: 0, thinking: 0 };
     const c = price(model, tokens);
     prompts.push({ i: prompts.length + 1, at: str(m.at), kind: 'prompt', text: redact(m.text), model, tokens, costUsd: c == null ? 0 : r4(c), costEstimated: true,
