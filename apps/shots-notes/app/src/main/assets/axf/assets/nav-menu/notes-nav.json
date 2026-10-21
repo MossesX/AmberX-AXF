@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "notes-nav",
+  "name": "Notes & Todo navigation",
+  "version": "0.1.0",
+  "description": "Generated from the notes boilerplate.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "boilerplate"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Notes & Todo",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Notes",
+            "icon": "list",
+            "view": "home"
+          },
+          {
+            "id": "editor",
+            "label": "Editor",
+            "icon": "edit",
+            "view": "editor"
+          },
+          {
+            "id": "todos",
+            "label": "Todos",
+            "icon": "list",
+            "view": "todos"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}
