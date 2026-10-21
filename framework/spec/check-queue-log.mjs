@@ -83,6 +83,7 @@ check(rec.prompts[0].changeIds.join() === 'chg-20261021-aaaaaaaaaa', 'change ent
 check(rec.prompts[0].costUsd > 0 && rec.totals.reportedUsd === 0.05, 'priced per prompt; Claude Code’s own total kept');
 check(rec.models.includes('claude-sonnet-4-6') && rec.prompts[1].model === 'claude-sonnet-4-6', 'models per prompt');
 
+check(sa.redact('two accounts. admin password amber123 and Conrad password Marcus') === 'two accounts. admin password [hidden] and Conrad password [hidden]', 'plain-word passwords are hidden');
 console.log('session-archive: chats, features, cost record');
 const chat = sa.fromChat({ id: 'c1', title: 'Hub auth', project: 'axhub', messages: [{ role: 'human', text: 'hi', chars: 4000 }, { role: 'assistant', text: 'x', chars: 8000, toolChars: 4000 }, { role: 'human', text: 'next chg-20261021-cccccccccc' }, { role: 'assistant', text: 'ok' }] }, { pricing: { costUsd } });
 check(chat.id === 'ai-c1' && chat.source === 'claude-ai' && chat.totals.costEstimated && chat.totals.prompts === 2, 'a chat is estimated, two prompts');

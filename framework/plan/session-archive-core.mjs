@@ -34,6 +34,9 @@ const SECRET_RES = [
   /xox[abpr]-[A-Za-z0-9-]{10,}/g, /AKIA[0-9A-Z]{16}/g, /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{5,}/g,
   /(Bearer\s+)[A-Za-z0-9._~+/=-]{12,}/gi, /((?:password|passwd|secret|token|api[_-]?key)\s*[:=]\s*)["']?[^\s"']{6,}/gi,
   /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g,
+  // spoken / typed in plain words: "password amber123", "passcode is 4417", "pin 1234"
+  /((?:password|passwd|passcode|pwd|pin)\s+(?:is\s+|of\s+|to\s+)?)[^\s,.;)]{3,}/gi,
+  /\b(?:\d{1,3}\.){3}\d{1,3}\b/g, // server addresses
 ];
 /** Hide anything that looks like a secret, then cut short. */
 export function redact(text, n = LIMITS.prompt) {
