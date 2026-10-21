@@ -74,7 +74,7 @@ jobs:
       - name: Compiler errors
         if: failure()
         run: |
-          grep -hE "^e: |error:|What went wrong|FAILED|Unresolved reference" /tmp/apk.log | sort -u | head -60 || true
+          grep -hE "^e: |error:|What went wrong|FAILED|Unresolved reference" /tmp/apk.log | sort -u | head -30 | sed 's/^/::error title=Compiler::/' || true
       - name: Enable KVM (hardware acceleration for the emulator)
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
