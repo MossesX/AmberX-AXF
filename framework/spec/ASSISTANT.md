@@ -1,7 +1,7 @@
 # AI assistant — `assistant@1`
 
-**Rule (Brett, Oct 2026):** the assistant is cross-app. Every AXF app that ships an assistant (the Dev Console today,
-Build Pilot next, Android later) shares one contract; the chat engine lives in a host module, the UI in the app.
+**Rule (Brett, Oct 2026):** the assistant is cross-app. Every AXF app that ships an assistant (the Dev Console and
+Build Pilot today, Android later) shares one contract; the chat engine lives in a host module, the UI in the app.
 
 ## Contract
 
@@ -37,7 +37,7 @@ Build Pilot next, Android later) shares one contract; the chat engine lives in a
 | App | Engine | UI | Status |
 | --- | --- | --- | --- |
 | Dev Console (web) | `apps/console-web/plugins/ai-assistant/server` | plugin web part on `HttpAssistantClient` | **built** (Fable rebuild Oct 20 2026) | <!-- axf-plugin:ai-assistant -->
-| Build Pilot | the console's engine over HTTP (console token server-side) | its own, on `HttpAssistantClient` | planned (`build-pilot-agents`) |
+| Build Pilot | its own engine on the baked contract (`scripts/bake-contracts.mjs`; `server/assistant.py`, routes `/api/assistant/*`) | its own, on `HttpAssistantClient` | **built** (Fable rebuild `build-pilot-agents`, Oct 20 2026) |
 | Android | a module implementing `AssistantClient` (HTTP/AXPP/in-process) | Compose | planned (kernel contract only) |
 
 ## Not yet

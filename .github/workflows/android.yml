@@ -24,6 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
       - run: node framework/cli/axf.mjs validate --framework
       - run: node framework/cli/tracker.mjs --check
       - run: node framework/cli/plugins.mjs --check
@@ -37,6 +39,15 @@ jobs:
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
         run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
+        run: |
+          set -e
+          for f in framework/deploy/*.sh deploy/install-console.sh framework/templates/web-fastapi-wall/deploy/install.sh; do bash -n "$f"; done
+          pip install --quiet shellcheck-py==0.10.0.1
+          shellcheck -x framework/deploy/*.sh
+          bash framework/deploy/test.sh
+      - name: Agent add-ons — every *.addon.json / addons/<id>/addon.json passes validateAddon (framework/core/agents.ts)
+        run: npx -y tsx framework/spec/check-addons.mts
       - name: Plugin lifecycle — plugins that follow plugin-lifecycle@1 have install/uninstall scripts and no stale references
         run: |
           set -e
@@ -44,8 +55,10 @@ jobs:
       - name: init every template + boilerplate, install a library, import a UI library
         run: |
           set -e
-          for t in react-ts next-ts android-compose; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
+          for t in react-ts next-ts android-compose web-fastapi-wall; do node framework/cli/axf.mjs init /tmp/sweep/t-$t --name "T $t" --template $t; done
           (cd /tmp/sweep/t-next-ts && npm install --silent && npm run build)
+          # web + FastAPI behind the axHub wall: web build, server self-test, installer syntax + shellcheck (with the baked helpers)
+          (cd /tmp/sweep/t-web-fastapi-wall && npm install --silent && npm run build && pip install --quiet -r server/requirements.txt httpx && python3 server/test_server.py && bash -n deploy/install.sh && shellcheck -x deploy/install.sh)
           for b in $(node -e "console.log(require('./framework/boilerplates/index.json').items.map(i=>i.id).join(' '))"); do node framework/cli/axf.mjs init /tmp/sweep/b-$b --name "B $b" --template android-compose --boilerplate $b > /dev/null; done
           node framework/cli/axf.mjs install browser /tmp/sweep/t-android-compose --yes
           mkdir -p /tmp/fakelib && printf 'package x\nval c = Color(0xFF7C3AED)\nval s = MaterialTheme.colorScheme.surface\n' > /tmp/fakelib/A.kt
