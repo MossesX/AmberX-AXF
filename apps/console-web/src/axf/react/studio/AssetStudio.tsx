@@ -57,7 +57,7 @@ export function AssetStudio() {
       </div>
 
       {types.map((t) => (
-        <Slot key={t} type={t} activeId={state.active[t]} />
+        <Slot key={t} type={t} activeId={state.active[t] ?? ''} />
       ))}
     </div>
   );

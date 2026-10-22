@@ -102,13 +102,16 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] 
         contribute, stacked; scrolls inside itself when tall). The menu bar leaves the layout grid for this; its grid row is
         `auto`, so the empty row takes no space. */}
     <Banner />
+    {/* app.frame.head: a page-wide bar above the application menu, e.g. the tabs of the apps a host (Patches) or the App
+        tabs plugin shows (Brett, Oct 22 2026: "tabs for the apps above the application menu"). Empty = nothing. */}
+    <Slot name="app.frame.head" />
     {showMenubar && (
       <div className="fx-region fx-frame__menubar">
         <MenuBar />
       </div>
     )}
     <FrameBanners />
-    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits below the banners (a page-wide bar a plugin adds);
+    {/* Page-level extension points (AxfWebLibrary.slots): app.frame.head sits above the menu bar (app tabs), app.frame.top below the banners (a page-wide bar a plugin adds);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
     <Slot name="app.frame.top" />
     <div className="fx-shell">

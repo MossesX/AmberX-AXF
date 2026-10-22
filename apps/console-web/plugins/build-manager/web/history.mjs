@@ -49,6 +49,9 @@ export function liveFromChanges(summaries, rows = [], now = Date.now()) {
     const st = statusOf(s);
     if (st !== 'running' && st !== 'queued') continue;
     if (!isBuild(s)) continue;
+    // Closed in the Codebase changes banner and gone quiet: nobody is building it any more (it never said how it ended),
+    // so it isn't live (Brett, Oct 22 2026: a closed, silent launch kept coming back under "No word from").
+    if (s.closed && isStale(s, now)) continue;
     const started = ms(s.startedAt) || ms(s.createdAt);
     const est = s.estimate?.minutes ?? null;
     const elapsed = started ? Math.max(0, now - started) : null;

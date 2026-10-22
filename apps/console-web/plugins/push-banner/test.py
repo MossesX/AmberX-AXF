@@ -34,7 +34,7 @@ STATE = {
                "base": {"ref": "main"}, "user": {"login": "someone"}, "head": {"ref": "patch-1", "sha": "fff999", "repo": {"full_name": "someone/AmberX-AXF"}}},
               {"number": 9, "title": "Draft work", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/9", "draft": True, "updated_at": "2026-10-21T08:00:00Z",
                "base": {"ref": "feat/a"}, "user": {"login": "MossesX"}, "head": {"ref": "feat/a-sub", "sha": "ddd444", "repo": {"full_name": "MossesX/AmberX-AXF"}}}],
-    "checks": {"aaa111": [{"status": "completed", "conclusion": "success"}]},
+    "checks": {"aaa111": [{"status": "completed", "conclusion": "success", "name": "CI"}]},
     "mergeable": True,
     "merged": [],
     "created": [],
@@ -70,6 +70,9 @@ class Fake(BaseHTTPRequestHandler):
             if "head" in q:
                 pulls = [x for x in pulls if f"MossesX:{x['head']['ref']}" == q["head"][0]]
             return self._send(200, pulls)
+        if p.startswith(R + "/pulls/") and p.endswith("/commits"):
+            return self._send(200, [{"sha": f"c{i}", "html_url": f"https://github.com/MossesX/AmberX-AXF/commit/c{i}",
+                                     "commit": {"message": f"Commit {i}\n\nmore", "author": {"name": "Brett", "date": "2026-10-22T06:00:00Z"}}} for i in range(25)])
         if p.startswith(R + "/pulls/"):
             n = int(p.rsplit("/", 1)[1])
             x = next((x for x in STATE["pulls"] if x["number"] == n), None)
@@ -226,6 +229,38 @@ check(not any(s["method"] == "PUT" and "/git/refs" in s["path"] for s in SEEN), 
 cfg = c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:feat/b"]}).json()
 out = c.get("/p/branches").json()
 check(next(b for b in out["repos"][0]["branches"] if b["name"] == "feat/b")["hidden"] is True, "hidden branches are marked (shared setting)")
+
+# ---------------------------------------------------------------- details, finished entries, the trash can
+d = c.get("/p/detail", params={"repo": "MossesX/AmberX-AXF", "number": 18}).json()
+check(len(d["commits"]) == 20 and d["commits"][0]["subject"] == "Commit 24" and d["commits"][0]["url"].startswith("https://github.com/"), "PR details: newest 20 commits, github.com links")
+check(d["checks"] and d["checks"][0]["conclusion"] == "success" and d["sha"] == "aaa111", "PR details: the check runs on its head commit")
+d = c.get("/p/detail", params={"repo": "MossesX/AmberX-AXF", "branch": "feat/b"}).json()
+check(d["sha"] == "feat/b-head" and not d["error"], "branch details: compare + its head")
+check(c.get("/p/detail", params={"repo": "MossesX/Other", "number": 1}).status_code == 400, "details: only watched repos")
+check(c.get("/p/detail", params={"repo": "MossesX/AmberX-AXF", "branch": "../x"}).status_code == 400, "details: a bad branch name is refused")
+
+out = c.get("/p/branches").json()
+keys = [x["key"] for x in out["done"]]
+check("MossesX/AmberX-AXF:#18" in keys and next(x for x in out["done"] if x["key"] == "MossesX/AmberX-AXF:#18")["kind"] == "merged", "a merge is remembered as finished (every device)")
+check("MossesX/AmberX-AXF:#18" in keys and "MossesX/AmberX-AXF:feat/b" in keys, "a pull main in is remembered too (PR + branch)")
+p18 = next(p for p in out["repos"][0]["pulls"] if p["number"] == 18)
+check(p18["sha"] == "aaa111", "PR entries carry their head commit")
+r = c.post("/p/done/remove", json={"key": "MossesX/AmberX-AXF:#18", "sha": "aaa111"}).json()
+out = c.get("/p/branches").json()
+p18 = next(p for p in out["repos"][0]["pulls"] if p["number"] == 18)
+check(r["hiddenUntilNewCommit"] and "MossesX/AmberX-AXF:#18" not in [x["key"] for x in out["done"]] and p18["hidden"] is True, "trash: off the banner (finished entry gone, PR hidden at this commit)")
+STATE["pulls"][0]["head"]["sha"] = "bbb222"
+clock["t"] += 999
+out = c.get("/p/branches").json()
+p18 = next(p for p in out["repos"][0]["pulls"] if p["number"] == 18)
+check(p18["hidden"] is False, "trash: it comes back once it gets a new commit")
+check(c.post("/p/done/remove", json={"key": "MossesX/AmberX-AXF:feat/b"}).status_code == 200 and "MossesX/AmberX-AXF:feat/b" not in [x["key"] for x in c.get("/p/branches").json()["done"]], "trash without a sha: just forgotten")
+check(c.post("/p/done/remove", json={"key": "nope"}).status_code == 400 and c.post("/p/done/remove", json={"key": "MossesX/AmberX-AXF:#1", "sha": "zz"}).status_code == 400, "trash: bad key or sha refused")
+check(c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:#7@abc1234"]}).status_code == 200 and c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:#7@nothex!"]}).status_code == 400, "hidden@sha entries are checked")
+clock["t"] += 8 * 24 * 3600
+c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+clock["t"] += 8 * 24 * 3600
+check(c.get("/p/branches").json()["done"] == [], "finished entries expire after 7 days")
 
 os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999

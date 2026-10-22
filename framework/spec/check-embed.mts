@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -97,6 +97,8 @@ for (const c of t.suffix) eq(userAgentSuffixFull(c.host, c.hidden ?? undefined, 
 for (const c of t.urls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `full url ${c.url}`);
 for (const c of t.links) eq(embedLinkOk(c.link), c.ok, `link ${c.link}`);
 for (const c of t.messages) eq(parseEmbedMessage(c.input), c.message, `message ${JSON.stringify(c.input).slice(0, 60)}`);
+for (const c of t.locked) { eq(embedLockedBy(c.embed, c.action), c.fn, `lockedBy ${JSON.stringify(c.embed.takes)} ${c.action}`); eq(embedLockNote(c.embed, c.fn), c.note, `lock note ${c.action}`); }
+for (const c of t.pluginMessages) eq(parseEmbedMessage(c.input), c.message, `plugin message ${JSON.stringify(c.input).slice(0, 60)}`);
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
 for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);
@@ -211,6 +213,50 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(embedPage('banners'), 'banners', 'banners is a page a host can show');
   const page = make({ host: 'patches', hidden: ['banner'], takes: ['settings'], page: 'banners' });
   eq(page.hostTakes('banners'), false, 'the banners page keeps its own function');
+  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+}
+
+/* ---------- runtime: plugins managed by the host (take `plugins`, lock mode) ---------- */
+{
+  const posted: unknown[] = [];
+  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
+  let ran = 0;
+  const rt = make({ host: 'patches', hidden: ['banner'], takes: ['settings', 'plugins'] });
+  rt.actions.register('plugin-manager.open', () => { ran++; }, { label: 'Plugin Manager', params: true });
+  rt.actions.register('alerts.open', () => { ran++; }, { label: 'Alerts' });
+  eq(rt.hostTakes('plugins'), true, 'takes: plugins');
+  eq(rt.takenByHost({ action: 'plugin-manager.open' }), false, 'plugin hooks are not dropped');
+  eq(rt.lockedByHost({ action: 'plugin-manager.open' }), 'Plugins are managed in Patches', 'plugin hooks are locked with a note');
+  eq(rt.lockedByHost({ view: 'plugin-manager' }), 'Plugins are managed in Patches', 'plugin manager view locked');
+  eq(rt.lockedByHost({ action: 'alerts.open' }), null, 'other hooks not locked');
+  eq(rt.hostLockNote('plugins'), 'Plugins are managed in Patches', 'lock note for Settings → Plugins');
+  eq(rt.dispatch('plugin-manager.open:x'), false, 'locked hook does not run');
+  rt.navigate('plugin-manager');
+  eq(rt.getState().view === 'plugin-manager', false, 'locked view does not open');
+  rt.dispatch('alerts.open');
+  eq(ran, 1, 'only the unlocked action ran');
+  eq(posted.length, 0, 'a locked hook never asks the host');
+  rt.addAppMenuItems({ id: 't.plugins', module: 't', menu: 'plugins', menuLabel: 'Plugins', items: [{ id: 'pm', label: 'Plugin Manager', action: 'plugin-manager.open' }, { id: 'al', label: 'Alerts', action: 'alerts.open' }] });
+  const items = rt.appMenu().menus.find((m) => m.id === 'plugins')?.items ?? [];
+  eq(items.map((i) => [i.id, i.locked]), [['pm', true], ['al', false]], 'app menu keeps plugin items, greyed out');
+  // the plugin list: reported to the host, the host's answer kept and announced
+  eq(rt.hostPlugins, null, 'no host list yet');
+  let heard: string[] | null = null;
+  rt.onHostPlugins((ids) => { heard = ids; });
+  eq(rt.reportPluginsToHost([{ id: 'ai.amberx.axf.example.alpha', name: 'Activity', on: true }]), true, 'report sent');
+  eq(posted.at(-1), { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: 'Activity', on: true }] }, 'report message');
+  (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify({ $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha'] }));
+  eq(rt.hostPlugins, ['ai.amberx.axf.example.alpha'], 'host list kept');
+  eq(heard, ['ai.amberx.axf.example.alpha'], 'host list announced');
+  posted.length = 0;
+  (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify({ $axf: 'embed@1', type: 'plugins-request' }));
+  eq((posted[0] as { type?: string } | undefined)?.type, 'plugins', 'host asked: report sent again');
+  // standalone, and a host that doesn't take plugins: nothing locked, nothing reported
+  const solo = make(null);
+  eq(solo.lockedByHost({ action: 'plugin-manager.open' }), null, 'standalone: nothing locked');
+  eq(solo.reportPluginsToHost([]), false, 'standalone: nothing reported');
+  const other = make({ host: 'patches', hidden: ['banner'], takes: ['settings'] });
+  eq(other.hostLockNote('plugins'), null, 'host without the take: no note');
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 

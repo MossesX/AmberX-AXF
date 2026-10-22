@@ -33,7 +33,9 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
     <ul className="fx-menu" role="menu">
       {visible.map((item) => {
         if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
-        const locked = rt.gate(item.requires) === 'disable';
+        // a hook of a function the host locks (plugins inside Patches) stays, greyed out with its note
+        const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
+        const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
         const hasSub = !!item.items?.length;
         return (
           <li
@@ -46,7 +48,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               role="menuitem"
               className="fx-menu__item"
               disabled={locked}
-              title={locked ? `Requires ${item.requires}` : undefined}
+              title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
               onClick={(e) => {
                 if (hasSub) {
                   e.stopPropagation();

@@ -16,3 +16,16 @@
 .pt-settings__body { flex: 1 1 auto; min-height: 0; position: relative; }
 .pt-settings__page[hidden] { display: none; }
 .pt-settings__page--own { overflow: auto; padding: calc(var(--fx-space) * 1.5); display: block; }
+/* The app tabs above the application menu (page slot app.frame.head, Brett Oct 22 2026): one row, never a bottom bar. */
+.fx-frame > .patches-tabs { flex: none; height: auto; position: relative; z-index: 45; background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-frame > .patches-tabs.fx-nav { flex-direction: row; padding: 4px calc(var(--fx-space) * 1.5); }
+
+/* Systems check entry: apps' plugins Patches doesn't have yet (layout only; the Note and Buttons are framework controls) */
+.pt-check { padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.75) 0; }
+.pt-check__line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); }
+.pt-check__title { min-width: 0; }
+.pt-check__err { margin-top: calc(var(--fx-space) * 0.4); color: var(--fx-danger); }
+.pt-check__list { list-style: none; margin: calc(var(--fx-space) * 0.5) 0 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.4); }
+.pt-check__list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); }
+.pt-plugins { display: grid; gap: calc(var(--fx-space) * 0.5); }
+.pt-plugins__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin: 0; font-size: var(--fx-font-size); }

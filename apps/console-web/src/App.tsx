@@ -1,5 +1,5 @@
 import { installConsoleSearch } from './consoleSearch';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
@@ -17,7 +17,8 @@ import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
-import { bundledPlugins, enabledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from './plugins';
+import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type PluginStatus } from './plugins';
+import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { consoleAlertsTransport } from './alertsTransport';
@@ -79,12 +80,28 @@ function usePlugins() {
   }, [reload]);
   // Search bar (banner widget): plan features, tracker items, pending builds and plugins on top of the framework's own.
   useEffect(() => installConsoleSearch(rt), [rt]);
+  // Inside a host that manages plugins (Patches, embed@1 take `plugins`): tell it which plugins the console has, and run
+  // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
+  // it runs on its own.
+  const managed = rt.hostTakes('plugins');
+  const [hostIds, setHostIds] = useState<string[] | null>(rt.hostPlugins);
+  useEffect(() => (managed ? rt.onHostPlugins(setHostIds) : undefined), [rt, managed]);
+  useEffect(() => { if (managed && loaded) rt.reportPluginsToHost(pluginReport(status)); }, [rt, managed, loaded, status]);
+  // A plugin the host enabled whose server part is off here gets it switched on (admins only; the route checks).
+  const tried = useRef(new Set<string>());
+  useEffect(() => {
+    // each folder once per page: a refused switch (not an admin) isn't retried in a loop
+    const folders = (managed ? serverPartsToSwitchOn(status, hostIds) : []).filter((f) => !tried.current.has(f));
+    if (!folders.length) return;
+    folders.forEach((f) => tried.current.add(f));
+    void Promise.all(folders.map((f) => post(`plugins/${f}/enabled`, { enabled: true }).catch(() => null))).then(() => reload());
+  }, [managed, status, hostIds, reload]);
   const contributed = useMemo(() => {
-    // The settings library and the console's own settings always run; plugins once the backend has answered.
-    const enabled = loaded ? enabledPlugins(status) : [];
+    // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
+    const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); }
     return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
-  }, [rt, status, loaded]);
+  }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }
 

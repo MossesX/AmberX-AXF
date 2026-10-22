@@ -1,7 +1,7 @@
 /* Codebase changes: banner + log browser. Same look as the other console banners; phone first. Theme tokens only. */
 
 /* badges + small actions */
-.axp-codebase-changes__kind, .axp-codebase-changes__state, .axp-codebase-changes__act { box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2) }
+.axp-codebase-changes__kind, .axp-codebase-changes__state { box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2) }
 .axp-codebase-changes__kind.is-build { color: var(--fx-accent); background: var(--fx-accent-soft); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-codebase-changes__kind.is-edit { color: var(--fx-info); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-codebase-changes__kind.is-remove { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
@@ -11,10 +11,7 @@
 .axp-codebase-changes__state.is-failed { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-codebase-changes__state.is-partial { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-codebase-changes__state.is-cancelled { color: var(--fx-muted) }
-.axp-codebase-changes__act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); text-decoration: none }
-.axp-codebase-changes__act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-codebase-changes__act.is-quiet { color: var(--fx-muted); background: var(--fx-surface2); border-color: var(--fx-border) }
-.axp-codebase-changes__act:disabled { opacity: var(--fx-opacity-disabled); cursor: default }
+a.axp-codebase-changes__act { text-decoration: none }
 .axp-codebase-changes__act:focus-visible, .axp-codebase-changes__head:focus-visible, .axp-codebase-changes-banner__main:focus-visible, .axp-codebase-changes-banner__entry:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-codebase-changes__meta { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__meta.is-danger { color: var(--fx-danger) }
@@ -25,14 +22,15 @@
 .axp-codebase-changes-banner.is-failed { border-color: var(--fx-danger) }
 .axp-codebase-changes-banner__row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0 }
 .axp-codebase-changes-banner__icon { display: inline-flex; color: var(--fx-info); flex: none }
-.axp-codebase-changes-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
+/* a row you tap (data-fx-row); `button.` outranks the framework row reset */
+button.axp-codebase-changes-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
 .axp-codebase-changes-banner__top { display: inline-flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
 .axp-codebase-changes-banner__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100% }
 .axp-codebase-changes-banner__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.5); max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto }
 .axp-codebase-changes-banner__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
 .axp-codebase-changes-banner__item { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); padding-right: calc(var(--fx-space) * 0.25) }
 .axp-codebase-changes-banner__item.is-failed { border-color: var(--fx-danger) }
-.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; flex: 1; min-width: 0; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
+button.axp-codebase-changes-banner__entry { all: unset; box-sizing: border-box; flex: 1; min-width: 0; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
 .axp-codebase-changes-banner__entry:hover { background: var(--fx-surface2) }
 .axp-codebase-changes-banner__line { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.4); min-width: 0 }
 .axp-codebase-changes-banner__title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
@@ -53,7 +51,7 @@
 .axp-codebase-changes__row { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-codebase-changes__row.is-failed { border-color: var(--fx-danger) }
 .axp-codebase-changes__row.is-closed { background: var(--fx-surface2) }
-.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); min-width: 0 }
+button.axp-codebase-changes__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); min-width: 0 }
 .axp-codebase-changes__head:hover { background: var(--fx-surface2) }
 .axp-codebase-changes__line { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.4); min-width: 0 }
 .axp-codebase-changes__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
@@ -87,4 +85,3 @@
 /* timers on active entries; stuck ones (no word / 30+ min) in the warning colour with a trash can */
 .axp-codebase-changes__timer { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__timer.is-stuck { color: var(--fx-warning) }
-.axp-codebase-changes__trash { color: var(--fx-danger) }

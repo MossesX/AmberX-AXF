@@ -1,6 +1,6 @@
 export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
-export { Button, Slider, Container, Chip, Kbd, type ButtonProps, type SliderProps, type ContainerProps } from './components/Controls';
+export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { Switch, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
@@ -8,6 +8,7 @@ export { MenuList } from './components/MenuList';
 export { MenuBar, Toolbar, NavMenu, StatusBar } from './components/Chrome';
 export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from './components/AppMenu';
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
+export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';

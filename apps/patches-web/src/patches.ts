@@ -9,16 +9,18 @@
  *
  * Pure helpers here; the UI is in patchesLibrary.tsx and views/.
  */
-import { embedUrlFull, parseEmbedMessage, EMBED_MESSAGE, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type MenuItem } from './axf/core';
+import { embedUrlFull, parseEmbedMessage, EMBED_MESSAGE, type EmbedPlugin, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type MenuItem } from './axf/core';
 import manifest from '../axf.manifest.json';
 
 export const HOST_ID = 'patches';
 
 /**
  * What Patches takes over from the apps in its tabs: their settings, and their banners' settings (every banner's look,
- * behaviour and own settings in Patches' Banners settings tab; Brett, Oct 22 2026). Android also takes notifications.
+ * behaviour and own settings in Patches' Banners settings tab; Brett, Oct 22 2026), and their plugins (Brett, Oct 22
+ * 2026: every page of an app runs only the plugins Patches has installed and switched on for it; the app's own plugin
+ * hooks are greyed out with "Plugins are managed in Patches"). Android also takes notifications.
  */
-export const TAKES = ['settings', 'banners'] as const;
+export const TAKES = ['settings', 'banners', 'plugins'] as const;
 /**
  * …and, from the app in a tab (not its settings page or the banner strip), its application menu (Brett, Oct 22 2026:
  * "all app menus are inherited by Patches' menu and the apps in tabs hide theirs").
@@ -158,3 +160,37 @@ export function runMessage(id: string): EmbedMessage { return { $axf: EMBED_MESS
 
 /** The message that asks an app's settings page to open one of its own tabs. */
 export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'open-tab', tab }; }
+
+/* ---------------- plugins Patches manages for the apps in its tabs (embed@1 take `plugins`) ---------------- */
+
+/** One plugin installed in Patches for an app (server/main.py → patches-plugins@1). */
+export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string }
+export interface PluginsState { $axf: 'patches-plugins@1'; apps: Record<string, { plugins: Record<string, InstalledPlugin> }> }
+
+/** Setting: try to install an app's missing plugins into Patches by itself (on by default). */
+export const AUTO_INSTALL_KEY = 'patches.plugins.autoInstall';
+
+/** The plugins an app reported that Patches doesn't have installed for it (report order). */
+export function missingPlugins(reported: readonly EmbedPlugin[] | undefined, state: PluginsState | null, app: string): EmbedPlugin[] {
+  if (!reported?.length || !state) return [];
+  const have = state.apps[app]?.plugins ?? {};
+  return reported.filter((p) => !have[p.id]);
+}
+
+/** The plugins an app may run: installed in Patches for it and switched on. */
+export function enabledPluginIds(state: PluginsState | null, app: string): string[] {
+  return Object.entries(state?.apps[app]?.plugins ?? {}).filter(([, p]) => p.enabled).map(([id]) => id).sort();
+}
+
+/** The message that tells an app which plugins to run. */
+export function pluginsEnabledMessage(ids: readonly string[]): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: [...ids] }; }
+
+/** The message that asks an app to report its plugins again. */
+export function pluginsRequestMessage(): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'plugins-request' }; }
+
+/** "Console: Activity, Terminal and 3 more" — the missing plugins in one line. */
+export function missingSummary(label: string, missing: readonly EmbedPlugin[], shown = 3): string {
+  const names = missing.slice(0, shown).map((p) => p.name);
+  const more = missing.length - names.length;
+  return `${label}: ${names.join(', ')}${more > 0 ? ` and ${more} more` : ''}`;
+}

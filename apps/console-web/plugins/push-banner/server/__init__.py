@@ -12,7 +12,16 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
                                     pulls the default branch into a branch that's behind it: a PR through GitHub's
                                     "update branch" (its head pinned), a branch without one as a merge commit on it
-    GET  /config | PUT /config      {repos: [owner/name …], hidden: ["owner/name:branch" …]}
+    GET  /detail?repo=&number= | ?repo=&branch=
+                                    one entry's details: its commits (newest first, up to 20) and the check runs on its
+                                    head commit (name, state, link), plus GitHub's mergeable state for a PR
+    POST /done/remove {key, sha?}   the trash can on a finished entry: forget it, and (when it is still open on GitHub,
+                                    e.g. main was pulled in) hide it until it gets a new commit ("<key>@<sha>")
+    GET  /config | PUT /config      {repos: [owner/name …], hidden: ["owner/name:branch" | "owner/name:#N", optionally
+                                    "@<head sha>" = hidden only while that is its newest commit …]}
+
+A successful Merge or Pull main in is remembered as a finished entry (`done` in /branches, every device, 7 days) until
+its trash can is tapped; the entry itself leaves the other groups meanwhile.
 
 main is never pushed to: a branch reaches main only through its PR. GitHub is read through lib-github
 (`axf_server.github`): the token goes to the API origin only, API calls never follow a redirect, answers are size-capped,
@@ -48,6 +57,22 @@ MAX_HIDDEN = 300
 MAX_PULLS = 60  # open PRs per repo
 BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
 TEXT_MAX = 200
+SHA_RE = re.compile(r"[0-9a-f]{6,40}\Z")
+MAX_DONE = 100
+DONE_KEEP_S = 7 * 24 * 3600
+
+
+def is_hidden(hidden: set[str], key: str, sha: str = "") -> bool:
+    """Hidden for good ("<key>"), or only while its newest commit is <sha> ("<key>@<sha>": comes back on a new commit)."""
+    return key in hidden or (bool(sha) and f"{key}@{sha}" in hidden)
+
+
+def valid_hidden(e: Any) -> bool:
+    key, at, sha = str(e).partition("@")
+    if at and not SHA_RE.match(sha):
+        return False
+    repo, _, ref = key.partition(":")
+    return github.valid_repo(repo) and (valid_branch(ref) or bool(re.fullmatch(r"#\d{1,9}", ref)))
 
 
 def data_dir() -> Path:
@@ -116,9 +141,8 @@ class Pushes:
             if not isinstance(h, list) or len(h) > MAX_HIDDEN:
                 raise HTTPException(400, f"hidden: up to {MAX_HIDDEN} entries")
             for e in h:
-                repo, _, branch = str(e).partition(":")
-                if not (github.valid_repo(repo) and (valid_branch(branch) or re.fullmatch(r"#\d{1,9}", branch))):
-                    raise HTTPException(400, f"hidden entries look like owner/name:branch ({_text(e, 80)!r})")
+                if not valid_hidden(e):
+                    raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden})
         with self._lock:
@@ -174,7 +198,7 @@ class Pushes:
                 "name": name, "ahead": ahead, "behind": cmp.get("behind_by") if isinstance(cmp.get("behind_by"), int) else None,
                 "sha": _text(last.get("sha"), 40), "subject": _text(str(c.get("message") or "").split("\n")[0]),
                 "date": _text((c.get("committer") or {}).get("date") if isinstance(c.get("committer"), dict) else "", 40),
-                "url": f"{github.GIT_BASE}/{repo}/compare/{quote(base, safe='/')}...{quote(name, safe='/')}", "hidden": f"{repo}:{name}" in hidden, "pr": None, "error": "",
+                "url": f"{github.GIT_BASE}/{repo}/compare/{quote(base, safe='/')}...{quote(name, safe='/')}", "hidden": is_hidden(hidden, f"{repo}:{name}", _text(last.get("sha"), 40)), "pr": None, "error": "",
             }
             p = prs.get(name)
             if p:
@@ -205,7 +229,7 @@ class Pushes:
                 "fork": ((head.get("repo") or {}).get("full_name") or "").lower() != repo.lower(),
                 "author": _text((p.get("user") or {}).get("login") if isinstance(p.get("user"), dict) else "", 60),
                 "updated": _text(p.get("updated_at"), 40), "ci": "none", "mergeable": None, "mergeState": "", "ready": False,
-                "hidden": f"{repo}:#{n}" in hidden,
+                "hidden": is_hidden(hidden, f"{repo}:#{n}", sha), "sha": sha,
             }
             try:
                 item["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
@@ -233,16 +257,97 @@ class Pushes:
         key = json.dumps([cfg["repos"], cfg["hidden"]])
         now = self.clock()
         with self._lock:
-            if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S:
-                return self._cache[2]
+            cached = self._cache[2] if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S else None
+        if cached is not None:
+            return {**cached, "done": self.done()}
         if not (self.token() or "").strip():
-            out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}
+            out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}  # done comes below
         else:
             gh = self.gh()
             hidden = set(cfg["hidden"])
             out = {"checkedAt": int(now * 1000), "cacheS": CACHE_S, "repos": [self._repo(gh, r, hidden) for r in cfg["repos"]], "error": ""}
         with self._lock:
             self._cache = (now, key, out)
+        return {**out, "done": self.done()}
+
+    # ---- finished entries (a successful Merge / Pull main in), until their trash can is tapped
+    def done(self) -> list[dict[str, Any]]:
+        raw = storage.read_json(data_dir() / "done.json", {}) or {}
+        items = raw.get("items") if isinstance(raw, dict) else None
+        now = self.clock()
+        keep = []
+        for d in items if isinstance(items, list) else []:
+            if isinstance(d, dict) and isinstance(d.get("key"), str) and isinstance(d.get("at"), (int, float)) and now - d["at"] / 1000 < DONE_KEEP_S:
+                keep.append({k: d[k] for k in ("key", "kind", "at", "repo", "base", "number", "branch", "title", "url", "text") if k in d})
+        return keep[:MAX_DONE]
+
+    def _remember(self, entry: dict[str, Any]) -> None:
+        with self._lock:
+            items = [d for d in self.done() if d["key"] != entry["key"]]
+            items.insert(0, {**entry, "at": int(self.clock() * 1000)})
+            storage.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items[:MAX_DONE]})
+
+    def remove_done(self, body: Any) -> dict[str, Any]:
+        if not isinstance(body, dict) or set(body) - {"key", "sha"} or not isinstance(body.get("key"), str) or not valid_hidden(body["key"]) or "@" in body["key"]:
+            raise HTTPException(400, "send {key: owner/name:branch | owner/name:#N, sha?}")
+        key, sha = body["key"], body.get("sha")
+        if sha is not None and not (isinstance(sha, str) and SHA_RE.match(sha)):
+            raise HTTPException(400, "sha is a commit sha")
+        with self._lock:
+            items = [d for d in self.done() if d["key"] != key]
+            storage.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items})
+        if sha:  # still open on GitHub: off the banner until it gets a new commit
+            cfg = self.config()
+            hidden = [h for h in cfg["hidden"] if not h.startswith(f"{key}@")] + [f"{key}@{sha}"]
+            self.save_config({"hidden": hidden[-MAX_HIDDEN:]})
+        self._forget()
+        return {"removed": key, "hiddenUntilNewCommit": bool(sha)}
+
+    # ---- one entry's details
+    def detail(self, repo: Any, number: Any = None, branch: Any = None) -> dict[str, Any]:
+        if repo not in self.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+        gh = self.gh()
+        out: dict[str, Any] = {"commits": [], "checks": [], "mergeState": "", "files": None, "error": ""}
+        try:
+            if number is not None:
+                if not isinstance(number, int) or number <= 0:
+                    raise HTTPException(400, "number is the PR number")
+                p = gh.get(github.repo_path(repo, "pulls", number))
+                if not isinstance(p, dict):
+                    raise HTTPException(404, "no such PR")
+                sha = _text((p.get("head") or {}).get("sha"), 40)
+                st = p.get("mergeable_state")
+                out["mergeState"] = st if isinstance(st, str) and len(st) < 20 else ""
+                out["files"] = p.get("changed_files") if isinstance(p.get("changed_files"), int) else None
+                out["body"] = _text(p.get("body"), 600)
+                commits = gh.get(github.repo_path(repo, "pulls", number, "commits", query={"per_page": 100}))
+            else:
+                if not valid_branch(branch):
+                    raise HTTPException(400, "send a PR number or a branch")
+                info = gh.repo(repo)
+                base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+                cmp = gh.get(compare_path(repo, base, branch).replace("?per_page=1", "?per_page=100"))
+                commits = cmp.get("commits") if isinstance(cmp, dict) else []
+                out["files"] = len(cmp.get("files") or []) if isinstance(cmp, dict) and isinstance(cmp.get("files"), list) else None
+                sha = _text(self._head(gh, repo, branch).get("sha"), 40)
+            for c in reversed(commits if isinstance(commits, list) else []):
+                if not isinstance(c, dict) or len(out["commits"]) >= 20:
+                    continue
+                inner = c.get("commit") if isinstance(c.get("commit"), dict) else {}
+                who = inner.get("author") if isinstance(inner.get("author"), dict) else {}
+                out["commits"].append({"sha": _text(c.get("sha"), 40), "subject": _text(str(inner.get("message") or "").split("\n")[0]),
+                                       "author": _text(who.get("name"), 60), "date": _text(who.get("date"), 40), "url": _safe_url(c.get("html_url"))})
+            try:
+                runs = self._checks(gh, repo, sha) if sha else []
+            except ValueError:  # not a commit sha
+                runs = []
+            for r in runs:
+                out["checks"].append({"name": _text(r.get("name"), 120), "status": _text(r.get("status"), 20), "conclusion": _text(r.get("conclusion"), 20),
+                                      "url": _safe_url(r.get("html_url"))})
+            out["sha"] = sha
+        except (github.GitHubError, ValueError) as e:
+            out["error"] = _text(str(e))
         return out
 
     def _forget(self) -> None:
@@ -309,8 +414,12 @@ class Pushes:
         except github.GitHubError as e:
             raise HTTPException(502, _text(str(e))) from None
         self._forget()
-        return {"merged": bool(isinstance(r, dict) and r.get("merged")), "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "",
-                "url": _safe_url(p.get("html_url"))}
+        merged = bool(isinstance(r, dict) and r.get("merged"))
+        base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
+        if merged:
+            self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
+                            "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
+        return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
 
 
     def update(self, body: Any) -> dict[str, Any]:
@@ -333,6 +442,9 @@ class Pushes:
                 sha = _text((p.get("head") or {}).get("sha"), 40)
                 gh.json("PUT", github.repo_path(repo, "pulls", number, "update-branch"), {"expected_head_sha": sha})
                 self._forget()
+                base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
+                self._remember({"key": f"{repo}:#{number}", "kind": "pulled", "repo": repo, "base": base, "number": number,
+                                "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Pulled {base or 'main'} into #{number}."})
                 return {"updated": True, "url": _safe_url(p.get("html_url"))}
             if not valid_branch(branch):
                 raise HTTPException(400, "send a PR number or a branch")
@@ -349,6 +461,8 @@ class Pushes:
                 raise HTTPException(409, "it has conflicts with the default branch (or GitHub can't update it): merge it by hand") from None
             raise HTTPException(502, _text(str(e))) from None
         self._forget()
+        self._remember({"key": f"{repo}:{branch}", "kind": "pulled", "repo": repo, "base": base, "branch": branch, "title": branch,
+                        "url": f"{github.GIT_BASE}/{repo}/compare/{quote(base, safe='/')}...{quote(branch, safe='/')}", "text": f"Pulled {base} into {branch}."})
         return {"updated": True, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else ""}
 
 
@@ -373,6 +487,16 @@ def merge(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/update")
 def update(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.update(body)
+
+
+@router.get("/detail")
+def detail(repo: str, number: int | None = None, branch: str | None = None) -> dict[str, Any]:
+    return PUSHES.detail(repo, number, branch)
+
+
+@router.post("/done/remove")
+def remove_done(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.remove_done(body)
 
 
 @router.get("/config")

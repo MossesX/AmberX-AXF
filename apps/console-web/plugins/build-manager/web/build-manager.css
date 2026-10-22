@@ -2,14 +2,13 @@
 .axp-build-manager { display: flex; flex-direction: column; gap: var(--fx-space) }
 
 /* badges + small action buttons (the systems check's axp-systems-check-act look) */
-.axp-build-manager__badge, .axp-build-manager__act, .axp-build-manager__model, .axp-build-manager__toggle { box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2); font-variant-numeric: tabular-nums }
+.axp-build-manager__badge, .axp-build-manager__model, .axp-build-manager__toggle { box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2); font-variant-numeric: tabular-nums }
 .axp-build-manager__badge.is-warn { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-ok { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-danger { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__badge.is-muted { color: var(--fx-muted) }
-.axp-build-manager__act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); text-decoration: none }
-.axp-build-manager__act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-build-manager__act:focus-visible, .axp-build-manager__head:focus-visible, .axp-build-manager__toggle:focus-visible, .axp-build-manager-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+a.axp-build-manager__act { text-decoration: none }
+.axp-build-manager__head:focus-visible, .axp-build-manager__toggle:focus-visible, .axp-build-manager-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-build-manager__model.is-fable { color: var(--fx-info); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-build-manager__model.is-opus { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }
 .axp-build-manager__model.is-sonnet { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
@@ -55,7 +54,8 @@
 .axp-build-manager__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
 .axp-build-manager__row { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-build-manager__row.is-building { border-color: var(--fx-accent) }
-.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75) }
+/* a row you tap (data-fx-row); `button.` outranks the framework row reset */
+button.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75) }
 .axp-build-manager__head:hover { background: var(--fx-surface2) }
 .axp-build-manager__title-line { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
 .axp-build-manager__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
@@ -83,7 +83,7 @@
 .axp-build-manager-banner { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
 .axp-build-manager-banner.is-done { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
 .axp-build-manager-banner.is-failed { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
-.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
+button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
 .axp-build-manager-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
 .axp-build-manager-banner__text > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
 .axp-build-manager-banner__meta { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) }
@@ -96,9 +96,8 @@
 .axp-build-manager__search input { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; outline: none; padding-left: 0; padding-right: 0 }
 .axp-build-manager__search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none }
 .axp-build-manager__tabs { display: flex; gap: calc(var(--fx-space) * 0.3); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-x: auto }
-.axp-build-manager__tab { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.75); cursor: pointer; font-weight: 600; color: var(--fx-muted); border-bottom: calc(var(--fx-border-w) * 2) solid transparent; margin-bottom: calc(var(--fx-border-w) * -1); white-space: nowrap }
-.axp-build-manager__tab.is-on { color: var(--fx-accent); border-bottom-color: var(--fx-accent) }
-.axp-build-manager__tab:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
+/* tabs are framework tabs (fx-tab); this class only lays them out */
+.axp-build-manager__tab { flex: none }
 .axp-build-manager__tab.is-busy .axp-build-manager__tab-n { color: var(--fx-accent) }
 .axp-build-manager__tab-n { font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums; color: var(--fx-muted) }
 
@@ -126,8 +125,6 @@
   .axp-build-manager__field select { min-width: 0; width: 100% }
 }
 /* Clean up: take builds off the list (already built / removed) */
-.axp-build-manager__act.is-danger { color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent) }
-.axp-build-manager__act[disabled] { opacity: var(--fx-opacity-disabled); cursor: default }
 .axp-build-manager__takeoff { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.4); margin-top: calc(var(--fx-space) * 0.5) }
 .axp-build-manager__cleanup { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-build-manager__cleanup p { margin: 0 }
@@ -135,10 +132,8 @@
 /* Filter toolbar (Oct 22 2026, Brett: style #23 with count badges; Model / Added by / Status / Sort moved into the Filter & sort dialog) */
 .axp-build-manager__tools { display: flex; align-items: stretch; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow-x: auto; scrollbar-width: thin }
 .axp-build-manager__tools-sep { flex: none; width: var(--fx-border-w); margin: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.15); background: var(--fx-border) }
-.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space) * 5.5); display: flex; flex-direction: column; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.4); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-muted); font-family: inherit; font-size: calc(var(--fx-font-size) * 11 / 14); cursor: pointer; white-space: nowrap }
-.axp-build-manager__tool:hover { background: var(--fx-surface2) }
-.axp-build-manager__tool:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
-.axp-build-manager__tool.is-on { color: var(--fx-accent); background: var(--fx-accent-soft); font-weight: 600 }
+/* toolbar toggles are framework chips (fx-chip, is-on when pressed); this class only lays them out: icon over label */
+button.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space) * 5.5); display: flex; flex-direction: column; align-items: center; gap: calc(var(--fx-space) * 0.25); white-space: nowrap }
 .axp-build-manager__tool-icon { position: relative; display: inline-flex }
 .axp-build-manager__tool-n { position: absolute; top: calc(var(--fx-space) * -0.7); left: calc(100% - var(--fx-space) * 0.5); min-width: calc(var(--fx-space) * 1.7); padding: 0 calc(var(--fx-space) * 0.35); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-surface3); color: var(--fx-text); font-size: calc(var(--fx-font-size) * 10 / 14); font-weight: 700; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums }
 .axp-build-manager__tool.is-on .axp-build-manager__tool-n { background: var(--fx-accent); color: var(--fx-surface) }
@@ -148,4 +143,9 @@
 .axp-build-manager__dialog-foot { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-top: calc(var(--fx-space) * 0.4) }
 .axp-build-manager__dialog-foot > span { flex: 1 }
 /* the trash can on a stuck live build (no word / running 30+ min) */
-.axp-build-manager__trash { flex: none; color: var(--fx-danger) }
+.axp-build-manager__trash { flex: none }
+/* the other running builds under the first, each with its own trash can when stuck (Oct 22 2026) */
+.axp-build-manager-banner:has(> .axp-build-manager-banner__more) { flex-wrap: wrap }
+.axp-build-manager-banner__more { flex: 1 0 100%; list-style: none; margin: 0; padding: calc(var(--fx-space) * 0.4) 0 0; border-top: var(--fx-border-w) solid var(--fx-border); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.axp-build-manager-banner__more li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-build-manager-banner__more-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

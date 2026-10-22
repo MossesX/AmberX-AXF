@@ -40,6 +40,8 @@ jobs:
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
+      - name: Plugin and library controls are framework controls (they inherit the app's style)
+        run: node framework/cli/check-controls.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
@@ -105,6 +107,7 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server

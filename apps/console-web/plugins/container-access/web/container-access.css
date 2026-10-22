@@ -18,6 +18,3 @@
 .axp-container-access__opt { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; color: var(--fx-text) }
 .axp-container-access__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--fx-space) }
 .axp-container-access__narrow { width: auto; max-width: 200px }
-.axp-container-access__seg { display: inline-flex; flex-wrap: wrap; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); overflow: hidden }
-.axp-container-access__seg button { padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer }
-.axp-container-access__seg button[aria-selected='true'] { background: var(--fx-accent-soft); color: var(--fx-text) }

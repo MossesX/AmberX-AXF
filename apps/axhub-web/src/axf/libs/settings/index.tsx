@@ -10,7 +10,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, Note, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -30,6 +30,11 @@ export const SETTINGS_TABS = {
 } as const;
 
 /* ---------------- hooks ---------------- */
+
+/** Makes a greyed-out block unreachable (`inert`); a ref works with every React version's typings. */
+function setInert(el: HTMLElement | null): void {
+  if (el) el.inert = true;
+}
 
 function useSettingsRevision(rt: AxfRuntime): number {
   return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
@@ -91,10 +96,10 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       if ((spec.options ?? []).length > 1 && (spec.options ?? []).length <= 3) {
         const cur = typeof value === 'string' ? value : String(spec.default ?? '');
         control = (
-          <div className="axf-settings__seg" role="radiogroup" aria-label={spec.label}>
+          <div className="fx-seg" role="radiogroup" aria-label={spec.label}>
             {(spec.options ?? []).map((o) => (
               <button key={o.value} type="button" role="radio" aria-checked={cur === o.value} disabled={locked}
-                className={`axf-settings__segbtn${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
+                className={`fx-seg__opt${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
             ))}
           </div>
         );
@@ -363,31 +368,37 @@ export function SettingsView() {
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
   const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const shown = (sub && subs.find((t) => t.id === sub)) || current;
+  // Plugins managed by the host app (Patches): Settings → Plugins and every plugin's sub-tab is greyed out (Banners stays:
+  // it's the banners' look, which the host shows through its own Banners tab).
+  const pluginLock = rt.hostLockNote('plugins');
+  const isPluginTab = (id: string) => id !== 'banners' && (id === 'plugins' || rt.settings.getTab(id)?.parent === 'plugins');
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>
       <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections">
         {tabs.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={t.id === current?.id} className={`axf-settings__tab ${t.id === current?.id ? 'is-active' : ''}`} onClick={() => choose(t.id)}>
-            <Icon name={t.icon} size={15} /> {t.label}
-          </button>
+          <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => choose(t.id)}>{t.label}</Button>
         ))}
       </nav>
       {subs.length > 0 && current && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
-          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`axf-settings__subtab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
             <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
           </button>
           {subs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`axf-settings__subtab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
+            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`fx-tab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
               <Icon name={t.icon} size={13} /> {t.label}
             </button>
           ))}
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {shown && <TabContent id={shown.id} />}
+      {shown && (pluginLock && isPluginTab(shown.id)
+        // Inside a host that manages plugins (embed@1 take `plugins`, Patches): every plugin page stays visible, greyed out.
+        ? <><Note icon="lock">{pluginLock}: install them, switch them on or off and set them up from its own settings.</Note>
+          <div className="fx-locked" aria-disabled="true" ref={setInert}><TabContent id={shown.id} /></div></>
+        : <TabContent id={shown.id} />)}
     </div>
   );
 }
@@ -427,14 +438,6 @@ function applyDisplay(rt: AxfRuntime): void {
 /* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
    sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
 const CSS = `
-.axf-settings__tabs{display:flex;gap:var(--fx-space);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
-.axf-settings__tab:hover{color:var(--fx-text)}
-.axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
-.axf-settings__subtabs{display:flex;gap:calc(var(--fx-space)*.5);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);border-bottom:var(--fx-border-w) solid var(--fx-border);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__subtab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);white-space:nowrap;padding:calc(var(--fx-space)*.6) var(--fx-space);border:0;border-bottom:calc(var(--fx-border-w)*2) solid transparent;background:transparent;color:var(--fx-muted);font:inherit;cursor:pointer}
-.axf-settings__subtab:hover{color:var(--fx-text)}
-.axf-settings__subtab.is-active{color:var(--fx-text);border-bottom-color:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
 .axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
@@ -450,12 +453,6 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{gap:var(--fx-space)}
-.axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
-.axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
-.axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
-.axf-settings__segbtn.is-on{background:var(--fx-accent);color:var(--fx-accent-text);font-weight:600}
-.axf-settings__segbtn:focus-visible{outline:2px solid var(--fx-accent);outline-offset:-2px}
-.axf-settings__segbtn[disabled]{cursor:default;opacity:var(--fx-opacity-disabled)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}

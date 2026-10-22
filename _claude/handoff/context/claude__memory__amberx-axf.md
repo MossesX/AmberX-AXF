@@ -1,0 +1,20 @@
+---
+name: amberx-axf
+description: AmberX-AXF — Brett's cross-platform app framework repo (GitHub MossesX/AmberX-AXF), demo on his Hostinger VPS (axf.amberxai.com)
+aliases: [AXF, amberx-axf, Frame framework, xaf.amberxai.com, axf.amberxai.com]
+---
+- [stated] Oct 17 2026: decided to move the demo from xaf.amberxai.com to axf.amberxai.com and delete the xaf subdomain
+- [stated] Framework code lives in his GitHub repo amberx-axf (MossesX); related to AmberX Studio (`shared/memory/projects/amberx-studio.md`)
+- [stated] Named the framework "AmberX AXF" (originally called "Frame" after his spec doc)
+- [stated] Oct 2026: next phase is the Android port, built on the fly alongside the first Android app — the app defines the kernel, engines, templates, assets and placeholders for future ports (react/next.js, angular, python…); scalability placeholders must not constrain the project
+- [stated] Decided Oct 16 2026: the very first Android app is instead a framework development console (AXF Dev Console) — tracks what's built vs not, lets him pick libraries to build by generating small demo apps that showcase each, has a feature list where checking a feature opens a dialog of suggested features to bundle into a library, and a modules & packages tab; the first build should include only what full future scalability/expandability needs, with the showcase features coming later as demo apps
+- [stated] Wants a checklist of Android kernel features and showcase features to tick off before the build; it lives at https://claude.ai/artifact/DvUPLjKSM3tEVTsL8pPtE2 (checks saved in its db, collection "checklist", doc "state")
+- [stated] Framework must be cross-platform with quick porting between stacks — Android, React/Next/TypeScript/Node, Python/PyQt6 — and allow seamless switching between third-party UI libraries
+- [stated] The console will have a boilerplate manager: dozens of categorized boilerplates built on the framework, a feature checklist that assembles a boilerplate with a live rendering preview pane, and import of third-party boilerplates to port to AXF; wants the Android build done "using the demo style" (same look as the web demo)
+- [stated] Oct 16 2026: the Dev Console is supposed to be a React/TypeScript + Python application (web console with a Python API), not an Android app; the Android console already built stays as the framework's Android showcase; wants the console pushed to a new private GitHub repo eventually, but not yet
+- [stated] Oct 17 2026: going with the web Dev Console staying on Vite + React and adding a separate `next-ts` template for Next.js apps; wants a server control panel (dev servers, command links, APK downloads, embedded VPS terminal) — https://claude.ai/artifact/JJDQfCHh4jXChe6KPCP6C6, live copy at console.amberxai.com on his VPS
+- [stated] Oct 17 2026: React/TypeScript port not built yet (no react-ts templates/boilerplates) — any app built in this project builds the framework while built on it; the first React/TS app defines the conventions but contributes only one possible template; its one hard constraint is compatibility with the framework's engines for Android porting
+- [stated] Oct 17 2026: wants the AmberX-AXF repo made private (was public)
+- [stated] Oct 18 2026: wants all live framework data (pending list, plan, build queue, catalog status, tracker) read from the server hub (now `/projects/amberx-axf/_data/`)
+- [stated] Oct 18 2026: decided every UI build (session, terminal, MCP, API) takes `--` switches for options; added `--wrap-groups` — all future builds default it off, existing files set to on
+- [stated] Oct 18 2026: every project gets a manifest (project-manifest@1) with its repo details, validated before it can be loaded or compiled; validation rules are defined in the Dev Console under a new section (named Standards); the hub keeps a `/projects/<manifest name>/` folder per project with `_data/` and `_claude/`
