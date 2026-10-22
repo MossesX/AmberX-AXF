@@ -84,6 +84,10 @@ ok(m.originOf('pending', 'fable-rebuilds') === 'auto' && m.originOf('pending', '
 ok(rows.every((r) => m.ORIGINS.includes(r.origin)) && rows.filter((r) => r.source !== 'pending').every((r) => r.origin === 'auto'), 'every row has an origin; queue steps and plan features are automatic');
 ok(m.filterRows(rows, { origins: ['auto'] }).every((r) => r.origin === 'auto') && m.filterRows(rows, { origins: ['prompt'] }).every((r) => r.origin === 'prompt'), 'filter by origin');
 ok(rows.find((r) => r.key === 'pending:p-open').origin === 'prompt' && m.filterRows(rows, { origins: ['prompt'] }).some((r) => r.key === 'pending:p-open'), 'a pending item added from a chat shows under From a prompt');
+ok(rows.find((r) => r.key === 'pending:p-open').addedBy === 'chat' && rows.filter((r) => r.source === 'queue').every((r) => r.addedBy === 'build-queue') && rows.filter((r) => r.source === 'plan').every((r) => r.addedBy === 'plan-feature'), 'addedBy: pending source, build-queue, plan-feature');
+ok(m.addedByKey('') === 'unrecorded' && m.addedByKey(' Fable-Rebuilds ') === 'fable-rebuilds' && m.addedByLabel('chat') === 'Chat session' && m.addedByLabel('some-new-tool') === 'Some new tool', 'addedBy keys normalised; unknown sources get a label from their key');
+{ const opts = m.addedByOf(rows); ok(opts.reduce((n, o) => n + o.count, 0) === rows.length && opts.every((o, i) => i === 0 || opts[i - 1].count >= o.count), 'Added by choices cover every row, most first'); }
+ok(m.filterRows(rows, { addedBy: 'chat' }).every((r) => r.addedBy === 'chat') && m.filterRows(rows, { addedBy: 'chat' }).length === 1 && m.filterRows(rows, { addedBy: '' }).length === rows.length, 'filter by who added it');
 ok(m.filterRows(rows, { origins: [] }).length === 0 && m.filterRows(rows).length === rows.length, 'no origin ticked → nothing; default → everything');
 ok(m.filterRows(rows, { status: 'unsafe' }).length === 1, 'filter by status');
 const byLeft = m.sortRows(rows, 'left');
