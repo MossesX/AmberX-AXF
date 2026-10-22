@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T20:06:34.553Z",
+ "updatedAt": "2026-10-22T20:09:10.620Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1683,6 +1683,20 @@
    "builtAt": "",
    "updatedAt": "2026-10-22T20:06:34.553Z",
    "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-approval-tap",
+   "title": "Patches: approval taps open the AXHub phone app",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-22T20:09:10.620Z",
+   "builtAt": "2026-10-22T20:09:10.620Z",
+   "updatedAt": "2026-10-22T20:09:10.620Z",
+   "estimate": "15 min",
    "source": "chat"
   }
  ]

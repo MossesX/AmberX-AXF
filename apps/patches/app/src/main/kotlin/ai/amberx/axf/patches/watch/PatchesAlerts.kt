@@ -2,7 +2,9 @@ package ai.amberx.axf.patches.watch
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import ai.amberx.axf.hub.HubApproval
 import ai.amberx.axf.hub.WatchPrefs
 import ai.amberx.axf.kernel.engine.EmbedMessage
@@ -23,7 +25,8 @@ fun patchesPrefs(context: Context): WatchPrefs = WatchPrefs(context, "patches_wa
  * Patches serves the phone's notifications for the Console, Pilot and axHub (Brett, Oct 21 2026), on lib-notifications:
  * a quiet ongoing one while it watches, approvals waiting on the hub (loud, private on the lock screen, full screen when
  * allowed), the console's alerts (CI, deploys, builds, systems check: errors loud, the rest quiet) and whatever an app
- * in a tab sends while it's open (embed@1 `notify`). Tapping opens Patches on the right tab.
+ * in a tab sends while it's open (embed@1 `notify`). Tapping opens Patches on the right tab, except approvals: those
+ * open in the AXHub phone app on that approval when it's installed (Brett, Oct 22 2026), else Patches' axHub tab.
  */
 object PatchesAlerts {
     const val CH_WATCH = "patches.watch"
@@ -33,6 +36,10 @@ object PatchesAlerts {
     const val EXTRA_TAB = "patches.tab"
     const val EXTRA_APPROVAL = "patches.approvalId"
     const val ID_WATCH = 11
+    /** The AXHub phone app and the extra its MainActivity reads to open one approval (its `Alerts.EXTRA_APPROVAL`). */
+    const val AXHUB_PACKAGE = "ai.amberx.axf.axhubandroid"
+    private const val AXHUB_ACTIVITY = "$AXHUB_PACKAGE.MainActivity"
+    private const val AXHUB_EXTRA_APPROVAL = "axhub.approvalId"
     private const val ID_SIGNIN = 12
 
     val channelSpecs: List<ChannelSpec> = listOf(
@@ -44,6 +51,20 @@ object PatchesAlerts {
 
     private fun open(context: Context, requestCode: Int, tab: String, approvalId: String? = null): PendingIntent =
         AxfNotifications.activityIntent(context, MainActivity::class.java, requestCode, extras = buildMap { put(EXTRA_TAB, tab); if (approvalId != null) put(EXTRA_APPROVAL, approvalId) })
+
+    /** The AXHub app is installed and its main screen can be started (Patches' manifest `<queries>` makes it visible). */
+    fun axhubAppInstalled(context: Context): Boolean = runCatching {
+        context.packageManager.getLaunchIntentForPackage(AXHUB_PACKAGE) != null
+    }.getOrDefault(false)
+
+    /** Tapping an approval: the AXHub phone app on that approval when installed, else Patches' axHub tab. */
+    private fun openApproval(context: Context, id: String): PendingIntent {
+        if (!axhubAppInstalled(context)) return open(context, id.hashCode(), "axhub", id)
+        val i = Intent().setComponent(ComponentName(AXHUB_PACKAGE, AXHUB_ACTIVITY))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(AXHUB_EXTRA_APPROVAL, id)
+        return PendingIntent.getActivity(context, id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    }
 
     fun watching(context: Context, waiting: Int, alerts: Int, note: String? = null): Notification = AxfNotifications.ongoing(
         context,
@@ -64,7 +85,7 @@ object PatchesAlerts {
         text = a.summary.lineSequence().firstOrNull()?.take(120) ?: "Tap to review", bigText = a.summary.take(400),
         smallIcon = R.drawable.ic_patches_notify, publicTitle = "Approval waiting", publicText = "Unlock to review",
         fullScreen = fullScreen, actionLabel = "Review",
-    ), open(context, a.id.hashCode(), "axhub", a.id))
+    ), openApproval(context, a.id))
 
     fun clearApproval(context: Context, id: String) = AxfNotifications.cancelTag(context, "approval:$id")
 
