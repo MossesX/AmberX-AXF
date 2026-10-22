@@ -18,6 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 ok = 0
+ORIG_ENV = dict(os.environ)  # the installer check runs on the real repo with the real HOME (npx cache)
 
 
 def check(cond, msg):
@@ -169,6 +170,11 @@ os.environ.pop("GITHUB_TOKEN")
 a = c.post("/p/assemble", json={"publish": True}).json()
 check(a["prompt"] and "GITHUB_TOKEN" in a["note"], "without GITHUB_TOKEN: prompt + a note that the kit couldn't be published")
 check(c.post("/p/publish").status_code == 409, "publish without GITHUB_TOKEN is refused with the fix")
+
+npx = __import__("shutil").which("npx")
+if npx:
+    r = subprocess.run([npx, "-y", "tsx", str(HERE / "installer-check.mts")], capture_output=True, text=True, cwd=str(REPO), env=ORIG_ENV)
+    check(r.returncode == 0, f"installer window plan (installer-check.mts): {(r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else ''}")
 
 r = subprocess.run(["node", str(REPO / "framework/cli/plugin-lifecycle.mjs"), "check", "claude-handoff"], capture_output=True, text=True, env={k: v for k, v in os.environ.items() if k not in ("AXF_ROOT", "HOME")} | {"HOME": str(HOME)})
 check(r.returncode == 0, f"lifecycle check: {(r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else ''}")

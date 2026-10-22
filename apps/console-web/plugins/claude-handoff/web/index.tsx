@@ -14,8 +14,11 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './claude-handoff.css';
 import { appMenu } from './menu';
-import { FOLDER, ID, VERSION, VIEW, assemble, publish, start } from './store';
+import { InstallerDialog } from './installer';
+import { FOLDER, ID, VERSION, VIEW, publish, start } from './store';
 import { HandoffBanner, HandoffSettings, HandoffView } from './ui';
+
+const INSTALLER = 'claude-handoff.installer';
 
 export const plugin: AxfWebLibrary = {
   appMenu,
@@ -25,11 +28,13 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     start(rt);
     rt.actions.register('claude-handoff.open', () => rt.navigate(VIEW), { label: 'Open Claude handoff' });
-    rt.actions.register('claude-handoff.assemble', () => { rt.navigate(VIEW); void assemble(); }, { label: 'Assemble the Claude handoff prompt' });
+    rt.actions.register('claude-handoff.assemble', () => rt.openDialog(INSTALLER), { label: 'Assemble the Claude handoff prompt' });
     rt.actions.register('claude-handoff.publish', () => { void publish(); }, { label: 'Publish the Claude handoff kit' });
   },
   views: { [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'clone', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
   nav: { label: 'Tools', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }] },
+  // the installer window Assemble prompt opens (searchable: false, it starts the real work)
+  dialogs: { [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> } },
   contextMenu: [{ id: 'claude-handoff.default', target: 'default', order: 93, items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', action: 'claude-handoff.open' }] }],
   // After Codebase changes (4.7) and the push banner (4.8), before approvals (5).
   banners: [{ id: 'claude-handoff', label: 'Claude handoff reminder', icon: 'rocket', settingsTab: 'claude-handoff', order: 4.9, render: () => <HandoffBanner /> }],

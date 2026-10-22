@@ -6,6 +6,7 @@
  *   node handoff.mjs status [--json]                 is the kit current? what changed since it was built
  *   node handoff.mjs build [--out <dir>] [--json]    write the kit (default _claude/handoff in this clone)
  *   node handoff.mjs prompt                          print the handoff prompt
+ *   node handoff.mjs plan                            what the kit is made of, by category (JSON, sizes only)
  *   node handoff.mjs publish [--json]                build on GitHub's current branch and push _claude/handoff (GITHUB_TOKEN)
  *   node handoff.mjs collect [--host <name>] [--out <file>] [--quiet] [--throttle <s>]
  *                                                    this machine's ~/.claude → the console (data folder, or the
@@ -20,7 +21,7 @@ import { homedir, hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  DEFAULT_CONTEXT, HOST_RE, KIT_DIR, buildKit, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
+  DEFAULT_CONTEXT, HOST_RE, KIT_DIR, buildKit, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
 } from './handoff-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -101,6 +102,20 @@ export function status(root = ROOT, dir = DATA) {
 export function build(root = ROOT, dir = DATA, { commit, branch, now } = {}) {
   const inp = inputs(root, dir);
   return buildKit({ ...inp, commit: commit ?? git(['rev-parse', 'HEAD'], root), branch: branch ?? (inp.manifest.repo?.defaultBranch || 'main'), now });
+}
+
+/** What the kit is made of, categorised, for the installer window (sizes only; no file content, no secret values). */
+export function plan(root = ROOT, dir = DATA) {
+  const inp = inputs(root, dir);
+  return {
+    repo: inp.repo.map(({ path, role, bytes }) => ({ path, role, bytes })),
+    context: inp.context.filter((p) => inp.repo.some((s) => s.path === p) || p === 'CLAUDE.md'),
+    machines: Object.values(inp.machines).map((m) => ({ host: m.host, files: m.files.map((f) => ({ path: f.path, kind: f.kind, bytes: f.bytes })) })),
+    claudeAi: inp.claudeAi.items.map((i) => ({ id: i.id, kind: i.kind, name: i.name })),
+    memory: !!inp.claudeAi.memory?.trim(),
+    secrets: secretNames(root).map((s) => s.name),
+    project: { name: inp.manifest.name ?? '', displayName: inp.manifest.displayName ?? '', repo: inp.manifest.repo ? `${inp.manifest.repo.owner}/${inp.manifest.repo.name}` : '' },
+  };
 }
 
 /** Replace a kit folder with the built files. Only a folder named "handoff" (or one passed with --out) is ever removed. */
@@ -232,6 +247,7 @@ async function main(argv) {
       return out({ dir, files: kit.files.length, fingerprint: kit.fingerprint, prompt: kit.prompt }, `wrote ${kit.files.length} files to ${dir}`);
     }
     case 'prompt': return console.log(build().prompt);
+    case 'plan': return console.log(JSON.stringify(plan()));
     case 'publish': {
       const r = await publish(DATA, (l) => { if (!flags.json) console.error(l); });
       return out(r, r.pushed ? `pushed ${r.sha}` : 'GitHub already has this kit');

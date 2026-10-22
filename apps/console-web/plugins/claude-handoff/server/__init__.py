@@ -203,6 +203,12 @@ def get_status() -> dict[str, Any]:
             "reminder": _reminder_view(st, cfg), "config": cfg, "canPublish": bool(os.environ.get("GITHUB_TOKEN"))}
 
 
+@router.get("/plan")
+def get_plan() -> dict[str, Any]:
+    """What the kit is made of, by category, for the installer window (paths and sizes; no content)."""
+    return _node("plan")
+
+
 @router.post("/publish")
 def post_publish() -> dict[str, Any]:
     return _publish()

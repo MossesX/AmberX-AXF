@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import {
-  type ClaudeAi, type ClaudeItem, type Config, ago, api, assemble, dismissReminder, publish, refresh, set, until, useStore,
+  type ClaudeAi, type ClaudeItem, type Config, ago, api, dismissReminder, publish, refresh, set, until, useStore,
 } from './store';
 
 const KINDS = ['project', 'artifact', 'connector', 'memory', 'style', 'other'].map((k) => ({ value: k, label: k }));
@@ -22,7 +22,7 @@ export function HandoffBanner() {
   return (
     <div className="axp-claude-handoff-banner" role="status" aria-live="polite">
       <span className="axp-claude-handoff-banner__icon" aria-hidden><Icon name="rocket" size={18} /></span>
-      <button type="button" className="axp-claude-handoff-banner__main" onClick={() => rt.navigate('claude-handoff')}>
+      <button type="button" data-fx-row className="axp-claude-handoff-banner__main" onClick={() => rt.navigate('claude-handoff')}>
         <strong>Refresh the Claude handoff kit</strong>
         <span className="axp-claude-handoff-banner__lead">{r.reason || `Due every ${r.everyHours} hours.`}</span>
       </button>
@@ -50,10 +50,10 @@ export function HandoffView() {
       <Container title="Assemble the prompt" icon="rocket">
         <div className="fx-stack">
           <div className="axp-claude-handoff__row">
-            <Button tone="primary" icon="copy" disabled={!!s.busy} onClick={() => void assemble()}>{s.busy === 'assemble' ? 'Assembling…' : 'Assemble prompt'}</Button>
+            <Button tone="primary" icon="rocket" disabled={!!s.busy} onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
             {s.assembled && <Button icon="copy" onClick={() => copy(rt, s.assembled!.prompt, 'Prompt')}>Copy again</Button>}
           </div>
-          <p className="axp-claude-handoff__meta">Publishes the kit first when it is out of date, then copies the prompt. Paste it into a new session on the new account (claude.ai/code clones the repo by itself).</p>
+          <p className="axp-claude-handoff__meta">Opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code clones the repo by itself).</p>
           {s.assembled?.note && <Note tone="warning">{s.assembled.note}</Note>}
           {s.assembled && <TextField label="The handoff prompt" value={s.assembled.prompt} onChange={() => undefined} rows={14} mono />}
         </div>
