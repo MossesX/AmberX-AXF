@@ -53,6 +53,7 @@ export function HandoffView() {
           <div className="axp-claude-handoff__row">
             <Button tone="primary" icon="rocket" disabled={!!s.busy} onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
             {s.assembled && <Button icon="copy" onClick={() => copy(rt, s.assembled!.prompt, 'Prompt')}>Copy again</Button>}
+            {s.assembled?.results?.url && <Button tone="success" icon="external" onClick={() => window.open(s.assembled!.results!.url, '_blank', 'noopener,noreferrer')}>Continue handoff on axHub</Button>}
           </div>
           <p className="axp-claude-handoff__meta">Opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code works in the same repo, MossesX/AmberX-AXF: no new repo, no fork).</p>
           {s.assembled?.note && <Note tone="warning">{s.assembled.note}</Note>}

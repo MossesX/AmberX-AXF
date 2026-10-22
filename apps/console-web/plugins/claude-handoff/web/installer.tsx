@@ -29,10 +29,12 @@ const stamp = (ms: number) => `[${clock(ms)}]`;
 
 const LOG_KEEP = 200;
 /** What the server keeps of a finished run (numbers rounded, the last 200 log lines, each at most 400 characters). */
-export function summaryOf(r: Run): RunSummary {
+export function summaryOf(r: Run, cats: Category[] = []): RunSummary {
   return {
     elapsed: Math.round(r.elapsed), read: Math.round(r.read), written: Math.round(r.written), filesDone: r.filesDone,
     failed: r.failed.slice(0, 2000), log: r.log.slice(-LOG_KEEP).map((l) => l.slice(0, 400)),
+    // every step it went through, for the axHub installation page (ticked there as done)
+    steps: cats.flatMap((c) => c.steps.map((s) => ({ group: c.label.slice(0, 80), label: s.label.slice(0, 160) }))).slice(0, 400),
   };
 }
 
@@ -138,7 +140,7 @@ function useInstallRun(demo: boolean, runKey: number) {
               if (!demo && result.current.ok) set({ assembled: result.current.ok });
               if (!demo) {
                 // keep this run with the last assembly, so Last assembly can show the same results page later
-                if (result.current.ok) void api.post('last-assembly/run', summaryOf(r)).catch(() => undefined);
+                if (result.current.ok) void api.post('last-assembly/run', summaryOf(r, cats)).catch(() => undefined);
                 void refresh();
               }
             } else say(`▸ ${cats[r.ci]!.label}`);
@@ -366,12 +368,16 @@ function Results({ ok, failed, demo, close, again, when }: {
       {failed && <Note tone="warning">{failed}</Note>}
       {ok?.note && <Note tone="warning">{ok.note}</Note>}
       {ok && <TextField label={`The handoff prompt (paste it into a new session on the new account)${demo ? ' — preview build, nothing was published' : ''}`} value={ok.prompt} onChange={() => undefined} rows={8} mono />}
-      {ok?.results?.url && <Note tone="info">Results browser on axHub (admin sign-in): instructions, the prompt, every kit file and this log. <a href={ok.results.url} target="_blank" rel="noopener noreferrer">{ok.results.url}</a></Note>}
+      {ok?.results?.url && (
+        <div className="axp-claude-handoff-inst__continue">
+          <Button tone="primary" icon="rocket" onClick={() => window.open(ok.results!.url, '_blank', 'noopener,noreferrer')}>Continue handoff to the new account</Button>
+          <span className="axp-claude-handoff-inst__resultsmeta">Opens the installation on axHub (admin sign-in): pick the new account's session, send the prompt, then watch every step tick off live.</span>
+        </div>
+      )}
       {ok?.results?.error && <Note tone="warning">{ok.results.error}</Note>}
       <div className="axp-claude-handoff-inst__foot">
         <Button tone="ghost" icon="palette" size="sm" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
         {again && <Button icon="refresh" onClick={again}>Run again</Button>}
-        {ok?.results?.url && <Button icon="external" onClick={() => window.open(ok.results!.url, '_blank', 'noopener,noreferrer')}>Open on axHub</Button>}
         {ok && <Button tone="primary" icon="copy" onClick={() => { void navigator.clipboard?.writeText(ok.prompt).then(() => rt.toast('Prompt copied', 'success', 'Claude handoff'), () => undefined); }}>Copy prompt</Button>}
         {close && <Button onClick={close}>Close</Button>}
       </div>

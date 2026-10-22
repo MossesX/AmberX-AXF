@@ -24,7 +24,7 @@ export interface ClaudeItem { id: string; kind: string; name: string; url: strin
 export interface ClaudeAi { items: ClaudeItem[]; memory: string; projectInstructions: string; updatedAt?: string }
 export interface Assembled { prompt: string; current: boolean; note: string; published: { pushed?: boolean; sha?: string } | null; results?: { id?: string; url?: string; error?: string } }
 /** How the installer's run went (sent when it finishes, kept with the last assembly). */
-export interface RunSummary { elapsed: number; read: number; written: number; filesDone: number; failed: string; log: string[] }
+export interface RunSummary { elapsed: number; read: number; written: number; filesDone: number; failed: string; log: string[]; steps?: { group: string; label: string }[] }
 /** The last assembly on this console (GET last-assembly): its result, the plan its installer walked and the run. */
 export interface LastAssembly { at: number; result: Assembled & { kit?: Status['kit'] }; plan: import('./installer-core').Plan | null; run: RunSummary | null }
 

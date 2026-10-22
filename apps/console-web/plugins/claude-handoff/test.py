@@ -145,21 +145,33 @@ check("new decision" in git("show", "main:_claude/handoff/context/claude__memory
 # the last assembly: kept with its plan, the installer's run attached, served back for Last assembly
 last = c.get("/p/last-assembly").json()
 check(last["result"]["prompt"] == a["prompt"] and last["result"]["published"]["pushed"] is True and isinstance(last["plan"], dict) and last["plan"].get("repo") and last["run"] is None, "last assembly saved: result, plan, no run yet")
-run = {"elapsed": 75000, "read": 4096, "written": 2048, "filesDone": 12, "failed": "", "log": ["[0:00] Installing", "[1:15] Install complete: the prompt is ready"]}
+run = {"elapsed": 75000, "read": 4096, "written": 2048, "filesDone": 12, "failed": "", "log": ["[0:00] Installing", "[1:15] Install complete: the prompt is ready"],
+       "steps": [{"group": "Rules", "label": "Read RULES.md"}, {"group": "Publish", "label": "Push to GitHub"}]}
 check(c.post("/p/last-assembly/run", json=run).status_code == 200 and c.get("/p/last-assembly").json()["run"]["log"][-1].endswith("ready"), "the installer's finished run is attached")
 check(c.post("/p/last-assembly/run", json={**run, "extra": 1}).status_code == 400, "unknown run field refused")
 check(c.post("/p/last-assembly/run", json={**run, "log": ["x" * 401]}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "log": ["x"] * 201}).status_code == 400, "over-long log refused")
+check(c.post("/p/last-assembly/run", json={**run, "steps": [{"label": "x", "evil": 1}]}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "steps": [{"label": "x" * 161}]}).status_code == 400, "bad installer steps refused")
 check(c.post("/p/last-assembly/run", json={**run, "elapsed": -1}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "filesDone": True}).status_code == 400, "bad numbers refused")
 check(oct((mod._data() / "last-assembly.json").stat().st_mode & 0o777) == "0o600", "last-assembly.json is private (0600)")
 
 # the results browser on axHub: one run per assembly in the hub's shared folder, read by the hub (claude-handoff-results@1)
 res = a.get("results") or {}
+hr_steps = sys.modules[mod.__name__ + ".results"].HANDOFF_STEPS
 check(res.get("id") and res.get("url") == f"https://hub.example.com/handoff/{res['id']}", "assemble publishes the results and returns the hub link")
 idx = json.loads((RESULTS / "index.json").read_text())
 rec = json.loads((RESULTS / "runs" / res["id"] / "run.json").read_text())
 check(idx["$axf"] == "claude-handoff-results@1" and idx["runs"][0]["id"] == res["id"], "index lists the run, newest first")
 check(rec["prompt"] == a["prompt"] and "same repo" in rec["instructions"] and any(f["path"] == "HANDOFF.md" for f in rec["files"]), "run: prompt, instructions, kit file list")
 check((RESULTS / "runs" / res["id"] / "files" / "HANDOFF.md").is_file() and rec["run"]["log"][-1].endswith("ready"), "kit files copied; the installer's log attached")
+ids = [x["id"] for x in rec["steps"]]
+check(ids[:3] == ["a000", "a001", "a002"] and rec["steps"][1]["label"] == "Read RULES.md" and all(x["done"] for x in rec["steps"] if x["id"].startswith("a")), "steps: Assemble prompt + the installer's steps, all done")
+check([x for x in ids if x.startswith("h")] == [sid for sid, _ in hr_steps] and not any(x["done"] for x in rec["steps"] if x["id"].startswith("h")), "then the handoff steps, still to do")
+import hashlib, re as _re
+km = _re.search(r"Authorization: Bearer ([A-Za-z0-9_-]{30,})", a["prompt"])
+check(km and f"/handoff/{res['id']}/progress" in a["prompt"] and "axhub.memory_write" in a["prompt"], "the prompt tells the new account how to report each step (key + MCP)")
+check(rec["report"]["keyHash"] == hashlib.sha256(km.group(1).encode()).hexdigest() and km.group(1) not in json.dumps(rec["report"]), "only the key's hash is stored for the hub")
+check(rec["report"]["expiresAt"] - rec["at"] == 24 * 3600_000, "the key expires after 24 hours")
+check(km.group(1) not in (ROOT / "_claude" / "handoff" / "PROMPT.md").read_text() and (RESULTS / "runs" / res["id"] / "progress").is_dir(), "the key never goes in the kit; the progress folder is ready")
 check(oct((RESULTS / "index.json").stat().st_mode & 0o777) == "0o664" and oct((RESULTS / "runs").stat().st_mode & 0o7777) == "0o2775", "readable by the hub's group (0664 / 2775)")
 hr = sys.modules[mod.__name__ + ".results"]
 kit_dir = ROOT / "_claude" / "handoff"
