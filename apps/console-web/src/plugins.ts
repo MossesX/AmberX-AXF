@@ -73,6 +73,31 @@ export function enabledPlugins(status: PluginStatus[] | null): BundledPlugin[] {
   });
 }
 
+/**
+ * Inside a host that manages plugins (embed@1 take `plugins`, Patches; Brett Oct 22 2026: "disable all plugins from the
+ * apps and only enable them in Patches"): the plugins to run are the ones the host enabled for the console, whatever
+ * the console's own switches say. null = the host hasn't answered yet: run none.
+ */
+export function hostEnabledPlugins(hostIds: readonly string[] | null): BundledPlugin[] {
+  if (!hostIds) return [];
+  return bundledPlugins.filter((p) => p.library && hostIds.includes(p.manifest.id));
+}
+
+/** What the console tells the host it has: every plugin that can run, and whether the console itself had it on. */
+export function pluginReport(status: PluginStatus[] | null): { id: string; name: string; version?: string; on: boolean }[] {
+  const on = new Set(enabledPlugins(status));
+  return bundledPlugins.filter((p) => p.library).map((p) => ({ id: p.manifest.id, name: p.manifest.name, ...(p.manifest.version ? { version: p.manifest.version } : {}), on: on.has(p) }));
+}
+
+/**
+ * Plugins the host enabled whose server part is off here: their web part runs inside the host, so their routes must
+ * answer too. Only switches parts on (never off: the console on its own keeps every other choice).
+ */
+export function serverPartsToSwitchOn(status: PluginStatus[] | null, hostIds: readonly string[] | null): string[] {
+  if (!status || !hostIds) return [];
+  return hostEnabledPlugins(hostIds).map((p) => status.find((s) => s.folder === p.folder)).filter((s): s is PluginStatus => !!s && !s.enabled && s.server !== 'none').map((s) => s.folder);
+}
+
 export async function fetchPluginStatus(): Promise<PluginStatus[] | null> {
   try {
     const r = await fetch('/api/plugins', { cache: 'no-store' });

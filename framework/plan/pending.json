@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T18:37:50.877Z",
+ "updatedAt": "2026-10-22T18:47:18.905Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1549,43 +1549,60 @@
    "title": "Patches manages the plugins of the apps it hosts (Opus)",
    "detail": "Brett, Oct 22 2026: when Patches loads developer apps in tabs, Patches owns all plugins. New embed@1 take `plugins`: inside such a host an app loads only the plugins Patches has installed and enabled for it (its own on/off switches don't apply), and its plugin hooks (Settings → Plugins, Plugin Manager, plugin switches, plugin menu entries) are greyed out with \"Plugins are managed in Patches\". The app reports the plugins it has (`plugins` message); Patches compares with its own list, tries to install the missing ones by itself, and shows a Systems check entry with Auto fix while any are missing. Web first (patches-web + console); Patches Android and Kotlin twin deferred.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
+     "at": "2026-10-22T18:47:18.545Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Framework: embed@1 take `plugins` (lock mode: hooks greyed with a note, not dropped) + messages `plugins` (guest → host report) and `plugins-enabled` (host → guest); fixture cases + check-embed.mts.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.600Z"
     },
     {
      "text": "Runtime + React: rt.hostPlugins state, locked takes in the app menu / dispatch, Settings → Plugins note and greyed switches.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.658Z"
     },
     {
      "text": "Console: inside a host that takes plugins, load only the plugins the host enabled; report its plugins; plugin-manager + plugin-switches show the note.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.732Z"
     },
     {
      "text": "Patches web server: plugin store per app (/data/plugins.json), routes GET /api/plugins, POST install/enable; tests.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.794Z"
     },
     {
      "text": "Patches web UI: compare reports, auto install, Systems check banner entry with Auto fix, Settings → Patches → Plugins switches; tabs take `plugins`.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.850Z"
     },
     {
      "text": "Docs, PORTING.md deferral, CLAUDE.md status, decisions, tests green.",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.905Z"
     }
    ],
    "createdAt": "2026-10-22T18:37:44.249Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-22T18:37:44.249Z",
+   "builtAt": "2026-10-22T18:47:18.490Z",
+   "updatedAt": "2026-10-22T18:47:18.905Z",
    "estimate": "3 h",
    "source": "chat"
   },

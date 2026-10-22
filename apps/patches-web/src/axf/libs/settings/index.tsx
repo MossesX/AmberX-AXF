@@ -10,7 +10,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, Note, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -363,6 +363,10 @@ export function SettingsView() {
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
   const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const shown = (sub && subs.find((t) => t.id === sub)) || current;
+  // Plugins managed by the host app (Patches): Settings → Plugins and every plugin's sub-tab is greyed out (Banners stays:
+  // it's the banners' look, which the host shows through its own Banners tab).
+  const pluginLock = rt.hostLockNote('plugins');
+  const isPluginTab = (id: string) => id !== 'banners' && (id === 'plugins' || rt.settings.getTab(id)?.parent === 'plugins');
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
@@ -385,7 +389,11 @@ export function SettingsView() {
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {shown && <TabContent id={shown.id} />}
+      {shown && (pluginLock && isPluginTab(shown.id)
+        // Inside a host that manages plugins (embed@1 take `plugins`, Patches): every plugin page stays visible, greyed out.
+        ? <><Note icon="lock">{pluginLock}: install them, switch them on or off and set them up from its own settings.</Note>
+          <div className="fx-locked" aria-disabled="true" {...{ inert: '' }}><TabContent id={shown.id} /></div></>
+        : <TabContent id={shown.id} />)}
     </div>
   );
 }

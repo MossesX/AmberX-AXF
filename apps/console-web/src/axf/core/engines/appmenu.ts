@@ -105,6 +105,11 @@ export interface AppMenuEnv {
    * one of them is dropped. Absent = nothing taken.
    */
   taken?: (item: { action?: string; provider?: string }) => boolean;
+  /**
+   * Hooks of a function the host locks (embed@1 take with `lock`, e.g. plugins inside Patches): the item stays, greyed
+   * out (`locked`). Absent = nothing locked.
+   */
+  locked?: (item: { action?: string; provider?: string }) => boolean;
 }
 
 /* ---------------- helpers ---------------- */
@@ -279,7 +284,8 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     const gate = env.gate(it.requires);
     if (gate === 'hide') continue;
     if (env.taken && (it.action !== undefined || it.provider !== undefined) && env.taken({ action: it.action, provider: it.provider })) continue;
-    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), locked: gate === 'disable', origin: it.origin };
+    const hostLock = !!env.locked && (it.action !== undefined || it.provider !== undefined) && env.locked({ action: it.action, provider: it.provider });
+    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), locked: gate === 'disable' || hostLock, origin: it.origin };
     if (it.icon !== undefined) c.icon = it.icon;
     if (it.action !== undefined) c.action = it.action;
     if (it.shortcut !== undefined) c.shortcut = it.shortcut;

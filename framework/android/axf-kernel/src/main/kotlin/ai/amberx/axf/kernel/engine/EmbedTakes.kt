@@ -16,6 +16,8 @@ public data class EmbedTakeSpec(
     val page: Boolean = false,
     /** chrome the app hides while the host takes this function (app-menu: the host's menu carries the app's) */
     val hides: List<String> = emptyList(),
+    /** lock instead of drop (plugins): the app keeps the hooks greyed out with "… are managed in <host>" (web only so far) */
+    val lock: Boolean = false,
 )
 
 /** One item of a menu an app sends its host (embed@1 `menu`): data only, the app keeps id → action. */
@@ -74,6 +76,15 @@ public object EmbedTakes {
         "app-menu" to EmbedTakeSpec(hides = listOf("app-menu")),
         // The host shows every banner's settings in one place (Brett, Oct 22 2026): Banner settings opens there, page `banners`.
         "banners" to EmbedTakeSpec(listOf("banners.settings"), listOf("banners.settings:"), listOf("banners"), page = true),
+        // The host manages the app's plugins (Brett, Oct 22 2026). Registry entry only: the lock lookups, the plugin
+        // messages and loading only the host's list are web-only for now (deferred, spec/PORTING.md).
+        "plugins" to EmbedTakeSpec(
+            listOf("plugin-switches.open", "plugin-manager.open", "plugin-manager.install", "plugin-manager.window"),
+            listOf("plugin-manager.", "plugin-switches.", "plugin-catalog."),
+            listOf("plugin-manager", "plugins"),
+            listOf("console.plugins"),
+            lock = true,
+        ),
     )
     private val fnId = Regex("^[a-z0-9][a-z0-9-]{0,31}$")
     private val tabId = Regex("^[a-z0-9][a-z0-9._:-]{0,63}$", RegexOption.IGNORE_CASE)
@@ -156,13 +167,14 @@ public object EmbedTakes {
         if (e == null || e.takes.isEmpty() || action.isNullOrEmpty()) return null
         for (fn in e.takes) {
             val s = registry[fn] ?: continue
+            if (s.lock) continue // locked functions keep their hooks (greyed out), they aren't taken
             if (action in s.actions || s.prefixes.any { action.startsWith(it) }) return fn
             if (action.startsWith("nav:") && action.substring(4) in s.views) return fn
         }
         return null
     }
-    public fun takenView(e: Embed?, view: String?): String? = if (e == null || view == null) null else e.takes.firstOrNull { registry[it]?.views?.contains(view) == true }
-    public fun takenProvider(e: Embed?, provider: String?): String? = if (e == null || provider == null) null else e.takes.firstOrNull { registry[it]?.providers?.contains(provider) == true }
+    public fun takenView(e: Embed?, view: String?): String? = if (e == null || view == null) null else e.takes.firstOrNull { registry[it]?.let { s -> !s.lock && view in s.views } == true }
+    public fun takenProvider(e: Embed?, provider: String?): String? = if (e == null || provider == null) null else e.takes.firstOrNull { registry[it]?.let { s -> !s.lock && provider in s.providers } == true }
 
     /** Host side: `AXF-Embed/<host>[/…]` plus ` AXF-Embed-Take/<fn>+<fn>` when it takes anything. */
     public fun userAgentSuffix(types: AssetTypeRegistry, host: String, hide: List<String> = EmbedEngine.DEFAULT_HIDDEN, take: List<String> = emptyList()): String {

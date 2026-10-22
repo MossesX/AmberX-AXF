@@ -14,7 +14,12 @@ Run: APP_TOKEN=dev uvicorn main:app --app-dir server --port 7290   (npm run dev 
 from __future__ import annotations
 
 import hmac
+import json
 import os
+import re
+import tempfile
+import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -100,6 +105,125 @@ def me(request: Request) -> dict[str, Any]:
 @app.get("/api/hello")
 def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
     return {"message": f"Hello {c.name} from {APP_ID}"}
+
+
+# ---------------------------------------------------------------- plugins Patches manages for the apps in its tabs
+#
+# Brett, Oct 22 2026: "when Patches loads developer apps in tabs … install the missing plugins in Patches … disable all
+# plugins from the apps and only enable them in Patches". Each app in a tab reports the plugins it has (embed@1
+# `plugins` message, in the browser); Patches keeps, per app, which of them are installed here and switched on. The
+# apps then run only the ones switched on here (`plugins-enabled`). Ids and names only: no plugin code is stored.
+
+PLUGINS_FILE = DATA / "plugins.json"
+PLUGIN_APPS = ("console", "pilot", "axhub")
+PLUGIN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$")
+MAX_PLUGINS = 200
+_plugins_lock = threading.Lock()
+
+
+def _clip(v: Any, n: int) -> str:
+    return re.sub(r"[\x00-\x1f\x7f]+", " ", v).strip()[:n] if isinstance(v, str) else ""
+
+
+def _read_plugins() -> dict[str, Any]:
+    try:
+        raw = json.loads(PLUGINS_FILE.read_text())
+    except (OSError, ValueError):
+        raw = {}
+    apps: dict[str, Any] = {}
+    for app_id in PLUGIN_APPS:
+        got = (raw.get("apps") or {}).get(app_id) if isinstance(raw, dict) else None
+        items = (got or {}).get("plugins") if isinstance(got, dict) else None
+        clean: dict[str, Any] = {}
+        for pid, p in (items.items() if isinstance(items, dict) else []):
+            if PLUGIN_ID.match(str(pid)) and isinstance(p, dict) and len(clean) < MAX_PLUGINS:
+                clean[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "enabled": p.get("enabled") is True, "installedAt": _clip(p.get("installedAt"), 40)}
+        apps[app_id] = {"plugins": clean}
+    return {"$axf": "patches-plugins@1", "apps": apps}
+
+
+def _write_plugins(state: dict[str, Any]) -> None:
+    DATA.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=DATA, prefix=".plugins-", suffix=".json")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(state, f, indent=1)
+            f.flush()
+            os.fsync(f.fileno())
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, PLUGINS_FILE)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _app_of(body: dict[str, Any]) -> str:
+    app_id = body.get("app")
+    if app_id not in PLUGIN_APPS:
+        raise HTTPException(400, f"app must be one of: {', '.join(PLUGIN_APPS)}")
+    return str(app_id)
+
+
+@app.get("/api/plugins")
+def plugins_list(_c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    with _plugins_lock:
+        return _read_plugins()
+
+
+@app.post("/api/plugins/install")
+def plugins_install(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    """Install plugins an app reported into Patches: new ones only (a plugin already here keeps its switch). Each new
+    one starts the way the app itself had it (`on`), so installing never turns on what the app had off."""
+    app_id = _app_of(body)
+    wanted = body.get("plugins")
+    if not isinstance(wanted, list) or len(wanted) > MAX_PLUGINS:
+        raise HTTPException(400, f"plugins must be a list of at most {MAX_PLUGINS}")
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with _plugins_lock:
+        state = _read_plugins()
+        mine = state["apps"][app_id]["plugins"]
+        added: list[str] = []
+        for p in wanted:
+            pid = p.get("id") if isinstance(p, dict) else None
+            if not isinstance(pid, str) or not PLUGIN_ID.match(pid) or pid in mine:
+                continue
+            if len(mine) >= MAX_PLUGINS:
+                raise HTTPException(400, f"at most {MAX_PLUGINS} plugins per app")
+            mine[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "enabled": p.get("on") is not False, "installedAt": now}
+            added.append(pid)
+        if added:
+            _write_plugins(state)
+    return {**state, "added": added}
+
+
+@app.post("/api/plugins/enabled")
+def plugins_enabled(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    """Switch one installed plugin on or off for an app (in Patches; the app runs only what is on here)."""
+    app_id = _app_of(body)
+    pid = body.get("id")
+    with _plugins_lock:
+        state = _read_plugins()
+        mine = state["apps"][app_id]["plugins"]
+        if not isinstance(pid, str) or pid not in mine:
+            raise HTTPException(404, "that plugin isn't installed in Patches")
+        mine[pid]["enabled"] = body.get("enabled") is True
+        _write_plugins(state)
+    return state
+
+
+@app.post("/api/plugins/remove")
+def plugins_remove(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    """Take a plugin out of Patches for an app (the app reports it again as missing while it still has it)."""
+    app_id = _app_of(body)
+    pid = body.get("id")
+    with _plugins_lock:
+        state = _read_plugins()
+        if isinstance(pid, str) and state["apps"][app_id]["plugins"].pop(pid, None) is not None:
+            _write_plugins(state)
+    return state
 
 
 # ---------------------------------------------------------------- the built web app (dist/), single-page fallback

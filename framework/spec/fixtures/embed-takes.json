@@ -4,7 +4,8 @@
     "settings",
     "notifications",
     "app-menu",
-    "banners"
+    "banners",
+    "plugins"
   ],
   "takes": [
     {
@@ -469,6 +470,32 @@
           "settings"
         ]
       },
+      "action": "plugin-manager.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
       "action": "",
       "fn": null
     },
@@ -586,6 +613,32 @@
           "notifications"
         ]
       },
+      "action": "plugin-manager.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
       "action": "",
       "fn": null
     },
@@ -679,6 +732,26 @@
           "banner"
         ]
       },
+      "action": "plugin-manager.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
       "action": "",
       "fn": null
     },
@@ -801,6 +874,34 @@
           "notifications"
         ]
       },
+      "action": "plugin-manager.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
       "action": "",
       "fn": null
     },
@@ -813,6 +914,160 @@
         "takes": [
           "settings",
           "notifications"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "app.settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "settings.open",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "plugin-manager.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
         ]
       },
       "action": null,
@@ -856,6 +1111,19 @@
           "settings"
         ]
       },
+      "view": "plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
       "view": "",
       "fn": null
     },
@@ -884,6 +1152,68 @@
         "host": "patches",
         "hidden": [
           "banner"
+        ]
+      },
+      "view": "plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ]
+      },
+      "view": "settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ]
+      },
+      "view": "home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ]
+      },
+      "view": "plugin-manager",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
         ]
       },
       "view": "",
@@ -1756,6 +2086,1604 @@
     {
       "input": null,
       "message": null
+    }
+  ],
+  "locked": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "plugin-manager.open",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "plugin-manager.view:cards",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "plugin-switches.open",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "plugin-catalog.install",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": "",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ]
+      },
+      "action": null,
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "plugin-manager.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "plugin-manager.view:cards",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "plugin-switches.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "plugin-catalog.install",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": null,
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "plugin-manager.open",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "plugin-manager.view:cards",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "plugin-switches.open",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "plugin-catalog.install",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "nav:plugin-manager",
+      "fn": "plugins",
+      "note": "Plugins are managed in Patches"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "app.settings",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "alerts.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": "",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "plugins"
+        ],
+        "page": "settings"
+      },
+      "action": null,
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "plugin-manager.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "plugin-manager.view:cards",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "plugin-switches.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "plugin-catalog.install",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:plugin-manager",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "",
+      "fn": null,
+      "note": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": null,
+      "fn": null,
+      "note": null
+    }
+  ],
+  "pluginMessages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.console.activity",
+            "name": " Activity\n",
+            "version": "0.1.0",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.console.activity",
+            "name": "dup"
+          },
+          {
+            "id": "bad id!",
+            "name": "x"
+          },
+          {
+            "id": "ai.amberx.axf.console.terminal",
+            "on": false,
+            "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+          },
+          "nope"
+        ]
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.console.activity",
+            "name": "Activity",
+            "on": true,
+            "version": "0.1.0"
+          },
+          {
+            "id": "ai.amberx.axf.console.terminal",
+            "name": "ai.amberx.axf.console.terminal",
+            "on": false,
+            "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": "nope"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins-enabled",
+        "plugins": [
+          "ai.amberx.axf.console.activity",
+          "ai.amberx.axf.console.activity",
+          "bad id!",
+          7
+        ]
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "plugins-enabled",
+        "plugins": [
+          "ai.amberx.axf.console.activity"
+        ]
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins-enabled"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins-request"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "plugins-request"
+      }
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"plugins\",\"plugins\":[{\"id\":\"ai.amberx.axf.p0\",\"name\":\"Plugin 0\",\"on\":true},{\"id\":\"ai.amberx.axf.p1\",\"name\":\"Plugin 1\",\"on\":false},{\"id\":\"ai.amberx.axf.p2\",\"name\":\"Plugin 2\",\"on\":true},{\"id\":\"ai.amberx.axf.p3\",\"name\":\"Plugin 3\",\"on\":false},{\"id\":\"ai.amberx.axf.p4\",\"name\":\"Plugin 4\",\"on\":true},{\"id\":\"ai.amberx.axf.p5\",\"name\":\"Plugin 5\",\"on\":false},{\"id\":\"ai.amberx.axf.p6\",\"name\":\"Plugin 6\",\"on\":true},{\"id\":\"ai.amberx.axf.p7\",\"name\":\"Plugin 7\",\"on\":false},{\"id\":\"ai.amberx.axf.p8\",\"name\":\"Plugin 8\",\"on\":true},{\"id\":\"ai.amberx.axf.p9\",\"name\":\"Plugin 9\",\"on\":false},{\"id\":\"ai.amberx.axf.p10\",\"name\":\"Plugin 10\",\"on\":true},{\"id\":\"ai.amberx.axf.p11\",\"name\":\"Plugin 11\",\"on\":false},{\"id\":\"ai.amberx.axf.p12\",\"name\":\"Plugin 12\",\"on\":true},{\"id\":\"ai.amberx.axf.p13\",\"name\":\"Plugin 13\",\"on\":false},{\"id\":\"ai.amberx.axf.p14\",\"name\":\"Plugin 14\",\"on\":true},{\"id\":\"ai.amberx.axf.p15\",\"name\":\"Plugin 15\",\"on\":false},{\"id\":\"ai.amberx.axf.p16\",\"name\":\"Plugin 16\",\"on\":true},{\"id\":\"ai.amberx.axf.p17\",\"name\":\"Plugin 17\",\"on\":false},{\"id\":\"ai.amberx.axf.p18\",\"name\":\"Plugin 18\",\"on\":true},{\"id\":\"ai.amberx.axf.p19\",\"name\":\"Plugin 19\",\"on\":false},{\"id\":\"ai.amberx.axf.p20\",\"name\":\"Plugin 20\",\"on\":true},{\"id\":\"ai.amberx.axf.p21\",\"name\":\"Plugin 21\",\"on\":false},{\"id\":\"ai.amberx.axf.p22\",\"name\":\"Plugin 22\",\"on\":true},{\"id\":\"ai.amberx.axf.p23\",\"name\":\"Plugin 23\",\"on\":false},{\"id\":\"ai.amberx.axf.p24\",\"name\":\"Plugin 24\",\"on\":true},{\"id\":\"ai.amberx.axf.p25\",\"name\":\"Plugin 25\",\"on\":false},{\"id\":\"ai.amberx.axf.p26\",\"name\":\"Plugin 26\",\"on\":true},{\"id\":\"ai.amberx.axf.p27\",\"name\":\"Plugin 27\",\"on\":false},{\"id\":\"ai.amberx.axf.p28\",\"name\":\"Plugin 28\",\"on\":true},{\"id\":\"ai.amberx.axf.p29\",\"name\":\"Plugin 29\",\"on\":false},{\"id\":\"ai.amberx.axf.p30\",\"name\":\"Plugin 30\",\"on\":true},{\"id\":\"ai.amberx.axf.p31\",\"name\":\"Plugin 31\",\"on\":false},{\"id\":\"ai.amberx.axf.p32\",\"name\":\"Plugin 32\",\"on\":true},{\"id\":\"ai.amberx.axf.p33\",\"name\":\"Plugin 33\",\"on\":false},{\"id\":\"ai.amberx.axf.p34\",\"name\":\"Plugin 34\",\"on\":true},{\"id\":\"ai.amberx.axf.p35\",\"name\":\"Plugin 35\",\"on\":false},{\"id\":\"ai.amberx.axf.p36\",\"name\":\"Plugin 36\",\"on\":true},{\"id\":\"ai.amberx.axf.p37\",\"name\":\"Plugin 37\",\"on\":false},{\"id\":\"ai.amberx.axf.p38\",\"name\":\"Plugin 38\",\"on\":true},{\"id\":\"ai.amberx.axf.p39\",\"name\":\"Plugin 39\",\"on\":false},{\"id\":\"ai.amberx.axf.p40\",\"name\":\"Plugin 40\",\"on\":true},{\"id\":\"ai.amberx.axf.p41\",\"name\":\"Plugin 41\",\"on\":false},{\"id\":\"ai.amberx.axf.p42\",\"name\":\"Plugin 42\",\"on\":true},{\"id\":\"ai.amberx.axf.p43\",\"name\":\"Plugin 43\",\"on\":false},{\"id\":\"ai.amberx.axf.p44\",\"name\":\"Plugin 44\",\"on\":true},{\"id\":\"ai.amberx.axf.p45\",\"name\":\"Plugin 45\",\"on\":false},{\"id\":\"ai.amberx.axf.p46\",\"name\":\"Plugin 46\",\"on\":true},{\"id\":\"ai.amberx.axf.p47\",\"name\":\"Plugin 47\",\"on\":false},{\"id\":\"ai.amberx.axf.p48\",\"name\":\"Plugin 48\",\"on\":true},{\"id\":\"ai.amberx.axf.p49\",\"name\":\"Plugin 49\",\"on\":false},{\"id\":\"ai.amberx.axf.p50\",\"name\":\"Plugin 50\",\"on\":true},{\"id\":\"ai.amberx.axf.p51\",\"name\":\"Plugin 51\",\"on\":false},{\"id\":\"ai.amberx.axf.p52\",\"name\":\"Plugin 52\",\"on\":true},{\"id\":\"ai.amberx.axf.p53\",\"name\":\"Plugin 53\",\"on\":false},{\"id\":\"ai.amberx.axf.p54\",\"name\":\"Plugin 54\",\"on\":true},{\"id\":\"ai.amberx.axf.p55\",\"name\":\"Plugin 55\",\"on\":false},{\"id\":\"ai.amberx.axf.p56\",\"name\":\"Plugin 56\",\"on\":true},{\"id\":\"ai.amberx.axf.p57\",\"name\":\"Plugin 57\",\"on\":false},{\"id\":\"ai.amberx.axf.p58\",\"name\":\"Plugin 58\",\"on\":true},{\"id\":\"ai.amberx.axf.p59\",\"name\":\"Plugin 59\",\"on\":false},{\"id\":\"ai.amberx.axf.p60\",\"name\":\"Plugin 60\",\"on\":true},{\"id\":\"ai.amberx.axf.p61\",\"name\":\"Plugin 61\",\"on\":false},{\"id\":\"ai.amberx.axf.p62\",\"name\":\"Plugin 62\",\"on\":true},{\"id\":\"ai.amberx.axf.p63\",\"name\":\"Plugin 63\",\"on\":false},{\"id\":\"ai.amberx.axf.p64\",\"name\":\"Plugin 64\",\"on\":true},{\"id\":\"ai.amberx.axf.p65\",\"name\":\"Plugin 65\",\"on\":false},{\"id\":\"ai.amberx.axf.p66\",\"name\":\"Plugin 66\",\"on\":true},{\"id\":\"ai.amberx.axf.p67\",\"name\":\"Plugin 67\",\"on\":false},{\"id\":\"ai.amberx.axf.p68\",\"name\":\"Plugin 68\",\"on\":true},{\"id\":\"ai.amberx.axf.p69\",\"name\":\"Plugin 69\",\"on\":false},{\"id\":\"ai.amberx.axf.p70\",\"name\":\"Plugin 70\",\"on\":true},{\"id\":\"ai.amberx.axf.p71\",\"name\":\"Plugin 71\",\"on\":false},{\"id\":\"ai.amberx.axf.p72\",\"name\":\"Plugin 72\",\"on\":true},{\"id\":\"ai.amberx.axf.p73\",\"name\":\"Plugin 73\",\"on\":false},{\"id\":\"ai.amberx.axf.p74\",\"name\":\"Plugin 74\",\"on\":true},{\"id\":\"ai.amberx.axf.p75\",\"name\":\"Plugin 75\",\"on\":false},{\"id\":\"ai.amberx.axf.p76\",\"name\":\"Plugin 76\",\"on\":true},{\"id\":\"ai.amberx.axf.p77\",\"name\":\"Plugin 77\",\"on\":false},{\"id\":\"ai.amberx.axf.p78\",\"name\":\"Plugin 78\",\"on\":true},{\"id\":\"ai.amberx.axf.p79\",\"name\":\"Plugin 79\",\"on\":false},{\"id\":\"ai.amberx.axf.p80\",\"name\":\"Plugin 80\",\"on\":true},{\"id\":\"ai.amberx.axf.p81\",\"name\":\"Plugin 81\",\"on\":false},{\"id\":\"ai.amberx.axf.p82\",\"name\":\"Plugin 82\",\"on\":true},{\"id\":\"ai.amberx.axf.p83\",\"name\":\"Plugin 83\",\"on\":false},{\"id\":\"ai.amberx.axf.p84\",\"name\":\"Plugin 84\",\"on\":true},{\"id\":\"ai.amberx.axf.p85\",\"name\":\"Plugin 85\",\"on\":false},{\"id\":\"ai.amberx.axf.p86\",\"name\":\"Plugin 86\",\"on\":true},{\"id\":\"ai.amberx.axf.p87\",\"name\":\"Plugin 87\",\"on\":false},{\"id\":\"ai.amberx.axf.p88\",\"name\":\"Plugin 88\",\"on\":true},{\"id\":\"ai.amberx.axf.p89\",\"name\":\"Plugin 89\",\"on\":false},{\"id\":\"ai.amberx.axf.p90\",\"name\":\"Plugin 90\",\"on\":true},{\"id\":\"ai.amberx.axf.p91\",\"name\":\"Plugin 91\",\"on\":false},{\"id\":\"ai.amberx.axf.p92\",\"name\":\"Plugin 92\",\"on\":true},{\"id\":\"ai.amberx.axf.p93\",\"name\":\"Plugin 93\",\"on\":false},{\"id\":\"ai.amberx.axf.p94\",\"name\":\"Plugin 94\",\"on\":true},{\"id\":\"ai.amberx.axf.p95\",\"name\":\"Plugin 95\",\"on\":false},{\"id\":\"ai.amberx.axf.p96\",\"name\":\"Plugin 96\",\"on\":true},{\"id\":\"ai.amberx.axf.p97\",\"name\":\"Plugin 97\",\"on\":false},{\"id\":\"ai.amberx.axf.p98\",\"name\":\"Plugin 98\",\"on\":true},{\"id\":\"ai.amberx.axf.p99\",\"name\":\"Plugin 99\",\"on\":false},{\"id\":\"ai.amberx.axf.p100\",\"name\":\"Plugin 100\",\"on\":true},{\"id\":\"ai.amberx.axf.p101\",\"name\":\"Plugin 101\",\"on\":false},{\"id\":\"ai.amberx.axf.p102\",\"name\":\"Plugin 102\",\"on\":true},{\"id\":\"ai.amberx.axf.p103\",\"name\":\"Plugin 103\",\"on\":false},{\"id\":\"ai.amberx.axf.p104\",\"name\":\"Plugin 104\",\"on\":true},{\"id\":\"ai.amberx.axf.p105\",\"name\":\"Plugin 105\",\"on\":false},{\"id\":\"ai.amberx.axf.p106\",\"name\":\"Plugin 106\",\"on\":true},{\"id\":\"ai.amberx.axf.p107\",\"name\":\"Plugin 107\",\"on\":false},{\"id\":\"ai.amberx.axf.p108\",\"name\":\"Plugin 108\",\"on\":true},{\"id\":\"ai.amberx.axf.p109\",\"name\":\"Plugin 109\",\"on\":false},{\"id\":\"ai.amberx.axf.p110\",\"name\":\"Plugin 110\",\"on\":true},{\"id\":\"ai.amberx.axf.p111\",\"name\":\"Plugin 111\",\"on\":false},{\"id\":\"ai.amberx.axf.p112\",\"name\":\"Plugin 112\",\"on\":true},{\"id\":\"ai.amberx.axf.p113\",\"name\":\"Plugin 113\",\"on\":false},{\"id\":\"ai.amberx.axf.p114\",\"name\":\"Plugin 114\",\"on\":true},{\"id\":\"ai.amberx.axf.p115\",\"name\":\"Plugin 115\",\"on\":false},{\"id\":\"ai.amberx.axf.p116\",\"name\":\"Plugin 116\",\"on\":true},{\"id\":\"ai.amberx.axf.p117\",\"name\":\"Plugin 117\",\"on\":false},{\"id\":\"ai.amberx.axf.p118\",\"name\":\"Plugin 118\",\"on\":true},{\"id\":\"ai.amberx.axf.p119\",\"name\":\"Plugin 119\",\"on\":false},{\"id\":\"ai.amberx.axf.p120\",\"name\":\"Plugin 120\",\"on\":true},{\"id\":\"ai.amberx.axf.p121\",\"name\":\"Plugin 121\",\"on\":false},{\"id\":\"ai.amberx.axf.p122\",\"name\":\"Plugin 122\",\"on\":true},{\"id\":\"ai.amberx.axf.p123\",\"name\":\"Plugin 123\",\"on\":false},{\"id\":\"ai.amberx.axf.p124\",\"name\":\"Plugin 124\",\"on\":true},{\"id\":\"ai.amberx.axf.p125\",\"name\":\"Plugin 125\",\"on\":false},{\"id\":\"ai.amberx.axf.p126\",\"name\":\"Plugin 126\",\"on\":true},{\"id\":\"ai.amberx.axf.p127\",\"name\":\"Plugin 127\",\"on\":false},{\"id\":\"ai.amberx.axf.p128\",\"name\":\"Plugin 128\",\"on\":true},{\"id\":\"ai.amberx.axf.p129\",\"name\":\"Plugin 129\",\"on\":false},{\"id\":\"ai.amberx.axf.p130\",\"name\":\"Plugin 130\",\"on\":true},{\"id\":\"ai.amberx.axf.p131\",\"name\":\"Plugin 131\",\"on\":false},{\"id\":\"ai.amberx.axf.p132\",\"name\":\"Plugin 132\",\"on\":true},{\"id\":\"ai.amberx.axf.p133\",\"name\":\"Plugin 133\",\"on\":false},{\"id\":\"ai.amberx.axf.p134\",\"name\":\"Plugin 134\",\"on\":true},{\"id\":\"ai.amberx.axf.p135\",\"name\":\"Plugin 135\",\"on\":false},{\"id\":\"ai.amberx.axf.p136\",\"name\":\"Plugin 136\",\"on\":true},{\"id\":\"ai.amberx.axf.p137\",\"name\":\"Plugin 137\",\"on\":false},{\"id\":\"ai.amberx.axf.p138\",\"name\":\"Plugin 138\",\"on\":true},{\"id\":\"ai.amberx.axf.p139\",\"name\":\"Plugin 139\",\"on\":false},{\"id\":\"ai.amberx.axf.p140\",\"name\":\"Plugin 140\",\"on\":true},{\"id\":\"ai.amberx.axf.p141\",\"name\":\"Plugin 141\",\"on\":false},{\"id\":\"ai.amberx.axf.p142\",\"name\":\"Plugin 142\",\"on\":true},{\"id\":\"ai.amberx.axf.p143\",\"name\":\"Plugin 143\",\"on\":false},{\"id\":\"ai.amberx.axf.p144\",\"name\":\"Plugin 144\",\"on\":true},{\"id\":\"ai.amberx.axf.p145\",\"name\":\"Plugin 145\",\"on\":false},{\"id\":\"ai.amberx.axf.p146\",\"name\":\"Plugin 146\",\"on\":true},{\"id\":\"ai.amberx.axf.p147\",\"name\":\"Plugin 147\",\"on\":false},{\"id\":\"ai.amberx.axf.p148\",\"name\":\"Plugin 148\",\"on\":true},{\"id\":\"ai.amberx.axf.p149\",\"name\":\"Plugin 149\",\"on\":false},{\"id\":\"ai.amberx.axf.p150\",\"name\":\"Plugin 150\",\"on\":true},{\"id\":\"ai.amberx.axf.p151\",\"name\":\"Plugin 151\",\"on\":false},{\"id\":\"ai.amberx.axf.p152\",\"name\":\"Plugin 152\",\"on\":true},{\"id\":\"ai.amberx.axf.p153\",\"name\":\"Plugin 153\",\"on\":false},{\"id\":\"ai.amberx.axf.p154\",\"name\":\"Plugin 154\",\"on\":true},{\"id\":\"ai.amberx.axf.p155\",\"name\":\"Plugin 155\",\"on\":false},{\"id\":\"ai.amberx.axf.p156\",\"name\":\"Plugin 156\",\"on\":true},{\"id\":\"ai.amberx.axf.p157\",\"name\":\"Plugin 157\",\"on\":false},{\"id\":\"ai.amberx.axf.p158\",\"name\":\"Plugin 158\",\"on\":true},{\"id\":\"ai.amberx.axf.p159\",\"name\":\"Plugin 159\",\"on\":false},{\"id\":\"ai.amberx.axf.p160\",\"name\":\"Plugin 160\",\"on\":true},{\"id\":\"ai.amberx.axf.p161\",\"name\":\"Plugin 161\",\"on\":false},{\"id\":\"ai.amberx.axf.p162\",\"name\":\"Plugin 162\",\"on\":true},{\"id\":\"ai.amberx.axf.p163\",\"name\":\"Plugin 163\",\"on\":false},{\"id\":\"ai.amberx.axf.p164\",\"name\":\"Plugin 164\",\"on\":true},{\"id\":\"ai.amberx.axf.p165\",\"name\":\"Plugin 165\",\"on\":false},{\"id\":\"ai.amberx.axf.p166\",\"name\":\"Plugin 166\",\"on\":true},{\"id\":\"ai.amberx.axf.p167\",\"name\":\"Plugin 167\",\"on\":false},{\"id\":\"ai.amberx.axf.p168\",\"name\":\"Plugin 168\",\"on\":true},{\"id\":\"ai.amberx.axf.p169\",\"name\":\"Plugin 169\",\"on\":false},{\"id\":\"ai.amberx.axf.p170\",\"name\":\"Plugin 170\",\"on\":true},{\"id\":\"ai.amberx.axf.p171\",\"name\":\"Plugin 171\",\"on\":false},{\"id\":\"ai.amberx.axf.p172\",\"name\":\"Plugin 172\",\"on\":true},{\"id\":\"ai.amberx.axf.p173\",\"name\":\"Plugin 173\",\"on\":false},{\"id\":\"ai.amberx.axf.p174\",\"name\":\"Plugin 174\",\"on\":true},{\"id\":\"ai.amberx.axf.p175\",\"name\":\"Plugin 175\",\"on\":false},{\"id\":\"ai.amberx.axf.p176\",\"name\":\"Plugin 176\",\"on\":true},{\"id\":\"ai.amberx.axf.p177\",\"name\":\"Plugin 177\",\"on\":false},{\"id\":\"ai.amberx.axf.p178\",\"name\":\"Plugin 178\",\"on\":true},{\"id\":\"ai.amberx.axf.p179\",\"name\":\"Plugin 179\",\"on\":false},{\"id\":\"ai.amberx.axf.p180\",\"name\":\"Plugin 180\",\"on\":true},{\"id\":\"ai.amberx.axf.p181\",\"name\":\"Plugin 181\",\"on\":false},{\"id\":\"ai.amberx.axf.p182\",\"name\":\"Plugin 182\",\"on\":true},{\"id\":\"ai.amberx.axf.p183\",\"name\":\"Plugin 183\",\"on\":false},{\"id\":\"ai.amberx.axf.p184\",\"name\":\"Plugin 184\",\"on\":true},{\"id\":\"ai.amberx.axf.p185\",\"name\":\"Plugin 185\",\"on\":false},{\"id\":\"ai.amberx.axf.p186\",\"name\":\"Plugin 186\",\"on\":true},{\"id\":\"ai.amberx.axf.p187\",\"name\":\"Plugin 187\",\"on\":false},{\"id\":\"ai.amberx.axf.p188\",\"name\":\"Plugin 188\",\"on\":true},{\"id\":\"ai.amberx.axf.p189\",\"name\":\"Plugin 189\",\"on\":false},{\"id\":\"ai.amberx.axf.p190\",\"name\":\"Plugin 190\",\"on\":true},{\"id\":\"ai.amberx.axf.p191\",\"name\":\"Plugin 191\",\"on\":false},{\"id\":\"ai.amberx.axf.p192\",\"name\":\"Plugin 192\",\"on\":true},{\"id\":\"ai.amberx.axf.p193\",\"name\":\"Plugin 193\",\"on\":false},{\"id\":\"ai.amberx.axf.p194\",\"name\":\"Plugin 194\",\"on\":true},{\"id\":\"ai.amberx.axf.p195\",\"name\":\"Plugin 195\",\"on\":false},{\"id\":\"ai.amberx.axf.p196\",\"name\":\"Plugin 196\",\"on\":true},{\"id\":\"ai.amberx.axf.p197\",\"name\":\"Plugin 197\",\"on\":false},{\"id\":\"ai.amberx.axf.p198\",\"name\":\"Plugin 198\",\"on\":true},{\"id\":\"ai.amberx.axf.p199\",\"name\":\"Plugin 199\",\"on\":false},{\"id\":\"ai.amberx.axf.p200\",\"name\":\"Plugin 200\",\"on\":true},{\"id\":\"ai.amberx.axf.p201\",\"name\":\"Plugin 201\",\"on\":false},{\"id\":\"ai.amberx.axf.p202\",\"name\":\"Plugin 202\",\"on\":true},{\"id\":\"ai.amberx.axf.p203\",\"name\":\"Plugin 203\",\"on\":false},{\"id\":\"ai.amberx.axf.p204\",\"name\":\"Plugin 204\",\"on\":true},{\"id\":\"ai.amberx.axf.p205\",\"name\":\"Plugin 205\",\"on\":false},{\"id\":\"ai.amberx.axf.p206\",\"name\":\"Plugin 206\",\"on\":true},{\"id\":\"ai.amberx.axf.p207\",\"name\":\"Plugin 207\",\"on\":false},{\"id\":\"ai.amberx.axf.p208\",\"name\":\"Plugin 208\",\"on\":true},{\"id\":\"ai.amberx.axf.p209\",\"name\":\"Plugin 209\",\"on\":false},{\"id\":\"ai.amberx.axf.p210\",\"name\":\"Plugin 210\",\"on\":true},{\"id\":\"ai.amberx.axf.p211\",\"name\":\"Plugin 211\",\"on\":false},{\"id\":\"ai.amberx.axf.p212\",\"name\":\"Plugin 212\",\"on\":true},{\"id\":\"ai.amberx.axf.p213\",\"name\":\"Plugin 213\",\"on\":false},{\"id\":\"ai.amberx.axf.p214\",\"name\":\"Plugin 214\",\"on\":true},{\"id\":\"ai.amberx.axf.p215\",\"name\":\"Plugin 215\",\"on\":false},{\"id\":\"ai.amberx.axf.p216\",\"name\":\"Plugin 216\",\"on\":true},{\"id\":\"ai.amberx.axf.p217\",\"name\":\"Plugin 217\",\"on\":false},{\"id\":\"ai.amberx.axf.p218\",\"name\":\"Plugin 218\",\"on\":true},{\"id\":\"ai.amberx.axf.p219\",\"name\":\"Plugin 219\",\"on\":false},{\"id\":\"ai.amberx.axf.p220\",\"name\":\"Plugin 220\",\"on\":true},{\"id\":\"ai.amberx.axf.p221\",\"name\":\"Plugin 221\",\"on\":false},{\"id\":\"ai.amberx.axf.p222\",\"name\":\"Plugin 222\",\"on\":true},{\"id\":\"ai.amberx.axf.p223\",\"name\":\"Plugin 223\",\"on\":false},{\"id\":\"ai.amberx.axf.p224\",\"name\":\"Plugin 224\",\"on\":true},{\"id\":\"ai.amberx.axf.p225\",\"name\":\"Plugin 225\",\"on\":false},{\"id\":\"ai.amberx.axf.p226\",\"name\":\"Plugin 226\",\"on\":true},{\"id\":\"ai.amberx.axf.p227\",\"name\":\"Plugin 227\",\"on\":false},{\"id\":\"ai.amberx.axf.p228\",\"name\":\"Plugin 228\",\"on\":true},{\"id\":\"ai.amberx.axf.p229\",\"name\":\"Plugin 229\",\"on\":false},{\"id\":\"ai.amberx.axf.p230\",\"name\":\"Plugin 230\",\"on\":true},{\"id\":\"ai.amberx.axf.p231\",\"name\":\"Plugin 231\",\"on\":false},{\"id\":\"ai.amberx.axf.p232\",\"name\":\"Plugin 232\",\"on\":true},{\"id\":\"ai.amberx.axf.p233\",\"name\":\"Plugin 233\",\"on\":false},{\"id\":\"ai.amberx.axf.p234\",\"name\":\"Plugin 234\",\"on\":true},{\"id\":\"ai.amberx.axf.p235\",\"name\":\"Plugin 235\",\"on\":false},{\"id\":\"ai.amberx.axf.p236\",\"name\":\"Plugin 236\",\"on\":true},{\"id\":\"ai.amberx.axf.p237\",\"name\":\"Plugin 237\",\"on\":false},{\"id\":\"ai.amberx.axf.p238\",\"name\":\"Plugin 238\",\"on\":true},{\"id\":\"ai.amberx.axf.p239\",\"name\":\"Plugin 239\",\"on\":false},{\"id\":\"ai.amberx.axf.p240\",\"name\":\"Plugin 240\",\"on\":true},{\"id\":\"ai.amberx.axf.p241\",\"name\":\"Plugin 241\",\"on\":false},{\"id\":\"ai.amberx.axf.p242\",\"name\":\"Plugin 242\",\"on\":true},{\"id\":\"ai.amberx.axf.p243\",\"name\":\"Plugin 243\",\"on\":false},{\"id\":\"ai.amberx.axf.p244\",\"name\":\"Plugin 244\",\"on\":true},{\"id\":\"ai.amberx.axf.p245\",\"name\":\"Plugin 245\",\"on\":false},{\"id\":\"ai.amberx.axf.p246\",\"name\":\"Plugin 246\",\"on\":true},{\"id\":\"ai.amberx.axf.p247\",\"name\":\"Plugin 247\",\"on\":false},{\"id\":\"ai.amberx.axf.p248\",\"name\":\"Plugin 248\",\"on\":true},{\"id\":\"ai.amberx.axf.p249\",\"name\":\"Plugin 249\",\"on\":false}]}",
+      "message": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.p0",
+            "name": "Plugin 0",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p1",
+            "name": "Plugin 1",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p2",
+            "name": "Plugin 2",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p3",
+            "name": "Plugin 3",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p4",
+            "name": "Plugin 4",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p5",
+            "name": "Plugin 5",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p6",
+            "name": "Plugin 6",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p7",
+            "name": "Plugin 7",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p8",
+            "name": "Plugin 8",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p9",
+            "name": "Plugin 9",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p10",
+            "name": "Plugin 10",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p11",
+            "name": "Plugin 11",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p12",
+            "name": "Plugin 12",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p13",
+            "name": "Plugin 13",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p14",
+            "name": "Plugin 14",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p15",
+            "name": "Plugin 15",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p16",
+            "name": "Plugin 16",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p17",
+            "name": "Plugin 17",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p18",
+            "name": "Plugin 18",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p19",
+            "name": "Plugin 19",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p20",
+            "name": "Plugin 20",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p21",
+            "name": "Plugin 21",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p22",
+            "name": "Plugin 22",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p23",
+            "name": "Plugin 23",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p24",
+            "name": "Plugin 24",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p25",
+            "name": "Plugin 25",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p26",
+            "name": "Plugin 26",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p27",
+            "name": "Plugin 27",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p28",
+            "name": "Plugin 28",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p29",
+            "name": "Plugin 29",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p30",
+            "name": "Plugin 30",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p31",
+            "name": "Plugin 31",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p32",
+            "name": "Plugin 32",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p33",
+            "name": "Plugin 33",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p34",
+            "name": "Plugin 34",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p35",
+            "name": "Plugin 35",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p36",
+            "name": "Plugin 36",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p37",
+            "name": "Plugin 37",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p38",
+            "name": "Plugin 38",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p39",
+            "name": "Plugin 39",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p40",
+            "name": "Plugin 40",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p41",
+            "name": "Plugin 41",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p42",
+            "name": "Plugin 42",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p43",
+            "name": "Plugin 43",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p44",
+            "name": "Plugin 44",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p45",
+            "name": "Plugin 45",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p46",
+            "name": "Plugin 46",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p47",
+            "name": "Plugin 47",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p48",
+            "name": "Plugin 48",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p49",
+            "name": "Plugin 49",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p50",
+            "name": "Plugin 50",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p51",
+            "name": "Plugin 51",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p52",
+            "name": "Plugin 52",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p53",
+            "name": "Plugin 53",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p54",
+            "name": "Plugin 54",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p55",
+            "name": "Plugin 55",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p56",
+            "name": "Plugin 56",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p57",
+            "name": "Plugin 57",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p58",
+            "name": "Plugin 58",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p59",
+            "name": "Plugin 59",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p60",
+            "name": "Plugin 60",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p61",
+            "name": "Plugin 61",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p62",
+            "name": "Plugin 62",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p63",
+            "name": "Plugin 63",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p64",
+            "name": "Plugin 64",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p65",
+            "name": "Plugin 65",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p66",
+            "name": "Plugin 66",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p67",
+            "name": "Plugin 67",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p68",
+            "name": "Plugin 68",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p69",
+            "name": "Plugin 69",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p70",
+            "name": "Plugin 70",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p71",
+            "name": "Plugin 71",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p72",
+            "name": "Plugin 72",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p73",
+            "name": "Plugin 73",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p74",
+            "name": "Plugin 74",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p75",
+            "name": "Plugin 75",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p76",
+            "name": "Plugin 76",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p77",
+            "name": "Plugin 77",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p78",
+            "name": "Plugin 78",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p79",
+            "name": "Plugin 79",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p80",
+            "name": "Plugin 80",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p81",
+            "name": "Plugin 81",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p82",
+            "name": "Plugin 82",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p83",
+            "name": "Plugin 83",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p84",
+            "name": "Plugin 84",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p85",
+            "name": "Plugin 85",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p86",
+            "name": "Plugin 86",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p87",
+            "name": "Plugin 87",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p88",
+            "name": "Plugin 88",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p89",
+            "name": "Plugin 89",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p90",
+            "name": "Plugin 90",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p91",
+            "name": "Plugin 91",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p92",
+            "name": "Plugin 92",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p93",
+            "name": "Plugin 93",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p94",
+            "name": "Plugin 94",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p95",
+            "name": "Plugin 95",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p96",
+            "name": "Plugin 96",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p97",
+            "name": "Plugin 97",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p98",
+            "name": "Plugin 98",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p99",
+            "name": "Plugin 99",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p100",
+            "name": "Plugin 100",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p101",
+            "name": "Plugin 101",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p102",
+            "name": "Plugin 102",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p103",
+            "name": "Plugin 103",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p104",
+            "name": "Plugin 104",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p105",
+            "name": "Plugin 105",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p106",
+            "name": "Plugin 106",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p107",
+            "name": "Plugin 107",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p108",
+            "name": "Plugin 108",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p109",
+            "name": "Plugin 109",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p110",
+            "name": "Plugin 110",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p111",
+            "name": "Plugin 111",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p112",
+            "name": "Plugin 112",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p113",
+            "name": "Plugin 113",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p114",
+            "name": "Plugin 114",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p115",
+            "name": "Plugin 115",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p116",
+            "name": "Plugin 116",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p117",
+            "name": "Plugin 117",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p118",
+            "name": "Plugin 118",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p119",
+            "name": "Plugin 119",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p120",
+            "name": "Plugin 120",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p121",
+            "name": "Plugin 121",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p122",
+            "name": "Plugin 122",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p123",
+            "name": "Plugin 123",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p124",
+            "name": "Plugin 124",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p125",
+            "name": "Plugin 125",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p126",
+            "name": "Plugin 126",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p127",
+            "name": "Plugin 127",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p128",
+            "name": "Plugin 128",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p129",
+            "name": "Plugin 129",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p130",
+            "name": "Plugin 130",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p131",
+            "name": "Plugin 131",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p132",
+            "name": "Plugin 132",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p133",
+            "name": "Plugin 133",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p134",
+            "name": "Plugin 134",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p135",
+            "name": "Plugin 135",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p136",
+            "name": "Plugin 136",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p137",
+            "name": "Plugin 137",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p138",
+            "name": "Plugin 138",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p139",
+            "name": "Plugin 139",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p140",
+            "name": "Plugin 140",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p141",
+            "name": "Plugin 141",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p142",
+            "name": "Plugin 142",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p143",
+            "name": "Plugin 143",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p144",
+            "name": "Plugin 144",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p145",
+            "name": "Plugin 145",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p146",
+            "name": "Plugin 146",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p147",
+            "name": "Plugin 147",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p148",
+            "name": "Plugin 148",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p149",
+            "name": "Plugin 149",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p150",
+            "name": "Plugin 150",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p151",
+            "name": "Plugin 151",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p152",
+            "name": "Plugin 152",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p153",
+            "name": "Plugin 153",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p154",
+            "name": "Plugin 154",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p155",
+            "name": "Plugin 155",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p156",
+            "name": "Plugin 156",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p157",
+            "name": "Plugin 157",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p158",
+            "name": "Plugin 158",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p159",
+            "name": "Plugin 159",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p160",
+            "name": "Plugin 160",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p161",
+            "name": "Plugin 161",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p162",
+            "name": "Plugin 162",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p163",
+            "name": "Plugin 163",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p164",
+            "name": "Plugin 164",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p165",
+            "name": "Plugin 165",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p166",
+            "name": "Plugin 166",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p167",
+            "name": "Plugin 167",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p168",
+            "name": "Plugin 168",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p169",
+            "name": "Plugin 169",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p170",
+            "name": "Plugin 170",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p171",
+            "name": "Plugin 171",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p172",
+            "name": "Plugin 172",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p173",
+            "name": "Plugin 173",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p174",
+            "name": "Plugin 174",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p175",
+            "name": "Plugin 175",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p176",
+            "name": "Plugin 176",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p177",
+            "name": "Plugin 177",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p178",
+            "name": "Plugin 178",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p179",
+            "name": "Plugin 179",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p180",
+            "name": "Plugin 180",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p181",
+            "name": "Plugin 181",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p182",
+            "name": "Plugin 182",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p183",
+            "name": "Plugin 183",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p184",
+            "name": "Plugin 184",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p185",
+            "name": "Plugin 185",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p186",
+            "name": "Plugin 186",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p187",
+            "name": "Plugin 187",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p188",
+            "name": "Plugin 188",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p189",
+            "name": "Plugin 189",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p190",
+            "name": "Plugin 190",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p191",
+            "name": "Plugin 191",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p192",
+            "name": "Plugin 192",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p193",
+            "name": "Plugin 193",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p194",
+            "name": "Plugin 194",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p195",
+            "name": "Plugin 195",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p196",
+            "name": "Plugin 196",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p197",
+            "name": "Plugin 197",
+            "on": false
+          },
+          {
+            "id": "ai.amberx.axf.p198",
+            "name": "Plugin 198",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.p199",
+            "name": "Plugin 199",
+            "on": false
+          }
+        ]
+      }
     }
   ],
   "settingsTab": [
