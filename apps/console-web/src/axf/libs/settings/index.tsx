@@ -279,7 +279,7 @@ function LibrariesPanel() {
   useSettingsRevision(rt);
   const inv = useMemo(() => runtimeInventory(rt), [rt, rt.libraries.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const manager = Boolean(rt.actions.get('plugin-manager.open'));
-  if (!inv.items.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  if (!inv.items.length && !rt.skippedLibraries.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
   const tone = (h: string) => (h === 'ok' ? 'success' : h === 'partial' ? 'warning' : h === 'off' ? undefined : 'danger');
   return (
     <div className="fx-stack">
@@ -300,6 +300,19 @@ function LibrariesPanel() {
         })}
       </ul>
       {inv.conflicts.length > 0 && <p className="fx-muted axf-settings__hint">{inv.conflicts.length} clash{inv.conflicts.length > 1 ? 'es' : ''}: {inv.conflicts.map((c) => c.id).join(', ')}</p>}
+      {rt.skippedLibraries.length > 0 && (
+        <div className="fx-stack">
+          <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>Not loaded inside {rt.embedded?.host ?? 'the host app'} (it does their job, or hides what they draw). They load as usual when this app runs on its own.</p>
+          <ul className="axf-settings__list">
+            {rt.skippedLibraries.map((l) => (
+              <li key={l.id} className="fx-row fx-row--wrap">
+                <span className="fx-grow"><strong>{l.label}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+                <Chip>{l.reason}</Chip>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

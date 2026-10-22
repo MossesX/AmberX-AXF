@@ -191,6 +191,8 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
+  readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
@@ -1051,6 +1053,18 @@ export class AxfRuntime {
       if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
       handle(e.data);
     });
+  }
+
+  /**
+   * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
+   * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
+   */
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+    const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
+    if (!fresh.length) return;
+    this.skippedLibraries.push(...fresh);
+    for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
+    this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
   }
 
   /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */

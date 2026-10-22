@@ -57,6 +57,8 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   dependsOn: ['ai.amberx.axf.alerts'],
   provides: ['banner.alerts-bell'],
+  // Only a bell on the app's banner: inside a host that hides the banner (Patches) it isn't loaded (embed@1 skipWhen).
+  embed: { skipWhen: ['hidden:banner'] },
   register(rt) {
     runtime = rt;
     if (!watching) {

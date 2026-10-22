@@ -166,4 +166,32 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 
+// Plugins a host makes unneeded (embed@1 skipWhen): skipped on that page only, logged once, listed with why.
+{
+  const { embedSkipReason } = await import('../core/engines/embed');
+  const { installLibraries } = await import('../react/library');
+  const host = { host: 'patches', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] };
+  eq(embedSkipReason(null, ['embedded']), null, 'skipWhen: standalone always loads');
+  eq(embedSkipReason(host, ['embedded']), 'patches does this itself', 'skipWhen embedded: any host');
+  eq(embedSkipReason(host, ['take:settings']), 'patches takes settings over', 'skipWhen take:<fn>');
+  eq(embedSkipReason(host, ['take:notifications']), null, 'skipWhen take:<fn> the host does not take');
+  eq(embedSkipReason(host, ['hidden:banner']), 'patches hides the banner', 'skipWhen hidden:<type>');
+  eq(embedSkipReason(host, ['hidden:toolbar']), null, 'skipWhen hidden:<type> the host shows');
+  eq(embedSkipReason({ ...host, page: 'settings' }, ['embedded']), null, 'page mode never skips (its tabs must all be there)');
+  eq(embedSkipReason(host, undefined), null, 'no skipWhen: loads');
+  const lib = (id: string, skipWhen?: string[]) => ({ id, label: id, version: '1.0.0', ...(skipWhen ? { embed: { skipWhen } } : {}), register: () => { registered.push(id); } });
+  const registered: string[] = [];
+  const inHost = make(host);
+  installLibraries(inHost, [lib('keep'), lib('tabs', ['embedded']), lib('bell', ['hidden:banner']), lib('notify', ['take:notifications'])] as never);
+  eq(registered, ['keep', 'notify'], 'inside the host: only what it needs is installed');
+  eq(inHost.skippedLibraries.map((l) => `${l.id}: ${l.reason}`), ['tabs: patches does this itself', 'bell: patches hides the banner'], 'skipped plugins listed with why');
+  eq(inHost.libraries.map((l) => l.id), ['keep', 'notify'], 'skipped plugins are not in the installed list');
+  eq(inHost.terminal.lines.some((l) => /2 plugin\(s\) not loaded \(tabs, bell\)/.test(l.text)), true, 'launch log: one summary line');
+  registered.length = 0;
+  const alone = make(null);
+  installLibraries(alone, [lib('keep'), lib('tabs', ['embedded']), lib('bell', ['hidden:banner'])] as never);
+  eq(registered, ['keep', 'tabs', 'bell'], 'standalone: every plugin loads');
+  eq(alone.skippedLibraries.length, 0, 'standalone: nothing skipped');
+}
+
 console.log(`check-embed: ${checks} checks passed`);
