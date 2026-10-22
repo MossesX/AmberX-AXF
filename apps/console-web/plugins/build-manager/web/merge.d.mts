@@ -1,5 +1,6 @@
 // Types for merge.mjs (the view imports it from TypeScript).
 export type Source = 'pending' | 'queue' | 'plan';
+export type Origin = 'prompt' | 'auto';
 export type Model = 'Fable' | 'Opus' | 'Sonnet';
 export type SortKey = 'order' | 'left' | 'model';
 export interface Helpers { estimateMinutes(text: unknown): number | null; formatMinutes(min: number | null | undefined): string }
@@ -7,6 +8,8 @@ export interface Step { text: string; estimate: number | null; estimateText: str
 export interface Timing { total: number | null; left: number | null; stepsDone: number; stepsTotal: number; needsSplit: boolean; estimateText: string }
 export interface Row extends Timing {
   key: string; id: string; source: Source; title: string; detail: string; model: Model; status: string; statusLabel: string; order: number;
+  /** Who added it: a person's prompt or a tool; addedBy = the pending item's `source`, or 'build queue' / 'plan'. */
+  origin: Origin; addedBy: string;
   steps: Step[]; planId?: string; queuePosition?: number; effort?: string; features?: { id: string; title: string; status: string }[];
   building: boolean; startedAt: number; fable: boolean; aliases: string[];
   /** Set when the list thinks it's already built or removed (the Clean up button). */
@@ -23,6 +26,10 @@ export interface Inputs { pending?: unknown[]; queue?: unknown; queueState?: unk
 
 export const SOURCES: Source[];
 export const SOURCE_LABEL: Record<Source, string>;
+export const ORIGINS: Origin[];
+export const ORIGIN_LABEL: Record<Origin, string>;
+export const PROMPT_SOURCES: string[];
+export function originOf(source: string, addedBy: unknown): Origin;
 export const MODELS: Model[];
 export const SORTS: SortKey[];
 export const SORT_LABEL: Record<SortKey, string>;
@@ -32,7 +39,7 @@ export function normId(s: unknown): string;
 export function timing(own: unknown, steps: Step[], h: Helpers): Timing;
 export function buildRows(inputs: Inputs, h: Helpers): Row[];
 export function totalsByModel(rows: Row[]): Record<Model | 'all', Totals>;
-export function filterRows(rows: Row[], f?: { model?: string; sources?: string[]; status?: string; split?: boolean }): Row[];
+export function filterRows(rows: Row[], f?: { model?: string; sources?: string[]; origins?: string[]; status?: string; split?: boolean }): Row[];
 export function sortRows(rows: Row[], key?: SortKey): Row[];
 export function statusesOf(rows: Row[]): { value: string; label: string }[];
 export function linkRow(item: ActivityItem, rows: Row[]): { row: Row; via: string } | null;

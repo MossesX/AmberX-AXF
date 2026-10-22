@@ -20,6 +20,16 @@
 
 export const SOURCES = ['pending', 'queue', 'plan'];
 export const SOURCE_LABEL = { pending: 'Pending', queue: 'Queue', plan: 'Plan' };
+/**
+ * Who added a build (Brett, Oct 22 2026: filter "added automatically" vs "added from a user prompt").
+ * `prompt` = a person asked for it: a pending item whose `source` says it came from a chat or Claude Code session,
+ * the console's Add form or the claude.ai page. Everything else is `auto`: pending items parked by tools
+ * (fable-rebuilds, feature-assist, plan sync, …, or no source at all), every build-queue step and every plan feature.
+ */
+export const ORIGINS = ['prompt', 'auto'];
+export const ORIGIN_LABEL = { prompt: 'From a prompt', auto: 'Added automatically' };
+export const PROMPT_SOURCES = ['chat', 'claude-code', 'console', 'artifact'];
+export const originOf = (source, addedBy) => (source === 'pending' && PROMPT_SOURCES.includes(str(addedBy).toLowerCase()) ? 'prompt' : 'auto');
 export const MODELS = ['Fable', 'Opus', 'Sonnet'];
 export const SORTS = ['order', 'left', 'model'];
 export const SORT_LABEL = { order: 'Build order', left: 'Time left', model: 'Model' };
@@ -136,6 +146,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const model = modelName(p.model);
     rows.push({
       key: `pending:${p.id}`, id: str(p.id), source: 'pending', title: str(p.title) || p.id, detail: str(p.detail), model,
+      origin: originOf('pending', p.source), addedBy: str(p.source),
       status: p.status, statusLabel: PENDING_LABEL[p.status] ?? p.status, order: i, steps, ...t,
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
@@ -153,7 +164,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const epic = byFeature.get(s.id);
     const building = epic?.status === 'in-progress';
     rows.push({
-      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model),
+      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model), origin: 'auto', addedBy: 'build queue',
       status: s.state, statusLabel: s.state === 'active' && epic?.status === 'partial' ? 'Partial' : QUEUE_LABEL[s.state] ?? s.state,
       order: 1000 + s.position, queuePosition: s.position, steps, ...t, effort: str(s.effort),
       features: (s.features ?? []).map((f) => ({ id: f.id, title: f.title, status: f.status })),
@@ -174,7 +185,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const t = timing(f.estimate, steps, h);
     const building = f.status === 'in-progress';
     rows.push({
-      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model),
+      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model), origin: 'auto', addedBy: 'plan',
       status: f.status, statusLabel: PLAN_LABEL[f.status] ?? f.status,
       order: 100000 + (Number(f.wave) || 9) * 1000 + (PRIORITY[f.priority] ?? 3) * 100 + i / 1000, steps, ...t,
       building, startedAt: building ? startedAt(f) : 0, fable: false, aliases: [f.id],
@@ -198,9 +209,10 @@ export function totalsByModel(rows) {
   return { ...out, all };
 }
 
-/** Filters: model ('' = any), sources (list), status ('' = any), split (only "needs split"). */
-export function filterRows(rows, { model = '', sources = SOURCES, status = '', split = false } = {}) {
-  return rows.filter((r) => (!model || r.model === model) && sources.includes(r.source) && (!status || r.status === status) && (!split || r.needsSplit));
+/** Filters: model ('' = any), sources (list), origins (list: who added it), status ('' = any), split (only "needs split"). */
+export function filterRows(rows, { model = '', sources = SOURCES, origins = ORIGINS, status = '', split = false } = {}) {
+  return rows.filter((r) => (!model || r.model === model) && sources.includes(r.source) && origins.includes(r.origin ?? 'auto')
+    && (!status || r.status === status) && (!split || r.needsSplit));
 }
 
 export function sortRows(rows, key = 'order') {
