@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useState, type ReactNode } from 'react';
-import { Button, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Icon, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { ago, bannerOn, load, mergePr, openPr, pullRows, rows, setHidden, useStore, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -92,7 +92,7 @@ export function PushBanner() {
   useAxfState();
   const s = useStore();
   // Launches expanded like the other banners; "_" folds it to its summary line.
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useBannerLaunchOpen();
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const pulls = pullRows(s.answer);
   const ready = pulls.filter((p) => p.ready);

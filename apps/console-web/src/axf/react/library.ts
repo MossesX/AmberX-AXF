@@ -64,7 +64,16 @@ export interface AxfWebLibrary {
 export interface SlotDef { id: string; order?: number; render: (props: Record<string, unknown>) => ReactNode }
 
 /** A banner contributed by a library or plugin; lower `order` shows first. */
-export interface BannerDef { id: string; order?: number; render: () => ReactNode }
+export interface BannerDef {
+  id: string;
+  order?: number;
+  render: () => ReactNode;
+  /** name and icon in Banner settings (right-click a banner → Banner settings; components/BannerSettings.tsx) */
+  label?: string;
+  icon?: string;
+  /** its plugin's settings tab, opened from its Banner settings tab */
+  settingsTab?: string;
+}
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
 export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[]; missing: string[] } {

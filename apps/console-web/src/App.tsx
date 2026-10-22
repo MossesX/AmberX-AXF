@@ -1,6 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, FRAME_BANNERS_SLOT, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -113,9 +113,19 @@ function Shell() {
   const banners = useMemo(() => plugins.contributed.banners.filter((b) => (isBannerStrip
     ? !consoleOwn.has(b.id)
     : consoleOwn.has(b.id) || inConsole)), [plugins.contributed.banners, consoleOwn, inConsole]);
-  const slots = useMemo(() => banners.length || isBannerStrip
-    ? { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...banners.map((b) => ({ id: b.id, order: b.order, render: () => b.render() }))] }
-    : plugins.contributed.slots, [banners, plugins.contributed.slots]);
+  // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
+  // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
+  const rt = useRuntime();
+  const bannerPrefs = useBannerPrefsTick();
+  const slots = useMemo(() => {
+    // Always called: it registers Banner settings and the full banner list, which the dialog needs even when this page
+    // shows none (the console tab inside Patches opens it for banners Patches shows through the strip).
+    const all = plugins.contributed.banners.filter((b) => !consoleOwn.has(b.id));
+    const framed = bannerSlotDefs(rt, all, banners.filter((b) => !consoleOwn.has(b.id)));
+    if (!banners.length && !isBannerStrip) return plugins.contributed.slots;
+    const own = banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
+    return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
+  }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
   if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
   return (
     <div {...drop} style={{ display: 'contents' }}>

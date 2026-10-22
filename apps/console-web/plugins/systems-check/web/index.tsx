@@ -39,9 +39,9 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('keys-needed.open', () => rt.openDialog('keys-needed', {}), { label: 'Add the keys the console needs' });
   },
   banners: [
-    { id: 'keys-needed', order: 8, render: () => <KeysBanner /> },
-    { id: 'systems-check', order: 10, render: () => <SystemBanner /> },
-    { id: 'whats-new', order: 20, render: () => <WhatsNewBanner /> },
+    { id: 'keys-needed', label: 'Keys needed', icon: 'key', settingsTab: 'systems-check', order: 8, render: () => <KeysBanner /> },
+    { id: 'systems-check', label: 'Systems check', icon: 'shield', settingsTab: 'systems-check', order: 10, render: () => <SystemBanner /> },
+    { id: 'whats-new', label: 'What’s new', icon: 'sparkles', settingsTab: 'systems-check', order: 20, render: () => <WhatsNewBanner /> },
   ],
   dialogs: {
     'keys-needed': { title: 'Keys needed', icon: 'key', render: () => <KeysDialog /> },

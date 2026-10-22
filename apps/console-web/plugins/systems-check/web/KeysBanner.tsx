@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { FixPanel, StatusDot, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
 
 /*
@@ -12,7 +12,7 @@ export function KeysBanner() {
   const s = useSys();
   const rt = useRuntime();
   // Launches expanded; "_" folds it to one short line (Brett, Oct 21 2026: error banners minimize, they don't close).
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useBannerLaunchOpen();
   const need = useMemo(() => issues(s.report).filter(isKeyIssue), [s.report]);
   if (s.unauthorized || need.length === 0) return null;
   const names = need.map((c) => c.title).join(', ');

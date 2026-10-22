@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, ago, api, bannerOn, closeAll, closeEntry, kindLabel, linkHref, loadEntry, loadOpen,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
@@ -25,7 +25,7 @@ export function ChangesBanner() {
   const s = useStore();
   const rt = useRuntime();
   // Launches expanded; the "_" under the entries' ✕ column folds it back to its summary (Brett, Oct 21 2026).
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useBannerLaunchOpen();
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
   const running = s.open.filter((e) => e.state === 'running').length;

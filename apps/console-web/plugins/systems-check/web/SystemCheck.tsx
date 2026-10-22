@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
 import './systems-check.css';
@@ -247,7 +247,7 @@ export function SystemBanner() {
   const s = useSys();
   const rt = useRuntime();
   // Launches expanded; "_" folds it to its one-line summary (Brett, Oct 21 2026: error banners minimize, they don't close).
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useBannerLaunchOpen();
   // Issues, plus anything just fixed: it stays (badge "Fixed") for FIXED_LINGER_MS so you see it worked, then leaves.
   const list = useMemo(() => {
     const open = issues(s.report).filter((c) => !isKeyIssue(c));

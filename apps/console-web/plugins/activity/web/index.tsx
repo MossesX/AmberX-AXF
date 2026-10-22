@@ -12,7 +12,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon } from '@console/axf/react';
+import { Button, Chip, Icon, useBannerLaunchOpen } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -202,7 +202,9 @@ function Row({ it, now }: { it: Item; now: number }) {
 function ActivityBanner() {
   const s = useStore();
   const [showDone, setShowDone] = useState(false);
-  useEffect(() => { start(); }, []);
+  const [launchOpen] = useBannerLaunchOpen();
+  // Banner settings → "When it appears: minimized" folds it once at launch.
+  useEffect(() => { start(); if (!launchOpen) set({ open: false }); }, []);
   const items = s.feed?.items ?? [];
   const active = items.filter((i) => ACTIVE.has(i.state));
   const finished = items.filter((i) => !ACTIVE.has(i.state));
@@ -227,7 +229,7 @@ function ActivityBanner() {
   return (
     <div className={`axp-activity${failed ? ' axp-activity--failed' : ''}${active.length ? '' : ' axp-activity--idle'}`} role="status" aria-live="polite">
       <div className="axp-activity__row">
-        <span className={active.length ? 'axp-activity__spin' : ''}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
+        <span className={`fx-banner-icon${active.length ? ' axp-activity__spin' : ''}`}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
         <button type="button" className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
           <span className="axp-activity__top">
             <strong>{summary}</strong>
@@ -314,7 +316,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('activity.open', () => { set({ open: true, pinned: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
     rt.actions.register('activity.check', () => void refresh(), { label: 'Check activity now' });
   },
-  banners: [{ id: 'activity', order: 4, render: () => <ActivityBanner /> }],
+  banners: [{ id: 'activity', label: 'Activity', icon: 'refresh', settingsTab: 'activity', order: 4, render: () => <ActivityBanner /> }],
   settingsTabs: [{ id: 'activity', label: 'Activity', icon: 'refresh', order: 7, parent: 'plugins' }],
   settingsPanels: [
     { id: 'activity.settings', tab: 'activity', title: 'Activity banner', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },

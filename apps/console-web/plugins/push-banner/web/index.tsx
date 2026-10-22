@@ -23,7 +23,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('push-banner.check', () => { void load(true); rt.toast('Checking every branch against main…', 'info', 'Push banner'); }, { label: 'Check branches not on main' });
   },
   // After Codebase changes (4.7), before the approvals banner (5).
-  banners: [{ id: 'push-banner', order: 4.8, render: () => <PushBanner /> }],
+  banners: [{ id: 'push-banner', label: 'Branches not on main', icon: 'branch', settingsTab: 'push-banner', order: 4.8, render: () => <PushBanner /> }],
   settingsTabs: [{ id: 'push-banner', label: 'Push banner', icon: 'branch', parent: 'plugins', order: 45, description: 'Branches not on main, with Open PR and Merge.' }],
   settings: [{
     id: 'push-banner.prefs', label: 'Push banner', icon: 'branch', tab: 'push-banner', order: 10,

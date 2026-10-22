@@ -13,7 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbed, type Embed } from './engines/embed';
+import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -191,6 +191,8 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
+  readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
@@ -207,6 +209,7 @@ export class AxfRuntime {
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
     this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
+    if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -443,6 +446,7 @@ export class AxfRuntime {
       setting: (k) => this.settings.get(k),
       hidden: (t) => this.slotHidden(t as AssetType),
       providers: this.appMenuProviderIds(),
+      taken: (it) => this.takenByHost(it),
     };
   }
 
@@ -953,6 +957,8 @@ export class AxfRuntime {
   /* ---------------- views & overlays ---------------- */
 
   navigate(view: string) {
+    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
     this.set({ view, context: null });
   }
 
@@ -987,7 +993,153 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
+    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
+  }
+
+  /* ---------------- embed@1: what the host takes over ---------------- */
+
+  /** Does the host this app runs in take this function over (`settings`, `notifications`)? */
+  hostTakes(fn: string): boolean { return embedTakesFn(this.embedded, fn); }
+
+  /**
+   * Is this action / view / live list a hook the host took over? Chrome drops such hooks (app menu, toolbar, nav,
+   * context menu, banner widgets), so the app shows none of its own hooks for a function the host does for it.
+   */
+  takenByHost(what: { action?: string; view?: string; provider?: string }): boolean {
+    return !!(embedTakenBy(this.embedded, what.action) || embedTakenView(this.embedded, what.view) || embedTakenProvider(this.embedded, what.provider));
+  }
+
+  /** Send a message to the host (Android: its `AxfEmbedHost` bridge; web: the parent frame). False when there's no host. */
+  postToHost(msg: EmbedMessage): boolean {
+    if (!this.embedded) return false;
+    const g = globalThis as unknown as { AxfEmbedHost?: { post?: (json: string) => void }; parent?: { postMessage?: (m: unknown, o: string) => void }; window?: unknown };
+    try {
+      if (typeof g.AxfEmbedHost?.post === 'function') { g.AxfEmbedHost.post(JSON.stringify(msg)); return true; }
+      // The message only asks the host to do something it would do anyway; its content is checked on arrival.
+      if (g.parent && g.parent !== (globalThis as unknown) && typeof g.parent.postMessage === 'function') { g.parent.postMessage(msg, '*'); return true; }
+    } catch { /* no host to reach */ }
+    return false;
+  }
+
+  /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
+  private askHost(spec: string): boolean {
+    const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
+    if (fn === 'settings') {
+      const tab = settingsTabOf(spec);
+      if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
+    }
+    this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
+    return false;
+  }
+
+  /** Messages from the host: a settings page opens the tab the host asks for. Web only; Android hosts evaluate the same. */
+  private listenToHost(): void {
+    const handle = (raw: unknown) => {
+      const m = parseEmbedMessage(raw);
+      if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'run') this.runSharedMenuItem(m.id);
+    };
+    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
+    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // Android hosts can't post into the page; they call this instead (evaluateJavascript).
+    (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
+    const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
+    if (typeof g.addEventListener !== 'function') return;
+    g.addEventListener('message', (e) => {
+      // Only the frame this app runs in may ask; anything else (other frames, the page itself) is ignored.
+      if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
+      handle(e.data);
+    });
+  }
+
+  /**
+   * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
+   * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
+   */
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+    const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
+    if (!fresh.length) return;
+    this.skippedLibraries.push(...fresh);
+    for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
+    this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
+  }
+
+  /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */
+
+  /** id → action of the menu last sent to the host: `run` messages can only run what this app offered. */
+  private sharedMenuRun = new Map<string, string>();
+  private sharedMenuText = '';
+  private sharedMenuTimer: ReturnType<typeof setTimeout> | null = null;
+  /** live lists as last loaded (refreshed on a host's request and every minute, not on every state change) */
+  private sharedMenuLists = new Map<string, CompiledMenuItem[]>();
+
+  /** Send the menu soon after start, after state changes (debounced) and every minute (live lists). */
+  private startMenuShare(): void {
+    // never keeps a non-browser host (tests, Node) alive
+    const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
+    const later = (ms: number, refresh = false) => {
+      if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      unref(this.sharedMenuTimer);
+    };
+    unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
+    unref(setInterval(() => later(0, true), 60_000));
+  }
+
+  /**
+   * Send this app's application menu to the host that took it over (`menu` message): data only (ids, labels, icons,
+   * check marks, counts, locks); the actions stay here. Unchanged menus aren't sent again unless `force`.
+   */
+  async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const run = new Map<string, string>();
+    const MAX_DEPTH = 4;
+    const list = async (provider: string): Promise<CompiledMenuItem[]> => {
+      if (!opts.refresh && this.sharedMenuLists.has(provider)) return this.sharedMenuLists.get(provider)!;
+      let items: CompiledMenuItem[] = [];
+      try { items = await this.loadAppMenuProvider(provider); } catch { items = this.sharedMenuLists.get(provider) ?? []; }
+      this.sharedMenuLists.set(provider, items);
+      return items;
+    };
+    const conv = async (it: CompiledMenuItem, id: string, depth: number): Promise<EmbedMenuItem | null> => {
+      if (it.separator) return { id, label: '', separator: true };
+      const kids = depth < MAX_DEPTH ? (it.provider ? await list(it.provider) : it.items ?? []) : [];
+      const out: EmbedMenuItem = { id, label: it.label };
+      if (it.icon) out.icon = it.icon;
+      if (it.locked) out.locked = true;
+      if (typeof it.check === 'boolean') out.check = it.check;
+      if (it.count) out.count = it.count;
+      if (kids.length) {
+        const sub = (await Promise.all(kids.map((k, i) => conv(k, `${id}.${i}`, depth + 1)))).filter((k): k is EmbedMenuItem => !!k);
+        if (sub.some((k) => !k.separator)) out.items = sub;
+      }
+      if (!out.items) {
+        if (!it.action) return null;
+        if (!it.locked) run.set(id, it.action);
+      }
+      return out;
+    };
+    const menus: EmbedMenu[] = [];
+    for (const [mi, m] of this.appMenu().menus.entries()) {
+      const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
+      if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    this.sharedMenuRun = run;
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The host's menu picked one of this app's items (`run` message): run it here, if this app offered it. */
+  runSharedMenuItem(id: string): boolean {
+    const action = this.sharedMenuRun.get(id);
+    if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
+    return this.dispatch(action);
   }
 
   /* ---------------- rendering ---------------- */
@@ -1090,7 +1242,7 @@ export class AxfRuntime {
 /** The embed marker on the current page (browser only; nothing elsewhere). */
 function detectPageEmbed(): Embed | null {
   const g = globalThis as { location?: { search?: string }; navigator?: { userAgent?: string } };
-  try { return detectEmbed(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
+  try { return detectEmbedFull(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
 }
 
 export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
