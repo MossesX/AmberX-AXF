@@ -16,6 +16,7 @@ exists only where /projects is mounted (the console container). Files are group-
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -33,6 +34,27 @@ MAX_TOTAL = 8_000_000
 ID_RE = re.compile(r"^\d{8}-\d{6}-[a-z0-9]{4}$")
 PATH_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.\-]{0,120}(/[A-Za-z0-9_][A-Za-z0-9_.\-]{0,120}){0,6}$")
 FILE_MODE, DIR_MODE = 0o664, 0o2775
+KEY_HOURS = 24
+MAX_INSTALLER_STEPS = 400
+
+# The steps left once the prompt is assembled (the new account's side). Their ids are what the new account's Claude
+# reports to axHub as it goes; the hub ticks them off live on the installation page.
+HANDOFF_STEPS: list[tuple[str, str]] = [
+    ("h01", "Pick the session on the new account and send the prompt"),
+    ("h02", "Open the repo itself (same repo: no new repository, no fork)"),
+    ("h03", "Read _claude/handoff/HANDOFF.md"),
+    ("h04", "Read the rules and instructions (CLAUDE.md, _claude/shared/rules, _claude/rules)"),
+    ("h05", "Read memory and decisions (_claude/memory)"),
+    ("h06", "Hand Brett the claude.ai Project's name, description, instructions and files"),
+    ("h07", "Brett makes the claude.ai Project and uploads the context files"),
+    ("h08", "Recreate the user-level files (USER-SCOPE.md)"),
+    ("h09", "Recreate the claude.ai-side items (CLAUDE-AI.md)"),
+    ("h10", "Ask Brett for each secret (SECRETS.md names only)"),
+    ("h11", "Connect GitHub and axHub on the new account"),
+    ("h12", "Go through SETUP.md"),
+    ("h13", "Tell Brett what is done and what still needs him"),
+]
+STEP_LABEL_MAX = 160
 
 
 def results_dir() -> Path | None:
@@ -46,6 +68,35 @@ def results_dir() -> Path | None:
 def hub_origin() -> str:
     hub = (os.environ.get("AXF_WALL_HUB") or "https://axhub.amberxai.com").strip().rstrip("/")
     return hub if re.match(r"^https://[a-z0-9.-]+(:\d+)?$", hub, re.I) else "https://axhub.amberxai.com"
+
+
+def new_key() -> tuple[str, str]:
+    """A one-run reporting key for the new account's Claude: (the key for the prompt, its SHA-256 for the hub)."""
+    key = secrets.token_urlsafe(32)
+    return key, hashlib.sha256(key.encode()).hexdigest()
+
+
+def steps_for(installer: list[dict[str, str]] | None) -> list[dict[str, Any]]:
+    """Every step on the hub's installation page: Assemble prompt, the installer's own (all done), then the handoff's."""
+    out: list[dict[str, Any]] = [{"id": "a000", "group": "Assemble prompt", "label": "Clicked Assemble prompt", "done": True}]
+    for i, s in enumerate((installer or [])[:MAX_INSTALLER_STEPS], start=1):
+        out.append({"id": f"a{i:03d}", "group": str(s.get("group", "Assembly"))[:80], "label": str(s.get("label", ""))[:STEP_LABEL_MAX], "done": True})
+    out += [{"id": sid, "group": "Hand off to the new account", "label": label, "done": False} for sid, label in HANDOFF_STEPS]
+    return out
+
+
+def reporting_block(run_id: str, key: str) -> str:
+    """Appended to the prompt (never to the kit on GitHub): how the new account's Claude ticks steps off on axHub."""
+    hub = hub_origin()
+    steps = "\n".join(f"   {sid}  {label}" for sid, label in HANDOFF_STEPS)
+    return "\n".join([
+        "",
+        f"Live progress: Brett watches this handoff at {hub}/handoff/{run_id}. Report each step below as you start and finish it, both ways when you can:",
+        f"- curl -s -X POST {hub}/handoff/{run_id}/progress -H 'Authorization: Bearer {key}' -H 'Content-Type: application/json' -d '{{\"step\":\"h03\",\"state\":\"done\",\"note\":\"short note\"}}'",
+        f"- or with axHub's MCP connector: axhub.memory_write, project \"shared\", area \"data\", path \"handoff/runs/{run_id}/progress/<step>.json\", content {{\"step\":\"h03\",\"state\":\"done\",\"note\":\"short note\"}}",
+        f"States: running, done, failed, skipped. The key works only for this handoff and stops after {KEY_HOURS} hours; never write it into the repo. Steps:",
+        steps,
+    ])
 
 
 def run_url(run_id: str) -> str:
@@ -137,10 +188,11 @@ def summary(run: dict[str, Any]) -> dict[str, Any]:
 
 
 def publish(folder: Path, *, at_ms: int, project: str, repo: str, commit: str, result: dict[str, Any], kit: Path,
-            run: dict[str, Any] | None = None) -> dict[str, Any]:
+            run: dict[str, Any] | None = None, run_id: str | None = None, key_hash: str = "") -> dict[str, Any]:
     """Write one assembly's results, add it to the index (newest first) and drop runs past the last KEEP."""
-    run_id = new_id(at_ms)
+    run_id = run_id if run_id and ID_RE.match(run_id) else new_id(at_ms)
     _mkdir(folder)
+    _mkdir(folder / "runs" / run_id / "progress")  # the hub and the new account's Claude write step files here
     base = folder / "runs" / run_id
     files = kit_files(kit)
     for rel, data in files:
@@ -154,6 +206,8 @@ def publish(folder: Path, *, at_ms: int, project: str, repo: str, commit: str, r
         "instructions": instructions(project, repo),
         "files": [{"path": rel, "bytes": len(data)} for rel, data in files],
         "run": run, "failed": bool(run and run.get("failed")),
+        "steps": steps_for((run or {}).get("steps")),
+        "report": {"keyHash": key_hash, "expiresAt": at_ms + KEY_HOURS * 3600_000} if key_hash else None,
     }
     _write_json(base / "run.json", record)
     _update_index(folder, record)
@@ -168,8 +222,9 @@ def attach_run(folder: Path, run_id: str, run: dict[str, Any]) -> bool:
     rec = _read_json(p, None)
     if not isinstance(rec, dict):
         return False
-    rec["run"] = run
+    rec["run"] = {k: v for k, v in run.items() if k != "steps"}
     rec["failed"] = bool(run.get("failed"))
+    rec["steps"] = steps_for(run.get("steps"))
     _write_json(p, rec)
     _update_index(folder, rec)
     return True

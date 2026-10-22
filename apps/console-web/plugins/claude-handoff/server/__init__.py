@@ -235,14 +235,21 @@ def post_assemble(req: AssembleReq) -> dict[str, Any]:
             note = "The kit on GitHub is out of date and this console has no GITHUB_TOKEN to publish it: the prompt points at the last published kit."
     prompt = (published or {}).get("prompt") or _node("build", "--out", str(_data() / "preview" / "handoff"))["prompt"]
     _set_state(lastAssembledAt=_now_ms())
+    run_id, key_hash = None, ""
+    if hub_results.results_dir() is not None:
+        # a one-run key for the new account's Claude to tick steps off on axHub; it goes in the prompt (never the kit)
+        run_id = hub_results.new_id(_now_ms())
+        key, key_hash = hub_results.new_key()
+        prompt = prompt + "\n" + hub_results.reporting_block(run_id, key)
     out = {"prompt": prompt, "current": bool(status.get("current")), "published": published, "note": note, "kit": status.get("kit")}
     kit = _root() / "_claude" / "handoff" if (published or status.get("current")) else _data() / "preview" / "handoff"
-    out["results"] = _publish_results(out, kit, str(status.get("head") or ""))
+    out["results"] = _publish_results(out, kit, str(status.get("head") or ""), run_id=run_id, key_hash=key_hash)
     _save_last(out)
     return out
 
 
-def _publish_results(result: dict[str, Any], kit: Path, commit: str, run: dict[str, Any] | None = None) -> dict[str, Any]:
+def _publish_results(result: dict[str, Any], kit: Path, commit: str, run: dict[str, Any] | None = None,
+                     run_id: str | None = None, key_hash: str = "") -> dict[str, Any]:
     """Put this assembly on axHub's results browser (the hub's shared data folder); never fails the assembly."""
     folder = hub_results.results_dir()
     if folder is None:
@@ -252,7 +259,7 @@ def _publish_results(result: dict[str, Any], kit: Path, commit: str, run: dict[s
     try:
         return hub_results.publish(folder, at_ms=_now_ms(), project=str(man.get("displayName") or man.get("name") or "the project"),
                                    repo=f"{repo.get('owner', 'MossesX')}/{repo.get('name', 'AmberX-AXF')}", commit=commit,
-                                   result=result, kit=kit, run=run)
+                                   result=result, kit=kit, run=run, run_id=run_id, key_hash=key_hash)
     except OSError as e:
         return {"error": f"Couldn't write the results for axHub: {e.strerror or e}"}
 
@@ -279,7 +286,7 @@ def run_error(r: Any) -> str:
     """The installer's finished-run summary, as the browser sends it (numbers, a short log, a failure text)."""
     if not isinstance(r, dict):
         return "run must be an object"
-    known = {"elapsed", "read", "written", "filesDone", "failed", "log"}
+    known = {"elapsed", "read", "written", "filesDone", "failed", "log", "steps"}
     extra = set(r) - known
     if extra:
         return f"unknown field(s): {', '.join(sorted(extra))}"
@@ -292,6 +299,11 @@ def run_error(r: Any) -> str:
     log = r.get("log", [])
     if not isinstance(log, list) or len(log) > LOG_LINES or any(not isinstance(x, str) or len(x) > LOG_LINE_MAX for x in log):
         return f"log must be at most {LOG_LINES} lines of at most {LOG_LINE_MAX} characters"
+    steps = r.get("steps", [])
+    if not isinstance(steps, list) or len(steps) > hub_results.MAX_INSTALLER_STEPS or any(
+            not isinstance(x, dict) or set(x) - {"group", "label"} or not isinstance(x.get("label", ""), str) or not isinstance(x.get("group", ""), str)
+            or len(x.get("label", "")) > hub_results.STEP_LABEL_MAX or len(x.get("group", "")) > 80 for x in steps):
+        return f"steps must be at most {hub_results.MAX_INSTALLER_STEPS} items of {{group, label}} text"
     return ""
 
 
@@ -323,11 +335,12 @@ async def post_last_run(request: Request) -> dict[str, Any]:
         last["run"] = {"elapsed": r.get("elapsed", 0), "read": r.get("read", 0), "written": r.get("written", 0),
                        "filesDone": r.get("filesDone", 0), "failed": r.get("failed", ""), "log": r.get("log", [])}
         _write(_last_path(), last)
+        steps = r.get("steps", [])
         rid = ((last.get("result") or {}).get("results") or {}).get("id")
         folder = hub_results.results_dir()
         if rid and folder is not None:
             try:
-                hub_results.attach_run(folder, str(rid), last["run"])
+                hub_results.attach_run(folder, str(rid), {**last["run"], "steps": steps})
             except OSError:
                 pass  # the results browser keeps the run without its log
     return {"ok": True}
