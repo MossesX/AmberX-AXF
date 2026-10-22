@@ -152,18 +152,24 @@ export interface EmbedTakeSpec {
   providers: string[];
   /** can the host show this function as a page on its own (`axf-embed-page=<id>`)? */
   page: boolean;
+  /** chrome the app hides while the host takes this function (the app menu: the host's menu carries it instead) */
+  hides: string[];
 }
 
 const TAKES = new Map<string, EmbedTakeSpec>([
-  ['settings', { actions: ['app.settings', 'settings.open', 'nav:settings'], prefixes: ['settings.open:'], views: ['settings'], providers: ['settings'], page: true }],
+  ['settings', { actions: ['app.settings', 'settings.open', 'nav:settings'], prefixes: ['settings.open:'], views: ['settings'], providers: ['settings'], page: true, hides: [] }],
   // The host shows the app's notifications (Patches on Android): the app hands them over instead of posting its own.
-  ['notifications', { actions: [], prefixes: [], views: [], providers: [], page: false }],
+  ['notifications', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [] }],
+  // The host's application menu carries the app's (Brett, Oct 22 2026: "all app menus are inherited by Patches' menu and
+  // the apps in tabs hide theirs"): the app hides its own menu bar and sends its menu to the host (`menu` message); the
+  // host runs a picked item back in the app (`run` message).
+  ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'] }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
 export function registerEmbedTake(id: string, spec: Partial<EmbedTakeSpec>): void {
   if (!HOST_ID.test(id) || id === HIDE_NONE) throw new Error(`embed: bad function id "${id}"`);
-  TAKES.set(id, { actions: [...(spec.actions ?? [])], prefixes: [...(spec.prefixes ?? [])], views: [...(spec.views ?? [])], providers: [...(spec.providers ?? [])], page: spec.page === true });
+  TAKES.set(id, { actions: [...(spec.actions ?? [])], prefixes: [...(spec.prefixes ?? [])], views: [...(spec.views ?? [])], providers: [...(spec.providers ?? [])], page: spec.page === true, hides: [...(spec.hides ?? [])] });
 }
 
 /** Functions a host can take over, in registry order. */
@@ -190,7 +196,10 @@ export function embedPage(raw: unknown): string | null {
 /** Put takes + page on an embed: only when set (an embed without them keeps its old shape), page's own function never taken. */
 function withExtras(e: Embed, takes: string[], page: string | null): Embed {
   const t = page ? takes.filter((x) => x !== page) : takes;
-  const out: Embed = { host: e.host, hidden: page ? [...hideableTypes()] : e.hidden };
+  // a taken function may hide chrome too (app-menu: the host's menu carries the app's); spec order, like embedHidden
+  const extra = new Set(t.flatMap((fn) => TAKES.get(fn)?.hides ?? []));
+  const hidden = page ? [...hideableTypes()] : extra.size ? hideableTypes().filter((x) => e.hidden.includes(x) || extra.has(x)) : e.hidden;
+  const out: Embed = { host: e.host, hidden };
   if (t.length) out.takes = t;
   if (page) out.page = page;
   return out;
@@ -296,9 +305,74 @@ export type EmbedMessage =
   /** guest → host: the app is up (and what it takes no longer matters to the host) */
   | { $axf: typeof EMBED_MESSAGE; type: 'ready'; app?: string }
   /** host → settings page: open this settings tab */
-  | { $axf: typeof EMBED_MESSAGE; type: 'open-tab'; tab: string };
+  | { $axf: typeof EMBED_MESSAGE; type: 'open-tab'; tab: string }
+  /** guest → host (the host takes `app-menu`): the app's application menu, as the host should show it */
+  | { $axf: typeof EMBED_MESSAGE; type: 'menu'; menus: EmbedMenu[] }
+  /** host → guest: send your menu now (the host just loaded, or the user is opening its menu) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'menu-request' }
+  /** host → guest: the user picked this item of your menu in the host's menu; run it */
+  | { $axf: typeof EMBED_MESSAGE; type: 'run'; id: string };
 
-export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000 } as const;
+/**
+ * One item of a menu an app sends its host. Data only: no action ids cross over. The app keeps id → action and runs
+ * the item itself when the host sends `run` back, so the host can never make the app run anything it didn't offer.
+ */
+export interface EmbedMenuItem {
+  id: string;
+  label: string;
+  icon?: string;
+  /** a divider line (no label needed) */
+  separator?: boolean;
+  /** greyed out (the app's access policy locks it) */
+  locked?: boolean;
+  /** check mark state (true / false); absent = not a checkable item */
+  check?: boolean;
+  /** a count badge */
+  count?: number;
+  /** a submenu */
+  items?: EmbedMenuItem[];
+}
+export interface EmbedMenu { id: string; label: string; items: EmbedMenuItem[] }
+
+export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40 } as const;
+const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
+const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
+
+/** A menu an app sent, checked and cut to size (limits above; bad entries dropped, never the whole menu). */
+function parseMenus(raw: unknown): EmbedMenu[] | null {
+  if (!Array.isArray(raw)) return null;
+  const L = EMBED_MESSAGE_LIMITS;
+  let budget = L.menuItems;
+  const item = (v: unknown, depth: number): EmbedMenuItem | null => {
+    if (budget <= 0 || !v || typeof v !== 'object' || Array.isArray(v)) return null;
+    const o = v as Record<string, unknown>;
+    if (typeof o.id !== 'string' || !MENU_ITEM_ID.test(o.id)) return null;
+    if (o.separator === true) { budget--; return { id: o.id, label: '', separator: true }; }
+    const label = clip(o.label, L.label);
+    if (!label) return null;
+    budget--;
+    const out: EmbedMenuItem = { id: o.id, label };
+    if (typeof o.icon === 'string' && ICON_ID.test(o.icon)) out.icon = o.icon;
+    if (o.locked === true) out.locked = true;
+    if (typeof o.check === 'boolean') out.check = o.check;
+    if (typeof o.count === 'number' && Number.isFinite(o.count) && o.count > 0) out.count = Math.min(Math.floor(o.count), 99999);
+    if (Array.isArray(o.items) && depth < L.menuDepth) {
+      const kids = o.items.map((k) => item(k, depth + 1)).filter((k): k is EmbedMenuItem => !!k);
+      if (kids.length) out.items = kids;
+    }
+    return out;
+  };
+  const menus: EmbedMenu[] = [];
+  for (const m of raw.slice(0, L.menus)) {
+    if (!m || typeof m !== 'object' || Array.isArray(m)) continue;
+    const o = m as Record<string, unknown>;
+    const label = clip(o.label, L.label);
+    if (typeof o.id !== 'string' || !MENU_ITEM_ID.test(o.id) || !label || !Array.isArray(o.items)) continue;
+    const items = o.items.map((k) => item(k, 1)).filter((k): k is EmbedMenuItem => !!k);
+    if (items.length) menus.push({ id: o.id, label, items });
+  }
+  return menus;
+}
 const TAB_ID = /^[a-z0-9][a-z0-9._:-]{0,63}$/i;
 const LEVELS = ['info', 'success', 'warning', 'error'] as const;
 
@@ -320,8 +394,10 @@ export function embedLinkOk(link: unknown): link is string {
 export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
   let m: unknown = raw;
   if (typeof raw === 'string') {
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw) return null;
+    // a menu may be long; every other message stays small
+    if (raw.length > EMBED_MESSAGE_LIMITS.menuRaw) return null;
     try { m = JSON.parse(raw); } catch { return null; }
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && (m as { type?: unknown } | null)?.type !== 'menu') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -347,6 +423,14 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     }
     case 'open-tab': {
       return typeof o.tab === 'string' && TAB_ID.test(o.tab) ? { $axf: EMBED_MESSAGE, type: 'open-tab', tab: o.tab } : null;
+    }
+    case 'menu': {
+      const menus = parseMenus(o.menus);
+      return menus ? { $axf: EMBED_MESSAGE, type: 'menu', menus } : null;
+    }
+    case 'menu-request': return { $axf: EMBED_MESSAGE, type: 'menu-request' };
+    case 'run': {
+      return typeof o.id === 'string' && MENU_ITEM_ID.test(o.id) ? { $axf: EMBED_MESSAGE, type: 'run', id: o.id } : null;
     }
     default: return null;
   }

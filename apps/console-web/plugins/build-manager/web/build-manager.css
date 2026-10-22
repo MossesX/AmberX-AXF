@@ -132,3 +132,18 @@
 .axp-build-manager__cleanup { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-build-manager__cleanup p { margin: 0 }
 .axp-build-manager__cleanup-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); max-height: calc(var(--fx-space) * 24); overflow: auto }
+/* Filter toolbar (Oct 22 2026, Brett: style #23 with count badges; Model / Added by / Status / Sort moved into the Filter & sort dialog) */
+.axp-build-manager__tools { display: flex; align-items: stretch; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow-x: auto; scrollbar-width: thin }
+.axp-build-manager__tools-sep { flex: none; width: var(--fx-border-w); margin: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.15); background: var(--fx-border) }
+.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space) * 5.5); display: flex; flex-direction: column; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.4); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-muted); font-family: inherit; font-size: calc(var(--fx-font-size) * 11 / 14); cursor: pointer; white-space: nowrap }
+.axp-build-manager__tool:hover { background: var(--fx-surface2) }
+.axp-build-manager__tool:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-build-manager__tool.is-on { color: var(--fx-accent); background: var(--fx-accent-soft); font-weight: 600 }
+.axp-build-manager__tool-icon { position: relative; display: inline-flex }
+.axp-build-manager__tool-n { position: absolute; top: calc(var(--fx-space) * -0.7); left: calc(100% - var(--fx-space) * 0.5); min-width: calc(var(--fx-space) * 1.7); padding: 0 calc(var(--fx-space) * 0.35); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-surface3); color: var(--fx-text); font-size: calc(var(--fx-font-size) * 10 / 14); font-weight: 700; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums }
+.axp-build-manager__tool.is-on .axp-build-manager__tool-n { background: var(--fx-accent); color: var(--fx-surface) }
+.axp-build-manager__dialog { width: min(calc(var(--fx-space) * 48), 100%) }
+.axp-build-manager__dialog-body { display: grid; gap: calc(var(--fx-space) * 0.9) }
+.axp-build-manager__dialog-body .axp-build-manager__field select { width: 100%; min-width: 0 }
+.axp-build-manager__dialog-foot { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-top: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__dialog-foot > span { flex: 1 }

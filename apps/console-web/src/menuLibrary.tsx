@@ -116,6 +116,8 @@ function ChromeRescue() {
   const rt = useRuntime();
   useAxfState();
   if (!rt.slotHidden('app-menu') || !rt.slotHidden('nav-menu')) return null;
+  // Inside a host that carries this menu in its own (embed@1 take `app-menu`, e.g. Patches) nothing is lost.
+  if (rt.hostTakes('app-menu')) return null;
   return (
     <Note tone="info" icon="menu">
       <span>The menu bar and the side navigation are both hidden. Press <strong>Ctrl K</strong> (⌘K) to search everything, or </span>
