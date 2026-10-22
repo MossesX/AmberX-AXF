@@ -231,3 +231,7 @@ html.axf-strip-page, html.axf-strip-page body { height: auto; min-height: 0; ove
 html.axf-strip-page #root { height: auto; min-height: 0; display: block; }
 .axf-banner-strip { display: block; }
 .axf-banner-strip .fx-frame-banners { max-height: none; overflow: visible; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.5) 0; }
+/* Build queue: expected build time + price per step (time left once steps are ticked), totals in Progress */
+.bm-cost { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--fx-text) }
+.bm-cost.is-none { color: var(--fx-muted); font-style: italic }
+.bm-cost__price { color: var(--fx-muted); font-variant-numeric: tabular-nums }

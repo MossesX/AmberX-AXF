@@ -225,6 +225,7 @@ check(c.post("/p/close-all", json={}).json()["closed"] == 2, "close-all closes e
 check(c.get("/p/entries?open=1").json()["total"] == 0, "the banner list is empty")
 check(c.get(f"/p/entries/{a['id']}").json()["result"]["state"] == "done", "closing never touches the record itself")
 
+
 print("pagination + filters")
 for i in range(7):
     c.post("/p/entries", json={"id": f"chg-202610{10 + i:02d}-{i:010x}", "createdAt": f"2026-10-{10 + i:02d}T08:00:00.000Z", "title": f"Item {i}",
@@ -265,6 +266,19 @@ check(svc is not None, "provides axf.changes@1")
 e4 = svc.open({"title": "From another plugin", "kind": "other"}, "plugin:test")
 check(svc.update(e4["id"], {"step": {"text": "go", "state": "done"}})["steps"][0]["state"] == "done", "update through the service")
 check(svc.close(e4["id"], "plugin:test")["closed"]["by"] == "plugin:test", "close through the service")
+
+print("trash can on a stuck entry")
+st = c.post("/p/entries", json={"title": "Stuck build", "kind": "build", "steps": [{"text": "one", "state": "done"}, {"text": "two", "state": "running"}, {"text": "three", "state": "queued"}]}).json()
+r = c.post(f"/p/entries/{st['id']}/abandon", json={})
+got = c.get(f"/p/entries/{st['id']}").json()
+check(r.status_code == 200 and got["closed"] and got["result"]["state"] == "failed" and "Stalled" in got["result"]["summary"], "abandon: finished as failed (stalled) and closed everywhere")
+check([x["state"] for x in got["steps"]] == ["done", "skipped", "skipped"], "abandon: unfinished steps are skipped, done ones kept")
+check(got.get("status") == "failed", "abandon: build status failed (the Build manager's Live list drops it)")
+r = c.post(f"/p/entries/{a['id']}/abandon", json={})
+check(c.get(f"/p/entries/{a['id']}").json()["result"]["state"] == "done", "abandon never overwrites a result it already has")
+check(c.post("/p/entries/chg-20991231-0000000000/abandon", json={}).status_code == 404, "abandon: unknown entry is 404")
+e5 = svc.open({"title": "Stuck elsewhere", "kind": "build"}, "plugin:test")
+check(svc.abandon(e5["id"], "plugin:test")["result"]["state"] == "failed", "abandon through the service (the Build manager's trash can)")
 
 print("console app (child process)")
 r = subprocess.run([sys.executable, str(Path(__file__).resolve()), "--console"], capture_output=True, text=True, timeout=180)

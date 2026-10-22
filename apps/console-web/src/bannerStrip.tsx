@@ -131,7 +131,19 @@ export function BannerStrip() {
     return () => ro?.disconnect();
   }, [waiting]);
   return (
-    <div ref={box} className="axf-banner-strip" data-axf-embed={rt.embedded?.host}>
+    <div
+      ref={box}
+      className="axf-banner-strip"
+      data-axf-embed={rt.embedded?.host}
+      // The strip has no context menu of its own: right-click / long-press on a banner opens its Banner settings in the
+      // Console tab (dispatch is relayed there, see patchStrip).
+      onContextMenu={(e) => {
+        const id = (e.target as HTMLElement).closest<HTMLElement>('[data-fx-banner-id]')?.dataset.fxBannerId;
+        if (!id) return;
+        e.preventDefault();
+        rt.dispatch(`banners.settings:${id}`);
+      }}
+    >
       {!waiting && <FrameBanners />}
     </div>
   );

@@ -164,6 +164,9 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // the apps in tabs hide theirs"): the app hides its own menu bar and sends its menu to the host (`menu` message); the
   // host runs a picked item back in the app (`run` message).
   ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'] }],
+  // The host shows every banner's settings in one place (Brett, Oct 22 2026: "Patches' settings renders the combined
+  // banners interface in a tab"): Banner settings opens in the host, which shows the app's page `banners` on its own.
+  ['banners', { actions: ['banners.settings'], prefixes: ['banners.settings:'], views: ['banners'], providers: [], page: true, hides: [] }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
@@ -434,6 +437,32 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     }
     default: return null;
   }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Plugins a host makes unneeded (Brett, Oct 22 2026: "when apps are running in Patches disable any plugins that … render
+ * something twice … or don't need to be, and log disabled plugins on launch"). A library or plugin says when it isn't
+ * needed inside a host with `embed.skipWhen`, a list of conditions; any one that holds skips it for this page only
+ * (standalone it always loads):
+ *
+ *   embedded         inside any host (the host does this job itself, e.g. app tabs)
+ *   take:<fn>        the host takes that function over (settings, notifications, app-menu, …)
+ *   hidden:<type>    the host hides that chrome (e.g. hidden:banner for widgets that live on the app's banner)
+ *
+ * A page the host shows alone (page mode, e.g. an app's settings page) never skips: its tabs must all be there.
+ * --------------------------------------------------------------------------------------------------------------- */
+
+/** Why a library isn't needed inside this host (the first condition that holds), or null: load it. */
+export function embedSkipReason(e: Embed | null | undefined, skipWhen: readonly string[] | null | undefined): string | null {
+  if (!e || e.page || !Array.isArray(skipWhen)) return null;
+  for (const raw of skipWhen) {
+    if (typeof raw !== 'string') continue;
+    const w = raw.trim().toLowerCase();
+    if (w === 'embedded') return `${e.host} does this itself`;
+    if (w.startsWith('take:') && embedTakesFn(e, w.slice(5))) return `${e.host} takes ${w.slice(5)} over`;
+    if (w.startsWith('hidden:') && e.hidden.includes(w.slice(7))) return `${e.host} hides the ${w.slice(7)}`;
+  }
+  return null;
 }
 
 /** The settings tab an action names (`settings.open:<tab>` → tab), else undefined. */

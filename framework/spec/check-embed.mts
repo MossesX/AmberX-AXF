@@ -166,4 +166,52 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 
+// Plugins a host makes unneeded (embed@1 skipWhen): skipped on that page only, logged once, listed with why.
+{
+  const { embedSkipReason } = await import('../core/engines/embed');
+  const { installLibraries } = await import('../react/library');
+  const host = { host: 'patches', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] };
+  eq(embedSkipReason(null, ['embedded']), null, 'skipWhen: standalone always loads');
+  eq(embedSkipReason(host, ['embedded']), 'patches does this itself', 'skipWhen embedded: any host');
+  eq(embedSkipReason(host, ['take:settings']), 'patches takes settings over', 'skipWhen take:<fn>');
+  eq(embedSkipReason(host, ['take:notifications']), null, 'skipWhen take:<fn> the host does not take');
+  eq(embedSkipReason(host, ['hidden:banner']), 'patches hides the banner', 'skipWhen hidden:<type>');
+  eq(embedSkipReason(host, ['hidden:toolbar']), null, 'skipWhen hidden:<type> the host shows');
+  eq(embedSkipReason({ ...host, page: 'settings' }, ['embedded']), null, 'page mode never skips (its tabs must all be there)');
+  eq(embedSkipReason(host, undefined), null, 'no skipWhen: loads');
+  const lib = (id: string, skipWhen?: string[]) => ({ id, label: id, version: '1.0.0', ...(skipWhen ? { embed: { skipWhen } } : {}), register: () => { registered.push(id); } });
+  const registered: string[] = [];
+  const inHost = make(host);
+  installLibraries(inHost, [lib('keep'), lib('tabs', ['embedded']), lib('bell', ['hidden:banner']), lib('notify', ['take:notifications'])] as never);
+  eq(registered, ['keep', 'notify'], 'inside the host: only what it needs is installed');
+  eq(inHost.skippedLibraries.map((l) => `${l.id}: ${l.reason}`), ['tabs: patches does this itself', 'bell: patches hides the banner'], 'skipped plugins listed with why');
+  eq(inHost.libraries.map((l) => l.id), ['keep', 'notify'], 'skipped plugins are not in the installed list');
+  eq(inHost.terminal.lines.some((l) => /2 plugin\(s\) not loaded \(tabs, bell\)/.test(l.text)), true, 'launch log: one summary line');
+  registered.length = 0;
+  const alone = make(null);
+  installLibraries(alone, [lib('keep'), lib('tabs', ['embedded']), lib('bell', ['hidden:banner'])] as never);
+  eq(registered, ['keep', 'tabs', 'bell'], 'standalone: every plugin loads');
+  eq(alone.skippedLibraries.length, 0, 'standalone: nothing skipped');
+}
+
+/* ---------- runtime: banner settings taken by the host (Patches' Banners tab) ---------- */
+{
+  const posted: unknown[] = [];
+  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
+  let ran = 0;
+  const taken = make({ host: 'patches', hidden: ['banner'], takes: ['settings', 'banners'] });
+  taken.actions.register('banners.settings', () => { ran++; }, { label: 'Banner settings', params: true });
+  eq(taken.hostTakes('banners'), true, 'takes: banners');
+  eq(taken.takenByHost({ view: 'banners' }), true, 'taken: banners view');
+  taken.dispatch('banners.settings:push-banner');
+  taken.dispatch('banners.settings');
+  taken.navigate('banners');
+  eq(ran, 0, 'banner settings never open here');
+  eq(posted, [{ $axf: 'embed@1', type: 'open-settings', tab: 'banners:push-banner' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }], 'banner settings asked the host');
+  eq(embedPage('banners'), 'banners', 'banners is a page a host can show');
+  const page = make({ host: 'patches', hidden: ['banner'], takes: ['settings'], page: 'banners' });
+  eq(page.hostTakes('banners'), false, 'the banners page keeps its own function');
+  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+}
+
 console.log(`check-embed: ${checks} checks passed`);

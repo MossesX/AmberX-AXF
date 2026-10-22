@@ -1,8 +1,8 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import {
-  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, ago, api, bannerOn, closeAll, closeEntry, kindLabel, linkHref, loadEntry, loadOpen,
+  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
 } from './store';
 
@@ -21,11 +21,35 @@ function StepsCount({ s }: { s: Summary['steps'] }) {
 
 /* ---------------- the banner ---------------- */
 
+const clockText = (ms: number) => {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return h ? `${h}h ${String(m).padStart(2, '0')}m` : m ? `${m}m ${String(sec).padStart(2, '0')}s` : `${sec}s`;
+};
+function useTick(on: boolean): number {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { if (!on) return; const t = setInterval(() => setNow(Date.now()), 1_000); return () => clearInterval(t); }, [on]);
+  return now;
+}
+
+/** A running timer on an active or stuck entry: time since it started, and how long it's been quiet when stuck. */
+function Timer({ e, now }: { e: Summary; now: number }) {
+  const st = startedMs(e);
+  const why = stuckWhy(e, now);
+  if (st == null) return null;
+  return (
+    <span className={`axp-codebase-changes__timer${why ? ' is-stuck' : ''}`} title={why === 'no-word' ? 'No word from its session for over 10 minutes' : why === 'long' ? 'Running for 30 minutes or more' : 'Running for'}>
+      <Icon name={why ? 'alert' : 'clock'} size={11} />{clockText(now - st)}{why === 'no-word' ? ` · no word ${clockText(quietMs(e, now))}` : ''}
+    </span>
+  );
+}
+
 export function ChangesBanner() {
   const s = useStore();
   const rt = useRuntime();
   // Launches expanded; the "_" under the entries' ✕ column folds it back to its summary (Brett, Oct 21 2026).
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useBannerLaunchOpen();
+  const now = useTick(s.open.some(isActive));
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
   const running = s.open.filter((e) => e.state === 'running').length;
@@ -57,11 +81,12 @@ export function ChangesBanner() {
                   </span>
                   <span className="axp-codebase-changes-banner__line">
                     <StateBadge state={e.state} />
-                    <span className="axp-codebase-changes__meta">{ago(e.updatedAt)}</span>
+                    {isActive(e) ? <Timer e={e} now={now} /> : <span className="axp-codebase-changes__meta">{ago(e.updatedAt)}</span>}
                     <StepsCount s={e.steps} />
                   </span>
                   {(e.result?.summary || e.steps.running) && <span className="axp-codebase-changes-banner__sub">{e.result?.summary || `Now: ${e.steps.running}`}</span>}
                 </button>
+                {stuckWhy(e, now) && <button type="button" className="fx-iconbtn axp-codebase-changes__trash" aria-label={`Remove stuck "${e.title}"`} title="Stuck: mark it failed (stalled) and take it off the banners on every device; it stays in the log" disabled={s.busy === e.id} onClick={() => void abandonEntry(e.id)}><Icon name="trash" size={16} /></button>}
                 <button type="button" className="fx-iconbtn" aria-label={`Close "${e.title}" everywhere`} title="Close (gone on every device; stays in the log)" disabled={s.busy === e.id} onClick={() => void closeEntry(e.id)}><Icon name="x" size={16} /></button>
               </li>
             ))}

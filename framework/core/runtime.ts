@@ -191,6 +191,8 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
+  readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
@@ -1028,6 +1030,12 @@ export class AxfRuntime {
       const tab = settingsTabOf(spec);
       if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
     }
+    // Banner settings: the host shows every banner's settings in its own Banners tab (`banners` / `banners:<banner id>`).
+    if (fn === 'banners') {
+      const id = spec.startsWith('banners.settings:') ? spec.slice('banners.settings:'.length) : '';
+      const tab = /^[a-z0-9][a-z0-9._-]{0,54}$/i.test(id) ? `banners:${id}` : 'banners';
+      if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'open-settings', tab })) return true;
+    }
     this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
     return false;
   }
@@ -1037,6 +1045,7 @@ export class AxfRuntime {
     const handle = (raw: unknown) => {
       const m = parseEmbedMessage(raw);
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
     };
@@ -1051,6 +1060,18 @@ export class AxfRuntime {
       if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
       handle(e.data);
     });
+  }
+
+  /**
+   * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
+   * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
+   */
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+    const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
+    if (!fresh.length) return;
+    this.skippedLibraries.push(...fresh);
+    for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
+    this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
   }
 
   /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */

@@ -14,8 +14,11 @@ import manifest from '../axf.manifest.json';
 
 export const HOST_ID = 'patches';
 
-/** What Patches takes over from the apps in its tabs (web: settings; Android also takes notifications). */
-export const TAKES = ['settings'] as const;
+/**
+ * What Patches takes over from the apps in its tabs: their settings, and their banners' settings (every banner's look,
+ * behaviour and own settings in Patches' Banners settings tab; Brett, Oct 22 2026). Android also takes notifications.
+ */
+export const TAKES = ['settings', 'banners'] as const;
 /**
  * …and, from the app in a tab (not its settings page or the banner strip), its application menu (Brett, Oct 22 2026:
  * "all app menus are inherited by Patches' menu and the apps in tabs hide theirs").
@@ -47,8 +50,8 @@ export const TABS: PatchTab[] = [
   { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
 ];
 
-/** The settings tabs of Patches' combined settings, in order: Patches itself, then one per app. */
-export const SETTINGS_APPS = [{ id: 'patches', label: 'Patches', icon: 'layers' }, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))] as const;
+/** The settings tabs of Patches' combined settings, in order: Patches itself, Banners (every banner shown above the tabs), then one per app. */
+export const SETTINGS_APPS = [{ id: 'patches', label: 'Patches', icon: 'layers' }, { id: 'banners', label: 'Banners', icon: 'bell' }, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))] as const;
 export type SettingsApp = (typeof SETTINGS_APPS)[number]['id'];
 export const isSettingsApp = (v: unknown): v is SettingsApp => SETTINGS_APPS.some((a) => a.id === v);
 
@@ -79,6 +82,17 @@ export function tabUrl(t: PatchTab, origin: string): string {
 /** An app's settings page for the combined settings (page mode; all its chrome hidden). */
 export function settingsUrl(t: PatchTab, origin: string): string {
   return embedUrlFull(`${origin}${t.settingsPath}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
+}
+
+/** The Banners settings page: the console's every-banner settings on its own (its banners are the ones above the tabs). */
+export function bannersUrl(consoleOrigin: string): string {
+  return embedUrlFull(`${consoleOrigin}/`, HOST_ID, { takes: [...TAKES], page: 'banners' });
+}
+
+/** An app asks for banner settings with `open-settings` tab `banners` or `banners:<banner id>`: the banner id, or null. */
+export function bannerAsk(tab: string | undefined): string | null {
+  if (!tab || (tab !== 'banners' && !tab.startsWith('banners:'))) return null;
+  return tab.slice('banners:'.length);
 }
 
 /** The banner strip: the Dev Console's plugin banners on their own page, above every tab. */

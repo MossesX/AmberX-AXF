@@ -72,6 +72,8 @@ public object EmbedTakes {
         "notifications" to EmbedTakeSpec(),
         // The host's application menu carries the app's (Oct 22 2026): the app hides its menu bar and sends its menu.
         "app-menu" to EmbedTakeSpec(hides = listOf("app-menu")),
+        // The host shows every banner's settings in one place (Brett, Oct 22 2026): Banner settings opens there, page `banners`.
+        "banners" to EmbedTakeSpec(listOf("banners.settings"), listOf("banners.settings:"), listOf("banners"), page = true),
     )
     private val fnId = Regex("^[a-z0-9][a-z0-9-]{0,31}$")
     private val tabId = Regex("^[a-z0-9][a-z0-9._:-]{0,63}$", RegexOption.IGNORE_CASE)

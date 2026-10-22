@@ -102,7 +102,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Build manager', icon: 'play', view: VIEW }] },
   contextMenu: [{ id: 'build-manager.default', target: 'default', order: 91, items: [{ id: 'build-manager', label: 'Build manager', icon: 'play', action: 'build-manager.open' }] }],
   // After the Activity banner (order 4), before the approvals banner (5).
-  banners: [{ id: 'build-manager', order: 4.5, render: () => <BuildBanner /> }],
+  banners: [{ id: 'build-manager', label: 'Builds', icon: 'play', settingsTab: 'build-manager', order: 4.5, render: () => <BuildBanner /> }],
   settingsTabs: [{ id: 'build-manager', label: 'Build manager', icon: 'play', parent: 'plugins', order: 43, description: 'Everything still to build, live tracker and banner.' }],
   settings: [{
     id: 'build-manager.prefs', label: 'Build manager', icon: 'play', tab: 'build-manager', order: 10,

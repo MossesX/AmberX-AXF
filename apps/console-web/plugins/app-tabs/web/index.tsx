@@ -14,7 +14,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
-import { detectEmbed, type AxfRuntime } from '@console/axf/core';
+import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { loadProjects } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -28,7 +28,6 @@ const KEYS = { tabs: 'app-tabs.tabs', custom: 'app-tabs.custom', active: 'app-ta
 const SEEN_KEY = 'app-tabs.seenDefaults';
 const here = () => globalThis.location?.origin ?? '';
 /** Running inside a host app (embed@1): the host controls the tabs. Fixed for the page's life, like `rt.embedded`. */
-const inHost = (() => { try { return detectEmbed(globalThis.location?.search ?? null, globalThis.navigator?.userAgent ?? null) !== null; } catch { return false; } })();
 
 /* ---------------- shared state: the app list and the saved choices ---------------- */
 
@@ -279,5 +278,5 @@ const standalone: AxfWebLibrary = {
   ],
 };
 
-/** Inside a host app (Patches) the host runs the tabs: no bar, no cover, no Apps-menu tab entries. */
-export const plugin: AxfWebLibrary = inHost ? { ...standalone, appMenu: [], appMenuProviders: {}, slots: {} } : standalone;
+/** Inside a host app (Patches) the host runs the tabs, so the plugin isn't loaded there at all (embed@1 skipWhen). */
+export const plugin: AxfWebLibrary = { ...standalone, embed: { skipWhen: ['embedded'] } };

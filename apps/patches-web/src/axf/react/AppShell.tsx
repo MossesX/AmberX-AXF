@@ -5,6 +5,7 @@ import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
+import { bannerSettingsDialog } from './components/BannerSettings';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
@@ -50,7 +51,7 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] 
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
-  const allDialogs: DialogMap = { ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(views, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
@@ -96,19 +97,21 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] 
     {/* data-axf-embed (embed@1): the host app this one runs inside, for styles and plugins that adapt to it; absent standalone. */}
     <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
     {/* Banners sit above everything, so they stay visible whatever app.frame.top / app.frame.cover show (Brett, Oct 21 2026):
-        the banner asset (thin permanent bar; hidden slot or no banner asset = nothing), then the app.frame.banners slot
-        (banners libraries contribute, stacked; scrolls inside itself when tall). */}
+        the banner asset (thin permanent bar; hidden slot or no banner asset = nothing), then the application menu (Brett,
+        Oct 22 2026: "application menus go above the live banners"), then the app.frame.banners slot (banners libraries
+        contribute, stacked; scrolls inside itself when tall). The menu bar leaves the layout grid for this; its grid row is
+        `auto`, so the empty row takes no space. */}
     <Banner />
+    {showMenubar && (
+      <div className="fx-region fx-frame__menubar">
+        <MenuBar />
+      </div>
+    )}
     <FrameBanners />
     {/* Page-level extension points (AxfWebLibrary.slots): app.frame.top sits below the banners (a page-wide bar a plugin adds);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
     <Slot name="app.frame.top" />
     <div className="fx-shell">
-      {showMenubar && (
-        <div className="fx-region" style={{ gridArea: 'menubar' }}>
-          <MenuBar />
-        </div>
-      )}
       {showToolbar && (
         <div className="fx-region fx-region--toolbar" style={{ gridArea: 'toolbar' }} data-pos={layout.toolbarPosition}>
           <Toolbar views={views} />

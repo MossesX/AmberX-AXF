@@ -30,9 +30,10 @@ command -v docker >/dev/null || { say "Docker is required (Coolify installs it).
 command -v git >/dev/null || { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git; }
 
 # ---- 1. repo ----
-if [ -z "${GITHUB_TOKEN:-}" ] && [ -f "$AXF_DIR/.axf-console/env" ]; then
-  GITHUB_TOKEN="$(sed -n 's/^GITHUB_TOKEN=//p' "$AXF_DIR/.axf-console/env" | head -n1)"
-fi
+# The console keeps its GitHub token in its env file or in the credentials it saved from the systems check (secrets.env).
+for f in "$AXF_DIR/.axf-console/env" "$AXF_DIR/.axf-console/secrets.env"; do
+  if [ -z "${GITHUB_TOKEN:-}" ] && [ -f "$f" ]; then GITHUB_TOKEN="$(sed -n 's/^GITHUB_TOKEN=//p' "$f" | head -n1)"; fi
+done
 GIT=(git)
 [ -n "${GITHUB_TOKEN:-}" ] && GIT=(git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)")
 if [ -d "$DIR/.git" ]; then
@@ -82,7 +83,7 @@ fi
 
 # ---- 4. auto-update ----
 # shellcheck disable=SC2016  # the fetch command is written into the update script as is
-AXF_UPDATE_PRELUDE="T=\$(sed -n 's/^GITHUB_TOKEN=//p' \"$AXF_DIR/.axf-console/env\" 2>/dev/null | head -n1)
+AXF_UPDATE_PRELUDE="T=\$(sed -n 's/^GITHUB_TOKEN=//p' \"$AXF_DIR/.axf-console/env\" \"$AXF_DIR/.axf-console/secrets.env\" 2>/dev/null | head -n1)
 H=(); [ -n \"\$T\" ] && H=(-c \"http.https://github.com/.extraheader=AUTHORIZATION: basic \$(printf 'x-access-token:%s' \"\$T\" | base64 -w0)\")" \
 AXF_UPDATE_FETCH='git "${H[@]}"' \
   axf_update_script "/usr/local/bin/$NAME-update" "$DIR" "$BRANCH" "/var/log/$NAME-update.log" \

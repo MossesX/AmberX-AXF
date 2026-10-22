@@ -48,9 +48,29 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
+/* The application menu sits above the live banners (Oct 22 2026); its drop-downs open over them. */
+.fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
 /* banners libraries contribute (slot app.frame.banners): above app tabs and the layout; a tall stack scrolls inside itself */
 .fx-frame-banners { flex: none; max-height: 45vh; overflow: auto; padding: var(--fx-space) var(--fx-space) 0; background: var(--fx-bg); position: relative; z-index: 42; }
 .fx-frame-banners:empty { display: none; }
+/* Banner settings (Oct 22 2026): every banner sits in a frame that applies its look choices, whatever plugin drew it. */
+.fx-banner-frame[hidden] { display: none; }
+.fx-banner-frame[data-tone='accent'] { --fx-info: var(--fx-accent); --fx-success: var(--fx-accent); --fx-warning: var(--fx-accent); --fx-danger: var(--fx-accent); }
+.fx-banner-frame[data-tone='info'] { --fx-accent: var(--fx-info); --fx-success: var(--fx-info); --fx-warning: var(--fx-info); --fx-danger: var(--fx-info); --fx-accent-soft: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='success'] { --fx-accent: var(--fx-success); --fx-info: var(--fx-success); --fx-warning: var(--fx-success); --fx-danger: var(--fx-success); --fx-accent-soft: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='warning'] { --fx-accent: var(--fx-warning); --fx-info: var(--fx-warning); --fx-success: var(--fx-warning); --fx-danger: var(--fx-warning); --fx-accent-soft: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='danger'] { --fx-accent: var(--fx-danger); --fx-info: var(--fx-danger); --fx-success: var(--fx-danger); --fx-warning: var(--fx-danger); --fx-accent-soft: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='neutral'] { --fx-accent: var(--fx-muted); --fx-info: var(--fx-muted); --fx-success: var(--fx-muted); --fx-warning: var(--fx-muted); --fx-danger: var(--fx-muted); --fx-accent-soft: var(--fx-surface2); }
+.fx-banner-frame[data-density='compact'] { zoom: 0.88; }
+.fx-banner-frame[data-density='roomy'] { zoom: 1.12; }
+.fx-banner-frame[data-icon='off'] .fx-banner-icon, .fx-banner-frame[data-icon='off'] [class*='banner__icon'], .fx-banner-frame[data-icon='off'] [class*='-banner-icon'] { display: none; }
+/* Banner settings dialog */
+.fx-banner-settings { display: grid; gap: var(--fx-space); }
+.fx-banner-settings__tabs { display: flex; gap: calc(var(--fx-space) * 0.4); overflow-x: auto; padding-bottom: calc(var(--fx-space) * 0.25); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-banner-settings__tab { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); flex: none; padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.8); border-radius: var(--fx-radius-sm); color: var(--fx-muted); cursor: pointer; white-space: nowrap; }
+.fx-banner-settings__tab:hover { background: var(--fx-surface2); }
+.fx-banner-settings__tab.is-on { color: var(--fx-accent); background: var(--fx-accent-soft); font-weight: 600; }
+.fx-banner-settings__tab:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); }
 /* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
 .fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
 /* Kept views (AppShell `keep`): stay mounted while hidden; a kept view fills the main region. */
