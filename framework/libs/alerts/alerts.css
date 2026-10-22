@@ -3,9 +3,6 @@
 .axf-alerts__filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
 .axf-alerts__filters .fx-input { width: auto }
 .axf-alerts__chips { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axf-alerts__chip { padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-text); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); text-transform: capitalize; cursor: pointer }
-.axf-alerts__chip.is-active { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
-.axf-alerts__chip:focus-visible, .axf-alerts__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
 .axf-alerts__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
 .axf-alerts__item + .axf-alerts__item { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axf-alerts__item.is-unread { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
