@@ -31,6 +31,11 @@ export const SETTINGS_TABS = {
 
 /* ---------------- hooks ---------------- */
 
+/** Makes a greyed-out block unreachable (`inert`); a ref works with every React version's typings. */
+function setInert(el: HTMLElement | null): void {
+  if (el) el.inert = true;
+}
+
 function useSettingsRevision(rt: AxfRuntime): number {
   return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
 }
@@ -392,7 +397,7 @@ export function SettingsView() {
       {shown && (pluginLock && isPluginTab(shown.id)
         // Inside a host that manages plugins (embed@1 take `plugins`, Patches): every plugin page stays visible, greyed out.
         ? <><Note icon="lock">{pluginLock}: install them, switch them on or off and set them up from its own settings.</Note>
-          <div className="fx-locked" aria-disabled="true" {...{ inert: '' }}><TabContent id={shown.id} /></div></>
+          <div className="fx-locked" aria-disabled="true" ref={setInert}><TabContent id={shown.id} /></div></>
         : <TabContent id={shown.id} />)}
     </div>
   );
