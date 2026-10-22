@@ -1,0 +1,43 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.claude-handoff",
+  "name": "Claude handoff",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Moves AmberX AXF to a new Claude account. Builds and keeps current the handoff kit in _claude/handoff/ (entry point, reading order, claude.ai Project instructions and knowledge, every instruction/rule/memory/spec file, copies of each machine's ~/.claude files, the claude.ai-side items, secret names) and assembles the one prompt that, typed into a new session on the new account, clones the repo and sets everything up from those files. Publishes the kit to GitHub; reminds every 6 hours with one banner and one alert (overwritten, never stacked). Lives in the console's Tools section.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:claude-handoff",
+    "banner:claude-handoff",
+    "settings-tab:claude-handoff",
+    "action:claude-handoff.open",
+    "action:claude-handoff.assemble",
+    "action:claude-handoff.publish"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/claude-handoff",
+    "env": [
+      "AXF_HANDOFF_DATA",
+      "AXF_HANDOFF_HOST"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ],
+    "keeps": [
+      "_claude/handoff/ in the repo: the published kit a new Claude account reads; take it out by hand (git rm) if it is no longer wanted"
+    ]
+  }
+}

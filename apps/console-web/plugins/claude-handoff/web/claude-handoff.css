@@ -1,0 +1,19 @@
+/* Claude handoff: page, banner. Layout only (controls are framework components); theme tokens only. */
+.axp-claude-handoff__lead { margin: 0; color: var(--fx-muted) }
+.axp-claude-handoff__row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__meta { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-claude-handoff__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35) }
+.axp-claude-handoff__list code { overflow-wrap: anywhere }
+.axp-claude-handoff__machine { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__item { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
+.axp-claude-handoff__item > summary { cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__item[open] > summary { margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 16), 1fr)); gap: calc(var(--fx-space) * 0.5); margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__doc { max-height: min(70vh, calc(var(--fx-row-h) * 24)); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-space) }
+
+.axp-claude-handoff-banner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-claude-handoff-banner__icon { display: inline-flex; color: var(--fx-warning); flex: none }
+.axp-claude-handoff-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
+.axp-claude-handoff-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-claude-handoff-banner__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+.axp-claude-handoff-banner__acts { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
