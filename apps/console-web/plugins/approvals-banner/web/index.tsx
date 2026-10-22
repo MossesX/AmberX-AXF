@@ -128,7 +128,7 @@ function ApprovalsBanner() {
     <div className="axp-approvals-banner" role="alert">
       <div className="axp-approvals-banner__row">
         <Icon name="shield" />
-        <button type="button" className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
@@ -141,7 +141,7 @@ function ApprovalsBanner() {
         <ul className="axp-approvals-banner__list">
           {s.pending.map((p) => (
             <li key={p.id}>
-              <button type="button" className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
+              <button type="button" data-fx-row className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
                 <span className="axp-approvals-banner__tool">{p.tool}</span>
                 <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
                 <span className="axp-approvals-banner__when">{ago(p.createdAt)}</span>

@@ -134,6 +134,11 @@ parts named for what they are, shared `is-*` states, never define `--fx-*`). The
 lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI runs
 `node framework/cli/check-theme.mjs` over every plugin.
 
+**A plugin inherits the app's style** (Oct 22 2026): every button, tab, chip and toggle is a framework control
+(`<Button tone size icon>`, `<IconButton>`, `<Segmented>`, `fx-chip`, `fx-tab`, `fx-menu__item`), so changing the
+app's button asset, style theme or spacing restyles the plugin too; a whole row or card you tap is marked
+`data-fx-row`. Your own class on a control only lays it out. CI runs `node framework/cli/check-controls.mjs`.
+
 ## Security rules
 
 - Every server route of a plugin requires the console token (`AXF_TOKEN`) for **every** method, reads

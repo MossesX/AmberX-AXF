@@ -207,11 +207,11 @@ function AlertsView() {
       <div className={`${P}__filters`}>
         <div className={`${P}__chips`} role="group" aria-label="Severity">
           {(['all', ...[...ALERT_SEVERITIES].reverse()] as const).map((x) => (
-            <button key={x} type="button" className={`${P}__chip ${sev === x ? 'is-active' : ''}`} aria-pressed={sev === x} onClick={() => setSev(x)}>{x}</button>
+            <button key={x} type="button" className={`fx-chip ${P}__chip ${sev === x ? 'is-on' : ''}`} aria-pressed={sev === x} onClick={() => setSev(x)}>{x}</button>
           ))}
         </div>
         <div className={`${P}__chips`} role="group" aria-label="Show">
-          {(['open', 'all'] as const).map((x) => <button key={x} type="button" className={`${P}__chip ${show === x ? 'is-active' : ''}`} aria-pressed={show === x} onClick={() => setShow(x)}>{x === 'open' ? 'Open' : 'Include resolved'}</button>)}
+          {(['open', 'all'] as const).map((x) => <button key={x} type="button" className={`fx-chip ${P}__chip ${show === x ? 'is-on' : ''}`} aria-pressed={show === x} onClick={() => setShow(x)}>{x === 'open' ? 'Open' : 'Include resolved'}</button>)}
         </div>
         {sources.length > 1 && (
           <select className="fx-input" value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source">
@@ -225,7 +225,7 @@ function AlertsView() {
         <div className={`${P}__list`} role="list">
           {rows.map((a) => (
             <div key={a.id} role="listitem" className={`${P}__item ${a.ack || a.resolved ? '' : 'is-unread'} ${a.resolved ? 'is-resolved' : ''}`}>
-              <button type="button" className={`${P}__row`} aria-expanded={open === a.id} onClick={() => { setOpen(open === a.id ? null : a.id); if (!a.ack) void s.act(() => s.transport.ack([a.id])); }}>
+              <button type="button" data-fx-row="" className={`${P}__row`} aria-expanded={open === a.id} onClick={() => { setOpen(open === a.id ? null : a.id); if (!a.ack) void s.act(() => s.transport.ack([a.id])); }}>
                 <span className={`${P}__sev is-${a.severity}`}><Icon name={ICON[a.severity]} size={16} /></span>
                 <span className={`${P}__main`}>
                   <span className={`${P}__title`}>{a.title}</span>

@@ -6,27 +6,56 @@ import { containerCollapsible } from '../../core';
 /* ---------------- Button (styled by the active `button` asset) ---------------- */
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  tone?: 'primary' | 'neutral' | 'danger' | 'ghost';
+  tone?: 'primary' | 'neutral' | 'danger' | 'success' | 'ghost' | 'quiet';
+  /** `sm`: a compact button (banners, row actions); every size follows the button asset */
+  size?: 'sm' | 'md';
   icon?: string;
   /** UAC permission required to use this button */
   requires?: string;
 }
 
-export function Button({ tone = 'neutral', icon, requires, children, className, disabled, ...rest }: ButtonProps) {
+export function Button({ tone = 'neutral', size = 'md', icon, requires, children, className, disabled, ...rest }: ButtonProps) {
   const gate = useGate(requires);
   if (gate === 'hide') return null;
   const locked = gate === 'disable';
   return (
     <button
       type="button"
-      className={`fx-btn fx-btn--${tone} ${className ?? ''}`}
+      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''} ${className ?? ''}`}
       disabled={disabled || locked}
       title={locked ? `Requires ${requires}` : rest.title}
       {...rest}
     >
-      {locked ? <Icon name="lock" size={14} /> : icon && <Icon name={icon} size={15} />}
+      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
       {children && <span>{children}</span>}
     </button>
+  );
+}
+
+/** An icon-only button (the framework's `fx-iconbtn`): a label is required, for screen readers and the tooltip. */
+export function IconButton({ icon, label, size = 14, className, ...rest }: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & { icon: string; label: string; size?: number }) {
+  return (
+    <button type="button" className={`fx-iconbtn ${className ?? ''}`} aria-label={label} title={rest.title ?? label} {...rest}>
+      <Icon name={icon} size={size} />
+    </button>
+  );
+}
+
+/* ---------------- Segmented choice (a short set of options, one on) ---------------- */
+
+export interface SegmentedOption<T extends string> { value: T; label: ReactNode; icon?: string; title?: string; disabled?: boolean }
+export function Segmented<T extends string>({ value, options, onChange, label, size, disabled, className }: {
+  value: T; options: SegmentedOption<T>[]; onChange: (v: T) => void; label: string; size?: 'sm'; disabled?: boolean; className?: string;
+}) {
+  return (
+    <div className={`fx-seg${size === 'sm' ? ' fx-seg--sm' : ''} ${className ?? ''}`} role="radiogroup" aria-label={label}>
+      {options.map((o) => (
+        <button key={o.value} type="button" role="radio" aria-checked={value === o.value} title={o.title} disabled={disabled || o.disabled}
+          className={`fx-seg__opt${value === o.value ? ' is-on' : ''}`} onClick={() => value !== o.value && onChange(o.value)}>
+          {o.icon && <Icon name={o.icon} size={size === 'sm' ? 11 : 13} />}{o.label}
+        </button>
+      ))}
+    </div>
   );
 }
 

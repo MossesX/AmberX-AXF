@@ -282,7 +282,7 @@ export function SystemBanner() {
     <div className={`axp-systems-check-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
       <div className="axp-systems-check-banner__row">
         <Icon name="alert" />
-        <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
@@ -300,7 +300,7 @@ export function SystemBanner() {
             const label = autoFixLabel(c);
             return (
               <li key={c.id} className="axp-systems-check-banner__li">
-                <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+                <button type="button" data-fx-row className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                 </button>
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
@@ -337,7 +337,7 @@ function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'suc
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
 /** A small action badge (icon + a word) for the banner's drop-down rows: same height as the run badges. */
 function ActBadge({ icon, label, onClick, disabled, title }: { icon: string; label: string; onClick: () => void; disabled?: boolean; title?: string }) {
-  return <button type="button" className="axp-systems-check-act" disabled={disabled} title={title ?? label} onClick={onClick}><Icon name={icon} size={11} />{label}</button>;
+  return <Button size="sm" tone="primary" icon={icon} disabled={disabled} title={title ?? label} onClick={onClick}>{label}</Button>;
 }
 const fixIcon = (c: Check) => (claudeConnected() ? 'zap' : c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
 
@@ -464,7 +464,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
       <div className="axp-systems-check__tabs" role="tablist">
         {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={view === id} className="axp-systems-check__tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
+          <button key={id} type="button" role="tab" aria-selected={view === id} className="fx-tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
         ))}
       </div>
 
@@ -506,7 +506,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                 <header className="axp-systems-check-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
                 <p className="fx-small fx-muted" style={{ margin: 0 }}>{sv.description}</p>
                 <ul className="axp-systems-check-card__list">
-                  {cs.map((c) => <li key={c.id}><button type="button" className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span><SourceBadge ai={isAiCheck(c)} />{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
+                  {cs.map((c) => <li key={c.id}><button type="button" data-fx-row className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span><SourceBadge ai={isAiCheck(c)} />{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
                 </ul>
               </section>
             );
@@ -555,7 +555,7 @@ function Guided({ list }: { list: Check[] }) {
       <ol className="axp-systems-check-guided__steps">
         {list.map((x, k) => {
           const now = s.report?.checks.find((y) => y.id === x.id) ?? x;
-          return <li key={x.id}><button type="button" className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
+          return <li key={x.id}><button type="button" data-fx-row className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
             <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span><SourceBadge ai={isAiCheck(x)} />{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
         })}
       </ol>

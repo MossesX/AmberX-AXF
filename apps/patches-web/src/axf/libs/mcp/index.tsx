@@ -149,7 +149,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
               {conn.instructions && <details className={`${P}__instructions`}><summary>Server instructions</summary><p>{conn.instructions}</p></details>}
               <div className={`${P}__tabs`} role="tablist">
                 {(['tools', 'resources', 'prompts', 'log'] as const).map((t) => (
-                  <button key={t} role="tab" aria-selected={tab === t} className={`${P}__tab`} onClick={() => setTab(t)}>
+                  <button key={t} type="button" role="tab" aria-selected={tab === t} className={`fx-tab ${P}__tab`} onClick={() => setTab(t)}>
                     {({ tools: 'Tools', resources: 'Resources', prompts: 'Prompts', log: 'Call log' } as const)[t]}
                     {t !== 'log' && <span className="fx-muted"> {(conn[t] as unknown[]).length}</span>}
                   </button>
@@ -165,7 +165,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
                         const effect = toolEffect(t.annotations);
                         const gate = callGate(effect, granted, perms);
                         return (
-                          <button key={t.name} role="listitem" className={`${P}__item ${tool?.name === t.name ? 'is-active' : ''} ${gate.allowed ? '' : 'is-denied'}`} onClick={() => setTool(t)} title={gate.allowed ? undefined : gate.error?.message}>
+                          <button key={t.name} type="button" role="listitem" data-fx-row="" className={`${P}__item ${tool?.name === t.name ? 'is-active' : ''} ${gate.allowed ? '' : 'is-denied'}`} onClick={() => setTool(t)} title={gate.allowed ? undefined : gate.error?.message}>
                             <span className="fx-mono">{t.name} <span className={`${P}__effect is-${effect}`}>{effect}</span></span>
                             {t.description && <span className={`${P}__desc`}>{t.description}</span>}
                           </button>

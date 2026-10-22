@@ -91,10 +91,10 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       if ((spec.options ?? []).length > 1 && (spec.options ?? []).length <= 3) {
         const cur = typeof value === 'string' ? value : String(spec.default ?? '');
         control = (
-          <div className="axf-settings__seg" role="radiogroup" aria-label={spec.label}>
+          <div className="fx-seg" role="radiogroup" aria-label={spec.label}>
             {(spec.options ?? []).map((o) => (
               <button key={o.value} type="button" role="radio" aria-checked={cur === o.value} disabled={locked}
-                className={`axf-settings__segbtn${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
+                className={`fx-seg__opt${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
             ))}
           </div>
         );
@@ -369,18 +369,16 @@ export function SettingsView() {
       <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>
       <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections">
         {tabs.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={t.id === current?.id} className={`axf-settings__tab ${t.id === current?.id ? 'is-active' : ''}`} onClick={() => choose(t.id)}>
-            <Icon name={t.icon} size={15} /> {t.label}
-          </button>
+          <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => choose(t.id)}>{t.label}</Button>
         ))}
       </nav>
       {subs.length > 0 && current && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
-          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`axf-settings__subtab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
             <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
           </button>
           {subs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`axf-settings__subtab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
+            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`fx-tab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
               <Icon name={t.icon} size={13} /> {t.label}
             </button>
           ))}
@@ -427,14 +425,6 @@ function applyDisplay(rt: AxfRuntime): void {
 /* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
    sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
 const CSS = `
-.axf-settings__tabs{display:flex;gap:var(--fx-space);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
-.axf-settings__tab:hover{color:var(--fx-text)}
-.axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
-.axf-settings__subtabs{display:flex;gap:calc(var(--fx-space)*.5);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);border-bottom:var(--fx-border-w) solid var(--fx-border);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__subtab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);white-space:nowrap;padding:calc(var(--fx-space)*.6) var(--fx-space);border:0;border-bottom:calc(var(--fx-border-w)*2) solid transparent;background:transparent;color:var(--fx-muted);font:inherit;cursor:pointer}
-.axf-settings__subtab:hover{color:var(--fx-text)}
-.axf-settings__subtab.is-active{color:var(--fx-text);border-bottom-color:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
 .axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
@@ -450,12 +440,6 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{gap:var(--fx-space)}
-.axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
-.axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
-.axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
-.axf-settings__segbtn.is-on{background:var(--fx-accent);color:var(--fx-accent-text);font-weight:600}
-.axf-settings__segbtn:focus-visible{outline:2px solid var(--fx-accent);outline-offset:-2px}
-.axf-settings__segbtn[disabled]{cursor:default;opacity:var(--fx-opacity-disabled)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
