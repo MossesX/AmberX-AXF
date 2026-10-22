@@ -60,7 +60,7 @@
     "src/axf/libs/mcp/mcp.css": "85a2cb1f0e3223c2",
     "src/axf/libs/settings/index.tsx": "1faae4ec13d4fa4b",
     "src/axf/libs/tsconfig.json": "8499343447d4bdef",
-    "src/axf/react/AppShell.tsx": "a27cb079f8db94ab",
+    "src/axf/react/AppShell.tsx": "c0cf0cf08dd55e2b",
     "src/axf/react/AxfProvider.tsx": "b362f1a6e4c74bec",
     "src/axf/react/components/AppMenu.tsx": "032335560c4e7170",
     "src/axf/react/components/Banner.tsx": "7b492225609e2ba1",
@@ -135,6 +135,6 @@
     "src/axf/schemas/json/window.schema.json": "e0f64392890b6c02",
     "src/axf/schemas/plugin.schema.json": "bbb8fb4ff8f09929",
     "src/axf/schemas/project-rules.json": "be7b7c29a1fd9663",
-    "src/axf/ui/axf.css": "066fdcaba33d7302"
+    "src/axf/ui/axf.css": "456f769cc54b56a0"
   }
 }

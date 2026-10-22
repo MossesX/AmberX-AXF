@@ -16,7 +16,7 @@
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "940a4f26aae2b3e2",
     "src/axf/core/validate.ts": "eb3309a5fed5777f",
-    "src/axf/react/AppShell.tsx": "7ec42136d5c88b0a",
+    "src/axf/react/AppShell.tsx": "c0cf0cf08dd55e2b",
     "src/axf/react/AxfProvider.tsx": "fc14aae5ae82e500",
     "src/axf/react/components/Chrome.tsx": "067e9f32518f23fa",
     "src/axf/react/components/Controls.tsx": "ea7b00277e9784b9",
@@ -61,6 +61,6 @@
     "src/axf/schemas/json/widget.schema.json": "01761e24be132e2d",
     "src/axf/schemas/json/window.schema.json": "e0f64392890b6c02",
     "src/axf/schemas/plugin.schema.json": "ef19ff3453211ac9",
-    "src/axf/ui/axf.css": "9fe27c38b4f5dcfd"
+    "src/axf/ui/axf.css": "456f769cc54b56a0"
   }
 }

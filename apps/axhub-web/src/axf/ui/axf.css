@@ -48,11 +48,17 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
+/* The application menu sits above the live banners (Oct 22 2026); its drop-downs open over them. */
+.fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
 /* banners libraries contribute (slot app.frame.banners): above app tabs and the layout; a tall stack scrolls inside itself */
 .fx-frame-banners { flex: none; max-height: 45vh; overflow: auto; padding: var(--fx-space) var(--fx-space) 0; background: var(--fx-bg); position: relative; z-index: 42; }
 .fx-frame-banners:empty { display: none; }
 /* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
 .fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
+/* Kept views (AppShell `keep`): stay mounted while hidden; a kept view fills the main region. */
+.fx-main__inner--kept[hidden] { display: none !important; }
+/* Page mode (embed@1 `page`): one view of the app on its own inside a host (e.g. its settings in Patches). */
+.fx-shell--page { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
 .fx-waiting { max-width: 36rem; margin: calc(var(--fx-space) * 4) auto; padding: 0 var(--fx-space); }
 
 /* ---------------- banner (core/engines/banner.ts) ---------------- */
