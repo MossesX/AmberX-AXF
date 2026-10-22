@@ -166,7 +166,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
           )}
           {r.links && Object.keys(r.links).length > 0 && (
             <div className="axp-codebase-changes__line">
-              {Object.entries(r.links).map(([name, v]) => { const href = linkHref(v, e.repos); return href ? <a key={name} className="axp-codebase-changes__act" href={href} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{name}</a> : <span key={name} className="axp-codebase-changes__meta">{name}: {v}</span>; })}
+              {Object.entries(r.links).map(([name, v]) => { const href = linkHref(v, e.repos); return href ? <a key={name} className="fx-btn fx-btn--neutral fx-btn--sm axp-codebase-changes__act" href={href} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{name}</a> : <span key={name} className="axp-codebase-changes__meta">{name}: {v}</span>; })}
             </div>
           )}
         </div>

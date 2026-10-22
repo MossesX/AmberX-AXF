@@ -63,7 +63,7 @@ export function buttonTags(src) {
 
 /** The class names a className attribute can carry (string, template or expression: every word-ish token). */
 export function classesOf(tag) {
-  const m = tag.match(/className=(\{[\s\S]*?\}(?=\s+[\w-]+=|\s*\/?>|\s*$)|"[^"]*"|'[^']*')/);
+  const m = tag.match(/className=(\{[\s\S]*?\}(?=\s+[\w-]+(?:=|\s|\/?>|$)|\s*\/?>|\s*$)|"[^"]*"|'[^']*')/);
   if (!m) return [];
   return [...new Set(m[1].match(/[A-Za-z_][\w-]*(?:__[\w-]+)?/g) ?? [])];
 }

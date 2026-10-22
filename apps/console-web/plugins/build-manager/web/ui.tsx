@@ -117,7 +117,7 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
         {!e.row && <Badge tone="muted" title="Not linked to anything on the build list">{e.source || 'Running'}</Badge>}
         {e.row && e.via && <Badge tone="muted" title="How this was linked to the build">{e.via}</Badge>}
         {e.row && <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}>Item</Button>}
-        {e.url && <a className="axp-build-manager__act" href={e.url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open</a>}
+        {e.url && <a className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={e.url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open</a>}
       </div>
       {e.currentStep && !finished && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
       {pct != null && !finished && <Bar value={pct} label={`${e.title} progress`} />}
@@ -259,7 +259,7 @@ export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) 
         <div className="axp-build-manager__job">
           <Badge icon={job.state === 'launched' ? 'check' : job.state === 'waiting' ? 'clock' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'x' : 'refresh'} tone={job.state === 'launched' ? 'ok' : job.state === 'waiting' ? 'warn' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'danger' : undefined}>{JOB_LABEL[job.state] ?? job.state}</Badge>
           <span className="fx-small">{job.message}</span>
-          {job.approvalUrl && job.state === 'waiting' && <a className="axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
+          {job.approvalUrl && job.state === 'waiting' && <a className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
           {job.state === 'waiting' && <span className="fx-small fx-muted">Retrying by itself ({job.attempts ?? 0}): every 15 s, then every minute.</span>}
         </div>
       )}
@@ -333,8 +333,8 @@ function BuiltView({ query }: { query: string }) {
                     </span>
                     <span className="axp-build-manager__chips">
                       {r.branch && <Badge icon="git-branch" tone="muted">{r.branch}</Badge>}
-                      {r.commits.slice(-2).map((c) => <a key={c} className="axp-build-manager__act" href={`https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
-                      {Object.entries(r.links).slice(0, 3).map(([k, v]) => <a key={k} className="axp-build-manager__act" href={v.startsWith('https://') ? v : `https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/blob/main/${v}`} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{k}</a>)}
+                      {r.commits.slice(-2).map((c) => <a key={c} className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={`https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
+                      {Object.entries(r.links).slice(0, 3).map(([k, v]) => <a key={k} className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={v.startsWith('https://') ? v : `https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/blob/main/${v}`} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{k}</a>)}
                       {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${r.id}`)}>Log</Button>}
                       {r.surface === 'console-launch' && r.status === 'done' && <Button size="sm" tone="neutral" icon="check-circle" disabled={busy === r.id} onClick={() => void verify(r.id)}>{busy === r.id ? 'Checking…' : 'Check nothing broke'}</Button>}
                     </span>
