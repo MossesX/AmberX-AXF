@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T20:44:42.519Z",
+ "updatedAt": "2026-10-22T20:47:38.691Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1703,6 +1703,31 @@
    "builtAt": "2026-10-22T20:44:42.448Z",
    "updatedAt": "2026-10-22T20:44:42.519Z",
    "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-auto-approve-all",
+   "title": "AXHub app: Approve everything except vps.run; waiting → approved notifications with alarm sound",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Approve-everything setting + vps.run exclusion in AutoApprove rules + tests",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Waiting notification first, then approved notification on an alarm-sound channel",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:47:38.691Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T20:47:38.691Z",
+   "estimate": "45 min",
    "source": "chat"
   }
  ]
