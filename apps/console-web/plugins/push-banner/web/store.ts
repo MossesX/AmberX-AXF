@@ -4,7 +4,7 @@ import { pluginApi } from '@console/plugins';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 export const BANNER_KEY = 'push-banner.banner';
 const POLL_MS = 120_000;
 
@@ -12,14 +12,18 @@ export const api = pluginApi(FOLDER, 'Push banner');
 
 export interface PullInfo { number: number | null; title: string; url: string; draft: boolean; ci: 'none' | 'running' | 'failure' | 'success' | 'unknown' }
 export interface Branch { name: string; ahead: number | null; behind: number | null; sha?: string; subject?: string; date?: string; url?: string; hidden?: boolean; pr: PullInfo | null; error: string }
-export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean }
+export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; mergeState?: string; ready: boolean; hidden?: boolean; sha?: string }
 export interface RepoBranches { repo: string; base: string; url: string; branches: Branch[]; pulls?: Pull[]; error: string }
 export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
-export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string }
+/** A successful Merge or Pull main in, kept (every device, 7 days) until its trash can is tapped. */
+export interface Done { key: string; kind: 'merged' | 'pulled'; at: number; repo: string; base?: string; number?: number; branch?: string; title?: string; url?: string; text?: string }
+export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string; done?: Done[] }
+/** One entry's details (GET detail): its commits, the checks on its head, GitHub's merge state. */
+export interface Detail { commits: { sha: string; subject: string; author: string; date: string; url: string }[]; checks: { name: string; status: string; conclusion: string; url: string }[]; mergeState: string; files: number | null; body?: string; sha?: string; error: string }
 export interface Row extends Branch { repo: string; base: string; key: string }
 
-interface State { answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null }
-let state: State = { answer: null, loading: false, error: '', busy: '', note: null };
+interface State { answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null; details: Record<string, { loading: boolean; data?: Detail; error?: string }> }
+let state: State = { answer: null, loading: false, error: '', busy: '', note: null, details: {} };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { state = { ...state, ...p }; subs.forEach((f) => f()); };
 export const useStore = (): State => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => state);
@@ -44,6 +48,26 @@ export function pullRows(a: Answer | null, withHidden = false): PullRow[] {
   return out.sort((x, y) => Number(y.ready) - Number(x.ready) || (y.updated ?? '').localeCompare(x.updated ?? ''));
 }
 
+/** Finished entries (merged / main pulled in), newest first; their keys leave the other groups. */
+export const doneRows = (a: Answer | null): Done[] => [...(a?.done ?? [])].sort((x, y) => y.at - x.at);
+export const doneKeys = (a: Answer | null) => new Set((a?.done ?? []).map((d) => d.key));
+
+/** The trash can on a finished entry: forget it, and when it's still open on GitHub, hide it until its next commit. */
+export const removeDone = (d: Done, sha?: string) => act(d.key, async () => {
+  await api.post('done/remove', sha ? { key: d.key, sha } : { key: d.key });
+  return 'Removed from the banner.';
+});
+
+/** Load one entry's details (commits, checks) the first time it's opened; `force` reloads. */
+export async function loadDetail(e: { key: string; repo: string; number?: number; branch?: string }, force = false): Promise<void> {
+  const have = state.details[e.key];
+  if (have?.loading || (have?.data && !force)) return;
+  set({ details: { ...state.details, [e.key]: { loading: true, data: have?.data } } });
+  const q = new URLSearchParams({ repo: e.repo, ...(e.number ? { number: String(e.number) } : { branch: e.branch ?? '' }) });
+  try { set({ details: { ...state.details, [e.key]: { loading: false, data: await api.call<Detail>(`detail?${q}`) } } }); }
+  catch (x) { set({ details: { ...state.details, [e.key]: { loading: false, error: x instanceof Error ? x.message : String(x) } } }); }
+}
+
 export async function load(refresh = false): Promise<void> {
   if (state.loading) return;
   set({ loading: true });
@@ -54,7 +78,7 @@ export async function load(refresh = false): Promise<void> {
 
 async function act(key: string, fn: () => Promise<string>): Promise<void> {
   set({ busy: key, note: null });
-  try { set({ note: { key, text: await fn(), tone: 'ok' } }); await load(true); }
+  try { set({ note: { key, text: await fn(), tone: 'ok' } }); const { [key]: _gone, ...rest } = state.details; set({ details: rest }); await load(true); }
   catch (e) { set({ note: { key, text: e instanceof Error ? e.message : String(e), tone: 'danger' } }); }
   finally { set({ busy: '' }); }
 }

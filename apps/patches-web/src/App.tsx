@@ -33,7 +33,8 @@ export function App() {
     else rt.unbindPrincipal();
   }, [rt, me]);
   useAppMessages();
-  // The banner strip (the Console's plugin banners) sits in app.frame.top, under Patches' banner, above the tabs.
+  // Page order: Patches' banner, the app tabs (app.frame.head), the menu bar, then the banner strip (the Console's plugin
+  // banners, app.frame.top) and the app in the tab.
   return (
     <SlotsProvider slots={contributed.slots}>
       <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} keep={KEEP} />

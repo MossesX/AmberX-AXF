@@ -1,7 +1,7 @@
 /**
  * App tabs console plugin (ai.amberx.axf.console.app-tabs).
  *
- * A tab group across the whole page (framework slot `app.frame.top`, below the banners): one tab per AmberX app picked
+ * A tab group across the whole page (framework slot `app.frame.head`, above the application menu): one tab per AmberX app picked
  * in Settings → Plugins → App tabs, Console, Pilot and axHub by default. The console's own tab shows the console; any other
  * tab covers the page below the tab bar (slot `app.frame.cover`) with that app in a frame. A frame stays loaded once
  * opened, so switching back and forth keeps its state. Apps: built-in list + project manifests with a deploy.url +
@@ -87,11 +87,12 @@ function useAppTabs() {
   };
 }
 
-/* ---------------- the tab bar (app.frame.top) ---------------- */
+/* ---------------- the tab bar (app.frame.head, above the application menu) ---------------- */
 
 /**
- * Banners sit above the tab bar and come and go, so the cover can't start at a fixed height: publish where the bar
- * ends as `--axp-app-tabs-bottom` on the page frame (the cover is inside it). Follows the bar and everything above it.
+ * The tab bar sits above the application menu (Brett, Oct 22 2026); the menu bar and the live banners (which come and go)
+ * sit between it and the page, and stay visible over another app. So the cover starts where the page (`.fx-shell`)
+ * starts: publish that as `--axp-app-tabs-bottom` on the page frame (the cover is inside it), following everything above.
  */
 function useBarBottom(shown: boolean) {
   const ref = useRef<HTMLElement | null>(null);
@@ -99,11 +100,17 @@ function useBarBottom(shown: boolean) {
     const bar = ref.current;
     const frame = bar?.parentElement;
     if (!bar || !frame) return;
-    const set = () => frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom))}px`);
+    const shell = () => Array.from(frame.children).find((el) => el.classList.contains('fx-shell')) ?? null;
+    const set = () => {
+      const below = shell();
+      const y = below ? below.getBoundingClientRect().top : bar.getBoundingClientRect().bottom;
+      frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(y))}px`);
+    };
     const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(set) : null;
     const watchAbove = () => {
       ro?.disconnect();
-      for (let el: Element | null = bar; el; el = el.previousElementSibling) ro?.observe(el);
+      const below = shell();
+      for (let el: Element | null = below?.previousElementSibling ?? bar; el; el = el.previousElementSibling) ro?.observe(el);
       set();
     };
     const mo = typeof MutationObserver === 'function' ? new MutationObserver(watchAbove) : null;
@@ -268,7 +275,7 @@ const standalone: AxfWebLibrary = {
     rt.actions.register('app-tabs.settings', () => rt.dispatch('settings.open:app-tabs'), { label: 'App tabs settings' });
   },
   slots: {
-    'app.frame.top': [{ id: 'app-tabs.bar', render: () => <TabBar /> }],
+    'app.frame.head': [{ id: 'app-tabs.bar', render: () => <TabBar /> }],
     'app.frame.cover': [{ id: 'app-tabs.cover', render: () => <Cover /> }],
   },
   settingsTabs: [{ id: 'app-tabs', label: 'App tabs', icon: 'layout', order: 7, parent: 'plugins' }],

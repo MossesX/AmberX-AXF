@@ -46,3 +46,18 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__pill.is-ready, .axp-push-banner__pill.is-success { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-push-banner__pill.is-failure { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
 .axp-push-banner__pill.is-running { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }
+/* tap an entry for its details; a finished one (merged / main pulled in) has a trash can (Oct 22 2026) */
+.axp-push-banner__expand { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0; width: 100%; cursor: pointer; color: var(--fx-muted) }
+.axp-push-banner__expand:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-push-banner__detail { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); margin-top: calc(var(--fx-space) * 0.25); padding-top: calc(var(--fx-space) * 0.4); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-push-banner__sec h5 { margin: 0 0 calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 700; color: var(--fx-muted) }
+.axp-push-banner__sec ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2) }
+.axp-push-banner__sec li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-push-banner__sec li > a, .axp-push-banner__sec li > span:not(.axp-push-banner__meta) { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-text) }
+.axp-push-banner__sec li > .axp-push-banner__meta { flex: none }
+.axp-push-banner__sec code { flex: none; font-family: var(--fx-font-mono); color: var(--fx-muted) }
+.axp-push-banner__sec li.is-success { color: var(--fx-success) }
+.axp-push-banner__sec li.is-failure, .axp-push-banner__sec li.is-timed_out, .axp-push-banner__sec li.is-cancelled { color: var(--fx-danger) }
+.axp-push-banner__sec li.is-running { color: var(--fx-accent) }
+.axp-push-banner__item.is-done { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-push-banner__trash { color: var(--fx-danger) }

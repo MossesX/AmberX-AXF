@@ -16,7 +16,7 @@
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "221f7036770823de",
     "src/axf/core/validate.ts": "6edd001f08a77439",
-    "src/axf/react/AppShell.tsx": "b5446b41bf2e8902",
+    "src/axf/react/AppShell.tsx": "dfefc8d15b399d06",
     "src/axf/react/AxfProvider.tsx": "b362f1a6e4c74bec",
     "src/axf/react/components/BannerSettings.tsx": "d83ffa6162255267",
     "src/axf/react/components/Chrome.tsx": "574e7e11613d9a21",

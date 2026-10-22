@@ -318,8 +318,10 @@ export function ReprocessDialog({ close }: { close: () => void }) {
   const [p, setP] = useState<Proposal | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const dirty = !!useQueueState()?.dirty;
   useEffect(() => { act({ kind: 'reprocess', apply: false }, (t, l) => { if (l === 'error') setErr(t); log(t, l); }).then(setP); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const apply = async () => { setBusy(true); const r = await act({ kind: 'reprocess', apply: true }, log); setBusy(false); if (r) { log(`reprocessed: ${r.moves.length} move(s), ${r.rework.length} step(s) flagged for rework`, 'ok'); close(); } };
+  const done = async () => { setBusy(true); if (dirty) await act({ kind: 'reprocess', apply: true }, log); setBusy(false); close(); };
   if (err) return <div className="fx-stack"><p className="pl-note is-error">{err}</p><Button onClick={close}>Close</Button></div>;
   if (!p) return <div className="fx-empty">Checking dependencies…</div>;
   const nothing = !p.changed && !p.moves.length && !p.rework.length;
@@ -331,7 +333,8 @@ export function ReprocessDialog({ close }: { close: () => void }) {
       {p.rework.length > 0 && <><h4 style={{ margin: 0 }}>Built steps to refactor ({p.rework.length})</h4><ul className="fx-small bm-list">{p.rework.map((r) => <li key={r.id}><strong>{r.title}</strong> <ModelChip model={r.model} />{r.already ? <span className="fx-muted"> (already flagged)</span> : ''}<br /><span className="fx-muted">{r.reasons.join('; ')}</span></li>)}</ul></>}
       {p.cycles.length > 0 && <p className="pl-note is-warn"><Icon name="alert" size={14} />Dependency cycle broken at: {p.cycles.map((c) => c.title).join(', ')} — fix the dependencies in the feature tracker.</p>}
       <div className="fx-row fx-row--wrap" style={{ justifyContent: 'flex-end' }}>
-        <Button onClick={close}>{nothing ? 'Close' : 'Later'}</Button>
+        {/* Nothing to move: the check itself is the reprocess, so closing clears "the queue changed" and its message. */}
+        <Button disabled={busy} onClick={nothing ? done : close}>{nothing ? 'Close' : 'Later'}</Button>
         {!nothing && <Button tone="primary" icon="shuffle" disabled={busy} onClick={apply}>Apply</Button>}
       </div>
     </div>
