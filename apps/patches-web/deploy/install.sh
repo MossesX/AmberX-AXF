@@ -59,11 +59,22 @@ fi
 APP_TOKEN="${ARG_APP_TOKEN:-${APP_TOKEN:-$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)}}"
 (umask 077; printf 'APP_TOKEN=%s\n' "$APP_TOKEN" > "$ENVF"); chmod 600 "$ENVF"
 
+# ---- 2b. the Dev Console's token: Patches runs the banner plugins, their server parts run in the console ----
+# Read from the console's own env file on every install / update (a console token reset is picked up by the next
+# update); kept in a 0600 env file for the container, never on the command line or in the image.
+CONSOLE_TOKEN="${PATCHES_CONSOLE_TOKEN:-}"
+if [ -z "$CONSOLE_TOKEN" ] && [ -f "$AXF_DIR/.axf-console/env" ]; then
+  CONSOLE_TOKEN="$(sed -n 's/^AXF_TOKEN=//p' "$AXF_DIR/.axf-console/env" | head -n1)"
+fi
+CONSOLE_ENVF="$STATE/console.env"
+(umask 077; { printf 'PATCHES_CONSOLE_URL=%s\n' "${PATCHES_CONSOLE_URL:-https://console.amberxai.com}"; [ -n "$CONSOLE_TOKEN" ] && printf 'PATCHES_CONSOLE_TOKEN=%s\n' "$CONSOLE_TOKEN"; } > "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+[ -n "$CONSOLE_TOKEN" ] || say "No console token found ($AXF_DIR/.axf-console/env): the banners above the tabs can't reach the Dev Console until it is set (PATCHES_CONSOLE_TOKEN=… bash install.sh)."
+
 # ---- 3. image ----
 say "Building the image (first time takes a few minutes)"
 docker build -q -t "$NAME:latest" "$APP" >/dev/null
 axf_stop_container "$NAME"
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT")
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT" --env-file "$CONSOLE_ENVF")
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"

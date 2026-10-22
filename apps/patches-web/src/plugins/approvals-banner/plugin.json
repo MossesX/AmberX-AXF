@@ -1,0 +1,23 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.approvals-banner",
+  "name": "Approvals banner",
+  "version": "0.3.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A banner above every tab in Patches whenever axHub has calls waiting for your approval (shell commands, deploys, merges and anything else set to confirm). Shows how many and what they are; Review opens the request on the hub, where you approve or reject it. Only for admins signed in to axHub; it never approves anything itself. Moved from the Dev Console to Patches on Oct 22 2026 (it was only a banner).",
+  "targets": [
+    "patches-web"
+  ],
+  "provides": [
+    "banner:approvals",
+    "settings-tab:approvals-banner"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  }
+}

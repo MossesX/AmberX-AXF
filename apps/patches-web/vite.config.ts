@@ -14,6 +14,14 @@ export default defineConfig({
     axfProjectGuard({ root, read: (f) => (existsSync(join(root, f)) ? readFileSync(join(root, f), 'utf8') : undefined), exists: (p) => existsSync(join(root, p)) }),
     react(),
   ],
+  // The banner plugins baked from the Dev Console (src/plugins, scripts/bake-banner-plugins.mjs) import the console's
+  // framework and helpers as `@console/...`: the framework is Patches' own baked copy, the helpers are Patches' stand-ins.
+  resolve: {
+    alias: [
+      { find: /^@console\/axf\//, replacement: `${join(root, 'src/axf')}/` },
+      { find: /^@console\//, replacement: `${join(root, 'src/console')}/` },
+    ],
+  },
   server: { proxy: { '/api': `http://127.0.0.1:${process.env.API_PORT ?? '7290'}` } },
   build: { outDir: 'dist' },
 });

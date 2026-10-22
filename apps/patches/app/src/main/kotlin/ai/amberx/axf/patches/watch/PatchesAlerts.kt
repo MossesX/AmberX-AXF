@@ -57,6 +57,15 @@ object PatchesAlerts {
         context.packageManager.getLaunchIntentForPackage(AXHUB_PACKAGE) != null
     }.getOrDefault(false)
 
+    /** Opens the AXHub phone app on this approval now (a tap on the banner strip); false when it isn't installed. */
+    fun showApproval(context: Context, id: String): Boolean {
+        if (!axhubAppInstalled(context)) return false
+        val i = Intent().setComponent(ComponentName(AXHUB_PACKAGE, AXHUB_ACTIVITY))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(AXHUB_EXTRA_APPROVAL, id)
+        return runCatching { context.startActivity(i) }.isSuccess
+    }
+
     /** Tapping an approval: the AXHub phone app on that approval when installed, else Patches' axHub tab. */
     private fun openApproval(context: Context, id: String): PendingIntent {
         if (!axhubAppInstalled(context)) return open(context, id.hashCode(), "axhub", id)

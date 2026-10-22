@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T20:09:16.475Z",
+ "updatedAt": "2026-10-22T20:26:56.001Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1697,6 +1697,108 @@
    "builtAt": "2026-10-22T20:09:10.620Z",
    "updatedAt": "2026-10-22T20:09:16.475Z",
    "estimate": "15 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-plugins-patches",
+   "title": "Banner plugins run in Patches; console and Pilot draw none (Opus)",
+   "detail": "Brett, Oct 22 2026: port all the banner plugins to Patches and install them; remove all banner plugins from console and pilot. Built on Opus on branch claude/project-thread-eew3jm (PR #28).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "embed@1 relay message + runtime + fixtures",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:55.696Z"
+    },
+    {
+     "text": "Console: drop plugin banners and the strip page; move approvals-banner to Patches",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:55.747Z"
+    },
+    {
+     "text": "Patches web: bake script + stand-ins + plugin loader + switches",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:55.805Z"
+    },
+    {
+     "text": "Patches server: console proxy + installer token",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:55.875Z"
+    },
+    {
+     "text": "Patches Android: strip from Patches web + relay/approval bridge",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:55.945Z"
+    },
+    {
+     "text": "Checks, CI, docs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T20:26:56.001Z"
+    }
+   ],
+   "createdAt": "2026-10-22T20:26:47.722Z",
+   "builtAt": "2026-10-22T20:26:47.783Z",
+   "updatedAt": "2026-10-22T20:26:56.001Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "banner-plugins-patches-fable",
+   "title": "Banner plugins run in Patches (Fable rebuild)",
+   "detail": "Fable rebuild of the Opus build banner-plugins-patches (branch claude/project-thread-eew3jm, PR #28): Fable was suggested for the embed@1 relay contract and the plugin host split, Opus was chosen. Start by reviewing/replacing the Opus version.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Read the Opus build and write a design note: relay contract, bake vs shared package, proxy allowlist.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Rework embed@1 relay (or replace with a general host→guest command) in embed.ts; fixtures; check-embed.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Replace the bake-copy with a shared plugin web package both console and Patches import (no copies).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Server side: a plugin-services route on the console for hosts instead of the path allowlist proxy.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin twin of relay (when the Android hold allows) + Patches Android strip review.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Differences report _claude/memory/docs/rebuilds/banner-plugins-patches-fable.md + LOG.md + shots.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:26:47.860Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T20:26:47.860Z",
+   "estimate": "3 h",
    "source": "chat"
   }
  ]

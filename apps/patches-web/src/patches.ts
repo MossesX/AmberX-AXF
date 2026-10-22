@@ -86,33 +86,18 @@ export function settingsUrl(t: PatchTab, origin: string): string {
   return embedUrlFull(`${origin}${t.settingsPath}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
 }
 
-/** The Banners settings page: the console's every-banner settings on its own (its banners are the ones above the tabs). */
-export function bannersUrl(consoleOrigin: string): string {
-  return embedUrlFull(`${consoleOrigin}/`, HOST_ID, { takes: [...TAKES], page: 'banners' });
-}
-
 /** An app asks for banner settings with `open-settings` tab `banners` or `banners:<banner id>`: the banner id, or null. */
 export function bannerAsk(tab: string | undefined): string | null {
   if (!tab || (tab !== 'banners' && !tab.startsWith('banners:'))) return null;
   return tab.slice('banners:'.length);
 }
 
-/** The banner strip: the Dev Console's plugin banners on their own page, above every tab. */
-export function stripUrl(consoleOrigin: string): string {
-  return embedUrlFull(`${consoleOrigin}/?axf-strip=banners`, HOST_ID, { takes: [...TAKES] });
-}
-
-/** What the console's banner strip page sends Patches (patches-strip@1): its height, or "bring the Console tab up". */
-export type StripMessage = { $axf: 'patches-strip@1'; type: 'height'; px: number } | { $axf: 'patches-strip@1'; type: 'open'; tab: 'console' };
-
-export function parseStripMessage(raw: unknown): StripMessage | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const o = raw as Record<string, unknown>;
-  if (o.$axf !== 'patches-strip@1') return null;
-  if (o.type === 'height' && typeof o.px === 'number' && Number.isFinite(o.px)) return { $axf: 'patches-strip@1', type: 'height', px: Math.max(0, Math.min(400, Math.round(o.px))) };
-  if (o.type === 'open' && o.tab === 'console') return { $axf: 'patches-strip@1', type: 'open', tab: 'console' };
-  return null;
-}
+/**
+ * Patches' own banner strip (`?axf-strip=banners`): this app showing only its banners. Patches on Android shows it in a
+ * web view above its tabs (bridge `AxfPatchesStrip`: `height(px)`, `open(tab)`, `relay(json)`).
+ */
+export const STRIP_QUERY = 'axf-strip';
+export const isStripPage = (search: string): boolean => { try { return new URLSearchParams(search).get(STRIP_QUERY) === 'banners'; } catch { return false; } };
 
 /** An embed@1 message from one of the apps (anything else is ignored). */
 export function fromApp(data: unknown): EmbedMessage | null { return parseEmbedMessage(data); }
@@ -157,6 +142,9 @@ export function guestMenuCounters(tab: string, menus: readonly EmbedMenu[]): Rec
 
 /** The message that asks the app in a tab to run one of the items it sent. */
 export function runMessage(id: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'run', id }; }
+
+/** The message that hands a banner tap to the app it names something of (embed@1 `relay`). */
+export function relayMessage(kind: 'action' | 'view' | 'dialog', target: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'relay', kind, target }; }
 
 /** The message that asks an app's settings page to open one of its own tabs. */
 export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'open-tab', tab }; }

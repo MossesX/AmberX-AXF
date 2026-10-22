@@ -7,7 +7,9 @@ Signed-in hub *users* (not admins) reach only `/api/health` and `/api/me` until 
 
 Env: APP_TOKEN (required in production; empty = open, local dev only), APP_TRUST_WALL=1 + APP_WALL_SECRET (the
 installer sets both), APP_WALL_HUB (hub address for sign-out links), APP_THEMES_PERM (hub permission that lets a
-user change themes; default "patches-web.themes"), APP_DATA_DIR (default ./data), PORT.
+user change themes; default "patches-web.themes"), APP_DATA_DIR (default ./data), PORT, PATCHES_CONSOLE_URL (the Dev
+Console, default https://console.amberxai.com) + PATCHES_CONSOLE_TOKEN (its console token: the banner plugins' server
+parts run there; the installer copies it from the console's env file).
 
 Run: APP_TOKEN=dev uvicorn main:app --app-dir server --port 7290   (npm run dev proxies /api here)
 """
@@ -23,8 +25,13 @@ import time
 from pathlib import Path
 from typing import Any
 
+import urllib.error
+import urllib.parse
+import urllib.request
+
 from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
+from starlette.concurrency import run_in_threadpool
 
 import wall
 
@@ -115,7 +122,8 @@ def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
 # apps then run only the ones switched on here (`plugins-enabled`). Ids and names only: no plugin code is stored.
 
 PLUGINS_FILE = DATA / "plugins.json"
-PLUGIN_APPS = ("console", "pilot", "axhub")
+# "patches" = Patches' own plugins: the banner plugins it runs above every tab (src/bannerPlugins.tsx).
+PLUGIN_APPS = ("patches", "console", "pilot", "axhub")
 PLUGIN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$")
 MAX_PLUGINS = 200
 _plugins_lock = threading.Lock()
@@ -224,6 +232,106 @@ def plugins_remove(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dic
         if isinstance(pid, str) and state["apps"][app_id]["plugins"].pop(pid, None) is not None:
             _write_plugins(state)
     return state
+
+
+# ---------------------------------------------------------------- the banner plugins' server parts, in the Dev Console
+#
+# Brett, Oct 22 2026: "port all the banner plugins to Patches and install them; remove all banner plugins from console
+# and pilot". Patches runs the banners (src/plugins, baked from apps/console-web/plugins); their server parts stay in the
+# console, which has their data, its host checks and their tokens. The browser calls them here, `/api/console/<path>`,
+# and this server calls the console with its console token (PATCHES_CONSOLE_TOKEN), so the token never reaches a
+# browser. Admins only (the gate above refuses hub users), only these plugins' routes and the few console routes the
+# build manager reads and ticks, no redirects followed, bodies capped. A plugin that is off in the console answers 404.
+
+CONSOLE_URL = os.environ.get("PATCHES_CONSOLE_URL", "https://console.amberxai.com").rstrip("/")
+BANNER_FOLDERS = frozenset({"activity", "build-manager", "claude-handoff", "codebase-changes", "push-banner", "systems-check"})
+CONSOLE_CORE = frozenset({("GET", "pending"), ("POST", "pending"), ("GET", "plan"), ("GET", "build-queue"), ("POST", "build-queue/steps"), ("POST", "build-queue/step")})
+CONSOLE_REST = re.compile(r"^[A-Za-z0-9._~-]+(/[A-Za-z0-9._~-]+){0,6}$")
+MAX_PROXY_BODY = 256 * 1024
+MAX_PROXY_REPLY = 8 * 1024 * 1024
+PROXY_TIMEOUT = 60
+
+
+def _console_token() -> str:
+    return os.environ.get("PATCHES_CONSOLE_TOKEN", "").strip()
+
+
+def console_route_ok(method: str, path: str) -> bool:
+    """Is this console route one Patches passes on? A banner plugin's own routes, or the build manager's console reads."""
+    if not CONSOLE_REST.match(path) or any(part in (".", "..") for part in path.split("/")):
+        return False
+    parts = path.split("/")
+    if parts[0] == "plugins":
+        return len(parts) >= 3 and parts[1] in BANNER_FOLDERS
+    return (method.upper(), path) in CONSOLE_CORE
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """The console token never follows a redirect."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[no-untyped-def]
+        return None
+
+
+_opener = urllib.request.build_opener(_NoRedirect())
+
+
+def _console_open(method: str, path: str, query: str, body: bytes, ctype: str, accept: str) -> Any:
+    url = f"{CONSOLE_URL}/api/{path}" + (f"?{query}" if query else "")
+    req = urllib.request.Request(url, data=body if method in ("POST", "PUT", "PATCH", "DELETE") and body else None, method=method)
+    req.add_header("Authorization", f"Bearer {_console_token()}")
+    req.add_header("Accept", accept or "application/json")
+    req.add_header("User-Agent", "patches-web/console-proxy")
+    if body and ctype:
+        req.add_header("Content-Type", ctype)
+    try:
+        return _opener.open(req, timeout=PROXY_TIMEOUT)
+    except urllib.error.HTTPError as e:
+        return e
+
+
+@app.api_route("/api/console/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+async def console_proxy(path: str, request: Request, c: wall.Caller = Depends(auth)) -> Any:
+    method = request.method.upper()
+    if not c.admin:
+        raise HTTPException(403, "admins only")
+    if not console_route_ok(method, path):
+        raise HTTPException(404, "Patches doesn't pass that on to the console")
+    if not _console_token():
+        raise HTTPException(503, "Patches can't reach the Dev Console: PATCHES_CONSOLE_TOKEN isn't set (reinstall Patches on the VPS)")
+    body = await request.body()
+    if len(body) > MAX_PROXY_BODY:
+        raise HTTPException(413, "request too large")
+    query = urllib.parse.urlencode(list(request.query_params.multi_items()))
+    try:
+        r = await run_in_threadpool(_console_open, method, path, query, body, request.headers.get("content-type", ""), request.headers.get("accept", ""))
+    except (urllib.error.URLError, OSError) as e:
+        raise HTTPException(502, f"the Dev Console didn't answer ({getattr(e, 'reason', e)})")
+    status = getattr(r, "status", None) or r.getcode()
+    ctype = r.headers.get("content-type", "application/json")
+    if 300 <= status < 400:
+        r.close()
+        raise HTTPException(502, "the Dev Console answered with a redirect (not followed)")
+    if ctype.startswith("text/event-stream") and status == 200:
+        def stream() -> Any:
+            try:
+                while True:
+                    chunk = r.read1(4096) if hasattr(r, "read1") else r.read(4096)
+                    if not chunk:
+                        break
+                    yield chunk
+            except OSError:
+                return
+            finally:
+                r.close()
+        return StreamingResponse(stream(), media_type="text/event-stream", headers={"Cache-Control": "no-store"})
+    try:
+        data = await run_in_threadpool(r.read, MAX_PROXY_REPLY + 1)
+    finally:
+        r.close()
+    if len(data) > MAX_PROXY_REPLY:
+        raise HTTPException(502, "the Dev Console's answer was too large")
+    return Response(content=data, status_code=status, media_type=ctype.split(";")[0] or "application/json", headers={"Cache-Control": "no-store"})
 
 
 # ---------------------------------------------------------------- the built web app (dist/), single-page fallback

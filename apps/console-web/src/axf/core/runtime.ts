@@ -1099,6 +1099,13 @@ export class AxfRuntime {
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+      // A banner the host runs for this app asked for something only this app has: run it like the app's own tap.
+      // Only the app itself in a tab takes these (never a page the host shows alone).
+      if (m?.type === 'relay' && !this.embedded?.page) {
+        if (m.kind === 'action') this.dispatch(m.target);
+        else if (m.kind === 'view') this.navigate(m.target);
+        else this.openDialog(m.target);
+      }
     };
     // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
     if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();

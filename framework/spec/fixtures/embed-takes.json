@@ -3686,6 +3686,108 @@
       }
     }
   ],
+  "relayMessages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "build-manager.open:pending:lib-mcp"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "build-manager.open:pending:lib-mcp"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "console.reveal:plan:auth wall"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "console.reveal:plan:auth wall"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "view",
+        "target": "codebase-changes"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "view",
+        "target": "codebase-changes"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "dialog",
+        "target": "systems-check"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "dialog",
+        "target": "systems-check"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "view",
+        "target": "bad view!"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "x:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action",
+        "target": "a:line\nbreak"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "script",
+        "target": "alert(1)"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "relay",
+        "kind": "action"
+      },
+      "message": null
+    }
+  ],
   "settingsTab": [
     {
       "action": "settings.open:appearance",

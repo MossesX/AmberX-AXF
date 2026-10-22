@@ -1,0 +1,46 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.systems-check",
+  "name": "Systems check",
+  "version": "0.2.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The systems check and What's new banners at the top of every view. Checks come from reading the codebase (every plugin, the services it needs and its own declared self-checks, project manifests, shared data) plus the built-in credential, GitHub, Coolify, axHub and VPS checks. With the AI switch on (needs the AI assistant and Mosses), Mosses adds checks and saves them as a routine that runs without AI, and summarises what's new. Settings \u2192 Plugins \u2192 Systems check.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:system-check",
+    "settings-tab:systems-check",
+    "action:system-check.open",
+    "banner:systems-check",
+    "banner:whats-new",
+    "service:axf.syscheck@1"
+  ],
+  "optional": [
+    "service:axf.llm@1",
+    "service:axf.agents@1"
+  ],
+  "scopes": [
+    "ROUTES",
+    "NETWORK"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/systems-check",
+    "env": [
+      "AXF_SYSTEMS_CHECK_DIR",
+      "AXF_SYSCHECK_AGENT"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml"
+    ]
+  }
+}

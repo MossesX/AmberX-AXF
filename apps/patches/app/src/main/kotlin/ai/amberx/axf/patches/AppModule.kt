@@ -112,7 +112,8 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("patches", "Patches", "layers", id, order = 20, description = "The apps in the tabs. Addresses are https, host only; the hub's address comes from the app itself.", settings =
             TABS.filter { it.settingKey.isNotEmpty() }.map { t -> SettingSpec(t.settingKey, "${t.label} address", SettingKind.TEXT, "https only, no path", JsonPrimitive(t.defaultUrl), icon = t.icon) } + listOf(
                 SettingSpec(NOTIFY_KEY, "Serve all notifications", SettingKind.TOGGLE, "Patches shows the phone's notifications for the Console, Pilot and axHub: approvals waiting on the hub, the console's alerts (builds, CI, deploys, systems check) and what the apps send while open. The AXHub app stays quiet while Patches is installed.", JsonPrimitive(true), icon = "bell"),
-                SettingSpec(BANNERS_KEY, "Banners above every tab", SettingKind.TOGGLE, "The Dev Console's banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What's new), on screen whichever tab is open", JsonPrimitive(true), icon = "bell"),
+                SettingSpec(BANNERS_KEY, "Banners above every tab", SettingKind.TOGGLE, "The banner plugins Patches runs (codebase changes, builds, GitHub activity, approvals, systems check, keys, push), on screen whichever tab is open", JsonPrimitive(true), icon = "bell"),
+                SettingSpec(WEB_KEY, "Patches web address", SettingKind.TEXT, "https only, no path: the banners come from Patches on the web", JsonPrimitive(WEB_DEFAULT), icon = "layers"),
                 SettingSpec("patches.reloadAction", "Reload the tab in front", SettingKind.ACTION, target = "patches.reload", icon = "refresh"),
                 SettingSpec("patches.openAction", "Open the tab in front in the browser", SettingKind.ACTION, target = "patches.open", icon = "external"),
             ))))
@@ -189,6 +190,9 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         return (HubRules.normalize(saved) ?: HubRules.normalize(t.defaultUrl))?.let { "$it/" }
     }
 
+    /** The banner strip: Patches web's banners-only page (https host only; a bad address falls back to the default). */
+    fun stripUrl(): String? = (HubRules.normalize(settings?.string(WEB_KEY)) ?: HubRules.normalize(WEB_DEFAULT))?.let { "$it/?axf-strip=banners" }
+
     /** An app's own settings page for the combined settings (embed@1 page mode: the page alone, no chrome). */
     fun settingsUrl(tab: String): String? {
         val t = TABS.firstOrNull { it.id == tab } ?: return null
@@ -202,6 +206,9 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
     companion object {
         const val BANNERS_KEY: String = "patches.banners"
         const val NOTIFY_KEY: String = "patches.notify"
+        /** Patches on the web: its `?axf-strip=banners` page is the banner strip above the tabs. */
+        const val WEB_KEY: String = "patches.web"
+        const val WEB_DEFAULT: String = "https://patches.amberxai.com"
 
         /** The combined settings' tabs, in order: Patches itself, then one per app (id → label, icon). */
         val SETTINGS_APPS: List<Triple<String, String, String>> = listOf(Triple("patches", "Patches", "layers"), Triple("console", "Console", "terminal"), Triple("pilot", "Pilot", "rocket"), Triple("axhub", "axHub", "shield"))
