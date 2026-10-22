@@ -57,7 +57,7 @@
     "src/axf/libs/mcp/mcp.css": "85a2cb1f0e3223c2",
     "src/axf/libs/settings/index.tsx": "3e8b10abb7d9abf6",
     "src/axf/libs/tsconfig.json": "8499343447d4bdef",
-    "src/axf/react/AppShell.tsx": "b5446b41bf2e8902",
+    "src/axf/react/AppShell.tsx": "dfefc8d15b399d06",
     "src/axf/react/AxfProvider.tsx": "b362f1a6e4c74bec",
     "src/axf/react/components/AppMenu.tsx": "032335560c4e7170",
     "src/axf/react/components/Banner.tsx": "7b492225609e2ba1",

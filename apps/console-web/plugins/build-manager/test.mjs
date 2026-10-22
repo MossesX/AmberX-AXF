@@ -218,6 +218,13 @@ const v0 = lv.find((e) => e.changeId.endsWith('0001'));
 ok(v0.row?.key === 'pending:p-steps' && v0.estimate === 80 && v0.elapsed === 40 * 60_000 && v0.costEstimate === 11.2 && v0.model === 'Opus' && v0.source === 'VPS' && v0.host === 'vps1', 'Live entry: linked by buildRef, elapsed vs estimate, cost, model, surface + host');
 ok(v0.currentStep === 'Editing server/__init__.py' && v0.progress === 0.25 && !v0.stale, 'current activity + step progress');
 ok(lv.find((e) => e.changeId.endsWith('0002')).stale && lv.find((e) => e.changeId.endsWith('0002')).activityState === 'stale', 'a session silent for 10+ min shows "no word" (stale), not running forever');
+{
+  // closed in the Codebase changes banner + silent = not live any more; closed but still talking = still live
+  const closedQuiet = { ...sums[1], id: 'chg-20261021-aaaaaa0007', closed: iso(now - 60_000) };
+  const closedLive = { ...sums[0], id: 'chg-20261021-aaaaaa0008', closed: iso(now - 60_000) };
+  const l2 = hs.liveFromChanges([...sums, closedQuiet, closedLive], rows, now);
+  ok(!l2.some((e) => e.changeId.endsWith('0007')) && l2.some((e) => e.changeId.endsWith('0008')), 'Live: a closed entry that went quiet is gone; a closed one still reporting stays');
+}
 const bt = hs.builtRows(sums);
 ok(bt.length === 3 && !bt.some((r) => r.title === 'Just a question') && bt[0].id.endsWith('0006'), 'Built: finished builds newest first; question-only entries left out');
 const b3 = bt.find((r) => r.id.endsWith('0003'));

@@ -691,6 +691,20 @@ export function BuildBanner() {
         </button>
         {isStuckLive(first, now) && <TrashBuild e={first} />}
         {fold}
+        {full && running.length > 1 && (
+          // Every other build, each with its own trash can when stuck (Oct 22 2026: trashing the first one used to bring
+          // the next stuck build up in the same spot, so it looked like the trash did nothing).
+          <ul className="axp-build-manager-banner__more">
+            {running.slice(1).map((e) => (
+              <li key={e.changeId}>
+                <Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={12} />
+                <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}{e.title}</span>
+                <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={isStuckLive(e, now) ? 'warn' : undefined}>{dur(e.startedAt ? now - e.startedAt : null)}</Badge>
+                {isStuckLive(e, now) && <TrashBuild e={e} />}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }

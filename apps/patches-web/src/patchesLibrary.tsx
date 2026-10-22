@@ -3,7 +3,7 @@
  * Settings (one tab per app), the settings hook in the application menu + the context menu, and the actions behind them.
  */
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Icon, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
+import { Icon, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
 import type { AxfRuntime } from './axf/core';
 import {
@@ -211,6 +211,35 @@ function runGuestItem(rt: AxfRuntime, tabId: string, id: string) {
 
 /* ---------------- the library ---------------- */
 
+/**
+ * The app tabs, above the application menu (Brett, Oct 22 2026: "tabs for the apps above the application menu"): the
+ * `patches-tabs` nav-menu asset drawn as one row in the page slot `app.frame.head`. The layout's nav region accepts
+ * nothing (`slots.nav: []`), so the tabs aren't drawn a second time under the menu.
+ */
+function AppTabs() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const nav = useAsset('nav-menu');
+  const items = nav.data.sections.flatMap((sec) => sec.items).filter((it) => TABS.some((t) => t.id === it.view) && rt.gate(it.requires) !== 'hide');
+  if (!items.length) return null;
+  return (
+    <nav className={`fx-nav fx-nav--${nav.data.style} patches-tabs`} data-orient="horizontal" aria-label="Apps">
+      <div className="fx-nav__section" role="tablist">
+        {items.map((it) => {
+          const on = state.view === it.view;
+          return (
+            <button key={it.id} type="button" role="tab" aria-selected={on} className={`fx-nav__item ${on ? 'is-active' : ''}`} title={it.label}
+              data-fx-ctx-target="nav-item" data-fx-ctx-payload={it.view} onClick={() => rt.navigate(it.view)}>
+              <Icon name={it.icon} size={17} />
+              <span className="fx-nav__text">{it.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
 export const patchesLibrary: AxfWebLibrary = {
   id: 'ai.amberx.axf.patches',
   label: 'Patches',
@@ -245,5 +274,8 @@ export const patchesLibrary: AxfWebLibrary = {
     { id: 'patches.ctx.canvas', target: 'canvas', order: 1, items: [{ id: 'patches.settings', label: 'Settings', icon: 'settings', action: 'app.settings' }] },
     { id: 'patches.ctx.tab', target: 'nav-item', order: 1, items: [{ id: 'patches.settings.tab', label: 'Settings for this app', icon: 'settings', action: 'patches.settings.here' }, { id: 'patches.settings', label: 'Settings', icon: 'settings', action: 'app.settings' }] },
   ],
-  slots: { 'app.frame.top': [{ id: 'patches.strip', order: 10, render: () => <BannerStrip /> }] },
+  slots: {
+    'app.frame.head': [{ id: 'patches.tabs', order: 10, render: () => <AppTabs /> }],
+    'app.frame.top': [{ id: 'patches.strip', order: 10, render: () => <BannerStrip /> }],
+  },
 };

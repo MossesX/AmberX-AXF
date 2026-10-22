@@ -19,7 +19,7 @@
 .axp-app-tabs__open { display: inline-flex; align-items: center; justify-content: center; flex: none; padding: 0 calc(var(--fx-space) * 0.6); color: var(--fx-muted) }
 .axp-app-tabs__open:hover { color: var(--fx-accent) }
 /* Covers everything below the tab bar (chrome, page); the banners above the bar stay visible; dialogs and toasts stay above it.
-   --axp-app-tabs-bottom is where the bar ends (set by the tab bar; banners above it change it). */
+   --axp-app-tabs-bottom is where the page starts, under the tab bar, the menu bar and the banners (set by the tab bar). */
 .axp-app-tabs-cover { position: fixed; left: 0; right: 0; bottom: 0; top: var(--axp-app-tabs-bottom, var(--axp-app-tabs-h)); z-index: 40; background: var(--fx-bg); display: none }
 .axp-app-tabs-cover.is-showing { display: block }
 .axp-app-tabs-cover__frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; background: transparent }
