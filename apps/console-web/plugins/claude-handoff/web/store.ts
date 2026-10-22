@@ -5,7 +5,7 @@ import { pluginApi } from '@console/plugins';
 
 export const FOLDER = 'claude-handoff';
 export const ID = 'ai.amberx.axf.console.claude-handoff';
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 export const VIEW = 'claude-handoff';
 export const api = pluginApi(FOLDER, 'The Claude handoff plugin');
 

@@ -15,10 +15,13 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './claude-handoff.css';
 import { appMenu } from './menu';
 import { InstallerDialog } from './installer';
+import { loadLook } from './look';
+import { LookDialog } from './lookDialog';
 import { FOLDER, ID, VERSION, VIEW, publish, start } from './store';
-import { HandoffBanner, HandoffSettings, HandoffView } from './ui';
+import { HandoffBanner, HandoffSettings, HandoffView, PreviewView } from './ui';
 
 const INSTALLER = 'claude-handoff.installer';
+const LOOK = 'claude-handoff.look';
 
 export const plugin: AxfWebLibrary = {
   appMenu,
@@ -27,14 +30,22 @@ export const plugin: AxfWebLibrary = {
   version: VERSION,
   register(rt) {
     start(rt);
+    void loadLook(rt); // the installer look (layout, rolled themes) from axHub's data server
+    rt.actions.register('claude-handoff.look', () => rt.openDialog(LOOK), { label: 'Installer look: layouts, gauges, meters, themes, roll' });
+    rt.actions.register('claude-handoff.preview', () => rt.navigate('claude-handoff-preview'), { label: 'Watch the Claude handoff installer run (preview)' });
     rt.actions.register('claude-handoff.open', () => rt.navigate(VIEW), { label: 'Open Claude handoff' });
     rt.actions.register('claude-handoff.assemble', () => rt.openDialog(INSTALLER), { label: 'Assemble the Claude handoff prompt' });
     rt.actions.register('claude-handoff.publish', () => { void publish(); }, { label: 'Publish the Claude handoff kit' });
   },
-  views: { [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'clone', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
-  nav: { label: 'Tools', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }] },
+  views: {
+    'claude-handoff-preview': { title: 'Installer preview', icon: 'play', keywords: ['installer', 'preview', 'demo', 'handoff', 'gauges', 'progress'], render: () => <PreviewView /> },
+    [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'clone', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
+  nav: { label: 'Tools', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }, { id: 'claude-handoff-preview', label: 'Installer preview', icon: 'play', view: 'claude-handoff-preview' }] },
   // the installer window Assemble prompt opens (searchable: false, it starts the real work)
-  dialogs: { [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> } },
+  dialogs: {
+    [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> },
+    [LOOK]: { title: 'Installer look', icon: 'palette', render: () => <LookDialog /> },
+  },
   contextMenu: [{ id: 'claude-handoff.default', target: 'default', order: 93, items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', action: 'claude-handoff.open' }] }],
   // After Codebase changes (4.7) and the push banner (4.8), before approvals (5).
   banners: [{ id: 'claude-handoff', label: 'Claude handoff reminder', icon: 'rocket', settingsTab: 'claude-handoff', order: 4.9, render: () => <HandoffBanner /> }],

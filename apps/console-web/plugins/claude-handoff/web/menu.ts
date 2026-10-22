@@ -13,6 +13,8 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
       { id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', action: 'nav:claude-handoff' },
       { id: 'claude-handoff-assemble', label: 'Assemble the handoff prompt', icon: 'copy', action: 'claude-handoff.assemble' },
       { id: 'claude-handoff-publish', label: 'Publish the handoff kit', icon: 'upload', action: 'claude-handoff.publish' },
+      { id: 'claude-handoff-preview', label: 'Installer preview', icon: 'play', action: 'nav:claude-handoff-preview' },
+      { id: 'claude-handoff-look', label: 'Installer look…', icon: 'palette', action: 'claude-handoff.look' },
     ],
   },
   { id: 'claude-handoff.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'claude-handoff-settings', label: 'Claude handoff settings', icon: 'rocket', action: 'settings.open:claude-handoff' }] },

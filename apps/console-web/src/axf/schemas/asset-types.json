@@ -456,6 +456,71 @@
         ]
       }
     },
+    "gauge": {
+      "label": "Gauge",
+      "group": "Controls",
+      "icon": "chart",
+      "description": "How gauges look (speed, files, data dials): shape, thickness, needle, ticks, ends and readout. Every gauge in every app follows the active gauge asset.",
+      "required": [
+        "shape",
+        "thickness",
+        "needle",
+        "ticks",
+        "cap",
+        "readout"
+      ],
+      "enums": {
+        "shape": [
+          "arc",
+          "ring",
+          "bar",
+          "digital"
+        ],
+        "cap": [
+          "round",
+          "square"
+        ],
+        "readout": [
+          "big",
+          "small",
+          "none"
+        ]
+      },
+      "optional": true
+    },
+    "meter": {
+      "label": "Progress meter",
+      "group": "Controls",
+      "icon": "chart",
+      "description": "How progress meters look (install bars, step bars): shape, height, corners, stripes, motion and fill. Every progress meter in every app follows the active meter asset.",
+      "required": [
+        "shape",
+        "height",
+        "radius",
+        "stripes",
+        "animated",
+        "fill"
+      ],
+      "enums": {
+        "shape": [
+          "bar",
+          "segments",
+          "steps",
+          "line"
+        ],
+        "radius": [
+          "pill",
+          "soft",
+          "square"
+        ],
+        "fill": [
+          "solid",
+          "gradient",
+          "soft"
+        ]
+      },
+      "optional": true
+    },
     "banner": {
       "label": "Banner",
       "group": "Chrome",

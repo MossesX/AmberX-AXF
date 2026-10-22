@@ -175,6 +175,8 @@ npx = __import__("shutil").which("npx")
 if npx:
     r = subprocess.run([npx, "-y", "tsx", str(HERE / "installer-check.mts")], capture_output=True, text=True, cwd=str(REPO), env=ORIG_ENV)
     check(r.returncode == 0, f"installer window plan (installer-check.mts): {(r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else ''}")
+    r = subprocess.run([npx, "-y", "tsx", str(HERE / "look-check.mts")], capture_output=True, text=True, cwd=str(REPO), env=ORIG_ENV)
+    check(r.returncode == 0, f"installer look: tree, marks, roll (look-check.mts): {(r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else ''}")
 
 r = subprocess.run(["node", str(REPO / "framework/cli/plugin-lifecycle.mjs"), "check", "claude-handoff"], capture_output=True, text=True, env={k: v for k, v in os.environ.items() if k not in ("AXF_ROOT", "HOME")} | {"HOME": str(HOME)})
 check(r.returncode == 0, f"lifecycle check: {(r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else ''}")

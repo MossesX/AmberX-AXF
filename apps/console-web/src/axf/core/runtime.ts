@@ -9,7 +9,7 @@ import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
@@ -1164,6 +1164,9 @@ export class AxfRuntime {
       toolbarStyle(this.asset('toolbar').data),
       navMenuStyle(this.asset('nav-menu').data),
       appMenuStyle(this.asset('app-menu').data),
+      // optional control types (older apps without them get the defaults)
+      gaugeStyle(this.assetOrNull('gauge')?.data),
+      meterStyle(this.assetOrNull('meter')?.data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

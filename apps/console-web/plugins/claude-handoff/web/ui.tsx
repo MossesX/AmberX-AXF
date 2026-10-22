@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { InstallerDialog } from './installer';
 import {
   type ClaudeAi, type ClaudeItem, type Config, ago, api, dismissReminder, publish, refresh, set, until, useStore,
 } from './store';
@@ -203,6 +204,22 @@ function Preview() {
         {pick && (pick.path.endsWith('.md') ? <div className="axp-claude-handoff__doc"><Markdown text={pick.text} /></div> : <TextField label={pick.path} value={pick.text} onChange={() => undefined} rows={14} mono />)}
       </div>
     </Container>
+  );
+}
+
+/* ---------------- Tools → Installer preview ---------------- */
+
+export function PreviewView() {
+  const rt = useRuntime();
+  return (
+    <div className="fx-stack fx-stack--lg axp-claude-handoff">
+      <header className="fx-pagehead">
+        <div><p className="fx-eyebrow">Tools</p><h1>Installer preview</h1></div>
+        <Button icon="palette" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
+      </header>
+      <p className="axp-claude-handoff__lead">The Claude handoff installer running on this project's real files, with example machines. Nothing is published: the prompt at the end comes from a preview build. Change its layout, gauges, meters and themes with <strong>Look</strong> (also Tools → Installer look).</p>
+      <div className="axp-claude-handoff__previewbox"><InstallerDialog demo /></div>
+    </div>
   );
 }
 

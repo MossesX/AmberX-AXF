@@ -1,0 +1,340 @@
+{
+  "$comment": "Gauge + progress meter control assets (engines/components.ts). Regenerate expected with `npx -y tsx framework/spec/check-meters.mts --write`.",
+  "cases": [
+    {
+      "fn": "normalizeGauge",
+      "name": "empty = defaults",
+      "input": {},
+      "expected": {
+        "shape": "arc",
+        "thickness": 9,
+        "needle": true,
+        "ticks": 0,
+        "cap": "round",
+        "readout": "big"
+      }
+    },
+    {
+      "fn": "normalizeGauge",
+      "name": "null = defaults",
+      "input": null,
+      "expected": {
+        "shape": "arc",
+        "thickness": 9,
+        "needle": true,
+        "ticks": 0,
+        "cap": "round",
+        "readout": "big"
+      }
+    },
+    {
+      "fn": "normalizeGauge",
+      "name": "valid kept",
+      "input": {
+        "shape": "ring",
+        "thickness": 12,
+        "needle": false,
+        "ticks": 4,
+        "cap": "square",
+        "readout": "small"
+      },
+      "expected": {
+        "shape": "ring",
+        "thickness": 12,
+        "needle": false,
+        "ticks": 4,
+        "cap": "square",
+        "readout": "small"
+      }
+    },
+    {
+      "fn": "normalizeGauge",
+      "name": "unknown shape + out of range numbers",
+      "input": {
+        "shape": "pie",
+        "thickness": 99,
+        "ticks": -3,
+        "cap": "blunt",
+        "needle": "yes",
+        "readout": "huge"
+      },
+      "expected": {
+        "shape": "arc",
+        "thickness": 16,
+        "needle": true,
+        "ticks": 0,
+        "cap": "round",
+        "readout": "big"
+      }
+    },
+    {
+      "fn": "normalizeGauge",
+      "name": "fractional thickness rounds",
+      "input": {
+        "thickness": 7.6,
+        "ticks": 2.4
+      },
+      "expected": {
+        "shape": "arc",
+        "thickness": 8,
+        "needle": true,
+        "ticks": 2,
+        "cap": "round",
+        "readout": "big"
+      }
+    },
+    {
+      "fn": "normalizeMeter",
+      "name": "empty = defaults",
+      "input": {},
+      "expected": {
+        "shape": "bar",
+        "height": 12,
+        "radius": "pill",
+        "stripes": true,
+        "animated": true,
+        "fill": "solid",
+        "segments": 20
+      }
+    },
+    {
+      "fn": "normalizeMeter",
+      "name": "valid kept",
+      "input": {
+        "shape": "segments",
+        "height": 16,
+        "radius": "square",
+        "stripes": false,
+        "animated": false,
+        "fill": "gradient",
+        "segments": 12
+      },
+      "expected": {
+        "shape": "segments",
+        "height": 16,
+        "radius": "square",
+        "stripes": false,
+        "animated": false,
+        "fill": "gradient",
+        "segments": 12
+      }
+    },
+    {
+      "fn": "normalizeMeter",
+      "name": "clamps",
+      "input": {
+        "shape": "donut",
+        "height": 0,
+        "radius": "round",
+        "fill": "neon",
+        "segments": 400
+      },
+      "expected": {
+        "shape": "bar",
+        "height": 2,
+        "radius": "pill",
+        "stripes": true,
+        "animated": true,
+        "fill": "solid",
+        "segments": 40
+      }
+    },
+    {
+      "fn": "gaugeStyle",
+      "name": "default",
+      "input": {},
+      "expected": {
+        "vars": {
+          "--fx-gauge-thickness": "9",
+          "--fx-gauge-cap": "round"
+        },
+        "attrs": {
+          "data-fx-gauge": "arc",
+          "data-fx-gauge-readout": "big",
+          "data-fx-gauge-needle": "on"
+        }
+      }
+    },
+    {
+      "fn": "gaugeStyle",
+      "name": "digital square",
+      "input": {
+        "shape": "digital",
+        "thickness": 4,
+        "needle": false,
+        "ticks": 0,
+        "cap": "square",
+        "readout": "none"
+      },
+      "expected": {
+        "vars": {
+          "--fx-gauge-thickness": "4",
+          "--fx-gauge-cap": "butt"
+        },
+        "attrs": {
+          "data-fx-gauge": "digital",
+          "data-fx-gauge-readout": "none",
+          "data-fx-gauge-needle": "off"
+        }
+      }
+    },
+    {
+      "fn": "meterStyle",
+      "name": "default",
+      "input": {},
+      "expected": {
+        "vars": {
+          "--fx-meter-h": "12px",
+          "--fx-meter-radius": "999px"
+        },
+        "attrs": {
+          "data-fx-meter": "bar",
+          "data-fx-meter-fill": "solid",
+          "data-fx-meter-stripes": "on",
+          "data-fx-meter-motion": "on"
+        }
+      }
+    },
+    {
+      "fn": "meterStyle",
+      "name": "steps square",
+      "input": {
+        "shape": "steps",
+        "height": 16,
+        "radius": "square",
+        "stripes": false,
+        "animated": false,
+        "fill": "solid"
+      },
+      "expected": {
+        "vars": {
+          "--fx-meter-h": "16px",
+          "--fx-meter-radius": "0"
+        },
+        "attrs": {
+          "data-fx-meter": "steps",
+          "data-fx-meter-fill": "solid",
+          "data-fx-meter-stripes": "off",
+          "data-fx-meter-motion": "off"
+        }
+      }
+    },
+    {
+      "fn": "meterStyle",
+      "name": "soft radius",
+      "input": {
+        "radius": "soft",
+        "fill": "soft"
+      },
+      "expected": {
+        "vars": {
+          "--fx-meter-h": "12px",
+          "--fx-meter-radius": "var(--fx-radius-sm)"
+        },
+        "attrs": {
+          "data-fx-meter": "bar",
+          "data-fx-meter-fill": "soft",
+          "data-fx-meter-stripes": "on",
+          "data-fx-meter-motion": "on"
+        }
+      }
+    },
+    {
+      "fn": "meterCells",
+      "name": "0%",
+      "input": {
+        "p": 0,
+        "segments": 20
+      },
+      "expected": 0
+    },
+    {
+      "fn": "meterCells",
+      "name": "50% of 20",
+      "input": {
+        "p": 50,
+        "segments": 20
+      },
+      "expected": 10
+    },
+    {
+      "fn": "meterCells",
+      "name": "99% of 20",
+      "input": {
+        "p": 99,
+        "segments": 20
+      },
+      "expected": 19
+    },
+    {
+      "fn": "meterCells",
+      "name": "100% of 12",
+      "input": {
+        "p": 100,
+        "segments": 12
+      },
+      "expected": 12
+    },
+    {
+      "fn": "meterCells",
+      "name": "over 100 clamps",
+      "input": {
+        "p": 140,
+        "segments": 10
+      },
+      "expected": 10
+    },
+    {
+      "fn": "meterCells",
+      "name": "segments clamp to 4",
+      "input": {
+        "p": 50,
+        "segments": 1
+      },
+      "expected": 2
+    },
+    {
+      "fn": "gaugeTicks",
+      "name": "none",
+      "input": 0,
+      "expected": []
+    },
+    {
+      "fn": "gaugeTicks",
+      "name": "one = middle",
+      "input": 1,
+      "expected": [
+        0.5
+      ]
+    },
+    {
+      "fn": "gaugeTicks",
+      "name": "five",
+      "input": 5,
+      "expected": [
+        0,
+        0.25,
+        0.5,
+        0.75,
+        1
+      ]
+    },
+    {
+      "fn": "gaugeTicks",
+      "name": "over 10 clamps",
+      "input": 25,
+      "expected": [
+        0,
+        0.111,
+        0.222,
+        0.333,
+        0.444,
+        0.556,
+        0.667,
+        0.778,
+        0.889,
+        1
+      ]
+    }
+  ]
+}
