@@ -45,7 +45,7 @@ const features = [
 const queueState = { ...qc.emptyQueue(), steps: { 'x.a': { estimate: '1.5 h', steps: [{ text: 's1', estimate: '30 min', done: true, doneAt: '2026-10-21T09:00:00Z' }, { text: 's2', estimate: '30 min' }, { text: 's3', estimate: '30 min' }] } } };
 const queue = qc.computeQueue(features, queueState);
 const pending = [
-  { id: 'p-open', title: 'Open item', model: 'Fable', status: 'pending', planId: 'x.b', createdAt: '2026-10-20T00:00:00Z', estimate: '2 h', subPrompts: [] },
+  { id: 'p-open', title: 'Open item', model: 'Fable', status: 'pending', planId: 'x.b', createdAt: '2026-10-20T00:00:00Z', estimate: '2 h', subPrompts: [], source: 'chat' },
   { id: 'p-steps', title: 'Stepped item', model: 'Opus', status: 'unsafe', createdAt: '2026-10-19T00:00:00Z', subPrompts: [{ text: 'one', at: '', estimate: '20 min', done: true }, { text: 'two', at: '', estimate: '25 min' }] },
   { id: 'p-claim', title: 'Claims a feature', model: 'Sonnet', status: 'pending', planId: 'f.claimed', createdAt: '2026-10-18T00:00:00Z', subPrompts: [] },
   { id: 'p-done', title: 'Done item', model: 'Opus', status: 'complete', createdAt: '2026-10-17T00:00:00Z', subPrompts: [] },
@@ -79,6 +79,12 @@ ok(tot.all.noEstimate === rows.filter((r) => r.left == null).length && tot.all.n
 ok(m.filterRows(rows, { model: 'Fable' }).every((r) => r.model === 'Fable'), 'filter by model');
 ok(m.filterRows(rows, { sources: ['plan'] }).every((r) => r.source === 'plan'), 'filter by source');
 ok(m.filterRows(rows, { split: true }).every((r) => r.needsSplit), 'filter needs split');
+ok(m.originOf('pending', 'chat') === 'prompt' && m.originOf('pending', 'Console') === 'prompt' && m.originOf('pending', 'artifact') === 'prompt' && m.originOf('pending', 'claude-code') === 'prompt', 'chat, console, claude.ai and Claude Code pending items came from a prompt');
+ok(m.originOf('pending', 'fable-rebuilds') === 'auto' && m.originOf('pending', 'feature-assist') === 'auto' && m.originOf('pending', '') === 'auto' && m.originOf('queue', 'chat') === 'auto', 'tool-parked items, unknown sources and queue/plan rows are automatic');
+ok(rows.every((r) => m.ORIGINS.includes(r.origin)) && rows.filter((r) => r.source !== 'pending').every((r) => r.origin === 'auto'), 'every row has an origin; queue steps and plan features are automatic');
+ok(m.filterRows(rows, { origins: ['auto'] }).every((r) => r.origin === 'auto') && m.filterRows(rows, { origins: ['prompt'] }).every((r) => r.origin === 'prompt'), 'filter by origin');
+ok(rows.find((r) => r.key === 'pending:p-open').origin === 'prompt' && m.filterRows(rows, { origins: ['prompt'] }).some((r) => r.key === 'pending:p-open'), 'a pending item added from a chat shows under From a prompt');
+ok(m.filterRows(rows, { origins: [] }).length === 0 && m.filterRows(rows).length === rows.length, 'no origin ticked → nothing; default → everything');
 ok(m.filterRows(rows, { status: 'unsafe' }).length === 1, 'filter by status');
 const byLeft = m.sortRows(rows, 'left');
 ok(byLeft.at(-1).left == null && byLeft[0].left <= byLeft[1].left, 'sort by time left: shortest first, no estimate last');

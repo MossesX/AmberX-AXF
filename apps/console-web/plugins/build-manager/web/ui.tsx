@@ -1,7 +1,7 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
-import { filterRows, GONE_LABEL, goneRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import { filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
@@ -24,6 +24,7 @@ const dur = (ms: number | null) => {
 /* ---------------- small pieces ---------------- */
 
 const SOURCE_ICON: Record<Source, string> = { pending: 'clock', queue: 'play', plan: 'layers' };
+const ORIGIN_ICON: Record<Origin, string> = { prompt: 'user', auto: 'zap' };
 
 function ModelChip({ model }: { model: string }) {
   return <span className={`axp-build-manager__model is-${model.toLowerCase()}`} title={`Build with ${model}`}>{model}</span>;
@@ -407,6 +408,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
         </span>
         <span className="axp-build-manager__chips">
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
+          {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically (${row.addedBy || 'no source recorded'})`}>auto</Badge>}
           <ModelChip model={row.model} />
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
@@ -486,6 +488,7 @@ export function BuildManagerView() {
   const [sources, setSources] = useState<Source[]>(() => enabledSources());
   const [status, setStatus] = useState('');
   const [split, setSplit] = useState(false);
+  const [origins, setOrigins] = useState<Origin[]>([...ORIGINS]);
   const [sort, setSort] = useState<SortKey>(() => defaultSort());
   const [open, setOpen] = useState<Set<string>>(() => { const f = takeFocus(); return new Set(f ? [f] : []); });
   useEffect(() => { void loadList(); }, []);
@@ -494,7 +497,7 @@ export function BuildManagerView() {
   useEffect(() => { const f = [...open][0]; if (f) setTimeout(() => document.getElementById(`axp-bm-${f.replace(/[^a-z0-9-]/gi, '-')}`)?.scrollIntoView({ block: 'center' }), 50); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const allowed = enabledSources();
   const base = useMemo(() => s.rows.filter((r) => allowed.includes(r.source)), [s.rows, allowed.join()]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, status, split, sort, query]);
+  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, origins, status, split, sort, query]);
   // a search that hits only other tabs says so
   const hits = useMemo(() => query ? {
     remaining: base.filter((r) => matches(query, r)).length,
@@ -559,6 +562,13 @@ export function BuildManagerView() {
             <button key={x} type="button" className={`axp-build-manager__toggle${sources.includes(x) ? ' is-on' : ''}`} aria-pressed={sources.includes(x)}
               onClick={() => setSources((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))}>
               <Icon name={SOURCE_ICON[x]} size={11} />{SOURCE_LABEL[x]} <span className="fx-muted">{base.filter((r) => r.source === x).length}</span>
+            </button>
+          ))}
+          {ORIGINS.map((x) => (
+            <button key={x} type="button" className={`axp-build-manager__toggle${origins.includes(x) ? ' is-on' : ''}`} aria-pressed={origins.includes(x)}
+              title={x === 'prompt' ? 'Asked for in a chat or Claude Code session, the Add form or the claude.ai page' : 'Parked by a tool (Fable rebuilds, feature assistant, plan sync), build-queue steps and plan features'}
+              onClick={() => setOrigins((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))}>
+              <Icon name={ORIGIN_ICON[x]} size={11} />{ORIGIN_LABEL[x]} <span className="fx-muted">{base.filter((r) => r.origin === x).length}</span>
             </button>
           ))}
           <button type="button" className={`axp-build-manager__toggle${split ? ' is-on' : ''}`} aria-pressed={split} onClick={() => setSplit(!split)}>
