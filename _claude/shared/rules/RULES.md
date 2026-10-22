@@ -19,6 +19,7 @@ These are shared files (axhub-projects@1). This folder syncs with `/projects/_sh
 ## How to work with him
 - He works mostly from his phone (Samsung Galaxy S26 Ultra), often in **Moshi** (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.
 - When he says "wait until I say continue", do nothing more until he does.
+- **Ask with cards (Oct 22 2026, Brett):** whenever you need an answer from him (a model pick, a choice, a yes/no, what to do next), ask with tap-to-pick choices (AskUserQuestion cards, recommended option first) instead of asking him to type a reply. Never answer your own questions or approvals for him (no auto-typing into the chat box).
 
 ## Memory, rules and decisions
 - Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.
