@@ -105,6 +105,7 @@ check("menu: 'tools'" in (HERE / "web" / "menu.ts").read_text("utf-8"), "a Tools
 s = c.get("/p/status").json()
 check(s["kit"] is None and s["current"] is False and s["canPublish"] is True, "status: no kit yet, can publish")
 check(any(m["host"] == "console" for m in s["machines"]), "the console's own ~/.claude counts as a machine")
+check(c.get("/p/last-assembly").status_code == 404 and c.post("/p/last-assembly/run", json={}).status_code == 409, "no last assembly yet: 404, a run can't attach")
 
 # reminder: one alert, a fixed key, overwritten
 start = mod._state()["startedAt"] if mod._state().get("startedAt") else None
@@ -139,6 +140,16 @@ check(s["current"] is False and "_claude/memory/decisions.md" in s["changes"]["c
 a = c.post("/p/assemble", json={"publish": True}).json()
 check("MossesX/test-handoff" in a["prompt"] and a["current"] is True and a["published"]["pushed"] is True, "assemble publishes first, then returns the prompt")
 check("new decision" in git("show", "main:_claude/handoff/context/claude__memory__decisions.md", cwd=BARE), "the published context copy has the change")
+
+# the last assembly: kept with its plan, the installer's run attached, served back for Last assembly
+last = c.get("/p/last-assembly").json()
+check(last["result"]["prompt"] == a["prompt"] and last["result"]["published"]["pushed"] is True and isinstance(last["plan"], dict) and last["plan"].get("repo") and last["run"] is None, "last assembly saved: result, plan, no run yet")
+run = {"elapsed": 75000, "read": 4096, "written": 2048, "filesDone": 12, "failed": "", "log": ["[0:00] Installing", "[1:15] Install complete: the prompt is ready"]}
+check(c.post("/p/last-assembly/run", json=run).status_code == 200 and c.get("/p/last-assembly").json()["run"]["log"][-1].endswith("ready"), "the installer's finished run is attached")
+check(c.post("/p/last-assembly/run", json={**run, "extra": 1}).status_code == 400, "unknown run field refused")
+check(c.post("/p/last-assembly/run", json={**run, "log": ["x" * 401]}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "log": ["x"] * 201}).status_code == 400, "over-long log refused")
+check(c.post("/p/last-assembly/run", json={**run, "elapsed": -1}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "filesDone": True}).status_code == 400, "bad numbers refused")
+check(oct((mod._data() / "last-assembly.json").stat().st_mode & 0o777) == "0o600", "last-assembly.json is private (0600)")
 
 # claude.ai items
 ca = c.get("/p/claude-ai").json()

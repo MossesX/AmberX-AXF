@@ -46,7 +46,7 @@ export function HandoffView() {
   return (
     <div className="fx-stack fx-stack--lg axp-claude-handoff">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Tools</p><h1>Claude handoff</h1></div></header>
-      <p className="axp-claude-handoff__lead">One prompt that moves this project to a new Claude account: it clones the repo and sets up the claude.ai Project, instructions, memory and user files from the handoff kit in <code>_claude/handoff/</code>, which this page keeps current.</p>
+      <p className="axp-claude-handoff__lead">One prompt that moves this project to a new Claude account: it keeps working on the same repo and sets up the claude.ai Project, instructions, memory and user files from the handoff kit in <code>_claude/handoff/</code>, which this page keeps current.</p>
 
       <Container title="Assemble the prompt" icon="rocket">
         <div className="fx-stack">
@@ -54,9 +54,16 @@ export function HandoffView() {
             <Button tone="primary" icon="rocket" disabled={!!s.busy} onClick={() => rt.openDialog('claude-handoff.installer')}>Assemble prompt</Button>
             {s.assembled && <Button icon="copy" onClick={() => copy(rt, s.assembled!.prompt, 'Prompt')}>Copy again</Button>}
           </div>
-          <p className="axp-claude-handoff__meta">Opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code clones the repo by itself).</p>
+          <p className="axp-claude-handoff__meta">Opens the installer: it publishes the kit when it is out of date, walks every file group by group, then hands you the prompt. Paste it into a new session on the new account (claude.ai/code works in the same repo, MossesX/AmberX-AXF: no new repo, no fork).</p>
           {s.assembled?.note && <Note tone="warning">{s.assembled.note}</Note>}
           {s.assembled && <TextField label="The handoff prompt" value={s.assembled.prompt} onChange={() => undefined} rows={14} mono />}
+        </div>
+      </Container>
+
+      <Container title="Last assembly" icon="clock" actions={<Button tone="ghost" icon="eye" onClick={() => rt.openDialog('claude-handoff.last')}>Open</Button>}>
+        <div className="fx-stack">
+          <p className="axp-claude-handoff__meta">{st?.state.lastAssembledAt ? `Assembled ${ago(st.state.lastAssembledAt)}.` : 'No prompt assembled on this console yet.'} Opens the installer's results page from that run: every group and step it went through, its log, the prompt and what was published.</p>
+          <div><Button icon="eye" disabled={!st?.state.lastAssembledAt} onClick={() => rt.openDialog('claude-handoff.last')}>Open the results</Button></div>
         </div>
       </Container>
 
@@ -170,7 +177,7 @@ function Machines() {
           <Button icon="copy" onClick={() => copy(rt, HOOK, 'Hook command')}>Copy: install the hook</Button>
           <Button icon="copy" onClick={() => copy(rt, COLLECT, 'Command')}>Copy: send now</Button>
         </div>
-        <p className="axp-claude-handoff__meta">Run in an AmberX-AXF clone on each machine (VPS, computers). The hook sends once an hour when a Claude Code session starts; it needs <code>AXF_TOKEN</code> to reach the console from outside it.</p>
+        <p className="axp-claude-handoff__meta">Run in AmberX-AXF's folder on each machine (VPS, computers). The hook sends once an hour when a Claude Code session starts; it needs <code>AXF_TOKEN</code> to reach the console from outside it.</p>
       </div>
     </Container>
   );

@@ -4,7 +4,7 @@
  *
  * Three kinds of sources, each recorded with where it lives and where it goes on the new account:
  *   - repo     instructions, rules, memory, specs and manifests in this repo (CLAUDE.md, _claude/, framework/spec, …):
- *              the new account reads them from its clone, so the kit only indexes them (path + hash) and copies a
+ *              the new account reads them from the same repo, so the kit only indexes them (path + hash) and copies a
  *              curated set into context/ for claude.ai Project knowledge;
  *   - user     files under a machine's ~/.claude (user CLAUDE.md, commands, agents, skills, settings hooks, auto-memory)
  *              collected by `handoff.mjs collect` on every machine: copied (secrets redacted) into user/<host>/;
@@ -330,7 +330,7 @@ export function buildKit(info) {
   put('SECRETS.md', secretsMd(P, secrets));
   put('SETUP.md', setupMd(P, hosts, claudeAi));
   const prompt = assemblePrompt(P);
-  put('PROMPT.md', `# The handoff prompt\n\nPaste this into a new session on the new Claude account (claude.ai/code is best: it can clone).\n\n${fence(prompt)}text\n${prompt}\n${fence(prompt)}\n`);
+  put('PROMPT.md', `# The handoff prompt\n\nPaste this into a new session on the new Claude account (claude.ai/code is best: it works on the repo itself).\n\n${fence(prompt)}text\n${prompt}\n${fence(prompt)}\n`);
 
   const fp = fingerprint({ repo, machines, claudeAi });
   const manifestOut = {
@@ -360,9 +360,9 @@ export function assemblePrompt(P) {
   return [
     `I'm moving my project "${P.displayName}" to this Claude account. Set everything up so development picks up exactly where it left off, built to the same spec and rules.`,
     '',
-    `Source of truth: the GitHub repo ${P.repo} (${P.visibility}), branch ${P.branch}. The handoff kit is in ${P.kit}/${at}.`,
+    `Source of truth: the GitHub repo ${P.repo} (${P.visibility}), branch ${P.branch}. Keep working on that same repo: never create a new repository, fork it or copy the project somewhere else; commit and push to ${P.repo} as before. The handoff kit is in ${P.kit}/${at}.`,
     '',
-    `1. Get the repo. In Claude Code (claude.ai/code or a terminal): clone ${P.url} (if access is refused, ask me to connect GitHub as ${P.repo.split('/')[0]} and give the Claude GitHub app access to the repo). In a claude.ai chat: read it through the GitHub connector.`,
+    `1. Open the repo ${P.url}. In Claude Code (claude.ai/code): work in ${P.repo} itself (if access is refused, ask me to connect GitHub as ${P.repo.split('/')[0]} and give the Claude GitHub app access to the repo). In a claude.ai chat: read it through the GitHub connector.`,
     `2. Read ${P.kit}/HANDOFF.md in full and follow it. It lists, in reading order, every instruction, rule, memory and spec file (all in the repo; CLAUDE.md imports the rules) and the files that lived outside the repo (claude.ai and ~/.claude on each machine), with their copies in ${P.kit}/.`,
     `3. Make the claude.ai Project: name "${P.displayName}", description from ${P.kit}/PROJECT.md, custom instructions = ${P.kit}/INSTRUCTIONS.md, knowledge = every file in ${P.kit}/context/. claude.ai has no API for Projects, so give me the name, description and instructions ready to paste and the list of files to upload, then wait while I create it.`,
     `4. Recreate the user-level files from ${P.kit}/user/ as ${P.kit}/USER-SCOPE.md says (user CLAUDE.md, commands, skills, agents, settings hooks, auto-memory) and point them at the repo files, not at copies.`,
@@ -395,7 +395,7 @@ function handoffMd(P, repo, context, hosts, claudeAi) {
 
 Repo **${P.repo}** · branch **${P.branch}**${P.commit ? ` · built at commit \`${P.commit.slice(0, 12)}\`` : ''} · kit date ${P.date}.
 
-**Routing rule for the new account:** the repo is the memory. Read the files below from the clone, at their repo
+**Routing rule for the new account:** the repo is the memory. Read the files below from the repo, at their repo
 paths, at the start of every session. The copies in this kit (\`context/\`, \`user/\`) exist only for places that can't
 read the repo (claude.ai Project knowledge, a fresh ~/.claude); whenever a copy and the repo differ, the repo wins.
 
@@ -476,7 +476,7 @@ Paste everything below the line into the Project's custom instructions.
 
 You are working on **${P.displayName}** (GitHub ${P.repo}, ${P.visibility}). ${P.description}
 
-**The repo is the memory and the source of truth.** At the start of every conversation read, from the repo (GitHub connector or a clone): \`CLAUDE.md\`, \`_claude/shared/rules/RULES.md\`, \`_claude/rules/RULES.md\`, \`_claude/memory/decisions.md\`, then what the task needs from \`_claude/memory/docs/\` and \`framework/spec/\`. The files in this Project's knowledge are copies from \`${P.kit}/context/\` (${P.date}); when they differ from the repo, the repo wins.
+**The repo is the memory and the source of truth.** At the start of every conversation read, from the repo (GitHub connector or Claude Code working in the repo): \`CLAUDE.md\`, \`_claude/shared/rules/RULES.md\`, \`_claude/rules/RULES.md\`, \`_claude/memory/decisions.md\`, then what the task needs from \`_claude/memory/docs/\` and \`framework/spec/\`. The files in this Project's knowledge are copies from \`${P.kit}/context/\` (${P.date}); when they differ from the repo, the repo wins.
 
 Rules that always apply (full text in the rules files):
 - Before any build, recommend Fable, Opus or Sonnet with one line of why and wait for Brett's pick; check the pending list (\`framework/plan/pending.json\`, or the Dev Console MCP \`pending_list\`).
@@ -525,7 +525,7 @@ ${(m.settings?.hooks ?? []).map((h) => `  - ${h.event}${h.matcher ? ` (${h.match
   return `${GEN(P)}
 # User-scope files (~/.claude on each machine)
 
-These live outside the repo, so a new account doesn't get them by cloning. Copies (secrets redacted) are in
+These live outside the repo, so a new account doesn't get them from the repo. Copies (secrets redacted) are in
 \`user/<host>/\`. The kit is refreshed from every machine that runs \`handoff.mjs collect\` (the SessionStart hook does it
 once an hour: \`node apps/console-web/plugins/claude-handoff/handoff.mjs hooks install\`).
 
@@ -536,7 +536,7 @@ once an hour: \`node apps/console-web/plugins/claude-handoff/handoff.mjs hooks i
 2. **Commands, agents, skills, output styles:** copy \`user/<host>/{commands,agents,skills,output-styles}/\` to the same
    folders under \`~/.claude/\`.
 3. **Auto-memory** (\`~/.claude/projects/<path>/memory/\`): Claude Code keys it by the project's folder path. Copy each
-   \`user/<host>/projects/<old path>/memory/\` to the folder that matches the new clone's path, or better, move lasting
+   \`user/<host>/projects/<old path>/memory/\` to the folder that matches the repo's folder on the new machine, or better, move lasting
    facts into \`_claude/memory/\` in the repo and commit.
 4. **Hooks:** don't copy settings.json. Install the same hooks with their own installers so paths are right:
    - \`bash deploy/claude-pick.sh --install\` (model/sign-in picker, claude-sync, codebase-changes hooks)
@@ -589,7 +589,7 @@ Tick each line; say which ones still need Brett.
 
 ## A. Repo access
 - [ ] GitHub connected as \`MossesX\`; the Claude GitHub app has access to ${P.repo} (and axHub, Build-Pilot).
-- [ ] The repo clones (claude.ai/code or a terminal); \`git log -1\` is at or after \`${P.commit.slice(0, 12) || 'the kit commit'}\`.
+- [ ] The new account works in ${P.repo} itself (claude.ai/code or the GitHub connector), not a new repo or a fork; \`git log -1\` is at or after \`${P.commit.slice(0, 12) || 'the kit commit'}\`.
 
 ## B. claude.ai Project
 - [ ] Project **${P.displayName}** created; description = PROJECT.md's description.
@@ -599,7 +599,7 @@ ${c.items.filter((it) => it.kind !== 'project').map((it) => `- [ ] ${it.kind}: $
 
 ## C. Claude Code (each machine)
 - [ ] \`bash deploy/claude-pick.sh --install\` on the VPS (and any computer): model picker, claude-sync, hooks.
-- [ ] \`claude-sync login\` then \`claude-sync sync\` in the clone: \`_claude/\` and \`data.shared\` match the hub (\`/projects/${P.name}/\`).
+- [ ] \`claude-sync login\` then \`claude-sync sync\` in the repo's folder: \`_claude/\` and \`data.shared\` match the hub (\`/projects/${P.name}/\`).
 - [ ] User files recreated from \`user/\` (USER-SCOPE.md)${hosts.length ? `: ${hosts.map((m) => m.host).join(', ')}` : ''}.
 - [ ] \`.mcp.json\` works: \`AXF_TOKEN\` set in the shell (SECRETS.md).
 

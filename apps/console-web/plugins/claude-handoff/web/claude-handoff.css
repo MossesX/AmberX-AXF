@@ -151,3 +151,7 @@
 @media (prefers-reduced-motion: reduce) {
   .axp-claude-handoff-inst__logo.is-busy, .axp-claude-handoff-inst__cat.is-working .axp-claude-handoff-inst__caticon, .axp-claude-handoff-inst__spin { animation: none }
 }
+/* results under a finished run (and Last assembly): takes the focus, so it gets a quiet focus ring */
+.axp-claude-handoff-inst__results { outline: none; border-radius: var(--fx-radius-md) }
+.axp-claude-handoff-inst__results:focus-visible { box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
+.axp-claude-handoff-inst__resultsmeta { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 0.85) }

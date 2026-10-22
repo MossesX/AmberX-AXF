@@ -11,7 +11,7 @@ project (the build's own repo goes in `repos`).
 
 ## Claude Code (VPS, any computer, headless, subagents)
 
-One line per machine (needs Node 18+ and a clone of AmberX-AXF; the hub token from `claude-sync login`, or
+One line per machine (needs Node 18+ and a checkout of AmberX-AXF; the hub token from `claude-sync login`, or
 `AXHUB_TOKEN`, lets it write to axHub from anywhere):
 
 ```bash

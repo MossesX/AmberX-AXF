@@ -14,7 +14,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './claude-handoff.css';
 import { appMenu } from './menu';
-import { InstallerDialog } from './installer';
+import { InstallerDialog, LastAssemblyDialog } from './installer';
 import { FILES_DIALOG, FILE_TAB_KIND, FileTab, FilesDialog } from './files';
 import { loadLook } from './look';
 import { LookDialog } from './lookDialog';
@@ -23,6 +23,7 @@ import { HandoffBanner, HandoffSettings, HandoffView, PreviewView } from './ui';
 
 const INSTALLER = 'claude-handoff.installer';
 const LOOK = 'claude-handoff.look';
+const LAST = 'claude-handoff.last';
 
 export const plugin: AxfWebLibrary = {
   appMenu,
@@ -37,15 +38,17 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-handoff.preview', () => rt.navigate('claude-handoff-preview'), { label: 'Watch the Claude handoff installer run (preview)' });
     rt.actions.register('claude-handoff.open', () => rt.navigate(VIEW), { label: 'Open Claude handoff' });
     rt.actions.register('claude-handoff.assemble', () => rt.openDialog(INSTALLER), { label: 'Assemble the Claude handoff prompt' });
+    rt.actions.register('claude-handoff.last', () => rt.openDialog(LAST), { label: 'Open the results of the last Claude handoff assembly' });
     rt.actions.register('claude-handoff.publish', () => { void publish(); }, { label: 'Publish the Claude handoff kit' });
   },
   views: {
     'claude-handoff-preview': { title: 'Installer preview', icon: 'play', keywords: ['installer', 'preview', 'demo', 'handoff', 'gauges', 'progress'], render: () => <PreviewView /> },
-    [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'clone', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
+    [VIEW]: { title: 'Claude handoff', icon: 'rocket', keywords: ['handoff', 'claude', 'account', 'prompt', 'memory', 'instructions', 'migrate', 'move', 'tools'], render: () => <HandoffView /> } },
   nav: { label: 'Tools', items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', view: 'claude-handoff' }, { id: 'claude-handoff-preview', label: 'Installer preview', icon: 'play', view: 'claude-handoff-preview' }] },
   // the installer window Assemble prompt opens (searchable: false, it starts the real work)
   dialogs: {
     [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> },
+    [LAST]: { title: 'Last assembly', icon: 'clock', render: (_p, close) => <LastAssemblyDialog close={close} /> },
     [LOOK]: { title: 'Installer look', icon: 'palette', render: () => <LookDialog /> },
     [FILES_DIALOG]: { title: 'Claude handoff files', icon: 'file', render: () => <FilesDialog /> },
   },

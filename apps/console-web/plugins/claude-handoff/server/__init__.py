@@ -233,7 +233,78 @@ def post_assemble(req: AssembleReq) -> dict[str, Any]:
             note = "The kit on GitHub is out of date and this console has no GITHUB_TOKEN to publish it: the prompt points at the last published kit."
     prompt = (published or {}).get("prompt") or _node("build", "--out", str(_data() / "preview" / "handoff"))["prompt"]
     _set_state(lastAssembledAt=_now_ms())
-    return {"prompt": prompt, "current": bool(status.get("current")), "published": published, "note": note, "kit": status.get("kit")}
+    out = {"prompt": prompt, "current": bool(status.get("current")), "published": published, "note": note, "kit": status.get("kit")}
+    _save_last(out)
+    return out
+
+
+# ---------------- the last assembly (Tools → Claude handoff → Last assembly reopens its results) ----------------
+
+def _last_path() -> Path:
+    return _data() / "last-assembly.json"
+
+
+def _save_last(result: dict[str, Any]) -> None:
+    """Keep the last assembly: its result (prompt, publish, note, kit) and the plan its installer walked."""
+    try:
+        plan = _node("plan")
+    except HTTPException:
+        plan = None
+    _write(_last_path(), {"$axf": "claude-handoff-last@1", "at": _now_ms(), "result": result, "plan": plan, "run": None})
+
+
+LOG_LINES, LOG_LINE_MAX = 200, 400
+
+
+def run_error(r: Any) -> str:
+    """The installer's finished-run summary, as the browser sends it (numbers, a short log, a failure text)."""
+    if not isinstance(r, dict):
+        return "run must be an object"
+    known = {"elapsed", "read", "written", "filesDone", "failed", "log"}
+    extra = set(r) - known
+    if extra:
+        return f"unknown field(s): {', '.join(sorted(extra))}"
+    for k in ("elapsed", "read", "written", "filesDone"):
+        v = r.get(k, 0)
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0 or v > 1e12:
+            return f"{k} must be a number ≥ 0"
+    if not isinstance(r.get("failed", ""), str) or len(r.get("failed", "")) > 2000:
+        return "failed must be text (at most 2000 characters)"
+    log = r.get("log", [])
+    if not isinstance(log, list) or len(log) > LOG_LINES or any(not isinstance(x, str) or len(x) > LOG_LINE_MAX for x in log):
+        return f"log must be at most {LOG_LINES} lines of at most {LOG_LINE_MAX} characters"
+    return ""
+
+
+@router.get("/last-assembly")
+def get_last_assembly() -> dict[str, Any]:
+    last = _read(_last_path(), None)
+    if not isinstance(last, dict) or not isinstance(last.get("result"), dict):
+        raise HTTPException(404, "No prompt has been assembled on this console yet.")
+    return last
+
+
+@router.post("/last-assembly/run")
+async def post_last_run(request: Request) -> dict[str, Any]:
+    """The installer reports how its run went (log, time, bytes, files), so Last assembly can show the same results page."""
+    body = await request.body()
+    if len(body) > 128_000:
+        raise HTTPException(413, "run summary too large")
+    try:
+        r = json.loads(body or b"{}")
+    except ValueError:
+        raise HTTPException(400, "not JSON")
+    err = run_error(r)
+    if err:
+        raise HTTPException(400, err)
+    with _lock:
+        last = _read(_last_path(), None)
+        if not isinstance(last, dict) or not isinstance(last.get("result"), dict):
+            raise HTTPException(409, "No assembly to attach the run to.")
+        last["run"] = {"elapsed": r.get("elapsed", 0), "read": r.get("read", 0), "written": r.get("written", 0),
+                       "filesDone": r.get("filesDone", 0), "failed": r.get("failed", ""), "log": r.get("log", [])}
+        _write(_last_path(), last)
+    return {"ok": True}
 
 
 @router.post("/preview")

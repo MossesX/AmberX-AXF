@@ -4,7 +4,7 @@
  * ~/.claude files for it. The console's server part runs the same commands.
  *
  *   node handoff.mjs status [--json]                 is the kit current? what changed since it was built
- *   node handoff.mjs build [--out <dir>] [--json]    write the kit (default _claude/handoff in this clone)
+ *   node handoff.mjs build [--out <dir>] [--json]    write the kit (default _claude/handoff in this checkout)
  *   node handoff.mjs prompt                          print the handoff prompt
  *   node handoff.mjs plan                            what the kit is made of, by category (JSON, sizes only)
  *   node handoff.mjs publish [--json]                build on GitHub's current branch and push _claude/handoff (GITHUB_TOKEN)
@@ -132,7 +132,7 @@ export function writeKit(kit, outDir) {
   return out;
 }
 
-/** Build on origin's current branch in a temporary worktree (so the kit matches what a new clone gets) and push it. */
+/** Build on origin's current branch in a temporary worktree (so the kit matches what GitHub serves) and push it. */
 export async function publish(dir = DATA, log = () => {}) {
   const { publishChange } = await import('../../../../framework/cli/plugin-lifecycle.mjs');
   let built = null;
@@ -145,7 +145,7 @@ export async function publish(dir = DATA, log = () => {}) {
     writeKit(built, join(wt, KIT_DIR));
     g(['-C', wt, 'add', '-A', '--', KIT_DIR]);
   }, 'Refresh the Claude handoff kit (_claude/handoff)', log, 'GitHub already has this handoff kit');
-  // keep this clone's copy the same as GitHub's, so status reads "current" until a source changes
+  // keep this checkout's copy the same as GitHub's, so status reads "current" until a source changes
   if (built && r.pushed) writeKit(built, join(ROOT, KIT_DIR));
   return { ...r, fingerprint: built?.fingerprint, files: built?.files.length ?? 0, prompt: built?.prompt ?? '' };
 }
