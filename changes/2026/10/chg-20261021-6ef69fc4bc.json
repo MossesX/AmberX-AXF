@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-6ef69fc4bc",
+  "createdAt": "2026-10-21T18:03:05.855Z",
+  "updatedAt": "2026-10-21T18:06:25.998Z",
+  "kind": "edit",
+  "title": "Console as before standalone; inside Patches drop the tab group and banners",
+  "asked": "Keep console the way it was unless running inside patches then remove tab group and let patches control tabs",
+  "repos": [
+    "MossesX/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Restore App tabs plugin; hide it when the console runs inside Patches",
+      "state": "done",
+      "startedAt": "2026-10-21T18:06:25.806Z",
+      "finishedAt": "2026-10-21T18:06:25.806Z"
+    },
+    {
+      "text": "Banners back on the console page standalone; only Patches' strip shows them inside Patches",
+      "state": "done",
+      "startedAt": "2026-10-21T18:06:25.866Z",
+      "finishedAt": "2026-10-21T18:06:25.866Z"
+    },
+    {
+      "text": "Tests, shots, docs, push",
+      "state": "done",
+      "startedAt": "2026-10-21T18:06:25.927Z",
+      "finishedAt": "2026-10-21T18:06:25.927Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Standalone console is as before: App tabs bar (Console / Pilot / axHub) restored and plugin banners on its page. Inside Patches the console shows no tab group and no plugin banners; Patches runs the tabs and shows the banners in its strip. The banners-in-console setting is gone.",
+    "branch": "feat/patches-banners",
+    "commits": [],
+    "tests": {
+      "menu-reach": {
+        "after": "ok"
+      },
+      "check-theme": {
+        "after": "ok"
+      },
+      "app-tabs lifecycle check": {
+        "after": "clean"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/patches-banners.md"
+    }
+  },
+  "closed": null,
+  "state": "done"
+}

@@ -1,0 +1,517 @@
+/**
+ * Settings library (web port of ai.amberx.axf.settings, Android: framework/android/lib-settings).
+ *
+ * A schema-driven Settings page with tabs. The standard tabs are Appearance, Account & security,
+ * Connections, Plugins and About; any library or plugin can add settings groups (generated controls)
+ * or panels (custom UI) to any tab through its AxfWebLibrary (`settings`, `settingsPanels`,
+ * `settingsTabs`), or a new tab of its own. Values persist per app (secrets never do).
+ *
+ * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
+ */
+import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { Button, Chip, Container, Icon, Slider, Switch, useAsset, useAxfState, useRuntime } from '../../react';
+import type { AxfWebLibrary } from '../../react/library';
+import { runtimeInventory } from '../../react/pluginRecords';
+
+export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
+const VIEW = 'settings';
+const TAB_KEY = 'axf.settings.lastTab';
+
+/** Standard tabs, in order. Ids are stable: libraries target them by id. */
+export const SETTINGS_TABS = {
+  appearance: { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10, description: 'Every slot is a hot-swappable asset. Changes apply instantly and persist.' },
+  account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
+  connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
+  plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
+  about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
+} as const;
+
+/* ---------------- hooks ---------------- */
+
+function useSettingsRevision(rt: AxfRuntime): number {
+  return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
+}
+
+/* ---------------- controls ---------------- */
+
+/** Every row carries a search anchor, so the toolbar search can scroll to it and flash it. */
+function SettingRow({ spec }: { spec: SettingSpec }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  // A setting about a hidden slot is greyed out (and its control disabled) until the slot is shown again.
+  const off = !!spec.slot && rt.slotHidden(spec.slot as AssetType);
+  return (
+    <div data-axf-anchor={`setting:${spec.key}`} className={off ? 'axf-settings__off' : undefined} aria-disabled={off || undefined}>
+      <SettingControl spec={spec} off={off} />
+      {off && <p className="fx-muted axf-settings__hint axf-settings__offnote">{assetTypeSpecs[spec.slot as AssetType]?.label ?? spec.slot} is hidden (Assets above).</p>}
+    </div>
+  );
+}
+
+function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolean }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  // `denied` = the role can't change it (lock icon); `off` = its slot is hidden (greyed, no lock).
+  const denied = spec.requires ? rt.gate(spec.requires) !== 'allow' : false;
+  const locked = off || denied;
+  const value = rt.settings.get(spec.key);
+  const set = (v: SettingValue) => rt.settings.set(spec.key, v);
+
+  let control: ReactNode;
+  switch (spec.kind) {
+    case 'section':
+      return <h3 className="axf-settings__section">{spec.label}</h3>;
+    case 'toggle':
+      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => set(on)} />;
+      break;
+    case 'slider':
+      return (
+        <div className="axf-settings__row axf-settings__row--wide">
+          <Slider label={spec.label} value={typeof value === 'number' ? value : Number(spec.default ?? spec.min ?? 0)} min={spec.min} max={spec.max} step={spec.step} onChange={(v) => !locked && set(v)} />
+          {spec.description && <p className="fx-muted axf-settings__hint">{spec.description}</p>}
+        </div>
+      );
+    case 'number':
+      control = <input className="axf-settings__field" type="number" value={typeof value === 'number' ? value : ''} min={spec.min} max={spec.max} step={spec.step} disabled={locked} onChange={(e) => set(e.target.value === '' ? null : Number(e.target.value))} />;
+      break;
+    case 'text':
+    case 'secret':
+      control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      break;
+    case 'color':
+      control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      break;
+    case 'choice':
+      // Up to three options read better as a three-way switch (radio group) than a drop-down.
+      if ((spec.options ?? []).length > 1 && (spec.options ?? []).length <= 3) {
+        const cur = typeof value === 'string' ? value : String(spec.default ?? '');
+        control = (
+          <div className="axf-settings__seg" role="radiogroup" aria-label={spec.label}>
+            {(spec.options ?? []).map((o) => (
+              <button key={o.value} type="button" role="radio" aria-checked={cur === o.value} disabled={locked}
+                className={`axf-settings__segbtn${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
+            ))}
+          </div>
+        );
+        break;
+      }
+      control = (
+        <select className="axf-settings__field" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
+          {(spec.options ?? []).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      );
+      break;
+    case 'multi_choice': {
+      const chosen = Array.isArray(value) ? value : [];
+      control = (
+        <div className="axf-settings__multi">
+          {(spec.options ?? []).map((o) => (
+            <label key={o.value}><input type="checkbox" disabled={locked} checked={chosen.includes(o.value)} onChange={(e) => set(e.target.checked ? [...chosen, o.value] : chosen.filter((c) => c !== o.value))} /> {o.label}</label>
+          ))}
+        </div>
+      );
+      break;
+    }
+    case 'asset_slot':
+      control = <AssetSlotControl type={spec.target as AssetType} locked={locked} />;
+      break;
+    case 'action':
+      control = <Button icon={spec.icon ?? 'play'} disabled={locked} onClick={() => spec.target && rt.dispatch(spec.target)}>{spec.label}</Button>;
+      return <div className="axf-settings__row"><div className="axf-settings__label">{spec.description ?? ''}</div>{control}</div>;
+    case 'link':
+      control = <Button icon={spec.icon ?? 'chevron-right'} onClick={() => spec.target && rt.navigate(spec.target)}>Open</Button>;
+      break;
+    default:
+      return null;
+  }
+  return (
+    <div className="axf-settings__row">
+      <div className="axf-settings__label">
+        <span>{denied && <Icon name="lock" size={13} />} {spec.label}{spec.restartRequired && <Chip tone="warning">restart</Chip>}</span>
+        {spec.description && <span className="fx-muted axf-settings__hint">{spec.description}</span>}
+      </div>
+      <div className="axf-settings__control">{control}</div>
+    </div>
+  );
+}
+
+/** Picks the active asset of a slot. Chrome slots (hideable in asset-types.json) also offer Hidden. */
+const HIDDEN = '__axf-hidden';
+function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }) {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const options = rt.registry.list(type);
+  const canHide = hideable(type);
+  const hidden = rt.slotHidden(type);
+  // embed@1: a host app (Patches) shows this chrome for the app; the choice is the host's until the app runs on its own.
+  const byHost = rt.slotHiddenByHost(type);
+  const pick = (v: string) => {
+    if (v === HIDDEN) return rt.setSlotHidden(type, true);
+    if (hidden) rt.setSlotHidden(type, false);
+    if (v !== state.active[type]) rt.swap(type, v);
+  };
+  return (
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || byHost || options.length + (canHide ? 1 : 0) < 2} title={byHost ? `Shown by ${rt.embedded?.host} while this app runs inside it` : undefined} onChange={(e) => pick(e.target.value)}>
+      {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+      {canHide && <option value={HIDDEN}>{byHost ? `Shown by ${rt.embedded?.host}` : 'Hidden'}</option>}
+    </select>
+  );
+}
+
+function GroupCard({ group }: { group: SettingsGroup }) {
+  return (
+    <div data-axf-anchor={`settings-group:${group.id}`}>
+      <Container title={group.label} icon={group.icon ?? 'settings'}>
+        {group.description && <p className="fx-muted" style={{ marginTop: 0 }}>{group.description}</p>}
+        <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
+      </Container>
+    </div>
+  );
+}
+
+/* ---------------- randomize rolls (core/engines/roll.ts) ---------------- */
+
+/** Slot switches: which slots "Randomize all" may change. Context menus start off. uac-policy is never rolled. */
+function rollGroup(): SettingsGroup {
+  return {
+    id: 'axf.roll',
+    label: 'Randomize',
+    icon: 'shuffle',
+    tab: 'appearance',
+    order: 15,
+    description: 'Which slots "Randomize all" may change. A slot that is off keeps its current asset.',
+    settings: ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t)).map((t) => ({
+      key: ROLL_SLOT_KEY(t),
+      label: assetTypeSpecs[t].label,
+      kind: 'toggle' as const,
+      default: rollSlotDefault(t),
+      requires: 'assets.swap',
+      slot: t,
+      ...(t === 'context-menu' ? { description: 'Off by default: rolls leave context menus alone.' } : {}),
+    })),
+  };
+}
+
+/** Per-asset switches: which assets a roll may pick. Context-menu assets are opt-in, one by one. */
+function RollAssetsPanel() {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  const types = ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t));
+  const [type, setType] = useState<AssetType>('context-menu');
+  const locked = rt.gate('assets.swap') !== 'allow';
+  const slotOn = rt.rollSlotIncluded(type);
+  const hidden = rt.slotHidden(type);
+  return (
+    <div className="axf-settings__rows">
+      <div className="axf-settings__row">
+        <div className="axf-settings__label">
+          <span>Slot</span>
+          <span className="fx-muted axf-settings__hint">{hidden ? `${assetTypeSpecs[type].label} is hidden (Assets above), so rolls skip it.` : slotOn ? 'Rolls change this slot, picking only the assets switched on below.' : 'This slot is off above, so rolls leave it alone whatever is switched on here.'}</span>
+        </div>
+        <div className="axf-settings__control">
+          <select className="axf-settings__field" value={type} onChange={(e) => setType(e.target.value as AssetType)} aria-label="Slot">
+            {types.map((t) => <option key={t} value={t}>{assetTypeSpecs[t].label}</option>)}
+          </select>
+        </div>
+      </div>
+      {rt.registry.list(type).map((a) => {
+        const on = rt.rollAssetIncluded(type, a.id);
+        const overridden = typeof rt.settings.get(ROLL_ASSET_KEY(type, a.id)) === 'boolean';
+        return (
+          <div key={a.id} className={`axf-settings__row${hidden ? ' axf-settings__off' : ''}`} aria-disabled={hidden || undefined} data-axf-anchor={`roll-asset:${type}:${a.id}`}>
+            <div className="axf-settings__label">
+              <span>{a.name}</span>
+              <span className="fx-muted axf-settings__hint fx-mono">{a.id}{overridden ? ' · changed here' : ''}</span>
+            </div>
+            <div className="axf-settings__control fx-row fx-row--wrap">
+              <Switch hideLabel className="axf-settings__switch" label={`Include ${a.name} in rolls`} text={on ? 'In rolls' : 'Not in rolls'} checked={on} disabled={locked || hidden} onChange={(v) => rt.setRollAsset(type, a.id, v)} />
+              {overridden && <Button tone="ghost" icon="refresh" disabled={locked || hidden} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------------- standard panels ---------------- */
+
+function RolePanel() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const policy = useAsset('uac-policy');
+  return (
+    <div className="axf-settings__rows">
+      <div className="axf-settings__row">
+        <div className="axf-settings__label"><span>Acting as</span><span className="fx-muted axf-settings__hint">Roles come from the active access policy ({policy.name}).</span></div>
+        <div className="axf-settings__control">
+          <select className="axf-settings__field" value={state.role} onChange={(e) => rt.setRole(e.target.value)}>
+            {policy.data.roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AccessPanel() {
+  const rt = useRuntime();
+  const policy = useAsset('uac-policy');
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted" style={{ marginTop: 0 }}>{policy.name}: {policy.description}</p>
+      <div><Button icon="chevron-right" onClick={() => rt.navigate('account')}>Roles and permissions</Button></div>
+    </div>
+  );
+}
+
+/**
+ * Every installed library with its health, straight from the plugin inventory engine (plugin-inventory@1), so every app
+ * ships a plugin list in Settings → Plugins. Each row opens the library's settings tab when it has one, or the Plugin
+ * Manager (`plugin-manager.open:<id>`) when that plugin is installed (same on Android: `InstalledModulesPanel`).
+ */
+function LibrariesPanel() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const inv = useMemo(() => runtimeInventory(rt), [rt, rt.libraries.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const manager = Boolean(rt.actions.get('plugin-manager.open'));
+  if (!inv.items.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  const tone = (h: string) => (h === 'ok' ? 'success' : h === 'partial' ? 'warning' : h === 'off' ? undefined : 'danger');
+  return (
+    <div className="fx-stack">
+      {manager && <div className="fx-row fx-row--wrap"><Button icon="package" onClick={() => rt.dispatch('plugin-manager.open')}>Open the Plugin Manager</Button></div>}
+      <ul className="axf-settings__list">
+        {inv.items.map((l) => {
+          const lib = rt.libraries.find((x) => x.id === l.id);
+          const tab = lib?.ui?.settingsTabs[0];
+          return (
+            <li key={l.id} className="fx-row fx-row--wrap">
+              <span className="fx-grow"><strong>{l.name}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+              <Chip tone={tone(l.health)}>{l.health === 'ok' ? 'healthy' : l.health}</Chip>
+              {l.dependents.length > 0 && <Chip>used by {l.dependents.length}</Chip>}
+              {tab && <Button tone="ghost" icon="settings" onClick={() => rt.dispatch(`settings.open:${tab.id}`)}>Settings</Button>}
+              {manager && <Button tone="ghost" icon="package" onClick={() => rt.dispatch(`plugin-manager.open:${l.folder}`)}>Details</Button>}
+            </li>
+          );
+        })}
+      </ul>
+      {inv.conflicts.length > 0 && <p className="fx-muted axf-settings__hint">{inv.conflicts.length} clash{inv.conflicts.length > 1 ? 'es' : ''}: {inv.conflicts.map((c) => c.id).join(', ')}</p>}
+    </div>
+  );
+}
+
+function AboutPanel() {
+  const rt = useRuntime();
+  const m = rt.manifest;
+  const counts = ASSET_TYPES.map((t) => rt.registry.list(t).length).reduce((a, b) => a + b, 0);
+  return (
+    <div className="axf-settings__rows">
+      <p style={{ marginTop: 0 }}><strong>{m.app.name}</strong> {m.app.version}</p>
+      <p className="fx-muted">AmberX AXF {m.framework.version} · {m.framework.template} · {counts} assets · {rt.libraries.length} libraries</p>
+      <div className="fx-row fx-row--wrap">
+        <Button icon="info" onClick={() => rt.dispatch('help.about')}>About this app</Button>
+        <Button icon="keyboard" onClick={() => rt.dispatch('view.shortcuts')}>Shortcuts</Button>
+        <Button icon="refresh" requires="assets.swap" onClick={() => rt.dispatch('assets.reset')}>Reset assets to defaults</Button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- the page ---------------- */
+
+export function SettingsView() {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const tabs = rt.settings.topTabs();
+  // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
+  const resolve = (id: unknown): [string, string] => {
+    const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
+    if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
+    if (t) return [t.id, ''];
+    return [tabs[0]?.id ?? 'appearance', ''];
+  };
+  const [[tab, sub], setSel] = useState<[string, string]>(() => resolve(rt.settings.get(TAB_KEY)));
+  useEffect(() => {
+    const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) setSel(resolve(id)); };
+    globalThis.addEventListener?.('axf:settings-tab', onOpen);
+    return () => globalThis.removeEventListener?.('axf:settings-tab', onOpen);
+  }, []);
+  const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
+  const current = tabs.find((t) => t.id === tab) ?? tabs[0];
+  const subs = current ? rt.settings.subTabs(current.id) : [];
+  const shown = (sub && subs.find((t) => t.id === sub)) || current;
+  const groups = shown ? rt.settings.groupsIn(shown.id) : [];
+  const panels = shown ? rt.settings.panelsIn(shown.id) : [];
+
+  return (
+    <div className="fx-stack fx-stack--lg axf-settings">
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>
+      <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections">
+        {tabs.map((t) => (
+          <button key={t.id} type="button" role="tab" aria-selected={t.id === current?.id} className={`axf-settings__tab ${t.id === current?.id ? 'is-active' : ''}`} onClick={() => choose(t.id)}>
+            <Icon name={t.icon} size={15} /> {t.label}
+          </button>
+        ))}
+      </nav>
+      {subs.length > 0 && current && (
+        <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
+          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`axf-settings__subtab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+            <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
+          </button>
+          {subs.map((t) => (
+            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`axf-settings__subtab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
+              <Icon name={t.icon} size={13} /> {t.label}
+            </button>
+          ))}
+        </nav>
+      )}
+      {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
+      {/* panels and groups interleaved by `order` (panels first on a tie) */}
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? shown?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+        ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
+        .sort((a, b) => a.order - b.order || a.tie - b.tie)
+        .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
+      {!panels.length && !groups.length && (
+        <p className="fx-muted">{shown?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- display effects ---------------- */
+
+function applyDisplay(rt: AxfRuntime): void {
+  const root = globalThis.document?.documentElement;
+  if (!root) return;
+  const scale = rt.settings.get('axf.display.fontScale');
+  root.style.fontSize = typeof scale === 'number' && scale !== 100 ? `${scale}%` : '';
+  root.toggleAttribute('data-reduced-motion', rt.settings.get('axf.display.animations') === false);
+}
+
+/* ---------------- styles (tokens only) ---------------- */
+
+/* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
+   sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
+const CSS = `
+.axf-settings__tabs{display:flex;gap:var(--fx-space);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
+.axf-settings__tab:hover{color:var(--fx-text)}
+.axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
+.axf-settings__subtabs{display:flex;gap:calc(var(--fx-space)*.5);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);border-bottom:var(--fx-border-w) solid var(--fx-border);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.axf-settings__subtab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);white-space:nowrap;padding:calc(var(--fx-space)*.6) var(--fx-space);border:0;border-bottom:calc(var(--fx-border-w)*2) solid transparent;background:transparent;color:var(--fx-muted);font:inherit;cursor:pointer}
+.axf-settings__subtab:hover{color:var(--fx-text)}
+.axf-settings__subtab.is-active{color:var(--fx-text);border-bottom-color:var(--fx-accent)}
+.axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
+.axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
+.axf-settings__row--wide{flex-direction:column;align-items:stretch}
+.axf-settings__label{display:flex;flex-direction:column;gap:calc(var(--fx-space)*.25);min-width:180px;flex:1}
+.axf-settings__control{flex:0 1 260px;min-width:160px}
+.axf-settings__control select,.axf-settings__control input:not([type=checkbox]):not([type=color]){width:100%}
+.axf-settings__field{font:inherit;padding:calc(var(--fx-space)*.75) var(--fx-space);border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2);color:var(--fx-text)}
+.axf-settings__field:focus-visible{outline:2px solid var(--fx-accent);outline-offset:1px}
+.axf-settings__field:disabled{opacity:var(--fx-opacity-disabled)}
+.axf-settings__off{opacity:var(--fx-opacity-disabled)}
+.axf-settings__off .axf-settings__field:disabled{opacity:1}
+.axf-settings__offnote{margin:calc(var(--fx-space)*.25) 0 0}
+.axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
+.axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
+.axf-settings__switch{gap:var(--fx-space)}
+.axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
+.axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
+.axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
+.axf-settings__segbtn.is-on{background:var(--fx-accent);color:var(--fx-accent-text);font-weight:600}
+.axf-settings__segbtn:focus-visible{outline:2px solid var(--fx-accent);outline-offset:-2px}
+.axf-settings__segbtn[disabled]{cursor:default;opacity:var(--fx-opacity-disabled)}
+.axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
+.axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
+.axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
+[data-reduced-motion] *{transition:none!important;animation:none!important}
+`;
+
+function injectStyles(): void {
+  const doc = globalThis.document;
+  if (!doc || doc.getElementById('axf-settings-css')) return;
+  const el = doc.createElement('style');
+  el.id = 'axf-settings-css';
+  el.textContent = CSS;
+  doc.head.appendChild(el);
+}
+
+/* ---------------- the library ---------------- */
+
+/** Asset-slot settings for every asset type that has a choice to make. */
+function appearanceGroup(rt: AxfRuntime): SettingsGroup {
+  return {
+    id: 'axf.appearance',
+    label: 'Assets',
+    icon: 'palette',
+    tab: 'appearance',
+    order: 10,
+    description: 'Pick the active asset for each slot.',
+    settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
+      key: `axf.slot.${t}`,
+      label: assetTypeSpecs[t].label,
+      kind: 'asset_slot' as const,
+      target: t,
+      requires: t === 'uac-policy' ? 'uac.manage' : 'assets.swap',
+      ...(t === 'uac-policy' ? { description: 'Changing the policy may change your role.' } : hideable(t) ? { description: 'Hidden removes it from the screen; its other options here grey out.' } : {}),
+    })),
+  };
+}
+
+export const library: AxfWebLibrary = {
+  id: SETTINGS_LIBRARY_ID,
+  label: 'Settings',
+  version: '0.1.0',
+  provides: ['axf.settings'],
+  register(rt) {
+    injectStyles();
+    rt.settings.addGroup(appearanceGroup(rt));
+    rt.settings.addGroup(rollGroup());
+    applyDisplay(rt);
+    rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
+    rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));
+    rt.actions.register('app.settings', () => rt.navigate(VIEW), { label: 'Settings' });
+    rt.actions.register('settings.open', ([tab]) => {
+      rt.navigate(VIEW);
+      if (tab) {
+        rt.settings.set(TAB_KEY, tab);
+        globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: tab }));
+      }
+    }, { label: 'Open a settings tab', params: true });
+  },
+  views: { [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> } },
+  settingsTabs: Object.values(SETTINGS_TABS),
+  settings: [
+    {
+      id: 'axf.display',
+      label: 'Display',
+      icon: 'monitor',
+      tab: 'appearance',
+      order: 20,
+      settings: [
+        { key: SPACING_KEY, label: 'Spacing', kind: 'choice', default: SPACING_DEFAULT, requires: 'assets.swap', options: SPACINGS.map((v) => ({ value: v, label: SPACING_LABEL[v] })), description: 'How much room between and around things. Applies to every theme; Regular shows the style theme as designed.' },
+        { key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 100, min: 80, max: 140, step: 5, description: 'Percent of the normal size.' },
+        { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true, description: 'Off reduces motion.' },
+      ],
+    },
+  ],
+  settingsPanels: [
+    { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
+    { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
+    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
+  ],
+};
+
+/** Convenience for apps that render the page somewhere other than the `settings` view. */
+export function useSettingsTabs(): string[] {
+  const rt = useRuntime();
+  const rev = useSettingsRevision(rt);
+  return useMemo(() => rt.settings.listTabs().map((t) => t.id), [rt, rev]);
+}

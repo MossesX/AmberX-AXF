@@ -50,13 +50,23 @@ object ApprovalWatch {
         val prefs = hubPrefs(context)
         val f = HubClient.Default.feed(prefs.base)
         HubState.update(f)
+        // Patches serves the phone's notifications for the hub, the Console and Pilot (Brett, Oct 21 2026): while it is
+        // installed AXHub stays quiet (still tracks what it has seen, so nothing old pops up if Patches goes away).
+        val quiet = patchesInstalled(context)
         if (f.status == HubFeedStatus.OK) {
             val plan = prefs.track(f.pending.map { it.id })
+            if (quiet) { plan.gone.forEach { Alerts.clearApproval(context, it) }; return f.status.id }
             plan.gone.forEach { Alerts.clearApproval(context, it) } // decided elsewhere or expired
             f.pending.filter { it.id in plan.fresh }.forEach { Alerts.approval(context, it, prefs.fullScreen) }
         }
         return f.status.id
     }
+
+    /** Patches (ai.amberx.axf.patches) is on this phone: it serves the notifications instead (manifest `<queries>` lists it). */
+    fun patchesInstalled(context: Context): Boolean = runCatching {
+        @Suppress("DEPRECATION") context.packageManager.getPackageInfo(PATCHES_PACKAGE, 0); true
+    }.getOrDefault(false)
+    const val PATCHES_PACKAGE = "ai.amberx.axf.patches"
 
     /** What the ongoing notification says, from the last feed (rebuilt by the service after every run). */
     private fun watchingNote(): Pair<Int, String?> {

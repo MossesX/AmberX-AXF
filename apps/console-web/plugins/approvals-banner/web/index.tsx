@@ -117,7 +117,7 @@ const shortSummary = (p: Pending) => {
 
 function ApprovalsBanner() {
   const s = useApprovals();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true); // every banner launches expanded (Brett, Oct 21 2026)
   useEffect(() => { start(); }, []);
   if (s.status !== 'ok' || s.count === 0) return null;
   const ids = s.pending.map((p) => p.id).join(',');

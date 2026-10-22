@@ -1,0 +1,48 @@
+[
+ {
+  "name": "console-page",
+  "path": "/",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const iso=(m)=>new Date(Date.now()-m*60000).toISOString();await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id:'chg-20261021-5ee0000101',title:'Banners live in Patches',kind:'edit',asked:'Disable all banner plugins from console and enable them in Patches',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(30),steps:[{text:'Console banner strip',state:'done',startedAt:iso(30),finishedAt:iso(20)},{text:'Patches strip',state:'running',startedAt:iso(20)}]})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 4000
+   }
+  ]
+ },
+ {
+  "name": "strip",
+  "path": "/?axf-strip=banners",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const iso=(m)=>new Date(Date.now()-m*60000).toISOString();await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id:'chg-20261021-5ee0000101',title:'Banners live in Patches',kind:'edit',asked:'Disable all banner plugins from console and enable them in Patches',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(30),steps:[{text:'Console banner strip',state:'done',startedAt:iso(30),finishedAt:iso(20)},{text:'Patches strip',state:'running',startedAt:iso(20)}]})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 5000
+   }
+  ]
+ },
+ {
+  "name": "strip-minimized",
+  "path": "/?axf-strip=banners",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const iso=(m)=>new Date(Date.now()-m*60000).toISOString();await fetch(base,{method:'POST',headers:h,body:JSON.stringify({id:'chg-20261021-5ee0000101',title:'Banners live in Patches',kind:'edit',asked:'Disable all banner plugins from console and enable them in Patches',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(30),steps:[{text:'Console banner strip',state:'done',startedAt:iso(30),finishedAt:iso(20)},{text:'Patches strip',state:'running',startedAt:iso(20)}]})});dispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "location.reload()",
+    "wait": 5000
+   },
+   {
+    "eval": "document.querySelectorAll('.axf-banner-strip button[aria-label=\"Minimize\"]').forEach((b)=>b.click())",
+    "wait": 1200
+   }
+  ]
+ }
+]
