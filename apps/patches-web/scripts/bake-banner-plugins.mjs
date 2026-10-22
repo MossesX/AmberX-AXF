@@ -49,7 +49,8 @@ function plan() {
   const files = new Map();
   for (const folder of BANNER_PLUGINS) {
     const src = join(repo, 'apps/console-web/plugins', folder);
-    if (!existsSync(join(src, 'plugin.json'))) throw new Error(`console plugin missing: ${folder}`);
+    // a plugin uninstalled from the console isn't baked (its copy goes with the next bake)
+    if (!existsSync(join(src, 'plugin.json'))) { console.warn(`console plugin not present, skipped: ${folder}`); continue; }
     files.set(`src/plugins/${folder}/plugin.json`, readFileSync(join(src, 'plugin.json')));
     for (const f of walk(join(src, 'web'))) {
       const rel = relative(src, f);
@@ -73,6 +74,7 @@ if (check) {
     if (!existsSync(p)) { console.error(`missing baked file: ${dest}`); bad++; }
     else if (sha(readFileSync(p)) !== hash) { console.error(`baked file edited: ${dest} (change the console plugin and re-bake instead)`); bad++; }
   }
+  for (const dest of Object.keys(lock.files)) if (!want.has(dest)) { console.error(`no longer baked: ${dest} (its console plugin is gone: re-bake)`); bad++; }
   for (const [dest, buf] of want) if (lock.files[dest] !== sha(buf)) { console.error(`out of date: ${dest} (the console plugin changed: re-bake)`); bad++; }
   console.log(bad ? `${bad} problem(s)` : `plugins.lock.json: ${Object.keys(lock.files).length} baked files current`);
   process.exit(bad ? 1 : 0);
@@ -89,5 +91,5 @@ for (const [dest, buf] of files) {
 }
 let commit = 'unknown';
 try { commit = execSync('git rev-parse HEAD', { cwd: repo, encoding: 'utf8' }).trim(); } catch { /* no git */ }
-writeFileSync(LOCK, JSON.stringify({ $axf: 'patches-plugins-lock@1', plugins: BANNER_PLUGINS, commit, files: hashes }, null, 2) + '\n');
+writeFileSync(LOCK, JSON.stringify({ $axf: 'patches-plugins-lock@1', plugins: BANNER_PLUGINS.filter((f) => existsSync(join(app, 'src/plugins', f))), commit, files: hashes }, null, 2) + '\n');
 console.log(`baked ${BANNER_PLUGINS.length} banner plugins (${files.size} files) into apps/patches-web; plugins.lock.json written`);
