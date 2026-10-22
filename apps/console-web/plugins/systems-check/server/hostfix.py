@@ -82,12 +82,17 @@ def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str,
 def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600) -> dict[str, Any]:
     """axHub's `call` meta-tool. Returns {"ok": text}, {"confirm": id} (waiting for approval), or raises HubError."""
     url, tok = _hub()
-    _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-autofix", "version": "1"}}, 30)
+    def init() -> str | None:
+        return _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-autofix", "version": "1"}}, 30)[1]
+    sid = init()
     args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
     if confirmation_id:
         args["confirmation_id"] = confirmation_id
     res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
     text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
+    job_id = _started_job(res, text)
+    if job_id:  # the hub answers after 25 s with a job; follow it until the command has finished
+        return _follow_job(url, tok, sid, job_id, timeout, reinit=init)
     if res.get("isError"):
         try:
             err = json.loads(text).get("error", {})
@@ -100,6 +105,57 @@ def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None =
             return {"confirm": cid}
         raise HubError(str(err.get("message") or text)[:400])
     return {"ok": text}
+
+
+def _started_job(res: dict[str, Any], text: str) -> str | None:
+    """A call that runs longer than the hub's sync wait (25 s) comes back as {"status": "started", "job_id": …}."""
+    if res.get("isError"):
+        return None
+    jid = str((res.get("_meta") or {}).get("axhub/jobId") or "")
+    if not jid:
+        try:
+            body = json.loads(text)
+        except Exception:  # noqa: BLE001
+            return None
+        if isinstance(body, dict) and body.get("status") == "started":
+            jid = str(body.get("job_id") or "")
+    if jid and not re.match(r"^[0-9a-f-]{36}$", jid):
+        raise HubError("axHub started a job without a valid id")
+    return jid or None
+
+
+def _follow_job(url: str, tok: str, sid: str | None, job_id: str, timeout: float, poll_s: float = 5,
+                rpc: Callable[..., tuple[dict[str, Any], str | None]] | None = None,
+                reinit: Callable[[], str | None] | None = None) -> dict[str, Any]:
+    """Poll get_job until the command finishes: {"ok": its output} when it succeeded, HubError otherwise."""
+    rpc = rpc or _rpc
+    deadline = time.time() + timeout + 120
+    reinits = 0
+    while True:
+        try:
+            res, sid = rpc(url, tok, sid, "tools/call", {"name": "get_job", "arguments": {"job_id": job_id}}, 60)
+        except HubError as e:
+            if "404" not in str(e) or not reinit or reinits >= 3:  # 404 = the MCP session expired: open a new one, keep following
+                raise
+            reinits += 1
+            sid = reinit()
+            continue
+        parts = [c.get("text", "") for c in res.get("content", []) if isinstance(c, dict)]
+        if res.get("isError"):
+            raise HubError(("\n".join(parts) or "axHub couldn't read the job")[:400])
+        try:
+            head = json.loads(parts[0]) if parts else {}
+        except Exception:  # noqa: BLE001
+            head = {}
+        state = head.get("state") or (res.get("_meta") or {}).get("axhub/jobState")
+        if state == "succeeded":
+            return {"ok": "\n".join(parts[1:])}
+        if state in ("failed", "cancelled"):
+            err = head.get("error") or {}
+            raise HubError(str(err.get("message") or f"The job {state} on axHub.")[:400])
+        if time.time() > deadline:
+            raise HubError("The command is still running on the VPS after its time limit; check it there.")
+        time.sleep(poll_s)
 
 
 class Jobs:

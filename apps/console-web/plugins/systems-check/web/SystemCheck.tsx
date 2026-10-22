@@ -133,6 +133,13 @@ export async function fixAll() {
     set(c.id, 'working');
     try {
       if (c.autoFix) { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); st.runMsg[c.id] = r.message; }
+      else if (c.fix?.type === 'host') {
+        await loadHostAuto();
+        if (hostAuto.has(c.id)) { // VPS fix through axHub: approve it in the pop-up, the run follows the job
+          const j = await runHostJob(c);
+          set(c.id, 'working', j.message); // then the check below decides: passes = done, else you're asked to run it
+        }
+      }
       await new Promise((res) => setTimeout(res, 350)); // let the badge show
       let after = await recheck(c.id);
       if (passes(after)) { set(c.id, 'done'); continue; }
@@ -201,18 +208,29 @@ export const autoFixLabel = (c: Check) => {
 };
 
 interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
-/** VPS fix: the hub runs the check's exact command once you approve it in the pop-up; we follow the job here. */
-async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+/** VPS fix: the hub runs the check's exact command once you approve it in the pop-up. Start the server's Auto fix job for a VPS check and follow it until it's done or failed (approval included). */
+async function runHostJob(c: Check): Promise<HostJob> {
   st.run[c.id] = 'working'; st.runMsg[c.id] = 'Asking axHub…'; emit();
-  try {
-    let j = await call<HostJob>(`autofix/${c.id}`, { method: 'POST' });
-    const until = Date.now() + 31 * 60_000;
-    while ((j.state === 'asking' || j.state === 'waiting' || j.state === 'running') && Date.now() < until) {
-      st.run[c.id] = j.state === 'waiting' ? 'waiting' : 'working'; st.runMsg[c.id] = j.message; emit();
-      await new Promise((r) => setTimeout(r, 3000));
+  let j = await call<HostJob>(`autofix/${c.id}`, { method: 'POST' });
+  const until = Date.now() + 50 * 60_000; // 30 min to approve + up to 15 min to run + the report
+  while (j.state === 'asking' || j.state === 'waiting' || j.state === 'running') {
+    if (Date.now() > until) return { state: 'failed', message: 'Still not finished: check the VPS, then check again.' };
+    st.run[c.id] = j.state === 'waiting' ? 'waiting' : 'working'; st.runMsg[c.id] = j.message; emit();
+    await new Promise((r) => setTimeout(r, 3000));
+    try {
       const all = await call<{ jobs: Record<string, HostJob | null> }>('autofix');
-      j = all.jobs[c.id] ?? j;
-    }
+      const now = all.jobs[c.id];
+      // A reinstall fix restarts the console, which forgets its jobs: check again instead of waiting forever.
+      if (!now) return { state: 'failed', message: 'The console restarted while the fix ran: check again to see if it worked.' };
+      j = now;
+    } catch { /* the console is restarting (a reinstall fix): keep following */ }
+  }
+  return j;
+}
+
+async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+  try {
+    const j = await runHostJob(c);
     st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; if (j.state === 'done') markFixed(c.id); emit();
     rt.toast(`${c.title}: ${j.message}`, j.state === 'done' ? 'success' : 'warning');
     await loadSystemCheck(true);

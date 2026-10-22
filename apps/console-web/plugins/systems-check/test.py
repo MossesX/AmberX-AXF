@@ -144,6 +144,28 @@ try:
 except hf.HubError:
     refused = True
 check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
+# Fixes that run longer than the hub's 25 s sync wait come back as a job: follow it to the command's real output
+JID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+started = {"content": [{"type": "text", "text": json.dumps({"status": "started", "job_id": JID})}], "_meta": {"axhub/status": "started", "axhub/jobId": JID}}
+check(hf._started_job(started, started["content"][0]["text"]) == JID, "a started job is recognised (not taken as the output)")
+check(hf._started_job({"content": []}, "$ cmd\nexit 0") is None, "a direct answer isn't a job")
+def job_reply(state, out=None, err=None):
+    head = {"job_id": JID, "state": state, **({"error": err} if err else {})}
+    return {"content": [{"type": "text", "text": json.dumps(head)}] + ([{"type": "text", "text": out}] if out else []), "_meta": {"axhub/jobState": state}}
+def fake_rpc(replies):
+    def f(url, tok, sid, method, params, timeout):
+        r = replies.pop(0)
+        if isinstance(r, Exception): raise r
+        assert params == {"name": "get_job", "arguments": {"job_id": JID}}
+        return r, sid
+    return f
+r = hf._follow_job("https://hub", "t", "s1", JID, 60, poll_s=0, rpc=fake_rpc([job_reply("running"), hf.HubError("axHub answered 404"), job_reply("succeeded", "$ apt-get install -y mosh\nexit 0 · 40000 ms\n")]), reinit=lambda: "s2")
+check(r["ok"].splitlines()[1].startswith("exit 0"), "running → session expired (new session) → succeeded: the command's output comes back")
+try:
+    hf._follow_job("https://hub", "t", "s1", JID, 60, poll_s=0, rpc=fake_rpc([job_reply("failed", err={"message": "The command didn't finish"})])); bad = ""
+except hf.HubError as e:
+    bad = str(e)
+check("didn't finish" in bad, "a failed job reports the hub's reason")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
 check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
