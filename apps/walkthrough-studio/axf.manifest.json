@@ -1,0 +1,104 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "walkthrough-studio",
+    "name": "Walkthrough Studio",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "react-ts"
+  },
+  "initializedAt": "2026-10-22T22:00:40.623Z",
+  "targets": [
+    "web"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "walkthrough-studio",
+    "app-menu": "walkthrough-studio",
+    "toolbar": "standard-icons",
+    "nav-menu": "walkthrough-studio",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
+    "banner": "walkthrough-studio",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "ws-compile",
+    "label": "ws-length",
+    "status": "ws-recording",
+    "counter": "ws-review",
+    "progress": "ws-built",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  },
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Hashes of the baked framework files, used for conformance checks."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine."
+    },
+    {
+      "path": "src/views",
+      "purpose": "App views registered with the shell (Studio = the IDE workspace)."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files served as-is."
+    },
+    {
+      "path": "src/studio",
+      "purpose": "The studio: walkthrough-project@1 model, compiler (walkthrough-timeline@1), store + persistence (device / axHub data server), workspace (panes, layouts, dockable + floating toolbars), commands, drag-and-drop, panes, dialogs."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Registers every studio command as an AXF action."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "App dialogs (the studio's plus the developer console)."
+    },
+    {
+      "path": "test.mts",
+      "purpose": "Self-test of the model and the compiler (npx -y tsx test.mts)."
+    }
+  ]
+}

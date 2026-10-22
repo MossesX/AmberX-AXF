@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T18:47:18.905Z",
+ "updatedAt": "2026-10-22T22:32:40.585Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1648,6 +1648,127 @@
    "createdAt": "2026-10-22T18:37:44.308Z",
    "builtAt": "",
    "updatedAt": "2026-10-22T18:37:44.308Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio",
+   "title": "Walkthrough Studio: narrated framework walkthrough video assembly suite",
+   "detail": "apps/walkthrough-studio (react-ts on AXF). Projects column, categorized index tree (filters, search, drag-and-drop), status grid (built/partial/failed/skipped/needs review, progress, clip lengths, drag to trash, hideable columns), IDE layouts with show/hide panes, unlimited dockable/floating toolbars with a command picker, file browser, live browser with mouse recorder, narration script per piece, compiler plan (narrate + assemble, swap + recompile). Branch claude/framework-walkthrough-video-builder-qocfr1.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/framework-walkthrough-video-builder-qocfr1 (draft PR). Fable rebuild parked as walkthrough-studio-fable.",
+     "at": "2026-10-22T22:32:32.272Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Scaffold app (axf init), manifest, data model + store (projects, sections, pieces, toolbars)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.809Z"
+    },
+    {
+     "text": "Walkthrough content: categorized outline of every framework area, plugin, setting, flow (seed project)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.871Z"
+    },
+    {
+     "text": "Shell: app menu, banner, nav, IDE layouts, pane manager",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.928Z"
+    },
+    {
+     "text": "Index tree with filters/search/drag + status grid with columns, drag-to-trash",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.980Z"
+    },
+    {
+     "text": "Toolbars: unlimited, dock/float, command picker dialog",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.030Z"
+    },
+    {
+     "text": "Live browser + recorder, file browser, script/narration editor",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.094Z"
+    },
+    {
+     "text": "Compiler plan + export, project settings (lengths)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.152Z"
+    },
+    {
+     "text": "Tests, build, screenshots, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:40.585Z"
+    }
+   ],
+   "createdAt": "2026-10-22T22:00:29.631Z",
+   "builtAt": "2026-10-22T22:32:32.202Z",
+   "updatedAt": "2026-10-22T22:32:40.585Z",
+   "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio-fable",
+   "title": "Walkthrough Studio: workspace engine (panes, layouts, dockable + floating toolbars) as a framework contract (Fable rebuild)",
+   "detail": "Fable rebuild of the Opus build `walkthrough-studio` (branch claude/framework-walkthrough-video-builder-qocfr1; Brett Oct 22 2026: Fable was offered for new cross-app engines, Opus chosen). Lift the studio-local workspace (ui.ts: pane areas, layouts, floats; toolbars docked on any edge or floating, the command catalog + customizer; pointer DnD with the pop-up trash can) into framework/core + framework/react as an engine every app can use (asset types for workspace layouts and user toolbars?), with fixtures; then switch the studio onto it and remove its private copy. Android twin deferred (PORTING.md).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Read the Opus build (apps/walkthrough-studio/src/studio: ui.ts, Workspace.tsx, dnd.tsx, commands.ts) and write a design note: what becomes framework contract, asset types or not.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Pure engine in framework/core/engines (workspace + toolbars: places, docking, catalog) with fixtures + check script.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React layer: WorkspaceHost, ToolbarDock, floating toolbar, pane tabs + splitters, DnD + trash can, customizer dialog.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Runtime + settings: saved per app, last save wins, search/app-menu hooks (panes, layouts, toolbars).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Switch Walkthrough Studio onto it, delete its private copy; tests + screenshots; differences report.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "PORTING.md deferred Kotlin twin; docs; CLAUDE.md.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T22:32:28.215Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T22:32:28.215Z",
    "estimate": "3 h",
    "source": "chat"
   }

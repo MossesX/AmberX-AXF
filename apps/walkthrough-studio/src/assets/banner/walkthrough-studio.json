@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "walkthrough-studio",
+  "name": "Walkthrough Studio",
+  "version": "1.0.0",
+  "description": "Logo, built progress, recording status and review count on the left; search in the center; compile, day/night and the clock on the right.",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "height": 28,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "Walkthrough Studio"
+    },
+    "divider": true,
+    "attach": [
+      {
+        "type": "progress",
+        "id": "ws-built",
+        "at": "left",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ws-recording",
+        "at": "left",
+        "order": 20
+      },
+      {
+        "type": "counter",
+        "id": "ws-review",
+        "at": "left",
+        "order": 30
+      },
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center"
+      },
+      {
+        "type": "action-button",
+        "id": "ws-compile",
+        "at": "right",
+        "order": 5
+      },
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "right",
+        "order": 10
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 20
+      }
+    ]
+  }
+}

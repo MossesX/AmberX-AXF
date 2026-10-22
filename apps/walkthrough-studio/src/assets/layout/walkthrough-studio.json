@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "walkthrough-studio",
+  "name": "Walkthrough Studio",
+  "version": "1.0.0",
+  "description": "Menu bar above a full-width IDE workspace, an icon rail on the left and a status bar; no framework toolbar (the studio docks its own).",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 64,
+    "showMenubar": true,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "none",
+    "inspectorWidth": 260,
+    "contentMaxWidth": 0
+  }
+}
