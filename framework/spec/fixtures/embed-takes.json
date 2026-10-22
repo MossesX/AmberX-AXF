@@ -2592,13 +2592,13 @@
         "type": "plugins",
         "plugins": [
           {
-            "id": "ai.amberx.axf.console.activity",
+            "id": "ai.amberx.axf.example.alpha",
             "name": " Activity\n",
             "version": "0.1.0",
             "on": true
           },
           {
-            "id": "ai.amberx.axf.console.activity",
+            "id": "ai.amberx.axf.example.alpha",
             "name": "dup"
           },
           {
@@ -2606,7 +2606,7 @@
             "name": "x"
           },
           {
-            "id": "ai.amberx.axf.console.terminal",
+            "id": "ai.amberx.axf.example.beta",
             "on": false,
             "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
           },
@@ -2618,14 +2618,14 @@
         "type": "plugins",
         "plugins": [
           {
-            "id": "ai.amberx.axf.console.activity",
+            "id": "ai.amberx.axf.example.alpha",
             "name": "Activity",
             "on": true,
             "version": "0.1.0"
           },
           {
-            "id": "ai.amberx.axf.console.terminal",
-            "name": "ai.amberx.axf.console.terminal",
+            "id": "ai.amberx.axf.example.beta",
+            "name": "ai.amberx.axf.example.beta",
             "on": false,
             "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
           }
@@ -2645,8 +2645,8 @@
         "$axf": "embed@1",
         "type": "plugins-enabled",
         "plugins": [
-          "ai.amberx.axf.console.activity",
-          "ai.amberx.axf.console.activity",
+          "ai.amberx.axf.example.alpha",
+          "ai.amberx.axf.example.alpha",
           "bad id!",
           7
         ]
@@ -2655,7 +2655,7 @@
         "$axf": "embed@1",
         "type": "plugins-enabled",
         "plugins": [
-          "ai.amberx.axf.console.activity"
+          "ai.amberx.axf.example.alpha"
         ]
       }
     },

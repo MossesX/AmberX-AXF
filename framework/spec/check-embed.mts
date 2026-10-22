@@ -243,11 +243,11 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(rt.hostPlugins, null, 'no host list yet');
   let heard: string[] | null = null;
   rt.onHostPlugins((ids) => { heard = ids; });
-  eq(rt.reportPluginsToHost([{ id: 'ai.amberx.axf.console.activity', name: 'Activity', on: true }]), true, 'report sent');
-  eq(posted.at(-1), { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.console.activity', name: 'Activity', on: true }] }, 'report message');
-  (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify({ $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.console.activity'] }));
-  eq(rt.hostPlugins, ['ai.amberx.axf.console.activity'], 'host list kept');
-  eq(heard, ['ai.amberx.axf.console.activity'], 'host list announced');
+  eq(rt.reportPluginsToHost([{ id: 'ai.amberx.axf.example.alpha', name: 'Activity', on: true }]), true, 'report sent');
+  eq(posted.at(-1), { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: 'Activity', on: true }] }, 'report message');
+  (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify({ $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha'] }));
+  eq(rt.hostPlugins, ['ai.amberx.axf.example.alpha'], 'host list kept');
+  eq(heard, ['ai.amberx.axf.example.alpha'], 'host list announced');
   posted.length = 0;
   (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify({ $axf: 'embed@1', type: 'plugins-request' }));
   eq((posted[0] as { type?: string } | undefined)?.type, 'plugins', 'host asked: report sent again');

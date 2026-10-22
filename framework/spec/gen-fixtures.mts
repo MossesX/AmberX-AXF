@@ -194,9 +194,9 @@ write('hide.json', {
         .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
     // Plugin messages (take `plugins`). Web only so far (Kotlin deferred, PORTING.md).
     pluginMessages: [
-      { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.console.activity', name: ' Activity\n', version: '0.1.0', on: true }, { id: 'ai.amberx.axf.console.activity', name: 'dup' }, { id: 'bad id!', name: 'x' }, { id: 'ai.amberx.axf.console.terminal', on: false, version: 'v'.repeat(60) }, 'nope'] },
+      { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: ' Activity\n', version: '0.1.0', on: true }, { id: 'ai.amberx.axf.example.alpha', name: 'dup' }, { id: 'bad id!', name: 'x' }, { id: 'ai.amberx.axf.example.beta', on: false, version: 'v'.repeat(60) }, 'nope'] },
       { $axf: 'embed@1', type: 'plugins', plugins: 'nope' },
-      { $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.console.activity', 'ai.amberx.axf.console.activity', 'bad id!', 7] },
+      { $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha', 'ai.amberx.axf.example.alpha', 'bad id!', 7] },
       { $axf: 'embed@1', type: 'plugins-enabled' },
       { $axf: 'embed@1', type: 'plugins-request' },
       JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),

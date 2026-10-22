@@ -419,7 +419,7 @@ function parseMenus(raw: unknown): EmbedMenu[] | null {
   return menus;
 }
 const TAB_ID = /^[a-z0-9][a-z0-9._:-]{0,63}$/i;
-/** A plugin id (`ai.amberx.axf.console.activity`): letters, digits, dot, dash, underscore; ≤ 120. */
+/** A plugin id (`ai.amberx.axf.example.alpha`): letters, digits, dot, dash, underscore; ≤ 120. */
 export const EMBED_PLUGIN_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/;
 
 /** A plugin list an app sent, checked and cut to size (bad entries dropped, repeats dropped, ≤ 200). */
