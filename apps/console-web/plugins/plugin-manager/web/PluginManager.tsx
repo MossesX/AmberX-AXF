@@ -125,7 +125,7 @@ function Studio(p: LayoutProps) {
         <h1 className="axp-plugin-manager-studio__title">Plugins</h1>
         <nav className="axp-plugin-manager-studio__filters" aria-label="Filter">
           {FILTERS.map((f) => (
-            <button key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} aria-pressed={p.prefs.filter === f} onClick={() => p.set('filter', f)}>
+            <button key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>
               <span>{FILTER_LABEL[f]}</span><span className="axp-plugin-manager-count">{p.inv.items.filter((r) => matches(r, f)).length}</span>
             </button>
           ))}
@@ -361,7 +361,7 @@ function Catalog(p: LayoutProps) {
   if (sel && p.prefs.view !== 'detail') {
     return (
       <div className="axp-plugin-manager-cat axp-plugin-manager-cat--product">
-        <Button size="sm" tone="quiet" icon="arrow-left" className="axp-plugin-manager-back" onClick={() => p.set('selected', '')}>All plugins</Button>
+        <Button size="sm" tone="quiet" icon="arrow-left" onClick={() => p.set('selected', '')}>All plugins</Button>
         <DetailPane row={sel} inv={p.inv} onChanged={() => void p.reload()} onSelect={p.select} />
       </div>
     );

@@ -497,9 +497,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-seg__opt:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -2); }
 .fx-seg--sm .fx-seg__opt { padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.7); font-size: 0.8em; }
 /* A whole row or card you tap (disclosure header, list row, tile): no control chrome of its own; the plugin lays it out. */
-[data-fx-row] { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0; color: inherit; font: inherit; text-align: start; }
-[data-fx-row]:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); }
-[data-fx-row]:disabled { cursor: default; opacity: max(var(--fx-opacity-disabled), 0.45); }
+:where([data-fx-row]) { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0; color: inherit; font: inherit; text-align: start; }
+:where([data-fx-row]):focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); border-radius: var(--fx-radius-sm); }
+:where([data-fx-row]):disabled { cursor: default; opacity: max(var(--fx-opacity-disabled), 0.45); }
 
 .fx-iconbtn {
   display: inline-flex; align-items: center; justify-content: center; flex: none;

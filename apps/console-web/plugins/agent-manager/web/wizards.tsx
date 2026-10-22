@@ -28,7 +28,7 @@ function Shell({ steps, step, setStep, children, canNext = true, onFinish, finis
   const last = step === steps.length - 1;
   return (
     <div className="axp-agent-manager__wizard fx-stack">
-      <ol className="axp-agent-manager__steps">{steps.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" onClick={() => i < step && setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
+      <ol className="axp-agent-manager__steps">{steps.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => i < step && setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
       <div className="axp-agent-manager__wizard-body">{children}</div>
       {error && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <div className="fx-row fx-row--wrap axp-agent-manager__wizard-nav">
@@ -92,7 +92,7 @@ function NewSkillWizard({ done }: { done: (msg: string) => void }) {
     <Shell steps={['Template', 'Skill', 'Give to agents', 'Review']} step={step} setStep={setStep} canNext={step === 0 || !!s.name?.trim()} onFinish={() => void finish()} busy={busy} error={err}>
       {step === 0 && (
         <div className="axp-agent-manager__grid">
-          {Object.entries(SKILL_TEMPLATES).map(([k, t]) => <button key={k} type="button" className="axp-agent-manager__tile" onClick={() => { setS({ ...t }); setStep(1); }}><strong>{t.name ?? 'Blank skill'}</strong><span className="fx-small fx-muted">{t.description ?? 'Start from scratch'}</span></button>)}
+          {Object.entries(SKILL_TEMPLATES).map(([k, t]) => <button key={k} type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => { setS({ ...t }); setStep(1); }}><span className="fx-card axp-agent-manager__tile-card"><strong>{t.name ?? 'Blank skill'}</strong><span className="fx-small fx-muted">{t.description ?? 'Start from scratch'}</span></span></button>)}
         </div>
       )}
       {step === 1 && <SkillForm v={s} set={setS} tools={cache.tools} />}
@@ -185,7 +185,7 @@ function BuilderWizard({ done }: { done: (msg: string) => void }) {
       {step === 0 && <AgentForm v={agent} set={setAgent} cache={cache} status={status} only={['identity', 'instructions']} />}
       {step === 1 && (
         <div className="fx-stack">
-          <div className="axp-agent-manager__picks">{(['new', 'pick', 'none'] as const).map((m) => <button key={m} type="button" className={`axp-agent-manager__pick${personaMode === m ? ' is-active' : ''}`} onClick={() => setPersonaMode(m)}>{m === 'new' ? 'Create a persona' : m === 'pick' ? 'Use an existing one' : 'No persona'}</button>)}</div>
+          <div className="axp-agent-manager__picks">{(['new', 'pick', 'none'] as const).map((m) => <button key={m} type="button" className={`fx-chip axp-agent-manager__pick${personaMode === m ? ' is-on' : ''}`} onClick={() => setPersonaMode(m)}>{m === 'new' ? 'Create a persona' : m === 'pick' ? 'Use an existing one' : 'No persona'}</button>)}</div>
           {personaMode === 'new' && <PersonaForm v={persona} set={setPersona} />}
           {personaMode === 'pick' && <AgentForm v={agent} set={setAgent} cache={cache} status={status} only={['persona']} />}
         </div>
