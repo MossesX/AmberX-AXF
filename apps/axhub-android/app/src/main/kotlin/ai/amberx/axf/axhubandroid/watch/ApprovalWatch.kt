@@ -45,7 +45,7 @@ object ApprovalWatch {
         restartOnBoot = true,
     )
 
-    /** One check: feed → HubState → seen ids → clear gone alerts, alert fresh ones. Returns the feed status as the outcome. */
+    /** One check: feed → HubState → seen ids → clear gone alerts, auto-approve or alert fresh ones. Returns the feed status as the outcome. */
     suspend fun check(context: Context): String {
         val prefs = hubPrefs(context)
         val f = HubClient.Default.feed(prefs.base)
@@ -57,7 +57,12 @@ object ApprovalWatch {
             val plan = prefs.track(f.pending.map { it.id })
             if (quiet) { plan.gone.forEach { Alerts.clearApproval(context, it) }; return f.status.id }
             plan.gone.forEach { Alerts.clearApproval(context, it) } // decided elsewhere or expired
-            f.pending.filter { it.id in plan.fresh }.forEach { Alerts.approval(context, it, prefs.fullScreen) }
+            val auto = AutoApprovePrefs(context)
+            f.pending.filter { it.id in plan.fresh }.forEach {
+                // Auto-approval only when it's on and the tool matches; if the hub doesn't confirm it, ask as usual.
+                if (auto.applies(it.tool) && AutoApprove.approve(prefs.base, it.id)) Alerts.autoApproved(context, it)
+                else Alerts.approval(context, it, prefs.fullScreen)
+            }
         }
         return f.status.id
     }

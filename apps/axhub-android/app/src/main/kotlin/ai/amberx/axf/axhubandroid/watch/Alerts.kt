@@ -26,6 +26,7 @@ fun hubPrefs(context: Context): WatchPrefs = WatchPrefs(context, "axhub_watch")
 object Alerts {
     const val CH_WATCH = "axhub.watch"
     const val CH_APPROVAL = "axhub.approvals"
+    const val CH_AUTO = "axhub.autoApproved"
     const val EXTRA_APPROVAL = "axhub.approvalId"
     const val EXTRA_OPEN_LIST = "axhub.openApprovals"
     const val ID_WATCH = 1
@@ -34,6 +35,7 @@ object Alerts {
     val channelSpecs: List<ChannelSpec> = listOf(
         ChannelSpec(CH_WATCH, "Watching for approvals", ChannelImportance.MIN, "Shown while AXHub checks the hub", lockScreen = null, showBadge = false),
         ChannelSpec(CH_APPROVAL, "Approvals waiting", ChannelImportance.HIGH, "A call on axHub needs your approval", LockScreen.PRIVATE, vibrate = true),
+        ChannelSpec(CH_AUTO, "Auto-approved", ChannelImportance.DEFAULT, "A call on axHub was approved by auto-approval", LockScreen.PRIVATE),
     )
 
     fun channels(context: Context) = AxfNotifications.channels(context, channelSpecs)
@@ -70,6 +72,23 @@ object Alerts {
         AxfNotifications.alert(context, approvalSpec(a, fullScreen), openIntent(context, a.id.hashCode(), a.id))
     }
 
+    /** Shown instead of the approval alert when auto-approval approved the call (pure apart from the icon; tested in AlertsTest). */
+    fun autoApprovedSpec(a: HubApproval): AlertSpec = AlertSpec(
+        channel = CH_AUTO,
+        tag = autoTag(a.id),
+        title = "Auto-approval approved ${a.tool}",
+        text = a.summary.lineSequence().firstOrNull()?.take(120) ?: a.tool,
+        bigText = a.summary.take(400),
+        smallIcon = R.drawable.ic_axhub_notify,
+        publicTitle = "Auto-approval approved",
+        publicText = "Unlock to see the call",
+        actionLabel = "View",
+    )
+
+    fun autoApproved(context: Context, a: HubApproval) {
+        AxfNotifications.alert(context, autoApprovedSpec(a), openIntent(context, a.id.hashCode(), a.id))
+    }
+
     fun clearApproval(context: Context, id: String) = AxfNotifications.cancelTag(context, tag(id))
 
     /** Not urgent: on the quiet channel. [notAdmin] = signed in, but the account can't approve. */
@@ -83,4 +102,5 @@ object Alerts {
     }
 
     fun tag(id: String) = "approval:$id"
+    fun autoTag(id: String) = "auto-approved:$id"
 }
