@@ -59,7 +59,7 @@ export function ChangesBanner() {
     <div className={`axp-codebase-changes-banner${failed ? ' is-failed' : ''}`} role="status" aria-live="polite">
       <div className="axp-codebase-changes-banner__row">
         <span className="axp-codebase-changes-banner__icon" aria-hidden><Icon name="branch" size={18} /></span>
-        <button type="button" className="axp-codebase-changes-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-codebase-changes-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-codebase-changes-banner__top">
             <strong>{n} codebase change{n === 1 ? '' : 's'}</strong>
             {running > 0 && <span className="axp-codebase-changes__meta">{running} in progress</span>}
@@ -74,7 +74,7 @@ export function ChangesBanner() {
           <ul className="axp-codebase-changes-banner__list">
             {s.open.map((e) => (
               <li key={e.id} className={`axp-codebase-changes-banner__item is-${e.state}`}>
-                <button type="button" className="axp-codebase-changes-banner__entry" onClick={() => go(e.id)} title="Open in the log">
+                <button type="button" data-fx-row className="axp-codebase-changes-banner__entry" onClick={() => go(e.id)} title="Open in the log">
                   <span className="axp-codebase-changes-banner__line">
                     <KindBadge kind={e.kind} />
                     <span className="axp-codebase-changes-banner__title">{e.title}</span>
@@ -92,8 +92,8 @@ export function ChangesBanner() {
             ))}
           </ul>
           <div className="axp-codebase-changes-banner__foot">
-            <button type="button" className="axp-codebase-changes__act" onClick={() => rt.dispatch('codebase-changes.open')}><Icon name="list" size={11} />Open the log</button>
-            <button type="button" className="axp-codebase-changes__act is-quiet" disabled={s.busy === '*'} onClick={() => void closeAll()}><Icon name="x" size={11} />Close all</button>
+            <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch('codebase-changes.open')}>Open the log</Button>
+            <Button size="sm" tone="quiet" icon="x" disabled={s.busy === '*'} onClick={() => void closeAll()}>Close all</Button>
             {n > s.open.length && <span className="axp-codebase-changes__meta">showing the newest {s.open.length}</span>}
             <button type="button" className="fx-iconbtn axp-codebase-changes-banner__min" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
           </div>
@@ -186,7 +186,7 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
   useEffect(() => { if (open) ref.current?.scrollIntoView?.({ block: 'nearest' }); }, [open]);
   return (
     <li ref={ref} className={`axp-codebase-changes__row is-${s.state}${s.closed ? ' is-closed' : ''}`} data-axf-anchor={`codebase-changes:${s.id}`}>
-      <button type="button" className="axp-codebase-changes__head" aria-expanded={open} onClick={onToggle}>
+      <button type="button" data-fx-row className="axp-codebase-changes__head" aria-expanded={open} onClick={onToggle}>
         <span className="axp-codebase-changes__line">
           <KindBadge kind={s.kind} />
           <span className="axp-codebase-changes__title">{s.title}</span>
@@ -255,7 +255,7 @@ export function ChangesView() {
         <input className="fx-input" placeholder="Repo (owner/name)" aria-label="Repo" value={f.repo} onChange={(e) => up({ repo: e.target.value })} />
         <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">From</span><input className="fx-input" type="date" value={f.from} onChange={(e) => up({ from: e.target.value })} /></label>
         <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">To</span><input className="fx-input" type="date" value={f.to} onChange={(e) => up({ to: e.target.value })} /></label>
-        {filtered && <button type="button" className="axp-codebase-changes__act is-quiet" onClick={() => setF(NO_FILTERS)}><Icon name="x" size={11} />Clear</button>}
+        {filtered && <Button size="sm" tone="quiet" icon="x" onClick={() => setF(NO_FILTERS)}>Clear</Button>}
       </div>
       {err && <p className="fx-small axp-codebase-changes__err">{err}</p>}
       {!err && page && !items.length && <p className="fx-small fx-muted axp-codebase-changes__none">{filtered ? 'Nothing matches these filters.' : 'No changes recorded yet. Once the Claude Code hook is installed (Settings → Plugins → Codebase changes), every request to build, edit, remove or fix something shows up here.'}</p>}

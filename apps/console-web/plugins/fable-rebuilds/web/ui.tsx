@@ -49,7 +49,7 @@ export function FableView() {
             const isOpen = open === r.id;
             return (
               <li key={r.id} id={`axp-fable-${r.id}`} className={`axp-fable__row is-${r.status} ${isOpen ? 'is-open' : ''}`} data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={r.id}>
-                <button type="button" className="axp-fable__hit" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? '' : r.id)}>
+                <button type="button" data-fx-row className="axp-fable__hit" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? '' : r.id)}>
                   <span className={`axp-fable__badge is-${r.status}`}>{STATUS[r.status] ?? r.status}</span>
                   <span className="axp-fable__main">
                     <span className="axp-fable__title">{r.title}</span>
@@ -116,14 +116,14 @@ export function FableChip({ rebuildId, park: parkBody, label }: { rebuildId?: st
   const r = rebuildId ? d.items.find((x) => x.id === rebuildId) : undefined;
   if (r) {
     return (
-      <button type="button" className={`axp-fable__chip is-${r.status}`} onClick={() => { setFocus(r.id); rt.navigate('fable-rebuilds'); }} title="Open in Fable rebuilds">
+      <button type="button" className="fx-chip axp-fable__chip" onClick={() => { setFocus(r.id); rt.navigate('fable-rebuilds'); }} title="Open in Fable rebuilds">
         <Icon name="sparkles" size={12} /> {label ?? 'Fable rebuild'}: {STATUS[r.status] ?? r.status}
       </button>
     );
   }
   if (!parkBody) return null;
   return (
-    <button type="button" className="axp-fable__chip" disabled={busy} onClick={() => { setBusy(true); void park(parkBody).then((it) => { rt.toast(`Parked for Fable: ${it.title}`, 'success'); }, (e) => rt.toast((e as Error).message, 'danger')).finally(() => setBusy(false)); }}>
+    <button type="button" className="fx-chip axp-fable__chip" disabled={busy} onClick={() => { setBusy(true); void park(parkBody).then((it) => { rt.toast(`Parked for Fable: ${it.title}`, 'success'); }, (e) => rt.toast((e as Error).message, 'danger')).finally(() => setBusy(false)); }}>
       <Icon name="sparkles" size={12} /> {busy ? 'Parking…' : 'Rebuild on Fable'}
     </button>
   );

@@ -7,9 +7,7 @@
 .axp-session-checkin__tile strong.is-warning { color: var(--fx-warning) }
 .axp-session-checkin__tile span { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); overflow-wrap: anywhere }
 .axp-session-checkin__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axp-session-checkin__filter { padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-text); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
-.axp-session-checkin__filter.is-active { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
-.axp-session-checkin__filter:focus-visible, .axp-session-checkin__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
+.axp-session-checkin__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2) }
 .axp-session-checkin__list { display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden }
 .axp-session-checkin__list > [role='listitem'] + [role='listitem'] { border-top: var(--fx-border-w) solid var(--fx-border) }
 .axp-session-checkin__row { display: flex; align-items: center; gap: var(--fx-space); width: 100%; padding: var(--fx-space) calc(var(--fx-space) * 1.25); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; min-width: 0 }
@@ -30,10 +28,6 @@
 .axp-session-checkin__flag { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: calc(var(--fx-space) * 0.75) 0 0; padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-session-checkin__device { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space) calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-session-checkin__cmd { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); overflow-wrap: anywhere; min-width: 0 }
-.axp-session-checkin__steps { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); margin: 0; padding: 0; list-style: none }
-.axp-session-checkin__step button { padding: calc(var(--fx-space) * 0.375) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: transparent; color: var(--fx-muted); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
-.axp-session-checkin__step.is-done button { color: var(--fx-text) }
-.axp-session-checkin__step.is-active button { color: var(--fx-text); border-color: var(--fx-accent); background: var(--fx-accent-soft) }
 .axp-session-checkin__fieldset { display: flex; flex-direction: column; gap: var(--fx-space); margin: 0; padding: 0; border: 0; min-width: 0 }
 .axp-session-checkin__fieldset legend { font-weight: 600; margin-bottom: calc(var(--fx-space) * 0.5) }
 .axp-session-checkin__choice { display: flex; align-items: flex-start; gap: var(--fx-space); cursor: pointer }

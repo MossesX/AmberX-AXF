@@ -76,7 +76,7 @@ export function WhatsNewBanner() {
     <div className="axp-systems-check-banner axp-systems-check-new" role="status">
       <div className="axp-systems-check-banner__row">
         <Icon name="sparkles" />
-        <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-systems-check-banner__title">What’s new</span>
           {d.summary?.text
             ? <SourceBadge ai title={`Made by AI: summary written by ${d.summary.agent ?? 'Mosses'}${d.summary.cached && !d.aiOn ? ' (saved earlier)' : ''}`} />

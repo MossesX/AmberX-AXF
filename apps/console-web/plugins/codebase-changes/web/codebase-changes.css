@@ -13,8 +13,6 @@
 .axp-codebase-changes__state.is-cancelled { color: var(--fx-muted) }
 .axp-codebase-changes__act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); text-decoration: none }
 .axp-codebase-changes__act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-codebase-changes__act.is-quiet { color: var(--fx-muted); background: var(--fx-surface2); border-color: var(--fx-border) }
-.axp-codebase-changes__act:disabled { opacity: var(--fx-opacity-disabled); cursor: default }
 .axp-codebase-changes__act:focus-visible, .axp-codebase-changes__head:focus-visible, .axp-codebase-changes-banner__main:focus-visible, .axp-codebase-changes-banner__entry:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-codebase-changes__meta { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__meta.is-danger { color: var(--fx-danger) }
@@ -87,4 +85,3 @@
 /* timers on active entries; stuck ones (no word / 30+ min) in the warning colour with a trash can */
 .axp-codebase-changes__timer { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
 .axp-codebase-changes__timer.is-stuck { color: var(--fx-warning) }
-.axp-codebase-changes__trash { color: var(--fx-danger) }

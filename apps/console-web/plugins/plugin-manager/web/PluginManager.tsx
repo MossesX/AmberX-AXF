@@ -6,7 +6,7 @@
  * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
 import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
@@ -49,13 +49,8 @@ function ViewBody(p: ViewProps & { view: ViewId }) {
 
 function Segmented<T extends string>({ items, value, onChange, label, iconsOnly }: { items: readonly { id: T; label: string; icon: string }[]; value: T; onChange: (v: T) => void; label: string; iconsOnly?: boolean }) {
   return (
-    <div className="axp-plugin-manager-seg" role="radiogroup" aria-label={label}>
-      {items.map((i) => (
-        <button key={i.id} type="button" role="radio" aria-checked={value === i.id} title={i.label} className={`axp-plugin-manager-seg__opt ${value === i.id ? 'is-active' : ''}`} onClick={() => onChange(i.id)}>
-          <Icon name={i.icon} size={14} />{!iconsOnly && <span>{i.label}</span>}
-        </button>
-      ))}
-    </div>
+    <FxSegmented label={label} value={value} onChange={onChange}
+      options={items.map((i) => ({ value: i.id, icon: i.icon, title: i.label, label: iconsOnly ? null : <span>{i.label}</span> }))} />
   );
 }
 
@@ -130,7 +125,7 @@ function Studio(p: LayoutProps) {
         <h1 className="axp-plugin-manager-studio__title">Plugins</h1>
         <nav className="axp-plugin-manager-studio__filters" aria-label="Filter">
           {FILTERS.map((f) => (
-            <button key={f} type="button" className={`axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-active' : ''}`} onClick={() => p.set('filter', f)}>
+            <button key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} aria-pressed={p.prefs.filter === f} onClick={() => p.set('filter', f)}>
               <span>{FILTER_LABEL[f]}</span><span className="axp-plugin-manager-count">{p.inv.items.filter((r) => matches(r, f)).length}</span>
             </button>
           ))}
@@ -138,7 +133,7 @@ function Studio(p: LayoutProps) {
         <p className="axp-plugin-manager-eyebrow">Layout</p>
         <div className="axp-plugin-manager-studio__layouts">
           {LAYOUTS.map((l) => (
-            <button key={l.id} type="button" className={`axp-plugin-manager-studio__layout ${p.prefs.layout === l.id ? 'is-active' : ''}`} onClick={() => p.set('layout', l.id)}>
+            <button key={l.id} type="button" data-fx-row className={`axp-plugin-manager-studio__layout ${p.prefs.layout === l.id ? 'is-active' : ''}`} onClick={() => p.set('layout', l.id)}>
               <Icon name={l.icon} size={14} /><span><strong>{l.label}</strong><span className="fx-muted fx-small">{l.note}</span></span>
             </button>
           ))}
@@ -157,7 +152,7 @@ function Studio(p: LayoutProps) {
       </main>
       {drawer && (
         <aside className="axp-plugin-manager-studio__drawer">
-          <button type="button" className="axp-plugin-manager-iconbtn axp-plugin-manager-studio__close" title="Close" onClick={() => p.set('selected', '')}><Icon name="x" size={14} /></button>
+          <IconButton icon="x" label="Close" className="axp-plugin-manager-studio__close" onClick={() => p.set('selected', '')} />
           <DetailPane row={sel} inv={p.inv} onChanged={() => void p.reload()} onSelect={p.select} />
         </aside>
       )}
@@ -211,7 +206,7 @@ function Mission(p: LayoutProps) {
       </header>
       <div className="axp-plugin-manager-mission__tiles">
         {tiles.map((t) => (
-          <button key={t.label} type="button" className={`axp-plugin-manager-tile ${t.tone ? `is-${t.tone}` : ''} ${t.filter && p.prefs.filter === t.filter ? 'is-active' : ''}`} onClick={() => t.filter && p.set('filter', t.filter)}>
+          <button key={t.label} type="button" data-fx-row className={`axp-plugin-manager-tile ${t.tone ? `is-${t.tone}` : ''} ${t.filter && p.prefs.filter === t.filter ? 'is-active' : ''}`} onClick={() => t.filter && p.set('filter', t.filter)}>
             <span className="axp-plugin-manager-tile__value">{t.value}</span>
             <span className="axp-plugin-manager-tile__label">{t.label}</span>
           </button>
@@ -237,7 +232,7 @@ function Mission(p: LayoutProps) {
           <p className="axp-plugin-manager-eyebrow">Signals · {signals.length}</p>
           {signals.length === 0 && <p className="axp-plugin-manager-signal is-ok"><Icon name="check-circle" size={14} /> All systems nominal.</p>}
           {signals.map((s) => (
-            <button key={s.id} type="button" className={`axp-plugin-manager-signal is-${s.tone}`} onClick={() => s.folder && p.select(s.folder)}>
+            <button key={s.id} type="button" data-fx-row className={`axp-plugin-manager-signal is-${s.tone}`} onClick={() => s.folder && p.select(s.folder)}>
               <strong>{s.title}</strong><span className="fx-small">{s.text}</span>
             </button>
           ))}
@@ -366,7 +361,7 @@ function Catalog(p: LayoutProps) {
   if (sel && p.prefs.view !== 'detail') {
     return (
       <div className="axp-plugin-manager-cat axp-plugin-manager-cat--product">
-        <button type="button" className="axp-plugin-manager-link" onClick={() => p.set('selected', '')}><Icon name="arrow-left" size={14} /> All plugins</button>
+        <Button size="sm" tone="quiet" icon="arrow-left" className="axp-plugin-manager-back" onClick={() => p.set('selected', '')}>All plugins</Button>
         <DetailPane row={sel} inv={p.inv} onChanged={() => void p.reload()} onSelect={p.select} />
       </div>
     );
@@ -398,7 +393,7 @@ function Catalog(p: LayoutProps) {
       )}
       <div className="axp-plugin-manager-cat__pills" role="tablist">
         {FILTERS.map((f) => (
-          <button key={f} type="button" role="tab" aria-selected={p.prefs.filter === f} className={`axp-plugin-manager-pill ${p.prefs.filter === f ? 'is-active' : ''}`} onClick={() => p.set('filter', f)}>{FILTER_LABEL[f]}</button>
+          <button key={f} type="button" role="tab" aria-selected={p.prefs.filter === f} className={`fx-chip axp-plugin-manager-pill ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>{FILTER_LABEL[f]}</button>
         ))}
       </div>
       <Offline inv={p.inv} />

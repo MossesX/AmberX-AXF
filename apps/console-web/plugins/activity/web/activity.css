@@ -45,6 +45,6 @@
 /* stuck items (No word, or active 30+ min): a trash can next to the row, the timer in the warning colour */
 .axp-activity__headrow { display: flex; align-items: center; min-width: 0 }
 .axp-activity__headrow > .axp-activity__head { flex: 1 1 auto }
-.axp-activity__trash { flex: none; margin-right: calc(var(--fx-space) * 0.25); color: var(--fx-danger) }
+.axp-activity__trash { flex: none; margin-right: calc(var(--fx-space) * 0.25) }
 .axp-activity__time { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25) }
 .axp-activity__time.is-stuck { color: var(--fx-warning) }

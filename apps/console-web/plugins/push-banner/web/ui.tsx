@@ -18,11 +18,11 @@ function PullMainButton({ k, repo, base, number, branch }: { k: string; repo: st
   const [sure, setSure] = useState(false);
   if (sure) return (
     <>
-      <button type="button" className="axp-push-banner__act is-primary" disabled={s.busy === k} onClick={() => { setSure(false); void pullMain({ key: k, repo, base, number, branch }); }}><Icon name="check" size={11} />Pull {base} in?</button>
-      <button type="button" className="axp-push-banner__act is-quiet" onClick={() => setSure(false)}>Cancel</button>
+      <Button size="sm" tone="success" icon="check" disabled={s.busy === k} onClick={() => { setSure(false); void pullMain({ key: k, repo, base, number, branch }); }}>Pull {base} in?</Button>
+      <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
     </>
   );
-  return <button type="button" className="axp-push-banner__act" disabled={s.busy === k} title={`Bring ${base}'s newer commits into this branch`} onClick={() => setSure(true)}><Icon name="download" size={11} />Pull {base} in</button>;
+  return <Button size="sm" tone="neutral" icon="download" disabled={s.busy === k} title={`Bring ${base}'s newer commits into this branch`} onClick={() => setSure(true)}>Pull {base} in</Button>;
 }
 
 const pullBehind = (p: PullRow) => !p.fork && (needsPull(p.behind, p.mergeState) || p.mergeState === 'behind');
@@ -75,8 +75,8 @@ function Details({ k, repo, number, branch, url, lines }: { k: string; repo: str
       )}
       {data?.body && <p className="axp-push-banner__sub">{data.body}</p>}
       <div className="axp-push-banner__foot">
-        {url && <a className="axp-push-banner__act is-quiet" href={url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open on GitHub</a>}
-        <button type="button" className="axp-push-banner__act is-quiet" disabled={d?.loading} onClick={() => void loadDetail({ key: k, repo, number, branch }, true)}><Icon name="refresh" size={11} />Reload</button>
+        {url && <a className="fx-btn fx-btn--quiet fx-btn--sm" href={url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open on GitHub</a>}
+        <Button size="sm" tone="quiet" icon="refresh" disabled={d?.loading} onClick={() => void loadDetail({ key: k, repo, number, branch }, true)}>Reload</Button>
       </div>
     </div>
   );
@@ -85,7 +85,7 @@ function Details({ k, repo, number, branch, url, lines }: { k: string; repo: str
 /** The entry's title line: tap to open its details (the chevron says which way). */
 function Expander({ open, onToggle, chip, title, label }: { open: boolean; onToggle: () => void; chip: string; title: string; label: string }) {
   return (
-    <button type="button" className="axp-push-banner__line axp-push-banner__expand" aria-expanded={open} title={open ? 'Hide the details' : 'Show the details'} aria-label={`${label}: ${open ? 'hide' : 'show'} details`} onClick={onToggle}>
+    <button type="button" data-fx-row className="axp-push-banner__line axp-push-banner__expand" aria-expanded={open} title={open ? 'Hide the details' : 'Show the details'} aria-label={`${label}: ${open ? 'hide' : 'show'} details`} onClick={onToggle}>
       <span className="axp-push-banner__chip">{chip}</span>
       <span className="axp-push-banner__name is-title">{title}</span>
       <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
@@ -116,9 +116,9 @@ function PullItem({ p }: { p: PullRow }) {
         {open && <Details k={p.key} repo={p.repo} number={p.number} url={p.url} lines={[`${p.head} → ${p.base}${p.fork ? ` · from a fork (${p.author})` : p.author ? ` · by ${p.author}` : ''}`, p.draft ? 'Draft: GitHub won’t merge it until it’s marked ready.' : '']} />}
       </div>
       <div className="axp-push-banner__acts">
-        {!sure && <button type="button" className="axp-push-banner__act is-primary" disabled={busy || !p.ready} title={p.ready ? `Merge #${p.number} into ${p.base}` : `Merges once it's ready (${why.toLowerCase()})`} onClick={() => setSure(true)}><Icon name="branch" size={11} />Merge</button>}
-        {sure && <button type="button" className="axp-push-banner__act is-primary" disabled={busy} onClick={() => { setSure(false); void mergePr({ key: p.key, repo: p.repo, number: p.number, base: p.base }); }}><Icon name="check" size={11} />Merge #{p.number} into {p.base}?</button>}
-        {sure && <button type="button" className="axp-push-banner__act is-quiet" onClick={() => setSure(false)}>Cancel</button>}
+        {!sure && <Button size="sm" tone="success" icon="branch" disabled={busy || !p.ready} title={p.ready ? `Merge #${p.number} into ${p.base}` : `Merges once it's ready (${why.toLowerCase()})`} onClick={() => setSure(true)}>Merge</Button>}
+        {sure && <Button size="sm" tone="success" icon="check" disabled={busy} onClick={() => { setSure(false); void mergePr({ key: p.key, repo: p.repo, number: p.number, base: p.base }); }}>Merge #{p.number} into {p.base}?</Button>}
+        {sure && <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>}
         {!sure && behind && <PullMainButton k={p.key} repo={p.repo} base={p.base} number={p.number} />}
         {!sure && <HideButton k={p.key} label={`pull request #${p.number}`} />}
       </div>
@@ -144,7 +144,7 @@ function BranchItem({ r }: { r: Row }) {
         {open && <Details k={r.key} repo={r.repo} branch={r.name} url={r.url ?? ''} lines={[`${r.name} → ${r.base} · no pull request yet`]} />}
       </div>
       <div className="axp-push-banner__acts">
-        <button type="button" className="axp-push-banner__act" disabled={busy || r.ahead == null} onClick={() => void openPr(r)}><Icon name="upload" size={11} />Open PR</button>
+        <Button size="sm" tone="neutral" icon="upload" disabled={busy || r.ahead == null} onClick={() => void openPr(r)}>Open PR</Button>
         {needsPull(r.behind) && <PullMainButton k={r.key} repo={r.repo} base={r.base} branch={r.name} />}
         <HideButton k={r.key} label={r.name} />
       </div>
@@ -172,7 +172,7 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
         <Note k={d.key} />
       </div>
       <div className="axp-push-banner__acts">
-        <button type="button" className="fx-iconbtn axp-push-banner__trash" aria-label={`Remove "${d.title || d.branch}" from the banner`}
+        <button type="button" className="fx-iconbtn" aria-label={`Remove "${d.title || d.branch}" from the banner`}
           title={sha ? 'Remove from the banner (every device); it comes back if it gets a new commit' : 'Remove from the banner (every device)'}
           disabled={s.busy === d.key} onClick={() => void removeDone(d, sha)}><Icon name="trash" size={14} /></button>
       </div>
@@ -222,7 +222,7 @@ export function PushBanner() {
     <div className={`axp-push-banner${ready.length ? ' is-ready' : ''}`} role="status" aria-live="polite">
       <div className="axp-push-banner__row">
         <span className="axp-push-banner__icon" aria-hidden><Icon name="branch" size={18} /></span>
-        <button type="button" className="axp-push-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-push-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-push-banner__top">
             <strong>{headline}</strong>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
@@ -241,8 +241,8 @@ export function PushBanner() {
           <Group title="Pull requests" count={waiting.length}>{waiting.map((p) => <PullItem key={p.key} p={p} />)}</Group>
           <Group title="Branches without a pull request" count={bare.length}>{bare.map((r) => <BranchItem key={r.key} r={r} />)}</Group>
           <div className="axp-push-banner__foot">
-            <button type="button" className="axp-push-banner__act is-quiet" disabled={s.loading} onClick={() => void load(true)}><Icon name="refresh" size={11} />{s.loading ? 'Checking…' : 'Check now'}</button>
-            <button type="button" className="axp-push-banner__act is-quiet" onClick={() => rt.dispatch('settings.open:push-banner')}><Icon name="settings" size={11} />Settings</button>
+            <Button size="sm" tone="quiet" icon="refresh" disabled={s.loading} onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
+            <Button size="sm" tone="quiet" icon="settings" onClick={() => rt.dispatch('settings.open:push-banner')}>Settings</Button>
             {s.error && <span className="axp-push-banner__note is-danger">{s.error}</span>}
             <button type="button" className="fx-iconbtn axp-push-banner__min" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
           </div>
@@ -269,7 +269,7 @@ export function PushSettings() {
           {hidden.map((h) => (
             <li key={h.key} className="axp-push-banner__item">
               <span className="axp-push-banner__entry"><span className="axp-push-banner__line"><span className="axp-push-banner__chip">{short(h.repo)}</span><span className="axp-push-banner__name">{h.name}</span></span></span>
-              <div className="axp-push-banner__acts"><button type="button" className="axp-push-banner__act" onClick={() => void setHidden({ key: h.key }, false)}><Icon name="eye" size={11} />Show</button></div>
+              <div className="axp-push-banner__acts"><Button size="sm" tone="neutral" icon="eye" onClick={() => void setHidden({ key: h.key }, false)}>Show</Button></div>
             </li>
           ))}
         </ul>
