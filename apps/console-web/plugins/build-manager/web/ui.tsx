@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
-import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
+import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
 /* ---------------- time ---------------- */
@@ -112,7 +112,7 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
       </div>
       <div className="axp-build-manager__live-meta">
         {finished ? <Badge icon={failed ? 'x' : 'check'} tone={failed ? 'danger' : 'ok'}>{failed ? 'Failed' : 'Finished'}</Badge> : null}
-        <Badge icon="clock" tone={over ? 'warn' : undefined} title="Elapsed vs estimate">{dur(elapsed)}{e.estimate ? ` / ~${fmt(e.estimate)}` : ''}</Badge>
+        <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={over || isStuckLive(e, now) ? 'warn' : undefined} title="Elapsed vs estimate">{dur(elapsed)}{e.estimate ? ` / ~${fmt(e.estimate)}` : ''}</Badge>
         {e.row && e.row.stepsTotal > 0 && <Badge icon="list">{e.row.stepsDone}/{e.row.stepsTotal} steps</Badge>}
         {!e.row && <Badge tone="muted" title="Not linked to anything on the build list">{e.source || 'Running'}</Badge>}
         {e.row && e.via && <Badge tone="muted" title="How this was linked to the build">{e.via}</Badge>}
@@ -122,6 +122,19 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
       {e.currentStep && !finished && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
       {pct != null && !finished && <Bar value={pct} label={`${e.title} progress`} />}
     </li>
+  );
+}
+
+/** The trash can on a stuck build (no word for 10 min, or running 30+ min): failed (stalled) + closed everywhere. */
+function TrashBuild({ e }: { e: ChangeLive }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  return (
+    <button type="button" className="fx-iconbtn axp-build-manager__trash" disabled={busy} aria-label={`Remove stuck build "${e.title}"`}
+      title="Stuck: mark it failed (stalled) and take it off the banners on every device; it stays in the build log"
+      onClick={(ev) => { ev.stopPropagation(); setBusy(true); abandonBuild(e.changeId).catch((x: Error) => { setBusy(false); rt.toast(x.message, 'warning'); }); }}>
+      <Icon name="trash" size={14} />
+    </button>
   );
 }
 
@@ -138,6 +151,7 @@ function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
         <span className={e.stale || e.state === 'queued' ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={14} /></span>
         <span className="axp-build-manager__live-title">{e.title}</span>
         <ModelChip model={e.model === 'Other' ? 'Opus' : e.model} />
+        {isStuckLive(e, now) && <TrashBuild e={e} />}
       </div>
       <div className="axp-build-manager__live-meta">
         {e.stale ? <Badge icon="alert" tone="warn" title="No heartbeat from this session for over 10 minutes: it may have stopped">no word for {dur(quiet)}</Badge>
@@ -665,7 +679,7 @@ export function BuildBanner() {
             <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
             {full && <span className="axp-build-manager-banner__meta">
               <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
-              <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
+              <Badge icon={isStuckLive(first, now) ? 'alert' : 'clock'} tone={isStuckLive(first, now) ? 'warn' : undefined}>{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}{first.stale && first.lastSeenAt ? ` · no word ${dur(now - first.lastSeenAt)}` : ''}</Badge>
               {cost != null && <Badge icon="zap">{first.costActual == null ? '~' : ''}{money(cost)}</Badge>}
               {first.stepsTotal > 0 && <Badge icon="list">{first.stepsDone}/{first.stepsTotal}</Badge>}
               <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
@@ -675,6 +689,7 @@ export function BuildBanner() {
             {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
           </span>
         </button>
+        {isStuckLive(first, now) && <TrashBuild e={first} />}
         {fold}
       </div>
     );

@@ -14,6 +14,8 @@ never on the console MCP).
                        VPS. Needs Brett's approval on the hub: the job waits for it (retries 15 s × 10, then every minute,
                        up to 30 min), the approval link + an alert go out at once. dryRun returns the plan only.
   GET  jobs            the start jobs (state, approval link, command, plan, verify result)
+  POST abandon        {changeId} the trash can on a stuck live build (no word for 10 min, or running 30+ min): the build
+                       log (axf.changes@1) finishes it as failed (stalled) and closes it on every device
   POST verify          {changeId} run the repo's checks for the areas a finished build touched + its branch's CI (via
                        lib-github), and mark the entry verified / broken (never merges)
 
@@ -384,6 +386,21 @@ async def start(request: Request) -> dict[str, Any]:
 @router.get("/jobs")
 def jobs() -> dict[str, Any]:
     return {"items": JOBS.all()}
+
+
+@router.post("/abandon")
+async def abandon(request: Request) -> dict[str, Any]:
+    body = await request.json()
+    cid = str((body or {}).get("changeId") or "")
+    if not _CID.match(cid):
+        raise HTTPException(400, "changeId is a change id")
+    svc = plugin_services.get(CHANGES)
+    if not svc or not callable(getattr(svc, "abandon", None)):
+        raise HTTPException(409, "the build log can't take builds off yet (update the Codebase changes plugin)")
+    if not svc.get(cid):
+        raise HTTPException(404, "no entry with that id")
+    e = await asyncio.to_thread(svc.abandon, cid, "build-manager")
+    return {"changeId": cid, "closed": bool(e.get("closed")), "state": (e.get("result") or {}).get("state")}
 
 
 @router.post("/verify")

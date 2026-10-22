@@ -109,6 +109,12 @@ d = c.get("/p/detail", params={"id": "gh:MossesX/AmberX-AXF:11"}).json()
 check(d["jobs"][0]["steps"][1] == {"name": "Gradle", "state": "running"} and abs(d["progress"] - 1 / 3) < 1e-9, "jobs + steps + progress for a run")
 check(c.get("/p/detail", params={"id": "gh:Someone/Else:1"}).status_code == 404, "details only for watched repos")
 mod.FEED._gh_cache = None
+# the trash can on a stuck item: a source's item (not a report) is dismissed everywhere, for a day
+check(c.delete("/p/item", params={"id": "gh:MossesX/AmberX-AXF:12"}).json()["removed"] is True, "trash: any item can be taken off")
+snap = c.get("/p/items").json()
+check("gh:MossesX/AmberX-AXF:12" not in {i["id"] for i in snap["items"]} and "gh:MossesX/AmberX-AXF:11" in {i["id"] for i in snap["items"]}, "trash: gone from the feed, the rest stay")
+check(oct(os.stat(DATA / "dismissed.json").st_mode)[-3:] == "600", "dismissed list is 0600")
+mod.FEED._gh_cache = None
 os.environ.pop("GITHUB_TOKEN")
 snap = c.get("/p/items").json()
 check(any("no token" in e for e in snap["errors"]) and not any(i["source"] == "github" for i in snap["items"]), "no GitHub token: says so, shows nothing from GitHub")

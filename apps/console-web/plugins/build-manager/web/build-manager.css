@@ -147,3 +147,5 @@
 .axp-build-manager__dialog-body .axp-build-manager__field select { width: 100%; min-width: 0 }
 .axp-build-manager__dialog-foot { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-top: calc(var(--fx-space) * 0.4) }
 .axp-build-manager__dialog-foot > span { flex: 1 }
+/* the trash can on a stuck live build (no word / running 30+ min) */
+.axp-build-manager__trash { flex: none; color: var(--fx-danger) }

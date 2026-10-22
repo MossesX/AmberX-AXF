@@ -190,6 +190,19 @@ export async function loadJobs(): Promise<void> {
     set({ jobs: Object.fromEntries((j.items ?? []).map((x) => [x.key, x])) });
   } catch { /* offline */ }
 }
+/** The trash can on a stuck live build: the build log finishes it as failed (stalled) and closes it on every device. */
+export async function abandonBuild(changeId: string): Promise<void> {
+  const r = await pluginFetch(FOLDER, 'abandon', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ changeId }) });
+  const j = (await r.json().catch(() => ({}))) as { detail?: string };
+  if (!r.ok) throw new Error(j.detail ?? `HTTP ${r.status}`);
+  void loadChanges(true);
+}
+
+/** Stuck = no word from its session for 10 min, or running 30+ min (Brett, Oct 22 2026): offers the trash can. */
+export const STUCK_MS = 30 * 60_000;
+export const isStuckLive = (e: { stale?: boolean; startedAt?: number | null; state?: string }, now: number) =>
+  !!e.stale || (e.state !== 'queued' && !!e.startedAt && now - e.startedAt >= STUCK_MS);
+
 export async function verifyBuild(changeId: string): Promise<string> {
   const r = await pluginFetch(FOLDER, 'verify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ changeId }) });
   const j = (await r.json().catch(() => ({}))) as { verify?: { state: string; summary?: string }; detail?: string };

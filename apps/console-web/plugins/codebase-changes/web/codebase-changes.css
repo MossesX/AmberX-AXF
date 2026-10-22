@@ -84,3 +84,7 @@
 .axp-codebase-changes__cmd { margin: 0; padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
 /* "_" under the entries' ✕ column: folds the banner to its summary (Oct 21 2026) */
 .axp-codebase-changes-banner__min { margin-left: auto; margin-right: calc(var(--fx-space) * 0.25 + var(--fx-border-w)) }
+/* timers on active entries; stuck ones (no word / 30+ min) in the warning colour with a trash can */
+.axp-codebase-changes__timer { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-codebase-changes__timer.is-stuck { color: var(--fx-warning) }
+.axp-codebase-changes__trash { color: var(--fx-danger) }

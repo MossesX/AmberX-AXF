@@ -80,7 +80,7 @@ feed.fail = True
 r = c.get("/p/live")
 check(r.status_code == 200 and r.json()["items"] == [] and "feed down" in r.json()["error"], "a failing feed doesn't break the route")
 
-check({(m.path, *sorted(m.methods)) for m in mod.router.routes if m.methods - {"GET", "HEAD"}} == {("/start", "POST"), ("/verify", "POST")}, "only start + verify write anything")
+check({(m.path, *sorted(m.methods)) for m in mod.router.routes if m.methods - {"GET", "HEAD"}} == {("/start", "POST"), ("/verify", "POST"), ("/abandon", "POST")}, "only start, verify + abandon write anything")
 check({p: p.stat().st_mtime for p in (REPO / "framework" / "plan").glob("*.json")} == before, "nothing in framework/plan written")
 
 # ---------------------------------------------------------------- the build log (axf.changes@1) + real time
@@ -111,6 +111,17 @@ mod.EVENT_EVERY_S, mod.EVENT_MAX_S = 0.05, 0.4
 with c.stream("GET", "/p/events") as s:
     first = next(s.iter_lines())
     check(first.startswith("retry:") or "ready" in first, "events: an SSE stream that says it's ready")
+
+# ---------------------------------------------------------------- the trash can on a stuck live build
+stuck = svc.open({"kind": "build", "title": "Stuck build", "status": "running", "surface": "vps-claude-code"}, "test")
+check(c.post("/p/abandon", json={"changeId": "nope"}).status_code == 400, "abandon: needs a change id")
+check(c.post("/p/abandon", json={"changeId": "chg-20991231-0000000000"}).status_code == 404, "abandon: unknown entry is 404")
+r = c.post("/p/abandon", json={"changeId": stuck["id"]}).json()
+got = svc.get(stuck["id"])
+check(r["closed"] and r["state"] == "failed" and got["status"] == "failed" and got["closed"]["by"] == "build-manager", "abandon: the build log finishes it as failed (stalled) and closes it everywhere")
+cc.store()._scanned = 0.0
+live = [x for x in c.get("/p/changes").json()["items"] if x["id"] == stuck["id"]]
+check(not live or live[0]["status"] == "failed", "abandon: it leaves the Live list (no longer running)")
 
 # ---------------------------------------------------------------- Start build now (dry run, refusals, fake axHub)
 os.environ["AXF_DATA_DIR"] = "off"

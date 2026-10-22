@@ -174,13 +174,33 @@ function ItemDetail({ it, now }: { it: Item; now: number }) {
   );
 }
 
+/** Stuck = "No word" (the source went quiet), or still active 30 min after it started (Brett, Oct 22 2026). */
+const STUCK_MS = 30 * 60_000;
+export const isStuck = (it: Pick<Item, 'state' | 'startedAt'>, now: number) => it.state === 'stale' || (ACTIVE.has(it.state) && now - it.startedAt >= STUCK_MS);
+
+/** Takes a stuck item off the banner on every device (the feed deletes a report, or remembers it as dismissed). */
+function Trash({ it }: { it: Item }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button type="button" className="fx-iconbtn axp-activity__trash" disabled={busy} aria-label={`Remove "${it.title}"`} title="Stuck: remove it from the banners on every device"
+      onClick={() => { setBusy(true); void call(`item?id=${encodeURIComponent(it.id)}`, { method: 'DELETE' }).then(refresh, () => setBusy(false)); }}>
+      <Icon name="trash" size={14} />
+    </button>
+  );
+}
+
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
   const icon = SOURCE_ICON[it.source] ?? 'zap';
-  const time = ACTIVE.has(it.state) ? dur(now - it.startedAt) : ago(it.finishedAt ?? it.updatedAt, now);
+  const stuck = isStuck(it, now);
+  // a running timer on every active or stuck item: how long since it started (and, when stuck, how long it's been quiet)
+  const time = ACTIVE.has(it.state) || it.state === 'stale'
+    ? `${dur(now - it.startedAt)}${stuck ? ` · quiet ${dur(now - it.updatedAt)}` : ''}`
+    : ago(it.finishedAt ?? it.updatedAt, now);
   const last = it.steps?.filter((s) => s.state === 'running').pop()?.name;
   return (
     <li className={`axp-activity__item axp-activity__item--${it.state}`}>
+      <div className="axp-activity__headrow">
       <button type="button" className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <StateIcon state={it.state} />
         <Icon name={icon} size={14} />
@@ -188,9 +208,11 @@ function Row({ it, now }: { it: Item; now: number }) {
           <span>{it.title}</span>
           {!open && (last || it.detail) && <span className="axp-activity__sub">{last ?? it.detail.split('\n')[0]}</span>}
         </span>
-        <span className="axp-activity__time">{time}</span>
+        <span className={`axp-activity__time${stuck ? ' is-stuck' : ''}`}><Icon name={stuck ? 'alert' : 'clock'} size={12} />{time}</span>
         <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
       </button>
+      {stuck && <Trash it={it} />}
+      </div>
       {it.progress != null && ACTIVE.has(it.state) && <Progress value={it.progress} />}
       {open && <ItemDetail it={it} now={now} />}
     </li>
@@ -210,7 +232,7 @@ function ActivityBanner() {
   const finished = items.filter((i) => !ACTIVE.has(i.state));
   const visible = useOnScreen();
   const waiting = finished.some((i) => !seenAt.has(i.id) || Date.now() - (seenAt.get(i.id) ?? 0) < DONE_FLASH_MS);
-  const now = useNow(active.length > 0 || s.pinned || (visible && waiting));
+  const now = useNow(active.length > 0 || items.some((i) => i.state === 'stale') || s.pinned || (visible && waiting));
   // Everything the feed still lists as finished (it keeps them 10 min) counts until you've had it on screen for 20 s.
   if (visible) markSeen(finished, now);
   const justDone = finished.filter((i) => { const t = seenAt.get(i.id); return t === undefined || now - t < DONE_FLASH_MS; });
@@ -221,8 +243,9 @@ function ActivityBanner() {
 
   const failed = (active.length ? [] : justDone).some((i) => i.state === 'failed' || i.state === 'stale');
   const first = active[0];
+  const stuckN = items.filter((i) => isStuck(i, now)).length;
   const summary = active.length
-    ? `${active.length} in progress`
+    ? `${active.length} in progress${stuckN ? ` · ${stuckN} stuck` : ''}`
     : failed ? `Finished, with ${justDone.filter((i) => i.state === 'failed' || i.state === 'stale').length} failed` : 'All done';
   const oldest = active.reduce((m, i) => Math.min(m, i.startedAt), Infinity);
 
