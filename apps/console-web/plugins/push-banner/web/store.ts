@@ -101,6 +101,26 @@ export const pullMain = (r: { key: string; repo: string; number?: number; branch
   return `Pulled ${r.base} in. CI runs again on the new commit.`;
 });
 
+export const PULL_ALL = 'pull-all';
+
+/** Pull main into every entry of "Needs main pulled in", one at a time (each the same server action as its own button);
+ *  a failure (a conflict GitHub only finds now, a refused branch) is noted and the rest go on. One reload at the end. */
+export async function pullAll(list: { key: string; repo: string; number?: number; branch?: string; base: string }[]): Promise<void> {
+  if (state.busy || !list.length) return;
+  set({ busy: PULL_ALL, note: null });
+  const failed: string[] = [];
+  let done = 0;
+  for (const r of list) {
+    set({ note: { key: PULL_ALL, text: `Pulling main into ${done + failed.length + 1} of ${list.length}…`, tone: 'ok' } });
+    const body = r.number ? { repo: r.repo, number: r.number, confirm: `${r.repo}#${r.number}` } : { repo: r.repo, branch: r.branch, confirm: `${r.repo}:${r.branch}` };
+    try { await api.post('update', body); done++; }
+    catch (e) { failed.push(`${r.number ? `#${r.number}` : r.branch} (${e instanceof Error ? e.message : String(e)})`); }
+  }
+  const text = `Pulled main into ${done} of ${list.length}.${failed.length ? ` Not pulled: ${failed.join('; ')}` : ' CI runs again on each.'}`;
+  set({ details: {} });
+  try { await load(true); } finally { set({ busy: '', note: { key: PULL_ALL, text, tone: failed.length ? 'danger' : 'ok' } }); }
+}
+
 /** Behind its base and nothing in the way of pulling it in (no conflicts GitHub knows of). */
 export const needsPull = (behind: number | null | undefined, mergeState?: string) => (behind ?? 0) > 0 && mergeState !== 'dirty';
 

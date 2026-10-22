@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
-import { ago, bannerOn, doneKeys, doneRows, load, loadDetail, mergePr, needsPull, openPr, pullMain, pullRows, removeDone, rows, setHidden, useStore, type Done, type PullRow, type Row } from './store';
+import { ago, bannerOn, doneKeys, doneRows, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, setHidden, useStore, type Done, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -180,11 +180,29 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
   );
 }
 
-function Group({ title, count, children }: { title: string; count: number; children: ReactNode }) {
+/** "Pull all" on the Needs main pulled in group (tap twice): main into every entry there, one at a time. */
+function PullAllButton({ list }: { list: { key: string; repo: string; number?: number; branch?: string; base: string }[] }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  if (list.length < 2) return null;
+  const busy = !!s.busy;
+  if (sure) return (
+    <span className="axp-push-banner__group-act">
+      <Button size="sm" tone="success" icon="check" disabled={busy} onClick={() => { setSure(false); void pullAll(list); }}>Pull main into all {list.length}?</Button>
+      <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
+    </span>
+  );
+  return <span className="axp-push-banner__group-act"><Button size="sm" tone="neutral" icon="download" disabled={busy} title="Bring main's newer commits into every entry in this group" onClick={() => setSure(true)}>{s.busy === PULL_ALL ? 'Pulling…' : 'Pull all'}</Button></span>;
+}
+
+function Group({ title, count, action, children }: { title: string; count: number; action?: ReactNode; children: ReactNode }) {
   if (!count) return null;
   return (
     <section className="axp-push-banner__group" aria-label={title}>
-      <h4 className="axp-push-banner__group-title">{title} <span>{count}</span></h4>
+      <div className="axp-push-banner__group-head">
+        <h4 className="axp-push-banner__group-title">{title} <span>{count}</span></h4>
+        {action}
+      </div>
       <ul className="axp-push-banner__list">{children}</ul>
     </section>
   );
@@ -234,7 +252,10 @@ export function PushBanner() {
         <div className="axp-push-banner__body">
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
-          <Group title="Needs main pulled in" count={behindCount}>
+          <Group title="Needs main pulled in" count={behindCount} action={<PullAllButton list={[
+            ...behindPulls.map((p) => ({ key: p.key, repo: p.repo, number: p.number, base: p.base })),
+            ...behindBare.map((r) => ({ key: r.key, repo: r.repo, branch: r.name, base: r.base })),
+          ]} />}>
             {behindPulls.map((p) => <PullItem key={p.key} p={p} />)}
             {behindBare.map((r) => <BranchItem key={r.key} r={r} />)}
           </Group>
@@ -243,6 +264,7 @@ export function PushBanner() {
           <div className="axp-push-banner__foot">
             <Button size="sm" tone="quiet" icon="refresh" disabled={s.loading} onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
             <Button size="sm" tone="quiet" icon="settings" onClick={() => rt.dispatch('settings.open:push-banner')}>Settings</Button>
+            <Note k={PULL_ALL} />
             {s.error && <span className="axp-push-banner__note is-danger">{s.error}</span>}
             <button type="button" className="fx-iconbtn axp-push-banner__min" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
           </div>
