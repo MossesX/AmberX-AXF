@@ -9,13 +9,18 @@
  *
  * Pure helpers here; the UI is in patchesLibrary.tsx and views/.
  */
-import { embedUrlFull, parseEmbedMessage, EMBED_MESSAGE, type EmbedMessage } from './axf/core';
+import { embedUrlFull, parseEmbedMessage, EMBED_MESSAGE, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type MenuItem } from './axf/core';
 import manifest from '../axf.manifest.json';
 
 export const HOST_ID = 'patches';
 
 /** What Patches takes over from the apps in its tabs (web: settings; Android also takes notifications). */
 export const TAKES = ['settings'] as const;
+/**
+ * …and, from the app in a tab (not its settings page or the banner strip), its application menu (Brett, Oct 22 2026:
+ * "all app menus are inherited by Patches' menu and the apps in tabs hide theirs").
+ */
+export const TAB_TAKES = [...TAKES, 'app-menu'] as const;
 
 export interface PatchTab {
   id: 'console' | 'pilot' | 'axhub';
@@ -68,7 +73,7 @@ export function tabOrigin(t: PatchTab, saved: unknown): string {
 
 /** The page a tab shows: its app, marked as embedded in Patches, with Patches taking its settings. */
 export function tabUrl(t: PatchTab, origin: string): string {
-  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAKES] });
+  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAB_TAKES] });
 }
 
 /** An app's settings page for the combined settings (page mode; all its chrome hidden). */
@@ -95,6 +100,47 @@ export function parseStripMessage(raw: unknown): StripMessage | null {
 
 /** An embed@1 message from one of the apps (anything else is ignored). */
 export function fromApp(data: unknown): EmbedMessage | null { return parseEmbedMessage(data); }
+
+/**
+ * An app's menu as items of Patches' own application menu: one top-level menu per app, the app's menus as its
+ * submenus. Items carry no action of the app's: picking one runs `patches.menu:<tab>:<item id>`, which hands the id
+ * back to the app (`run`). Check marks and counts become Patches counters (`counterName`).
+ */
+export function guestMenuItems(tab: PatchTab['id'], menus: readonly EmbedMenu[]): MenuItem[] {
+  // levels under the app's menu: its menus are level 0, so items nest to level 3 (app-menu maxDepth 4)
+  const conv = (it: EmbedMenuItem, level: number): MenuItem | null => {
+    if (it.separator) return { id: `g.${it.id}`, label: '', separator: true };
+    if (it.locked) return null;
+    const out: MenuItem = { id: `g.${it.id}`, label: it.label };
+    if (it.icon) out.icon = it.icon;
+    if (typeof it.check === 'boolean') out.checked = `counter:${counterName(tab, it.id)}`;
+    else if (it.count) out.badge = counterName(tab, it.id);
+    const kids = level >= 3 ? [] : (it.items ?? []).map((k) => conv(k, level + 1)).filter((k): k is MenuItem => !!k);
+    if (kids.length) out.items = kids;
+    else if (it.items?.length) return null;
+    else out.action = `patches.menu:${tab}:${it.id}`;
+    return out;
+  };
+  return menus.map((m) => ({ id: `g.${m.id}`, label: m.label, items: m.items.map((k) => conv(k, 1)).filter((k): k is MenuItem => !!k) })).filter((m) => m.items!.some((k) => !k.separator));
+}
+
+/** The counter that carries an app item's check mark or count in Patches' menu. */
+export function counterName(tab: string, id: string): string { return `patches.menu.${tab}.${id}`; }
+
+/** Every counter an app's menu sets (check = 1 / 0, count = the number). */
+export function guestMenuCounters(tab: string, menus: readonly EmbedMenu[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  const walk = (it: EmbedMenuItem) => {
+    if (typeof it.check === 'boolean') out[counterName(tab, it.id)] = it.check ? 1 : 0;
+    else if (it.count) out[counterName(tab, it.id)] = it.count;
+    it.items?.forEach(walk);
+  };
+  menus.forEach((m) => m.items.forEach(walk));
+  return out;
+}
+
+/** The message that asks the app in a tab to run one of the items it sent. */
+export function runMessage(id: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'run', id }; }
 
 /** The message that asks an app's settings page to open one of its own tabs. */
 export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED_MESSAGE, type: 'open-tab', tab }; }

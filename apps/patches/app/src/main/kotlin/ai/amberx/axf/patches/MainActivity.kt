@@ -68,6 +68,8 @@ class MainActivity : AxfActivity() {
     @Composable
     override fun Content() {
         val module = patches.appModule
+        // embed@1 `run`: a picked item of a tab app's menu goes back to that app's web view
+        module.sendToTab = { tab, json -> holder.send(tab, json) }
         val views = mutableMapOf<String, @Composable () -> Unit>("plugin-manager" to { PluginManagerScreen() })
         for (t in AppModule.TABS) views[t.id] = { TabView(holder, module, t.id) }
         // The combined settings (Patches · Console · Pilot · axHub) replaces the settings screen lib-settings registers.

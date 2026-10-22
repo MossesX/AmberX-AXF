@@ -37,7 +37,9 @@ export const originOf = (source, addedBy) => (source === 'pending' && PROMPT_SOU
  */
 export const ADDED_BY_LABEL = {
   chat: 'Chat session', 'claude-code': 'Claude Code', console: 'Console form', artifact: 'claude.ai page',
-  'fable-rebuilds': 'Fable rebuilds', 'feature-assist': 'Feature assistant', plan: 'Plan sync',
+  // tool sources named after a plugin folder (Fable rebuilds, feature assistant) get their label from the key: a plugin's
+  // code never names another plugin's folder (plugin-lifecycle@1)
+  plan: 'Plan sync',
   'build-queue': 'Build queue', 'plan-feature': 'Plan feature', unrecorded: 'Not recorded',
 };
 export const addedByKey = (source) => str(source).trim().toLowerCase() || 'unrecorded';

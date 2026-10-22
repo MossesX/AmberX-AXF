@@ -21,6 +21,7 @@ import ai.amberx.axf.kernel.runtime.AxfRuntime
 import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.settings.SettingsEngine
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.put
 
 /**
  * One tab of Patches: the app it shows and where. `origins` = the places its web view may render: the app's own origin
@@ -48,6 +49,13 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
      * own settings to open (asked by the app itself, e.g. the console's "Set up a provider"). [views.CombinedSettings].
      */
     val settingsApp = kotlinx.coroutines.flow.MutableStateFlow(SettingsRequest("patches"))
+    /** Sends JSON into a tab's web view (`AxfEmbedGuest.receive`); set by the activity, which holds the web views. */
+    var sendToTab: ((tab: String, json: String) -> Unit)? = null
+    /** The menus the apps in the tabs sent (embed@1 take `app-menu`), shown in Patches' own application menu. */
+    private val guestMenus = linkedMapOf<String, List<ai.amberx.axf.kernel.engine.EmbedMenu>>()
+    /** Patches' own app-menu asset as shipped, the base the apps' menus are added to. */
+    private var baseMenu: kotlinx.serialization.json.JsonObject? = null
+
     /** Settings → Patches → Notifications: Patches serves the phone's notifications for the Console, Pilot and axHub. */
     val notify = kotlinx.coroutines.flow.MutableStateFlow(true)
 
@@ -84,6 +92,13 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
             ai.amberx.axf.kernel.asset.MenuItem("patches.settings.tab", "Settings for this app", "settings", "patches.settings:{payload}"),
             ai.amberx.axf.kernel.asset.MenuItem("patches.settings", "Settings", "settings", "app.settings"),
         )))
+        // embed@1 app-menu: an item of a tab app's menu, picked in Patches' menu, runs in that app (it runs only what it sent).
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("patches.menu", ActionMeta("Run an item of a tab app's menu", module = id)) { args, _ ->
+            val tab = args.getOrNull(0)?.takeIf { t -> TABS.any { it.id == t } } ?: return@ActionContribution
+            val json = args.getOrNull(1)?.let { ai.amberx.axf.kernel.engine.EmbedTakes.run(it) } ?: return@ActionContribution
+            runtime?.navigate(tab)
+            sendToTab?.invoke(tab, json)
+        })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("patches.reload", ActionMeta("Reload the tab in front", module = id)) { _, _ ->
             val tab = runtime?.state?.value?.view ?: return@ActionContribution
             reloads.value = reloads.value + (tab to System.currentTimeMillis())
@@ -120,8 +135,47 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         when (m) {
             is ai.amberx.axf.kernel.engine.EmbedMessage.OpenSettings -> openSettings(tab, m.tab)
             is ai.amberx.axf.kernel.engine.EmbedMessage.Notify -> if (notify.value) ai.amberx.axf.patches.watch.PatchesAlerts.fromApp(context, tab, TABS.firstOrNull { it.id == tab }?.label ?: tab, m)
+            is ai.amberx.axf.kernel.engine.EmbedMessage.Menu -> showGuestMenu(tab, m.menus)
             else -> Unit
         }
+    }
+
+    /**
+     * Patches' application menu = its own menus + one menu per app in a tab, holding that app's menus as submenus
+     * (Brett, Oct 22 2026: "all app menus are inherited by Patches' menu and the apps in tabs hide theirs"). Items run
+     * `patches.menu:<tab>:<item id>`; check marks and counts go into the label (the Android menu has no badges yet).
+     */
+    private fun showGuestMenu(tab: String, menus: List<ai.amberx.axf.kernel.engine.EmbedMenu>) {
+        val rt = runtime ?: return
+        if (TABS.none { it.id == tab }) return
+        val base = baseMenu ?: rt.registry.get("app-menu", MENU_ID)?.toJson()?.also { baseMenu = it } ?: return
+        if (menus.isEmpty()) guestMenus.remove(tab) else guestMenus[tab] = menus
+        // levels under the app's menu: its menus are level 0, so items nest to level 3 (app-menu maxDepth 4)
+        fun item(it: ai.amberx.axf.kernel.engine.EmbedMenuItem, level: Int): kotlinx.serialization.json.JsonObject? {
+            if (it.separator) return kotlinx.serialization.json.buildJsonObject { put("id", "g.${it.id}"); put("separator", true) }
+            if (it.locked) return null
+            val kids = if (level >= 3) null else it.items?.mapNotNull { k -> item(k, level + 1) }
+            if (it.items != null && kids.isNullOrEmpty()) return null
+            val label = (if (it.check == true) "✓ " else "") + it.label + (it.count?.let { n -> " ($n)" } ?: "")
+            return kotlinx.serialization.json.buildJsonObject {
+                put("id", "g.${it.id}"); put("label", label)
+                it.icon?.let { i -> put("icon", i) }
+                if (kids != null) put("items", kotlinx.serialization.json.JsonArray(kids)) else put("action", "patches.menu:$tab:${it.id}")
+            }
+        }
+        val added = TABS.mapNotNull { t ->
+            val ms = guestMenus[t.id] ?: return@mapNotNull null
+            val subs = ms.mapNotNull { m ->
+                val items = m.items.mapNotNull { item(it, 1) }
+                if (items.none { (it["separator"] as? JsonPrimitive)?.content != "true" }) null
+                else kotlinx.serialization.json.buildJsonObject { put("id", "g.${m.id}"); put("label", m.label); put("items", kotlinx.serialization.json.JsonArray(items)) }
+            }
+            if (subs.isEmpty()) null else kotlinx.serialization.json.buildJsonObject { put("id", "app-${t.id}"); put("label", t.label); put("items", kotlinx.serialization.json.JsonArray(subs)) }
+        }
+        val data = base["data"] as? kotlinx.serialization.json.JsonObject ?: return
+        val own = (data["menus"] as? kotlinx.serialization.json.JsonArray)?.toList() ?: emptyList()
+        val next = kotlinx.serialization.json.JsonObject(base + ("data" to kotlinx.serialization.json.JsonObject(data + ("menus" to kotlinx.serialization.json.JsonArray(own + added)))))
+        rt.replaceAsset(next, id)
     }
 
     /** The hub's address (manifest `developer.hub`, else lib-hub's default). */
@@ -153,7 +207,9 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         val SETTINGS_APPS: List<Triple<String, String, String>> = listOf(Triple("patches", "Patches", "layers"), Triple("console", "Console", "terminal"), Triple("pilot", "Pilot", "rocket"), Triple("axhub", "axHub", "shield"))
 
         /** What Patches takes over from the apps in its tabs (embed@1): their settings and their notifications. */
-        val TAKES: List<String> = listOf("settings", "notifications")
+        val TAKES: List<String> = listOf("settings", "notifications", "app-menu")
+        /** Patches' own app-menu asset (assets/axf/assets/app-menu/patches.json). */
+        const val MENU_ID: String = "patches"
 
         /** The tabs, in order. The hub tab has no address setting: it is the app's own hub. */
         val TABS: List<PatchTab> = listOf(

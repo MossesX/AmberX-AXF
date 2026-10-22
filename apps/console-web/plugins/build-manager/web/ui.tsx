@@ -1,5 +1,6 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
@@ -25,6 +26,56 @@ const dur = (ms: number | null) => {
 
 const SOURCE_ICON: Record<Source, string> = { pending: 'clock', queue: 'play', plan: 'layers' };
 const ORIGIN_ICON: Record<Origin, string> = { prompt: 'user', auto: 'zap' };
+
+const ORIGIN_SHORT: Record<Origin, string> = { prompt: 'Prompt', auto: 'Auto' };
+
+/** One toolbar toggle: icon over a short label, the count as a badge on the corner (Brett, Oct 22 2026: style #23 + count badges). */
+function ToolToggle({ icon, label, title, count, on, onClick, quiet, pressed }: { icon: string; label: string; title: string; count: number; on: boolean; onClick: () => void; quiet?: boolean; pressed?: boolean | null }) {
+  return (
+    <button type="button" className={`axp-build-manager__tool${on ? ' is-on' : ''}`} title={title} aria-pressed={pressed === null ? undefined : (pressed ?? on)} aria-label={`${label}${count ? `, ${count}` : ''}`} onClick={onClick}>
+      <span className="axp-build-manager__tool-icon"><Icon name={icon} size={18} />{(!quiet || count > 0) && <span className="axp-build-manager__tool-n">{count > 999 ? '999+' : count}</span>}</span>
+      <span className="axp-build-manager__tool-label">{label}</span>
+    </button>
+  );
+}
+
+/** Model, Added by, Status and Sort in one dialog (they were four drop-downs above the list). */
+function FilterSortDialog(p: { onClose: () => void; model: string; setModel: (v: string) => void; addedBy: string; setAddedBy: (v: string) => void; adders: { value: string; label: string; count: number }[];
+  status: string; setStatus: (v: string) => void; statuses: { value: string; label: string }[]; sort: SortKey; setSort: (v: SortKey) => void; shown: number }) {
+  useEffect(() => { const k = (e: KeyboardEvent) => { if (e.key === 'Escape') p.onClose(); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [p.onClose]); // eslint-disable-line react-hooks/exhaustive-deps
+  const reset = () => { p.setModel(''); p.setAddedBy(''); p.setStatus(''); p.setSort(defaultSort()); };
+  return createPortal(
+    <div className="fx-backdrop" onPointerDown={(e) => e.target === e.currentTarget && p.onClose()}>
+      <div className="fx-dialog axp-build-manager__dialog" role="dialog" aria-modal="true" aria-label="Filter and sort">
+        <header className="fx-dialog__head">
+          <Icon name="sliders" size={18} />
+          <h2>Filter &amp; sort</h2>
+          <button type="button" className="fx-iconbtn" onClick={p.onClose} aria-label="Close"><Icon name="x" size={16} /></button>
+        </header>
+        <div className="fx-dialog__body axp-build-manager__dialog-body">
+          <label className="axp-build-manager__field"><span>Model</span>
+            <select className="fx-input" value={p.model} onChange={(e) => p.setModel(e.target.value)}><option value="">All</option>{MODELS.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field" title="Who or what added the item"><span>Added by</span>
+            <select className="fx-input" value={p.addedBy} onChange={(e) => p.setAddedBy(e.target.value)}><option value="">Anyone</option>{p.adders.map((x) => <option key={x.value} value={x.value}>{x.label} ({x.count})</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field"><span>Status</span>
+            <select className="fx-input" value={p.status} onChange={(e) => p.setStatus(e.target.value)}><option value="">All</option>{p.statuses.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field"><span>Sort</span>
+            <select className="fx-input" value={p.sort} onChange={(e) => p.setSort(e.target.value as SortKey)}>{SORTS.map((k) => <option key={k} value={k}>{SORT_LABEL[k]}</option>)}</select>
+          </label>
+          <div className="axp-build-manager__dialog-foot">
+            <span className="fx-small fx-muted">{p.shown} shown</span>
+            <Button icon="refresh" onClick={reset}>Reset</Button>
+            <Button icon="check" onClick={p.onClose}>Done</Button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 function ModelChip({ model }: { model: string }) {
   return <span className={`axp-build-manager__model is-${model.toLowerCase()}`} title={`Build with ${model}`}>{model}</span>;
@@ -510,6 +561,9 @@ export function BuildManagerView() {
   const t = totalsByModel(base);
   const gone = useMemo(() => goneRows(base), [base]);
   const [cleaning, setCleaning] = useState(false);
+  const [sorting, setSorting] = useState(false);
+  // how many of the dialog's choices differ from their defaults (shown as the Filter & sort badge)
+  const picked = [model, addedBy, status].filter(Boolean).length + (sort !== defaultSort() ? 1 : 0);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const canTick = (r: Row) => (r.source === 'pending' ? s.canTickPending : r.source === 'queue' ? s.canTickQueue : false);
 
@@ -549,38 +603,24 @@ export function BuildManagerView() {
       {tab === 'remaining' && <>
       <Totals rows={base} />
 
-      <div className="axp-build-manager__filters" role="group" aria-label="Filter and sort">
-        <label className="axp-build-manager__field"><span>Model</span>
-          <select className="fx-input" value={model} onChange={(e) => setModel(e.target.value)}><option value="">All</option>{MODELS.map((m) => <option key={m} value={m}>{m}</option>)}</select>
-        </label>
-        <label className="axp-build-manager__field" title="Who or what added the item"><span>Added by</span>
-          <select className="fx-input" value={addedBy} onChange={(e) => setAddedBy(e.target.value)}><option value="">Anyone</option>{adders.map((x) => <option key={x.value} value={x.value}>{x.label} ({x.count})</option>)}</select>
-        </label>
-        <label className="axp-build-manager__field"><span>Status</span>
-          <select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value)}><option value="">All</option>{statuses.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select>
-        </label>
-        <label className="axp-build-manager__field"><span>Sort</span>
-          <select className="fx-input" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>{SORTS.map((k) => <option key={k} value={k}>{SORT_LABEL[k]}</option>)}</select>
-        </label>
-        <div className="axp-build-manager__toggles">
-          {SOURCES.filter((x) => allowed.includes(x)).map((x) => (
-            <button key={x} type="button" className={`axp-build-manager__toggle${sources.includes(x) ? ' is-on' : ''}`} aria-pressed={sources.includes(x)}
-              onClick={() => setSources((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))}>
-              <Icon name={SOURCE_ICON[x]} size={11} />{SOURCE_LABEL[x]} <span className="fx-muted">{base.filter((r) => r.source === x).length}</span>
-            </button>
-          ))}
-          {ORIGINS.map((x) => (
-            <button key={x} type="button" className={`axp-build-manager__toggle${origins.includes(x) ? ' is-on' : ''}`} aria-pressed={origins.includes(x)}
-              title={x === 'prompt' ? 'Asked for in a chat or Claude Code session, the Add form or the claude.ai page' : 'Parked by a tool (Fable rebuilds, feature assistant, plan sync), build-queue steps and plan features'}
-              onClick={() => setOrigins((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))}>
-              <Icon name={ORIGIN_ICON[x]} size={11} />{ORIGIN_LABEL[x]} <span className="fx-muted">{base.filter((r) => r.origin === x).length}</span>
-            </button>
-          ))}
-          <button type="button" className={`axp-build-manager__toggle${split ? ' is-on' : ''}`} aria-pressed={split} onClick={() => setSplit(!split)}>
-            <Icon name="alert" size={11} />Needs split <span className="fx-muted">{base.filter((r) => r.needsSplit).length}</span>
-          </button>
-        </div>
+      <div className="axp-build-manager__tools" role="toolbar" aria-label="Filter the builds">
+        {SOURCES.filter((x) => allowed.includes(x)).map((x) => (
+          <ToolToggle key={x} icon={SOURCE_ICON[x]} label={SOURCE_LABEL[x]} title={`Show builds from the ${SOURCE_LABEL[x].toLowerCase()} list`} count={base.filter((r) => r.source === x).length} on={sources.includes(x)}
+            onClick={() => setSources((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))} />
+        ))}
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        {ORIGINS.map((x) => (
+          <ToolToggle key={x} icon={ORIGIN_ICON[x]} label={ORIGIN_SHORT[x]} count={base.filter((r) => r.origin === x).length} on={origins.includes(x)}
+            title={x === 'prompt' ? `${ORIGIN_LABEL[x]}: asked for in a chat or Claude Code session, the Add form or the claude.ai page` : `${ORIGIN_LABEL[x]}: parked by a tool (Fable rebuilds, feature assistant, plan sync), build-queue steps and plan features`}
+            onClick={() => setOrigins((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))} />
+        ))}
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        <ToolToggle icon="alert" label="Split" title="Only builds over 30 min that still need splitting into steps" count={base.filter((r) => r.needsSplit).length} on={split} onClick={() => setSplit(!split)} />
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        <ToolToggle icon="sliders" label="Filter & sort" title="Model, who added it, status and sort order" count={picked} on={picked > 0} quiet onClick={() => setSorting(true)} pressed={null} />
       </div>
+      {sorting && <FilterSortDialog onClose={() => setSorting(false)} model={model} setModel={setModel} addedBy={addedBy} setAddedBy={setAddedBy} adders={adders}
+        status={status} setStatus={setStatus} statuses={statuses} sort={sort} setSort={setSort} shown={shown.length} />}
 
       {s.error && <p className="fx-small axp-build-manager__error" role="alert">{s.error}</p>}
       {s.offline && <p className="fx-small fx-muted">The console API is offline: showing the snapshot that came with the page.</p>}

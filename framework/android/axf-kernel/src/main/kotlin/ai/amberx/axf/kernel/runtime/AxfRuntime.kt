@@ -568,6 +568,16 @@ public class AxfRuntime(
         pushAppearance(AppearanceChange(slots = active.filterKeys { it != AssetTypes.UAC_POLICY }, hidden = HideEngine.hideableTypes(registry.types).associateWith { null }, palette = appearancePalette()))
     }
 
+    /**
+     * Replace a module's own asset in place (e.g. Patches' application menu, rebuilt from the menus the apps in its tabs
+     * send): registered, recompiled when it's the active one, never persisted, swapped or pushed to the hub.
+     */
+    public fun replaceAsset(raw: JsonObject, origin: String): RegisterResult {
+        val r = registry.register(raw, AssetSource.BUILTIN, origin)
+        r.asset?.let { a -> set({ it }, recompile = current.active[a.type] == a.id) }
+        return r
+    }
+
     public fun importAsset(raw: JsonObject, activate: Boolean = true, origin: String? = null): RegisterResult {
         if (!can("assets.import")) return RegisterResult(false, listOf("Your role needs \"assets.import\" to import assets."))
         if (principal != null && (raw["type"] as? kotlinx.serialization.json.JsonPrimitive)?.content == AssetTypes.UAC_POLICY) return RegisterResult(false, listOf("Access policies come from your account while you are signed in."))

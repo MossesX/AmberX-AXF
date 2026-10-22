@@ -270,14 +270,15 @@ class Jobs:
                     except Exception as e:  # noqa: BLE001
                         m = str(e).lower()
                         state = "rejected" if "reject" in m else "expired" if "expired" in m else "failed"
-                        self._set(key, state=state, message="Rejected on axHub." if state == "rejected" else "The approval expired." if state == "expired" else str(e)[:300])
+                        # the entry first: anyone who sees the job's final state also sees its result
                         _finish_change(change_id, "cancelled" if state != "failed" else "failed", f"Not started: {state}.")
+                        self._set(key, state=state, message="Rejected on axHub." if state == "rejected" else "The approval expired." if state == "expired" else str(e)[:300])
                         return
                     if "confirm" not in r:
                         break
                 else:
-                    self._set(key, state="expired", message="The approval expired.")
                     _finish_change(change_id, "cancelled", "Not started: the approval expired.")
+                    self._set(key, state="expired", message="The approval expired.")
                     return
             out = str(r.get("ok", ""))
             ok = "started pid" in out or re.search(r"^exit 0\b", out, re.M) is not None
