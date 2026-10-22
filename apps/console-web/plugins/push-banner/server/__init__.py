@@ -8,7 +8,9 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     POST /pr     {repo, branch}     opens a PR into the default branch (or answers the one already open)
     POST /merge  {repo, number, confirm: "<repo>#<number>"}
                                     merges an open PR (merge commit) only when GitHub says it can and every check on
-                                    its head commit passed; the head commit is pinned so nothing newer slips in
+                                    its head commit passed; the head commit is pinned so nothing newer slips in. The
+                                    merge itself is approved by Brett on axHub (github.pulls/merge, see batch.py):
+                                    answers {queued, approvalUrl} until then
     POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
                                     pulls the default branch into a branch that's behind it: a PR through GitHub's
                                     "update branch" (its head pinned), a branch without one as a merge commit on it
@@ -19,6 +21,8 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     e.g. main was pulled in) hide it until it gets a new commit ("<key>@<sha>")
     GET  /config | PUT /config      {repos: [owner/name …], hidden: ["owner/name:branch" | "owner/name:#N", optionally
                                     "@<head sha>" = hidden only while that is its newest commit …]}
+    POST /merge-all | /pull-all | /queue/remove
+                                    Merge all, Pull main into all and the pending merges they leave (server/batch.py)
 
 A successful Merge or Pull main in is remembered as a finished entry (`done` in /branches, every device, 7 days) until
 its trash can is tapped; the entry itself leaves the other groups meanwhile.
@@ -44,6 +48,8 @@ from fastapi import APIRouter, Body, HTTPException
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
+
+from .batch import Batch
 
 router = APIRouter()
 
@@ -159,6 +165,13 @@ class Pushes:
         runs = data.get("check_runs", []) if isinstance(data, dict) else []
         return [r for r in runs if isinstance(r, dict)] if isinstance(runs, list) else []
 
+    def ci_of(self, gh: github.GitHubClient, repo: str, sha: str) -> str:
+        """One CI state for a commit (none | running | failure | success | unknown when GitHub didn't answer)."""
+        try:
+            return ci_state(self._checks(gh, repo, sha)) if sha else "none"
+        except (github.GitHubError, ValueError):
+            return "unknown"
+
     def _head(self, gh: github.GitHubClient, repo: str, branch: str) -> dict[str, Any]:
         """The newest commit on a branch (the commits list: no file diffs, unlike compare's)."""
         data = gh.get(github.repo_path(repo, "commits", query={"sha": branch, "per_page": 1}))
@@ -259,7 +272,7 @@ class Pushes:
         with self._lock:
             cached = self._cache[2] if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S else None
         if cached is not None:
-            return {**cached, "done": self.done()}
+            return {**cached, "done": self.done(), **BATCH.view()}
         if not (self.token() or "").strip():
             out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}  # done comes below
         else:
@@ -268,7 +281,7 @@ class Pushes:
             out = {"checkedAt": int(now * 1000), "cacheS": CACHE_S, "repos": [self._repo(gh, r, hidden) for r in cfg["repos"]], "error": ""}
         with self._lock:
             self._cache = (now, key, out)
-        return {**out, "done": self.done()}
+        return {**out, "done": self.done(), **BATCH.view()}
 
     # ---- finished entries (a successful Merge / Pull main in), until their trash can is tapped
     def done(self) -> list[dict[str, Any]]:
@@ -410,16 +423,17 @@ class Pushes:
             ci = ci_state(self._checks(gh, repo, sha)) if sha else "none"
             if ci != "success":
                 raise HTTPException(409, {"running": "its CI is still running", "failure": "its CI failed", "none": "it has no CI result yet"}.get(ci, "its CI isn't green"))
-            r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
         except github.GitHubError as e:
             raise HTTPException(502, _text(str(e))) from None
-        self._forget()
-        merged = bool(isinstance(r, dict) and r.get("merged"))
+        # Brett reviews every merge on axHub: the PR joins the pending merges, which ask the hub (the approval link comes back at once)
         base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
-        if merged:
-            self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
-                            "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
-        return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
+        head = _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)
+        key = f"{repo}:#{number}"
+        BATCH._enqueue([{"key": key, "kind": "merge", "repo": repo, "number": number, "branch": head, "base": base,
+                         "title": _text(p.get("title")), "url": _safe_url(p.get("html_url"))}], [])
+        BATCH.step()
+        q = next((i for i in BATCH.view()["queue"] if i["key"] == key), None)
+        return {"merged": q is None, "queued": q is not None, "approvalUrl": (q or {}).get("approvalUrl") or "", "sha": sha, "url": _safe_url(p.get("html_url"))}
 
 
     def update(self, body: Any) -> dict[str, Any]:
@@ -467,6 +481,23 @@ class Pushes:
 
 
 PUSHES = Pushes()
+BATCH = Batch(PUSHES)
+BATCH.kick()  # carry on with what was pending when the console restarted
+
+
+@router.post("/merge-all")
+def merge_all(body: Any = Body(None)) -> dict[str, Any]:
+    return BATCH.merge_all(body)
+
+
+@router.post("/pull-all")
+def pull_all(body: Any = Body(None)) -> dict[str, Any]:
+    return BATCH.pull_all(body)
+
+
+@router.post("/queue/remove")
+def queue_remove(body: Any = Body(None)) -> dict[str, Any]:
+    return BATCH.remove(body)
 
 
 @router.get("/branches")

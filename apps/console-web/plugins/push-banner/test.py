@@ -135,6 +135,22 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 clock = {"t": 1_000_000.0}
 mod.PUSHES.clock = lambda: clock["t"]
+
+b = mod.BATCH
+# a fake axHub: every merge goes through its github.pulls/merge (approved unless a test says otherwise)
+HUB: list[tuple] = []
+HUB_STATE = {"approved": True}
+
+
+def fake_hub(tool, args, conf=None):
+    HUB.append((tool, json.loads(json.dumps(args)), conf))
+    if not HUB_STATE["approved"]:
+        return {"confirm": "11111111-2222-3333-4444-555555555555"}
+    STATE["merged"].append(("hub", args))
+    return {"ok": json.dumps({"sha": "m1", "merged": True, "message": "Pull Request successfully merged"})}
+
+
+b.auto, b.call = False, fake_hub
 app = FastAPI()
 app.include_router(mod.router, prefix="/p")
 c = TestClient(app)
@@ -222,8 +238,9 @@ STATE["mergeable"] = True
 check(not STATE["merged"], "nothing merged so far")
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"}).json()
 path, body = STATE["merged"][-1]
-check(m["merged"] is True and path == R + "/pulls/18/merge", "green + mergeable: merged through the PR")
-check(body == {"merge_method": "merge", "sha": "aaa111"}, "merge commit, pinned to the head that passed CI")
+check(m["merged"] is True and path == "hub" and HUB[-1][0] == "github.pulls/merge", "green + mergeable: merged through axHub's github.pulls/merge (approved there)")
+check(body == {"owner": "MossesX", "repo": "AmberX-AXF", "pull_number": 18, "body": {"merge_method": "merge", "sha": "aaa111"}}, "merge commit, pinned to the head that passed CI")
+check(not any(x["method"] == "PUT" and x["path"].endswith("/merge") for x in SEEN), "the console never merges directly")
 check(not any(s["method"] == "PUT" and "/git/refs" in s["path"] for s in SEEN), "main is never pushed to directly")
 
 cfg = c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:feat/b"]}).json()
@@ -261,6 +278,57 @@ clock["t"] += 8 * 24 * 3600
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 clock["t"] += 8 * 24 * 3600
 check(c.get("/p/branches").json()["done"] == [], "finished entries expire after 7 days")
+
+# ---------------------------------------------------------------- Merge all / Pull main into all (every merge approved on axHub)
+HUB_STATE["approved"] = False
+c.put("/p/config", json={"hidden": []})
+STATE["mergeable"], STATE["checks"]["bbb222"] = True, [{"status": "completed", "conclusion": "success"}]
+for x in STATE["pulls"]:
+    x["mergeable_state"] = "clean"
+check(c.post("/p/merge-all", json={}).status_code == 400, "merge all: needs the confirm word")
+r = c.post("/p/merge-all", json={"confirm": "merge-all"}).json()
+check(r["added"] == 1 and any("fork" in s for s in r["skipped"]) and any("draft" in s for s in r["skipped"]), "merge all: open PRs queued, forks and drafts skipped (said why)")
+check([q["key"] for q in r["queue"]] == ["MossesX/AmberX-AXF:#18"] and r["queue"][0]["state"] == "queued", "pending merges: the queued entry")
+out = c.get("/p/branches").json()
+check([q["key"] for q in out["queue"]] == ["MossesX/AmberX-AXF:#18"], "branches carries the pending merges")
+n_merged = len(STATE["merged"])
+check(b.step() is True, "step: still pending")
+q = b.view()["queue"][0]
+check(q["state"] == "approval" and q["approvalUrl"].endswith("/11111111-2222-3333-4444-555555555555"), "a green PR waits for approval on axHub (link to the approval)")
+tool, args, conf = HUB[-1]
+check(tool == "github.pulls/merge" and args == {"owner": "MossesX", "repo": "AmberX-AXF", "pull_number": 18, "body": {"merge_method": "merge", "sha": "bbb222"}} and conf is None,
+      "the merge goes through axHub's github.pulls/merge, pinned to the head that passed CI")
+check(len(STATE["merged"]) == n_merged and not any(s["method"] == "PUT" and s["path"].endswith("/merge") for s in SEEN[-30:]), "nothing merged before the approval (no direct merge call)")
+calls = len(HUB)
+b.step()
+check(len(HUB) == calls, "not retried before it's due (15 s)")
+clock["t"] += 16
+b.step()
+check(len(HUB) == calls + 1 and HUB[-1][2] == "11111111-2222-3333-4444-555555555555", "retried with its confirmation id once due")
+HUB_STATE["approved"] = True
+clock["t"] += 16
+check(b.step() is False, "approved: the queue is empty")
+out = c.get("/p/branches").json()
+check(out["queue"] == [] and next(d for d in out["done"] if d["key"] == "MossesX/AmberX-AXF:#18")["kind"] == "merged", "merged once approved: in Done, off the pending list")
+r = c.post("/p/merge-all", json={"confirm": "merge-all"}).json()
+check(r["added"] == 0, "merge all: a PR already in Done isn't queued again")
+c.post("/p/done/remove", json={"key": "MossesX/AmberX-AXF:#18"})
+STATE["pulls"][0]["mergeable_state"] = "dirty"
+r = c.post("/p/merge-all", json={"confirm": "merge-all"}).json()
+b.step()
+v = b.view()
+check(v["queue"][0]["state"] == "conflicts" and "feat/a" in v["fixBrief"] and "never merge" in v["fixBrief"].lower(), "conflicts: waits with a fix brief for a Claude session")
+check(c.post("/p/queue/remove", json={"key": "MossesX/AmberX-AXF:#18"}).json()["queue"] == [], "the trash can takes an entry off the pending list")
+STATE["pulls"][0]["mergeable_state"] = "behind"
+r = c.post("/p/pull-all", json={"confirm": "pull-all"}).json()
+check({q["key"] for q in r["queue"]} >= {"MossesX/AmberX-AXF:#18"} and all(q["kind"] == "pull" for q in r["queue"]), "pull main into all: behind PRs and branches queued")
+before = len(STATE.get("updated", []))
+b.step()
+check(len(STATE["updated"]) == before + 1 and STATE["updated"][-1][1] == {"expected_head_sha": "bbb222"}, "pull all: update-branch, pinned to its head")
+check(all(q["key"] != "MossesX/AmberX-AXF:#18" for q in b.view()["queue"]), "pulled in: off the pending list")
+c.post("/p/queue/remove", json={"key": "MossesX/AmberX-AXF:feat/b"})
+for x in STATE["pulls"]:
+    x.pop("mergeable_state", None)
 
 os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999

@@ -1,6 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, AssetStudio, FRAME_BANNERS_SLOT, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -26,7 +26,6 @@ import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
 import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
 import { menuLibrary } from './menuLibrary';
-import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -120,30 +119,17 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
-  // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
-  // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
-  // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which
-  // is only them (Brett, Oct 21 2026). The console's own banners (the menu rescue note) stay on the console page.
-  const inConsole = useBannersInConsole();
-  useBannerRelay();
+  // Plugin banners live in Patches, not here (Brett, Oct 22 2026: "port all the banner plugins to Patches … remove all banner
+  // plugins from console and pilot"). Patches runs the banner plugins' web parts (apps/patches-web/src/plugins, baked from
+  // these plugins) over its own proxy to their server parts, which stay in this console; a banner tap that names something
+  // only the console has comes back as an embed@1 `relay` message (runtime). The console draws only its own banner (the
+  // menu rescue note); whatever banners a plugin contributes are dropped.
   const consoleOwn = useMemo(() => new Set((menuLibrary.banners ?? []).map((b) => b.id)), []);
-  const banners = useMemo(() => plugins.contributed.banners.filter((b) => (isBannerStrip
-    ? !consoleOwn.has(b.id)
-    : consoleOwn.has(b.id) || inConsole)), [plugins.contributed.banners, consoleOwn, inConsole]);
-  // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
-  // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
-  const rt = useRuntime();
-  const bannerPrefs = useBannerPrefsTick();
   const slots = useMemo(() => {
-    // Always called: it registers Banner settings and the full banner list, which the dialog needs even when this page
-    // shows none (the console tab inside Patches opens it for banners Patches shows through the strip).
-    const all = plugins.contributed.banners.filter((b) => !consoleOwn.has(b.id));
-    const framed = bannerSlotDefs(rt, all, banners.filter((b) => !consoleOwn.has(b.id)));
-    if (!banners.length && !isBannerStrip) return plugins.contributed.slots;
-    const own = banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
-    return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
-  }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
-  if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
+    const own = plugins.contributed.banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
+    if (!own.length) return plugins.contributed.slots;
+    return { ...plugins.contributed.slots, [FRAME_BANNERS_SLOT]: [...(plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own] };
+  }, [plugins.contributed.banners, plugins.contributed.slots, consoleOwn]);
   return (
     <div {...drop} style={{ display: 'contents' }}>
       <SlotsProvider slots={slots}>

@@ -13,7 +13,9 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": { "@console/axf/*": ["src/axf/*"], "@console/*": ["src/console/*"] }
   },
   "include": ["src", "axf.manifest.json"]
 }

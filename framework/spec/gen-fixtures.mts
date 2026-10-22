@@ -201,6 +201,18 @@ write('hide.json', {
       { $axf: 'embed@1', type: 'plugins-request' },
       JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Banner taps the host relays back to the app they came from (Patches runs the banner plugins). Web only so far (Kotlin deferred, PORTING.md).
+    relayMessages: [
+      { $axf: 'embed@1', type: 'relay', kind: 'action', target: 'build-manager.open:pending:lib-mcp' },
+      { $axf: 'embed@1', type: 'relay', kind: 'action', target: 'console.reveal:plan:auth wall' },
+      { $axf: 'embed@1', type: 'relay', kind: 'view', target: 'codebase-changes' },
+      { $axf: 'embed@1', type: 'relay', kind: 'dialog', target: 'systems-check' },
+      { $axf: 'embed@1', type: 'relay', kind: 'view', target: 'bad view!' },
+      { $axf: 'embed@1', type: 'relay', kind: 'action', target: 'x:' + 'y'.repeat(300) },
+      { $axf: 'embed@1', type: 'relay', kind: 'action', target: 'a:line\nbreak' },
+      { $axf: 'embed@1', type: 'relay', kind: 'script', target: 'alert(1)' },
+      { $axf: 'embed@1', type: 'relay', kind: 'action' },
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
     settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
   });
 }

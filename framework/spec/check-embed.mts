@@ -99,6 +99,8 @@ for (const c of t.links) eq(embedLinkOk(c.link), c.ok, `link ${c.link}`);
 for (const c of t.messages) eq(parseEmbedMessage(c.input), c.message, `message ${JSON.stringify(c.input).slice(0, 60)}`);
 for (const c of t.locked) { eq(embedLockedBy(c.embed, c.action), c.fn, `lockedBy ${JSON.stringify(c.embed.takes)} ${c.action}`); eq(embedLockNote(c.embed, c.fn), c.note, `lock note ${c.action}`); }
 for (const c of t.pluginMessages) eq(parseEmbedMessage(c.input), c.message, `plugin message ${JSON.stringify(c.input).slice(0, 60)}`);
+for (const c of t.relayMessages) eq(parseEmbedMessage(c.input), c.message, `relay message ${JSON.stringify(c.input).slice(0, 60)}`);
+eq(t.relayMessages.filter((c: { message: unknown }) => c.message).length, 4, 'relay: only the four good ones parse');
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
 for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);
@@ -257,6 +259,23 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(solo.reportPluginsToHost([]), false, 'standalone: nothing reported');
   const other = make({ host: 'patches', hidden: ['banner'], takes: ['settings'] });
   eq(other.hostLockNote('plugins'), null, 'host without the take: no note');
+  // banner taps the host relays back: an action the app has runs, a view opens, a dialog opens; a page never takes them
+  let relayed = 0;
+  other.actions.register('t.relay', () => { relayed++; }, { label: 'Relay test' });
+  const recv = (m: unknown) => (globalThis as unknown as { AxfEmbedGuest: { receive: (j: string) => void } }).AxfEmbedGuest.receive(JSON.stringify(m));
+  recv({ $axf: 'embed@1', type: 'relay', kind: 'action', target: 't.relay' });
+  eq(relayed, 1, 'relayed action ran');
+  recv({ $axf: 'embed@1', type: 'relay', kind: 'view', target: 'relay-view' });
+  eq(other.getState().view, 'relay-view', 'relayed view opened');
+  recv({ $axf: 'embed@1', type: 'relay', kind: 'dialog', target: 'relay-dialog' });
+  eq(other.getState().dialog?.id, 'relay-dialog', 'relayed dialog opened');
+  recv({ $axf: 'embed@1', type: 'relay', kind: 'script', target: 't.relay' });
+  eq(relayed, 1, 'a bad relay is ignored');
+  const page = make({ host: 'patches', hidden: ['banner'], takes: ['settings'], page: 'settings' });
+  let pageRan = 0;
+  page.actions.register('t.relay', () => { pageRan++; }, { label: 'Relay test' });
+  recv({ $axf: 'embed@1', type: 'relay', kind: 'action', target: 't.relay' });
+  eq(pageRan, 0, 'a page the host shows alone never runs relays');
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 

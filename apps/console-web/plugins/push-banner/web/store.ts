@@ -4,9 +4,10 @@ import { pluginApi } from '@console/plugins';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 export const BANNER_KEY = 'push-banner.banner';
 const POLL_MS = 120_000;
+const QUEUE_POLL_MS = 15_000; // while Merge all / Pull all has entries pending
 
 export const api = pluginApi(FOLDER, 'Push banner');
 
@@ -17,7 +18,9 @@ export interface RepoBranches { repo: string; base: string; url: string; branche
 export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
 /** A successful Merge or Pull main in, kept (every device, 7 days) until its trash can is tapped. */
 export interface Done { key: string; kind: 'merged' | 'pulled'; at: number; repo: string; base?: string; number?: number; branch?: string; title?: string; url?: string; text?: string }
-export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string; done?: Done[] }
+/** An entry Merge all / Pull main into all queued: the server walks them until each is merged (approved on axHub) or pulled in. */
+export interface Queued { key: string; kind: 'merge' | 'pull'; repo: string; number?: number; branch: string; base: string; title?: string; url?: string; state: 'queued' | 'checking' | 'pulling' | 'conflicts' | 'ci' | 'approval' | 'blocked' | 'failed'; text: string; approvalUrl?: string; at: number; updatedAt: number }
+export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string; done?: Done[]; queue?: Queued[]; fixBrief?: string }
 /** One entry's details (GET detail): its commits, the checks on its head, GitHub's merge state. */
 export interface Detail { commits: { sha: string; subject: string; author: string; date: string; url: string }[]; checks: { name: string; status: string; conclusion: string; url: string }[]; mergeState: string; files: number | null; body?: string; sha?: string; error: string }
 export interface Row extends Branch { repo: string; base: string; key: string }
@@ -90,8 +93,32 @@ export const openPr = (r: Row) => act(r.key, async () => {
 
 export const mergePr = (r: { key: string; repo: string; number: number; base: string }) => act(r.key, async () => {
   const n = r.number;
-  const m = await api.post<{ merged: boolean }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
-  return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
+  const m = await api.post<{ merged: boolean; queued: boolean; approvalUrl: string }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
+  if (m.approvalUrl) window.open(m.approvalUrl, '_blank', 'noopener');
+  return m.merged ? `Merged PR #${n} into ${r.base}.` : `Approve merging #${n} into ${r.base} on axHub: it shows under Pending merges until then.`;
+});
+
+/** Every pending entry, newest first; their keys leave the other groups while they're pending. */
+export const queueRows = (a: Answer | null): Queued[] => [...(a?.queue ?? [])].sort((x, y) => y.at - x.at);
+export const queueKeys = (a: Answer | null) => new Set((a?.queue ?? []).map((q) => q.key));
+
+/** Merge all: every open PR (not drafts or forks) is pulled up to date and waits for CI; each merge is approved on axHub. */
+export const mergeAll = () => act('merge-all', async () => {
+  const r = await api.post<{ added: number; skipped: string[] }>('merge-all', { confirm: 'merge-all' });
+  const s = r.skipped.length ? ` Skipped ${r.skipped.join(', ')}.` : '';
+  return r.added ? `Queued ${r.added} pull request${r.added === 1 ? '' : 's'} under Pending merges: each merge asks for your approval on axHub.${s}` : `Nothing new to merge.${s}`;
+});
+
+/** Pull main into all: every PR and branch behind its base gets the base pulled in. */
+export const pullAll = () => act('pull-all', async () => {
+  const r = await api.post<{ added: number }>('pull-all', { confirm: 'pull-all' });
+  return r.added ? `Pulling main into ${r.added} branch${r.added === 1 ? '' : 'es'}: they show under Pending merges.` : 'Nothing is behind main.';
+});
+
+/** Take an entry off the pending list (nothing on GitHub changes). */
+export const removeQueued = (q: Queued) => act(q.key, async () => {
+  await api.post('queue/remove', { key: q.key });
+  return 'Taken off the pending list.';
 });
 
 /** Pull the default branch into a PR's branch, or into a branch without a PR (never touches the default branch). */
@@ -112,12 +139,13 @@ export const setHidden = (r: { key: string }, hide: boolean) => act(r.key, async
 });
 
 let started = false;
-/** Load now, every 2 minutes while the page is visible, and when it comes back into view. */
+/** Load now, every 2 minutes while the page is visible (every 15 s while entries are pending), and when it comes back into view. */
 export function start(): void {
   if (started || typeof window === 'undefined') return;
   started = true;
   void load();
   setInterval(() => { if (document.visibilityState === 'visible') void load(); }, POLL_MS);
+  setInterval(() => { if (document.visibilityState === 'visible' && state.answer?.queue?.length) void load(); }, QUEUE_POLL_MS);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void load(); });
 }
 

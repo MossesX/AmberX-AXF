@@ -124,4 +124,71 @@ check("ai.amberx.axf.example.alpha" not in r["apps"]["console"]["plugins"], "rem
 main.PLUGINS_FILE.write_text("{broken")
 check(c.get("/api/plugins", headers=TOKEN).json()["apps"]["console"]["plugins"] == {}, "damaged store reads as empty")
 
+# the banner plugins' server parts, in the console: Patches passes the allowed routes on with the console token
+import json as _json  # noqa: E402
+import threading as _threading  # noqa: E402
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer  # noqa: E402
+
+seen: list[dict] = []
+
+
+class FakeConsole(BaseHTTPRequestHandler):
+    def log_message(self, *a):  # noqa: ANN002
+        pass
+
+    def _answer(self) -> None:
+        n = int(self.headers.get("content-length") or 0)
+        body = self.rfile.read(n) if n else b""
+        seen.append({"method": self.command, "path": self.path, "auth": self.headers.get("authorization"), "body": body})
+        if self.path.startswith("/api/plugins/push-banner/moved"):
+            self.send_response(302); self.send_header("Location", "https://evil.example/steal"); self.end_headers(); return
+        if self.path.startswith("/api/plugins/build-manager/events"):
+            self.send_response(200); self.send_header("Content-Type", "text/event-stream"); self.end_headers()
+            self.wfile.write(b"data: one\n\ndata: two\n\n"); return
+        if self.path.startswith("/api/plugins/activity/off"):
+            self.send_response(404); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(b'{"detail":"Not Found"}'); return
+        out = _json.dumps({"ok": True, "path": self.path, "got": body.decode() or None}).encode()
+        self.send_response(200); self.send_header("Content-Type", "application/json"); self.send_header("Content-Length", str(len(out))); self.end_headers(); self.wfile.write(out)
+
+    do_GET = do_POST = do_PUT = do_PATCH = do_DELETE = _answer
+
+
+srv = ThreadingHTTPServer(("127.0.0.1", 0), FakeConsole)
+_threading.Thread(target=srv.serve_forever, daemon=True).start()
+main.CONSOLE_URL = f"http://127.0.0.1:{srv.server_port}"
+os.environ.pop("PATCHES_CONSOLE_TOKEN", None)
+check(c.get("/api/console/plugins/activity/items", headers=TOKEN).status_code == 503, "proxy: no console token = 503, says so")
+os.environ["PATCHES_CONSOLE_TOKEN"] = "console-secret"
+r = c.get("/api/console/plugins/activity/items?since=5&x=a%20b", headers=TOKEN)
+check(r.status_code == 200 and r.json()["path"] == "/api/plugins/activity/items?since=5&x=a+b", "proxy: plugin route + query passed on")
+check(seen[-1]["auth"] == "Bearer console-secret", "proxy: console token added server-side")
+check("console-secret" not in r.text, "proxy: token never in the answer")
+r = c.post("/api/console/plugins/push-banner/merge-all", headers=TOKEN, json={"confirm": "merge-all"})
+check(r.status_code == 200 and _json.loads(r.json()["got"]) == {"confirm": "merge-all"}, "proxy: POST body passed on")
+check(c.put("/api/console/plugins/claude-handoff/config", headers=TOKEN, json={}).status_code == 200, "proxy: PUT")
+check(c.delete("/api/console/plugins/activity/item?id=x", headers=TOKEN).status_code == 200, "proxy: DELETE")
+check(c.get("/api/console/pending", headers=TOKEN).status_code == 200, "proxy: console pending list (read)")
+check(c.post("/api/console/build-queue/steps", headers=TOKEN, json={"id": "x", "index": 0, "done": True}).status_code == 200, "proxy: build-queue step tick")
+n = len(seen)
+for bad in ["plugins/console-terminal/sessions", "plugins/ai-assistant/chat", "plugins/activity", "token/reset", "secrets", "mcp", "plugins/activity/../../token/reset", "plugins/activity/%2e%2e/x", "plugins//activity/x"]:
+    check(c.get(f"/api/console/{bad}", headers=TOKEN).status_code == 404, f"proxy: refuses {bad}")
+check(c.delete("/api/console/pending", headers=TOKEN).status_code == 404, "proxy: only the listed methods on console routes")
+check(c.post("/api/console/plan", headers=TOKEN, json={}).status_code == 404, "proxy: plan is read-only")
+check(len(seen) == n, "proxy: refused routes never reach the console")
+check(c.get("/api/console/plugins/activity/items").status_code == 401, "proxy: needs a caller")
+check(c.get("/api/console/plugins/activity/items", headers=session("conrad", "user")).status_code == 403, "proxy: hub users refused")
+check(c.get("/api/console/plugins/activity/items", headers=session("brett", "admin")).status_code == 200, "proxy: signed-in hub admin")
+check(c.post("/api/console/plugins/activity/report", headers={**session("brett", "admin"), "origin": "https://other.example"}, json={}).status_code == 403, "proxy: cross-site write refused")
+check(c.get("/api/console/plugins/push-banner/moved", headers=TOKEN).status_code == 502, "proxy: a redirect is never followed")
+check(not any(x["path"].startswith("/steal") for x in seen), "proxy: nothing went to the redirect target")
+check(c.get("/api/console/plugins/activity/off", headers=TOKEN).status_code == 404, "proxy: the console's 404 (plugin off) passed on")
+check(c.post("/api/console/plugins/activity/report", headers=TOKEN, content=b"x" * (main.MAX_PROXY_BODY + 1)).status_code == 413, "proxy: body cap")
+r = c.get("/api/console/plugins/build-manager/events", headers=TOKEN)
+check(r.headers["content-type"].startswith("text/event-stream") and "data: two" in r.text, "proxy: event stream passed on")
+main.CONSOLE_URL = "http://127.0.0.1:9"
+check(c.get("/api/console/plugins/activity/items", headers=TOKEN).status_code == 502, "proxy: console down = 502")
+srv.shutdown()
+r = c.post("/api/plugins/install", headers=TOKEN, json={"app": "patches", "plugins": [{"id": "ai.amberx.axf.console.activity", "name": "Activity", "on": True}]}).json()
+check(r["apps"]["patches"]["plugins"]["ai.amberx.axf.console.activity"]["enabled"], "Patches' own banner plugins install under app patches")
+
 print(f"server self-test: {passed} checks passed")

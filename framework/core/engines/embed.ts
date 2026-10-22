@@ -353,7 +353,26 @@ export type EmbedMessage =
   /** host → guest (the host takes `plugins`): the plugins the host has installed and enabled for this app; load only these */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' }
+  /**
+   * host → guest: something the host's banners asked for that only this app has (an action it registers, one of its
+   * views or dialogs). The host runs the banner plugins of the apps it embeds (Brett, Oct 22 2026); what a banner tap
+   * names in the app it came from is handed back to that app, which runs it like its own tap.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'relay'; kind: EmbedRelayKind; target: string };
+
+/** What a relayed banner tap names: an action spec, a view id or a dialog id. */
+export type EmbedRelayKind = 'action' | 'view' | 'dialog';
+export const EMBED_RELAY_KINDS: readonly EmbedRelayKind[] = ['action', 'view', 'dialog'];
+/** A view or dialog id; an action spec may also carry `:`-separated arguments with spaces (`console.reveal:plan:auth`). */
+const RELAY_ID = /^[a-z0-9][a-z0-9._:-]{0,99}$/i;
+const RELAY_ACTION = /^[a-z0-9][a-z0-9._-]{0,99}(:[^\u0000-\u001f\u007f]{0,200})?$/i;
+
+/** Whether a relayed target is one this kind may carry. */
+export function embedRelayOk(kind: unknown, target: unknown): kind is EmbedRelayKind {
+  if (typeof kind !== 'string' || !(EMBED_RELAY_KINDS as readonly string[]).includes(kind) || typeof target !== 'string') return false;
+  return kind === 'action' ? RELAY_ACTION.test(target) : RELAY_ID.test(target);
+}
 
 /** One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). */
 export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean }
@@ -510,6 +529,9 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
     }
     case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
+    case 'relay': {
+      return embedRelayOk(o.kind, o.target) ? { $axf: EMBED_MESSAGE, type: 'relay', kind: o.kind, target: o.target as string } : null;
+    }
     default: return null;
   }
 }

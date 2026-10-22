@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Approval taps open the AXHub phone app when it's installed (PatchesAlerts.openApproval). -->
+    <queries>
+        <package android:name="ai.amberx.axf.axhubandroid" />
+    </queries>
     <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
     <application
         android:name=".App"

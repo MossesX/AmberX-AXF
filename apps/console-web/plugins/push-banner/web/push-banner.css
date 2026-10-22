@@ -56,3 +56,9 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__sec li.is-failure, .axp-push-banner__sec li.is-timed_out, .axp-push-banner__sec li.is-cancelled { color: var(--fx-danger) }
 .axp-push-banner__sec li.is-running { color: var(--fx-accent) }
 .axp-push-banner__item.is-done { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
+/* Merge all / Pull main into all and the pending merges they leave (Oct 22 2026) */
+.axp-push-banner__group-title { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.4) }
+.axp-push-banner__group-acts { margin-left: auto; display: inline-flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3); text-transform: none; letter-spacing: normal; font-weight: 400 }
+.axp-push-banner__item.is-approval { border-color: var(--fx-accent) }
+.axp-push-banner__item.is-blocked, .axp-push-banner__item.is-failed, .axp-push-banner__item.is-conflicts { border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-push-banner__item.is-queued .axp-push-banner__sub { white-space: normal }
