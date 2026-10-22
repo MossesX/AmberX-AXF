@@ -366,9 +366,12 @@ function Results({ ok, failed, demo, close, again, when }: {
       {failed && <Note tone="warning">{failed}</Note>}
       {ok?.note && <Note tone="warning">{ok.note}</Note>}
       {ok && <TextField label={`The handoff prompt (paste it into a new session on the new account)${demo ? ' — preview build, nothing was published' : ''}`} value={ok.prompt} onChange={() => undefined} rows={8} mono />}
+      {ok?.results?.url && <Note tone="info">Results browser on axHub (admin sign-in): instructions, the prompt, every kit file and this log. <a href={ok.results.url} target="_blank" rel="noopener noreferrer">{ok.results.url}</a></Note>}
+      {ok?.results?.error && <Note tone="warning">{ok.results.error}</Note>}
       <div className="axp-claude-handoff-inst__foot">
         <Button tone="ghost" icon="palette" size="sm" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
         {again && <Button icon="refresh" onClick={again}>Run again</Button>}
+        {ok?.results?.url && <Button icon="external" onClick={() => window.open(ok.results!.url, '_blank', 'noopener,noreferrer')}>Open on axHub</Button>}
         {ok && <Button tone="primary" icon="copy" onClick={() => { void navigator.clipboard?.writeText(ok.prompt).then(() => rt.toast('Prompt copied', 'success', 'Claude handoff'), () => undefined); }}>Copy prompt</Button>}
         {close && <Button onClick={close}>Close</Button>}
       </div>
