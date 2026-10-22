@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
-import { ago, bannerOn, doneKeys, doneRows, load, loadDetail, mergePr, needsPull, openPr, pullMain, pullRows, removeDone, rows, setHidden, useStore, type Done, type PullRow, type Row } from './store';
+import { ago, bannerOn, doneKeys, doneRows, load, loadDetail, mergeAll, mergePr, needsPull, openPr, pullAll, pullMain, pullRows, queueKeys, queueRows, removeDone, removeQueued, rows, setHidden, useStore, type Done, type PullRow, type Queued, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -180,11 +180,65 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
   );
 }
 
-function Group({ title, count, children }: { title: string; count: number; children: ReactNode }) {
+const QUEUE_WORD: Record<Queued['state'], string> = { queued: 'Queued', checking: 'Checking', pulling: 'Pulling main in', conflicts: 'Has conflicts', ci: 'Waiting for CI', approval: 'Approve on axHub', blocked: 'Needs you', failed: 'Failed' };
+const QUEUE_ICON: Record<Queued['state'], string> = { queued: 'clock', checking: 'refresh', pulling: 'download', conflicts: 'alert', ci: 'refresh', approval: 'lock', blocked: 'alert', failed: 'x-circle' };
+
+/** An entry Merge all / Pull main into all is working through: where it stands, the axHub approval link, take it off. */
+function QueueItem({ q }: { q: Queued }) {
+  const s = useStore();
+  const tone = q.state === 'failed' || q.state === 'blocked' || q.state === 'conflicts' ? 'failure' : q.state === 'approval' ? 'ready' : 'running';
+  return (
+    <li className={`axp-push-banner__item is-queued is-${q.state}`}>
+      <div className="axp-push-banner__entry">
+        <span className="axp-push-banner__line">
+          <span className="axp-push-banner__chip" title={q.repo}>{short(q.repo)}</span>
+          {q.url ? <a className="axp-push-banner__name is-title" href={q.url} target="_blank" rel="noopener noreferrer" title="Open on GitHub">{q.number ? `#${q.number} ` : ''}{q.title || q.branch}</a>
+            : <span className="axp-push-banner__name is-title">{q.title || q.branch}</span>}
+        </span>
+        <span className="axp-push-banner__line axp-push-banner__meta">
+          <span className={`axp-push-banner__pill is-${tone}`}><Icon name={QUEUE_ICON[q.state] ?? 'clock'} size={11} />{QUEUE_WORD[q.state] ?? q.state}</span>
+          <span>{q.kind === 'merge' ? `merge into ${q.base}` : `pull ${q.base} in`}</span>
+          <span>{ago(new Date(q.updatedAt).toISOString())}</span>
+        </span>
+        {q.text && <span className="axp-push-banner__sub">{q.text}</span>}
+        <Note k={q.key} />
+      </div>
+      <div className="axp-push-banner__acts">
+        {q.state === 'approval' && q.approvalUrl && <a className="fx-btn fx-btn--sm" href={q.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="lock" size={11} />Approve on axHub</a>}
+        <button type="button" className="fx-iconbtn" aria-label={`Take "${q.title || q.branch}" off the pending list`} title="Take off the pending list (nothing on GitHub changes)"
+          disabled={s.busy === q.key} onClick={() => void removeQueued(q)}><Icon name="trash" size={14} /></button>
+      </div>
+    </li>
+  );
+}
+
+/** A bulk action that asks once more before it starts (tap twice). */
+function BulkButton({ k, icon, label, sureLabel, title, count, run }: { k: string; icon: string; label: string; sureLabel: string; title: string; count: number; run: () => void }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  if (!count) return null;
+  if (sure) return (
+    <>
+      <Button size="sm" tone="success" icon="check" disabled={s.busy === k} onClick={() => { setSure(false); run(); }}>{sureLabel}</Button>
+      <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
+    </>
+  );
+  return <Button size="sm" tone="neutral" icon={icon} disabled={s.busy === k} title={title} onClick={() => setSure(true)}>{label} ({count})</Button>;
+}
+
+/** Copy the brief for the conflicts Merge all / Pull main into all can't fix by itself (paste it into a Claude session). */
+function CopyBrief({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  if (!text) return null;
+  return <Button size="sm" tone="neutral" icon={copied ? 'check' : 'copy'} title="Paste it into a Claude session: the queue carries on once the fix is pushed"
+    onClick={() => { void navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); }); }}>{copied ? 'Copied' : 'Copy fix brief'}</Button>;
+}
+
+function Group({ title, count, children, actions }: { title: string; count: number; children: ReactNode; actions?: ReactNode }) {
   if (!count) return null;
   return (
     <section className="axp-push-banner__group" aria-label={title}>
-      <h4 className="axp-push-banner__group-title">{title} <span>{count}</span></h4>
+      <h4 className="axp-push-banner__group-title">{title} <span>{count}</span>{actions && <span className="axp-push-banner__group-acts">{actions}</span>}</h4>
       <ul className="axp-push-banner__list">{children}</ul>
     </section>
   );
@@ -200,7 +254,8 @@ export function PushBanner() {
   const [open, setOpen] = useBannerLaunchOpen();
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
-  const gone = doneKeys(s.answer);
+  const pending = queueRows(s.answer);
+  const gone = new Set([...doneKeys(s.answer), ...queueKeys(s.answer)]);
   // a finished entry shows only in Done (its trash can hides the open one until its next commit)
   const allPulls = pullRows(s.answer);
   const allRows = rows(s.answer);
@@ -213,10 +268,14 @@ export function PushBanner() {
   const behindBare = allBare.filter((r) => needsPull(r.behind));
   const bare = allBare.filter((r) => !needsPull(r.behind));
   const behindCount = behindPulls.length + behindBare.length;
-  if (!pulls.length && !allBare.length && !finished.length) return null;
-  const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...allBare.map((r) => short(r.repo)), ...finished.map((d) => short(d.repo))])];
-  const headline = ready.length ? `${plural(ready.length, 'pull request', 'pull requests')} ready to merge`
+  if (!pulls.length && !allBare.length && !finished.length && !pending.length) return null;
+  const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...allBare.map((r) => short(r.repo)), ...finished.map((d) => short(d.repo)), ...pending.map((q) => short(q.repo))])];
+  const approvals = pending.filter((q) => q.state === 'approval').length;
+  const mergeable = pulls.filter((p) => !p.fork && !p.draft).length;
+  const headline = approvals ? `${plural(approvals, 'merge waits', 'merges wait')} for your approval on axHub`
+    : ready.length ? `${plural(ready.length, 'pull request', 'pull requests')} ready to merge`
     : pulls.length + allBare.length ? plural(pulls.length + allBare.length, 'change waiting for main', 'changes waiting for main')
+    : pending.length ? `${plural(pending.length, 'pending merge', 'pending merges')}`
     : `${plural(finished.length, 'change', 'changes')} done`;
   return (
     <div className={`axp-push-banner${ready.length ? ' is-ready' : ''}`} role="status" aria-live="polite">
@@ -227,14 +286,23 @@ export function PushBanner() {
             <strong>{headline}</strong>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', behindCount ? `${behindCount} need main pulled in` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
+          <span className="axp-push-banner__lead">{[pending.length ? `${pending.length} pending` : '', pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', behindCount ? `${behindCount} need main pulled in` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
       </div>
       {open && (
         <div className="axp-push-banner__body">
+          <div className="axp-push-banner__foot">
+            <BulkButton k="merge-all" icon="branch" label="Merge all" sureLabel={`Merge all ${mergeable}? Each asks you on axHub`} count={mergeable}
+              title="Pull main into every open PR, wait for green CI, then merge each one (you approve every merge on axHub)" run={() => void mergeAll()} />
+            <BulkButton k="pull-all" icon="download" label="Pull main into all" sureLabel={`Pull main into ${behindCount}?`} count={behindCount}
+              title="Bring main's newer commits into every PR and branch that's behind it" run={() => void pullAll()} />
+            <Note k="merge-all" /><Note k="pull-all" />
+          </div>
+          <Group title="Pending merges" count={pending.length} actions={<CopyBrief text={s.answer?.fixBrief ?? ''} />}>{pending.map((q) => <QueueItem key={q.key} q={q} />)}</Group>
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
-          <Group title="Needs main pulled in" count={behindCount}>
+          <Group title="Needs main pulled in" count={behindCount} actions={<BulkButton k="pull-all" icon="download" label="Pull all" sureLabel={`Pull main into ${behindCount}?`} count={behindCount}
+            title="Bring main's newer commits into every PR and branch here" run={() => void pullAll()} />}>
             {behindPulls.map((p) => <PullItem key={p.key} p={p} />)}
             {behindBare.map((r) => <BranchItem key={r.key} r={r} />)}
           </Group>

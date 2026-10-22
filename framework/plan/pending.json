@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T18:47:18.905Z",
+ "updatedAt": "2026-10-22T20:06:34.553Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1649,6 +1649,40 @@
    "builtAt": "",
    "updatedAt": "2026-10-22T18:37:44.308Z",
    "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "push-banner-merge-all",
+   "title": "Push banner: Pending merges, Merge all (approved on axHub), Pull main into all",
+   "detail": "Brett, Oct 22 2026: add pending merges to the push banner, a button to fix conflicts and merge all, and a button to fix conflicts and pull main into all. Every merge goes to axHub for approval (github.pulls/merge). Conflicts get a Copy fix brief for a Claude session (automatic Claude conflict fixing was refused by the session safety check).",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Server queue + worker (batch.py): merge all, pull all, approvals via axHub",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Banner UI: Pending merges, Merge all, Pull all, Copy fix brief",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Tests + docs + PR",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:06:34.553Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T20:06:34.553Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
