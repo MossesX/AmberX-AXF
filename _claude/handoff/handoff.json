@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-22T14:19:52.384Z",
+  "generatedAt": "2026-10-22T14:45:51.802Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "cc349db424e21c08ae6ccc1c778172471014ec4f",
-  "fingerprint": "1fb1e376547a3cf7",
+  "commit": "c1a2698bb40e9ada1e49e8518c99e214dec999ef",
+  "fingerprint": "05d5fa3ba2af7cbf",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "eda0cd6e468e683e",
-      "bytes": 167984
+      "sha": "5bebca0c96e9ab4a",
+      "bytes": 168789
     },
     {
       "path": "project.manifest.json",
@@ -107,8 +107,8 @@
     {
       "path": "_claude/memory/docs/build-reporting.md",
       "role": "memory",
-      "sha": "7a5f32bddb7d8e37",
-      "bytes": 5092
+      "sha": "1daadd7b808c6dec",
+      "bytes": 5095
     },
     {
       "path": "_claude/memory/docs/build-steps.md",
@@ -365,8 +365,8 @@
     {
       "path": "_claude/shared/rules/RULES.md",
       "role": "rules",
-      "sha": "bf3f51afb3b48db6",
-      "bytes": 10120
+      "sha": "6bb757ad7b4a1f52",
+      "bytes": 10123
     },
     {
       "path": "_claude/shared/rules/preferences.md",
@@ -546,8 +546,8 @@
   "machines": [
     {
       "host": "console",
-      "collectedAt": "2026-10-22T14:19:50.641Z",
-      "files": 0
+      "collectedAt": "2026-10-22T11:32:00.343Z",
+      "files": 1
     }
   ],
   "claudeAi": {
@@ -558,7 +558,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "eda0cd6e468e683e"
+      "sha": "5bebca0c96e9ab4a"
     },
     {
       "path": "context/claude__README.md",
@@ -566,7 +566,7 @@
     },
     {
       "path": "context/claude__shared__rules__RULES.md",
-      "sha": "bf3f51afb3b48db6"
+      "sha": "6bb757ad7b4a1f52"
     },
     {
       "path": "context/claude__rules__RULES.md",
@@ -590,7 +590,7 @@
     },
     {
       "path": "context/claude__memory__docs__build-reporting.md",
-      "sha": "7a5f32bddb7d8e37"
+      "sha": "1daadd7b808c6dec"
     },
     {
       "path": "context/claude__memory__docs__build-steps.md",
@@ -621,6 +621,10 @@
       "sha": "40e5273f073685b5"
     },
     {
+      "path": "user/console/skills/session-start-hook/SKILL.md",
+      "sha": "ea33aef5c5674173"
+    },
+    {
       "path": "user/console/settings-summary.json",
       "sha": "7199f2fa8753380c"
     },
@@ -630,43 +634,43 @@
     },
     {
       "path": "README.md",
-      "sha": "6e1b78f94310677e"
+      "sha": "b45be1b9fd6bf3da"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "fd24a84e6146feaf"
+      "sha": "163c28e9f357aa76"
     },
     {
       "path": "PROJECT.md",
-      "sha": "54fb1af026357174"
+      "sha": "b2f3973e263127e2"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "c929f72fd8febc8e"
+      "sha": "1a394eae67b99ec1"
     },
     {
       "path": "FILES.md",
-      "sha": "b714904d7f0135e9"
+      "sha": "23842ae747561716"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "ae5d61490e1dd7dd"
+      "sha": "ba6d56dc9b67e51d"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "da1c6cec75155e7f"
+      "sha": "322e80513e9804ba"
     },
     {
       "path": "SECRETS.md",
-      "sha": "6988b570d18cd180"
+      "sha": "9818a9b660ef1d00"
     },
     {
       "path": "SETUP.md",
-      "sha": "3391edb1f476acd0"
+      "sha": "7fd6189ad5d637eb"
     },
     {
       "path": "PROMPT.md",
-      "sha": "45a367d9aa19e91c"
+      "sha": "76bdd5d35b637e23"
     },
     {
       "path": "handoff.json",

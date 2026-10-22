@@ -16,7 +16,7 @@ import {
 } from './installer-core';
 import type { InstallerLayout } from './look-core';
 import { installerLayout, useLook } from './look';
-import { type Assembled, api, refresh, set } from './store';
+import { type Assembled, type LastAssembly, type RunSummary, ago, api, refresh, set } from './store';
 
 export interface Run {
   ci: number; si: number; p: number; elapsed: number;
@@ -26,6 +26,20 @@ export interface Run {
 const fresh = (): Run => ({ ci: 0, si: 0, p: 0, elapsed: 0, read: 0, written: 0, filesDone: 0, readSpeed: 0, writeSpeed: 0, log: [], done: false, failed: '' });
 const clock = (ms: number) => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const stamp = (ms: number) => `[${clock(ms)}]`;
+
+const LOG_KEEP = 200;
+/** What the server keeps of a finished run (numbers rounded, the last 200 log lines, each at most 400 characters). */
+export function summaryOf(r: Run): RunSummary {
+  return {
+    elapsed: Math.round(r.elapsed), read: Math.round(r.read), written: Math.round(r.written), filesDone: r.filesDone,
+    failed: r.failed.slice(0, 2000), log: r.log.slice(-LOG_KEEP).map((l) => l.slice(0, 400)),
+  };
+}
+
+/** A finished run rebuilt from a saved summary (the results page of an earlier assembly). */
+export function finishedRun(cats: Category[], s: RunSummary | null): Run {
+  return { ...fresh(), ci: cats.length, si: 0, done: true, ...(s ?? {}), readSpeed: 0, writeSpeed: 0, log: s?.log ?? [], failed: s?.failed ?? '' };
+}
 
 /** Example machines for the preview when none have sent their files yet (sizes only). */
 export function withDemoData(p: Plan): Plan {
@@ -122,7 +136,11 @@ function useInstallRun(demo: boolean, runKey: number) {
               r.done = true; r.readSpeed = 0; r.writeSpeed = 0;
               say(r.failed ? 'Finished with a problem' : 'Install complete: the prompt is ready');
               if (!demo && result.current.ok) set({ assembled: result.current.ok });
-              if (!demo) void refresh();
+              if (!demo) {
+                // keep this run with the last assembly, so Last assembly can show the same results page later
+                if (result.current.ok) void api.post('last-assembly/run', summaryOf(r)).catch(() => undefined);
+                void refresh();
+              }
             } else say(`▸ ${cats[r.ci]!.label}`);
           }
         }
@@ -318,20 +336,9 @@ export function InstallerDialog({ close, demo = false }: { close?: () => void; d
   );
   if (!cats) return <div className="axp-claude-handoff-inst__loading"><span className="axp-claude-handoff-inst__spin" aria-hidden><Icon name="refresh" size={22} /></span> Preparing the installer…</div>;
 
-  const ok = result.ok;
   const look = <Button tone="ghost" icon="palette" size="sm" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>;
   const footer = r.done ? (
-    <div className="fx-stack">
-      {r.failed && <Note tone="warning">{r.failed}</Note>}
-      {ok?.note && <Note tone="warning">{ok.note}</Note>}
-      {ok && <TextField label={`The handoff prompt (paste it into a new session on the new account)${demo ? ' — preview build, nothing was published' : ''}`} value={ok.prompt} onChange={() => undefined} rows={8} mono />}
-      <div className="axp-claude-handoff-inst__foot">
-        {look}
-        {demo && <Button icon="refresh" onClick={() => setRunKey((k) => k + 1)}>Run again</Button>}
-        {ok && <Button tone="primary" icon="copy" onClick={() => { void navigator.clipboard?.writeText(ok.prompt).then(() => rt.toast('Prompt copied', 'success', 'Claude handoff'), () => undefined); }}>Copy prompt</Button>}
-        {close && <Button onClick={close}>Close</Button>}
-      </div>
-    </div>
+    <Results ok={result.ok} failed={r.failed} demo={demo} close={close} again={demo ? () => setRunKey((k) => k + 1) : undefined} />
   ) : (
     <div className="axp-claude-handoff-inst__foot">
       {look}
@@ -340,4 +347,51 @@ export function InstallerDialog({ close, demo = false }: { close?: () => void; d
     </div>
   );
   return <InstallerView cats={cats} run={r} project={project} layout={layout} speed={speed} footer={footer} />;
+}
+
+/**
+ * The results under a finished installer: the prompt, notes, Copy prompt. It takes the focus when it appears (the
+ * dialog scrolls to it), both when a run finishes and when Last assembly reopens an earlier one.
+ */
+function Results({ ok, failed, demo, close, again, when }: {
+  ok?: Assembled; failed: string; demo?: boolean; close?: () => void; again?: () => void; when?: string;
+}) {
+  const rt = useRuntime();
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => { ref.current?.focus(); }, []);
+  const published = ok?.published?.pushed ? `published ${ok.published.sha ?? ''}`.trim() : ok ? 'GitHub already had this kit' : '';
+  return (
+    <div className="fx-stack axp-claude-handoff-inst__results" ref={ref} tabIndex={-1} aria-label="Results">
+      {when && <p className="axp-claude-handoff-inst__resultsmeta"><Icon name="clock" size={12} /> Assembled {when}{published ? ` · ${published}` : ''}</p>}
+      {failed && <Note tone="warning">{failed}</Note>}
+      {ok?.note && <Note tone="warning">{ok.note}</Note>}
+      {ok && <TextField label={`The handoff prompt (paste it into a new session on the new account)${demo ? ' — preview build, nothing was published' : ''}`} value={ok.prompt} onChange={() => undefined} rows={8} mono />}
+      <div className="axp-claude-handoff-inst__foot">
+        <Button tone="ghost" icon="palette" size="sm" onClick={() => rt.openDialog('claude-handoff.look')}>Look</Button>
+        {again && <Button icon="refresh" onClick={again}>Run again</Button>}
+        {ok && <Button tone="primary" icon="copy" onClick={() => { void navigator.clipboard?.writeText(ok.prompt).then(() => rt.toast('Prompt copied', 'success', 'Claude handoff'), () => undefined); }}>Copy prompt</Button>}
+        {close && <Button onClick={close}>Close</Button>}
+      </div>
+    </div>
+  );
+}
+
+/** Last assembly: the installer's results page for the last prompt assembled on this console, rebuilt from what was saved. */
+export function LastAssemblyDialog({ close }: { close?: () => void }) {
+  useLook();
+  const [last, setLast] = useState<LastAssembly | null>(null);
+  const [error, setError] = useState('');
+  useEffect(() => { api.call<LastAssembly>('last-assembly').then(setLast, (e: Error) => setError(e.message)); }, []);
+  if (error) return (
+    <div className="fx-stack">
+      <Note tone="info">{error}</Note>
+      {close && <div><Button onClick={close}>Close</Button></div>}
+    </div>
+  );
+  if (!last) return <div className="axp-claude-handoff-inst__loading"><span className="axp-claude-handoff-inst__spin" aria-hidden><Icon name="refresh" size={22} /></span> Loading the last assembly…</div>;
+  const cats = last.plan ? buildCategories(last.plan) : [];
+  const footer = <Results ok={last.result} failed={last.run?.failed ?? ''} close={close} when={ago(last.at)} />;
+  if (!cats.length) return footer;
+  const project = last.plan?.project?.displayName || last.plan?.project?.name || 'the project';
+  return <InstallerView cats={cats} run={finishedRun(cats, last.run)} project={project} layout={installerLayout()} footer={footer} />;
 }

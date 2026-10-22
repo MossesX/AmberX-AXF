@@ -23,6 +23,10 @@ export interface Config { remindHours: number; onlyWhenChanged: boolean; autoPub
 export interface ClaudeItem { id: string; kind: string; name: string; url: string; notes: string; recreate: string }
 export interface ClaudeAi { items: ClaudeItem[]; memory: string; projectInstructions: string; updatedAt?: string }
 export interface Assembled { prompt: string; current: boolean; note: string; published: { pushed?: boolean; sha?: string } | null }
+/** How the installer's run went (sent when it finishes, kept with the last assembly). */
+export interface RunSummary { elapsed: number; read: number; written: number; filesDone: number; failed: string; log: string[] }
+/** The last assembly on this console (GET last-assembly): its result, the plan its installer walked and the run. */
+export interface LastAssembly { at: number; result: Assembled & { kit?: Status['kit'] }; plan: import('./installer-core').Plan | null; run: RunSummary | null }
 
 interface State { status: Status | null; error: string; busy: '' | 'publish' | 'assemble' | 'preview' | 'save'; assembled: Assembled | null; bannerHidden: boolean }
 let st: State = { status: null, error: '', busy: '', assembled: null, bannerHidden: false };

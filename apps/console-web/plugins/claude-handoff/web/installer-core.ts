@@ -61,7 +61,7 @@ export function buildCategories(plan: Plan): Category[] {
   cats.push({
     id: 'preflight', label: 'Preflight', icon: 'zap', features: ['Find the repo', 'Read the project', 'Plan the install'],
     steps: [
-      step('pre-repo', 'Find the repo clone', plan.project.repo || 'this clone', 0, 'check'),
+      step('pre-repo', 'Find the repo', plan.project.repo || 'this repo', 0, 'check'),
       step('pre-manifest', 'Read the project manifest', plan.project.displayName || plan.project.name, 0, 'check'),
       step('pre-sources', 'Count the sources', `${plan.repo.length} repo files · ${plan.machines.length} machines · ${plan.claudeAi.length} claude.ai items`, 0, 'check'),
       step('pre-folder', 'Reserve the kit folder', '_claude/handoff/', 0, 'check'),
