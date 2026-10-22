@@ -1,0 +1,213 @@
+[
+ {
+  "name": "agents-list",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');for(const a of ['coder','axf-expert','ai-expert']){await fetch('/api/plugins/agent-manager/addons/'+a+'/install',{method:'POST',headers:{authorization:'Bearer '+t,'content-type':'application/json'},body:'{\"train\":false}'});}})()",
+    "wait": 1500
+   },
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   }
+  ]
+ },
+ {
+  "name": "agent-editor",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "text=Mosses",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "agent-prompt",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "text=Mosses",
+    "wait": 800
+   },
+   {
+    "click": "text=Prompt & tools",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "skills-library",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Skills')",
+    "wait": 800
+   },
+   {
+    "click": "text=React + TypeScript",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "tools-tab",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Tools')",
+    "wait": 800
+   },
+   {
+    "click": "text=container_write",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "training-tab",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Training')",
+    "wait": 800
+   },
+   {
+    "click": ".axp-agent-manager__item >> nth=0",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "workflows-tab",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Workflows')",
+    "wait": 800
+   },
+   {
+    "click": ".axp-agent-manager__item >> nth=0",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "memory-tab",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Memory')",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "addons-tab",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "[role=tab]:has-text('Add-ons')",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "wizard-builder",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "text=Agent builder",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "wizard-skill",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "button:has-text('New skill')",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "wizard-tool",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "button:has-text('New tool')",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "wizard-training",
+  "steps": [
+   {
+    "search": "Agent manager",
+    "wait": 2500
+   },
+   {
+    "click": "button:has-text('Training')",
+    "wait": 1500
+   }
+  ]
+ },
+ {
+  "name": "settings-safety",
+  "steps": [
+   {
+    "search": "Safety: dangerous tools",
+    "wait": 3500
+   },
+   {
+    "eval": "(()=>{const e=document.querySelector('[data-axf-anchor=\"settings-panel:agent-manager.safety\"]'); if(e){e.scrollIntoView({block:'start'});} return !!e})()",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "settings-addons",
+  "steps": [
+   {
+    "search": "Add-on agents",
+    "wait": 2500
+   }
+  ]
+ }
+]

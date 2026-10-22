@@ -52,6 +52,8 @@ export function templateInfo(id) {
   };
 }
 export const defaults = readJson(join(FRAMEWORK_DIR, 'defaults.json'));
+/** Non-slot defaults for every new app (framework/app-defaults.json, app-defaults@1): `hidden` = chrome hidden by default. */
+export const appDefaults = (() => { const f = join(FRAMEWORK_DIR, 'app-defaults.json'); return existsSync(f) ? readJson(f) : { hidden: [] }; })();
 export const FRAMEWORK_VERSION = spec.frameworkVersion;
 
 /** Directories of the framework that the react-ts template bakes into every new app (template.json → bake). */
@@ -81,10 +83,91 @@ export function validateAsset(raw) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
+  if (raw.type === 'app-menu' && Array.isArray(raw.data.menus)) {
+    raw.data.menus.forEach((m, i) => {
+      if (!isObj(m)) return;
+      if ('order' in m && (typeof m.order !== 'number' || !Number.isFinite(m.order))) errors.push(`data.menus[${i}].order must be a number`);
+      if ('items' in m) errors.push(...validateMenuItems(m.items, `data.menus[${i}].items`));
+    });
+  }
+  if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
+    for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
+  }
+  const host = hostSpec(raw.type);
+  if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
     errors.push('data.defaultRole must reference a role id');
   }
   return { ok: errors.length === 0, errors };
+}
+
+/* Menu items — mirrors validateMenuItems / parseChecked in core/engines/appmenu.ts (asset-types.json → menuItems). */
+/** JSON Schema of one menu item (recursive through `items`), for the generated editor schemas. */
+export function menuItemSchema() {
+  return {
+    type: 'object', required: ['id'],
+    properties: {
+      id: { type: 'string' }, label: { type: 'string' }, icon: { type: 'string' }, action: { type: 'string' }, shortcut: { type: 'string' }, requires: { type: 'string' },
+      separator: { type: 'boolean' }, items: { type: 'array', items: { $ref: '#/$defs/menuItem' } },
+      provider: { type: 'string', minLength: 1, description: MENU_SPEC.optional_fields.provider },
+      badge: { type: 'string', minLength: 1, description: MENU_SPEC.optional_fields.badge },
+      checked: { type: 'string', pattern: `^(${MENU_SPEC.checkedKinds.join('|')}):.+$`, description: MENU_SPEC.optional_fields.checked },
+      order: { type: 'number', description: MENU_SPEC.optional_fields.order },
+      before: { type: 'string', minLength: 1 }, after: { type: 'string', minLength: 1 },
+    },
+  };
+}
+const MENU_SPEC = spec.menuItems;
+export function parseChecked(binding) {
+  if (typeof binding !== 'string') return null;
+  const i = binding.indexOf(':');
+  if (i <= 0) return null;
+  const kind = binding.slice(0, i);
+  const ref = binding.slice(i + 1);
+  return MENU_SPEC.checkedKinds.includes(kind) && ref ? { kind, ref } : null;
+}
+export function validateMenuItems(items, path, depth = 0) {
+  if (!Array.isArray(items)) return [`${path} must be a list of menu items`];
+  const errors = [];
+  items.forEach((o, i) => {
+    const p = `${path}[${i}]`;
+    if (!isObj(o)) { errors.push(`${p} must be a menu item object`); return; }
+    for (const k of ['provider', 'badge', 'before', 'after']) if (k in o && (typeof o[k] !== 'string' || !o[k])) errors.push(`${p}.${k} must be a non-empty string`);
+    if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${MENU_SPEC.checkedKinds.map((k) => `${k}:<ref>`).join(', ')}`);
+    if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
+    if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
+    if ('items' in o) {
+      if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);
+      else errors.push(...validateMenuItems(o.items, `${p}.items`, depth + 1));
+    }
+  });
+  return errors;
+}
+
+/* Widget hosts — mirrors hostSpec / validateHostAttachments in core/engines/widgets.ts (banner.attach, toolbar.widgets). */
+const WIDGET_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].widget === true);
+const ATTACHABLE_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].attachable === true);
+export function hostSpec(type) {
+  const t = spec.types[type];
+  if (!t) return undefined;
+  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? ATTACHABLE_TYPES, sides: t.attach.sides ?? [] };
+  if (t.widgets) return { host: type, field: 'widgets', types: WIDGET_TYPES, sides: t.widgets.sides ?? [] };
+  return undefined;
+}
+export function validateHostAttachments(type, list) {
+  const h = hostSpec(type);
+  if (!h) return [];
+  if (!Array.isArray(list)) return [`data.${h.field} must be a list`];
+  const errors = [];
+  list.forEach((a, i) => {
+    const p = `data.${h.field}[${i}]`;
+    if (!isObj(a)) { errors.push(`${p} must be an object {type, id, at}`); return; }
+    if (typeof a.type !== 'string' || !h.types.includes(a.type)) errors.push(`${p}.type must be one of: ${h.types.join(', ')}`);
+    if (typeof a.id !== 'string' || !a.id) errors.push(`${p}.id must be an asset id`);
+    if (typeof a.at !== 'string' || !h.sides.includes(a.at)) errors.push(`${p}.at must be one of: ${h.sides.join(', ')}`);
+    if ('order' in a && (typeof a.order !== 'number' || !Number.isFinite(a.order))) errors.push(`${p}.order must be a number`);
+  });
+  return errors;
 }
 
 /** Layout slot contract — mirrors validateSlots in core/validate.ts. */
@@ -118,15 +201,15 @@ export function listFrameworkAssets(template) {
 }
 
 /** Default-asset picks for `init` ({ type: id }): every pick must name an asset the new app will actually ship. */
-export function checkSlotPicks(slots, template) {
+export function checkSlotPicks(slots, template, designed = []) {
   if (!slots || typeof slots !== 'object' || Array.isArray(slots)) throw new Error('slots must be an object of { assetType: assetId }');
   const known = listFrameworkAssets(template);
   const out = {};
   for (const [type, id] of Object.entries(slots)) {
     if (id === undefined || id === null || id === '') continue;
     if (typeof id !== 'string') throw new Error(`slots.${type} must be an asset id`);
-    if (!known[type]) throw new Error(`slots: unknown asset type "${type}"`);
-    if (!known[type].some((a) => a.id === id)) throw new Error(`slots: no ${type} asset "${id}"`);
+    if (!known[type] && !spec.types[type]) throw new Error(`slots: unknown asset type "${type}"`);
+    if (!(known[type] ?? []).some((a) => a.id === id) && !designed.some((a) => a.type === type && a.id === id)) throw new Error(`slots: no ${type} asset "${id}"`);
     out[type] = id;
   }
   return out;
@@ -169,17 +252,29 @@ function walk(dir) {
 }
 
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
-const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
+const TEXT = /(\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml|sh|py|ya?ml)|(^|[\\/])Dockerfile)$/;
+
+/** Token values are free text (an app named "Notes & Todo"): escape them for the file they land in, so the generated
+ * app still compiles. Android string resources: XML entities + Android's own quote rules; Kotlin/Java string literals:
+ * backslash, quote and `$` (template strings); JSON is written by the engine itself, not through tokens. */
+export function tokenEscaper(file) {
+  if (/\.xml$/i.test(file)) return (v) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/^@/, '\\@').replace(/^\?/, '\\?');
+  if (/\.(kt|kts|java)$/i.test(file)) return (v) => v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/\r?\n/g, ' ');
+  return (v) => v;
+}
+
+const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
     // `src/main/kotlin/app/…` in a template lands at the app's real package path.
-    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
+    const rel = relative(src, file).replace(/^_(gitignore|dockerignore)$/, '.$1').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
     const target = join(dest, rel);
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
       let text = readFileSync(file, 'utf8');
-      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, v);
+      const esc = tokenEscaper(file);
+      for (const [k, v] of Object.entries(tokens)) text = text.replaceAll(`{{${k}}}`, esc(String(v)));
       writeFileSync(target, text);
     } else cpSync(file, target);
   }
@@ -197,7 +292,57 @@ export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
  * validate the result. Every app starts from the exact same asset set, so
  * apps left on defaults look identical.
  */
-export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, project = {}, log = () => {} }) {
+/**
+ * Designed assets an app ships with (Build Pilot's banner / toolbar designers, …): asset@1 documents written into the
+ * app's own assets folder before the slot picks are checked, so a pick may name one of them. Each is validated like a
+ * framework asset; ids must not collide with a framework starter of the same type.
+ */
+export function checkDesignedAssets(assets) {
+  if (assets === undefined || assets === null) return [];
+  if (!Array.isArray(assets) || assets.length > 40) throw new Error('assets must be a list of up to 40 asset@1 documents');
+  const seen = new Set();
+  return assets.map((raw, i) => {
+    const r = validateAsset(raw);
+    if (!r.ok) throw new Error(`assets[${i}]: ${r.errors.join('; ')}`);
+    const key = `${raw.type}/${raw.id}`;
+    if (seen.has(key)) throw new Error(`assets[${i}]: ${key} is listed twice`);
+    seen.add(key);
+    if (existsSync(join(FRAMEWORK_DIR, 'assets', raw.type, `${raw.id}.json`))) throw new Error(`assets[${i}]: ${key} is a framework starter; give the designed asset its own id`);
+    if (JSON.stringify(raw).length > 200_000) throw new Error(`assets[${i}]: ${key} is over 200 KB`);
+    return raw;
+  });
+}
+
+/** The hub's https origin (http only for localhost): a plain origin, no path, no credentials. */
+export function hubOrigin(raw) {
+  let u;
+  try { u = new URL(String(raw)); } catch { return null; }
+  const local = u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === '10.0.2.2';
+  if ((u.protocol !== 'https:' && !(local && u.protocol === 'http:')) || u.username || u.password || u.pathname !== '/' || u.search || u.hash) return null;
+  return u.origin;
+}
+
+/** Developer app flag (`--developer [hub]`, manifest `developer: { hub }`): true = the default hub; a string = that hub; off = none. */
+export const DEFAULT_HUB = 'https://axhub.amberxai.com';
+export function resolveDeveloper(v) {
+  if (v === undefined || v === null || v === false || v === 'off' || v === '') return null;
+  if (v === true || v === 'on') return { hub: DEFAULT_HUB };
+  const raw = typeof v === 'object' ? v.hub : v;
+  const hub = hubOrigin(raw);
+  if (!hub) throw new Error(`developer: the hub must be an https origin, e.g. ${DEFAULT_HUB}`);
+  return { hub };
+}
+
+/** Chrome hidden by default for a new app: the request's own list when given, else framework/app-defaults.json (+ the boilerplate's). */
+export function resolveHidden(hidden, bp) {
+  const list = hidden !== undefined && hidden !== null ? hidden : [...(appDefaults.hidden ?? []), ...(bp?.hidden ?? [])];
+  if (!Array.isArray(list) || list.some((t) => typeof t !== 'string')) throw new Error('hidden must be a list of asset types');
+  for (const t of list) if (!spec.types[t]?.hideable) throw new Error(`hidden: "${t}" is not a hideable type (${Object.keys(spec.types).filter((k) => spec.types[k].hideable).join(', ')})`);
+  return [...new Set(list)];
+}
+
+export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets, applicationId, modules = [], boilerplate, libraries = [], options = {}, slots = {}, hidden, assets: designedAssets, developer, project = {}, log = () => {} }) {
+  const dev = resolveDeveloper(developer);
   const dest = resolve(dir);
   if (existsSync(dest) && readdirSync(dest).length) throw new Error(`Target directory is not empty: ${dest}`);
   const tpl = templateInfo(template);
@@ -206,7 +351,9 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   targets ??= tpl.targets;
   const pkg = applicationId ?? `ai.amberx.axf.${appId.replace(/-/g, '')}`;
   const bp = boilerplate ? loadBoilerplate(boilerplate) : null;
-  const picks = checkSlotPicks(slots, template);
+  const designed = checkDesignedAssets(designedAssets);
+  const hiddenSlots = resolveHidden(hidden, bp);
+  const picks = checkSlotPicks(slots, template, designed);
   if (bp) { modules = [...new Set([...modules, ...(bp.modules ?? [])])]; libraries = [...(bp.libraries ?? []).map((l) => (typeof l === 'string' ? { library: l } : l)), ...libraries]; }
   const tokens = { APP_NAME: name, APP_ID: appId, APPLICATION_ID: pkg, FRAMEWORK_VERSION, AXF_MODULES: JSON.stringify(modules), ...tpl.tokens };
 
@@ -229,6 +376,14 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   if (bad.length) throw new Error(`Framework assets failed validation:\n${bad.map((b) => `  ${b.file}: ${b.result.errors.join('; ')}`).join('\n')}`);
   cpSync(join(FRAMEWORK_DIR, 'assets'), join(dest, tpl.assetsDir), { recursive: true });
   for (const extra of tpl.extraAssets) if (existsSync(join(FRAMEWORK_DIR, extra))) cpSync(join(FRAMEWORK_DIR, extra), join(dest, tpl.assetsDir), { recursive: true });
+  if (designed.length) {
+    log(`• writing ${designed.length} designed asset(s)`);
+    for (const a of designed) {
+      const d = join(dest, tpl.assetsDir, a.type);
+      mkdirSync(d, { recursive: true });
+      writeFileSync(join(d, `${a.id}.json`), JSON.stringify(a, null, 2) + '\n');
+    }
+  }
 
   // Build options (--wrap-groups …): every option is written at its default unless given, so new builds
   // start from the registry defaults even when the framework's own starter assets differ.
@@ -244,6 +399,8 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
     targets,
     startView: bp?.screens?.[0]?.id ?? 'home',
     defaults: { ...defaults, ...(bp?.defaults ?? {}), ...picks },
+    hidden: hiddenSlots,
+    ...(dev ? { developer: dev } : {}),
     options: buildOptions,
     structure: tpl.structure.map(({ path, purpose }) => ({ path, purpose })),
   };
@@ -376,7 +533,9 @@ export function validateApp(dir) {
   const tpl = appTemplate(root);
   for (const e of tpl.structure) {
     const p = join(root, pkgPath(root, e.path));
-    if (!existsSync(p)) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
+    // Android sources may sit in the package folder (what init writes) or in the template's plain `app/` folder
+    // (apps made before init mapped it, e.g. the Android console): either is the same file.
+    if (!existsSync(p) && !existsSync(join(root, e.path))) (e.required ? errors : warnings).push(`missing ${e.kind} ${relative(root, p)}`);
   }
   const assets = loadAssets(join(root, tpl.assetsDir));
   for (const a of assets) if (!a.result.ok) errors.push(`${relative(root, a.file)}: ${a.result.errors.join('; ')}`);
@@ -390,6 +549,9 @@ export function validateApp(dir) {
     for (const [t, id] of Object.entries(m.defaults ?? {})) {
       if (!byType[t]?.has(id)) errors.push(`manifest default ${t} → "${id}" does not exist`);
     }
+    if (m.hidden !== undefined && (!Array.isArray(m.hidden) || m.hidden.some((t) => typeof t !== 'string'))) errors.push('manifest "hidden" must be a list of asset types');
+    for (const t of Array.isArray(m.hidden) ? m.hidden : []) if (!spec.types[t]?.hideable) errors.push(`manifest hidden "${t}" is not a hideable type`);
+    if (m.developer !== undefined && (typeof m.developer !== 'object' || m.developer === null || !hubOrigin(m.developer.hub))) errors.push('manifest "developer" must be { hub: "https://…" } (a plain https origin)');
     if (m.framework?.version !== FRAMEWORK_VERSION) warnings.push(`app targets framework ${m.framework?.version}, engine is ${FRAMEWORK_VERSION}`);
   }
   const lPath = join(root, 'axf.lock.json');
@@ -431,7 +593,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const written = [];
   for (const [type, ts] of Object.entries(spec.types)) {
     const props = Object.fromEntries(ts.required.map((k) => [k, ts.enums?.[k] ? { enum: ts.enums[k] } : ts.nested?.[k] ? { type: 'object', required: ts.nested[k] } : {}]));
+    // Menu items (asset-types.json → menuItems): a recursive definition for editors, where menu items appear.
+    const menuItem = { $ref: '#/$defs/menuItem' };
+    if (type === 'app-menu') props.menus = { type: 'array', items: { type: 'object', required: ['id', 'label', 'items'], properties: { id: { type: 'string' }, label: { type: 'string' }, order: { type: 'number' }, items: { type: 'array', items: menuItem } } } };
+    if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
+      ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',
       $id: `axf/${type}.schema.json`,
       title: `AmberX AXF ${ts.label} asset`,
@@ -508,7 +676,10 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
+    const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
+    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };
   });
 }
 
@@ -551,7 +722,7 @@ function applyBoilerplate(dest, tpl, bp, log) {
     for (const s of bp.screens ?? []) {
       const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View';
       if (existsSync(join(viewsDir, `${cls}.kt`))) continue;
-      writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${s.label}", message = "Boilerplate screen (${s.kind}). Build it here.")\n}\n`);
+      writeFileSync(join(viewsDir, `${cls}.kt`), `package ${pkg}.views\n\nimport androidx.compose.runtime.Composable\nimport ai.amberx.axf.ui.components.PlaceholderScreen\n\n/** ${s.label} — "${s.kind}" screen from the ${bp.id} boilerplate. Replace the placeholder with the real screen. */\n@Composable\nfun ${cls}() {\n    PlaceholderScreen("${ktStr(s.label)}", message = "Boilerplate screen (${ktStr(s.kind)}). Build it here.")\n}\n`);
     }
     const screens = (bp.screens ?? []).map((s) => { const cls = s.id.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()) + 'View'; return `"${s.id}" to { ${cls}() }`; });
     const main = join(dest, pkgPath(dest, 'app/src/main/kotlin/app/MainActivity.kt'));

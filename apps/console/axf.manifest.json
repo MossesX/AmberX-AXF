@@ -15,8 +15,8 @@
   ],
   "startView": "home",
   "defaults": {
-    "color-theme": "amber-ember",
-    "style-theme": "soft-studio",
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
     "layout": "classic-ide",
     "app-menu": "console-menu",
     "toolbar": "standard-icons",
@@ -27,8 +27,26 @@
     "button": "rounded-solid",
     "slider": "classic-round",
     "container": "soft-card",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new"
   },
+  "hidden": [
+    "toolbar"
+  ],
   "structure": [
     {
       "path": "axf.manifest.json",
@@ -79,7 +97,8 @@
       "ai.amberx.axf.billing",
       "ai.amberx.axf.admin",
       "ai.amberx.axf.ui.windows",
-      "ai.amberx.axf.browser"
+      "ai.amberx.axf.browser",
+      "ai.amberx.axf.mcp"
     ],
     "minSdk": 26,
     "targetSdk": 35
@@ -105,7 +124,10 @@
     },
     "$installed": [
       "ai.amberx.axf.browser"
-    ]
+    ],
+    "mcp": {
+      "timeoutMs": 30000
+    }
   },
   "options": {
     "wrap-groups": true

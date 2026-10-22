@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-7a84810313",
+  "createdAt": "2026-10-21T09:23:29.000Z",
+  "updatedAt": "2026-10-21T12:23:29.000Z",
+  "kind": "build",
+  "title": "Alerts bell plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/alerts-bell` (`ai.amberx.axf.console.alerts-bell`). The alerts bell moved off the console toolbar (`console-search` 1.1.0 no longer has it; Brett: banner only) onto the banner: its own `action-button/alerts-bell` (bell, `alerts.open`) + `counter/alerts-bell` (`alerts.unread",
+    "commits": [
+      {
+        "sha": "b237597",
+        "message": "Alerts bell plugin: the bell moves from the toolbar to the banner (action-button + counter widgets)"
+      },
+      {
+        "sha": "8dd7295",
+        "message": "Merge main into feat/console-menu; app-menu entries for codebase-changes, main-build-status and alerts-bell (menu-reach caught them)"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T12:23:29.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "alerts-bell"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T09:23:29.000Z",
+  "finishedAt": "2026-10-21T12:23:29.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/alerts-bell"
+  ]
+}

@@ -132,7 +132,7 @@ export function ConflictList({ conflicts }: { conflicts: Conflict[] }) {
   );
 }
 
-const KIND_LABEL: Record<Dependency['kind'], string> = { framework: 'Framework', service: 'Capability', env: 'Environment', scope: 'Scope', core: 'Console core', other: 'Other' };
+const KIND_LABEL: Record<Dependency['kind'], string> = { framework: 'Framework', service: 'Capability', plugin: 'Plugin', env: 'Environment', scope: 'Scope', core: 'Console core', other: 'Other' };
 
 function Dependencies({ row, conflicts, onSelect }: { row: PluginRow; conflicts: Conflict[]; onSelect: (folder: string) => void }) {
   const groups = useMemo(() => {

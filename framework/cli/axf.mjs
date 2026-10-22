@@ -88,6 +88,8 @@ try {
         applicationId: flags['application-id'],
         modules: flags.modules ? String(flags.modules).split(',') : [],
         boilerplate: flags.boilerplate,
+        // --developer [https://hub]: a developer app (settings + look from axHub's data server; waits for the hub)
+        developer: flags.developer,
         // --libraries browser,other  (pre-build configuration; each library's defaults, or --param key=value for all)
         options: pickOptions(flags),
         project: {

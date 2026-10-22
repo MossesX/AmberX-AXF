@@ -1,0 +1,22 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.fable-rebuilds",
+  "name": "Fable rebuilds",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every build parked for Fable in one place: what each replaces (the Opus plugin and its uninstall command), its branch, differences report, Android before/after screenshots and rebuild-log line, plus a ready-to-paste brief for the Fable session. Hooks: nav, the default context menu, Plugin Manager rows, Plan features and Pending builds rows (open it, or park a new Fable rebuild).",
+  "targets": ["axf-console"],
+  "provides": ["view:fable-rebuilds", "dialog:fable-rebuilds.report", "settings-tab:fable-rebuilds", "action:fable-rebuilds.open", "slot:plan.feature", "slot:pending.item"],
+  "optional": [],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/fable-rebuilds",
+    "env": [],
+    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+  }
+}

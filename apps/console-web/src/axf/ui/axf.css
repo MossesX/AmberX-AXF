@@ -48,6 +48,36 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
+/* The application menu sits above the live banners (Oct 22 2026); its drop-downs open over them. */
+.fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
+/* banners libraries contribute (slot app.frame.banners): above app tabs and the layout; a tall stack scrolls inside itself */
+.fx-frame-banners { flex: none; max-height: 45vh; overflow: auto; padding: var(--fx-space) var(--fx-space) 0; background: var(--fx-bg); position: relative; z-index: 42; }
+.fx-frame-banners:empty { display: none; }
+/* Banner settings (Oct 22 2026): every banner sits in a frame that applies its look choices, whatever plugin drew it. */
+.fx-banner-frame[hidden] { display: none; }
+.fx-banner-frame[data-tone='accent'] { --fx-info: var(--fx-accent); --fx-success: var(--fx-accent); --fx-warning: var(--fx-accent); --fx-danger: var(--fx-accent); }
+.fx-banner-frame[data-tone='info'] { --fx-accent: var(--fx-info); --fx-success: var(--fx-info); --fx-warning: var(--fx-info); --fx-danger: var(--fx-info); --fx-accent-soft: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='success'] { --fx-accent: var(--fx-success); --fx-info: var(--fx-success); --fx-warning: var(--fx-success); --fx-danger: var(--fx-success); --fx-accent-soft: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='warning'] { --fx-accent: var(--fx-warning); --fx-info: var(--fx-warning); --fx-success: var(--fx-warning); --fx-danger: var(--fx-warning); --fx-accent-soft: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='danger'] { --fx-accent: var(--fx-danger); --fx-info: var(--fx-danger); --fx-success: var(--fx-danger); --fx-warning: var(--fx-danger); --fx-accent-soft: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-banner-frame[data-tone='neutral'] { --fx-accent: var(--fx-muted); --fx-info: var(--fx-muted); --fx-success: var(--fx-muted); --fx-warning: var(--fx-muted); --fx-danger: var(--fx-muted); --fx-accent-soft: var(--fx-surface2); }
+.fx-banner-frame[data-density='compact'] { zoom: 0.88; }
+.fx-banner-frame[data-density='roomy'] { zoom: 1.12; }
+.fx-banner-frame[data-icon='off'] .fx-banner-icon, .fx-banner-frame[data-icon='off'] [class*='banner__icon'], .fx-banner-frame[data-icon='off'] [class*='-banner-icon'] { display: none; }
+/* Banner settings dialog */
+.fx-banner-settings { display: grid; gap: var(--fx-space); }
+.fx-banner-settings__tabs { display: flex; gap: calc(var(--fx-space) * 0.4); overflow-x: auto; padding-bottom: calc(var(--fx-space) * 0.25); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-banner-settings__tab { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); flex: none; padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.8); border-radius: var(--fx-radius-sm); color: var(--fx-muted); cursor: pointer; white-space: nowrap; }
+.fx-banner-settings__tab:hover { background: var(--fx-surface2); }
+.fx-banner-settings__tab.is-on { color: var(--fx-accent); background: var(--fx-accent-soft); font-weight: 600; }
+.fx-banner-settings__tab:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); }
+/* developer apps while the hub hasn't answered (react/components/Waiting.tsx): one centred card, nothing else */
+.fx-shell--waiting { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
+/* Kept views (AppShell `keep`): stay mounted while hidden; a kept view fills the main region. */
+.fx-main__inner--kept[hidden] { display: none !important; }
+/* Page mode (embed@1 `page`): one view of the app on its own inside a host (e.g. its settings in Patches). */
+.fx-shell--page { display: grid; grid-template-areas: "main"; grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.fx-waiting { max-width: 36rem; margin: calc(var(--fx-space) * 4) auto; padding: 0 var(--fx-space); }
 
 /* ---------------- banner (core/engines/banner.ts) ---------------- */
 .fx-banner {
@@ -58,7 +88,11 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner.is-raised { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); }
 .fx-banner.is-accent { background: var(--fx-accent); color: var(--fx-accent-text); }
 .fx-banner.has-divider { border-bottom: var(--fx-border-w) solid var(--fx-border); }
-.fx-banner__side { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; }
+.fx-banner__side { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; overflow: hidden; }
+.fx-banner__side.is-center { overflow: visible; }
+/* On narrow screens a crowded side clips in order (last attachments first) instead of drawing over its neighbours. */
+.fx-banner__item { flex: none; }
+@media (max-width: 480px) { .fx-banner__side.is-left { justify-content: flex-start; } .fx-banner__side .fx-widget-label, .fx-banner__side .fx-widget-progress__label { display: none; } }
 .fx-banner__side.is-center { justify-content: center; }
 .fx-banner__side.is-right { justify-content: flex-end; }
 .fx-banner__logo { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); font-family: var(--fx-font-display); font-weight: 700; color: var(--fx-text); white-space: nowrap; }
@@ -103,6 +137,40 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-banner .fx-widget-search .fx-search input { height: 100%; font-size: 1em; }
 .fx-toolbar__widget { display: inline-flex; align-items: center; min-width: 0; flex: none; }
 .fx-toolbar__widget .fx-banner__clock { color: var(--fx-muted); font-size: 0.9em; padding: 0 var(--fx-space); }
+/* widget kinds (logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) */
+.fx-widget-logo, .fx-widget-label, .fx-widget-status, .fx-widget-counter, .fx-widget-progress, .fx-widget-avatar, .fx-widget-link, .fx-widget-theme { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); white-space: nowrap; font: inherit; color: inherit; }
+.fx-widget-logo { font-family: var(--fx-font-display); }
+.fx-widget-logo img, .fx-widget-avatar img { display: block; object-fit: cover; }
+.is-tap { background: none; border: 0; padding: 0; cursor: pointer; color: inherit; border-radius: var(--fx-radius-sm); }
+.is-tap:focus-visible, .fx-widget-theme:focus-visible, .fx-widget-link:focus-visible { outline: 2px solid var(--fx-accent); outline-offset: 1px; }
+.fx-widget-label.is-bold { font-weight: 700; }
+.fx-widget-label.is-mono { font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; }
+.fx-widget-label[data-tone='success'], .fx-widget-status [data-tone='success'], .fx-widget-counter__num[data-tone='success'], .fx-widget-progress[data-tone='success'] { color: var(--fx-success); }
+.fx-widget-label[data-tone='warning'], .fx-widget-status [data-tone='warning'], .fx-widget-counter__num[data-tone='warning'], .fx-widget-progress[data-tone='warning'] { color: var(--fx-warning); }
+.fx-widget-label[data-tone='danger'], .fx-widget-status [data-tone='danger'], .fx-widget-counter__num[data-tone='danger'], .fx-widget-progress[data-tone='danger'] { color: var(--fx-danger); }
+.fx-widget-label[data-tone='accent'], .fx-widget-status [data-tone='accent'], .fx-widget-counter__num[data-tone='accent'], .fx-widget-progress[data-tone='accent'] { color: var(--fx-accent); }
+.fx-widget-label[data-tone='muted'], .fx-widget-status [data-tone='muted'], .fx-widget-counter__num[data-tone='muted'], .fx-widget-progress[data-tone='muted'] { color: var(--fx-muted); }
+.fx-widget-status__dot { width: 0.55em; height: 0.55em; border-radius: 999px; background: currentColor; }
+.fx-widget-status.is-on .fx-widget-status__dot { box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-widget-counter__num { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 1.4em; padding: 0 0.35em; border-radius: 999px; text-align: center; border: var(--fx-border-w) solid currentColor; background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent); font-size: 0.85em; }
+.fx-widget-counter__label { color: var(--fx-muted); font-size: 0.9em; }
+.fx-widget-progress__label, .fx-widget-progress__value { font-size: 0.85em; color: var(--fx-muted); font-variant-numeric: tabular-nums; }
+.fx-widget-progress__bar { display: inline-block; height: 0.5em; border-radius: 999px; background: color-mix(in srgb, currentColor calc(var(--fx-opacity-tint) * 100%), transparent); overflow: hidden; }
+.fx-widget-progress__fill { display: block; height: 100%; background: currentColor; border-radius: 999px; transition: width var(--fx-motion) ease-out; }
+.fx-widget-avatar__initials { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-widget-avatar.is-circle img, .fx-widget-avatar.is-circle .fx-widget-avatar__initials { border-radius: 999px; }
+.fx-widget-avatar.is-rounded img, .fx-widget-avatar.is-rounded .fx-widget-avatar__initials { border-radius: var(--fx-radius-sm); }
+.fx-widget-link { text-decoration: none; color: var(--fx-accent); }
+.fx-widget-link:hover { text-decoration: underline; }
+.fx-widget-theme { background: none; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; padding: 0 calc(var(--fx-space) * 0.6); height: calc(var(--fx-row-h) * 0.7); cursor: pointer; }
+.fx-widget-theme.is-icon { padding: 0; width: calc(var(--fx-row-h) * 0.7); justify-content: center; }
+.fx-widget-button { height: calc(var(--fx-row-h) * 0.75); padding: 0 calc(var(--fx-space) * 0.6); font-size: 0.9em; }
+.fx-widget-button.is-icon { padding: 0; width: calc(var(--fx-row-h) * 0.75); justify-content: center; }
+.fx-widget-spacer { display: inline-block; flex: none; }
+.fx-widget-spacer.is-flex { flex: 1 1 auto; min-width: var(--fx-space); }
+.fx-banner__item:has(> .fx-widget-spacer.is-flex), .fx-toolbar__widget:has(> .fx-widget-spacer.is-flex) { flex: 1 1 auto; }
+.fx-widget-divider { display: inline-block; width: var(--fx-border-w); align-self: stretch; background: var(--fx-border); margin: 0 calc(var(--fx-space) * 0.5); }
+.fx-widget-divider.is-inset { align-self: center; height: 1.1em; }
 
 
 .fx-shell {
@@ -195,6 +263,30 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__label { flex: 1; white-space: nowrap; }
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: 4px 6px; }
 .fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: 4px; }
+/* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
+.fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
+.fx-menu__item.is-checked { color: var(--fx-text); }
+.fx-menu__chevron { color: var(--fx-muted); }
+.fx-menu__badge {
+  min-width: 18px; padding: 0 6px; border-radius: 999px; text-align: center;
+  background: var(--fx-accent); color: var(--fx-accent-text); font-size: 0.72em; font-weight: 700; line-height: 18px;
+}
+.fx-menu__row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.88em; color: var(--fx-muted); }
+.fx-menu__error { color: var(--fx-danger); }
+.fx-menu__spinner {
+  width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--fx-border); border-top-color: var(--fx-accent);
+  animation: fx-spin calc(var(--fx-motion) * 4) linear infinite;
+}
+@keyframes fx-spin { to { transform: rotate(360deg); } }
+.fx-menu__back {
+  width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent;
+  padding: 6px 8px; margin-bottom: 4px; font-size: 0.93em; font-weight: 600; color: var(--fx-text);
+  border-bottom: var(--fx-border-w) solid var(--fx-border); border-radius: 0;
+}
+.fx-menu__back:hover { color: var(--fx-accent); }
+.fx-dropdown--phone { max-height: 70vh; overflow-y: auto; }
+.fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
 
 /* context-menu asset variants */
 .fx-ctx { position: fixed; min-width: 220px; padding: 4px; z-index: 80; animation: fx-pop 120ms ease both; }
@@ -224,6 +316,10 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar[data-align='center'] { justify-content: center; }
 .fx-toolbar[data-align='spread'] { justify-content: space-between; }
 .fx-toolbar__group { display: flex; gap: 2px; padding-right: var(--fx-space); border-right: var(--fx-border-w) solid var(--fx-border); }
+/* collapsible toolbar (asset `collapsible: true`): a chevron at the end folds it to a thin handle */
+.fx-toolbar__fold { margin-left: auto; flex: none; }
+.fx-toolbar.is-collapsed { padding-top: 0; padding-bottom: 0; min-height: 0; justify-content: flex-end; }
+.fx-toolbar.is-collapsed .fx-toolbar__fold { height: calc(var(--fx-row-h) * 0.6); }
 .fx-toolbar__group:last-of-type { border-right: 0; }
 .fx-toolbtn {
   display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
@@ -617,6 +713,77 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-input:focus { border-color: var(--fx-accent); box-shadow: 0 0 0 3px var(--fx-accent-soft); }
 textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-field { display: flex; flex-direction: column; gap: 6px; font-size: 0.9em; }
+
+/* ---------------- form controls (react/components/Forms.tsx; Compose: axf-ui Forms.kt) ---------------- */
+/* Field: label / control / hint-or-error wrapper. Sizes are theme tokens so the spacing choice applies. */
+.fx-field { gap: calc(var(--fx-space) * 0.4); min-width: 0; font-size: inherit; }
+.fx-field__label { font-weight: 600; font-size: calc(var(--fx-font-size) * 13 / 14); }
+.fx-field__required { color: var(--fx-danger); }
+.fx-field__hint, .fx-field__error { margin: 0; font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); }
+.fx-field__error { color: var(--fx-danger); }
+.fx-field.is-error .fx-field__input { border-color: var(--fx-danger); }
+.fx-input.fx-field__input { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; }
+.fx-input.fx-field__input:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
+.fx-input:focus-visible { outline: 0; }
+/* Switch: role=switch input over a drawn track; the focus ring sits on the track. */
+.fx-switchrow { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-space); min-height: var(--fx-row-h); cursor: pointer; }
+.fx-switchrow--bare { justify-content: flex-start; gap: calc(var(--fx-space) * 0.5); min-height: 0; font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); white-space: nowrap; }
+.fx-switchrow.is-disabled { cursor: not-allowed; opacity: var(--fx-opacity-disabled); }
+.fx-switchrow__text { display: flex; flex-direction: column; min-width: 0; }
+.fx-switchrow__label { font-weight: 600; }
+.fx-switchrow__hint { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-switch { --fx-switch-w: calc(var(--fx-font-size) * 2.6); --fx-switch-h: calc(var(--fx-font-size) * 1.45); position: relative; display: inline-flex; flex: none; }
+.fx-switch__input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.fx-switch__track { display: inline-flex; align-items: center; width: var(--fx-switch-w); height: var(--fx-switch-h); padding: calc(var(--fx-switch-h) * 0.1); box-sizing: border-box; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; background: var(--fx-surface2); transition: background var(--fx-motion), border-color var(--fx-motion); }
+.fx-switch__thumb { width: calc(var(--fx-switch-h) * 0.7); height: calc(var(--fx-switch-h) * 0.7); border-radius: 999px; background: var(--fx-muted); box-shadow: var(--fx-shadow-sm); transition: transform var(--fx-motion), background var(--fx-motion); }
+.fx-switch__input:checked + .fx-switch__track { background: var(--fx-accent); border-color: var(--fx-accent); }
+.fx-switch__input:checked + .fx-switch__track .fx-switch__thumb { background: var(--fx-accent-text); transform: translateX(calc(var(--fx-switch-w) - var(--fx-switch-h))); }
+.fx-switch__input:disabled + .fx-switch__track { opacity: var(--fx-opacity-disabled); }
+.fx-switch__input:focus-visible + .fx-switch__track { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
+/* ChoiceGrid: tappable cards (radio / checkbox semantics) */
+.fx-choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 13)), 1fr)); gap: calc(var(--fx-space) * 0.75); }
+.fx-choice { display: flex; flex-direction: column; align-items: stretch; gap: calc(var(--fx-space) * 0.35); min-width: 0; padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; transition: border-color var(--fx-motion), box-shadow var(--fx-motion); }
+.fx-choice:hover:not(:disabled) { border-color: var(--fx-accent); }
+.fx-choice:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
+.fx-choice.is-active { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); background: var(--fx-accent-soft); }
+.fx-choice:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
+.fx-choice__top { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); }
+.fx-choice__title { flex: 1; min-width: 0; font-weight: 600; }
+.fx-choice__text { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-choice__tag { align-self: flex-start; padding: 0 calc(var(--fx-space) * 0.4); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); }
+/* Note: info / warning / danger / success callout */
+.fx-note { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); font-size: calc(var(--fx-font-size) * 13 / 14); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-note > .fx-icon { margin-top: calc(var(--fx-space) * 0.15); }
+.fx-note.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-note.is-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-note.is-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-note__body { min-width: 0; flex: 1; }
+.fx-note p { margin: 0; }
+/* Section: titled block without card chrome */
+.fx-section { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); }
+.fx-section__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--fx-space); flex-wrap: wrap; }
+.fx-section__title { margin: 0; font-size: calc(var(--fx-font-size) * 15 / 14); }
+/* Markdown (react/components/Markdown.tsx) */
+.fx-md { overflow-wrap: anywhere; line-height: 1.55; }
+.fx-md > :first-child { margin-top: 0; }
+.fx-md > :last-child { margin-bottom: 0; }
+.fx-md p, .fx-md ul, .fx-md ol, .fx-md blockquote { margin: calc(var(--fx-space) * 0.5) 0; }
+.fx-md h3, .fx-md h4, .fx-md h5 { margin: var(--fx-space) 0 calc(var(--fx-space) * 0.5); }
+.fx-md ul, .fx-md ol { padding-left: calc(var(--fx-space) * 2); }
+.fx-md blockquote { padding-left: var(--fx-space); border-left: calc(var(--fx-border-w) * 3) solid var(--fx-border); color: var(--fx-muted); }
+.fx-md code { padding: 0 calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); background: var(--fx-surface); font-family: var(--fx-font-mono); }
+.fx-md a { color: var(--fx-accent); }
+.fx-md__nested { list-style: none; }
+.fx-md__tablewrap { overflow: auto; }
+.fx-md__code { border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); overflow: hidden; margin: calc(var(--fx-space) * 0.5) 0; }
+.fx-md__code-head { display: flex; justify-content: space-between; align-items: center; padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted); }
+.fx-md__code-copy { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.fx-md__code pre { margin: 0; padding: var(--fx-space); overflow: auto; font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); }
+.fx-md__code pre code { padding: 0; background: transparent; }
+.fx-md--compact { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); }
+.fx-md--compact p, .fx-md--compact ul, .fx-md--compact ol { margin: 0; }
+.fx-md--compact ul, .fx-md--compact ol { padding-left: calc(var(--fx-space) * 1.5); }
+.fx-md--compact h3, .fx-md--compact h4, .fx-md--compact h5 { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 13 / 14); }
 .fx-errors { margin: 0; padding: 8px 10px 8px 28px; border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger); font-size: 0.86em; }
 .fx-icon { flex: none; }
 

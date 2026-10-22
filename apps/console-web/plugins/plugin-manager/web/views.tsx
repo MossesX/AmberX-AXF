@@ -1,9 +1,10 @@
-/** The four views. Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
+/** The views (Install is in InstallView.tsx). Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
 import { useMemo, useState } from 'react';
 import { Chip, Icon, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi } from './actions';
 import { DetailPane, HealthChip, Monogram, QuickActions } from './Detail';
-import { fmtBytes, HEALTH_LABEL, type Inventory, type PluginRow } from './model';
+import { fmtBytes, HEALTH_LABEL, HEALTH_RANK, type Inventory, type PluginRow } from './model';
+import { pluginGraph, type GraphNode } from '@console/axf/core/engines/plugins';
 import type { LayoutId } from './prefs';
 
 export interface ViewProps {
@@ -16,7 +17,7 @@ export interface ViewProps {
 }
 
 const ctx = (row: PluginRow) => ({ 'data-fx-ctx-target': 'plugin-manager.row', 'data-fx-ctx-payload': row.folder });
-const needCount = (r: PluginRow) => r.dependencies.filter((d) => d.kind === 'service').length;
+const needCount = (r: PluginRow) => r.dependencies.filter((d) => d.kind === 'service' || d.kind === 'plugin').length;
 const tag = (layout: LayoutId, on: boolean) => (layout === 'terminal' ? (on ? '[ ON ]' : '[OFF ]') : on ? 'on' : 'off');
 
 /* ---------------- Cards ---------------- */
@@ -60,7 +61,6 @@ const COLS: { id: Col; label: string; num?: boolean }[] = [
   { id: 'needs', label: 'Needs', num: true }, { id: 'usedBy', label: 'Used by', num: true }, { id: 'size', label: 'Code', num: true },
   { id: 'data', label: 'Data', num: true }, { id: 'logs', label: 'Logs', num: true },
 ];
-const HEALTH_RANK = { error: 0, blocked: 1, partial: 2, off: 3, ok: 4 } as const;
 const value = (r: PluginRow, c: Col): string | number => ({
   name: r.name.toLowerCase(), version: r.version, health: HEALTH_RANK[r.health], enabled: r.enabled ? 1 : 0, needs: needCount(r),
   usedBy: r.dependents.length, size: r.code.bytes, data: r.lifecycle.data.bytes, logs: r.logCount,
@@ -139,8 +139,9 @@ export function MasterDetailView(props: ViewProps) {
 
 /* ---------------- Dependency graph ---------------- */
 
-interface Node { id: string; kind: 'plugin' | 'service'; label: string; x: number; y: number; row?: PluginRow; missing?: boolean; providers: number }
-interface Edge { from: string; to: string; kind: 'provides' | 'requires' | 'optional'; broken: boolean }
+/** Rows are the engine's half-steps (×2); the web port draws them at ROW px apart and three fixed columns. */
+const ROW = 23, TOP = 30, COLX = [20, 260, 500] as const, NODE_W = 144;
+interface Node extends GraphNode { x: number; y: number; row2: PluginRow | undefined }
 
 export function GraphView({ rows, inv, selected, onSelect }: ViewProps) {
   const [hover, setHover] = useState('');
@@ -162,7 +163,7 @@ export function GraphView({ rows, inv, selected, onSelect }: ViewProps) {
         <svg className="axp-plugin-manager-graph__svg" viewBox={`0 0 ${g.width} ${g.height}`} width={g.width} height={g.height} role="img" aria-label="Plugin dependency graph">
           {g.edges.map((e, i) => {
             const a = pos.get(e.from)!, b = pos.get(e.to)!;
-            const [x1, x2] = a.x < b.x ? [a.x + 150, b.x - 6] : [a.x - 6, b.x + 150];
+            const [x1, x2] = a.x < b.x ? [a.x + NODE_W + 6, b.x - 6] : [a.x - 6, b.x + NODE_W + 6];
             const mx = (x1 + x2) / 2;
             const dim = focus && !(linked.has(e.from) && linked.has(e.to));
             return <path key={i} d={`M${x1},${a.y} C${mx},${a.y} ${mx},${b.y} ${x2},${b.y}`} className={`axp-plugin-manager-edge is-${e.kind} ${e.broken ? 'is-broken' : ''} ${dim ? 'is-dim' : ''}`} />;
@@ -170,13 +171,13 @@ export function GraphView({ rows, inv, selected, onSelect }: ViewProps) {
           {g.nodes.map((n) => {
             const dim = focus && !linked.has(n.id);
             return (
-              <g key={n.id} transform={`translate(${n.x},${n.y - 16})`} className={`axp-plugin-manager-node is-${n.kind} ${n.row ? `is-${n.row.health}` : ''} ${n.missing ? 'is-missing' : ''} ${dim ? 'is-dim' : ''} ${n.row?.folder === selected ? 'is-selected' : ''}`}
-                onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover('')} onClick={() => n.row && onSelect(n.row.folder)} tabIndex={n.row ? 0 : -1}
-                onKeyDown={(e) => { if (n.row && (e.key === 'Enter' || e.key === ' ')) onSelect(n.row.folder); }}>
-                <rect width="144" height="32" rx={n.kind === 'service' ? 16 : 6} className="axp-plugin-manager-node__box" />
+              <g key={n.id} transform={`translate(${n.x},${n.y - 16})`} className={`axp-plugin-manager-node is-${n.kind} ${n.row2 ? `is-${n.row2.health}` : ''} ${n.missing ? 'is-missing' : ''} ${dim ? 'is-dim' : ''} ${n.row2?.folder === selected ? 'is-selected' : ''}`}
+                onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover('')} onClick={() => n.row2 && onSelect(n.row2.folder)} tabIndex={n.row2 ? 0 : -1}
+                onKeyDown={(e) => { if (n.row2 && (e.key === 'Enter' || e.key === ' ')) onSelect(n.row2.folder); }}>
+                <rect width={NODE_W} height="32" rx={n.kind === 'service' ? 16 : 6} className="axp-plugin-manager-node__box" />
                 {n.kind === 'plugin' && <circle cx="14" cy="16" r="5" className="axp-plugin-manager-node__dot" />}
-                <text x={n.kind === 'plugin' ? 26 : 72} y="20" textAnchor={n.kind === 'plugin' ? 'start' : 'middle'} className="axp-plugin-manager-node__label">{n.label.length > 19 ? `${n.label.slice(0, 18)}…` : n.label}</text>
-                <title>{n.kind === 'plugin' ? `${n.label} · ${HEALTH_LABEL[n.row!.health]}` : `${n.label} · ${n.providers ? `${n.providers} provider(s)` : 'no provider installed'}`}</title>
+                <text x={n.kind === 'plugin' ? 26 : NODE_W / 2} y="20" textAnchor={n.kind === 'plugin' ? 'start' : 'middle'} className="axp-plugin-manager-node__label">{n.label.length > 19 ? `${n.label.slice(0, 18)}…` : n.label}</text>
+                <title>{n.kind === 'plugin' ? `${n.label} · ${HEALTH_LABEL[n.row2!.health]}` : `${n.label} · ${n.providers ? `${n.providers} provider(s)` : 'no provider installed'}`}</title>
               </g>
             );
           })}
@@ -185,39 +186,23 @@ export function GraphView({ rows, inv, selected, onSelect }: ViewProps) {
       {selRow && (
         <div className="axp-plugin-manager-graph__info">
           <strong>{selRow.name}</strong>
-          {selRow.dependencies.filter((d) => d.kind === 'service').map((d) => (
+          {selRow.dependencies.filter((d) => d.kind === 'service' || d.kind === 'plugin').map((d) => (
             <span key={d.name} className="axp-plugin-manager-meta"><code>{d.name}</code> <Chip tone={d.status === 'ok' ? 'success' : d.required ? 'danger' : 'warning'}>{d.required ? 'requires' : 'optional'} · {d.status}</Chip></span>
           ))}
           {selRow.dependents.map((d) => <span key={d.folder + d.service} className="axp-plugin-manager-meta">used by <strong>{d.name}</strong> ({d.service})</span>)}
-          {!selRow.dependencies.some((d) => d.kind === 'service') && !selRow.dependents.length && <span className="fx-muted fx-small">Standalone: no capability links.</span>}
+          {!selRow.dependencies.some((d) => d.kind === 'service' || d.kind === 'plugin') && !selRow.dependents.length && <span className="fx-muted fx-small">Standalone: no capability links.</span>}
         </div>
       )}
     </div>
   );
 }
 
+/** The engine lays the graph out (columns + half-step rows, same on every port); this only maps it to pixels. */
 function buildGraph(rows: PluginRow[], inv: Inventory) {
-  const svc = new Map<string, { providers: number; consumers: number }>();
-  const touch = (n: string) => svc.get(n) ?? (svc.set(n, { providers: 0, consumers: 0 }), svc.get(n)!);
-  const edges: Edge[] = [];
-  for (const r of rows) {
-    for (const p of r.provides) if (p.startsWith('service:')) { const n = p.slice(8); touch(n).providers += 1; edges.push({ from: `p:${r.folder}`, to: `s:${n}`, kind: 'provides', broken: !r.enabled }); }
-    for (const d of r.dependencies) if (d.kind === 'service') { touch(d.name).consumers += 1; edges.push({ from: `p:${r.folder}`, to: `s:${d.name}`, kind: d.required ? 'requires' : 'optional', broken: d.status !== 'ok' }); }
-  }
-  // Columns: consumers-only plugins | capabilities | providing plugins; standalone plugins sit below the consumers.
-  const providers = rows.filter((r) => r.provides.some((p) => p.startsWith('service:')));
-  const consumers = rows.filter((r) => !providers.includes(r) && r.dependencies.some((d) => d.kind === 'service'));
-  const alone = rows.filter((r) => !providers.includes(r) && !consumers.includes(r));
-  const services = [...svc.keys()].sort();
-  const ROW = 46, TOP = 30, COLX = [20, 260, 500];
-  const nodes: Node[] = [
-    ...[...consumers, ...alone].map((r, i) => ({ id: `p:${r.folder}`, kind: 'plugin' as const, label: r.name, x: COLX[0]!, y: TOP + i * ROW + (i >= consumers.length && consumers.length ? ROW / 2 : 0), row: r, providers: 0 })),
-    ...services.map((s, i) => ({ id: `s:${s}`, kind: 'service' as const, label: s, x: COLX[1]!, y: TOP + i * ROW, missing: (svc.get(s)?.providers ?? 0) === 0 && !inv.services.some((x) => x.name === s), providers: svc.get(s)?.providers ?? 0 })),
-    ...providers.map((r, i) => ({ id: `p:${r.folder}`, kind: 'plugin' as const, label: r.name, x: COLX[2]!, y: TOP + i * ROW, row: r, providers: 0 })),
-  ];
-  // A provider that also consumes points left to its needs; draw those edges from its own node (already in edges).
-  const height = TOP + Math.max(consumers.length + alone.length + (alone.length && consumers.length ? 0.5 : 0), services.length, providers.length, 1) * ROW;
-  return { nodes, edges, width: COLX[2]! + 170, height };
+  const g = pluginGraph(rows, inv.services);
+  const byFolder = new Map(rows.map((r) => [r.folder, r]));
+  const nodes: Node[] = g.nodes.map((n) => ({ ...n, x: COLX[n.column], y: TOP + n.row * ROW, row2: n.folder ? byFolder.get(n.folder) : undefined }));
+  return { nodes, edges: g.edges, width: COLX[2] + NODE_W + 26, height: TOP + g.rows * ROW };
 }
 
 function Empty() {

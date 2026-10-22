@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "axhub-web",
+  "displayName": "AXHub",
+  "description": "AXHub — web app to approve and manage axHub",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "web"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "react-ts",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "axhub-web",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/axhub-web"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-22"
+}

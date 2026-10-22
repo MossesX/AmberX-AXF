@@ -1,6 +1,6 @@
 {
-  "color-theme": "amber-ember",
-  "style-theme": "soft-studio",
+  "color-theme": "arctic-daylight",
+  "style-theme": "glass-orbit",
   "layout": "classic-ide",
   "app-menu": "standard-desktop",
   "toolbar": "standard-icons",
@@ -14,6 +14,17 @@
   "banner": "amberx-thin",
   "clock": "digital-12h",
   "search-bar": "everything",
+  "logo": "wordmark",
+  "action-button": "settings",
+  "label": "version",
+  "status": "online",
+  "counter": "alerts",
+  "progress": "build",
+  "avatar": "account",
+  "link": "docs",
+  "theme-switch": "day-night",
+  "spacer": "gap",
+  "divider": "rule",
   "badge": "new",
   "uac-policy": "standard"
 }

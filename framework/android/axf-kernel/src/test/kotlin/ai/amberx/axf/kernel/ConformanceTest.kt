@@ -20,6 +20,8 @@ import ai.amberx.axf.kernel.asset.AssetEnvelope
 import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 import ai.amberx.axf.kernel.engine.WindowClass
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
@@ -93,7 +95,14 @@ class ConformanceTest {
         assertEquals((f.getValue("hideable") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hideableTypes(types), "hideable types")
         for (c in f.getValue("cases") as JsonArray) {
             val o = c.jsonObject.getValue("overrides").jsonObject.mapValues { it.value.jsonPrimitive.content.toBoolean() }
-            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o), "hidden for $o")
+            val d = (c.jsonObject["defaults"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            val forced = (c.jsonObject["forced"] as? JsonArray)?.map { it.jsonPrimitive.content } ?: emptyList()
+            assertEquals((c.jsonObject.getValue("hidden") as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.hiddenSlots(types, o, d, forced), "hidden for $o with defaults $d forced $forced")
+        }
+        // manifest.hidden cleaned: hideable types only, spec order, no repeats
+        for ((k, v) in f.getValue("defaults").jsonObject) {
+            val input = if (k == "(none)") emptyList() else k.split(",")
+            assertEquals((v as JsonArray).map { it.jsonPrimitive.content }, ai.amberx.axf.kernel.engine.HideEngine.defaultHidden(types, input), "defaultHidden($input)")
         }
     }
 
@@ -153,6 +162,64 @@ class ConformanceTest {
         }
         val bar = ai.amberx.axf.kernel.engine.SearchBarData.fromJson(asset("search-bar", "everything"))
         assertEquals("regular", bar.width, "search bar width field")
+        // Fable rebuild (Oct 20 2026): host registry, attachable types, search bar config and attachment validation.
+        assertEquals((f.getValue("attachableTypes") as JsonArray).map { it.jsonPrimitive.content }.toSet(), W.ATTACHABLE_TYPES.toSet(), "attachable types")
+        val hosts = (f.getValue("hosts") as JsonArray).map { h -> val o = h.jsonObject; ai.amberx.axf.kernel.engine.HostSpec(o.getValue("host").jsonPrimitive.content, o.getValue("field").jsonPrimitive.content, (o.getValue("types") as JsonArray).map { it.jsonPrimitive.content }, (o.getValue("sides") as JsonArray).map { it.jsonPrimitive.content }) }
+        AssetTypeRegistry.builtin() // loads the spec's hosts into the registry (same as the kernel does)
+        for (h in hosts) assertEquals(h, W.hostSpec(h.host), "host ${h.host}")
+        for ((name, c) in f.getValue("searchBarConfig").jsonObject) {
+            val o = c.jsonObject
+            val want = o.getValue("config").jsonObject
+            val got = W.searchBarConfig(o["data"] as? JsonObject)
+            assertEquals(want.getValue("placeholder").jsonPrimitive.content, got.placeholder, "search config $name placeholder")
+            assertEquals(want.getValue("maxResults").jsonPrimitive.content.toInt(), got.maxResults, "search config $name maxResults")
+            assertEquals(want.getValue("width").jsonPrimitive.content.toInt(), got.width, "search config $name width")
+            assertEquals((want["kinds"] as? JsonArray)?.map { it.jsonPrimitive.content }, got.kinds, "search config $name kinds")
+            assertEquals(want.getValue("shortcut").jsonPrimitive.content.toBoolean(), got.shortcut, "search config $name shortcut")
+        }
+        for ((name, c) in f.getValue("attachValidation").jsonObject) {
+            val o = c.jsonObject
+            assertEquals((o.getValue("errors") as JsonArray).map { it.jsonPrimitive.content }, W.validateHostAttachments(o.getValue("host").jsonPrimitive.content, o["list"]), "attach validation $name")
+        }
+        // Widget kinds (Oct 20 2026): logo, counter, status, progress, avatar, link, image, spacer, theme switch rules.
+        val k = f.getValue("kinds").jsonObject
+        fun num(e: JsonElement?): Double? = (e as? JsonPrimitive)?.takeUnless { it.isString || it.content == "null" }?.doubleOrNull
+        fun strOrNull(e: JsonElement?): String? = (e as? JsonPrimitive)?.takeIf { it.isString }?.content
+        assertEquals((k.getValue("tones") as JsonArray).map { it.jsonPrimitive.content }, W.WIDGET_TONES, "widget tones")
+        for ((name, c) in k.getValue("tone").jsonObject) {
+            val o = c.jsonObject
+            assertEquals(o.getValue("out").jsonPrimitive.content, W.widgetTone(strOrNull(o["in"])), "tone $name")
+            assertEquals(o.getValue("accentFallback").jsonPrimitive.content, W.widgetTone(strOrNull(o["in"]), "accent"), "tone fallback $name")
+        }
+        for (c in k.getValue("counter") as JsonArray) {
+            val o = c.jsonObject
+            val hide = (o["hideAtZero"] as? JsonPrimitive)?.takeUnless { it.isString }?.content?.toBooleanStrictOrNull() ?: true
+            assertEquals(o.getValue("text").jsonPrimitive.content, W.counterText(num(o["n"]), if ("max" in o) num(o["max"]) else 99.0, hide), "counter $o")
+        }
+        for (c in k.getValue("status") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("on").jsonPrimitive.content.toBoolean(), W.statusOn(num(o["n"])), "status $o") }
+        for (c in k.getValue("progress") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("percent").jsonPrimitive.content.toInt(), W.progressPercent(num(o["n"]), num(o["max"])), "progress $o") }
+        for (c in k.getValue("initials") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("initials").jsonPrimitive.content, W.avatarInitials(strOrNull(o["name"])), "initials $o") }
+        for (c in k.getValue("link") as JsonArray) { val o = c.jsonObject; assertEquals(strOrNull(o["out"]), W.linkHref(strOrNull(o["href"])), "link $o") }
+        for (c in k.getValue("image") as JsonArray) { val o = c.jsonObject; assertEquals(strOrNull(o["out"]), W.imageSrc(strOrNull(o["src"])), "image $o") }
+        for ((size, n) in k.getValue("spacer").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.SPACER_UNITS[size], "spacer $size")
+        for ((size, n) in k.getValue("avatar").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.AVATAR_SIZE[size], "avatar $size")
+        for ((w, n) in k.getValue("progressWidth").jsonObject) assertEquals(n.jsonPrimitive.content.toInt(), W.PROGRESS_WIDTH[w], "progress width $w")
+        for ((size, v) in k.getValue("logo").jsonObject) { val o = v.jsonObject; assertEquals(ai.amberx.axf.kernel.engine.WidgetEngine.LogoSize(o.getValue("scale").jsonPrimitive.content.toDouble(), o.getValue("px").jsonPrimitive.content.toInt()), W.LOGO_SIZE[size], "logo $size") }
+        for (c in k.getValue("themeSwitch") as JsonArray) { val o = c.jsonObject; assertEquals(o.getValue("next").jsonPrimitive.content, W.themeSwitchNext(strOrNull(o["active"]), o.getValue("light").jsonPrimitive.content, o.getValue("dark").jsonPrimitive.content), "theme switch $o") }
+    }
+
+    @Test fun `asset validation matches the reference engine`() {
+        val v = ai.amberx.axf.kernel.asset.AssetValidator(AssetTypeRegistry.builtin())
+        val cases = File(fixtures, "validation.json").readText().let { ai.amberx.axf.kernel.asset.AxfJson.parseToJsonElement(it) as JsonArray }
+        for (c in cases) {
+            val o = c.jsonObject
+            val want = o.getValue("result").jsonObject
+            val got = v.validate(o.getValue("raw").jsonObject)
+            assertEquals(want.getValue("ok").jsonPrimitive.content.toBoolean(), got.ok, "validate ${o.getValue("case").jsonPrimitive.content} ok")
+            // the host attachment and slot messages are shared word for word; the envelope ones differ by port ($axf frame list)
+            val wantErrors = (want.getValue("errors") as JsonArray).map { it.jsonPrimitive.content }.filter { it.startsWith("data.") }
+            assertEquals(wantErrors, got.errors.filter { it.startsWith("data.") }, "validate ${o.getValue("case").jsonPrimitive.content} data errors")
+        }
     }
 
     @Test fun `spacing choice matches the reference engine`() {
@@ -177,7 +244,7 @@ class ConformanceTest {
         }
         fun attrsOf(t: Toolbar? = null, n: NavMenu? = null, a: AppMenu? = null): Map<String, String> {
             val m = mutableMapOf<String, String>()
-            t?.let { val s = ComponentStyleEngine.toolbar(it, st); m["data-fx-toolbar"] = s.variant.name.lowercase().replace('_', '-'); m["data-fx-toolbar-surface"] = s.surface.name.lowercase(); m["data-fx-toolbar-divider"] = if (s.divider) "on" else "off" }
+            t?.let { val s = ComponentStyleEngine.toolbar(it, st); m["data-fx-toolbar"] = s.variant.name.lowercase().replace('_', '-'); m["data-fx-toolbar-surface"] = s.surface.name.lowercase(); m["data-fx-toolbar-divider"] = if (s.divider) "on" else "off"; m["data-fx-toolbar-collapsible"] = if (s.collapsible) "on" else "off" }
             n?.let { val s = ComponentStyleEngine.navMenu(it); m["data-fx-nav"] = s.style.name.lowercase(); m["data-fx-nav-indicator"] = s.indicator.name.lowercase(); m["data-fx-nav-icons"] = if (s.showIcons) "on" else "off" }
             a?.let { m["data-fx-menubar"] = ComponentStyleEngine.appMenu(it, st).surface.name.lowercase() }
             return m

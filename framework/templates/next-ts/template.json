@@ -39,6 +39,12 @@
       "purpose": "The baked framework runtime (core engines, React components, CSS, schemas)."
     },
     {
+      "path": "src/axf/libs",
+      "kind": "dir",
+      "required": true,
+      "purpose": "Baked framework libraries: `settings` (the settings interface every app ships: Appearance, Account & security, Connections, Plugins, About) and `alerts`. Plugins add groups or sub-tabs to Settings → Plugins; they never ship a settings screen of their own."
+    },
+    {
       "path": "src/assets",
       "kind": "dir",
       "required": true,
@@ -60,7 +66,7 @@
       "path": "src/dialogs.tsx",
       "kind": "file",
       "required": true,
-      "purpose": "The app's dialogs (id \u2192 component)."
+      "purpose": "The app's dialogs (id → component)."
     },
     {
       "path": "app/layout.tsx",

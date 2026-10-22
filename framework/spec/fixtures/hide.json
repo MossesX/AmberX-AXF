@@ -29,6 +29,88 @@
       "hidden": [
         "context-menu"
       ]
+    },
+    {
+      "overrides": {},
+      "defaults": [
+        "toolbar"
+      ],
+      "hidden": [
+        "toolbar"
+      ]
+    },
+    {
+      "overrides": {
+        "toolbar": false
+      },
+      "defaults": [
+        "toolbar"
+      ],
+      "hidden": []
+    },
+    {
+      "overrides": {
+        "banner": true
+      },
+      "defaults": [
+        "toolbar",
+        "layout"
+      ],
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "overrides": {
+        "banner": false
+      },
+      "defaults": [],
+      "forced": [
+        "banner"
+      ],
+      "hidden": [
+        "banner"
+      ]
+    },
+    {
+      "overrides": {},
+      "defaults": [
+        "toolbar"
+      ],
+      "forced": [
+        "banner",
+        "layout"
+      ],
+      "hidden": [
+        "toolbar",
+        "banner"
+      ]
+    },
+    {
+      "overrides": {
+        "toolbar": false
+      },
+      "defaults": [
+        "toolbar"
+      ],
+      "forced": [
+        "toolbar",
+        "app-menu"
+      ],
+      "hidden": [
+        "app-menu",
+        "toolbar"
+      ]
     }
-  ]
+  ],
+  "defaults": {
+    "toolbar": [
+      "toolbar"
+    ],
+    "layout,app-menu,app-menu": [
+      "app-menu"
+    ],
+    "(none)": []
+  }
 }

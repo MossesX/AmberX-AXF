@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-f6b563656f",
+  "createdAt": "2026-10-18T18:10:02.000Z",
+  "updatedAt": "2026-10-18T21:10:02.000Z",
+  "kind": "build",
+  "title": "Snapshot Manager plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/snapshot-manager`. `axf.snapshots@1`: take/list/get/diff/restore/delete/prune. Snapshots in `.axf-console/plugins/snapshot-manager/snaps/<id>/` (tar.gz + file list + manifest: container, paths, who, why, batch, chat turn); excluded folders (node_modules, caches) skipped and",
+    "commits": [
+      {
+        "sha": "de10375",
+        "message": "Add the Snapshot Manager plugin: snapshots before every approved change, diff, one-step restore (itself undoable), retention 30 days / 5 GB (axf.snapshots@1)"
+      },
+      {
+        "sha": "f6a1e40",
+        "message": "Independent review fixes: Claude Code CLI gets no secrets and can't read /proc or the console's private folder; exact base hashes for big files, explicit accept for changes the card can't show, comman"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T21:10:02.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "snapshot-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T18:10:02.000Z",
+  "finishedAt": "2026-10-18T21:10:02.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/snapshot-manager"
+  ]
+}

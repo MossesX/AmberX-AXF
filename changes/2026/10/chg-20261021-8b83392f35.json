@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-8b83392f35",
+  "createdAt": "2026-10-21T01:48:58.000Z",
+  "updatedAt": "2026-10-21T04:48:58.000Z",
+  "kind": "build",
+  "title": "Approvals banner plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/approvals-banner` (`ai.amberx.axf.console.approvals-banner`). A banner at the top of every view (order 5, above the systems check banners) while axHub has calls waiting for approval: count, tool + command per call (drop-down), **Review** opens the request on the hub (one wa",
+    "commits": [
+      {
+        "sha": "c54934e",
+        "message": "Approvals banner plugin: axHub calls waiting for approval, at the top of the console"
+      },
+      {
+        "sha": "7a278d2",
+        "message": "Approvals banner: new approvals open in the console by themselves"
+      },
+      {
+        "sha": "33b90cb",
+        "message": "Switch AXHub and the approvals banner to lib-hub + lib-notifications; register the libraries"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T04:48:58.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "approvals-banner"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:48:58.000Z",
+  "finishedAt": "2026-10-21T04:48:58.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/approvals-banner"
+  ]
+}

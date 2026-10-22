@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { Field, Num, Text } from './forms';
 import { WIZARDS, useData } from './wizards';
-import { MEMORY_HELP, call, post, put, refresh, type Settings } from './api';
+import { MEMORY_HELP, call, isDangerousTool, post, put, refresh, type Settings } from './api';
 
 function useSettings() {
   const [s, setS] = useState<Settings | null>(null);
@@ -116,21 +116,35 @@ export function MemoryDefaultsPanel() {
 /** Settings → Safety: which agents may use dangerous tools (containers, writes, commands). Personas can't change this. */
 export function SafetyPanel() {
   const { s, err, saveS } = useSettings();
-  const { cache } = useData();
+  const { cache, status } = useData();
   if (err) return <p className="axp-agent-manager__bad">{err}</p>;
   if (!s || !cache) return <p className="fx-muted">Loading…</p>;
   const allowed = new Set(s.safety?.dangerousAgents ?? []);
   const flip = (id: string) => { const n = new Set(allowed); if (n.has(id)) n.delete(id); else n.add(id); void saveS({ safety: { dangerousAgents: [...n] } }); };
-  const dangerous = cache.tools.filter((t) => t.dangerous || String((t.config as { builtin?: string }).builtin ?? '').startsWith('container_'));
+  const dangerous = cache.tools.filter((t) => isDangerousTool(t, status));
+  const skillTools = new Map(cache.skills.map((sk) => [sk.id, sk.toolIds ?? []]));
+  const wants = (a: { toolIds?: string[]; skillIds?: string[] }) => {
+    const ids = new Set([...(a.toolIds ?? []), ...(a.skillIds ?? []).flatMap((id) => skillTools.get(id) ?? [])]);
+    return dangerous.filter((t) => ids.has(t.id)).map((t) => t.name);
+  };
   return (
     <div className="fx-stack">
       <p className="fx-small fx-muted">Dangerous tools touch the VPS containers, write files or run commands. Only the agents ticked here get them, whatever their persona or skills say. Every change they propose still needs your approval on a card, with a snapshot first.</p>
+      <div className="fx-row fx-row--wrap">
+        <Chip tone={status?.services?.containers ? 'success' : undefined}>{status?.services?.containers ? 'Container access on' : 'Container access not installed'}</Chip>
+        <Chip tone={status?.services?.snapshots ? 'success' : undefined}>{status?.services?.snapshots ? 'Snapshot Manager on' : 'Snapshot Manager not installed (read only)'}</Chip>
+      </div>
       <div className="fx-stack">
-        {cache.agents.map((a) => (
-          <label key={a.id} className="axp-agent-manager__toggle">
-            <input type="checkbox" checked={allowed.has(a.id)} onChange={() => flip(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
-          </label>
-        ))}
+        {cache.agents.map((a) => {
+          const w = wants(a);
+          return (
+            <label key={a.id} className="axp-agent-manager__toggle">
+              <input type="checkbox" checked={allowed.has(a.id)} onChange={() => flip(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
+              {w.length > 0 && <Chip tone={allowed.has(a.id) ? 'warning' : undefined}>{allowed.has(a.id) ? `gets ${w.length}: ` : `wants ${w.length} (off): `}{w.slice(0, 4).join(', ')}{w.length > 4 ? '…' : ''}</Chip>}
+            </label>
+          );
+        })}
+        {!cache.agents.length && <p className="fx-small fx-muted">No agents yet.</p>}
       </div>
       <p className="fx-small fx-muted">Dangerous tools: {dangerous.length ? dangerous.map((t) => t.name).join(', ') : 'none yet'}.</p>
     </div>

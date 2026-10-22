@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-dda842599a",
+  "createdAt": "2026-10-21T02:03:03.000Z",
+  "updatedAt": "2026-10-21T06:03:03.000Z",
+  "kind": "build",
+  "title": "Harvest: android-security",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest: android-security (Oct 20–21 2026, Opus)",
+    "branch": "harvest/h-android-security",
+    "commits": [
+      {
+        "sha": "c0cfb44",
+        "message": "Harvest android-security: catalog, voice boilerplate, CLAUDE.md status, report"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/android-security.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T06:03:03.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-android-security"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T02:03:03.000Z",
+  "finishedAt": "2026-10-21T06:03:03.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "branch": "harvest/h-android-security",
+  "areas": [
+    "apps/axhub-android",
+    "apps/voicevault",
+    "framework/schemas/build-options.json",
+    "apps/console"
+  ]
+}

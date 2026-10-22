@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import time
 import os
 import subprocess
 import sys
@@ -93,6 +94,60 @@ check((CRED_DIR / ".axf-console" / "secrets.env").stat().st_mode & 0o077 == 0, "
 c.post("/p/secret/clear", json={"key": "COOLIFY_TOKEN"})
 check("COOLIFY_TOKEN" not in os.environ, "credential cleared")
 
+# Moshi key: public key saved here, installed on the VPS only by the host doctor (after it asks)
+core = mod.SVC.core
+core.host_file = CRED_DIR / "host-check.json"
+def moshi_report(status):
+    core.host_file.write_text(json.dumps({"at": int(time.time()), "checks": {"host-moshi-key": {"status": status, "summary": "Moshi's key can sign in as root (SHA256:abc)" if status == "ok" else "no key"}}}))
+    core._cache = None
+    return c.post("/p/check/moshi-key").json()
+m = moshi_report("error")
+check(m["status"] == "error" and m["fix"]["type"] == "secrets" and m["fix"]["fields"][0]["key"] == "MOSHI_SSH_PUBKEY", "missing Moshi key asks for it (Keys banner)")
+check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": "ssh-ed25519 AAAA; rm -rf /"}).status_code == 400, "a bad public key is refused")
+PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi"
+check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": PUB}).status_code == 200, "Moshi public key saved")
+m = moshi_report("error")
+check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved but not on the VPS: says the command that installs it")
+check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
+c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
+
+# Auto fix for VPS checks: only commands from the table, sent to axHub's vps.run, run once approved there
+hf = sys.modules.get(spec.name + ".hostfix")
+check(hf is not None, "hostfix module loaded with the plugin")
+calls = []
+def fake_call(states):
+    def f(tool, args, conf=None):
+        calls.append((tool, args["command"], conf))
+        st_ = states.pop(0)
+        if st_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if st_ == "reject": raise hf.HubError("The user rejected this call.")
+        return {"ok": "$ cmd\nexit 0 · 10 ms\n"}
+    return f
+os.environ["AXHUB_TOKEN"] = "hub-token-for-test"
+rechecked = []
+jobs = hf.Jobs(lambda cid: rechecked.append(cid), fake_call(["confirm", "confirm", "ok"]), poll_s=0.01)
+jobs.start("host-mosh-ports")
+for _ in range(200):
+    if (jobs.get("host-mosh-ports") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+j = jobs.get("host-mosh-ports")
+check(j["state"] == "done" and rechecked == ["host-mosh-ports"], "approved on the hub → ran, then re-checked")
+check(calls[0] == ("vps.run", "ufw allow 60000:61000/udp && bash /opt/axf/deploy/console-doctor.sh --report", None) and calls[-1][2], "the exact table command, then the same call with the approval id")
+jobs2 = hf.Jobs(lambda cid: None, fake_call(["confirm", "reject"]), poll_s=0.01)
+jobs2.start("host-mosh")
+for _ in range(200):
+    if (jobs2.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(jobs2.get("host-mosh")["state"] == "failed" and "Rejected" in jobs2.get("host-mosh")["message"], "rejected on the hub → nothing runs")
+try:
+    jobs.start("host-moshi-key"); refused = False
+except hf.HubError:
+    refused = True
+check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
+check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
+del os.environ["AXHUB_TOKEN"]
+check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
+
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()
 check(not a["requirements"]["ok"] and not a["effective"]["systems"], "AI greyed out with nothing installed")
@@ -108,6 +163,9 @@ check(sorted(p["folder"] for p in a["requirements"]["mosses"]["providers"]) == _
       and all(p["tab"] for p in a["requirements"]["mosses"]["providers"]), "…and the agent manager, with its settings tab")
 check(c.put("/p/settings", json={"ai": {"systems": True}}).status_code == 409, "can't turn AI on while something's missing")
 check(c.post("/p/routine/run").status_code == 409, "no AI run while off")
+st = c.get("/p/ai/state").json()
+check(not st["ok"] and "isn't connected" in st["error"], "key Auto fix: Claude not connected without the assistant + Mosses")
+check(c.post("/p/keys/GITHUB_TOKEN/guide").status_code == 409, "key Auto fix refused while Claude isn't connected")
 
 REPLY = {"checks": [
     {"id": "coolify-url-set", "kind": "env", "params": {"name": "COOLIFY_URL"}, "title": "Coolify URL", "service": "coolify", "severity": "warn", "why": "redeploys need it"},
@@ -133,6 +191,8 @@ class FakeLlm:
             if getattr(self, "broken", False):
                 raise RuntimeError("401 invalid x-api-key")
             return {"text": "OK, Mosses here.", "model": "fake-1", "profile": "fake"}
+        if messages[-1]["content"].startswith("Brett needs a"):
+            return {"text": "1. Open the page\n2. Tap Generate token\n3. Copy it\n4. Paste it here", "model": "fake-1"}
         if messages[-1]["content"].startswith("You're running the systems check"):
             return {"text": "Aight boss, here's the routine:\n" + json.dumps(REPLY), "model": "fake-1", "profile": "fake"}
         return {"text": "## New\n- **Mosses** got container powers\n- Snapshots before every change", "model": "fake-1"}
@@ -154,7 +214,17 @@ check(t["ok"] and t["agent"] == "Mosses" and t["model"] == "fake-1" and t["reply
 llm.broken = True
 t = c.post("/p/ai/test").json()
 check(not t["ok"] and "invalid x-api-key" in t["error"], "AI test reports the provider's error")
+check(not c.get("/p/ai/state").json()["ok"], "AI state follows a failed test")
+check(c.post("/p/keys/GITHUB_TOKEN/guide").status_code == 409, "key Auto fix greyed out while Claude's connection fails")
 llm.broken = False
+st = c.get("/p/ai/state?refresh=true").json()
+check(st["ok"] and st["model"] == "fake-1", "AI state ok once Claude answers")
+g = c.post("/p/keys/GITHUB_TOKEN/guide").json()
+check(g["url"].startswith("https://github.com/settings/personal-access-tokens/new?") and "contents=write" in g["url"] and "actions=write" in g["url"] and "target_name=MossesX" in g["url"], "GitHub: pre-filled fine-grained token page")
+check(len(g["steps"]) == 4 and "Paste" in g["steps"][-1] and "Brett needs a GitHub token" in llm.calls[-1]["text"], "Claude writes the steps for this key")
+check(c.post("/p/keys/ANTHROPIC_API_KEY/guide").json()["url"] == "https://console.anthropic.com/settings/keys", "Anthropic key page")
+check(c.post("/p/keys/COOLIFY_URL/guide").status_code == 404 and c.post("/p/keys/NOPE/guide").status_code == 404, "only secret keys the console asks for")
+check(all("ghp_" not in str(x) and "sk-ant" not in str(x) for x in g.values()), "the guide never carries a key")
 check(c.put("/p/settings", json={"ai": {"systems": True, "whatsnew": True}}).status_code == 200, "AI switches turn on")
 rr = c.post("/p/routine/run").json()["routine"]
 kept = {x["id"] for x in rr["checks"]}
@@ -214,6 +284,13 @@ plugin_services.withdraw("fake-agent-manager")
 check(not c.get("/p/ai").json()["effective"]["systems"], "removing Mosses switches AI off again")
 check(c.post("/p/ai/test").status_code == 409, "AI test refused again without Mosses")
 check(c.delete("/p/routine").json()["ok"] and c.get("/p/routine").json()["routine"] is None, "routine can be deleted")
+
+# Coolify address rules (Oct 21 2026): https anywhere, plain http only to Coolify's own container on the Docker network.
+_chk = sys.modules.get("axf_console_plugins.systems_check_test.checks")
+if _chk is not None:
+    from axf_server import http as _h
+    check(_h.target_ok("http://coolify:8080", _chk.COOLIFY_INTERNAL_HOSTS) and _h.target_ok("https://coolify.example.com", _chk.COOLIFY_INTERNAL_HOSTS)
+          and not _h.target_ok("http://31.97.13.252:8000", _chk.COOLIFY_INTERNAL_HOSTS), "Coolify URL: https or http://coolify only, never http to an IP")
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

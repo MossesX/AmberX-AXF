@@ -1,0 +1,9 @@
+[
+ { "name": "menubar-build", "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Build'", "wait": 900 } ], "settle": 5000 },
+ { "name": "menubar-contributed", "settle": 5000, "steps": [
+   { "press": "Escape", "wait": 500 },
+   { "eval": "(()=>{const rt=window.AXF;rt.setBadge('demo.pending',3);rt.registerAppMenuProvider('demo.features',{items:()=>['Build manager','Pending builds','Plugins','Libraries','Modules','Standards','Sessions','Alerts','Fable rebuilds','Boilerplates','Projects','Rules','Tracker','Catalog'].map((l,i)=>({id:'f'+i,label:l,icon:'star',action:'toast:info:'+l})),max:8,moreAction:'nav:plan'});rt.addAppMenuItems({id:'demo.builds',module:'demo',menu:'builds',menuLabel:'Builds',menuOrder:150,items:[{id:'pending',label:'Pending builds',icon:'clock',action:'nav:pending',badge:'demo.pending',shortcut:'Alt+P'},{id:'queue',label:'Build queue',icon:'list',action:'nav:plan'},{id:'s1',separator:true},{id:'features',label:'Features',icon:'star',provider:'demo.features'},{id:'views',label:'Every page',icon:'layout',provider:'views'},{id:'chrome',label:'Show',icon:'eye',provider:'chrome'},{id:'s2',separator:true},{id:'auto',label:'Build on save',action:'noop',checked:'setting:demo.auto'}]});rt.settings.set('demo.auto',true);})()", "wait": 800 },
+   { "click": ".fx-menubar__btn >> text='Builds'", "wait": 900 },
+   { "click": "[data-axf-menu-item=features]", "wait": 1500 }
+ ] }
+]

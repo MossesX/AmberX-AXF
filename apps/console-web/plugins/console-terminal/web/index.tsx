@@ -5,6 +5,7 @@ import { openFromContext } from './open';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalTab } from './TerminalTab';
 import './terminal.css';
+import { appMenu } from './menu';
 
 /*
  * Terminal plugin (web part):
@@ -18,6 +19,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Terminal',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.terminal'],
   register(rt) {
     rt.actions.register('terminal.open', ([target, payload]) => openFromContext(rt, target, payload), { label: 'Open terminal', params: true });

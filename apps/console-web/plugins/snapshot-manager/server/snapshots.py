@@ -14,7 +14,6 @@ from __future__ import annotations
 import difflib
 import gzip
 import hashlib
-import json
 import os
 import posixpath
 import re
@@ -28,6 +27,8 @@ from pathlib import Path
 from typing import Any
 
 import plugin_services
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_SNAPSHOT_MANAGER_DIR", ROOT / ".axf-console" / "plugins" / "snapshot-manager"))
@@ -47,19 +48,11 @@ def _actor(a: dict[str, Any] | None) -> dict[str, Any]:
 
 
 def _write_json(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_suffix(p.suffix + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, p)
+    storage.write_json(p, data, indent=None)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text("utf-8"))
-    except (OSError, ValueError):
-        return default
+    return storage.read_json(p, default)
 
 
 def settings() -> dict[str, Any]:

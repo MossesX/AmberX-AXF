@@ -4,10 +4,9 @@
  * AI is off). The seen point lives on the server and is shared by every viewer; only an admin (console token or hub
  * admin) gets "Got it", which clears it for everyone. Everyone else sees the banner until an admin clears it.
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Icon } from '@console/axf/react';
+import { useEffect, useSyncExternalStore } from 'react';
+import { Button, Icon, Markdown, useBannerLaunchOpen } from '@console/axf/react';
 import * as api from '@console/api';
-import { Markdown } from './Markdown';
 import { SourceBadge } from './SystemCheck';
 
 interface Commit { sha: string; short: string; subject: string; author: string; at: number }
@@ -58,7 +57,7 @@ function pluginChanges(d: Resp, seen: Seen) {
 
 export function WhatsNewBanner() {
   const s = useWN();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { if (!open) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [open]);
   const d = s.data;
   const seen = s.seen;
@@ -92,7 +91,7 @@ export function WhatsNewBanner() {
           {s.summarizing && <p className="fx-small fx-muted">Mosses is writing a summary…</p>}
           {d.summary?.text && (
             <div className="axp-systems-check-new__summary">
-              <Markdown text={d.summary.text} />
+              <Markdown compact text={d.summary.text} />
               <span className="fx-small fx-muted"><SourceBadge ai title="Made by AI" /> Summary by {d.summary.agent ?? 'Mosses'}{d.summary.cached && !d.aiOn ? ' (saved earlier; AI is off now)' : ''}</span>
             </div>
           )}

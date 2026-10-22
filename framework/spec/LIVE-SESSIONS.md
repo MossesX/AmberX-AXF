@@ -15,10 +15,10 @@ again. These features belong to the **assistant plugin**; the kernel only carrie
 
 ## Contract
 
-| Piece | Web (reference) | Kotlin kernel | Python (console plugins) |
+| Piece | Web (reference) | Kotlin kernel | Python (`framework/python`) |
 | --- | --- | --- | --- |
-| Types, reducer, log, host interface, placeholder, host registry | `framework/core/live-session.ts` | `ai.amberx.axf.kernel.live` (`LiveSession.kt`) | `plugins/ai-assistant/server/sessions.py` (log + reducer + local host) | <!-- axf-plugin:ai-assistant -->
-| Conformance | `spec/fixtures/live-session.json` (from `gen-fixtures.mts`) | `LiveSessionConformanceTest` | `test.py` replays the same fixture |
+| Contract + host side | `framework/core/live-session.ts` | `ai.amberx.axf.kernel.live` | `axf.assistant_host.sessions` (log + reducer + `SessionHosts` open registry + `LocalHost` + `PlaceholderHost`); the console's ai-assistant plugin and Build Pilot's server run on it |
+| Conformance | `spec/fixtures/live-session.json` (from `gen-fixtures.mts`) | `LiveSessionConformanceTest` | `framework/python/axf/assistant_host/test.py` replays the same fixture (CI) |
 
 - **States:** `idle` · `running` · `waiting` · `closed` (`closed` is final).
 - **Reserved kinds:** `session.open`, `session.close`, `turn.start`, `turn.end`, `wait`, `resume`, `interrupted`.
@@ -41,8 +41,9 @@ again. These features belong to the **assistant plugin**; the kernel only carrie
 
 | Host | Where | Status |
 | --- | --- | --- |
-| `local` | inside the app/console that runs the assistant (the console's AI assistant plugin) | **built** (Oct 18 2026): turns run detached from the request, survive browser closes, replay on reattach; a console restart mid-turn marks that turn `interrupted` | <!-- axf-plugin:ai-assistant -->
-| `axhub` | session workers on the VPS hub, reached from any app or device | **placeholder**: picked in Settings → Plugins → AI assistant → Sessions, answers "not available yet" until axHub's worker side exists | <!-- axf-plugin:ai-assistant -->
+
+| `local` | inside the app/console that runs the assistant (the console's AI assistant plugin) | **built** (Oct 18 2026, Fable rebuild Oct 20 2026): turns run detached from the request, survive browser closes, replay on reattach; a console restart mid-turn marks that turn `interrupted` and keeps the text that had streamed as an interrupted message | <!-- axf-plugin:ai-assistant -->
+| `axhub` | session workers on the VPS hub, reached from any app or device | **placeholder** (`PlaceholderHost`): picked in Settings → Plugins → AI assistant → Live sessions, answers "not available yet" and the chat falls back to `local` with a notice; a plugin providing `axf.live-host@1` (or calling `axf.live-sessions@1.register_host`) replaces it with no change to the assistant | <!-- axf-plugin:ai-assistant -->
 
 Future hosts register the same way (open registry); nothing in an app changes.
 

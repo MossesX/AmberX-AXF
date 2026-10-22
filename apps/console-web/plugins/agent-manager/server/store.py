@@ -5,12 +5,15 @@
       agents.json skills.json personas.json lingo.json tools.json workflows.json training.json   one collection each
       addons.json          installed add-ons and exactly what each created
       runs.json            last workflow / playground / training runs
-      memory/<scope>.json  persistent memory per agent (or shared scope)
+      memory/<scope>.json  persistent memory per agent (or shared scope), agent-memory@1
+      versions/<coll>/<id>.json   previous copies of library items (last 30)
       addons/<id>.json     add-ons imported from JSON or a URL (bundled ones ship in the plugin's addons/ folder)
+
+Same layout and file tags as the Opus build, so existing data loads unchanged. A `$axf` tag per collection file lets
+a later format change migrate (see `migrate()`).
 """
 from __future__ import annotations
 
-import json
 import os
 import re
 import secrets
@@ -20,11 +23,15 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf.contracts import agents as contract  # framework/python
+from axf_server import storage
+
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AGENT_MANAGER_DIR", ROOT / ".axf-console" / "plugins" / "agent-manager"))
 PLUGIN_DIR = Path(__file__).resolve().parents[1]
-COLLECTIONS = ("agents", "skills", "personas", "lingo", "tools", "workflows", "training")
-ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}$")
+COLLECTIONS = contract.COLLECTIONS
+ID_RE = contract.ID_RE
 MASK = "••••••••"
 _lock = threading.RLock()
 
@@ -53,20 +60,13 @@ def new_id(prefix: str) -> str:
     return f"{prefix}-{secrets.token_hex(3)}"
 
 
-def _write(path: Path, data: Any, private: bool = False) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False))
-    if private:
-        os.chmod(tmp, 0o600)
-    tmp.replace(path)
+def _write(path: Path, data: Any, private: bool = True) -> None:
+    """Atomic, 0600, folder 0700 (axf_server.storage). Every file is private now; `private` is kept for callers."""
+    storage.write_json(path, data, ensure_ascii=False)
 
 
 def _read(path: Path, default: Any) -> Any:
-    try:
-        return json.loads(path.read_text())
-    except (OSError, ValueError):
-        return deepcopy(default)
+    return storage.read_json(path, default)  # a deep copy of the default when missing or damaged
 
 
 # ---------------------------------------------------------------- settings
@@ -99,6 +99,15 @@ def secret(section: str) -> str:
     return s.get("key") or (os.environ.get(s.get("keyEnv") or "", "") if s.get("keyEnv") else "")
 
 
+def memory_defaults() -> dict[str, Any]:
+    d = load_settings()["defaults"]
+    return {"type": d.get("memoryType", "hybrid"), "topK": d.get("topK", 6), "window": d.get("window", 8), "maxItems": d.get("maxItems", 2000)}
+
+
+def dangerous_agents() -> set[str]:
+    return set(load_settings().get("safety", {}).get("dangerousAgents") or [])
+
+
 # ---------------------------------------------------------------- collections
 
 def items(coll: str) -> dict[str, dict[str, Any]]:
@@ -117,6 +126,11 @@ def get(coll: str, iid: str) -> dict[str, Any]:
     if not it:
         raise KeyError(f"no {coll[:-1] if coll.endswith('s') else coll} {iid!r}")
     return it
+
+
+def known() -> dict[str, set[str]]:
+    """The ids that exist, for the contract validator (references to anything else are dropped or refused)."""
+    return {c: set(items(c)) for c in COLLECTIONS}
 
 
 def upsert(coll: str, rec: dict[str, Any], *, origin: str | None = None) -> dict[str, Any]:
@@ -147,8 +161,8 @@ def delete(coll: str, iid: str) -> None:
             raise KeyError(iid)
         save_items(coll, data)
         # drop dangling references so nothing points at a deleted thing
-        if coll in ("skills", "personas", "lingo", "tools"):
-            field = {"skills": "skillIds", "lingo": "lingoIds", "tools": "toolIds"}.get(coll)
+        if coll in ("skills", "personas", "lingo", "tools", "agents"):
+            field = {"skills": "skillIds", "lingo": "lingoIds", "tools": "toolIds", "agents": "delegates"}.get(coll)
             agents = items("agents")
             changed = False
             for a in agents.values():
@@ -191,3 +205,30 @@ def add_run(run: dict[str, Any]) -> dict[str, Any]:
 def runs(kind: str = "") -> list[dict[str, Any]]:
     r = _read(DATA / "runs.json", {"items": []}).get("items", [])
     return [x for x in r if not kind or x.get("kind") == kind]
+
+
+# ---------------------------------------------------------------- migration
+
+def migrate() -> list[str]:
+    """Bring data written by older builds up to this one. Idempotent, never destructive; returns what it did."""
+    done: list[str] = []
+    with _lock:
+        for coll in COLLECTIONS:
+            p = DATA / f"{coll}.json"
+            if not p.exists():
+                continue
+            raw = _read(p, {})
+            if not isinstance(raw, dict) or "items" not in raw:
+                continue
+            changed = False
+            for iid, rec in list(raw["items"].items()):
+                if coll == "tools" and "dangerous" not in rec:  # Opus 0.1.0 tools had no explicit flag
+                    rec["dangerous"] = False
+                    changed = True
+                if coll == "agents" and rec.get("memory") is None:
+                    rec["memory"] = {}
+                    changed = True
+            if changed:
+                _write(p, {"$axf": f"agent-manager-{coll}@1", "items": raw["items"]})
+                done.append(f"{coll}: normalised {len(raw['items'])} records")
+    return done

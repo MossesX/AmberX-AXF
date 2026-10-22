@@ -1,0 +1,85 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-146dd20470",
+  "createdAt": "2026-10-21T16:15:20.183Z",
+  "updatedAt": "2026-10-21T16:56:55.537Z",
+  "kind": "build",
+  "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs); remove App tabs from the console",
+  "asked": "",
+  "repos": [
+    "MossesX/amberx-axf"
+  ],
+  "model": "Fable",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "embed@1: web engine + hide forced layer + runtime + settings",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.143Z",
+      "finishedAt": "2026-10-21T16:38:43.143Z"
+    },
+    {
+      "text": "embed@1: Kotlin EmbedEngine, HideEngine forced, AxfRuntime.embedded, EmbedConformanceTest",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.246Z",
+      "finishedAt": "2026-10-21T16:38:43.246Z"
+    },
+    {
+      "text": "Dev Console: App tabs plugin uninstalled clean",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.320Z",
+      "finishedAt": "2026-10-21T16:38:43.320Z"
+    },
+    {
+      "text": "Patches app (apps/patches) + lib-hub WebAppView/WebAppHolder",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.409Z",
+      "finishedAt": "2026-10-21T16:38:43.409Z"
+    },
+    {
+      "text": "CI artifact, catalog/tracker, docs, shots, PR #5",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.500Z",
+      "finishedAt": "2026-10-21T16:38:43.500Z"
+    },
+    {
+      "text": "Android CI compile of the Kotlin (PR #5)",
+      "state": "done",
+      "startedAt": "2026-10-21T16:38:43.576Z",
+      "finishedAt": "2026-10-21T16:56:55.470Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "App tabs removed from the Dev Console; embed@1 (TS + Kotlin, fixture embed.json, hide forced layer, runtime + settings); Patches Android app (one banner, Console / Pilot / axHub web tabs kept alive) + lib-hub WebAppView/WebAppHolder; CI green, patches-debug.apk built.",
+    "branch": "fable/patches-wrapper",
+    "commits": [
+      {
+        "sha": "0a0b554"
+      },
+      {
+        "sha": "e53884e"
+      }
+    ],
+    "filesChanged": 148,
+    "tests": {
+      "check-embed": {
+        "before": "0",
+        "after": "94"
+      },
+      "axf project validate": {
+        "before": "6",
+        "after": "7 projects"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/patches-wrapper.md",
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/5"
+    }
+  },
+  "closed": null,
+  "state": "done"
+}

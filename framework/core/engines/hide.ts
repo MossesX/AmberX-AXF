@@ -23,7 +23,19 @@ export function hideableTypes(): string[] {
   return Object.keys(types).filter(hideable);
 }
 
-/** The hidden slots, given runtime overrides (type → hidden). Non-hideable types are never hidden. */
-export function hiddenSlots(overrides: Record<string, boolean | undefined>): string[] {
-  return hideableTypes().filter((t) => overrides[t] === true);
+/**
+ * The hidden slots, given runtime overrides (type → hidden) and the app's defaults (`manifest.hidden`: types hidden
+ * until the user shows them). An override wins over the default either way (`true` hides, `false` shows); with no
+ * override the default decides. Non-hideable types are never hidden, whatever either says.
+ *
+ * `forced` (embed@1, engines/embed.ts): chrome a host app shows for this one while it is embedded; always hidden,
+ * over any override — the user's choice stays saved for when the app runs on its own.
+ */
+export function hiddenSlots(overrides: Record<string, boolean | undefined>, defaults: readonly string[] = [], forced: readonly string[] = []): string[] {
+  return hideableTypes().filter((t) => forced.includes(t) || (overrides[t] === undefined ? defaults.includes(t) : overrides[t] === true));
+}
+
+/** The app's default hidden slots, cleaned: hideable types only, in schema order, no repeats. */
+export function defaultHidden(manifestHidden: readonly string[] | undefined): string[] {
+  return hideableTypes().filter((t) => (manifestHidden ?? []).includes(t));
 }

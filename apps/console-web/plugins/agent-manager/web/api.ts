@@ -1,5 +1,6 @@
 /* Agent manager — web API layer and shared types. */
-import { pluginFetch } from '@console/plugins';
+import { readSse } from '@console/axf/core/sse';
+import { pluginApi, pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'agent-manager';
 export const ID = 'ai.amberx.axf.console.agent-manager';
@@ -22,11 +23,14 @@ export interface Training extends Base { agentId: string; sources: Source[]; chu
 export interface MemItem { id: string; kind: string; text: string; tags?: string[]; source?: string; createdAt: number; hits?: number; score?: number }
 export interface MemStats { scope: string; items: number; byKind: Record<string, number>; summary: boolean; vectors: number; bytes: number }
 export interface Status {
-  counts: Record<Coll, number>; assistant: boolean; firecrawl: boolean; trainingRunning: string[];
+  version: string; contract: string; counts: Record<Coll, number>; assistant: boolean; firecrawl: boolean; trainingRunning: string[]; schedulerTick: number;
   llm: { source: 'assistant' | 'own'; profiles: { id: string; label: string; defaultModel: string; ready?: boolean }[]; kind?: string; model?: string; ready?: boolean };
-  addons: { available: number; installed: number }; memoryTypes: string[]; toolKinds: string[]; builtins: Record<string, string>; sourceTypes: string[];
+  addons: { available: number; installed: number }; memoryTypes: string[]; memoryKinds: string[]; toolKinds: string[]; builtins: Record<string, string>; dangerousBuiltins: string[];
+  sourceTypes: string[]; workflowModes: string[]; services: { containers: boolean; snapshots: boolean }; safety: { dangerousAgents: string[] };
 }
-export interface Addon { id: string; name: string; version: string; description: string; author?: string; icon?: string; source: string; provides: Record<string, number>; installed: boolean; installedVersion?: string; updateAvailable?: boolean }
+export interface Addon { id: string; name: string; version: string; description: string; author?: string; icon?: string; source: string; provides: Record<string, number>; installed: boolean; installedVersion?: string; updateAvailable?: boolean; risks?: string[]; agents?: { id: string; name: string }[] }
+export interface Validation<T = Record<string, unknown>> { ok: boolean; errors: string[]; warnings: string[]; item: T }
+export interface MemScope extends MemStats { agents: string[]; orphan: boolean }
 export interface Run { id: string; at: number; kind: string; name?: string; agentId?: string; workflowId?: string; input?: string; output?: string; status?: string; added?: number; trace?: { step: string; agent: string; output: string; chosen?: string[] }[]; log?: string[]; tools?: { tool: string; ok: boolean; preview: string }[] }
 export interface Settings {
   llm: { kind: string; baseUrl: string; keyEnv: string; model: string; embedModel: string; hasKey: boolean; envPresent: boolean };
@@ -35,14 +39,8 @@ export interface Settings {
   safety: { dangerousAgents: string[] };
 }
 
-export async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Settings → Account & security).');
-  if (r.status === 404 && !j.detail) throw new Error('The agent manager plugin is disabled or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+const api = pluginApi(FOLDER, 'The agent manager plugin');
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 export const post = <T,>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) });
 export const put = <T,>(path: string, body: unknown) => call<T>(path, { method: 'PUT', body: JSON.stringify(body) });
 export const del = <T,>(path: string) => call<T>(path, { method: 'DELETE' });
@@ -50,6 +48,23 @@ export const del = <T,>(path: string) => call<T>(path, { method: 'DELETE' });
 export const list = <T,>(c: Coll) => call<{ items: T[] }>(`c/${c}`).then((r) => r.items);
 export const save = <T,>(c: Coll, item: unknown) => post<{ item: T }>(`c/${c}`, item).then((r) => r.item);
 export const remove = (c: Coll, id: string) => del(`c/${c}/${id}`);
+/** Dry run through the contract validator (agent-definition@1): errors, warnings and the normalised item; nothing saved. */
+export const validate = <T,>(c: Coll, item: unknown) => post<Validation<T>>(`validate/${c}`, item);
+export const isDangerousTool = (t: { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status?: Status) =>
+  !!t.dangerous || (t.kind === 'builtin' && (status?.dangerousBuiltins ?? []).includes(String(t.config?.builtin ?? ''))) || String(t.config?.builtin ?? '').startsWith('container_');
+
+/** Streams a workflow run (SSE): step / step_done while it works, then done or error. Returns a stop function. */
+export function streamWorkflow(id: string, input: string, on: (event: string, data: Record<string, unknown>) => void): () => void {
+  const ac = new AbortController();
+  void (async () => {
+    try {
+      const r = await pluginFetch(FOLDER, `workflows/${id}/run/stream`, { method: 'POST', body: JSON.stringify({ input }), signal: ac.signal });
+      if (!r.ok || !r.body) { on('error', { error: r.status === 404 ? 'workflow not found' : `HTTP ${r.status}` }); return; }
+      await readSse(r.body, (f) => { try { on(f.event, JSON.parse(f.data || '{}') as Record<string, unknown>); } catch { on(f.event, { raw: f.data }); } }, ac.signal);
+    } catch (e) { if (!ac.signal.aborted) on('error', { error: (e as Error).message }); }
+  })();
+  return () => ac.abort();
+}
 
 /* A small cache of every collection, refreshed after writes, shared by all views and wizards. */
 export interface Cache { agents: Agent[]; skills: Skill[]; personas: Persona[]; lingo: Lingo[]; tools: Tool[]; workflows: Workflow[]; training: Training[] }

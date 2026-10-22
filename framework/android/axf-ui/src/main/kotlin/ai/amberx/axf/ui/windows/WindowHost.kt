@@ -86,7 +86,9 @@ public fun FloatingWindowsHost(wm: WindowManager) {
     val density = LocalDensity.current
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val maxW = maxWidth; val maxH = maxHeight
-        Box(Modifier.fillMaxSize().pointerInput(Unit) { awaitPointerEventScope { while (true) { val e = awaitPointerEvent(androidx.compose.ui.input.pointer.PointerEventPass.Initial); e.changes.firstOrNull()?.position?.let { WindowPointer.x = it.x; WindowPointer.y = it.y } } } })
+        // The pointer position for "minimize at cursor" is tracked by AxfRoot on the app's root container (an ancestor
+        // that only observes, never consumes). A full-size sibling Box here used to do it, and a topmost sibling with any
+        // pointer input takes every touch, so nothing underneath ever received a tap (every app looked frozen).
         for (w in st.windows.filter { it.isFloating && it.minimized == null }.sortedBy { it.z }) key(w.id) { FloatingWindow(wm, w, maxW.value, maxH.value) }
         for (corner in Corner.entries) MinimizedCorner(wm, corner, st.windows.filter { it.minimized == MinimizeTarget.CORNER_TITLEBAR && it.settings.corner == corner })
         for (w in st.windows.filter { it.minimized == MinimizeTarget.FLOATING_TOOLBAR }) FloatingMiniToolbar(wm, w)

@@ -22,8 +22,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import ai.amberx.axf.ui.windows.WindowPointer
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 
@@ -38,8 +43,10 @@ public fun AxfRoot(
     fonts: FontRegistry = FontRegistry.Default,
     strings: Strings = MapStrings(emptyMap()),
     extraDialogs: Map<String, DialogContribution> = emptyMap(),
+    /** Developer apps: the app's hub sign-in UI (a web view locked to the hub), shown by the waiting screen's "Sign in"; call `done` when signed in. */
+    hubSignIn: (@Composable (done: () -> Unit) -> Unit)? = null,
     content: @Composable () -> Unit,
-): Unit = AxfRoot(kernel.runtime, kernel, fonts, strings, extraDialogs, content)
+): Unit = AxfRoot(kernel.runtime, kernel, fonts, strings, extraDialogs, hubSignIn, content)
 
 /** Runtime-only variant for previews and tests (no kernel → no extension-point dialogs). */
 @Composable
@@ -49,10 +56,12 @@ public fun AxfRoot(
     fonts: FontRegistry = FontRegistry.Default,
     strings: Strings = MapStrings(emptyMap()),
     extraDialogs: Map<String, DialogContribution> = emptyMap(),
+    hubSignIn: (@Composable (done: () -> Unit) -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val state by runtime.state.collectAsState()
     val compiled by runtime.compiled.collectAsState()
+    val appearance by runtime.appearance.collectAsState()
     val clipboard = LocalClipboardManager.current
     val actions = remember(runtime, clipboard) {
         AxfActions({ spec, payload, extras -> runtime.dispatch(spec, payload, extras) }, { m, k, t -> runtime.toast(m, k, t) }) { text -> clipboard.setText(AnnotatedString(text)) }
@@ -64,7 +73,21 @@ public fun AxfRoot(
     }
 
     AxfThemeProvider(compiled.theme, fonts) {
-        BoxWithConstraints(Modifier.fillMaxSize().background(LocalAxfTheme.current.colors.bg)) {
+        // Hardware keyboards: Ctrl/Cmd+K focuses the search bar (search-bar widget `shortcut`). "/" is left to the page: at the
+        // root we can't tell whether a text field has focus, and stealing a typed "/" would be worse than no shortcut.
+        // The window manager's pointer position (minimize-to-cursor) is observed here, on the root, in the Initial pass
+        // and never consumed, so every child still gets its taps. (A full-size sibling Box in FloatingWindowsHost used
+        // to do this, and a topmost sibling with any pointer input takes every touch: every app looked frozen.)
+        BoxWithConstraints(Modifier.fillMaxSize().background(LocalAxfTheme.current.colors.bg).onPreviewKeyEvent { e ->
+            ai.amberx.axf.ui.components.SearchShortcuts.handles(e, typing = true) && ai.amberx.axf.ui.components.SearchShortcuts.trigger()
+        }.pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val e = awaitPointerEvent(PointerEventPass.Initial)
+                    e.changes.firstOrNull()?.position?.let { WindowPointer.x = it.x; WindowPointer.y = it.y }
+                }
+            }
+        }) {
             val widthDp = maxWidth.value.toInt()
             LaunchedEffect(widthDp) { runtime.setWindowWidth(widthDp) }
             val layout = remember(compiled, widthDp) { compiled.layouts.getValue(LayoutEngine.windowClass(widthDp, compiled.layout)) }
@@ -87,7 +110,13 @@ public fun AxfRoot(
                     ai.amberx.axf.ui.windows.LocalTabRenderers provides tabRenderers,
                 ) {
                     Box(Modifier.fillMaxSize()) {
-                        content()
+                        // Developer apps: nothing but the waiting screen until the hub's data server has answered.
+                        val waiting = appearance
+                        if (waiting != null && waiting !is ai.amberx.axf.kernel.engine.AppearanceSourceState.Ready) {
+                            var signingIn by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            if (signingIn && hubSignIn != null) hubSignIn { signingIn = false; runtime.refreshFromSaved() }
+                            else ai.amberx.axf.ui.components.AxfWaitingForHub(waiting, runtime.appearanceHub(), onRetry = { runtime.refreshFromSaved() }, onSignIn = if (hubSignIn != null) ({ signingIn = true }) else null)
+                        } else content()
                         if (wm != null) ai.amberx.axf.ui.windows.FloatingWindowsHost(wm)
                         AxfToastHost()
                         AxfDialogHost(dialogs)

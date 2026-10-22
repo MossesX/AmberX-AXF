@@ -25,6 +25,7 @@ const PATHS: Record<string, string> = {
   info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
   help: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01',
   lock: 'M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4',
+  key: 'M15.5 7.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0zM12 11v11M12 16h3M12 19h2',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
   zap: 'M13 2 3 14h9l-1 8 10-12h-9z',
   sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
@@ -58,6 +59,10 @@ const PATHS: Record<string, string> = {
   package: 'M16.5 9.4 7.5 4.2M21 16V8l-9-5-9 5v8l9 5zM3.3 7 12 12l8.7-5M12 22V12',
   external: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3',
   minus: 'M5 12h14',
+  /** the underscore of a window's minimize button (banners: "_" folds them to one line) */
+  minimize: 'M6 18h12',
+  more: 'M5 12h.01M12 12h.01M19 12h.01',
+  hammer: 'M14 4l6 6-2 2-6-6zM4 20l8-8 2 2-8 8z',
   list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
   'arrow-left': 'M19 12H5M12 19l-7-7 7-7',
   'arrow-right': 'M5 12h14M12 5l7 7-7 7',

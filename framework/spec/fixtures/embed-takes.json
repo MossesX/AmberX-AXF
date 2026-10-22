@@ -1,0 +1,1779 @@
+{
+  "uaToken": "AXF-Embed-Take",
+  "ids": [
+    "settings",
+    "notifications",
+    "app-menu",
+    "banners"
+  ],
+  "takes": [
+    {
+      "input": null,
+      "takes": []
+    },
+    {
+      "input": "",
+      "takes": []
+    },
+    {
+      "input": "settings",
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": "notifications,settings",
+      "takes": [
+        "settings",
+        "notifications"
+      ]
+    },
+    {
+      "input": "settings+notifications",
+      "takes": [
+        "settings",
+        "notifications"
+      ]
+    },
+    {
+      "input": "Settings",
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": "nothing",
+      "takes": []
+    },
+    {
+      "input": "settings,none",
+      "takes": []
+    },
+    {
+      "input": [
+        "settings",
+        "settings"
+      ],
+      "takes": [
+        "settings"
+      ]
+    },
+    {
+      "input": " notifications ",
+      "takes": [
+        "notifications"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "input": null,
+      "page": null
+    },
+    {
+      "input": "",
+      "page": null
+    },
+    {
+      "input": "settings",
+      "page": "settings"
+    },
+    {
+      "input": "SETTINGS",
+      "page": "settings"
+    },
+    {
+      "input": "notifications",
+      "page": null
+    },
+    {
+      "input": "nothing",
+      "page": null
+    },
+    {
+      "input": 3,
+      "page": null
+    }
+  ],
+  "queries": [
+    {
+      "input": "?axf-embed=patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings,notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=bogus",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-page=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "input": "?axf-embed=patches&axf-embed-page=notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "?axf-embed-take=settings",
+      "embed": null
+    }
+  ],
+  "userAgents": [
+    {
+      "input": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed-Take/settings",
+      "embed": null
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications",
+          "app-menu"
+        ]
+      }
+    },
+    {
+      "input": "Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu"
+        ],
+        "takes": [
+          "app-menu"
+        ]
+      }
+    }
+  ],
+  "detect": [
+    {
+      "search": "?axf-embed=patches",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=patches&axf-embed-page=settings",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ],
+        "page": "settings"
+      }
+    },
+    {
+      "search": "?axf-embed=patches&axf-embed-take=notifications",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      }
+    },
+    {
+      "search": "",
+      "userAgent": "Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "toolbar",
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=other",
+      "userAgent": "Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications",
+      "embed": {
+        "host": "other",
+        "hidden": [
+          "banner"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=patches",
+      "userAgent": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications",
+          "app-menu"
+        ]
+      }
+    },
+    {
+      "search": "?axf-embed=patches&axf-embed-page=settings",
+      "userAgent": "Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "notifications",
+          "app-menu"
+        ],
+        "page": "settings"
+      }
+    }
+  ],
+  "takenBy": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "app.settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.open",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "notifications"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "app.settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "action": null,
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "app.settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.open",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.open:appearance",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "nav:settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "nav:home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "settings.reset",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "alerts.open",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "action": null,
+      "fn": null
+    }
+  ],
+  "takenView": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "view": "",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "home",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "view": "",
+      "fn": null
+    }
+  ],
+  "takenProvider": [
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "provider": "settings",
+      "fn": "settings"
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ],
+        "takes": [
+          "settings"
+        ]
+      },
+      "provider": "views",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "provider": "settings",
+      "fn": null
+    },
+    {
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "banner"
+        ]
+      },
+      "provider": "views",
+      "fn": null
+    }
+  ],
+  "suffix": [
+    {
+      "host": "patches",
+      "hidden": null,
+      "takes": [
+        "settings",
+        "notifications",
+        "app-menu"
+      ],
+      "suffix": "AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu"
+    },
+    {
+      "host": "patches",
+      "hidden": null,
+      "takes": [
+        "settings",
+        "notifications"
+      ],
+      "suffix": "AXF-Embed/patches AXF-Embed-Take/settings+notifications"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner"
+      ],
+      "takes": [],
+      "suffix": "AXF-Embed/patches"
+    },
+    {
+      "host": "patches",
+      "hidden": [
+        "banner",
+        "toolbar"
+      ],
+      "takes": [
+        "settings"
+      ],
+      "suffix": "AXF-Embed/patches/toolbar+banner AXF-Embed-Take/settings"
+    },
+    {
+      "host": "patches",
+      "hidden": null,
+      "takes": [
+        "bogus"
+      ],
+      "suffix": "AXF-Embed/patches"
+    }
+  ],
+  "urls": [
+    {
+      "url": "https://console.amberxai.com/",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings",
+          "notifications"
+        ]
+      },
+      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,notifications"
+    },
+    {
+      "url": "https://console.amberxai.com/?x=1#a",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings"
+        ],
+        "page": "settings"
+      },
+      "out": "https://console.amberxai.com/?x=1&axf-embed=patches&axf-embed-page=settings#a"
+    },
+    {
+      "url": "https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old",
+      "host": "patches",
+      "opts": {
+        "page": "settings"
+      },
+      "out": "https://pilot.amberxai.com/?axf-embed=patches&axf-embed-page=settings"
+    },
+    {
+      "url": "https://pilot.amberxai.com/",
+      "host": "patches",
+      "opts": {},
+      "out": "https://pilot.amberxai.com/?axf-embed=patches"
+    },
+    {
+      "url": "https://console.amberxai.com/",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings",
+          "app-menu"
+        ]
+      },
+      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,app-menu"
+    }
+  ],
+  "links": [
+    {
+      "link": "https://axhub.amberxai.com/apps",
+      "ok": true
+    },
+    {
+      "link": "http://x.example/",
+      "ok": false
+    },
+    {
+      "link": "view:alerts",
+      "ok": true
+    },
+    {
+      "link": "settings:appearance",
+      "ok": true
+    },
+    {
+      "link": "javascript:alert(1)",
+      "ok": false
+    },
+    {
+      "link": "https://u:p@h/",
+      "ok": false
+    },
+    {
+      "link": "view:",
+      "ok": false
+    },
+    {
+      "link": "",
+      "ok": false
+    }
+  ],
+  "messages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "appearance"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "appearance"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "bad tab!"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "  Build failed\n",
+        "body": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "tag": "ci:main",
+        "level": "error",
+        "link": "view:alerts"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Build failed",
+        "body": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "tag": "ci:main",
+        "level": "error",
+        "link": "view:alerts"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": ""
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Hi",
+        "level": "loud",
+        "link": "javascript:x",
+        "tag": "has space"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "notify",
+        "title": "Hi"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "ready",
+        "app": "Console"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "ready",
+        "app": "console"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-tab",
+        "tab": "plugins"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-tab",
+        "tab": "plugins"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "open-tab"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@2",
+        "type": "open-settings"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "run-code",
+        "code": "x"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "menu",
+        "menus": [
+          {
+            "id": "m0",
+            "label": "Builds",
+            "items": [
+              {
+                "id": "m0.0",
+                "label": "  Pending builds\n",
+                "icon": "clock",
+                "count": 12.7
+              },
+              {
+                "id": "m0.1",
+                "separator": true
+              },
+              {
+                "id": "m0.2",
+                "label": "Open pending items",
+                "items": [
+                  {
+                    "id": "m0.2.0",
+                    "label": "Asset Designer",
+                    "locked": true
+                  },
+                  {
+                    "id": "bad id!",
+                    "label": "x"
+                  },
+                  {
+                    "id": "m0.2.2",
+                    "label": ""
+                  }
+                ]
+              },
+              {
+                "id": "m0.3",
+                "label": "Toolbar",
+                "check": false,
+                "icon": "Bad Icon",
+                "count": -3
+              }
+            ]
+          },
+          {
+            "id": "m1",
+            "label": "Empty",
+            "items": []
+          },
+          {
+            "id": "m2",
+            "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "items": [
+              {
+                "id": "m2.0",
+                "label": "Deep",
+                "items": [
+                  {
+                    "id": "m2.0.0",
+                    "label": "Deeper",
+                    "items": [
+                      {
+                        "id": "m2.0.0.0",
+                        "label": "Deepest",
+                        "items": [
+                          {
+                            "id": "m2.0.0.0.0",
+                            "label": "Too deep"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "No id",
+            "items": [
+              {
+                "id": "x",
+                "label": "y"
+              }
+            ]
+          }
+        ]
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "menu",
+        "menus": [
+          {
+            "id": "m0",
+            "label": "Builds",
+            "items": [
+              {
+                "id": "m0.0",
+                "label": "Pending builds",
+                "icon": "clock",
+                "count": 12
+              },
+              {
+                "id": "m0.1",
+                "label": "",
+                "separator": true
+              },
+              {
+                "id": "m0.2",
+                "label": "Open pending items",
+                "items": [
+                  {
+                    "id": "m0.2.0",
+                    "label": "Asset Designer",
+                    "locked": true
+                  }
+                ]
+              },
+              {
+                "id": "m0.3",
+                "label": "Toolbar",
+                "check": false
+              }
+            ]
+          },
+          {
+            "id": "m2",
+            "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "items": [
+              {
+                "id": "m2.0",
+                "label": "Deep",
+                "items": [
+                  {
+                    "id": "m2.0.0",
+                    "label": "Deeper",
+                    "items": [
+                      {
+                        "id": "m2.0.0.0",
+                        "label": "Deepest",
+                        "items": [
+                          {
+                            "id": "m2.0.0.0.0",
+                            "label": "Too deep"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "menu",
+        "menus": "nope"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "menu-request"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "menu-request"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "run",
+        "id": "m0.2.0"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "run",
+        "id": "m0.2.0"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "run",
+        "id": "m0 2"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "run"
+      },
+      "message": null
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"menu\",\"menus\":[{\"id\":\"m0\",\"label\":\"Long\",\"items\":[{\"id\":\"m0.0\",\"label\":\"Item 0 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.1\",\"label\":\"Item 1 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.2\",\"label\":\"Item 2 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.3\",\"label\":\"Item 3 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.4\",\"label\":\"Item 4 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.5\",\"label\":\"Item 5 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.6\",\"label\":\"Item 6 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.7\",\"label\":\"Item 7 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.8\",\"label\":\"Item 8 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.9\",\"label\":\"Item 9 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.10\",\"label\":\"Item 10 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.11\",\"label\":\"Item 11 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.12\",\"label\":\"Item 12 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.13\",\"label\":\"Item 13 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.14\",\"label\":\"Item 14 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.15\",\"label\":\"Item 15 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.16\",\"label\":\"Item 16 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.17\",\"label\":\"Item 17 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.18\",\"label\":\"Item 18 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.19\",\"label\":\"Item 19 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.20\",\"label\":\"Item 20 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.21\",\"label\":\"Item 21 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.22\",\"label\":\"Item 22 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.23\",\"label\":\"Item 23 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.24\",\"label\":\"Item 24 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.25\",\"label\":\"Item 25 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.26\",\"label\":\"Item 26 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.27\",\"label\":\"Item 27 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.28\",\"label\":\"Item 28 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.29\",\"label\":\"Item 29 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.30\",\"label\":\"Item 30 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.31\",\"label\":\"Item 31 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.32\",\"label\":\"Item 32 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.33\",\"label\":\"Item 33 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.34\",\"label\":\"Item 34 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.35\",\"label\":\"Item 35 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.36\",\"label\":\"Item 36 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.37\",\"label\":\"Item 37 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.38\",\"label\":\"Item 38 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.39\",\"label\":\"Item 39 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.40\",\"label\":\"Item 40 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.41\",\"label\":\"Item 41 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.42\",\"label\":\"Item 42 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.43\",\"label\":\"Item 43 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.44\",\"label\":\"Item 44 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.45\",\"label\":\"Item 45 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.46\",\"label\":\"Item 46 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.47\",\"label\":\"Item 47 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.48\",\"label\":\"Item 48 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.49\",\"label\":\"Item 49 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.50\",\"label\":\"Item 50 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.51\",\"label\":\"Item 51 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.52\",\"label\":\"Item 52 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.53\",\"label\":\"Item 53 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.54\",\"label\":\"Item 54 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.55\",\"label\":\"Item 55 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.56\",\"label\":\"Item 56 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.57\",\"label\":\"Item 57 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.58\",\"label\":\"Item 58 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.59\",\"label\":\"Item 59 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.60\",\"label\":\"Item 60 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.61\",\"label\":\"Item 61 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.62\",\"label\":\"Item 62 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.63\",\"label\":\"Item 63 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.64\",\"label\":\"Item 64 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.65\",\"label\":\"Item 65 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.66\",\"label\":\"Item 66 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.67\",\"label\":\"Item 67 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.68\",\"label\":\"Item 68 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.69\",\"label\":\"Item 69 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.70\",\"label\":\"Item 70 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.71\",\"label\":\"Item 71 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.72\",\"label\":\"Item 72 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.73\",\"label\":\"Item 73 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.74\",\"label\":\"Item 74 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.75\",\"label\":\"Item 75 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.76\",\"label\":\"Item 76 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.77\",\"label\":\"Item 77 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.78\",\"label\":\"Item 78 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"},{\"id\":\"m0.79\",\"label\":\"Item 79 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\"}]}]}",
+      "message": {
+        "$axf": "embed@1",
+        "type": "menu",
+        "menus": [
+          {
+            "id": "m0",
+            "label": "Long",
+            "items": [
+              {
+                "id": "m0.0",
+                "label": "Item 0 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.1",
+                "label": "Item 1 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.2",
+                "label": "Item 2 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.3",
+                "label": "Item 3 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.4",
+                "label": "Item 4 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.5",
+                "label": "Item 5 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.6",
+                "label": "Item 6 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.7",
+                "label": "Item 7 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.8",
+                "label": "Item 8 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.9",
+                "label": "Item 9 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.10",
+                "label": "Item 10 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.11",
+                "label": "Item 11 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.12",
+                "label": "Item 12 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.13",
+                "label": "Item 13 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.14",
+                "label": "Item 14 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.15",
+                "label": "Item 15 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.16",
+                "label": "Item 16 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.17",
+                "label": "Item 17 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.18",
+                "label": "Item 18 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.19",
+                "label": "Item 19 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.20",
+                "label": "Item 20 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.21",
+                "label": "Item 21 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.22",
+                "label": "Item 22 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.23",
+                "label": "Item 23 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.24",
+                "label": "Item 24 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.25",
+                "label": "Item 25 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.26",
+                "label": "Item 26 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.27",
+                "label": "Item 27 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.28",
+                "label": "Item 28 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.29",
+                "label": "Item 29 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.30",
+                "label": "Item 30 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.31",
+                "label": "Item 31 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.32",
+                "label": "Item 32 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.33",
+                "label": "Item 33 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.34",
+                "label": "Item 34 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.35",
+                "label": "Item 35 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.36",
+                "label": "Item 36 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.37",
+                "label": "Item 37 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.38",
+                "label": "Item 38 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.39",
+                "label": "Item 39 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.40",
+                "label": "Item 40 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.41",
+                "label": "Item 41 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.42",
+                "label": "Item 42 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.43",
+                "label": "Item 43 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.44",
+                "label": "Item 44 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.45",
+                "label": "Item 45 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.46",
+                "label": "Item 46 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.47",
+                "label": "Item 47 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.48",
+                "label": "Item 48 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.49",
+                "label": "Item 49 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.50",
+                "label": "Item 50 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.51",
+                "label": "Item 51 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.52",
+                "label": "Item 52 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.53",
+                "label": "Item 53 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.54",
+                "label": "Item 54 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.55",
+                "label": "Item 55 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.56",
+                "label": "Item 56 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.57",
+                "label": "Item 57 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.58",
+                "label": "Item 58 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.59",
+                "label": "Item 59 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.60",
+                "label": "Item 60 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.61",
+                "label": "Item 61 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.62",
+                "label": "Item 62 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.63",
+                "label": "Item 63 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.64",
+                "label": "Item 64 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.65",
+                "label": "Item 65 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.66",
+                "label": "Item 66 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.67",
+                "label": "Item 67 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.68",
+                "label": "Item 68 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.69",
+                "label": "Item 69 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.70",
+                "label": "Item 70 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.71",
+                "label": "Item 71 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.72",
+                "label": "Item 72 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.73",
+                "label": "Item 73 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.74",
+                "label": "Item 74 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.75",
+                "label": "Item 75 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.76",
+                "label": "Item 76 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.77",
+                "label": "Item 77 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.78",
+                "label": "Item 78 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              },
+              {
+                "id": "m0.79",
+                "label": "Item 79 yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"notify\",\"title\":\"Long\",\"body\":\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"}",
+      "message": null
+    },
+    {
+      "input": "{\"$axf\":\"embed@1\",\"type\":\"open-settings\",\"tab\":\"about\"}",
+      "message": {
+        "$axf": "embed@1",
+        "type": "open-settings",
+        "tab": "about"
+      }
+    },
+    {
+      "input": "not json",
+      "message": null
+    },
+    {
+      "input": [
+        "array"
+      ],
+      "message": null
+    },
+    {
+      "input": null,
+      "message": null
+    }
+  ],
+  "settingsTab": [
+    {
+      "action": "settings.open:appearance",
+      "tab": "appearance"
+    },
+    {
+      "action": "settings.open",
+      "tab": null
+    },
+    {
+      "action": "app.settings",
+      "tab": null
+    },
+    {
+      "action": "settings.open:a b",
+      "tab": "a"
+    }
+  ]
+}

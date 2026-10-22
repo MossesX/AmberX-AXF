@@ -1,5 +1,7 @@
 import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
+import { hostSpec, validateHostAttachments } from './engines/widgets';
+import { validateMenuItems } from './engines/appmenu';
 
 export interface ValidationResult {
   ok: boolean;
@@ -72,6 +74,20 @@ export function validateAsset(raw: unknown): ValidationResult {
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
+  // Menu items (app-menu menus, context-menu targets): optional fields provider / badge / checked / order / before / after.
+  if (raw.type === 'app-menu' && Array.isArray(data.menus)) {
+    (data.menus as unknown[]).forEach((m, i) => {
+      if (!isObj(m)) return;
+      if ('order' in m && (typeof m.order !== 'number' || !Number.isFinite(m.order))) errors.push(`data.menus[${i}].order must be a number`);
+      if ('items' in m) errors.push(...validateMenuItems(m.items, `data.menus[${i}].items`));
+    });
+  }
+  if (raw.type === 'context-menu' && isObj(data.targets)) {
+    for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
+  }
+  // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+  const host = hostSpec(raw.type);
+  if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

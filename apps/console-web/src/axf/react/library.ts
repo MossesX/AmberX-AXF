@@ -3,7 +3,9 @@
  * dialogs, tab renderers and actions; apps list their libraries and merge what they contribute into AppShell.
  * Libraries generated from framework/library-templates implement this.
  */
-import type { AxfRuntime, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
+import type { AppMenuContribution } from '../core/engines/appmenu';
+import { embedSkipReason } from '../core/engines/embed';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -18,6 +20,8 @@ export interface AxfWebLibrary {
   template?: string;
   dependsOn?: string[];
   provides?: string[];
+  /** Kinds of values it edits (theme / style / layout / manager / builder): the UI-editor rule applies (last save wins, fresh on focus). */
+  uiEditor?: string[];
   /** register actions, terminal lines, services on window.AXF… — called once, in dependency order */
   register?(rt: AxfRuntime): void;
   views?: ViewMap;
@@ -36,8 +40,22 @@ export interface AxfWebLibrary {
    * context-menu asset's items and removed with the library, so a plugin's link never outlives the plugin.
    */
   contextMenu?: { id: string; target?: string; order?: number; items: MenuEntry[] }[];
-  /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
+  /**
+   * Application-menu items (core/engines/appmenu.ts): items or whole submenus into a named top-level menu (created when
+   * missing) or under an item path, with placement, UAC `requires`, badges, check marks and live lists (`provider`).
+   * Removed with the library (`rt.removeAppMenuItems(id)`), so a disabled plugin's entries go with it.
+   */
+  appMenu?: Omit<AppMenuContribution, 'module'>[];
+  /** Live lists for the application menu (`rt.registerAppMenuProvider`), keyed by provider id; removed with the library. */
+  appMenuProviders?: Record<string, AppMenuProvider | AppMenuProvider['items']>;
+  /** Banners the app shows at the top of the page, above app tabs (slot `app.frame.banners`; e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
+  /**
+   * Inside a host app (embed@1, e.g. Patches): when this library isn't needed there, because the host already does its
+   * job or hides what it draws (`skipWhen`: `embedded` | `take:<fn>` | `hidden:<type>`; see engines/embed.ts
+   * embedSkipReason). It is then not installed on that page and is listed in `rt.skippedLibraries`; standalone it loads.
+   */
+  embed?: { skipWhen: string[] };
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
   slots?: Record<string, SlotDef[]>;
 }
@@ -46,7 +64,16 @@ export interface AxfWebLibrary {
 export interface SlotDef { id: string; order?: number; render: (props: Record<string, unknown>) => ReactNode }
 
 /** A banner contributed by a library or plugin; lower `order` shows first. */
-export interface BannerDef { id: string; order?: number; render: () => ReactNode }
+export interface BannerDef {
+  id: string;
+  order?: number;
+  render: () => ReactNode;
+  /** name and icon in Banner settings (right-click a banner → Banner settings; components/BannerSettings.tsx) */
+  label?: string;
+  icon?: string;
+  /** its plugin's settings tab, opened from its Banner settings tab */
+  settingsTab?: string;
+}
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
 export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[]; missing: string[] } {
@@ -65,6 +92,28 @@ export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[
   return { ordered: out, missing: [...missing] };
 }
 
+/** What the runtime remembers about an installed library (`rt.libraries`): declarations + the UI it offers. */
+export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
+  const tabs = (l.settingsTabs ?? []).map((t) => ({ id: t.id, label: t.label }));
+  const tabIds = new Set(tabs.map((t) => t.id));
+  const views = Object.entries(l.views ?? {}).map(([id, v]) => ({ id, title: v.title, icon: v.icon }));
+  const dialogs = Object.entries(l.dialogs ?? {}).map(([id, d]) => ({ id, title: String((d as { title?: unknown }).title ?? id) }));
+  return {
+    id: l.id, label: l.label, version: l.version,
+    ...(l.template ? { template: l.template } : {}),
+    ...(l.dependsOn?.length ? { dependsOn: [...l.dependsOn] } : {}),
+    ...(l.provides?.length ? { provides: [...l.provides] } : {}),
+    ...(l.uiEditor?.length ? { uiEditor: [...l.uiEditor] } : {}),
+    contributes: [...views.map((v) => `view:${v.id}`), ...dialogs.map((d) => `dialog:${d.id}`), ...tabs.map((t) => `settings-tab:${t.id}`)],
+    ui: {
+      views, dialogs, settingsTabs: tabs,
+      settingsCount: (l.settingsPanels ?? []).filter((x) => tabIds.has(x.tab)).length + (l.settings ?? []).filter((g) => tabIds.has(g.tab ?? '')).length,
+      contextItems: (l.contextMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
+      appMenuItems: (l.appMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
+    },
+  };
+}
+
 /** Register every library with the runtime and merge their views / dialogs / tab renderers for AppShell. */
 export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views: ViewMap; dialogs: DialogMap; tabs: TabRenderers; banners: BannerDef[]; slots: Record<string, SlotDef[]>; missing: string[] } {
   const { ordered, missing } = orderLibraries(libs);
@@ -73,7 +122,10 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   const tabs: TabRenderers = {};
   const banners: BannerDef[] = [];
   const slots: Record<string, SlotDef[]> = {};
+  const skipped: { id: string; label: string; version: string; reason: string }[] = [];
   for (const l of ordered) {
+    const why = embedSkipReason(rt.embedded, l.embed?.skipWhen);
+    if (why) { skipped.push({ id: l.id, label: l.label, version: l.version, reason: why }); continue; }
     l.register?.(rt);
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
@@ -82,13 +134,16 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const [name, defs] of Object.entries(l.slots ?? {})) for (const d of defs) { const list = (slots[name] ??= []); if (!list.some((x) => x.id === d.id)) list.push(d); }
     if (l.nav?.items.length) rt.setNavSection({ id: l.id, ...l.nav });
     for (const c of l.contextMenu ?? []) rt.addContextItems({ ...c, module: l.id });
+    for (const [id, p] of Object.entries(l.appMenuProviders ?? {})) rt.registerAppMenuProvider(id, typeof p === 'function' ? { items: p, module: l.id } : { module: l.id, ...p });
+    for (const c of l.appMenu ?? []) rt.addAppMenuItems({ ...c, module: l.id });
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
-    if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push({ id: l.id, label: l.label, version: l.version, ...(l.template ? { template: l.template } : {}) });
+    if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
+  rt.noteSkippedLibraries(skipped);
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };

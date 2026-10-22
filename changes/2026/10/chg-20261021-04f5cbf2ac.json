@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-04f5cbf2ac",
+  "createdAt": "2026-10-21T02:04:13.000Z",
+  "updatedAt": "2026-10-21T06:04:13.000Z",
+  "kind": "build",
+  "title": "Harvest: web-client",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest — web-client group (Oct 20–21 2026, Opus 5.5)",
+    "branch": "harvest/h-web-client",
+    "commits": [
+      {
+        "sha": "3e80b79",
+        "message": "Harvest web-client: typed catalog models (core/catalog.ts = kernel.catalog) + catalog-driven libraries"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/web-client.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T06:04:13.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-web-client"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T02:04:13.000Z",
+  "finishedAt": "2026-10-21T06:04:13.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "branch": "harvest/h-web-client",
+  "areas": [
+    "framework/core/assistant.ts",
+    "apps/console-web/src/changeBatch.tsx",
+    "framework/core/sse.ts",
+    "framework/libs/apiclient/client.ts",
+    "framework/libs/apiclient/index.tsx",
+    "framework/core/catalog.ts",
+    "apps/console-web/src/views/Libraries.tsx",
+    "framework/spec/fixtures/catalog.json",
+    "framework/spec/catalog-samples.json",
+    "framework/spec/check-web-client.mts",
+    "framework/libs/apiclient/library.json",
+    "framework/cli/libraries.mjs"
+  ]
+}

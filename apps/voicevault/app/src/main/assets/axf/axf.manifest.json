@@ -1,0 +1,151 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "voice-vault",
+    "name": "Voice Vault",
+    "version": "0.1.0",
+    "about": "Passwords stay encrypted on this phone."
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "android-compose"
+  },
+  "initializedAt": "2026-10-20T15:32:24.480Z",
+  "targets": [
+    "android"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "classic-ide",
+    "app-menu": "standard-desktop",
+    "toolbar": "standard-icons",
+    "nav-menu": "voice-nav",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version, targets and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Framework version + template the app was initialized from (Android apps depend on published framework modules, nothing is baked)."
+    },
+    {
+      "path": "settings.gradle.kts",
+      "purpose": "Includes the framework as a composite build (framework/android) and shares its version catalog."
+    },
+    {
+      "path": "app/src/main/assets/axf/axf.manifest.json",
+      "purpose": "Copy of the manifest shipped inside the APK; the kernel reads it at startup."
+    },
+    {
+      "path": "app/src/main/assets/axf/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type (same JSON as every other port)."
+    },
+    {
+      "path": "app/src/main/kotlin/app/App.kt",
+      "purpose": "Application class: builds the kernel from the manifest, assets and modules."
+    },
+    {
+      "path": "app/src/main/kotlin/app/MainActivity.kt",
+      "purpose": "The single activity: AxfRoot + AppShell + the app's views."
+    },
+    {
+      "path": "app/src/main/kotlin/app/AppModule.kt",
+      "purpose": "The app's own AxfModule: routes, actions, settings, dialogs."
+    },
+    {
+      "path": "app/src/main/kotlin/app/views",
+      "purpose": "Composable views registered with the shell."
+    }
+  ],
+  "boilerplate": {
+    "id": "voice",
+    "name": "Voice Control",
+    "category": "assistant",
+    "screens": [
+      {
+        "id": "home",
+        "label": "Home",
+        "kind": "landing"
+      },
+      {
+        "id": "commands",
+        "label": "Commands",
+        "kind": "list-detail"
+      },
+      {
+        "id": "settings",
+        "label": "Settings",
+        "kind": "settings"
+      }
+    ],
+    "features": [
+      "c.voice",
+      "c.pilot"
+    ]
+  },
+  "android": {
+    "applicationId": "ai.amberx.axf.voicevault",
+    "scheme": "axf",
+    "modules": [
+      "ai.amberx.axf.platform",
+      "ai.amberx.axf.settings",
+      "ai.amberx.axf.logging",
+      "ai.amberx.axf.devtools",
+      "ai.amberx.axf.ui.windows",
+      "ai.amberx.axf.voice",
+      "ai.amberx.axf.lock"
+    ],
+    "minSdk": 26,
+    "targetSdk": 35,
+    "secureWindow": true
+  },
+  "libraries": {
+    "voice": {
+      "speakPrompts": true,
+      "preferOffline": true
+    },
+    "lock": {
+      "defaultMode": "none"
+    },
+    "$installed": [
+      "ai.amberx.axf.voice",
+      "ai.amberx.axf.lock"
+    ]
+  }
+}

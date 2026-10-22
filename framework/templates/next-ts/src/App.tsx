@@ -1,4 +1,6 @@
-import { AccountView, AppShell, AssetStudio, type ViewMap } from './axf/react';
+import { useMemo } from 'react';
+import { AccountView, AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
+import { library as settingsLibrary } from './axf/libs/settings';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
 import { Components } from './views/Components';
@@ -11,6 +13,16 @@ const views: ViewMap = {
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
 
+/**
+ * Libraries this app ships. Every app built by the build engine ships the settings interface (lib-settings: Appearance,
+ * Account & security, Connections, Plugins, About). Plugins never get a settings screen of their own: they add groups,
+ * panels or sub-tabs to Settings → Plugins through their `AxfWebLibrary`, and the Plugins tab lists every installed
+ * library with its health (plugin inventory engine). Add more libraries to this list.
+ */
+const libraries = [settingsLibrary];
+
 export function App() {
-  return <AppShell views={views} dialogs={dialogs} />;
+  const rt = useRuntime();
+  const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
+  return <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />;
 }

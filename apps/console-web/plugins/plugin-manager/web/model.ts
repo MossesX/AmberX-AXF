@@ -1,26 +1,24 @@
 /**
  * Plugin Manager data: the server inventory (GET /api/plugins/plugin-manager/inventory) merged with what each
  * plugin's web part contributes (its views, dialogs, nav entries, settings tabs), so every row knows whether the
- * plugin has a UI or settings to open. Without the console API it falls back to the bundled manifests.
+ * plugin has a UI or settings to open. Without the console API the bundled manifests go through the same engine.
  */
 import { useCallback, useEffect, useState } from 'react';
 import { bundledPlugins, pluginFetch, PLUGINS_CHANGED, type BundledPlugin } from '@console/plugins';
+import { buildPluginInventory, DEPENDENCY_LABEL, PLUGIN_HEALTH_RANK, pluginRecord, type Conflict, type Dependency, type DependencyStatus, type Dependent, type InventoryContext, type LiveService, type PluginHealth, type PluginInventory, type PluginInventoryItem, type PluginRecord } from '@console/axf/core/engines/plugins';
+import { installedLibraryRecord } from '@console/axf/react/library';
 
 export const FOLDER = 'plugin-manager';
 
-export type Health = 'ok' | 'partial' | 'off' | 'blocked' | 'error';
-export type DepStatus = 'ok' | 'missing' | 'disabled' | 'optional-missing' | 'set' | 'unset' | 'granted' | 'declared' | 'unsupported' | 'error' | 'not loaded';
-
-export interface Dependency {
-  kind: 'framework' | 'service' | 'env' | 'scope' | 'core' | 'other';
-  name: string;
-  required: boolean;
-  status: DepStatus;
-  detail: string;
-  providers?: { folder: string; name: string; enabled: boolean; live?: boolean }[];
-}
-export interface Dependent { folder: string; name: string; service: string; required: boolean; enabled: boolean }
-export interface Conflict { id: string; kind: string; key: string; folders: string[]; detail: string; severity: 'info' | 'warn' | 'error' }
+/*
+ * The model is the framework's plugin inventory engine (plugin-inventory@1, `core/engines/plugins.ts`): dependencies,
+ * dependents, health, clashes and the graph are resolved by the same code on the web, in the console's Python server
+ * (`server/engine.py`) and in the Kotlin kernel. The console server resolves live (it knows enabled flags, server parts,
+ * env, data folders); without it the browser resolves the bundled manifests with the very same engine.
+ */
+export type Health = PluginHealth;
+export type DepStatus = DependencyStatus;
+export type { Dependency, Dependent, Conflict };
 export interface LogLine { at: number; channel: string; level: string; text: string }
 
 /** What a plugin's web part gives the user to open. */
@@ -32,38 +30,21 @@ export interface PluginUi {
   contextItems: number;
 }
 
-export interface PluginRow {
-  folder: string;
-  id: string;
-  name: string;
-  version: string;
+/** One plugin as the manager shows it: the engine's item + what the console server and the browser bundle know. */
+export interface PluginRow extends PluginInventoryItem {
   description: string;
   author: string;
   kind: string;
-  apiLevel: number | null;
-  scopes: string[];
-  provides: string[];
-  requires: string[];
-  optional: string[];
-  uiEditor: string[];
   builtWith: { model?: string; replacedBy?: string } | null;
-  enabled: boolean;
   enabledByDefault: boolean;
-  server: 'none' | 'loaded' | 'error';
-  error: string | null;
   removed: boolean;
+  loaded: boolean;
   parts: Record<'web' | 'server' | 'install' | 'uninstall' | 'hooks' | 'selfTest' | 'readme', boolean>;
   lifecycle: { managed: boolean; dataDir: string | null; dataDirProblem: string | null; data: { files: number; bytes: number }; mentions: string[] };
   code: { files: number; bytes: number };
-  env: { name: string; set: boolean }[];
-  services: string[];
   logCount: number;
   lastLog: LogLine | null;
   backups: number;
-  dependencies: Dependency[];
-  dependents: Dependent[];
-  conflicts: string[];
-  health: Health;
   ui: PluginUi;
   webProblem?: string;
 }
@@ -71,92 +52,87 @@ export interface PluginRow {
 export interface Inventory {
   items: PluginRow[];
   conflicts: Conflict[];
-  services: { name: string; folder: string; enabled: boolean }[];
-  counts: { total: number; enabled: number; errors: number; missingDeps: number; conflicts: number; editors: number };
+  services: LiveService[];
+  counts: PluginInventory['counts'];
   live: boolean;
 }
 
 export function uiOf(p?: BundledPlugin): PluginUi {
   const lib = p?.library;
-  const tabs = (lib?.settingsTabs ?? []).map((t) => ({ id: t.id, label: t.label }));
-  const tabIds = new Set(tabs.map((t) => t.id));
-  return {
-    views: Object.entries(lib?.views ?? {}).map(([id, v]) => ({ id, title: v.title, icon: v.icon })),
-    dialogs: Object.entries(lib?.dialogs ?? {}).map(([id, d]) => ({ id, title: String((d as { title?: unknown }).title ?? id) })),
-    settingsTabs: tabs,
-    settingsCount: (lib?.settingsPanels ?? []).filter((x) => tabIds.has(x.tab)).length + (lib?.settings ?? []).filter((g) => tabIds.has(g.tab ?? '')).length,
-    contextItems: (lib?.contextMenu ?? []).reduce((n, c) => n + c.items.filter((i) => !i.separator).length, 0),
-  };
+  if (!lib) return { views: [], dialogs: [], settingsTabs: [], settingsCount: 0, contextItems: 0 };
+  return installedLibraryRecord(lib).ui!;
 }
 
-/** Clashes only the browser can see: two plugins' web parts using the same view / dialog / settings-tab id. */
-function webConflicts(): Conflict[] {
-  const seen = new Map<string, string[]>();
-  for (const p of bundledPlugins) {
-    const lib = p.library;
-    if (!lib) continue;
-    const keys = [
-      ...Object.keys(lib.views ?? {}).map((k) => `view:${k}`),
-      ...Object.keys(lib.dialogs ?? {}).map((k) => `dialog:${k}`),
-      ...(lib.settingsTabs ?? []).map((t) => `settings-tab:${t.id}`),
-    ];
-    for (const k of keys) seen.set(k, [...(seen.get(k) ?? []), p.folder]);
-  }
-  return [...seen.entries()]
-    .filter(([, fs]) => new Set(fs).size > 1)
-    .map(([key, fs]) => ({ id: `web:${key}`, kind: 'web-contribution', key, folders: [...new Set(fs)].sort(), detail: 'Two plugins register this id in the browser; the one installed last replaces the other.', severity: 'warn' as const }));
+/** Contribution ids only the browser can see (views, dialogs, settings tabs), so clashes between web parts are reported by the engine too. */
+function webContributions(p: BundledPlugin): string[] {
+  return p.library ? installedLibraryRecord(p.library).contributes ?? [] : [];
 }
+
+const EMPTY_PARTS: PluginRow['parts'] = { web: false, server: false, install: false, uninstall: false, hooks: false, selfTest: false, readme: false };
+const EMPTY_LC: PluginRow['lifecycle'] = { managed: false, dataDir: null, dataDirProblem: null, data: { files: 0, bytes: 0 }, mentions: [] };
+
+/** The bundled manifest as an engine record (what the browser knows without the API). */
+function recordOf(p: BundledPlugin): PluginRecord {
+  const m = p.manifest as BundledPlugin['manifest'] & { requires?: string[]; optional?: string[]; uiEditor?: string[] };
+  return pluginRecord({
+    folder: p.folder, id: m.id, name: m.name, version: m.version, apiLevel: m.apiLevel ?? null, targets: m.targets ?? [],
+    provides: [...(m.provides ?? []), ...webContributions(p).filter((c) => !(m.provides ?? []).includes(c))],
+    requires: m.requires ?? [], optional: m.optional ?? [], uiEditor: m.uiEditor ?? [], scopes: m.scopes ?? [],
+    enabled: m.enabledByDefault !== false && !p.problem, error: p.problem ?? null,
+  });
+}
+
+export const OFFLINE_CONTEXT: InventoryContext = { apiLevels: [1], target: 'axf-console', live: [] };
 
 function offline(): Inventory {
-  const items: PluginRow[] = bundledPlugins.map((p) => {
-    const m = p.manifest as BundledPlugin['manifest'] & { requires?: string[]; optional?: string[]; uiEditor?: string[]; builtWith?: PluginRow['builtWith'] };
-    const enabled = m.enabledByDefault !== false && !p.problem;
+  const byFolder = new Map(bundledPlugins.map((p) => [p.folder, p]));
+  const inv = buildPluginInventory(bundledPlugins.map(recordOf), OFFLINE_CONTEXT);
+  const items: PluginRow[] = inv.items.map((it) => {
+    const p = byFolder.get(it.folder)!;
+    const m = p.manifest as BundledPlugin['manifest'] & { builtWith?: PluginRow['builtWith'] };
     return {
-      folder: p.folder, id: m.id, name: m.name, version: m.version, description: m.description ?? '', author: m.author ?? '', kind: m.kind,
-      apiLevel: m.apiLevel ?? null, scopes: m.scopes ?? [], provides: m.provides ?? [], requires: m.requires ?? [], optional: m.optional ?? [],
-      uiEditor: m.uiEditor ?? [], builtWith: m.builtWith ?? null, enabled, enabledByDefault: m.enabledByDefault !== false, server: 'none',
-      error: p.problem ?? null, removed: false,
-      parts: { web: Boolean(p.library), server: false, install: false, uninstall: false, hooks: false, selfTest: false, readme: false },
-      lifecycle: { managed: false, dataDir: null, dataDirProblem: null, data: { files: 0, bytes: 0 }, mentions: [] },
-      code: { files: 0, bytes: 0 }, env: [], services: [], logCount: 0, lastLog: null, backups: 0,
-      dependencies: [...(m.requires ?? []).map((n) => dep(n, true)), ...(m.optional ?? []).map((n) => dep(n, false))],
-      dependents: [], conflicts: [], health: p.problem ? 'error' : enabled ? 'ok' : 'off', ui: uiOf(p), webProblem: p.problem,
+      ...it, description: m.description ?? '', author: m.author ?? '', kind: m.kind, builtWith: m.builtWith ?? null, enabledByDefault: m.enabledByDefault !== false,
+      removed: false, loaded: false, parts: { ...EMPTY_PARTS, web: Boolean(p.library) }, lifecycle: EMPTY_LC, code: { files: 0, bytes: 0 }, logCount: 0, lastLog: null, backups: 0,
+      ui: uiOf(p), webProblem: p.problem,
     };
   });
-  const conflicts = webConflicts();
-  for (const it of items) it.conflicts = conflicts.filter((c) => c.folders.includes(it.folder)).map((c) => c.id);
-  return { items, conflicts, services: [], live: false, counts: count(items, conflicts) };
+  return { items, conflicts: inv.conflicts, services: [], live: false, counts: inv.counts };
 }
 
-function dep(entry: string, required: boolean): Dependency {
-  const svc = entry.startsWith('service:') ? entry.slice(8) : entry;
-  return { kind: entry.startsWith('service:') ? 'service' : 'other', name: svc, required, status: 'declared', detail: 'The console API is offline, so this can’t be checked right now.' };
+/**
+ * The server resolves with its own copy of the engine, but only the browser sees web contributions (view / dialog /
+ * settings-tab ids), so they are re-resolved here: the server's records + the bundle's contributions through the engine.
+ */
+function mergeWebContributions(j: ServerInventory): { items: PluginInventoryItem[]; conflicts: Conflict[]; counts: PluginInventory['counts'] } {
+  const byFolder = new Map(bundledPlugins.map((p) => [p.folder, p]));
+  const records: PluginRecord[] = j.items.map((it) => {
+    const p = byFolder.get(it.folder);
+    const extra = p ? webContributions(p).filter((c) => !it.provides.includes(c)) : [];
+    return pluginRecord({ ...stripItem(it), provides: [...it.provides, ...extra] });
+  });
+  return buildPluginInventory(records, { apiLevels: [1], target: 'axf-console', live: j.services });
 }
 
-function count(items: PluginRow[], conflicts: Conflict[]): Inventory['counts'] {
-  return {
-    total: items.length,
-    enabled: items.filter((i) => i.enabled).length,
-    errors: items.filter((i) => i.error).length,
-    missingDeps: items.filter((i) => i.dependencies.some((d) => d.required && (d.status === 'missing' || d.status === 'disabled'))).length,
-    conflicts: conflicts.length,
-    editors: items.filter((i) => i.uiEditor.length).length,
-  };
-}
+const stripItem = (it: PluginInventoryItem): PluginRecord => {
+  const { dependencies: _d, dependents: _e, health: _h, conflicts: _c, ...rec } = it as PluginInventoryItem & Record<string, unknown>;
+  return pluginRecord(rec as PluginRecord);
+};
+
+interface ServerInventory { frame?: string; items: PluginRow[]; conflicts: Conflict[]; services: LiveService[]; counts: PluginInventory['counts'] }
 
 export async function loadInventory(): Promise<Inventory> {
   try {
     const r = await pluginFetch(FOLDER, 'inventory');
     if (!r.ok || !(r.headers.get('content-type') ?? '').includes('json')) return offline();
-    const j = (await r.json()) as Omit<Inventory, 'live'>;
+    const j = (await r.json()) as ServerInventory;
     const byFolder = new Map(bundledPlugins.map((p) => [p.folder, p]));
-    const extra = webConflicts();
-    const conflicts = [...j.conflicts, ...extra];
-    const items = j.items.map((it) => {
+    const merged = mergeWebContributions(j);
+    const items: PluginRow[] = j.items.map((it) => {
       const b = byFolder.get(it.folder);
-      return { ...it, ui: uiOf(b), webProblem: b?.problem, conflicts: [...it.conflicts, ...extra.filter((c) => c.folders.includes(it.folder)).map((c) => c.id)] };
+      const m = merged.items.find((x) => x.folder === it.folder)!;
+      return { ...it, ...m, ui: uiOf(b), webProblem: b?.problem, error: it.error ?? b?.problem ?? null };
     });
-    return { items, conflicts, services: j.services, live: true, counts: { ...j.counts, conflicts: conflicts.length } };
+    return { items, conflicts: merged.conflicts, services: j.services, live: true, counts: merged.counts };
   } catch {
     return offline();
   }
@@ -205,7 +181,5 @@ export const HEALTH_LABEL: Record<Health, string> = { ok: 'Healthy', partial: 'P
 export const HEALTH_TONE: Record<Health, 'success' | 'warning' | 'danger' | 'accent' | undefined> = { ok: 'success', partial: 'warning', off: undefined, blocked: 'danger', error: 'danger' };
 export const DEP_TONE = (s: DepStatus): 'success' | 'warning' | 'danger' | 'accent' | undefined =>
   s === 'ok' || s === 'set' ? 'success' : s === 'missing' || s === 'unsupported' || s === 'error' ? 'danger' : s === 'disabled' || s === 'unset' || s === 'optional-missing' || s === 'not loaded' ? 'warning' : s === 'granted' ? 'accent' : undefined;
-export const DEP_LABEL: Record<DepStatus, string> = {
-  ok: 'satisfied', missing: 'missing', disabled: 'provider off', 'optional-missing': 'not installed', set: 'set', unset: 'not set', granted: 'granted',
-  declared: 'declared', unsupported: 'unsupported', error: 'error', 'not loaded': 'not loaded',
-};
+export const DEP_LABEL: Record<DepStatus, string> = DEPENDENCY_LABEL;
+export const HEALTH_RANK = PLUGIN_HEALTH_RANK;

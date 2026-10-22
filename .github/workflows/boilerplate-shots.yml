@@ -1,0 +1,137 @@
+name: Boilerplate screenshots
+
+# Real screenshots of every boilerplate (boilerplate-shots@1). For each boilerplate: the build engine generates an
+# Android app from it (template android-compose), Gradle compiles it, an Android emulator runs it and
+# framework/cli/boilerplate-capture.py taps through each screen in the app's own navigation and saves a screenshot.
+# The last job files the verified ones into framework/boilerplates/<id>/screenshots/ + boilerplate.json
+# (framework/cli/boilerplate-shots.mjs apply) and pushes to main. The Dev Console serves them and Build Pilot shows
+# them in each boilerplate's row. Run it by hand (Actions → Boilerplate screenshots → Run workflow) after
+# boilerplates or the Android shell change.
+
+on:
+  workflow_dispatch:
+    inputs:
+      boilerplates:
+        description: 'Boilerplate ids, comma separated, or "all"'
+        required: false
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: boilerplate-shots
+  cancel-in-progress: false
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - id: m
+        env: { WHICH: '${{ inputs.boilerplates }}' }
+        run: echo "matrix=$(node framework/cli/boilerplate-shots.mjs matrix "${WHICH:-all}")" >> "$GITHUB_OUTPUT"
+
+  capture:
+    needs: list
+    name: ${{ matrix.bp.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        bp: ${{ fromJson(needs.list.outputs.matrix) }}
+    env:
+      BP_ID: ${{ matrix.bp.id }}
+      BP_NAME: ${{ matrix.bp.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Generate the app from the boilerplate
+        run: |
+          echo "$BP_ID" | grep -Eq '^[a-z0-9][a-z0-9-]{0,63}$'
+          node framework/cli/axf.mjs init "apps/shots-$BP_ID" --template android-compose --boilerplate "$BP_ID" --name "$BP_NAME"
+          PKG=$(node -e "console.log(JSON.parse(require('fs').readFileSync('apps/shots-$BP_ID/axf.manifest.json','utf8')).android.applicationId)")
+          echo "$PKG" | grep -Eq '^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$'
+          echo "APP_PKG=$PKG" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - name: Android SDK (API 35 + build-tools)
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" "platform-tools" > /dev/null
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.14.3' }
+      - name: Build the APK
+        working-directory: apps/shots-${{ matrix.bp.id }}
+        run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/apk.log | tail -20; exit ${PIPESTATUS[0]}
+      - name: Compiler errors
+        if: failure()
+        run: |
+          grep -hE "^e: |error:|What went wrong|FAILED|Unresolved reference" /tmp/apk.log | sort -u | head -30 | sed 's/^/::error title=Compiler::/' || true
+      - name: Enable KVM (hardware acceleration for the emulator)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo apt-get -qq install -y imagemagick > /dev/null || true
+      - name: Run it on an emulator and capture every screen
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: default
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: >-
+            python3 framework/cli/boilerplate-capture.py --apk "$(ls apps/shots-${{ matrix.bp.id }}/app/build/outputs/apk/debug/*.apk | head -1)" --package "${{ env.APP_PKG }}" --boilerplate "framework/boilerplates/${{ matrix.bp.id }}/boilerplate.json" --out "shots/${{ matrix.bp.id }}"
+      - name: Report the captures
+        if: always()
+        run: |
+          f="shots/$BP_ID/result.json"
+          if [ -f "$f" ]; then node -e "const r=JSON.parse(require('fs').readFileSync('$f','utf8'));for(const s of r.shots)console.log('::notice title='+r.boilerplate+'::'+s.screen+' ('+s.label+') '+(s.verified?'verified':'NOT verified'));if(r.debug)console.log('::notice title=on screen::'+JSON.stringify(r.debug).slice(0,3500))"; else echo "::warning title=$BP_ID::no result.json (capture didn't finish)"; fi
+          ls -la "shots/$BP_ID" 2>/dev/null | sed 's/^/::notice title=files::/' | head -20 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shots-${{ matrix.bp.id }}
+          path: shots/${{ matrix.bp.id }}
+          if-no-files-found: error
+          retention-days: 14
+
+  file:
+    needs: capture
+    if: always() && needs.capture.result != 'cancelled'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { pattern: 'shots-*', path: captured }
+      - name: File the verified screenshots
+        run: |
+          mkdir -p staged
+          for d in captured/shots-*; do [ -d "$d" ] && mv "$d" "staged/${d#captured/shots-}"; done
+          node framework/cli/boilerplate-shots.mjs apply staged | tee /tmp/report.txt
+          sed 's/^/::notice title=Filed::/' /tmp/report.txt
+          echo '### Boilerplate screenshots' >> "$GITHUB_STEP_SUMMARY"; sed 's/^/- /' /tmp/report.txt >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit and push
+        run: |
+          git add framework/boilerplates
+          if git diff --cached --quiet; then echo "No changes."; exit 0; fi
+          git config user.name "axf-shots[bot]"
+          git config user.email "axf-shots@users.noreply.github.com"
+          git commit -q -m "Boilerplate screenshots captured (run ${{ github.run_number }}) [skip ci]" -m "$(cat /tmp/report.txt)"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1

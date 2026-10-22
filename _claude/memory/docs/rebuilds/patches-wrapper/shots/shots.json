@@ -1,0 +1,5 @@
+[
+  { "name": "console-home", "steps": [ { "wait": 1500 } ] },
+  { "name": "console-embedded-in-patches", "userAgent": "AXF-Embed/patches", "steps": [ { "wait": 1500 } ] },
+  { "name": "settings-appearance-embedded", "userAgent": "AXF-Embed/patches", "steps": [ { "search": "Appearance", "wait": 2500 } ] }
+]

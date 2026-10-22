@@ -1,0 +1,62 @@
+[
+  {
+    "name": "live",
+    "steps": [
+      {
+        "eval": "localStorage.setItem('axp-build-manager:tab','live'); AXF.navigate('build-manager')",
+        "wait": 3500
+      }
+    ]
+  },
+  {
+    "name": "built",
+    "steps": [
+      {
+        "eval": "localStorage.setItem('axp-build-manager:tab','built'); AXF.navigate('build-manager')",
+        "wait": 3500
+      }
+    ]
+  },
+  {
+    "name": "search",
+    "steps": [
+      {
+        "eval": "localStorage.setItem('axp-build-manager:tab','remaining'); AXF.navigate('build-manager')",
+        "wait": 3000
+      },
+      {
+        "click": ".axp-build-manager__search input"
+      },
+      {
+        "type": "asset",
+        "wait": 900
+      }
+    ]
+  },
+  {
+    "name": "start",
+    "steps": [
+      {
+        "eval": "localStorage.setItem('axp-build-manager:tab','remaining'); AXF.navigate('build-manager')",
+        "wait": 3000
+      },
+      {
+        "click": ".axp-build-manager__start-btn",
+        "wait": 2500
+      },
+      {
+        "eval": "document.querySelector('.axp-build-manager__start')?.scrollIntoView({block:'start'})",
+        "wait": 600
+      }
+    ]
+  },
+  {
+    "name": "banner",
+    "steps": [
+      {
+        "eval": "AXF.navigate('home')",
+        "wait": 3000
+      }
+    ]
+  }
+]

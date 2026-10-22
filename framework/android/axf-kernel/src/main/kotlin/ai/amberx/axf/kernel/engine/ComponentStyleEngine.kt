@@ -25,7 +25,7 @@ public data class ContainerStyle(val padding: Double, val elevation: Int, val va
 public data class DialogStyle(val width: Double, val variant: ai.amberx.axf.kernel.asset.DialogVariant, val backdrop: ai.amberx.axf.kernel.asset.Backdrop, val animation: ai.amberx.axf.kernel.asset.DialogAnim, val header: ai.amberx.axf.kernel.asset.HeaderStyle, val closeOnBackdrop: Boolean)
 public data class PopupStyle(val position: ai.amberx.axf.kernel.asset.PopupPosition, val variant: ai.amberx.axf.kernel.asset.PopupVariant, val durationMs: Int, val showIcon: Boolean, val maxVisible: Int)
 public data class ContextMenuStyle(val variant: ai.amberx.axf.kernel.asset.ContextVariant, val showIcons: Boolean, val showShortcuts: Boolean, val rowHeight: Double, val minWidth: Double)
-public data class ToolbarStyle(val variant: ToolbarVariant, val density: ChromeDensity, val surface: ChromeSurface, val divider: Boolean, val paddingY: Double, val buttonHeight: Double)
+public data class ToolbarStyle(val variant: ToolbarVariant, val density: ChromeDensity, val surface: ChromeSurface, val divider: Boolean, val paddingY: Double, val buttonHeight: Double, val collapsible: Boolean = false)
 public data class NavMenuStyle(val style: NavStyle, val density: ChromeDensity, val indicator: NavIndicator, val showIcons: Boolean, val itemPaddingY: Double)
 public data class AppMenuStyle(val density: ChromeDensity, val surface: ChromeSurface, val height: Double)
 
@@ -78,7 +78,7 @@ public object ComponentStyleEngine {
     private val MENUBAR_H = mapOf(ChromeDensity.COMPACT to 0.0, ChromeDensity.REGULAR to 4.0, ChromeDensity.ROOMY to 12.0)
 
     public fun toolbar(t: Toolbar, st: StyleTokens): ToolbarStyle =
-        ToolbarStyle(t.variant, t.density, t.surface, t.divider, st.space * TOOLBAR_PY.getValue(t.density), st.rowHeight + TOOLBTN_H.getValue(t.density))
+        ToolbarStyle(t.variant, t.density, t.surface, t.divider, st.space * TOOLBAR_PY.getValue(t.density), st.rowHeight + TOOLBTN_H.getValue(t.density), t.collapsible)
     public fun navMenu(n: NavMenu): NavMenuStyle = NavMenuStyle(n.style, n.density, n.indicator, n.showIcons, NAV_PY.getValue(n.density))
     public fun appMenu(a: AppMenu, st: StyleTokens): AppMenuStyle = AppMenuStyle(a.density, a.surface, st.rowHeight + MENUBAR_H.getValue(a.density))
 

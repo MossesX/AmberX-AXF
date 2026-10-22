@@ -104,6 +104,7 @@ export function toolbarStyle(t: ToolbarData): StyleOutput {
       'data-fx-toolbar': t.variant,
       'data-fx-toolbar-surface': t.surface ?? 'flat',
       'data-fx-toolbar-divider': t.divider === false ? 'off' : 'on',
+      'data-fx-toolbar-collapsible': t.collapsible === true ? 'on' : 'off',
     },
   };
 }

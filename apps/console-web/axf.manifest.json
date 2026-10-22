@@ -18,7 +18,7 @@
     "color-theme": "arctic-daylight",
     "style-theme": "glass-orbit",
     "layout": "focus-top",
-    "app-menu": "developer",
+    "app-menu": "console",
     "toolbar": "standard-icons",
     "nav-menu": "console-nav",
     "context-menu": "compact-classic",
@@ -30,9 +30,24 @@
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
     "badge": "new",
     "uac-policy": "standard"
   },
+  "hidden": [
+    "toolbar",
+    "nav-menu"
+  ],
   "structure": [
     {
       "path": "axf.manifest.json",

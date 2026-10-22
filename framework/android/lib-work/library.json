@@ -1,0 +1,26 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.work",
+  "module": "lib-work",
+  "name": "Work (poll jobs in a foreground service, boot restart)",
+  "description": "The Android host for work@1 poll jobs: an app registers a job (a kernel JobSpec: interval bounds as data, one rule per outcome with fixed / exponential / interval delays, one-time notices per spell, run conditions read from the app's own prefs, foreground + boot restart) whose body is a suspend function that only calls libraries; the loop is the framework's. PollService (foreground, specialUse) drives every job through the kernel's WorkEngine state machine and only carries out its effects (run, sleep, stop, notice, status); START / CHECK_NOW / STOP / INTERVAL commands; a refused foreground start stops quietly; START_STICKY; WorkBootReceiver restarts jobs after a reboot or update when their conditions hold; running-state + state flows per job; the ongoing notification through lib-notifications, rebuilt from the job's state after every run. Fills the platform's android.work placeholder. The engine is cross-port: framework/core/engines/work.ts = ai.amberx.axf.kernel.work.WorkEngine, fixture spec/fixtures/work.json.",
+  "features": ["lib.work", "k.scheduler", "dv.bg"],
+  "dependsOn": ["ai.amberx.axf.notifications"],
+  "manifestKey": "libraries.work",
+  "params": [],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-work:$axf\")",
+    "module": "WorkModule(jobs = listOf())",
+    "import": "ai.amberx.axf.work.WorkModule",
+    "routes": []
+  },
+  "ports": {
+    "android": { "status": "scaffolded", "dir": "android/lib-work", "note": "written without a compiler; CI compiles and runs :lib-work:testDebugUnitTest (the kernel engine + WorkConformanceTest and JobRunner were compiled and replayed with a local kotlinc)" },
+    "web": { "status": "compiled", "dir": "core/engines/work.ts", "note": "engine + reducer only (no timer host yet); self-test spec/check-work.mts" }
+  },
+  "placeholders": [
+    { "capability": "axf.work.manager", "note": "The kernel's WorkScheduler contract (axf.work) on WorkManager: constrained periodic work, 15 min minimum, survives process death." },
+    { "capability": "axf.work.alarm", "note": "Wall-clock alarms (AlarmManager), exact only when allowed." },
+    { "capability": "axf.work.chain", "note": "Jobs that run after each other." }
+  ]
+}

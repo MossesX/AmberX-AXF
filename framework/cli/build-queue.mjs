@@ -5,6 +5,9 @@
  *   node framework/cli/build-queue.mjs              sync with the plan and print the queue
  *   node framework/cli/build-queue.mjs --next       print the next step to build (id, model, deps, features)
  *   node framework/cli/build-queue.mjs --reprocess  apply a reprocess (dependency order + rework flags)
+ *   node framework/cli/build-queue.mjs --steps      also list each step's small steps (✓ when done) with their estimates
+ *   node framework/cli/build-queue.mjs --check-steps  small-steps rule (Oct 21 2026): remaining steps over 30 min without
+ *                                                   small steps of ≤ 30 min. Read-only; warns, exit 0 (--strict fails). In CI.
  *
  * The logic lives in framework/plan/build-queue-core.mjs (shared with the console and the MCP server);
  * this file only reads and writes the files.
@@ -72,11 +75,37 @@ export function stepQueue({ id, action, status, note, by = 'console', log = () =
   return queueView();
 }
 
+/** Edit a step's build-time estimate and its small steps (Oct 21 2026; see build-queue-core stepsAction). Never touches the plan. */
+export function stepsQueue({ by = 'console', log = () => {}, ...edit }) {
+  const q = core.stepsAction(loadPlan().features, loadQueueState(), edit, new Date().toISOString(), by);
+  saveQueueState(q);
+  log(q.history[q.history.length - 1]?.text ?? `steps of ${edit.id} updated`);
+  return queueView();
+}
+
+/** Remaining steps that break the small-steps rule (CI `--check-steps`). */
+export function unsplitQueue() { return core.unsplitSteps(loadPlan().features, loadQueueState()); }
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const log = (m) => console.log(m);
+  if (process.argv.includes('--check-steps')) {
+    // Read-only: no sync, so CI never rewrites the shared data file.
+    const view = core.computeQueue(loadPlan().features, loadQueueState());
+    const bad = core.unsplitSteps(loadPlan().features, loadQueueState());
+    const left = Object.entries(view.minutesLeftByModel).map(([m, n]) => `${core.MODEL_LABEL[m] ?? m} ${core.formatMinutes(n) || '0 min'}`).join(' · ');
+    console.log(`build queue: ${view.steps.length - (view.counts.done ?? 0) - (view.counts.rework ?? 0) - (view.counts.dropped ?? 0)} remaining step(s) · time left ${left || '—'}`);
+    for (const b of bad) console.log(`  ⚠ ${b.id} (~${b.estimate || '?'}): ${b.reasons.join('; ')}`);
+    if (!bad.length) console.log('  every remaining step over 30 min is split into small steps of 30 min or less');
+    else console.log(`  ${bad.length} step(s) break the small-steps rule (steps over 30 min are split into small steps of ≤ 30 min, each with an estimate)`);
+    process.exit(bad.length && process.argv.includes('--strict') ? 1 : 0);
+  }
   if (process.argv.includes('--reprocess')) reprocessQueue({ apply: true, by: 'cli', log });
   const { view } = syncBuildQueue({ by: 'cli', log });
   if (process.argv.includes('--next')) { const s = view.steps.find((x) => x.id === view.next); console.log(JSON.stringify(s, null, 2)); }
-  else for (const s of view.steps) console.log(`${String(s.position).padStart(2)}. ${s.state.padEnd(7)} ${s.modelLabel.padEnd(10)} ${s.title}${s.violations.length ? '  ⚠ ' + s.violations.join('; ') : ''}${s.rework ? '  ↻ ' + s.rework.reasons[0] : ''}`);
-  console.log(`next: ${view.next ?? '—'} · ${JSON.stringify(view.counts)} · remaining by model ${JSON.stringify(view.byModel)}`);
+  else for (const s of view.steps) {
+    const prog = s.steps.length ? `  [${s.stepsDone}/${s.steps.length} steps${s.minutesLeft ? `, ${core.formatMinutes(s.minutesLeft)} left` : ''}]` : s.estimate ? `  [~${s.estimate}]` : '';
+    console.log(`${String(s.position).padStart(2)}. ${s.state.padEnd(7)} ${s.modelLabel.padEnd(10)} ${s.title}${prog}${s.needsSplit && s.state !== 'done' ? '  ⚠ needs splitting' : ''}${s.violations.length ? '  ⚠ ' + s.violations.join('; ') : ''}${s.rework ? '  ↻ ' + s.rework.reasons[0] : ''}`);
+    if (process.argv.includes('--steps')) for (const [k, sp] of s.steps.entries()) console.log(`      ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
+  }
+  console.log(`next: ${view.next ?? '—'} · ${JSON.stringify(view.counts)} · remaining by model ${JSON.stringify(view.byModel)} · time left ${JSON.stringify(Object.fromEntries(Object.entries(view.minutesLeftByModel).map(([m, n]) => [m, core.formatMinutes(n) || '0 min'])))}`);
 }

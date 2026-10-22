@@ -17,7 +17,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import ai.amberx.axf.kernel.module.ExtensionPoint
 
 /* Composition locals every AXF composable reads. All are provided by [AxfRoot]. */
 
@@ -63,6 +65,8 @@ public data class DialogContribution(
     val id: String,
     val title: String,
     val icon: String? = null,
+    /** false keeps it out of the app-wide search (web: `DialogDef.searchable`) */
+    val searchable: Boolean = true,
     val content: @Composable (DialogState) -> Unit,
 )
 
@@ -72,6 +76,28 @@ public data class ShellRegionContribution(
     val id: String,
     val content: @Composable () -> Unit,
 )
+
+/**
+ * A service from the kernel's registry, remembered for this kernel (null when no module registered it):
+ * `val lock = rememberService<AppLock>()` instead of `remember(kernel) { kernel?.services?.get<AppLock>() }`.
+ */
+@Composable
+public inline fun <reified T : Any> rememberService(): T? {
+    val kernel = LocalAxfKernel.current
+    return remember(kernel) { kernel?.services?.get(T::class) }
+}
+
+/**
+ * A view a module registers for the shell (web: `AxfWebLibrary.views`), e.g. lib-settings' `settings` and lib-lock's
+ * `lock-pin`. `AppShell` merges these under the app's own `views` (the app's entry wins for the same id) and runs
+ * them through its `viewGuard` like every other view.
+ */
+public data class ViewContribution(val id: String, val title: String, val icon: String? = null, val content: @Composable () -> Unit)
+
+/** Extension points owned by the Compose layer (they carry composables, so they can't live in the pure kernel). */
+public object AxfUiPoints {
+    public val VIEWS: ExtensionPoint<ViewContribution> = ExtensionPoint("axf.views", ViewContribution::class, "Views modules register with the shell (merged under the app's own views)")
+}
 
 /** A devtools panel contributed through `ExtensionPoints.DEVTOOLS_PANELS`. */
 public data class DevtoolsPanelContribution(val id: String, val label: String, val icon: String = "bug", val content: @Composable () -> Unit)

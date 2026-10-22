@@ -6,7 +6,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
-  type AgentRef, type Config, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
+  type AgentRef, type Config, type ContractInfo, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
 } from './api';
 
 function useStore<T>(s: { get: () => T | undefined; subscribe: (f: () => void) => () => void; reload: () => Promise<T | undefined>; error: () => string }) {
@@ -210,7 +210,9 @@ export function SetupWizard() {
             <li>Many providers at once, with a fallback chain if one fails, and side-by-side model comparison.</li>
             <li>Reads the AXF repository, fetches web pages, accepts images and files, and runs agent tools.</li>
             <li>With the agent manager installed: chat as any agent, with its persistent memory.</li>
+            <li>Replies are live sessions on the host: close the browser and come back on any device.</li>
           </ul>
+          <p className="fx-small fx-muted">Providers come from the framework's shared registry (<code className="fx-mono">framework/schemas/ai-providers.json</code>, {cat.providers.length} kinds); every AXF app's assistant shares it.</p>
           {cfg.setupComplete && <Chip tone="success">Already set up — {ready.length} provider{ready.length === 1 ? '' : 's'} ready</Chip>}
         </div>
       )}
@@ -403,6 +405,7 @@ export function BehaviorPanel() {
         <Field label="Thinking budget (tokens)"><input className="fx-input" type="number" min={1024} value={v.params.thinking_budget} onChange={(e) => set({ params: { ...v.params, thinking_budget: Number(e.target.value) } })} /></Field>
         <Field label="Reasoning effort (OpenAI-style)"><select className="fx-input" value={v.params.reasoning_effort} onChange={(e) => set({ params: { ...v.params, reasoning_effort: e.target.value } })}><option value="">default</option><option value="low">low</option><option value="medium">medium</option><option value="high">high</option></select></Field>
         <Field label="Daily token budget" hint="0 = unlimited"><input className="fx-input" type="number" min={0} value={v.dailyTokenBudget} onChange={(e) => set({ dailyTokenBudget: Number(e.target.value) })} /></Field>
+        <Field label="Daily tokens per hub user" hint="non-admins signed in through axHub; 0 = unlimited"><input className="fx-input" type="number" min={0} value={v.userDailyTokens ?? 50000} onChange={(e) => set({ userDailyTokens: Number(e.target.value) })} /></Field>
       </div>
       <span className="fx-small fx-muted">Tools</span>
       {Object.entries(cat.toolGroups).map(([g, label]) => <Toggle key={g} label={label} checked={!!v.tools[g]} onChange={(c) => set({ tools: { ...v.tools, [g]: c } })} />)}
@@ -412,6 +415,7 @@ export function BehaviorPanel() {
       <Toggle label="Name conversations automatically" checked={v.autoTitle} onChange={(c) => set({ autoTitle: c })} />
       <Toggle label="Show model, time and tokens under replies" checked={v.showUsage} onChange={(c) => set({ showUsage: c })} />
       <Toggle label="Redact API keys and tokens from messages before they leave the console" checked={v.redactSecrets} onChange={(c) => set({ redactSecrets: c })} />
+      <Toggle label="Keep the text of a reply interrupted by a console restart" hint="saved as an interrupted message you can continue from" checked={v.keepInterrupted !== false} onChange={(c) => set({ keepInterrupted: c })} />
       <span className="fx-small fx-muted">Agent manager</span>
       {agents ? (
         <>
@@ -471,6 +475,10 @@ export function UsagePanel() {
       <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Provider</th><th>Model</th><th>Calls</th><th>In</th><th>Out</th></tr></thead>
         <tbody>{u.byProfileModel.map((r) => <tr key={`${r.profile}|${r.model}`}><td>{r.profile}</td><td className="fx-mono">{r.model}</td><td>{fmtNum(r.calls)}</td><td>{fmtNum(r.input)}</td><td>{fmtNum(r.output)}</td></tr>)}</tbody></table></div>
       {u.byProfileModel.length === 0 && <p className="fx-muted fx-small">No calls yet.</p>}
+      {u.users && u.users.length > 0 && (
+        <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Hub user</th><th>Today</th><th>Last 30 days</th></tr></thead>
+          <tbody>{u.users.map((r) => <tr key={r.user}><td>{r.user}</td><td>{fmtNum(r.today)}</td><td>{fmtNum(r.month)}</td></tr>)}</tbody></table></div>
+      )}
     </div>
   );
 }
@@ -482,9 +490,10 @@ export function SessionsPanel() {
   const rt = useRuntime();
   const cfg = useConfig();
   const [d, setD] = useState<{ host: string; active: string; hosts: SessionHostInfo[]; items: LiveSessionInfo[] } | null>(null);
+  const [ci, setCi] = useState<ContractInfo | null>(null);
   const [err, setErr] = useState('');
   const load = () => call<{ host: string; active: string; hosts: SessionHostInfo[]; items: LiveSessionInfo[] }>('sessions').then(setD, (e: Error) => setErr(e.message));
-  useEffect(() => { void load(); const t = setInterval(() => void load(), 5000); return () => clearInterval(t); }, []);
+  useEffect(() => { void load(); void call<ContractInfo>('contract').then(setCi, () => undefined); const t = setInterval(() => void load(), 5000); return () => clearInterval(t); }, []);
   if (!d) return <p className="fx-muted">{err || 'Loading…'}</p>;
   const pick = d.host || cfg?.sessionHost || 'local';
   const closeOne = async (s: LiveSessionInfo) => {
@@ -494,13 +503,15 @@ export function SessionsPanel() {
   };
   return (
     <div className="fx-stack">
-      <p className="fx-muted fx-small">Every chat is a live session on its host. Closing the browser, the dialog or the app only detaches: the reply keeps going, and opening the chat again on any device catches up and follows it. A session ends only when you end it here or delete the conversation.</p>
+      <p className="fx-muted fx-small">Every chat is a live session on its host. Closing the browser, the dialog or the app only detaches: the reply keeps going, and opening the chat again on any device catches up and follows it. A session ends only when you end it here or delete the conversation. A console restart mid-reply keeps the text that had arrived as an interrupted message.</p>
+      {ci && <div className="fx-row fx-row--wrap"><Chip>{ci.liveSession}</Chip><Chip>{ci.assistant}</Chip>{ci.hosts.map((h) => <Chip key={h.id} tone={h.available ? 'success' : undefined}>{h.label}: {h.available ? 'available' : 'placeholder'}</Chip>)}</div>}
       <Field label="Session host" hint={d.hosts.find((h) => h.id === pick)?.note}>
         <select className="fx-input" value={pick} onChange={(e) => void saveConfig({ sessionHost: e.target.value }).then(load)}>
           {d.hosts.map((h) => <option key={h.id} value={h.id}>{h.label}{h.available ? '' : ' — not available yet'}</option>)}
         </select>
       </Field>
-      {pick !== d.active && <Chip tone="warning">Running on {d.hosts.find((h) => h.id === d.active)?.label ?? d.active} until {d.hosts.find((h) => h.id === pick)?.label ?? pick} is available</Chip>}
+      {pick !== d.active && <Chip tone="warning">Running on {d.hosts.find((h) => h.id === d.active)?.label ?? (d.active || 'no host')} until {d.hosts.find((h) => h.id === pick)?.label ?? pick} is available</Chip>}
+      <p className="fx-small fx-muted">Hosts are an open registry: a plugin providing <code className="fx-mono">axf.live-host@1</code> (axHub's session workers, when built) takes over without any change here.</p>
       {d.items.length === 0 ? <p className="fx-muted fx-small">No live sessions yet.</p> : (
         <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Chat</th><th>State</th><th>Watching</th><th>Last activity</th><th /></tr></thead>
           <tbody>{d.items.map((s) => (
@@ -509,7 +520,7 @@ export function SessionsPanel() {
               <td><Chip tone={s.state === 'running' ? 'accent' : s.state === 'waiting' ? 'warning' : undefined}>{s.state}</Chip></td>
               <td>{s.viewers}</td>
               <td>{fmtTime(s.updatedAt)}</td>
-              <td><Button icon="x" onClick={() => void closeOne(s)}>End</Button></td>
+              <td className="fx-row">{s.state === 'running' && <Button icon="pause" onClick={() => void post(`sessions/${s.id}/stop`, {}).then(load)}>Stop</Button>}<Button icon="sparkles" onClick={() => rt.openDialog('ai-assistant.chat', { open: s.id })}>Open</Button><Button icon="x" onClick={() => void closeOne(s)}>End</Button></td>
             </tr>
           ))}</tbody></table></div>
       )}

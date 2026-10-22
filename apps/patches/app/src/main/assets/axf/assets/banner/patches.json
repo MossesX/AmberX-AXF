@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "patches",
+  "name": "Patches",
+  "version": "1.0.0",
+  "description": "The one banner on screen in Patches: the Patches mark on the left; day/night switch, clock and the settings button on the right. The apps in the tabs hide their own (embed@1).",
+  "author": "AmberX AXF build engine",
+  "tags": ["banner", "patches"],
+  "data": {
+    "height": 28,
+    "surface": "flat",
+    "logo": { "show": true, "text": "Patches" },
+    "attach": [
+      { "type": "theme-switch", "id": "day-night", "at": "right", "order": 10 },
+      { "type": "clock", "id": "digital-12h", "at": "right", "order": 20 },
+      { "type": "action-button", "id": "settings", "at": "right", "order": 30 }
+    ],
+    "divider": true
+  }
+}

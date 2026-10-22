@@ -15,14 +15,19 @@ import socket
 import stat
 import subprocess
 import time
-import urllib.error
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable
 
 
-from credentials import CREDENTIALS, CredStore  # noqa: E402 — core module (server/credentials.py)
+from fastapi import HTTPException  # noqa: E402 — raised by fixes and run_one (was used without an import)
+from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core module (server/credentials.py)
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import github, http as axf_http
+
+# Coolify's own container on the VPS's shared Docker network (`coolify`, port 8080 inside): plain http stays on the
+# server, so it may carry the token. Any other http address is refused (Brett, Oct 21 2026).
+COOLIFY_INTERNAL_HOSTS = ("coolify",)
 
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
@@ -52,14 +57,13 @@ HOST_SCRIPT = "bash /opt/axf/deploy/console-doctor.sh"
 
 
 def _http(url: str, headers: dict[str, str] | None = None, method: str = "GET", body: bytes | None = None, timeout: float = 7) -> tuple[int, dict[str, str], str]:
-    req = urllib.request.Request(url, data=body, method=method, headers={"user-agent": "axf-console-syscheck", **(headers or {})})
+    """One check request (axf_server.http): https only (plain http only to this machine), redirects never followed (the
+    keys being checked must not travel to another host; a 3xx is the answer), 4 KB read. Network trouble → (0, {}, why)."""
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return r.status, {k.lower(): v for k, v in r.headers.items()}, r.read(4000).decode("utf-8", "replace")
-    except urllib.error.HTTPError as e:
-        return e.code, {k.lower(): v for k, v in (e.headers or {}).items()}, ""
-    except Exception as e:  # noqa: BLE001 — network trouble is a result, not a crash
+        r = axf_http.request(method, url, headers={"user-agent": "axf-console-syscheck", **(headers or {})}, body=body, timeout=timeout, max_bytes=4000, truncate=True)
+    except axf_http.HttpError as e:
         return 0, {}, str(e)[:200]
+    return r.status, r.headers, r.text() if r.ok else ""
 
 
 # ---------------------------------------------------------------- checks
@@ -95,6 +99,7 @@ class SysCheck:
             "shared-data": self.c_shared_data,
             "claude-files": self.c_claude_files,
             "host-report": self.c_host_report,
+            "moshi-key": self.c_moshi_key,
         }
         for hid, meta in HOST_CHECKS.items():
             self.checks[hid] = (lambda h=hid: self.c_host(h))
@@ -152,7 +157,10 @@ class SysCheck:
                                   "Permissions: Contents → Read and write, Actions → Read, Metadata → Read.", "Paste it here; it is saved on the server only."], order=10)
         if not tok:
             return self.item("github-token", "github", "GitHub token", "warn", "Not set: CI downloads (APK, Maven) and publishing settings to every clone won't work.", **base)
-        code, hdr, _ = _http(f"https://api.github.com/repos/{self.repo}", {"authorization": f"Bearer {tok}", "accept": "application/vnd.github+json"})
+        if not github.valid_repo(self.repo):
+            return self.item("github-token", "github", "GitHub token", "error", f"AXF_GITHUB_REPO isn't owner/name ({self.repo[:60]!r}).", **base)
+        # lib-github: token to api.github.com only, no redirects, 4 KB read, 7 s
+        code, hdr = github.GitHubClient(tok, user_agent="axf-console-syscheck").check_token(self.repo, timeout=7)
         if code == 200:
             scopes = hdr.get("x-oauth-scopes")
             note = f"classic token, scopes: {scopes}" if scopes else "fine-grained token (write access is confirmed on its first push)"
@@ -200,9 +208,11 @@ class SysCheck:
         url = os.environ.get("COOLIFY_URL", "").rstrip("/")
         tok = os.environ.get("COOLIFY_TOKEN", "")
         base = dict(fix=self.secret_fix("COOLIFY_URL", "COOLIFY_TOKEN"), links=[{"label": "Coolify API: authorization", "url": DOCS["coolify_api"]}],
-                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Enter your Coolify address and the token."], order=50)
+                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Coolify URL: http://coolify:8080 (private, inside the VPS) or your dashboard's https address; then the token."], order=50)
         if not url or not tok:
             return self.item("coolify", "coolify", "Coolify API", "warn", "Not set: deploys and app status from the console won't work.", **base)
+        if not axf_http.target_ok(url, COOLIFY_INTERNAL_HOSTS):  # never plain http to another machine (axf_server.http)
+            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https, so the token would cross the internet in the clear. Use http://coolify:8080 (Coolify's container on the VPS's own Docker network: the token never leaves the server) or your Coolify dashboard's https address.", **base)
         code, _, body = _http(f"{url}/api/v1/version", {"authorization": f"Bearer {tok}"})
         st = "ok" if code == 200 else "error" if code in (401, 403) else "unknown"
         return self.item("coolify", "coolify", "Coolify API", st, {"ok": f"Connected (Coolify {body.strip()[:20]}).", "error": f"Coolify refused the token ({code})."}.get(st, f"Couldn't reach {url} ({code or 'network'})."), **base)
@@ -278,6 +288,24 @@ class SysCheck:
         if age > 86400:
             return self.item("host-report", "vps", "VPS host report", "warn", f"Last host report is {int(age // 3600)} hours old.", **base)
         return self.item("host-report", "vps", "VPS host report", "ok", f"Host {rep.get('host', '?')} reported {int(age // 60)} minute(s) ago.", **base)
+
+    def c_moshi_key(self) -> Check:
+        """Can Moshi (the phone's mosh/ssh app) sign in to the VPS with a key? The host doctor looks for a key named "moshi"
+        in root's authorized_keys. A key pasted here is only saved; the doctor installs it after showing its fingerprint."""
+        rep = self.host_report() or {}
+        r = (rep.get("checks") or {}).get("host-moshi-key") or {}
+        saved = bool(os.environ.get("MOSHI_SSH_PUBKEY"))
+        cmd = f"{HOST_SCRIPT} --fix host-moshi-key"
+        base = dict(fix=self.secret_fix("MOSHI_SSH_PUBKEY"), depends=["host-report"], order=30,
+                    instructions=["In Moshi: Keys → your key → copy the public key, and paste it here.", f"Then on the VPS: {cmd}   (shows the key's fingerprint and asks before adding it)"],
+                    links=[{"label": "Moshi", "url": "https://getmoshi.app"}])
+        if r.get("status") == "ok":
+            return self.item("moshi-key", "vps", "Moshi key", "ok", str(r.get("summary", ""))[:300], **base)
+        if not r:
+            return self.item("moshi-key", "vps", "Moshi key", "unknown", "The VPS hasn't reported its sign-in keys yet.", **base)
+        if saved:
+            return self.item("moshi-key", "vps", "Moshi key", "warn", f"Saved here, not on the VPS yet. Run on the VPS: {cmd}", **base)
+        return self.item("moshi-key", "vps", "Moshi key", "error", "No Moshi key can sign in to the VPS: paste Moshi's public key.", **base)
 
     def c_host(self, hid: str) -> Check:
         meta = HOST_CHECKS[hid]

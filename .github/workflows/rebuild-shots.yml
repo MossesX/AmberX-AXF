@@ -1,0 +1,221 @@
+name: Rebuild screenshots (Android, before/after)
+
+# Rebuild log rule (Oct 20 2026): every rebuild that changes a GUI gets before/after screenshots. This workflow
+# does the Android half automatically (the web half is framework/cli/rebuild-shots.mjs, run where the rebuild is
+# made). On every push to a rebuild branch (fable/**, rebuild/**) it:
+#   plan    — finds the base (merge-base with main), the pending item id (from the branch name or rebuild reports
+#             changed on the branch) and which Android apps the change can affect (framework/android/** = all apps,
+#             apps/<app>/** = that app). Nothing Android changed → nothing runs.
+#   build   — builds the framework + affected apps at the base and at the head (one job per side).
+#   capture — installs each APK on an API 34 emulator and taps through the app's own nav
+#             (framework/cli/app-screens.mjs → framework/cli/boilerplate-capture.py --start-shot).
+#   file    — commits the screenshots to the head branch under
+#             _claude/memory/docs/rebuilds/<item>/shots/android/{before,after}/<project>/ with android.md
+#             (side-by-side table), [skip ci]. The rebuild report links android.md.
+# Run by hand: Actions → Rebuild screenshots → Run workflow (head ref, optional base ref and item id).
+
+on:
+  push:
+    branches: ['fable/**', 'rebuild/**', 'harvest/**']
+  workflow_dispatch:
+    inputs:
+      head: { description: 'Branch or commit with the rebuild', required: true }
+      base: { description: 'Commit to compare with (default: merge-base with main)', required: false, default: '' }
+      item: { description: 'Pending item id (default: from the branch name)', required: false, default: '' }
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: rebuild-shots-${{ github.event.inputs.head || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    outputs:
+      base: ${{ steps.p.outputs.base }}
+      head: ${{ steps.p.outputs.head }}
+      branch: ${{ steps.p.outputs.branch }}
+      item: ${{ steps.p.outputs.item }}
+      apps: ${{ steps.p.outputs.apps }}
+      captures: ${{ steps.p.outputs.captures }}
+      any: ${{ steps.p.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0, ref: '${{ github.event.inputs.head || github.ref }}' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - id: p
+        env:
+          IN_BASE: ${{ github.event.inputs.base }}
+          IN_ITEM: ${{ github.event.inputs.item }}
+          IN_HEAD: ${{ github.event.inputs.head }}
+        run: |
+          set -e
+          git fetch -q origin main
+          HEAD_SHA=$(git rev-parse HEAD)
+          BRANCH="${IN_HEAD:-${GITHUB_REF_NAME}}"
+          BASE="${IN_BASE:-$(git merge-base origin/main HEAD)}"
+          if [ "$BASE" = "$HEAD_SHA" ]; then BASE=$(git rev-parse HEAD~1); fi
+          ITEM="$IN_ITEM"
+          if [ -z "$ITEM" ]; then
+            ITEM=$(git diff --name-only "$BASE" HEAD -- '_claude/memory/docs/rebuilds/*.md' | grep -v LOG.md | head -1 | xargs -r basename | sed 's/\.md$//')
+          fi
+          [ -z "$ITEM" ] && ITEM=$(echo "$BRANCH" | sed 's|.*/||')
+          echo "$ITEM" | grep -Eq '^[a-z0-9][a-z0-9-]{0,63}$' || { echo "bad item id: $ITEM"; exit 1; }
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
+          node -e '
+            const { execSync } = require("child_process");
+            const changed = process.argv[1].split("\n").filter(Boolean);
+            const apps = JSON.parse(execSync("node framework/cli/app-bundle.mjs list --android", { encoding: "utf8" }))
+              .filter((a) => !a.dir.startsWith("apps/shots-") && !a.dir.startsWith("apps/pilot-"));
+            const all = changed.some((f) => f.startsWith("framework/android/") || f.startsWith("framework/assets/") || f.startsWith("framework/schemas/") || f.startsWith("framework/templates/android-compose/"));
+            const hit = apps.filter((a) => all || changed.some((f) => f.startsWith(a.dir + "/")));
+            const captures = hit.flatMap((a) => ["before", "after"].map((side) => ({ ...a, side })));
+            const fs = require("fs");
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `apps=${JSON.stringify(hit)}\ncaptures=${JSON.stringify(captures)}\nany=${hit.length ? "true" : "false"}\n`);
+            console.log("affected apps:", hit.map((a) => a.dir).join(", ") || "none");
+          ' "$CHANGED"
+          { echo "base=$BASE"; echo "head=$HEAD_SHA"; echo "branch=$BRANCH"; echo "item=$ITEM"; } >> "$GITHUB_OUTPUT"
+          echo "base $BASE → head $HEAD_SHA, item $ITEM"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.any == 'true'
+    name: Build APKs (${{ matrix.side }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        side: [before, after]
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: "${{ matrix.side == 'before' && needs.plan.outputs.base || needs.plan.outputs.head }}" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - name: Android SDK (API 35 + build-tools)
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" "platform-tools" > /dev/null
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.14.3' }
+      - name: Framework modules → mavenLocal
+        working-directory: framework/android
+        run: gradle assembleDebug publishToMavenLocal --no-daemon --continue 2>&1 | tee /tmp/build-framework.log | tail -30
+      - name: Build the affected apps
+        env: { APPS: '${{ needs.plan.outputs.apps }}' }
+        run: |
+          set -o pipefail
+          mkdir -p out
+          : > /tmp/build-apps.log
+          for d in $(node -e 'for (const a of JSON.parse(process.env.APPS)) console.log(a.dir)'); do
+            [ -d "$d" ] || { echo "::notice::$d does not exist on the ${{ matrix.side }} side"; continue; }
+            echo "== $d" | tee -a /tmp/build-apps.log
+            if ! (cd "$d" && gradle :app:assembleDebug --no-daemon 2>&1 | tee -a /tmp/build-apps.log | tail -15); then
+              echo "::warning::$d did not build on the ${{ matrix.side }} side"; echo "$d" >> /tmp/failed-apps; continue
+            fi
+            name=$(node -e "console.log(require('./$d/project.manifest.json').name)")
+            apk=$(ls "$d"/app/build/outputs/apk/debug/*.apk | head -1)
+            cp "$apk" "out/$name.apk"
+            node framework/cli/app-screens.mjs "$d" --out "out/$name.screens.json"
+            node -e "console.log(require('./$d/axf.manifest.json').android.applicationId)" > "out/$name.package"
+          done
+          ls -la out
+      - name: Report compile errors to the "CI build errors" issue (readable without downloading logs)
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}', SIDE: '${{ matrix.side }}', BRANCH: '${{ needs.plan.outputs.branch }}' }
+        run: |
+          [ -s /tmp/failed-apps ] || grep -qE "^e: |FAILED|What went wrong" /tmp/build-framework.log 2>/dev/null || exit 0
+          { echo "### Rebuild screenshots: build errors on \`$BRANCH\` ($SIDE side) — $(git rev-parse --short HEAD)"; echo
+            echo "Apps that didn't build: $(tr '\n' ' ' < /tmp/failed-apps 2>/dev/null)"; echo; echo '```'
+            grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/[^/]*/[^/]*/||' | sort -u | head -150
+            echo '```'; } > /tmp/report.md
+          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rapks-${{ matrix.side }}
+          path: out/
+          retention-days: 7
+
+  capture:
+    needs: [plan, build]
+    if: needs.plan.outputs.any == 'true'
+    name: Capture ${{ matrix.c.project }} (${{ matrix.c.side }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        c: ${{ fromJson(needs.plan.outputs.captures) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.plan.outputs.head }}' }
+      - uses: actions/download-artifact@v4
+        with: { name: 'rapks-${{ matrix.c.side }}', path: apks }
+      - id: have
+        run: |
+          if [ -f "apks/${{ matrix.c.project }}.apk" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; echo "::notice::no ${{ matrix.c.side }} APK for ${{ matrix.c.project }}"; fi
+      - name: Enable KVM
+        if: steps.have.outputs.ok == 'true'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo apt-get -qq install -y imagemagick > /dev/null || true
+      - name: Run on an emulator and capture every nav screen
+        if: steps.have.outputs.ok == 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: >-
+            python3 framework/cli/boilerplate-capture.py --start-shot --apk "apks/${{ matrix.c.project }}.apk" --package "$(cat apks/${{ matrix.c.project }}.package)" --boilerplate "apks/${{ matrix.c.project }}.screens.json" --out "shots/${{ matrix.c.side }}/${{ matrix.c.project }}"
+      - uses: actions/upload-artifact@v4
+        if: steps.have.outputs.ok == 'true'
+        with:
+          name: rshots-${{ matrix.c.side }}-${{ matrix.c.project }}
+          path: shots/
+          retention-days: 14
+
+  file:
+    needs: [plan, capture]
+    if: always() && needs.plan.outputs.any == 'true' && needs.capture.result != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: '${{ needs.plan.outputs.branch }}', fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { pattern: 'rshots-*', path: captured, merge-multiple: true }
+      - name: File the screenshots + android.md
+        env:
+          ITEM: ${{ needs.plan.outputs.item }}
+          BASE: ${{ needs.plan.outputs.base }}
+          HEAD_SHA: ${{ needs.plan.outputs.head }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node framework/cli/rebuild-android-shots.mjs captured "_claude/memory/docs/rebuilds/$ITEM" --base "$BASE" --head "$HEAD_SHA" --run "$RUN" | tee -a "$GITHUB_STEP_SUMMARY"
+          pip install --quiet pillow && python3 framework/cli/shrink-shots.py "_claude/memory/docs/rebuilds/$ITEM/shots/android" || true
+      - name: Commit to the rebuild branch
+        env: { ITEM: '${{ needs.plan.outputs.item }}', BRANCH: '${{ needs.plan.outputs.branch }}' }
+        run: |
+          git add "_claude/memory/docs/rebuilds/$ITEM"
+          if git diff --cached --quiet; then echo "No changes."; exit 0; fi
+          git config user.name "axf-shots[bot]"
+          git config user.email "axf-shots@users.noreply.github.com"
+          git commit -q -m "Rebuild screenshots (Android) for $ITEM, run ${{ github.run_number }} [skip ci]"
+          for i in 1 2 3; do git pull -q --rebase origin "$BRANCH" && git push -q origin "HEAD:$BRANCH" && exit 0; sleep 5; done
+          exit 1

@@ -1,11 +1,12 @@
 /*
  * Banner (asset type `banner`): the thin permanent bar across the top of the screen. Logo on the left, then the
- * attachments the engine places (core/engines/banner.ts) on the left, center and right: badges and clocks from the
- * banner asset itself and from modules at run time (rt.attachToBanner). A runtime popup (rt.showBannerPopup) pops a short
- * message out to the right of its attachment for a few seconds. Theme tokens only.
+ * attachments the engine places (core/engines/banner.ts → widget host engine) on the left, center and right: badges and
+ * widgets (clock, search bar) from the banner asset itself and from modules at run time (rt.attachToBanner). A runtime
+ * popup (rt.showBannerPopup) pops a short message out to the right of its attachment for a few seconds; tapping it
+ * dismisses it early. Theme tokens only.
  */
 import { useEffect, useState } from 'react';
-import { BANNER_SIDES, badgeToneToken, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
+import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -23,15 +24,18 @@ function clockParts(tz?: string): ClockParts {
   }
 }
 
+/** A clock widget. Ticks every second with seconds shown, else exactly on the minute (no drift, no wasted renders). */
 export function BannerClock({ data }: { data: ClockData }) {
   const [, tick] = useState(0);
   useEffect(() => {
-    const ms = data.seconds ? 1000 : 15000;
-    const t = setInterval(() => tick((n) => n + 1), ms);
-    return () => clearInterval(t);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const step = clockTickMs(data);
+    const arm = () => { timer = setTimeout(() => { tick((n) => n + 1); arm(); }, step - (Date.now() % step)); };
+    arm();
+    return () => { if (timer) clearTimeout(timer); };
   }, [data.seconds]);
   const text = formatClock(data, clockParts(data.timezone));
-  return <span className={`fx-banner__clock${data.mono === false ? '' : ' is-mono'}`} aria-label={`Time ${text}`}>{text}</span>;
+  return <time className={`fx-banner__clock${data.mono === false ? '' : ' is-mono'}`} aria-label={`Time ${text}`} title={data.timezone || undefined}>{text}</time>;
 }
 
 export function BannerBadge({ data }: { data: BadgeData }) {
@@ -55,9 +59,9 @@ function Attached({ a }: { a: PlacedAttachment }) {
   if (!asset) return null;
   const pop = state.bannerPopup && state.bannerPopup.key === a.key ? state.bannerPopup : null;
   return (
-    <span className="fx-banner__item" data-axf-banner-item={a.key}>
-      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} />}
-      {pop && <span className="fx-banner__pop" role="status">{pop.text}</span>}
+    <span className="fx-banner__item" data-axf-banner-item={a.key} data-axf-origin={a.origin}>
+      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}
+      {pop && <span className="fx-banner__pop" role="status" onClick={() => rt.dismissBannerPopup()}>{pop.text}</span>}
     </span>
   );
 }
@@ -68,11 +72,11 @@ export function Banner() {
   const { data, placed } = rt.banner();
   if (!data) return null;
   return (
-    <div className={`fx-banner is-${data.surface}${data.divider === false ? '' : ' has-divider'}`} role="banner" data-fx-ctx-target="banner">
+    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}`} role="banner" data-fx-ctx-target="banner" data-axf-search="off">
       {BANNER_SIDES.map((side) => (
         <div key={side} className={`fx-banner__side is-${side}`}>
-          {side === 'left' && data.logo.show && (
-            <span className="fx-banner__logo"><span className="fx-brand__mark" aria-hidden="true" />{data.logo.text && <span className="fx-banner__name">{data.logo.text}</span>}</span>
+          {side === 'left' && data.logo?.show !== false && (
+            <span className="fx-banner__logo"><span className="fx-brand__mark" aria-hidden="true" />{data.logo?.text && <span className="fx-banner__name">{data.logo.text}</span>}</span>
           )}
           {placed[side].map((a) => <Attached key={a.key} a={a} />)}
         </div>

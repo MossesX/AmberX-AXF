@@ -4,7 +4,8 @@ android {
     namespace = "{{APPLICATION_ID}}"
     defaultConfig {
         applicationId = "{{APPLICATION_ID}}"
-        versionCode = 1
+        // CI sets AXF_BUILD_NUMBER (the run number) so each catalog build installs over the last one.
+        versionCode = System.getenv("AXF_BUILD_NUMBER")?.toIntOrNull() ?: 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Deep-link scheme used by axf-nav: axf://{{APP_ID}}/<route>
@@ -35,6 +36,7 @@ dependencies {
     implementation("ai.amberx.axf:axf-data:$axf")
     implementation("ai.amberx.axf:axf-network:$axf")
     implementation("ai.amberx.axf:lib-settings:$axf")
+    implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:lib-logging:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
     // axf:modules {{AXF_MODULES}}

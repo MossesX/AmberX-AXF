@@ -1,0 +1,5 @@
+{
+  "$axf": "app-defaults@1",
+  "_doc": "Defaults for every new app besides the asset per slot (those are in defaults.json). `hidden`: chrome slots hidden by default (hideable types only); the user can still show them in Settings → Appearance → Assets. Decided Oct 20 2026: no top toolbar by default, the banner stays.",
+  "hidden": ["toolbar"]
+}

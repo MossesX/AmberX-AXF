@@ -152,8 +152,9 @@ public fun AxfDropdown(onDismiss: () -> Unit, content: @Composable () -> Unit) {
 /* ---------------- Toolbar (toolbar asset) ---------------- */
 
 /**
- * Web `.fx-toolbar`: groups separated by a border, icon / icon+label / label buttons (UAC-gated), align
- * start / center / spread, optional search that jumps to a view or hot-swaps an asset by name.
+ * Web `.fx-toolbar`: widgets at the start (`toolbar.widgets` + runtime.attachToToolbar), groups separated by a border,
+ * icon / icon+label / label buttons (UAC-gated), align start / center / spread, widgets at the end, then the search:
+ * the live search (`data.search.live`, reads the kernel index) or the classic box that jumps to a view / swaps an asset.
  */
 @Composable
 public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, String> = emptyMap(), onSearch: ((String) -> Boolean)? = null) {
@@ -166,7 +167,15 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
     val theme = Axf.theme
     val c = theme.colors
     val tb = compiled.toolbar
+    val widgets = runtime.toolbarWidgets()
     var q by remember { mutableStateOf("") }
+    // `collapsible` toolbars fold to a thin handle; the fold is remembered per device (runtime.toolbarCollapsed()).
+    if (tb.collapsible && runtime.toolbarCollapsed()) {
+        Row(modifier.fillMaxWidth().background(c.surface2).padding(horizontal = theme.spacing.oneHalf), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+            AxfIconButton("chevron-down", "Unfold the toolbar", { runtime.setToolbarCollapsed(false) }, size = theme.spacing.rowHeight * 0.6f, iconSize = 14.dp)
+        }
+        return
+    }
 
     fun runSearch() {
         val needle = q.trim().lowercase()
@@ -189,6 +198,7 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = when (tb.align) { Align.CENTER -> Arrangement.Center; Align.SPREAD -> Arrangement.SpaceBetween; Align.START -> Arrangement.spacedBy(theme.spacing.one) },
     ) {
+        for (w in widgets["start"] ?: emptyList()) Box(Modifier.padding(end = theme.spacing.one)) { AxfWidget(w, host = "toolbar") }
         tb.groups.forEachIndexed { gi, g ->
             val last = gi == tb.groups.lastIndex && !tb.showSearch
             Row(
@@ -218,7 +228,10 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
             }
             if (tb.align == Align.START && gi == tb.groups.lastIndex && tb.showSearch) Spacer(Modifier.weight(1f, fill = true))
         }
-        if (tb.showSearch) {
+        for (w in widgets["end"] ?: emptyList()) Box(Modifier.padding(start = theme.spacing.one)) { AxfWidget(w, host = "toolbar") }
+        if (tb.showSearch && tb.liveSearch != null) {
+            AxfLiveSearch(tb.liveSearch!!, Modifier.widthIn(min = 150.dp, max = theme.spacing.x(tb.liveSearch!!.width)))
+        } else if (tb.showSearch) {
             Row(
                 Modifier.widthIn(min = 150.dp, max = 260.dp).heightIn(min = theme.spacing.rowHeight - 6.dp).clip(theme.shapes.smShape).background(c.surface).border(theme.spacing.borderWidth, c.border, theme.shapes.smShape).padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -234,6 +247,7 @@ public fun AxfToolbar(modifier: Modifier = Modifier, viewTitles: Map<String, Str
                 )
             }
         }
+        if (tb.collapsible) AxfIconButton("chevron-up", "Fold the toolbar", { runtime.setToolbarCollapsed(true) }, iconSize = 14.dp)
     }
 }
 

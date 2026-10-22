@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "voice-nav",
+  "name": "Voice Vault navigation",
+  "version": "0.1.0",
+  "description": "Voice Vault: voice screen, saved sites, voice triggers, settings.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "boilerplate"
+  ],
+  "data": {
+    "style": "list",
+    "header": "Voice Vault",
+    "sections": [
+      {
+        "label": null,
+        "items": [
+          {
+            "id": "home",
+            "label": "Voice",
+            "icon": "mic",
+            "view": "home"
+          },
+          {
+            "id": "vault",
+            "label": "Saved sites",
+            "icon": "lock",
+            "view": "vault"
+          },
+          {
+            "id": "voice-triggers",
+            "label": "Voice triggers",
+            "icon": "list",
+            "view": "voice-triggers"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}

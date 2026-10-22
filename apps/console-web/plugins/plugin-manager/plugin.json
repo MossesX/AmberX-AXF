@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.plugin-manager",
   "name": "Plugin Manager",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every console plugin in one place: info, health, enable / disable, logs, settings, its UI, install & uninstall, and its dependencies in detail (what it needs, who provides it, who needs it, what clashes). Four views (cards, table, detail, dependency graph) in four completely different layouts (Studio, Mission control, Terminal, Catalog). Opened from the default context menu, the Plugins nav section or Settings \u2192 Plugins \u2192 Plugin Manager.",
+  "description": "Every console plugin in one place: info, health, enable / disable, logs, settings, its UI, install & uninstall, and its dependencies in detail (what it needs, who provides it, who needs it, what clashes). Five views (cards, table, detail, dependency graph, install from the catalog) in four completely different layouts (Studio, Mission control, Terminal, Catalog). The model is the framework's plugin inventory engine (plugin-inventory@1), shared with every AXF web app's Settings → Plugins tab and the Android Plugin Manager. Opened from the default context menu, the Plugins nav section or Settings → Plugins → Plugin Manager.",
   "targets": [
     "axf-console"
   ],
@@ -14,6 +14,7 @@
     "view:plugin-manager",
     "dialog:plugin-manager.window",
     "action:plugin-manager.open",
+    "action:plugin-manager.window",
     "context-menu:default/plugin-manager",
     "settings-tab:plugin-manager"
   ],
@@ -28,8 +29,8 @@
   ],
   "enabledByDefault": true,
   "builtWith": {
-    "model": "opus",
-    "replacedBy": "pending item plugin-manager (Fable)"
+    "model": "fable",
+    "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)"
   },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -38,7 +39,8 @@
     "mentions": [
       "CLAUDE.md",
       "apps/console-web/plugins/README.md",
-      "_claude/memory/decisions.md"
+      "_claude/memory/decisions.md",
+      "_claude/memory/docs/rebuilds/plugin-manager.md"
     ]
   }
 }

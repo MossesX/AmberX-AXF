@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-19T00:18:34.991Z",
+ "generatedAt": "2026-10-22T02:08:55.378Z",
  "statuses": [
   "built",
   "partial",
@@ -702,6 +702,10 @@
     {
      "at": "2026-10-17",
      "text": "Added to the plan"
+    },
+    {
+     "at": "2026-10-21",
+     "text": "work@1 engine (TS + Kotlin) + lib-work built (harvest from AXHub, Fable); WorkScheduler on WorkManager still a placeholder"
     }
    ],
    "model": "fable",
@@ -2371,6 +2375,10 @@
     {
      "at": "2026-10-17",
      "text": "Added to the plan"
+    },
+    {
+     "at": "2026-10-21",
+     "text": "Harvest lib-github (Opus): Python axf_server.github + Node framework/cli/github.mjs from 8 copies, fixture github.json; Android port and demo app still planned"
     }
    ],
    "model": "opus",
@@ -2388,8 +2396,8 @@
    "summary": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
    "ports": {
     "android": {
-     "status": "planned",
-     "where": "lib-notifications"
+     "status": "built",
+     "where": "lib-notifications; written without a compiler"
     },
     "web": {
      "status": "planned",
@@ -2407,10 +2415,16 @@
    ],
    "catalog": [
     "dv.notif",
+    "lib.notifications",
+    "lib.notifications.alerts",
     "w.push"
    ],
-   "modules": [],
-   "files": [],
+   "modules": [
+    "lib-notifications"
+   ],
+   "files": [
+    "framework/android/lib-notifications"
+   ],
    "acceptance": [],
    "warnings": [],
    "recommendations": [],
@@ -2418,7 +2432,7 @@
    "screenshots": [],
    "links": [],
    "tags": [],
-   "notes": "",
+   "notes": "Oct 20 2026 harvest (group hub-notify, Opus): lib-notifications from apps/axhub-android watch/Alerts.kt fills android.notifications; alert@1 hook built, push + scheduling + web/python still to do.",
    "source": "seed",
    "history": [
     {
@@ -2428,6 +2442,10 @@
     {
      "at": "2026-10-17T16:12:45.952Z",
      "text": "1/2 linked features built (feature tracker)"
+    },
+    {
+     "at": "2026-10-20",
+     "text": "Android lib-notifications built (harvest from AXHub)"
     }
    ],
    "model": "opus",
@@ -4252,21 +4270,68 @@
    "area": "Foundations",
    "group": "Modules, extension points, placeholders",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "built",
    "priority": "P1",
    "wave": 1,
    "effort": "",
    "summary": "kernel/interop — protocol-neutral; see framework/spec/INTEROP.md",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "axf-kernel"
+     "status": "built",
+     "where": "lib-mcp"
     }
    },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [
     "f.interop.remote"
+   ],
+   "modules": [
+    "lib-mcp"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "f.appearance.source",
+   "title": "Appearance source: developer apps take their appearance + settings documents from the axHub data server (appearance@1), waiting screen while the hub is unreachable",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "core/engines/appearance.ts = kernel AppearanceEngine; web HubAppearanceSource, Android lib-hub; opt-in per app (manifest developer: { hub })",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.source"
    ],
    "modules": [
     "axf-kernel"
@@ -4280,13 +4345,13 @@
    "links": [],
    "tags": [
     "foundations",
-    "lock"
+    "lib"
    ],
-   "notes": "contract + typed placeholder",
+   "notes": "",
    "source": "catalog",
    "history": [
     {
-     "at": "2026-10-17",
+     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],
@@ -5877,6 +5942,48 @@
    "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
+   "id": "f.pyserver",
+   "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
+   "area": "Foundations",
+   "group": "Observability, security, build",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.pyserver"
+   ],
+   "modules": [
+    "axf_server"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
    "id": "k.assets",
    "title": "Asset envelope + registry (asset@1 JSON, same files as the web demo)",
    "area": "Kernel",
@@ -7009,14 +7116,14 @@
    "area": "Kernel",
    "group": "Kernel architecture & extension safety",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P1",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
+     "status": "partial",
      "where": "axf-kernel"
     }
    },
@@ -7039,7 +7146,7 @@
     "kernel",
     "core"
    ],
-   "notes": "",
+   "notes": "Oct 21 2026 (Fable, harvest work-watcher): work@1 engine (poll jobs: interval bounds, per-outcome back-off fixed/exponential/interval, one-time notices, run conditions, state machine) in core/engines/work.ts = kernel work/WorkEngine; debounce/throttle/queues/priorities not yet",
    "source": "catalog",
    "history": [
     {
@@ -7151,14 +7258,14 @@
    "area": "Kernel",
    "group": "Kernel architecture & extension safety",
    "kind": "feature",
-   "status": "partial",
+   "status": "built",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "partial",
+     "status": "built",
      "where": "axf-kernel"
     }
    },
@@ -7186,6 +7293,100 @@
    "history": [
     {
      "at": "2026-10-17",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "k.embed",
+   "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
+   "area": "Kernel",
+   "group": "Kernel architecture & extension safety",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "",
+   "summary": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "k.embed"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "k.appmenu",
+   "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
+   "area": "Kernel",
+   "group": "Kernel architecture & extension safety",
+   "kind": "feature",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "",
+   "summary": "Web built (core/engines/appmenu.ts); Android twin deferred (port on hold, Oct 21 2026).",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "k.appmenu"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "core"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
      "text": "Imported from the feature catalog"
     }
    ],
@@ -8565,15 +8766,15 @@
    "area": "Kernel",
    "group": "Settings, logging, admin, accounts, profile, subscription (the six libraries)",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "built",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "lib-accounts"
+     "status": "built",
+     "where": "lib-lock"
     }
    },
    "capabilities": [],
@@ -8582,7 +8783,7 @@
     "u.bio"
    ],
    "modules": [
-    "lib-accounts"
+    "lib-lock"
    ],
    "files": [],
    "acceptance": [],
@@ -8595,7 +8796,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "biometric + PIN lock, auto-lock gate (LockGate, Gated, AppShell viewGuard), lock-mode guard, persisted lockout, hashed secrets incl. spoken passphrases; Oct 20 2026 (harvest Oct 21 2026 from AXHub + Voice Vault), written without a compiler (CI compiles)",
    "source": "catalog",
    "history": [
     {
@@ -11599,6 +11800,642 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "lib.voice",
+   "title": "Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-voice + library.json; first used by apps/voicevault (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-voice"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.voice"
+   ],
+   "modules": [
+    "lib-voice"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Always-on wake word in a foreground service (lib.voice.wakeword)",
+    "Bundle with: Recognise the owner's voice (lib.voice.speakerid)",
+    "Bundle with: Web port of PhraseMatcher + VoiceCommands (Web Speech API) (lib.voice.web)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; Voice triggers screen; Oct 20 2026, written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.wakeword",
+   "title": "Always-on wake word in a foreground service",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.wakeword"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.speakerid",
+   "title": "Recognise the owner's voice",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.speakerid"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.voice.web",
+   "title": "Web port of PhraseMatcher + VoiceCommands (Web Speech API)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.voice",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Voice library: one-shot speech recognition (on-device recognizer for secret speech), spoken prompts that finish before the next listen, open registry of voice commands whose trigger phrases users record, type or pick from defaults (Voice triggers screen), pure-Kotlin phrase matching.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.voice"
+   ],
+   "catalog": [
+    "lib.voice.web"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.lock",
+   "title": "App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-lock + library.json; AxfActivity is now a FragmentActivity (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-lock"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.lock"
+   ],
+   "modules": [
+    "lib-lock"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Keystore keys that need the fingerprint for every decrypt (CryptoObject) (lib.lock.keybound)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; PIN + biometric second step; Oct 20 2026, written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "lib.lock.keybound",
+   "title": "Keystore keys that need the fingerprint for every decrypt (CryptoObject)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.lock",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with App lock library: second-step unlock by strong biometrics (BiometricPrompt) or a PIN (salted PBKDF2 in the Keystore-backed secure store), doubling lockout after failed tries, auto-lock delay, set/change PIN screen; fills the platform's android.biometric placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.lock"
+   ],
+   "catalog": [
+    "lib.lock.keybound"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "lib.hub",
+   "title": "axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/libs/hub + framework/android/lib-hub + library.json; fixture spec/fixtures/hub-approvals.json; harvested from apps/axhub-android and the console approvals-banner plugin (Oct 20 2026, Kotlin written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-hub"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.hub"
+   ],
+   "modules": [
+    "lib-hub"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable) (lib.hub.axpp)",
+    "Bundle with: Hub-pushed approvals and events instead of polling (lib.hub.push)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "First slice (Oct 20 2026 harvest, Opus): web framework/libs/hub + Android lib-hub, one fixture hub-approvals.json; AXHub app + console approvals-banner switched. AXPP parked for Fable. Kotlin written without a compiler (HubRules replayed the fixture with a local kotlinc).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hub.axpp",
+   "title": "Hub protocol contract (AXPP): typed calls, jobs and events between AXF apps and axHub (Fable)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.hub",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.hub"
+   ],
+   "catalog": [
+    "lib.hub.axpp"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.hub.axpp; parked for Fable",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hub.push",
+   "title": "Hub-pushed approvals and events instead of polling",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.hub",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with axHub connector library, first slice: hub address rules, approvals feed (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen-id tracking, sign-out on the hub, a web view locked to one origin, hub APK downloads; web + Android from one fixture.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.hub"
+   ],
+   "catalog": [
+    "lib.hub.push"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.hub.push",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.notifications",
+   "title": "Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-notifications + library.json; harvested from apps/axhub-android watch/Alerts.kt (Oct 20 2026, written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-notifications"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.notifications"
+   ],
+   "modules": [
+    "lib-notifications"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: alert@1 deliveries as device notifications (hook built, not wired) (lib.notifications.alerts)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "Oct 20 2026 harvest from AXHub (Opus); fills android.notifications; written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.notifications.alerts",
+   "title": "alert@1 deliveries as device notifications (hook built, not wired)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.notifications",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "Suggested together with Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.notifications"
+   ],
+   "catalog": [
+    "lib.notifications.alerts"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Hook AxfNotifications.deliverAlert + AlertNotifications.plan built; nothing subscribes AlertCenter yet (capability axf.notifications.alerts)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.work",
+   "title": "Work library: poll jobs (work@1) hosted by a foreground service (specialUse) with STOP / CHECK_NOW / INTERVAL commands, quiet stop when Android refuses a background start, START_STICKY, boot + update restart, running-state flows, ongoing notification through lib-notifications; the job's decisions (interval bounds, per-outcome back-off, one-time notices, run conditions) are data run by the kernel's WorkEngine state machine; fills the platform's android.work placeholder",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/core/engines/work.ts = ai.amberx.axf.kernel.work.WorkEngine (fixture spec/fixtures/work.json) + framework/android/lib-work + library.json; harvested from apps/axhub-android watch/ApprovalWatchService.kt (Oct 21 2026, Fable; Kotlin engine + conformance replayed with a local kotlinc, the Android host written without a compiler)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-work"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.work"
+   ],
+   "modules": [
+    "lib-work"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: The kernel's WorkScheduler (axf.work) on WorkManager: constrained periodic work, 15 min minimum (placeholder axf.work.manager) (lib.work.manager)",
+    "Bundle with: Wall-clock alarms (placeholder axf.work.alarm) (lib.work.alarm)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "Oct 21 2026 harvest from AXHub ApprovalWatchService (Fable); fills android.work; engine fixture work.json replayed on web (check-work.mts) and Kotlin (WorkConformanceTest, local kotlinc); the Android host written without a compiler (CI compiles)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.work.manager",
+   "title": "The kernel's WorkScheduler (axf.work) on WorkManager: constrained periodic work, 15 min minimum (placeholder axf.work.manager)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.work",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Work library: poll jobs (work@1) hosted by a foreground service (specialUse) with STOP / CHECK_NOW / INTERVAL commands, quiet stop when Android refuses a background start, START_STICKY, boot + update restart, running-state flows, ongoing notification through lib-notifications; the job's decisions (interval bounds, per-outcome back-off, one-time notices, run conditions) are data run by the kernel's WorkEngine state machine; fills the platform's android.work placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.work"
+   ],
+   "catalog": [
+    "lib.work.manager"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.work.manager (the kernel's axf.work WorkScheduler contract on WorkManager)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.work.alarm",
+   "title": "Wall-clock alarms (placeholder axf.work.alarm)",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.work",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Work library: poll jobs (work@1) hosted by a foreground service (specialUse) with STOP / CHECK_NOW / INTERVAL commands, quiet stop when Android refuses a background start, START_STICKY, boot + update restart, running-state flows, ongoing notification through lib-notifications; the job's decisions (interval bounds, per-outcome back-off, one-time notices, run conditions) are data run by the kernel's WorkEngine state machine; fills the platform's android.work placeholder.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.work"
+   ],
+   "catalog": [
+    "lib.work.alarm"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.work.alarm",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "ui.explorer",
    "title": "Element explorer: categorized collapsible tree of every UI element with counts, live preview, branches for tokens and style parameters (tooltips everywhere, greyed when the kit lacks the element, inline-editable with hot-swap), root of element options/flags with default-state switches, any non-parameter node draggable into its own ELEMENT floating window (toolbar off by default, own switch)",
    "area": "Kernel",
@@ -12294,7 +13131,7 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
@@ -12305,7 +13142,9 @@
    "catalog": [
     "w.github"
    ],
-   "modules": [],
+   "modules": [
+    "axf_server.github"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -12479,7 +13318,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder",
    "source": "catalog",
    "history": [
     {
@@ -12496,7 +13335,7 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
@@ -12507,7 +13346,9 @@
    "catalog": [
     "w.ai"
    ],
-   "modules": [],
+   "modules": [
+    "python/axf/assistant_host"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -12519,7 +13360,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "Python host runtime built (framework/python/axf/assistant_host: providers for 18 kinds + 3 protocols, live-session@1 LocalHost, safety) on the assistant@1 contract (axf.contracts.assistant); hosts: console ai-assistant plugin, Build Pilot server. Web in-process engine and Android module not built (contract + client only).",
    "source": "catalog",
    "history": [
     {
@@ -12537,18 +13378,25 @@
    "area": "Kernel",
    "group": "Navigation, data, network",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
-   "ports": {},
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-mcp"
+    }
+   },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [
     "w.mcp"
    ],
-   "modules": [],
+   "modules": [
+    "lib-mcp"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -12794,7 +13642,7 @@
    "ports": {
     "android": {
      "status": "built",
-     "where": "axf-platform-android"
+     "where": "lib-notifications"
     }
    },
    "capabilities": [],
@@ -12803,7 +13651,7 @@
     "dv.notif"
    ],
    "modules": [
-    "axf-platform-android"
+    "lib-notifications"
    ],
    "files": [],
    "acceptance": [],
@@ -12816,7 +13664,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "Oct 20 2026: lib-notifications (channels, permission checks, ongoing + private-lock-screen alerts, tags); actions/progress/grouped/scheduled/bubbles not yet",
    "source": "catalog",
    "history": [
     {
@@ -12834,15 +13682,15 @@
    "area": "Kernel",
    "group": "Device & platform capabilities",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "axf-platform-android"
+     "status": "partial",
+     "where": "lib-work"
     }
    },
    "capabilities": [],
@@ -12851,7 +13699,7 @@
     "dv.bg"
    ],
    "modules": [
-    "axf-platform-android"
+    "lib-work"
    ],
    "files": [],
    "acceptance": [],
@@ -12864,7 +13712,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "Oct 21 2026: foreground poll service + boot restart (lib-work); WorkManager + alarms are placeholders (axf.work.manager, axf.work.alarm)",
    "source": "catalog",
    "history": [
     {
@@ -13121,15 +13969,15 @@
    "area": "Kernel",
    "group": "Device & platform capabilities",
    "kind": "feature",
-   "status": "placeholder",
+   "status": "partial",
    "priority": "P3",
    "wave": 2,
    "effort": "",
    "summary": "",
    "ports": {
     "android": {
-     "status": "placeholder",
-     "where": "axf-platform-android"
+     "status": "partial",
+     "where": "lib-voice"
     }
    },
    "capabilities": [],
@@ -13138,7 +13986,7 @@
     "dv.audio"
    ],
    "modules": [
-    "axf-platform-android"
+    "lib-voice"
    ],
    "files": [],
    "acceptance": [],
@@ -13151,7 +13999,7 @@
     "kernel",
     "lib"
    ],
-   "notes": "",
+   "notes": "speech-to-text, TTS and voice commands in lib-voice; recording + audio focus not yet",
    "source": "catalog",
    "history": [
     {
@@ -17346,6 +18194,53 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "m.browser",
+   "title": "lib-browser — Floating tab-group browser: two panes, multi-select, compare → undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "ai.amberx.axf.browser",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-browser"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.browser"
+   ],
+   "modules": [
+    "lib-browser"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "framework/android/lib-browser + library.json",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "m.media",
    "title": "lib-media — Media3 player, camera, audio (placeholder)",
    "area": "Modules",
@@ -17426,6 +18321,46 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "m.editor",
+   "title": "lib-editor — Rich text, markdown, code editor, diff",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.editor",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.editor"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
    "id": "m.ai",
    "title": "lib-ai — AI providers, streaming, tools",
    "area": "Modules",
@@ -17504,6 +18439,300 @@
    ],
    "model": "opus",
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "m.github",
+   "title": "lib-github — Repos, commits, Actions, releases, tracker sync",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.github",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.github"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.work",
+   "title": "lib-work — WorkManager scheduler, alarms, foreground services",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "partial",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.work",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-work"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.work"
+   ],
+   "modules": [
+    "lib-work"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "lib-work built Oct 21 2026 (work-watcher harvest; feature lib.work): work@1 poll jobs on a foreground service with boot restart. WorkManager scheduler, alarms and chains (dv.bg, k.scheduler) are placeholders (lib.work.manager, lib.work.alarm).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "m.notifications",
+   "title": "lib-notifications — Channels, actions, scheduled, FCM/self-hosted push",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "partial",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.notifications",
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-notifications"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.notifications"
+   ],
+   "modules": [
+    "lib-notifications"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "lib-notifications built Oct 20 2026 (hub-notify harvest; feature lib.notifications): channels, permission checks, ongoing + private lock-screen alerts. Push (w.push, c.push) and scheduled notifications not built yet.",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.sensors",
+   "title": "lib-sensors — Sensors, BLE, NFC, Wi-Fi tools",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.sensors",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.sensors"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.files",
+   "title": "lib-files — File manager, transfer, backup, offline sync",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.files",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.files"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.charts",
+   "title": "lib-charts — Charts, data grids, dashboards",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.charts",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.charts"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "m.plugins",
+   "title": "lib-plugins — Plugin loader, packs, OTA asset packs, designer bridge",
+   "area": "Modules",
+   "group": "Framework modules (framework/android/*)",
+   "kind": "feature",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "ai.amberx.axf.plugins",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "m.plugins"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "modules",
+    "ph"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
   },
   {
    "id": "m.devtools",
@@ -19716,6 +20945,48 @@
    "modelReason": "Default: Opus 5.5"
   },
   {
+   "id": "c.patches",
+   "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+   "area": "Demos later",
+   "group": "Dev, server and AI",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "c.patches"
+   ],
+   "modules": [
+    "apps/patches"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "demos",
+    "app"
+   ],
+   "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-21",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "c.mcp",
    "title": "MCP server/client demo (expose app actions to Claude Code)",
    "area": "Demos later",
@@ -20001,7 +21272,7 @@
    "area": "Demos later",
    "group": "Data, files, productivity",
    "kind": "feature",
-   "status": "planned",
+   "status": "partial",
    "priority": "P3",
    "wave": 3,
    "effort": "",
@@ -20012,7 +21283,9 @@
    "catalog": [
     "c.passwords"
    ],
-   "modules": [],
+   "modules": [
+    "apps/voicevault"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -20024,7 +21297,7 @@
     "demos",
     "lib"
    ],
-   "notes": "",
+   "notes": "Voice Vault: Keystore-encrypted vault, voice store/retrieve, clipboard auto-clear; TOTP not yet",
    "source": "catalog",
    "history": [
     {
@@ -20721,18 +21994,25 @@
    "area": "Demos later",
    "group": "Device, sensors, connectivity",
    "kind": "feature",
-   "status": "planned",
+   "status": "partial",
    "priority": "P3",
    "wave": 3,
    "effort": "",
    "summary": "",
-   "ports": {},
+   "ports": {
+    "android": {
+     "status": "partial",
+     "where": "lib-voice"
+    }
+   },
    "capabilities": [],
    "dependsOn": [],
    "catalog": [
     "c.voice"
    ],
-   "modules": [],
+   "modules": [
+    "lib-voice"
+   ],
    "files": [],
    "acceptance": [],
    "warnings": [],
@@ -20744,7 +22024,7 @@
     "demos",
     "lib"
    ],
-   "notes": "",
+   "notes": "voice commands + user triggers + SpokenText normalisers built; gesture hooks not yet",
    "source": "catalog",
    "history": [
     {
@@ -21427,19 +22707,23 @@
    "title": "lib-mcp: MCP client (and server) library for every AXF app",
    "area": "Kernel & engines",
    "kind": "epic",
-   "status": "planned",
+   "status": "built",
    "priority": "P1",
    "wave": 2,
    "effort": "L",
    "summary": "Framework library so any AXF app (web + Android, later Python) can connect to MCP servers as a client: server registry, Streamable HTTP transport, tool/resource/prompt browsing, tool calls behind the kernel interop exposure rules, tokens in secure storage. The console MCP client plugin (apps/console-web/plugins/mcp-client) is the reference UI.",
    "ports": {
     "web": {
-     "status": "planned",
-     "where": "—"
+     "status": "built",
+     "where": "framework/libs/mcp (+ core/engines/mcp.ts)"
     },
     "android": {
-     "status": "planned",
-     "where": "lib-mcp"
+     "status": "built",
+     "where": "lib-mcp (+ kernel mcp/McpEngine.kt); written without a compiler"
+    },
+    "python": {
+     "status": "built",
+     "where": "framework/python/axf_libs/mcp"
     }
    },
    "capabilities": [],
@@ -21450,33 +22734,40 @@
    "modules": [
     "lib-mcp"
    ],
-   "files": [],
+   "files": [
+    "framework/core/engines/mcp.ts",
+    "framework/libs/mcp",
+    "framework/android/lib-mcp",
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/mcp/McpEngine.kt",
+    "framework/python/axf_libs/mcp",
+    "framework/spec/fixtures/mcp-client.json",
+    "framework/spec/check-mcp.mts"
+   ],
    "acceptance": [
     {
      "text": "Same client contract on web and Android (conformance fixtures)",
-     "done": false
+     "done": true
     },
     {
      "text": "Tokens only in secure storage / server env",
-     "done": false
+     "done": true
     },
     {
      "text": "Remote tool calls respect UAC + interop exposure",
-     "done": false
+     "done": true
     }
    ],
    "warnings": [],
    "recommendations": [
-    "Port the console plugin server part (plugins/mcp-client/server) as the behaviour reference"
+    "The console MCP client plugin now runs on this library (server part on the Python client, web part on the library views)."
    ],
    "previews": [],
    "screenshots": [],
    "links": [],
    "tags": [
-    "pending",
-    "waits-on-fable"
+    "built-on-fable"
    ],
-   "notes": "",
+   "notes": "Fable rebuild Oct 20 2026 on branch fable/lib-mcp. MCP server side (expose actions as tools) stays a placeholder (axf.mcp.server).",
    "source": "user",
    "history": [
     {
@@ -21486,11 +22777,96 @@
     {
      "at": "2026-10-18T04:30:05.543Z",
      "text": "Added to the pending build list (waits on Fable)"
+    },
+    {
+     "at": "2026-10-20",
+     "text": "Built on Fable (rebuild of the Opus console plugin into a cross-port library: TS + Kotlin + Python, one fixture)"
     }
    ],
    "model": "fable",
    "modelEdited": true,
    "modelReason": "Cross-port library contract: Fable keeps every port consistent",
+   "edited": true
+  },
+  {
+   "id": "x.lib.hub",
+   "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
+   "area": "Kernel & engines",
+   "kind": "epic",
+   "status": "partial",
+   "priority": "P1",
+   "wave": 2,
+   "effort": "L",
+   "summary": "Framework library so any AXF app (web + Android) talks to axHub. First slice (Opus, Oct 20 2026 harvest) = only what the hub serves today: hub address rules, hub URLs, the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen ids, sign-out on the hub, an origin-locked web view and hub APK downloads (Android). The hub protocol contract (AXPP) stays parked for Fable (placeholder axf.hub.axpp).",
+   "ports": {
+    "web": {
+     "status": "built",
+     "where": "framework/libs/hub"
+    },
+    "android": {
+     "status": "built",
+     "where": "lib-hub; written without a compiler"
+    },
+    "python": {
+     "status": "planned",
+     "where": "—"
+    }
+   },
+   "capabilities": [
+    "axf.hub"
+   ],
+   "dependsOn": [
+    "x.plugins"
+   ],
+   "catalog": [
+    "lib.hub",
+    "lib.hub.axpp",
+    "lib.hub.push"
+   ],
+   "modules": [
+    "lib-hub"
+   ],
+   "files": [
+    "framework/libs/hub",
+    "framework/android/lib-hub",
+    "framework/spec/fixtures/hub-approvals.json",
+    "framework/spec/check-hub.mts"
+   ],
+   "acceptance": [
+    {
+     "text": "Same address rules, URLs, feed parsing and status mapping on web and Android (one fixture)",
+     "done": true
+    },
+    {
+     "text": "AXHub app and the console approvals banner use it; their private copies are gone",
+     "done": true
+    },
+    {
+     "text": "Hub protocol contract (AXPP)",
+     "done": false
+    }
+   ],
+   "warnings": [],
+   "recommendations": [
+    "AXPP is parked for Fable: design it as its own contract; lib-hub gains it as a new capability without renaming the first slice."
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "harvest"
+   ],
+   "notes": "Harvest Oct 20 2026 (group hub-notify, Opus): from apps/axhub-android hub/* + views/HubWebView.kt and apps/console-web/plugins/approvals-banner.",
+   "source": "user",
+   "history": [
+    {
+     "at": "2026-10-20",
+     "text": "First slice built on Opus (harvest group hub-notify); AXPP parked for Fable"
+    }
+   ],
+   "model": "opus",
+   "modelEdited": true,
+   "modelReason": "Security-adjacent (sessions, auth, web view origin lock): Opus 5.5",
    "edited": true
   },
   {

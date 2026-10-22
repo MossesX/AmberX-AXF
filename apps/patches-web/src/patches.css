@@ -1,0 +1,18 @@
+/* Patches (web): frames fill the main region; the combined settings' app tabs. Theme tokens only (THEMING.md). */
+.fx-main__inner--kept[data-axf-view="console"],
+.fx-main__inner--kept[data-axf-view="pilot"],
+.fx-main__inner--kept[data-axf-view="axhub"],
+.fx-main__inner--kept[data-axf-view="settings"] { padding: 0; max-width: none; height: 100%; }
+.pt-tab, .pt-settings__page { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.pt-frame { flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; border: 0; display: block; background: var(--fx-bg); }
+.pt-strip { flex: 0 0 auto; overflow: hidden; border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-bg); }
+.pt-strip[aria-hidden="true"] { border-bottom: 0; }
+.pt-frame--strip { height: 100%; }
+.pt-settings { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.pt-settings__tabs { display: flex; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 1); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-x: auto; flex: 0 0 auto; }
+.pt-settings__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 1); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; white-space: nowrap; }
+.pt-settings__tab:hover { color: var(--fx-text); }
+.pt-settings__tab.is-active { color: var(--fx-accent-text); background: var(--fx-accent); border-color: var(--fx-accent); }
+.pt-settings__body { flex: 1 1 auto; min-height: 0; position: relative; }
+.pt-settings__page[hidden] { display: none; }
+.pt-settings__page--own { overflow: auto; padding: calc(var(--fx-space) * 1.5); display: block; }

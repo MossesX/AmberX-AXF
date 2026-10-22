@@ -1,6 +1,6 @@
 import { installConsoleSearch } from './consoleSearch';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountView, AppShell, AssetStudio, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -23,6 +23,9 @@ import { createAlertsLibrary } from './axf/libs/alerts';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
+import { hubAppearanceLibrary, useHubAppearance } from './hubAppearance';
+import { menuLibrary } from './menuLibrary';
+import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from './bannerStrip';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
@@ -32,7 +35,7 @@ const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
-  build: { title: 'Build', icon: 'play', render: () => <BuildManager /> },
+  build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
   // Standards: rules every project must meet (first: project manifests).
   'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },
@@ -79,8 +82,8 @@ function usePlugins() {
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend has answered.
     const enabled = loaded ? enabledPlugins(status) : [];
-    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachFromBanner(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
+    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); }
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
   }, [rt, status, loaded]);
   return { contributed };
 }
@@ -90,6 +93,8 @@ function Shell() {
   const drop = useUndockDrop();
   // Signed in through axHub's wall: the account decides the access role (themes, plugins); see src/account.tsx.
   useBindAccount();
+  // Developer app: the look + settings come from axHub's data server (src/hubAppearance.tsx); waits for the hub.
+  useHubAppearance();
   const plugins = usePlugins();
   useEffect(() => { (globalThis as unknown as { __axfConsole?: unknown }).__axfConsole = s; }, [s]);
   const allViews: ViewMap = {
@@ -98,16 +103,35 @@ function Shell() {
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };
-  // Banners plugins contribute (e.g. the systems check and What's new) sit at the top of every view.
-  const banners = plugins.contributed.banners;
-  const withBanner: ViewMap = banners.length
-    ? Object.fromEntries(Object.entries(allViews).map(([id, v]) => [id, { ...v, render: () => <>{banners.map((b) => <Fragment key={b.id}>{b.render()}</Fragment>)}{v.render()}</> }]))
-    : allViews;
+  // Plugin banners (codebase changes, builds, activity, approvals, systems check, keys, What's new) sit above the page
+  // (slot app.frame.banners) when the console runs on its own. As a tab in Patches the console page shows none of them:
+  // Patches shows them above every tab through the banner strip page (`?axf-strip=banners`, src/bannerStrip.tsx), which
+  // is only them (Brett, Oct 21 2026). The console's own banners (the menu rescue note) stay on the console page.
+  const inConsole = useBannersInConsole();
+  useBannerRelay();
+  const consoleOwn = useMemo(() => new Set((menuLibrary.banners ?? []).map((b) => b.id)), []);
+  const banners = useMemo(() => plugins.contributed.banners.filter((b) => (isBannerStrip
+    ? !consoleOwn.has(b.id)
+    : consoleOwn.has(b.id) || inConsole)), [plugins.contributed.banners, consoleOwn, inConsole]);
+  // Every plugin banner goes through Banner settings (framework BannerSettings.tsx): right-click / long-press any of them →
+  // Banner settings, one tab per banner, its look and behaviour (Brett, Oct 22 2026). The console's own rescue note stays plain.
+  const rt = useRuntime();
+  const bannerPrefs = useBannerPrefsTick();
+  const slots = useMemo(() => {
+    // Always called: it registers Banner settings and the full banner list, which the dialog needs even when this page
+    // shows none (the console tab inside Patches opens it for banners Patches shows through the strip).
+    const all = plugins.contributed.banners.filter((b) => !consoleOwn.has(b.id));
+    const framed = bannerSlotDefs(rt, all, banners.filter((b) => !consoleOwn.has(b.id)));
+    if (!banners.length && !isBannerStrip) return plugins.contributed.slots;
+    const own = banners.filter((b) => consoleOwn.has(b.id)).map((b) => ({ id: b.id, order: b.order, render: () => b.render() }));
+    return { ...(isBannerStrip ? {} : plugins.contributed.slots), [FRAME_BANNERS_SLOT]: [...(isBannerStrip ? [] : plugins.contributed.slots[FRAME_BANNERS_SLOT] ?? []), ...own, ...framed] };
+  }, [banners, plugins.contributed.banners, plugins.contributed.slots, consoleOwn, rt, bannerPrefs]);
+  if (isBannerStrip) return <SlotsProvider slots={slots}><BannerStrip /></SlotsProvider>;
   return (
     <div {...drop} style={{ display: 'contents' }}>
-      <SlotsProvider slots={plugins.contributed.slots}>
+      <SlotsProvider slots={slots}>
       <AppShell
-        views={withBanner}
+        views={allViews}
         dialogs={{ ...plugins.contributed.dialogs, ...dialogs }}
         tabs={{ ...plugins.contributed.tabs, ...consoleTabs, 'plan-feature': (t) => <PlanFeatureTab id={t.payload || ''} /> }}
       />

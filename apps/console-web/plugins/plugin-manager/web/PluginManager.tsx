@@ -1,21 +1,22 @@
 /**
- * The Plugin Manager. Four views (cards, table, detail, dependency graph) inside four layouts that are built
- * differently, not just recoloured: Studio (rail + drawer), Mission control (status tiles + signals column),
+ * The Plugin Manager (Fable rebuild, Oct 20 2026). Five views (cards, table, detail, dependency graph, install from the
+ * catalog) inside four layouts that are built differently, not just recoloured: Studio (rail + drawer), Mission control (status tiles + signals column),
  * Terminal (monospace with a command line) and Catalog (store shelves + product page). Everything is theme tokens,
- * so every colour / style theme still applies to every layout.
+ * so every colour / style theme still applies to every layout. The model (dependencies, dependents, health, clashes,
+ * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
-import { HEALTH_LABEL, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
+import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
 import { FILTERS, LAYOUTS, SORTS, usePrefs, VIEWS, type FilterId, type LayoutId, type Prefs, type SortId, type ViewId } from './prefs';
 import { CardsView, GraphView, MasterDetailView, TableView, type ViewProps } from './views';
+import { InstallView } from './InstallView';
 import './plugin-manager.css';
 
 const FILTER_LABEL: Record<FilterId, string> = { all: 'All', enabled: 'Running', off: 'Switched off', problems: 'Needs attention', editors: 'UI editors' };
 const SORT_LABEL: Record<SortId, string> = { name: 'Name', health: 'Health', size: 'Size', deps: 'Most used' };
-const HEALTH_RANK = { error: 0, blocked: 1, partial: 2, off: 3, ok: 4 } as const;
 
 const matches = (r: PluginRow, f: FilterId) =>
   f === 'all' ? true : f === 'enabled' ? r.enabled : f === 'off' ? !r.enabled : f === 'editors' ? r.uiEditor.length > 0
@@ -40,6 +41,7 @@ function ViewBody(p: ViewProps & { view: ViewId }) {
   if (p.view === 'table') return <TableView {...p} />;
   if (p.view === 'detail') return <MasterDetailView {...p} />;
   if (p.view === 'graph') return <GraphView {...p} />;
+  if (p.view === 'install') return <InstallView {...p} />;
   return <CardsView {...p} />;
 }
 
@@ -277,13 +279,15 @@ function Terminal(p: LayoutProps) {
     switch (c.toLowerCase()) {
       case 'help':
         return print([
-          'ls                      list plugins          view grid|table|detail|graph',
+          'ls                      list plugins          view grid|table|detail|graph|install',
           'select <plugin>         show details          layout studio|mission|terminal|catalog',
           'deps <plugin>           dependencies          filter all|enabled|off|problems|editors',
           'open <plugin>           open its UI           settings <plugin>    open its settings',
           'enable|disable <plugin> switch it             logs <plugin>        show recent log lines',
           'clashes                 list conflicts        refresh | clear',
+          'install                 the plugin catalog (install, update, publish)',
         ]);
+      case 'install': return (p.set('view', 'install'), print(['view → install (plugin catalog)']));
       case 'ls':
         return print(p.rows.map((r) => `${r.enabled ? '[ ON ]' : '[OFF ]'} ${r.folder.padEnd(18)} ${r.version.padEnd(7)} ${HEALTH_LABEL[r.health].padEnd(14)} ${r.name}`));
       case 'view': return VIEWS.some((v) => v.id === a) ? (p.set('view', a as ViewId), print([`view → ${a}`])) : print([`unknown view "${a ?? ''}"`], 'err');

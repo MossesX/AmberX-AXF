@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-5b97bddaa9",
+  "createdAt": "2026-10-21T13:36:43.039Z",
+  "updatedAt": "2026-10-21T13:36:43.222Z",
+  "kind": "fix",
+  "title": "Coolify [hidden] http://coolify:8080 so the Keys banner can be satisfied",
+  "asked": "",
+  "repos": [
+    "MossesX/amberx-axf"
+  ],
+  "model": "",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Allow Coolify's internal address in the check, redeploy and form",
+      "state": "done",
+      "startedAt": "2026-10-21T13:36:43.138Z",
+      "finishedAt": "2026-10-21T13:36:43.138Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Coolify URL may be http://coolify:8080 (stays on the VPS) or https; plain http to an IP refused; redeploy guarded too.",
+    "commits": [
+      {
+        "sha": "97d2ca8"
+      }
+    ],
+    "tests": {
+      "systems-check": {
+        "before": "79",
+        "after": "80"
+      }
+    },
+    "links": {}
+  },
+  "closed": null,
+  "state": "done"
+}

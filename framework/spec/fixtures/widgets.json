@@ -1,8 +1,278 @@
 {
   "widgetTypes": [
     "clock",
-    "search-bar"
+    "search-bar",
+    "action-button",
+    "logo",
+    "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
+    "link",
+    "theme-switch",
+    "spacer",
+    "divider"
   ],
+  "attachableTypes": [
+    "clock",
+    "search-bar",
+    "action-button",
+    "logo",
+    "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
+    "link",
+    "theme-switch",
+    "spacer",
+    "divider",
+    "badge"
+  ],
+  "hosts": [
+    {
+      "host": "toolbar",
+      "field": "widgets",
+      "types": [
+        "clock",
+        "search-bar",
+        "action-button",
+        "logo",
+        "label",
+        "status",
+        "counter",
+        "progress",
+        "avatar",
+        "link",
+        "theme-switch",
+        "spacer",
+        "divider"
+      ],
+      "sides": [
+        "start",
+        "end"
+      ]
+    },
+    {
+      "host": "banner",
+      "field": "attach",
+      "types": [
+        "clock",
+        "search-bar",
+        "action-button",
+        "logo",
+        "label",
+        "status",
+        "counter",
+        "progress",
+        "avatar",
+        "link",
+        "theme-switch",
+        "spacer",
+        "divider",
+        "badge"
+      ],
+      "sides": [
+        "left",
+        "center",
+        "right"
+      ]
+    }
+  ],
+  "searchBarConfig": {
+    "everything": {
+      "data": {
+        "placeholder": "Search everything…",
+        "maxResults": 14,
+        "width": "regular",
+        "shortcut": true
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search everything…",
+        "maxResults": 14,
+        "width": 30,
+        "shortcut": true
+      }
+    },
+    "compact": {
+      "data": {
+        "placeholder": "Search…",
+        "maxResults": 10,
+        "width": "compact",
+        "shortcut": true
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 10,
+        "width": 18,
+        "shortcut": true
+      }
+    },
+    "empty": {
+      "data": {},
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 12,
+        "width": 30,
+        "shortcut": true
+      }
+    },
+    "too-many": {
+      "data": {
+        "placeholder": "",
+        "maxResults": 999,
+        "width": "huge",
+        "kinds": [
+          "view",
+          7,
+          ""
+        ],
+        "shortcut": false
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Search…",
+        "maxResults": 50,
+        "width": 30,
+        "kinds": [
+          "view"
+        ],
+        "shortcut": false
+      }
+    },
+    "too-few": {
+      "data": {
+        "placeholder": "Go",
+        "maxResults": 0,
+        "width": "wide",
+        "kinds": []
+      },
+      "config": {
+        "live": true,
+        "placeholder": "Go",
+        "maxResults": 1,
+        "width": 46,
+        "shortcut": true
+      }
+    },
+    "not-numbers": {
+      "data": {
+        "placeholder": "x",
+        "maxResults": "ten",
+        "width": "compact",
+        "shortcut": "no"
+      },
+      "config": {
+        "live": true,
+        "placeholder": "x",
+        "maxResults": 12,
+        "width": 18,
+        "shortcut": true
+      }
+    }
+  },
+  "attachValidation": {
+    "banner-ok": {
+      "host": "banner",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "left"
+        },
+        {
+          "type": "clock",
+          "id": "digital-12h",
+          "at": "right",
+          "order": 2
+        }
+      ],
+      "errors": []
+    },
+    "banner-not-a-list": {
+      "host": "banner",
+      "list": {
+        "type": "badge"
+      },
+      "errors": [
+        "data.attach must be a list"
+      ]
+    },
+    "banner-bad-entries": {
+      "host": "banner",
+      "list": [
+        {
+          "type": "button",
+          "id": "x",
+          "at": "left"
+        },
+        {
+          "type": "badge",
+          "id": "",
+          "at": "top"
+        },
+        "nope",
+        {
+          "type": "clock",
+          "id": "c",
+          "at": "center",
+          "order": "first"
+        }
+      ],
+      "errors": [
+        "data.attach[0].type must be one of: clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge",
+        "data.attach[1].id must be an asset id",
+        "data.attach[1].at must be one of: left, center, right",
+        "data.attach[2] must be an object {type, id, at}",
+        "data.attach[3].order must be a number"
+      ]
+    },
+    "toolbar-ok": {
+      "host": "toolbar",
+      "list": [
+        {
+          "type": "search-bar",
+          "id": "compact",
+          "at": "end"
+        }
+      ],
+      "errors": []
+    },
+    "toolbar-badge-refused": {
+      "host": "toolbar",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "start"
+        },
+        {
+          "type": "clock",
+          "id": "digital-24h",
+          "at": "left"
+        }
+      ],
+      "errors": [
+        "data.widgets[0].type must be one of: clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider",
+        "data.widgets[1].at must be one of: start, end"
+      ]
+    },
+    "not-a-host": {
+      "host": "button",
+      "list": [
+        {
+          "type": "badge",
+          "id": "new",
+          "at": "left"
+        }
+      ],
+      "errors": []
+    }
+  },
   "toolbarSides": [
     "start",
     "end"
@@ -13,11 +283,28 @@
     "wide": 46
   },
   "exists": [
+    "action-button:help",
+    "action-button:settings",
+    "avatar:account",
     "badge:new",
     "clock:digital-12h",
     "clock:digital-24h",
+    "counter:alerts",
+    "counter:approvals",
+    "divider:rule",
+    "label:environment",
+    "label:version",
+    "link:docs",
+    "logo:mark",
+    "logo:wordmark",
+    "progress:build",
     "search-bar:compact",
-    "search-bar:everything"
+    "search-bar:everything",
+    "spacer:gap",
+    "spacer:push",
+    "status:ai",
+    "status:online",
+    "theme-switch:day-night"
   ],
   "toolbar": {
     "none": {
@@ -164,6 +451,524 @@
         "start": [],
         "end": []
       }
+    },
+    "widget-kinds": {
+      "toolbar": {
+        "widgets": [
+          {
+            "type": "logo",
+            "id": "wordmark",
+            "at": "start"
+          },
+          {
+            "type": "spacer",
+            "id": "push",
+            "at": "start"
+          },
+          {
+            "type": "counter",
+            "id": "alerts",
+            "at": "end"
+          },
+          {
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": -1
+          },
+          {
+            "type": "badge",
+            "id": "new",
+            "at": "end"
+          }
+        ]
+      },
+      "extra": [
+        {
+          "type": "avatar",
+          "id": "account",
+          "at": "end",
+          "origin": "account"
+        }
+      ],
+      "placed": {
+        "start": [
+          {
+            "key": "logo:wordmark",
+            "type": "logo",
+            "id": "wordmark",
+            "at": "start",
+            "order": 0,
+            "origin": "asset"
+          },
+          {
+            "key": "spacer:push",
+            "type": "spacer",
+            "id": "push",
+            "at": "start",
+            "order": 10,
+            "origin": "asset"
+          }
+        ],
+        "end": [
+          {
+            "key": "theme-switch:day-night",
+            "type": "theme-switch",
+            "id": "day-night",
+            "at": "end",
+            "order": -1,
+            "origin": "asset"
+          },
+          {
+            "key": "counter:alerts",
+            "type": "counter",
+            "id": "alerts",
+            "at": "end",
+            "order": 20,
+            "origin": "asset"
+          },
+          {
+            "key": "avatar:account",
+            "type": "avatar",
+            "id": "account",
+            "at": "end",
+            "order": 1000,
+            "origin": "account"
+          }
+        ]
+      }
     }
+  },
+  "kinds": {
+    "tones": [
+      "neutral",
+      "success",
+      "warning",
+      "danger",
+      "accent",
+      "muted"
+    ],
+    "tone": {
+      "7": {
+        "in": 7,
+        "out": "neutral",
+        "accentFallback": "accent"
+      },
+      "neutral": {
+        "in": "neutral",
+        "out": "neutral",
+        "accentFallback": "neutral"
+      },
+      "success": {
+        "in": "success",
+        "out": "success",
+        "accentFallback": "success"
+      },
+      "warning": {
+        "in": "warning",
+        "out": "warning",
+        "accentFallback": "warning"
+      },
+      "danger": {
+        "in": "danger",
+        "out": "danger",
+        "accentFallback": "danger"
+      },
+      "accent": {
+        "in": "accent",
+        "out": "accent",
+        "accentFallback": "accent"
+      },
+      "muted": {
+        "in": "muted",
+        "out": "muted",
+        "accentFallback": "muted"
+      },
+      "loud": {
+        "in": "loud",
+        "out": "neutral",
+        "accentFallback": "accent"
+      },
+      "": {
+        "in": "",
+        "out": "neutral",
+        "accentFallback": "accent"
+      },
+      "null": {
+        "in": null,
+        "out": "neutral",
+        "accentFallback": "accent"
+      }
+    },
+    "counter": [
+      {
+        "n": 0,
+        "max": 99,
+        "hideAtZero": true,
+        "text": ""
+      },
+      {
+        "n": 0,
+        "max": 99,
+        "hideAtZero": false,
+        "text": "0"
+      },
+      {
+        "n": 0,
+        "text": ""
+      },
+      {
+        "n": 7,
+        "max": 99,
+        "hideAtZero": true,
+        "text": "7"
+      },
+      {
+        "n": 99,
+        "max": 99,
+        "hideAtZero": true,
+        "text": "99"
+      },
+      {
+        "n": 100,
+        "max": 99,
+        "hideAtZero": true,
+        "text": "99+"
+      },
+      {
+        "n": 1234,
+        "max": 999,
+        "hideAtZero": true,
+        "text": "999+"
+      },
+      {
+        "n": 5,
+        "max": 0,
+        "hideAtZero": true,
+        "text": "5"
+      },
+      {
+        "n": 5,
+        "max": -3,
+        "hideAtZero": false,
+        "text": "5"
+      },
+      {
+        "n": 3.9,
+        "max": 99,
+        "hideAtZero": true,
+        "text": "3"
+      },
+      {
+        "n": -2,
+        "max": 99,
+        "hideAtZero": false,
+        "text": "0"
+      },
+      {
+        "n": "x",
+        "max": 99,
+        "hideAtZero": true,
+        "text": ""
+      },
+      {
+        "n": 12,
+        "max": "y",
+        "hideAtZero": true,
+        "text": "12"
+      },
+      {
+        "n": 12,
+        "max": 1,
+        "hideAtZero": true,
+        "text": "1+"
+      }
+    ],
+    "status": [
+      {
+        "n": 0,
+        "on": false
+      },
+      {
+        "n": 1,
+        "on": true
+      },
+      {
+        "n": -1,
+        "on": false
+      },
+      {
+        "n": 2.5,
+        "on": true
+      },
+      {
+        "n": "x",
+        "on": false
+      },
+      {
+        "n": null,
+        "on": false
+      }
+    ],
+    "progress": [
+      {
+        "n": 0,
+        "max": 100,
+        "percent": 0
+      },
+      {
+        "n": 50,
+        "max": 100,
+        "percent": 50
+      },
+      {
+        "n": 100,
+        "max": 100,
+        "percent": 100
+      },
+      {
+        "n": 150,
+        "max": 100,
+        "percent": 100
+      },
+      {
+        "n": -5,
+        "max": 100,
+        "percent": 0
+      },
+      {
+        "n": 1,
+        "max": 3,
+        "percent": 33
+      },
+      {
+        "n": 2,
+        "max": 3,
+        "percent": 67
+      },
+      {
+        "n": 7,
+        "max": 0,
+        "percent": 0
+      },
+      {
+        "n": 7,
+        "max": -1,
+        "percent": 0
+      },
+      {
+        "n": "x",
+        "max": 10,
+        "percent": 0
+      },
+      {
+        "n": 7,
+        "max": "y",
+        "percent": 0
+      },
+      {
+        "n": 0.4,
+        "max": 100,
+        "percent": 0
+      },
+      {
+        "n": 0.5,
+        "max": 100,
+        "percent": 1
+      }
+    ],
+    "initials": [
+      {
+        "name": "Brett",
+        "initials": "BR"
+      },
+      {
+        "name": "Brett Mosses",
+        "initials": "BM"
+      },
+      {
+        "name": "brett m",
+        "initials": "BM"
+      },
+      {
+        "name": "  Ada   Lovelace  ",
+        "initials": "AL"
+      },
+      {
+        "name": "x",
+        "initials": "X"
+      },
+      {
+        "name": "",
+        "initials": "?"
+      },
+      {
+        "name": "   ",
+        "initials": "?"
+      },
+      {
+        "name": "Jean-Luc Picard de la Rue",
+        "initials": "JR"
+      },
+      {
+        "name": 7,
+        "initials": "?"
+      },
+      {
+        "name": null,
+        "initials": "?"
+      }
+    ],
+    "link": [
+      {
+        "href": "https://amberxai.com",
+        "out": "https://amberxai.com"
+      },
+      {
+        "href": "http://localhost:8080/x",
+        "out": "http://localhost:8080/x"
+      },
+      {
+        "href": " https://a.b/c?d=1#e ",
+        "out": "https://a.b/c?d=1#e"
+      },
+      {
+        "href": "mailto:brett@example.com",
+        "out": "mailto:brett@example.com"
+      },
+      {
+        "href": "tel:+1 (555) 010-0100",
+        "out": "tel:+1 (555) 010-0100"
+      },
+      {
+        "href": "javascript:alert(1)",
+        "out": null
+      },
+      {
+        "href": "ftp://x.y",
+        "out": null
+      },
+      {
+        "href": "amberxai.com",
+        "out": null
+      },
+      {
+        "href": "https://",
+        "out": null
+      },
+      {
+        "href": "mailto:nope",
+        "out": null
+      },
+      {
+        "href": "tel:12",
+        "out": null
+      },
+      {
+        "href": "",
+        "out": null
+      },
+      {
+        "href": 7,
+        "out": null
+      }
+    ],
+    "image": [
+      {
+        "src": "https://x.y/logo.png",
+        "out": "https://x.y/logo.png"
+      },
+      {
+        "src": "http://x.y/l.webp",
+        "out": "http://x.y/l.webp"
+      },
+      {
+        "src": "/logo.svg",
+        "out": "/logo.svg"
+      },
+      {
+        "src": "./img/logo.png",
+        "out": "./img/logo.png"
+      },
+      {
+        "src": "data:image/png;base64,iVBORw0KGgo=",
+        "out": "data:image/png;base64,iVBORw0KGgo="
+      },
+      {
+        "src": "data:text/html;base64,PGI+",
+        "out": null
+      },
+      {
+        "src": "javascript:x",
+        "out": null
+      },
+      {
+        "src": "logo.png",
+        "out": null
+      },
+      {
+        "src": "",
+        "out": null
+      },
+      {
+        "src": 7,
+        "out": null
+      }
+    ],
+    "spacer": {
+      "small": 1,
+      "regular": 2,
+      "large": 4,
+      "flex": -1
+    },
+    "logo": {
+      "small": {
+        "scale": 0.85,
+        "px": 16
+      },
+      "regular": {
+        "scale": 1,
+        "px": 20
+      },
+      "large": {
+        "scale": 1.25,
+        "px": 28
+      }
+    },
+    "avatar": {
+      "small": 18,
+      "regular": 24,
+      "large": 32
+    },
+    "progressWidth": {
+      "compact": 8,
+      "regular": 14,
+      "wide": 24
+    },
+    "themeSwitch": [
+      {
+        "active": "arctic-daylight",
+        "light": "arctic-daylight",
+        "dark": "amber-ember",
+        "next": "amber-ember"
+      },
+      {
+        "active": "amber-ember",
+        "light": "arctic-daylight",
+        "dark": "amber-ember",
+        "next": "arctic-daylight"
+      },
+      {
+        "active": "neon-tide",
+        "light": "arctic-daylight",
+        "dark": "amber-ember",
+        "next": "amber-ember"
+      },
+      {
+        "light": "a",
+        "dark": "b",
+        "next": "b"
+      }
+    ]
   }
 }

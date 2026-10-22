@@ -10,8 +10,9 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { Button, Chip, Container, Icon, Slider, useAsset, useAxfState, useRuntime } from '../../react';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
+import { runtimeInventory } from '../../react/pluginRecords';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -23,6 +24,8 @@ export const SETTINGS_TABS = {
   account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
   connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
   plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
+  // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
+  banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
 } as const;
 
@@ -64,12 +67,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
     case 'section':
       return <h3 className="axf-settings__section">{spec.label}</h3>;
     case 'toggle':
-      control = (
-        <label className="axf-settings__switch">
-          <input type="checkbox" checked={value === true} disabled={locked} onChange={(e) => set(e.target.checked)} />
-          <span>{value === true ? 'On' : 'Off'}</span>
-        </label>
-      );
+      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => set(on)} />;
       break;
     case 'slider':
       return (
@@ -150,15 +148,17 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   const options = rt.registry.list(type);
   const canHide = hideable(type);
   const hidden = rt.slotHidden(type);
+  // embed@1: a host app (Patches) shows this chrome for the app; the choice is the host's until the app runs on its own.
+  const byHost = rt.slotHiddenByHost(type);
   const pick = (v: string) => {
     if (v === HIDDEN) return rt.setSlotHidden(type, true);
     if (hidden) rt.setSlotHidden(type, false);
     if (v !== state.active[type]) rt.swap(type, v);
   };
   return (
-    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || byHost || options.length + (canHide ? 1 : 0) < 2} title={byHost ? `Shown by ${rt.embedded?.host} while this app runs inside it` : undefined} onChange={(e) => pick(e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-      {canHide && <option value={HIDDEN}>Hidden</option>}
+      {canHide && <option value={HIDDEN}>{byHost ? `Shown by ${rt.embedded?.host}` : 'Hidden'}</option>}
     </select>
   );
 }
@@ -230,10 +230,7 @@ function RollAssetsPanel() {
               <span className="fx-muted axf-settings__hint fx-mono">{a.id}{overridden ? ' · changed here' : ''}</span>
             </div>
             <div className="axf-settings__control fx-row fx-row--wrap">
-              <label className="axf-settings__switch">
-                <input type="checkbox" checked={on} disabled={locked || hidden} onChange={(e) => rt.setRollAsset(type, a.id, e.target.checked)} aria-label={`Include ${a.name} in rolls`} />
-                <span>{on ? 'In rolls' : 'Not in rolls'}</span>
-              </label>
+              <Switch hideLabel className="axf-settings__switch" label={`Include ${a.name} in rolls`} text={on ? 'In rolls' : 'Not in rolls'} checked={on} disabled={locked || hidden} onChange={(v) => rt.setRollAsset(type, a.id, v)} />
               {overridden && <Button tone="ghost" icon="refresh" disabled={locked || hidden} onClick={() => rt.setRollAsset(type, a.id, null)}>Default</Button>}
             </div>
           </div>
@@ -274,16 +271,51 @@ function AccessPanel() {
   );
 }
 
+/**
+ * Every installed library with its health, straight from the plugin inventory engine (plugin-inventory@1), so every app
+ * ships a plugin list in Settings → Plugins. Each row opens the library's settings tab when it has one, or the Plugin
+ * Manager (`plugin-manager.open:<id>`) when that plugin is installed (same on Android: `InstalledModulesPanel`).
+ */
 function LibrariesPanel() {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  if (!rt.libraries.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  const inv = useMemo(() => runtimeInventory(rt), [rt, rt.libraries.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const manager = Boolean(rt.actions.get('plugin-manager.open'));
+  if (!inv.items.length && !rt.skippedLibraries.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  const tone = (h: string) => (h === 'ok' ? 'success' : h === 'partial' ? 'warning' : h === 'off' ? undefined : 'danger');
   return (
-    <ul className="axf-settings__list">
-      {rt.libraries.map((l) => (
-        <li key={l.id}><strong>{l.label}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></li>
-      ))}
-    </ul>
+    <div className="fx-stack">
+      {manager && <div className="fx-row fx-row--wrap"><Button icon="package" onClick={() => rt.dispatch('plugin-manager.open')}>Open the Plugin Manager</Button></div>}
+      <ul className="axf-settings__list">
+        {inv.items.map((l) => {
+          const lib = rt.libraries.find((x) => x.id === l.id);
+          const tab = lib?.ui?.settingsTabs[0];
+          return (
+            <li key={l.id} className="fx-row fx-row--wrap">
+              <span className="fx-grow"><strong>{l.name}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+              <Chip tone={tone(l.health)}>{l.health === 'ok' ? 'healthy' : l.health}</Chip>
+              {l.dependents.length > 0 && <Chip>used by {l.dependents.length}</Chip>}
+              {tab && <Button tone="ghost" icon="settings" onClick={() => rt.dispatch(`settings.open:${tab.id}`)}>Settings</Button>}
+              {manager && <Button tone="ghost" icon="package" onClick={() => rt.dispatch(`plugin-manager.open:${l.folder}`)}>Details</Button>}
+            </li>
+          );
+        })}
+      </ul>
+      {inv.conflicts.length > 0 && <p className="fx-muted axf-settings__hint">{inv.conflicts.length} clash{inv.conflicts.length > 1 ? 'es' : ''}: {inv.conflicts.map((c) => c.id).join(', ')}</p>}
+      {rt.skippedLibraries.length > 0 && (
+        <div className="fx-stack">
+          <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>Not loaded inside {rt.embedded?.host ?? 'the host app'} (it does their job, or hides what they draw). They load as usual when this app runs on its own.</p>
+          <ul className="axf-settings__list">
+            {rt.skippedLibraries.map((l) => (
+              <li key={l.id} className="fx-row fx-row--wrap">
+                <span className="fx-grow"><strong>{l.label}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+                <Chip>{l.reason}</Chip>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -311,7 +343,11 @@ export function SettingsView() {
   useSettingsRevision(rt);
   const tabs = rt.settings.topTabs();
   // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
+  // A banner plugin's own settings live inside Banners (one interface for every banner): its tab opens Banners on it.
+  const banners = useKnownBanners();
+  const folded = banners.length ? bannerSettingsTabs(rt) : new Set<string>();
   const resolve = (id: unknown): [string, string] => {
+    if (typeof id === 'string' && folded.has(id)) { askBannerTab(rt, id); return ['plugins', 'banners']; }
     const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
     if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
     if (t) return [t.id, ''];
@@ -325,10 +361,8 @@ export function SettingsView() {
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
-  const subs = current ? rt.settings.subTabs(current.id) : [];
+  const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const shown = (sub && subs.find((t) => t.id === sub)) || current;
-  const groups = shown ? rt.settings.groupsIn(shown.id) : [];
-  const panels = shown ? rt.settings.panelsIn(shown.id) : [];
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
@@ -353,15 +387,28 @@ export function SettingsView() {
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {/* panels and groups interleaved by `order` (panels first on a tie) */}
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? shown?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+      {shown && <TabContent id={shown.id} />}
+    </div>
+  );
+}
+
+/** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings. */
+export function TabContent({ id }: { id: string }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const tab = rt.settings.getTab(id);
+  const groups = rt.settings.groupsIn(id);
+  const panels = rt.settings.panelsIn(id);
+  return (
+    <>
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
         ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
         .sort((a, b) => a.order - b.order || a.tie - b.tie)
         .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
-        <p className="fx-muted">{shown?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
       )}
-    </div>
+    </>
   );
 }
 
@@ -402,7 +449,7 @@ const CSS = `
 .axf-settings__offnote{margin:calc(var(--fx-space)*.25) 0 0}
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
-.axf-settings__switch{display:inline-flex;gap:var(--fx-space);align-items:center;cursor:pointer}
+.axf-settings__switch{gap:var(--fx-space)}
 .axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
 .axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
 .axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
@@ -453,6 +500,7 @@ export const library: AxfWebLibrary = {
   provides: ['axf.settings'],
   register(rt) {
     injectStyles();
+    setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} />);
     rt.settings.addGroup(appearanceGroup(rt));
     rt.settings.addGroup(rollGroup());
     applyDisplay(rt);
@@ -467,7 +515,11 @@ export const library: AxfWebLibrary = {
       }
     }, { label: 'Open a settings tab', params: true });
   },
-  views: { [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> } },
+  views: {
+    [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
+    // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
+    [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
+  },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
     {
@@ -487,7 +539,8 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
-    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],
 };

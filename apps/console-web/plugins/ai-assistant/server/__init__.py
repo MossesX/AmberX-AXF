@@ -1,18 +1,26 @@
-"""AI assistant — server part. Mounted at /api/plugins/ai-assistant/ (console token on every method, 404 when disabled).
+"""AI assistant — server part (Fable rebuild, Oct 20 2026). Mounted at /api/plugins/ai-assistant/ (console token on
+every method, 404 when disabled, never on the console MCP).
 
-Ported from xGallery's assistant (conversations, streamed turns, page context, read-only code tools, subscription +
-API backends, owner settings with masked credentials) and extended: many providers and profiles with a fallback
-chain, a setup wizard, per-conversation settings, regenerate / edit / fork, prompt library, image attachments,
-model comparison, usage and daily budget, export / import, secret redaction, and agent integration.
+The console's host of the framework's assistant contract (assistant@1: framework/core/assistant.ts = Kotlin
+ai.amberx.axf.kernel.assistant = Python `axf.contracts.assistant`) on the framework's Python host runtime
+(`axf.assistant_host`: providers, live-session hosts, safety; framework/python, harvested Oct 21 2026 — this folder
+keeps only what is console-specific). Ported from xGallery's assistant and extended: providers from the
+shared registry with a fallback chain, a setup wizard, per-conversation settings, regenerate / edit / fork, prompt
+library, image attachments, model comparison, usage and budgets, export / import, secret redaction, agent
+integration, write-mode change batches, the Claude Code MCP bridge, live sessions and hub users.
 
 Integration (plugin_services, capability names only — never another plugin's folder):
-  provides  axf.llm@1     complete(), embed(), profiles() for any plugin that needs a model (the agent manager uses it)
-  consumes  axf.agents@1  when an agent manager is installed: chat *as* one of its agents (its prompt, tools, memory)
+  provides  axf.llm@1            complete(), embed(), profiles() for any plugin that needs a model (the agent manager uses it)
+  provides  axf.live-sessions@1  read-only session views + register_host() for new session hosts
+  consumes  axf.agents@1         when an agent manager is installed: chat *as* one of its agents (its prompt, tools, memory)
+  consumes  axf.containers@1     change batches (approval cards) for write-mode agents
+  consumes  axf.live-host@1      a module's session host (e.g. axHub's workers) replaces the axHub placeholder
 """
 from __future__ import annotations
 
 import json
 import re
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -27,7 +35,41 @@ from fastapi.responses import HTMLResponse, PlainTextResponse, StreamingResponse
 import plugin_services
 import wall
 
-from . import providers, sessions, store, tools
+_PY = Path(__file__).resolve().parents[5] / "framework" / "python"
+if str(_PY) not in sys.path:
+    sys.path.insert(0, str(_PY))
+
+from axf.assistant_host import providers, sessions  # noqa: E402
+from axf.contracts import assistant as contract  # noqa: E402
+
+from . import store, tools  # noqa: E402
+
+# Host hooks of the shared runtime: what makes this host the console (never a copy of the runtime).
+providers.extra_kinds = store.extra_provider_kinds
+providers.HOST_LABEL = "the console server"
+providers.PRIVATE_DIRS = [".axf-console"]
+
+
+def _stored_secret_names() -> set[str]:
+    """Names of credentials the console's core credential store loaded into os.environ (never given to the CLI)."""
+    try:
+        import credentials
+        return set((credentials.STORE.read() if credentials.STORE else {}).keys())
+    except Exception:  # noqa: BLE001
+        return set()
+
+
+def _private_roots() -> set[str]:
+    try:
+        import console_context as cx
+        return {str(cx.ROOT)}
+    except Exception:  # noqa: BLE001
+        return set()
+
+
+providers.stored_secret_names = _stored_secret_names
+providers.PRIVATE_ROOTS = _private_roots
+providers.reload_catalog()  # the registry is read once at import with the default hooks; read again with ours
 
 # ---------------------------------------------------------------- who may do what (hub users behind the wall)
 # The console lets hub *users* into this plugin ("wallUsers": true). Admins (and the console token) can do
@@ -38,7 +80,7 @@ from . import providers, sessions, store, tools
 _CALLER: ContextVar["wall.Caller | None"] = ContextVar("ai_assistant_caller", default=None)
 _PREFIX = "/api/plugins/ai-assistant"
 _USER_ROUTES = {
-    ("GET", "/app"), ("GET", "/me"), ("GET", "/status"), ("GET", "/catalog"),
+    ("GET", "/app"), ("GET", "/me"), ("GET", "/status"), ("GET", "/catalog"), ("GET", "/contract"), ("GET", "/tags"),
     ("GET", "/conversations"), ("POST", "/conversations"), ("POST", "/conversations/import"),
     ("GET", "/conversations/{cid}"), ("PATCH", "/conversations/{cid}"), ("DELETE", "/conversations/{cid}"),
     ("POST", "/conversations/{cid}/fork"), ("DELETE", "/conversations/{cid}/messages/{mid}"), ("GET", "/conversations/{cid}/export"),
@@ -48,19 +90,12 @@ _USER_ROUTES = {
 }
 
 
-_SETTINGS_ALLOWED = {"profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking"}
+_SETTINGS_ALLOWED = set(contract.SETTING_KEYS)
 
 
 def _settings_for(c: "wall.Caller") -> set[str]:
-    """Conversation settings this caller may set (admins: all)."""
-    if c.admin:
-        return set(_SETTINGS_ALLOWED)
-    keys = {"temperature", "top_p", "systemPrompt", "tools"}
-    if c.can("assistant.agents"):
-        keys.add("agentId")
-    if c.can("assistant.models"):
-        keys |= {"profileId", "model", "max_tokens", "thinking"}
-    return keys
+    """Conversation settings this caller may set (admins: all) — assistant@1 rule."""
+    return set(contract.settings_allowed_for(c.admin, c.can))
 
 
 def _me() -> "wall.Caller":
@@ -103,7 +138,6 @@ _busy_users: set[str] = set()
 _busy_lock = threading.Lock()
 FOLDER = Path(__file__).resolve().parents[1].name
 _turns: dict[str, threading.Event] = {}
-_SECRET = re.compile(r"\b(sk-(?:ant-|proj-)?[A-Za-z0-9_\-]{20,}|xai-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_\-]{30,}|fc-[a-f0-9]{24,})\b")
 
 
 def _agents():
@@ -154,10 +188,52 @@ def tools_root() -> Path:
 
 plugin_services.provide("axf.llm@1", LlmService(), FOLDER)
 
-# Live sessions (live-session@1): every conversation is a session owned by this server; replies run detached from the
-# browser and viewers reattach + replay. See server/sessions.py and framework/spec/LIVE-SESSIONS.md.
-_host = sessions.LocalHost(store.DATA / "sessions")
-plugin_services.provide("axf.live-sessions@1", sessions.LiveSessionsService(_host), FOLDER)
+# Live sessions (live-session@1): every conversation is a session owned by its host; replies run detached from the
+# browser and viewers reattach + replay. Hosts are an open registry: `local` is built, `axhub` is a placeholder until a
+# module provides `axf.live-host@1`. See axf.assistant_host.sessions and framework/spec/LIVE-SESSIONS.md.
+_host = sessions.LocalHost(store.DATA / "sessions", label="This console", note="Replies run on the console server and keep going when the browser closes.",
+                           restart_reason="The console restarted while this reply was running.")
+HOSTS = sessions.SessionHosts()
+HOSTS.register(_host)
+HOSTS.register(sessions.axhub_placeholder("this console"))
+plugin_services.provide("axf.live-sessions@1", sessions.LiveSessionsService(HOSTS, _host), FOLDER)
+
+
+def _hosts() -> sessions.SessionHosts:
+    """The registry with any module-provided host (axf.live-host@1) merged in at request time."""
+    ext = plugin_services.get(sessions.HOST_CAPABILITY)
+    if ext is not None and isinstance(getattr(ext, "id", None), str) and HOSTS.get(ext.id) is not ext:
+        HOSTS.register(ext)
+    return HOSTS
+
+
+def _keep_interrupted(s: "sessions.Session") -> None:
+    """A console restart mid-reply: keep the text that had streamed as an assistant message marked `interrupted`,
+    so nothing the model said is lost and the next turn can continue from it."""
+    if not store.load_config().get("keepInterrupted", True):
+        return
+    with s.log.cond:
+        items = list(s.log.items)
+    start = next((i for i in range(len(items) - 1, -1, -1) if items[i]["kind"] == sessions.KINDS["turnStart"]), -1)
+    if start < 0:
+        return
+    text = "".join(str((e.get("data") or {}).get("text", "")) for e in items[start:] if e["kind"] == "text" and isinstance(e.get("data"), dict))
+    if any(e["kind"] == "done" for e in items[start:]) or not text.strip():
+        return
+    try:
+        conv = store.get_conversation(s.id)
+    except KeyError:
+        return
+    msgs = conv.setdefault("messages", [])
+    if msgs and msgs[-1].get("role") == "assistant" and (msgs[-1].get("meta") or {}).get("interrupted"):
+        return
+    msgs.append({"id": store.new_id("m"), "role": "assistant", "content": text.strip() + "\n\n_(The console restarted while this reply was running; say “continue” to carry on.)_",
+                 "createdAt": store.now_ms(), "meta": {"interrupted": True, "lastRound": text.strip()}})
+    conv["updatedAt"] = store.now_ms()
+    store.save_conversation(conv)
+
+
+_host.on_interrupted = _keep_interrupted
 
 
 # ---------------------------------------------------------------- prompts
@@ -182,8 +258,10 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
         parts.append(f"Instructions for this conversation:\n{st['systemPrompt'].strip()}")
     if memory:
         parts.append(f"Relevant memory (from the agent's persistent memory; use it when it helps, never invent beyond it):\n{memory}")
-    if context and any(context.get(k) for k in ("view", "title", "selection", "note")):
+    if context and any(context.get(k) for k in ("view", "title", "selection", "note", "extra")):
         bits = [f"view: {context['view']}" if context.get("view") else "", f"title: {context['title']}" if context.get("title") else ""]
+        # Well-known `extra` keys (assistant@1 ChatContext.extra) are named for the model; other keys are the host's own.
+        bits += [f"{k}: {v}" for k in contract.CHAT_CONTEXT_KEYS for v in [contract.context_extra(context, k)] if v]
         text = "Console context: " + " · ".join(b for b in bits if b)
         if context.get("selection"):
             text += f"\nSelected text:\n\"\"\"\n{str(context['selection'])[:4000]}\n\"\"\""
@@ -228,7 +306,7 @@ def _batch_history(cid: str) -> str:
 
 
 def _redact(text: str, on: bool) -> str:
-    return _SECRET.sub("[redacted secret]", text) if on and text else text
+    return contract.redact_secrets(text, on)
 
 
 # ---------------------------------------------------------------- the turn engine
@@ -238,49 +316,15 @@ def _sse(event: str, data: Any) -> str:
 
 
 def _wire_history(msgs: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
-    """Last `limit` user/assistant turns plus the tool messages between them, in the canonical format."""
-    keep: list[dict[str, Any]] = []
-    turns = 0
-    for m in reversed(msgs):
-        if m.get("role") == "user":
-            turns += 1
-        keep.append(m)
-        if turns >= limit:
-            break
-    keep.reverse()
-    while keep and keep[0].get("role") == "tool":  # never start on an orphaned tool result
-        keep.pop(0)
-    out = []
-    for i, m in enumerate(keep):
-        content = m.get("content", "")
-        prev = keep[i - 1] if i else None
-        if m.get("role") == "assistant" and not (m.get("meta") or {}).get("step") and prev and prev.get("role") == "tool":
-            content = (m.get("meta") or {}).get("lastRound", content)  # earlier rounds' text already sits in the step messages
-        w: dict[str, Any] = {"role": m["role"], "content": content}
-        if m.get("images"):
-            w["images"] = m["images"]
-        if m.get("toolCalls"):
-            w["tool_calls"] = m["toolCalls"]
-        if m.get("thinkingBlocks"):
-            w["thinking_blocks"] = m["thinkingBlocks"]
-        if m.get("role") == "tool":
-            w["tool_call_id"] = m.get("toolCallId", "")
-            w["is_error"] = bool(m.get("isError"))
-        out.append(w)
-    return out
+    return contract.wire_history(msgs, limit)
 
 
 def _batch_title(user_text: str, n: int) -> str:
-    t = re.sub(r"\s+", " ", user_text or "").strip()
-    return f"{n} change{'s' if n != 1 else ''}: {t[:80]}{'…' if len(t) > 80 else ''}" if t else f"{n} change{'s' if n != 1 else ''}"
+    return contract.batch_title(user_text, n)
 
 
 def _summ(args: dict[str, Any]) -> str:
-    for k in ("path", "command", "pattern", "url", "query", "expression", "dir", "name", "id", "container"):
-        if isinstance(args.get(k), str) and args[k]:
-            return args[k][:160]
-    s = json.dumps(args)[:160]
-    return "" if s == "{}" else s
+    return contract.summarize_args(args)
 
 
 def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None) -> Iterator[str]:
@@ -331,7 +375,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             images = [i for i in (body.get("images") or [])[:6] if isinstance(i, dict) and re.match(r"^image/(png|jpe?g|gif|webp)$", str(i.get("media_type", "")))]
             if not user_text and not images:
                 raise ValueError("empty message")
-            umsg = {"id": store.new_id("m"), "role": "user", "content": user_text, "createdAt": store.now_ms(), "meta": {"context": body.get("context") or None}}
+            umsg = {"id": store.new_id("m"), "role": "user", "content": user_text, "createdAt": store.now_ms(), "meta": {"context": contract.normalize_chat_context(body.get("context"))}}
             if images:
                 umsg["images"] = [{"media_type": i["media_type"], "data": str(i.get("data", ""))[:8_000_000], "name": str(i.get("name", ""))[:120]} for i in images]
             msgs.append(umsg)
@@ -375,12 +419,11 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                     yield _sse("status", {"text": "Recalled from agent memory"})
             except Exception:  # noqa: BLE001
                 memory = ""
-        system = _system_prompt(cfg, conv, agent, body.get("context"), tool_specs, memory)
+        system = _system_prompt(cfg, conv, agent, contract.normalize_chat_context(body.get("context")), tool_specs, memory)
         amodel = (agent or {}).get("model") or {}
         if not me.can("assistant.models"):
             st = {k: v for k, v in st.items() if k not in ("profileId", "model")}  # the default model for this account
-        chain = [p for p in [st.get("profileId") or amodel.get("profile") or cfg.get("defaultProfile"), *cfg.get("fallback", [])] if p]
-        chain = list(dict.fromkeys(chain)) or [""]
+        chain = contract.profile_chain(st.get("profileId"), amodel.get("profile"), cfg.get("defaultProfile") or "", cfg.get("fallback", []))
         params = {**cfg.get("params", {})}
         for k in ("temperature", "max_tokens", "top_p"):
             if st.get(k) is not None and st.get(k) != "":
@@ -389,13 +432,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 params[k] = amodel[k]
         if st.get("thinking") is not None:
             params["thinking"] = bool(st["thinking"])
-        if not me.admin:
-            try:
-                params["max_tokens"] = max(256, min(int(params.get("max_tokens") or 4096), 4096 if not me.can("assistant.models") else 16384))
-            except (TypeError, ValueError):
-                params["max_tokens"] = 4096
-            if not me.can("assistant.models"):
-                params["thinking"] = False
+        params = contract.clamp_user_params(params, me.admin, me.can("assistant.models"))
 
         yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None})
 
@@ -545,7 +582,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
         # A trailing assistant "step" with tool calls and no final text would leave the next turn without a reply: keep the final one always.
         msgs.append(amsg)
         if conv.get("title", "New conversation") == "New conversation" and user_text:
-            conv["title"] = re.sub(r"\s+", " ", user_text)[:60]
+            conv["title"] = contract.title_from_text(user_text)
             if cfg.get("autoTitle", True) and used_pid:
                 threading.Thread(target=_auto_title, args=(cid, used_pid, user_text, amsg["content"]), daemon=True).start()
         conv["updatedAt"] = store.now_ms()
@@ -640,7 +677,29 @@ def status() -> dict[str, Any]:
 
 @router.get("/catalog")
 def catalog() -> dict[str, Any]:
-    return {"providers": providers.CATALOG, "personas": list(store.PERSONAS), "toolGroups": tools.GROUPS, "cliInstalled": providers.cli_available()}
+    return {"providers": providers.CATALOG, "protocols": sorted({*providers.PROTOCOLS, "openai", "anthropic", "claude-cli"}), "personas": list(store.PERSONAS),
+            "toolGroups": tools.GROUPS, "cliInstalled": providers.cli_available()}
+
+
+@router.get("/contract")
+def contract_info() -> dict[str, Any]:
+    """What this assistant speaks (for other apps and ports): contracts, event kinds, hosts, capabilities."""
+    return {"assistant": contract.CONTRACT, "conversation": contract.CONVERSATION_CONTRACT, "liveSession": sessions.CONTRACT,
+            "turnEvents": contract.TURN_EVENT_KINDS, "settingKeys": contract.SETTING_KEYS, "hosts": _hosts().describe(),
+            "provides": ["axf.llm@1", "axf.live-sessions@1"], "actions": ["ai-assistant.open", "ai.chat.start"]}
+
+
+@router.get("/tags")
+def tags() -> dict[str, Any]:
+    me = _me()
+    return {"items": store.all_tags(None if me.admin else me.name)}
+
+
+@router.post("/providers/reload")
+def providers_reload() -> dict[str, Any]:
+    """Re-read the provider registry (framework schema + <dataDir>/providers.json)."""
+    providers.reload_catalog()
+    return {"providers": len(providers.CATALOG)}
 
 
 @router.get("/config")
@@ -649,7 +708,7 @@ def get_config() -> dict[str, Any]:
 
 
 _CONFIG_KEYS = {"userDailyTokens": int, "setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
-                "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool,
+                "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool, "keepInterrupted": bool,
                 "showThinking": bool, "redactSecrets": bool, "dailyTokenBudget": int, "agentIntegration": bool, "defaultAgent": str,
                 "suggestions": list, "prompts": list, "sessionHost": str}
 
@@ -679,7 +738,7 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
             v = [{"id": str(p.get("id") or store.new_id("p"))[:40], "title": str(p.get("title", ""))[:80], "shortcut": str(p.get("shortcut", ""))[:24], "text": str(p.get("text", ""))[:8000]} for p in v if isinstance(p, dict)][:100]
         if k == "suggestions":
             v = [str(s)[:200] for s in v][:12]
-        if k == "sessionHost" and v not in {h["id"] for h in sessions.HOSTS}:
+        if k == "sessionHost" and _hosts().get(v) is None:
             raise HTTPException(400, "unknown session host")
         if k == "fallback":
             v = [str(s) for s in v if str(s) in cfg.get("profiles", {})][:10]
@@ -745,9 +804,9 @@ def draft_models(body: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------- routes: conversations
 
 @router.get("/conversations")
-def conversations(q: str = "", archived: bool = False) -> dict[str, Any]:
+def conversations(q: str = "", archived: bool = False, tag: str = "") -> dict[str, Any]:
     me = _me()
-    return {"items": store.list_conversations(q, archived, owner=None if me.admin else me.name)}
+    return {"items": store.list_conversations(q, archived, owner=None if me.admin else me.name, tag=tag[:30])}
 
 
 @router.post("/conversations")
@@ -853,6 +912,14 @@ def export_conversation(cid: str, format: str = "md"):  # noqa: A002
         raise HTTPException(404, "conversation not found") from None
     if format == "json":
         return c
+    if format == "txt":
+        lines = []
+        for m in c.get("messages", []):
+            if m.get("role") == "user":
+                lines += ["You:", m.get("content", ""), ""]
+            elif m.get("role") == "assistant" and not m.get("meta", {}).get("step"):
+                lines += [f"{m.get('meta', {}).get('agentName') or 'Assistant'}:", m.get("content", ""), ""]
+        return PlainTextResponse("\n".join(lines), media_type="text/plain")
     lines = [f"# {c.get('title', 'Conversation')}", "", f"_Exported from the AXF Dev Console assistant · {time.strftime('%Y-%m-%d %H:%M')}_", ""]
     for m in c.get("messages", []):
         if m.get("role") == "user":
@@ -890,8 +957,11 @@ def send_message(cid: str, body: dict[str, Any]):
         conv = store.get_conversation(cid)
     except KeyError:
         raise HTTPException(404, "conversation not found") from None
-    host = store.load_config().get("sessionHost") or "local"
-    notice = "" if host == "local" else "axHub's session workers aren't built yet, so this reply runs on the console (it still keeps going if you close the browser)."
+    try:
+        host, notice = _hosts().resolve(store.load_config().get("sessionHost") or "local")
+    except sessions.NotImplementedHost as e:
+        raise HTTPException(503, str(e)) from None
+    # `host` may be an external one (axHub workers, via axf.live-host@1): it runs the same turn engine and streams the same log.
     try:
         me = _me()
         if not me.admin:
@@ -900,7 +970,7 @@ def send_message(cid: str, body: dict[str, Any]):
                     raise HTTPException(409, "you already have a reply running; wait for it or stop it first")
                 _busy_users.add(me.name)
         try:
-            seq = _host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body, me), notice)
+            seq = host.start_turn(cid, str(conv.get("title") or ""), lambda: run_turn(cid, body, me), notice, owner=conv.get("owner") or "")
         except Exception:
             with _busy_lock:
                 _busy_users.discard(me.name)
@@ -908,7 +978,7 @@ def send_message(cid: str, body: dict[str, Any]):
     except sessions.Busy as e:
         raise HTTPException(409, str(e)) from None
     # The reply runs in its own thread; this response only watches the session log. Leaving doesn't stop it.
-    return StreamingResponse(_host.tail(cid, seq - 1), media_type="text/event-stream", headers=_SSE_HEADERS)
+    return StreamingResponse(host.tail(cid, seq - 1), media_type="text/event-stream", headers=_SSE_HEADERS)
 
 
 _SSE_HEADERS = {"cache-control": "no-store", "x-accel-buffering": "no"}
@@ -937,7 +1007,11 @@ def list_sessions(closed: bool = False) -> dict[str, Any]:
     if not me.admin:
         mine = {c["id"] for c in store.list_conversations("", False, owner=me.name)} | {c["id"] for c in store.list_conversations("", True, owner=me.name)}
         items = [i for i in items if i["id"] in mine]
-    return {"contract": sessions.CONTRACT, "host": cfg.get("sessionHost") or "local", "active": "local", "hosts": sessions.HOSTS,
+    try:
+        active = _hosts().resolve(cfg.get("sessionHost") or "local")[0].id
+    except sessions.NotImplementedHost:
+        active = ""
+    return {"contract": sessions.CONTRACT, "host": cfg.get("sessionHost") or "local", "active": active, "hosts": _hosts().describe(),
             "items": items}
 
 
@@ -1005,7 +1079,7 @@ def compare(body: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/usage")
 def usage() -> dict[str, Any]:
-    return store.usage_summary()
+    return {**store.usage_summary(), "users": store.user_usage_summary()}
 
 
 @router.get("/agents")

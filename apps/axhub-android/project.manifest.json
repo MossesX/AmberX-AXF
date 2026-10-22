@@ -1,0 +1,36 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "axhub-android",
+  "displayName": "AXHub",
+  "description": "AXHub — Android app to approve and manage axHub",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": [
+    "android"
+  ],
+  "framework": {
+    "relation": "built-on",
+    "version": "0.2.0",
+    "template": "android-compose",
+    "appManifest": "axf.manifest.json"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "axhub-android",
+    "exists": false,
+    "visibility": "private"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "apps/axhub-android"
+  },
+  "data": {
+    "shared": []
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-20"
+}

@@ -2,21 +2,48 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.agent-manager",
   "name": "Agent manager",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory. Wizards for agents, skills, tools, an all-in-one agent builder and training (Firecrawl, web pages, the repo, MCP). Add-on agents: coder (React/TS/Python), AXF expert, AI expert. Works with the AI assistant when both are installed.",
-  "targets": ["axf-console", "axf-web-app"],
-  "provides": ["view:agent-manager", "settings-tab:agent-manager", "service:axf.agents@1"],
-  "optional": ["service:axf.llm@1"],
-  "scopes": ["ROUTES", "NETWORK"],
+  "description": "Create, edit, manage and orchestrate AI agents built from personas, lingo, skills and tools, each with its own persistent memory. Wizards for agents, skills, tools, an all-in-one agent builder and training (Firecrawl, web pages, the repo, MCP). Add-on agents: Mosses (React/TS/Python coder with container write mode), AXF expert, AI expert. Agents follow the framework contract agent-definition@1, so other AXF apps load the same ones. Works with the AI assistant when both are installed.",
+  "targets": [
+    "axf-console",
+    "axf-web-app"
+  ],
+  "provides": [
+    "view:agent-manager",
+    "settings-tab:agent-manager",
+    "service:axf.agents@1"
+  ],
+  "optional": [
+    "service:axf.llm@1",
+    "service:axf.containers@1",
+    "service:axf.snapshots@1"
+  ],
+  "scopes": [
+    "ROUTES",
+    "NETWORK"
+  ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "replacedBy": "pending item agent-manager-plugin (Fable)" },
+  "uiEditor": [
+    "builder"
+  ],
+  "builtWith": {
+    "model": "fable",
+    "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)"
+  },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/agent-manager",
-    "env": ["FIRECRAWL_API_KEY", "ANTHROPIC_API_KEY", "AXF_AGENT_MANAGER_DIR"],
-    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+    "env": [
+      "FIRECRAWL_API_KEY",
+      "ANTHROPIC_API_KEY",
+      "AXF_AGENT_MANAGER_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
   }
 }

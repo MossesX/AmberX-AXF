@@ -138,12 +138,12 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
   const [params, setParams] = useState<Param[]>(() => toParams(v.parameters));
   const upd = (ps: Param[]) => { setParams(ps); set({ ...v, parameters: toSchema(ps) }); };
   const headers = (cfg.headers as Record<string, string> | undefined) ?? {};
-  const forcedDangerous = kind === 'builtin' && String(cfg.builtin ?? '').startsWith('container_');
+  const forcedDangerous = kind === 'builtin' && ((status?.dangerousBuiltins ?? []).includes(String(cfg.builtin ?? '')) || String(cfg.builtin ?? '').startsWith('container_'));
   return (
     <div className="fx-stack">
       <label className="axp-agent-manager__toggle" title="Dangerous tools change things (files, containers, commands, money). Only agents allowed in Settings → Safety get them.">
         <input type="checkbox" checked={forcedDangerous || !!v.dangerous} disabled={forcedDangerous} onChange={(e) => set({ ...v, dangerous: e.target.checked })} />
-        Dangerous {forcedDangerous ? '(always: it touches containers)' : '(writes, runs commands or touches containers)'}
+        Dangerous {forcedDangerous ? '(always: it changes things on the VPS)' : '(writes, runs commands or touches containers)'}
       </label>
       <Field label="Kind">
         <div className="axp-agent-manager__picks">

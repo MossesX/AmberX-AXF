@@ -1,20 +1,20 @@
 /*
- * The assistant chat: conversations sidebar, streamed replies with tool activity, composer with attachments, slash
- * prompts and console context, per-message actions, the in-chat settings dialog, and model comparison.
- * Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
+ * The assistant chat (Fable rebuild): conversations sidebar with search, tags, pin and archive; streamed replies that
+ * live on the host (assistant@1 `watchReply` reattaches and replays); composer with attachments, slash prompts and
+ * console context; per-message actions; the in-chat settings dialog; model comparison; write-mode badge and approval
+ * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
-import { Markdown } from './markdown';
+import { ActivityIcon, useReportActivity } from './activity';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, del, fileToImage, fmtNum, fmtTime, followSession, patch, post, sessionInfo, statusStore, streamTurn,
-  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type Message, type Status, type StreamEvent, type WriteMode,
+  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
+  type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
-interface Live { text: string; status: string; thinking: string; tools: { id: string; name: string; input?: string; ok?: boolean; preview?: string; done: boolean }[]; error: string; agent: string }
 interface TextFile { name: string; text: string }
 
 const LAST = 'axf-ai-assistant:last';
@@ -29,12 +29,16 @@ export function useStatus(): Status | undefined {
 /** `start`: open a fresh conversation with this agent and send this message at once (e.g. “Build with Mosses”). */
 export interface ChatStart { agentId?: string; message: string; title?: string; profileId?: string | null; model?: string | null }
 
-export function ChatPanel({ compact = false, initialContext, onClose, start }: { compact?: boolean; initialContext?: Ctx; onClose?: () => void; start?: ChatStart }) {
+const snapshot = (r: LiveReply): LiveReply => ({ ...r, tools: r.tools.map((t) => ({ ...t })) });
+
+export function ChatPanel({ compact = false, initialContext, onClose, start, openId }: { compact?: boolean; initialContext?: Ctx; onClose?: () => void; start?: ChatStart; openId?: string }) {
   const rt = useRuntime();
   const axState = useAxfState();
   const status = useStatus();
   const [list, setList] = useState<ConvSummary[]>([]);
   const [q, setQ] = useState('');
+  const [tag, setTag] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [archived, setArchived] = useState(false);
   const [showList, setShowList] = useState(!compact);
   const [conv, setConv] = useState<Conversation | null>(null);
@@ -43,30 +47,34 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
   const [images, setImages] = useState<Image[]>([]);
   const [files, setFiles] = useState<TextFile[]>([]);
   const [ctx, setCtx] = useState<Ctx | undefined>(initialContext);
-  const [live, setLive] = useState<Live | null>(null);
+  const [live, setLive] = useState<LiveReply | null>(null);
   const [editing, setEditing] = useState<string>('');
   const [sheet, setSheet] = useState<'' | 'settings' | 'compare'>('');
   const [renaming, setRenaming] = useState('');
+  const [tagging, setTagging] = useState('');
   const [err, setErr] = useState('');
   const abort = useRef<AbortController | null>(null);
-  const turnId = useRef('');
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const name = status?.assistantName || 'Assistant';
+  const activity = useReportActivity(live);
 
-  const loadList = () => call<{ items: ConvSummary[] }>(`conversations?archived=${archived}&q=${encodeURIComponent(q)}`).then((r) => setList(r.items), (e: Error) => setErr(e.message));
+  const loadList = () => Promise.all([
+    client.listConversations(q, archived).then((items) => setList(tag ? items.filter((c) => c.tags.includes(tag)) : items), (e: Error) => setErr(e.message)),
+    call<{ items: string[] }>('tags').then((r) => setTags(r.items), () => undefined),
+  ]);
   const convId = useRef('');
   const open = async (id: string, follow = true) => {
     if (follow && convId.current !== id) abort.current?.abort(); // switching chats detaches from the old one (it keeps running)
     convId.current = id;
     try {
-      const r = await call<{ conversation: Conversation }>(`conversations/${id}`);
-      setConv(r.conversation); remember(id); setErr(''); if (compact) setShowList(false);
-      if (follow) void attach(r.conversation);
+      const c = await client.getConversation(id);
+      setConv(c); remember(id); setErr(''); if (compact) setShowList(false);
+      if (follow) void attach(c);
     } catch { setConv(null); remember(''); }
   };
-  useEffect(() => { void loadList(); }, [archived]);
+  useEffect(() => { void loadList(); }, [archived, tag]);
   const started = useRef(false);
   useEffect(() => {
     if (!start || started.current) return;
@@ -74,15 +82,15 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     void (async () => {
       try {
         const settings: ConvSettings = { ...(start.agentId ? { agentId: start.agentId } : {}), ...(start.profileId ? { profileId: start.profileId } : {}), ...(start.profileId && start.model ? { model: start.model } : {}) };
-        const r = await post<{ conversation: Conversation }>('conversations', { settings, title: start.title });
-        setConv(r.conversation); remember(r.conversation.id); convId.current = r.conversation.id; if (compact) setShowList(false);
+        const c = await client.createConversation(settings, start.title);
+        setConv(c); remember(c.id); convId.current = c.id; if (compact) setShowList(false);
         const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content: start.message, createdAt: Date.now(), meta: { context: null } };
-        await run({ content: start.message }, opt, r.conversation);
+        await run({ content: start.message }, opt, c);
       } catch (e) { setErr((e as Error).message); }
     })();
   }, [start]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { const t = setTimeout(() => void loadList(), 250); return () => clearTimeout(t); }, [q]);
-  useEffect(() => { const last = recall(); if (last) void open(last); }, []);
+  useEffect(() => { const last = openId || recall(); if (last) void open(last); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [conv?.messages.length, live?.text, live?.tools.length]);
   useEffect(() => { setTimeout(() => inputRef.current?.focus(), 60); }, [conv?.id]);
 
@@ -93,81 +101,37 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
   useEffect(() => {
     setWriteMode(null);
     if (!activeAgent) return;
-    let live = true;
-    void call<{ writeMode: WriteMode | null }>(`agents/${encodeURIComponent(activeAgent.id)}/write-mode`).then((r) => { if (live) setWriteMode(r.writeMode); }, () => undefined);
-    return () => { live = false; };
+    let on = true;
+    void call<{ writeMode: WriteMode | null }>(`agents/${encodeURIComponent(activeAgent.id)}/write-mode`).then((r) => { if (on) setWriteMode(r.writeMode); }, () => undefined);
+    return () => { on = false; };
   }, [activeAgent?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
   const updateSettings = async (s: Partial<ConvSettings>) => {
     if (!conv) { setPending((p) => ({ ...p, ...s })); return; }
-    const r = await patch<{ conversation: Conversation }>(`conversations/${conv.id}`, { settings: s });
-    setConv(r.conversation);
+    setConv(await client.patchConversation(conv.id, { settings: s }));
   };
 
   const ensureConv = async (): Promise<Conversation> => {
     if (conv) return conv;
     const s = { ...pending };
     if (s.agentId === undefined && status?.defaultAgent && agents.some((a) => a.id === status.defaultAgent)) s.agentId = status.defaultAgent;
-    const r = await post<{ conversation: Conversation }>('conversations', { settings: s });
-    setConv(r.conversation); remember(r.conversation.id); convId.current = r.conversation.id;
-    return r.conversation;
+    const c = await client.createConversation(s);
+    setConv(c); remember(c.id); convId.current = c.id;
+    return c;
   };
 
   /*
-   * Live sessions (live-session@1): a reply runs on the console server, not in this tab. This view only watches the
-   * conversation's event log. If the connection drops it reattaches and replays what it missed; closing the chat
-   * just detaches, and opening the conversation again (on any device) picks the running reply back up.
+   * Live sessions (live-session@1): a reply runs on its host, not in this tab. This view only watches the
+   * conversation's event log through the framework's watchReply: it reattaches and replays after drops, closing
+   * the chat just detaches, and opening the conversation again (on any device) picks the running reply back up.
    */
-  const lastSeq = useRef(0);
-  const applyEvent = (turn: Live, e: StreamEvent) => {
-    if (e.seq) lastSeq.current = Math.max(lastSeq.current, e.seq);
-    if (e.event === 'start') { turnId.current = e.data.turnId; if (e.data.agent) turn.agent = e.data.agent.name; }
-    else if (e.event === 'text') turn.text += e.data.text;
-    else if (e.event === 'thinking') turn.thinking += e.data.text;
-    else if (e.event === 'status') turn.status = e.data.text;
-    else if (e.event === 'tool') {
-      if (e.data.phase === 'call') turn.tools.push({ id: e.data.id, name: e.data.name, input: e.data.input, done: false });
-      else { const t = turn.tools.find((x) => x.id === e.data.id); if (t) Object.assign(t, { ok: e.data.ok, preview: e.data.preview, done: true }); }
-      turn.text += turn.text && !turn.text.endsWith('\n') && e.data.phase === 'call' ? '\n\n' : '';
-    } else if (e.event === 'error') turn.error = e.data.message;
-    else if (e.event === 'interrupted') turn.error = 'The console restarted while this reply was running.';
-    else if (e.event === 'replay' && e.data.reset) lastSeq.current = 0;
-    else return;
-    setLive({ ...turn, tools: turn.tools.map((t) => ({ ...t })) });
-  };
-
-  /** Follow the session until its reply ends, reattaching after dropped connections (backoff up to ~30 s). */
-  const watch = async (cid: string, turn: Live, first: ((onEvent: (e: StreamEvent) => void, signal: AbortSignal) => Promise<void>) | null) => {
-    let attempt = 0;
-    let step = first;
-    for (;;) {
-      const ac = new AbortController();
-      abort.current = ac;
-      try {
-        await (step ?? ((on, sig) => followSession(cid, lastSeq.current, on, sig)))((e) => applyEvent(turn, e), ac.signal);
-        const info = await sessionInfo(cid);
-        if (!info || info.state !== 'running') return;  // finished (or closed) — done
-        step = null; // stream ended early: catch up
-      } catch (e) {
-        if ((e as Error).name === 'AbortError') return; // this viewer left; the reply keeps going on the server
-        if ((e as { status?: number }).status && step) throw e; // the server refused the message itself
-        if (++attempt > 8) { turn.error = 'Lost the connection. The reply is still running on the console — reopen the conversation to follow it.'; return; }
-        turn.status = 'Reconnecting…';
-        setLive({ ...turn, tools: turn.tools.map((t) => ({ ...t })) });
-        await new Promise((r) => setTimeout(r, Math.min(30_000, 500 * 2 ** attempt)));
-        step = null;
-      }
-    }
-  };
-
-  const finish = async (cid: string, turn: Live) => {
+  const finish = async (cid: string, reply: LiveReply) => {
     abort.current = null;
-    turnId.current = '';
     if (convId.current === cid) await open(cid, false);
     void loadList();
     void statusStore.reload();
-    if (turn.error) setErr(turn.error);
+    if (reply.error) setErr(reply.error);
     setLive(null);
   };
 
@@ -184,32 +148,33 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
       while (msgs.length && msgs[msgs.length - 1]?.role !== 'user') msgs.pop();
       setConv({ ...c, messages: msgs });
     }
-    const turn: Live = { text: '', status: 'Connecting…', thinking: '', tools: [], error: '', agent: activeAgent?.name ?? '' };
-    setLive({ ...turn });
+    const reply = emptyLiveReply('Connecting…', activeAgent?.name ?? '');
+    setLive(snapshot(reply));
+    const ac = new AbortController();
+    abort.current = ac;
     try {
-      await watch(c.id, turn, (on, sig) => streamTurn(c.id, body, on, sig));
+      await watchReply(client, c.id, reply, (r) => setLive(snapshot(r)), (on, sig) => client.send(c.id, body, on, sig), ac.signal);
     } catch (e) {
-      turn.error = (e as Error).message;
+      reply.error = (e as Error).message;
     } finally {
-      await finish(c.id, turn);
+      await finish(c.id, reply);
     }
   };
 
   /** Opening a conversation whose reply is still running (started here, in another tab or on another device): follow it. */
   const attach = async (c: Conversation) => {
-    const info = await sessionInfo(c.id);
+    const info = await client.session(c.id);
     if (!info || info.state !== 'running' || abort.current) return;
-    const turn: Live = { text: '', status: 'Following the running reply…', thinking: '', tools: [], error: '', agent: activeAgent?.name ?? '' };
-    lastSeq.current = Math.max(0, (info.meta?.turnSeq ?? info.lastSeq) - 1);
-    setLive({ ...turn });
-    try { await watch(c.id, turn, null); } finally { await finish(c.id, turn); }
+    const reply = emptyLiveReply('Following the running reply…', activeAgent?.name ?? '');
+    reply.lastSeq = Math.max(0, Number(info.meta?.turnSeq ?? info.lastSeq) - 1);
+    setLive(snapshot(reply));
+    const ac = new AbortController();
+    abort.current = ac;
+    try { await watchReply(client, c.id, reply, (r) => setLive(snapshot(r)), null, ac.signal); } finally { await finish(c.id, reply); }
   };
   useEffect(() => () => abort.current?.abort(), []); // leaving the chat only detaches
 
-  const stop = () => {
-    if (turnId.current) void post(`turns/${turnId.current}/stop`, {}).catch(() => undefined);
-    else if (conv) void post(`sessions/${conv.id}/stop`, {}).catch(() => undefined);
-  };
+  const stop = () => { if (conv) void client.stop(conv.id); };
 
   const slash = (t: string): boolean => {
     const [cmd, ...rest] = t.trim().split(/\s+/);
@@ -217,13 +182,16 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     if (cmd === '/new' || cmd === '/clear') { newChat(); return true; }
     if (cmd === '/settings') { setSheet('settings'); return true; }
     if (cmd === '/compare') { setSheet('compare'); return true; }
-    if (cmd === '/export' && conv) { void exportConv('md'); return true; }
+    if (cmd === '/export' && conv) { void exportConv(arg === 'json' ? 'json' : arg === 'txt' ? 'txt' : 'md'); return true; }
+    if (cmd === '/stop') { stop(); return true; }
+    if (cmd === '/tag' && conv) { void client.patchConversation(conv.id, { tags: [...new Set([...conv.tags, ...arg.split(/[\s,]+/).filter(Boolean)])] }).then((c) => { setConv(c); void loadList(); }); return true; }
     if (cmd === '/agent') {
       const a = agents.find((x) => x.name.toLowerCase().startsWith(arg.toLowerCase()) || x.id === arg);
       void updateSettings({ agentId: arg && a ? a.id : '' });
       rt.toast(a ? `Now chatting with ${a.name}` : `Agent cleared — chatting with ${name}`, 'info');
       return true;
     }
+    if (cmd === '/model') { void updateSettings({ model: arg }); rt.toast(arg ? `Model set to ${arg}` : 'Model reset to the provider default', 'info'); return true; }
     if (cmd === '/system') { void updateSettings({ systemPrompt: arg }); rt.toast(arg ? 'Conversation instructions set' : 'Conversation instructions cleared', 'info'); return true; }
     return false;
   };
@@ -233,15 +201,15 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
-    const body: Record<string, unknown> = { content, images, context: ctx };
+    const body: Record<string, unknown> = { content, images, context: normalizeChatContext(ctx) ?? undefined };
     if (editing) body.editMessageId = editing;
     const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content, images, createdAt: Date.now(), meta: { context: ctx ?? null } };
     setText(''); setImages([]); setFiles([]); setEditing(''); setCtx(undefined);
     void run(body, opt);
   };
 
-  const addFiles = async (list: FileList | File[]) => {
-    for (const f of Array.from(list).slice(0, 8)) {
+  const addFiles = async (fl: FileList | File[]) => {
+    for (const f of Array.from(fl).slice(0, 8)) {
       if (f.type.startsWith('image/')) {
         if (f.size > 6_000_000) { rt.toast(`${f.name} is over 6 MB`, 'warning'); continue; }
         const img = await fileToImage(f);
@@ -258,17 +226,17 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); }
     else if (e.key === 'Escape' && live) stop();
+    else if (e.key === 'Escape' && editing) { setEditing(''); setText(''); }
     else if (e.key === 'ArrowUp' && !text && conv) {
       const last = [...conv.messages].reverse().find((m) => m.role === 'user');
       if (last) { e.preventDefault(); setEditing(last.id); setText(last.content); }
     }
   };
 
-  const exportConv = async (fmt: 'md' | 'json') => {
+  const exportConv = async (fmt: 'md' | 'json' | 'txt') => {
     if (!conv) return;
-    const { pluginFetch } = await import('@console/plugins');
-    const r = await pluginFetch('ai-assistant', `conversations/${conv.id}/export?format=${fmt}`);
-    const blob = new Blob([fmt === 'json' ? JSON.stringify(await r.json(), null, 2) : await r.text()], { type: fmt === 'json' ? 'application/json' : 'text/markdown' });
+    const r = await pluginFetch(FOLDER, `conversations/${conv.id}/export?format=${fmt}`);
+    const blob = new Blob([fmt === 'json' ? JSON.stringify(await r.json(), null, 2) : await r.text()], { type: fmt === 'json' ? 'application/json' : fmt === 'txt' ? 'text/plain' : 'text/markdown' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `${conv.title.replace(/[^\w-]+/g, '-').slice(0, 40) || 'conversation'}.${fmt}`;
@@ -279,13 +247,15 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
     try { const r = await post<{ conversation: Conversation }>('conversations/import', JSON.parse(await f.text())); await open(r.conversation.id); void loadList(); rt.toast('Conversation imported', 'success'); }
     catch (e) { rt.toast(`Import failed: ${(e as Error).message}`, 'danger'); }
   };
+  const continueReply = () => { setText('continue'); void run({ content: 'continue' }, { id: `tmp-${Date.now()}`, role: 'user', content: 'continue', createdAt: Date.now(), meta: { context: null } }); setText(''); };
 
   const slashMatches = useMemo(() => {
     if (!text.startsWith('/') || text.includes(' ')) return [];
     const builtins = [
       { shortcut: '/new', title: 'New conversation', text: '' }, { shortcut: '/settings', title: 'Chat settings', text: '' },
-      { shortcut: '/compare', title: 'Compare models', text: '' }, { shortcut: '/export', title: 'Export as Markdown', text: '' },
-      { shortcut: '/system ', title: 'Set instructions for this conversation', text: '' },
+      { shortcut: '/compare', title: 'Compare models', text: '' }, { shortcut: '/export', title: 'Export as Markdown (/export json|txt)', text: '' },
+      { shortcut: '/system ', title: 'Set instructions for this conversation', text: '' }, { shortcut: '/model ', title: 'Set the model for this conversation', text: '' },
+      { shortcut: '/tag ', title: 'Tag this conversation', text: '' }, { shortcut: '/stop', title: 'Stop the running reply', text: '' },
       ...(agents.length ? [{ shortcut: '/agent ', title: 'Switch agent', text: '' }] : []),
     ];
     return [...(status?.prompts ?? []), ...builtins].filter((p) => p.shortcut.startsWith(text)).slice(0, 8);
@@ -299,7 +269,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
       <div className="axp-ai-assistant__empty fx-stack">
         <Icon name="sparkles" size={28} />
         <h3>Set up {name}</h3>
-        <p className="fx-muted">Connect at least one AI provider — Anthropic, OpenAI, Grok, Gemini, Ollama and a dozen more. The wizard takes a minute.</p>
+        <p className="fx-muted">Connect at least one AI provider — Anthropic, OpenAI, Grok, Gemini, Ollama and a dozen more from the framework's provider registry. The wizard takes a minute.</p>
         <div className="fx-row fx-row--wrap"><Button tone="primary" icon="rocket" onClick={() => { onClose?.(); rt.dispatch('settings.open:ai-assistant'); }}>Open the setup wizard</Button></div>
       </div>
     );
@@ -311,32 +281,43 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
         <aside className="axp-ai-assistant__side">
           <div className="axp-ai-assistant__side-head">
             <Button tone="primary" icon="plus" onClick={newChat}>New chat</Button>
-            {<button type="button" className="fx-iconbtn" aria-label="Hide conversations" onClick={() => setShowList(false)}><Icon name="x" size={14} /></button>}
+            <button type="button" className="fx-iconbtn" aria-label="Hide conversations" onClick={() => setShowList(false)}><Icon name="x" size={14} /></button>
           </div>
           <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search conversations" aria-label="Search conversations" />
           <div className="axp-ai-assistant__tabs" role="tablist">
             <button type="button" role="tab" className="axp-ai-assistant__tab" aria-selected={!archived} onClick={() => setArchived(false)}>Chats</button>
             <button type="button" role="tab" className="axp-ai-assistant__tab" aria-selected={archived} onClick={() => setArchived(true)}>Archived</button>
           </div>
+          {tags.length > 0 && (
+            <div className="axp-ai-assistant__tagrow" role="group" aria-label="Filter by tag">
+              {tags.slice(0, 12).map((t) => <button key={t} type="button" className={`fx-chip axp-ai-assistant__tagchip${tag === t ? ' is-active' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
+            </div>
+          )}
           <div className="axp-ai-assistant__convs">
-            {list.length === 0 && <p className="fx-muted fx-small">{q ? 'No matches.' : 'No conversations yet.'}</p>}
+            {list.length === 0 && <p className="fx-muted fx-small">{q || tag ? 'No matches.' : 'No conversations yet.'}</p>}
             {list.map((c) => (
               <div key={c.id} className={`axp-ai-assistant__conv${c.id === conv?.id ? ' is-active' : ''}`}>
                 {renaming === c.id ? (
                   <input className="fx-input" autoFocus defaultValue={c.title} aria-label="Conversation title"
-                    onBlur={(e) => { void patch(`conversations/${c.id}`, { title: e.target.value }).then(() => { setRenaming(''); void loadList(); if (conv?.id === c.id) void open(c.id); }); }}
+                    onBlur={(e) => { void client.patchConversation(c.id, { title: e.target.value }).then(() => { setRenaming(''); void loadList(); if (conv?.id === c.id) void open(c.id, false); }); }}
                     onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); if (e.key === 'Escape') setRenaming(''); }} />
+                ) : tagging === c.id ? (
+                  <input className="fx-input" autoFocus defaultValue={c.tags.join(', ')} placeholder="tags, comma separated" aria-label="Tags"
+                    onBlur={(e) => { void client.patchConversation(c.id, { tags: e.target.value.split(/[\s,]+/).filter(Boolean) }).then(() => { setTagging(''); void loadList(); if (conv?.id === c.id) void open(c.id, false); }); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); if (e.key === 'Escape') setTagging(''); }} />
                 ) : (
                   <button type="button" className="axp-ai-assistant__conv-main" onClick={() => void open(c.id)}>
                     <strong>{c.pinned && <Icon name="star" size={11} />} {c.title}</strong>
-                    <span className="fx-small fx-muted">{c.messages} msgs · {fmtTime(c.updatedAt)}{c.agentId ? ` · ${agents.find((a) => a.id === c.agentId)?.name ?? c.agentId}` : ''}</span>
+                    <span className="fx-small fx-muted">{c.messages} msgs · {fmtTime(c.updatedAt)}{c.agentId ? ` · ${agents.find((a) => a.id === c.agentId)?.name ?? c.agentId}` : ''}{c.owner ? ` · ${c.owner}` : ''}</span>
+                    {c.tags.length > 0 && <span className="fx-small fx-muted">{c.tags.map((t) => `#${t}`).join(' ')}</span>}
                   </button>
                 )}
                 <div className="axp-ai-assistant__conv-acts">
-                  <button type="button" className="fx-iconbtn" title={c.pinned ? 'Unpin' : 'Pin'} onClick={() => void patch(`conversations/${c.id}`, { pinned: !c.pinned }).then(loadList)}><Icon name="star" size={12} /></button>
+                  <button type="button" className="fx-iconbtn" title={c.pinned ? 'Unpin' : 'Pin'} onClick={() => void client.patchConversation(c.id, { pinned: !c.pinned }).then(loadList)}><Icon name="star" size={12} /></button>
                   <button type="button" className="fx-iconbtn" title="Rename" onClick={() => setRenaming(c.id)}><Icon name="edit" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title={c.archived ? 'Unarchive' : 'Archive'} onClick={() => void patch(`conversations/${c.id}`, { archived: !c.archived }).then(loadList)}><Icon name="box" size={12} /></button>
-                  <button type="button" className="fx-iconbtn" title="Delete" onClick={() => { if (confirm(`Delete "${c.title}"?`)) void del(`conversations/${c.id}`).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); }}><Icon name="trash" size={12} /></button>
+                  <button type="button" className="fx-iconbtn" title="Tags" onClick={() => setTagging(c.id)}><Icon name="list" size={12} /></button>
+                  <button type="button" className="fx-iconbtn" title={c.archived ? 'Unarchive' : 'Archive'} onClick={() => void client.patchConversation(c.id, { archived: !c.archived }).then(loadList)}><Icon name="box" size={12} /></button>
+                  <button type="button" className="fx-iconbtn" title="Delete" onClick={() => { if (confirm(`Delete "${c.title}"?`)) void client.deleteConversation(c.id).then(() => { if (conv?.id === c.id) newChat(); void loadList(); }); }}><Icon name="trash" size={12} /></button>
                 </div>
               </div>
             ))}
@@ -349,12 +330,13 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
         <header className="axp-ai-assistant__head">
           {!showList && <button type="button" className="fx-iconbtn" title="Conversations" onClick={() => setShowList(true)}><Icon name="list" size={16} /></button>}
           <div className="axp-ai-assistant__title">
-            <Icon name={activeAgent?.icon || 'sparkles'} size={16} />
+            <ActivityIcon icon={activeAgent?.icon || 'sparkles'} size={16} state={activity} />
             <div className="fx-stack axp-ai-assistant__title-text">
               <strong>{conv?.title ?? (activeAgent ? `Chat with ${activeAgent.name}` : `Chat with ${name}`)}</strong>
               <span className="fx-small fx-muted">{activeAgent ? `${activeAgent.name} · ` : ''}{settings.model || status?.defaultProfile?.defaultModel || ''}{settings.profileId ? ` · ${settings.profileId}` : status?.defaultProfile ? ` · ${status.defaultProfile.label}` : ''}</span>
             </div>
           </div>
+          {live && <span className="axp-ai-assistant__livepill" title="This reply runs on its host: closing the chat only detaches, and any device can follow it."><Icon name="cloud" size={12} /> live</span>}
           {writeMode && (
             <span className="axp-ai-assistant__write" title={`${activeAgent?.name ?? 'This agent'} can propose changes to these containers. Nothing changes until you approve a card; a snapshot is taken first.`}>
               <Icon name="shield" size={13} /> Write mode{writeMode.containers.length ? `: ${writeMode.containers.slice(0, 4).join(', ')}${writeMode.containers.length > 4 ? ` +${writeMode.containers.length - 4}` : ''}` : ''}
@@ -378,17 +360,18 @@ export function ChatPanel({ compact = false, initialContext, onClose, start }: {
             <div className="axp-ai-assistant__welcome fx-stack">
               <Icon name={activeAgent?.icon || 'sparkles'} size={28} />
               <h3>{activeAgent ? `Ask ${activeAgent.name}` : `Ask ${name} anything`}</h3>
-              <p className="fx-muted fx-small">{activeAgent?.description || 'About this framework and its code (it reads the real repository), or anything else. Type / for prompts and commands; paste or drop images and files.'}</p>
+              <p className="fx-muted fx-small">{activeAgent?.description || 'About this framework and its code (it reads the real repository), or anything else. Type / for prompts and commands; paste or drop images and files. Replies keep running if you leave.'}</p>
               <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <button key={s} type="button" className="fx-chip" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</button>)}</div>
             </div>
           )}
           {visible.map((m) => (
-            <MessageView key={m.id} m={m} name={name} isLast={m.id === lastAssistant?.id} busy={!!live} showUsage={status?.showUsage !== false} toolSteps={conv?.messages ?? []}
+            <MessageView key={m.id} m={m} name={name} isLast={m.id === lastAssistant?.id} busy={!!live} showUsage={status?.showUsage !== false}
               onCopy={() => void navigator.clipboard?.writeText(m.content).then(() => rt.toast('Copied', 'success'))}
               onEdit={() => { setEditing(m.id); setText(m.content); inputRef.current?.focus(); }}
               onRegenerate={() => void run({ regenerate: true })}
-              onFork={() => void post<{ conversation: Conversation }>(`conversations/${conv!.id}/fork`, { messageId: m.id }).then((r) => { void open(r.conversation.id); void loadList(); rt.toast('Forked into a new conversation', 'success'); })}
-              onDelete={() => void del<{ conversation: Conversation }>(`conversations/${conv!.id}/messages/${m.id}`).then((r) => setConv(r.conversation))} />
+              onContinue={continueReply}
+              onFork={() => void client.fork(conv!.id, m.id).then((c) => { void open(c.id); void loadList(); rt.toast('Forked into a new conversation', 'success'); })}
+              onDelete={() => void client.deleteMessage(conv!.id, m.id).then(setConv)} />
           ))}
           {live && (
             <div className="axp-ai-assistant__msg is-ai">
@@ -452,19 +435,19 @@ function ToolChip({ name, input, ok, preview, running }: { name: string; input?:
   );
 }
 
-function MessageView({ m, name, isLast, busy, showUsage, toolSteps, onCopy, onEdit, onRegenerate, onFork, onDelete }: {
-  m: Message; name: string; isLast: boolean; busy: boolean; showUsage: boolean; toolSteps: Message[];
-  onCopy: () => void; onEdit: () => void; onRegenerate: () => void; onFork: () => void; onDelete: () => void;
+function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegenerate, onContinue, onFork, onDelete }: {
+  m: Message; name: string; isLast: boolean; busy: boolean; showUsage: boolean;
+  onCopy: () => void; onEdit: () => void; onRegenerate: () => void; onContinue: () => void; onFork: () => void; onDelete: () => void;
 }) {
   const ai = m.role === 'assistant';
   const meta = m.meta ?? {};
   const tools = meta.tools ?? [];
-  void toolSteps;
   return (
-    <div className={`axp-ai-assistant__msg ${ai ? 'is-ai' : 'is-user'}`}>
+    <div className={`axp-ai-assistant__msg ${ai ? 'is-ai' : 'is-user'}${meta.interrupted ? ' is-interrupted' : ''}`}>
       <div className="axp-ai-assistant__avatar"><Icon name={ai ? 'sparkles' : 'user'} size={14} /></div>
       <div className="axp-ai-assistant__bubble">
         {ai && meta.agentName && <span className="fx-small fx-muted">{meta.agentName}</span>}
+        {ai && meta.interrupted && <Chip tone="warning">interrupted</Chip>}
         {tools.length > 0 && <div className="axp-ai-assistant__tools">{tools.map((t) => <ToolChip key={t.id} name={t.name} input={t.input} ok={t.ok} preview={t.preview} />)}</div>}
         {ai && meta.thinking && <details className="axp-ai-assistant__thinking"><summary>Reasoning</summary><p>{meta.thinking}</p></details>}
         {m.images?.length ? <div className="axp-ai-assistant__imgs">{m.images.map((im, i) => <img key={i} alt={im.name || 'attachment'} src={`data:${im.media_type};base64,${im.data}`} />)}</div> : null}
@@ -477,6 +460,7 @@ function MessageView({ m, name, isLast, busy, showUsage, toolSteps, onCopy, onEd
             <button type="button" className="fx-iconbtn" title="Copy" onClick={onCopy}><Icon name="copy" size={12} /></button>
             {!ai && <button type="button" className="fx-iconbtn" title="Edit and resend" disabled={busy} onClick={onEdit}><Icon name="edit" size={12} /></button>}
             {ai && isLast && <button type="button" className="fx-iconbtn" title="Regenerate" disabled={busy} onClick={onRegenerate}><Icon name="refresh" size={12} /></button>}
+            {ai && isLast && (meta.interrupted || meta.stopped) && <button type="button" className="fx-iconbtn" title="Continue this reply" disabled={busy} onClick={onContinue}><Icon name="play" size={12} /></button>}
             <button type="button" className="fx-iconbtn" title="Fork from here" disabled={busy} onClick={onFork}><Icon name="branch" size={12} /></button>
             <button type="button" className="fx-iconbtn" title="Delete" disabled={busy} onClick={onDelete}><Icon name="trash" size={12} /></button>
           </span>

@@ -18,12 +18,14 @@ public object AssetTypes {
     public const val SLIDER: String = "slider"
     public const val CONTAINER: String = "container"
     public const val UAC_POLICY: String = "uac-policy"
-    /** Optional chrome types every port shares: the banner, and the attachable types it hosts (widgets: clock, search bar; badges). */
+    /** Optional chrome types every port shares: the banner, and the attachable types it hosts (widgets and badges; web OPTIONAL_TYPES). */
     public const val BANNER: String = "banner"
     public const val CLOCK: String = "clock"
     public const val SEARCH_BAR: String = "search-bar"
     public const val BADGE: String = "badge"
-    public val OPTIONAL_SHARED: List<String> = listOf(BANNER, CLOCK, SEARCH_BAR, BADGE)
+    /** Widget kinds (Oct 20 2026): logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider. */
+    public val WIDGET_KINDS: List<String> = listOf("action-button", "logo", "label", "status", "counter", "progress", "avatar", "link", "theme-switch", "spacer", "divider")
+    public val OPTIONAL_SHARED: List<String> = listOf(BANNER, CLOCK, SEARCH_BAR) + WIDGET_KINDS + BADGE
 
     /** Android-port asset types (framework/schemas/asset-types.android.json). Optional slots: an app may have none. */
     public const val SCREEN_TEMPLATE: String = "screen-template"
@@ -140,6 +142,8 @@ public class AssetTypeRegistry {
         val types = json.obj("types") ?: return 0
         var n = 0
         for ((id, v) in types) { (v as? JsonObject)?.let { register(AssetTypeSpec.fromJson(id, it, owner, optional)); n++ } }
+        // Widget hosts the spec declares (`attach` / `widgets` blocks) join the WidgetEngine's host registry.
+        ai.amberx.axf.kernel.engine.WidgetEngine.loadHosts(this, json)
         return n
     }
 

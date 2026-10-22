@@ -8,6 +8,8 @@ this plugin is off or removed. Never exposed through the console's MCP server (p
                                      dependencies with details, dependents, conflicts, health, log counts
     GET /plugin/{folder}             one plugin's inventory entry + its file list + raw plugin.json
     GET /logs/{folder}?limit=&level= console terminal lines from or about that plugin
+    GET /records                     the plain plugin-inventory@1 records + context (what the shared engine resolves:
+                                     framework/core/engines/plugins.ts = Kotlin PluginInventoryEngine = server/engine.py)
 """
 from __future__ import annotations
 
@@ -49,6 +51,19 @@ def _folder(folder: str) -> str:
 @router.get("/inventory")
 def inventory() -> dict[str, Any]:
     return _inventory()
+
+
+@router.get("/records")
+def records() -> dict[str, Any]:
+    """Unresolved facts, so any port (or a test) can run its own engine over this console's plugins."""
+    live = plugin_services.available()
+    out = []
+    for folder in sorted(p for p in _plugins_dir().iterdir() if p.is_dir() and not p.name.startswith("_") and not p.is_symlink()):
+        info = dict(cx.PLUGINS.get(folder.name, {}))
+        info["_table"] = cx.PLUGINS
+        rec, _ = inv.plugin_record(folder, cx.ROOT, info, cx.plugin_enabled(folder.name), live, dict(__import__("os").environ))
+        out.append(rec)
+    return {"frame": inv.engine.FRAME, "records": out, "context": inv.context(live)}
 
 
 @router.get("/plugin/{folder}")

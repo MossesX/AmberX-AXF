@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Self-test for the Plugin Manager's server part (no console needed: fake plugins folder, table and services).
 
+The Python engine (server/engine.py) must replay framework/spec/fixtures/plugin-inventory.json exactly, like the TS
+reference (core/engines/plugins.ts) and the Kotlin port (PluginInventoryConformanceTest).
+
     python3 apps/console-web/plugins/plugin-manager/test.py
 
 Checks the inventory (manifest fields, parts, data size, env set/unset without values, live services), dependency
@@ -23,10 +26,23 @@ HERE = Path(__file__).resolve().parent
 SERVER = HERE / "server"
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 
-spec = importlib.util.spec_from_file_location("pm_inventory", SERVER / "inventory.py")
+# The server part is a package (relative imports of engine.py), loaded the way the console loads plugin parts.
+pkg = sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins"))
+pkg.__path__ = []  # type: ignore[attr-defined]
+_sub = types.ModuleType("axf_console_plugins.plugin_manager")
+_sub.__path__ = [str(SERVER)]  # type: ignore[attr-defined]
+sys.modules["axf_console_plugins.plugin_manager"] = _sub
+spec = importlib.util.spec_from_file_location("axf_console_plugins.plugin_manager.engine", SERVER / "engine.py")
+eng = importlib.util.module_from_spec(spec)
+assert spec and spec.loader
+sys.modules[spec.name] = eng
+spec.loader.exec_module(eng)
+spec = importlib.util.spec_from_file_location("axf_console_plugins.plugin_manager.inventory", SERVER / "inventory.py")
 inv = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
+sys.modules[spec.name] = inv
 spec.loader.exec_module(inv)
+ROOT = HERE.parent.parent.parent.parent
 
 passed = 0
 
@@ -66,6 +82,8 @@ plugin(root, "dup-a", provides=["view:same"], lifecycle={"dataDir": ".axf-consol
 plugin(root, "dup-b", provides=["view:same"])
 plugin(root, "twin", id="ai.test.agents")  # same id as agents
 plugin(root, "bad-data", lifecycle={"dataDir": ".axf-console/plugins/llm"})  # outside its own folder
+plugin(root, "wrong", targets=["android"])  # not for this console
+plugin(root, "by-id", requires=["plugin:ai.test.llm"], optional=["plugin:ai.test.nobody"])
 (plugins / "_template").mkdir()
 (plugins / "_template" / "plugin.json").write_text("{}")
 (plugins / "broken").mkdir()
@@ -139,9 +157,13 @@ check(M["health"] == "blocked", "missing required → blocked")
 check(any(d["kind"] == "env" and d["name"] == "LLM_OTHER" and d["status"] == "unset" for d in L["dependencies"]), "env deps listed")
 check(any(d["kind"] == "core" and d["status"] == "ok" for d in L["dependencies"]), "console API dep for server parts")
 check(items["off-provider"]["health"] == "off", "switched-off plugin")
+check(items["wrong"]["health"] == "blocked" and any(d["name"] == "target axf-console" and d["status"] == "unsupported" for d in items["wrong"]["dependencies"]), "a plugin not targeting the console is blocked")
+bid = {d["name"]: d for d in items["by-id"]["dependencies"]}
+check(bid["ai.test.llm"]["kind"] == "plugin" and bid["ai.test.llm"]["status"] == "ok" and bid["ai.test.nobody"]["status"] == "optional-missing", "plugin:<id> dependencies resolve by id")
+check(any(d["folder"] == "by-id" and d["service"] == "plugin:ai.test.llm" for d in L["dependents"]), "a plugin:<id> dependency shows under Needed by")
 
 # dependents
-check([(d["folder"], d["required"]) for d in L["dependents"]] == [("agents", True)], f"llm is needed by agents: {L['dependents']}")
+check([(d["folder"], d["required"]) for d in L["dependents"]] == [("agents", True), ("by-id", True)], f"llm is needed by agents and by-id: {L['dependents']}")
 check(items["off-provider"]["dependents"][0]["folder"] == "needs-off", "dependents of a switched-off provider")
 check(items["dup-b"]["dependents"] == [], "no dependents")
 
@@ -173,6 +195,18 @@ real = HERE.parent
 rout = inv.build_inventory(real, real.parent.parent.parent, {}, lambda f: True, [], [], {}, None)
 check(any(i["folder"] == "plugin-manager" for i in rout["items"]), "real plugins folder parses (plugin-manager listed)")
 
+# the shared engine replays the cross-port fixture exactly (plugin-inventory@1)
+fixture = json.loads((ROOT / "framework" / "spec" / "fixtures" / "plugin-inventory.json").read_text())
+check(fixture["frame"] == eng.FRAME and fixture["healths"] == eng.HEALTHS and fixture["dependencyLabels"] == eng.DEPENDENCY_LABEL, "fixture frame, healths, labels")
+got = eng.build(fixture["records"], fixture["context"])
+check(got == fixture["inventory"], "engine.build replays the fixture inventory (items, conflicts, counts)")
+on = [{**r, "enabled": True} if r["folder"] == "off-provider" else r for r in fixture["records"]]
+g2 = eng.build(on, fixture["context"])
+check({"items": [{"folder": i["folder"], "health": i["health"], "conflicts": i["conflicts"]} for i in g2["items"]], "conflicts": g2["conflicts"], "counts": g2["counts"]} == fixture["enabledOffProvider"], "enabling the off provider matches the fixture")
+check(eng.graph(fixture["inventory"]["items"], fixture["context"]["live"]) == fixture["graph"], "graph layout matches the fixture")
+check(set(fixture["records"][0]) == set(eng.record()), "fixture records carry exactly the engine's record fields")
+check(out.get("frame") == eng.FRAME and inv.context([])["target"] == "axf-console", "console inventory is plugin-inventory@1 for target axf-console")
+
 # routes, when FastAPI is installed
 try:
     from fastapi import FastAPI
@@ -186,8 +220,6 @@ else:
     cx.set_context(ROOT=root, PLUGINS=table, plugin_enabled=lambda f: enabled.get(f, True), terminal_lines=lambda: terminal)
     plugin_services._services.clear()
     plugin_services.provide("axf.llm@1", object(), folder="llm")
-    pkg = sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins"))
-    pkg.__path__ = []  # type: ignore[attr-defined]
     s2 = importlib.util.spec_from_file_location("axf_console_plugins.plugin_manager", SERVER / "__init__.py", submodule_search_locations=[str(SERVER)])
     mod = importlib.util.module_from_spec(s2)
     sys.modules["axf_console_plugins.plugin_manager"] = mod
@@ -197,6 +229,8 @@ else:
     c = TestClient(app)
     r = c.get("/api/plugins/plugin-manager/inventory")
     check(r.status_code == 200 and any(i["folder"] == "llm" for i in r.json()["items"]), "GET /inventory")
+    r = c.get("/api/plugins/plugin-manager/records")
+    check(r.status_code == 200 and r.json()["frame"] == eng.FRAME and set(r.json()["records"][0]) == set(eng.record()), "GET /records: plain plugin-inventory@1 records + context for other ports")
     r = c.get("/api/plugins/plugin-manager/plugin/llm")
     check(r.status_code == 200 and r.json()["manifest"]["id"] == "ai.test.llm" and r.json()["files"], "GET /plugin/{folder}")
     check(c.get("/api/plugins/plugin-manager/plugin/nope").status_code == 404, "unknown plugin → 404")

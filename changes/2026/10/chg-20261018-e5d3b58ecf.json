@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-e5d3b58ecf",
+  "createdAt": "2026-10-18T15:29:06.000Z",
+  "updatedAt": "2026-10-18T17:29:06.000Z",
+  "kind": "build",
+  "title": "claude-project",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`framework/cli/claude-project.mjs` (= `axf claude-project`, the `claude-project` shell command and `/claude-project` in any Claude Code session; `deploy/claude-pick.sh --install` installs both globally). Run in any folder: detects the stack and the AXF relation, writes a validated `project.manifest.",
+    "commits": [
+      {
+        "sha": "737290e",
+        "message": "Add claude-project: one command that makes any folder a Claude project with a home on GitHub, the VPS or the device, and parks AXF ports for Fable"
+      },
+      {
+        "sha": "2dcbea8",
+        "message": "Harden the project wizard and claude-project: no writes through symlinks, safer folder sources, only their own files committed"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T17:29:06.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "claude-project"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T15:29:06.000Z",
+  "finishedAt": "2026-10-18T17:29:06.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/claude-project.mjs"
+  ]
+}

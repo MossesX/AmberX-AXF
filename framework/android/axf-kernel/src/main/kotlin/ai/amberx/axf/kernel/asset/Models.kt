@@ -191,7 +191,11 @@ public enum class ToolbarVariant { ICONS, ICONS_LABELS, LABELS; public companion
 public enum class Align { START, CENTER, SPREAD; public companion object { public fun parse(s: String?): Align = entries.firstOrNull { it.name.equals(s, true) } ?: START } }
 public data class ToolbarItem(val id: String, val icon: String, val label: String, val action: String, val requires: String? = null, /** runtime counter shown as a badge (e.g. `alerts.unread`) */ val badge: String? = null)
 public data class Toolbar(val variant: ToolbarVariant, val align: Align, val groups: List<Group>, val showSearch: Boolean, /** window id/kind this toolbar is attached to; "main" by default */ val window: String = "main",
-    val density: ChromeDensity = ChromeDensity.REGULAR, val surface: ChromeSurface = ChromeSurface.FLAT, /** rule between item groups */ val divider: Boolean = true) {
+    val density: ChromeDensity = ChromeDensity.REGULAR, val surface: ChromeSurface = ChromeSurface.FLAT, /** rule between item groups */ val divider: Boolean = true,
+    /** `data.search` with `live: true`: the live search box (web `ToolbarSearch`); null = the classic submit-to-jump box */
+    val liveSearch: ai.amberx.axf.kernel.engine.SearchBarConfig? = null,
+    /** a chevron at the end folds the toolbar to a thin handle and back; remembered per device */
+    val collapsible: Boolean = false) {
     public data class Group(val id: String, val items: List<ToolbarItem>)
     public companion object {
         public fun fromJson(o: JsonObject): Toolbar = Toolbar(
@@ -199,6 +203,8 @@ public data class Toolbar(val variant: ToolbarVariant, val align: Align, val gro
             o.objList("groups").map { g -> Group(g.str("id"), g.objList("items").map { ToolbarItem(it.str("id"), it.str("icon"), it.str("label"), it.str("action"), it.strOrNull("requires"), it.strOrNull("badge")) }) },
             o.bool("showSearch"), o.str("window", "main"),
             ChromeDensity.parse(o.strOrNull("density")), ChromeSurface.parse(o.strOrNull("surface")), o.bool("divider", true),
+            o.obj("search")?.takeIf { it.bool("live", false) }?.let { ai.amberx.axf.kernel.engine.WidgetEngine.searchBarConfig(it) },
+            o.bool("collapsible", false),
         )
     }
 }

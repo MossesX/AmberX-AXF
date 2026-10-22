@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '../axf/react';
+import { Button, Icon, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import type { PendingAction, PendingItem, PendingModel, PendingSort, PendingState, PendingStatus } from '../axf/plan/pending-core.mjs';
@@ -117,24 +117,28 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
   const [title, setTitle] = useState(it.title);
   const [detail, setDetail] = useState(it.detail);
   const [model, setModel] = useState<PendingModel>(it.model);
+  const [estimate, setEstimate] = useState(it.estimate ?? '');
   const date = core.shownDate(it);
-  const open = (m: Mode) => { setMode(m); setText(''); setTitle(it.title); setDetail(it.detail); setModel(it.model); };
+  const progress = core.stepsProgress(it);
+  const split = core.splitCheck(it);
+  const open = (m: Mode) => { setMode(m); setText(''); setTitle(it.title); setDetail(it.detail); setModel(it.model); setEstimate(it.estimate ?? ''); };
   const save = async () => {
     if (mode === 'note' || mode === 'sub') { if (text.trim() && (await act({ action: mode, id: it.id, text }))) setMode(null); }
-    else if (mode === 'edit') { if (await act({ action: 'update', id: it.id, title, detail, model })) setMode(null); }
+    else if (mode === 'edit') { if (await act({ action: 'update', id: it.id, title, detail, model, estimate })) setMode(null); }
   };
   const copy = () => {
     const brief = [`Pending build: ${it.title} (${it.id}) — waits on ${it.model}`, it.planId && `Plan epic: ${it.planId}`, it.detail && `\n${it.detail}`,
-      it.subPrompts.length ? `\nSub prompts:\n${it.subPrompts.map((s) => `- ${s.text}`).join('\n')}` : '',
+      it.subPrompts.length ? `\nSteps (${progress.done}/${progress.total} done; rule: steps of 30 min or less, tick each off with pending_change(action="step", id="${it.id}", index=N, done=true)):\n${it.subPrompts.map((s, i) => `${s.done ? '[x]' : '[ ]'} ${i + 1}. ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}`).join('\n')}` : '',
       `\nWhen done, mark it complete in the console's Pending view or with the AXF MCP tool pending_change(action="status", id="${it.id}", status="complete").`].filter(Boolean).join('\n');
     navigator.clipboard?.writeText(brief).then(() => rt.toast(`Brief for "${it.title}" copied`, 'success'), () => rt.toast('Clipboard blocked', 'warning'));
   };
   return (
-    <article className={`pd-card is-${it.status}`} role="listitem">
+    <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
         <button className={`pd-badge is-${it.status}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
       </div>
+      <Slot name="pending.item" props={{ item: it }} />
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
           {core.STATUSES.map((s) => <button key={s} className={`pd-badge is-${s}`} disabled={busy || s === it.status} onClick={async () => { if (await act({ action: 'status', id: it.id, status: s })) setStatusOpen(false); }}>{core.STATUS_LABEL[s]}</button>)}
@@ -144,6 +148,9 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
         <span className={`pd-date ${date.label === 'Built' ? 'is-built' : ''}`} title={`Added ${fmtTime(it.createdAt)}${it.builtAt ? ` · built ${fmtTime(it.builtAt)}` : ''}`}><Icon name={date.label === 'Built' ? 'check-circle' : 'clock'} size={13} />{date.label} {fmtDate(date.at)}</span>
         {date.label === 'Built' && <span>Added {fmtDate(it.createdAt)}</span>}
         <span>Waits on {it.model}</span>
+        {core.itemEstimate(it) && <span className="pd-est" title={it.estimate ? 'Build time (estimate)' : 'Build time: the steps added up'}><Icon name="zap" size={13} />~{core.itemEstimate(it)}</span>}
+        {progress.total > 0 && it.status !== 'complete' && <span className="pd-est" title={`${progress.done} of ${progress.total} steps done · ${core.formatMinutes(progress.minutesLeft) || '0 min'} left`}><Icon name="check-circle" size={13} />{progress.done}/{progress.total} steps{progress.minutesLeft ? ` · ${core.formatMinutes(progress.minutesLeft)} left` : ''}</span>}
+        {split.needsSplit && it.status !== 'complete' && <span className="pd-split" title={`Small steps for big builds: ${split.reasons.join('; ')}`}><Icon name="alert" size={13} />needs splitting</span>}
         {it.planId && <span className="fx-mono">{it.planId}</span>}
       </div>
       {mode === 'edit' ? (
@@ -151,9 +158,10 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
           <label className="pd-field">Title<input className="fx-input" value={title} onChange={(e) => setTitle(e.target.value)} /></label>
           <label className="pd-field">Details<textarea className="fx-input" rows={4} value={detail} onChange={(e) => setDetail(e.target.value)} /></label>
           <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
         </div>
       ) : it.detail && <p className="pd-detail">{it.detail}</p>}
-      {it.subPrompts.length > 0 && <Thread label="Sub prompts" list={it.subPrompts} mono />}
+      {it.subPrompts.length > 0 && <Thread label={progress.total > 1 ? 'Steps' : 'Sub prompts'} list={it.subPrompts} mono onTick={it.status === 'complete' ? undefined : (i, done) => void act({ action: 'step', id: it.id, index: i, done })} busy={busy} />}
       {it.notes.length > 0 && <Thread label="Notes" list={it.notes} />}
       {(mode === 'note' || mode === 'sub') && (
         <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : 'Add a sub prompt: extra instructions for when this build runs'} />
@@ -181,28 +189,36 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
   );
 }
 
-function Thread({ label, list, mono }: { label: string; list: { text: string; at: string }[]; mono?: boolean }) {
+function Thread({ label, list, mono, onTick, busy }: { label: string; list: { text: string; at: string; estimate?: string; done?: boolean; doneAt?: string }[]; mono?: boolean; onTick?: (index: number, done: boolean) => void; busy?: boolean }) {
   return (
     <div className="pd-thread">
       <h3>{label}</h3>
-      {list.map((e, i) => <div key={i} className={`pd-entry ${mono ? 'is-mono' : ''}`}><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}
+      {list.map((e, i) => (
+        <div key={i} className={`pd-entry ${mono ? 'is-mono' : ''} ${e.done ? 'is-done' : ''}`}>
+          {onTick && <input type="checkbox" className="pd-tick" checked={!!e.done} disabled={busy} onChange={(ev) => onTick(i, ev.target.checked)} aria-label={`Step ${i + 1} done`} title={e.done && e.doneAt ? `Done ${fmtTime(e.doneAt)}` : 'Mark this step done'} />}
+          <time dateTime={e.at}>{onTick ? `${i + 1}.` : fmtDate(e.at)}{e.estimate && <span className="pd-est"> · ~{e.estimate}</span>}</time>
+          <p>{e.text}</p>
+        </div>
+      ))}
     </div>
   );
 }
 
-function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus }) => Promise<boolean> }) {
+function AddForm({ busy, onAdd }: { busy: boolean; onAdd: (c: { title: string; detail: string; model: PendingModel; status: PendingStatus; estimate?: string }) => Promise<boolean> }) {
   const [title, setTitle] = useState('');
+  const [estimate, setEstimate] = useState('');
   const [detail, setDetail] = useState('');
   const [model, setModel] = useState<PendingModel>('Fable');
   const [status, setStatus] = useState<PendingStatus>('pending');
   return (
     <details className="pd-add">
       <summary>Add a build</summary>
-      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status }))) { setTitle(''); setDetail(''); } }}>
+      <form className="fx-stack" onSubmit={async (e) => { e.preventDefault(); if (title.trim() && (await onAdd({ title, detail, model, status, estimate }))) { setTitle(''); setDetail(''); setEstimate(''); } }}>
         <label className="pd-field">Title<input className="fx-input" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What to build" /></label>
         <label className="pd-field">Details<textarea className="fx-input" rows={3} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="Scope, files touched, acceptance notes" /></label>
         <div className="pd-two">
           <label className="pd-field">Waiting on model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as PendingModel)}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+          <label className="pd-field">Build time (e.g. 45 min, 2 h, 1.5 d; blank = the steps added up)<input className="fx-input" value={estimate} onChange={(e) => setEstimate(e.target.value)} /></label>
           <label className="pd-field">Status<select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value as PendingStatus)}>{core.STATUSES.map((s) => <option key={s} value={s}>{core.STATUS_LABEL[s]}</option>)}</select></label>
         </div>
         <div><Button tone="primary" icon="plus" disabled={busy || !title.trim()} type="submit">Add to list</Button></div>

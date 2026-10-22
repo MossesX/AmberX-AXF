@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-0eedf06e4e",
+  "createdAt": "2026-10-18T16:57:03.000Z",
+  "updatedAt": "2026-10-18T18:57:03.000Z",
+  "kind": "build",
+  "title": "Randomize roll rules + console search toolbar",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "*Rolls:* `core/engines/roll.ts` = Kotlin `engine/RollEngine.kt`. `asset-types.json` → `rollDefaults` (slot/asset default true, `never: [uac-policy]`) and per-type `roll` (context-menu: `{slot:false, asset:false}`); assets may carry an envelope `roll` boolean. Runtime: `rollRules()`, `rollSlotInclude",
+    "commits": [
+      {
+        "sha": "1ca7a88",
+        "message": "Randomize roll rules + console search toolbar"
+      },
+      {
+        "sha": "741f774",
+        "message": "Add the developer alerts library: one alert feed with a toolbar bell, ntfy and web push to the phone, and alerts for CI, deploys, the systems check, builds, plugins, conflicts and crashes"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T18:57:03.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "randomize-roll-rules-console-search-toolbar"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T16:57:03.000Z",
+  "finishedAt": "2026-10-18T18:57:03.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/src/assets/toolbar"
+  ]
+}

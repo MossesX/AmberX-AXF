@@ -73,10 +73,7 @@
 .axp-systems-check-new__body { display: flex; flex-direction: column; gap: var(--fx-space); padding-top: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) solid var(--fx-border); max-height: 60vh; overflow: auto }
 .axp-systems-check-new__summary { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-systems-check-new__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); font-size: calc(var(--fx-font-size) * 13 / 14); overflow-wrap: anywhere }
-.axp-systems-check-md { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-systems-check-md__h { margin: calc(var(--fx-space) * 0.5) 0 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-systems-check-md__p { margin: 0 }
-.axp-systems-check-md__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
+/* What's new summaries render through the framework `Markdown` (compact mode, `.fx-md--compact`). */
 .axp-systems-check-ai { display: flex; flex-direction: column; gap: var(--fx-space) }
 .axp-systems-check-switch { display: flex; gap: var(--fx-space); align-items: flex-start; padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-systems-check-switch.is-off { opacity: var(--fx-opacity-disabled) }
@@ -94,3 +91,13 @@
 .axp-systems-check-aitest dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.25) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-systems-check-aitest dt { color: var(--fx-muted) }
 .axp-systems-check-aitest dd { margin: 0; overflow-wrap: anywhere }
+.axp-systems-check-banner__li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-banner__li > .axp-systems-check-banner__item { flex: 1; min-width: 0 }
+.axp-systems-check-banner__fixall { display: flex; justify-content: flex-end; padding-bottom: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-keyfix { gap: calc(var(--fx-space) * 0.5) }
+.axp-systems-check-keyfix__steps { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
+.axp-systems-check-act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
+.axp-systems-check-act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-systems-check-act:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: var(--fx-border-w) }
+.axp-systems-check-act:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
+.axp-systems-check-banner__li .axp-systems-check-run { font-size: calc(var(--fx-font-size) * 11 / 14); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6) }

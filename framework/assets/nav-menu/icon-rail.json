@@ -40,6 +40,12 @@
             "label": "Roles",
             "icon": "shield",
             "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
           }
         ]
       }

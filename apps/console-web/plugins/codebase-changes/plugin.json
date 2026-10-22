@@ -1,0 +1,49 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.codebase-changes",
+  "name": "Codebase changes",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every time Claude is asked to build, edit, remove or fix something, an entry is opened (by a Claude Code hook) with what was asked, broken into steps that Claude fills in as it works, and the result when it's done (branch, commits, files, tests, links). A Codebase changes banner on every console load lists the entries you haven't closed; closing one clears it on every device. The permanent log lives on axHub (/projects/amberx-axf/_data/changes) and is browsable under Builds → Codebase changes.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:codebase-changes",
+    "banner:codebase-changes",
+    "settings-tab:codebase-changes",
+    "action:codebase-changes.open",
+    "search:codebase-changes.entries",
+    "service:axf.changes@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/codebase-changes",
+    "env": [
+      "AXF_CHANGES_DIR",
+      "AXF_CHANGES_HOME",
+      "AXF_CHANGES_REPO"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md",
+      "_claude/rules/RULES.md",
+      "_claude/memory/docs/codebase-changes.md",
+      "_claude/memory/docs/build-reporting.md",
+      "_claude/shared/rules/RULES.md",
+      "deploy/claude-pick.sh"
+    ],
+    "keeps": [
+      "changes/ in the shared data folder (/projects/amberx-axf/_data/changes on axHub, and the repo's changes/ snapshot): Brett's permanent record, never deleted by uninstall"
+    ]
+  }
+}

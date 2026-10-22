@@ -37,6 +37,8 @@ public class AssetValidator(private val types: AssetTypeRegistry) {
             for (nk in keys) if (nk !in inner) errors += "data.$k.$nk is required"
         }
         if (type == AssetTypes.LAYOUT && "slots" in data) errors += validateSlots(data["slots"])
+        // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
+        ai.amberx.axf.kernel.engine.WidgetEngine.hostSpec(type)?.let { h -> if (h.field in data) errors += ai.amberx.axf.kernel.engine.WidgetEngine.validateHostAttachments(type, data[h.field]) }
         if (type == AssetTypes.UAC_POLICY) {
             val roles = data.arr("roles") as? JsonArray
             val ids = roles?.mapNotNull { (it as? JsonObject)?.strOrNull("id") } ?: emptyList()

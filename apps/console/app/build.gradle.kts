@@ -4,7 +4,8 @@ android {
     namespace = "ai.amberx.axf.console"
     defaultConfig {
         applicationId = "ai.amberx.axf.console"
-        versionCode = 1
+        // CI sets AXF_BUILD_NUMBER (the run number) so each catalog build installs over the last one.
+        versionCode = System.getenv("AXF_BUILD_NUMBER")?.toIntOrNull() ?: 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["axfAppId"] = "axf-console"
@@ -39,8 +40,10 @@ dependencies {
     implementation("ai.amberx.axf:lib-billing:$axf")
     implementation("ai.amberx.axf:lib-admin:$axf")
     implementation("ai.amberx.axf:lib-browser:$axf")
+    implementation("ai.amberx.axf:lib-mcp:$axf")
+    implementation("ai.amberx.axf:lib-hub:$axf")
     implementation("ai.amberx.axf:axf-devtools:$axf")
-    // axf:modules ["ai.amberx.axf.settings","ai.amberx.axf.logging","ai.amberx.axf.devtools","ai.amberx.axf.accounts","ai.amberx.axf.profile","ai.amberx.axf.billing","ai.amberx.axf.admin"]
+    // axf:modules ["ai.amberx.axf.settings","ai.amberx.axf.logging","ai.amberx.axf.devtools","ai.amberx.axf.accounts","ai.amberx.axf.profile","ai.amberx.axf.billing","ai.amberx.axf.admin","ai.amberx.axf.mcp"]
 }
 
 // The console ships the framework's catalog, tracker and boilerplates inside the APK (assets/axf/console/**).

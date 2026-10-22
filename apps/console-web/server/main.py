@@ -31,7 +31,6 @@ import select
 import signal
 import struct
 import termios
-import urllib.request
 import zipfile
 from io import BytesIO
 from contextlib import asynccontextmanager
@@ -45,7 +44,10 @@ from fastapi.staticfiles import StaticFiles
 
 import hmac as _hmac  # noqa: E402
 
-import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall)
+import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
+import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
+from axf_server import github, storage  # noqa: E402
+from axf_server.console_client import TokenFile  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = Path(os.environ.get("AXF_ROOT", HERE.parent.parent.parent)).resolve()
@@ -54,38 +56,18 @@ STATE = Path(os.environ.get("AXF_STATE", ROOT / ".axf-console" / "state.json"))
 # The console token. The saved env file (AXF_TOKEN_FILE, default .axf-console/env, written by install-console.sh and by
 # a reset) wins over the AXF_TOKEN environment variable, so a reset from the panel survives container restarts.
 TOKEN_FILE = Path(os.environ.get("AXF_TOKEN_FILE", ROOT / ".axf-console" / "env"))
-_token_cache: dict[str, Any] = {"mtime": None, "value": os.environ.get("AXF_TOKEN", "")}
+_TOKEN = TokenFile(TOKEN_FILE, fallback=os.environ.get("AXF_TOKEN", ""), allow_bare=False)  # axf_server.console_client
 _shells: set[WebSocket] = set()
 
 
 def current_token() -> str:
     """The token every protected route checks; re-read whenever the env file changes."""
-    try:
-        m = TOKEN_FILE.stat().st_mtime_ns
-    except OSError:
-        return _token_cache["value"]
-    if m != _token_cache["mtime"]:
-        try:
-            for line in TOKEN_FILE.read_text().splitlines():
-                if line.startswith("AXF_TOKEN=") and line[10:].strip():
-                    _token_cache["value"] = line[10:].strip()
-        except OSError:
-            pass
-        _token_cache["mtime"] = m
-    return _token_cache["value"]
+    return _TOKEN()
 
 
 def _write_token(new: str) -> None:
     """Replace AXF_TOKEN in the env file (other lines kept), owner-only, atomically."""
-    lines = TOKEN_FILE.read_text().splitlines() if TOKEN_FILE.is_file() else []
-    lines = [l for l in lines if not l.startswith("AXF_TOKEN=")]
-    TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = TOKEN_FILE.with_name(TOKEN_FILE.name + ".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as fh:
-        fh.write("\n".join([f"AXF_TOKEN={new}", *lines]) + "\n")
-    os.replace(tmp, TOKEN_FILE)
-    _token_cache.update(value=new, mtime=TOKEN_FILE.stat().st_mtime_ns)
+    _TOKEN.write(new)
 # The built console. The image keeps a copy outside /axf because install-console.sh mounts the host clone
 # over /axf (dist/ is git-ignored, so the mount would hide the build). Prefer the repo build when it exists.
 DIST = HERE.parent / "dist"
@@ -98,6 +80,9 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         hub = globals().get("ALERTS")  # developer alerts (defined below): sources + phone delivery threads
         if hub:
             hub.start()
+        cat = globals().get("APP_CATALOG")  # app catalog on axHub (defined below): files new CI APKs
+        if cat:
+            cat.start(int(os.environ.get("AXF_APP_CATALOG_EVERY", "600") or 600))
         try:
             yield
         finally:
@@ -158,16 +143,14 @@ _subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
 
 def _load_state() -> None:
-    if STATE.exists():
-        try:
-            _state.update(json.loads(STATE.read_text()))
-        except json.JSONDecodeError:
-            pass
+    saved = storage.read_json(STATE, {})
+    if isinstance(saved, dict):
+        _state.update(saved)
 
 
 def _save_state() -> None:
-    STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps({"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, indent=2))
+    # atomic + 0600 (axf_server.storage); the folder keeps its mode (.axf-console is made by the installer)
+    storage.write_json(STATE, {"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, dir_mode=None if STATE.parent.is_dir() else storage.PRIVATE_DIR)
 
 
 def log(channel: str, text: str, level: str = "info") -> None:
@@ -235,18 +218,68 @@ def ok_or_500(r: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------- reads
 
 
+def _appearance_hub(hub: str) -> str:
+    """Where the look comes from. AXF_APPEARANCE_HUB wins when set; otherwise the wall's hub, except that a wall turned
+    off with `AXF_WALL=off bash deploy/install-console.sh` (saved as .axf-console/wall = off, the way back in while the
+    hub is down) also turns the hub source off, so the console runs on local settings instead of waiting for the hub
+    (decision Oct 21 2026)."""
+    explicit = os.environ.get("AXF_APPEARANCE_HUB", "").strip().rstrip("/")
+    if explicit:
+        return explicit
+    try:
+        if (ROOT / ".axf-console" / "wall").read_text(encoding="utf-8").strip() == "off":
+            return "off"
+    except OSError:
+        pass
+    if _hub_lacks_data_server(hub):
+        return "off"
+    return hub
+
+
+_HUB_PROBE: dict[str, tuple[float, bool]] = {}
+
+
+def _hub_lacks_data_server(hub: str) -> bool:
+    """Rollout guard (Oct 21 2026): a hub that answers but predates the data server (its /healthz names no `data`) can't
+    hold the look yet, so the console uses its local settings instead of waiting forever. A hub that doesn't answer
+    still means "wait" (Brett's rule: developer apps don't run without the hub). Cached 60 s; https only, no redirects."""
+    now = time.time()
+    hit = _HUB_PROBE.get(hub)
+    if hit and now - hit[0] < 60:
+        return hit[1]
+    lacks = False
+    try:
+        import urllib.request
+        if hub.startswith("https://"):
+            class _NoRedirect(urllib.request.HTTPRedirectHandler):
+                def redirect_request(self, *a: Any, **k: Any) -> None:
+                    return None
+            opener = urllib.request.build_opener(_NoRedirect)
+            with opener.open(urllib.request.Request(hub.rstrip("/") + "/healthz", headers={"Accept": "application/json"}), timeout=3) as r:
+                body = json.loads(r.read(65536).decode("utf-8", "replace"))
+            lacks = isinstance(body, dict) and body.get("name") == "axHub" and "data" not in body
+    except Exception:
+        lacks = False
+    _HUB_PROBE[hub] = (now, lacks)
+    return lacks
+
+
 @app.get("/api/me")
 def me(request: Request) -> dict[str, Any]:
     """Who this browser is: a signed-in hub user/admin (wall on), the console token, or an open console (no wall)."""
     hub = os.environ.get("AXF_WALL_HUB", "https://axhub.amberxai.com").rstrip("/")
+    # Developer app (decision Oct 20 2026): the look + settings come from the hub's data server. Same hub as the wall
+    # unless AXF_APPEARANCE_HUB says otherwise; "off" = no source (local development without a hub only: the console
+    # then runs on its own local settings, which is never the case on the VPS).
+    appearance_hub = _appearance_hub(hub)
     c = wall.wall_caller(request.headers)
     if c:
-        return {"wall": True, "hub": hub, "user": c.public(), "admin": c.admin, "role": wall.ui_role(c),
+        return {"wall": True, "hub": hub, "appearanceHub": appearance_hub, "user": c.public(), "admin": c.admin, "role": wall.ui_role(c),
                 "themes": c.can(wall.THEMES_PERM), "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS),
                 "plugins": sorted(f for f in PLUGINS if wall.plugin_granted(c, f, WALL_USER_PLUGINS, USER_GRANTABLE_PLUGINS))}
     tok = current_token()
     via_token = bool(tok) and _token_ok(request, tok)
-    return {"wall": wall.trusted(), "hub": hub, "user": None, "admin": via_token or not tok, "role": "admin" if (via_token or not tok) else None,
+    return {"wall": wall.trusted(), "hub": hub, "appearanceHub": appearance_hub, "user": None, "admin": via_token or not tok, "role": "admin" if (via_token or not tok) else None,
             "themes": True, "grantable": sorted(USER_GRANTABLE_PLUGINS), "open": sorted(WALL_USER_PLUGINS), "plugins": sorted(PLUGINS)}
 
 
@@ -283,6 +316,32 @@ def boilerplate_items() -> Any:
     return engine("boilerplate-items")
 
 
+BP_SHOT_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
+
+
+def boilerplate_shot(bid: str, name: str) -> Path | None:
+    """A boilerplate screenshot (boilerplate@1 `screenshots[].file`): framework/boilerplates/<id>/screenshots/<name>.
+    Plain names and raster images only (no SVG: it can carry script), never a link or anything outside that folder."""
+    import re
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", bid) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,99}", name) or ".." in name:
+        return None
+    if Path(name).suffix.lower() not in BP_SHOT_TYPES:
+        return None
+    base = (ROOT / "framework" / "boilerplates" / bid / "screenshots").resolve()
+    f = base / name
+    if f.is_symlink() or not f.is_file() or f.resolve().parent != base or f.stat().st_size > 5_000_000:
+        return None
+    return f
+
+
+@app.get("/api/boilerplates/{bid}/screenshots/{name}")
+def boilerplate_screenshot(bid: str, name: str) -> Any:
+    f = boilerplate_shot(bid, name)
+    if f is None:
+        raise HTTPException(404, "no such screenshot")
+    return FileResponse(f, media_type=BP_SHOT_TYPES[f.suffix.lower()], headers={"cache-control": "private, max-age=300", "x-content-type-options": "nosniff"})
+
+
 @app.get("/api/plugin-index")
 def plugin_index() -> Any:
     """framework/catalog/plugins.json (plugin-index@1): planned framework plugins. Built ones come from their manifests."""
@@ -301,6 +360,12 @@ def modules() -> Any:
 @app.get("/api/templates")
 def templates() -> Any:
     return engine("templates")
+
+
+@app.get("/api/app-defaults")
+def app_defaults() -> Any:
+    """framework/app-defaults.json (app-defaults@1) + what the chrome can do (hideable types, widget hosts, enums): for designers."""
+    return engine("app-defaults")
 
 
 @app.get("/api/build-options")
@@ -429,6 +494,13 @@ async def build_reprocess(request: Request) -> Any:
 @app.post("/api/build-queue/step", dependencies=[Depends(auth)])
 async def build_step(request: Request) -> Any:
     return ok_or_500(engine("build-step", "build", **await _body(request)))
+
+
+@app.post("/api/build-queue/steps", dependencies=[Depends(auth)])
+async def build_steps(request: Request) -> Any:
+    """Build-time estimate + small steps of one queue step (small-steps rule, Oct 21 2026):
+    {id, estimate?} | {id, steps: [{text, estimate?, done?}]} | {id, add: {text, estimate?}} | {id, index, done?|text?|stepEstimate?} | {id, removeIndex}."""
+    return ok_or_500(engine("build-steps", "build", **await _body(request)))
 
 
 def _project_name() -> str:
@@ -732,10 +804,15 @@ async def shell(ws: WebSocket) -> None:
 _releases_cache: dict[str, Any] = {"at": 0.0, "data": None}
 
 
-def _gh(url: str) -> Any:
-    req = urllib.request.Request(url, headers={"accept": "application/vnd.github+json", "user-agent": "axf-console", **({"authorization": f"Bearer {_gh_token()}"} if _gh_token() else {})})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        return json.loads(r.read().decode())
+# lib-github: token only to api.github.com (an `artifacts_url` elsewhere is refused), API redirects never followed,
+# artifact zips follow GitHub's redirect without the token (https only, 5 hops), size caps.
+GH = github.GitHubClient(_gh_token, user_agent="axf-console", timeout=20)
+RELEASE_MAX = 500 * 1024 * 1024
+
+
+def _gh(path: str) -> Any:
+    """GitHub API GET; anonymous when no token is set (public repos)."""
+    return GH.get(path, auth_required=False)
 
 
 @app.get("/api/releases")
@@ -744,7 +821,7 @@ def releases() -> dict[str, Any]:
     if time.time() - _releases_cache["at"] < 60 and _releases_cache["data"]:
         return _releases_cache["data"]
     try:
-        runs = _gh(f"https://api.github.com/repos/{GITHUB_REPO}/actions/workflows/android.yml/runs?status=success&per_page=1")["workflow_runs"]
+        runs = _gh(github.repo_path(GITHUB_REPO, "actions", "workflows", "android.yml", "runs", query={"status": "success", "per_page": 1}))["workflow_runs"]
         if not runs:
             return {"ok": False, "error": "no successful run yet"}
         run = runs[0]
@@ -763,14 +840,23 @@ def release_download(artifact_id: int, name: str) -> Response:
     """Proxies a CI artifact (GitHub requires a token for artifact zips); single-file artifacts like the APK are unzipped."""
     if not _gh_token():
         raise HTTPException(403, "set GITHUB_TOKEN on the API to download CI artifacts directly; otherwise use the run page")
-    req = urllib.request.Request(f"https://api.github.com/repos/{GITHUB_REPO}/actions/artifacts/{artifact_id}/zip", headers={"authorization": f"Bearer {_gh_token()}", "user-agent": "axf-console"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        blob = r.read()
-    z = zipfile.ZipFile(BytesIO(blob))
+    # GitHub answers with a redirect to blob storage: lib-github follows it without the token.
+    try:
+        blob = GH.download(github.repo_path(GITHUB_REPO, "actions", "artifacts", artifact_id, "zip"), max_bytes=RELEASE_MAX, timeout=120)
+    except github.GitHubError as e:
+        raise HTTPException(502, f"GitHub answered {e.status or 'nothing'} for that artifact") from None
+    try:
+        z = zipfile.ZipFile(BytesIO(blob))
+    except zipfile.BadZipFile:
+        raise HTTPException(502, "that artifact isn't a zip") from None
     files = [n for n in z.namelist() if not n.endswith("/")]
     if len(files) == 1:
         fname = files[0].split("/")[-1]
-        return Response(z.read(files[0]), media_type="application/vnd.android.package-archive" if fname.endswith(".apk") else "application/octet-stream", headers={"content-disposition": f'attachment; filename="{fname}"'})
+        try:
+            _n, data = github.zip_member(blob, lambda n: n == files[0], RELEASE_MAX)  # unzipped size capped too
+        except github.GitHubError as e:
+            raise HTTPException(502, str(e)) from None
+        return Response(data, media_type="application/vnd.android.package-archive" if fname.endswith(".apk") else "application/octet-stream", headers={"content-disposition": f'attachment; filename="{fname}"'})
     return Response(blob, media_type="application/zip", headers={"content-disposition": f'attachment; filename="{name}.zip"'})
 
 
@@ -954,7 +1040,7 @@ def load_plugins() -> None:
         pkg.__path__ = []  # type: ignore[attr-defined]
         _sys.modules["axf_console_plugins"] = pkg
     for folder in sorted(PLUGINS_DIR.iterdir()):
-        if not folder.is_dir() or folder.name.startswith("_") or not (folder / "plugin.json").exists():
+        if not folder.is_dir() or folder.name.startswith(("_", ".")) or not (folder / "plugin.json").exists():
             continue
         info: dict[str, Any] = {"folder": folder.name, "server": "none", "error": None}
         PLUGINS[folder.name] = info
@@ -1079,6 +1165,175 @@ def app_apk_file(dir: str) -> Any:
     except app_ci.CiError as e:
         raise HTTPException(409, str(e)) from None
     return FileResponse(path, media_type="application/vnd.android.package-archive", filename=f"{dir.split('/', 1)[1]}-debug.apk")
+
+
+# ---- App catalog (app-catalog@1, app_catalog.py): every framework app's APK, filed on axHub for its Apps page ----------
+# CI's app-apks bundle -> /projects/_shared/_data/app-catalog (checked against sha256). Checks every 10 min
+# (AXF_APP_CATALOG_EVERY seconds); console token on every route.
+import app_catalog  # noqa: E402
+
+APP_CATALOG = app_catalog.AppCatalog(GITHUB_REPO, lambda: os.environ.get("GITHUB_TOKEN", ""), app_catalog.default_dir())
+
+
+@app.get("/api/app-catalog", dependencies=[Depends(auth_always)])
+def app_catalog_status() -> dict[str, Any]:
+    return {**APP_CATALOG.status(), "catalog": APP_CATALOG.read()}
+
+
+@app.post("/api/app-catalog/sync", dependencies=[Depends(auth)])
+def app_catalog_sync(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    try:
+        r = APP_CATALOG.sync(force=bool((body or {}).get("force")))
+        if r.get("state") == "updated":
+            log("build", f"app catalog updated: {', '.join(r.get('added', [])) or 'nothing new'}")
+        return r
+    except app_catalog.CatalogError as e:
+        raise HTTPException(409, str(e)) from None
+
+
+# ---- Plugin catalog (plugin-catalog@1, framework/cli/plugin-catalog.mjs): plugins kept on axHub ----------------------
+# /projects/_shared/_data/plugin-catalog (the console mounts /projects). Console token on every route (admins only behind
+# the wall); never on MCP. Installing a console plugin unpacks it into this clone, runs its lifecycle install and commits
+# it to the repo on GitHub, so the 5-minute update rebuilds the console with it. Other apps (Build Pilot) read packages
+# here with the console token and install them on their side.
+CATALOG_CLI = ROOT / "framework" / "cli" / "plugin-catalog.mjs"
+import threading as _threading  # noqa: E402
+_catalog_lock = _threading.Lock()
+_CATALOG_KIND = _re.compile(r"^[a-z][a-z0-9-]{0,31}$")
+_CATALOG_VERSION = _re.compile(r"^[0-9][0-9A-Za-z.+-]{0,60}$")
+MAX_PACKAGE_BODY = 12 * 1024 * 1024
+
+
+def _catalog(args: list[str], stdin: str | None = None, timeout: int = 300) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(CATALOG_CLI), *args, "--json"], cwd=ROOT, input=stdin, capture_output=True, text=True, timeout=timeout,
+                          env={**os.environ, "AXF_ROOT": str(ROOT), "AXF_STATE": str(STATE)})
+    try:
+        out = json.loads((proc.stdout or "").strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        raise HTTPException(500, f"plugin-catalog failed: {(proc.stderr or proc.stdout)[-400:]}") from None
+    if out.get("ok") is False:
+        msg = str(out.get("error", "plugin-catalog failed"))
+        raise HTTPException(404 if "not in the catalog" in msg or "has no version" in msg else 503 if "not reachable" in msg else 400, msg)
+    return out
+
+
+def _local_plugin(folder: str) -> dict[str, Any] | None:
+    f = ROOT / "apps" / "console-web" / "plugins" / folder / "plugin.json"
+    try:
+        if f.parent.is_symlink():
+            return None
+        m = json.loads(f.read_text())
+        return {"id": m.get("id"), "version": m.get("version")}
+    except (OSError, ValueError):
+        return None
+
+
+def _catalog_args(kind: str, folder: str) -> None:
+    if not _CATALOG_KIND.match(kind or "") or not _PLUGIN_FOLDER.match(folder or ""):
+        raise HTTPException(400, "bad plugin kind or folder")
+
+
+@app.get("/api/plugin-catalog", dependencies=[Depends(auth_always)])
+def catalog_list(kind: str = "") -> dict[str, Any]:
+    if kind and not _CATALOG_KIND.match(kind):
+        raise HTTPException(400, "bad plugin kind")
+    out = _catalog(["list"] + (["--kind", kind] if kind else []))
+    out.pop("root", None)
+    for it in out.get("items", []):
+        if it.get("kind") == "console":
+            local = _local_plugin(str(it.get("folder", "")))
+            it["installed"] = local["version"] if local and local.get("id") == it.get("id") else None
+            it["clash"] = bool(local and local.get("id") != it.get("id"))
+            it["loaded"] = it.get("folder") in PLUGINS and not PLUGINS[it["folder"]].get("removed")
+    return out
+
+
+@app.get("/api/plugin-catalog/package", dependencies=[Depends(auth_always)])
+def catalog_package(kind: str, folder: str, version: str = "") -> Any:
+    """A verified plugin-package@1 (files in base64). Build Pilot fetches pilot plugins here, server to server."""
+    _catalog_args(kind, folder)
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    args = ["package", kind, folder] + (["--version", version] if version else [])
+    return _catalog(args)
+
+
+@app.post("/api/plugin-catalog/install", dependencies=[Depends(auth_always)])
+def catalog_install(body: dict[str, Any]) -> dict[str, Any]:
+    """Install (or update) a console plugin from the catalog into this clone and commit it to GitHub."""
+    folder = str(body.get("folder", ""))
+    _catalog_args("console", folder)
+    version = str(body.get("version", "") or "")
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    if body.get("confirm") != folder:
+        raise HTTPException(400, f'installing runs the plugin\'s code on this server: confirm with the folder name ("{folder}")')
+    if not _catalog_lock.acquire(blocking=False):
+        raise HTTPException(409, "another catalog install is running")
+    if not _lifecycle_lock.acquire(blocking=False):
+        _catalog_lock.release()
+        raise HTTPException(409, "a plugin install/uninstall is running")
+    try:
+        args = ["install", "console", folder, "--no-state"]
+        if body.get("update"):
+            args.append("--update")
+        publish = body.get("publish", True) is not False and bool(os.environ.get("GITHUB_TOKEN"))
+        if publish:
+            args.append("--publish")
+        if version:
+            args += ["--version", version]
+        out = _catalog(args, timeout=600)
+        _state.setdefault("plugins", {})[folder] = True
+        _save_state()
+        log("plugins", f"{folder} {'updated' if out.get('updated') else 'installed'} from the plugin catalog ({out.get('version')})")
+        out["restartNeeded"] = True
+        out["note"] = ("Committed to GitHub: the console rebuilds with it within about 5 minutes." if (out.get("published") or {}).get("pushed")
+                       else "Already on GitHub: the console loads it at its next rebuild." if publish
+                       else "Unpacked in this clone only (no GITHUB_TOKEN): it loads after the next rebuild of this console, but other clones won't get it.")
+        return out
+    finally:
+        _lifecycle_lock.release()
+        _catalog_lock.release()
+
+
+@app.post("/api/plugin-catalog/publish", dependencies=[Depends(auth_always)])
+async def catalog_publish(request: Request) -> dict[str, Any]:
+    """Put a plugin in the catalog: {"folder"} = a console plugin in this clone, or {"package": plugin-package@1} from elsewhere."""
+    raw = await request.body()
+    if len(raw) > MAX_PACKAGE_BODY:
+        raise HTTPException(413, "package too large")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "body is not JSON") from None
+    who = str(getattr(request.state, "axf_user", {}).get("name", "") if isinstance(getattr(request.state, "axf_user", None), dict) else "")
+    src = f"console{(' · ' + who) if who else ''} · {str(body.get('from', ''))[:60]}".rstrip(" ·")
+    def run() -> dict[str, Any]:
+        with _catalog_lock:
+            if isinstance(body.get("package"), dict):
+                return _catalog(["publish-package", "-", "--from", src], stdin=json.dumps(body["package"]))
+            folder = str(body.get("folder", ""))
+            _catalog_args("console", folder)
+            d = ROOT / "apps" / "console-web" / "plugins" / folder
+            if d.is_symlink() or not d.is_dir():
+                raise HTTPException(404, f"{folder} is not a console plugin in this clone")
+            return _catalog(["publish", str(d), "--kind", "console", "--from", src])
+    out = await run_in_threadpool(run)
+    item = out.get("item") or {}
+    log("plugins", f"{item.get('kind')}/{item.get('folder')} {item.get('version')} {'published to' if out.get('published') else 'already in'} the plugin catalog")
+    return out
+
+
+@app.post("/api/plugin-catalog/remove", dependencies=[Depends(auth_always)])
+def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
+    kind, folder = str(body.get("kind", "")), str(body.get("folder", ""))
+    _catalog_args(kind, folder)
+    if body.get("confirm") != folder:
+        raise HTTPException(400, f'confirm with the folder name ("{folder}")')
+    with _catalog_lock:
+        out = _catalog(["remove", kind, folder])
+    log("plugins", f"{kind}/{folder} taken out of the plugin catalog")
+    return out
 
 
 @app.get("/api/plugin-services", dependencies=[Depends(auth_always)])

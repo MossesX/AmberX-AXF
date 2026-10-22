@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-19T00:18:34.975Z",
+  "generatedAt": "2026-10-22T02:08:55.359Z",
   "items": [
     {
       "$axf": "library@1",
@@ -109,6 +109,335 @@
           "browser"
         ]
       }
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.hub",
+      "module": "lib-hub",
+      "name": "axHub connector (first slice: approvals feed, hub address, locked web view)",
+      "description": "What axHub serves today, for any AXF app: hub address rules (https host only; links checked against that exact origin), hub URLs (approvals, one approval by id, sign-in, account, app catalog), the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session (web: the browser's cookie, credentials included; Android: the WebView cookie store) with redirects refused and the reply size-capped, mapped to ok / signed-out / not-admin / unreachable, seen-id tracking so each approval rings once, sign-out on the hub (CSRF form post), and on Android a web view locked to one origin plus hub APK downloads through the download manager. Web (framework/libs/hub) and Kotlin (lib-hub HubRules) replay one fixture, spec/fixtures/hub-approvals.json. The hub protocol contract (AXPP) is a named placeholder, parked for Fable. Developer apps: the same module attaches the hub appearance source (appearance@1 document on the hub's data server, live change feed, backoff, waiting screen + HubSignInView while the hub is unreachable; HubOrigin also allows localhost for dev).",
+      "features": [
+        "lib.hub",
+        "f.appearance.source"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.hub",
+      "params": [
+        {
+          "key": "base",
+          "label": "Hub address",
+          "type": "string",
+          "default": "https://axhub.amberxai.com",
+          "help": "https, host only (no path)"
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-hub:$axf\")",
+        "module": "HubModule()",
+        "import": "ai.amberx.axf.hub.HubModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-hub",
+          "note": "written without a compiler; CI compiles and runs :lib-hub:testDebugUnitTest (HubRules replayed the fixture with a local kotlinc)"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "libs/hub"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.hub.axpp",
+          "note": "The hub protocol contract (AXPP): typed calls, jobs and events between an AXF app and axHub. Parked for Fable; not designed here."
+        },
+        {
+          "capability": "axf.hub.push",
+          "note": "Hub-pushed approvals and events instead of polling the feed."
+        },
+        {
+          "capability": "axf.hub.admin-api",
+          "note": "The hub's admin API (services, jobs, audit, vault names, users, projects), hub step 4."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.lock",
+      "module": "lib-lock",
+      "name": "App lock (fingerprint/face or PIN)",
+      "description": "Second-step unlock any app can put after its own first step: strong biometrics through BiometricPrompt, or a 4–12 digit PIN kept only as a salted PBKDF2 hash in the Keystore-backed secure store. Failed PINs lock out with a doubling delay that survives restarts (PersistedLockout). LockGate opens and closes the app's screens (starts locked, auto-lock after leaving or idling, fails closed without the lock service) and Gated{} shows the locked card with the unlock step; AppShell(viewGuard) puts it around every view. The lock-mode guard puts Settings → App lock back when PIN is picked without a PIN or fingerprint without a sensor. StoredSecret + SecretKind (pin, passphrase) keep other hashed secrets such as a spoken unlock code. Settings group App lock (mode, auto-lock delay) and the lock-pin view (current PIN required to change). Fills the platform's android.biometric placeholder.",
+      "features": [
+        "u.bio"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.lock",
+      "params": [
+        {
+          "key": "defaultMode",
+          "label": "Default second step",
+          "type": "choice",
+          "choices": [
+            "none",
+            "biometric",
+            "pin"
+          ],
+          "default": "none",
+          "required": true
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-lock:$axf\")",
+        "module": "LockModule(this)",
+        "import": "ai.amberx.axf.lock.LockModule",
+        "routes": [
+          "lock-pin"
+        ]
+      },
+      "placeholders": [
+        {
+          "capability": "axf.lock.keybound",
+          "note": "Keystore keys that need the fingerprint for every decrypt (CryptoObject). Not built: the lock gates the UI. Hook: axf-platform-android KeystoreFileStore(configureKey = { it.setUserAuthenticationRequired(true) … }) + decryptCipher() for a BiometricPrompt CryptoObject."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.mcp",
+      "module": "lib-mcp",
+      "name": "MCP client (connect to MCP servers)",
+      "description": "Any AXF app as an MCP client: a server registry (records in the key-value store, tokens only in the platform secure store), Streamable HTTP sessions (JSON-RPC, SSE replies, session ids, version negotiation, pagination, cancellation, timeouts), browsing tools/resources/prompts and calling tools under the kernel interop exposure rules (mcp.call / mcp.call.write / mcp.call.destructive + confirmation). Pure-Kotlin engine in the kernel (ai.amberx.axf.kernel.mcp) mirrors framework/core/engines/mcp.ts and framework/python/axf_libs/mcp; all three replay spec/fixtures/mcp-client.json. Registers the kernel's axf.remote (RemoteServices) provider.",
+      "features": [
+        "w.mcp",
+        "f.interop.remote"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.network"
+      ],
+      "manifestKey": "libraries.mcp",
+      "params": [
+        {
+          "key": "timeoutMs",
+          "label": "Call timeout (ms)",
+          "type": "number",
+          "default": 30000,
+          "min": 1000,
+          "max": 600000
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-mcp:$axf\")",
+        "module": "McpModule()",
+        "import": "ai.amberx.axf.mcp.McpModule",
+        "routes": [
+          "mcp",
+          "mcp-servers"
+        ]
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-mcp",
+          "note": "written without a compiler; CI compiles and runs :lib-mcp:testDebugUnitTest"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "libs/mcp"
+        },
+        "python": {
+          "status": "compiled",
+          "dir": "python/axf_libs/mcp"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.mcp.server",
+          "note": "MCP server side (expose the app's surface@1 actions as tools) — not built; the client half is this library."
+        },
+        {
+          "capability": "axf.mcp.oauth",
+          "note": "OAuth 2.1 authorization-code sign-in to MCP servers — not built; bearer tokens only."
+        },
+        {
+          "capability": "axf.mcp.elicitation",
+          "note": "Server→client requests (sampling, elicitation) are ignored, not answered."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.notifications",
+      "module": "lib-notifications",
+      "name": "Notifications (channels, private lock-screen alerts)",
+      "description": "Android notifications with the privacy rules built in: channels (importance, lock-screen visibility, vibration, badge), canPost (POST_NOTIFICATIONS on Android 13+; every post checks it), canFullScreen (Android 14+ per-app opt-in), the quiet ongoing \"watching\" notification for a foreground service, high-priority alerts that are VISIBILITY_PRIVATE with a public version (the lock screen shows only e.g. \"Approval waiting\"), full screen only when asked and allowed, quiet notices, post/cancel by tag or id. Never shows the app over the lock screen. Hook for alert@1 deliveries (AlertNotifications.plan / AxfNotifications.deliverAlert, channel \"device\"). Fills the platform's android.notifications placeholder.",
+      "features": [
+        "dv.notif",
+        "lib.notifications"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.notifications",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-notifications:$axf\")",
+        "module": "NotificationsModule(this)",
+        "import": "ai.amberx.axf.notifications.NotificationsModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-notifications",
+          "note": "written without a compiler; CI compiles and runs :lib-notifications:testDebugUnitTest"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.notifications.alerts",
+          "note": "alert@1 deliveries posted as device notifications; the hook exists (AxfNotifications.deliverAlert), nothing subscribes AlertCenter yet."
+        },
+        {
+          "capability": "axf.notifications.push",
+          "note": "FCM / UnifiedPush / hub push."
+        },
+        {
+          "capability": "axf.notifications.schedule",
+          "note": "Scheduled notifications (with the work scheduler, x.work)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.voice",
+      "module": "lib-voice",
+      "name": "Voice (speech in, prompts out, voice commands)",
+      "description": "One-shot speech recognition as a suspend call (on-device recognizer for secret speech when the phone has one), spoken prompts that finish before the next listen, and an open registry of voice commands. Every command ships default trigger phrases; users switch defaults off, record their own (pick from what the recognizer heard) or type them in Settings → Voice triggers. Pure-Kotlin phrase matching (normalize, fuzzy trigger + label scores) and SpokenText normalisers (\"gmail dot com\" → gmail.com, spoken codes as plain words) so other ports can mirror them.",
+      "features": [
+        "c.voice",
+        "dv.audio"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.voice",
+      "params": [
+        {
+          "key": "speakPrompts",
+          "label": "Speak prompts by default",
+          "type": "bool",
+          "default": true
+        },
+        {
+          "key": "preferOffline",
+          "label": "Prefer on-device recognition",
+          "type": "bool",
+          "default": true,
+          "help": "Secret speech (passwords) always uses the on-device recognizer when the phone has one."
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-voice:$axf\")",
+        "module": "VoiceModule(this)",
+        "import": "ai.amberx.axf.voice.VoiceModule",
+        "routes": [
+          "voice-triggers"
+        ]
+      },
+      "placeholders": [
+        {
+          "capability": "axf.voice.wakeword",
+          "note": "Always-on wake word in a foreground service (not built; the app listens only while open)."
+        },
+        {
+          "capability": "axf.voice.speaker-id",
+          "note": "Recognise the owner's voice (not built)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.work",
+      "module": "lib-work",
+      "name": "Work (poll jobs in a foreground service, boot restart)",
+      "description": "The Android host for work@1 poll jobs: an app registers a job (a kernel JobSpec: interval bounds as data, one rule per outcome with fixed / exponential / interval delays, one-time notices per spell, run conditions read from the app's own prefs, foreground + boot restart) whose body is a suspend function that only calls libraries; the loop is the framework's. PollService (foreground, specialUse) drives every job through the kernel's WorkEngine state machine and only carries out its effects (run, sleep, stop, notice, status); START / CHECK_NOW / STOP / INTERVAL commands; a refused foreground start stops quietly; START_STICKY; WorkBootReceiver restarts jobs after a reboot or update when their conditions hold; running-state + state flows per job; the ongoing notification through lib-notifications, rebuilt from the job's state after every run. Fills the platform's android.work placeholder. The engine is cross-port: framework/core/engines/work.ts = ai.amberx.axf.kernel.work.WorkEngine, fixture spec/fixtures/work.json.",
+      "features": [
+        "lib.work",
+        "k.scheduler",
+        "dv.bg"
+      ],
+      "dependsOn": [
+        "ai.amberx.axf.notifications"
+      ],
+      "manifestKey": "libraries.work",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-work:$axf\")",
+        "module": "WorkModule(jobs = listOf())",
+        "import": "ai.amberx.axf.work.WorkModule",
+        "routes": []
+      },
+      "ports": {
+        "android": {
+          "status": "scaffolded",
+          "dir": "android/lib-work",
+          "note": "written without a compiler; CI compiles and runs :lib-work:testDebugUnitTest (the kernel engine + WorkConformanceTest and JobRunner were compiled and replayed with a local kotlinc)"
+        },
+        "web": {
+          "status": "compiled",
+          "dir": "core/engines/work.ts",
+          "note": "engine + reducer only (no timer host yet); self-test spec/check-work.mts"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.work.manager",
+          "note": "The kernel's WorkScheduler contract (axf.work) on WorkManager: constrained periodic work, 15 min minimum, survives process death."
+        },
+        {
+          "capability": "axf.work.alarm",
+          "note": "Wall-clock alarms (AlarmManager), exact only when allowed."
+        },
+        {
+          "capability": "axf.work.chain",
+          "note": "Jobs that run after each other."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.apiclient",
+      "module": "lib-apiclient",
+      "name": "API client (token, calls, streams)",
+      "description": "What every AXF web app needs to talk to its own server: the app's token in localStorage (every access wrapped, change event), Bearer call/post/put/patch/del with ApiError (message + HTTP status) and the standard 401/404 messages, file download and token-protected blobs, and a TokenDialog built from the framework's React controls and theme classes. Server-Sent Events come from framework/core/sse.ts (readSse, followSse with back-off). Harvested Oct 2026 from the Dev Console, its plugins and Build Pilot.",
+      "features": [
+        "w.realtime"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.apiclient",
+      "params": [
+        {
+          "key": "tokenKey",
+          "label": "Token storage key",
+          "type": "text",
+          "default": "app:token",
+          "help": "localStorage key the app's token is kept under (the console uses axf-console:token)."
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/apiclient"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.apiclient.android",
+          "note": "Android port (token in the platform SecureStore, OkHttp calls through axf-network) — not built; Android apps use axf-network directly."
+        },
+        {
+          "capability": "axf.apiclient.refresh",
+          "note": "Token refresh / OAuth sign-in — not built; bearer tokens pasted by a person only."
+        }
+      ]
     }
   ]
 }

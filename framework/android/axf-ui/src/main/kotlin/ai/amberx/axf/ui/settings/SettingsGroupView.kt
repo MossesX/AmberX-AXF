@@ -73,9 +73,11 @@ public fun SettingsGroupView(group: SettingsGroup, values: Map<String, JsonEleme
                     SettingKind.ASSET_SLOT -> { val type = s.target ?: ""; val list = runtime.registry.list(type); val active = state.active[type]
                         // Chrome slots (hideable in asset-types.json) also offer Hidden.
                         val canHide = ai.amberx.axf.kernel.engine.HideEngine.hideable(runtime.registry.types, type); val hidden = runtime.slotHidden(type)
+                        // embed@1: a host app shows this chrome for the app; the choice is the host's until the app runs on its own.
+                        val byHost = runtime.slotHiddenByHost(type); val pickable = enabled && !byHost
                         Column { AxfText(s.label); if (s.description != null) AxfText(s.description!!, muted = true); FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            for (a in list) AxfChip(a.name, selected = !hidden && a.id == active, onClick = if (enabled) ({ if (hidden) runtime.setSlotHidden(type, false); if (a.id != active) runtime.swap(type, a.id) }) else null)
-                            if (canHide) AxfChip("Hidden", selected = hidden, onClick = if (enabled) ({ runtime.setSlotHidden(type, true) }) else null)
+                            for (a in list) AxfChip(a.name, selected = !hidden && a.id == active, onClick = if (pickable) ({ if (hidden) runtime.setSlotHidden(type, false); if (a.id != active) runtime.swap(type, a.id) }) else null)
+                            if (canHide) AxfChip(if (byHost) "Shown by ${runtime.embedded?.host}" else "Hidden", selected = hidden, onClick = if (pickable) ({ runtime.setSlotHidden(type, true) }) else null)
                         } } }
                     SettingKind.ACTION -> AxfListItem(s.label, subtitle = s.description, icon = s.icon ?: "zap", enabled = enabled, onClick = { s.target?.let { actions.dispatch(it) } }, trailing = { AxfBadge("run") })
                     SettingKind.LINK -> AxfListItem(s.label, subtitle = s.description, icon = s.icon ?: "chevron-right", enabled = enabled, onClick = { s.target?.let { runtime.navigate(it) } })

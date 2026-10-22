@@ -1,0 +1,241 @@
+{
+  "slotTypes": [
+    "color-theme",
+    "style-theme",
+    "layout",
+    "app-menu",
+    "toolbar",
+    "nav-menu",
+    "context-menu",
+    "dialog",
+    "popup",
+    "button",
+    "slider",
+    "container",
+    "banner",
+    "clock",
+    "search-bar",
+    "action-button",
+    "logo",
+    "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
+    "link",
+    "theme-switch",
+    "spacer",
+    "divider",
+    "badge"
+  ],
+  "parsed": {
+    "full": {
+      "$axf": "appearance@1",
+      "slots": {
+        "color-theme": "arctic-daylight",
+        "style-theme": "glass-orbit",
+        "layout": "focus-top",
+        "toolbar": "standard-icons"
+      },
+      "spacing": "compact",
+      "hidden": {
+        "toolbar": true,
+        "color-theme": true,
+        "nav-menu": false
+      },
+      "palette": {
+        "bg": "#f2f5f8",
+        "accent": "rgb(31,111,235)",
+        "scheme": "light"
+      },
+      "updatedBy": "axf-console",
+      "updatedAt": "2026-10-21T00:00:00Z"
+    },
+    "unknown-ids": {
+      "$axf": "appearance@1",
+      "slots": {
+        "color-theme": "no-such-theme",
+        "layout": "classic-ide",
+        "not-a-type": "x"
+      }
+    },
+    "wrong-frame": null,
+    "not-json": null,
+    "empty": null,
+    "code-shaped": {
+      "$axf": "appearance@1",
+      "slots": {
+        "layout": "classic-ide"
+      }
+    },
+    "too-big": null
+  },
+  "resolved": {
+    "full": {
+      "slots": {
+        "color-theme": "arctic-daylight",
+        "style-theme": "glass-orbit",
+        "layout": "focus-top",
+        "toolbar": "standard-icons"
+      },
+      "spacing": "compact",
+      "hidden": {
+        "toolbar": true,
+        "nav-menu": false
+      },
+      "skipped": [
+        "hidden color-theme (not hideable)"
+      ]
+    },
+    "unknown-ids": {
+      "slots": {
+        "layout": "classic-ide"
+      },
+      "spacing": null,
+      "hidden": {},
+      "skipped": [
+        "color-theme:no-such-theme (not in this app)",
+        "not-a-type:x (not a slot here)"
+      ]
+    },
+    "wrong-frame": {
+      "slots": {},
+      "spacing": null,
+      "hidden": {},
+      "skipped": []
+    },
+    "not-json": {
+      "slots": {},
+      "spacing": null,
+      "hidden": {},
+      "skipped": []
+    },
+    "empty": {
+      "slots": {},
+      "spacing": null,
+      "hidden": {},
+      "skipped": []
+    },
+    "code-shaped": {
+      "slots": {
+        "layout": "classic-ide"
+      },
+      "spacing": null,
+      "hidden": {},
+      "skipped": []
+    },
+    "too-big": {
+      "slots": {},
+      "spacing": null,
+      "hidden": {},
+      "skipped": []
+    }
+  },
+  "merged": {
+    "slot-over-full": {
+      "$axf": "appearance@1",
+      "slots": {
+        "color-theme": "neon-tide",
+        "style-theme": "glass-orbit",
+        "layout": "focus-top",
+        "toolbar": "standard-icons"
+      },
+      "spacing": "compact",
+      "hidden": {
+        "toolbar": true,
+        "color-theme": true,
+        "nav-menu": false
+      },
+      "palette": {
+        "bg": "#f2f5f8",
+        "accent": "rgb(31,111,235)",
+        "scheme": "light"
+      },
+      "updatedBy": "build-pilot",
+      "updatedAt": "2026-10-21T01:00:00Z"
+    },
+    "hidden-clear": {
+      "$axf": "appearance@1",
+      "slots": {
+        "color-theme": "arctic-daylight",
+        "style-theme": "glass-orbit",
+        "layout": "focus-top",
+        "toolbar": "standard-icons"
+      },
+      "spacing": "compact",
+      "hidden": {
+        "color-theme": true,
+        "nav-menu": false,
+        "app-menu": true
+      },
+      "palette": {
+        "bg": "#f2f5f8",
+        "accent": "rgb(31,111,235)",
+        "scheme": "light"
+      },
+      "updatedBy": "axf-console",
+      "updatedAt": "2026-10-21T01:00:00Z"
+    },
+    "spacing-only-into-null": {
+      "$axf": "appearance@1",
+      "spacing": "regular",
+      "updatedBy": "axhub-android",
+      "updatedAt": "2026-10-21T01:00:00Z"
+    },
+    "keeps-other-apps-slots": {
+      "$axf": "appearance@1",
+      "slots": {
+        "pilot-only-type": "thing",
+        "layout": "classic-ide"
+      },
+      "updatedBy": "axf-console",
+      "updatedAt": "2026-10-21T01:00:00Z"
+    }
+  },
+  "serialized": "{\n  \"$axf\": \"appearance@1\",\n  \"slots\": {\n    \"color-theme\": \"neon-tide\",\n    \"layout\": \"focus-top\",\n    \"style-theme\": \"glass-orbit\",\n    \"toolbar\": \"standard-icons\"\n  },\n  \"spacing\": \"compact\",\n  \"hidden\": {\n    \"color-theme\": true,\n    \"nav-menu\": false,\n    \"toolbar\": true\n  },\n  \"palette\": {\n    \"bg\": \"#f2f5f8\",\n    \"accent\": \"rgb(31,111,235)\",\n    \"scheme\": \"light\"\n  },\n  \"updatedBy\": \"build-pilot\",\n  \"updatedAt\": \"2026-10-21T01:00:00Z\"\n}",
+  "palette": {
+    "amber-ember": {
+      "bg": "#0f0d0a",
+      "fg": "#f3ece2",
+      "muted": "#a39684",
+      "card": "#17140f",
+      "line": "#342c21",
+      "accent": "#f5a524",
+      "danger": "#f0605a",
+      "ok": "#4cc38a",
+      "scheme": "dark"
+    },
+    "arctic-daylight": {
+      "bg": "#f2f5f8",
+      "fg": "#14202b",
+      "muted": "#5d6d7c",
+      "card": "#ffffff",
+      "line": "#d6dfe7",
+      "accent": "#1f6feb",
+      "danger": "#d1373f",
+      "ok": "#1a8f5a",
+      "scheme": "light"
+    },
+    "neon-tide": {
+      "bg": "#0c0a18",
+      "fg": "#ece9ff",
+      "muted": "#9a93c4",
+      "card": "#14112a",
+      "line": "#2e2852",
+      "accent": "#22d3ee",
+      "danger": "#ff4d8d",
+      "ok": "#3ee6a0",
+      "scheme": "dark"
+    }
+  },
+  "retryMs": {
+    "0": 1000,
+    "1": 2000,
+    "2": 4000,
+    "3": 8000,
+    "4": 16000,
+    "5": 30000,
+    "6": 30000,
+    "20": 30000
+  }
+}

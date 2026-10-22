@@ -1,0 +1,94 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "axhub-web",
+    "name": "AXHub",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "react-ts"
+  },
+  "initializedAt": "2026-10-22T01:40:02.503Z",
+  "targets": [
+    "web"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "classic-ide",
+    "app-menu": "axhub-web",
+    "toolbar": "standard-icons",
+    "nav-menu": "axhub-web",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "banner": "amberx-thin",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  },
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Hashes of the baked framework files, used for conformance checks."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "src/views",
+      "purpose": "App views registered with the shell."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Handlers bound to the standard action vocabulary."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "App-specific dialogs opened through the dialog engine."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files served as-is."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-"""Persistent agent memory. One store per scope (an agent's own id, or a named shared scope several agents use).
+"""Persistent agent memory (agent-memory@1). One store per scope (an agent's own id, or a named shared scope).
 
-Memory types (per agent, agent.memory.type)
+Memory types (agent.memory.type)
   none      nothing recalled, nothing recorded
   buffer    the last `window` exchanges, in order
   summary   one rolling summary the model rewrites after each exchange
@@ -11,6 +11,7 @@ Memory types (per agent, agent.memory.type)
 Recording (agent.memory.record): episodes (each exchange, condensed), facts (the model extracts durable facts),
 both, or off. Training jobs add `knowledge` items; people add `note`/`fact` items by hand.
 Items: {id, kind, text, tags, source, jobId, createdAt, hits, lastUsed, vector?}
+The text engine (tokens, BM25, chunking, trimming) is the contract's (contract.py = core/agents.ts = Agents.kt).
 """
 from __future__ import annotations
 
@@ -18,77 +19,50 @@ import json
 import math
 import re
 import threading
-import time
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf.contracts import agents as contract  # framework/python
+from axf_server import storage
+
 from . import llm, store
 
 _lock = threading.RLock()
-TYPES = ("none", "buffer", "summary", "keyword", "vector", "hybrid")
-KINDS = ("fact", "episode", "summary", "knowledge", "note")
-_WORD = re.compile(r"[a-z0-9][a-z0-9_.+#-]*")
-_STOP = set("a an the and or but if then else of to in on at for with by from is are was were be been being it its this that these those i you he she we they me my your our their as not no do does did have has had can could will would should may might just so than too very what which who whom how when where why all any some such own same other into over under again further once here there about out up down off".split())
+TYPES = contract.MEMORY_TYPES
+KINDS = contract.MEMORY_KINDS
+_SCOPE_RE = contract.ID_RE
 
 
 def config(agent: dict[str, Any]) -> dict[str, Any]:
-    d = store.load_settings()["defaults"]
-    m = agent.get("memory") or {}
-    return {"type": m.get("type") or d.get("memoryType", "hybrid"), "scope": m.get("scope") or agent["id"], "topK": int(m.get("topK") or d.get("topK", 6)),
-            "window": int(m.get("window") or d.get("window", 8)), "maxItems": int(m.get("maxItems") or d.get("maxItems", 2000)),
-            "record": m.get("record") or "both", "decayDays": int(m.get("decayDays") or 0), "embedProfile": m.get("embedProfile") or "",
-            "minScore": float(m.get("minScore") or 0.0)}
+    return contract.resolve_memory(agent, store.memory_defaults())
 
 
 def _path(scope: str) -> Path:
-    if not re.match(r"^[a-z0-9][a-z0-9._-]{0,63}$", scope):
+    if not _SCOPE_RE.match(scope or ""):
         raise ValueError("bad memory scope")
     return store.DATA / "memory" / f"{scope}.json"
 
 
 def load(scope: str) -> dict[str, Any]:
     try:
-        return json.loads(_path(scope).read_text())
+        mem = json.loads(_path(scope).read_text())
+        if not isinstance(mem, dict) or not isinstance(mem.get("items"), list):
+            raise ValueError
+        return mem
     except (OSError, ValueError):
-        return {"$axf": "agent-memory@1", "scope": scope, "summary": "", "items": []}
+        return {"$axf": contract.AGENT_MEMORY_TAG, "scope": scope, "summary": "", "items": []}
 
 
 def save(scope: str, mem: dict[str, Any]) -> None:
     with _lock:
         p = _path(scope)
-        p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        tmp = p.with_suffix(".tmp")
-        tmp.write_text(json.dumps(mem, ensure_ascii=False))
-        tmp.replace(p)
+        storage.write_json(p, mem, indent=None, ensure_ascii=False)  # atomic, 0600 (axf_server.storage)
 
 
-def tokens(text: str) -> list[str]:
-    return [w for w in _WORD.findall(text.lower()) if w not in _STOP and len(w) > 1]
-
-
-def _bm25(query: str, docs: list[dict[str, Any]], k1: float = 1.4, b: float = 0.75) -> list[tuple[float, dict[str, Any]]]:
-    q = tokens(query)
-    if not q or not docs:
-        return []
-    toks = [tokens(d["text"] + " " + " ".join(d.get("tags") or [])) for d in docs]
-    avg = sum(len(t) for t in toks) / max(1, len(toks))
-    df: Counter[str] = Counter()
-    for t in toks:
-        df.update(set(t))
-    n = len(docs)
-    out = []
-    for d, t in zip(docs, toks):
-        tf = Counter(t)
-        s = 0.0
-        for w in q:
-            if w not in tf:
-                continue
-            idf = math.log(1 + (n - df[w] + 0.5) / (df[w] + 0.5))
-            s += idf * tf[w] * (k1 + 1) / (tf[w] + k1 * (1 - b + b * len(t) / max(1.0, avg)))
-        if s > 0:
-            out.append((s, d))
-    return sorted(out, key=lambda x: -x[0])
+tokens = contract.tokens
+chunk = contract.chunk
 
 
 def _cos(a: list[float], b: list[float]) -> float:
@@ -100,7 +74,7 @@ def _cos(a: list[float], b: list[float]) -> float:
     return dot / (na * nb) if na and nb else 0.0
 
 
-def search(scope: str, query: str, k: int = 6, mode: str = "keyword", kinds: tuple[str, ...] | None = None, embed_profile: str = "") -> list[dict[str, Any]]:
+def search(scope: str, query: str, k: int = 6, mode: str = "keyword", kinds: tuple[str, ...] | None = None, embed_profile: str = "", min_score: float = 0.0) -> list[dict[str, Any]]:
     mem = load(scope)
     docs = [d for d in mem["items"] if not kinds or d.get("kind") in kinds]
     hits: list[tuple[float, dict[str, Any]]] = []
@@ -108,9 +82,9 @@ def search(scope: str, query: str, k: int = 6, mode: str = "keyword", kinds: tup
         qv = llm.embed([query], embed_profile or None)
         if qv:
             hits = sorted(((_cos(qv[0], d["vector"]), d) for d in docs if d.get("vector")), key=lambda x: -x[0])
-            hits = [h for h in hits if h[0] > 0.2]
+            hits = [h for h in hits if h[0] > max(0.2, min_score)]
     if not hits:
-        hits = _bm25(query, docs)
+        hits = [(s, docs[i]) for s, i in contract.bm25_rank(query, docs) if s >= min_score]
     top = [dict(d, score=round(s, 3)) for s, d in hits[:k]]
     if top:
         ids = {d["id"] for d in top}
@@ -126,7 +100,6 @@ def search(scope: str, query: str, k: int = 6, mode: str = "keyword", kinds: tup
 
 def add(scope: str, text: str, kind: str = "note", tags: list[str] | None = None, source: str = "", job_id: str = "", embed: bool = False,
         embed_profile: str = "", max_items: int = 5000) -> list[dict[str, Any]]:
-    """Add one item (or many, if text is a list of chunks via add_many)."""
     return add_many(scope, [text], kind, tags, source, job_id, embed, embed_profile, max_items)
 
 
@@ -134,7 +107,7 @@ def add_many(scope: str, texts: list[str], kind: str = "knowledge", tags: list[s
              embed: bool = False, embed_profile: str = "", max_items: int = 5000) -> list[dict[str, Any]]:
     if kind not in KINDS:
         raise ValueError(f"memory kind must be one of {', '.join(KINDS)}")
-    texts = [t.strip()[:8000] for t in texts if t and t.strip()]
+    texts = [t.strip()[:contract.LIMITS["memoryText"]] for t in texts if t and t.strip()]
     vectors: list[list[float]] | None = None
     if embed and texts:
         vectors = []
@@ -154,9 +127,7 @@ def add_many(scope: str, texts: list[str], kind: str = "knowledge", tags: list[s
     with _lock:
         mem = load(scope)
         mem["items"].extend(new)
-        if len(mem["items"]) > max_items:  # forget the least useful episodes first, then the oldest others
-            mem["items"].sort(key=lambda d: (d.get("kind") != "episode", d.get("hits", 0), d.get("createdAt", 0)))
-            mem["items"] = mem["items"][len(mem["items"]) - max_items:]
+        mem["items"] = contract.trim_memory(mem["items"], max_items)
         save(scope, mem)
     return [{k: v for k, v in d.items() if k != "vector"} for d in new]
 
@@ -195,6 +166,11 @@ def decay(scope: str, days: int) -> int:
         return before - len(mem["items"])
 
 
+def scopes() -> list[str]:
+    d = store.DATA / "memory"
+    return sorted(p.stem for p in d.glob("*.json")) if d.exists() else []
+
+
 # ---------------------------------------------------------------- what chats use
 
 def context_for(agent: dict[str, Any], query: str) -> str:
@@ -208,7 +184,7 @@ def context_for(agent: dict[str, Any], query: str) -> str:
         parts.append(f"Summary of earlier conversations:\n{mem['summary']}")
     if t in ("keyword", "vector", "hybrid") and query.strip():
         hits = search(cfg["scope"], query, cfg["topK"], "vector" if t in ("vector", "hybrid") else "keyword",
-                      ("fact", "knowledge", "note", "episode") if t != "hybrid" else ("fact", "knowledge", "note"), cfg["embedProfile"])
+                      ("fact", "knowledge", "note", "episode") if t != "hybrid" else ("fact", "knowledge", "note"), cfg["embedProfile"], cfg["minScore"])
         if hits:
             parts.append("Relevant items:\n" + "\n".join(f"- [{h['kind']}{' · ' + h['source'] if h.get('source') else ''}] {h['text'][:1200]}" for h in hits))
     if t in ("buffer", "hybrid"):
@@ -238,7 +214,6 @@ def _reflect(agent: dict[str, Any], cfg: dict[str, Any], user_text: str, reply: 
     try:
         mem = load(cfg["scope"])
         want_facts = cfg["record"] in ("facts", "both")
-        want_summary = True  # same call either way; keeps the summary ready if the agent switches to summary/hybrid
         ask = (
             "You maintain an AI agent's long-term memory. Given the previous summary and the latest exchange, reply with JSON only: "
             '{"facts": ["durable fact about the user, their projects, preferences or decisions", ...], "summary": "updated summary, <= 1200 characters"}. '
@@ -256,7 +231,7 @@ def _reflect(agent: dict[str, Any], cfg: dict[str, Any], user_text: str, reply: 
             facts = [f for f in facts if f.lower() not in existing]
             if facts:
                 add_many(cfg["scope"], facts, "fact", source="reflection", embed=cfg["type"] in ("vector", "hybrid"), embed_profile=cfg["embedProfile"], max_items=cfg["maxItems"])
-        if want_summary and isinstance(j.get("summary"), str) and j["summary"].strip():
+        if isinstance(j.get("summary"), str) and j["summary"].strip():
             with _lock:
                 m2 = load(cfg["scope"])
                 m2["summary"] = j["summary"].strip()[:1500]
@@ -264,29 +239,3 @@ def _reflect(agent: dict[str, Any], cfg: dict[str, Any], user_text: str, reply: 
                 save(cfg["scope"], m2)
     except Exception:  # noqa: BLE001
         return
-
-
-def chunk(text: str, size: int = 1200, overlap: int = 120) -> list[str]:
-    """Split on headings/paragraphs into ~size-character chunks with a little overlap."""
-    text = re.sub(r"\n{3,}", "\n\n", text.strip())
-    if len(text) <= size:
-        return [text] if text else []
-    paras = re.split(r"\n(?=#{1,6} )|\n\n", text)
-    out, cur = [], ""
-    for p in paras:
-        if len(cur) + len(p) + 2 <= size:
-            cur = f"{cur}\n\n{p}" if cur else p
-            continue
-        if cur:
-            out.append(cur)
-        while len(p) > size:
-            out.append(p[:size])
-            p = p[size - overlap:]
-        cur = (out[-1][-overlap:] + "\n" if out and overlap else "") + p
-    if cur.strip():
-        out.append(cur)
-    return out
-
-
-def now() -> float:
-    return time.time()
