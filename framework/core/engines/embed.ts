@@ -164,6 +164,9 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // the apps in tabs hide theirs"): the app hides its own menu bar and sends its menu to the host (`menu` message); the
   // host runs a picked item back in the app (`run` message).
   ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'] }],
+  // The host shows every banner's settings in one place (Brett, Oct 22 2026: "Patches' settings renders the combined
+  // banners interface in a tab"): Banner settings opens in the host, which shows the app's page `banners` on its own.
+  ['banners', { actions: ['banners.settings'], prefixes: ['banners.settings:'], views: ['banners'], providers: [], page: true, hides: [] }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */

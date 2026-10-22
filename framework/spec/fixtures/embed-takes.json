@@ -3,7 +3,8 @@
   "ids": [
     "settings",
     "notifications",
-    "app-menu"
+    "app-menu",
+    "banners"
   ],
   "takes": [
     {

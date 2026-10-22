@@ -10,7 +10,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { Button, Chip, Container, Icon, Slider, Switch, useAsset, useAxfState, useRuntime } from '../../react';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -24,6 +24,8 @@ export const SETTINGS_TABS = {
   account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
   connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
   plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
+  // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
+  banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
 } as const;
 
@@ -341,7 +343,11 @@ export function SettingsView() {
   useSettingsRevision(rt);
   const tabs = rt.settings.topTabs();
   // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
+  // A banner plugin's own settings live inside Banners (one interface for every banner): its tab opens Banners on it.
+  const banners = useKnownBanners();
+  const folded = banners.length ? bannerSettingsTabs(rt) : new Set<string>();
   const resolve = (id: unknown): [string, string] => {
+    if (typeof id === 'string' && folded.has(id)) { askBannerTab(rt, id); return ['plugins', 'banners']; }
     const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
     if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
     if (t) return [t.id, ''];
@@ -355,10 +361,8 @@ export function SettingsView() {
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
-  const subs = current ? rt.settings.subTabs(current.id) : [];
+  const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const shown = (sub && subs.find((t) => t.id === sub)) || current;
-  const groups = shown ? rt.settings.groupsIn(shown.id) : [];
-  const panels = shown ? rt.settings.panelsIn(shown.id) : [];
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
@@ -383,15 +387,28 @@ export function SettingsView() {
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {/* panels and groups interleaved by `order` (panels first on a tie) */}
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? shown?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+      {shown && <TabContent id={shown.id} />}
+    </div>
+  );
+}
+
+/** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings. */
+export function TabContent({ id }: { id: string }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const tab = rt.settings.getTab(id);
+  const groups = rt.settings.groupsIn(id);
+  const panels = rt.settings.panelsIn(id);
+  return (
+    <>
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
         ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
         .sort((a, b) => a.order - b.order || a.tie - b.tie)
         .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
-        <p className="fx-muted">{shown?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
       )}
-    </div>
+    </>
   );
 }
 
@@ -483,6 +500,7 @@ export const library: AxfWebLibrary = {
   provides: ['axf.settings'],
   register(rt) {
     injectStyles();
+    setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} />);
     rt.settings.addGroup(appearanceGroup(rt));
     rt.settings.addGroup(rollGroup());
     applyDisplay(rt);
@@ -497,7 +515,11 @@ export const library: AxfWebLibrary = {
       }
     }, { label: 'Open a settings tab', params: true });
   },
-  views: { [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> } },
+  views: {
+    [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
+    // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
+    [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
+  },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
     {
@@ -518,6 +540,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],
 };

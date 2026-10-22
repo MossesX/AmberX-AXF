@@ -194,4 +194,24 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   eq(alone.skippedLibraries.length, 0, 'standalone: nothing skipped');
 }
 
+/* ---------- runtime: banner settings taken by the host (Patches' Banners tab) ---------- */
+{
+  const posted: unknown[] = [];
+  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
+  let ran = 0;
+  const taken = make({ host: 'patches', hidden: ['banner'], takes: ['settings', 'banners'] });
+  taken.actions.register('banners.settings', () => { ran++; }, { label: 'Banner settings', params: true });
+  eq(taken.hostTakes('banners'), true, 'takes: banners');
+  eq(taken.takenByHost({ view: 'banners' }), true, 'taken: banners view');
+  taken.dispatch('banners.settings:push-banner');
+  taken.dispatch('banners.settings');
+  taken.navigate('banners');
+  eq(ran, 0, 'banner settings never open here');
+  eq(posted, [{ $axf: 'embed@1', type: 'open-settings', tab: 'banners:push-banner' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }, { $axf: 'embed@1', type: 'open-settings', tab: 'banners' }], 'banner settings asked the host');
+  eq(embedPage('banners'), 'banners', 'banners is a page a host can show');
+  const page = make({ host: 'patches', hidden: ['banner'], takes: ['settings'], page: 'banners' });
+  eq(page.hostTakes('banners'), false, 'the banners page keeps its own function');
+  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+}
+
 console.log(`check-embed: ${checks} checks passed`);

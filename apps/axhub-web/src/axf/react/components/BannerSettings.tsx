@@ -90,6 +90,14 @@ const installed = new WeakSet<AxfRuntime>();
 
 /** The banners every app has registered (all of them, including ones not on this page, e.g. inside a host). */
 export function knownBanners(rt: AxfRuntime): BannerDef[] { return known.get(rt) ?? []; }
+const knownSubs = new Set<() => void>();
+const EMPTY: BannerDef[] = [];
+/** knownBanners that re-renders when the app's banner list changes (plugins load after the first render). */
+export function useKnownBanners(): BannerDef[] {
+  const rt = useRuntime();
+  const get = () => known.get(rt) ?? EMPTY;
+  return useSyncExternalStore((f) => { knownSubs.add(f); return () => { knownSubs.delete(f); }; }, get, get);
+}
 
 export const bannerLabel = (b: Pick<BannerDef, 'id' | 'label'>) => b.label ?? b.id.replace(/[-_.]+/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
@@ -98,6 +106,8 @@ function install(rt: AxfRuntime): void {
   installed.add(rt);
   rt.actions.register('banners.settings', ([id], ctx) => {
     const pick = id || (typeof ctx?.payload === 'string' ? ctx.payload : '');
+    // Shown as a page on its own (a host's Banners settings tab, embed@1 page `banners`): switch the page's tab instead.
+    if (rt.embedded?.page === 'banners') { setWantTab(pick); return; }
     rt.openDialog(BANNER_SETTINGS_DIALOG, pick ? { id: pick } : {});
   }, { label: 'Banner settings' });
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
@@ -110,7 +120,11 @@ function install(rt: AxfRuntime): void {
  */
 export function bannerSlotDefs(rt: AxfRuntime, all: BannerDef[], shown: BannerDef[] = all): SlotDef[] {
   install(rt);
-  known.set(rt, all);
+  const before = known.get(rt) ?? EMPTY;
+  if (before.length !== all.length || before.some((b, i) => b.id !== all[i]?.id)) {
+    known.set(rt, all);
+    queueMicrotask(() => knownSubs.forEach((f) => f()));
+  }
   return shown
     .map((b) => ({ b, p: bannerPrefs(rt, b.id) }))
     .filter(({ p }) => p.show && !(p.hideInHost && rt.embedded))
@@ -169,18 +183,49 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   );
 }
 
+/* ---------------- the banner a page was asked to show; each banner's own settings ---------------- */
+
+let wantTab = '';
+const wantSubs = new Set<() => void>();
+function setWantTab(id: string): void { wantTab = id; wantSubs.forEach((f) => f()); }
+/** Show this banner's tab wherever Banner settings is open (a settings page asked for a banner plugin's own tab). */
+export function askBannerTab(rt: AxfRuntime, idOrSettingsTab: string): void {
+  const b = knownBanners(rt).find((x) => x.id === idOrSettingsTab) ?? knownBanners(rt).find((x) => x.settingsTab === idOrSettingsTab);
+  if (b) setWantTab(b.id);
+}
+function useWantTab(): string {
+  return useSyncExternalStore((f) => { wantSubs.add(f); return () => { wantSubs.delete(f); }; }, () => wantTab, () => wantTab);
+}
+
+/**
+ * Renders a settings tab's own content (its panels and groups) inside Banner settings, so each banner's tab holds its
+ * plugin's settings too: one interface for every banner (Brett, Oct 22 2026). The settings library installs it.
+ */
+let ownSettings: ((settingsTab: string) => ReactNode) | null = null;
+export function setBannerOwnSettingsRenderer(fn: ((settingsTab: string) => ReactNode) | null): void { ownSettings = fn; }
+
+/** Settings tabs that belong to a banner: shown inside Banner settings instead of on their own. */
+export function bannerSettingsTabs(rt: AxfRuntime): Set<string> {
+  return new Set(knownBanners(rt).map((b) => b.settingsTab).filter((t): t is string => !!t));
+}
+
 /* ---------------- the dialog: one tab per banner ---------------- */
 
 const TONE_LABEL: Record<BannerTone, string> = { own: 'Its own colour', accent: 'Accent', info: 'Info (blue)', success: 'Success (green)', warning: 'Warning (amber)', danger: 'Danger (red)', neutral: 'Neutral (grey)' };
 const AUTO_HIDE = [0, 10, 30, 60, 300, 900];
 const autoHideLabel = (s: number) => (s === 0 ? 'Never' : s < 60 ? `After ${s} s with nothing new` : `After ${s / 60} min with nothing new`);
 
-function BannerSettingsPanel({ initial }: { initial?: string }) {
+/** Every banner's settings, one tab each: its look, its behaviour and its plugin's own settings. Dialog, settings tab or page. */
+export function BannerSettingsPanel({ initial }: { initial?: string }) {
   const rt = useRuntime();
   useAxfState();
   useBannerPrefsTick();
-  const list = knownBanners(rt);
+  const list = useKnownBanners();
+  const asked = useWantTab();
   const [tab, setTab] = useState(() => (initial && list.some((b) => b.id === initial) ? initial : list[0]?.id ?? ''));
+  useEffect(() => { if (asked && list.some((b) => b.id === asked)) setTab(asked); }, [asked]);
+  // the list fills in after the plugins load (a page opened straight on Banners)
+  useEffect(() => { if (!list.some((b) => b.id === tab) && list[0]) setTab(initial && list.some((b) => b.id === initial) ? initial : list[0].id); }, [list.length]);
   const b = list.find((x) => x.id === tab);
   if (!list.length) return <p className="fx-muted">This app has no banners.</p>;
   const p = bannerPrefs(rt, tab);
@@ -220,15 +265,20 @@ function BannerSettingsPanel({ initial }: { initial?: string }) {
             </div>
             <Switch label="Hide it inside a host app (Patches)" checked={p.hideInHost} onChange={(v) => set({ hideInHost: v })} />
           </Section>
+          {b.settingsTab && ownSettings && (
+            <Section title={`${bannerLabel(b)} settings`}>{ownSettings(b.settingsTab)}</Section>
+          )}
           <div className="fx-row fx-row--wrap">
-            {b.settingsTab && <Button icon="settings" onClick={() => { rt.closeDialog(); rt.dispatch(`settings.open:${b.settingsTab}`); }}>{bannerLabel(b)}’s own settings</Button>}
-            <Button tone="ghost" icon="refresh" onClick={() => resetBannerPrefs(rt, tab)}>Back to its defaults</Button>
+            <Button tone="ghost" icon="refresh" onClick={() => resetBannerPrefs(rt, tab)}>Look and behaviour back to defaults</Button>
           </div>
         </div>
       )}
     </div>
   );
 }
+
+/** The page a host shows on its own (embed@1 page `banners`) and the app's own Banners view. */
+export const BANNERS_VIEW = 'banners';
 
 export const bannerSettingsDialog: DialogMap = {
   [BANNER_SETTINGS_DIALOG]: { title: 'Banner settings', icon: 'bell', searchable: false, render: (props) => <BannerSettingsPanel initial={typeof props.id === 'string' ? props.id : undefined} /> },

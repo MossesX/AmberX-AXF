@@ -89,6 +89,11 @@ class Fake(BaseHTTPRequestHandler):
         p = unquote(urlsplit(self.path).path)
         b = self._body()
         SEEN.append({"method": "POST", "path": p, "body": b})
+        if p == R + "/merges":
+            STATE.setdefault("pulled", []).append(b)
+            if b.get("base") == "feat/conflict":
+                return self._send(409, {"message": "Merge conflict"})
+            return self._send(201, {"sha": "pulled1"})
         if p == R + "/pulls":
             STATE["created"].append(b)
             return self._send(201, {"number": 19, "html_url": "https://github.com/MossesX/AmberX-AXF/pull/19"})
@@ -98,6 +103,9 @@ class Fake(BaseHTTPRequestHandler):
         p = unquote(urlsplit(self.path).path)
         b = self._body()
         SEEN.append({"method": "PUT", "path": p, "body": b})
+        if p.endswith("/update-branch"):
+            STATE.setdefault("updated", []).append((p, b))
+            return self._send(202, {"message": "Updating pull request branch."})
         if p.endswith("/merge"):
             STATE["merged"].append((p, b))
             return self._send(200, {"merged": True, "sha": "merge123"})
@@ -141,6 +149,21 @@ def check(cond, msg):
 print("push-banner self-test")
 cfg = c.get("/p/config").json()
 check(cfg["repos"] == ["MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot"], "default repos: AmberX-AXF, axHub, Build-Pilot")
+# Pull main in: a PR through GitHub's update-branch (head pinned), a branch without one as a merge commit on it
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18})
+check(u.status_code == 400 and "confirm" in u.json()["detail"], "pull main in: needs the typed confirm")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+up, ub = STATE["updated"][-1]
+check(u.status_code == 200 and up == R + "/pulls/18/update-branch" and ub == {"expected_head_sha": "aaa111"}, "PR: update-branch, pinned to its head")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b", "confirm": "MossesX/AmberX-AXF:feat/b"})
+check(u.status_code == 200 and STATE["pulled"][-1] == {"base": "feat/b", "head": "main", "commit_message": "Merge main into feat/b (Dev Console Push banner)"}, "branch: main merged into it")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"})
+check(u.status_code == 400, "never into the default branch")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(u.status_code == 409 and "conflicts" in u.json()["detail"], "conflicts: says to merge by hand")
+u = c.post("/p/update", json={"repo": "Someone/Else", "branch": "x", "confirm": "Someone/Else:x"})
+check(u.status_code == 400, "only watched repos")
+
 cfg = c.put("/p/config", json={"repos": ["MossesX/AmberX-AXF"]}).json()
 check(cfg["repos"] == ["MossesX/AmberX-AXF"], "repos are a setting")
 check(c.put("/p/config", json={"repos": ["not a repo"]}).status_code == 400, "a bad repo name is refused")

@@ -1030,6 +1030,12 @@ export class AxfRuntime {
       const tab = settingsTabOf(spec);
       if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
     }
+    // Banner settings: the host shows every banner's settings in its own Banners tab (`banners` / `banners:<banner id>`).
+    if (fn === 'banners') {
+      const id = spec.startsWith('banners.settings:') ? spec.slice('banners.settings:'.length) : '';
+      const tab = /^[a-z0-9][a-z0-9._-]{0,54}$/i.test(id) ? `banners:${id}` : 'banners';
+      if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'open-settings', tab })) return true;
+    }
     this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
     return false;
   }
@@ -1039,6 +1045,7 @@ export class AxfRuntime {
     const handle = (raw: unknown) => {
       const m = parseEmbedMessage(raw);
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
     };

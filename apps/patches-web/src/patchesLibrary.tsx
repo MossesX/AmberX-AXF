@@ -7,7 +7,7 @@ import { Icon, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
 import type { AxfRuntime } from './axf/core';
 import {
-  BANNERS_KEY, SETTINGS_APPS, SETTINGS_APP_KEY, TABS, fromApp, guestMenuCounters, guestMenuItems, isSettingsApp, openTabMessage, parseStripMessage,
+  BANNERS_KEY, bannerAsk, bannersUrl, SETTINGS_APPS, SETTINGS_APP_KEY, TABS, fromApp, guestMenuCounters, guestMenuItems, isSettingsApp, openTabMessage, parseStripMessage,
   runMessage, settingsUrl, stripUrl, tabOrigin, tabUrl, type PatchTab, type SettingsApp,
 } from './patches';
 
@@ -105,7 +105,7 @@ export function BannerStrip() {
 /* ---------------- combined settings ---------------- */
 
 /** One app's own settings page inside the combined settings (page mode), kept alive once opened. */
-function AppSettings({ t, active, tab, at }: { t: PatchTab; active: boolean; tab?: string; at: number }) {
+function AppSettings({ t, active, tab, at, banners = false }: { t: PatchTab; active: boolean; tab?: string; at: number; banners?: boolean }) {
   const origin = useOrigin(t);
   const ref = useRef<HTMLDivElement>(null);
   // A sub-tab asked for (e.g. the console's Appearance): sent once the page is there, again after a short wait.
@@ -120,7 +120,13 @@ function AppSettings({ t, active, tab, at }: { t: PatchTab; active: boolean; tab
     const b = setTimeout(send, 2500);
     return () => { clearTimeout(a); clearTimeout(b); };
   }, [active, tab, at, origin, t.axf]);
-  return <div ref={ref} className="pt-settings__page" hidden={!active}><Frame tab={t} src={settingsUrl(t, origin)} kind="settings" title={`${t.label} settings`} /></div>;
+  return (
+    <div ref={ref} className="pt-settings__page" hidden={!active}>
+      {banners
+        ? <Frame tab={t} src={bannersUrl(origin)} kind="settings" title="Banner settings" />
+        : <Frame tab={t} src={settingsUrl(t, origin)} kind="settings" title={`${t.label} settings`} />}
+    </div>
+  );
 }
 
 /** Patches' combined Settings: Patches · Console · Pilot · axHub. Each app's tab is that app's own settings page. */
@@ -144,6 +150,8 @@ export function CombinedSettings() {
       </div>
       <div className="pt-settings__body">
         <div className="pt-settings__page pt-settings__page--own" hidden={app !== 'patches'}>{Own()}</div>
+        {/* Banners: every banner above the tabs (they come from the Dev Console), the console's Banners page on its own */}
+        {opened.includes('banners') && <AppSettings t={TABS[0]!} banners active={app === 'banners'} tab={app === 'banners' ? w.tab : undefined} at={w.at} />}
         {TABS.filter((t) => opened.includes(t.id)).map((t) => (
           <AppSettings key={t.id} t={t} active={app === t.id} tab={app === t.id ? w.tab : undefined} at={w.at} />
         ))}
@@ -160,13 +168,18 @@ export function useAppMessages() {
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const f = e.source ? frames.get(e.source as Window) : undefined;
-      if (!f || f.kind === 'strip') return;
+      if (!f) return;
       // Believed only from the frame it came from, at that frame's own origin.
       const origin = tabOrigin(f.tab, f.tab.key ? rt.settings.get(f.tab.key) : null);
       if (e.origin !== origin) return;
       const m = fromApp(e.data);
       if (!m) return;
-      if (m.type === 'open-settings') openSettings(rt, f.tab.id, m.tab);
+      // Banner settings (from a banner's right-click, in the strip or an app) open Patches' Banners tab on that banner;
+      // anything else the strip sends is ignored (it only relays banner taps to the Console tab).
+      const banner = m.type === 'open-settings' ? bannerAsk(m.tab) : null;
+      if (banner !== null) openSettings(rt, 'banners', banner || undefined);
+      else if (f.kind === 'strip') return;
+      else if (m.type === 'open-settings') openSettings(rt, f.tab.id, m.tab);
       else if (m.type === 'menu' && f.kind === 'app') showGuestMenu(rt, f.tab, m.menus);
       else if (m.type === 'notify') rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level === 'warning' ? 'warning' : m.level === 'success' ? 'success' : 'info', `${f.tab.label}: ${m.title}`);
     };

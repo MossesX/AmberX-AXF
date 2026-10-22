@@ -9,6 +9,9 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     POST /merge  {repo, number, confirm: "<repo>#<number>"}
                                     merges an open PR (merge commit) only when GitHub says it can and every check on
                                     its head commit passed; the head commit is pinned so nothing newer slips in
+    POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
+                                    pulls the default branch into a branch that's behind it: a PR through GitHub's
+                                    "update branch" (its head pinned), a branch without one as a merge commit on it
     GET  /config | PUT /config      {repos: [owner/name …], hidden: ["owner/name:branch" …]}
 
 main is never pushed to: a branch reaches main only through its PR. GitHub is read through lib-github
@@ -201,7 +204,7 @@ class Pushes:
                 "head": _text(head.get("ref"), 200), "base": _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200),
                 "fork": ((head.get("repo") or {}).get("full_name") or "").lower() != repo.lower(),
                 "author": _text((p.get("user") or {}).get("login") if isinstance(p.get("user"), dict) else "", 60),
-                "updated": _text(p.get("updated_at"), 40), "ci": "none", "mergeable": None, "ready": False,
+                "updated": _text(p.get("updated_at"), 40), "ci": "none", "mergeable": None, "mergeState": "", "ready": False,
                 "hidden": f"{repo}:#{n}" in hidden,
             }
             try:
@@ -212,6 +215,8 @@ class Pushes:
                 full = gh.get(github.repo_path(repo, "pulls", n))
                 m = full.get("mergeable") if isinstance(full, dict) else None
                 item["mergeable"] = m if isinstance(m, bool) else None
+                st = full.get("mergeable_state") if isinstance(full, dict) else None
+                item["mergeState"] = st if st in ("clean", "behind", "dirty", "blocked", "unstable", "draft", "has_hooks", "unknown") else ""
             except (github.GitHubError, ValueError):
                 pass
             item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"]
@@ -308,6 +313,45 @@ class Pushes:
                 "url": _safe_url(p.get("html_url"))}
 
 
+    def update(self, body: Any) -> dict[str, Any]:
+        """Pull the default branch into a branch behind it (never touches the default branch itself)."""
+        if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm"}:
+            raise HTTPException(400, "send {repo, number | branch, confirm}")
+        repo, number, branch = body.get("repo"), body.get("number"), body.get("branch")
+        if repo not in self.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+        gh = self.gh()
+        try:
+            if number is not None:
+                if not isinstance(number, int) or isinstance(number, bool) or number <= 0:
+                    raise HTTPException(400, "number is the PR number")
+                if body.get("confirm") != f"{repo}#{number}":
+                    raise HTTPException(400, f'confirm with "{repo}#{number}"')
+                p = gh.get(github.repo_path(repo, "pulls", number))
+                if not isinstance(p, dict) or p.get("state") != "open":
+                    raise HTTPException(409, "that PR isn't open")
+                sha = _text((p.get("head") or {}).get("sha"), 40)
+                gh.json("PUT", github.repo_path(repo, "pulls", number, "update-branch"), {"expected_head_sha": sha})
+                self._forget()
+                return {"updated": True, "url": _safe_url(p.get("html_url"))}
+            if not valid_branch(branch):
+                raise HTTPException(400, "send a PR number or a branch")
+            if body.get("confirm") != f"{repo}:{branch}":
+                raise HTTPException(400, f'confirm with "{repo}:{branch}"')
+            info = gh.repo(repo)
+            base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+            if branch == base:
+                raise HTTPException(400, "that is the default branch")
+            r = gh.json("POST", github.repo_path(repo, "merges"), {
+                "base": branch, "head": base, "commit_message": f"Merge {base} into {branch} (Dev Console Push banner)"})
+        except github.GitHubError as e:
+            if getattr(e, "status", 0) in (409, 422):
+                raise HTTPException(409, "it has conflicts with the default branch (or GitHub can't update it): merge it by hand") from None
+            raise HTTPException(502, _text(str(e))) from None
+        self._forget()
+        return {"updated": True, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else ""}
+
+
 PUSHES = Pushes()
 
 
@@ -324,6 +368,11 @@ def open_pr(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.merge(body)
+
+
+@router.post("/update")
+def update(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.update(body)
 
 
 @router.get("/config")

@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useState, type ReactNode } from 'react';
 import { Button, Icon, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
-import { ago, bannerOn, load, mergePr, openPr, pullRows, rows, setHidden, useStore, type PullRow, type Row } from './store';
+import { ago, bannerOn, load, mergePr, needsPull, openPr, pullMain, pullRows, rows, setHidden, useStore, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -11,6 +11,21 @@ function Note({ k }: { k: string }) {
   const s = useStore();
   return s.note?.key === k ? <span className={`axp-push-banner__note is-${s.note.tone}`} role="status">{s.note.text}</span> : null;
 }
+
+/** Pull the default branch into this branch (tap twice): GitHub's "update branch" for a PR, a merge commit otherwise. */
+function PullMainButton({ k, repo, base, number, branch }: { k: string; repo: string; base: string; number?: number; branch?: string }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  if (sure) return (
+    <>
+      <button type="button" className="axp-push-banner__act is-primary" disabled={s.busy === k} onClick={() => { setSure(false); void pullMain({ key: k, repo, base, number, branch }); }}><Icon name="check" size={11} />Pull {base} in?</button>
+      <button type="button" className="axp-push-banner__act is-quiet" onClick={() => setSure(false)}>Cancel</button>
+    </>
+  );
+  return <button type="button" className="axp-push-banner__act" disabled={s.busy === k} title={`Bring ${base}'s newer commits into this branch`} onClick={() => setSure(true)}><Icon name="download" size={11} />Pull {base} in</button>;
+}
+
+const pullBehind = (p: PullRow) => !p.fork && (needsPull(p.behind, p.mergeState) || p.mergeState === 'behind');
 
 function HideButton({ k, label }: { k: string; label: string }) {
   const s = useStore();
@@ -22,7 +37,8 @@ function PullItem({ p }: { p: PullRow }) {
   const s = useStore();
   const [sure, setSure] = useState(false);
   const busy = s.busy === p.key;
-  const why = p.ready ? 'Ready to merge' : p.draft ? 'Draft' : p.ci !== 'success' ? (CI_WORD[p.ci] ?? 'CI unknown') : p.mergeable === false ? 'Has conflicts' : 'GitHub is still checking it';
+  const behind = pullBehind(p);
+  const why = p.ready ? 'Ready to merge' : p.mergeState === 'dirty' ? 'Has conflicts' : behind ? `Behind ${p.base}` : p.draft ? 'Draft' : p.ci !== 'success' ? (CI_WORD[p.ci] ?? 'CI unknown') : p.mergeable === false ? 'Has conflicts' : 'GitHub is still checking it';
   return (
     <li className={`axp-push-banner__item is-ci-${p.ci}${p.ready ? ' is-ready' : ''}`}>
       <div className="axp-push-banner__entry">
@@ -43,6 +59,7 @@ function PullItem({ p }: { p: PullRow }) {
         {!sure && <button type="button" className="axp-push-banner__act is-primary" disabled={busy || !p.ready} title={p.ready ? `Merge #${p.number} into ${p.base}` : `Merges once it's ready (${why.toLowerCase()})`} onClick={() => setSure(true)}><Icon name="branch" size={11} />Merge</button>}
         {sure && <button type="button" className="axp-push-banner__act is-primary" disabled={busy} onClick={() => { setSure(false); void mergePr({ key: p.key, repo: p.repo, number: p.number, base: p.base }); }}><Icon name="check" size={11} />Merge #{p.number} into {p.base}?</button>}
         {sure && <button type="button" className="axp-push-banner__act is-quiet" onClick={() => setSure(false)}>Cancel</button>}
+        {!sure && behind && <PullMainButton k={p.key} repo={p.repo} base={p.base} number={p.number} />}
         {!sure && <HideButton k={p.key} label={`pull request #${p.number}`} />}
       </div>
     </li>
@@ -69,6 +86,7 @@ function BranchItem({ r }: { r: Row }) {
       </div>
       <div className="axp-push-banner__acts">
         <button type="button" className="axp-push-banner__act" disabled={busy || r.ahead == null} onClick={() => void openPr(r)}><Icon name="upload" size={11} />Open PR</button>
+        {needsPull(r.behind) && <PullMainButton k={r.key} repo={r.repo} base={r.base} branch={r.name} />}
         <HideButton k={r.key} label={r.name} />
       </div>
     </li>
@@ -96,25 +114,33 @@ export function PushBanner() {
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const pulls = pullRows(s.answer);
   const ready = pulls.filter((p) => p.ready);
-  const waiting = pulls.filter((p) => !p.ready);
-  const bare = rows(s.answer).filter((r) => !r.pr);
-  if (!pulls.length && !bare.length) return null;
-  const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...bare.map((r) => short(r.repo))])];
+  const behindPulls = pulls.filter((p) => !p.ready && pullBehind(p));
+  const waiting = pulls.filter((p) => !p.ready && !pullBehind(p));
+  const allBare = rows(s.answer).filter((r) => !r.pr);
+  const behindBare = allBare.filter((r) => needsPull(r.behind));
+  const bare = allBare.filter((r) => !needsPull(r.behind));
+  const behindCount = behindPulls.length + behindBare.length;
+  if (!pulls.length && !allBare.length) return null;
+  const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...allBare.map((r) => short(r.repo))])];
   return (
     <div className={`axp-push-banner${ready.length ? ' is-ready' : ''}`} role="status" aria-live="polite">
       <div className="axp-push-banner__row">
         <span className="axp-push-banner__icon" aria-hidden><Icon name="branch" size={18} /></span>
         <button type="button" className="axp-push-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-push-banner__top">
-            <strong>{ready.length ? `${plural(ready.length, 'pull request', 'pull requests')} ready to merge` : plural(pulls.length + bare.length, 'change waiting for main', 'changes waiting for main')}</strong>
+            <strong>{ready.length ? `${plural(ready.length, 'pull request', 'pull requests')} ready to merge` : plural(pulls.length + allBare.length, 'change waiting for main', 'changes waiting for main')}</strong>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', bare.length ? `${plural(bare.length, 'branch', 'branches')} without a PR` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
+          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', behindCount ? `${behindCount} need main pulled in` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
       </div>
       {open && (
         <div className="axp-push-banner__body">
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
+          <Group title="Needs main pulled in" count={behindCount}>
+            {behindPulls.map((p) => <PullItem key={p.key} p={p} />)}
+            {behindBare.map((r) => <BranchItem key={r.key} r={r} />)}
+          </Group>
           <Group title="Pull requests" count={waiting.length}>{waiting.map((p) => <PullItem key={p.key} p={p} />)}</Group>
           <Group title="Branches without a pull request" count={bare.length}>{bare.map((r) => <BranchItem key={r.key} r={r} />)}</Group>
           <div className="axp-push-banner__foot">
