@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-22T14:44:19.791Z",
+  "generatedAt": "2026-10-22T14:45:51.802Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "c322f16314d5a17635edd90c2407cfb288c023a3",
-  "fingerprint": "d35cf29193660299",
+  "commit": "c1a2698bb40e9ada1e49e8518c99e214dec999ef",
+  "fingerprint": "05d5fa3ba2af7cbf",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "5b0a84f7e42a092c",
-      "bytes": 168062
+      "sha": "5bebca0c96e9ab4a",
+      "bytes": 168789
     },
     {
       "path": "project.manifest.json",
@@ -558,7 +558,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "5b0a84f7e42a092c"
+      "sha": "5bebca0c96e9ab4a"
     },
     {
       "path": "context/claude__README.md",
@@ -634,43 +634,43 @@
     },
     {
       "path": "README.md",
-      "sha": "12c8e55ab970f03d"
+      "sha": "b45be1b9fd6bf3da"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "08fc823c0d4f9d30"
+      "sha": "163c28e9f357aa76"
     },
     {
       "path": "PROJECT.md",
-      "sha": "1188fd86f05142d0"
+      "sha": "b2f3973e263127e2"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "f06e7ab9a3dd1798"
+      "sha": "1a394eae67b99ec1"
     },
     {
       "path": "FILES.md",
-      "sha": "9a67b51efef47bab"
+      "sha": "23842ae747561716"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "0a19990c1006b28f"
+      "sha": "ba6d56dc9b67e51d"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "de7a4ce303d4bdb5"
+      "sha": "322e80513e9804ba"
     },
     {
       "path": "SECRETS.md",
-      "sha": "8e6c12e86cbd8cfa"
+      "sha": "9818a9b660ef1d00"
     },
     {
       "path": "SETUP.md",
-      "sha": "38e3e14625ae1752"
+      "sha": "7fd6189ad5d637eb"
     },
     {
       "path": "PROMPT.md",
-      "sha": "adbc1a7245c259e1"
+      "sha": "76bdd5d35b637e23"
     },
     {
       "path": "handoff.json",
