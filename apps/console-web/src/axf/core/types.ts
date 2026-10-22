@@ -18,6 +18,8 @@ export const ASSET_TYPES = [
   'button',
   'slider',
   'container',
+  'gauge',
+  'meter',
   'banner',
   'clock',
   'search-bar',
@@ -37,7 +39,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -313,6 +315,31 @@ export interface SliderData {
   ticks: boolean;
 }
 
+/** Gauge control asset: how every dial looks (engines/components.ts gaugeStyle). */
+export interface GaugeData {
+  shape: 'arc' | 'ring' | 'bar' | 'digital';
+  /** stroke / bar thickness, 4–16 (drawing units of a 120-wide gauge) */
+  thickness: number;
+  needle: boolean;
+  /** tick marks along the scale, 0–10 */
+  ticks: number;
+  cap: 'round' | 'square';
+  readout: 'big' | 'small' | 'none';
+}
+
+/** Progress meter control asset: how every progress bar looks (engines/components.ts meterStyle). */
+export interface MeterData {
+  shape: 'bar' | 'segments' | 'steps' | 'line';
+  /** bar height in px, 2–24 */
+  height: number;
+  radius: 'pill' | 'soft' | 'square';
+  stripes: boolean;
+  animated: boolean;
+  fill: 'solid' | 'gradient' | 'soft';
+  /** segments for shape segments / steps, 4–40 (default 20) */
+  segments?: number;
+}
+
 export interface ContainerData {
   variant: 'card' | 'panel' | 'glass' | 'outline';
   header: 'plain' | 'divided' | 'accent';
@@ -355,6 +382,8 @@ export interface AssetDataMap {
   popup: PopupData;
   button: ButtonData;
   slider: SliderData;
+  gauge: GaugeData;
+  meter: MeterData;
   container: ContainerData;
   banner: BannerData;
   clock: ClockData;

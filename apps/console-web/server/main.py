@@ -1449,6 +1449,7 @@ def _pending_file() -> Path:
 ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],
                              systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
+console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve)
 
 
 async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:

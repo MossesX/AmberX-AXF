@@ -876,3 +876,46 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-terminal__row { display: flex; gap: 8px; white-space: pre-wrap; }
 .fx-terminal__time, .fx-terminal__chan { color: var(--fx-muted); flex: 0 0 auto; }
 .fx-terminal__row.is-ok .fx-terminal__text { color: var(--fx-success); } .fx-terminal__row.is-warn .fx-terminal__text { color: var(--fx-warning); } .fx-terminal__row.is-error .fx-terminal__text { color: var(--fx-danger); } .fx-terminal__row.is-note .fx-terminal__text { color: var(--fx-info); }
+
+/* ---------- gauges + progress meters (gauge / meter control assets; react/components/Meters.tsx) ---------- */
+.fx-gauge { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-md); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); min-width: 0 }
+.fx-gauge svg { width: 100%; max-width: calc(var(--fx-space) * 9); height: auto; overflow: visible }
+.fx-gauge__track, .fx-gauge__value { fill: none; stroke-linecap: var(--fx-gauge-cap) }
+.fx-gauge__track { stroke: var(--fx-border) }
+.fx-gauge__value { stroke: var(--fx-accent); transition: stroke-dasharray 0.2s linear }
+.fx-gauge__ringvalue { transform: rotate(-90deg); transform-origin: 50px 50px }
+.fx-gauge__tick { stroke: var(--fx-muted); stroke-width: 1.5 }
+.fx-gauge__needle { stroke: var(--fx-text); stroke-width: 2.5; stroke-linecap: round; transform-origin: 60px 62px; transition: transform 0.2s linear }
+.fx-gauge__hub { fill: var(--fx-text) }
+.fx-gauge__readout { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: calc(var(--fx-space) * 0.2); text-align: center; font-variant-numeric: tabular-nums }
+.fx-gauge__readout strong { font-size: calc(var(--fx-font-size) * 1.15); font-weight: 800 }
+.fx-gauge__readout.is-small strong { font-size: var(--fx-font-size) }
+.fx-gauge__readout span { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.fx-gauge__readout em { flex-basis: 100%; font-style: normal; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 10.5 / 14); letter-spacing: 0.08em; text-transform: uppercase }
+.fx-gauge__ringwrap { position: relative; width: 100%; max-width: calc(var(--fx-space) * 6.5); display: grid; place-items: center }
+.fx-gauge__ringwrap svg { grid-area: 1 / 1 }
+.fx-gauge__center { grid-area: 1 / 1; font-weight: 800; font-size: calc(var(--fx-font-size) * 1.1); font-variant-numeric: tabular-nums }
+.fx-gauge__bar, .fx-gauge__digital { width: 100%; display: flex; flex-direction: column; align-items: stretch; gap: calc(var(--fx-space) * 0.35); padding-block: calc(var(--fx-space) * 0.4) }
+.fx-gauge__barvalue { text-align: center; font-weight: 800; font-size: calc(var(--fx-font-size) * 1.25); font-variant-numeric: tabular-nums }
+.fx-gauge__bartrack { position: relative; display: block; border-radius: 999px; background: var(--fx-border); overflow: hidden }
+.fx-gauge[data-cap="square"] .fx-gauge__bartrack, .fx-gauge[data-cap="square"] .fx-gauge__barfill { border-radius: 0 }
+.fx-gauge__barfill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--fx-accent); transition: width 0.2s linear }
+.fx-gauge__bartick { position: absolute; top: 0; bottom: 0; width: var(--fx-border-w); background: var(--fx-surface) }
+.fx-gauge__digits { text-align: center; font-family: var(--fx-font-mono); font-weight: 600; font-size: calc(var(--fx-font-size) * 1.9); line-height: 1.1; color: var(--fx-accent); font-variant-numeric: tabular-nums }
+
+.fx-meter { position: relative; display: flex; gap: calc(var(--fx-space) * 0.2); width: 100%; background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); overflow: hidden; box-sizing: border-box }
+.fx-meter--segments, .fx-meter--steps { background: transparent; border: none; overflow: visible }
+.fx-meter--line { border: none; background: var(--fx-border) }
+.fx-meter__fill { display: block; height: 100%; background: var(--fx-accent); transition: width 0.25s linear }
+.fx-meter--fill-gradient .fx-meter__fill, .fx-meter--fill-gradient .fx-meter__cell.is-lit { background: linear-gradient(90deg, var(--fx-accent), var(--fx-info)) }
+.fx-meter--fill-soft .fx-meter__fill, .fx-meter--fill-soft .fx-meter__cell.is-lit { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), var(--fx-surface)) }
+.fx-meter.is-done .fx-meter__fill, .fx-meter.is-done .fx-meter__cell.is-lit { background: var(--fx-success) }
+.fx-meter.has-stripes.is-active .fx-meter__fill { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-muted) * 100%), transparent) 0 calc(var(--fx-space) * 0.6), transparent calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 1.2)); background-size: calc(var(--fx-space) * 1.7) 100% }
+.fx-meter.has-stripes.has-motion.is-active .fx-meter__fill { animation: fx-meter-stripes 0.8s linear infinite }
+.fx-meter__cell { flex: 1; min-width: 0; background: var(--fx-surface3); border: var(--fx-border-w) solid var(--fx-border); transition: background 0.25s }
+.fx-meter--steps .fx-meter__cell { border-width: calc(var(--fx-border-w) * 2) }
+.fx-meter__cell.is-lit { background: var(--fx-accent); border-color: transparent }
+.fx-meter.has-motion .fx-meter__cell.is-next { animation: fx-meter-blink 0.9s ease-in-out infinite }
+@keyframes fx-meter-stripes { to { background-position: calc(var(--fx-space) * 1.7) 0 } }
+@keyframes fx-meter-blink { 50% { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), var(--fx-surface3)) } }
+@media (prefers-reduced-motion: reduce) { .fx-meter .fx-meter__fill, .fx-meter .fx-meter__cell { animation: none !important } }

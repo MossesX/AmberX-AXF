@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/meter.schema.json",
+  "title": "AmberX AXF Progress meter asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "meter"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "shape",
+        "height",
+        "radius",
+        "stripes",
+        "animated",
+        "fill"
+      ],
+      "properties": {
+        "shape": {
+          "enum": [
+            "bar",
+            "segments",
+            "steps",
+            "line"
+          ]
+        },
+        "height": {},
+        "radius": {
+          "enum": [
+            "pill",
+            "soft",
+            "square"
+          ]
+        },
+        "stripes": {},
+        "animated": {},
+        "fill": {
+          "enum": [
+            "solid",
+            "gradient",
+            "soft"
+          ]
+        }
+      }
+    }
+  }
+}

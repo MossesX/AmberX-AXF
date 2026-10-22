@@ -1,0 +1,153 @@
+/* Claude handoff: page, banner. Layout only (controls are framework components); theme tokens only. */
+.axp-claude-handoff__lead { margin: 0; color: var(--fx-muted) }
+.axp-claude-handoff__row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__meta { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-claude-handoff__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35) }
+.axp-claude-handoff__list code { overflow-wrap: anywhere }
+.axp-claude-handoff__machine { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__item { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75) }
+.axp-claude-handoff__item > summary { cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__item[open] > summary { margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 16), 1fr)); gap: calc(var(--fx-space) * 0.5); margin-bottom: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff__doc { max-height: min(70vh, calc(var(--fx-row-h) * 24)); overflow: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); padding: var(--fx-space) }
+
+.axp-claude-handoff-banner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-claude-handoff-banner__icon { display: inline-flex; color: var(--fx-warning); flex: none }
+.axp-claude-handoff-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
+.axp-claude-handoff-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-claude-handoff-banner__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+.axp-claude-handoff-banner__acts { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
+
+/* installer window: layout only; gauges and meters are the framework's (Gauge / Meter) */
+.axp-claude-handoff__previewbox { max-width: calc(var(--fx-space) * 72) }
+.axp-claude-handoff-inst { display: flex; flex-direction: column; gap: var(--fx-space); width: min(100%, calc(var(--fx-space) * 70)); min-width: 0 }
+.axp-claude-handoff-inst__loading { display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 2); color: var(--fx-muted) }
+.axp-claude-handoff-inst__head { display: flex; align-items: center; gap: var(--fx-space); min-width: 0 }
+.axp-claude-handoff-inst__logo { display: inline-flex; align-items: center; justify-content: center; flex: none; width: calc(var(--fx-space) * 3.2); height: calc(var(--fx-space) * 3.2); border-radius: 999px; color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-claude-handoff-inst__logo.is-busy { animation: axp-claude-handoff-pulse 1.6s ease-in-out infinite }
+.is-done .axp-claude-handoff-inst__logo { color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-claude-handoff-inst__title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2) }
+.axp-claude-handoff-inst__now { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-inst__pct { flex: none; font-size: calc(var(--fx-font-size) * 2.2); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--fx-accent); line-height: 1 }
+.axp-claude-handoff-inst__pct small { font-size: calc(var(--fx-font-size) * 0.9); color: var(--fx-muted) }
+.is-done .axp-claude-handoff-inst__pct { color: var(--fx-success) }
+.axp-claude-handoff-inst__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums }
+
+.axp-claude-handoff-inst__gauges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-inst__gauges.is-focus .fx-gauge svg { max-width: calc(var(--fx-space) * 6) }
+@media (max-width: 520px) { .axp-claude-handoff-inst__gauges { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+
+.axp-claude-handoff-inst__body { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--fx-space); min-height: 0 }
+.is-groups-right .axp-claude-handoff-inst__body > .axp-claude-handoff-inst__cats { order: 2 }
+@media (max-width: 620px) { .axp-claude-handoff-inst__body { grid-template-columns: minmax(0, 1fr) } .is-groups-right .axp-claude-handoff-inst__body > .axp-claude-handoff-inst__cats { order: 0 } }
+.axp-claude-handoff-inst__cats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); max-height: calc(var(--fx-row-h) * 12); overflow: auto }
+.axp-claude-handoff-inst__cat { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: calc(var(--fx-space) * 0.2) calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.35) calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; transition: background 0.3s, border-color 0.3s }
+.axp-claude-handoff-inst__cat.is-working { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-claude-handoff-inst__cat.is-queued { color: var(--fx-muted) }
+.axp-claude-handoff-inst__caticon { display: inline-flex; align-items: center; justify-content: center; width: calc(var(--fx-space) * 1.5); height: calc(var(--fx-space) * 1.5); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted) }
+.axp-claude-handoff-inst__cat.is-working .axp-claude-handoff-inst__caticon { color: var(--fx-accent); animation: axp-claude-handoff-pulse 1.2s ease-in-out infinite }
+.axp-claude-handoff-inst__cat.is-done .axp-claude-handoff-inst__caticon { color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-claude-handoff-inst__catname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-inst__catcount { font-variant-numeric: tabular-nums; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-claude-handoff-inst__catmeter { grid-column: 1 / -1 }
+
+.axp-claude-handoff-inst__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 11), 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-inst__card { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); transition: border-color 0.3s }
+.axp-claude-handoff-inst__card.is-working { border-color: var(--fx-accent) }
+.axp-claude-handoff-inst__card.is-queued { color: var(--fx-muted) }
+.axp-claude-handoff-inst__cardhead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-claude-handoff-inst__cardhead > span:nth-child(2) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-inst__chips { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) }
+
+.axp-claude-handoff-inst__focus { display: flex; flex-direction: column; align-items: center; text-align: center; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 1.5) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-claude-handoff-inst__focus > .fx-meter { max-width: calc(var(--fx-space) * 30) }
+.axp-claude-handoff-inst__focuslabel { color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-claude-handoff-inst__focusstep { font-size: calc(var(--fx-font-size) * 1.8); line-height: 1.15; overflow-wrap: anywhere }
+.axp-claude-handoff-inst__focusdetail { color: var(--fx-muted); font-variant-numeric: tabular-nums }
+
+.axp-claude-handoff-inst__now-panel { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); min-width: 0; padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-claude-handoff-inst__nowhead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-inst__nowhead strong { flex: 1 }
+.axp-claude-handoff-inst__features { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) calc(var(--fx-space) * 0.75); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-claude-handoff-inst__features li { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); transition: color 0.3s }
+.axp-claude-handoff-inst__features li.is-done { color: var(--fx-success) }
+.axp-claude-handoff-inst__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); max-height: calc(var(--fx-row-h) * 9); overflow: auto }
+.axp-claude-handoff-inst__step { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.3) calc(var(--fx-space) * 0.4); border-radius: var(--fx-radius-sm); transition: background 0.3s, color 0.3s }
+.axp-claude-handoff-inst__step.is-current { background: var(--fx-accent-soft) }
+.axp-claude-handoff-inst__step.is-todo { color: var(--fx-muted) }
+.axp-claude-handoff-inst__tick { display: inline-flex; align-items: center; justify-content: center; flex: none; width: calc(var(--fx-space) * 1.2); height: calc(var(--fx-space) * 1.2); margin-top: calc(var(--fx-space) * 0.1); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-accent) }
+.axp-claude-handoff-inst__step.is-done .axp-claude-handoff-inst__tick { border-color: var(--fx-success); color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-claude-handoff-inst__step.is-skip .axp-claude-handoff-inst__tick { border-color: var(--fx-border); color: var(--fx-muted); background: transparent }
+.axp-claude-handoff-inst__steptext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15) }
+.axp-claude-handoff-inst__steplabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: line-through transparent; transition: text-decoration-color 0.4s, color 0.4s }
+.axp-claude-handoff-inst__step.is-done .axp-claude-handoff-inst__steplabel { text-decoration-color: var(--fx-muted); color: var(--fx-muted) }
+.axp-claude-handoff-inst__stepdetail { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-inst__size { flex: none; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums }
+.axp-claude-handoff-inst__spin { display: inline-flex; animation: axp-claude-handoff-spin 0.9s linear infinite }
+
+.axp-claude-handoff-inst__log { margin: 0; padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 11 / 14); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-claude-handoff-inst__foot { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: calc(var(--fx-space) * 0.5) }
+
+/* installer look dialog: tree on the left (collapsible), switches + preview on the right; follows the dialog's width */
+.axp-claude-handoff-lookwrap { container-type: inline-size; width: min(100%, calc(var(--fx-space) * 90)); min-width: 0 }
+.axp-claude-handoff-look { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-space); min-width: 0 }
+@container (min-width: 640px) { .axp-claude-handoff-look.is-tree-open { grid-template-columns: minmax(calc(var(--fx-space) * 16), 2fr) minmax(0, 3fr) } }
+.axp-claude-handoff-look__tree { display: none; flex-direction: column; gap: calc(var(--fx-space) * 0.4); min-width: 0; max-height: min(60vh, calc(var(--fx-row-h) * 26)); overflow: auto; padding: calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2) }
+.is-tree-open .axp-claude-handoff-look__tree { display: flex }
+.axp-claude-handoff-look__treehead { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); position: sticky; top: calc(var(--fx-space) * -0.6); background: var(--fx-surface2); padding-block: calc(var(--fx-space) * 0.2); z-index: 1 }
+.axp-claude-handoff-look__hint { flex: 1; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-claude-handoff-look__nodes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.1) }
+.axp-claude-handoff-look__nodes .axp-claude-handoff-look__nodes { padding-left: calc(var(--fx-space) * 0.9); border-left: var(--fx-border-w) solid var(--fx-border); margin-left: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-look__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-height: var(--fx-row-h); min-width: 0 }
+.axp-claude-handoff-look__toggle { flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.3) }
+.axp-claude-handoff-look__chev { display: inline-flex; color: var(--fx-muted) }
+.axp-claude-handoff-look__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.is-branch > .axp-claude-handoff-look__row .axp-claude-handoff-look__label { font-weight: 700 }
+.axp-claude-handoff-look__count { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums }
+.axp-claude-handoff-look__row .fx-field { margin: 0; width: calc(var(--fx-space) * 9); flex: none }
+.axp-claude-handoff-look__row .fx-field :is(select, input), .axp-claude-handoff-look__toggles .fx-field :is(select, input) { width: 100% }
+.axp-claude-handoff-look__color { flex: none; width: calc(var(--fx-space) * 2.4); height: calc(var(--fx-space) * 1.7); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: transparent; cursor: pointer }
+.axp-claude-handoff-look__value { flex: none; max-width: calc(var(--fx-space) * 8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 11 / 14) }
+.axp-claude-handoff-look__main { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
+.axp-claude-handoff-look__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-look__picks { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-look__pick { display: grid; grid-template-columns: calc(var(--fx-space) * 9) minmax(0, 1fr); align-items: center; gap: calc(var(--fx-space) * 0.5) }
+@container (max-width: 560px) { .axp-claude-handoff-look__pick { grid-template-columns: minmax(0, 1fr); gap: calc(var(--fx-space) * 0.25) } }
+.axp-claude-handoff-look__picklabel { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); text-transform: uppercase; letter-spacing: 0.06em }
+.axp-claude-handoff-look__pick .fx-seg { flex-wrap: wrap; max-width: 100% }
+.axp-claude-handoff-look__schemes { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3) }
+.axp-claude-handoff-look__chiprow { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.3) }
+.axp-claude-handoff-look__chiprow em { flex: none; font-style: normal; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 11 / 14); min-width: calc(var(--fx-space) * 3.5) }
+.axp-claude-handoff-look__rolled { color: var(--fx-accent); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-claude-handoff-look__toggles { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) var(--fx-space) }
+.axp-claude-handoff-look__toggles .fx-field { margin: 0; width: calc(var(--fx-space) * 11); flex: none }
+.axp-claude-handoff-look__preview { padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) dashed var(--fx-border); background: var(--fx-bg); overflow: hidden; pointer-events: none }
+.axp-claude-handoff-look__where { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+
+/* files dialog + file window tabs */
+.axp-claude-handoff-files { display: flex; flex-direction: column; gap: var(--fx-space); width: min(100%, calc(var(--fx-space) * 60)); min-width: 0 }
+.axp-claude-handoff-files__bar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-files__bar .fx-field { flex: 1; margin: 0 }
+.axp-claude-handoff-files__section { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35) }
+.axp-claude-handoff-files__head { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-files__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2) }
+.axp-claude-handoff-files__row { width: 100%; display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.45) calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); text-align: left; cursor: pointer }
+.axp-claude-handoff-files__row:hover { background: var(--fx-surface2) }
+.axp-claude-handoff-files__row.is-open { border-color: var(--fx-accent) }
+.axp-claude-handoff-files__row.is-missing { color: var(--fx-muted) }
+.axp-claude-handoff-files__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.1) }
+.axp-claude-handoff-files__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-claude-handoff-files__path { font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted); overflow-wrap: anywhere }
+.axp-claude-handoff-files__by { font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted) }
+.axp-claude-handoff-files__side { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: calc(var(--fx-space) * 0.2) }
+.axp-claude-handoff-filetab { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75); min-width: 0; height: 100%; overflow: auto; box-sizing: border-box }
+.axp-claude-handoff-filetab__bar { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-claude-handoff-filetab__bar > .axp-claude-handoff-files__path { flex: 1; min-width: 0 }
+.axp-claude-handoff-filetab__pre { margin: 0; padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 12 / 14); line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-claude-handoff-filetab__doc { min-width: 0 }
+
+@keyframes axp-claude-handoff-spin { to { transform: rotate(360deg) } }
+@keyframes axp-claude-handoff-pulse { 50% { transform: scale(1.08) } }
+@media (prefers-reduced-motion: reduce) {
+  .axp-claude-handoff-inst__logo.is-busy, .axp-claude-handoff-inst__cat.is-working .axp-claude-handoff-inst__caticon, .axp-claude-handoff-inst__spin { animation: none }
+}

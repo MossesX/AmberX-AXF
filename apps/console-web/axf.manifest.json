@@ -27,6 +27,8 @@
     "button": "pill-gradient",
     "slider": "precision-bar",
     "container": "frosted-glass",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",

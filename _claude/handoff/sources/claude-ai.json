@@ -1,0 +1,72 @@
+{
+  "$axf": "claude-handoff-claude-ai@1",
+  "items": [
+    {
+      "id": "project",
+      "kind": "project",
+      "name": "AmberX AXF",
+      "url": "",
+      "notes": "The claude.ai Project for this repo.",
+      "recreate": "Create a Project with the same name and description; instructions = INSTRUCTIONS.md, knowledge = every file in context/."
+    },
+    {
+      "id": "pending-builds",
+      "kind": "artifact",
+      "name": "AXF Pending Builds",
+      "url": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+      "notes": "Artifact page with db collection `builds`; mirrors framework/plan/pending.json field for field.",
+      "recreate": "Ask Claude to publish a Pending Builds page from framework/plan/pending.json (fields: id, title, detail, model, status, notes, subPrompts, estimate, dates in epoch ms), then put its new link in project.manifest.json → links.pendingBuilds."
+    },
+    {
+      "id": "kernel-checklist",
+      "kind": "artifact",
+      "name": "Kernel checklist",
+      "url": "https://claude.ai/artifact/DvUPLjKSM3tEVTsL8pPtE2",
+      "notes": "Checklist artifact for the kernel build.",
+      "recreate": "Rebuild from framework/plan/build-queue.json and framework/catalog/status.json; update links.kernelChecklist."
+    },
+    {
+      "id": "axhub",
+      "kind": "connector",
+      "name": "axHub",
+      "url": "https://axhub.amberxai.com/mcp",
+      "notes": "Connector hub (list_services, describe_service, call, axhub.memory_*). Approvals at https://axhub.amberxai.com/auth/admin/approvals.",
+      "recreate": "Settings → Connectors → Add custom connector → the URL; sign in with the hub (token AXHUB_MCP_TOKEN, never pasted in chat)."
+    },
+    {
+      "id": "axf-console",
+      "kind": "connector",
+      "name": "AXF Dev Console MCP",
+      "url": "https://console.amberxai.com/mcp",
+      "notes": "26 tools (pending_list, build_next, …); bearer = AXF_TOKEN.",
+      "recreate": "Add as a custom connector, or reach it through axHub (it is axHub's first downstream service)."
+    },
+    {
+      "id": "github",
+      "kind": "connector",
+      "name": "GitHub (account MossesX)",
+      "url": "https://github.com/apps/claude",
+      "notes": "Repos MossesX/AmberX-AXF, axHub, Build-Pilot, xGallery.",
+      "recreate": "Connect GitHub as MossesX and give the Claude GitHub app access to the repos."
+    },
+    {
+      "id": "hostinger",
+      "kind": "connector",
+      "name": "Hostinger",
+      "url": "",
+      "notes": "DNS for amberxai.com (rule: DNS is done by the session, logged in /projects/_shared/_data/dns/log.md).",
+      "recreate": "Add the Hostinger connector; token from hPanel → Account → API."
+    },
+    {
+      "id": "memory",
+      "kind": "memory",
+      "name": "claude.ai memory",
+      "url": "",
+      "notes": "Paste the account's memory (Settings → Capabilities → Memory) in the console so it travels with the kit.",
+      "recreate": "Import with the memory import (claude.ai → Settings → Memory) from user/claude-ai/memory.md."
+    }
+  ],
+  "memory": "",
+  "projectInstructions": "",
+  "updatedAt": ""
+}
