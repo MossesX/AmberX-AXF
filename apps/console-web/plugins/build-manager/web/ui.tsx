@@ -1,7 +1,7 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
-import { filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
+import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
@@ -408,7 +408,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
         </span>
         <span className="axp-build-manager__chips">
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
-          {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically (${row.addedBy || 'no source recorded'})`}>auto</Badge>}
+          {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
           <ModelChip model={row.model} />
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
@@ -489,6 +489,7 @@ export function BuildManagerView() {
   const [status, setStatus] = useState('');
   const [split, setSplit] = useState(false);
   const [origins, setOrigins] = useState<Origin[]>([...ORIGINS]);
+  const [addedBy, setAddedBy] = useState('');
   const [sort, setSort] = useState<SortKey>(() => defaultSort());
   const [open, setOpen] = useState<Set<string>>(() => { const f = takeFocus(); return new Set(f ? [f] : []); });
   useEffect(() => { void loadList(); }, []);
@@ -497,7 +498,7 @@ export function BuildManagerView() {
   useEffect(() => { const f = [...open][0]; if (f) setTimeout(() => document.getElementById(`axp-bm-${f.replace(/[^a-z0-9-]/gi, '-')}`)?.scrollIntoView({ block: 'center' }), 50); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const allowed = enabledSources();
   const base = useMemo(() => s.rows.filter((r) => allowed.includes(r.source)), [s.rows, allowed.join()]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, origins, status, split, sort, query]);
+  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, addedBy, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, origins, addedBy, status, split, sort, query]);
   // a search that hits only other tabs says so
   const hits = useMemo(() => query ? {
     remaining: base.filter((r) => matches(query, r)).length,
@@ -505,6 +506,7 @@ export function BuildManagerView() {
     built: builtRows(s.changes).filter((r) => matches(query, r)).length,
   } : null, [query, base, sessions, activity, s.changes]);
   const statuses = useMemo(() => statusesOf(base), [base]);
+  const adders = useMemo(() => addedByOf(base), [base]);
   const t = totalsByModel(base);
   const gone = useMemo(() => goneRows(base), [base]);
   const [cleaning, setCleaning] = useState(false);
@@ -550,6 +552,9 @@ export function BuildManagerView() {
       <div className="axp-build-manager__filters" role="group" aria-label="Filter and sort">
         <label className="axp-build-manager__field"><span>Model</span>
           <select className="fx-input" value={model} onChange={(e) => setModel(e.target.value)}><option value="">All</option>{MODELS.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+        </label>
+        <label className="axp-build-manager__field" title="Who or what added the item"><span>Added by</span>
+          <select className="fx-input" value={addedBy} onChange={(e) => setAddedBy(e.target.value)}><option value="">Anyone</option>{adders.map((x) => <option key={x.value} value={x.value}>{x.label} ({x.count})</option>)}</select>
         </label>
         <label className="axp-build-manager__field"><span>Status</span>
           <select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value)}><option value="">All</option>{statuses.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select>

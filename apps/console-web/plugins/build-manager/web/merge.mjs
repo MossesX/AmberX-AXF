@@ -30,6 +30,25 @@ export const ORIGINS = ['prompt', 'auto'];
 export const ORIGIN_LABEL = { prompt: 'From a prompt', auto: 'Added automatically' };
 export const PROMPT_SOURCES = ['chat', 'claude-code', 'console', 'artifact'];
 export const originOf = (source, addedBy) => (source === 'pending' && PROMPT_SOURCES.includes(str(addedBy).toLowerCase()) ? 'prompt' : 'auto');
+/**
+ * Who or what added a build (Brett, Oct 22 2026: "a filter for who or what added or initialized the item"):
+ * a pending item's `source` (lowercased; none = `unrecorded`), `build-queue` for queue steps, `plan-feature` for
+ * plan features. An open set: a source not in the label table still filters, labelled from its key.
+ */
+export const ADDED_BY_LABEL = {
+  chat: 'Chat session', 'claude-code': 'Claude Code', console: 'Console form', artifact: 'claude.ai page',
+  'fable-rebuilds': 'Fable rebuilds', 'feature-assist': 'Feature assistant', plan: 'Plan sync',
+  'build-queue': 'Build queue', 'plan-feature': 'Plan feature', unrecorded: 'Not recorded',
+};
+export const addedByKey = (source) => str(source).trim().toLowerCase() || 'unrecorded';
+export const addedByLabel = (key) => ADDED_BY_LABEL[key] ?? (str(key).replace(/[-_]+/g, ' ').replace(/^./, (c) => c.toUpperCase()) || 'Not recorded');
+/** The "Added by" choices present in these rows, most first: { value, label, count }. */
+export function addedByOf(rows) {
+  const n = new Map();
+  for (const r of rows) n.set(r.addedBy, (n.get(r.addedBy) ?? 0) + 1);
+  return [...n.entries()].map(([value, count]) => ({ value, label: addedByLabel(value), count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
 export const MODELS = ['Fable', 'Opus', 'Sonnet'];
 export const SORTS = ['order', 'left', 'model'];
 export const SORT_LABEL = { order: 'Build order', left: 'Time left', model: 'Model' };
@@ -146,7 +165,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const model = modelName(p.model);
     rows.push({
       key: `pending:${p.id}`, id: str(p.id), source: 'pending', title: str(p.title) || p.id, detail: str(p.detail), model,
-      origin: originOf('pending', p.source), addedBy: str(p.source),
+      origin: originOf('pending', p.source), addedBy: addedByKey(p.source),
       status: p.status, statusLabel: PENDING_LABEL[p.status] ?? p.status, order: i, steps, ...t,
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
@@ -164,7 +183,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const epic = byFeature.get(s.id);
     const building = epic?.status === 'in-progress';
     rows.push({
-      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model), origin: 'auto', addedBy: 'build queue',
+      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model), origin: 'auto', addedBy: 'build-queue',
       status: s.state, statusLabel: s.state === 'active' && epic?.status === 'partial' ? 'Partial' : QUEUE_LABEL[s.state] ?? s.state,
       order: 1000 + s.position, queuePosition: s.position, steps, ...t, effort: str(s.effort),
       features: (s.features ?? []).map((f) => ({ id: f.id, title: f.title, status: f.status })),
@@ -185,7 +204,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const t = timing(f.estimate, steps, h);
     const building = f.status === 'in-progress';
     rows.push({
-      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model), origin: 'auto', addedBy: 'plan',
+      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model), origin: 'auto', addedBy: 'plan-feature',
       status: f.status, statusLabel: PLAN_LABEL[f.status] ?? f.status,
       order: 100000 + (Number(f.wave) || 9) * 1000 + (PRIORITY[f.priority] ?? 3) * 100 + i / 1000, steps, ...t,
       building, startedAt: building ? startedAt(f) : 0, fable: false, aliases: [f.id],
@@ -209,10 +228,10 @@ export function totalsByModel(rows) {
   return { ...out, all };
 }
 
-/** Filters: model ('' = any), sources (list), origins (list: who added it), status ('' = any), split (only "needs split"). */
-export function filterRows(rows, { model = '', sources = SOURCES, origins = ORIGINS, status = '', split = false } = {}) {
+/** Filters: model ('' = any), sources (list), origins (list: prompt/auto), addedBy ('' = any: who or what added it), status ('' = any), split (only "needs split"). */
+export function filterRows(rows, { model = '', sources = SOURCES, origins = ORIGINS, addedBy = '', status = '', split = false } = {}) {
   return rows.filter((r) => (!model || r.model === model) && sources.includes(r.source) && origins.includes(r.origin ?? 'auto')
-    && (!status || r.status === status) && (!split || r.needsSplit));
+    && (!addedBy || r.addedBy === addedBy) && (!status || r.status === status) && (!split || r.needsSplit));
 }
 
 export function sortRows(rows, key = 'order') {
