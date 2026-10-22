@@ -3,7 +3,7 @@ import { Button, Chip, LibraryParamField, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import * as api from '../api';
 import type { EngineResult, InstallableLibrary } from '../api';
-import { LIBRARIES, UI_LIBRARIES } from './Libraries';
+import { UI_LIBRARIES } from './Libraries';
 
 const now = () => new Date().toISOString();
 const Code = ({ children }: { children: string }) => <pre className="fx-code" style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{children}</pre>;
@@ -46,7 +46,7 @@ export function LibraryPickerDialog({ libraryId, close }: { libraryId: string; c
   const s = useStore();
   const rt = useRuntime();
   const term = useTerminal('build');
-  const lib = LIBRARIES.find((l) => l.id === libraryId);
+  const lib = s.libraryCards.find((l) => l.id === libraryId);
   const [include, setInclude] = useState<Set<string>>(() => new Set(lib?.features.filter((f) => s.isChecked(f) || s.status(f) !== 'built')));
   const [template, setTemplate] = useState(DEMO_TEMPLATES[0]!);
   const [name, setName] = useState(`AXF Demo — ${lib?.label ?? ''}`);

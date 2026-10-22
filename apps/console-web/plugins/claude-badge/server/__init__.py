@@ -18,6 +18,8 @@ from fastapi import APIRouter
 
 import console_context as cx
 import plugin_services
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 router = APIRouter()
 _lock = threading.Lock()
@@ -44,12 +46,7 @@ def pretty_model(model: str) -> str:
 def _save(res: dict[str, Any]) -> None:
     p = data_dir() / "status.json"
     with _lock:
-        p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        tmp = p.with_suffix(".tmp")
-        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(res, f)
-        os.replace(tmp, p)
+        storage.write_json(p, res, indent=None)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def run_test() -> dict[str, Any]:

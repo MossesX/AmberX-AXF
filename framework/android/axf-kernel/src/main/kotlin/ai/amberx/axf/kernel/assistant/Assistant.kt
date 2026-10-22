@@ -13,6 +13,7 @@ import ai.amberx.axf.kernel.live.LiveReplay
 import ai.amberx.axf.kernel.live.LiveSessionInfo
 import ai.amberx.axf.kernel.result.AxfResult
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
@@ -150,7 +151,137 @@ public data class Message(
     }
 }
 
-public data class ChatContext(val view: String? = null, val title: String? = null, val selection: String? = null, val note: String? = null)
+/**
+ * What the app attaches to a turn: the view it was sent from, its title, selected text, a note — plus [extra], an open
+ * bag for host-specific context (Build Pilot's `projectId`, …). Well-known keys live in [ChatContextKeys]; any other
+ * key passes through untouched. [ChatContextRules.normalize] is the rule every port applies before storing or using a
+ * context (sizes capped, bad shapes dropped) — fixture `chatContext` in spec/fixtures/assistant.json.
+ */
+public data class ChatContext(
+    val view: String? = null,
+    val title: String? = null,
+    val selection: String? = null,
+    val note: String? = null,
+    val extra: JsonObject? = null,
+) {
+    /** A well-known `extra` value as a string (empty when absent or not a string); how a host reads `projectId`. */
+    public fun extraString(key: String): String {
+        val v = extra?.get(key) as? JsonPrimitive ?: return ""
+        return if (v.isString) v.content else ""
+    }
+
+    public fun toJson(): JsonObject {
+        val m = LinkedHashMap<String, JsonElement>()
+        if (view != null) m["view"] = JsonPrimitive(view)
+        if (title != null) m["title"] = JsonPrimitive(title)
+        if (selection != null) m["selection"] = JsonPrimitive(selection)
+        if (note != null) m["note"] = JsonPrimitive(note)
+        if (extra != null) m["extra"] = extra
+        return JsonObject(m)
+    }
+
+    public companion object {
+        /** Parses then normalises (never trusts the wire). */
+        public fun fromJson(o: JsonElement?): ChatContext? = ChatContextRules.normalize(o)
+    }
+}
+
+/** Well-known `ChatContext.extra` keys (documented in spec/ASSISTANT.md); hosts may add their own. */
+public object ChatContextKeys {
+    /** id of the project the chat is about (Build Pilot); 1–64 chars */
+    public const val PROJECT_ID: String = "projectId"
+    /** id of the app (`axf.manifest.json` name or project manifest name) the chat is about */
+    public const val APP_ID: String = "appId"
+    /** path of the file the user is looking at, relative to the app */
+    public const val PATH: String = "path"
+    /** route/page id when `view` is not enough */
+    public const val ROUTE: String = "route"
+    public val ALL: List<String> = listOf(PROJECT_ID, APP_ID, PATH, ROUTE)
+}
+
+/** Size limits for a context (the same on every port, so a context can't be abused as a payload channel). */
+public object ChatContextRules {
+    public const val VIEW: Int = 200
+    public const val TITLE: Int = 300
+    public const val SELECTION: Int = 4000
+    public const val NOTE: Int = 2000
+    /** at most this many keys in `extra` (and items in an array inside it) */
+    public const val EXTRA_KEYS: Int = 32
+    /** a string value in `extra` is cut to this length */
+    public const val EXTRA_STRING: Int = 2000
+    /** `extra` serialised as compact JSON may not exceed this many characters */
+    public const val EXTRA_JSON: Int = 16_000
+    /** nesting depth allowed inside an `extra` value (objects/arrays) */
+    public const val EXTRA_DEPTH: Int = 4
+    private val EXTRA_KEY: Regex = Regex("^[A-Za-z0-9_.-]{1,64}$")
+
+    /** A string-typed field of the raw context, or null when absent, empty or not a string. */
+    private fun field(o: JsonObject, key: String, max: Int): String? {
+        val p = o[key] as? JsonPrimitive ?: return null
+        if (!p.isString || p.content.isEmpty()) return null
+        return p.content.take(max)
+    }
+
+    /** Bounded copy of a value inside `extra`; null = dropped (too deep, not a finite number, not JSON-shaped). */
+    private fun boundedPrimitive(v: JsonPrimitive): JsonElement? {
+        if (v is JsonNull) return v
+        if (v.isString) return JsonPrimitive(v.content.take(EXTRA_STRING))
+        if (v.booleanOrNull != null) return v
+        val d = v.doubleOrNull ?: return null
+        return if (d.isFinite()) v else null
+    }
+
+    private fun boundedArray(v: JsonArray, depth: Int): JsonElement? {
+        if (depth >= EXTRA_DEPTH) return null
+        val out = ArrayList<JsonElement>()
+        for (x in v.take(EXTRA_KEYS)) {
+            val b = bounded(x, depth + 1)
+            if (b != null) out.add(b)
+        }
+        return JsonArray(out)
+    }
+
+    private fun boundedObject(v: JsonObject, depth: Int): JsonObject? {
+        if (depth >= EXTRA_DEPTH) return null
+        val out = LinkedHashMap<String, JsonElement>()
+        for ((k, x) in v.entries) {
+            if (!EXTRA_KEY.matches(k)) continue
+            val b = bounded(x, depth + 1) ?: continue
+            out[k] = b
+            if (out.size >= EXTRA_KEYS) break
+        }
+        return JsonObject(out)
+    }
+
+    private fun bounded(v: JsonElement, depth: Int): JsonElement? = when (v) {
+        is JsonPrimitive -> boundedPrimitive(v)
+        is JsonArray -> boundedArray(v, depth)
+        is JsonObject -> boundedObject(v, depth)
+    }
+
+    /**
+     * The context a host stores and uses: known fields cut to their limits, `extra` kept as an open bag with every key
+     * it came with (unknown keys preserved, in order) but bounded: key pattern, ≤ 32 keys, strings ≤ 2000, depth ≤ 4,
+     * ≤ 16 000 JSON characters in all (an oversized `extra` is dropped whole, never truncated into a different meaning).
+     * Null for anything that isn't an object or has nothing left. Same answers as `normalizeChatContext` (web) and
+     * `normalize_chat_context` (Python).
+     */
+    public fun normalize(raw: JsonElement?): ChatContext? {
+        val o = raw as? JsonObject ?: return null
+        val view = field(o, "view", VIEW)
+        val title = field(o, "title", TITLE)
+        val selection = field(o, "selection", SELECTION)
+        val note = field(o, "note", NOTE)
+        var extra: JsonObject? = null
+        val rawExtra = o["extra"] as? JsonObject
+        if (rawExtra != null) {
+            val b = boundedObject(rawExtra, 0)
+            if (b != null && b.isNotEmpty() && CompactJson.encodeToString(JsonObject.serializer(), b).length <= EXTRA_JSON) extra = b
+        }
+        if (view == null && title == null && selection == null && note == null && extra == null) return null
+        return ChatContext(view, title, selection, note, extra)
+    }
+}
 
 public data class ConversationSettings(
     val profileId: String? = null,

@@ -13,11 +13,14 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { spacingOf, type Spacing } from './engines/spacing';
+import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage } from './engines/embed';
+import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
+import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -29,6 +32,7 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type MenuItem,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -52,6 +56,12 @@ export interface AxfRuntimeOptions {
   assets: unknown[];
   /** localStorage key for persisting the user's hot-swap choices */
   storageKey?: string;
+  /**
+   * The embed this app runs in (embed@1, engines/embed.ts): a host app that shows some of its chrome (the banner by
+   * default). Omitted = detected from the page (`?axf-embed=` query, `AXF-Embed/` user agent) where there is one;
+   * `null` = standalone whatever the page says.
+   */
+  embed?: Embed | null;
 }
 
 /** Settings keys for roll overrides (values: true | false; absent = built-in default). */
@@ -98,6 +108,20 @@ export interface ContextContribution {
 }
 
 /**
+ * A live list for the application menu (`rt.registerAppMenuProvider`): called when its submenu opens, it returns
+ * the items to show (sync or async; the web renderer shows a loading row meanwhile). `max` caps the list before a
+ * More… entry that runs `moreAction`. (Android twin deferred: port on hold, Oct 21 2026.)
+ */
+export interface AppMenuProvider {
+  items: () => MenuItem[] | Promise<MenuItem[]>;
+  max?: number;
+  moreAction?: string;
+  moreLabel?: string;
+  /** the module that registered it (`removeAppMenuItems(module)` also drops its providers) */
+  module?: string;
+}
+
+/**
  * A library installed with `installLibraries` (web) — what the settings library's Plugins tab and the plugin
  * inventory engine (`engines/plugins.ts`) read. Everything a library declared, so the inventory can resolve
  * `dependsOn` → `plugin:<id>` and `provides` → `service:<capability>` the same way on every port.
@@ -114,7 +138,7 @@ export interface InstalledLibrary {
   /** Contribution ids (`view:x`, `dialog:x`, `settings-tab:x`), so two libraries contributing one id are reported. */
   contributes?: string[];
   /** The library's nav items / views / dialogs / settings tabs, for "Open" and "Settings" in the Plugin Manager. */
-  ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number };
+  ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number; /** app-menu items it contributes (engines/appmenu.ts) */ appMenuItems?: number };
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */
@@ -123,6 +147,28 @@ export interface NavExtraSection {
   id: string;
   label?: string;
   items: import('./types').NavItem[];
+}
+
+/**
+ * Where a developer app's appearance selection lives: the axHub data server (`shared/settings/appearance.json`,
+ * engines/appearance.ts). Off by default: an ordinary AXF app never attaches one. With one attached the runtime
+ * applies the document through its normal swap / settings paths, pushes every local change back (per key, last
+ * write wins), follows pushed changes live, and reports the source's state so the app can show its waiting screen
+ * while the hub is unreachable (a developer app doesn't run without the hub: no local fallback, no default theme).
+ * Web: `HubAppearanceSource` (react/hubAppearance.ts); Android: `HubAppearanceSource` in lib-hub.
+ */
+export interface AppearanceSource {
+  /** Current connection state (the runtime mirrors it into `state.appearance`). */
+  state(): AppearanceSourceState;
+  /** Called with the document (null = none saved yet) whenever it loads or changes, and with the state on every change. */
+  subscribe(listener: (ev: { doc: AppearanceDocument | null; version: string | null } | { state: AppearanceSourceState }) => void): () => void;
+  /** Start loading / watching. */
+  start(): void;
+  stop(): void;
+  /** Re-read now (the UI-editor rule: fresh on focus). */
+  refresh(): void;
+  /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
+  save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
 }
 
 export class AxfRuntime {
@@ -145,11 +191,15 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
+  readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
   private readonly badgeCounts = new Map<string, number>();
   readonly manifest: AxfManifest;
+  /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
+  readonly embedded: Embed | null;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -158,6 +208,8 @@ export class AxfRuntime {
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
+    if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -196,8 +248,113 @@ export class AxfRuntime {
       context: null,
       rev: 0,
       swaps: 0,
+      appearance: null,
     };
     this.registerBuiltinActions();
+    this.registerBuiltinAppMenuProviders();
+  }
+
+  /* ---------------- appearance source (engines/appearance.ts): settings from the axHub data server ---------------- */
+
+  private appearanceSource: AppearanceSource | null = null;
+  private appearanceOff: (() => void) | null = null;
+  /** true while the runtime applies a pushed document, so the change isn't echoed back to the source */
+  private applyingAppearance = false;
+  private lastAppearance: AppearanceDocument | null = null;
+
+  /**
+   * Make this a developer app: its appearance comes from the source (and goes back to it). Until the source is
+   * `ready` the app's UI shows the waiting screen (`state.appearance`). Only one source at a time.
+   */
+  attachAppearanceSource(source: AppearanceSource): void {
+    this.detachAppearanceSource();
+    this.appearanceSource = source;
+    this.appearanceOff = source.subscribe((ev) => {
+      if ('state' in ev) { this.set({ appearance: ev.state }); return; }
+      this.applyAppearance(ev.doc);
+    });
+    this.set({ appearance: source.state() });
+    source.start();
+  }
+
+  detachAppearanceSource(): void {
+    this.appearanceOff?.();
+    this.appearanceSource?.stop();
+    this.appearanceOff = null;
+    this.appearanceSource = null;
+    this.lastAppearance = null;
+    this.set({ appearance: null });
+  }
+
+  /** Is a source attached (developer app)? */
+  hasAppearanceSource(): boolean { return this.appearanceSource !== null; }
+
+  /** The hub the source talks to (shown on the waiting screen), when the source says. */
+  appearanceHub(): string | undefined { return (this.appearanceSource as { origin?: string } | null)?.origin; }
+
+  /** The source's state, or null when the app has none. */
+  appearanceState(): AppearanceSourceState | null { return this.state.appearance ?? null; }
+
+  /** The developer app runs only while its source is ready (or it has none). The React layer shows the waiting screen otherwise. */
+  appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
+
+  /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
+  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+
+  /**
+   * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
+   * document's id when the app has that asset (unknown id = the default; never a crash); spacing and hidden slots go
+   * through the same settings keys the UI uses. Nothing here needs a permission: the document *is* the saved setting,
+   * the UAC gate sits on changing it (swap / setSpacing / setSlotHidden still decide who may).
+   */
+  private applyAppearance(doc: AppearanceDocument | null): void {
+    this.lastAppearance = doc;
+    const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
+    this.applyingAppearance = true;
+    try {
+      const active = { ...this.state.active };
+      for (const t of ASSET_TYPES) {
+        if (t === 'uac-policy') continue;
+        const want = r.slots[t] ?? this.manifest.defaults[t];
+        if (want && this.registry.has(t, want)) active[t] = want;
+        else if (!want && (OPTIONAL_TYPES as readonly string[]).includes(t)) active[t] = '';
+      }
+      for (const t of ASSET_TYPES) {
+        if (!hideable(t)) continue;
+        const v = r.hidden[t];
+        const cur = this.settings.get(HIDE_KEY(t));
+        if (v === undefined) { if (cur !== null) this.settings.clear(HIDE_KEY(t)); }
+        else if (cur !== v) this.settings.set(HIDE_KEY(t), v);
+      }
+      const sp = r.spacing ?? SPACING_DEFAULT_VALUE;
+      if (this.spacing() !== sp) this.settings.set(SPACING_KEY, sp);
+      const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
+      this.set({ active, swaps: this.state.swaps + (changed ? 1 : 0) }, true);
+      if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
+      this.terminal.ok('appearance', `applied from the hub${doc?.updatedBy ? ` (saved by ${doc.updatedBy})` : ''}`);
+    } finally {
+      this.applyingAppearance = false;
+    }
+  }
+
+  /** Push a local change to the source (no-op without one, or while applying a pushed document). */
+  private pushAppearance(change: Parameters<AppearanceSource['save']>[0]): void {
+    if (!this.appearanceSource || this.applyingAppearance) return;
+    this.appearanceSource.save(change);
+  }
+
+  /** The palette the hub's own pages use, from this app's active colour theme. */
+  private appearancePalette(): AppearanceDocument['palette'] | undefined {
+    return paletteFromColorTheme(this.asset('color-theme').data as { scheme?: string; tokens?: Record<string, string> });
+  }
+
+  /** The document this app would write for its whole current look (Reset, or a first save). */
+  currentAppearance(): AppearanceDocument {
+    const slots: Record<string, string> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
+    const hidden: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
   }
 
   /* ---------------- store ---------------- */
@@ -239,6 +396,148 @@ export class AxfRuntime {
     if (this.navSections.delete(id)) this.set({});
   }
 
+  /* ---------------- application menu: contributions + live lists (core/engines/appmenu.ts) ---------------- */
+
+  /** App-menu contributions (`AxfWebLibrary.appMenu`), keyed by id, removable per module. */
+  private readonly appMenuContributions = new Map<string, AppMenuContribution>();
+  /** Live-list providers by id (open registry; the built-in ones are registered in the constructor). */
+  private readonly appMenuProviders = new Map<string, AppMenuProvider>();
+  private appMenuCache: { rev: number; active: string; merged: MergedAppMenu; reported: number } | null = null;
+
+  /** Add or replace a contribution (same id replaces). The app-menu asset stays untouched, so swapping it keeps them. */
+  addAppMenuItems(c: AppMenuContribution): void {
+    this.appMenuContributions.set(c.id, c);
+    this.appMenuCache = null;
+    this.set({});
+  }
+
+  /** Remove every contribution and provider of a module (a plugin was disabled or removed), or one contribution by id. */
+  removeAppMenuItems(moduleOrId: string): void {
+    let changed = this.appMenuContributions.delete(moduleOrId);
+    for (const [id, c] of this.appMenuContributions) if (c.module === moduleOrId) { this.appMenuContributions.delete(id); changed = true; }
+    for (const [id, p] of this.appMenuProviders) if (p.module === moduleOrId) { this.appMenuProviders.delete(id); changed = true; }
+    if (changed) { this.appMenuCache = null; this.set({}); }
+  }
+
+  /** Every contribution, in the order added. */
+  appMenuContributed(): AppMenuContribution[] { return [...this.appMenuContributions.values()]; }
+
+  /** Register (or replace) a live list; an item with `provider: id` shows it. Returns a remover. */
+  registerAppMenuProvider(id: string, provider: AppMenuProvider | AppMenuProvider['items']): () => void {
+    const p: AppMenuProvider = typeof provider === 'function' ? { items: provider } : provider;
+    this.appMenuProviders.set(id, p);
+    this.appMenuCache = null;
+    this.set({});
+    return () => { if (this.appMenuProviders.get(id) === p) this.unregisterAppMenuProvider(id); };
+  }
+
+  unregisterAppMenuProvider(id: string): void {
+    if (this.appMenuProviders.delete(id)) { this.appMenuCache = null; this.set({}); }
+  }
+
+  /** Registered live-list ids. */
+  appMenuProviderIds(): string[] { return [...this.appMenuProviders.keys()]; }
+
+  /** What compiling the menu needs from this runtime (the fixtures feed the engine the same shape). */
+  private appMenuEnv(): AppMenuEnv {
+    return {
+      gate: (r) => this.gate(r),
+      counter: (n) => this.badge(n),
+      setting: (k) => this.settings.get(k),
+      hidden: (t) => this.slotHidden(t as AssetType),
+      providers: this.appMenuProviderIds(),
+      taken: (it) => this.takenByHost(it),
+    };
+  }
+
+  /**
+   * The application menu to draw: the active asset's menus merged with every contribution, gated for the current role,
+   * badges and check marks resolved, live lists marked (`provider`) and filled on open with `loadAppMenuProvider`.
+   * Conflicts (one id from two modules) are reported once through `diagnostics`, like context items.
+   */
+  appMenu(): CompiledAppMenu {
+    const asset = this.asset('app-menu').data;
+    const active = this.state.active['app-menu'];
+    let cache = this.appMenuCache;
+    if (!cache || cache.active !== active) {
+      const merged = mergeAppMenu(asset, this.appMenuContributed());
+      cache = { rev: this.state.rev, active, merged, reported: 0 };
+      this.appMenuCache = cache;
+    }
+    for (; cache.reported < cache.merged.conflicts.length; cache.reported++) {
+      const c = cache.merged.conflicts[cache.reported]!;
+      this.diagnostics.report({ kind: 'contribution-conflict', what: c.what, id: c.id, was: c.was, now: c.now });
+      this.terminal.warn('menus', `${c.what} "${c.id}": ${c.now} replaced the one from ${c.was}`);
+    }
+    const out = compileAppMenu(cache.merged, this.appMenuEnv());
+    for (const n of out.notes) if (!this.appMenuNoted.has(n)) { this.appMenuNoted.add(n); this.terminal.warn('menus', n); }
+    return out;
+  }
+  private readonly appMenuNoted = new Set<string>();
+
+  /** Ask a live list for its items (compiled, capped with More…). Rejects when the provider throws. */
+  async loadAppMenuProvider(id: string, opts: Partial<ProviderOptions> = {}): Promise<CompiledMenuItem[]> {
+    const p = this.appMenuProviders.get(id);
+    if (!p) return [];
+    const items = await p.items();
+    return compileProviderItems(items, this.appMenuEnv(), { id, max: p.max, moreAction: p.moreAction, moreLabel: p.moreLabel, ...opts });
+  }
+
+  /** Contributed menu items with an action, for the search index (kind `menu`). */
+  appMenuSearchEntries(): MenuSearchEntry[] {
+    const listed = new Set(this.actions.list().filter(({ meta }) => !meta.stub && !meta.params && meta.searchable !== false).map(({ id }) => id));
+    return appMenuSearchEntries(this.appMenu(), listed);
+  }
+
+  /** Built-in live lists every app gets: views, toolbar, nav, settings, windows, dialogs, chrome (visibility toggles). */
+  private registerBuiltinAppMenuProviders() {
+    const fromSearch = (kinds: string[], icon: string, action: (f: Record<string, string>) => string | undefined) => (): MenuItem[] =>
+      this.search.entries().filter((e) => kinds.includes(e.kind)).map((e) => {
+        const f = e.focus as Record<string, string>;
+        const spec = action(f);
+        return { id: e.id, label: e.label, icon: e.icon ?? icon, ...(spec ? { action: spec } : {}), ...(e.requires ? { requires: e.requires } : {}) };
+      }).filter((i) => i.action);
+    // Every registered view (so hiding the nav loses nothing); the nav-menu's own tree; the toolbar's items and widget actions.
+    this.registerAppMenuProvider('views', { items: fromSearch(['view'], 'layout', (f) => (f.view ? `nav:${f.view}` : undefined)), max: 40, module: 'axf' });
+    this.registerAppMenuProvider('nav', {
+      module: 'axf', max: 40,
+      items: () => {
+        const nav = this.asset('nav-menu').data;
+        const sections = [...nav.sections.map((s) => ({ label: s.label, items: s.items })), ...this.navExtras.map((s) => ({ label: s.label, items: s.items }))];
+        const out: MenuItem[] = [];
+        sections.forEach((s, i) => {
+          if (!s.items.length) return;
+          if (out.length) out.push({ id: `nav-sep-${i}`, separator: true });
+          for (const it of s.items) out.push({ id: `nav:${it.view}`, label: it.label, icon: it.icon, action: `nav:${it.view}`, ...(it.requires ? { requires: it.requires } : {}), ...(it.badge ? { badge: it.badge } : {}) });
+        });
+        return out;
+      },
+    });
+    this.registerAppMenuProvider('toolbar', {
+      module: 'axf', max: 40,
+      items: () => {
+        const tb = this.asset('toolbar').data;
+        const out: MenuItem[] = [];
+        tb.groups.forEach((g, i) => {
+          if (!g.items.length) return;
+          if (out.length) out.push({ id: `toolbar-sep-${i}`, separator: true });
+          for (const it of g.items) out.push({ id: `toolbar:${it.id}`, label: it.label, icon: it.icon, action: it.action, ...(it.requires ? { requires: it.requires } : {}), ...(it.badge ? { badge: it.badge } : {}) });
+        });
+        // Widget actions (action-button widgets on the toolbar, its own or attached at run time).
+        const widgets = [...(tb.widgets ?? []), ...this.hostAttachments('toolbar')];
+        for (const w of widgets) {
+          const a = this.registry.get(w.type as AssetType, w.id) as { data?: { action?: string; label?: string; icon?: string } } | undefined;
+          if (a?.data?.action) out.push({ id: `toolbar-widget:${w.type}:${w.id}`, label: a.data.label ?? (a as { name?: string }).name ?? w.id, icon: a.data.icon ?? 'zap', action: a.data.action });
+        }
+        return out;
+      },
+    });
+    this.registerAppMenuProvider('settings', { items: fromSearch(['settings-tab'], 'settings', (f) => (f.tab ? `settings.open:${f.tab}` : undefined)), max: 30, module: 'axf' });
+    this.registerAppMenuProvider('windows', { items: fromSearch(['window'], 'monitor', (f) => (f.id ? `windows.restore:${f.id}` : undefined)), max: 20, module: 'axf' });
+    this.registerAppMenuProvider('dialogs', { items: fromSearch(['dialog'], 'box', (f) => (f.id ? `dialog:${f.id}` : undefined)), max: 30, module: 'axf' });
+    this.registerAppMenuProvider('chrome', { items: () => chromeToggleItems(), module: 'axf' });
+  }
+
   /* ---------------- contributed context-menu items ---------------- */
 
   /** Add or replace a contribution (same id replaces). The context-menu asset stays untouched, so swapping it keeps them. */
@@ -265,6 +564,7 @@ export class AxfRuntime {
    * come back into focus, so they read current token values, never a stale copy. Returns what changed.
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
+    this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
     const settings = this.settings.reload();
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
@@ -453,15 +753,18 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
+    if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
     const active = { ...this.state.active };
+    const pushed: Record<string, string> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
-      if (t !== 'uac-policy' && this.registry.has(t, id)) active[t] = id;
+      if (t !== 'uac-policy' && this.registry.has(t, id)) { active[t] = id; pushed[t] = id; }
     }
     this.set({ active, swaps: this.state.swaps + 1 }, true);
+    if (Object.keys(pushed).length) this.pushAppearance({ slots: pushed, ...(pushed['color-theme'] ? { palette: this.appearancePalette() } : {}) });
   }
 
   /* ---------------- randomize rolls (engines/roll.ts) ---------------- */
@@ -530,22 +833,34 @@ export class AxfRuntime {
     return hideable(type) && this.hiddenSlots().includes(type);
   }
 
-  /** Every hidden slot: the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
+  /** Chrome the host app shows while this one is embedded (embed@1): hidden here whatever the user chose. */
+  embedHiddenSlots(): AssetType[] {
+    return (this.embedded?.hidden ?? []) as AssetType[];
+  }
+
+  /** Is this slot hidden because a host app shows it (embed@1)? Settings grey such a row out instead of offering a choice. */
+  slotHiddenByHost(type: AssetType): boolean {
+    return this.embedHiddenSlots().includes(type);
+  }
+
+  /** Every hidden slot: the host's chrome (while embedded) over the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
-    return hiddenSlots(o, this.defaultHiddenSlots()) as AssetType[];
+    return hiddenSlots(o, this.defaultHiddenSlots(), this.embedHiddenSlots()) as AssetType[];
   }
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
     if (!hideable(type) || this.slotHidden(type) === hidden) return;
+    if (this.slotHiddenByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
     if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
     else this.settings.set(HIDE_KEY(type), hidden);
     if (hidden && type === 'context-menu') this.closeContext();
     this.terminal.ok('hot-swap', `${type} ${hidden ? 'hidden' : 'shown'}`);
     this.set({});
+    this.pushAppearance({ hidden: { [type]: hidden === this.defaultHiddenSlots().includes(type) ? null : hidden } });
   }
 
   /* ---------------- spacing (core/engines/spacing.ts) ---------------- */
@@ -559,6 +874,7 @@ export class AxfRuntime {
   setSpacing(s: Spacing): void {
     if (spacingOf(s) !== s || this.spacing() === s) return;
     this.settings.set(SPACING_KEY, s);
+    this.pushAppearance({ spacing: s });
   }
 
   /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
@@ -582,10 +898,15 @@ export class AxfRuntime {
       // signed in: the account keeps deciding the policy and role
       active['uac-policy'] = this.principal.policy;
       this.set({ active, role: this.principal.role, swaps: this.state.swaps + 1 }, true);
-      return;
+    } else {
+      const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
+      this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
     }
-    const policy = this.registry.get('uac-policy', active['uac-policy'])!.data;
-    this.set({ active, role: policy.defaultRole, swaps: this.state.swaps + 1 }, true);
+    const hidden: Record<string, null> = {};
+    for (const t of ASSET_TYPES) if (hideable(t)) hidden[t] = null;
+    const slots: Record<string, string> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && active[t]) slots[t] = active[t];
+    this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
@@ -636,6 +957,8 @@ export class AxfRuntime {
   /* ---------------- views & overlays ---------------- */
 
   navigate(view: string) {
+    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
     this.set({ view, context: null });
   }
 
@@ -670,7 +993,160 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
+    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
+  }
+
+  /* ---------------- embed@1: what the host takes over ---------------- */
+
+  /** Does the host this app runs in take this function over (`settings`, `notifications`)? */
+  hostTakes(fn: string): boolean { return embedTakesFn(this.embedded, fn); }
+
+  /**
+   * Is this action / view / live list a hook the host took over? Chrome drops such hooks (app menu, toolbar, nav,
+   * context menu, banner widgets), so the app shows none of its own hooks for a function the host does for it.
+   */
+  takenByHost(what: { action?: string; view?: string; provider?: string }): boolean {
+    return !!(embedTakenBy(this.embedded, what.action) || embedTakenView(this.embedded, what.view) || embedTakenProvider(this.embedded, what.provider));
+  }
+
+  /** Send a message to the host (Android: its `AxfEmbedHost` bridge; web: the parent frame). False when there's no host. */
+  postToHost(msg: EmbedMessage): boolean {
+    if (!this.embedded) return false;
+    const g = globalThis as unknown as { AxfEmbedHost?: { post?: (json: string) => void }; parent?: { postMessage?: (m: unknown, o: string) => void }; window?: unknown };
+    try {
+      if (typeof g.AxfEmbedHost?.post === 'function') { g.AxfEmbedHost.post(JSON.stringify(msg)); return true; }
+      // The message only asks the host to do something it would do anyway; its content is checked on arrival.
+      if (g.parent && g.parent !== (globalThis as unknown) && typeof g.parent.postMessage === 'function') { g.parent.postMessage(msg, '*'); return true; }
+    } catch { /* no host to reach */ }
+    return false;
+  }
+
+  /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
+  private askHost(spec: string): boolean {
+    const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
+    if (fn === 'settings') {
+      const tab = settingsTabOf(spec);
+      if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
+    }
+    // Banner settings: the host shows every banner's settings in its own Banners tab (`banners` / `banners:<banner id>`).
+    if (fn === 'banners') {
+      const id = spec.startsWith('banners.settings:') ? spec.slice('banners.settings:'.length) : '';
+      const tab = /^[a-z0-9][a-z0-9._-]{0,54}$/i.test(id) ? `banners:${id}` : 'banners';
+      if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'open-settings', tab })) return true;
+    }
+    this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
+    return false;
+  }
+
+  /** Messages from the host: a settings page opens the tab the host asks for. Web only; Android hosts evaluate the same. */
+  private listenToHost(): void {
+    const handle = (raw: unknown) => {
+      const m = parseEmbedMessage(raw);
+      if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
+      if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'run') this.runSharedMenuItem(m.id);
+    };
+    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
+    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // Android hosts can't post into the page; they call this instead (evaluateJavascript).
+    (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
+    const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
+    if (typeof g.addEventListener !== 'function') return;
+    g.addEventListener('message', (e) => {
+      // Only the frame this app runs in may ask; anything else (other frames, the page itself) is ignored.
+      if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
+      handle(e.data);
+    });
+  }
+
+  /**
+   * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
+   * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
+   */
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+    const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
+    if (!fresh.length) return;
+    this.skippedLibraries.push(...fresh);
+    for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
+    this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
+  }
+
+  /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */
+
+  /** id → action of the menu last sent to the host: `run` messages can only run what this app offered. */
+  private sharedMenuRun = new Map<string, string>();
+  private sharedMenuText = '';
+  private sharedMenuTimer: ReturnType<typeof setTimeout> | null = null;
+  /** live lists as last loaded (refreshed on a host's request and every minute, not on every state change) */
+  private sharedMenuLists = new Map<string, CompiledMenuItem[]>();
+
+  /** Send the menu soon after start, after state changes (debounced) and every minute (live lists). */
+  private startMenuShare(): void {
+    // never keeps a non-browser host (tests, Node) alive
+    const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
+    const later = (ms: number, refresh = false) => {
+      if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      unref(this.sharedMenuTimer);
+    };
+    unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
+    unref(setInterval(() => later(0, true), 60_000));
+  }
+
+  /**
+   * Send this app's application menu to the host that took it over (`menu` message): data only (ids, labels, icons,
+   * check marks, counts, locks); the actions stay here. Unchanged menus aren't sent again unless `force`.
+   */
+  async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const run = new Map<string, string>();
+    const MAX_DEPTH = 4;
+    const list = async (provider: string): Promise<CompiledMenuItem[]> => {
+      if (!opts.refresh && this.sharedMenuLists.has(provider)) return this.sharedMenuLists.get(provider)!;
+      let items: CompiledMenuItem[] = [];
+      try { items = await this.loadAppMenuProvider(provider); } catch { items = this.sharedMenuLists.get(provider) ?? []; }
+      this.sharedMenuLists.set(provider, items);
+      return items;
+    };
+    const conv = async (it: CompiledMenuItem, id: string, depth: number): Promise<EmbedMenuItem | null> => {
+      if (it.separator) return { id, label: '', separator: true };
+      const kids = depth < MAX_DEPTH ? (it.provider ? await list(it.provider) : it.items ?? []) : [];
+      const out: EmbedMenuItem = { id, label: it.label };
+      if (it.icon) out.icon = it.icon;
+      if (it.locked) out.locked = true;
+      if (typeof it.check === 'boolean') out.check = it.check;
+      if (it.count) out.count = it.count;
+      if (kids.length) {
+        const sub = (await Promise.all(kids.map((k, i) => conv(k, `${id}.${i}`, depth + 1)))).filter((k): k is EmbedMenuItem => !!k);
+        if (sub.some((k) => !k.separator)) out.items = sub;
+      }
+      if (!out.items) {
+        if (!it.action) return null;
+        if (!it.locked) run.set(id, it.action);
+      }
+      return out;
+    };
+    const menus: EmbedMenu[] = [];
+    for (const [mi, m] of this.appMenu().menus.entries()) {
+      const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
+      if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    this.sharedMenuRun = run;
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The host's menu picked one of this app's items (`run` message): run it here, if this app offered it. */
+  runSharedMenuItem(id: string): boolean {
+    const action = this.sharedMenuRun.get(id);
+    if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
+    return this.dispatch(action);
   }
 
   /* ---------------- rendering ---------------- */
@@ -735,8 +1211,9 @@ export class AxfRuntime {
       if (type && id && (ASSET_TYPES as readonly string[]).includes(type)) this.setRollAsset(type as AssetType, id, onOff(v));
     }, { label: 'Include an asset in randomize rolls', requires: 'assets.swap', params: true });
     // Hidden slots from code, menus or MCP: slot.hide:<type>:on|off
+    // slot.hide:<type>:on|off|toggle (the menu's chrome toggles use `toggle`)
     a.register('slot.hide', ([type, v]) => {
-      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v !== 'off');
+      if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.setSlotHidden(type as AssetType, v === 'toggle' ? !this.slotHidden(type as AssetType) : v !== 'off');
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
     a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
@@ -767,6 +1244,12 @@ export class AxfRuntime {
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
+}
+
+/** The embed marker on the current page (browser only; nothing elsewhere). */
+function detectPageEmbed(): Embed | null {
+  const g = globalThis as { location?: { search?: string }; navigator?: { userAgent?: string } };
+  try { return detectEmbedFull(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
 }
 
 export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {

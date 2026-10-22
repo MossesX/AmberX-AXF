@@ -1,0 +1,60 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-936817f99c",
+  "createdAt": "2026-10-21T06:27:43.000Z",
+  "updatedAt": "2026-10-21T10:27:43.000Z",
+  "kind": "build",
+  "title": "Harvest: lib-github",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest — lib-github (Oct 21 2026, Opus 5.5)",
+    "branch": "harvest/h-lib-github",
+    "commits": [
+      {
+        "sha": "02fbb3a",
+        "message": "Harvest lib-github: report + CLAUDE.md status"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/lib-github.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T10:27:43.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-lib-github"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T06:27:43.000Z",
+  "finishedAt": "2026-10-21T10:27:43.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "branch": "harvest/h-lib-github",
+  "areas": [
+    "framework/cli/github.mjs",
+    "apps/console-web/server/Dockerfile",
+    "framework/spec/fixtures/github.json",
+    "framework/spec/check-github.mjs",
+    "framework/python/axf_server/test.py",
+    "framework/python/axf_libs/mcp/test.py"
+  ]
+}

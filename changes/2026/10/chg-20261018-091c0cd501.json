@@ -1,0 +1,62 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-091c0cd501",
+  "createdAt": "2026-10-18T12:42:39.000Z",
+  "updatedAt": "2026-10-18T14:42:39.000Z",
+  "kind": "build",
+  "title": "Projects, manifests and Standards",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "every project built with or for AmberX has `project.manifest.json` (`project-manifest@1`): `name` (= its folder on the hub, `/projects/<name>`), `displayName`, `kind`, `framework.relation` (core/built-on/for/none), `repo` (owner, name, `exists` — a repo that doesn't exist yet is still defined, for f",
+    "commits": [
+      {
+        "sha": "c0652da",
+        "message": "Build options: --wrap-groups switch + style-theme wrapGroups token"
+      },
+      {
+        "sha": "2295c71",
+        "message": "Project manifests + Standards + shared data on the hub's /projects"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T14:42:39.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "projects-manifests-and-standards"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T12:42:39.000Z",
+  "finishedAt": "2026-10-18T14:42:39.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/project.mjs",
+    "apps/demo",
+    "framework/schemas/project-rules.json",
+    "framework/core/project.ts",
+    "framework/core/project-check.mjs",
+    "framework/spec/fixtures/project-manifest.json",
+    "framework/spec/check-project-fixtures.mjs",
+    "framework/schemas/json/project-manifest.schema.json"
+  ]
+}

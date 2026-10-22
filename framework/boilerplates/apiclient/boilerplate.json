@@ -32,5 +32,13 @@
     "style-theme": "sharp-terminal"
   },
   "status": "planned",
-  "source": "amberx"
+  "source": "amberx",
+  "libraries": [
+    {
+      "library": "apiclient",
+      "params": {
+        "tokenKey": "apiclient:token"
+      }
+    }
+  ]
 }

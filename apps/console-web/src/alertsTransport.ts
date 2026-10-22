@@ -6,6 +6,7 @@
  * never goes in a URL). It reconnects with back-off and falls back to polling every 30 s.
  */
 import type { Alert, AlertInput } from './axf/core';
+import { followSse, sseJson } from './axf/core/sse';
 import type { AlertConfig, AlertConfigPatch, AlertTransport } from './axf/libs/alerts';
 import { getToken } from './api';
 
@@ -35,43 +36,15 @@ export const consoleAlertsTransport: AlertTransport = {
   resolve: async (keys) => { await call('/resolve', { keys }); },
   dismiss: async (ids) => { await call('/dismiss', { ids }); },
   subscribe(onList) {
-    let stopped = false;
-    let ctrl: AbortController | null = null;
-    let poll: ReturnType<typeof setInterval> | null = null;
-    let delay = 2000;
     const refresh = () => call<{ alerts: Alert[] }>('').then((j) => onList(j.alerts), () => { /* offline: keep what we have */ });
-    const connect = async () => {
-      while (!stopped) {
-        ctrl = new AbortController();
-        try {
-          const r = await fetch('/api/alerts/stream', { headers: headers(), cache: 'no-store', signal: ctrl.signal });
-          if (!r.ok || !r.body) throw new Error(`stream ${r.status}`);
-          delay = 2000;
-          const reader = r.body.getReader();
-          const dec = new TextDecoder();
-          let buf = '';
-          for (;;) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            buf += dec.decode(value, { stream: true });
-            let i: number;
-            while ((i = buf.indexOf('\n\n')) >= 0) {
-              const chunk = buf.slice(0, i);
-              buf = buf.slice(i + 2);
-              const data = chunk.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).join('\n');
-              if (data) { try { onList((JSON.parse(data) as { alerts: Alert[] }).alerts); } catch { /* bad frame */ } }
-            }
-          }
-        } catch { /* aborted or offline: fall through to back-off */ }
-        if (stopped) break;
-        await new Promise((res) => setTimeout(res, delay));
-        delay = Math.min(delay * 2, 60_000);
-      }
-    };
     void refresh();
-    void connect();
-    poll = setInterval(() => void refresh(), 30_000);
-    return () => { stopped = true; ctrl?.abort(); if (poll) clearInterval(poll); };
+    // live stream, reconnecting with back-off (2 s … 60 s) through the framework's SSE follower
+    const stopStream = followSse(
+      (signal) => fetch('/api/alerts/stream', { headers: headers(), cache: 'no-store', signal }),
+      (f) => { const j = sseJson<{ alerts: Alert[] }>(f); if (j?.alerts) onList(j.alerts); },
+    );
+    const poll = setInterval(() => void refresh(), 30_000);
+    return () => { stopStream(); clearInterval(poll); };
   },
   config: {
     get: () => call<AlertConfig>('/config'),

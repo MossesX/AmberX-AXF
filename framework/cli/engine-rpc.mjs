@@ -18,7 +18,7 @@ import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { buildPlan, deleteFeature, loadPlan, saveMedia, upsertFeature } from './plan.mjs';
-import { queueView, reorderQueue, reprocessQueue, stepQueue, syncBuildQueue } from './build-queue.mjs';
+import { queueView, reorderQueue, reprocessQueue, stepQueue, stepsQueue, syncBuildQueue } from './build-queue.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { dataPath } from './persist.mjs';
 import { RULES_REL, baseRules, checkProject, findProjects, loadRules, validateProjectManifest, validateProjectRules } from './project.mjs';
@@ -39,12 +39,17 @@ const lines = [];
 function appDefaultsView() {
   const types = assetSpec.types;
   const widgetTypes = Object.keys(types).filter((t) => types[t].widget === true);
+  const attachableTypes = Object.keys(types).filter((t) => types[t].attachable === true);
   const hosts = {};
   for (const [t, ts] of Object.entries(types)) {
-    if (ts.attach) hosts[t] = { field: 'attach', types: ts.attach.types ?? [], sides: ts.attach.sides ?? [] };
+    // Same rule as the engines: an `attach` block without `types` takes every attachable type, `widgets` every widget type.
+    if (ts.attach) hosts[t] = { field: 'attach', types: ts.attach.types ?? attachableTypes, sides: ts.attach.sides ?? [] };
     else if (ts.widgets) hosts[t] = { field: 'widgets', types: widgetTypes, sides: ts.widgets.sides ?? [] };
   }
   return { $axf: 'app-defaults@1', hidden: appDefaults.hidden ?? [], hideable: Object.keys(types).filter((t) => types[t].hideable), hosts,
+    widgets: widgetTypes, attachable: attachableTypes,
+    typeLabels: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.label).map(([t, ts]) => [t, ts.label])),
+    typeIcons: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.icon).map(([t, ts]) => [t, ts.icon])),
     enums: Object.fromEntries(Object.entries(types).filter(([, ts]) => ts.enums).map(([t, ts]) => [t, ts.enums])) };
 }
 
@@ -116,7 +121,8 @@ function run() {
     case 'build-reorder': return reorderQueue({ order: b.order, by: b.by ?? 'console', log });
     case 'build-reprocess': return reprocessQueue({ apply: !!b.apply, by: b.by ?? 'console', log });
     case 'build-step': return stepQueue({ id: b.id, action: b.action, status: b.status, note: b.note, by: b.by ?? 'console', log });
-    case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
+    case 'build-steps': { const { by, ...edit } = b; return stepsQueue({ ...edit, by: by ?? 'console', log }); } // estimate + small steps of one queue step (Oct 21 2026)
+    case 'init': { const r = init({ dir: safeDir(b.dir ?? (b.id ?? b.name ?? 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-')), name: b.name, id: b.id, template: b.template ?? 'react-ts', modules: b.modules ?? [], boilerplate: b.boilerplate, libraries: b.libraries ?? [], applicationId: b.applicationId, options: b.options ?? {}, slots: b.slots ?? {}, hidden: b.hidden, assets: b.assets, developer: b.developer, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report, libraries: r.libraries }; }
     case 'build-options': return { options: describeOptions() };
     case 'app-defaults': return appDefaultsView();
     case 'framework-assets': return { template: b.template ?? null, assets: listFrameworkAssets(b.template) };

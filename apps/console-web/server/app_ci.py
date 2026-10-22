@@ -9,24 +9,24 @@ app-ci@1 — compile an app the build engine made into an APK on GitHub Actions.
                 failure, the compiler's error lines.
   apk(dir)      the debug APK of the last successful run (downloaded once, cached in .axf-console/app-apks/).
 
-Needs GITHUB_TOKEN with Contents: write and Actions: write on the repo (AXF_GITHUB_REPO). The token goes to git as
-a header for one command and to the GitHub API; it is never written to .git/config or returned.
+Needs GITHUB_TOKEN with Contents: write and Actions: write on the repo (AXF_GITHUB_REPO). GitHub calls go through
+lib-github (axf_server.github): the token goes to git as a header through the environment of one command (never argv,
+.git/config or a URL) and to api.github.com only; it is never returned.
 """
 from __future__ import annotations
 
-import base64
-import io
 import json
 import os
 import re
 import subprocess
 import tempfile
 import time
-import urllib.error
-import urllib.request
-import zipfile
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urlencode
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import github, http as axf_http, storage
 
 WORKFLOW = "pilot-apk.yml"
 APP_DIR_RE = re.compile(r"^apps/[a-z0-9][a-z0-9-]{0,63}$")
@@ -62,62 +62,52 @@ def check_dir(root: Path, app_dir: str) -> Path:
 
 class AppCi:
     def __init__(self, root: Path, repo: str, token: Callable[[], str], state_dir: Path,
-                 http: Callable[..., tuple[int, dict[str, str], bytes]] | None = None, git: Callable[..., str] | None = None):
+                 transport: axf_http.Transport | None = None, git: Callable[..., str] | None = None):
+        if not github.valid_repo(repo):
+            raise CiError("AXF_GITHUB_REPO must look like owner/name")
         self.root = root
         self.repo = repo
         self.token = token
         self.state = state_dir
-        self.http = http or _http
+        # lib-github: token only to api.github.com, no redirects on API calls, downloads capped at MAX_APK
+        self.gh = github.GitHubClient(token, user_agent="axf-console", timeout=120, max_bytes=MAX_APK, transport=transport)
         self.git = git or self._git
 
     # ------------------------------------------------------------ helpers
-    def _auth_header(self) -> str:
+    def _git_auth(self) -> dict[str, str]:
         t = self.token()
         if not t:
             raise CiError("GITHUB_TOKEN isn't set on the console (needs Contents: write and Actions: write)")
-        return "AUTHORIZATION: basic " + base64.b64encode(f"x-access-token:{t}".encode()).decode()
+        return github.git_env(t)
 
     def _git(self, *args: str, env: dict[str, str] | None = None, auth: bool = False, inp: str | None = None) -> str:
-        cmd = ["git"]
-        if auth:
-            cmd += ["-c", f"http.https://github.com/.extraheader={self._auth_header()}"]
-        cmd += ["-C", str(self.root), *args]
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env={**os.environ, **(env or {}), "GIT_TERMINAL_PROMPT": "0"}, input=inp)
+        extra = self._git_auth() if auth else {"GIT_TERMINAL_PROMPT": "0"}
+        r = subprocess.run(["git", "-C", str(self.root), *args], capture_output=True, text=True, timeout=300, env={**os.environ, **(env or {}), **extra}, input=inp)
         if r.returncode != 0:
             msg = (r.stderr or r.stdout).strip().splitlines()[-1:] or ["git failed"]
-            raise CiError(f"git {args[0]}: {msg[0].replace(self.token() or '¤', '***')[:300]}")
+            raise CiError(f"git {args[0]}: {github.scrub(msg[0], [self.token()])[:300]}")
         return r.stdout
 
     def _api(self, method: str, path: str, body: Any = None) -> tuple[int, Any]:
-        t = self.token()
-        if not t:
-            raise CiError("GITHUB_TOKEN isn't set on the console")
-        code, _h, raw = self.http(method, f"https://api.github.com/repos/{self.repo}{path}", {"Authorization": f"Bearer {t}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
-                                  json.dumps(body).encode() if body is not None else None)
+        """`path` is relative to /repos/<repo> (e.g. '/actions/runs/7/jobs')."""
         try:
-            data = json.loads(raw) if raw else None
-        except ValueError:
-            data = None
-        if code >= 400:
-            msg = (data or {}).get("message") if isinstance(data, dict) else ""
-            hint = " (the token needs Actions: write)" if code in (403, 404) and "dispatches" in path else ""
-            raise CiError(f"GitHub {code}: {msg or 'request failed'}{hint}")
-        return code, data
+            data = self.gh.json(method, f"/repos/{self.repo}{path}", body)
+        except github.GitHubError as e:
+            if e.status == 0 and not self.token():
+                raise CiError("GITHUB_TOKEN isn't set on the console") from None
+            hint = " (the token needs Actions: write)" if e.status in (403, 404) and "dispatches" in path else ""
+            raise CiError(f"{e}{hint}") from None
+        return 200, data
 
     def _record_path(self, app_dir: str) -> Path:
         return self.state / f"{app_dir.split('/', 1)[1]}.json"
 
     def _record(self, app_dir: str) -> dict[str, Any]:
-        try:
-            return json.loads(self._record_path(app_dir).read_text())
-        except (OSError, ValueError):
-            return {}
+        rec = storage.read_json(self._record_path(app_dir), {})
+        return rec if isinstance(rec, dict) else {}
 
     def _save(self, app_dir: str, rec: dict[str, Any]) -> None:
-        self.state.mkdir(parents=True, exist_ok=True, mode=0o700)
-        p = self._record_path(app_dir)
-        p.write_text(json.dumps(rec, indent=2))
-        os.chmod(p, 0o600)
+        storage.write_json(self._record_path(app_dir), rec)  # atomic, 0600, folder 0700
 
     # ------------------------------------------------------------ publish + start
     def changed_framework_files(self) -> list[str]:
@@ -162,12 +152,14 @@ class AppCi:
         rec = self._record(app_dir)
         if not rec:
             return {"dir": app_dir, "state": "none"}
-        _c, data = self._api("GET", f"/actions/workflows/{WORKFLOW}/runs?branch={rec['branch']}&event=workflow_dispatch&per_page=5")
+        q = urlencode({"branch": rec["branch"], "event": "workflow_dispatch", "per_page": 5})
+        _c, data = self._api("GET", f"/actions/workflows/{WORKFLOW}/runs?{q}")
         runs = [r for r in (data or {}).get("workflow_runs", []) if r.get("created_at", "") >= rec["startedAt"] and r.get("head_sha") == rec["commit"]]
         if not runs:
             return {**rec, "state": "queued"}
         run = runs[0]
-        state = run.get("status") if run.get("status") != "completed" else ("success" if run.get("conclusion") == "success" else "failure")
+        done = github.run_state(run.get("status"), run.get("conclusion")) in ("success", "failure", "cancelled")
+        state = ("success" if run.get("conclusion") == "success" else "failure") if done else run.get("status")
         out = {**rec, "state": state, "runId": run.get("id"), "url": run.get("html_url"), "conclusion": run.get("conclusion")}
         if state == "failure" and not rec.get("errors"):
             rec["errors"] = self._errors(run.get("id"))
@@ -183,8 +175,10 @@ class AppCi:
             job = next((j for j in (jobs or {}).get("jobs", []) if j.get("conclusion") == "failure"), None)
             if not job:
                 return []
-            code, _h, raw = self.http("GET", f"https://api.github.com/repos/{self.repo}/actions/jobs/{job['id']}/logs", {"Authorization": f"Bearer {self.token()}"}, None)
-            text = raw.decode("utf-8", "replace") if code < 400 else ""
+            try:
+                text = self.gh.job_log(self.repo, int(job["id"]), max_bytes=16 * 1024 * 1024)
+            except (github.GitHubError, ValueError, TypeError):
+                text = ""
             lines = [re.sub(r"^\S+Z ", "", l) for l in text.splitlines() if re.search(r"(^|\s)e: |error:|What went wrong|FAILED|Could not resolve|Unresolved reference", l)]
             return [l.replace("/home/runner/work/AmberX-AXF/AmberX-AXF/", "")[:300] for l in lines][-40:]
         except CiError:
@@ -201,43 +195,12 @@ class AppCi:
         art = next((a for a in (arts or {}).get("artifacts", []) if a.get("name", "").endswith(".apk") and not a.get("expired")), None)
         if not art:
             raise CiError("the run has no APK artifact (expired?)")
-        code, _h, raw = self.http("GET", art["archive_download_url"], {"Authorization": f"Bearer {self.token()}"}, None)
-        if code >= 400:
-            raise CiError(f"GitHub {code} downloading the APK")
-        if len(raw) > MAX_APK:
-            raise CiError("APK too large")
-        with zipfile.ZipFile(io.BytesIO(raw)) as z:
-            name = next((n for n in z.namelist() if n.endswith(".apk") and "/" not in n.strip("/")), None) or next((n for n in z.namelist() if n.endswith(".apk")), None)
-            if not name:
-                raise CiError("the artifact has no .apk")
-            data = z.read(name)
-        self.state.mkdir(parents=True, exist_ok=True, mode=0o700)
-        tmp = path.with_suffix(".tmp")
-        tmp.write_bytes(data)
-        os.chmod(tmp, 0o600)
-        tmp.replace(path)
+        try:
+            # the zip URL must be on api.github.com (the token goes nowhere else); its redirect is fetched without it
+            raw = self.gh.download(str(art.get("archive_download_url") or ""), max_bytes=MAX_APK)
+            _name, data = github.zip_member(raw, lambda n: n.endswith(".apk"), MAX_APK)  # unzipped size capped too
+        except github.GitHubError as e:
+            raise CiError(f"APK download: {e}") from None
+        storage.write_bytes(path, data)  # atomic, 0600, folder 0700
         return path
 
-
-class _NoAuthRedirect(urllib.request.HTTPRedirectHandler):
-    """Follow GitHub's redirects to blob storage without carrying the token there."""
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[override]
-        new = super().redirect_request(req, fp, code, msg, headers, newurl)
-        if new is not None and not newurl.startswith("https://api.github.com/"):
-            for h in list(new.headers):
-                if h.lower() == "authorization":
-                    del new.headers[h]
-            new.unredirected_hdrs.pop("Authorization", None)
-        return new
-
-
-def _http(method: str, url: str, headers: dict[str, str], body: bytes | None) -> tuple[int, dict[str, str], bytes]:
-    req = urllib.request.Request(url, data=body, method=method, headers={**headers, **({"Content-Type": "application/json"} if body else {})})
-    opener = urllib.request.build_opener(_NoAuthRedirect)
-    try:
-        with opener.open(req, timeout=120) as r:
-            return r.status, dict(r.headers), r.read(MAX_APK + 1)
-    except urllib.error.HTTPError as e:
-        return e.code, dict(e.headers or {}), e.read(65536)
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
-        raise CiError(f"GitHub not reachable: {getattr(e, 'reason', e)}") from None

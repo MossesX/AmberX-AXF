@@ -52,7 +52,8 @@
   "x.plugins.manager",
   "x.assets.templates",
   "x.console.pending",
-  "x.lib.mcp"
+  "x.lib.mcp",
+  "x.lib.hub"
  ],
  "steps": {
   "x.kernel": {
@@ -224,10 +225,928 @@
    "completedAt": "2026-10-18T14:17:14.449Z",
    "completedBy": "feature-tracker",
    "deps": []
+  },
+  "x.lib.mcp": {
+   "completedAt": "2026-10-21T04:48:23.349Z",
+   "completedBy": "feature-tracker",
+   "deps": [
+    "x.plugins"
+   ]
+  },
+  "x.modules": {
+   "estimate": "4 h",
+   "steps": [
+    {
+     "text": "Web extension registry: `framework/core/extensions.ts` = Kotlin `module/Extensions.kt` (`ExtensionPoint`, `Contribution`, `ExtensionRegistry` with declare/contribute/list/listeners, `ExtensionPoints` with the same ids `axf.actions` … `axf.event-descriptors`); exported from `core/index.ts`; `rt.extensions` on `AxfRuntime`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web placeholders: `NotImplemented` answers for undeclared capabilities (`rt.capability(id)` → placeholder record with reason), same shape as the kernel's `placeholder(id)`; `framework/react/library.ts` `installLibraries` routes `provides` into the registry so a library can declare its own points.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixture: `spec/fixtures/extensions.json` (declare order, contribution order by `order` then insertion, single vs multiple points, placeholder answers) generated from the TS reference; Kotlin `ConformanceTest` replays it (written without a compiler; check the CI issue).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Topological start order on web: `orderLibraries` (already in `library.ts`) becomes the shared `startOrder(modules)` used by both ports' rules (cycle = error listing members), fixture cases added; `installLibraries` reports `missing` + `cycles`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Python port: `framework/python/axf/extensions.py` (`ExtensionRegistry`, standard points, placeholders) replacing the `MemoryKernel` stand-in in `library.py`; `axf compile-library` smoke test uses it; fixture replay test `framework/python/axf/test_extensions.py`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Services: typed service registry on web (`rt.services.register/get` with `service:<cap>` names as `plugin-inventory@1` uses) + Python; inventory engine reads providers from it; one fixture case.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: `framework/spec/PORTING.md` section \"Extension points on every port\", plan ports web/python → built, `status.json` features for the epic's capabilities, `tracker.mjs`, `build_step complete`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Template + console: `react-ts`/`next-ts` templates and the console register one custom extension point each (proves \"add modules without rebuilding the kernel\"); console tsc + vite build; CI template sweep passes.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.state": {
+   "estimate": "4 h",
+   "steps": [
+    {
+     "text": "Web `AxfStore` in `framework/core/state/store.ts` mirroring Kotlin `state/Store.kt` (reducer, middleware chain, undo/redo, `StatePersistence` over the settings store); unit cases in a new fixture `spec/fixtures/state.json` (reduce, middleware order, undo).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web `QueryClient` in `core/state/query.ts` = Kotlin `data/QueryEngine.kt` (stale-while-revalidate, `Freshness`, `QueryOptions`, dedupe in-flight, persistence hook); fixture section `query` with fake timers encoded as explicit clock values.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web `EventBus` (`core/state/events.ts` = `event/EventBus.kt`: topics, replay buffer, typed kernel events) wired to the runtime's existing `on()`; fixture section `events` (replay count, ordering).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web `FeatureFlags` + `Config` (`core/state/flags.ts`, `config.ts` = `flags/FeatureFlags.kt`, `config/Config.kt`: layers DEFAULT/MANIFEST/REMOTE/ROLE/USER/KILL_SWITCH and DEFAULTS/MANIFEST/REMOTE/USER/OVERRIDE, precedence); manifest `flags`/`config` read at `createAxf`; fixture sections.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web migrations ledger + semver (`core/state/migrations.ts` = `migrate/Migrations.kt`: `Migration`, `MigrationRunner`, ledger in settings, `Semver` compare, `Deprecations`); the console's one-time saved-defaults migration moves onto it; fixture section `migrations`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin conformance: `StateConformanceTest` replaying `state.json` against the existing kernel classes (adjust kernel behaviour only where the fixture exposes a real divergence; note each in the commit); written without a compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React hooks: `useStore`, `useQuery`, `useFlag`, `useConfig` in `framework/react/state.ts`; the console's Plan view uses `useQuery` for `plan.json` as the first consumer; tsc + vite build.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md section, plan web port → built (python stays planned), status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.uikits": {
+   "estimate": "3.5 h",
+   "steps": [
+    {
+     "text": "Web kit contract: `framework/core/uikit.ts` = Kotlin `contract/UiKit.kt` (`ComponentKind` list from `ui-port.mjs` `COMPONENT_KINDS`, `UiKitSpec`, `UiKitResolver` with fallback to the default AmberX kit + terminal note per missing kind); fixture `spec/fixtures/uikit.json` (resolve, fallback, note text).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React kit registry: `framework/react/kits/index.ts` with the built-in `amberx` kit (today's components mapped by kind) and `registerKit(spec, impl)`; `AppShell`/`Controls` resolve each kind through the resolver instead of importing components directly.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "ui-kit asset wiring: the active `ui-kit` asset (already an asset type on Android) picks the kit on web too; Settings → Appearance → UI kit drop-down (both ports share the setting key); rolls exclude it (`rollDefaults.never`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Second kit (proof): `framework/libs/kit-mui` skeleton via `axf new-library kit-mui --template ui-kit --ports web` with 6 kinds (BUTTON, TEXT_FIELD, SWITCH, CARD, DIALOG, TOAST) on MUI reading only `--fx-*` tokens (THEMING.md); missing kinds fall back and are listed in the Output terminal.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin parity check: `UiKitConformanceTest` replaying `uikit.json` against `UiKitResolver`; `check-theme.mjs` covers `libs/kit-*`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Python placeholder: `framework/python/axf/uikit.py` resolver replaying the fixture (Qt Widgets kit stays planned, a placeholder capability `axf.uikit.qt`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"UI kits\", plan web → built, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.plugins": {
+   "estimate": "5 h",
+   "steps": [
+    {
+     "text": "Design check (no code): read `contract/Plugin.kt` (PACK/MODULE/SCRIPT, scopes, `PluginLoader`), `framework/schemas/asset-pack.json` if asset-browser made it, and the plugin-catalog format; write `_claude/memory/docs/plugin-runtime.md`: what a PACK may carry (assets, action macros, string packs), install sources (file, URL, QR, console catalog), grants UI, and what stays placeholder (MODULE code loading, SCRIPT).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Pack format on every port: `framework/schemas/plugin-pack.json` (`pack@1`: manifest plugin@1 + files list + hashes) validated by TS (`core/plugins-pack.ts`), Kotlin (`PluginManifest` + pack reader) and Python (catalog engine); fixture `spec/fixtures/plugin-pack.json` (good pack, over-scope pack refused, bad hash).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android loader, PACK only: `axf-platform-android` `PackLoader implements PluginLoader` — stage from file/URL (OkHttp, no redirects, size cap), verify hashes, keep under `filesDir/plugins/<id>/`, states STAGED→DISABLED→ENABLED; `axf.plugins` placeholder replaced for PACK, MODULE/SCRIPT still answer NotImplemented.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android apply: an enabled pack registers its assets into `AssetRegistry` (origin = plugin id, conflicts reported as diagnostics) and its macros into `ExtensionPoints.MACROS`; disable/uninstall removes exactly those; unit test with a fixture pack.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Grants: scopes requested vs granted stored in KV; a pack asking beyond `PACK_MAX` is BLOCKED; Settings → Plugins (lib-settings) shows each pack with its scopes and an Enable switch; `PluginManagerModule` lists packs via `PluginInventoryHost`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sources: `ExtensionPoints.PLUGIN_SOURCES` gets two contributions — local file picker and console catalog (`GET /api/plugin-catalog?kind=pack` through the console client in lib-hub or a plain URL setting); QR stays placeholder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web loader: `framework/libs/plugins` (web `PackLoader`: fetch pack JSON, validate, register assets/macros into `rt`, enable/disable persisted in settings); the console installs it; Settings → Plugins lists packs beside libraries.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Catalog publish for packs: `plugin-catalog.mjs` kind `pack` (files = asset JSON only, validated by `validateAsset`), console Plugin Manager → Install view lists packs; `check-plugin-catalog.mjs` cases.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: Kotlin `PackLoaderTest` (fixture pack, hash refusal, scope block, remove leaves nothing), web unit via `check-plugin-pack.mts`, CI lines; written without a compiler for the Kotlin part.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Plugins after install\", plan android placeholder → built (PACK), web → built, status.json + tracker, `build_step complete`; MODULE/SCRIPT remain placeholders (named in the tracker).",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.work": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Web contract: `framework/core/work.ts` = Kotlin `contract/Work.kt` (`WorkSpec`, `WorkConstraints`, policies, states, `WorkRegistry` of workers by id); fixture `spec/fixtures/work.json` (unique + KEEP/REPLACE/APPEND rules, backoff computation, constraint evaluation with explicit inputs).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android scheduler: `axf-platform-android` `WorkManagerScheduler` mapping `WorkSpec` → WorkManager requests (constraints, backoff, unique work policy), `WorkRegistry` dispatch inside one `AxfWorker`; capability `axf.work` real; periodic + one-shot; progress through `WorkState` flow. Written without a compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web scheduler: `framework/libs/work` with a `setTimeout`/visibility-aware scheduler (one-shot + periodic while the page lives, persisted queue in settings so a reload re-enqueues), constraints evaluated with `navigator.connection`/battery where available, else ignored with a terminal note.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Workers registry: `ExtensionPoints.WORKERS` typed (`WorkerContribution {id, run}`) on Kotlin + web; the alerts library's 3-minute poll becomes the first web worker; Android console showcase registers a demo periodic worker (logs a line).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: Kotlin `WorkConformanceTest` (fixture) + `WorkManagerSchedulerTest` with `WorkManagerTestInitHelper`; web `check-work.mts`; CI lines.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Background work\", plan android placeholder → built, web → built, features `k.scheduler`/`dv.bg` built, tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.session": {
+   "estimate": "3.5 h",
+   "steps": [
+    {
+     "text": "Web contract: `framework/core/session.ts` = Kotlin `contract/Session.kt` (`Principal`, `Session`, `SessionState`, `SessionProvider`, `AnonymousSession`, `AuditEntry`, `AuditLog`, `MemoryAuditLog`); `rt.session` replaces the ad-hoc principal in `runtime.ts` (`bindPrincipal` keeps working, built on it); fixture `spec/fixtures/session.json` (state transitions, audit cap).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Audit log everywhere: every UAC-denied action, swap, settings write of a locked key and bound-principal refusal records an `AuditEntry` (web + Kotlin, same action names); Settings → Account & security → **Audit** list (last 100) in `libs/settings` and Android `SettingsScreen`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Real provider, axHub: `lib-hub` gets `AxhubSessionProvider` (web: `/api/me` + hub cookie; Android: the AXHub app's cookie-jar sign-in) mapping hub role/perms → `Principal`; the console's `account.tsx` reads `rt.session` instead of its own fetch; first non-mock provider.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin: `AuthProviders` extension point typed (`AUTH_PROVIDERS` → `SessionProvider`), `lib-accounts` picks the first registered provider (mock stays as fallback module `lib-accounts-mock`); `SessionConformanceTest` replays the fixture; written without a compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Persistence: session survives restart (Kotlin KV `<key>:session` minus secrets; web settings), `EXPIRED`/`LOCKED` transitions on expiry and app lock (lib-lock hooks `LOCKED`); fixture cases for expiry.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: `check-session.mts`, Kotlin test, console `test_wall_users.py` unchanged; CI lines.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Session + audit\", plan android/web partial → built, status.json + tracker, `build_step complete`; warning \"No real sign-in provider yet\" cleared.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.libs.core": {
+   "estimate": "6 h",
+   "steps": [
+    {
+     "text": "Scope note first: `_claude/memory/docs/libs-core.md` — for each of admin, accounts, profile, billing: what the Android placeholder has (`lib-admin`, `lib-accounts`, `lib-profile`, `lib-billing` screens + modules), what \"real\" means per port (accounts = axHub provider from `x.session`; billing = provider interface only, Play Billing as a separate library per the plan's recommendation), the web library ids (`ai.amberx.axf.<name>`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web lib-logging: `framework/libs/logging` (`AxfWebLibrary`: log sinks via `ExtensionPoints.LOG_SINKS`, levels, the Output terminal as default sink, Settings → General → Logging group) matching `lib-logging` on Android; `axf init` web templates install it beside settings.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web lib-accounts: `framework/libs/accounts` (Account view = today's `react/studio/AccountView.tsx` moved into the library, sign-in/out through `rt.session` providers, Settings → Account group); the console installs it.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android lib-accounts real: `AccountsModule` consumes `AUTH_PROVIDERS` (from `x.session` step 4), `AccountScreen` shows the provider's principal, sign-in/out, errors; mock provider moved to `lib-accounts-mock`; `lib-accounts` unit test with a fake provider.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Profile: `lib-profile` Android (`ProfileScreen` edits display name/avatar stored per principal in KV, exported through a `ProfileProvider` interface) + web `framework/libs/profile` (same provider interface, avatar widget uses `avatar` widget kind); contract in `core/profile.ts` = Kotlin `contract/Profile.kt`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Admin: `lib-admin` Android + web `framework/libs/admin`: an admin-only view (UAC `admin.*`) listing modules/libraries (plugin-inventory), audit log, flags toggles (`x.state` flags), feature kill switches; hidden entirely without the role.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Billing: provider contract `core/billing.ts` = Kotlin `contract/Billing.kt` (products, entitlements, purchase flow result, restore), `BILLING_PROVIDERS` typed; `lib-billing` Android with a `NoBilling` provider (entitlements empty) and `SubscriptionScreen` driven by the provider; web `framework/libs/billing` same; Play Billing library parked as a plan feature (`x.lib.billing.play`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixtures + Kotlin tests: `spec/fixtures/libs-core.json` (profile validation, billing entitlement rules, admin role gate) replayed on both ports; written without a compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Templates: `axf init` installs logging + accounts + profile on web/Android by default (settings already is), build options unchanged; CI template sweep + `axf validate` on the generated apps.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Catalog + status: `libraries.json` entries for the six on web/android/python(planned), status.json features `a.admin`, `u.accounts`, `p.profile`, `b.subs` → built (billing = contract + NoBilling), tracker, `build_step complete`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Console: Settings → Account & security uses lib-accounts/profile; Standards → nothing changes; console tsc + vite build; theme-swap script passes on the new views.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs: PORTING.md \"Core libraries\", CLAUDE.md Status bullet, `_claude/memory/docs/libs-core.md` finished with what stayed placeholder (Play Billing).",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.python.port": {
+   "estimate": "1 d",
+   "steps": [
+    {
+     "text": "Plan the port (no code): `_claude/memory/docs/python-port.md` — engines in fixture order (theme → layout → components → UAC → actions → hide/spacing/roll/search → banner/widgets), package layout `framework/python/axf/engines/`, dataclasses mirroring the Kotlin models, how fixtures are replayed (`framework/python/axf/spec/replay.py`), what the PyQt6 layer covers in the first slice.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixture replay harness: `framework/python/axf/spec/replay.py` loads every `spec/fixtures/*.json`, dispatches by fixture name to a registered engine, reports pass/fail per case; CI job `python-port` runs it (allowed to skip unported engines, listed).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Asset model + validator: `axf/asset.py` (envelope dataclass, `validate_asset` from `asset-types.json` incl. `attach`/`widgets` hosts, slot checks) replaying `validation.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Theme engine: `axf/engines/theme.py` (color + style compile, spacing scale, opacity tokens) replaying `theme.json` + `spacing.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Layout engine: `axf/engines/layout.py` (`compile_slots`, `region_accepts`, hidden regions) replaying `layout.json`, `layout-slots.json`, `hide.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Components engine: `axf/engines/components.py` (component styles, toolbar/nav/app-menu style inputs, container collapsible, toolbar collapsible) replaying `components.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "UAC + actions: `axf/engines/uac.py`, `actions.py` replaying `uac.json`, `actions.json`, `menu-filter.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Roll + search engines: `axf/engines/roll.py`, `search.py` replaying `roll.json`, `search.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Banner + widgets engines: `axf/engines/banner.py`, `widgets.py` (host registry, kinds rules) replaying `banner.json`, `widgets.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Runtime: `axf/runtime.py` (registry, swap, settings store, hidden slots, attachments, bound principal, session from `x.session`) with the same action ids; smoke test registering the starter assets.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Project gate: `axf/project.py` validator replaying `project-manifest.json` (same rules file), used by the pyqt6 template's guard.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "PyQt6 shell, part 1: `axf/qt/shell.py` — window with banner, menubar (app-menu), toolbar, nav (side list), content region from the compiled layout; theme tokens → Qt stylesheet via a token→QSS compiler.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "PyQt6 shell, part 2: dialogs/popups, context menu, settings window driven by `SettingsGroup`s (lib-settings python), search bar widget, clock widget; hot-swap re-applies QSS live.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Qt Widgets kit: `axf/qt/kit.py` implementing the `ComponentKind` table on QtWidgets through the uikit resolver (`x.uikits` python placeholder becomes real).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Template `pyqt6`: `framework/templates/pyqt6` (`template.json`, `project.manifest.json`, `main.py`, `requirements.txt`, guard), `axf init --template pyqt6` wired in `build-engine.mjs` (bakes `framework/python/axf` + assets); `axf validate` on the output.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI: replay harness must pass every fixture (no skips left), `python -m pytest framework/python` job, template sweep includes pyqt6 (no display: `QT_QPA_PLATFORM=offscreen` smoke).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: PORTING.md \"Python port\", plan python ports → built across epics touched, status.json + tracker, `build_step complete`; `axf init` README lists the template.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.engine.uiport": {
+   "estimate": "2.5 h",
+   "steps": [
+    {
+     "text": "Real-library trial: run `axf import-ui --name Cupertino --kit cupertino --source git --path <compose-cupertino repo>` into a scratch android-compose app (`/tmp`), read `tokens.map.json`, list what the codemod missed (patterns + counts) in `_claude/memory/docs/uiport-trial.md`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Codemod fixes from the trial: extend `ROLE_MAP`/`guessToken` in `framework/cli/ui-port.mjs` for the missed Compose patterns (e.g. `MaterialTheme.colorScheme.x`, `Modifier.padding(Nn.dp)` → space tokens), unit cases in `framework/spec/check-uiport.mjs` (new; fixture snippets in `spec/fixtures/uiport/`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kit overrides: generated `kit-<id>` module gets per-kind override files from the library's components (mapping table in `tokens.map.json` → `components.map.json`), default components kept where unmapped; the ui-kit asset lists `covers`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web side: `import-ui` for npm libraries (MUI first) generating `framework/libs/kit-<id>` from the `ui-kit` library template with the same maps; `check-theme.mjs` passes on the output.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CI + status: `check-uiport.mjs` in `android.yml` (node job) + the existing fake-lib import sweep; plan warnings cleared, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.engine.dev": {
+   "estimate": "2 h",
+   "steps": [
+    {
+     "text": "Web hot reload: `framework/react` `useDevServer(url)` long-polls `/events` from `dev-server.mjs` and re-registers changed assets (`registry.register` + `rt.refreshFromSaved`); `axf dev` prints the URL; demo app opts in with `?axfDev=`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android end to end on the emulator (CI): `rebuild-shots.yml`-style job step that starts `axf dev --framework` on the runner, points the emulator at `10.0.2.2:7070` (setting `axf.devServer`, flag `axf.hotReload`), edits a theme file, screenshots before/after and asserts the pixel diff > 0.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Robustness: dev server validates every changed file before announcing it (invalid → `/events` carries `error` and the device shows a terminal line), ignores editor temp files, handles rename/delete; `check-dev-server.mjs` test with a temp folder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs + status: README section \"Live reload on a phone\" (PC IP, same Wi-Fi), plan warning cleared, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.console.repo": {
+   "estimate": "2.5 h",
+   "steps": [
+    {
+     "text": "BRETT says go (rule: not until he does) and picks the dependency style: tagged framework version via git tag + `npm pack`-style tarball, or a git submodule. Record in decisions.md.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Framework packaging: `framework/cli/axf.mjs pack-framework <tag>` producing `axf-framework-<tag>.tgz` (core, react, ui, schemas, libs, plan cores) + a GitHub release asset on tag push (`release.yml`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Repo split: create `MossesX/axf-console` (exists on GitHub first), move `apps/console-web` with history (`git subtree split`), manifest `location` + `repo.exists: true`, `_claude/` + CLAUDE.md via `claude-project`; CI there re-bakes from the tagged tarball instead of `../../framework`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "This repo: `apps/console-web` becomes a thin pointer (README + manifest `location` pointing at the new repo), `install-console.sh` clones the console repo; `deploy/` scripts and `android.yml` console job updated.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Verify: console builds in its repo against the tag, deploy on the VPS from the new clone, `/api/health` + `/mcp` ok; status + `build_step complete`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.deploy.console": {
+   "estimate": "30 min"
+  },
+  "x.showcase.packs": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Reuse `x.assets.templates` output: the 10 layouts, 10 light/dark pairs and 10 style packs are the showcase packs; add `showcase: true` tags in `framework/assets/templates/index.json` for the chosen 30 and a `packs.json` grouping them (`showcase-packs@1`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `apps/demo` re-baked (older framework!) and given a Showcase view that lists packs and swaps all three (layout, colour pair, style) at once (`rt.swap` ×3), with a thumbnail per pack from `template-shots`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android console showcase: same Showcase screen in `apps/console` (Compose) reading the bundled packs; thumbnails from the same shots.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Deploy + status: demo deploy green on `axf.amberxai.com`, Android APK in CI, status.json + tracker, `build_step complete`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Polish pass on the phone: BRETT checks each pack on the S26 Ultra and the web; fix the ones that read badly (contrast/spacing) in the template files.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs: README \"Showcase packs\", screenshots in `_claude/memory/docs/showcase-packs.md`.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.media": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library media --template device-capability --ports android,web,python` → `framework/android/lib-media`, `framework/libs/media`, `framework/python/axf_libs/media` (python = contract + placeholder); `axf compile-library media` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android `MediaPlayer` service (ExoPlayer/Media3 behind the kernel seam `axf.media`): play/pause/seek, playlist, background playback through `x.work`/foreground service; `MediaScreen` route `media`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android camera + capture (CameraX behind `axf.camera`): preview composable, photo/video capture into app files; permissions through the platform seam.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Streaming: HLS/RTSP sources + the VPS stream case (`c.vpsstream`: a Coolify-hosted stream URL from settings), reconnect rules; web uses `<video>` + hls.js only when needed.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-media --template android-compose --boilerplate <closest>` + `axf install media` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-media:testDebugUnitTest`, fake providers), web `check-media.mts` where a fixture exists, CI lines; status.json features dv.media, dv.stream, c.video, c.vpsstream → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.location": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library location --template device-capability --ports android,web,python` → `framework/android/lib-location`, `framework/libs/location`, `framework/python/axf_libs/location` (python = contract + placeholder); `axf compile-library location` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android location (fused provider behind `axf.location`): current fix, updates with accuracy/interval, permission flow; web `navigator.geolocation` with the same `LocationFix` shape.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Maps: a `map` widget kind (open registry) with a provider interface (`MapProvider`: tiles, markers, polyline); first providers: OSM tiles on web (Leaflet), Google Maps Compose on Android behind the seam.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Trails: record a track (list of fixes) to app files, show as polyline, export GPX; demo screen.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-location --template android-compose --boilerplate <closest>` + `axf install location` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-location:testDebugUnitTest`, fake providers), web `check-location.mts` where a fixture exists, CI lines; status.json features dv.loc, dv.maps, c.gps → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.editor": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library editor --template feature-screens --ports android,web,python` → `framework/android/lib-editor`, `framework/libs/editor`, `framework/python/axf_libs/editor` (python = contract + placeholder); `axf compile-library editor` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Editor contract `core/editor.ts` = Kotlin (document model, selection, undo, formats: plain/markdown/rich/code with language id), fixture `editor.json` for the markdown ↔ model round trip.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web editors: markdown (textarea + preview), code (CodeMirror 6 reading theme tokens), rich text (contenteditable minimal) — all `--fx-*` tokens only; `check-theme.mjs` passes.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android editors: Compose `BasicTextField`-based markdown + code (syntax colouring from a small tokenizer in the kernel), rich text minimal; `EditorScreen` route `editor`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-editor --template android-compose --boilerplate <closest>` + `axf install editor` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-editor:testDebugUnitTest`, fake providers), web `check-editor.mts` where a fixture exists, CI lines; status.json features ui.editor, c.texteditor → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.ai": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library ai --template integration --ports android,web,python` → `framework/android/lib-ai`, `framework/libs/ai`, `framework/python/axf_libs/ai` (python = contract + placeholder); `axf compile-library ai` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Scope: lib-ai = the app-side assistant UI on `assistant@1` (`framework/core/assistant.ts`, `AssistantClient`) + lib-mcp for tools; no new provider code. Web: chat view library `framework/libs/ai` wrapping `HttpAssistantClient` + `watchReply` (from the ai-assistant plugin's reference routes), Settings → AI group (host URL, profile).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android: `lib-ai` `AssistantScreen` (route `assistant`) on the Kotlin `AssistantClient` (SSE via lib-mcp's parser), live replies, stop, history; keys never in the app (host-side).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "MCP tools in chat: tool rounds shown with the lib-mcp effects gate (destructive confirm card) on both ports; demo app wires the console's assistant host.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-ai --template android-compose --boilerplate <closest>` + `axf install ai` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-ai:testDebugUnitTest`, fake providers), web `check-ai.mts` where a fixture exists, CI lines; status.json features w.ai, w.mcp, c.ai → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.vps": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library vps --template integration --ports android,web,python` → `framework/android/lib-vps`, `framework/libs/vps`, `framework/python/axf_libs/vps` (python = contract + placeholder); `axf compile-library vps` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract: `VpsProvider` (hosts, run command through axHub `vps.run` with approvals, status) + `DeployProvider` (Coolify apps: list, deploy, logs) in `core/vps.ts` = Kotlin; everything goes through axHub (`lib-hub` client), never direct SSH from an app.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web + Android screens: Hosts (status, doctor report from `console-doctor.sh --report` via the console API), Deploys (Coolify apps, Deploy now with approval link), logs tail; tokens only server-side.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo: ShipX-style wizard screen (pick project → home → deploy) as the demo app, reusing project-wizard homes through the console API.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-vps --template android-compose --boilerplate <closest>` + `axf install vps` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-vps:testDebugUnitTest`, fake providers), web `check-vps.mts` where a fixture exists, CI lines; status.json features w.vps, w.coolify, c.deploy → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.github": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library github --template integration --ports android,web,python` → `framework/android/lib-github`, `framework/libs/github`, `framework/python/axf_libs/github` (python = contract + placeholder); `axf compile-library github` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract + client: `GitHubProvider` (repos, branches, runs, issues, PRs; token via a credential provider; api.github.com only, no redirects) in `core/github.ts` = Kotlin over axf-network; fixture `github.json` for URL building + pagination.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Screens: Repos list, Runs (CI status, the \"CI build errors\" issue link), Issues/PRs read + comment; web `framework/libs/github` + Android `lib-github`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Context menu contribution `cx.github`: \"Open on GitHub\" for files/features that carry a repo path (runtime context items, never asset edits).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-github --template android-compose --boilerplate <closest>` + `axf install github` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-github:testDebugUnitTest`, fake providers), web `check-github.mts` where a fixture exists, CI lines; status.json features w.github, cx.github → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.notifications": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library notifications --template device-capability --ports android,web,python` → `framework/android/lib-notifications`, `framework/libs/notifications`, `framework/python/axf_libs/notifications` (python = contract + placeholder); `axf compile-library notifications` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract: `Notifier` (local notifications: channels, show, cancel) + `PushProvider` (subscribe/unsubscribe/token) in `core/notifications.ts` = Kotlin; the alerts library's web push moves behind `PushProvider` (web); Android local notifications via the platform seam.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android push: UnifiedPush provider (no Google dependency) + FCM provider skeleton behind the same interface; the AXHub app's approval alerts use `Notifier`; `axhub.push` placeholder becomes a `PushProvider` fed by the hub.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Settings → Notifications group on both ports (channels on/off, push device list), demo app sends a local notification from a button.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-notifications --template android-compose --boilerplate <closest>` + `axf install notifications` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-notifications:testDebugUnitTest`, fake providers), web `check-notifications.mts` where a fixture exists, CI lines; status.json features w.push, dv.notif → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.sensors": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library sensors --template device-capability --ports android,web,python` → `framework/android/lib-sensors`, `framework/libs/sensors`, `framework/python/axf_libs/sensors` (python = contract + placeholder); `axf compile-library sensors` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract: `SensorStream` (accelerometer, gyro, light, steps…) + `Connectivity` (network type/metered/online) in `core/sensors.ts` = Kotlin; web uses the Generic Sensor API / `navigator.connection` where present, else a NotImplemented placeholder answer.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android sensors + connectivity through the platform seam, flows with sample rate; demo screen with live values.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "BLE + NFC: scan/connect/characteristic read-write (Android BLE), NFC tag read (Android); web BLE behind `navigator.bluetooth` with a feature check; both as separate optional modules so apps without them ship nothing.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-sensors --template android-compose --boilerplate <closest>` + `axf install sensors` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-sensors:testDebugUnitTest`, fake providers), web `check-sensors.mts` where a fixture exists, CI lines; status.json features dv.sensors, dv.ble, dv.nfc → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.files": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library files --template data-feature --ports android,web,python` → `framework/android/lib-files`, `framework/libs/files`, `framework/python/axf_libs/files` (python = contract + placeholder); `axf compile-library files` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Files: `FileStore` contract (app files, documents picker, share) in `core/files.ts` = Kotlin (`d.files` is built on Android: wrap it), web with the File System Access API + download fallback.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sync `d.sync`: a `SyncProvider` interface + the first provider syncing a folder with axHub's `/projects/<name>/_data` through `axhub.memory_*` (conflict = hold for the user, as claude-sync does); background through `x.work`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Screens: Files browser + Sync status (last run, held conflicts with keep local/hub), both ports.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-files --template android-compose --boilerplate <closest>` + `axf install files` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-files:testDebugUnitTest`, fake providers), web `check-files.mts` where a fixture exists, CI lines; status.json features d.files, d.sync → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.lib.charts": {
+   "estimate": "3 h",
+   "steps": [
+    {
+     "text": "Scaffold: `axf new-library charts --template feature-screens --ports android,web,python` → `framework/android/lib-charts`, `framework/libs/charts`, `framework/python/axf_libs/charts` (python = contract + placeholder); `axf compile-library charts` passes; `libraries.json` entry; settings group (no own settings screen, rule).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Contract: chart spec (`line|bar|pie|area`, series, axes) + table spec (columns, sort, filter, paging) in `core/charts.ts` = Kotlin, colours from theme tokens only (`--fx-accent`, tone tokens; dataviz rules), fixture `charts.json` for scale/tick computation.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web: SVG chart components + a table component (virtualised rows), `framework/libs/charts`; Android: Compose Canvas charts + LazyColumn table, `lib-charts`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo screens + the console's Tracker view uses the table component as the first consumer.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Demo app: `axf init apps/demo-charts --template android-compose --boilerplate <closest>` + `axf install charts` with the library's screens in its nav; web demo page in `apps/demo` behind a nav entry; APK via `android.yml` (app-bundle finds it).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + status: Kotlin unit tests (`:lib-charts:testDebugUnitTest`, fake providers), web `check-charts.mts` where a fixture exists, CI lines; status.json features ui.charts, ui.tables → built, tracker, `build_step complete`; written without a compiler for Kotlin.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.assets.designer": {
+   "estimate": "1 d",
+   "steps": [
+    {
+     "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Designer shell `web/Designer.tsx`: type picker (every non-attachable type from `asset-types.json` the designer covers: nav-menu, drawer, app-menu, context-menu, toolbar, layout, style-theme, color-theme), id + label fields, Save/Cancel; `useEditorSync()` so it reloads values on focus (UI-editor rule). Saves nothing yet.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation gate: every save runs `validateAsset` from the baked `src/axf/core/validate.ts`; errors shown inline next to the field they name; Save disabled until clean. Server route `POST /api/plugins/asset-designer/validate` mirrors it with the CLI validator (`framework/core/project-check.mjs` pattern). Test in `test.py`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Storage: designed assets saved as asset@1 files under `.axf-console/plugins/asset-designer/assets/<type>/<id>.json` (lifecycle dataDir), served by `GET /api/plugins/asset-designer/assets`, registered into the runtime on load like the theme-manager plugin does (`registry.register`, origin `asset-designer`). Built-in ids refused.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Menu editor (nav-menu, app-menu, context-menu): tree of items (label, icon, action, children, divider), drag to reorder, action picker from `rt.actions.list()`, live preview via `rt.swap` on a `ad-preview-<type>` id. Reuses `MenuList.tsx` for the preview.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Toolbar editor: items (icon, label, action, badge counter), `density`/`surface`/`divider`/`collapsible`, widgets start/end picker from `attachable` types (engine-rpc `app-defaults` → `widgets`), live preview through the React `Toolbar`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "`drawer` asset type: add it to `asset-types.json` (hideable chrome, `side` left/right, `width`, `items` like nav-menu, `modal`), `layout.slots` accept it in the `drawer` region, starter `framework/assets/drawer/amberx-side.json`, `framework/defaults.json` names it. Validators on all three ports accept it (Kotlin: `AssetTypeSpec` resource); fixture case in `layout-slots.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Drawer rendering: React `components/Chrome.tsx` draws the drawer region; Compose `axf-ui/components/Chrome.kt` the same (swipe from the edge, scrim from `--fx-opacity-scrim`). Drawer editor in the designer (same editor as nav-menu plus side/width/modal).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Layout editor: region grid (9 regions from `layout.slots`), per-region size/visibility, `data.slots` overrides with accepted-type chips; preview through `compileLayout`. Hidden slots greyed like Appearance does.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Color-theme editor: token groups from the theme engine (`core/engines/theme.ts` token list), colour pickers, contrast warnings (reuse `theme-manager/web/rollEngine.ts` checks), light/dark pair, preview via `rt.swap`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Style-theme editor: space, radii, borders, font sizes, opacity tokens (`opacityDisabled/Muted/Hover/Tint/Scrim/Glass`), density; preview; numbers clamped to the ranges known themes use.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Templates hook: \"Start from\" picker listing starters + designed assets + (later) `x.assets.templates` entries; Duplicate / Rename / Export JSON / Import JSON (validated). Export writes a file a user can drop into an app's assets folder.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default: plugin `enabled: true` in the console's plugin defaults, `framework/catalog/plugins.json` entry (planned → built resolves by itself), `node framework/cli/plugins.mjs --check`, status.json + tracker; Plugin Manager shows it.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android face (first slice): `axf-devtools` gets an `AssetDesignerModule` placeholder route `asset-designer` listing designed assets received from the console (read-only), so the plugin-inventory shows it on both ports; full editors stay web-only for now (noted as a placeholder capability `axf.designer`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: plugin `test.py` (validate route, storage, built-in id refused, lifecycle), web unit cases for the drawer slot + layout compile, CI line; `uninstall.mjs --all` leaves nothing (`check --after-uninstall`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: differences report `_claude/memory/docs/rebuilds/asset-designer.md` (new plugin, so a build report), LOG.md line, web screenshots via `rebuild-shots.mjs`, CLAUDE.md Status, plan epic `x.assets.designer` built via `build_step`, pending item complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.assets.browser": {
+   "estimate": "5 h",
+   "steps": [
+    {
+     "text": "Plugin skeleton `apps/console-web/plugins/asset-browser` from `_template` (id `ai.amberx.axf.console.asset-browser`, lifecycle, install/uninstall, nav → Plugins → Asset browser, settings sub-tab). Lifecycle check + console build pass.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Sources: server route `GET /api/plugins/asset-browser/sources` lists asset folders it may read: framework starters (`framework/assets`), every app under `apps/*/src/assets` or `app/src/main/assets/axf` (from `framework/cli/app-bundle.mjs list`), designed assets (asset-designer dataDir when present). Never follows symlinks; roots only.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Browse view: grid by type → source → asset, search box (reuses `consoleSearch.ts` provider pattern), type chips from `asset-types.json`, counts per source. Rows show id, label, origin, tier.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Preview: `AssetPreview.tsx` from `framework/react/studio` renders the selected asset in a card; for chrome types a live preview on an `ab-preview-<type>` swap like theme-manager; \"Apply here\" = `rt.swap(type, id)` after `registry.register`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Import: drop/paste JSON or pick a file → `validateAsset` → preview → install into a chosen target (console runtime, or an app folder through `POST /api/plugins/asset-browser/install {source, target, type, id}` that writes the file only inside allowed app asset folders; built-in ids refused; backups under the plugin dataDir).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Export: single asset or a pack (zip of asset@1 files + `pack.json`), served by `GET …/export?ids=`; packs are what the plugin runtime (`x.plugins`, PACK kind) will load later, so write the `pack@1` shape now in `framework/schemas/asset-pack.json`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hot-swap across apps: for apps running `axf dev` (`framework/cli/dev-server.mjs`), \"Push to device\" posts the asset to the dev server's folder so the HotReloader picks it up; list dev servers from settings (`axf.devServer`). Error card when none.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Installed by default + Android: enabled in console plugin defaults, `plugins.json` catalog entry, `plugins.mjs --check`; Android `axf-devtools` route `asset-browser` showing the bundled assets by type with Apply (uses `AssetRegistry` + `AxfRuntime.swap`), so Settings → Plugins lists it on both ports.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests: `test.py` (sources never leave roots, import validation, built-in refusal, export pack shape), lifecycle check, CI line.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: report `_claude/memory/docs/rebuilds/asset-browser.md` + LOG.md + web screenshots, CLAUDE.md Status, plan `x.assets.browser` built, pending complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.assets.templates": {
+   "estimate": "7 h",
+   "steps": [
+    {
+     "text": "Template index: `framework/assets/templates/index.json` (`asset-templates@1`: id, type, label, tags, file) + loader `listAssetTemplates(type)` in `framework/cli/build-engine.mjs`; engine-rpc `asset-templates`, console `GET /api/asset-templates?type=`. Empty list works end to end.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Validation in CI: `framework/spec/check-asset-templates.mjs` loads every template, runs `validateAsset`, checks unique ids, ≥ 10 per covered type once a type is marked `complete` in the index, and that each type has a `default`. Wire into `android.yml` (node job).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "nav-menu ×10: side nav, bottom tabs, rail, grouped sections, icon-only, with badges, two-level, settings-first, admin, minimal. Each a valid `nav-menu` asset in `framework/assets/templates/nav-menu/`.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "app-menu ×10 (file/edit/view style menus, single-page apps, tool apps…) + context-menu ×10 (text, list row, card, media, dev, file, link, minimal, with submenus, keyboard hints).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "toolbar ×10: editor, media, search-first, compact icons, labelled, split start/end with widgets, status-heavy (counters/progress), collapsible, roomy, minimal.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "layout ×10: dashboard, master-detail, sidebar-left/right, bottom-nav phone, kiosk, editor + inspector, chat, settings, full-bleed, three-pane. Each with `data.slots` where it narrows a region.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "drawer ×10 (needs `asset-designer` step 7's `drawer` type): left/right, modal/non-modal, wide/narrow, with header, grouped, icon rail, account-first, admin, minimal.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "color-theme ×10 light + ×10 dark (pairs): contrast-checked with `theme-manager/web/rollEngine.ts` checks run from a script; names in one family (`arctic-daylight` style). Each pair shares a `pair` tag.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "style-theme ×10: glass, flat, outlined, dense, roomy, rounded, square, hairline, soft, print. Numbers inside ranges known themes use; every opacity token present.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Defaults: `framework/defaults.json` + `framework/app-defaults.json` reviewed so every type has a default template id (new field `templates.default.<type>` read by `axf init` for \"start from a template\"); `axf init --template-set <id>` option registered in `build-options.json` only if it sets a token, else as an init argument.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Previews: `framework/cli/rebuild-shots.mjs`-style script `framework/cli/template-shots.mjs` renders each template in the demo app headless (phone + desktop) to `framework/assets/templates/<type>/shots/`; `index.json` entries get `shot`. Run once; commit shots ≤ 60 KB each (`framework/cli/shrink-shots.py`).",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Android: templates bundled into `axf-assets` as a resource folder so Compose previews (`ComponentGallery.kt`) and the future Android designer read the same files; `AssetTemplates` Kotlin loader + a unit test that every bundled template validates.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hooks: asset-designer \"Start from\" and Build Pilot's designers list templates by type (console `GET /api/asset-templates`); asset-browser shows a Templates source. Add the `templates` capability to `app-defaults` engine-rpc.",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Close: regenerate fixtures touched (`gen-fixtures.mts`), CI green, report `_claude/memory/docs/rebuilds/asset-templates.md`, CLAUDE.md Status, plan `x.assets.templates` built, pending complete.",
+     "estimate": "30 min"
+    }
+   ]
+  },
+  "x.plugins.manager": {
+   "estimate": "30 min"
   }
  },
  "dirty": true,
- "updatedAt": "2026-10-18T14:17:14.449Z",
+ "updatedAt": "2026-10-21T04:48:23.349Z",
  "history": [
   {
    "at": "2026-10-17T16:12:45.936Z",
@@ -262,6 +1181,151 @@
   {
    "at": "2026-10-18T14:17:14.449Z",
    "by": "feature-tracker",
+   "text": "Synced with the feature tracker: 1 change(s)"
+  },
+  {
+   "at": "2026-10-21T04:41:36.489Z",
+   "by": "cli",
+   "text": "Synced with the feature tracker: 1 change(s)"
+  },
+  {
+   "at": "2026-10-21T04:46:12.602Z",
+   "by": "claude-code:fable",
+   "text": "Module system: modules, extension points, services, placeholders: ~4 h, 8 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.603Z",
+   "by": "claude-code:fable",
+   "text": "State, data cache, events, flags, config, migrations: ~4 h, 8 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.603Z",
+   "by": "claude-code:fable",
+   "text": "UI-kit switching + fallback: ~3.5 h, 7 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.603Z",
+   "by": "claude-code:fable",
+   "text": "Plugin runtime (deliver features after install): ~5 h, 10 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.603Z",
+   "by": "claude-code:fable",
+   "text": "Background work scheduler: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.604Z",
+   "by": "claude-code:fable",
+   "text": "Session, principal, audit log: ~3.5 h, 7 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.604Z",
+   "by": "claude-code:fable",
+   "text": "Libraries: settings, logging, admin, accounts, profile, billing: ~6 h, 12 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.604Z",
+   "by": "claude-code:fable",
+   "text": "Python / PyQt6 port: ~1 d, 17 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.604Z",
+   "by": "claude-code:fable",
+   "text": "Import third-party UI libraries → AmberX kits: ~2.5 h, 5 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.604Z",
+   "by": "claude-code:fable",
+   "text": "Live reload (axf dev) + device hot reload: ~2 h, 4 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.605Z",
+   "by": "claude-code:fable",
+   "text": "Console in its own private repo: ~2.5 h, 5 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.605Z",
+   "by": "claude-code:fable",
+   "text": "Console deployment (install-console.sh): ~30 min, 0 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.605Z",
+   "by": "claude-code:fable",
+   "text": "10 layouts, 10 light/dark theme pairs, 10 style packs: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.605Z",
+   "by": "claude-code:fable",
+   "text": "Library: Media (video, audio, streaming, camera): ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.605Z",
+   "by": "claude-code:fable",
+   "text": "Library: Location (GPS, maps, trails): ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.607Z",
+   "by": "claude-code:fable",
+   "text": "Library: Editors (rich text, markdown, code): ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.607Z",
+   "by": "claude-code:fable",
+   "text": "Library: AI assistant (Claude, MCP): ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.607Z",
+   "by": "claude-code:fable",
+   "text": "Library: VPS & deploy: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.608Z",
+   "by": "claude-code:fable",
+   "text": "Library: GitHub: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.608Z",
+   "by": "claude-code:fable",
+   "text": "Library: Notifications & push: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.608Z",
+   "by": "claude-code:fable",
+   "text": "Library: Sensors & connectivity: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.608Z",
+   "by": "claude-code:fable",
+   "text": "Library: Files & sync: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.609Z",
+   "by": "claude-code:fable",
+   "text": "Library: Charts & tables: ~3 h, 6 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.609Z",
+   "by": "claude-code:fable",
+   "text": "Asset Designer plugin (no-code): ~1 d, 16 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.609Z",
+   "by": "claude-code:fable",
+   "text": "Asset Browser plugin: ~5 h, 10 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.611Z",
+   "by": "claude-code:fable",
+   "text": "Asset templates: 10+ per type + defaults: ~7 h, 14 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:46:12.611Z",
+   "by": "claude-code:fable",
+   "text": "Plugin manager + settings tabs for every app: ~30 min, 0 step(s) set"
+  },
+  {
+   "at": "2026-10-21T04:48:23.349Z",
+   "by": "cli",
    "text": "Synced with the feature tracker: 1 change(s)"
   }
  ]

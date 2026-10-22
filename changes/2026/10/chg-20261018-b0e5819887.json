@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-b0e5819887",
+  "createdAt": "2026-10-18T14:14:22.000Z",
+  "updatedAt": "2026-10-18T16:14:22.000Z",
+  "kind": "build",
+  "title": "Launcher: plan or API key",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`deploy/claude-pick.sh` (installed as `claude` by `--install`) now asks first how to sign in: Claude plan (default; unsets any stray `ANTHROPIC_API_KEY`) or an Anthropic API key read from `~/.anthropic-key` (0600, `ANTHROPIC_KEY_FILE` overrides) and exported only for that `claude` process; option 3",
+    "commits": [
+      {
+        "sha": "453b73e",
+        "message": "Memory lives on axHub: memory/ becomes a read-only mirror"
+      },
+      {
+        "sha": "3027deb",
+        "message": "claude-pick: choose Claude plan or API key at launch"
+      },
+      {
+        "sha": "ceb648e",
+        "message": "claude-fs@1: _memory/ replaces memory/, live data under /Claude/projects/amberx-axf/data"
+      },
+      {
+        "sha": "d95cc40",
+        "message": "Revert \"claude-fs@1: _memory/ replaces memory/, live data under /Claude/projects/amberx-axf/data\""
+      },
+      {
+        "sha": "2295c71",
+        "message": "Project manifests + Standards + shared data on the hub's /projects"
+      },
+      {
+        "sha": "737290e",
+        "message": "Add claude-project: one command that makes any folder a Claude project with a home on GitHub, the VPS or the device, and parks AXF ports for Fable"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T16:14:22.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "launcher-plan-or-api-key"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T14:14:22.000Z",
+  "finishedAt": "2026-10-18T16:14:22.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "deploy/claude-pick.sh"
+  ]
+}

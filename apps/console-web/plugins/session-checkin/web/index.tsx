@@ -3,6 +3,7 @@ import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
+import { appMenu } from './menu';
 
 /** Plugin folder: server routes live at /api/plugins/session-checkin/. */
 const FOLDER = 'session-checkin';
@@ -391,6 +392,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Session check-in',
   version: '1.0.0',
+  appMenu,
   views: { 'session-checkin': { title: 'Sessions', icon: 'list', render: () => <SessionsView /> } },
   nav: { label: 'Plugins', items: [{ id: 'session-checkin', label: 'Sessions', icon: 'list', view: 'session-checkin' }] },
   settingsTabs: [{ id: 'session-checkin', label: 'Session check-in', icon: 'check-circle', order: 36, description: 'The questions every new Claude Code session opens with, where they are installed, and the baseline build costs they quote.' }],

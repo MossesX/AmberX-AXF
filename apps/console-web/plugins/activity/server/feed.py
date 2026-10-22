@@ -16,7 +16,8 @@ Sources (each can be switched off in Settings → Plugins → Activity):
              activity.mjs on the VPS, e.g. from Claude Code hooks). An active report not updated for report_ttl_s turns
              stale; finished ones are dropped after linger_s.
 
-Never holds a secret: GitHub calls carry the token to api.github.com only (no redirects), and every title/detail is
+Never holds a secret: GitHub calls go through lib-github (axf_server.github: the token to api.github.com only, no
+redirects, owner/name checked before any URL), and every title/detail is
 passed through ``redact``.
 """
 from __future__ import annotations
@@ -27,9 +28,11 @@ import re
 import threading
 import time
 import urllib.parse
-import urllib.request
 from pathlib import Path
 from typing import Any, Callable
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import github, storage
 
 ACTIVE = ("queued", "running", "waiting")
 FINISHED = ("done", "failed", "cancelled", "stale")
@@ -41,7 +44,6 @@ SOURCES = {
     "services": "Plugins (VPS Auto fix and others)",
     "reports": "Reported work (Claude Code, scripts)",
 }
-REPO_RE = re.compile(r"^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$")
 ID_RE = re.compile(r"^[A-Za-z0-9_.:@/+-]{1,160}$")
 MAX_REPORTS = 200
 
@@ -132,21 +134,12 @@ def norm(raw: Any, source: str, now_ms: int) -> dict[str, Any] | None:
     return it
 
 
+_GH_STATES = {"success": "done", "failure": "failed"}  # lib-github run states → feed states (others are the same word)
+
+
 def _gh_state(status: str, conclusion: str | None) -> str:
-    if status == "in_progress":
-        return "running"
-    if status in ("queued", "requested", "waiting", "pending"):
-        return "waiting" if status == "waiting" else "queued"
-    if conclusion == "success":
-        return "done"
-    if conclusion in ("cancelled", "skipped", "neutral"):
-        return "cancelled"
-    return "failed"
-
-
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *a: Any, **k: Any) -> None:  # the token must never follow a redirect
-        return None
+    s = github.run_state(status, conclusion)
+    return _GH_STATES.get(s, s)
 
 
 class Feed:
@@ -158,13 +151,12 @@ class Feed:
                  now: Callable[[], float] = time.time) -> None:
         self.dir = data_dir
         self.root = root
-        self.default_repos = [r for r in (default_repos or []) if REPO_RE.match(r)]
+        self.default_repos = [r for r in (default_repos or []) if github.valid_repo(r)]
         self.github_token = github_token
         self.services = services
         self.live_sessions = live_sessions
         self.now = now
         self._gh_get = github_get or self._github_get
-        self._opener = urllib.request.build_opener(_NoRedirect)
         self._lock = threading.Lock()
         self._gh_cache: tuple[float, list[dict[str, Any]], list[str]] | None = None
         self._detail_cache: dict[str, tuple[float, dict[str, Any]]] = {}
@@ -184,7 +176,7 @@ class Feed:
         src = c.get("sources") if isinstance(c.get("sources"), dict) else {}
         return {
             "sources": {k: bool(src.get(k, True)) for k in SOURCES},
-            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and REPO_RE.match(r)][:20],
+            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and github.valid_repo(r)][:20],
             "lingerS": int(c.get("lingerS", 600)) if str(c.get("lingerS", "")).isdigit() else 600,
             "reportTtlS": int(c.get("reportTtlS", 1800)) if str(c.get("reportTtlS", "")).isdigit() else 1800,
         }
@@ -196,7 +188,7 @@ class Feed:
                 if k in SOURCES:
                     c["sources"][k] = bool(v)
         if isinstance(patch.get("repos"), list):
-            bad = [r for r in patch["repos"] if not isinstance(r, str) or not REPO_RE.match(r)]
+            bad = [r for r in patch["repos"] if not isinstance(r, str) or not github.valid_repo(r)]
             if bad:
                 raise ValueError(f"repos must look like owner/name: {bad[:3]}")
             c["repos"] = list(dict.fromkeys(patch["repos"]))[:20]
@@ -207,10 +199,7 @@ class Feed:
                 except (TypeError, ValueError):
                     raise ValueError(f"{k} must be a number of seconds") from None
         self.dir.mkdir(parents=True, exist_ok=True)
-        tmp = self.dir / "config.json.tmp"
-        tmp.write_text(json.dumps(c, indent=2))
-        os.chmod(tmp, 0o600)
-        tmp.replace(self.dir / "config.json")
+        storage.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         self._gh_cache = None
         return c
 
@@ -248,10 +237,7 @@ class Feed:
         p = self._report_path(it["id"])
         if not p.exists() and len(files) >= MAX_REPORTS:
             raise ValueError("too many reported items; finish some first")
-        tmp = p.with_suffix(".tmp")
-        tmp.write_text(json.dumps(it))
-        os.chmod(tmp, 0o600)
-        tmp.replace(p)
+        storage.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         return it
 
     def finish(self, iid: str, state: str = "done", detail: str | None = None) -> dict[str, Any] | None:
@@ -261,12 +247,38 @@ class Feed:
             return None
         return self.report({**prev, "state": state if state in FINISHED else "done", **({"detail": detail} if detail else {}), "finishedAt": None}, prev.get("origin", "api"))
 
+    # Items taken off the banner on purpose (the trash can on a stuck item): every device, for a day.
+    DISMISS_KEEP_MS = 24 * 3600 * 1000
+    MAX_DISMISSED = 500
+
+    def _dismissed(self, now: int) -> dict[str, int]:
+        try:
+            raw = json.loads((self.dir / "dismissed.json").read_text("utf-8"))
+        except (OSError, ValueError):
+            return {}
+        if not isinstance(raw, dict):
+            return {}
+        return {k: v for k, v in raw.items() if isinstance(k, str) and len(k) <= 200 and isinstance(v, int) and now - v < self.DISMISS_KEEP_MS}
+
     def dismiss(self, iid: str) -> bool:
+        """Take an item off the banner everywhere: a reported one is deleted; any other (a GitHub run, a reply, a
+        service's item) is remembered as dismissed for a day so it doesn't come back from its source."""
+        if not isinstance(iid, str) or not iid or len(iid) > 200:
+            return False
         p = self._report_path(iid)
-        if p.is_file() and not p.is_symlink():
-            p.unlink()
+        if p.is_symlink():
+            return False  # never touched through a link
+        if p.is_file():
+            p.unlink()  # a reporter that reports again later shows again: it's alive
             return True
-        return False
+        now = int(self.now() * 1000)
+        with self._lock:
+            d = self._dismissed(now)
+            d[iid] = now
+            if len(d) > self.MAX_DISMISSED:
+                d = dict(sorted(d.items(), key=lambda kv: kv[1])[-self.MAX_DISMISSED:])
+            storage.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
+        return True
 
     @staticmethod
     def _read_report(p: Path) -> dict[str, Any] | None:
@@ -304,14 +316,14 @@ class Feed:
     # ---------------- GitHub Actions
 
     def _github_get(self, path: str) -> Any:
-        tok = self.github_token()
-        if not tok:
+        if not self.github_token():
             raise RuntimeError("no GitHub token")
-        req = urllib.request.Request(f"https://api.github.com{path}", headers={
-            "Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-activity"})
-        with self._opener.open(req, timeout=12) as r:
-            return json.loads(r.read(4_000_000).decode())
+        # lib-github: the token to api.github.com only, never follows a redirect, 4 MB cap
+        gh = github.GitHubClient(self.github_token, user_agent="axf-console-activity", timeout=12, max_bytes=4_000_000)
+        try:
+            return gh.get(path)
+        except github.GitHubError as e:
+            raise RuntimeError(f"GitHub answered {e.status}" if e.status else str(e)) from None
 
     def _github(self, cfg: dict[str, Any], now: int) -> tuple[list[dict[str, Any]], list[str]]:
         if self._gh_cache and self.now() - self._gh_cache[0] < 20:
@@ -324,9 +336,9 @@ class Feed:
             runs: dict[int, dict[str, Any]] = {}
             try:
                 for status in ("in_progress", "queued", "waiting"):
-                    for r in self._gh_get(f"/repos/{repo}/actions/runs?status={status}&per_page=30").get("workflow_runs", []):
+                    for r in self._gh_get(github.repo_path(repo, "actions", "runs", query={"status": status, "per_page": 30})).get("workflow_runs", []):
                         runs[int(r.get("id") or 0)] = r
-                for r in self._gh_get(f"/repos/{repo}/actions/runs?status=completed&per_page=10").get("workflow_runs", []):
+                for r in self._gh_get(github.repo_path(repo, "actions", "runs", query={"status": "completed", "per_page": 10})).get("workflow_runs", []):
                     runs.setdefault(int(r.get("id") or 0), r)
             except Exception as e:  # noqa: BLE001 — one repo failing doesn't hide the others
                 errors.append(f"GitHub {repo}: {redact(e, 120)}")
@@ -352,8 +364,8 @@ class Feed:
         return items, errors
 
     def _github_detail(self, iid: str) -> dict[str, Any]:
-        m = re.match(r"^gh:([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+):(\d+)$", iid)
-        if not m:
+        m = re.match(r"^gh:([^:]{3,140}):(\d{1,20})$", iid)
+        if not m or not github.valid_repo(m.group(1)):
             raise KeyError(iid)
         repo, rid = m.groups()
         if repo not in self.config()["repos"]:
@@ -361,7 +373,7 @@ class Feed:
         hit = self._detail_cache.get(iid)
         if hit and self.now() - hit[0] < 8:
             return hit[1]
-        jobs = self._gh_get(f"/repos/{repo}/actions/runs/{rid}/jobs?per_page=50").get("jobs", [])
+        jobs = self._gh_get(github.repo_path(repo, "actions", "runs", int(rid), "jobs", query={"per_page": 50})).get("jobs", [])
         groups = []
         done = total = 0
         for j in jobs:
@@ -460,7 +472,7 @@ class Feed:
         if cfg["sources"]["reports"]:
             run("Reports", lambda: self._reports(cfg, now))
 
-        seen: set[str] = set()
+        seen: set[str] = set(self._dismissed(now))
         uniq = []
         for it in items:
             if it["id"] not in seen:

@@ -23,14 +23,15 @@ import re
 import threading
 import time
 import traceback
-import urllib.error
-import urllib.request
 from pathlib import Path
 from typing import Any, Callable
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import github, http as axf_http, storage
 
 # ---------------------------------------------------------------- engine (mirror of core/engines/alerts.ts)
 
@@ -150,27 +151,15 @@ SOURCES: list[dict[str, str]] = [
 ]
 SOURCE_IDS = {s["id"] for s in SOURCES}
 SOURCE_RE = re.compile(r"^[a-z][a-z0-9._-]{0,39}$")
-REPO_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$")
 
 
 def _now() -> int:
     return int(time.time() * 1000)
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    """Never follow redirects: they would carry the Authorization header (ntfy token, GitHub token) to another host."""
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[no-untyped-def]
-        return None
-
-
-_OPENER = urllib.request.build_opener(_NoRedirect)
-_LOOPBACK = re.compile(r"^http://(127\.0\.0\.1|localhost|\[::1\])(:\d+)?(/|$)")
-
-
 def _target_ok(url: str) -> bool:
-    """https anywhere; plain http only to this machine (a local ntfy, tests)."""
-    return url.startswith("https://") or bool(_LOOPBACK.match(url))
+    """https anywhere; plain http only to this machine (a local ntfy, tests). (axf_server.http.target_ok)"""
+    return axf_http.target_ok(url)
 
 
 ALERT_FIELDS: dict[str, tuple[type, ...]] = {
@@ -189,19 +178,12 @@ def _valid_alert(a: Any) -> bool:
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text())
-    except (OSError, json.JSONDecodeError):
-        return default
+    return storage.read_json(p, default)
 
 
 def _write_private(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_name(f"{p.name}.{os.getpid()}.{threading.get_ident()}.tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as fh:
-        fh.write(json.dumps(data, indent=2))
-    os.replace(tmp, p)
+    """Atomic, 0600 (axf_server.storage). The data folder (.axf-console) keeps its mode when it exists."""
+    storage.write_json(p, data, dir_mode=None if p.parent.is_dir() else storage.PRIVATE_DIR)
 
 
 def _valid_rules(r: Any) -> dict[str, Any]:
@@ -239,11 +221,13 @@ class AlertHub:
         self.f_run = data_dir / "alerts-run.json"
         self.log = log
         self.github_token = github_token
-        self.github_api = (github_api or os.environ.get("GITHUB_API_URL") or "https://api.github.com").rstrip("/")
+        self.github_api = (github_api or github.api_base_from_env()).rstrip("/")
+        # lib-github: token only to this API origin, redirects never followed, scrubbed errors
+        self.gh = github.GitHubClient(lambda: self.github_token(), base_url=self.github_api, user_agent="axf-console-alerts", timeout=15)
         self.systems = systems
         self.pending_file = pending_file
         self.plugins = plugins if plugins is not None else {}
-        self.default_repos = [r for r in (default_repos or []) if REPO_RE.match(r)]
+        self.default_repos = [r for r in (default_repos or []) if github.valid_repo(r)]
         self.lock = threading.RLock()
         loaded = _read_json(self.f_alerts, [])
         self.items: list[dict[str, Any]] = trim_alerts([a for a in (loaded if isinstance(loaded, list) else []) if _valid_alert(a)])
@@ -273,7 +257,7 @@ class AlertHub:
                      "details": bool(c.get("ntfy", {}).get("details", False))},
             "webpush": {"enabled": bool(c.get("webpush", {}).get("enabled", False))},
             "sources": {s: bool(c.get("sources", {}).get(s, True)) for s in SOURCE_IDS},
-            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and REPO_RE.match(r)],
+            "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and github.valid_repo(r)],
             "publicUrl": c.get("publicUrl") or os.environ.get("AXF_PUBLIC_URL", ""),
             "pollSeconds": max(60, min(int(c.get("pollSeconds", 180) or 180), 3600)),
         }
@@ -332,7 +316,7 @@ class AlertHub:
                         src[k] = bool(v)
                 c["sources"] = src
             if isinstance(patch.get("repos"), list):
-                bad = [r for r in patch["repos"] if not isinstance(r, str) or not REPO_RE.match(r)]
+                bad = [r for r in patch["repos"] if not isinstance(r, str) or not github.valid_repo(r)]
                 if bad:
                     raise HTTPException(400, f"repos must look like owner/name: {bad[:3]}")
                 c["repos"] = list(dict.fromkeys(patch["repos"]))[:30]
@@ -430,14 +414,13 @@ class AlertHub:
         tok = self._secrets().get("ntfyToken")
         if tok:
             headers["Authorization"] = f"Bearer {tok}"
-        req = urllib.request.Request(c["server"].rstrip("/") + "/", data=json.dumps(body).encode(), headers=headers, method="POST")
-        try:
-            with _OPENER.open(req, timeout=10) as r:  # validated in set_config; redirects are not followed
-                return 200 <= r.status < 300, f"sent to ntfy ({r.status})"
-        except urllib.error.HTTPError as e:
-            return False, f"ntfy answered {e.code}"
-        except (urllib.error.URLError, TimeoutError, OSError) as e:
-            return False, f"ntfy unreachable: {getattr(e, 'reason', e)}"
+        try:  # validated in set_config; redirects are never followed (axf_server.http)
+            r = axf_http.request("POST", c["server"].rstrip("/") + "/", headers=headers, body=json.dumps(body).encode(), timeout=10, max_bytes=65536)
+        except axf_http.HttpError as e:
+            return False, f"ntfy unreachable: {e}"
+        if 200 <= r.status < 300:
+            return True, f"sent to ntfy ({r.status})"
+        return False, f"ntfy answered {r.status}"
 
     # web push
 
@@ -456,10 +439,7 @@ class AlertHub:
             if not self.f_vapid.exists():
                 key = ec.generate_private_key(ec.SECP256R1())
                 pem = key.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8, serialization.NoEncryption())
-                self.dir.mkdir(parents=True, exist_ok=True)
-                fd = os.open(self.f_vapid, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-                with os.fdopen(fd, "wb") as fh:
-                    fh.write(pem)
+                storage.write_bytes(self.f_vapid, pem, dir_mode=None if self.dir.is_dir() else storage.PRIVATE_DIR)
             key = serialization.load_pem_private_key(self.f_vapid.read_bytes(), password=None)
         raw = key.public_key().public_bytes(serialization.Encoding.X962, serialization.PublicFormat.UncompressedPoint)  # type: ignore[union-attr]
         return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
@@ -524,12 +504,12 @@ class AlertHub:
     # ---- sources
 
     def _gh(self, path: str) -> Any:
-        tok = self.github_token()
-        if not tok:
+        if not self.github_token():
             raise RuntimeError("no GitHub token")
-        req = urllib.request.Request(f"{self.github_api}{path}", headers={"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "axf-console-alerts"})
-        with _OPENER.open(req, timeout=15) as r:  # fixed API host; redirects not followed (they'd carry the token)
-            return json.loads(r.read().decode())
+        try:
+            return self.gh.get(path)
+        except github.GitHubError as e:
+            raise RuntimeError(f"GitHub answered {e.status}" if e.status else str(e)) from None
 
     def poll_github(self) -> None:
         cfg = self.config()
@@ -539,7 +519,7 @@ class AlertHub:
         seen = self._seen_runs or set()
         for repo in cfg["repos"]:
             try:
-                runs = self._gh(f"/repos/{repo}/actions/runs?per_page=30&status=completed").get("workflow_runs", [])
+                runs = self._gh(github.repo_path(repo, "actions", "runs", query={"per_page": 30, "status": "completed"})).get("workflow_runs", [])
             except Exception as e:  # noqa: BLE001 — one repo failing doesn't stop the others
                 self.log("alerts", f"GitHub {repo}: {str(e)[:120]}", "warn")
                 continue
@@ -555,7 +535,7 @@ class AlertHub:
                 rid = int(run.get("id") or 0)
                 fresh = rid not in seen
                 seen.add(rid)
-                if run.get("conclusion") in ("failure", "timed_out", "startup_failure"):
+                if run.get("conclusion") in github.FAILURE_CONCLUSIONS:
                     # once per failing run: a dismissed alert stays gone until the next failing run
                     if fresh:
                         self.raise_alert({"source": source, "severity": "error", "key": key, "title": f"{name} failed on {branch} ({repo})",
@@ -772,14 +752,10 @@ def _push_payload(alert: dict[str, Any], url: str) -> bytes:
 def webpush_send(sub: dict[str, Any], payload: bytes, key_file: Path, vapid_sub: str, urgency: str = "normal") -> int:
     """POST one encrypted message to the subscription's push service; returns the HTTP status."""
     body = webpush_encrypt(payload, sub["keys"]["p256dh"], sub["keys"]["auth"])
-    req = urllib.request.Request(sub["endpoint"], data=body, method="POST", headers={
-        "Content-Encoding": "aes128gcm", "Content-Type": "application/octet-stream", "TTL": "86400", "Urgency": urgency,
-        "Authorization": vapid_header(sub["endpoint"], key_file, vapid_sub)})
-    try:
-        with _OPENER.open(req, timeout=10) as r:  # https endpoint (checked when subscribed); no redirects
-            return r.status
-    except urllib.error.HTTPError as e:
-        return e.code
+    headers = {"Content-Encoding": "aes128gcm", "Content-Type": "application/octet-stream", "TTL": "86400", "Urgency": urgency,
+               "Authorization": vapid_header(sub["endpoint"], key_file, vapid_sub)}
+    # https endpoint (checked when subscribed); no redirects (axf_server.http)
+    return axf_http.request("POST", sub["endpoint"], headers=headers, body=body, timeout=10, max_bytes=65536).status
 
 
 # ---------------------------------------------------------------- API

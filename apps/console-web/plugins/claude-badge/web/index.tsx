@@ -4,6 +4,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Chip, Icon } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { appMenu } from './menu';
 
 /*
  * Claude badge: on every console load it tests the AI connection (server/__init__.py → axf.llm@1) and attaches a
@@ -93,7 +94,10 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Claude badge',
   version: '0.1.0',
+  appMenu,
   provides: ['banner.badge.claude'],
+  // Only a badge on the app's banner: inside a host that hides the banner (Patches) it isn't loaded (embed@1 skipWhen).
+  embed: { skipWhen: ['hidden:banner'] },
   register(rt) {
     runtime = rt;
     show(rt, last, !tested && !last);

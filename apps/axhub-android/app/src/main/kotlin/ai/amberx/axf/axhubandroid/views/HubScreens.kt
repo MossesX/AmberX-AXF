@@ -17,16 +17,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import ai.amberx.axf.axhubandroid.hub.HubAddress
-import ai.amberx.axf.axhubandroid.hub.HubClient
-import ai.amberx.axf.axhubandroid.hub.HubState
-import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.watch.Alerts
-import ai.amberx.axf.settings.SettingsScreen
+import ai.amberx.axf.axhubandroid.watch.hubPrefs
+import ai.amberx.axf.hub.HubClient
+import ai.amberx.axf.hub.HubRules
+import ai.amberx.axf.hub.HubState
+import ai.amberx.axf.hub.LockedWebView
+import ai.amberx.axf.hub.hubApkDownloads
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
-import ai.amberx.axf.ui.components.AxfPageHead
 import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.ButtonTone
 import ai.amberx.axf.ui.components.PlaceholderScreen
@@ -38,20 +38,20 @@ import kotlinx.coroutines.launch
 fun HubPageView() {
     val ctx = LocalContext.current
     val runtime = LocalAxfRuntime.current
-    val prefs = remember { WatchPrefs(ctx) }
+    val prefs = remember { hubPrefs(ctx) }
     val page by HubState.page.collectAsState()
     val scope = rememberCoroutineScope()
     val base = prefs.base
-    val url = page.first?.takeIf { HubAddress.isHub(base, it) } ?: HubAddress.approvals(base)
+    val url = page.first?.takeIf { HubRules.isHub(base, it) } ?: HubRules.approvalsUrl(base)
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = Axf.space.two, vertical = Axf.space.one), horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             AxfButton("Approvals", { HubState.open(null); runtime.navigate("home") }, tone = ButtonTone.GHOST, icon = "arrow-left")
-            AxfButton("All on hub", { HubState.open(HubAddress.approvals(base)) }, tone = ButtonTone.GHOST, icon = "list")
+            AxfButton("All on hub", { HubState.open(HubRules.approvalsUrl(base)) }, tone = ButtonTone.GHOST, icon = "list")
         }
-        HubWebView(base, url, Modifier.weight(1f), reload = page.second) { finished ->
+        LockedWebView(base, url, Modifier.weight(1f), reload = page.second) { finished ->
             // After any hub page (e.g. an approval decided), refresh the list and drop that approval's alert.
             Regex("/auth/admin/approvals/([0-9a-f-]{36})").find(finished)?.groupValues?.get(1)?.let { Alerts.clearApproval(ctx, it) }
-            scope.launch { HubState.update(HubClient.feed(base)) }
+            scope.launch { HubState.update(HubClient.Default.feed(base)) }
         }
     }
 }
@@ -63,13 +63,13 @@ fun HubPageView() {
 @Composable
 fun AppsView() {
     val ctx = LocalContext.current
-    val base = remember { WatchPrefs(ctx).base }
+    val base = remember { hubPrefs(ctx).base }
     var reload by remember { mutableLongStateOf(0L) }
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = Axf.space.two, vertical = Axf.space.one), horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             AxfButton("Refresh", { reload = System.nanoTime() }, tone = ButtonTone.GHOST, icon = "refresh")
         }
-        HubWebView(base, HubAddress.apps(base), Modifier.weight(1f), reload = reload, allowDownloads = true)
+        LockedWebView(base, HubRules.appsUrl(base), Modifier.weight(1f), reload = reload, onDownload = hubApkDownloads(base))
     }
 }
 
@@ -91,21 +91,12 @@ val hubAreas: List<HubArea> = listOf(
 fun HubAreaView(area: HubArea) {
     val ctx = LocalContext.current
     val runtime = LocalAxfRuntime.current
-    val base = remember { WatchPrefs(ctx).base }
+    val base = remember { hubPrefs(ctx).base }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two)) {
         PlaceholderScreen(area.title, message = "${area.plan}\n\nComing with ${area.waitsOn}.", icon = area.icon)
         AxfCard(Modifier.fillMaxWidth(), title = "Meanwhile", icon = "external") {
             AxfText("The hub's own pages already cover approvals, your account and users (admins).", muted = true)
-            AxfButton("Open the hub", { HubState.open("$base/auth/account"); runtime.navigate("hub") }, icon = "external")
+            AxfButton("Open the hub", { HubState.open(HubRules.accountUrl(base)); runtime.navigate("hub") }, icon = "external")
         }
-    }
-}
-
-/** Generated settings (AXHub, Unlock, Appearance, General, About). */
-@Composable
-fun SettingsView() {
-    Column(Modifier.fillMaxSize()) {
-        AxfPageHead("Settings", modifier = Modifier.padding(horizontal = Axf.space.two))
-        SettingsScreen()
     }
 }

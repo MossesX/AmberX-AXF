@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-ea9560bad8",
+  "createdAt": "2026-10-21T01:35:03.527Z",
+  "updatedAt": "2026-10-21T03:35:03.527Z",
+  "kind": "build",
+  "title": "Build Pilot: AI assistant + agent manager + assembling agent (Fable)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Port the console AI assistant and agent manager into Build Pilot (MossesX/Build-Pilot), and make the assembling agent (pilot-assembler) run there as a local backend in server/assembly.py instead of the Dev Console. The agent may only add features from existing plugins, libraries, modules, boilerplat",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T03:35:03.527Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "build-pilot-agents"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:35:03.527Z",
+  "finishedAt": "2026-10-21T03:35:03.527Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

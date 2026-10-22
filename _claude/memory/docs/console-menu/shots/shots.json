@@ -1,0 +1,15 @@
+[
+ { "name": "01-console-default", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 } ] },
+ { "name": "02-menu-console", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Console'", "wait": 900 } ] },
+ { "name": "03-menu-builds", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Builds'", "wait": 900 } ] },
+ { "name": "04-live-pending", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Builds'", "wait": 700 }, { "click": "[data-axf-menu-item=pending-open]", "wait": 1800 } ] },
+ { "name": "05-menu-framework", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Framework'", "wait": 700 }, { "click": "[data-axf-menu-item=libraries]", "wait": 700 } ] },
+ { "name": "06-live-libraries", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Framework'", "wait": 700 }, { "click": "[data-axf-menu-item=libraries]", "wait": 700 }, { "click": "[data-axf-menu-item=list]", "wait": 1800 } ] },
+ { "name": "07-menu-plugins", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Plugins'", "wait": 900 } ] },
+ { "name": "08-menu-apps", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Apps'", "wait": 700 }, { "click": "[data-axf-menu-item=axhub]", "wait": 900 } ] },
+ { "name": "09-menu-view", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='View'", "wait": 900 } ] },
+ { "name": "10-view-toolbar-shown", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='View'", "wait": 700 }, { "click": "[data-axf-menu-item='chrome.toolbar']", "wait": 700 }, { "click": ".fx-menubar__btn >> text='View'", "wait": 900 } ] },
+ { "name": "11-menu-help", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Help'", "wait": 900 } ] },
+ { "name": "12-search-fallback", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "eval": "window.AXF.setSlotHidden('banner', true)", "wait": 600 }, { "press": "Control+K", "wait": 600 }, { "type": "pend", "wait": 900 } ] },
+ { "name": "13-rescue-note", "settle": 5000, "steps": [ { "press": "Escape", "wait": 500 }, { "eval": "window.AXF.setSlotHidden('app-menu', true)", "wait": 900 } ] }
+]

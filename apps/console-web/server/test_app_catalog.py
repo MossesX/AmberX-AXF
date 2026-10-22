@@ -11,6 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 import app_catalog  # noqa: E402
+import axf_framework  # noqa: E402,F401
+from axf_server import http as axf_http  # noqa: E402
 
 passed = 0
 
@@ -48,25 +50,32 @@ class FakeGitHub:
     def set(self, run: int, data: bytes) -> None:
         self.run, self.zip = run, data
 
-    def __call__(self, method: str, url: str, headers: dict, body):  # noqa: ANN001
+    def __call__(self, req):  # noqa: ANN001 — an axf_server.http transport
+        r = self.answer(req.method, req.url, req.headers)
+        return axf_http.Response(r[0], r[1], r[2], req.url)
+
+    def answer(self, method: str, url: str, headers: dict):  # noqa: ANN001
+        if url.startswith("https://blob.example/"):  # the artifact's redirect target: never gets the token
+            assert not any(k.lower() == "authorization" for k in headers)
+            self.downloads += 1
+            return 200, {}, self.zip
         assert "Authorization" in headers
         if "/runs?" in url:
             return 200, {}, json.dumps({"workflow_runs": [{"id": 1000 + self.run, "run_number": self.run, "head_sha": "abc123def4567890", "html_url": f"https://github.com/x/runs/{self.run}", "updated_at": "2026-10-20T20:00:00Z"}]}).encode()
         if url.endswith("/artifacts?per_page=100"):
             return 200, {}, json.dumps({"artifacts": [{"name": "voicevault-debug.apk", "archive_download_url": "https://api.github.com/a/1"}, {"name": "app-apks", "size_in_bytes": len(self.zip), "archive_download_url": "https://api.github.com/a/2"}]}).encode()
         if url == "https://api.github.com/a/2":
-            self.downloads += 1
-            return 200, {}, self.zip
+            return 302, {"location": "https://blob.example/a2.zip"}, b""
         return 404, {}, b""
 
 
 with tempfile.TemporaryDirectory() as tmp:
     folder = Path(tmp) / "app-catalog"
     gh = FakeGitHub()
-    cat = app_catalog.AppCatalog("MossesX/AmberX-AXF", lambda: "t0ken", folder, http=gh)
+    cat = app_catalog.AppCatalog("MossesX/AmberX-AXF", lambda: "t0ken", folder, transport=gh)
 
     # no token -> clear error
-    nocat = app_catalog.AppCatalog("r/r", lambda: "", folder, http=gh)
+    nocat = app_catalog.AppCatalog("r/r", lambda: "", folder, transport=gh)
     try:
         nocat.sync(); check(False, "sync without a token fails")
     except app_catalog.CatalogError as e:

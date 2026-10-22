@@ -1,28 +1,39 @@
 /**
  * App tabs console plugin (ai.amberx.axf.console.app-tabs).
  *
- * A tab group across the whole page (framework slot `app.frame.top`, above the banner): one tab per AmberX app picked
+ * A tab group across the whole page (framework slot `app.frame.top`, below the banners): one tab per AmberX app picked
  * in Settings → Plugins → App tabs, Console, Pilot and axHub by default. The console's own tab shows the console; any other
  * tab covers the page below the tab bar (slot `app.frame.cover`) with that app in a frame. A frame stays loaded once
  * opened, so switching back and forth keeps its state. Apps: built-in list + project manifests with a deploy.url +
  * ones added in settings (https only). Choices are settings (`app-tabs.tabs`, `app-tabs.custom`, `app-tabs.active`),
  * so they follow the UI-editor rule (fresh on focus, last save wins). No server part.
+ *
+ * Inside a host app (embed@1, e.g. Patches) the tab group is gone: the host runs the tabs (Brett, Oct 21 2026: "keep
+ * console the way it was unless running inside Patches, then remove tab group and let Patches control tabs"). No bar,
+ * no cover, no Apps-menu tab entries there; settings and the saved choices stay for when the console runs on its own.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { loadProjects } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BUILT_IN, DEFAULT_TABS, LATER_DEFAULTS, encodeCustom, fromManifests, isHome, mergeApps, parseCustom, safeUrl, slug, tabsFor, type AppDef } from './apps';
 import './app-tabs.css';
+import { appMenu, TABS } from './menu';
 
 const ID = 'ai.amberx.axf.console.app-tabs';
 const FOLDER = 'app-tabs';
 const KEYS = { tabs: 'app-tabs.tabs', custom: 'app-tabs.custom', active: 'app-tabs.active' } as const;
 const SEEN_KEY = 'app-tabs.seenDefaults';
 const here = () => globalThis.location?.origin ?? '';
+/** Running inside a host app (embed@1): the host controls the tabs. Fixed for the page's life, like `rt.embedded`. */
 
 /* ---------------- shared state: the app list and the saved choices ---------------- */
+
+let runtime: AxfRuntime | null = null;
+const savedTabs = (rt: AxfRuntime): string[] | null => { const t = rt.settings.get(KEYS.tabs); return Array.isArray(t) ? t.filter((x): x is string => typeof x === 'string') : null; };
+const knownApps = (rt: AxfRuntime): AppDef[] => mergeApps(BUILT_IN, manifestApps, parseCustom(rt.settings.get(KEYS.custom)));
 
 let manifestApps: AppDef[] = [];
 let manifestsLoaded: Promise<void> | null = null;
@@ -78,11 +89,38 @@ function useAppTabs() {
 
 /* ---------------- the tab bar (app.frame.top) ---------------- */
 
+/**
+ * Banners sit above the tab bar and come and go, so the cover can't start at a fixed height: publish where the bar
+ * ends as `--axp-app-tabs-bottom` on the page frame (the cover is inside it). Follows the bar and everything above it.
+ */
+function useBarBottom(shown: boolean) {
+  const ref = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const bar = ref.current;
+    const frame = bar?.parentElement;
+    if (!bar || !frame) return;
+    const set = () => frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom))}px`);
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(set) : null;
+    const watchAbove = () => {
+      ro?.disconnect();
+      for (let el: Element | null = bar; el; el = el.previousElementSibling) ro?.observe(el);
+      set();
+    };
+    const mo = typeof MutationObserver === 'function' ? new MutationObserver(watchAbove) : null;
+    mo?.observe(frame, { childList: true });
+    watchAbove();
+    globalThis.addEventListener?.('resize', set);
+    return () => { ro?.disconnect(); mo?.disconnect(); globalThis.removeEventListener?.('resize', set); frame.style.removeProperty('--axp-app-tabs-bottom'); };
+  }, [shown]);
+  return ref;
+}
+
 function TabBar() {
   const t = useAppTabs();
+  const ref = useBarBottom(t.tabs.length > 0);
   if (t.tabs.length < 1) return null;
   return (
-    <nav className="axp-app-tabs" aria-label="Apps" data-fx-ctx-ignore="">
+    <nav ref={ref} className="axp-app-tabs" aria-label="Apps" data-fx-ctx-ignore="">
       <div className="axp-app-tabs__list" role="tablist">
         {t.tabs.map((a) => {
           const on = a === t.active;
@@ -202,12 +240,31 @@ function TabsPanel() {
   );
 }
 
-export const plugin: AxfWebLibrary = {
+const standalone: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'App tabs',
   version: '0.1.0',
+  appMenu,
+  appMenuProviders: {
+    [TABS]: {
+      items: async () => {
+        if (runtime) await loadManifestApps();
+        const rt = runtime;
+        if (!rt) return [];
+        return tabsFor(knownApps(rt), savedTabs(rt), here()).map((a) => ({ id: `tab:${a.id}`, label: a.name, icon: a.icon, action: `app-tabs.show:${a.id}` }));
+      },
+    },
+  },
   register(rt) {
-    rt.actions.register('app-tabs.show', (args) => { const id = args?.[0]; if (id) rt.settings.set(KEYS.active, id); }, { label: 'Switch app tab', searchable: false });
+    runtime = rt;
+    // app-tabs.show:<id> — a known app not yet on the tab bar is added to it first (the app menu's "Show … in a tab").
+    rt.actions.register('app-tabs.show', (args) => {
+      const id = args?.[0];
+      if (!id) return;
+      const chosen = savedTabs(rt) ?? [...DEFAULT_TABS];
+      if (!chosen.includes(id) && knownApps(rt).some((a) => a.id === id && !isHome(a, here()))) rt.settings.set(KEYS.tabs, [...chosen, id]);
+      rt.settings.set(KEYS.active, id);
+    }, { label: 'Switch app tab', searchable: false });
     rt.actions.register('app-tabs.settings', () => rt.dispatch('settings.open:app-tabs'), { label: 'App tabs settings' });
   },
   slots: {
@@ -220,3 +277,6 @@ export const plugin: AxfWebLibrary = {
     { id: 'app-tabs.lifecycle', tab: 'app-tabs', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
+
+/** Inside a host app (Patches) the host runs the tabs, so the plugin isn't loaded there at all (embed@1 skipWhen). */
+export const plugin: AxfWebLibrary = { ...standalone, embed: { skipWhen: ['embedded'] } };

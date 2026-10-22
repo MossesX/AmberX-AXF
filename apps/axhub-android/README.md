@@ -14,8 +14,17 @@ Phone app for Brett's axHub, built on **AmberX AXF 0.2.0** (`android-compose` te
 - The web view only shows the hub's address (https, exact host); any other link opens in the phone's browser and redirects elsewhere are stopped. No JavaScript, file or content access, or mixed content.
 - The app never approves through an API; approving happens on the hub's own page, so the hub's Origin + CSRF checks apply.
 - Never shows over the lock screen; the lock screen only says "Approval waiting". Screens are kept out of screenshots and recents.
-- Optional app lock (Settings → Unlock: fingerprint or PIN, via lib-lock). If the lock can't run, **Sign out and reset** drops the hub session before turning it off.
+- Optional app lock (Settings → Unlock: fingerprint or PIN, via lib-lock's `LockGate` + `Gated` around every view). Picking PIN without a saved PIN, or fingerprint without a working sensor, is refused (lib-lock's mode guard). If the lock can't run, **Sign out and reset** drops the hub session before turning it off.
+- Secure window (`android.secureWindow` in `axf.manifest.json`): FLAG_SECURE and WebView debugging off, applied by the framework.
 - Hub address must be plain https with no path.
+
+## Framework libraries it runs on
+
+- **lib-hub** (framework/android/lib-hub, harvested from this app Oct 20 2026): hub address rules, the approvals feed + status mapping, sign-out on the hub, watch settings + seen ids (`WatchPrefs`, kept in this app's original `axhub_watch` preferences file), `HubState`, the origin-locked web view and the Apps tab's downloads.
+- **lib-notifications** (framework/android/lib-notifications, harvested from this app): channels, permission checks, the ongoing "watching" notification, the private-lock-screen approval alert.
+- **lib-lock**: the app lock.
+- **lib-work** (framework/android/lib-work, harvested from this app's `ApprovalWatchService` + `WatchBootReceiver` Oct 21 2026): the foreground service, STOP / CHECK_NOW / INTERVAL commands, 5-minute back-off while signed out, the one-time sign-in notice, stop when watching is off and the boot/update restart. The app only registers `watch/ApprovalWatch.kt`: a job spec (data, the same one the framework fixture `spec/fixtures/work.json` replays) and a body that checks the feed once through lib-hub and alerts through lib-notifications.
+- What stays in the app: `Alerts.kt` (its channel ids, wording, intents) and `ApprovalWatch.kt` (the job spec + one check).
 
 ## Planned (routes and placeholders already in place)
 

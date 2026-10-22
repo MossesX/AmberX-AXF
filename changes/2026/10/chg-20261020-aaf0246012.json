@@ -1,0 +1,50 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-aaf0246012",
+  "createdAt": "2026-10-20T20:30:00.000Z",
+  "updatedAt": "2026-10-20T22:30:00.000Z",
+  "kind": "build",
+  "title": "Banner, badge and clock asset types (Fable rebuild)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Ban",
+    "commits": [
+      {
+        "sha": "ad0e8b0",
+        "message": "Rebuild reports for banner-assets + widget-assets; mark both complete; k.search built"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/banner-assets.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-20T22:30:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "banner-assets"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T20:30:00.000Z",
+  "finishedAt": "2026-10-20T22:30:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

@@ -28,6 +28,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { gitAuthEnv, scrub } from './github.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 export const PLUGINS_DIR = join(ROOT, 'apps/console-web/plugins');
@@ -35,6 +36,9 @@ const STATE = resolve(process.env.AXF_STATE || join(ROOT, '.axf-console/state.js
 const BACKUPS = join(ROOT, '.axf-console/plugin-backups');
 const FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 const REBUILDS_DIR = join(ROOT, '_claude', 'memory', 'docs', 'rebuilds');
+const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
+// The Codebase changes log (change-log@1, one JSON per request) is history too: an entry names the folders a build touched.
+const CHANGES_DIR = join(ROOT, 'changes');
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
@@ -108,8 +112,8 @@ export function scanReferences(p) {
   const hits = [];
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
-    // Rebuild reports and their screenshots are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/')) continue;
+    // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/')) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop());
@@ -306,7 +310,7 @@ function publishToSource(change, message, log, already) {
   if (!token) throw new Error('publishing needs GITHUB_TOKEN with Contents: write on the repo');
   const git = (args, o = {}) => {
     const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { encoding: 'utf8', timeout: 120000, cwd: o.cwd, env: { ...process.env, ...o.env, GIT_TERMINAL_PROMPT: '0' } });
-    if (r.status !== 0 && !o.ok) throw new Error(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ').replaceAll(token, '***')}`);
+    if (r.status !== 0 && !o.ok) throw new Error(scrub(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ')}`, [token]));
     return { ok: r.status === 0, out: (r.stdout || '').trim(), err: (r.stderr || '').trim() };
   };
   const m = git(['-C', ROOT, 'remote', 'get-url', 'origin']).out.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
@@ -316,10 +320,8 @@ function publishToSource(change, message, log, already) {
   if (!branch || branch === 'HEAD') throw new Error('publishing needs a checked-out branch (this clone is on a detached HEAD)');
   const url = process.env.AXF_LIFECYCLE_PUSH_URL || `https://github.com/${slug}.git`;
   const tmp = mkdtempSync(join(tmpdir(), 'axf-lifecycle-'));
-  const askpass = join(tmp, 'askpass.sh');
-  writeFileSync(askpass, '#!/bin/sh\ncase "$1" in Username*) echo x-access-token ;; *) printf %s "$AXF_GIT_PUSH_TOKEN" ;; esac\n');
-  chmodSync(askpass, 0o700);
-  const auth = { env: { GIT_ASKPASS: askpass, AXF_GIT_PUSH_TOKEN: token } };
+  // lib-github: the token reaches git only through GIT_CONFIG_* (header scoped to https://github.com/, no redirects)
+  const auth = { env: gitAuthEnv(token) };
   const wt = join(tmp, 'wt');
   try {
     git(['-C', ROOT, 'fetch', '-q', url, branch], auth);

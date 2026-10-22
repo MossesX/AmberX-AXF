@@ -5,23 +5,15 @@
  * backend; without it the console records the command for Claude Code and says so on the output terminal.
  */
 
-/* ---------------- models (mirrors framework/catalog/*.json, tracker.json, boilerplates) ---------------- */
+/* ---------------- models: the framework's typed catalog contract (framework/core/catalog.ts = Kotlin kernel.catalog) ---------------- */
 
-export interface Suggestion { id: string; title: string }
-export interface CatalogItem { id: string; title: string; note: string; tag: string; recommended: boolean; suggests: Suggestion[]; tab: string; group: string }
-export interface CatalogGroup { id: string; label: string; items: CatalogItem[] }
-export interface CatalogTab { id: string; label: string; groups: CatalogGroup[] }
-export interface Catalog { frameworkVersion: string; tabs: CatalogTab[] }
-export type Status = 'built' | 'partial' | 'placeholder' | 'planned';
-export const STATUSES: Status[] = ['built', 'partial', 'placeholder', 'planned'];
-export interface TrackerItem { id: string; tab: string; group: string; parent?: string; title: string; tag: string; status: Status; wave: number; module: string | null; notes: string }
-export interface Tracker { generatedAt: string; summary: Record<string, Record<string, number>>; items: TrackerItem[] }
-export interface BoilerplateScreen { id: string; label: string; kind: string }
-export interface Boilerplate { id: string; name: string; category: string; description: string; features: string[]; screens: BoilerplateScreen[]; modules: string[]; libraries?: ({ library: string; params?: Record<string, unknown> } | string)[]; defaults: Record<string, string>; status: string; source: string }
-export interface BoilerplateIndex { categories: { id: string; label: string }[]; items: { id: string; name: string; category: string; description: string; status: string; source: string }[] }
-import type { LibraryParam } from './axf/core/library';
-export type { LibraryParam };
-export interface InstallableLibrary { id: string; module: string; name: string; description: string; features: string[]; dependsOn: string[]; manifestKey: string; params: LibraryParam[]; install?: { gradle?: string; module?: string; import?: string }; port?: { source?: { kind: string; url?: string; coordinate?: string; path?: string }; version?: string; covers?: string[]; ported?: boolean } }
+import { createTokenStore } from './axf/libs/apiclient';
+import { parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrary, parseTracker, type Boilerplate, type FeatureStatus, type LibraryDescriptor, type LibraryParam } from './axf/core/catalog';
+export type { BoilerplateIndex, BoilerplateScreen, Boilerplate, Catalog, CatalogGroup, CatalogItem, CatalogTab, LibraryParam, Tracker, TrackerItem } from './axf/core/catalog';
+export type { CatalogSuggestion as Suggestion, FeatureStatus as Status } from './axf/core/catalog';
+export { FEATURE_STATUSES as STATUSES, paramDefaultText, paramError, paramToJson } from './axf/core/catalog';
+/** An installable library (library@1). */
+export type InstallableLibrary = LibraryDescriptor;
 export interface ModuleInfo { name: string; kind: string; description: string }
 export interface EngineResult { ok: boolean; log?: string[]; error?: string; [k: string]: unknown }
 
@@ -48,11 +40,12 @@ async function getJson<T>(api: string, fallback: string): Promise<T> {
   return (await r.json()) as T;
 }
 
-/** The console token (AXF_TOKEN) kept in this browser; sent with every write. */
-export const getToken = () => { try { return localStorage.getItem('axf-console:token') ?? ''; } catch { return ''; } };
-export const setToken = (t: string) => { try { if (t) localStorage.setItem('axf-console:token', t); else localStorage.removeItem('axf-console:token'); } catch { /* storage blocked */ } globalThis.dispatchEvent?.(new Event(TOKEN_CHANGED)); };
+/** The console token (AXF_TOKEN) kept in this browser; sent with every write (store: the framework's API client library). */
+export const consoleTokens = createTokenStore({ key: 'axf-console:token', event: 'axf:token-changed' });
+export const getToken = () => consoleTokens.get();
+export const setToken = (t: string) => consoleTokens.set(t);
 /** Fired on window when the console token saved in this browser changes (the systems check re-runs). */
-export const TOKEN_CHANGED = 'axf:token-changed';
+export const TOKEN_CHANGED = consoleTokens.event;
 const authHeader = (): Record<string, string> => { const t = getToken(); return t ? { authorization: `Bearer ${t}` } : {}; };
 
 export async function post(api: string, body: unknown): Promise<EngineResult> {
@@ -67,11 +60,11 @@ export async function post(api: string, body: unknown): Promise<EngineResult> {
 
 /* ---------------- data ---------------- */
 
-export const loadCatalog = () => getJson<Catalog>('catalog', 'catalog.json');
-export const loadTracker = () => getJson<Tracker>('tracker', 'tracker.json');
-export const loadLibraries = async () => (await getJson<{ items: InstallableLibrary[] }>('libraries', 'libraries.json')).items ?? [];
-export const loadBoilerplateIndex = () => getJson<BoilerplateIndex>('boilerplates', 'boilerplates.json');
-export const loadBoilerplates = async (): Promise<Boilerplate[]> => { const x = await getJson<{ items: Boilerplate[] } | Boilerplate[]>('boilerplates/items', 'boilerplate-items.json'); return Array.isArray(x) ? x : x.items ?? []; };
+export const loadCatalog = async () => parseCatalog(await getJson<unknown>('catalog', 'catalog.json'));
+export const loadTracker = async () => parseTracker(await getJson<unknown>('tracker', 'tracker.json'));
+export const loadLibraries = async (): Promise<InstallableLibrary[]> => { const x = await getJson<{ items?: unknown[] }>('libraries', 'libraries.json'); return (Array.isArray(x.items) ? x.items : []).map(parseLibrary); };
+export const loadBoilerplateIndex = async () => parseBoilerplateIndex(await getJson<unknown>('boilerplates', 'boilerplates.json'));
+export const loadBoilerplates = async (): Promise<Boilerplate[]> => { const x = await getJson<{ items?: unknown[] } | unknown[]>('boilerplates/items', 'boilerplate-items.json'); return (Array.isArray(x) ? x : Array.isArray(x.items) ? x.items : []).map(parseBoilerplate); };
 export interface PlannedPlugin { id: string; name: string; target: string; description?: string; plan?: string; pending?: string; model?: string }
 export const loadPluginIndex = async () => (await getJson<{ items: PlannedPlugin[] }>('plugin-index', 'plugin-index.json')).items ?? [];
 export const loadModules = async () => (await getJson<{ modules: ModuleInfo[] }>('modules', 'modules.json')).modules ?? [];
@@ -88,9 +81,7 @@ export interface DemoApp { id: string; library: string; name: string; template: 
 
 /* ---------------- helpers ---------------- */
 
-export const statusTone = (s: Status): 'success' | 'accent' | 'warning' | 'danger' | undefined => (s === 'built' ? 'success' : s === 'partial' ? 'accent' : s === 'placeholder' ? 'warning' : undefined);
-/** library@1 parameter helpers live in the framework (`core/library.ts`): the wizard and `LibraryParamField` share them. */
-export { paramDefaultText, paramToJson, paramError } from './axf/core/library';
+export const statusTone = (s: FeatureStatus): 'success' | 'accent' | 'warning' | 'danger' | undefined => (s === 'built' ? 'success' : s === 'partial' ? 'accent' : s === 'placeholder' ? 'warning' : undefined);
 
 /* ---------------- plan (framework/plan/plan.json) ---------------- */
 

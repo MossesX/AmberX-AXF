@@ -40,8 +40,10 @@ public data class SearchBarData(val placeholder: String, val maxResults: Int, va
 public data class SearchBarConfig(val placeholder: String, val maxResults: Int, val width: Int, val kinds: List<String>?, val shortcut: Boolean)
 
 public object WidgetEngine {
-    public val WIDGET_TYPES: List<String> = listOf("clock", "search-bar")
-    public val ATTACHABLE_TYPES: List<String> = listOf("clock", "search-bar", "badge")
+    /** Widget types, spec order (asset-types.json → "widget": true). Oct 20 2026: eleven widget kinds joined clock and search bar. */
+    public val WIDGET_TYPES: List<String> = listOf("clock", "search-bar", "action-button", "logo", "label", "status", "counter", "progress", "avatar", "link", "theme-switch", "spacer", "divider")
+    /** Attachable types, spec order ("attachable": true): every widget plus the badge. */
+    public val ATTACHABLE_TYPES: List<String> = WIDGET_TYPES + "badge"
     public val TOOLBAR_SIDES: List<String> = listOf("start", "end")
     /** Search bar width in multiples of the theme's space token. */
     public val SEARCH_BAR_WIDTH: Map<String, Int> = linkedMapOf("compact" to 18, "regular" to 30, "wide" to 46)
@@ -53,7 +55,7 @@ public object WidgetEngine {
     init {
         // The same two hosts asset-types.json declares (toolbar first, as the spec lists `toolbar` before `banner`).
         registerHost(HostSpec("toolbar", "widgets", WIDGET_TYPES, TOOLBAR_SIDES))
-        registerHost(HostSpec("banner", "attach", listOf("badge") + WIDGET_TYPES, listOf("left", "center", "right")))
+        registerHost(HostSpec("banner", "attach", ATTACHABLE_TYPES, listOf("left", "center", "right")))
     }
 
     /** Register (or replace) a host. Libraries may make any chrome asset a host without a kernel change. */
@@ -66,10 +68,12 @@ public object WidgetEngine {
     /** Hosts declared by a type registry's specs (`attach` / `widgets` blocks) — lets a module's own spec file add hosts. */
     public fun loadHosts(types: AssetTypeRegistry, specJson: JsonObject) {
         val widgetTypes = (specJson.obj("types") ?: return).entries.filter { (_, v) -> (v as? JsonObject)?.bool("widget") == true }.map { it.key }.ifEmpty { WIDGET_TYPES }
+        val attachableTypes = (specJson.obj("types") ?: return).entries.filter { (_, v) -> (v as? JsonObject)?.bool("attachable") == true }.map { it.key }.ifEmpty { ATTACHABLE_TYPES }
         for ((id, v) in specJson.obj("types") ?: return) {
             val o = v as? JsonObject ?: continue
             if (types.get(id) == null) continue
-            o.obj("attach")?.let { a -> registerHost(HostSpec(id, "attach", a.strList("types").ifEmpty { widgetTypes }, a.strList("sides"))) }
+            // An `attach` block without `types` takes every attachable type; a `widgets` block every widget type (web: widgets.ts).
+            o.obj("attach")?.let { a -> registerHost(HostSpec(id, "attach", a.strList("types").ifEmpty { attachableTypes }, a.strList("sides"))) }
             o.obj("widgets")?.let { w -> registerHost(HostSpec(id, "widgets", widgetTypes, w.strList("sides"))) }
         }
     }
@@ -140,4 +144,54 @@ public object WidgetEngine {
         val shortcut = !(sp != null && !sp.isString && sp.content == "false") // only a boolean false turns it off, as on the web
         return SearchBarConfig(placeholder, n.coerceIn(SEARCH_MAX_RESULTS_MIN, SEARCH_MAX_RESULTS_MAX), width, kinds, shortcut)
     }
+
+    /* ---------------- widget kinds: the pure rules every port draws from (web: widgets.ts; fixtures widgets.json → kinds) ---------------- */
+
+    public val WIDGET_TONES: List<String> = listOf("neutral", "success", "warning", "danger", "accent", "muted")
+    /** A tone from asset data, [fallback] when it isn't one of the six. */
+    public fun widgetTone(t: String?, fallback: String = "neutral"): String = if (t != null && t in WIDGET_TONES) t else fallback
+
+    /** Counter widget text: "" when hidden at zero, the number, or `max+` past the cap (max defaults to 99, min 1). */
+    public fun counterText(n: Double?, max: Double? = 99.0, hideAtZero: Boolean = true): String {
+        val v = n?.takeIf { it.isFinite() }?.let { Math.max(0.0, Math.floor(it)).toLong() } ?: 0L
+        val cap = max?.takeIf { it.isFinite() && it >= 1 }?.let { Math.floor(it).toLong() } ?: 99L
+        if (v == 0L && hideAtZero) return ""
+        return if (v > cap) "$cap+" else v.toString()
+    }
+    /** Status widget: on while the bound counter is above zero. */
+    public fun statusOn(count: Double?): Boolean = count != null && count.isFinite() && count > 0
+    /** Progress widget: whole percent 0–100 of n over max (max ≤ 0 or missing → 0). Rounds half up like the web's Math.round. */
+    public fun progressPercent(n: Double?, max: Double?): Int {
+        val v = n?.takeIf { it.isFinite() } ?: 0.0
+        val m = max?.takeIf { it.isFinite() && it > 0 } ?: return 0
+        return Math.floor(v / m * 100 + 0.5).toInt().coerceIn(0, 100)
+    }
+    /** Avatar initials: first letters of the first and last word, upper-cased; one word gives its first two letters; empty → "?". */
+    public fun avatarInitials(name: String?): String {
+        val words = (name ?: "").trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        if (words.isEmpty()) return "?"
+        if (words.size == 1) return words[0].take(2).uppercase()
+        return (words.first().take(1) + words.last().take(1)).uppercase()
+    }
+    private val LINK = Regex("^(https?://[^\\s/?#]+[^\\s]*|mailto:[^\\s@]+@[^\\s]+|tel:\\+?[0-9().\\- ]{3,})$", RegexOption.IGNORE_CASE)
+    /** Link widget: the address it may open (https, http, mailto, tel; trimmed), else null (the widget is not drawn). */
+    public fun linkHref(href: String?): String? = href?.trim()?.takeIf { LINK.matches(it) }
+    private val IMAGE = Regex("^(https?://[^\\s]+|data:image/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+|\\.?/[^\\s]*)$", RegexOption.IGNORE_CASE)
+    /** Image address a logo/avatar may show: https, http, data:image or an app path (starts with / or ./), else null. */
+    public fun imageSrc(src: String?): String? = src?.trim()?.takeIf { IMAGE.matches(it) }
+    /** Spacer widget: gap in multiples of the space token; -1 = flex (push what follows to the other end). */
+    public val SPACER_UNITS: Map<String, Int> = linkedMapOf("small" to 1, "regular" to 2, "large" to 4, "flex" to -1)
+    public fun spacerUnits(size: String?): Int = SPACER_UNITS[size] ?: 2
+    /** Logo widget size: font scale for text/icon logos and the image height in px. */
+    public data class LogoSize(val scale: Double, val px: Int)
+    public val LOGO_SIZE: Map<String, LogoSize> = linkedMapOf("small" to LogoSize(0.85, 16), "regular" to LogoSize(1.0, 20), "large" to LogoSize(1.25, 28))
+    public fun logoSize(size: String?): LogoSize = LOGO_SIZE[size] ?: LOGO_SIZE.getValue("regular")
+    /** Avatar widget size in px. */
+    public val AVATAR_SIZE: Map<String, Int> = linkedMapOf("small" to 18, "regular" to 24, "large" to 32)
+    public fun avatarSize(size: String?): Int = AVATAR_SIZE[size] ?: 24
+    /** Progress widget width in multiples of the space token. */
+    public val PROGRESS_WIDTH: Map<String, Int> = linkedMapOf("compact" to 8, "regular" to 14, "wide" to 24)
+    public fun progressWidth(w: String?): Int = PROGRESS_WIDTH[w] ?: 14
+    /** Theme switch: the color theme to swap to from the active one (dark unless dark is active). */
+    public fun themeSwitchNext(active: String?, light: String, dark: String): String = if (active == dark) light else dark
 }

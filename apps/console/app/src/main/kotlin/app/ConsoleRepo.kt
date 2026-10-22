@@ -3,14 +3,9 @@ package ai.amberx.axf.console
 import android.content.Context
 import ai.amberx.axf.data.JsonDocumentStore
 import ai.amberx.axf.kernel.asset.AxfJson
-import ai.amberx.axf.kernel.asset.bool
-import ai.amberx.axf.kernel.asset.int
-import ai.amberx.axf.kernel.asset.obj
-import ai.amberx.axf.kernel.asset.objList
 import ai.amberx.axf.kernel.asset.parseJsonObject
 import ai.amberx.axf.kernel.asset.str
 import ai.amberx.axf.kernel.asset.strList
-import ai.amberx.axf.kernel.asset.strMap
 import ai.amberx.axf.kernel.asset.strOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,54 +14,35 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-/* ---- models mirrored from framework/catalog JSON, tracker.json and framework/boilerplates ---- */
+/* ---- models: the framework's typed catalog contract (ai.amberx.axf.kernel.catalog = framework/core/catalog.ts) ---- */
 
-data class Suggestion(val id: String, val title: String)
-data class CatalogItem(val id: String, val title: String, val note: String, val tag: String, val recommended: Boolean, val suggests: List<Suggestion>, val tab: String, val group: String)
-data class CatalogGroup(val id: String, val label: String, val items: List<CatalogItem>)
-data class CatalogTab(val id: String, val label: String, val groups: List<CatalogGroup>)
-data class Catalog(val frameworkVersion: String, val tabs: List<CatalogTab>) { val items: List<CatalogItem> get() = tabs.flatMap { t -> t.groups.flatMap { it.items } } }
-
-enum class Status { BUILT, PARTIAL, PLACEHOLDER, PLANNED; companion object { fun parse(s: String?) = entries.firstOrNull { it.name.equals(s, true) } ?: PLANNED } }
-data class TrackerItem(val id: String, val tab: String, val group: String, val parent: String?, val title: String, val tag: String, val status: Status, val wave: Int, val module: String?, val notes: String)
-data class Tracker(val generatedAt: String, val items: List<TrackerItem>) { fun byId(id: String) = items.firstOrNull { it.id == id } }
-
-data class BoilerplateScreen(val id: String, val label: String, val kind: String)
-data class Boilerplate(val id: String, val name: String, val category: String, val description: String, val features: List<String>, val screens: List<BoilerplateScreen>, val modules: List<String>, val defaults: Map<String, String>, val status: String, val source: String) {
-    fun toJson(): JsonObject = buildJsonObject {
-        put("\$axf", JsonPrimitive("boilerplate@1")); put("id", JsonPrimitive(id)); put("name", JsonPrimitive(name)); put("category", JsonPrimitive(category)); put("description", JsonPrimitive(description))
-        put("features", kotlinx.serialization.json.JsonArray(features.map { JsonPrimitive(it) }))
-        put("screens", kotlinx.serialization.json.JsonArray(screens.map { s -> buildJsonObject { put("id", JsonPrimitive(s.id)); put("label", JsonPrimitive(s.label)); put("kind", JsonPrimitive(s.kind)) } }))
-        put("modules", kotlinx.serialization.json.JsonArray(modules.map { JsonPrimitive(it) }))
-        put("defaults", JsonObject(defaults.mapValues { JsonPrimitive(it.value) })); put("status", JsonPrimitive(status)); put("source", JsonPrimitive(source))
-    }
-    companion object {
-        fun fromJson(o: JsonObject) = Boilerplate(o.str("id"), o.str("name"), o.str("category", "starter"), o.str("description"), o.strList("features"),
-            o.objList("screens").map { BoilerplateScreen(it.str("id"), it.str("label"), it.str("kind", "custom")) }, o.strList("modules"), o.strMap("defaults"), o.str("status", "planned"), o.str("source", "amberx"))
-    }
-}
-data class BoilerplateCategory(val id: String, val label: String)
+typealias Suggestion = ai.amberx.axf.kernel.catalog.CatalogSuggestion
+typealias CatalogItem = ai.amberx.axf.kernel.catalog.CatalogItem
+typealias CatalogGroup = ai.amberx.axf.kernel.catalog.CatalogGroup
+typealias CatalogTab = ai.amberx.axf.kernel.catalog.CatalogTab
+typealias Catalog = ai.amberx.axf.kernel.catalog.Catalog
+typealias Status = ai.amberx.axf.kernel.catalog.FeatureStatus
+typealias TrackerItem = ai.amberx.axf.kernel.catalog.TrackerItem
+typealias Tracker = ai.amberx.axf.kernel.catalog.Tracker
+typealias BoilerplateScreen = ai.amberx.axf.kernel.catalog.BoilerplateScreen
+typealias Boilerplate = ai.amberx.axf.kernel.catalog.Boilerplate
+typealias BoilerplateCategory = ai.amberx.axf.kernel.catalog.BoilerplateCategory
+/** One parameter a library's install wizard asks for (library.json → params[]). */
+typealias LibraryParam = ai.amberx.axf.kernel.catalog.LibraryParam
+/** An installable library (library@1): what `axf install <id>` / the console wizard configure. */
+typealias InstallableLibrary = ai.amberx.axf.kernel.catalog.LibraryDescriptor
+/** A framework library as the Libraries view shows it (from the catalog, library.json and the tracker). */
+typealias LibraryCard = ai.amberx.axf.kernel.catalog.LibraryCard
 
 /** A library install or UI-library import the console ran (or recorded for Claude Code when no build engine is configured). kind: install | ui-import */
 data class PortRecord(val id: String, val kind: String, val name: String, val source: String, val project: String, val status: String, val createdAt: String, val log: String = "")
 
-/** One parameter a library's install wizard asks for: the kernel's library@1 contract (`ai.amberx.axf.kernel.library.LibraryParam`). */
-typealias LibraryParam = ai.amberx.axf.kernel.library.LibraryParam
-
-/** An installable library (library@1): what `axf install <id>` / the console wizard configure. */
-data class InstallableLibrary(val id: String, val module: String, val name: String, val description: String, val features: List<String>, val dependsOn: List<String>, val manifestKey: String, val params: List<LibraryParam>, val gradle: String, val moduleCtor: String, val import: String) {
-    val slug: String get() = module.removePrefix("lib-")
-    companion object {
-        fun fromJson(o: JsonObject): InstallableLibrary { val i = o.obj("install"); return InstallableLibrary(o.str("id"), o.str("module"), o.str("name"), o.str("description"), o.strList("features"), o.strList("dependsOn"), o.str("manifestKey", "libraries.${o.str("module").removePrefix("lib-")}"), o.objList("params").map(LibraryParam::fromJson), i?.str("gradle") ?: "", i?.str("module") ?: "", i?.str("import") ?: "") }
-    }
-}
-
 /** Everything the console tracks, loaded from the APK (`assets/axf/console`) with local overrides in the document store. */
 class ConsoleRepo(private val context: Context, private val docs: JsonDocumentStore?) {
     private val module = "axf.console"
-    private val _catalog = MutableStateFlow(Catalog("0.2.0", emptyList()))
+    private val _catalog = MutableStateFlow(Catalog.EMPTY)
     val catalog: StateFlow<Catalog> get() = _catalog
-    private val _tracker = MutableStateFlow(Tracker("", emptyList()))
+    private val _tracker = MutableStateFlow(Tracker.EMPTY)
     val tracker: StateFlow<Tracker> get() = _tracker
     private val _overrides = MutableStateFlow<Map<String, Status>>(emptyMap())
     /** Local status edits (id → status) on top of tracker.json; exported for status.json. */
@@ -94,43 +70,46 @@ class ConsoleRepo(private val context: Context, private val docs: JsonDocumentSt
     private fun read(path: String): JsonObject? = runCatching { context.assets.open("axf/console/$path").bufferedReader().use { it.readText() } }.getOrNull()?.parseJsonObject()
 
     fun load() {
-        read("catalog/catalog.json")?.let { c ->
-            _catalog.value = Catalog(c.str("frameworkVersion", "0.2.0"), c.objList("tabs").map { t -> CatalogTab(t.str("id"), t.str("label"), t.objList("groups").map { g -> CatalogGroup(g.str("id"), g.str("label"), g.objList("items").map { i -> CatalogItem(i.str("id"), i.str("title"), i.str("note"), i.str("tag"), i.bool("recommended"), i.objList("suggests").map { s -> Suggestion(s.str("id"), s.str("title")) }, t.str("id"), g.str("id")) }) }) })
-        }
-        read("tracker.json")?.let { t -> _tracker.value = Tracker(t.str("generatedAt"), t.objList("items").map { i -> TrackerItem(i.str("id"), i.str("tab"), i.str("group"), i.strOrNull("parent"), i.str("title"), i.str("tag"), Status.parse(i.strOrNull("status")), int(i, "wave", 3), i.strOrNull("module"), i.str("notes")) }) }
-        read("catalog/libraries.json")?.let { l -> _installable.value = l.objList("items").map(InstallableLibrary::fromJson) }
+        read("catalog/catalog.json")?.let { c -> _catalog.value = Catalog.fromJson(c) }
+        read("tracker.json")?.let { t -> _tracker.value = Tracker.fromJson(t) }
+        read("catalog/libraries.json")?.let { l -> _installable.value = ai.amberx.axf.kernel.catalog.LibrariesIndex.fromJson(l).items }
         read("boilerplates/index.json")?.let { idx ->
-            _categories.value = idx.objList("categories").map { BoilerplateCategory(it.str("id"), it.str("label")) } + BoilerplateCategory("custom", "My boilerplates")
-            _boilerplates.value = idx.objList("items").mapNotNull { it.strOrNull("id") }.mapNotNull { id -> read("boilerplates/$id/boilerplate.json")?.let(Boilerplate::fromJson) }
+            val index = ai.amberx.axf.kernel.catalog.BoilerplateIndex.fromJson(idx)
+            _categories.value = index.categories + BoilerplateCategory("custom", "My boilerplates")
+            _boilerplates.value = index.items.map { it.id }.filter { it.isNotEmpty() }.mapNotNull { id -> read("boilerplates/$id/boilerplate.json")?.let { Boilerplate.fromJson(it) } }
         }
         docs?.let { d ->
             _overrides.value = d.list(module, "status").mapNotNull { id -> d.read(module, "status", id).getOrNull()?.strOrNull("status")?.let { id to Status.parse(it) } }.toMap()
             _checked.value = d.read(module, "state", "checked").getOrNull()?.strList("ids")?.toSet() ?: _catalog.value.items.filter { it.recommended }.map { it.id }.toSet()
-            _boilerplates.update { it + d.list(module, "boilerplates").mapNotNull { id -> d.read(module, "boilerplates", id).getOrNull()?.let(Boilerplate::fromJson) } }
+            _boilerplates.update { it + d.list(module, "boilerplates").mapNotNull { id -> d.read(module, "boilerplates", id).getOrNull()?.let { Boilerplate.fromJson(it) } } }
             _project.value = d.read(module, "state", "project").getOrNull()?.str("dir") ?: ""
             _ports.value = d.list(module, "ports").mapNotNull { id -> d.read(module, "ports", id).getOrNull()?.let { PortRecord(id, it.str("kind"), it.str("name"), it.str("source"), it.str("project"), it.str("status"), it.str("createdAt"), it.str("log")) } }
             _demos.value = d.list(module, "demos").mapNotNull { id -> d.read(module, "demos", id).getOrNull()?.let { DemoApp(id, it.str("library"), it.str("name"), it.str("template", "list-detail"), it.str("status", "planned"), it.str("createdAt")) } }
         }
     }
 
+    /** Every framework library: catalog items that name one, every library.json, every lib-* module in the tracker. */
+    fun libraryCards(): List<LibraryCard> = ai.amberx.axf.kernel.catalog.LibraryCards.of(_catalog.value, _installable.value, _tracker.value)
+    fun libraryCard(id: String): LibraryCard? = libraryCards().firstOrNull { it.id == id || it.module == id || it.packageName == id }
+
     fun status(id: String): Status = _overrides.value[id] ?: _tracker.value.byId(id)?.status ?: Status.PLANNED
-    fun setStatus(id: String, s: Status) { _overrides.update { it + (id to s) }; docs?.write(module, "status", id, buildJsonObject { put("status", JsonPrimitive(s.name.lowercase())) }) }
+    fun setStatus(id: String, s: Status) { _overrides.update { it + (id to s) }; docs?.write(module, "status", id, buildJsonObject { put("status", JsonPrimitive(s.id)) }) }
     fun setChecked(id: String, on: Boolean) { _checked.update { if (on) it + id else it - id }; docs?.write(module, "state", "checked", buildJsonObject { put("ids", kotlinx.serialization.json.JsonArray(_checked.value.map { JsonPrimitive(it) })) }) }
     fun isChecked(id: String) = id in _checked.value
 
     /** Coverage per tab from the effective status (tracker + overrides). */
     fun coverage(tab: String): Map<Status, Int> { val rows = _tracker.value.items.filter { it.tab == tab && it.parent == null }; return Status.entries.associateWith { s -> rows.count { status(it.id) == s } } }
 
-    fun saveBoilerplate(b: Boilerplate) { _boilerplates.update { it.filterNot { x -> x.id == b.id } + b }; docs?.write(module, "boilerplates", b.id, b.toJson()) }
+    fun saveBoilerplate(b: Boilerplate) { _boilerplates.update { it.filterNot { x -> x.id == b.id } + b }; docs?.write(module, "boilerplates", b.id, b.toDocument()) }
     fun addDemo(d: DemoApp) { _demos.update { it.filterNot { x -> x.id == d.id } + d }; docs?.write(module, "demos", d.id, buildJsonObject { put("library", JsonPrimitive(d.library)); put("name", JsonPrimitive(d.name)); put("template", JsonPrimitive(d.template)); put("status", JsonPrimitive(d.status)); put("createdAt", JsonPrimitive(d.createdAt)) }) }
 
     /** status.json fragment for the repo (what `framework/cli/tracker.mjs` reads). */
-    fun exportStatusJson(): String = AxfJson.encodeToString(JsonObject.serializer(), JsonObject(_overrides.value.mapValues { (_, s) -> buildJsonObject { put("status", JsonPrimitive(s.name.lowercase())) } }))
+    fun exportStatusJson(): String = AxfJson.encodeToString(JsonObject.serializer(), JsonObject(_overrides.value.mapValues { (_, s) -> buildJsonObject { put("status", JsonPrimitive(s.id)) } }))
     /** A Claude Code prompt that builds everything checked but not built. */
     fun exportPlan(): String = buildString {
         appendLine("# AXF build plan (exported from the Dev Console)"); appendLine()
         for (tab in _catalog.value.tabs) { val todo = tab.groups.flatMap { it.items }.filter { isChecked(it.id) && status(it.id) != Status.BUILT }; if (todo.isEmpty()) continue
-            appendLine("## ${tab.label}"); for (i in todo) { appendLine("- [${status(i.id).name.lowercase()}] ${i.id} — ${i.title}${if (i.note.isNotBlank()) " (" + i.note + ")" else ""}"); for (s in i.suggests) if (isChecked(s.id)) appendLine("    - ${s.id} — ${s.title}") }; appendLine() }
+            appendLine("## ${tab.label}"); for (i in todo) { appendLine("- [${status(i.id).id}] ${i.id} — ${i.title}${if (i.note.isNotBlank()) " (" + i.note + ")" else ""}"); for (s in i.suggests) if (isChecked(s.id)) appendLine("    - ${s.id} — ${s.title}") }; appendLine() }
     }
 }
 

@@ -8,9 +8,10 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type Clipbo
 import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
+import { ActivityIcon, useReportActivity } from './activity';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, post, statusStore, watchReply,
+  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
@@ -57,6 +58,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const name = status?.assistantName || 'Assistant';
+  const activity = useReportActivity(live);
 
   const loadList = () => Promise.all([
     client.listConversations(q, archived).then((items) => setList(tag ? items.filter((c) => c.tags.includes(tag)) : items), (e: Error) => setErr(e.message)),
@@ -199,7 +201,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
-    const body: Record<string, unknown> = { content, images, context: ctx };
+    const body: Record<string, unknown> = { content, images, context: normalizeChatContext(ctx) ?? undefined };
     if (editing) body.editMessageId = editing;
     const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content, images, createdAt: Date.now(), meta: { context: ctx ?? null } };
     setText(''); setImages([]); setFiles([]); setEditing(''); setCtx(undefined);
@@ -328,7 +330,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
         <header className="axp-ai-assistant__head">
           {!showList && <button type="button" className="fx-iconbtn" title="Conversations" onClick={() => setShowList(true)}><Icon name="list" size={16} /></button>}
           <div className="axp-ai-assistant__title">
-            <Icon name={activeAgent?.icon || 'sparkles'} size={16} />
+            <ActivityIcon icon={activeAgent?.icon || 'sparkles'} size={16} state={activity} />
             <div className="fx-stack axp-ai-assistant__title-text">
               <strong>{conv?.title ?? (activeAgent ? `Chat with ${activeAgent.name}` : `Chat with ${name}`)}</strong>
               <span className="fx-small fx-muted">{activeAgent ? `${activeAgent.name} · ` : ''}{settings.model || status?.defaultProfile?.defaultModel || ''}{settings.profileId ? ` · ${settings.profileId}` : status?.defaultProfile ? ` · ${status.defaultProfile.label}` : ''}</span>

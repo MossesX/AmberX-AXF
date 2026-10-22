@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
+    <!-- Every framework module contributes its own manifest pieces; this file holds the app's identity and its background listener. -->
+    <!-- Background listener (global trigger): microphone foreground service, its notifications, and opening the app when heard. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -25,5 +31,9 @@
                 <data android:scheme="axf" android:host="${axfAppId}" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".background.WakeService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
     </application>
 </manifest>

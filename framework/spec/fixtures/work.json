@@ -1,0 +1,2780 @@
+{
+  "contract": "work@1",
+  "pollCapability": "axf.work.poll",
+  "kinds": [
+    {
+      "id": "poll",
+      "label": "Periodic poll",
+      "status": "built",
+      "note": "A body run again and again while conditions hold; delay per outcome; needs a long-running host (Android foreground service)"
+    },
+    {
+      "id": "once",
+      "label": "One-off",
+      "status": "placeholder",
+      "note": "Run once, retried by the outcome rules; survives process death through the platform scheduler"
+    },
+    {
+      "id": "alarm",
+      "label": "Alarm",
+      "status": "placeholder",
+      "note": "Run at a wall-clock time (exact only when the platform allows)"
+    },
+    {
+      "id": "constrained",
+      "label": "Constrained periodic",
+      "status": "placeholder",
+      "note": "Platform-scheduled periodic work with constraints (network, charging…); 15 min minimum on Android (WorkManager)"
+    },
+    {
+      "id": "chain",
+      "label": "Chain",
+      "status": "placeholder",
+      "note": "Jobs that run after each other"
+    }
+  ],
+  "placeholders": {
+    "manager": "axf.work.manager",
+    "alarm": "axf.work.alarm",
+    "chain": "axf.work.chain"
+  },
+  "delayKinds": [
+    "interval",
+    "fixed",
+    "exponential"
+  ],
+  "conditionKinds": [
+    "flag"
+  ],
+  "phases": [
+    "idle",
+    "running",
+    "sleeping",
+    "stopped"
+  ],
+  "eventTypes": [
+    "start",
+    "stop",
+    "check-now",
+    "outcome",
+    "wake",
+    "host-refused",
+    "interval",
+    "flags"
+  ],
+  "effects": [
+    "run",
+    "sleep",
+    "stop",
+    "notice",
+    "clear-notices",
+    "status"
+  ],
+  "stopReasons": {
+    "stopped": "stopped",
+    "hostRefused": "host-refused",
+    "outcome": "outcome",
+    "condition": "condition"
+  },
+  "fallbackOutcome": "*",
+  "defaultBackoffFactor": 2,
+  "specs": {
+    "approvals": {
+      "id": "axhub.approvals",
+      "kind": "poll",
+      "interval": {
+        "defaultMs": 30000,
+        "minMs": 15000,
+        "maxMs": 300000
+      },
+      "outcomes": {
+        "ok": {
+          "delay": {
+            "kind": "interval"
+          },
+          "endsSpell": true
+        },
+        "signed-out": {
+          "delay": {
+            "kind": "fixed",
+            "ms": 300000
+          },
+          "notice": "sign-in"
+        },
+        "not-admin": {
+          "delay": {
+            "kind": "fixed",
+            "ms": 300000
+          },
+          "notice": "sign-in"
+        },
+        "unreachable": {
+          "delay": {
+            "kind": "interval"
+          }
+        }
+      },
+      "conditions": [
+        {
+          "kind": "flag",
+          "flag": "watching",
+          "equals": true
+        }
+      ],
+      "foreground": true,
+      "restartOnBoot": true,
+      "label": "Watch axHub approvals",
+      "module": "ai.amberx.axf.axhubandroid"
+    },
+    "backoff": {
+      "id": "demo.backoff",
+      "kind": "poll",
+      "interval": {
+        "defaultMs": 10000,
+        "minMs": 1000,
+        "maxMs": 60000
+      },
+      "outcomes": {
+        "ok": {
+          "delay": {
+            "kind": "interval"
+          }
+        },
+        "error": {
+          "delay": {
+            "kind": "exponential",
+            "baseMs": 2000,
+            "factor": 2,
+            "maxMs": 20000
+          }
+        },
+        "fatal": {
+          "delay": {
+            "kind": "interval"
+          },
+          "stop": true
+        },
+        "*": {
+          "delay": {
+            "kind": "fixed",
+            "ms": 5000
+          },
+          "notice": "odd"
+        }
+      },
+      "conditions": [],
+      "foreground": false,
+      "restartOnBoot": false
+    }
+  },
+  "validate": [
+    {
+      "name": "not-object",
+      "raw": "poll",
+      "result": {
+        "ok": false,
+        "errors": [
+          "job spec must be an object"
+        ]
+      }
+    },
+    {
+      "name": "bad-id",
+      "raw": {
+        "id": "Axhub Approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "id must match [a-z0-9][a-z0-9._-]*"
+        ]
+      }
+    },
+    {
+      "name": "unknown-kind",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "cron",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "unknown job kind \"cron\""
+        ]
+      }
+    },
+    {
+      "name": "placeholder-kind",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "alarm",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "job kind alarm is a placeholder (not built yet)"
+        ]
+      }
+    },
+    {
+      "name": "no-interval",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "interval bounds are required"
+        ]
+      }
+    },
+    {
+      "name": "interval-min-zero",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 0,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "interval.minMs must be ≥ 1"
+        ]
+      }
+    },
+    {
+      "name": "interval-max-below-min",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 10000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "interval.maxMs must be ≥ minMs",
+          "interval.defaultMs must lie within [minMs, maxMs]"
+        ]
+      }
+    },
+    {
+      "name": "interval-default-outside",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 5000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "interval.defaultMs must lie within [minMs, maxMs]"
+        ]
+      }
+    },
+    {
+      "name": "outcomes-missing",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcomes must be an object"
+        ]
+      }
+    },
+    {
+      "name": "delay-unknown",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "random"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcome ok: unknown delay kind \"random\""
+        ]
+      }
+    },
+    {
+      "name": "fixed-no-ms",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "fixed"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcome ok: fixed delay needs ms ≥ 1"
+        ]
+      }
+    },
+    {
+      "name": "exponential-max-below-base",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "exponential",
+              "baseMs": 5000,
+              "maxMs": 1000
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcome ok: exponential delay needs maxMs ≥ baseMs"
+        ]
+      }
+    },
+    {
+      "name": "exponential-factor-below-one",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "exponential",
+              "baseMs": 1000,
+              "maxMs": 5000,
+              "factor": 0.5
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcome ok: exponential factor must be ≥ 1"
+        ]
+      }
+    },
+    {
+      "name": "notice-empty",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "notice": ""
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "outcome ok: notice must be a non-empty string"
+        ]
+      }
+    },
+    {
+      "name": "condition-no-flag",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "equals": true
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "every condition needs a flag name"
+        ]
+      }
+    },
+    {
+      "name": "condition-unknown-kind",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "kind": "battery",
+            "flag": "charging"
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "condition charging: unknown kind \"battery\" (it would never hold)"
+        ]
+      }
+    },
+    {
+      "name": "foreground-not-boolean",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "watching"
+          }
+        ],
+        "foreground": "yes",
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "foreground must be a boolean"
+        ]
+      }
+    },
+    {
+      "name": "minimal-ok",
+      "raw": {
+        "id": "x",
+        "kind": "poll",
+        "interval": {
+          "defaultMs": 1,
+          "minMs": 1,
+          "maxMs": 1
+        },
+        "outcomes": {}
+      },
+      "result": {
+        "ok": true,
+        "errors": [],
+        "spec": {
+          "id": "x",
+          "kind": "poll",
+          "interval": {
+            "defaultMs": 1,
+            "minMs": 1,
+            "maxMs": 1
+          },
+          "outcomes": {},
+          "conditions": [],
+          "foreground": false,
+          "restartOnBoot": false
+        }
+      }
+    },
+    {
+      "name": "equals-false-ok",
+      "raw": {
+        "id": "axhub.approvals",
+        "kind": "poll",
+        "label": "Watch axHub approvals",
+        "module": "ai.amberx.axf.axhubandroid",
+        "interval": {
+          "defaultMs": 30000,
+          "minMs": 15000,
+          "maxMs": 300000
+        },
+        "outcomes": {
+          "ok": {
+            "delay": {
+              "kind": "interval"
+            },
+            "endsSpell": true
+          },
+          "signed-out": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "not-admin": {
+            "delay": {
+              "kind": "fixed",
+              "ms": 300000
+            },
+            "notice": "sign-in"
+          },
+          "unreachable": {
+            "delay": {
+              "kind": "interval"
+            }
+          }
+        },
+        "conditions": [
+          {
+            "flag": "paused",
+            "equals": false
+          }
+        ],
+        "foreground": true,
+        "restartOnBoot": true
+      },
+      "result": {
+        "ok": true,
+        "errors": [],
+        "spec": {
+          "id": "axhub.approvals",
+          "kind": "poll",
+          "interval": {
+            "defaultMs": 30000,
+            "minMs": 15000,
+            "maxMs": 300000
+          },
+          "outcomes": {
+            "ok": {
+              "delay": {
+                "kind": "interval"
+              },
+              "endsSpell": true
+            },
+            "signed-out": {
+              "delay": {
+                "kind": "fixed",
+                "ms": 300000
+              },
+              "notice": "sign-in"
+            },
+            "not-admin": {
+              "delay": {
+                "kind": "fixed",
+                "ms": 300000
+              },
+              "notice": "sign-in"
+            },
+            "unreachable": {
+              "delay": {
+                "kind": "interval"
+              }
+            }
+          },
+          "conditions": [
+            {
+              "kind": "flag",
+              "flag": "paused",
+              "equals": false
+            }
+          ],
+          "foreground": true,
+          "restartOnBoot": true,
+          "label": "Watch axHub approvals",
+          "module": "ai.amberx.axf.axhubandroid"
+        }
+      }
+    }
+  ],
+  "clamp": [
+    {
+      "ms": -1,
+      "clamped": 15000
+    },
+    {
+      "ms": 0,
+      "clamped": 15000
+    },
+    {
+      "ms": 14999,
+      "clamped": 15000
+    },
+    {
+      "ms": 15000,
+      "clamped": 15000
+    },
+    {
+      "ms": 30000,
+      "clamped": 30000
+    },
+    {
+      "ms": 299999,
+      "clamped": 299999
+    },
+    {
+      "ms": 300000,
+      "clamped": 300000
+    },
+    {
+      "ms": 300001,
+      "clamped": 300000
+    },
+    {
+      "ms": 12.7,
+      "clamped": 15000
+    },
+    {
+      "ms": "NaN",
+      "clamped": 30000
+    },
+    {
+      "ms": "abc",
+      "clamped": 30000
+    },
+    {
+      "ms": null,
+      "clamped": 30000
+    }
+  ],
+  "conditions": [
+    {
+      "flags": {},
+      "unmet": [
+        "watching"
+      ],
+      "restart": false,
+      "restartNoBoot": false
+    },
+    {
+      "flags": {
+        "watching": true
+      },
+      "unmet": [],
+      "restart": true,
+      "restartNoBoot": false
+    },
+    {
+      "flags": {
+        "watching": false
+      },
+      "unmet": [
+        "watching"
+      ],
+      "restart": false,
+      "restartNoBoot": false
+    },
+    {
+      "flags": {
+        "watching": true,
+        "other": false
+      },
+      "unmet": [],
+      "restart": true,
+      "restartNoBoot": false
+    }
+  ],
+  "delays": [
+    {
+      "rule": {
+        "kind": "interval"
+      },
+      "intervalMs": 30000,
+      "streak": 3,
+      "ms": 30000
+    },
+    {
+      "rule": {
+        "kind": "fixed",
+        "ms": 300000
+      },
+      "intervalMs": 30000,
+      "streak": 1,
+      "ms": 300000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 0,
+      "ms": 2000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 1,
+      "ms": 2000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 2,
+      "ms": 4000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 3,
+      "ms": 8000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 4,
+      "ms": 16000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 5,
+      "ms": 20000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 2000,
+        "maxMs": 20000
+      },
+      "intervalMs": 10000,
+      "streak": 9,
+      "ms": 20000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 1000,
+        "factor": 3,
+        "maxMs": 100000
+      },
+      "intervalMs": 10000,
+      "streak": 4,
+      "ms": 27000
+    },
+    {
+      "rule": {
+        "kind": "exponential",
+        "baseMs": 1000,
+        "factor": 1,
+        "maxMs": 100000
+      },
+      "intervalMs": 10000,
+      "streak": 4,
+      "ms": 1000
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "approvals: ok, signed out once, not-admin keeps quiet, back to ok, check now, stop",
+      "spec": "axhub.approvals",
+      "intervalMs": null,
+      "initial": {
+        "phase": "idle",
+        "intervalMs": 30000,
+        "lastOutcome": null,
+        "streak": 0,
+        "runs": 0,
+        "sleepMs": null,
+        "notices": [],
+        "stopReason": null
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": 30000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 30000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "signed-out"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": 300000,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "notice",
+              "id": "sign-in",
+              "outcome": "signed-out"
+            },
+            {
+              "effect": "status",
+              "outcome": "signed-out"
+            },
+            {
+              "effect": "sleep",
+              "ms": 300000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "signed-out"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 2,
+            "runs": 3,
+            "sleepMs": 300000,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "signed-out"
+            },
+            {
+              "effect": "sleep",
+              "ms": 300000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 2,
+            "runs": 3,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "not-admin"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "not-admin",
+            "streak": 1,
+            "runs": 4,
+            "sleepMs": 300000,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "not-admin"
+            },
+            {
+              "effect": "sleep",
+              "ms": 300000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "not-admin",
+            "streak": 1,
+            "runs": 4,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 5,
+            "sleepMs": 30000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "clear-notices"
+            },
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 30000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 5,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "signed-out"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 1,
+            "runs": 6,
+            "sleepMs": 300000,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "notice",
+              "id": "sign-in",
+              "outcome": "signed-out"
+            },
+            {
+              "effect": "status",
+              "outcome": "signed-out"
+            },
+            {
+              "effect": "sleep",
+              "ms": 300000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "check-now"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": "signed-out",
+            "streak": 1,
+            "runs": 6,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "unreachable"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 7,
+            "sleepMs": 30000,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "unreachable"
+            },
+            {
+              "effect": "sleep",
+              "ms": 30000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "stop"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 7,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": "stopped"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "stopped"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 7,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": "stopped"
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 7,
+            "sleepMs": null,
+            "notices": [
+              "sign-in"
+            ],
+            "stopReason": "stopped"
+          },
+          "effects": []
+        }
+      ]
+    },
+    {
+      "name": "approvals: watching off blocks start, turned off while sleeping, off at wake",
+      "spec": "axhub.approvals",
+      "intervalMs": null,
+      "initial": {
+        "phase": "idle",
+        "intervalMs": 30000,
+        "lastOutcome": null,
+        "streak": 0,
+        "runs": 0,
+        "sleepMs": null,
+        "notices": [],
+        "stopReason": null
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": false
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "condition:watching"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "condition:watching"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {},
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "condition:watching"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "condition:watching"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": 30000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 30000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "flags"
+          },
+          "flags": {
+            "watching": false
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "condition:watching"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "condition:watching"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 1,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": 30000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 30000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": false
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "condition:watching"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "condition:watching"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "check-now"
+          },
+          "flags": {
+            "watching": false
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "condition:watching"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "condition:watching"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "approvals: start while running is a no-op, start with checkNow restarts, interval changes clamp and apply at the next sleep",
+      "spec": "axhub.approvals",
+      "intervalMs": 60000,
+      "initial": {
+        "phase": "idle",
+        "intervalMs": 60000,
+        "lastOutcome": null,
+        "streak": 0,
+        "runs": 0,
+        "sleepMs": null,
+        "notices": [],
+        "stopReason": null
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 60000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 60000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "start",
+            "checkNow": true
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 60000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "interval",
+            "ms": 5000
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 15000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 15000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": 15000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 15000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "interval",
+            "ms": 900000
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 300000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": 15000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 300000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "unreachable"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 300000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": 300000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "unreachable"
+            },
+            {
+              "effect": "sleep",
+              "ms": 300000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "flags"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 300000,
+            "lastOutcome": "unreachable",
+            "streak": 1,
+            "runs": 2,
+            "sleepMs": 300000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": []
+        }
+      ]
+    },
+    {
+      "name": "approvals: host refused the foreground start; boot restart only when watching",
+      "spec": "axhub.approvals",
+      "intervalMs": null,
+      "initial": {
+        "phase": "idle",
+        "intervalMs": 30000,
+        "lastOutcome": null,
+        "streak": 0,
+        "runs": 0,
+        "sleepMs": null,
+        "notices": [],
+        "stopReason": null
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "running",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "host-refused"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "host-refused"
+          },
+          "effects": [
+            {
+              "effect": "stop",
+              "reason": "host-refused"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {
+            "watching": true
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "host-refused"
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "flags"
+          },
+          "flags": {
+            "watching": false
+          },
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 30000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": "host-refused"
+          },
+          "effects": []
+        }
+      ]
+    },
+    {
+      "name": "backoff: exponential streak resets on another outcome, fallback rule with a notice, stop outcome",
+      "spec": "demo.backoff",
+      "intervalMs": null,
+      "initial": {
+        "phase": "idle",
+        "intervalMs": 10000,
+        "lastOutcome": null,
+        "streak": 0,
+        "runs": 0,
+        "sleepMs": null,
+        "notices": [],
+        "stopReason": null
+      },
+      "steps": [
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 0,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "error"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": 2000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "error"
+            },
+            {
+              "effect": "sleep",
+              "ms": 2000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 1,
+            "runs": 1,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "error"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 2,
+            "runs": 2,
+            "sleepMs": 4000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "error"
+            },
+            {
+              "effect": "sleep",
+              "ms": 4000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 2,
+            "runs": 2,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "error"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 3,
+            "runs": 3,
+            "sleepMs": 8000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "error"
+            },
+            {
+              "effect": "sleep",
+              "ms": 8000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 3,
+            "runs": 3,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "ok"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 4,
+            "sleepMs": 10000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "ok"
+            },
+            {
+              "effect": "sleep",
+              "ms": 10000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "ok",
+            "streak": 1,
+            "runs": 4,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "error"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 1,
+            "runs": 5,
+            "sleepMs": 2000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "error"
+            },
+            {
+              "effect": "sleep",
+              "ms": 2000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 1,
+            "runs": 5,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "weird"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "weird",
+            "streak": 1,
+            "runs": 6,
+            "sleepMs": 5000,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "notice",
+              "id": "odd",
+              "outcome": "weird"
+            },
+            {
+              "effect": "status",
+              "outcome": "weird"
+            },
+            {
+              "effect": "sleep",
+              "ms": 5000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "weird",
+            "streak": 1,
+            "runs": 6,
+            "sleepMs": null,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "weird"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "weird",
+            "streak": 2,
+            "runs": 7,
+            "sleepMs": 5000,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "weird"
+            },
+            {
+              "effect": "sleep",
+              "ms": 5000
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": "weird",
+            "streak": 2,
+            "runs": 7,
+            "sleepMs": null,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "fatal"
+          },
+          "flags": {},
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 10000,
+            "lastOutcome": "fatal",
+            "streak": 1,
+            "runs": 8,
+            "sleepMs": null,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": "outcome:fatal"
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "fatal"
+            },
+            {
+              "effect": "stop",
+              "reason": "outcome:fatal"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "wake"
+          },
+          "flags": {},
+          "state": {
+            "phase": "stopped",
+            "intervalMs": 10000,
+            "lastOutcome": "fatal",
+            "streak": 1,
+            "runs": 8,
+            "sleepMs": null,
+            "notices": [
+              "odd"
+            ],
+            "stopReason": "outcome:fatal"
+          },
+          "effects": []
+        },
+        {
+          "event": {
+            "type": "start"
+          },
+          "flags": {},
+          "state": {
+            "phase": "running",
+            "intervalMs": 10000,
+            "lastOutcome": null,
+            "streak": 0,
+            "runs": 8,
+            "sleepMs": null,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "run"
+            }
+          ]
+        },
+        {
+          "event": {
+            "type": "outcome",
+            "outcome": "error"
+          },
+          "flags": {},
+          "state": {
+            "phase": "sleeping",
+            "intervalMs": 10000,
+            "lastOutcome": "error",
+            "streak": 1,
+            "runs": 9,
+            "sleepMs": 2000,
+            "notices": [],
+            "stopReason": null
+          },
+          "effects": [
+            {
+              "effect": "status",
+              "outcome": "error"
+            },
+            {
+              "effect": "sleep",
+              "ms": 2000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

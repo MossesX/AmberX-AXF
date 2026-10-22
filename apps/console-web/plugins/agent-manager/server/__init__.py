@@ -4,8 +4,9 @@ Create, edit, manage and orchestrate AI agents built from reusable parts — per
 with its own persistent memory (type and settings per agent), trained from Firecrawl, web pages, the repo, pasted text
 and MCP servers. Add-on agents install as bundles (three ship with the plugin: coder = Mosses, axf-expert, ai-expert).
 
-The definition format is the framework contract agent-definition@1 (framework/core/agents.ts; here server/contract.py;
-Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps load the same agents.
+The definition format is the framework contract agent-definition@1 (framework/core/agents.ts = Python
+`axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps
+load the same agents; the safety helpers come from `axf.assistant_host.safety` (harvested Oct 21 2026).
 
 Integration (plugin_services, capability names only — never another plugin's folder):
   provides  axf.agents@1  list_agents / get_agent / memory_context / run_tool / record_turn — the AI assistant uses it
@@ -16,6 +17,7 @@ from __future__ import annotations
 
 import json
 import queue
+import sys
 import threading
 from pathlib import Path
 from typing import Any, Iterator
@@ -25,7 +27,13 @@ from fastapi.responses import StreamingResponse
 
 import plugin_services
 
-from . import addons, containers, contract, engine, library, llm, memory, store, toolkit, training
+_PY = Path(__file__).resolve().parents[5] / "framework" / "python"
+if str(_PY) not in sys.path:
+    sys.path.insert(0, str(_PY))
+
+from axf.contracts import agents as contract  # noqa: E402
+
+from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name

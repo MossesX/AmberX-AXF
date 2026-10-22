@@ -1,0 +1,37 @@
+{
+  "label": "Web app + FastAPI server behind axHub's sign-in wall (React/TS + Python, one container, Coolify)",
+  "kind": "web-app",
+  "targets": [
+    "web",
+    "server"
+  ],
+  "bake": [
+    "core",
+    "react",
+    "ui",
+    "schemas",
+    "libs",
+    "deploy"
+  ],
+  "bakeInto": "src/axf",
+  "assetsDir": "src/assets",
+  "structure": [
+    { "path": "project.manifest.json", "kind": "file", "required": true, "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one." },
+    { "path": "axf.manifest.json", "kind": "file", "required": true, "purpose": "App identity, framework version, targets and the default asset for every slot." },
+    { "path": "axf.lock.json", "kind": "file", "required": true, "purpose": "Framework version + template, with a hash of every baked file (src/axf, including the deploy helpers)." },
+    { "path": "src/axf", "kind": "dir", "required": true, "purpose": "The baked framework runtime (engines, React layer, CSS, schemas, libraries) and src/axf/deploy: the shared deploy helpers (axf-deploy@1) the installer sources." },
+    { "path": "src/axf/deploy/axf-deploy.sh", "kind": "file", "required": true, "purpose": "Shared deploy helpers: Coolify run + router labels, axHub wall labels, wall secret, auto-update. Re-bake instead of editing." },
+    { "path": "src/assets", "kind": "dir", "required": true, "purpose": "Hot-swappable assets, one folder per asset type." },
+    { "path": "src/views", "kind": "dir", "required": true, "purpose": "The app's views; nav assets reference them by id." },
+    { "path": "src/actions.ts", "kind": "file", "required": true, "purpose": "Binds this app's handlers to the standard action vocabulary." },
+    { "path": "src/dialogs.tsx", "kind": "file", "required": true, "purpose": "The app's dialogs (id → component)." },
+    { "path": "src/api.ts", "kind": "file", "required": true, "purpose": "Browser client for the app's own API (/api): same-origin, token from this browser only when there is no wall." },
+    { "path": "server/main.py", "kind": "file", "required": true, "purpose": "FastAPI app: /api routes behind the app token or a signed-in hub admin, serves the built web app (dist/)." },
+    { "path": "server/wall.py", "kind": "file", "required": true, "purpose": "Who is calling behind axHub's wall: signed X-Auth-* headers (HMAC, 120 s, this host), admin/user, same-origin writes." },
+    { "path": "server/test_server.py", "kind": "file", "required": true, "purpose": "Server self-test: token, wall signature, admin vs user, cross-site writes, static files." },
+    { "path": "Dockerfile", "kind": "file", "required": true, "purpose": "One image: Node builds the web app, Python serves it with the API (runs as uid 1000)." },
+    { "path": "deploy/install.sh", "kind": "file", "required": true, "purpose": "VPS installer (root): clone/update, token, image, Coolify + Traefik + the wall, 5-minute auto-update. Sources src/axf/deploy/axf-deploy.sh." },
+    { "path": "public", "kind": "dir", "required": false, "purpose": "Static files." }
+  ],
+  "next": "npm install && npm run dev   (API: pip install -r server/requirements.txt && APP_TOKEN=dev uvicorn main:app --app-dir server --port 7290)"
+}

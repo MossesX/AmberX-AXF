@@ -59,25 +59,33 @@ public object LibraryParams {
 
     public fun isTrue(text: String): Boolean = text.trim().lowercase() in TRUE_WORDS
 
-    /** A stored/default value as form text (lists join with commas). */
+    /** A stored/default value as form text (lists join with commas; numbers as people write them: 6, 0.5). */
     public fun text(value: JsonElement?): String = when (value) {
         null, is JsonNull -> ""
-        is JsonPrimitive -> value.content
-        is JsonArray -> value.joinToString(",") { e -> (e as? JsonPrimitive)?.content ?: e.toString() }
+        is JsonPrimitive -> primitiveText(value)
+        is JsonArray -> value.joinToString(",") { e -> (e as? JsonPrimitive)?.let { primitiveText(it) } ?: e.toString() }
         else -> value.toString()
     }
 
+    private fun primitiveText(p: JsonPrimitive): String = if (p.isString) p.content else p.content.toDoubleOrNull()?.takeIf { it.isFinite() }?.let { numberText(it) } ?: p.content
+
     /** Whole numbers print without a decimal part (6, not 6.0), like the reference engine. */
-    private fun number(n: Double): JsonPrimitive = if (n % 1.0 == 0.0 && n >= Int.MIN_VALUE && n <= Int.MAX_VALUE) JsonPrimitive(n.toInt()) else JsonPrimitive(n)
+    private fun number(n: Double): JsonPrimitive = if (n % 1.0 == 0.0 && n >= Long.MIN_VALUE.toDouble() && n <= Long.MAX_VALUE.toDouble()) JsonPrimitive(n.toLong()) else JsonPrimitive(n)
 
     private fun numberText(n: Double): String = if (n % 1.0 == 0.0) n.toLong().toString() else n.toString()
+
+    /** Plain decimal numbers only (no hex, no Infinity, no `d`/`f` suffix), the same on every port. */
+    private val DECIMAL = Regex("^[+-]?(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?$")
+
+    /** A plain decimal as a finite number, else null (reference: `parseDecimal` in core/library.ts). */
+    public fun parseDecimal(t: String): Double? = if (DECIMAL.matches(t)) t.toDoubleOrNull()?.takeIf { it.isFinite() } else null
 
     public fun toJson(p: LibraryParam, text: String): JsonElement? {
         val t = text.trim()
         if (t.isEmpty()) return null
         return when (p.type) {
             "bool" -> JsonPrimitive(isTrue(t))
-            "number" -> t.toDoubleOrNull()?.let { number(it) }
+            "number" -> parseDecimal(t)?.let { number(it) }
             "list" -> JsonArray(t.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.map { JsonPrimitive(it) })
             else -> JsonPrimitive(t)
         }
@@ -87,7 +95,7 @@ public object LibraryParams {
         val t = text.trim()
         if (t.isEmpty()) return if (p.required && p.default == null) "Required" else null
         if (p.type == "number") {
-            val n = t.toDoubleOrNull() ?: return "Must be a number"
+            val n = parseDecimal(t) ?: return "Must be a number"
             val lo = p.min
             val hi = p.max
             if (lo != null && n < lo) return "Must be ≥ ${numberText(lo)}"

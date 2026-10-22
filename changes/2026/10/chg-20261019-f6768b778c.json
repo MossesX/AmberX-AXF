@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-f6768b778c",
+  "createdAt": "2026-10-19T12:52:18.000Z",
+  "updatedAt": "2026-10-19T15:52:18.000Z",
+  "kind": "build",
+  "title": "App tabs plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/app-tabs` (`ai.amberx.axf.console.app-tabs`). A tab bar across the whole page, one tab per AmberX app picked in Settings → Plugins → App tabs (default **Console + Pilot**). The console's tab is the console itself; any other tab covers the page below the bar with that app in",
+    "commits": [
+      {
+        "sha": "b9cf592",
+        "message": "App tabs plugin: a whole-page tab group of AmberX apps (Console + Pilot by default)"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T15:52:18.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "app-tabs"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-19T12:52:18.000Z",
+  "finishedAt": "2026-10-19T15:52:18.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/app-tabs"
+  ]
+}

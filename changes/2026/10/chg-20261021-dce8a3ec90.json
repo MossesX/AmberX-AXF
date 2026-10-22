@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-dce8a3ec90",
+  "createdAt": "2026-10-21T00:47:17.000Z",
+  "updatedAt": "2026-10-21T04:47:17.000Z",
+  "kind": "build",
+  "title": "Harvest: axf-server",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest — axf-server (Oct 20 2026, Opus 5.5)",
+    "branch": "harvest/h-axf-server",
+    "commits": [
+      {
+        "sha": "541cdf1",
+        "message": "Harvest axf-server: report, CLAUDE.md status, catalog feature f.pyserver"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/axf-server.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:47:17.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-axf-server"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:47:17.000Z",
+  "finishedAt": "2026-10-21T04:47:17.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "branch": "harvest/h-axf-server",
+  "areas": [
+    "framework/python/axf_server",
+    "apps/console-web/server/wall.py",
+    "apps/console-web/server/credentials.py",
+    "framework/python",
+    "framework/spec/fixtures/wall-signature.json",
+    "framework/spec/check-axf-server.mjs",
+    "framework/python/axf_server/test.py",
+    "framework/spec/fixtures/plugin-package.json",
+    "framework/cli/plugin-catalog.mjs",
+    "framework/python/axf_libs/mcp/test.py",
+    "apps/console-web/server/Dockerfile",
+    "deploy/install-console.sh"
+  ]
+}

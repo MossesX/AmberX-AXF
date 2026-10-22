@@ -30,8 +30,20 @@ const TRUE_RE = new RegExp(`^(${PARAM_TRUE_WORDS.join('|')})$`, 'i');
 /** A stored/default value as the text a form shows (lists join with commas). */
 export function paramText(value: unknown): string {
   if (value == null) return '';
-  if (Array.isArray(value)) return value.map((v) => String(v)).join(',');
+  if (Array.isArray(value)) return value.map((v) => (typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v))).join(',');
+  if (typeof value === 'object') return JSON.stringify(value);
   return String(value);
+}
+
+/** Numbers as people write them: 6, 0.5 (never 6.0). */
+const fmtNum = (n: number): string => String(n);
+/** Plain decimal numbers only (no hex, no Infinity), the same on every port (harvested with the typed catalog models, Oct 2026). */
+const DECIMAL = /^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/;
+/** A plain decimal as a finite number, else undefined. */
+export function parseDecimal(t: string): number | undefined {
+  if (!DECIMAL.test(t)) return undefined;
+  const n = Number(t);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 /** The parameter's default as form text ('' when it has none). */
@@ -43,13 +55,13 @@ export function paramBool(p: Pick<LibraryParam, 'default'>, text: string): boole
   return TRUE_RE.test(t.trim());
 }
 
-/** Form text → the typed JSON value the installer takes; `undefined` for blank text (the installer then uses the default). */
+/** Form text → the typed JSON value the installer takes; `undefined` for blank text (the installer then uses the default) or a number that isn't a plain finite decimal. */
 export function paramToJson(p: Pick<LibraryParam, 'type'>, text: string): unknown {
   const t = text.trim();
   if (!t) return undefined;
   switch (p.type) {
     case 'bool': return TRUE_RE.test(t);
-    case 'number': return Number(t);
+    case 'number': return parseDecimal(t);
     case 'list': return t.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
     default: return t;
   }
@@ -60,10 +72,10 @@ export function paramError(p: LibraryParam, text: string): string | null {
   const t = text.trim();
   if (!t) return p.required && p.default == null ? 'Required' : null;
   if (p.type === 'number') {
-    const n = Number(t);
-    if (Number.isNaN(n)) return 'Must be a number';
-    if (p.min != null && n < p.min) return `Must be ≥ ${p.min}`;
-    if (p.max != null && n > p.max) return `Must be ≤ ${p.max}`;
+    const n = parseDecimal(t);
+    if (n === undefined) return 'Must be a number';
+    if (p.min != null && n < p.min) return `Must be ≥ ${fmtNum(p.min)}`;
+    if (p.max != null && n > p.max) return `Must be ≤ ${fmtNum(p.max)}`;
   }
   if (p.type === 'choice' && p.choices?.length && !p.choices.includes(t)) return `One of ${p.choices.join(', ')}`;
   return null;

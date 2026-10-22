@@ -1,8 +1,10 @@
 """AI assistant — server part (Fable rebuild, Oct 20 2026). Mounted at /api/plugins/ai-assistant/ (console token on
 every method, 404 when disabled, never on the console MCP).
 
-The chat engine behind the framework's assistant contract (assistant@1: framework/core/assistant.ts = Kotlin
-ai.amberx.axf.kernel.assistant = contract.py here). Ported from xGallery's assistant and extended: providers from the
+The console's host of the framework's assistant contract (assistant@1: framework/core/assistant.ts = Kotlin
+ai.amberx.axf.kernel.assistant = Python `axf.contracts.assistant`) on the framework's Python host runtime
+(`axf.assistant_host`: providers, live-session hosts, safety; framework/python, harvested Oct 21 2026 — this folder
+keeps only what is console-specific). Ported from xGallery's assistant and extended: providers from the
 shared registry with a fallback chain, a setup wizard, per-conversation settings, regenerate / edit / fork, prompt
 library, image attachments, model comparison, usage and budgets, export / import, secret redaction, agent
 integration, write-mode change batches, the Claude Code MCP bridge, live sessions and hub users.
@@ -18,6 +20,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -32,7 +35,41 @@ from fastapi.responses import HTMLResponse, PlainTextResponse, StreamingResponse
 import plugin_services
 import wall
 
-from . import contract, providers, sessions, store, tools
+_PY = Path(__file__).resolve().parents[5] / "framework" / "python"
+if str(_PY) not in sys.path:
+    sys.path.insert(0, str(_PY))
+
+from axf.assistant_host import providers, sessions  # noqa: E402
+from axf.contracts import assistant as contract  # noqa: E402
+
+from . import store, tools  # noqa: E402
+
+# Host hooks of the shared runtime: what makes this host the console (never a copy of the runtime).
+providers.extra_kinds = store.extra_provider_kinds
+providers.HOST_LABEL = "the console server"
+providers.PRIVATE_DIRS = [".axf-console"]
+
+
+def _stored_secret_names() -> set[str]:
+    """Names of credentials the console's core credential store loaded into os.environ (never given to the CLI)."""
+    try:
+        import credentials
+        return set((credentials.STORE.read() if credentials.STORE else {}).keys())
+    except Exception:  # noqa: BLE001
+        return set()
+
+
+def _private_roots() -> set[str]:
+    try:
+        import console_context as cx
+        return {str(cx.ROOT)}
+    except Exception:  # noqa: BLE001
+        return set()
+
+
+providers.stored_secret_names = _stored_secret_names
+providers.PRIVATE_ROOTS = _private_roots
+providers.reload_catalog()  # the registry is read once at import with the default hooks; read again with ours
 
 # ---------------------------------------------------------------- who may do what (hub users behind the wall)
 # The console lets hub *users* into this plugin ("wallUsers": true). Admins (and the console token) can do
@@ -153,11 +190,12 @@ plugin_services.provide("axf.llm@1", LlmService(), FOLDER)
 
 # Live sessions (live-session@1): every conversation is a session owned by its host; replies run detached from the
 # browser and viewers reattach + replay. Hosts are an open registry: `local` is built, `axhub` is a placeholder until a
-# module provides `axf.live-host@1`. See server/sessions.py and framework/spec/LIVE-SESSIONS.md.
-_host = sessions.LocalHost(store.DATA / "sessions")
+# module provides `axf.live-host@1`. See axf.assistant_host.sessions and framework/spec/LIVE-SESSIONS.md.
+_host = sessions.LocalHost(store.DATA / "sessions", label="This console", note="Replies run on the console server and keep going when the browser closes.",
+                           restart_reason="The console restarted while this reply was running.")
 HOSTS = sessions.SessionHosts()
 HOSTS.register(_host)
-HOSTS.register(sessions.AXHUB_PLACEHOLDER)
+HOSTS.register(sessions.axhub_placeholder("this console"))
 plugin_services.provide("axf.live-sessions@1", sessions.LiveSessionsService(HOSTS, _host), FOLDER)
 
 
@@ -220,8 +258,10 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
         parts.append(f"Instructions for this conversation:\n{st['systemPrompt'].strip()}")
     if memory:
         parts.append(f"Relevant memory (from the agent's persistent memory; use it when it helps, never invent beyond it):\n{memory}")
-    if context and any(context.get(k) for k in ("view", "title", "selection", "note")):
+    if context and any(context.get(k) for k in ("view", "title", "selection", "note", "extra")):
         bits = [f"view: {context['view']}" if context.get("view") else "", f"title: {context['title']}" if context.get("title") else ""]
+        # Well-known `extra` keys (assistant@1 ChatContext.extra) are named for the model; other keys are the host's own.
+        bits += [f"{k}: {v}" for k in contract.CHAT_CONTEXT_KEYS for v in [contract.context_extra(context, k)] if v]
         text = "Console context: " + " · ".join(b for b in bits if b)
         if context.get("selection"):
             text += f"\nSelected text:\n\"\"\"\n{str(context['selection'])[:4000]}\n\"\"\""
@@ -335,7 +375,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             images = [i for i in (body.get("images") or [])[:6] if isinstance(i, dict) and re.match(r"^image/(png|jpe?g|gif|webp)$", str(i.get("media_type", "")))]
             if not user_text and not images:
                 raise ValueError("empty message")
-            umsg = {"id": store.new_id("m"), "role": "user", "content": user_text, "createdAt": store.now_ms(), "meta": {"context": body.get("context") or None}}
+            umsg = {"id": store.new_id("m"), "role": "user", "content": user_text, "createdAt": store.now_ms(), "meta": {"context": contract.normalize_chat_context(body.get("context"))}}
             if images:
                 umsg["images"] = [{"media_type": i["media_type"], "data": str(i.get("data", ""))[:8_000_000], "name": str(i.get("name", ""))[:120]} for i in images]
             msgs.append(umsg)
@@ -379,7 +419,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                     yield _sse("status", {"text": "Recalled from agent memory"})
             except Exception:  # noqa: BLE001
                 memory = ""
-        system = _system_prompt(cfg, conv, agent, body.get("context"), tool_specs, memory)
+        system = _system_prompt(cfg, conv, agent, contract.normalize_chat_context(body.get("context")), tool_specs, memory)
         amodel = (agent or {}).get("model") or {}
         if not me.can("assistant.models"):
             st = {k: v for k, v in st.items() if k not in ("profileId", "model")}  # the default model for this account

@@ -1,0 +1,10 @@
+[
+  { "name": "settings-appearance", "signIn": { "url": "http://127.0.0.1:18080/auth/login", "username": "admin", "password": "admin-password-1" },
+    "steps": [ { "search": "Appearance", "wait": 2500 } ] },
+  { "name": "app-tabs", "signIn": { "url": "http://127.0.0.1:18080/auth/login", "username": "admin", "password": "admin-password-1" },
+    "steps": [ { "wait": 1500 } ] },
+  { "name": "theme-manager", "signIn": { "url": "http://127.0.0.1:18080/auth/login", "username": "admin", "password": "admin-password-1" },
+    "steps": [ { "search": "Theme manager", "wait": 2500 } ] },
+  { "name": "waiting-for-hub", "viewports": ["phone", "desktop"],
+    "steps": [ { "wait": 2500 } ] }
+]

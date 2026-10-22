@@ -5,6 +5,7 @@ import { AddonsTab, AgentManagerView } from './views';
 import { WIZARDS, WizardDialog } from './wizards';
 import { MemoryDefaultsPanel, ModelPanel, SafetyPanel, TrainingPanel, WizardsPanel } from './settings';
 import './agent-manager.css';
+import { appMenu } from './menu';
 
 /*
  * Agent manager plugin (web part) — see server/__init__.py for the model.
@@ -17,6 +18,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Agent manager',
   version: '0.2.0',
+  appMenu,
   provides: ['axf.agent-manager'],
   register(rt) {
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });

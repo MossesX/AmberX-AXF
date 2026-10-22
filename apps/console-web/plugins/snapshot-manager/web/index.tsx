@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, setFocus } from './api';
 import { ChangeLogPanel, RetentionPanel, SnapshotsPanel, TakePanel } from './panels';
 import './snapshot-manager.css';
+import { appMenu } from './menu';
 
 /*
  * Snapshot Manager (web part): Settings → Plugins → Snapshots. Action `snapshots.show:<id>` opens one snapshot
@@ -12,6 +13,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Snapshot Manager',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.snapshot-manager'],
   register(rt) {
     rt.actions.register('snapshots.show', ([id]) => { setFocus(id ?? ''); rt.dispatch('settings.open:snapshots'); }, { label: 'Show a snapshot', params: true });

@@ -1,0 +1,102 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-5535630347",
+  "createdAt": "2026-10-21T11:58:59.216Z",
+  "updatedAt": "2026-10-21T11:58:59.712Z",
+  "kind": "build",
+  "title": "Codebase changes plugin: log, banner and browser",
+  "asked": "Add another banner to the console's load listing all new builds: every time Claude is asked to build, edit or remove something, create an entry with details about what it does, broken into steps, and store its results. Show them in a Codebase changes banner on every load until closed (closed everywhere). Keep a permanent log in the console. One plugin, installed; all data stored on axHub.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [
+    {
+      "text": "Record format change-log@1 and validators (Node + Python)",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.288Z",
+      "finishedAt": "2026-10-21T11:58:59.288Z"
+    },
+    {
+      "text": "Server routes and storage on axHub",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.354Z",
+      "finishedAt": "2026-10-21T11:58:59.354Z"
+    },
+    {
+      "text": "CLI, local queue and Claude Code hook",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.424Z",
+      "finishedAt": "2026-10-21T11:58:59.424Z"
+    },
+    {
+      "text": "Banner, log browser and settings sub-tab",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.493Z",
+      "finishedAt": "2026-10-21T11:58:59.493Z"
+    },
+    {
+      "text": "Lifecycle, docs, rule and Status",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.572Z",
+      "finishedAt": "2026-10-21T11:58:59.572Z"
+    },
+    {
+      "text": "Tests and screenshots",
+      "state": "done",
+      "startedAt": "2026-10-21T11:58:59.640Z",
+      "finishedAt": "2026-10-21T11:58:59.640Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "New console plugin: every build/edit/remove/fix request is a change-log@1 entry opened by a Claude Code hook and filled in step by step; stored one file per entry on axHub (changes/ in the shared data folder); banner on every load until closed (closed everywhere); permanent log under Builds -> Codebase changes. Not pushed: waits for review on branch feat/codebase-changes.",
+    "branch": "feat/codebase-changes",
+    "commits": [
+      {
+        "sha": "e573b22"
+      }
+    ],
+    "filesChanged": 30,
+    "tests": {
+      "plugin test.py": {
+        "before": "0",
+        "after": "105"
+      },
+      "plugin test.mjs": {
+        "before": "0",
+        "after": "67"
+      },
+      "console tsc + vite build": {
+        "state": "pass"
+      },
+      "lifecycle check + after-uninstall": {
+        "state": "pass"
+      }
+    },
+    "links": {
+      "report": "_claude/memory/docs/codebase-changes.md"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "codebase-changes"
+  },
+  "startedAt": "2026-10-21T11:58:59.216Z",
+  "finishedAt": "2026-10-21T11:58:59.712Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/codebase-changes"
+  ]
+}

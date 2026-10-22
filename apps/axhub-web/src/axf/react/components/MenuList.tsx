@@ -1,0 +1,77 @@
+import { useState } from 'react';
+import { filterMenu, type MenuItem } from '../../core';
+import { useRuntime, useAxfState } from '../AxfProvider';
+import { Icon } from './Icon';
+import { Kbd } from './Controls';
+
+interface MenuListProps {
+  items: MenuItem[];
+  onDone: () => void;
+  payload?: string;
+  showIcons?: boolean;
+  showShortcuts?: boolean;
+}
+
+/** Items without the hooks a host app took over (embed@1), nested lists included. */
+function dropTaken(items: MenuItem[], rt: ReturnType<typeof useRuntime>): MenuItem[] {
+  if (!rt.embedded?.takes?.length) return items;
+  return items
+    .filter((i) => i.separator || !(i.action && rt.takenByHost({ action: i.action })))
+    .map((i) => (i.items ? { ...i, items: dropTaken(i.items, rt) } : i))
+    .filter((i) => i.separator || !i.items || i.items.length > 0 || !!i.action);
+}
+
+/** Shared renderer for dropdown menus and context menus (UAC-aware, nested). */
+export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true }: MenuListProps) {
+  const rt = useRuntime();
+  useAxfState();
+  const [openSub, setOpenSub] = useState<string | null>(null);
+  // Hooks the host app took over (embed@1 takes, e.g. Settings inside Patches) are dropped like hidden items.
+  const visible = filterMenu(dropTaken(items, rt), (r) => rt.gate(r));
+
+  return (
+    <ul className="fx-menu" role="menu">
+      {visible.map((item) => {
+        if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
+        const locked = rt.gate(item.requires) === 'disable';
+        const hasSub = !!item.items?.length;
+        return (
+          <li
+            key={item.id}
+            className="fx-menu__li"
+            onMouseEnter={() => setOpenSub(hasSub ? item.id : null)}
+          >
+            <button
+              type="button"
+              role="menuitem"
+              className="fx-menu__item"
+              disabled={locked}
+              title={locked ? `Requires ${item.requires}` : undefined}
+              onClick={(e) => {
+                if (hasSub) {
+                  e.stopPropagation();
+                  setOpenSub((s) => (s === item.id ? null : item.id));
+                  return;
+                }
+                onDone();
+                if (item.action) rt.dispatch(item.action, { payload });
+              }}
+            >
+              {showIcons && (
+                <span className="fx-menu__icon">{locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>
+              )}
+              <span className="fx-menu__label">{item.label}</span>
+              {showShortcuts && item.shortcut && <Kbd>{item.shortcut}</Kbd>}
+              {hasSub && <Icon name="chevron-right" size={14} />}
+            </button>
+            {hasSub && openSub === item.id && (
+              <div className="fx-menu__sub fx-popover">
+                <MenuList items={item.items!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}

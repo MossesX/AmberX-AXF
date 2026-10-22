@@ -1,0 +1,63 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-eb79fa0d44",
+  "createdAt": "2026-10-18T16:03:08.000Z",
+  "updatedAt": "2026-10-18T19:03:08.000Z",
+  "kind": "build",
+  "title": "Session check-in plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/session-checkin` (`ai.amberx.axf.console.session-checkin`). Every new Claude Code session opens with grouped questions (location → repo → container → project → memory files read-only → model → effort with the fixed baseline build's cost) and is logged as `session-log@1` in",
+    "commits": [
+      {
+        "sha": "69e855d",
+        "message": "Session check-in plugin: new-session questions, interactive installer from Settings, Sessions archive"
+      },
+      {
+        "sha": "e2789da",
+        "message": "Session check-in: pin the baseline build to commit 69e855d (tag pushes are blocked from cloud sessions)"
+      },
+      {
+        "sha": "3c58fd5",
+        "message": "Session check-in: 'Every clone' from the console now commits + pushes to GitHub"
+      },
+      {
+        "sha": "855d354",
+        "message": "Plugin settings are sub-tabs of Settings → Plugins, never top-level tabs"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T19:03:08.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "session-checkin"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T16:03:08.000Z",
+  "finishedAt": "2026-10-18T19:03:08.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/session-checkin"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-2e0872b95d",
+  "createdAt": "2026-10-21T00:48:58.000Z",
+  "updatedAt": "2026-10-21T04:48:58.000Z",
+  "kind": "build",
+  "title": "Harvest: hub-notify",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest group hub-notify — lib-hub (first slice) + lib-notifications (Oct 20 2026, Opus)",
+    "commits": [
+      {
+        "sha": "33b90cb",
+        "message": "Switch AXHub and the approvals banner to lib-hub + lib-notifications; register the libraries"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/hub-notify.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:48:58.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-hub-notify"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:48:58.000Z",
+  "finishedAt": "2026-10-21T04:48:58.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/libs/hub/hub.ts",
+    "framework/android/lib-notifications",
+    "apps/console-web/plugins/approvals-banner",
+    "framework/libs/hub",
+    "framework/spec/fixtures/hub-approvals.json",
+    "framework/spec/check-hub.mts",
+    "framework/android/lib-hub"
+  ]
+}

@@ -17,6 +17,7 @@ import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './plugin-switches.css';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.plugin-switches';
 /** This plugin's folder under plugins/ — its row is the greyed-out one. */
@@ -160,6 +161,7 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Plugin switches',
   version: '0.1.0',
+  appMenu,
   register(rt) {
     rt.actions.register('plugin-switches.open', () => rt.openDialog(DIALOG), { label: 'Plugin switches' });
   },

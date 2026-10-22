@@ -29,7 +29,7 @@ import java.util.Calendar
 import java.util.TimeZone
 
 /*
- * Widgets (asset types with "widget": true: clock, search bar) drawn on their hosts (banner, toolbar). Placement is the
+ * Widgets (asset types with "widget": true: clock, search bar, and the widget kinds in WidgetKinds.kt) drawn on their hosts (banner, toolbar). Placement is the
  * kernel's (WidgetEngine); this draws one placed widget. Renderers are an open registry (`WidgetRenderers`): a library
  * adds a new widget type by registering its renderer, no shell change. Web twin: react/components/Widgets.tsx.
  */
@@ -43,6 +43,7 @@ public object WidgetRenderers {
     init {
         register("clock") { s -> AxfClock(ClockData.fromJson(s.data), host = s.host) }
         register("search-bar") { s -> AxfSearchBar(WidgetEngine.searchBarConfig(s.data), host = s.host) }
+        registerWidgetKinds { type, r -> register(type, r) }
     }
     /** Register (or replace) the renderer for a widget type. Returns an unregister function. */
     public fun register(type: String, r: @Composable (WidgetRenderScope) -> Unit): () -> Unit { map[type] = r; return { if (map[type] === r) map.remove(type) } }

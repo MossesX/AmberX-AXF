@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-03c0a443c1",
+  "createdAt": "2026-10-18T04:07:53.368Z",
+  "updatedAt": "2026-10-18T06:07:53.368Z",
+  "kind": "build",
+  "title": "claude-pick.sh: choose plan or API key at launch",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "On the VPS, deploy/claude-pick.sh asks at launch whether Claude Code uses the Claude plan login or an Anthropic API key (billed per use). Key read from ~/.anthropic-key (0600), never the repo; export ANTHROPIC_API_KEY only for that launch; option to save/replace/remove the key; show which is active.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T06:07:53.368Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "claude-pick-api-key"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T04:07:53.368Z",
+  "finishedAt": "2026-10-18T06:07:53.368Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

@@ -1,0 +1,4616 @@
+{
+  "spec": {
+    "maxDepth": 4,
+    "providerMax": 12,
+    "defaultOrder": 100,
+    "checkedKinds": [
+      "setting",
+      "counter",
+      "slot",
+      "hidden"
+    ],
+    "itemFields": [
+      "provider",
+      "badge",
+      "checked",
+      "order",
+      "before",
+      "after"
+    ],
+    "defaultMenu": "more",
+    "assetOrigin": "asset"
+  },
+  "titles": {
+    "pending-builds": "Pending builds",
+    "build_queue": "Build queue",
+    "a.b.c": "A b c",
+    "x": "X",
+    "": "",
+    "--": "--"
+  },
+  "truthy": {
+    "0": false,
+    "1": true,
+    "true": true,
+    "false": false,
+    "-2": true,
+    "\"\"": false,
+    "\"false\"": false,
+    "\"FALSE\"": false,
+    "\"0\"": false,
+    "\"off\"": false,
+    "\"no\"": false,
+    "\"yes\"": true,
+    "\"x\"": true,
+    "\" on \"": true
+  },
+  "checked": {
+    "setting:a": {
+      "parsed": {
+        "kind": "setting",
+        "ref": "a"
+      },
+      "resolved": true
+    },
+    "counter:c": {
+      "parsed": {
+        "kind": "counter",
+        "ref": "c"
+      },
+      "resolved": true
+    },
+    "slot:toolbar": {
+      "parsed": {
+        "kind": "slot",
+        "ref": "toolbar"
+      },
+      "resolved": false
+    },
+    "hidden:toolbar": {
+      "parsed": {
+        "kind": "hidden",
+        "ref": "toolbar"
+      },
+      "resolved": true
+    },
+    "slot:nav-menu": {
+      "parsed": {
+        "kind": "slot",
+        "ref": "nav-menu"
+      },
+      "resolved": true
+    },
+    "nope:x": {
+      "parsed": null,
+      "resolved": null
+    },
+    "setting:": {
+      "parsed": null,
+      "resolved": null
+    },
+    ":x": {
+      "parsed": null,
+      "resolved": null
+    },
+    "plain": {
+      "parsed": null,
+      "resolved": null
+    },
+    "": {
+      "parsed": null,
+      "resolved": null
+    }
+  },
+  "asset": {
+    "menus": [
+      {
+        "id": "file",
+        "label": "File",
+        "items": [
+          {
+            "id": "new",
+            "label": "New file",
+            "icon": "plus",
+            "action": "file.new",
+            "shortcut": "Alt+N"
+          },
+          {
+            "id": "save",
+            "label": "Save",
+            "icon": "save",
+            "action": "file.save",
+            "requires": "files.write"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "exports",
+            "label": "Export",
+            "icon": "share",
+            "items": [
+              {
+                "id": "json",
+                "label": "As JSON",
+                "action": "file.export:json"
+              }
+            ]
+          },
+          {
+            "id": "admin-only",
+            "label": "Wipe",
+            "action": "file.wipe",
+            "requires": "uac.manage"
+          }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "order": 50,
+        "items": [
+          {
+            "id": "reload",
+            "label": "Reload",
+            "action": "view.reload"
+          },
+          {
+            "id": "legacy-list",
+            "label": "Legacy list",
+            "provider": "nobody-registered"
+          },
+          {
+            "id": "deep",
+            "label": "Deep",
+            "items": [
+              {
+                "id": "d2",
+                "label": "D2",
+                "items": [
+                  {
+                    "id": "d3",
+                    "label": "D3",
+                    "items": [
+                      {
+                        "id": "d4",
+                        "label": "D4",
+                        "items": [
+                          {
+                            "id": "d5",
+                            "label": "D5",
+                            "action": "deep.five"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "empty",
+        "label": "Empty",
+        "items": [
+          {
+            "id": "hidden-sub",
+            "label": "Hidden",
+            "items": [
+              {
+                "id": "x",
+                "label": "X",
+                "action": "x",
+                "requires": "uac.manage"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "contributions": [
+    {
+      "id": "builds.pending",
+      "module": "builds",
+      "menu": "builds",
+      "menuLabel": "Builds",
+      "menuOrder": 60,
+      "path": [
+        {
+          "id": "manager",
+          "label": "Build manager",
+          "icon": "hammer"
+        }
+      ],
+      "items": [
+        {
+          "id": "pending",
+          "label": "Pending builds",
+          "icon": "clock",
+          "action": "nav:pending",
+          "badge": "builds.pending"
+        },
+        {
+          "id": "queue",
+          "label": "Build queue",
+          "icon": "list",
+          "action": "nav:build-queue"
+        }
+      ]
+    },
+    {
+      "id": "builds.lists",
+      "module": "builds",
+      "menu": "builds",
+      "items": [
+        {
+          "id": "sep",
+          "separator": true
+        },
+        {
+          "id": "features",
+          "label": "Features",
+          "icon": "star",
+          "provider": "features"
+        },
+        {
+          "id": "auto",
+          "label": "Auto build",
+          "action": "builds.auto:toggle",
+          "checked": "setting:builds.auto"
+        }
+      ]
+    },
+    {
+      "id": "files.extra",
+      "module": "files",
+      "menu": "file",
+      "items": [
+        {
+          "id": "open",
+          "label": "Open…",
+          "icon": "folder",
+          "action": "file.open",
+          "before": "save"
+        },
+        {
+          "id": "recent",
+          "label": "Recent",
+          "provider": "recent",
+          "after": "open"
+        },
+        {
+          "id": "first",
+          "label": "First",
+          "action": "file.first",
+          "order": 1
+        },
+        {
+          "id": "save",
+          "label": "Save (plugin)",
+          "icon": "save",
+          "action": "files.save"
+        }
+      ]
+    },
+    {
+      "id": "files.export",
+      "module": "files",
+      "menu": "file",
+      "path": [
+        "exports"
+      ],
+      "items": [
+        {
+          "id": "csv",
+          "label": "As CSV",
+          "action": "file.export:csv"
+        }
+      ]
+    },
+    {
+      "id": "a.view",
+      "module": "mod-a",
+      "menu": "view",
+      "items": [
+        {
+          "id": "theme",
+          "label": "Theme (A)",
+          "action": "a.theme"
+        }
+      ]
+    },
+    {
+      "id": "b.view",
+      "module": "mod-b",
+      "menu": "view",
+      "items": [
+        {
+          "id": "theme",
+          "label": "Theme (B)",
+          "action": "b.theme"
+        }
+      ]
+    },
+    {
+      "id": "b.view2",
+      "module": "mod-b",
+      "menu": "view",
+      "items": [
+        {
+          "id": "theme",
+          "label": "Theme (B2)",
+          "action": "b.theme2"
+        }
+      ]
+    },
+    {
+      "id": "view.chrome",
+      "module": "axf",
+      "menu": "view",
+      "order": 200,
+      "items": [
+        {
+          "id": "sep",
+          "separator": true
+        },
+        {
+          "id": "chrome.toolbar",
+          "label": "Toolbar",
+          "icon": "sliders",
+          "action": "slot.hide:toolbar:toggle",
+          "checked": "slot:toolbar",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "chrome.nav-menu",
+          "label": "Navigation menu",
+          "icon": "grid",
+          "action": "slot.hide:nav-menu:toggle",
+          "checked": "slot:nav-menu",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "chrome.banner",
+          "label": "Banner",
+          "icon": "menu",
+          "action": "slot.hide:banner:toggle",
+          "checked": "slot:banner",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "sep2",
+          "separator": true
+        },
+        {
+          "id": "hidden-state",
+          "label": "Toolbar hidden?",
+          "action": "noop",
+          "checked": "hidden:toolbar"
+        }
+      ]
+    },
+    {
+      "id": "help.about",
+      "module": "help",
+      "order": 1,
+      "items": [
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "action": "dialog:about",
+          "checked": "counter:about.seen"
+        },
+        {
+          "id": "alerts",
+          "label": "Alerts",
+          "action": "alerts.open",
+          "badge": "alerts.unread"
+        }
+      ]
+    },
+    {
+      "id": "files.recent-extra",
+      "module": "files",
+      "menu": "file",
+      "path": [
+        "recent"
+      ],
+      "items": [
+        {
+          "id": "clear-recent",
+          "label": "Clear recent",
+          "action": "file.recent.clear"
+        }
+      ]
+    },
+    {
+      "id": "bad.checks",
+      "module": "help",
+      "menu": "more",
+      "items": [
+        {
+          "id": "bad1",
+          "label": "Bad 1",
+          "action": "noop",
+          "checked": "nope:x"
+        },
+        {
+          "id": "bad2",
+          "label": "Bad 2",
+          "action": "noop",
+          "checked": "setting:"
+        }
+      ]
+    }
+  ],
+  "merged": {
+    "menus": [
+      {
+        "id": "view",
+        "label": "View",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "reload",
+            "origin": "asset",
+            "label": "Reload",
+            "action": "view.reload"
+          },
+          {
+            "id": "legacy-list",
+            "origin": "asset",
+            "label": "Legacy list",
+            "provider": "nobody-registered"
+          },
+          {
+            "id": "deep",
+            "origin": "asset",
+            "label": "Deep",
+            "items": [
+              {
+                "id": "d2",
+                "origin": "asset",
+                "label": "D2",
+                "items": [
+                  {
+                    "id": "d3",
+                    "origin": "asset",
+                    "label": "D3",
+                    "items": [
+                      {
+                        "id": "d4",
+                        "origin": "asset",
+                        "label": "D4",
+                        "items": [
+                          {
+                            "id": "d5",
+                            "origin": "asset",
+                            "label": "D5",
+                            "action": "deep.five"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "theme",
+            "origin": "mod-b",
+            "label": "Theme (B2)",
+            "action": "b.theme2"
+          },
+          {
+            "id": "sep",
+            "origin": "axf",
+            "separator": true
+          },
+          {
+            "id": "chrome.toolbar",
+            "origin": "axf",
+            "label": "Toolbar",
+            "icon": "sliders",
+            "action": "slot.hide:toolbar:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:toolbar"
+          },
+          {
+            "id": "chrome.nav-menu",
+            "origin": "axf",
+            "label": "Navigation menu",
+            "icon": "grid",
+            "action": "slot.hide:nav-menu:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:nav-menu"
+          },
+          {
+            "id": "chrome.banner",
+            "origin": "axf",
+            "label": "Banner",
+            "icon": "menu",
+            "action": "slot.hide:banner:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:banner"
+          },
+          {
+            "id": "sep2",
+            "origin": "axf",
+            "separator": true
+          },
+          {
+            "id": "hidden-state",
+            "origin": "axf",
+            "label": "Toolbar hidden?",
+            "action": "noop",
+            "checked": "hidden:toolbar"
+          }
+        ]
+      },
+      {
+        "id": "builds",
+        "label": "Builds",
+        "origin": "builds",
+        "items": [
+          {
+            "id": "manager",
+            "origin": "builds",
+            "label": "Build manager",
+            "icon": "hammer",
+            "items": [
+              {
+                "id": "pending",
+                "origin": "builds",
+                "label": "Pending builds",
+                "icon": "clock",
+                "action": "nav:pending",
+                "badge": "builds.pending"
+              },
+              {
+                "id": "queue",
+                "origin": "builds",
+                "label": "Build queue",
+                "icon": "list",
+                "action": "nav:build-queue"
+              }
+            ]
+          },
+          {
+            "id": "sep",
+            "origin": "builds",
+            "separator": true
+          },
+          {
+            "id": "features",
+            "origin": "builds",
+            "label": "Features",
+            "icon": "star",
+            "provider": "features"
+          },
+          {
+            "id": "auto",
+            "origin": "builds",
+            "label": "Auto build",
+            "action": "builds.auto:toggle",
+            "checked": "setting:builds.auto"
+          }
+        ]
+      },
+      {
+        "id": "file",
+        "label": "File",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "first",
+            "origin": "files",
+            "label": "First",
+            "action": "file.first"
+          },
+          {
+            "id": "new",
+            "origin": "asset",
+            "label": "New file",
+            "icon": "plus",
+            "action": "file.new",
+            "shortcut": "Alt+N"
+          },
+          {
+            "id": "open",
+            "origin": "files",
+            "label": "Open…",
+            "icon": "folder",
+            "action": "file.open"
+          },
+          {
+            "id": "recent",
+            "origin": "files",
+            "label": "Recent",
+            "provider": "recent"
+          },
+          {
+            "id": "save",
+            "origin": "files",
+            "label": "Save (plugin)",
+            "icon": "save",
+            "action": "files.save"
+          },
+          {
+            "id": "s1",
+            "origin": "asset",
+            "separator": true
+          },
+          {
+            "id": "exports",
+            "origin": "asset",
+            "label": "Export",
+            "icon": "share",
+            "items": [
+              {
+                "id": "json",
+                "origin": "asset",
+                "label": "As JSON",
+                "action": "file.export:json"
+              },
+              {
+                "id": "csv",
+                "origin": "files",
+                "label": "As CSV",
+                "action": "file.export:csv"
+              }
+            ]
+          },
+          {
+            "id": "admin-only",
+            "origin": "asset",
+            "label": "Wipe",
+            "action": "file.wipe",
+            "requires": "uac.manage"
+          },
+          {
+            "id": "clear-recent",
+            "origin": "files",
+            "label": "Clear recent",
+            "action": "file.recent.clear"
+          }
+        ]
+      },
+      {
+        "id": "empty",
+        "label": "Empty",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "hidden-sub",
+            "origin": "asset",
+            "label": "Hidden",
+            "items": [
+              {
+                "id": "x",
+                "origin": "asset",
+                "label": "X",
+                "action": "x",
+                "requires": "uac.manage"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "more",
+        "label": "More",
+        "origin": "help",
+        "items": [
+          {
+            "id": "about",
+            "origin": "help",
+            "label": "About",
+            "icon": "info",
+            "action": "dialog:about",
+            "checked": "counter:about.seen"
+          },
+          {
+            "id": "alerts",
+            "origin": "help",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "bad1",
+            "origin": "help",
+            "label": "Bad 1",
+            "action": "noop",
+            "checked": "nope:x"
+          },
+          {
+            "id": "bad2",
+            "origin": "help",
+            "label": "Bad 2",
+            "action": "noop",
+            "checked": "setting:"
+          }
+        ]
+      }
+    ],
+    "conflicts": [
+      {
+        "what": "app-menu item",
+        "id": "view/theme",
+        "was": "mod-a",
+        "now": "mod-b"
+      }
+    ],
+    "notes": [
+      "builds.pending: created submenu builds/manager",
+      "files.recent-extra: file/recent is a live list; items placed beside it"
+    ]
+  },
+  "compiled": {
+    "guest": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "admin-only",
+              "label": "Wipe",
+              "locked": true,
+              "origin": "asset",
+              "action": "file.wipe",
+              "requires": "uac.manage"
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "empty",
+          "label": "Empty",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "hidden-sub",
+              "label": "Hidden",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "x",
+                  "label": "X",
+                  "locked": true,
+                  "origin": "asset",
+                  "action": "x",
+                  "requires": "uac.manage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    },
+    "user": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "admin-only",
+              "label": "Wipe",
+              "locked": true,
+              "origin": "asset",
+              "action": "file.wipe",
+              "requires": "uac.manage"
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "empty",
+          "label": "Empty",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "hidden-sub",
+              "label": "Hidden",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "x",
+                  "label": "X",
+                  "locked": true,
+                  "origin": "asset",
+                  "action": "x",
+                  "requires": "uac.manage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    },
+    "admin": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "admin-only",
+              "label": "Wipe",
+              "locked": false,
+              "origin": "asset",
+              "action": "file.wipe",
+              "requires": "uac.manage"
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "empty",
+          "label": "Empty",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "hidden-sub",
+              "label": "Hidden",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "x",
+                  "label": "X",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "x",
+                  "requires": "uac.manage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    }
+  },
+  "compiledShown": {
+    "menus": [
+      {
+        "id": "view",
+        "label": "View",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "reload",
+            "label": "Reload",
+            "locked": false,
+            "origin": "asset",
+            "action": "view.reload"
+          },
+          {
+            "id": "theme",
+            "label": "Theme (B2)",
+            "locked": false,
+            "origin": "mod-b",
+            "action": "b.theme2"
+          },
+          {
+            "id": "sep",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "axf"
+          },
+          {
+            "id": "chrome.toolbar",
+            "label": "Toolbar",
+            "locked": false,
+            "origin": "axf",
+            "icon": "sliders",
+            "action": "slot.hide:toolbar:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:toolbar",
+            "check": true
+          },
+          {
+            "id": "chrome.nav-menu",
+            "label": "Navigation menu",
+            "locked": false,
+            "origin": "axf",
+            "icon": "grid",
+            "action": "slot.hide:nav-menu:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:nav-menu",
+            "check": true
+          },
+          {
+            "id": "chrome.banner",
+            "label": "Banner",
+            "locked": false,
+            "origin": "axf",
+            "icon": "menu",
+            "action": "slot.hide:banner:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:banner",
+            "check": true
+          },
+          {
+            "id": "sep2",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "axf"
+          },
+          {
+            "id": "hidden-state",
+            "label": "Toolbar hidden?",
+            "locked": false,
+            "origin": "axf",
+            "action": "noop",
+            "checked": "hidden:toolbar",
+            "check": false
+          }
+        ]
+      },
+      {
+        "id": "builds",
+        "label": "Builds",
+        "origin": "builds",
+        "items": [
+          {
+            "id": "manager",
+            "label": "Build manager",
+            "locked": false,
+            "origin": "builds",
+            "icon": "hammer",
+            "items": [
+              {
+                "id": "pending",
+                "label": "Pending builds",
+                "locked": false,
+                "origin": "builds",
+                "icon": "clock",
+                "action": "nav:pending",
+                "badge": "builds.pending",
+                "count": 3
+              },
+              {
+                "id": "queue",
+                "label": "Build queue",
+                "locked": false,
+                "origin": "builds",
+                "icon": "list",
+                "action": "nav:build-queue"
+              }
+            ]
+          },
+          {
+            "id": "sep",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "builds"
+          },
+          {
+            "id": "features",
+            "label": "Features",
+            "locked": false,
+            "origin": "builds",
+            "icon": "star",
+            "provider": "features",
+            "items": []
+          },
+          {
+            "id": "auto",
+            "label": "Auto build",
+            "locked": false,
+            "origin": "builds",
+            "action": "builds.auto:toggle",
+            "checked": "setting:builds.auto",
+            "check": false
+          }
+        ]
+      },
+      {
+        "id": "file",
+        "label": "File",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "first",
+            "label": "First",
+            "locked": false,
+            "origin": "files",
+            "action": "file.first"
+          },
+          {
+            "id": "new",
+            "label": "New file",
+            "locked": false,
+            "origin": "asset",
+            "icon": "plus",
+            "action": "file.new",
+            "shortcut": "Alt+N"
+          },
+          {
+            "id": "open",
+            "label": "Open…",
+            "locked": false,
+            "origin": "files",
+            "icon": "folder",
+            "action": "file.open"
+          },
+          {
+            "id": "recent",
+            "label": "Recent",
+            "locked": false,
+            "origin": "files",
+            "provider": "recent",
+            "items": []
+          },
+          {
+            "id": "save",
+            "label": "Save (plugin)",
+            "locked": false,
+            "origin": "files",
+            "icon": "save",
+            "action": "files.save"
+          },
+          {
+            "id": "s1",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "asset"
+          },
+          {
+            "id": "exports",
+            "label": "Export",
+            "locked": false,
+            "origin": "asset",
+            "icon": "share",
+            "items": [
+              {
+                "id": "json",
+                "label": "As JSON",
+                "locked": false,
+                "origin": "asset",
+                "action": "file.export:json"
+              },
+              {
+                "id": "csv",
+                "label": "As CSV",
+                "locked": false,
+                "origin": "files",
+                "action": "file.export:csv"
+              }
+            ]
+          },
+          {
+            "id": "admin-only",
+            "label": "Wipe",
+            "locked": false,
+            "origin": "asset",
+            "action": "file.wipe",
+            "requires": "uac.manage"
+          },
+          {
+            "id": "clear-recent",
+            "label": "Clear recent",
+            "locked": false,
+            "origin": "files",
+            "action": "file.recent.clear"
+          }
+        ]
+      },
+      {
+        "id": "empty",
+        "label": "Empty",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "hidden-sub",
+            "label": "Hidden",
+            "locked": false,
+            "origin": "asset",
+            "items": [
+              {
+                "id": "x",
+                "label": "X",
+                "locked": false,
+                "origin": "asset",
+                "action": "x",
+                "requires": "uac.manage"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "more",
+        "label": "More",
+        "origin": "help",
+        "items": [
+          {
+            "id": "about",
+            "label": "About",
+            "locked": false,
+            "origin": "help",
+            "icon": "info",
+            "action": "dialog:about",
+            "checked": "counter:about.seen",
+            "check": true
+          },
+          {
+            "id": "alerts",
+            "label": "Alerts",
+            "locked": false,
+            "origin": "help",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "bad1",
+            "label": "Bad 1",
+            "locked": false,
+            "origin": "help",
+            "action": "noop",
+            "checked": "nope:x"
+          },
+          {
+            "id": "bad2",
+            "label": "Bad 2",
+            "locked": false,
+            "origin": "help",
+            "action": "noop",
+            "checked": "setting:"
+          }
+        ]
+      }
+    ],
+    "conflicts": [
+      {
+        "what": "app-menu item",
+        "id": "view/theme",
+        "was": "mod-a",
+        "now": "mod-b"
+      }
+    ],
+    "notes": [
+      "builds.pending: created submenu builds/manager",
+      "files.recent-extra: file/recent is a live list; items placed beside it",
+      "view/legacy-list: live list \"nobody-registered\" is not registered",
+      "view/deep/d2/d3/d4: submenu cut at depth 4"
+    ]
+  },
+  "compiledHideGate": {
+    "guest": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    },
+    "user": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    },
+    "admin": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "reload",
+              "label": "Reload",
+              "locked": false,
+              "origin": "asset",
+              "action": "view.reload"
+            },
+            {
+              "id": "theme",
+              "label": "Theme (B2)",
+              "locked": false,
+              "origin": "mod-b",
+              "action": "b.theme2"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "chrome.toolbar",
+              "label": "Toolbar",
+              "locked": false,
+              "origin": "axf",
+              "icon": "sliders",
+              "action": "slot.hide:toolbar:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:toolbar",
+              "check": false
+            },
+            {
+              "id": "chrome.nav-menu",
+              "label": "Navigation menu",
+              "locked": false,
+              "origin": "axf",
+              "icon": "grid",
+              "action": "slot.hide:nav-menu:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:nav-menu",
+              "check": true
+            },
+            {
+              "id": "chrome.banner",
+              "label": "Banner",
+              "locked": false,
+              "origin": "axf",
+              "icon": "menu",
+              "action": "slot.hide:banner:toggle",
+              "requires": "assets.swap",
+              "checked": "slot:banner",
+              "check": true
+            },
+            {
+              "id": "sep2",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "axf"
+            },
+            {
+              "id": "hidden-state",
+              "label": "Toolbar hidden?",
+              "locked": false,
+              "origin": "axf",
+              "action": "noop",
+              "checked": "hidden:toolbar",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "origin": "builds",
+          "items": [
+            {
+              "id": "manager",
+              "label": "Build manager",
+              "locked": false,
+              "origin": "builds",
+              "icon": "hammer",
+              "items": [
+                {
+                  "id": "pending",
+                  "label": "Pending builds",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "clock",
+                  "action": "nav:pending",
+                  "badge": "builds.pending",
+                  "count": 3
+                },
+                {
+                  "id": "queue",
+                  "label": "Build queue",
+                  "locked": false,
+                  "origin": "builds",
+                  "icon": "list",
+                  "action": "nav:build-queue"
+                }
+              ]
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "builds"
+            },
+            {
+              "id": "features",
+              "label": "Features",
+              "locked": false,
+              "origin": "builds",
+              "icon": "star",
+              "provider": "features",
+              "items": []
+            },
+            {
+              "id": "auto",
+              "label": "Auto build",
+              "locked": false,
+              "origin": "builds",
+              "action": "builds.auto:toggle",
+              "checked": "setting:builds.auto",
+              "check": true
+            }
+          ]
+        },
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "first",
+              "label": "First",
+              "locked": false,
+              "origin": "files",
+              "action": "file.first"
+            },
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "open",
+              "label": "Open…",
+              "locked": false,
+              "origin": "files",
+              "icon": "folder",
+              "action": "file.open"
+            },
+            {
+              "id": "recent",
+              "label": "Recent",
+              "locked": false,
+              "origin": "files",
+              "provider": "recent",
+              "items": []
+            },
+            {
+              "id": "save",
+              "label": "Save (plugin)",
+              "locked": false,
+              "origin": "files",
+              "icon": "save",
+              "action": "files.save"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "exports",
+              "label": "Export",
+              "locked": false,
+              "origin": "asset",
+              "icon": "share",
+              "items": [
+                {
+                  "id": "json",
+                  "label": "As JSON",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "file.export:json"
+                },
+                {
+                  "id": "csv",
+                  "label": "As CSV",
+                  "locked": false,
+                  "origin": "files",
+                  "action": "file.export:csv"
+                }
+              ]
+            },
+            {
+              "id": "admin-only",
+              "label": "Wipe",
+              "locked": false,
+              "origin": "asset",
+              "action": "file.wipe",
+              "requires": "uac.manage"
+            },
+            {
+              "id": "clear-recent",
+              "label": "Clear recent",
+              "locked": false,
+              "origin": "files",
+              "action": "file.recent.clear"
+            }
+          ]
+        },
+        {
+          "id": "empty",
+          "label": "Empty",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "hidden-sub",
+              "label": "Hidden",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "x",
+                  "label": "X",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "x",
+                  "requires": "uac.manage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "more",
+          "label": "More",
+          "origin": "help",
+          "items": [
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "help",
+              "icon": "info",
+              "action": "dialog:about",
+              "checked": "counter:about.seen",
+              "check": true
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "locked": false,
+              "origin": "help",
+              "action": "alerts.open",
+              "badge": "alerts.unread"
+            },
+            {
+              "id": "bad1",
+              "label": "Bad 1",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "nope:x"
+            },
+            {
+              "id": "bad2",
+              "label": "Bad 2",
+              "locked": false,
+              "origin": "help",
+              "action": "noop",
+              "checked": "setting:"
+            }
+          ]
+        }
+      ],
+      "conflicts": [
+        {
+          "what": "app-menu item",
+          "id": "view/theme",
+          "was": "mod-a",
+          "now": "mod-b"
+        }
+      ],
+      "notes": [
+        "builds.pending: created submenu builds/manager",
+        "files.recent-extra: file/recent is a live list; items placed beside it",
+        "view/legacy-list: live list \"nobody-registered\" is not registered",
+        "view/deep/d2/d3/d4: submenu cut at depth 4"
+      ]
+    }
+  },
+  "compiledDepth2": {
+    "menus": [
+      {
+        "id": "view",
+        "label": "View",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "reload",
+            "label": "Reload",
+            "locked": false,
+            "origin": "asset",
+            "action": "view.reload"
+          },
+          {
+            "id": "theme",
+            "label": "Theme (B2)",
+            "locked": false,
+            "origin": "mod-b",
+            "action": "b.theme2"
+          },
+          {
+            "id": "sep",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "axf"
+          },
+          {
+            "id": "chrome.toolbar",
+            "label": "Toolbar",
+            "locked": false,
+            "origin": "axf",
+            "icon": "sliders",
+            "action": "slot.hide:toolbar:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:toolbar",
+            "check": false
+          },
+          {
+            "id": "chrome.nav-menu",
+            "label": "Navigation menu",
+            "locked": false,
+            "origin": "axf",
+            "icon": "grid",
+            "action": "slot.hide:nav-menu:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:nav-menu",
+            "check": true
+          },
+          {
+            "id": "chrome.banner",
+            "label": "Banner",
+            "locked": false,
+            "origin": "axf",
+            "icon": "menu",
+            "action": "slot.hide:banner:toggle",
+            "requires": "assets.swap",
+            "checked": "slot:banner",
+            "check": true
+          },
+          {
+            "id": "sep2",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "axf"
+          },
+          {
+            "id": "hidden-state",
+            "label": "Toolbar hidden?",
+            "locked": false,
+            "origin": "axf",
+            "action": "noop",
+            "checked": "hidden:toolbar",
+            "check": true
+          }
+        ]
+      },
+      {
+        "id": "builds",
+        "label": "Builds",
+        "origin": "builds",
+        "items": [
+          {
+            "id": "manager",
+            "label": "Build manager",
+            "locked": false,
+            "origin": "builds",
+            "icon": "hammer",
+            "items": [
+              {
+                "id": "pending",
+                "label": "Pending builds",
+                "locked": false,
+                "origin": "builds",
+                "icon": "clock",
+                "action": "nav:pending",
+                "badge": "builds.pending",
+                "count": 3
+              },
+              {
+                "id": "queue",
+                "label": "Build queue",
+                "locked": false,
+                "origin": "builds",
+                "icon": "list",
+                "action": "nav:build-queue"
+              }
+            ]
+          },
+          {
+            "id": "sep",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "builds"
+          },
+          {
+            "id": "features",
+            "label": "Features",
+            "locked": false,
+            "origin": "builds",
+            "icon": "star",
+            "provider": "features",
+            "items": []
+          },
+          {
+            "id": "auto",
+            "label": "Auto build",
+            "locked": false,
+            "origin": "builds",
+            "action": "builds.auto:toggle",
+            "checked": "setting:builds.auto",
+            "check": true
+          }
+        ]
+      },
+      {
+        "id": "file",
+        "label": "File",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "first",
+            "label": "First",
+            "locked": false,
+            "origin": "files",
+            "action": "file.first"
+          },
+          {
+            "id": "new",
+            "label": "New file",
+            "locked": false,
+            "origin": "asset",
+            "icon": "plus",
+            "action": "file.new",
+            "shortcut": "Alt+N"
+          },
+          {
+            "id": "open",
+            "label": "Open…",
+            "locked": false,
+            "origin": "files",
+            "icon": "folder",
+            "action": "file.open"
+          },
+          {
+            "id": "recent",
+            "label": "Recent",
+            "locked": false,
+            "origin": "files",
+            "provider": "recent",
+            "items": []
+          },
+          {
+            "id": "save",
+            "label": "Save (plugin)",
+            "locked": false,
+            "origin": "files",
+            "icon": "save",
+            "action": "files.save"
+          },
+          {
+            "id": "s1",
+            "label": "",
+            "separator": true,
+            "locked": false,
+            "origin": "asset"
+          },
+          {
+            "id": "exports",
+            "label": "Export",
+            "locked": false,
+            "origin": "asset",
+            "icon": "share",
+            "items": [
+              {
+                "id": "json",
+                "label": "As JSON",
+                "locked": false,
+                "origin": "asset",
+                "action": "file.export:json"
+              },
+              {
+                "id": "csv",
+                "label": "As CSV",
+                "locked": false,
+                "origin": "files",
+                "action": "file.export:csv"
+              }
+            ]
+          },
+          {
+            "id": "admin-only",
+            "label": "Wipe",
+            "locked": false,
+            "origin": "asset",
+            "action": "file.wipe",
+            "requires": "uac.manage"
+          },
+          {
+            "id": "clear-recent",
+            "label": "Clear recent",
+            "locked": false,
+            "origin": "files",
+            "action": "file.recent.clear"
+          }
+        ]
+      },
+      {
+        "id": "empty",
+        "label": "Empty",
+        "origin": "asset",
+        "items": [
+          {
+            "id": "hidden-sub",
+            "label": "Hidden",
+            "locked": false,
+            "origin": "asset",
+            "items": [
+              {
+                "id": "x",
+                "label": "X",
+                "locked": false,
+                "origin": "asset",
+                "action": "x",
+                "requires": "uac.manage"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "more",
+        "label": "More",
+        "origin": "help",
+        "items": [
+          {
+            "id": "about",
+            "label": "About",
+            "locked": false,
+            "origin": "help",
+            "icon": "info",
+            "action": "dialog:about",
+            "checked": "counter:about.seen",
+            "check": true
+          },
+          {
+            "id": "alerts",
+            "label": "Alerts",
+            "locked": false,
+            "origin": "help",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "bad1",
+            "label": "Bad 1",
+            "locked": false,
+            "origin": "help",
+            "action": "noop",
+            "checked": "nope:x"
+          },
+          {
+            "id": "bad2",
+            "label": "Bad 2",
+            "locked": false,
+            "origin": "help",
+            "action": "noop",
+            "checked": "setting:"
+          }
+        ]
+      }
+    ],
+    "conflicts": [
+      {
+        "what": "app-menu item",
+        "id": "view/theme",
+        "was": "mod-a",
+        "now": "mod-b"
+      }
+    ],
+    "notes": [
+      "builds.pending: created submenu builds/manager",
+      "files.recent-extra: file/recent is a live list; items placed beside it",
+      "view/legacy-list: live list \"nobody-registered\" is not registered",
+      "view/deep/d2: submenu cut at depth 2"
+    ]
+  },
+  "developer": {
+    "guest": {
+      "menus": [
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "save",
+              "label": "Save",
+              "locked": true,
+              "origin": "asset",
+              "icon": "save",
+              "action": "file.save",
+              "shortcut": "Ctrl+S",
+              "requires": "files.write"
+            }
+          ]
+        },
+        {
+          "id": "build",
+          "label": "Build",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "build",
+              "label": "Build app",
+              "locked": true,
+              "origin": "asset",
+              "icon": "package",
+              "action": "run.build",
+              "shortcut": "Alt+B",
+              "requires": "dev.tools"
+            },
+            {
+              "id": "deploy",
+              "label": "Deploy",
+              "locked": true,
+              "origin": "asset",
+              "icon": "rocket",
+              "action": "run.deploy",
+              "requires": "dev.deploy"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "console",
+              "label": "Developer console",
+              "locked": true,
+              "origin": "asset",
+              "icon": "terminal",
+              "action": "dev.console",
+              "shortcut": "Alt+J",
+              "requires": "dev.tools"
+            }
+          ]
+        },
+        {
+          "id": "assets",
+          "label": "Assets",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "import",
+              "label": "Import asset…",
+              "locked": true,
+              "origin": "asset",
+              "icon": "upload",
+              "action": "dialog:import-asset",
+              "requires": "assets.import"
+            },
+            {
+              "id": "cycle",
+              "label": "Cycle slot",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "items": [
+                {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next",
+                  "shortcut": "Alt+C"
+                },
+                {
+                  "id": "next-style",
+                  "label": "Next style theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "type",
+                  "action": "swap:style-theme:next",
+                  "shortcut": "Alt+S"
+                },
+                {
+                  "id": "next-layout",
+                  "label": "Next layout",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "layout",
+                  "action": "swap:layout:next",
+                  "shortcut": "Alt+L"
+                },
+                {
+                  "id": "next-button",
+                  "label": "Next button",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "zap",
+                  "action": "swap:button:next",
+                  "shortcut": "Alt+1"
+                },
+                {
+                  "id": "next-slider",
+                  "label": "Next slider",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "sliders",
+                  "action": "swap:slider:next",
+                  "shortcut": "Alt+2"
+                },
+                {
+                  "id": "next-container",
+                  "label": "Next container",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:container:next",
+                  "shortcut": "Alt+3"
+                },
+                {
+                  "id": "next-dialog",
+                  "label": "Next dialog",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:dialog:next",
+                  "shortcut": "Alt+4"
+                },
+                {
+                  "id": "next-popup",
+                  "label": "Next popup",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "bell",
+                  "action": "swap:popup:next",
+                  "shortcut": "Alt+5"
+                }
+              ]
+            },
+            {
+              "id": "random",
+              "label": "Randomize",
+              "locked": false,
+              "origin": "asset",
+              "icon": "shuffle",
+              "action": "assets.random",
+              "shortcut": "Alt+R"
+            },
+            {
+              "id": "reset",
+              "label": "Reset",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "assets.reset"
+            }
+          ]
+        },
+        {
+          "id": "window",
+          "label": "Window",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "go-home",
+              "label": "Home",
+              "locked": false,
+              "origin": "asset",
+              "icon": "home",
+              "action": "nav:home"
+            },
+            {
+              "id": "go-components",
+              "label": "Components",
+              "locked": false,
+              "origin": "asset",
+              "icon": "grid",
+              "action": "nav:components"
+            },
+            {
+              "id": "go-assets",
+              "label": "Assets",
+              "locked": false,
+              "origin": "asset",
+              "icon": "layers",
+              "action": "nav:assets"
+            },
+            {
+              "id": "go-account",
+              "label": "Account",
+              "locked": false,
+              "origin": "asset",
+              "icon": "user",
+              "action": "nav:account"
+            },
+            {
+              "id": "settings",
+              "label": "Settings",
+              "locked": false,
+              "origin": "asset",
+              "icon": "settings",
+              "action": "app.settings"
+            }
+          ]
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "shortcuts",
+              "label": "Shortcuts",
+              "locked": false,
+              "origin": "asset",
+              "icon": "keyboard",
+              "action": "view.shortcuts",
+              "shortcut": "Alt+K"
+            },
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "asset",
+              "icon": "info",
+              "action": "help.about"
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": []
+    },
+    "user": {
+      "menus": [
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "save",
+              "label": "Save",
+              "locked": false,
+              "origin": "asset",
+              "icon": "save",
+              "action": "file.save",
+              "shortcut": "Ctrl+S",
+              "requires": "files.write"
+            }
+          ]
+        },
+        {
+          "id": "build",
+          "label": "Build",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "build",
+              "label": "Build app",
+              "locked": false,
+              "origin": "asset",
+              "icon": "package",
+              "action": "run.build",
+              "shortcut": "Alt+B",
+              "requires": "dev.tools"
+            },
+            {
+              "id": "deploy",
+              "label": "Deploy",
+              "locked": true,
+              "origin": "asset",
+              "icon": "rocket",
+              "action": "run.deploy",
+              "requires": "dev.deploy"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "console",
+              "label": "Developer console",
+              "locked": false,
+              "origin": "asset",
+              "icon": "terminal",
+              "action": "dev.console",
+              "shortcut": "Alt+J",
+              "requires": "dev.tools"
+            }
+          ]
+        },
+        {
+          "id": "assets",
+          "label": "Assets",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "import",
+              "label": "Import asset…",
+              "locked": false,
+              "origin": "asset",
+              "icon": "upload",
+              "action": "dialog:import-asset",
+              "requires": "assets.import"
+            },
+            {
+              "id": "cycle",
+              "label": "Cycle slot",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "items": [
+                {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next",
+                  "shortcut": "Alt+C"
+                },
+                {
+                  "id": "next-style",
+                  "label": "Next style theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "type",
+                  "action": "swap:style-theme:next",
+                  "shortcut": "Alt+S"
+                },
+                {
+                  "id": "next-layout",
+                  "label": "Next layout",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "layout",
+                  "action": "swap:layout:next",
+                  "shortcut": "Alt+L"
+                },
+                {
+                  "id": "next-button",
+                  "label": "Next button",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "zap",
+                  "action": "swap:button:next",
+                  "shortcut": "Alt+1"
+                },
+                {
+                  "id": "next-slider",
+                  "label": "Next slider",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "sliders",
+                  "action": "swap:slider:next",
+                  "shortcut": "Alt+2"
+                },
+                {
+                  "id": "next-container",
+                  "label": "Next container",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:container:next",
+                  "shortcut": "Alt+3"
+                },
+                {
+                  "id": "next-dialog",
+                  "label": "Next dialog",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:dialog:next",
+                  "shortcut": "Alt+4"
+                },
+                {
+                  "id": "next-popup",
+                  "label": "Next popup",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "bell",
+                  "action": "swap:popup:next",
+                  "shortcut": "Alt+5"
+                }
+              ]
+            },
+            {
+              "id": "random",
+              "label": "Randomize",
+              "locked": false,
+              "origin": "asset",
+              "icon": "shuffle",
+              "action": "assets.random",
+              "shortcut": "Alt+R"
+            },
+            {
+              "id": "reset",
+              "label": "Reset",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "assets.reset"
+            }
+          ]
+        },
+        {
+          "id": "window",
+          "label": "Window",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "go-home",
+              "label": "Home",
+              "locked": false,
+              "origin": "asset",
+              "icon": "home",
+              "action": "nav:home"
+            },
+            {
+              "id": "go-components",
+              "label": "Components",
+              "locked": false,
+              "origin": "asset",
+              "icon": "grid",
+              "action": "nav:components"
+            },
+            {
+              "id": "go-assets",
+              "label": "Assets",
+              "locked": false,
+              "origin": "asset",
+              "icon": "layers",
+              "action": "nav:assets"
+            },
+            {
+              "id": "go-account",
+              "label": "Account",
+              "locked": false,
+              "origin": "asset",
+              "icon": "user",
+              "action": "nav:account"
+            },
+            {
+              "id": "settings",
+              "label": "Settings",
+              "locked": false,
+              "origin": "asset",
+              "icon": "settings",
+              "action": "app.settings"
+            }
+          ]
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "shortcuts",
+              "label": "Shortcuts",
+              "locked": false,
+              "origin": "asset",
+              "icon": "keyboard",
+              "action": "view.shortcuts",
+              "shortcut": "Alt+K"
+            },
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "asset",
+              "icon": "info",
+              "action": "help.about"
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": []
+    },
+    "admin": {
+      "menus": [
+        {
+          "id": "file",
+          "label": "File",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "new",
+              "label": "New file",
+              "locked": false,
+              "origin": "asset",
+              "icon": "plus",
+              "action": "file.new",
+              "shortcut": "Alt+N"
+            },
+            {
+              "id": "save",
+              "label": "Save",
+              "locked": false,
+              "origin": "asset",
+              "icon": "save",
+              "action": "file.save",
+              "shortcut": "Ctrl+S",
+              "requires": "files.write"
+            }
+          ]
+        },
+        {
+          "id": "build",
+          "label": "Build",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "build",
+              "label": "Build app",
+              "locked": false,
+              "origin": "asset",
+              "icon": "package",
+              "action": "run.build",
+              "shortcut": "Alt+B",
+              "requires": "dev.tools"
+            },
+            {
+              "id": "deploy",
+              "label": "Deploy",
+              "locked": false,
+              "origin": "asset",
+              "icon": "rocket",
+              "action": "run.deploy",
+              "requires": "dev.deploy"
+            },
+            {
+              "id": "s1",
+              "label": "",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "console",
+              "label": "Developer console",
+              "locked": false,
+              "origin": "asset",
+              "icon": "terminal",
+              "action": "dev.console",
+              "shortcut": "Alt+J",
+              "requires": "dev.tools"
+            }
+          ]
+        },
+        {
+          "id": "assets",
+          "label": "Assets",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "import",
+              "label": "Import asset…",
+              "locked": false,
+              "origin": "asset",
+              "icon": "upload",
+              "action": "dialog:import-asset",
+              "requires": "assets.import"
+            },
+            {
+              "id": "cycle",
+              "label": "Cycle slot",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "items": [
+                {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next",
+                  "shortcut": "Alt+C"
+                },
+                {
+                  "id": "next-style",
+                  "label": "Next style theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "type",
+                  "action": "swap:style-theme:next",
+                  "shortcut": "Alt+S"
+                },
+                {
+                  "id": "next-layout",
+                  "label": "Next layout",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "layout",
+                  "action": "swap:layout:next",
+                  "shortcut": "Alt+L"
+                },
+                {
+                  "id": "next-button",
+                  "label": "Next button",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "zap",
+                  "action": "swap:button:next",
+                  "shortcut": "Alt+1"
+                },
+                {
+                  "id": "next-slider",
+                  "label": "Next slider",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "sliders",
+                  "action": "swap:slider:next",
+                  "shortcut": "Alt+2"
+                },
+                {
+                  "id": "next-container",
+                  "label": "Next container",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:container:next",
+                  "shortcut": "Alt+3"
+                },
+                {
+                  "id": "next-dialog",
+                  "label": "Next dialog",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "box",
+                  "action": "swap:dialog:next",
+                  "shortcut": "Alt+4"
+                },
+                {
+                  "id": "next-popup",
+                  "label": "Next popup",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "bell",
+                  "action": "swap:popup:next",
+                  "shortcut": "Alt+5"
+                }
+              ]
+            },
+            {
+              "id": "random",
+              "label": "Randomize",
+              "locked": false,
+              "origin": "asset",
+              "icon": "shuffle",
+              "action": "assets.random",
+              "shortcut": "Alt+R"
+            },
+            {
+              "id": "reset",
+              "label": "Reset",
+              "locked": false,
+              "origin": "asset",
+              "icon": "refresh",
+              "action": "assets.reset"
+            }
+          ]
+        },
+        {
+          "id": "window",
+          "label": "Window",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "go-home",
+              "label": "Home",
+              "locked": false,
+              "origin": "asset",
+              "icon": "home",
+              "action": "nav:home"
+            },
+            {
+              "id": "go-components",
+              "label": "Components",
+              "locked": false,
+              "origin": "asset",
+              "icon": "grid",
+              "action": "nav:components"
+            },
+            {
+              "id": "go-assets",
+              "label": "Assets",
+              "locked": false,
+              "origin": "asset",
+              "icon": "layers",
+              "action": "nav:assets"
+            },
+            {
+              "id": "go-account",
+              "label": "Account",
+              "locked": false,
+              "origin": "asset",
+              "icon": "user",
+              "action": "nav:account"
+            },
+            {
+              "id": "settings",
+              "label": "Settings",
+              "locked": false,
+              "origin": "asset",
+              "icon": "settings",
+              "action": "app.settings"
+            }
+          ]
+        },
+        {
+          "id": "help",
+          "label": "Help",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "shortcuts",
+              "label": "Shortcuts",
+              "locked": false,
+              "origin": "asset",
+              "icon": "keyboard",
+              "action": "view.shortcuts",
+              "shortcut": "Alt+K"
+            },
+            {
+              "id": "about",
+              "label": "About",
+              "locked": false,
+              "origin": "asset",
+              "icon": "info",
+              "action": "help.about"
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": []
+    }
+  },
+  "providers": {
+    "cap-3-more-action": [
+      {
+        "id": "f1",
+        "label": "Feature 1",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f1"
+      },
+      {
+        "id": "f2",
+        "label": "Feature 2",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f2",
+        "requires": "uac.manage"
+      },
+      {
+        "id": "f3",
+        "label": "Feature 3",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f3"
+      },
+      {
+        "id": "features.more",
+        "label": "More…",
+        "icon": "more",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:features"
+      }
+    ],
+    "cap-3-no-action": [
+      {
+        "id": "f1",
+        "label": "Feature 1",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f1"
+      },
+      {
+        "id": "f2",
+        "label": "Feature 2",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f2",
+        "requires": "uac.manage"
+      },
+      {
+        "id": "f3",
+        "label": "Feature 3",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f3"
+      },
+      {
+        "id": "features.more",
+        "label": "3 more…",
+        "icon": "more",
+        "locked": true,
+        "origin": "provider:features"
+      }
+    ],
+    "fits-guest": [
+      {
+        "id": "f1",
+        "label": "Feature 1",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f1"
+      },
+      {
+        "id": "f2",
+        "label": "Feature 2",
+        "locked": true,
+        "origin": "provider:features",
+        "action": "nav:f2",
+        "requires": "uac.manage"
+      },
+      {
+        "id": "f3",
+        "label": "Feature 3",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f3"
+      },
+      {
+        "id": "f4",
+        "label": "Feature 4",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f4",
+        "badge": "builds.pending",
+        "count": 3
+      },
+      {
+        "id": "f5",
+        "label": "Feature 5",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f5"
+      },
+      {
+        "id": "sep",
+        "label": "",
+        "separator": true,
+        "locked": false,
+        "origin": "provider:features"
+      },
+      {
+        "id": "f6",
+        "label": "Feature 6",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f6"
+      }
+    ],
+    "fits-exactly": [
+      {
+        "id": "f1",
+        "label": "Feature 1",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f1"
+      },
+      {
+        "id": "f2",
+        "label": "Feature 2",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f2",
+        "requires": "uac.manage"
+      },
+      {
+        "id": "f3",
+        "label": "Feature 3",
+        "locked": false,
+        "origin": "provider:features",
+        "action": "nav:f3"
+      }
+    ]
+  },
+  "chrome": {
+    "types": [
+      "toolbar",
+      "nav-menu",
+      "context-menu",
+      "banner"
+    ],
+    "all": [
+      "app-menu",
+      "toolbar",
+      "nav-menu",
+      "context-menu",
+      "banner"
+    ],
+    "items": [
+      {
+        "id": "chrome.toolbar",
+        "label": "Toolbar",
+        "icon": "sliders",
+        "action": "slot.hide:toolbar:toggle",
+        "checked": "slot:toolbar",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.nav-menu",
+        "label": "Navigation menu",
+        "icon": "grid",
+        "action": "slot.hide:nav-menu:toggle",
+        "checked": "slot:nav-menu",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.context-menu",
+        "label": "Context menu",
+        "icon": "chevron-right",
+        "action": "slot.hide:context-menu:toggle",
+        "checked": "slot:context-menu",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.banner",
+        "label": "Banner",
+        "icon": "menu",
+        "action": "slot.hide:banner:toggle",
+        "checked": "slot:banner",
+        "requires": "assets.swap"
+      }
+    ],
+    "labelled": [
+      {
+        "id": "chrome.toolbar",
+        "label": "Top toolbar",
+        "icon": "sliders",
+        "action": "slot.hide:toolbar:toggle",
+        "checked": "slot:toolbar",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.nav-menu",
+        "label": "Navigation menu",
+        "icon": "grid",
+        "action": "slot.hide:nav-menu:toggle",
+        "checked": "slot:nav-menu",
+        "requires": "assets.swap"
+      }
+    ]
+  },
+  "search": {
+    "entries": [
+      {
+        "id": "menu:view/theme",
+        "kind": "menu",
+        "label": "Theme (B2)",
+        "detail": "Menu › View",
+        "keywords": [
+          "theme",
+          "b.theme2"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "b.theme2"
+        }
+      },
+      {
+        "id": "menu:view/chrome.toolbar",
+        "kind": "menu",
+        "label": "Toolbar",
+        "detail": "Menu › View",
+        "keywords": [
+          "chrome.toolbar",
+          "slot.hide:toolbar:toggle"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "slot.hide:toolbar:toggle"
+        },
+        "icon": "sliders",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "menu:view/chrome.nav-menu",
+        "kind": "menu",
+        "label": "Navigation menu",
+        "detail": "Menu › View",
+        "keywords": [
+          "chrome.nav-menu",
+          "slot.hide:nav-menu:toggle"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "slot.hide:nav-menu:toggle"
+        },
+        "icon": "grid",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "menu:view/chrome.banner",
+        "kind": "menu",
+        "label": "Banner",
+        "detail": "Menu › View",
+        "keywords": [
+          "chrome.banner",
+          "slot.hide:banner:toggle"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "slot.hide:banner:toggle"
+        },
+        "icon": "menu",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "menu:view/hidden-state",
+        "kind": "menu",
+        "label": "Toolbar hidden?",
+        "detail": "Menu › View",
+        "keywords": [
+          "hidden-state",
+          "noop"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "noop"
+        }
+      },
+      {
+        "id": "menu:builds/manager/pending",
+        "kind": "menu",
+        "label": "Pending builds",
+        "detail": "Menu › Builds › Build manager",
+        "keywords": [
+          "pending",
+          "nav:pending"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "nav:pending"
+        },
+        "icon": "clock"
+      },
+      {
+        "id": "menu:builds/manager/queue",
+        "kind": "menu",
+        "label": "Build queue",
+        "detail": "Menu › Builds › Build manager",
+        "keywords": [
+          "queue",
+          "nav:build-queue"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "nav:build-queue"
+        },
+        "icon": "list"
+      },
+      {
+        "id": "menu:builds/auto",
+        "kind": "menu",
+        "label": "Auto build",
+        "detail": "Menu › Builds",
+        "keywords": [
+          "auto",
+          "builds.auto:toggle"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "builds.auto:toggle"
+        }
+      },
+      {
+        "id": "menu:file/open",
+        "kind": "menu",
+        "label": "Open…",
+        "detail": "Menu › File",
+        "keywords": [
+          "open",
+          "file.open"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "file.open"
+        },
+        "icon": "folder"
+      },
+      {
+        "id": "menu:file/save",
+        "kind": "menu",
+        "label": "Save (plugin)",
+        "detail": "Menu › File",
+        "keywords": [
+          "save",
+          "files.save"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "files.save"
+        },
+        "icon": "save"
+      },
+      {
+        "id": "menu:file/exports/csv",
+        "kind": "menu",
+        "label": "As CSV",
+        "detail": "Menu › File › Export",
+        "keywords": [
+          "csv",
+          "file.export:csv"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "file.export:csv"
+        }
+      },
+      {
+        "id": "menu:file/clear-recent",
+        "kind": "menu",
+        "label": "Clear recent",
+        "detail": "Menu › File",
+        "keywords": [
+          "clear-recent",
+          "file.recent.clear"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "file.recent.clear"
+        }
+      },
+      {
+        "id": "menu:more/about",
+        "kind": "menu",
+        "label": "About",
+        "detail": "Menu › More",
+        "keywords": [
+          "about",
+          "dialog:about"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "dialog:about"
+        },
+        "icon": "info"
+      },
+      {
+        "id": "menu:more/alerts",
+        "kind": "menu",
+        "label": "Alerts",
+        "detail": "Menu › More",
+        "keywords": [
+          "alerts",
+          "alerts.open"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "alerts.open"
+        }
+      },
+      {
+        "id": "menu:more/bad1",
+        "kind": "menu",
+        "label": "Bad 1",
+        "detail": "Menu › More",
+        "keywords": [
+          "bad1",
+          "noop"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "noop"
+        }
+      },
+      {
+        "id": "menu:more/bad2",
+        "kind": "menu",
+        "label": "Bad 2",
+        "detail": "Menu › More",
+        "keywords": [
+          "bad2",
+          "noop"
+        ],
+        "focus": {
+          "kind": "action",
+          "spec": "noop"
+        }
+      }
+    ]
+  },
+  "validation": [
+    {
+      "case": "ok-fields",
+      "items": [
+        {
+          "id": "a",
+          "provider": "p"
+        },
+        {
+          "id": "b",
+          "badge": "n",
+          "checked": "slot:toolbar",
+          "order": 5,
+          "before": "a"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "bad-strings",
+      "items": [
+        {
+          "id": "a",
+          "provider": ""
+        },
+        {
+          "id": "b",
+          "badge": 3
+        },
+        {
+          "id": "c",
+          "before": ""
+        },
+        {
+          "id": "d",
+          "after": 1
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].provider must be a non-empty string",
+        "data.menus[0].items[1].badge must be a non-empty string",
+        "data.menus[0].items[2].before must be a non-empty string",
+        "data.menus[0].items[3].after must be a non-empty string"
+      ]
+    },
+    {
+      "case": "bad-checked",
+      "items": [
+        {
+          "id": "a",
+          "checked": "nope:x"
+        },
+        {
+          "id": "b",
+          "checked": "setting:"
+        },
+        {
+          "id": "c",
+          "checked": 7
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].checked must be one of: setting:<ref>, counter:<ref>, slot:<ref>, hidden:<ref>",
+        "data.menus[0].items[1].checked must be one of: setting:<ref>, counter:<ref>, slot:<ref>, hidden:<ref>",
+        "data.menus[0].items[2].checked must be one of: setting:<ref>, counter:<ref>, slot:<ref>, hidden:<ref>"
+      ]
+    },
+    {
+      "case": "bad-order",
+      "items": [
+        {
+          "id": "a",
+          "order": "first"
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].order must be a number"
+      ]
+    },
+    {
+      "case": "provider-and-items",
+      "items": [
+        {
+          "id": "a",
+          "provider": "p",
+          "items": []
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0] has both provider and items (a live list fills its own)"
+      ]
+    },
+    {
+      "case": "too-deep",
+      "items": [
+        {
+          "id": "a",
+          "items": [
+            {
+              "id": "b",
+              "items": [
+                {
+                  "id": "c",
+                  "items": [
+                    {
+                      "id": "d",
+                      "items": [
+                        {
+                          "id": "e"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].items[0].items[0].items[0].items is deeper than 4 levels"
+      ]
+    },
+    {
+      "case": "not-a-list",
+      "items": "x",
+      "errors": [
+        "data.menus[0].items must be a list of menu items"
+      ]
+    },
+    {
+      "case": "not-objects",
+      "items": [
+        1,
+        null
+      ],
+      "errors": [
+        "data.menus[0].items[0] must be a menu item object",
+        "data.menus[0].items[1] must be a menu item object"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "case": "app-menu-bad-order",
+      "raw": {
+        "$axf": "asset@1",
+        "type": "app-menu",
+        "id": "bad-menu",
+        "name": "X",
+        "version": "1",
+        "data": {
+          "menus": [
+            {
+              "id": "m",
+              "label": "M",
+              "order": "x",
+              "items": [
+                {
+                  "id": "a",
+                  "checked": "bad"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.menus[0].order must be a number",
+          "data.menus[0].items[0].checked must be one of: setting:<ref>, counter:<ref>, slot:<ref>, hidden:<ref>"
+        ]
+      }
+    },
+    {
+      "case": "context-menu-bad-items",
+      "raw": {
+        "$axf": "asset@1",
+        "type": "context-menu",
+        "id": "bad-ctx",
+        "name": "X",
+        "version": "1",
+        "data": {
+          "variant": "compact",
+          "showIcons": true,
+          "showShortcuts": true,
+          "targets": {
+            "default": [
+              {
+                "id": "a",
+                "provider": "p",
+                "items": []
+              }
+            ],
+            "other": "no"
+          }
+        }
+      },
+      "result": {
+        "ok": false,
+        "errors": [
+          "data.targets.default[0] has both provider and items (a live list fills its own)",
+          "data.targets.other must be a list of menu items"
+        ]
+      }
+    }
+  ]
+}

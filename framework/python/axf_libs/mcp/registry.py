@@ -13,6 +13,8 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
+from axf_server import storage
+
 from . import engine as E
 
 
@@ -37,11 +39,8 @@ class FileRegistry:
             return {}
 
     def save(self, servers: dict[str, dict[str, Any]]) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        tmp = self.path.with_suffix(".tmp")
-        tmp.write_text(json.dumps({"$axf": "mcp-servers@1", "servers": servers}, indent=2))
-        os.chmod(tmp, 0o600)
-        tmp.replace(self.path)
+        # atomic (unique tmp + fsync + replace), 0600 from the start; a new folder is 0700 (axf_server.storage)
+        storage.write_json(self.path, {"$axf": "mcp-servers@1", "servers": servers})
 
     # ---------- records
 

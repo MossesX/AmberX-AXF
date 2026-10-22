@@ -4,6 +4,7 @@
  * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
 
+// Same order as framework/schemas/asset-types.json (the Kotlin registry's order), so lists derived from it match across ports.
 export const ASSET_TYPES = [
   'color-theme',
   'style-theme',
@@ -20,12 +21,23 @@ export const ASSET_TYPES = [
   'banner',
   'clock',
   'search-bar',
+  'action-button',
+  'logo',
+  'label',
+  'status',
+  'counter',
+  'progress',
+  'avatar',
+  'link',
+  'theme-switch',
+  'spacer',
+  'divider',
   'badge',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'search-bar', 'badge'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -56,6 +68,17 @@ export interface MenuItem {
   requires?: string;
   items?: MenuItem[];
   separator?: boolean;
+  /* ---- optional fields (asset-types.json → menuItems; engines/appmenu.ts) ---- */
+  /** id of a live-list provider (`rt.registerAppMenuProvider`): the item becomes a submenu filled on open */
+  provider?: string;
+  /** name of a runtime counter shown as a badge (e.g. `alerts.unread`); hidden at 0 */
+  badge?: string;
+  /** check-mark binding: `setting:<key>` | `counter:<name>` | `slot:<type>` (shown) | `hidden:<type>` */
+  checked?: string;
+  /** placement among siblings (default 100); `before` / `after` name a sibling id */
+  order?: number;
+  before?: string;
+  after?: string;
 }
 
 /* ---------- themes ---------- */
@@ -128,7 +151,7 @@ export type ChromeSurface = 'flat' | 'raised' | 'glass';
 /* ---------- navigation ---------- */
 
 export interface AppMenuData {
-  menus: { id: string; label: string; items: MenuItem[] }[];
+  menus: { id: string; label: string; items: MenuItem[]; /** placement (default 100), see engines/appmenu.ts */ order?: number }[];
   density?: ChromeDensity;
   surface?: ChromeSurface;
 }
@@ -248,6 +271,19 @@ export interface SearchBarData {
 }
 /** A widget placed on a toolbar (asset type toolbar → data.widgets). */
 export interface ToolbarWidget { type: string; id: string; at: 'start' | 'end'; order?: number }
+export type WidgetTone = 'neutral' | 'success' | 'warning' | 'danger' | 'accent' | 'muted';
+/** Widget kinds (asset types with "widget": true besides clock and search bar); rules in engines/widgets.ts. */
+export interface LogoData { kind: 'text' | 'image' | 'icon'; text: string; size: 'small' | 'regular' | 'large'; image?: string; icon?: string; link?: string; bold?: boolean; tooltip?: string }
+export interface ActionButtonData { icon: string; label: string; action: string; show: 'icon' | 'label' | 'both'; tone?: 'neutral' | 'accent' | 'danger'; tooltip?: string }
+export interface LabelData { text: string; tone: WidgetTone; bold?: boolean; mono?: boolean; tooltip?: string }
+export interface StatusData { counter: string; onLabel: string; offLabel: string; onTone: WidgetTone; offTone: WidgetTone; link?: string; dot?: boolean }
+export interface CounterData { counter: string; tone: WidgetTone; hideAtZero: boolean; icon?: string; label?: string; link?: string; max?: number }
+export interface ProgressData { counter: string; max: number; width: 'compact' | 'regular' | 'wide'; label?: string; tone?: WidgetTone; showValue?: boolean }
+export interface AvatarData { source: 'account' | 'text' | 'image'; size: 'small' | 'regular' | 'large'; shape: 'circle' | 'rounded'; text?: string; image?: string; link?: string; tooltip?: string }
+export interface LinkData { label: string; href: string; external: boolean; icon?: string; tooltip?: string }
+export interface ThemeSwitchData { light: string; dark: string; show: 'icon' | 'label' | 'both'; lightLabel?: string; darkLabel?: string; tooltip?: string }
+export interface SpacerData { size: 'small' | 'regular' | 'large' | 'flex' }
+export interface DividerData { inset: boolean }
 export interface BadgeData {
   icon: string;
   label: string;
@@ -323,6 +359,17 @@ export interface AssetDataMap {
   banner: BannerData;
   clock: ClockData;
   'search-bar': SearchBarData;
+  logo: LogoData;
+  'action-button': ActionButtonData;
+  label: LabelData;
+  status: StatusData;
+  counter: CounterData;
+  progress: ProgressData;
+  avatar: AvatarData;
+  link: LinkData;
+  'theme-switch': ThemeSwitchData;
+  spacer: SpacerData;
+  divider: DividerData;
   badge: BadgeData;
   'uac-policy': UACPolicyData;
 }
@@ -340,6 +387,12 @@ export interface AxfManifest {
   defaults: ActiveAssets;
   /** Chrome slots hidden by default (hideable types only, e.g. `["toolbar"]`); the user can still show them in Settings → Appearance. */
   hidden?: string[];
+  /**
+   * Developer app (Brett's decision, Oct 20 2026): its appearance and settings documents live on the axHub data
+   * server (`hub` = the hub's https origin); the app waits for the hub instead of running without it. Absent = an
+   * ordinary app with its own local settings. Templates read it and attach the hub appearance source.
+   */
+  developer?: { hub: string };
   structure?: { path: string; purpose: string }[];
 }
 
@@ -352,6 +405,8 @@ export interface Toast {
 
 export interface AxfState {
   active: ActiveAssets;
+  /** Developer apps: the appearance source's state (engines/appearance.ts); null = no source (ordinary app). */
+  appearance?: import('./engines/appearance').AppearanceSourceState | null;
   role: string;
   view: string;
   dialog: { id: string; props?: Record<string, unknown> } | null;

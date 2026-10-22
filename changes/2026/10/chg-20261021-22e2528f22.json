@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-22e2528f22",
+  "createdAt": "2026-10-21T00:36:01.000Z",
+  "updatedAt": "2026-10-21T04:36:01.000Z",
+  "kind": "build",
+  "title": "Harvest: ui-controls",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest — `ui-controls`: shared form controls, Markdown and library-parameter fields (Fable, Oct 21 2026)",
+    "branch": "harvest/f-ui-controls",
+    "commits": [
+      {
+        "sha": "c140c61",
+        "message": "Harvest ui-controls: shared form controls, Markdown and library-parameter fields on both ports"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/ui-controls.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:36:01.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-ui-controls"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:36:01.000Z",
+  "finishedAt": "2026-10-21T04:36:01.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true,
+  "branch": "harvest/f-ui-controls",
+  "areas": [
+    "framework/react/components/Forms.tsx",
+    "framework/ui/axf.css",
+    "framework/libs/settings/index.tsx",
+    "framework/react/components/Markdown.tsx",
+    "apps/console-web/src/api.ts",
+    "framework/core/library.ts",
+    "framework/spec/fixtures/library-params.json",
+    "framework/spec/check-library-params.mts",
+    "framework/spec/THEMING.md",
+    "framework/core/index.ts",
+    "framework/react/index.ts",
+    "framework/cli/ui-port.mjs"
+  ]
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Fake git: fetch/reset/clone do nothing (the harness pre-populates the clone), rev-parse prints a fixed sha.
+echo "=== git $*" >> "$HARNESS_LOG"
+case "$*" in *rev-parse*) echo 0123456789abcdef;; esac
+exit 0

@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-8b70534031",
+  "createdAt": "2026-10-18T22:37:26.000Z",
+  "updatedAt": "2026-10-19T01:37:26.000Z",
+  "kind": "build",
+  "title": "Container access plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/container-access` (`ai.amberx.axf.console.container-access`). The only console code that touches other containers, through `axf-docker-proxy` (haproxy, `deploy/haproxy.cfg` in the plugin: list/inspect, archive GET/HEAD/PUT, exec, restart only; everything else 403), started",
+    "commits": [
+      {
+        "sha": "5b9f558",
+        "message": "Add the Container access plugin: locked-down Docker socket proxy, server-side protected list, audit log and approval-gated change batches (axf.containers@1)"
+      },
+      {
+        "sha": "de10375",
+        "message": "Add the Snapshot Manager plugin: snapshots before every approved change, diff, one-step restore (itself undoable), retention 30 days / 5 GB (axf.snapshots@1)"
+      },
+      {
+        "sha": "1fb42fb",
+        "message": "Add the Terminal plugin: floating terminal tabs for containers, the console, the VPS host and Claude Code, Open terminal on every right-click, mouse mode, copy/paste, Mosh mode with server-kept sessio"
+      },
+      {
+        "sha": "f6a1e40",
+        "message": "Independent review fixes: Claude Code CLI gets no secrets and can't read /proc or the console's private folder; exact base hashes for big files, explicit accept for changes the card can't show, comman"
+      },
+      {
+        "sha": "68a6ab0",
+        "message": "Fix console installer stopping after removing the container (wall on)"
+      },
+      {
+        "sha": "49c287d",
+        "message": "Fix console start: empty docker run arg from container-access host.sh"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T01:37:26.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "container-access"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T22:37:26.000Z",
+  "finishedAt": "2026-10-19T01:37:26.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/container-access"
+  ]
+}

@@ -1,5 +1,5 @@
 /* Terminal — web API layer, the xterm loader (vendored UMD builds, loaded once) and the per-tab session registry. */
-import { pluginFetch } from '@console/plugins';
+import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import xtermUrl from './vendor/xterm.js?url';
 import fitUrl from './vendor/xterm-addon-fit.js?url';
@@ -20,14 +20,8 @@ export interface Settings {
 export interface Status { containers: boolean; claude: boolean; ssh: boolean; vps: { ready: boolean; host: string }; settings: Settings; sessions: SessionInfo[] }
 export interface Target { name: string; image: string; state: string; protected: string | null; reachable: boolean }
 
-export async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Settings → Account & security).');
-  if (r.status === 404 && !j.detail) throw new Error('The terminal plugin is disabled or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+const api = pluginApi(FOLDER, 'The terminal plugin');
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 export const post = <T,>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) });
 export const put = <T,>(path: string, body: unknown) => call<T>(path, { method: 'PUT', body: JSON.stringify(body) });
 
