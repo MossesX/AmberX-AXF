@@ -284,12 +284,13 @@ class Jobs:
                     return
             out = str(r.get("ok", ""))
             ok = "started pid" in out or re.search(r"^exit 0\b", out, re.M) is not None
-            self._set(key, state="launched" if ok else "failed", output=out[-2000:],
-                      message="Running on the VPS: it reports itself in Live." if ok else "The VPS command failed: see the output.")
+            # the build log first, then the job: anyone who sees the job "launched" also sees the entry running
             if ok:
                 _update_change(change_id, {"status": "running", "doing": "Launched on the VPS (headless Claude Code)"})
             else:
                 _finish_change(change_id, "failed", "Launch failed on the VPS.")
+            self._set(key, state="launched" if ok else "failed", output=out[-2000:],
+                      message="Running on the VPS: it reports itself in Live." if ok else "The VPS command failed: see the output.")
         except Exception as e:  # noqa: BLE001
             self._set(key, state="failed", message=str(e)[:300])
             _finish_change(change_id, "failed", f"Not started: {str(e)[:200]}")
