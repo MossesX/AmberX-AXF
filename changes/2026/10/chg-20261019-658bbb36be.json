@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-658bbb36be",
+  "createdAt": "2026-10-19T14:00:00.000Z",
+  "updatedAt": "2026-10-19T16:00:00.000Z",
+  "kind": "build",
+  "title": "Build Pilot hooks",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "for the plugin-driven app designer in `MossesX/Build-Pilot`. `init` takes `slots` (`{ assetType: assetId }`, checked by `checkSlotPicks` against the assets the new app will ship; they win over the registry and boilerplate defaults); `listFrameworkAssets(template)` lists them per type (engine-rpc `fr",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "build-pilot-hooks"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-19T14:00:00.000Z",
+  "finishedAt": "2026-10-19T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

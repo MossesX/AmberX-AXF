@@ -20,6 +20,35 @@
 
 export const SOURCES = ['pending', 'queue', 'plan'];
 export const SOURCE_LABEL = { pending: 'Pending', queue: 'Queue', plan: 'Plan' };
+/**
+ * Who added a build (Brett, Oct 22 2026: filter "added automatically" vs "added from a user prompt").
+ * `prompt` = a person asked for it: a pending item whose `source` says it came from a chat or Claude Code session,
+ * the console's Add form or the claude.ai page. Everything else is `auto`: pending items parked by tools
+ * (fable-rebuilds, feature-assist, plan sync, …, or no source at all), every build-queue step and every plan feature.
+ */
+export const ORIGINS = ['prompt', 'auto'];
+export const ORIGIN_LABEL = { prompt: 'From a prompt', auto: 'Added automatically' };
+export const PROMPT_SOURCES = ['chat', 'claude-code', 'console', 'artifact'];
+export const originOf = (source, addedBy) => (source === 'pending' && PROMPT_SOURCES.includes(str(addedBy).toLowerCase()) ? 'prompt' : 'auto');
+/**
+ * Who or what added a build (Brett, Oct 22 2026: "a filter for who or what added or initialized the item"):
+ * a pending item's `source` (lowercased; none = `unrecorded`), `build-queue` for queue steps, `plan-feature` for
+ * plan features. An open set: a source not in the label table still filters, labelled from its key.
+ */
+export const ADDED_BY_LABEL = {
+  chat: 'Chat session', 'claude-code': 'Claude Code', console: 'Console form', artifact: 'claude.ai page',
+  'fable-rebuilds': 'Fable rebuilds', 'feature-assist': 'Feature assistant', plan: 'Plan sync',
+  'build-queue': 'Build queue', 'plan-feature': 'Plan feature', unrecorded: 'Not recorded',
+};
+export const addedByKey = (source) => str(source).trim().toLowerCase() || 'unrecorded';
+export const addedByLabel = (key) => ADDED_BY_LABEL[key] ?? (str(key).replace(/[-_]+/g, ' ').replace(/^./, (c) => c.toUpperCase()) || 'Not recorded');
+/** The "Added by" choices present in these rows, most first: { value, label, count }. */
+export function addedByOf(rows) {
+  const n = new Map();
+  for (const r of rows) n.set(r.addedBy, (n.get(r.addedBy) ?? 0) + 1);
+  return [...n.entries()].map(([value, count]) => ({ value, label: addedByLabel(value), count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
 export const MODELS = ['Fable', 'Opus', 'Sonnet'];
 export const SORTS = ['order', 'left', 'model'];
 export const SORT_LABEL = { order: 'Build order', left: 'Time left', model: 'Model' };
@@ -69,6 +98,47 @@ export function timing(ownEstimate, steps, h) {
   };
 }
 
+/* ---------- already built or removed (the Clean up button) ---------- */
+
+export const GONE_LABEL = { built: 'Already built', removed: 'Removed' };
+const goneOf = (g) => (g ? { gone: g } : {});
+
+/** Built when every listed feature is built (an empty list says nothing). */
+function featuresBuilt(list, why) {
+  const fs = (list ?? []).filter((f) => f && f.status !== 'dropped');
+  return fs.length && fs.every((f) => f.status === 'built') ? { kind: 'built', why } : null;
+}
+
+/** A pending item whose plan entry is built, dropped or gone, or whose every step is ticked. */
+function pendingGone(p, t, byFeature) {
+  if (p.planId) {
+    const f = byFeature.get(p.planId);
+    if (byFeature.size && !f) return { kind: 'removed', why: `its plan entry ${p.planId} is no longer in the plan` };
+    if (f?.status === 'built') return { kind: 'built', why: `the plan says ${p.planId} is built` };
+    if (f?.status === 'dropped') return { kind: 'removed', why: `${p.planId} was dropped from the plan` };
+  }
+  if (t.stepsTotal > 0 && t.stepsDone === t.stepsTotal) return { kind: 'built', why: 'every step is ticked' };
+  return null;
+}
+
+/** Rows the list thinks are already built or removed. */
+export const goneRows = (rows) => rows.filter((r) => r.gone);
+
+/**
+ * The console writes that take one row off the list. how = 'built' | 'removed'.
+ *   pending  built → status complete (keeps it, with builtAt) · removed → remove the item
+ *   queue    built → build-queue/step complete (its features become built too) · removed → epic status dropped
+ *   plan     the feature's status → built | dropped (needs the feature as the plan holds it)
+ */
+export function takeOffRequests(row, how, feature) {
+  const note = how === 'built' ? 'Taken off the build list as already built (Build manager)' : 'Taken off the build list as removed (Build manager)';
+  if (how !== 'built' && how !== 'removed') return [];
+  if (row?.source === 'pending') return [{ path: 'pending', body: how === 'built' ? { action: 'status', id: row.id, status: 'complete' } : { action: 'remove', id: row.id } }];
+  if (row?.source === 'queue') return [{ path: 'build-queue/step', body: how === 'built' ? { id: row.id, action: 'complete', note } : { id: row.id, action: 'status', status: 'dropped', note } }];
+  if (row?.source === 'plan' && feature?.id === row.id) return [{ path: 'plan/feature', body: { feature: { ...feature, status: how === 'built' ? 'built' : 'dropped' }, note } }];
+  return [];
+}
+
 /** The moment a plan item was started (its last "Build started …" history line), or 0. */
 function startedAt(feature) {
   const hit = [...(feature?.history ?? [])].reverse().find((x) => /\bstarted\b/i.test(str(x?.text)));
@@ -83,6 +153,9 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
   const claimed = new Map(openPending.filter((p) => p.planId).map((p) => [p.planId, p.id]));
   const queuePos = new Map((queue?.steps ?? []).map((s) => [s.id, s.position]));
   const linkedBuilding = (planId) => !!planId && byFeature.get(planId)?.status === 'in-progress';
+  // A complete pending item linked to a queue step / plan feature means that one was built too.
+  const completeFor = new Map(pending.filter((p) => p && p.status === 'complete' && p.planId).map((p) => [p.planId, p.id]));
+  const completedBy = (id) => (completeFor.has(id) ? { kind: 'built', why: `pending item ${completeFor.get(id)} is complete` } : null);
 
   // 1. Pending items not complete (Fable items are the Fable rebuilds).
   const pendingOrder = [...openPending].sort((a, b) => PENDING_OPEN.indexOf(a.status) - PENDING_OPEN.indexOf(b.status) || (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0) || str(a.title).localeCompare(str(b.title)));
@@ -92,11 +165,12 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const model = modelName(p.model);
     rows.push({
       key: `pending:${p.id}`, id: str(p.id), source: 'pending', title: str(p.title) || p.id, detail: str(p.detail), model,
+      origin: originOf('pending', p.source), addedBy: addedByKey(p.source),
       status: p.status, statusLabel: PENDING_LABEL[p.status] ?? p.status, order: i, steps, ...t,
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
       fable: model === 'Fable', building: linkedBuilding(p.planId), startedAt: linkedBuilding(p.planId) ? startedAt(byFeature.get(p.planId)) : 0,
-      aliases: [p.id, p.planId, `${p.id}-fable`].filter(Boolean),
+      aliases: [p.id, p.planId, `${p.id}-fable`].filter(Boolean), ...goneOf(pendingGone(p, t, byFeature)),
     });
   });
 
@@ -109,11 +183,12 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const epic = byFeature.get(s.id);
     const building = epic?.status === 'in-progress';
     rows.push({
-      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model),
+      key: `queue:${s.id}`, id: s.id, source: 'queue', title: s.title, detail: str(s.summary), model: modelName(s.model), origin: 'auto', addedBy: 'build-queue',
       status: s.state, statusLabel: s.state === 'active' && epic?.status === 'partial' ? 'Partial' : QUEUE_LABEL[s.state] ?? s.state,
       order: 1000 + s.position, queuePosition: s.position, steps, ...t, effort: str(s.effort),
       features: (s.features ?? []).map((f) => ({ id: f.id, title: f.title, status: f.status })),
       building, startedAt: building ? startedAt(epic) : 0, fable: false, aliases: [s.id],
+      ...goneOf(featuresBuilt(s.features, 'every plan feature in this step is built') ?? completedBy(s.id)),
     });
   }
 
@@ -129,10 +204,11 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
     const t = timing(f.estimate, steps, h);
     const building = f.status === 'in-progress';
     rows.push({
-      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model),
+      key: `plan:${f.id}`, id: f.id, source: 'plan', title: f.title || f.id, detail: str(f.summary), model: modelName(f.model), origin: 'auto', addedBy: 'plan-feature',
       status: f.status, statusLabel: PLAN_LABEL[f.status] ?? f.status,
       order: 100000 + (Number(f.wave) || 9) * 1000 + (PRIORITY[f.priority] ?? 3) * 100 + i / 1000, steps, ...t,
       building, startedAt: building ? startedAt(f) : 0, fable: false, aliases: [f.id],
+      ...goneOf(featuresBuilt((f.catalog ?? []).map((c) => byFeature.get(c)).filter(Boolean), 'everything it lists in the catalog is built') ?? completedBy(f.id)),
     });
   });
   return rows;
@@ -152,9 +228,10 @@ export function totalsByModel(rows) {
   return { ...out, all };
 }
 
-/** Filters: model ('' = any), sources (list), status ('' = any), split (only "needs split"). */
-export function filterRows(rows, { model = '', sources = SOURCES, status = '', split = false } = {}) {
-  return rows.filter((r) => (!model || r.model === model) && sources.includes(r.source) && (!status || r.status === status) && (!split || r.needsSplit));
+/** Filters: model ('' = any), sources (list), origins (list: prompt/auto), addedBy ('' = any: who or what added it), status ('' = any), split (only "needs split"). */
+export function filterRows(rows, { model = '', sources = SOURCES, origins = ORIGINS, addedBy = '', status = '', split = false } = {}) {
+  return rows.filter((r) => (!model || r.model === model) && sources.includes(r.source) && origins.includes(r.origin ?? 'auto')
+    && (!addedBy || r.addedBy === addedBy) && (!status || r.status === status) && (!split || r.needsSplit));
 }
 
 export function sortRows(rows, key = 'order') {

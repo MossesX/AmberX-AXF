@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-c5fbe27786",
+  "createdAt": "2026-10-21T00:56:33.000Z",
+  "updatedAt": "2026-10-21T04:56:33.000Z",
+  "kind": "build",
+  "title": "theme-from-hub (rebuild)",
+  "asked": "Backfilled from the rebuild log (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Developer apps take their look + settings from axHub's data server (appearance@1 document over a new `/data` API + SSE feed); waiting screen when the hub is down; opt-in `developer` manifest flag; lib-hub on Android; hub pages follow the palette. check-appearance 74, hub tests 302 → 311.",
+    "branch": "fable/theme-from-hub",
+    "commits": [
+      {
+        "sha": "4eb8b48",
+        "message": "Settings + look of developer apps from the axHub data server (appearance@1), waiting screen when the hub is down"
+      },
+      {
+        "sha": "5860f53",
+        "message": "Rebuild screenshots (Android) for theme-from-hub, run 5 [skip ci]"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/theme-from-hub.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:56:33.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "theme-from-hub"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:56:33.000Z",
+  "finishedAt": "2026-10-21T04:56:33.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true,
+  "branch": "fable/theme-from-hub"
+}

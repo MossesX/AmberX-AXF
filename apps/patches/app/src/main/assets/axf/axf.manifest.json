@@ -19,7 +19,7 @@
     "color-theme": "arctic-daylight",
     "style-theme": "glass-orbit",
     "layout": "patches-tabs",
-    "app-menu": "standard-desktop",
+    "app-menu": "patches",
     "toolbar": "standard-icons",
     "nav-menu": "patches-tabs",
     "context-menu": "compact-classic",
@@ -46,8 +46,7 @@
     "uac-policy": "standard"
   },
   "hidden": [
-    "toolbar",
-    "app-menu"
+    "toolbar"
   ],
   "developer": {
     "hub": "https://axhub.amberxai.com"

@@ -1375,6 +1375,126 @@
    "source": "chat"
   },
   {
+   "id": "build-manager-history",
+   "title": "Build manager: global live tracking, Built history, search, Start build now",
+   "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.830Z"
+    },
+    {
+     "text": "Shared pricing file + cost from Claude Code transcript usage",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.910Z"
+    },
+    {
+     "text": "changes.mjs: open/result/beat flags, PreToolUse progress, heartbeat, subagents, global hooks",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.978Z"
+    },
+    {
+     "text": "claude.ai reporting via axhub.memory_write: doc + rules (shared + project) + one-line setup",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:01.047Z"
+    },
+    {
+     "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.177Z"
+    },
+    {
+     "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.541Z"
+    },
+    {
+     "text": "Build manager server: change-log feed, live/built index, hub events + polling",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.274Z"
+    },
+    {
+     "text": "Built history view: totals by model / week, filters, cost badges",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.438Z"
+    },
+    {
+     "text": "Search bar + Live shows change entries (elapsed vs estimate, cost, model) + banner",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.546Z"
+    },
+    {
+     "text": "Orchestrator core: dependency closure, overlap check, reorder, brief",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.625Z"
+    },
+    {
+     "text": "Orchestrator server: start route, vps.run approval + retries, verification",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.792Z"
+    },
+    {
+     "text": "Start build now: context menu + row button + approval link/alert",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.877Z"
+    },
+    {
+     "text": "Tests: build-manager + codebase-changes (fake axHub, dry run)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.954Z"
+    },
+    {
+     "text": "Checks: check-theme, console tsc + vite, menu-reach, plugin self-tests",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:14.029Z"
+    },
+    {
+     "text": "Docs, CLAUDE.md Status, PR, CI",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.623Z"
+    }
+   ],
+   "createdAt": "2026-10-21T16:02:06.336Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-21T17:11:28.623Z",
+   "estimate": "6.5 h",
+   "source": "claude-code"
+  },
+  {
    "id": "axhub-web-hub-rules",
    "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
    "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",

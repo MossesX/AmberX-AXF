@@ -1,6 +1,6 @@
 # Build manager (console plugin)
 
-Built Oct 21 2026 on Opus. Plugin `apps/console-web/plugins/build-manager` (`ai.amberx.axf.console.build-manager`, 0.1.0). <!-- axf-plugin:build-manager -->
+Built Oct 21 2026 on Opus; 0.2.0 the same day (Live from every session, Built history, search, Start build now). Plugin `apps/console-web/plugins/build-manager` (`ai.amberx.axf.console.build-manager`). <!-- axf-plugin:build-manager -->
 Nav → **Builds → Build manager**. The core view that was labelled "Build" is now **Build queue** everywhere (route `build` unchanged).
 
 ## What it shows
@@ -34,6 +34,49 @@ finished; tap opens the Build manager at that item; ✕ hides it until something
 `build-manager.items` (every build); default context menu; context target `axf-build-item` on rows; "Open in Build
 manager" on Pending builds rows (`axf-pending-item`) and Plan features (`axf-plan-feature`).
 
+## Live, Built, search and Start build now (0.2.0, Oct 21 2026, Opus)
+
+Three tabs under one **search bar** (every word must match; title, id, notes/detail, steps, model, branch, surface,
+host, plan id): **Remaining** (the list above, with a **Start** button on every row), **Live**, **Built**.
+
+**Live** = every build any Claude session reported to axHub (change-log@1 with build stats, read through
+`axf.changes@1`; see `codebase-changes.md`): VPS, other computers, claude.ai, console launches, subagents (shown under
+their parent), plus the activity feed. Each: elapsed vs estimate (amber when over), cost (actual from token usage,
+else ~estimate), model, steps, current activity, where it runs (surface + host), branch, links to the item and the log;
+**no word for N min** when a running session stopped sending heartbeats for 10 min. Real time: the server's
+`GET events` stream says when any entry file changes (checked every 2 s on the shared folder every surface writes
+through axHub), the browser refetches `GET changes?since=<stamp>` (answers `{same}` when nothing changed); polling
+every 5 s while the stream reconnects. Badge `live` / `polling`. The **banner** shows the first running session build
+(title, model, elapsed / estimate, cost, steps, where, current step, progress, +N more).
+
+**Built** = every finished build (backfilled history included): model, date, time (actual or ~estimated), cost
+(actual, or ~estimated with an `estimated` badge), failed / verified / broken badges, branch, commits, report/PR links,
+Log. Totals overall + by model or by week (estimated part shown), filters model / period (all, 7 d, 30 d, this week) /
+cost actual or estimated. "Check nothing broke" on console launches.
+
+**Start build now** (row button, context menu on Build manager rows, Pending builds rows and Plan features, action
+`build-manager.start:<key>`): the server plans it with `web/orchestrate.mjs` (pure; run through `web/plan-cli.mjs`):
+- dependency closure from plan `dependsOn` + queue `deps`, deepest first (cycles broken and reported); the build
+  queue is reordered through the `build-reorder` engine so unbuilt deps come right before it;
+- **never twice**: refused when a running entry has the same buildRef or branch;
+- **never on top of other work**: "wait" when its areas (entry areas, plan files/modules, plugin folder) overlap any
+  running or silent entry's areas (prefix on `/`), naming who and where; a dependency being built → wait;
+- model from the item (Fable stays Fable; a queue step takes its strongest unbuilt feature); branch `fable/<id>` or `build/<id>`;
+- a brief (detail, steps, deps, do-not-touch list from running entries, rules, the reporting commands, the checks).
+It opens a `console-launch` entry (queued, steps: approve / build / verify), then asks axHub `vps.run` for one command:
+a fresh worktree of `/opt/axf` on the branch, the brief (base64), `claude -p --model <m>` in the background with
+`AXF_SURFACE=console-launch AXF_ADOPT_CHANGE=<id>` (the session's hooks report on that entry). Approval: link + alert at
+once, retried 15 s × 10 then every minute (Brett's rule) until approved, rejected or expired (30 min). Never pushes to
+main, never merges. **Verify** (`POST verify {changeId}`, "Check nothing broke"): the checks for the touched areas
+(plugin self-tests + lifecycle, theme check, menu reach, framework assets/tracker, manifests; the console build runs
+only with `AXF_VERIFY_BUILD=1`, CI covers it) + the branch's CI through lib-github → `verify` verified / broken (names
+the failures) / pending (CI running). Server routes: `GET changes|events|jobs`, `POST start {key, dryRun?}|verify`;
+`dryRun` plans without the VPS.
+
+Logic + tests: `web/history.mjs` (Live/Built/totals/filters/search), `web/orchestrate.mjs` (plan, overlap, brief,
+launch command, verify checks); `test.mjs` 83, `test.py` 38 (fake axHub: approval + retries + alert link, rejection,
+dry run on real data, refusals, verify; never writes framework/plan).
+
 ## Data and ticks
 
 - Logic: `web/merge.mjs` (pure; `buildRows`, `timing`, `totalsByModel`, `filterRows`, `sortRows`, `linkRow`, `liveEntries`), estimates parsed by pending-core's `estimateMinutes` / `formatMinutes`.
@@ -43,11 +86,22 @@ manager" on Pending builds rows (`axf-pending-item`) and Plan features (`axf-pla
 
 ## Tests
 
-`python3 apps/console-web/plugins/build-manager/test.py` (12, runs `test.mjs` too) · `node apps/console-web/plugins/build-manager/test.mjs` (44: timing, no double counting, degrade without new fields, totals, filters, sort, branch/report linking, elapsed vs estimate, real repo data). <!-- axf-plugin:build-manager -->
+`python3 apps/console-web/plugins/build-manager/test.py` (38, runs `test.mjs` too) · `node apps/console-web/plugins/build-manager/test.mjs` (83: timing, no double counting, degrade without new fields, totals, filters, sort, branch/report linking, elapsed vs estimate, real repo data). <!-- axf-plugin:build-manager -->
 
 ## Screenshots
 
-Phone:
+0.2.0 (Live, Built, search, Start build now, session builds on the banner):
+
+<img src="build-manager/shots/live-phone.png" width="260"> <img src="build-manager/shots/built-phone.png" width="260"> <img src="build-manager/shots/search-phone.png" width="260"> <img src="build-manager/shots/start-phone.png" width="260">
+
+![Built tab with totals](build-manager/shots/built-desktop.png)
+![Live tab](build-manager/shots/live-desktop.png)
+![Search across tabs](build-manager/shots/search-desktop.png)
+![Start build now](build-manager/shots/start-desktop.png)
+
+Re-take 0.2.0: `AXF_APPEARANCE_HUB=off AXF_CHANGES_DIR=<copy of changes/> node framework/cli/rebuild-shots.mjs --repo . --out _claude/memory/docs/build-manager --shots _claude/memory/docs/build-manager/shots/shots-v2.json --label shots` (pass these through the environment: the script keeps only the last `--env`).
+
+0.1.0 phone:
 
 <img src="build-manager/shots/tracker-phone.png" width="260"> <img src="build-manager/shots/view-phone.png" width="260"> <img src="build-manager/shots/needs-split-phone.png" width="260"> <img src="build-manager/shots/settings-phone.png" width="260">
 
@@ -60,3 +114,20 @@ Desktop:
 ![Settings → Plugins → Build manager](build-manager/shots/settings-desktop.png)
 
 Re-take: `node framework/cli/rebuild-shots.mjs --repo . --out _claude/memory/docs/build-manager --shots _claude/memory/docs/build-manager/shots/shots.json --label shots` (seeds three reports in the scratch activity feed).
+
+
+## Clean up (Oct 22 2026, Opus)
+
+**Clean up (N)** in the page header opens a list of builds that look already built or removed, each ticked with the reason:
+
+- pending item: its plan entry is built (built), dropped or no longer in the plan (removed), or every step is ticked (built)
+- build-queue step: every plan feature in it is built, or a complete pending item links to it (built)
+- plan feature: everything it lists in the catalog is built, or a complete pending item links to it (built)
+
+**Take N off the list** applies them one at a time. Every row also has **Already built** and **Removed** (with a confirm saying what it does) for anything the list can't tell by itself.
+
+| Source | Already built | Removed |
+|---|---|---|
+| Pending | status complete (`POST /api/pending {action:'status'}`) | item deleted (`{action:'remove'}`) |
+| Build queue | `POST /api/build-queue/step {action:'complete'}` (its features become built) | epic status dropped |
+| Plan | feature saved as built (`POST /api/plan/feature`) | feature saved as dropped |

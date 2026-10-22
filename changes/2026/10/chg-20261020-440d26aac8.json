@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-440d26aac8",
+  "createdAt": "2026-10-20T20:30:00.000Z",
+  "updatedAt": "2026-10-20T22:30:00.000Z",
+  "kind": "build",
+  "title": "AI Assistant plugin (Fable rebuild)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [
+    {
+      "text": "Keep live sessions (live-session@1, Oct 18 2026): every chat is a session owned by its host; replies run detached from the browser and survive closes; viewers reattach and replay by seq; sessions end only when closed on purpose. Implement SessionHost from framework/core/live-session.ts / Kotlin ai.a",
+      "state": "done"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Cross-app plugin porting the xGallery assistant with providers (Anthropic, Claude Code subscription, OpenAI, Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, custom OpenAI-compatible), setup wizard in its settings",
+    "commits": [
+      {
+        "sha": "22d17e6",
+        "message": "ai-assistant: Fable rebuild docs — CLAUDE.md status, ASSISTANT.md spec, LIVE-SESSIONS.md hosts, pending item complete, differences report with before/after screenshots"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/ai-assistant-plugin.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-20T22:30:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "ai-assistant-plugin"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T20:30:00.000Z",
+  "finishedAt": "2026-10-20T22:30:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

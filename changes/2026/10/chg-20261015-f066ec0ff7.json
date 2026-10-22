@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261015-f066ec0ff7",
+  "createdAt": "2026-10-15T12:47:47.000Z",
+  "updatedAt": "2026-10-15T16:47:47.000Z",
+  "kind": "build",
+  "title": "Web port: core + React components",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "framework/core + framework/react + framework/ui/axf.css: the original port, plain React 18 + TypeScript, no router. (built before the build queue existed; date = the first commits)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-15T16:47:47.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.web.core"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-15T12:47:47.000Z",
+  "finishedAt": "2026-10-15T16:47:47.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true
+}

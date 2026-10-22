@@ -24,7 +24,8 @@ function StepsCount({ s }: { s: Summary['steps'] }) {
 export function ChangesBanner() {
   const s = useStore();
   const rt = useRuntime();
-  const [open, setOpen] = useState(false);
+  // Launches expanded; the "_" under the entries' ✕ column folds it back to its summary (Brett, Oct 21 2026).
+  const [open, setOpen] = useState(true);
   if (!bannerOn() || !s.open.length) return null;
   const n = s.openTotal;
   const running = s.open.filter((e) => e.state === 'running').length;
@@ -69,6 +70,7 @@ export function ChangesBanner() {
             <button type="button" className="axp-codebase-changes__act" onClick={() => rt.dispatch('codebase-changes.open')}><Icon name="list" size={11} />Open the log</button>
             <button type="button" className="axp-codebase-changes__act is-quiet" disabled={s.busy === '*'} onClick={() => void closeAll()}><Icon name="x" size={11} />Close all</button>
             {n > s.open.length && <span className="axp-codebase-changes__meta">showing the newest {s.open.length}</span>}
+            <button type="button" className="fx-iconbtn axp-codebase-changes-banner__min" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
           </div>
         </div>
       )}

@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-38c3ba6904",
+  "createdAt": "2026-10-21T09:21:21.000Z",
+  "updatedAt": "2026-10-21T12:21:21.000Z",
+  "kind": "build",
+  "title": "Build manager plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/build-manager` (`ai.amberx.axf.console.build-manager`), nav → Builds → **Build manager** (the core `build` view is now labelled **Build queue** everywhere; route and actions unchanged). Everything still to build in one list: pending items not complete, build-queue steps not",
+    "commits": [
+      {
+        "sha": "4c46c8e",
+        "message": "Build manager plugin: everything still to build, live tracker and banner"
+      },
+      {
+        "sha": "a027b1c",
+        "message": "Integration fixes: build-manager ticks on the real step routes, one library@1 param source, slot order, stale import"
+      },
+      {
+        "sha": "0c2bd45",
+        "message": "Console application menu reaches everything; toolbar and side navigation hidden by default"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T12:21:21.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "build-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T09:21:21.000Z",
+  "finishedAt": "2026-10-21T12:21:21.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/build-manager"
+  ]
+}

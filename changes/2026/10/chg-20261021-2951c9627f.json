@@ -1,0 +1,52 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-2951c9627f",
+  "createdAt": "2026-10-21T06:30:10.000Z",
+  "updatedAt": "2026-10-21T10:30:10.000Z",
+  "kind": "build",
+  "title": "work-watcher (rebuild)",
+  "asked": "Backfilled from the rebuild log (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "work@1 engine (TS + Kotlin, fixture work.json) + lib-work foreground poll host with boot restart; AXHub watcher is a registered job. Tests: +129 web, +4 kernel, +4 lib-work, AXHub 2 → 4.",
+    "branch": "fable/work-watcher",
+    "commits": [
+      {
+        "sha": "78a12bc",
+        "message": "work@1 engine (TS + Kotlin) and lib-work: AXHub's approval watcher becomes a framework poll job"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/work-watcher.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T10:30:10.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "work-watcher"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T06:30:10.000Z",
+  "finishedAt": "2026-10-21T10:30:10.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true,
+  "branch": "fable/work-watcher"
+}

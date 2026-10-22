@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-74609ed24f",
+  "createdAt": "2026-10-21T00:35:29.000Z",
+  "updatedAt": "2026-10-21T04:35:29.000Z",
+  "kind": "build",
+  "title": "Harvest: deploy-misc",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest Oct 20 2026 — group `deploy-misc` (Opus)",
+    "branch": "harvest/h-deploy-misc",
+    "commits": [
+      {
+        "sha": "05153ea",
+        "message": "Harvest deploy-misc: report, CLAUDE.md status, README/architecture docs"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/deploy-misc.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:35:29.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-deploy-misc"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:35:29.000Z",
+  "finishedAt": "2026-10-21T04:35:29.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true,
+  "branch": "harvest/h-deploy-misc",
+  "areas": [
+    "deploy/install-console.sh",
+    "deploy/install.sh",
+    "framework/deploy/axf-deploy.sh",
+    "framework/templates/web-fastapi-wall",
+    "apps/console-web/src/assets/uac-policy/console-access.json",
+    "framework/assets/uac-policy/hub-accounts.json",
+    "framework/deploy",
+    "framework/deploy/README.md",
+    "framework/defaults.json",
+    "framework/assets",
+    "apps/console-web/src/account.tsx",
+    "framework/spec/ASSISTANT.md"
+  ]
+}

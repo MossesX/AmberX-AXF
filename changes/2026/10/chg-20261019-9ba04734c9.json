@@ -1,0 +1,72 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-9ba04734c9",
+  "createdAt": "2026-10-18T23:37:26.000Z",
+  "updatedAt": "2026-10-19T01:37:26.000Z",
+  "kind": "build",
+  "title": "Shared data lives on the hub",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "the root manifest's `data.shared` (pending list, plan + media, build queue, catalog `status.json`, `libraries.json`, `project-rules.json`, `tracker.json`) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>`. Resolver: `framework/cli/persist.mjs` (`dataPath(rel)`, used by e",
+    "commits": [
+      {
+        "sha": "c5ecef0",
+        "message": "Hub users can use the AI assistant: per-user permissions on the hub, wall identity in the console"
+      },
+      {
+        "sha": "8edb8ee",
+        "message": "Hub users: fixes from the independent security review"
+      },
+      {
+        "sha": "ba87ce4",
+        "message": "Hub users in the console: default-deny for users, themes and plugins granted per user (in review)"
+      },
+      {
+        "sha": "2dd1822",
+        "message": "Merge hub users in the console (default-deny, per-user theme and plugin grants) with signed wall answers"
+      },
+      {
+        "sha": "68a6ab0",
+        "message": "Fix console installer stopping after removing the container (wall on)"
+      },
+      {
+        "sha": "49c287d",
+        "message": "Fix console start: empty docker run arg from container-access host.sh"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T01:37:26.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "shared-data-lives-on-the-hub"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T23:37:26.000Z",
+  "finishedAt": "2026-10-19T01:37:26.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/persist.mjs",
+    "deploy/install-console.sh"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-2f0c651a16",
+  "createdAt": "2026-10-19T12:22:39.000Z",
+  "updatedAt": "2026-10-19T14:22:39.000Z",
+  "kind": "build",
+  "title": "App APKs on GitHub Actions — app-ci@1",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/server/app_ci.py`. `POST /api/apps/apk {dir}` (console token) commits `apps/<name>` plus framework files the engine changed on the server (untracked/modified under `framework/android`, `framework/libs`, `framework/python/axf_libs`, `framework/catalog/libraries.json`: new libraries)",
+    "commits": [
+      {
+        "sha": "b76f677",
+        "message": "app-ci@1: compile engine-built apps into APKs on GitHub Actions"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T14:22:39.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "app-apks-on-github-actions-app-ci-1"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-19T12:22:39.000Z",
+  "finishedAt": "2026-10-19T14:22:39.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/server/app_ci.py",
+    "framework/android",
+    "framework/libs",
+    "framework/python/axf_libs",
+    "framework/catalog/libraries.json"
+  ]
+}

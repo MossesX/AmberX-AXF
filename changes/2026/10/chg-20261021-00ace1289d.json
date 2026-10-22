@@ -67,5 +67,20 @@
     }
   },
   "closed": null,
-  "state": "done"
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "console-application-menu-reaches-everything"
+  },
+  "startedAt": "2026-10-21T12:32:58.708Z",
+  "finishedAt": "2026-10-21T12:33:06.612Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/src/assets/app-menu/console.json"
+  ]
 }
