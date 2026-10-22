@@ -125,7 +125,15 @@ export async function fixAll() {
   if (st.fixing || !st.report) return;
   const queue = guidedOrder(issues(st.report));
   st.fixing = true; st.prompt = null; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
-  const set = (id: string, r: Run, msg?: string) => { st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; if (r === 'done') markFixed(id); emit(); };
+  // Claude on failure (setting): an item Fix all marks failed goes to headless Claude Code on the VPS (the server dedups).
+  const handOver = await call<{ on: boolean }>('claude').then((x) => x.on, () => false);
+  const set = (id: string, r: Run, msg?: string) => {
+    st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; if (r === 'done') markFixed(id); emit();
+    if (r === 'failed' && handOver) {
+      void call<{ job: { message?: string } | null }>(`claude/${id}`, { method: 'POST', body: JSON.stringify({ reason: `Fix all: ${msg ?? 'failed'}`.slice(0, 400) }) })
+        .then((x) => { if (x.job?.message) { st.runMsg = { ...st.runMsg, [id]: `${msg ?? ''} · ${x.job.message}` }; emit(); } }, () => undefined);
+    }
+  };
   const passes = (c: Check) => c.status === 'ok' || c.status === 'info';
   let stopped = false;
   for (let k = 0; k < queue.length && !stopped; k++) {

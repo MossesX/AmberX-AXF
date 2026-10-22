@@ -161,8 +161,10 @@ def _follow_job(url: str, tok: str, sid: str | None, job_id: str, timeout: float
 class Jobs:
     """One background job per host check: ask the hub, wait for the approval, run, report."""
 
-    def __init__(self, recheck: Callable[[str], Any], call: Callable[..., dict[str, Any]] = call_hub, poll_s: float = 4) -> None:
+    def __init__(self, recheck: Callable[[str], Any], call: Callable[..., dict[str, Any]] = call_hub, poll_s: float = 4,
+                 on_fail: Callable[[str, str], Any] | None = None) -> None:
         self.recheck = recheck
+        self.on_fail = on_fail  # a fix that ran (or couldn't) and failed; never called for one Brett rejected
         self.call = call
         self.poll_s = poll_s
         self.jobs: dict[str, dict[str, Any]] = {}
@@ -223,7 +225,19 @@ class Jobs:
             except Exception:  # noqa: BLE001
                 pass
             self._set(cid, state="done" if ok else "failed", output=out[-4000:], message="Fixed." if ok else "The fix command failed: see the output.")
+            if not ok:
+                tail = [ln for ln in out.strip().splitlines() if ln.strip()][-3:]
+                self._failed(cid, "the VPS fix command failed: " + " / ".join(tail)[:240])
         except HubError as e:
             self._set(cid, state="failed", message=str(e))
+            self._failed(cid, str(e))
         except Exception as e:  # noqa: BLE001
             self._set(cid, state="failed", message=f"Auto fix stopped ({type(e).__name__}).")
+            self._failed(cid, f"Auto fix stopped ({type(e).__name__})")
+
+    def _failed(self, cid: str, why: str) -> None:
+        if self.on_fail:
+            try:
+                self.on_fail(cid, why)
+            except Exception:  # noqa: BLE001 — the hand-over never breaks the job
+                pass

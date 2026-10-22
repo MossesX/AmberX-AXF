@@ -14,6 +14,8 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
   POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command through axHub's vps.run (approval pops up)
+  GET  claude | POST claude/{id}    Claude on failure: a failed fix handed to headless Claude Code on the VPS (setting
+                                    claudeOnFail; vps.run, so it needs approval; reports on a change-log entry = building banner)
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
@@ -22,6 +24,7 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
 """
 from __future__ import annotations
 
+import os
 import re
 import time
 from pathlib import Path
@@ -34,7 +37,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import derive, hostfix, routine, store, whatsnew
+from . import claudefix, derive, hostfix, routine, store, whatsnew
 from .checks import HOST_SCRIPT, SERVICES, SysCheck
 
 router = APIRouter()
@@ -63,6 +66,13 @@ class Service:
                         "detail": f"{j.get('message', '')}\n$ {j.get('command', '')}".strip(),
                         "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
                         "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
+        for j in CLAUDE.all():  # sessions handed to headless Claude Code; once launched, its change-log entry reports instead
+            if j.get("state") not in ("asking", "waiting", "failed"):
+                continue
+            state = {"asking": "running", "waiting": "waiting", "failed": "failed"}[j["state"]]
+            out.append({"id": f"syscheck:claude:{j['id']}", "kind": "build", "state": state, "title": f"Claude on the VPS: {j.get('title') or j['id']}",
+                        "detail": str(j.get("message", "")), "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
+                        "finishedAt": j.get("updatedAt") if state == "failed" else None})
         return out
 
     def run_all(self, force: bool = False) -> list[dict[str, Any]]:
@@ -172,10 +182,68 @@ def fix(cid: str) -> dict[str, Any]:
     fn = SVC.core.fixes.get(cid)
     if not fn:
         raise HTTPException(400, "this check has no automatic fix")
-    msg = fn()
+    try:
+        msg = fn()
+    except HTTPException as e:
+        _hand_to_claude(cid, f"the console's fix failed: {e.detail}")
+        raise
+    except Exception as e:  # noqa: BLE001
+        _hand_to_claude(cid, f"the console's fix failed: {str(e)[:200]}")
+        raise HTTPException(500, f"the fix failed: {str(e)[:200]}") from None
     SVC.invalidate()
     cx.log("system", f"{cid}: {msg}", "ok")
-    return {"ok": True, "message": msg, "check": SVC.core.run_one(cid)}
+    after = SVC.core.run_one(cid)
+    claude = _hand_to_claude(cid, f"the console's fix ran ({msg}) but the check still fails: {after.get('summary', '')}", after) \
+        if after.get("status") not in ("ok", "info") else None
+    return {"ok": True, "message": msg, "check": after, "claude": claude}
+
+
+# ---------------------------------------------------------------- Claude on failure (headless Claude Code on the VPS)
+
+CLAUDE = claudefix.Launches(store.settings)
+
+
+def _hand_to_claude(cid: str, why: str, check: dict[str, Any] | None = None, force: bool = False) -> dict[str, Any] | None:
+    """Hand a failed fix to headless Claude Code on the VPS when the setting is on (never raises)."""
+    try:
+        c = check or SVC.run_one(cid)
+        job = CLAUDE.maybe_launch(c, why, force=force)
+        if job and job.get("state") == "asking":
+            cx.log("system", f"{cid}: fix failed, asked axHub to start Claude Code on the VPS (needs your approval)", "info")
+        return job
+    except Exception:  # noqa: BLE001
+        return None
+
+
+class ClaudeReq(BaseModel):
+    reason: str = Field(default="", max_length=400)
+    force: bool = False
+
+
+@router.get("/claude")
+def claude_list() -> dict[str, Any]:
+    """The setting, and every hand-over to headless Claude Code (state, approval, entry id, branch)."""
+    s = store.settings()
+    return {"on": bool(s.get("claudeOnFail")), "shell": bool(s.get("claudeShell")), "hubToken": bool(os.environ.get("AXHUB_TOKEN")),
+            "changes": plugin_services.get(claudefix.CHANGES) is not None,
+            "jobs": {j["id"]: {k: v for k, v in j.items() if k != "command"} for j in CLAUDE.all()}}
+
+
+@router.post("/claude/{cid:path}")
+def claude_start(cid: str, req: ClaudeReq) -> dict[str, Any]:
+    """A fix failed in the browser (Fix all): hand it over if the setting is on. `force` = by hand, skips the cooldown."""
+    if not store.settings().get("claudeOnFail"):
+        raise HTTPException(409, "Turn on “Hand failed fixes to Claude Code on the VPS” first")
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    if c.get("status") in ("ok", "info"):
+        return {"ok": True, "job": None, "message": "It passes now: nothing to hand over."}
+    job = _hand_to_claude(cid, req.reason or "a fix failed in the console", c, req.force)
+    if not job:
+        raise HTTPException(400, "This check can't be handed over")
+    return {"ok": True, "job": {k: v for k, v in job.items() if k != "command"}}
 
 
 # ---------------------------------------------------------------- AI switches + routine
@@ -382,7 +450,7 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
 
-HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate())
+HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate(), on_fail=lambda cid, why: _hand_to_claude(cid, why))
 
 
 @router.get("/autofix")

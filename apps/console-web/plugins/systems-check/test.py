@@ -166,6 +166,76 @@ try:
 except hf.HubError as e:
     bad = str(e)
 check("didn't finish" in bad, "a failed job reports the hub's reason")
+# Claude on failure: a failed fix goes to headless Claude Code on the VPS through vps.run (approved), reporting on an entry
+cf = sys.modules.get(spec.name + ".claudefix")
+check(cf is not None, "claudefix module loaded with the plugin")
+fails = []
+jf = hf.Jobs(lambda cid: None, lambda tool, args, conf=None: {"ok": "$ cmd\nexit 1 · 5 ms\nE: no mosh"}, poll_s=0.01, on_fail=lambda cid, why: fails.append((cid, why)))
+jf.start("host-mosh")
+for _ in range(200):
+    if (jf.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+time.sleep(0.02)
+check(fails and fails[0][0] == "host-mosh" and "no mosh" in fails[0][1], "a VPS fix that ran and failed is handed on, with the output's last lines")
+fails.clear()
+jr = hf.Jobs(lambda cid: None, fake_call(["confirm", "reject"]), poll_s=0.01, on_fail=lambda cid, why: fails.append(cid))
+jr.start("host-mosh")
+for _ in range(200):
+    if (jr.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(not fails, "a fix Brett rejected on the hub is never handed to Claude")
+
+class FakeChanges:
+    def __init__(self): self.opened, self.updates = [], []
+    def open(self, e, by): self.opened.append((e, by)); return {"id": "chg-20261022-abcdef1234"}
+    def update(self, cid, patch): self.updates.append((cid, patch)); return {}
+fc = FakeChanges()
+sett = {"claudeOnFail": False, "claudeShell": False}
+hub_calls = []
+def claude_call(states):
+    def f(tool, args, conf=None, timeout=None):
+        hub_calls.append((tool, args["command"], conf))
+        s_ = states.pop(0)
+        if s_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if s_ == "reject": raise hf.HubError("The user rejected this call.")
+        return {"ok": "$ …\nexit 0 · 30 ms\nstarted pid 42 in /root/axf-fixes/fix-syscheck-host-mosh"}
+    return f
+L = cf.Launches(lambda: sett, claude_call(["confirm", "ok"]), delays=lambda: [0.01] * 5, changes=lambda: fc)
+bad = {"id": "host-mosh", "service": "vps", "title": "mosh server", "status": "error", "summary": "mosh-server not installed",
+       "details": ["x" * 300] * 12, "instructions": ["sudo apt-get install -y mosh"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-mosh"}}
+check(L.maybe_launch(bad, "apt failed") is None and not hub_calls, "setting off: nothing is handed over")
+sett["claudeOnFail"] = True
+check(L.maybe_launch({**bad, "status": "ok"}, "x") is None, "a check that passes is never handed over")
+j = L.maybe_launch(bad, "apt failed")
+for _ in range(300):
+    if (L.get("host-mosh") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+j = L.get("host-mosh")
+cmd = hub_calls[0][1]
+check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "asks vps.run, waits for the approval, retries with its id, launched")
+check(len(cmd) <= cf.MAX_COMMAND and "base64 -d > .axf-brief.md" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd and "AXF_SURFACE=console-launch" in cmd,
+      "the command fits axHub's limit, carries the brief in base64 and reports on the opened entry")
+check("--allowedTools" not in cmd and "fix/syscheck-host-mosh" in cmd and "origin/main" in cmd and " main" not in cmd.replace("origin/main", ""),
+      "shell off: read + edit only, on its own fix branch from origin/main")
+check(fc.opened and fc.opened[0][0]["surface"] == "console-launch" and fc.opened[0][0]["kind"] == "fix" and any(p.get("status") == "running" for _, p in fc.updates),
+      "a change-log entry is opened (building banner) and marked running once launched")
+import base64 as _b64
+b = _b64.b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
+check("mosh server" in b and "never main" in b and "secrets" in b, "the brief names the check, the branch rule and the secrets rule")
+check(L.maybe_launch(bad, "again")["state"] == "launched" and len(hub_calls) == 2, "not handed over again within the cooldown")
+sett["claudeShell"] = True
+L2 = cf.Launches(lambda: sett, claude_call(["confirm", "reject"]), delays=lambda: [0.01], changes=lambda: fc)
+L2.maybe_launch({**bad, "id": "host-docker"}, "x")
+for _ in range(300):
+    if (L2.get("host-docker") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+check("--allowedTools Bash" in hub_calls[-1][1], "shell on: Bash is allowed")
+check(L2.get("host-docker")["state"] == "failed" and "Rejected" in L2.get("host-docker")["message"]
+      and any(p.get("status") == "failed" for _, p in fc.updates), "rejected on the hub → failed, and the entry says so")
+check(cf.launch_command("x", "host-mosh; rm -rf /", "bad id", False).count("AXF_ADOPT_CHANGE") == 0 and "rm -rf" not in cf.branch_for("host-mosh; rm -rf /"),
+      "odd ids never reach the shell unquoted")
+check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refuses while the setting is off")
+check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
 check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
