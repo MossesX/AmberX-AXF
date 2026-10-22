@@ -1,0 +1,50 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-ff28a3aad4",
+  "createdAt": "2026-10-20T20:30:00.000Z",
+  "updatedAt": "2026-10-20T22:30:00.000Z",
+  "kind": "build",
+  "title": "Widget asset category + search bar (Fable rebuild)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Widgets (\"widget\": true: clock, search-bar) attach to banners and toolbars through one host engine (engines/widgets.ts = Kotlin WidgetEngine.kt, fixtures widgets.json): banner.attach and toolbar.widgets (start/end), rt.attachToToolbar/detachFromToolbar/toolbarWidgets on both ports. search-bar asset",
+    "commits": [
+      {
+        "sha": "ad0e8b0",
+        "message": "Rebuild reports for banner-assets + widget-assets; mark both complete; k.search built"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/widget-assets.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-20T22:30:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "widget-assets"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T20:30:00.000Z",
+  "finishedAt": "2026-10-20T22:30:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

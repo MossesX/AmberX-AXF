@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-4b15a9f363",
+  "createdAt": "2026-10-21T01:50:46.000Z",
+  "updatedAt": "2026-10-21T03:50:46.000Z",
+  "kind": "build",
+  "title": "Widget kinds — eleven new attachable widget types",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`logo` (wordmark / icon / image, size, link), `action-button` (icon and/or label running one action), `label` (text in a tone), `status` (dot + text bound to a runtime counter: on above zero), `counter` (a runtime counter as a number, `99+` past max, hidden at zero), `progress` (bar bound to a count",
+    "commits": [
+      {
+        "sha": "84bea6a",
+        "message": "Fix frozen Android apps; light theme + no toolbar by default; collapsible toolbar; designed assets at init"
+      },
+      {
+        "sha": "6949cc2",
+        "message": "Widget kinds: eleven attachable widget types for banners and toolbars"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T03:50:46.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "widget-kinds-eleven-new-attachable-widget-types"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:50:46.000Z",
+  "finishedAt": "2026-10-21T03:50:46.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/defaults.json"
+  ]
+}

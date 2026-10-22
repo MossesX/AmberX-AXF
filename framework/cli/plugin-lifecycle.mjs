@@ -112,7 +112,7 @@ export function scanReferences(p) {
   const hits = [];
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
-    // Rebuild and harvest reports (and their screenshots) are history: they describe a plugin version and must outlive it.
+    // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
     if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/')) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".

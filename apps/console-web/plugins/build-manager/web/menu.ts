@@ -8,6 +8,8 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
   { id: 'build-manager.builds', menu: 'builds', menuLabel: 'Builds', menuOrder: 20, order: 5, items: [
     { id: 'build-manager', label: 'Build manager', icon: 'play', action: 'nav:build-manager' },
     { id: 'remaining', label: 'Remaining builds', icon: 'list', provider: REMAINING },
+    { id: 'live', label: 'Building now', icon: 'refresh', action: 'build-manager.live' },
+    { id: 'built', label: 'Built (cost + time)', icon: 'check-circle', action: 'build-manager.built' },
   ] },
   { id: 'build-manager.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'build-manager', label: 'Build manager', icon: 'play', action: 'nav:build-manager' }] },
 ];

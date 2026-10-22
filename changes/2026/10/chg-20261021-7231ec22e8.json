@@ -1,0 +1,66 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-7231ec22e8",
+  "createdAt": "2026-10-21T00:24:49.000Z",
+  "updatedAt": "2026-10-21T04:24:49.000Z",
+  "kind": "build",
+  "title": "Harvest: py-contracts",
+  "asked": "Backfilled from a harvest report (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Harvest — `py-contracts` (Fable, Oct 21 2026)",
+    "branch": "harvest/f-py-contracts",
+    "commits": [
+      {
+        "sha": "bf42193",
+        "message": "Console image carries framework/python; CLAUDE.md status + harvest report for py-contracts"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/harvest/py-contracts.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T04:24:49.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "harvest-py-contracts"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T00:24:49.000Z",
+  "finishedAt": "2026-10-21T04:24:49.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true,
+  "branch": "harvest/f-py-contracts",
+  "areas": [
+    "framework/python",
+    "framework/python/axf/contracts/assistant.py",
+    "framework/python/axf/contracts/agents.py",
+    "framework/python/axf/assistant_host/sessions.py",
+    "framework/python/axf/assistant_host/providers.py",
+    "framework/python/axf/assistant_host/cli_bridge.py",
+    "framework/python/axf/assistant_host/safety.py",
+    "apps/console-web/plugins/ai-assistant/server/__init__.py",
+    "framework/core/assistant.ts",
+    "framework/spec/ASSISTANT.md",
+    "apps/console-web/plugins/ai-assistant/test.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+  ]
+}

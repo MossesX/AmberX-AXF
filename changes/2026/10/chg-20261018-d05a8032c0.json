@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-d05a8032c0",
+  "createdAt": "2026-10-18T14:12:14.000Z",
+  "updatedAt": "2026-10-18T16:12:14.000Z",
+  "kind": "build",
+  "title": "Systems check + console setup",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "every time the console loads, `GET /api/plugins/systems-check/check` (`server/checks.py` in the plugin, console token required) checks the console token, credential file, plugins, GitHub token + repo, Anthropic API key, Hostinger API token, Coolify URL + token, axHub URL + token (live API calls with",
+    "commits": [
+      {
+        "sha": "2c3f0f4",
+        "message": "Systems check on every console load: banner, Systems check dialog (Grid / By service / Guided setup), Fix all, console-doctor.sh"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T16:12:14.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "systems-check-console-setup"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T14:12:14.000Z",
+  "finishedAt": "2026-10-18T16:12:14.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "deploy/console-doctor.sh"
+  ]
+}

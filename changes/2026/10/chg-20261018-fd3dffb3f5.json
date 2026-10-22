@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-fd3dffb3f5",
+  "createdAt": "2026-10-18T17:42:52.000Z",
+  "updatedAt": "2026-10-18T20:42:52.000Z",
+  "kind": "build",
+  "title": "Feature assistant plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/feature-assist`. Through the Plan view's new extension points (`AxfWebLibrary.slots` + `<Slot>` in `framework/react/components/Slots.tsx`; slots `plan.top`, `plan.feature`; rows are context target `axf-plan-feature`; `axf:plan-changed` reloads every plan copy): **Describe a",
+    "commits": [
+      {
+        "sha": "4576181",
+        "message": "Add the Feature assistant plugin: describe a feature in plain English (AXF expert drafts plan entries) and Build with Mosses (plan, build order, model choice incl. Opus now + Fable later, then Mosses"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T20:42:52.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "feature-assist"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T17:42:52.000Z",
+  "finishedAt": "2026-10-18T20:42:52.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/feature-assist"
+  ]
+}

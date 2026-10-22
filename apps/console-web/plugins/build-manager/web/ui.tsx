@@ -2,7 +2,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
-import { bannerOn, defaultSort, enabledSources, fmt, hideBanner, loadList, loadLive, takeFocus, tickStep, useStore, onStore, type Store } from './store';
+import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
+import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
 /* ---------------- time ---------------- */
 
@@ -72,25 +73,211 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
   );
 }
 
-export function LiveTracker({ compact }: { compact?: boolean }) {
+/** One build reported by a session (any surface, any machine) through the build log. */
+function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
+  const rt = useRuntime();
+  const elapsed = e.startedAt ? now - e.startedAt : null;
+  const over = e.estimate && elapsed != null && elapsed > e.estimate * 60_000;
+  const pct = e.progress ?? (e.estimate && elapsed != null ? Math.min(0.99, elapsed / (e.estimate * 60_000)) : null);
+  const quiet = now - (e.lastSeenAt || now);
+  return (
+    <li className={`axp-build-manager__live${e.stale ? ' is-stale' : ''}${e.parent ? ' is-child' : ''}`}>
+      <div className="axp-build-manager__live-head">
+        <span className={e.stale || e.state === 'queued' ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={14} /></span>
+        <span className="axp-build-manager__live-title">{e.title}</span>
+        <ModelChip model={e.model === 'Other' ? 'Opus' : e.model} />
+      </div>
+      <div className="axp-build-manager__live-meta">
+        {e.stale ? <Badge icon="alert" tone="warn" title="No heartbeat from this session for over 10 minutes: it may have stopped">no word for {dur(quiet)}</Badge>
+          : e.state === 'queued' ? <Badge icon="clock" tone="warn">Waiting to start</Badge> : null}
+        <Badge icon="clock" tone={over ? 'warn' : undefined} title="Elapsed vs estimate">{dur(elapsed)}{e.estimate ? ` / ~${fmt(e.estimate)}` : ' · no estimate'}</Badge>
+        <Badge icon="zap" tone={e.costActual != null ? 'ok' : undefined} title={e.costActual != null ? 'Actual cost so far (from the session’s token usage)' : 'Estimated cost'}>
+          {e.costActual != null ? money(e.costActual) : e.costEstimate != null ? `~${money(e.costEstimate)}` : 'no cost estimate'}
+        </Badge>
+        {e.stepsTotal > 0 && <Badge icon="list">{e.stepsDone}/{e.stepsTotal} steps</Badge>}
+        <Badge tone="muted" title={`Where it runs${e.host ? `: ${e.host}` : ''}`}>{e.source}{e.host && e.host !== e.source ? ` · ${e.host}` : ''}</Badge>
+        {e.branch && <Badge icon="git-branch" tone="muted">{e.branch}</Badge>}
+        {e.row && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}><Icon name="arrow-right" size={11} />Item</button>}
+        {rt.actions.get('codebase-changes.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}><Icon name="list" size={11} />Log</button>}
+      </div>
+      {e.currentStep && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
+      {pct != null && <Bar value={pct} label={`${e.title} progress`} />}
+    </li>
+  );
+}
+
+/** Everything in progress: builds reported by sessions (through axHub) + activity items + builds marked in progress. */
+export function useLive() {
   const s = useStore();
-  const now = useNow(s.live.length > 0 || s.finished.length > 0);
-  const live = compact ? s.live.filter((e) => e.row) : s.live;
-  const fin = compact ? s.finished.filter((e) => e.row) : s.finished;
+  const sessions = useMemo(() => liveFromChanges(s.changes, s.rows, s.now), [s.changes, s.rows, s.now]);
+  // an activity item about the same build as a session entry shows once (the session entry has more detail)
+  const coveredRows = new Set(sessions.map((e) => e.row?.key).filter(Boolean));
+  const activity = s.live.filter((e) => !(e.row && coveredRows.has(e.row.key) && e.id.startsWith('row:')));
+  return { sessions, activity, finished: s.finished };
+}
+
+export function LiveTracker({ compact, query = '' }: { compact?: boolean; query?: string }) {
+  const s = useStore();
+  const { sessions: sess0, activity: act0, finished: fin0 } = useLive();
+  const now = useNow(sess0.length > 0 || act0.length > 0 || fin0.length > 0);
+  const sessions = sess0.filter((e) => matches(query, e));
+  const live = (compact ? act0.filter((e) => e.row) : act0).filter((e) => matches(query, { ...e, ...(e.row ?? {}) }));
+  const fin = (compact ? fin0.filter((e) => e.row) : fin0).filter((e) => matches(query, e));
+  const n = sessions.length + live.length;
   return (
     <section className="axp-build-manager__tracker" aria-label="Building now" aria-live="polite">
       <div className="axp-build-manager__tracker-head">
-        <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : 'check-circle'} size={16} /></span>
-        <strong>{live.length ? `${live.length} building now` : 'Nothing building right now'}</strong>
-        {s.liveAvailable === false && <Badge tone="muted" title={s.liveError || 'The activity feed (axf.activity@1) isn’t available: install or switch on the Activity plugin for GitHub runs, console updates, assistant replies and VPS jobs.'}>build list only</Badge>}
-        <button type="button" className="axp-build-manager__act" onClick={() => void loadLive()} title="Check now"><Icon name="refresh" size={11} />Check</button>
+        <span className={n ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={n ? 'refresh' : 'check-circle'} size={16} /></span>
+        <strong>{n ? `${n} in progress` : query ? 'Nothing in progress matches' : 'Nothing building right now'}</strong>
+        <Badge tone={s.realtime ? 'ok' : 'muted'} icon={s.realtime ? 'zap' : 'clock'} title={s.realtime ? 'Live: updates the moment any session (any machine) reports to axHub' : 'Checking every few seconds (live stream reconnecting)'}>{s.realtime ? 'live' : 'polling'}</Badge>
+        {s.changesAvailable === false && <Badge tone="muted" title={s.changesError || 'The build log (axf.changes@1, Codebase changes plugin) isn’t available: sessions’ builds can’t be shown.'}>no build log</Badge>}
+        {s.liveAvailable === false && <Badge tone="muted" title={s.liveError || 'The activity feed (axf.activity@1) isn’t available: install or switch on the Activity plugin for GitHub runs, console updates, assistant replies and VPS jobs.'}>no activity feed</Badge>}
+        <button type="button" className="axp-build-manager__act" onClick={() => { void loadLive(); void loadChanges(true); }} title="Check now"><Icon name="refresh" size={11} />Check</button>
       </div>
-      {(live.length > 0 || fin.length > 0) && (
+      {(n > 0 || fin.length > 0) && (
         <ul className="axp-build-manager__live-list">
+          {sessions.map((e) => <SessionEntry key={e.id} e={e} now={now} />)}
           {live.map((e) => <TrackerEntry key={e.id} e={e} now={now} />)}
           {fin.map((e) => <TrackerEntry key={`f-${e.id}`} e={e} now={now} finished />)}
         </ul>
       )}
+      {!compact && !n && !query && <p className="fx-small fx-muted" style={{ margin: 0 }}>Every Claude session (VPS, other computers, claude.ai, launches from here) reports here through axHub before it starts building.</p>}
+    </section>
+  );
+}
+
+/* ---------------- Start build now ---------------- */
+
+const JOB_LABEL: Record<string, string> = { asking: 'Asking axHub…', waiting: 'Waiting for your approval', launching: 'Starting…', launched: 'Running on the VPS', rejected: 'Rejected', expired: 'Approval expired', failed: 'Failed' };
+
+export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) {
+  const rt = useRuntime();
+  const s = useStore();
+  const [plan, setPlan] = useState<StartPlan | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const job = s.jobs[row.key];
+  useEffect(() => { let on = true; planBuild(row.key).then((p) => on && setPlan(p), (e: Error) => on && setErr(e.message)); return () => { on = false; }; }, [row.key]);
+  const go = async () => {
+    setBusy(true); setErr('');
+    try {
+      const r = await startBuild(row.key);
+      if (!r.ok) setPlan(r.plan ?? plan);
+      else if (r.job?.approvalUrl) rt.toast('Approve it on axHub to start', 'info');
+    } catch (e) { setErr((e as Error).message); }
+    setBusy(false);
+  };
+  return (
+    <div className="axp-build-manager__start" role="region" aria-label={`Start ${row.title}`}>
+      <div className="axp-build-manager__start-head"><Icon name="play" size={14} /><strong>Start build now</strong><span className="fx-grow" /><button type="button" className="fx-iconbtn" aria-label="Close" onClick={onClose}><Icon name="x" size={14} /></button></div>
+      {err && <p className="fx-small axp-build-manager__error" role="alert">{err}</p>}
+      {!plan && !err && <p className="fx-small fx-muted">Planning: dependencies, what’s running, model…</p>}
+      {plan && !plan.ok && <p className="fx-small axp-build-manager__error" role="alert">{plan.refuse ?? plan.wait}</p>}
+      {plan && plan.ok && (
+        <>
+          <dl className="axp-build-manager__facts">
+            <dt>Model</dt><dd><ModelChip model={(plan.model ?? 'opus').replace(/^./, (c) => c.toUpperCase())} /></dd>
+            <dt>Branch</dt><dd><code>{plan.branch}</code></dd>
+            <dt>Estimate</dt><dd>{plan.estimate?.minutes ? `${fmt(plan.estimate.minutes)} · ~${money(plan.estimate.costUsd ?? null)}` : 'none'}</dd>
+            <dt>First</dt><dd>{plan.deps?.length ? plan.deps.map((d) => d.title).join(' → ') : 'no unbuilt dependencies'}</dd>
+            {plan.order ? <><dt>Queue</dt><dd>reordered so its dependencies build first</dd></> : null}
+            <dt>Checks after</dt><dd>{plan.verify?.map((v) => v.name).join(', ')}</dd>
+          </dl>
+          <p className="fx-small fx-muted" style={{ margin: 0 }}>Runs headless Claude Code on the VPS on its own branch through axHub <code>vps.run</code>. You approve it on axHub first (the page shows the whole command). Nothing is merged.</p>
+          {!job || ['rejected', 'expired', 'failed'].includes(job.state)
+            ? <div className="axp-build-manager__actions"><Button icon="play" onClick={() => void go()} disabled={busy}>{busy ? 'Starting…' : job ? 'Try again' : 'Start on the VPS'}</Button></div>
+            : null}
+        </>
+      )}
+      {job && (
+        <div className="axp-build-manager__job">
+          <Badge icon={job.state === 'launched' ? 'check' : job.state === 'waiting' ? 'clock' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'x' : 'refresh'} tone={job.state === 'launched' ? 'ok' : job.state === 'waiting' ? 'warn' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'danger' : undefined}>{JOB_LABEL[job.state] ?? job.state}</Badge>
+          <span className="fx-small">{job.message}</span>
+          {job.approvalUrl && job.state === 'waiting' && <a className="axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
+          {job.state === 'waiting' && <span className="fx-small fx-muted">Retrying by itself ({job.attempts ?? 0}): every 15 s, then every minute.</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Built (history) ---------------- */
+
+function BuiltView({ query }: { query: string }) {
+  const rt = useRuntime();
+  const s = useStore();
+  const [model, setModel] = useState('');
+  const [period, setPeriod] = useState<Period>('all');
+  const [cost, setCost] = useState<'' | 'actual' | 'estimated'>('');
+  const [group, setGroup] = useState<'model' | 'week'>('model');
+  const [limit, setLimit] = useState(40);
+  const [busy, setBusy] = useState('');
+  const all = useMemo(() => builtRows(s.changes), [s.changes]);
+  const shown = useMemo(() => filterBuilt(all, { model, period, cost }).filter((r) => matches(query, r)), [all, model, period, cost, query]);
+  const t = builtTotals(shown);
+  const models = [...new Set(all.map((r) => r.model))];
+  const verify = async (id: string) => { setBusy(id); try { rt.toast(await verifyBuild(id), 'info'); } catch (e) { rt.toast((e as Error).message, 'warning'); } setBusy(''); };
+  return (
+    <section className="axp-build-manager__built" aria-label="Built">
+      <div className="axp-build-manager__totals" role="list" aria-label="Totals">
+        <div role="listitem" className="axp-build-manager__total is-all">
+          <span className="axp-build-manager__total-label">Built</span>
+          <strong>{t.all.count}</strong>
+          <span className="fx-small fx-muted">{fmt(t.all.minutes) || '0 min'} · {money(t.all.cost)}{t.all.estimatedCost ? ` (${money(t.all.estimatedCost)} estimated)` : ''}</span>
+        </div>
+        {Object.entries(group === 'model' ? t.byModel : t.byWeek).slice(0, 8).map(([k, v]) => (
+          <div key={k} role="listitem" className={`axp-build-manager__total is-${k.toLowerCase()}`}>
+            <span className="axp-build-manager__total-label">{k}</span>
+            <strong>{money(v.cost)}</strong>
+            <span className="fx-small fx-muted">{v.count} builds · {fmt(v.minutes) || '0 min'}</span>
+          </div>
+        ))}
+      </div>
+      <div className="axp-build-manager__filters" role="group" aria-label="Filter the history">
+        <label className="axp-build-manager__field"><span>Model</span>
+          <select className="fx-input" value={model} onChange={(e) => setModel(e.target.value)}><option value="">All</option>{models.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+        </label>
+        <label className="axp-build-manager__field"><span>When</span>
+          <select className="fx-input" value={period} onChange={(e) => setPeriod(e.target.value as Period)}>{PERIODS.map((p) => <option key={p} value={p}>{PERIOD_LABEL[p]}</option>)}</select>
+        </label>
+        <label className="axp-build-manager__field"><span>Cost</span>
+          <select className="fx-input" value={cost} onChange={(e) => setCost(e.target.value as '' | 'actual' | 'estimated')}><option value="">All</option><option value="actual">Actual</option><option value="estimated">Estimated</option></select>
+        </label>
+        <label className="axp-build-manager__field"><span>Totals by</span>
+          <select className="fx-input" value={group} onChange={(e) => setGroup(e.target.value as 'model' | 'week')}><option value="model">Model</option><option value="week">Week</option></select>
+        </label>
+      </div>
+      {!s.changesLoaded ? <div className="fx-empty">Loading the history…</div>
+        : !shown.length ? <div className="fx-empty">{all.length ? 'Nothing built matches.' : s.changesAvailable === false ? 'The build log isn’t available (Codebase changes plugin off?).' : 'Nothing recorded yet.'}</div>
+          : (
+            <ul className="axp-build-manager__list" aria-label={`${shown.length} builds`}>
+              {shown.slice(0, limit).map((r) => (
+                <li key={r.id} className={`axp-build-manager__row${r.status === 'failed' ? ' is-failed' : ''}`}>
+                  <div className="axp-build-manager__head is-static">
+                    <span className="axp-build-manager__title-line"><span className="axp-build-manager__title">{r.title}</span></span>
+                    <span className="axp-build-manager__chips">
+                      <ModelChip model={r.model === 'Other' ? 'Opus' : r.model} />
+                      <Badge icon="calendar" tone="muted">{r.day}</Badge>
+                      <Badge icon="clock" title={r.minutesEstimated ? 'Estimated time' : 'Actual time'}>{r.minutes != null ? `${r.minutesEstimated ? '~' : ''}${fmt(r.minutes) || '0 min'}` : '—'}</Badge>
+                      <Badge icon="zap" tone={r.costEstimated ? undefined : 'ok'} title={r.costEstimated ? 'Estimated (no token counts for this build)' : 'Actual cost from the session’s token usage'}>{r.cost != null ? `${r.costEstimated ? '~' : ''}${money(r.cost)}` : '—'}</Badge>
+                      {r.costEstimated && r.cost != null && <Badge tone="muted">estimated</Badge>}
+                      {r.status === 'failed' && <Badge tone="danger" icon="x">{r.resultState || 'failed'}</Badge>}
+                      {r.verify && <Badge tone={r.verify === 'verified' ? 'ok' : r.verify === 'broken' ? 'danger' : 'muted'} icon={r.verify === 'verified' ? 'check' : r.verify === 'broken' ? 'alert' : 'clock'}>{r.verify}</Badge>}
+                      {r.surface === 'backfill' && <Badge tone="muted" title="Recorded afterwards from the repo’s history">backfill</Badge>}
+                    </span>
+                    <span className="axp-build-manager__chips">
+                      {r.branch && <Badge icon="git-branch" tone="muted">{r.branch}</Badge>}
+                      {r.commits.slice(-2).map((c) => <a key={c} className="axp-build-manager__act" href={`https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
+                      {Object.entries(r.links).slice(0, 3).map(([k, v]) => <a key={k} className="axp-build-manager__act" href={v.startsWith('https://') ? v : `https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/blob/main/${v}`} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{k}</a>)}
+                      {rt.actions.get('codebase-changes.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`codebase-changes.open:${r.id}`)}><Icon name="list" size={11} />Log</button>}
+                      {r.surface === 'console-launch' && r.status === 'done' && <button type="button" className="axp-build-manager__act" disabled={busy === r.id} onClick={() => void verify(r.id)}><Icon name="check-circle" size={11} />{busy === r.id ? 'Checking…' : 'Check nothing broke'}</button>}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+      {shown.length > limit && <div className="axp-build-manager__actions"><Button onClick={() => setLimit(limit + 40)}>Show more ({shown.length - limit})</Button></div>}
     </section>
   );
 }
@@ -127,6 +314,10 @@ function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
 
 function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; onToggle: () => void; canTick: boolean }) {
   const rt = useRuntime();
+  const s = useStore();
+  const [starting, setStarting] = useState(false);
+  useEffect(() => onStartRequest((k) => { if (k === row.key) setStarting(true); }), [row.key]);
+  const job = s.jobs[row.key];
   const go = () => rt.navigate(row.source === 'pending' ? 'pending' : row.source === 'queue' ? 'build' : 'plan');
   return (
     <li id={`axp-bm-${row.key.replace(/[^a-z0-9-]/gi, '-')}`} className={`axp-build-manager__row${open ? ' is-open' : ''}${row.building ? ' is-building' : ''}`}
@@ -141,6 +332,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           <ModelChip model={row.model} />
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
+          {job && <Badge tone={job.state === 'waiting' ? 'warn' : job.state === 'launched' ? 'ok' : ['failed', 'rejected', 'expired'].includes(job.state) ? 'danger' : undefined} icon="play">{JOB_LABEL[job.state] ?? job.state}</Badge>}
           <span className="fx-grow" />
           <TimeLeft row={row} />
         </span>
@@ -151,6 +343,10 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           </span>
         )}
       </button>
+      <button type="button" className="axp-build-manager__act axp-build-manager__start-btn" onClick={() => setStarting(true)} aria-label={`Start building ${row.title} now`} title="Start build now (dependencies first, never on top of a running build)">
+        <Icon name="play" size={11} />Start
+      </button>
+      {starting && <StartPanel row={row} onClose={() => setStarting(false)} />}
       {open && (
         <div className="axp-build-manager__body">
           {row.detail && <p className="axp-build-manager__detail">{row.detail.length > 400 ? `${row.detail.slice(0, 400)}…` : row.detail}</p>}
@@ -194,8 +390,18 @@ function Totals({ rows }: { rows: Row[] }) {
   );
 }
 
+type Tab = 'remaining' | 'live' | 'built';
+const TAB_KEY = 'axp-build-manager:tab';
+const readTab = (): Tab => { try { const t = localStorage.getItem(TAB_KEY); return t === 'live' || t === 'built' ? t : 'remaining'; } catch { return 'remaining'; } };
+
 export function BuildManagerView() {
   const s = useStore();
+  const [tab, setTab0] = useState<Tab>(readTab);
+  const setTab = (t: Tab) => { setTab0(t); try { localStorage.setItem(TAB_KEY, t); } catch { /* private window */ } };
+  const [query, setQuery] = useState('');
+  const { sessions, activity } = useLive();
+  const liveCount = sessions.length + activity.length;
+  const builtCount = useMemo(() => builtRows(s.changes).length, [s.changes]);
   const [model, setModel] = useState('');
   const [sources, setSources] = useState<Source[]>(() => enabledSources());
   const [status, setStatus] = useState('');
@@ -208,7 +414,13 @@ export function BuildManagerView() {
   useEffect(() => { const f = [...open][0]; if (f) setTimeout(() => document.getElementById(`axp-bm-${f.replace(/[^a-z0-9-]/gi, '-')}`)?.scrollIntoView({ block: 'center' }), 50); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const allowed = enabledSources();
   const base = useMemo(() => s.rows.filter((r) => allowed.includes(r.source)), [s.rows, allowed.join()]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, status, split }), sort), [base, model, sources, status, split, sort]);
+  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, status, split, sort, query]);
+  // a search that hits only other tabs says so
+  const hits = useMemo(() => query ? {
+    remaining: base.filter((r) => matches(query, r)).length,
+    live: sessions.filter((e) => matches(query, e)).length + activity.filter((e) => matches(query, { ...e, ...(e.row ?? {}) })).length,
+    built: builtRows(s.changes).filter((r) => matches(query, r)).length,
+  } : null, [query, base, sessions, activity, s.changes]);
   const statuses = useMemo(() => statusesOf(base), [base]);
   const t = totalsByModel(base);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
@@ -223,11 +435,28 @@ export function BuildManagerView() {
           <p className="fx-muted">Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.</p>
         </div>
         <div className="fx-row fx-row--wrap">
-          <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); }}>Refresh</Button>
+          <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); void loadChanges(true); }}>Refresh</Button>
         </div>
       </header>
 
-      <LiveTracker />
+      <div className="axp-build-manager__search" role="search">
+        <Icon name="search" size={14} />
+        <input className="fx-input" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search builds: title, id, notes, model, branch…" aria-label="Search remaining, live and built builds" />
+        {query && <button type="button" className="fx-iconbtn" aria-label="Clear the search" onClick={() => setQuery('')}><Icon name="x" size={14} /></button>}
+      </div>
+
+      <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
+        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle']] as const).map(([id, label, n, icon]) => (
+          <button key={id} type="button" role="tab" aria-selected={tab === id} className={`axp-build-manager__tab${tab === id ? ' is-on' : ''}${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
+            <Icon name={icon} size={12} />{label} <span className="axp-build-manager__tab-n">{hits ? `${hits[id]}/${n}` : n}</span>
+          </button>
+        ))}
+      </div>
+
+      {tab === 'live' && <LiveTracker query={query} />}
+      {tab === 'built' && <BuiltView query={query} />}
+      {tab === 'remaining' && liveCount > 0 && !query && <LiveTracker compact />}
+      {tab === 'remaining' && <>
       <Totals rows={base} />
 
       <div className="axp-build-manager__filters" role="group" aria-label="Filter and sort">
@@ -256,8 +485,9 @@ export function BuildManagerView() {
       {s.error && <p className="fx-small axp-build-manager__error" role="alert">{s.error}</p>}
       {s.offline && <p className="fx-small fx-muted">The console API is offline: showing the snapshot that came with the page.</p>}
       {!s.loaded ? <div className="fx-empty">Loading the build list…</div>
-        : shown.length === 0 ? <div className="fx-empty">{base.length ? 'Nothing matches these filters.' : 'Nothing left to build.'}</div>
+        : shown.length === 0 ? <div className="fx-empty">{query && hits && (hits.live || hits.built) ? `Nothing remaining matches: ${hits.live} live, ${hits.built} built.` : base.length ? 'Nothing matches these filters.' : 'Nothing left to build.'}</div>
           : <ul className="axp-build-manager__list" aria-label={`${shown.length} builds`}>{shown.map((r) => <BuildRow key={r.key} row={r} open={open.has(r.key)} onToggle={() => toggle(r.key)} canTick={canTick(r)} />)}</ul>}
+      </>}
     </div>
   );
 }
@@ -268,9 +498,48 @@ export function BuildBanner() {
   const rt = useRuntime();
   const s = useStore();
   const now = useNow(true);
+  const { sessions } = useLive();
+  // Launches expanded; "_" folds it to its title line, the chevron unfolds it (Brett, Oct 21 2026: building banners
+  // minimize, they don't close).
+  const [full, setFull] = useState(true);
+  const fold = full
+    ? <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setFull(false)}><Icon name="minimize" size={16} /></button>
+    : <button type="button" className="fx-iconbtn" aria-label="Expand" title="Show the details" aria-expanded={false} onClick={() => setFull(true)}><Icon name="chevron-down" size={16} /></button>;
   const live = s.live.filter((e) => e.row);
   const fin = s.finished.filter((e) => e.row);
-  if (!bannerOn() || (!live.length && !fin.length)) return null;
+  if (!bannerOn()) return null;
+  // Builds reported by sessions (any machine, through axHub) come first: they carry estimates, cost and where they run.
+  const running = sessions.filter((e) => !e.parent);
+  if (running.length) {
+    const key = `chg:${running.map((e) => e.changeId).join(',')}`;
+    if (key === s.hiddenFor) return null;
+    const first = running[0]!;
+    const elapsed = first.startedAt ? now - first.startedAt : null;
+    const cost = first.costActual ?? first.costEstimate;
+    const more = running.length - 1 + live.filter((e) => !running.some((r) => r.row && r.row.key === e.row?.key)).length;
+    return (
+      <div className={`axp-build-manager-banner${first.stale ? ' is-failed' : ''}`} role="status" aria-live="polite">
+        <button type="button" className="axp-build-manager-banner__main" onClick={() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live')} title="Open the Build manager (Live)">
+          <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
+          <span className="axp-build-manager-banner__text">
+            <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
+            {full && <span className="axp-build-manager-banner__meta">
+              <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
+              <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
+              {cost != null && <Badge icon="zap">{first.costActual == null ? '~' : ''}{money(cost)}</Badge>}
+              {first.stepsTotal > 0 && <Badge icon="list">{first.stepsDone}/{first.stepsTotal}</Badge>}
+              <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
+              {more > 0 && <Badge>+{more} more</Badge>}
+            </span>}
+            {full && first.currentStep && <span className="axp-build-manager-banner__step">{first.currentStep}</span>}
+            {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
+          </span>
+        </button>
+        {fold}
+      </div>
+    );
+  }
+  if (!live.length && !fin.length) return null;
   const key = live.map((e) => e.id).join(',') || `done:${fin.map((e) => e.id).join(',')}`;
   if (key === s.hiddenFor) return null;
   const first = live[0] ?? fin[0]!;
@@ -284,16 +553,16 @@ export function BuildBanner() {
         <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : failed ? 'x-circle' : 'check-circle'} size={16} /></span>
         <span className="axp-build-manager-banner__text">
           <strong>{summary}</strong>
-          <span className="axp-build-manager-banner__meta">
+          {full && <span className="axp-build-manager-banner__meta">
             <ModelChip model={first.row!.model} />
             <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
             {first.row!.stepsTotal > 0 && <Badge icon="list">{first.row!.stepsDone}/{first.row!.stepsTotal}</Badge>}
             {live.length > 1 && <Badge>+{live.length - 1} more</Badge>}
-          </span>
-          {pct != null && <Bar value={pct} label="Build progress" />}
+          </span>}
+          {full && pct != null && <Bar value={pct} label="Build progress" />}
         </span>
       </button>
-      <button type="button" className="fx-iconbtn" aria-label="Hide until a new build starts" title="Hide until a new build starts" onClick={() => hideBanner(key)}><Icon name="x" size={16} /></button>
+      {fold}
     </div>
   );
 }

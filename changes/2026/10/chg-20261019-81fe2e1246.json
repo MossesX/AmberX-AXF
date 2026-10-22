@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-81fe2e1246",
+  "createdAt": "2026-10-18T21:47:30.000Z",
+  "updatedAt": "2026-10-19T00:47:30.000Z",
+  "kind": "build",
+  "title": "AI assistant plugin (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/ai-assistant` (`ai.amberx.axf.console.ai-assistant`, v0.2.0). Now the console face of the framework's **assistant contract `assistant@1`**: `framework/core/assistant.ts` = Kotlin `ai.amberx.axf.kernel.assistant` (`Assistant.kt`, written without a compiler) = Python `framewo",
+    "commits": [
+      {
+        "sha": "7901261",
+        "message": "Mosses: approval cards and write-mode badge in the assistant chat, Claude Code CLI gets the console tools over an MCP bridge, Safety panel and voice slot in the agent manager"
+      },
+      {
+        "sha": "4576181",
+        "message": "Add the Feature assistant plugin: describe a feature in plain English (AXF expert drafts plan entries) and Build with Mosses (plan, build order, model choice incl. Opus now + Fable later, then Mosses"
+      },
+      {
+        "sha": "f6a1e40",
+        "message": "Independent review fixes: Claude Code CLI gets no secrets and can't read /proc or the console's private folder; exact base hashes for big files, explicit accept for changes the card can't show, comman"
+      },
+      {
+        "sha": "c12aaad",
+        "message": "Live sessions (live-session@1): assistant sessions stay live when the browser closes"
+      },
+      {
+        "sha": "c5ecef0",
+        "message": "Hub users can use the AI assistant: per-user permissions on the hub, wall identity in the console"
+      },
+      {
+        "sha": "8edb8ee",
+        "message": "Hub users: fixes from the independent security review"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T00:47:30.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "ai-assistant"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T21:47:30.000Z",
+  "finishedAt": "2026-10-19T00:47:30.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/ai-assistant"
+  ]
+}

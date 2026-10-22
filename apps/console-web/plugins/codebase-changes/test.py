@@ -131,8 +131,42 @@ check(len(long["title"]) == 160 and len(long["asked"]) == 600, "long text is cut
 huge, errs3 = store_mod.normalize({**good, "steps": [{"text": "s" * 300, "note": "n" * 1000}] * 100})
 check(huge is None and any("KB" in x for x in errs3), "an entry over 64 KB is refused")
 
+print("build stats (Build manager)")
+build_good = {**good, "result": None, "status": "running", "buildRef": {"kind": "pending", "id": "lib-clone"}, "surface": "claude-ai",
+              "startedAt": "2026-10-21T10:00:00.000Z", "lastSeenAt": "2026-10-21T10:05:00.000Z", "estimate": {"minutes": 90.5, "costUsd": 12.345678},
+              "actual": {"minutes": 3, "inputTokens": 100, "outputTokens": 5, "source": "transcript"}, "branch": "feat/x",
+              "areas": ["apps/x", "apps/x", "framework/core/*.ts"], "parent": "chg-20261021-abcdef1234", "progress": 0.33333, "doing": "Editing x token=abcdefghijk",
+              "verify": {"state": "broken", "at": "2026-10-21T11:00:00.000Z", "summary": "tsc failed", "checks": {"tsc": "fail", "vite": "pass"}}}
+be, berrs = store_mod.normalize(build_good)
+check(be is not None and not berrs, "a build entry passes")
+check(be["estimate"] == {"minutes": 91, "costUsd": 12.3457} and be["areas"] == ["apps/x", "framework/core/*.ts"] and be["costEstimated"] is True, "rounded like JS, areas unique, costEstimated derived")
+check("[hidden]" in be["doing"] and be["status"] == "running" and be["progress"] == 0.333, "doing redacted; status + progress")
+check(store_mod.normalize(good)[0]["status"] == "done" and "estimate" not in store_mod.normalize(good)[0], "an old entry only gains the derived status")
+check(store_mod.is_stale({"status": "running", "lastSeenAt": "2020-01-01T00:00:00.000Z"}) and not store_mod.is_stale({"status": "done", "lastSeenAt": "2020-01-01T00:00:00.000Z"}), "stale = running and not seen for 10 min")
+check(store_mod.summary(be)["buildRef"]["id"] == "lib-clone" and store_mod.summary(be)["verify"]["state"] == "broken", "summaries carry build stats")
+build_bad = {
+    "bad status": {**build_good, "status": "flying"},
+    "bad ref": {**build_good, "buildRef": {"kind": "Pending!", "id": "x"}},
+    "bad surface": {**build_good, "surface": "Claude AI"},
+    "negative estimate": {**build_good, "estimate": {"minutes": -5}},
+    "huge cost": {**build_good, "estimate": {"costUsd": 1e9}},
+    "string tokens": {**build_good, "actual": {"inputTokens": "12"}},
+    "bool cost flag": {**build_good, "costEstimated": "yes"},
+    "abs area": {**build_good, "areas": ["/etc"]},
+    "traversal area": {**build_good, "areas": ["a/../b"]},
+    "bad parent": {**build_good, "parent": "nope"},
+    "progress > 1": {**build_good, "progress": 2},
+    "bad verify": {**build_good, "verify": {"state": "great"}},
+    "bad verify check": {**build_good, "verify": {"state": "verified", "checks": {"x": "ok"}}},
+}
+for name, raw in build_bad.items():
+    e2, errs2 = store_mod.normalize(raw)
+    check(e2 is None and errs2, f"refused: {name}")
+bad_cases.update(build_bad)
+
 print("Python and Node validators agree")
-cases = [good, {**good, "title": "t" * 500}, *bad_cases.values()]
+cases = [good, {**good, "title": "t" * 500}, build_good, {**build_good, "result": {"state": "cancelled", "summary": ""}, "status": "queued"},
+         {**build_good, "actual": {"costUsd": 0.12345}, "costEstimated": None}, *bad_cases.values()]
 for i, raw in enumerate(cases):
     r = subprocess.run(["node", str(HERE / "changes.mjs"), "validate"], input=json.dumps(raw), capture_output=True, text=True, timeout=20)
     js = json.loads(r.stdout)

@@ -1,0 +1,69 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-c3728acbaf",
+  "createdAt": "2026-10-21T02:43:00.000Z",
+  "updatedAt": "2026-10-21T04:43:00.000Z",
+  "kind": "build",
+  "title": "Rebuild log + automatic screenshots",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "every rebuild gets a line in `_claude/memory/docs/rebuilds/LOG.md`, a differences report `<pending-id>.md`, and before/after screenshots when a GUI changed. Web: `framework/cli/rebuild-shots.mjs` (console API + Vite in headless Chromium, steps search/click/press/type/eval/wait, phone + desktop). And",
+    "commits": [
+      {
+        "sha": "7425d4c",
+        "message": "Rebuild log with before/after screenshots: rule, LOG.md, rebuild-shots harness"
+      },
+      {
+        "sha": "e0673fa",
+        "message": "Automatic Android before/after screenshots for rebuilds (rebuild-shots.yml)"
+      },
+      {
+        "sha": "05d4a00",
+        "message": "Rebuild log entries for wave 1; screenshots shrunk (31 → 9 MB) and shrunk automatically from now on; Android captures: secure screens noted, cut-off nav labels tapped by position, compile errors repor"
+      },
+      {
+        "sha": "d0b3ea9",
+        "message": "rebuild-shots: phone shots really use the phone viewport (412×915 @2x); they were desktop-sized"
+      },
+      {
+        "sha": "4eb8b48",
+        "message": "Settings + look of developer apps from the axHub data server (appearance@1), waiting screen when the hub is down"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T04:43:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "rebuild-log-automatic-screenshots"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T02:43:00.000Z",
+  "finishedAt": "2026-10-21T04:43:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/rebuild-shots.mjs",
+    "framework/cli/app-screens.mjs",
+    "framework/cli/rebuild-android-shots.mjs"
+  ]
+}

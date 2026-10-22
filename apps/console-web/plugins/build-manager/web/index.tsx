@@ -15,7 +15,8 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES } from './merge.mjs';
-import { FOLDER, ID, KEYS, VERSION, fmt, getStore, loadList, setFocus, start } from './store';
+import { FOLDER, ID, KEYS, VERSION, fmt, getStore, loadList, requestStart, setFocus, start } from './store';
+import { builtRows, liveFromChanges, money } from './history.mjs';
 import { BuildBanner, BuildManagerView, SettingsSummary } from './ui';
 import './build-manager.css';
 import { appMenu, REMAINING } from './menu';
@@ -54,20 +55,45 @@ export const plugin: AxfWebLibrary = {
     start(rt);
     rt.actions.register('build-manager.open', ([arg]) => open(rt, decodeURIComponent(arg ?? '')), { label: 'Open the Build manager' });
     rt.actions.register('build-manager.refresh', () => void loadList(), { label: 'Refresh the Build manager' });
+    // Start build now: opens the row (in the Remaining tab) with its Start panel: plan, approval, launch.
+    rt.actions.register('build-manager.start', ([arg]) => {
+      const key = resolveKey(decodeURIComponent(arg ?? ''));
+      if (!key) { rt.toast('That build isn’t on the remaining list.', 'warning'); return; }
+      try { localStorage.setItem('axp-build-manager:tab', 'remaining'); } catch { /* private window */ }
+      open(rt, key);
+      setTimeout(() => requestStart(key), 60);
+    }, { label: 'Start build now' });
+    const tabTo = (t: string) => () => { try { localStorage.setItem('axp-build-manager:tab', t); } catch { /* private window */ } rt.navigate(VIEW); };
+    rt.actions.register('build-manager.live', tabTo('live'), { label: 'Build manager: what’s building now' });
+    rt.actions.register('build-manager.built', tabTo('built'), { label: 'Build manager: everything built (cost + time)' });
+    rt.search.add('build-manager.log', () => [
+      ...liveFromChanges(getStore().changes, getStore().rows).map((e) => ({
+        id: `live:${e.changeId}`, kind: 'build', label: `Building: ${e.title}`, icon: 'refresh',
+        detail: `Build manager · Live · ${e.model} · ${e.source}${e.host ? ` · ${e.host}` : ''}${e.costEstimate != null ? ` · ~${money(e.costEstimate)}` : ''}`,
+        keywords: [e.changeId, e.model, e.branch, e.surface, e.host].filter(Boolean), focus: { kind: 'action' as const, spec: 'build-manager.live' },
+      })),
+      ...builtRows(getStore().changes).slice(0, 300).map((r) => ({
+        id: `built:${r.id}`, kind: 'build', label: r.title, icon: 'check-circle',
+        detail: `Build manager · Built ${r.day} · ${r.model}${r.minutes != null ? ` · ${r.minutesEstimated ? '~' : ''}${fmt(r.minutes)}` : ''}${r.cost != null ? ` · ${r.costEstimated ? '~' : ''}${money(r.cost)}` : ''}`,
+        keywords: [r.id, r.model, r.branch, r.surface, ...(r.ref ? [r.ref.id] : [])].filter(Boolean), focus: { kind: 'action' as const, spec: 'build-manager.built' },
+      })),
+    ]);
     rt.search.add('build-manager.items', () => getStore().rows.map((r) => ({
       id: `build:${r.key}`, kind: 'build', label: r.title, icon: 'play',
       detail: `Build manager · ${SOURCE_LABEL[r.source]} · ${r.model} · ${r.left == null ? 'no estimate' : `${fmt(r.left)} left`}${r.needsSplit ? ' · needs split' : ''}`,
       keywords: [r.id, r.model, r.status, r.source, ...(r.planId ? [r.planId] : []), ...(r.needsSplit ? ['split'] : [])],
       focus: { kind: 'action', spec: `build-manager.open:${encodeURIComponent(r.key)}` },
     })));
+    const startItem = (key: string) => ({ id: 'build-manager.start', label: 'Start build now', icon: 'play', action: `build-manager.start:${encodeURIComponent(key)}` });
     rt.contextExtras.set('*:build-manager', (target, payload) => {
       if (!payload) return [];
+      if (target === 'axf-build-item' && getStore().rows.some((r) => r.key === payload)) return [startItem(payload)];
       if (target === 'axf-pending-item' && getStore().rows.some((r) => r.key === `pending:${payload}`)) {
-        return [{ id: 'build-manager.open', label: 'Open in Build manager', icon: 'play', action: `build-manager.open:${encodeURIComponent(`pending:${payload}`)}` }];
+        return [{ id: 'build-manager.open', label: 'Open in Build manager', icon: 'play', action: `build-manager.open:${encodeURIComponent(`pending:${payload}`)}` }, startItem(`pending:${payload}`)];
       }
       if (target === 'axf-plan-feature') {
         const r = getStore().rows.find((x) => x.id === payload || x.planId === payload);
-        return r ? [{ id: 'build-manager.open', label: 'Open in Build manager', icon: 'play', action: `build-manager.open:${encodeURIComponent(r.key)}` }] : [];
+        return r ? [{ id: 'build-manager.open', label: 'Open in Build manager', icon: 'play', action: `build-manager.open:${encodeURIComponent(r.key)}` }, startItem(r.key)] : [];
       }
       return [];
     });

@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-32bc6fc137",
+  "createdAt": "2026-10-20T14:00:00.000Z",
+  "updatedAt": "2026-10-20T16:00:00.000Z",
+  "kind": "build",
+  "title": "Collapsible toolbar",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "toolbar asset field `collapsible: boolean` (default false): a chevron at the end folds the toolbar to a thin handle and back, remembered per device (`rt.toolbarCollapsed()` / `setToolbarCollapsed()`; web setting `axf.toolbar.collapsed`, Kotlin `<key>:toolbar-collapsed`). Engine attr `data-fx-toolbar",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-20T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "collapsible-toolbar"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T14:00:00.000Z",
+  "finishedAt": "2026-10-20T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

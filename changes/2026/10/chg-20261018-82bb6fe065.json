@@ -1,0 +1,60 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-82bb6fe065",
+  "createdAt": "2026-10-17T23:42:19.000Z",
+  "updatedAt": "2026-10-18T01:42:19.000Z",
+  "kind": "build",
+  "title": "Settings library",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`framework/libs/settings` (web, id `ai.amberx.axf.settings`): tabs Appearance, Account & security, Connections, Plugins, About; libraries/plugins contribute `settings` groups, `settingsPanels` and `settingsTabs` via `AxfWebLibrary`. Contract in `framework/core/settings.ts` mirrors Android `SettingsG",
+    "commits": [
+      {
+        "sha": "8f215dc",
+        "message": "Settings library for the framework, with a Plugins tab"
+      },
+      {
+        "sha": "40ad750",
+        "message": "Make plugin and library UIs conform to the theme engines"
+      },
+      {
+        "sha": "a351561",
+        "message": "Add transparency tokens to the style themes on both ports"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T01:42:19.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "settings-library"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-17T23:42:19.000Z",
+  "finishedAt": "2026-10-18T01:42:19.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/libs/settings",
+    "framework/core/settings.ts"
+  ]
+}

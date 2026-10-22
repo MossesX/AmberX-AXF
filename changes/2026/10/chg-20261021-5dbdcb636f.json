@@ -1,0 +1,50 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-5dbdcb636f",
+  "createdAt": "2026-10-20T22:23:02.695Z",
+  "updatedAt": "2026-10-21T02:23:02.695Z",
+  "kind": "build",
+  "title": "Plugin manager + settings tabs for every app (Fable rebuild)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Every plugin gets a plugin-manager entry (info, enable/disable, view logs, settings). Plugins never ship their own settings screen; they add tabs to the app settings interface. Every app compiled by the build engine ships the settings interface and lib-settings. The Opus version is the console plugi",
+    "commits": [
+      {
+        "sha": "62b7610",
+        "message": "plugin-manager: Fable rebuild — plugin-inventory@1 engine on every port, Android Plugin Manager, settings + Plugins tab in every app"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/plugin-manager.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T02:23:02.695Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "plugin-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T22:23:02.695Z",
+  "finishedAt": "2026-10-21T02:23:02.695Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true
+}

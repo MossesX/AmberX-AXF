@@ -84,9 +84,9 @@ Provides `axf.changes@1` (open, update, close, reopen, get, query) so other plug
 
 ## Tests
 
-`python3 apps/console-web/plugins/codebase-changes/test.py` (105: validation, Python = Node validators, routes, close everywhere, <!-- axf-plugin:codebase-changes -->
+`python3 apps/console-web/plugins/codebase-changes/test.py` (140: validation incl. build stats, Python = Node validators, routes, close everywhere, <!-- axf-plugin:codebase-changes -->
 pagination + filters, hub-tree modes, the service, and the real console app in a child process for the token and 404)
-and `node apps/console-web/plugins/codebase-changes/test.mjs` (67: rules, classifier, CLI, hook, queue + flush, <!-- axf-plugin:codebase-changes -->
+and `node apps/console-web/plugins/codebase-changes/test.mjs` (100: rules, build stats, prices + transcript usage, classifier, CLI, hook incl. live progress/subagents/transcript cost, axHub backend against a fake hub, queue + flush, <!-- axf-plugin:codebase-changes -->
 console-API backend against a fake console, hooks install/remove). Console `tsc` + `vite build`, `check-theme.mjs`,
 `plugins.mjs --check`, `tracker.mjs --check`, `plugin-lifecycle.mjs check codebase-changes` (+ `--after-uninstall` on a scratch copy).
 
@@ -98,14 +98,54 @@ Phone + desktop in `codebase-changes/shots/after/` (`shots.json` replays them wi
 |---|---|---|---|
 | ![](codebase-changes/shots/after/banner-phone.png) | ![](codebase-changes/shots/after/log-phone.png) | ![](codebase-changes/shots/after/entry-phone.png) | ![](codebase-changes/shots/after/settings-desktop.png) |
 
+## Build stats + every session, every machine (Oct 21 2026)
+
+Brett: anything any Claude session builds (VPS, other computers, claude.ai, console launches, subagents) is reported to
+axHub before it starts and kept live; the Build manager shows it (Live + Built). change-log@1 gained optional build
+fields (old entries still valid; validators `changes-core.mjs` = `server/store.py`, agreement checked by `test.py`, schema updated):
+`buildRef {kind, id}` · `status` queued|running|done|failed (derived from the result) · `surface` (vps-claude-code,
+claude-code, claude-code-cloud, claude-ai, console-launch, subagent, backfill, … open) · `startedAt` / `finishedAt` /
+`lastSeenAt` (heartbeat; running + silent 10 min = "no word") · `estimate {minutes, costUsd}` · `actual {minutes,
+costUsd, inputTokens, outputTokens, cacheReadTokens, cacheWriteTokens, source}` · `costEstimated` · `branch` · `areas`
+(relative paths: the overlap check) · `parent` (subagent / launched-under) · `progress` 0..1 · `doing` (what it's doing now, short) ·
+`verify {state pending|running|verified|broken|skipped, at, summary, checks}`. Every write while running is a heartbeat.
+
+- **CLI:** `open … --ref pending:<id> --model opus --estimate-min 90 [--estimate-cost USD] --areas "a,b" --branch b`;
+  `update <id>` (same flags + `--doing`, `--progress`); `beat <id>`; `result … --minutes --cost --input-tokens
+  --output-tokens …`. Without `--estimate-cost` the cost = minutes × the model's per-minute heuristic.
+- **Prices:** `framework/schemas/model-pricing.json` (model-pricing@1, shared with session-checkin, which keeps its
+  own `baseline/pricing.json` as a fallback and now saves its settings-tab prices to the shared file) +
+  `framework/cli/model-pricing.mjs` (`costUsd`, `estimateCost`, `transcriptUsage`).
+- **Writes from anywhere:** after `AXF_CHANGES_DIR` and `/projects`, `changes.mjs` writes **straight to axHub over MCP**
+  (`axhub.memory_write`, project amberx-axf, area data) with the hub token (`AXHUB_TOKEN` or `~/.config/axhub/token`
+  from `claude-sync login`), so Claude Code on any computer reports live; then the console API, `--to-repo`, the queue.
+- **Hooks** (`hooks install` → `~/.claude/settings.json`: every project on that machine): UserPromptSubmit opens a live
+  entry (surface, host, model, start, heartbeat) and tells Claude how to add the estimate; **PreToolUse** sends what it's
+  doing (one write per 30 s; tool names and file names only, never command arguments) and a subagent start
+  as a running child step; **SubagentStop** ends it; **Notification** = "Waiting for you"; **Stop / SessionEnd** fill
+  `actual` tokens + cost from the session transcript (each message counted once). `AXF_ADOPT_CHANGE=<id>` makes a
+  session report on an existing entry (console "Start build now"); `AXF_PARENT_CHANGE` links a new one under another.
+- **claude.ai (no shell):** write the JSON with `axhub.memory_write`: `_claude/memory/docs/build-reporting.md`.
+- **Server:** POST/PATCH accept the build fields (`beat: true` = heartbeat); `axf.changes@1` adds `summaries()`,
+  `stamp()` (cheap "anything new?") and `cli()`.
+- **Backfill:** `node apps/console-web/plugins/codebase-changes/backfill.mjs` (dry run) / `--write [--update] [--out dir]` <!-- axf-plugin:codebase-changes -->
+  — one `surface: backfill` entry per thing built before builds reported themselves (pending items complete, build-queue
+  steps done, rebuild LOG.md, harvest reports, CLAUDE.md Status entries with dates), dates + commits from `origin/main`
+  git history, estimates from the item (effort S 45 min / M 2 h / L 4 h / XL 8 h, rebuilds and harvests 4 h, plugins
+  3 h, else 2 h) × the price heuristic, `costEstimated: true`. Idempotent ids; real entries with the same buildRef win;
+  real entries recorded before build stats get the estimate merged in. Oct 21 2026 run: 101 entries, 282.5 h,
+  $2,923.80 estimated (Fable 22 / 68 h / $1,122; Opus 79 / 214.5 h / $1,801.80), written to axHub.
+
 ## On the VPS
 
 1. After the merge, the console's 5-minute update rebuilds it with the plugin (enabled by default).
-2. Once: `node apps/console-web/plugins/codebase-changes/changes.mjs hooks install` in the clone Claude Code uses (it writes the absolute path into `~/.claude/settings.json`). <!-- axf-plugin:codebase-changes -->
-3. Claude Code runs on the host, where `/projects` isn't mounted: set `AXF_TOKEN` (the console token) in that shell's environment so entries go straight to the console; without it they wait in `~/.axf-changes/queue` (`changes.mjs flush` later).
+2. Once per machine: `node apps/console-web/plugins/codebase-changes/changes.mjs hooks install` (or `bash deploy/claude-pick.sh --install`, which runs it). It writes the absolute path into `~/.claude/settings.json`, so every Claude Code session in every project on that machine reports. <!-- axf-plugin:codebase-changes -->
+3. Claude Code runs on the host, where `/projects` isn't mounted: entries go to axHub with the hub token (`claude-sync login` saves it), else to the console with `AXF_TOKEN`; without either they wait in `~/.axf-changes/queue` (`changes.mjs flush` later).
+
+**Other computers:** clone AmberX-AXF, `claude-sync login` (hub token), then the same `hooks install` line.
 
 ## Not yet
 
 - No Android twin (all Android work is on hold).
-- The hook can't know the model reliably (Claude Code doesn't pass it to hooks); it records `ANTHROPIC_MODEL`/`CLAUDE_MODEL` when set, and `open --model` / sessions can fill it in.
-- Activity integration (an entry in progress showing in the Activity banner) isn't wired; both banners show separately.
+- The model comes from the transcript (first assistant message) or `AXF_MODEL` / `ANTHROPIC_MODEL`; sessions can set it with `update --model`.
+- axHub's `/data-events` watches single documents, not a folder: the console watches the shared folder it mounts instead (follow-up for axHub: a prefix watch).

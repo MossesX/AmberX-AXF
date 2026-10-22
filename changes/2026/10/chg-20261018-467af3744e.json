@@ -1,0 +1,53 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-467af3744e",
+  "createdAt": "2026-10-18T20:52:44.000Z",
+  "updatedAt": "2026-10-18T22:52:44.000Z",
+  "kind": "build",
+  "title": "Live sessions — live-session@1 (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "rule: every assistant in the framework keeps its sessions live — a session is owned by its host, never by the browser; closing a tab/app only detaches, any device reattaches and replays; a session ends only when closed on purpose. Kernel contract unchanged (`framework/core/live-session.ts` = Kotlin",
+    "commits": [
+      {
+        "sha": "c12aaad",
+        "message": "Live sessions (live-session@1): assistant sessions stay live when the browser closes"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T22:52:44.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "live-sessions-live-session-1"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T20:52:44.000Z",
+  "finishedAt": "2026-10-18T22:52:44.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/core/live-session.ts",
+    "framework/spec/LIVE-SESSIONS.md",
+    "framework/python/axf/assistant_host/sessions.py"
+  ]
+}

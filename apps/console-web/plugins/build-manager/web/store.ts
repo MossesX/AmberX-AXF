@@ -10,16 +10,20 @@ import { pluginFetch } from '@console/plugins';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import * as queueCore from '@console/axf/plan/build-queue-core.mjs';
 import type { QFeature } from '@console/axf/plan/build-queue-core.mjs';
+import { followSse } from '@console/axf/core/sse';
 import { buildRows, liveEntries, probeTicks as probe, SOURCES, tickRequest, type ActivityItem, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import type { ChangeSummary } from './history.mjs';
 
 export const FOLDER = 'build-manager';
 export const ID = 'ai.amberx.axf.console.build-manager';
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 export const helpers: Helpers = { estimateMinutes: pendingCore.estimateMinutes, formatMinutes: pendingCore.formatMinutes };
 export const fmt = (min: number | null | undefined) => (min === 0 ? '0 min' : pendingCore.formatMinutes(min ?? null) || '');
 
 const LIVE_MS = 4_000;
 const LIST_MS = 60_000;
+/** Fallback polling of the build log while the event stream is down (cheap: the server answers {same} when nothing changed). */
+const CHANGES_MS = 5_000;
 /** Finished builds stay on the tracker (and the banner) this long, then leave. */
 export const LINGER_MS = 4_000;
 
@@ -41,8 +45,13 @@ export interface Store {
   finished: (LiveEntry & { until: number })[];
   hiddenFor: string; focus: string;
   canTickPending: boolean; canTickQueue: boolean;
+  /** the build log (every session, every machine, through axHub): change-log@1 summaries with build stats */
+  changes: ChangeSummary[]; changesAvailable: boolean | null; changesError: string; changesLoaded: boolean; realtime: boolean; now: number;
+  /** "Start build now" jobs by row key */
+  jobs: Record<string, StartJob>;
 }
-let st: Store = { rows: [], loaded: false, error: '', offline: false, live: [], liveAvailable: null, liveError: '', finished: [], hiddenFor: '', focus: '', canTickPending: false, canTickQueue: false };
+let st: Store = { rows: [], loaded: false, error: '', offline: false, live: [], liveAvailable: null, liveError: '', finished: [], hiddenFor: '', focus: '', canTickPending: false, canTickQueue: false,
+  changes: [], changesAvailable: null, changesError: '', changesLoaded: false, realtime: false, now: Date.now(), jobs: {} };
 const subs = new Set<() => void>();
 const set = (p: Partial<Store>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 export const getStore = () => st;
@@ -51,6 +60,12 @@ export const useStore = () => useSyncExternalStore(onStore, getStore, getStore);
 export const setFocus = (key: string) => set({ focus: key });
 export const takeFocus = () => { const f = st.focus; if (f) st = { ...st, focus: '' }; return f; };
 export const hideBanner = (key: string) => set({ hiddenFor: key });
+
+/** "Start build now" from the context menu / action: the row opens its Start panel. */
+const startSubs = new Set<(key: string) => void>();
+let pendingStart = '';
+export const onStartRequest = (f: (key: string) => void) => { startSubs.add(f); if (pendingStart) { const k = pendingStart; setTimeout(() => f(k), 0); } return () => { startSubs.delete(f); }; };
+export const requestStart = (key: string) => { pendingStart = key; startSubs.forEach((f) => f(key)); setTimeout(() => { if (pendingStart === key) pendingStart = ''; }, 3000); };
 
 /**
  * Step ticks write through the console's own routes (pending list: `step` action; build queue: `/build-queue/steps`).
@@ -115,17 +130,83 @@ export async function loadLive(): Promise<void> {
   finally { liveInflight = false; refreshLive(true); }
 }
 
+/* ---------------- the build log: every session's builds, through axHub (Live + Built) ---------------- */
+
+let changesInflight = false;
+let stamp = '';
+export async function loadChanges(force = false): Promise<void> {
+  if (changesInflight) return;
+  changesInflight = true;
+  try {
+    const r = await pluginFetch(FOLDER, `changes${stamp && !force ? `?since=${encodeURIComponent(stamp)}` : ''}`);
+    const j = (await r.json().catch(() => ({}))) as { available?: boolean; items?: ChangeSummary[]; stamp?: string; same?: boolean; error?: string };
+    if (!r.ok) throw new Error(r.status === 401 ? 'Console token needed for the build log.' : `HTTP ${r.status}`);
+    if (j.same) return;
+    stamp = j.stamp ?? '';
+    set({ changes: j.items ?? [], changesAvailable: j.available !== false, changesError: j.error ?? '', changesLoaded: true, now: Date.now() });
+  } catch (e) { set({ changesAvailable: false, changesError: (e as Error).message, changesLoaded: true }); }
+  finally { changesInflight = false; }
+}
+
+/** Real time: the server's event stream says when any session anywhere wrote to the build log; fall back to polling. */
+let stopEvents: (() => void) | null = null;
+function followChanges() {
+  stopEvents?.();
+  stopEvents = followSse(
+    (signal) => pluginFetch(FOLDER, 'events', { signal }),
+    (f) => { if (f.event === 'changed' || f.event === 'ready') { set({ realtime: true }); void loadChanges(); } },
+    { onOpen: () => set({ realtime: true }), onDrop: () => set({ realtime: false }) },
+  );
+}
+
+/* ---------------- Start build now ---------------- */
+
+export interface StartJob { key: string; state: string; message: string; approvalUrl?: string; changeId?: string; command?: string; attempts?: number; plan?: { model?: string; branch?: string; areas?: string[]; deps?: { id: string; title: string }[] } }
+export interface StartPlan { ok: boolean; refuse?: string; wait?: string; model?: string; branch?: string; areas?: string[]; deps?: { id: string; title: string; model: string }[]; order?: string[] | null; brief?: string; verify?: { name: string }[]; estimate?: { minutes?: number; costUsd?: number }; clashes?: { title: string; who: string; paths: string[] }[] }
+
+export async function planBuild(key: string): Promise<StartPlan> {
+  const r = await pluginFetch(FOLDER, 'start', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key, dryRun: true }) });
+  const j = (await r.json().catch(() => ({}))) as { plan?: StartPlan; detail?: string };
+  if (!r.ok) throw new Error(r.status === 401 ? 'Console token needed.' : j.detail ?? `HTTP ${r.status}`);
+  return j.plan ?? { ok: false, refuse: 'No plan.' };
+}
+export async function startBuild(key: string): Promise<{ job?: StartJob; plan?: StartPlan; ok: boolean }> {
+  const r = await pluginFetch(FOLDER, 'start', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key }) });
+  const j = (await r.json().catch(() => ({}))) as { ok?: boolean; job?: StartJob; plan?: StartPlan; detail?: string };
+  if (!r.ok) throw new Error(j.detail ?? `HTTP ${r.status}`);
+  if (j.job) set({ jobs: { ...st.jobs, [key]: j.job } });
+  void loadChanges(true);
+  return { ok: !!j.ok, job: j.job, plan: j.plan };
+}
+export async function loadJobs(): Promise<void> {
+  try {
+    const r = await pluginFetch(FOLDER, 'jobs');
+    if (!r.ok) return;
+    const j = (await r.json()) as { items?: StartJob[] };
+    set({ jobs: Object.fromEntries((j.items ?? []).map((x) => [x.key, x])) });
+  } catch { /* offline */ }
+}
+export async function verifyBuild(changeId: string): Promise<string> {
+  const r = await pluginFetch(FOLDER, 'verify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ changeId }) });
+  const j = (await r.json().catch(() => ({}))) as { verify?: { state: string; summary?: string }; detail?: string };
+  if (!r.ok) throw new Error(j.detail ?? `HTTP ${r.status}`);
+  void loadChanges(true);
+  return `${j.verify?.state ?? '?'}: ${j.verify?.summary ?? ''}`;
+}
+
 let started = false;
 export function start(runtime: AxfRuntime) {
   rt = runtime;
   if (started) return;
   started = true;
-  void loadList().then(() => loadLive());
+  void loadList().then(() => { void loadLive(); void loadChanges(true); void loadJobs(); });
+  followChanges();
   setInterval(() => { if (document.visibilityState === 'visible') void loadLive(); }, LIVE_MS);
+  setInterval(() => { if (document.visibilityState === 'visible') { void loadChanges(); if (Object.values(st.jobs).some((j) => ['asking', 'waiting', 'launching'].includes(j.state))) void loadJobs(); } }, CHANGES_MS);
   setInterval(() => { if (document.visibilityState === 'visible') void loadList(); }, LIST_MS);
-  setInterval(() => { if (st.finished.length) refreshLive(false); }, 1_000);
+  setInterval(() => { if (st.finished.length) refreshLive(false); if (st.changes.length && document.visibilityState === 'visible') set({ now: Date.now() }); }, 1_000);
   for (const ev of ['axf:pending-changed', 'axf:plan-changed']) globalThis.addEventListener(ev, () => void loadList());
-  globalThis.addEventListener('focus', () => { void loadList(); void loadLive(); });
+  globalThis.addEventListener('focus', () => { void loadList(); void loadLive(); void loadChanges(); });
   runtime.settings.subscribe(() => subs.forEach((f) => f()));
 }
 

@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-014fecc41e",
+  "createdAt": "2026-10-18T02:21:56.128Z",
+  "updatedAt": "2026-10-18T04:21:56.128Z",
+  "kind": "build",
+  "title": "Pending build list manager (console)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Console view of this list: date added for unbuilt items, date built for built ones, sortable by status and date. Built on Opus at Brett's request.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T04:21:56.128Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "pending-list-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T02:21:56.128Z",
+  "finishedAt": "2026-10-18T04:21:56.128Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

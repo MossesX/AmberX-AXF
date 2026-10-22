@@ -1,0 +1,72 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-74fde19b98",
+  "createdAt": "2026-10-21T01:45:08.000Z",
+  "updatedAt": "2026-10-21T03:45:08.000Z",
+  "kind": "build",
+  "title": "Boilerplate screenshots",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "boilerplate@1 takes optional `screenshots: [{file, screen?, caption?}]`, files in `framework/boilerplates/<id>/screenshots/` (PNG/JPEG/WebP, plain names, ≤ 5 MB, no SVG). Console `GET /api/boilerplates/<id>/screenshots/<file>` serves them (admin/console token; refuses links, traversal, other types).",
+    "commits": [
+      {
+        "sha": "59e38cc",
+        "message": "Boilerplate screenshots: report what was on screen (focus, packages, texts)"
+      },
+      {
+        "sha": "05d4a00",
+        "message": "Rebuild log entries for wave 1; screenshots shrunk (31 → 9 MB) and shrunk automatically from now on; Android captures: secure screens noted, cut-off nav labels tapped by position, compile errors repor"
+      },
+      {
+        "sha": "b7fcbcb",
+        "message": "boilerplate-capture: launch the app directly and dismiss \"isn't responding\" dialogs"
+      },
+      {
+        "sha": "4a557bc",
+        "message": "boilerplate-shots: plain AOSP image, 4 GB, wait for boot to settle, close a hung launcher"
+      },
+      {
+        "sha": "6b1d39a",
+        "message": "boilerplate-capture: report what am start answered and the app's crash lines"
+      },
+      {
+        "sha": "e97b03a",
+        "message": "boilerplate-capture: report install output and installed packages"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T03:45:08.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "boilerplate-screenshots"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:45:08.000Z",
+  "finishedAt": "2026-10-21T03:45:08.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/boilerplates/README.md",
+    "framework/cli/boilerplate-capture.py"
+  ]
+}

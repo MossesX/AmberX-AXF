@@ -1,0 +1,46 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-097b9ac46a",
+  "createdAt": "2026-10-18T14:00:00.000Z",
+  "updatedAt": "2026-10-18T16:00:00.000Z",
+  "kind": "build",
+  "title": "Banner, badge and clock asset types (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "three permanent framework types in `asset-types.json` (`\"optional\": true`, so older apps without them still validate). **banner** (hideable chrome): thin permanent bar above the layout (`.fx-frame` wraps the shell), `height` (16–48, thin 24) → `--fx-banner-h`, `surface` flat/raised/accent (unknown →",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "banner-badge-and-clock-asset-types"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T14:00:00.000Z",
+  "finishedAt": "2026-10-18T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/spec/check-widgets.mts"
+  ]
+}
