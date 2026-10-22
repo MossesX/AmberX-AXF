@@ -540,9 +540,8 @@ once an hour: \`node apps/console-web/plugins/claude-handoff/handoff.mjs hooks i
    facts into \`_claude/memory/\` in the repo and commit.
 4. **Hooks:** don't copy settings.json. Install the same hooks with their own installers so paths are right:
    - \`bash deploy/claude-pick.sh --install\` (model/sign-in picker, claude-sync, codebase-changes hooks)
-   - \`node apps/console-web/plugins/codebase-changes/changes.mjs hooks install\` (build reporting)
    - \`node apps/console-web/plugins/claude-handoff/handoff.mjs hooks install\` (keeps this kit's user copies current)
-   - \`node apps/console-web/plugins/session-checkin/install.mjs\` (session check-in) and \`node apps/console-web/plugins/activity/activity.mjs hooks install\` (activity banner), where those were installed.
+   - the other plugins' hook installers (build reporting, session check-in, activity banner), where those were installed: each plugin's line in CLAUDE.md names its command.
 5. **MCP servers:** add them again (\`claude mcp add …\`); tokens come from SECRETS.md names, asked for, never copied.
 
 ## Machines
