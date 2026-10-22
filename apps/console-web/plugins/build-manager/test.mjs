@@ -130,6 +130,50 @@ ok(!m.probeTicks({ apply() { throw new Error('unknown action'); } }, { emptyQueu
   ok(q1.steps['x.e'].steps[0].done === true && !q1.steps['x.e'].steps[1].done, 'build-queue core applies the tick body');
 }
 
+/* ---------- already built or removed (Clean up) ---------- */
+{
+  const feats = [
+    { id: 'x.b', title: 'B', kind: 'epic', status: 'planned', catalog: ['f.b1', 'f.b2'] },
+    { id: 'f.b1', title: 'B1', kind: 'feature', status: 'built' }, { id: 'f.b2', title: 'B2', kind: 'feature', status: 'built' },
+    { id: 'x.c', title: 'C', kind: 'epic', status: 'planned', catalog: ['f.c1'] }, { id: 'f.c1', title: 'C1', kind: 'feature', status: 'planned' },
+    { id: 'f.d', title: 'D', kind: 'feature', status: 'built' }, { id: 'f.e', title: 'E', kind: 'feature', status: 'dropped' },
+    { id: 'f.lone', title: 'Lone', kind: 'feature', status: 'planned' },
+  ];
+  const q = qc.computeQueue(feats, qc.emptyQueue());
+  const pend = [
+    { id: 'p-built', title: 'PB', model: 'Opus', status: 'pending', planId: 'f.d', subPrompts: [] },
+    { id: 'p-dropped', title: 'PD', model: 'Opus', status: 'pending', planId: 'f.e', subPrompts: [] },
+    { id: 'p-missing', title: 'PM', model: 'Opus', status: 'pending', planId: 'f.nope', subPrompts: [] },
+    { id: 'p-ticked', title: 'PT', model: 'Opus', status: 'pending', subPrompts: [{ text: 'a', at: '', done: true }, { text: 'b', at: '', done: true }] },
+    { id: 'p-open', title: 'PO', model: 'Opus', status: 'pending', subPrompts: [{ text: 'a', at: '', done: true }, { text: 'b', at: '' }] },
+    { id: 'p-done', title: 'Done', model: 'Opus', status: 'complete', planId: 'f.lone', subPrompts: [] },
+  ];
+  const r = m.buildRows({ pending: pend, queue: q, queueState: qc.emptyQueue(), features: feats }, h);
+  const g = (k) => r.find((x) => x.key === k)?.gone;
+  ok(g('pending:p-built')?.kind === 'built', 'pending item whose plan entry is built → looks built');
+  ok(g('pending:p-dropped')?.kind === 'removed' && g('pending:p-missing')?.kind === 'removed', 'plan entry dropped or gone → looks removed');
+  ok(g('pending:p-ticked')?.kind === 'built' && !g('pending:p-open'), 'every step ticked → looks built; some open → stays');
+  ok(g('queue:x.b')?.kind === 'built' && !g('queue:x.c'), 'queue step whose features are all built → looks built');
+  ok(g('plan:f.lone')?.kind === 'built', 'plan feature with a complete pending item → looks built');
+  ok(m.goneRows(r).length === 6, 'goneRows lists exactly those (4 pending, 1 queue, 1 plan)');
+  const tp = m.takeOffRequests({ source: 'pending', id: 'p1' }, 'built');
+  ok(tp.length === 1 && tp[0].path === 'pending' && tp[0].body.action === 'status' && tp[0].body.status === 'complete', 'pending built → status complete');
+  ok(m.takeOffRequests({ source: 'pending', id: 'p1' }, 'removed')[0].body.action === 'remove', 'pending removed → remove');
+  const tq = m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'built')[0];
+  ok(tq.path === 'build-queue/step' && tq.body.action === 'complete', 'queue built → build-queue/step complete');
+  ok(m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'removed')[0].body.status === 'dropped', 'queue removed → status dropped');
+  const pl = m.takeOffRequests({ source: 'plan', id: 'f.lone' }, 'removed', feats.find((f) => f.id === 'f.lone'))[0];
+  ok(pl.path === 'plan/feature' && pl.body.feature.status === 'dropped' && pl.body.feature.title === 'Lone', 'plan removed → whole feature saved as dropped');
+  ok(m.takeOffRequests({ source: 'plan', id: 'f.lone' }, 'built').length === 0 && m.takeOffRequests({ source: 'pending', id: 'p' }, 'other').length === 0, 'no feature or bad choice → nothing sent');
+  // the bodies really work on the cores behind the routes
+  const ps = pc.normalizeState({ $axf: 'pending@1', updatedAt: '', artifact: '', items: [{ id: 'p1', title: 'P', subPrompts: [] }] });
+  ok(pc.apply(ps, tp[0].body).item.status === 'complete', 'pending core applies the built body');
+  ok(pc.apply(ps, m.takeOffRequests({ source: 'pending', id: 'p1' }, 'removed')[0].body).state.items.length === 0, 'pending core applies the removed body');
+  const sa = qc.stepAction(feats, qc.emptyQueue(), tq.body);
+  ok(sa.changes.some((c) => c.id === 'x.c' && c.status === 'built') && sa.changes.some((c) => c.id === 'f.c1' && c.status === 'built'), 'queue core completes the step and its features');
+  ok(qc.stepAction(feats, qc.emptyQueue(), m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'removed')[0].body).changes[0].status === 'dropped', 'queue core drops the step');
+}
+
 /* ---------- the real data ---------- */
 const read = (f) => JSON.parse(readFileSync(join(REPO, 'framework/plan', f), 'utf8'));
 const plan = read('plan.json'); const qs = read('build-queue.json'); const pend = pc.normalizeState(read('pending.json'));

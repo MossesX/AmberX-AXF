@@ -69,6 +69,47 @@ export function timing(ownEstimate, steps, h) {
   };
 }
 
+/* ---------- already built or removed (the Clean up button) ---------- */
+
+export const GONE_LABEL = { built: 'Already built', removed: 'Removed' };
+const goneOf = (g) => (g ? { gone: g } : {});
+
+/** Built when every listed feature is built (an empty list says nothing). */
+function featuresBuilt(list, why) {
+  const fs = (list ?? []).filter((f) => f && f.status !== 'dropped');
+  return fs.length && fs.every((f) => f.status === 'built') ? { kind: 'built', why } : null;
+}
+
+/** A pending item whose plan entry is built, dropped or gone, or whose every step is ticked. */
+function pendingGone(p, t, byFeature) {
+  if (p.planId) {
+    const f = byFeature.get(p.planId);
+    if (byFeature.size && !f) return { kind: 'removed', why: `its plan entry ${p.planId} is no longer in the plan` };
+    if (f?.status === 'built') return { kind: 'built', why: `the plan says ${p.planId} is built` };
+    if (f?.status === 'dropped') return { kind: 'removed', why: `${p.planId} was dropped from the plan` };
+  }
+  if (t.stepsTotal > 0 && t.stepsDone === t.stepsTotal) return { kind: 'built', why: 'every step is ticked' };
+  return null;
+}
+
+/** Rows the list thinks are already built or removed. */
+export const goneRows = (rows) => rows.filter((r) => r.gone);
+
+/**
+ * The console writes that take one row off the list. how = 'built' | 'removed'.
+ *   pending  built → status complete (keeps it, with builtAt) · removed → remove the item
+ *   queue    built → build-queue/step complete (its features become built too) · removed → epic status dropped
+ *   plan     the feature's status → built | dropped (needs the feature as the plan holds it)
+ */
+export function takeOffRequests(row, how, feature) {
+  const note = how === 'built' ? 'Taken off the build list as already built (Build manager)' : 'Taken off the build list as removed (Build manager)';
+  if (how !== 'built' && how !== 'removed') return [];
+  if (row?.source === 'pending') return [{ path: 'pending', body: how === 'built' ? { action: 'status', id: row.id, status: 'complete' } : { action: 'remove', id: row.id } }];
+  if (row?.source === 'queue') return [{ path: 'build-queue/step', body: how === 'built' ? { id: row.id, action: 'complete', note } : { id: row.id, action: 'status', status: 'dropped', note } }];
+  if (row?.source === 'plan' && feature?.id === row.id) return [{ path: 'plan/feature', body: { feature: { ...feature, status: how === 'built' ? 'built' : 'dropped' }, note } }];
+  return [];
+}
+
 /** The moment a plan item was started (its last "Build started …" history line), or 0. */
 function startedAt(feature) {
   const hit = [...(feature?.history ?? [])].reverse().find((x) => /\bstarted\b/i.test(str(x?.text)));
@@ -83,6 +124,9 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
   const claimed = new Map(openPending.filter((p) => p.planId).map((p) => [p.planId, p.id]));
   const queuePos = new Map((queue?.steps ?? []).map((s) => [s.id, s.position]));
   const linkedBuilding = (planId) => !!planId && byFeature.get(planId)?.status === 'in-progress';
+  // A complete pending item linked to a queue step / plan feature means that one was built too.
+  const completeFor = new Map(pending.filter((p) => p && p.status === 'complete' && p.planId).map((p) => [p.planId, p.id]));
+  const completedBy = (id) => (completeFor.has(id) ? { kind: 'built', why: `pending item ${completeFor.get(id)} is complete` } : null);
 
   // 1. Pending items not complete (Fable items are the Fable rebuilds).
   const pendingOrder = [...openPending].sort((a, b) => PENDING_OPEN.indexOf(a.status) - PENDING_OPEN.indexOf(b.status) || (Date.parse(a.createdAt) || 0) - (Date.parse(b.createdAt) || 0) || str(a.title).localeCompare(str(b.title)));
@@ -96,7 +140,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       ...(p.planId ? { planId: str(p.planId) } : {}),
       ...(p.planId && queuePos.has(p.planId) ? { queuePosition: queuePos.get(p.planId) } : {}),
       fable: model === 'Fable', building: linkedBuilding(p.planId), startedAt: linkedBuilding(p.planId) ? startedAt(byFeature.get(p.planId)) : 0,
-      aliases: [p.id, p.planId, `${p.id}-fable`].filter(Boolean),
+      aliases: [p.id, p.planId, `${p.id}-fable`].filter(Boolean), ...goneOf(pendingGone(p, t, byFeature)),
     });
   });
 
@@ -114,6 +158,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       order: 1000 + s.position, queuePosition: s.position, steps, ...t, effort: str(s.effort),
       features: (s.features ?? []).map((f) => ({ id: f.id, title: f.title, status: f.status })),
       building, startedAt: building ? startedAt(epic) : 0, fable: false, aliases: [s.id],
+      ...goneOf(featuresBuilt(s.features, 'every plan feature in this step is built') ?? completedBy(s.id)),
     });
   }
 
@@ -133,6 +178,7 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       status: f.status, statusLabel: PLAN_LABEL[f.status] ?? f.status,
       order: 100000 + (Number(f.wave) || 9) * 1000 + (PRIORITY[f.priority] ?? 3) * 100 + i / 1000, steps, ...t,
       building, startedAt: building ? startedAt(f) : 0, fable: false, aliases: [f.id],
+      ...goneOf(featuresBuilt((f.catalog ?? []).map((c) => byFeature.get(c)).filter(Boolean), 'everything it lists in the catalog is built') ?? completedBy(f.id)),
     });
   });
   return rows;

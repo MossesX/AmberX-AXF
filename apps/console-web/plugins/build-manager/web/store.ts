@@ -10,11 +10,11 @@ import { pluginFetch } from '@console/plugins';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import * as queueCore from '@console/axf/plan/build-queue-core.mjs';
 import type { QFeature } from '@console/axf/plan/build-queue-core.mjs';
-import { buildRows, liveEntries, probeTicks as probe, SOURCES, tickRequest, type ActivityItem, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import { buildRows, liveEntries, probeTicks as probe, SOURCES, takeOffRequests, tickRequest, type ActivityItem, type GoneKind, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
 
 export const FOLDER = 'build-manager';
 export const ID = 'ai.amberx.axf.console.build-manager';
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 export const helpers: Helpers = { estimateMinutes: pendingCore.estimateMinutes, formatMinutes: pendingCore.formatMinutes };
 export const fmt = (min: number | null | undefined) => (min === 0 ? '0 min' : pendingCore.formatMinutes(min ?? null) || '');
 
@@ -58,6 +58,9 @@ export const hideBanner = (key: string) => set({ hiddenFor: key });
  */
 const probeTicks = () => probe(pendingCore, queueCore);
 
+/** The plan's features as last loaded (a plan row is taken off by saving its feature with a new status). */
+let featureById = new Map<string, QFeature>();
+
 let loading = false;
 export async function loadList(): Promise<void> {
   if (loading) return;
@@ -69,6 +72,7 @@ export async function loadList(): Promise<void> {
       api.loadBuildQueueState().catch(() => null),
     ]);
     const features = (plan?.features ?? []) as unknown as QFeature[];
+    featureById = new Map(features.map((f) => [f.id, f]));
     const queue = features.length ? queueCore.computeQueue(features, queueState) : null;
     const items = pending ? pendingCore.normalizeState(pending).items : [];
     // normalizeState drops fields it doesn't know yet (step done/doneAt); keep them from the raw file.
@@ -143,4 +147,29 @@ export async function tickStep(row: Row, index: number, done: boolean): Promise<
     await loadList();
     return null;
   } catch (e) { return (e as Error).message; }
+}
+
+/* ---------------- take builds off the list (already built / removed) ---------------- */
+
+/** Takes each row off through the console's own routes, one at a time; returns how many worked and the errors. */
+export async function takeOff(picks: { row: Row; how: GoneKind }[]): Promise<{ done: number; errors: string[] }> {
+  let done = 0;
+  const errors: string[] = [];
+  let pending = false, plan = false;
+  for (const { row, how } of picks) {
+    const reqs = takeOffRequests(row, how, featureById.get(row.id) as ({ id: string } & Record<string, unknown>) | undefined);
+    if (!reqs.length) { errors.push(`${row.title}: can’t be taken off from here`); continue; }
+    try {
+      let ok = true;
+      for (const req of reqs) {
+        const r = await api.post(req.path, req.body);
+        if (!r.ok) { ok = false; errors.push(`${row.title}: ${r.error ?? 'failed'}`); break; }
+      }
+      if (ok) { done++; if (row.source === 'pending') pending = true; else plan = true; }
+    } catch (e) { errors.push(`${row.title}: ${(e as Error).message}`); }
+  }
+  if (pending) globalThis.dispatchEvent(new CustomEvent('axf:pending-changed'));
+  if (plan) globalThis.dispatchEvent(new CustomEvent('axf:plan-changed'));
+  await loadList();
+  return { done, errors };
 }

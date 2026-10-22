@@ -1,8 +1,8 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
-import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
-import { bannerOn, defaultSort, enabledSources, fmt, hideBanner, loadList, loadLive, takeFocus, tickStep, useStore, onStore, type Store } from './store';
+import { filterRows, GONE_LABEL, goneRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
+import { bannerOn, defaultSort, enabledSources, fmt, hideBanner, loadList, loadLive, takeFocus, takeOff, tickStep, useStore, onStore, type Store } from './store';
 
 /* ---------------- time ---------------- */
 
@@ -125,6 +125,84 @@ function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
   );
 }
 
+/** What taking a row off does, per source (shown before it happens). */
+const takeOffText = (row: Row, how: GoneKind) =>
+  row.source === 'pending' ? (how === 'built' ? 'marks the pending item complete' : 'deletes the pending item')
+    : row.source === 'queue' ? (how === 'built' ? 'completes the build-queue step (its plan features become built)' : 'drops the step from the plan')
+      : how === 'built' ? 'sets the plan feature to built' : 'drops the plan feature';
+
+/** Take one build off the list: Already built / Removed, then a confirm. */
+function TakeOffRow({ row }: { row: Row }) {
+  const rt = useRuntime();
+  const [ask, setAsk] = useState<GoneKind | null>(null);
+  const [busy, setBusy] = useState(false);
+  const go = async (how: GoneKind) => {
+    setBusy(true);
+    const r = await takeOff([{ row, how }]);
+    setBusy(false); setAsk(null);
+    rt.toast(r.errors.length ? r.errors.join('\n') : `${row.title}: taken off the list (${GONE_LABEL[how].toLowerCase()}).`, r.errors.length ? 'warning' : 'success');
+  };
+  if (ask) {
+    return (
+      <div className="axp-build-manager__takeoff" role="group" aria-label="Take off the list">
+        <span className="fx-small">Take off as <strong>{GONE_LABEL[ask].toLowerCase()}</strong>? This {takeOffText(row, ask)}.</span>
+        <button type="button" className="axp-build-manager__act is-danger" disabled={busy} onClick={() => void go(ask)}><Icon name="check" size={11} />{busy ? 'Working…' : 'Yes, take it off'}</button>
+        <button type="button" className="axp-build-manager__act" disabled={busy} onClick={() => setAsk(null)}><Icon name="x" size={11} />Cancel</button>
+      </div>
+    );
+  }
+  return (
+    <div className="axp-build-manager__takeoff" role="group" aria-label="Take off the list">
+      {row.gone && <span className="fx-small fx-muted">Looks {row.gone.kind}: {row.gone.why}.</span>}
+      <button type="button" className="axp-build-manager__act" onClick={() => setAsk('built')}><Icon name="check-circle" size={11} />Already built</button>
+      <button type="button" className="axp-build-manager__act" onClick={() => setAsk('removed')}><Icon name="trash" size={11} />Removed</button>
+    </div>
+  );
+}
+
+/** The Clean up panel: every build that looks already built or removed, ticked, taken off in one go. */
+function CleanUp({ rows, onClose }: { rows: Row[]; onClose: () => void }) {
+  const rt = useRuntime();
+  const [picked, setPicked] = useState<Set<string>>(() => new Set(rows.map((r) => r.key)));
+  const [busy, setBusy] = useState(false);
+  const list = rows.filter((r) => picked.has(r.key));
+  const run = async () => {
+    setBusy(true);
+    const r = await takeOff(list.map((row) => ({ row, how: row.gone!.kind })));
+    setBusy(false);
+    rt.toast(r.errors.length ? `Took ${r.done} off; ${r.errors.length} failed:\n${r.errors.join('\n')}` : `Took ${r.done} build${r.done === 1 ? '' : 's'} off the list.`, r.errors.length ? 'warning' : 'success');
+    if (!r.errors.length) onClose();
+  };
+  return (
+    <section className="axp-build-manager__cleanup" aria-label="Clean up the build list">
+      <div className="axp-build-manager__tracker-head">
+        <Icon name="check-circle" size={16} />
+        <strong>{rows.length ? `${rows.length} look${rows.length === 1 ? 's' : ''} already built or removed` : 'Nothing looks built or removed'}</strong>
+      </div>
+      {rows.length > 0 && (
+        <>
+          <p className="fx-small fx-muted">Untick anything that should stay. Built ones are marked complete or built; removed ones are deleted (pending) or dropped (queue, plan). For anything else, open the build and use <em>Already built</em> or <em>Removed</em>.</p>
+          <ul className="axp-build-manager__cleanup-list">
+            {rows.map((r) => (
+              <li key={r.key}>
+                <label className="axp-build-manager__step">
+                  <input type="checkbox" checked={picked.has(r.key)} disabled={busy}
+                    onChange={(e) => setPicked((cur) => { const n = new Set(cur); if (e.target.checked) n.add(r.key); else n.delete(r.key); return n; })} />
+                  <span className="axp-build-manager__step-text"><strong>{r.title}</strong> <span className="fx-muted">· {SOURCE_LABEL[r.source]} · {GONE_LABEL[r.gone!.kind]}: {r.gone!.why}</span></span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <div className="axp-build-manager__actions">
+        {rows.length > 0 && <button type="button" className="axp-build-manager__act is-danger" disabled={busy || !list.length} onClick={() => void run()}><Icon name="check" size={11} />{busy ? 'Working…' : `Take ${list.length} off the list`}</button>}
+        <button type="button" className="axp-build-manager__act" disabled={busy} onClick={onClose}><Icon name="x" size={11} />Close</button>
+      </div>
+    </section>
+  );
+}
+
 function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; onToggle: () => void; canTick: boolean }) {
   const rt = useRuntime();
   const go = () => rt.navigate(row.source === 'pending' ? 'pending' : row.source === 'queue' ? 'build' : 'plan');
@@ -141,6 +219,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           <ModelChip model={row.model} />
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
+          {row.gone && <Badge icon={row.gone.kind === 'built' ? 'check' : 'trash'} tone="muted" title={`Looks ${row.gone.kind}: ${row.gone.why}`}>Looks {row.gone.kind}</Badge>}
           <span className="fx-grow" />
           <TimeLeft row={row} />
         </span>
@@ -167,6 +246,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
             <button type="button" className="axp-build-manager__act" onClick={go}><Icon name="arrow-right" size={11} />Open in {row.source === 'pending' ? 'Pending builds' : row.source === 'queue' ? 'Build queue' : 'Plan'}</button>
             {row.fable && rt.actions.get('fable-rebuilds.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`fable-rebuilds.open:${encodeURIComponent(row.id)}`)}><Icon name="sparkles" size={11} />Fable rebuild</button>}
           </div>
+          <TakeOffRow row={row} />
           {!canTick && row.steps.length > 0 && <p className="fx-small fx-muted axp-build-manager__none">Ticks are read-only on this console until the {row.source === 'pending' ? 'pending list' : 'build queue'} gets its step action.</p>}
         </div>
       )}
@@ -211,6 +291,8 @@ export function BuildManagerView() {
   const shown = useMemo(() => sortRows(filterRows(base, { model, sources, status, split }), sort), [base, model, sources, status, split, sort]);
   const statuses = useMemo(() => statusesOf(base), [base]);
   const t = totalsByModel(base);
+  const gone = useMemo(() => goneRows(base), [base]);
+  const [cleaning, setCleaning] = useState(false);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const canTick = (r: Row) => (r.source === 'pending' ? s.canTickPending : r.source === 'queue' ? s.canTickQueue : false);
 
@@ -223,10 +305,12 @@ export function BuildManagerView() {
           <p className="fx-muted">Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.</p>
         </div>
         <div className="fx-row fx-row--wrap">
+          <Button icon="check-circle" onClick={() => setCleaning(!cleaning)} title="Take off builds that are already built or removed">Clean up{gone.length ? ` (${gone.length})` : ''}</Button>
           <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); }}>Refresh</Button>
         </div>
       </header>
 
+      {cleaning && <CleanUp rows={gone} onClose={() => setCleaning(false)} />}
       <LiveTracker />
       <Totals rows={base} />
 
