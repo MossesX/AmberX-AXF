@@ -11,6 +11,7 @@ import os
 import sys
 import tempfile
 import threading
+import time
 import types
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -166,6 +167,59 @@ u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conf
 check(u.status_code == 409 and "conflicts" in u.json()["detail"], "conflicts: says to merge by hand")
 u = c.post("/p/update", json={"repo": "Someone/Else", "branch": "x", "confirm": "Someone/Else:x"})
 check(u.status_code == 400, "only watched repos")
+
+# Claude on failure: a conflicted pull / refused merge goes to headless Claude Code on the VPS (approved on axHub)
+cf = sys.modules[spec.name + ".claudefix"]
+hub_calls = []
+def fake_hub(tool, args, conf=None, timeout=None):
+    hub_calls.append((tool, args["command"], conf))
+    return {"confirm": "11111111-2222-3333-4444-555555555555"} if conf is None else {"ok": "$ …\nexit 0 · 40 ms\nstarted pid 7"}
+class FakeChanges:
+    def __init__(self): self.opened, self.updates = [], []
+    def open(self, e, by): self.opened.append(e); return {"id": "chg-20261022-abcdef1234"}
+    def update(self, cid, patch): self.updates.append(patch); return {}
+fch = FakeChanges()
+mod.CLAUDE.call, mod.CLAUDE.delays, mod.CLAUDE.changes = fake_hub, (lambda: [0.01] * 5), (lambda: fch)
+def settle(key):
+    for _ in range(300):
+        j = mod.CLAUDE.get(key)
+        if j and j["state"] in ("launched", "failed"): return j
+        time.sleep(0.01)
+    return mod.CLAUDE.get(key)
+check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b", "confirm": "MossesX/AmberX-AXF:feat/b"}).status_code == 409 and not hub_calls, "setting off: nothing handed over, Fix with Claude refused")
+check(c.put("/p/config", json={"claudeOnFail": "yes"}).status_code == 400, "the switches are true/false")
+check(c.put("/p/config", json={"claudeOnFail": True}).json()["claudeOnFail"] is True, "Hand failures to Claude Code is a setting")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(u.status_code == 409 and "Handed to Claude Code" in u.json()["detail"], "a conflicted Pull main in is handed to Claude (the error says so)")
+j = settle("MossesX/AmberX-AXF:feat/conflict")
+cmd = hub_calls[0][1]
+check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "vps.run, waits for the approval, retries with its id, launched")
+check(len(cmd) <= cf.MAX_COMMAND and "git clone -q 'https://github.com/MossesX/AmberX-AXF.git'" in cmd and "-B 'feat/conflict'" in cmd
+      and "'origin/feat/conflict'" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd, "one clone per repo, a worktree on that branch, reports on its entry")
+check("'Bash(git push origin HEAD:feat/conflict)'" in cmd and "--allowedTools Bash " not in cmd and "push origin HEAD:main" not in cmd, "shell off: edits + git, a push only to that branch")
+b = __import__("base64").b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
+check("Never push to `main`" in b and "never force-push" in b and "never merge the PR" in b and "secrets" in b, "the brief: never main, never force, never merge, no secrets")
+check(fch.opened and fch.opened[0]["surface"] == "console-launch" and fch.opened[0]["kind"] == "fix" and any(p.get("status") == "running" for p in fch.updates), "a change-log entry: it shows in the building banner")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(len(hub_calls) == 2, "not handed over again within the cooldown")
+r = c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(r.status_code == 200 and settle("MossesX/AmberX-AXF:feat/conflict")["state"] == "launched" and len(hub_calls) == 4, "Fix with Claude by hand skips the cooldown")
+check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "never the default branch")
+STATE["mergeable"] = False
+m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+STATE["mergeable"] = True
+check(m.status_code == 409 and "conflicts" in m.json()["detail"] and "Handed to Claude Code" in m.json()["detail"], "a Merge GitHub refuses for conflicts is handed over")
+check(settle("MossesX/AmberX-AXF:#18")["branch"] == "feat/a", "…on the PR's own branch")
+c.put("/p/config", json={"claudeShell": True})
+try:
+    cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "x; rm -rf /", "base": "main", "kind": "conflict", "action": "x", "failure": ""}, "")
+    odd = False
+except cf.HubError:
+    odd = True
+check(odd, "odd branch names never reach the shell")
+check("--allowedTools Bash " in cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "feat/a", "base": "main", "kind": "merge", "action": "merge it", "failure": "", "shell": True}, ""), "shell on: any command")
+check(c.get("/p/claude").json()["on"] is True and all("command" not in j for j in c.get("/p/claude").json()["jobs"]), "GET claude: the setting and the jobs (no commands)")
+c.put("/p/config", json={"claudeOnFail": False, "claudeShell": False})
 
 cfg = c.put("/p/config", json={"repos": ["MossesX/AmberX-AXF"]}).json()
 check(cfg["repos"] == ["MossesX/AmberX-AXF"], "repos are a setting")

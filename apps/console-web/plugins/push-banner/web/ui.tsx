@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
-import { ago, bannerOn, doneKeys, doneRows, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, setHidden, useStore, type Done, type PullRow, type Row } from './store';
+import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { ago, bannerOn, doneKeys, doneRows, fixWithClaude, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, type Done, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -23,6 +23,22 @@ function PullMainButton({ k, repo, base, number, branch }: { k: string; repo: st
     </>
   );
   return <Button size="sm" tone="neutral" icon="download" disabled={s.busy === k} title={`Bring ${base}'s newer commits into this branch`} onClick={() => setSure(true)}>Pull {base} in</Button>;
+}
+
+/** "Fix with Claude" (setting on): hands a conflicted or failing entry to headless Claude Code on the VPS (tap twice). */
+function ClaudeButton({ k, repo, number, branch }: { k: string; repo: string; number?: number; branch?: string }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  if (!s.claude?.on) return null;
+  const job = s.claude.jobs.find((j) => j.key === k);
+  if (job && (job.state === 'asking' || job.state === 'waiting')) return <span className="axp-push-banner__note is-ok">{job.state === 'waiting' ? 'Claude: approve on axHub' : 'Claude: asking axHub…'}</span>;
+  if (sure) return (
+    <>
+      <Button size="sm" tone="primary" icon="sparkles" disabled={s.busy === k} onClick={() => { setSure(false); void fixWithClaude({ key: k, repo, number, branch }); }}>Hand to Claude?</Button>
+      <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
+    </>
+  );
+  return <Button size="sm" tone="neutral" icon="sparkles" disabled={s.busy === k} title="Headless Claude Code on the VPS fixes it on this branch (you approve the launch on axHub)" onClick={() => setSure(true)}>{job?.state === 'launched' ? 'Claude again' : 'Fix with Claude'}</Button>;
 }
 
 const pullBehind = (p: PullRow) => !p.fork && (needsPull(p.behind, p.mergeState) || p.mergeState === 'behind');
@@ -120,6 +136,7 @@ function PullItem({ p }: { p: PullRow }) {
         {sure && <Button size="sm" tone="success" icon="check" disabled={busy} onClick={() => { setSure(false); void mergePr({ key: p.key, repo: p.repo, number: p.number, base: p.base }); }}>Merge #{p.number} into {p.base}?</Button>}
         {sure && <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>}
         {!sure && behind && <PullMainButton k={p.key} repo={p.repo} base={p.base} number={p.number} />}
+        {!sure && !p.fork && (p.mergeState === 'dirty' || p.mergeable === false || p.ci === 'failure') && <ClaudeButton k={p.key} repo={p.repo} number={p.number} />}
         {!sure && <HideButton k={p.key} label={`pull request #${p.number}`} />}
       </div>
     </li>
@@ -146,6 +163,7 @@ function BranchItem({ r }: { r: Row }) {
       <div className="axp-push-banner__acts">
         <Button size="sm" tone="neutral" icon="upload" disabled={busy || r.ahead == null} onClick={() => void openPr(r)}>Open PR</Button>
         {needsPull(r.behind) && <PullMainButton k={r.key} repo={r.repo} base={r.base} branch={r.name} />}
+        {(r.behind ?? 0) > 0 && <ClaudeButton k={r.key} repo={r.repo} branch={r.name} />}
         <HideButton k={r.key} label={r.name} />
       </div>
     </li>
@@ -297,6 +315,38 @@ export function PushSettings() {
         </ul>
       )}
       <div className="fx-row"><Button icon="refresh" onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button></div>
+      <ClaudeSettings />
+    </div>
+  );
+}
+
+/** When a pull or merge fails: hand it to headless Claude Code on the VPS (off by default; every launch approved on axHub). */
+function ClaudeSettings() {
+  const s = useStore();
+  const [err, setErr] = useState('');
+  const c = s.claude;
+  if (!c) return null;
+  const save = (patch: Partial<Record<'claudeOnFail' | 'claudeShell', boolean>>) => { setErr(''); saveClaude(patch).catch((e: Error) => setErr(e.message)); };
+  const recent = [...c.jobs].sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)).slice(0, 8);
+  return (
+    <div className="fx-stack">
+      <h4 className="axp-push-banner__group-title">When a pull or merge fails</h4>
+      <Switch label="Hand failures to Claude Code on the VPS" checked={c.on} onChange={(v) => save({ claudeOnFail: v })}
+        hint="A Pull main in that hits conflicts, or a Merge GitHub refuses (conflicts, failed CI), starts headless Claude Code (Opus) on the VPS on that branch in AmberX-AXF, axHub or Build-Pilot. Nothing starts until you approve it on axHub. It shows in the building banner, pushes only to that branch and never merges. Conflicted entries also get a Fix with Claude button." />
+      <Switch label="Let it run any shell command" checked={c.shell} disabled={!c.on} onChange={(v) => save({ claudeShell: v })}
+        hint="Off: it can edit files and run git (fetch, merge, commit, push to that branch) only. On: any command on the VPS as root, still approved per launch." />
+      {c.on && !c.hubToken && <p className="fx-small axp-push-banner__note is-danger">Needs the axHub token on the console (Keys needed → axHub connection).</p>}
+      {c.on && !c.changes && <p className="fx-small fx-muted">The Codebase changes plugin is off, so sessions won’t show in the building banner.</p>}
+      {err && <p className="fx-small axp-push-banner__note is-danger">{err}</p>}
+      {recent.length > 0 && (
+        <ul className="axp-push-banner__list">
+          {recent.map((j) => (
+            <li key={j.key} className="axp-push-banner__item">
+              <span className="axp-push-banner__entry"><span className="axp-push-banner__line"><span className="axp-push-banner__chip">{j.state}</span><span className="axp-push-banner__name">{j.key}</span></span><span className="fx-small fx-muted">{j.message}</span></span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

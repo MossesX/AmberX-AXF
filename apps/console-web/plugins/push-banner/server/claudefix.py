@@ -1,0 +1,295 @@
+"""Claude on failure for the push banner (Oct 22 2026): a Pull main in that hits conflicts, or a Merge that GitHub refuses
+(conflicts, failed CI, a GitHub error), is handed to headless Claude Code on the VPS when the setting is on.
+
+Setting `claudeOnFail` (off). The launch goes through axHub's `vps.run`, so nothing starts until Brett approves it on
+the hub (the approval page shows the whole command, brief included). The command keeps one clone per repo in
+`/root/axf-fixes/repos/<owner>-<name>` (git's own credentials on the VPS), makes a worktree on the entry's branch and
+starts `claude -p` there in the background with the reporting variables set (`AXF_SURFACE=console-launch`,
+`AXF_ADOPT_CHANGE=<entry id>`), so its hooks report onto the change-log entry opened here: it shows in the Build
+manager's Live list and building banner.
+
+What the session may run: setting `claudeShell` off (default) = file edits plus git only (fetch, merge, status, diff,
+log, add, commit, and a push of HEAD to that one branch); on = any shell command. It never pushes to the default
+branch, never force-pushes and never merges the PR: the banner's Merge stays Brett's.
+
+One session per entry at a time; an entry isn't handed over again within COOLDOWN_S of the last launch.
+"""
+from __future__ import annotations
+
+import base64
+import json
+import os
+import re
+import threading
+import time
+import uuid
+from typing import Any, Callable
+
+import plugin_services
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import http as axf_http
+
+CHANGES = "axf.changes@1"
+COOLDOWN_S = 6 * 3600
+WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
+WORK_ROOT = "/root/axf-fixes"
+MAX_COMMAND = 3400  # axHub's ssh run refuses commands over 3500 characters
+REPO_RE = re.compile(r"[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}\Z")
+BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!-)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
+_CHG = re.compile(r"^chg-\d{8}-[0-9a-f]{6,16}$")
+
+
+class HubError(Exception):
+    pass
+
+
+def sq(s: str) -> str:
+    """Shell-safe single-quoted string."""
+    return "'" + str(s).replace("'", "'\\''") + "'"
+
+
+def entry_key(repo: str, number: int | None, branch: str) -> str:
+    return f"{repo}:#{number}" if number else f"{repo}:{branch}"
+
+
+def brief(t: dict[str, Any]) -> str:
+    """What the session is asked to do. Data from GitHub and the failure only: no tokens."""
+    what = f"pull request #{t['number']} ({t.get('title') or t['branch']})" if t.get("number") else f"branch {t['branch']}"
+    lines = [f"# Fix {what} in {t['repo']} so it can reach {t['base']}", "",
+             f"The Dev Console's push banner tried to {t['action']} and it failed: {t['failure'] or 'unknown'}.", "",
+             f"- Repository: {t['repo']} (this folder is a worktree of it, on branch `{t['branch']}`)",
+             f"- Base branch: `{t['base']}`"]
+    if t.get("number"):
+        lines.append(f"- Pull request: #{t['number']} {t.get('url') or ''}".rstrip())
+    lines += ["", "What to do:",
+              f"1. `git fetch origin`, then `git merge origin/{t['base']}` into `{t['branch']}`." if t["kind"] == "conflict"
+              else f"1. Find why it can't merge (conflicts with `{t['base']}`, or failing CI on the head commit) and fix that on `{t['branch']}`.",
+              "2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.",
+              "3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).",
+              f"4. Commit, then `git push origin HEAD:{t['branch']}`. CI runs again on the PR by itself.",
+              "", "Rules:",
+              f"- Push only to `{t['branch']}`. Never push to `{t['base']}` or any other branch, never force-push, never merge the PR.",
+              "- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).",
+              "- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.",
+              "- Record steps and the result on your change-log entry (the hooks do most of it)."]
+    if not t.get("shell"):
+        lines.append("- You can edit files and run git only; list any other command Brett should run at the end.")
+    return "\n".join(lines)
+
+
+def launch_command(t: dict[str, Any], change_id: str) -> str:
+    """The one command axHub's vps.run gets (Brett sees all of it on the approval page)."""
+    repo, branch = t["repo"], t["branch"]
+    if not REPO_RE.match(repo) or not BRANCH_RE.match(branch) or not BRANCH_RE.match(t["base"]):
+        raise HubError("odd repo or branch name: not handed over")
+    clone = f"{WORK_ROOT}/repos/{repo.replace('/', '-')}"
+    work = f"{WORK_ROOT}/{repo.replace('/', '-')}--{re.sub(r'[^A-Za-z0-9._-]', '-', branch)[:80]}"
+    b64 = base64.b64encode(brief(t).encode()).decode()
+    adopt = f" AXF_ADOPT_CHANGE={change_id}" if _CHG.match(change_id or "") else ""
+    if t.get("shell"):
+        tools = "--allowedTools Bash"
+    else:  # git only, and a push of HEAD to this one branch
+        allowed = ["Bash(git fetch:*)", "Bash(git merge:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
+                   "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout -- :*)", f"Bash(git push origin HEAD:{branch})"]
+        tools = "--allowedTools " + " ".join(sq(a) for a in allowed)
+    return "; ".join([
+        "set -e",
+        f"mkdir -p {sq(WORK_ROOT + '/repos')}",
+        f"if [ ! -d {sq(clone)} ]; then git clone -q {sq('https://github.com/' + repo + '.git')} {sq(clone)}; fi",
+        f"git -C {sq(clone)} fetch -q origin",
+        f"git -C {sq(clone)} worktree prune",
+        f"if [ -d {sq(work)} ]; then git -C {sq(work)} checkout -q -B {sq(branch)} {sq('origin/' + branch)}; "
+        f"else git -C {sq(clone)} worktree add -q -B {sq(branch)} {sq(work)} {sq('origin/' + branch)}; fi",
+        f"cd {sq(work)}",
+        f"echo {sq(b64)} | base64 -d > .axf-brief.md",
+        f"export AXF_SURFACE=console-launch AXF_MODEL=opus{adopt} AXF_CLAUDE_AUTH=${{AXF_CLAUDE_AUTH:-plan}}",
+        f'nohup claude -p --model opus --permission-mode acceptEdits {tools} "$(cat .axf-brief.md)" > .axf-fix.log 2>&1 &',
+        'echo "started pid $! in $(pwd)"',
+    ])
+
+
+def fitted_command(t: dict[str, Any], change_id: str) -> str:
+    """launch_command with the failure and title trimmed until the command fits the hub's limit."""
+    t = dict(t)
+    for _ in range(30):
+        cmd = launch_command(t, change_id)
+        if len(cmd) <= MAX_COMMAND:
+            return cmd
+        t["failure"] = str(t.get("failure", ""))[:-80]
+        t["title"] = str(t.get("title", ""))[:-40]
+    raise HubError("The brief is too long to send through axHub.")
+
+
+# ---------------------------------------------------------------- axHub (`call` meta-tool over MCP)
+
+def _hub() -> tuple[str, str]:
+    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
+    tok = os.environ.get("AXHUB_TOKEN", "")
+    if not tok:
+        raise HubError("Add the axHub token first (Keys needed → axHub connection), so the console can ask the hub.")
+    if not url.startswith("https://"):
+        raise HubError("The axHub address must be https.")
+    return url, tok
+
+
+def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
+    body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
+    headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
+    if session:
+        headers["mcp-session-id"] = session
+    try:  # https only, never follows a redirect: the token goes nowhere else
+        r = axf_http.request("POST", f"{url}/mcp", headers=headers, body=body, timeout=timeout, max_bytes=2_000_000, truncate=True)
+    except axf_http.HttpError as e:
+        raise HubError(f"Couldn't reach axHub ({type(e).__name__})") from None
+    if not r.ok:
+        raise HubError(f"axHub answered {r.status}" + (" (check the axHub token)" if r.status in (401, 403) else ""))
+    raw = r.text()
+    if "text/event-stream" in r.headers.get("content-type", ""):
+        msgs = [json.loads(ln[5:].strip()) for ln in raw.splitlines() if ln.startswith("data:") and ln[5:].strip()]
+        msg = next((m for m in reversed(msgs) if "result" in m or "error" in m), {})
+    else:
+        msg = json.loads(raw or "{}")
+    if "error" in msg:
+        raise HubError(str(msg["error"].get("message", "axHub error"))[:300])
+    return msg.get("result") or {}, r.headers.get("mcp-session-id") or session
+
+
+def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 180) -> dict[str, Any]:
+    """{"ok": text}, {"confirm": id} (waiting for approval), or HubError. The launch returns at once (nohup), so no job."""
+    url, tok = _hub()
+    sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-push-banner", "version": "1"}}, 30)[1]
+    args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
+    if confirmation_id:
+        args["confirmation_id"] = confirmation_id
+    res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
+    text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
+    if res.get("isError"):
+        try:
+            err = json.loads(text).get("error", {})
+        except Exception:  # noqa: BLE001
+            err = {"message": text}
+        if err.get("code") == "confirmation_required":
+            cid = str((err.get("details") or {}).get("confirmationId", ""))
+            if not re.match(r"^[0-9a-f-]{36}$", cid):
+                raise HubError("axHub asked for an approval without an id")
+            return {"confirm": cid}
+        raise HubError(str(err.get("message") or text)[:400])
+    return {"ok": text}
+
+
+def retry_delays() -> list[float]:
+    """Approval retries: the first 10 every 15 seconds, then every minute (shared rule, Oct 21 2026)."""
+    return [15.0] * 10 + [60.0] * 40
+
+
+class Launches:
+    """One headless Claude Code session per failing entry: ask the hub, wait for the approval, report on the entry."""
+
+    def __init__(self, settings: Callable[[], dict[str, Any]], call: Callable[..., dict[str, Any]] = call_hub,
+                 delays: Callable[[], list[float]] = retry_delays, changes: Callable[[], Any] = lambda: plugin_services.get(CHANGES)) -> None:
+        self.settings = settings
+        self.call = call
+        self.delays = delays
+        self.changes = changes
+        self.jobs: dict[str, dict[str, Any]] = {}
+        self.lock = threading.RLock()  # maybe_launch reads a job back (get) while it holds the lock
+
+    def get(self, key: str) -> dict[str, Any] | None:
+        with self.lock:
+            j = self.jobs.get(key)
+            return {k: v for k, v in j.items() if k != "command"} if j else None
+
+    def all(self) -> list[dict[str, Any]]:
+        with self.lock:
+            return [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
+
+    def _set(self, key: str, **kw: Any) -> None:
+        with self.lock:
+            self.jobs[key].update(kw, updatedAt=time.time())
+
+    def maybe_launch(self, t: dict[str, Any], *, force: bool = False) -> dict[str, Any] | None:
+        """t = {repo, branch, base, number?, title?, url?, kind: conflict|merge, action, failure}. None when the setting is
+        off or the names are odd; the running/recent job when one exists (`force` skips the cooldown, never a running one)."""
+        s = self.settings()
+        if not s.get("claudeOnFail") or not REPO_RE.match(str(t.get("repo", ""))) or not BRANCH_RE.match(str(t.get("branch", ""))):
+            return None
+        key = entry_key(t["repo"], t.get("number"), t["branch"])
+        with self.lock:
+            cur = self.jobs.get(key)
+            if cur and cur["state"] in ("asking", "waiting"):
+                return self.get(key)
+            if cur and not force and time.time() - float(cur.get("startedAt", 0)) < COOLDOWN_S:
+                return self.get(key)
+            self.jobs[key] = {"key": key, "state": "asking", "message": "Asking axHub to start Claude Code on the VPS…", "changeId": "",
+                              "startedAt": time.time(), "title": t.get("title") or t["branch"], "repo": t["repo"], "branch": t["branch"],
+                              "failure": str(t.get("failure", ""))[:300]}
+        t = {**t, "shell": bool(s.get("claudeShell"))}
+        change_id = self._open_entry(t)
+        try:
+            cmd = fitted_command(t, change_id)
+        except HubError as e:
+            self._fail(key, change_id, str(e))
+            return self.get(key)
+        self._set(key, changeId=change_id, command=cmd)
+        threading.Thread(target=self._run, args=(key, cmd, change_id), daemon=True).start()
+        return self.get(key)
+
+    def _open_entry(self, t: dict[str, Any]) -> str:
+        svc = self.changes()
+        if not svc:
+            return ""
+        what = f"#{t['number']}" if t.get("number") else t["branch"]
+        try:
+            e = svc.open({"kind": "fix", "title": f"Fix {t['repo'].split('/')[-1]} {what}: {t['action']} failed"[:160],
+                          "asked": f"Push banner: {t['action']} failed ({str(t.get('failure', ''))[:200]}); handed to headless Claude Code on the VPS.",
+                          "model": "opus", "repos": [t["repo"]], "status": "queued", "surface": "console-launch", "branch": t["branch"],
+                          "startedAt": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime()), "who": {"where": "console", "host": "console"},
+                          "steps": [{"text": "Approve on axHub", "state": "running"},
+                                    {"text": f"Fix and push {t['branch']} ({'shell allowed' if t.get('shell') else 'edits + git only'})", "state": "queued"},
+                                    {"text": "CI runs again on the branch", "state": "queued"}]}, "push-banner")
+            return str(e.get("id") or "")
+        except Exception:  # noqa: BLE001 — the launch still happens without the log entry
+            return ""
+
+    def _update(self, change_id: str, patch: dict[str, Any]) -> None:
+        svc = self.changes()
+        if svc and change_id:
+            try:
+                svc.update(change_id, patch)
+            except Exception:  # noqa: BLE001
+                pass
+
+    def _fail(self, key: str, change_id: str, msg: str) -> None:
+        self._set(key, state="failed", message=msg)
+        self._update(change_id, {"status": "failed", "result": {"state": "failed", "summary": msg[:300]}})
+
+    def _run(self, key: str, cmd: str, change_id: str) -> None:
+        args = {"command": cmd, "timeout_seconds": 300}
+        try:
+            r = self.call("vps.run", args, None, 360)
+            if "confirm" in r:
+                conf = r["confirm"]
+                self._set(key, state="waiting", message="Approve it on axHub (it shows the whole command and brief).")
+                self._update(change_id, {"doing": "Waiting for approval on axHub"})
+                deadline = time.time() + WAIT_S
+                waits = iter(self.delays())
+                while "confirm" in r:
+                    if time.time() > deadline:
+                        self._fail(key, change_id, "The approval expired."); return
+                    time.sleep(next(waits, 60.0))
+                    try:
+                        r = self.call("vps.run", args, conf, 360)
+                    except HubError as e:
+                        m = str(e).lower()
+                        self._fail(key, change_id, "Rejected on the hub." if "reject" in m else "The approval expired." if "expired" in m else str(e)); return
+            out = r.get("ok", "")
+            if '"status": "started"' in out or not re.search(r"^exit 0\b", out, re.M):
+                tail = out.strip().splitlines()[-1] if out.strip() else "no output"
+                self._fail(key, change_id, f"Couldn't start Claude Code on the VPS: {tail}"[:300]); return
+            self._set(key, state="launched", message="Claude Code is fixing it on the VPS: follow it in the building banner.")
+            self._update(change_id, {"status": "running", "doing": "Launched on the VPS (headless Claude Code)",
+                                     "lastSeenAt": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())})
+        except HubError as e:
+            self._fail(key, change_id, str(e))
+        except Exception as e:  # noqa: BLE001
+            self._fail(key, change_id, f"Launch stopped ({type(e).__name__}).")

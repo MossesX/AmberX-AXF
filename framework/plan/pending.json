@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T21:07:43.754Z",
+ "updatedAt": "2026-10-22T22:37:36.833Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1747,6 +1747,36 @@
    "builtAt": "2026-10-22T21:07:43.682Z",
    "updatedAt": "2026-10-22T21:07:43.754Z",
    "estimate": "20 min",
+   "source": "chat"
+  },
+  {
+   "id": "push-banner-claude-fix",
+   "title": "Push banner: hand conflicted pulls and failed merges to headless Claude Code on the VPS (setting)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T22:37:36.833Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Server launcher: brief, command (clone per repo, worktree on the branch, git-only tools), axHub approval, change-log entry",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Triggers on update/merge failures + Fix with Claude button, settings, tests",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-22T22:31:30.552Z",
+   "builtAt": "2026-10-22T22:37:36.773Z",
+   "updatedAt": "2026-10-22T22:37:36.833Z",
+   "estimate": "50 min",
    "source": "chat"
   }
  ]

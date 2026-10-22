@@ -22,8 +22,10 @@ export interface Answer { checkedAt: number; repos: RepoBranches[]; error: strin
 export interface Detail { commits: { sha: string; subject: string; author: string; date: string; url: string }[]; checks: { name: string; status: string; conclusion: string; url: string }[]; mergeState: string; files: number | null; body?: string; sha?: string; error: string }
 export interface Row extends Branch { repo: string; base: string; key: string }
 
-interface State { answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null; details: Record<string, { loading: boolean; data?: Detail; error?: string }> }
-let state: State = { answer: null, loading: false, error: '', busy: '', note: null, details: {} };
+export interface ClaudeJob { key: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; repo?: string; branch?: string; changeId?: string; startedAt?: number }
+export interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; changes: boolean; jobs: ClaudeJob[] }
+interface State { claude: ClaudeState | null; answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null; details: Record<string, { loading: boolean; data?: Detail; error?: string }> }
+let state: State = { claude: null, answer: null, loading: false, error: '', busy: '', note: null, details: {} };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { state = { ...state, ...p }; subs.forEach((f) => f()); };
 export const useStore = (): State => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => state);
@@ -68,9 +70,27 @@ export async function loadDetail(e: { key: string; repo: string; number?: number
   catch (x) { set({ details: { ...state.details, [e.key]: { loading: false, error: x instanceof Error ? x.message : String(x) } } }); }
 }
 
+/** Claude on failure: the setting and the hand-overs (read with every load; quiet when the plugin's route is older). */
+export async function loadClaude(): Promise<void> {
+  try { set({ claude: await api.call<ClaudeState>('claude') }); } catch { /* keep what we had */ }
+}
+
+export async function saveClaude(patch: Partial<Record<'claudeOnFail' | 'claudeShell', boolean>>): Promise<void> {
+  await api.put('config', patch);
+  await loadClaude();
+}
+
+/** "Fix with Claude": hand this entry to headless Claude Code on the VPS (approved on axHub first). */
+export const fixWithClaude = (r: { key: string; repo: string; number?: number; branch?: string }) => act(r.key, async () => {
+  const body = r.number ? { repo: r.repo, number: r.number, confirm: `${r.repo}#${r.number}` } : { repo: r.repo, branch: r.branch, confirm: `${r.repo}:${r.branch}` };
+  const j = await api.post<{ job: ClaudeJob }>('claude', body);
+  return j.job.state === 'failed' ? `Claude Code couldn't be started: ${j.job.message}` : 'Handed to Claude Code on the VPS: approve it on axHub, then follow it in the building banner.';
+});
+
 export async function load(refresh = false): Promise<void> {
   if (state.loading) return;
   set({ loading: true });
+  void loadClaude();
   try { set({ answer: await api.call<Answer>(`branches${refresh ? '?refresh=true' : ''}`), error: '' }); }
   catch (e) { set({ error: e instanceof Error ? e.message : String(e) }); }
   finally { set({ loading: false }); }
