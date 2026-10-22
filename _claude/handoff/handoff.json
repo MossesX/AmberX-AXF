@@ -1,0 +1,676 @@
+{
+  "$axf": "claude-handoff@1",
+  "generatedAt": "2026-10-22T15:42:11.586Z",
+  "project": "amberx-axf",
+  "displayName": "AmberX AXF",
+  "repo": "MossesX/AmberX-AXF",
+  "branch": "main",
+  "commit": "81972ad5d1087ec36c820b153a3d1129f6c8b92e",
+  "fingerprint": "57c0c4924c9a54fe",
+  "sources": [
+    {
+      "path": "CLAUDE.md",
+      "role": "instructions",
+      "sha": "0cd5edca61016f2a",
+      "bytes": 169457
+    },
+    {
+      "path": "project.manifest.json",
+      "role": "manifest",
+      "sha": "b1d6ce10c8339e0c",
+      "bytes": 1782
+    },
+    {
+      "path": ".mcp.json",
+      "role": "mcp",
+      "sha": "043149abcdbffed0",
+      "bytes": 328
+    },
+    {
+      "path": ".claude/commands/claude-project.md",
+      "role": "command",
+      "sha": "4f13c3e616991b6c",
+      "bytes": 2162
+    },
+    {
+      "path": "_claude/README.md",
+      "role": "instructions",
+      "sha": "6407db9cb33f364b",
+      "bytes": 1256
+    },
+    {
+      "path": "_claude/instructions/README.md",
+      "role": "instructions",
+      "sha": "eddacad121aef4fd",
+      "bytes": 108
+    },
+    {
+      "path": "_claude/memory/README.md",
+      "role": "memory",
+      "sha": "12351dedc6503c73",
+      "bytes": 199
+    },
+    {
+      "path": "_claude/memory/amberx-axf.md",
+      "role": "memory",
+      "sha": "c7afbc94fb1b6232",
+      "bytes": 3928
+    },
+    {
+      "path": "_claude/memory/decisions.md",
+      "role": "memory",
+      "sha": "295dd4cbfd1b5b56",
+      "bytes": 31153
+    },
+    {
+      "path": "_claude/memory/docs/Building-baseline.md",
+      "role": "memory",
+      "sha": "e729d8d3a4917db6",
+      "bytes": 1080
+    },
+    {
+      "path": "_claude/memory/docs/Frame.md",
+      "role": "memory",
+      "sha": "f1098eeed1ca5b59",
+      "bytes": 2454
+    },
+    {
+      "path": "_claude/memory/docs/Start.md",
+      "role": "memory",
+      "sha": "1f85a51202ca2499",
+      "bytes": 773
+    },
+    {
+      "path": "_claude/memory/docs/axf-architecture.md",
+      "role": "memory",
+      "sha": "5ecc0f2fec6b4878",
+      "bytes": 6849
+    },
+    {
+      "path": "_claude/memory/docs/axhub-web.md",
+      "role": "memory",
+      "sha": "0b5945652d0d49a8",
+      "bytes": 5042
+    },
+    {
+      "path": "_claude/memory/docs/banner-status-bell.md",
+      "role": "memory",
+      "sha": "a64063e1d1423d4a",
+      "bytes": 5238
+    },
+    {
+      "path": "_claude/memory/docs/build-manager.md",
+      "role": "memory",
+      "sha": "eff1a511d525b00b",
+      "bytes": 11199
+    },
+    {
+      "path": "_claude/memory/docs/build-reporting.md",
+      "role": "memory",
+      "sha": "1daadd7b808c6dec",
+      "bytes": 5095
+    },
+    {
+      "path": "_claude/memory/docs/build-steps.md",
+      "role": "memory",
+      "sha": "c199776b050b9461",
+      "bytes": 7256
+    },
+    {
+      "path": "_claude/memory/docs/codebase-changes.md",
+      "role": "memory",
+      "sha": "96d0346e8cb3cb02",
+      "bytes": 13914
+    },
+    {
+      "path": "_claude/memory/docs/console-menu.md",
+      "role": "memory",
+      "sha": "5440147840e901bb",
+      "bytes": 7484
+    },
+    {
+      "path": "_claude/memory/docs/harvest/android-security.md",
+      "role": "memory",
+      "sha": "dda260e56f5104f3",
+      "bytes": 9864
+    },
+    {
+      "path": "_claude/memory/docs/harvest/axf-server.md",
+      "role": "memory",
+      "sha": "f45982e4ff1a3573",
+      "bytes": 12496
+    },
+    {
+      "path": "_claude/memory/docs/harvest/deploy-misc.md",
+      "role": "memory",
+      "sha": "df646f0d464fee97",
+      "bytes": 11660
+    },
+    {
+      "path": "_claude/memory/docs/harvest/hub-notify.md",
+      "role": "memory",
+      "sha": "9a5cbc70ba6e0987",
+      "bytes": 11044
+    },
+    {
+      "path": "_claude/memory/docs/harvest/lib-github.md",
+      "role": "memory",
+      "sha": "d19566fa4d9f71b0",
+      "bytes": 9187
+    },
+    {
+      "path": "_claude/memory/docs/harvest/py-contracts.md",
+      "role": "memory",
+      "sha": "01abd62a4c95ee49",
+      "bytes": 12063
+    },
+    {
+      "path": "_claude/memory/docs/harvest/ui-controls.md",
+      "role": "memory",
+      "sha": "99cd72981c689651",
+      "bytes": 16114
+    },
+    {
+      "path": "_claude/memory/docs/harvest/web-client.md",
+      "role": "memory",
+      "sha": "7ea214a7dcc9164c",
+      "bytes": 12942
+    },
+    {
+      "path": "_claude/memory/docs/harvest/work-watcher.md",
+      "role": "memory",
+      "sha": "984c5fb715f542db",
+      "bytes": 10207
+    },
+    {
+      "path": "_claude/memory/docs/harvest-plan.md",
+      "role": "memory",
+      "sha": "c08abcc1a7ee673e",
+      "bytes": 4514
+    },
+    {
+      "path": "_claude/memory/docs/patches-banners.md",
+      "role": "memory",
+      "sha": "bffeb5970ff73f75",
+      "bytes": 3337
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/LOG.md",
+      "role": "memory",
+      "sha": "0277745764c17103",
+      "bytes": 5841
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/agent-manager-plugin.md",
+      "role": "memory",
+      "sha": "4d5f2bd3fc89ef18",
+      "bytes": 16040
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/ai-assistant-plugin.md",
+      "role": "memory",
+      "sha": "c2da6b2a9a5c66ad",
+      "bytes": 12361
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/app-menu-hooks.md",
+      "role": "memory",
+      "sha": "2408245e61ed7d36",
+      "bytes": 7841
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/banner-assets/android.md",
+      "role": "memory",
+      "sha": "731a97c4b9fb9e4d",
+      "bytes": 4123
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/banner-assets.md",
+      "role": "memory",
+      "sha": "646e96b4996df9ed",
+      "bytes": 9085
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/lib-mcp/android.md",
+      "role": "memory",
+      "sha": "c0946024f649373e",
+      "bytes": 491
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/lib-mcp.md",
+      "role": "memory",
+      "sha": "17c666b7f2f441f0",
+      "bytes": 13697
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/patches-web-settings-notify/android.md",
+      "role": "memory",
+      "sha": "880fa373c73907ed",
+      "bytes": 6163
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/patches-web-settings-notify.md",
+      "role": "memory",
+      "sha": "b570e6dddae45b66",
+      "bytes": 8475
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/patches-wrapper/android.md",
+      "role": "memory",
+      "sha": "587a3c92dd5de363",
+      "bytes": 5915
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/patches-wrapper.md",
+      "role": "memory",
+      "sha": "65e82813faaa8456",
+      "bytes": 11417
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/plugin-manager.md",
+      "role": "memory",
+      "sha": "4b9e3fd7708c83aa",
+      "bytes": 18200
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/theme-from-hub/android.md",
+      "role": "memory",
+      "sha": "872b032daa025512",
+      "bytes": 3428
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/theme-from-hub.md",
+      "role": "memory",
+      "sha": "221359b75b66b1fe",
+      "bytes": 8176
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/widget-assets.md",
+      "role": "memory",
+      "sha": "6c140bff1638b90c",
+      "bytes": 8851
+    },
+    {
+      "path": "_claude/memory/docs/session-checkin.md",
+      "role": "memory",
+      "sha": "3dd462ce06fe5e38",
+      "bytes": 13521
+    },
+    {
+      "path": "_claude/rules/README.md",
+      "role": "rules",
+      "sha": "e3d1dafdb9aea688",
+      "bytes": 113
+    },
+    {
+      "path": "_claude/rules/RULES.md",
+      "role": "rules",
+      "sha": "4de03b60fd8c3235",
+      "bytes": 14715
+    },
+    {
+      "path": "_claude/shared/instructions/README.md",
+      "role": "instructions",
+      "sha": "8d312a064e74847c",
+      "bytes": 141
+    },
+    {
+      "path": "_claude/shared/instructions/projects-and-sync.md",
+      "role": "instructions",
+      "sha": "8273f98655b47d99",
+      "bytes": 2689
+    },
+    {
+      "path": "_claude/shared/memory/README.md",
+      "role": "memory",
+      "sha": "512f3bcc3c670c33",
+      "bytes": 232
+    },
+    {
+      "path": "_claude/shared/memory/decisions.md",
+      "role": "memory",
+      "sha": "88c05cd73a490f5b",
+      "bytes": 1364
+    },
+    {
+      "path": "_claude/shared/memory/links.md",
+      "role": "memory",
+      "sha": "200b6dcec02d38e7",
+      "bytes": 483
+    },
+    {
+      "path": "_claude/shared/memory/projects/amberx-studio.md",
+      "role": "memory",
+      "sha": "00a5dbd82a97937f",
+      "bytes": 2502
+    },
+    {
+      "path": "_claude/shared/memory/projects.md",
+      "role": "memory",
+      "sha": "7abce1d914aa6a2b",
+      "bytes": 979
+    },
+    {
+      "path": "_claude/shared/memory/tools.md",
+      "role": "memory",
+      "sha": "10c73970c91e145b",
+      "bytes": 1070
+    },
+    {
+      "path": "_claude/shared/rules/README.md",
+      "role": "rules",
+      "sha": "4236a0e77e705db3",
+      "bytes": 146
+    },
+    {
+      "path": "_claude/shared/rules/RULES.md",
+      "role": "rules",
+      "sha": "6bb757ad7b4a1f52",
+      "bytes": 10123
+    },
+    {
+      "path": "_claude/shared/rules/preferences.md",
+      "role": "rules",
+      "sha": "15065333ee6cae22",
+      "bytes": 870
+    },
+    {
+      "path": "framework/spec/APPEARANCE-SOURCE.md",
+      "role": "spec",
+      "sha": "3d3cc69b6cde71c2",
+      "bytes": 9140
+    },
+    {
+      "path": "framework/spec/ASSISTANT.md",
+      "role": "spec",
+      "sha": "684a5839209e9d32",
+      "bytes": 6449
+    },
+    {
+      "path": "framework/spec/INTEROP.md",
+      "role": "spec",
+      "sha": "669998a74a60971f",
+      "bytes": 6024
+    },
+    {
+      "path": "framework/spec/LIVE-SESSIONS.md",
+      "role": "spec",
+      "sha": "5d2e106a74e9a96f",
+      "bytes": 4230
+    },
+    {
+      "path": "framework/spec/PORTING.md",
+      "role": "spec",
+      "sha": "5bd1d3135c489825",
+      "bytes": 9199
+    },
+    {
+      "path": "framework/spec/THEMING.md",
+      "role": "spec",
+      "sha": "05100ab5eaefeced",
+      "bytes": 9320
+    },
+    {
+      "path": "apps/console-web/plugins/README.md",
+      "role": "spec",
+      "sha": "40e5273f073685b5",
+      "bytes": 21966
+    },
+    {
+      "path": "framework/boilerplates/README.md",
+      "role": "spec",
+      "sha": "edf57d38a6554d4c",
+      "bytes": 2455
+    },
+    {
+      "path": "apps/axhub-android/project.manifest.json",
+      "role": "manifest",
+      "sha": "ddcd041d4987c271",
+      "bytes": 731
+    },
+    {
+      "path": "apps/axhub-web/project.manifest.json",
+      "role": "manifest",
+      "sha": "c17771ab28f3389b",
+      "bytes": 704
+    },
+    {
+      "path": "apps/console/project.manifest.json",
+      "role": "manifest",
+      "sha": "3a1287a234da4dbd",
+      "bytes": 792
+    },
+    {
+      "path": "apps/console/_claude/README.md",
+      "role": "memory",
+      "sha": "2273aed67843b858",
+      "bytes": 1283
+    },
+    {
+      "path": "apps/console/_claude/instructions/README.md",
+      "role": "memory",
+      "sha": "eddacad121aef4fd",
+      "bytes": 108
+    },
+    {
+      "path": "apps/console/_claude/memory/README.md",
+      "role": "memory",
+      "sha": "12351dedc6503c73",
+      "bytes": 199
+    },
+    {
+      "path": "apps/console/_claude/rules/README.md",
+      "role": "memory",
+      "sha": "e3d1dafdb9aea688",
+      "bytes": 113
+    },
+    {
+      "path": "apps/console-web/project.manifest.json",
+      "role": "manifest",
+      "sha": "cda88c88549a21a3",
+      "bytes": 1015
+    },
+    {
+      "path": "apps/console-web/_claude/README.md",
+      "role": "memory",
+      "sha": "7d15809cca6cecbd",
+      "bytes": 1271
+    },
+    {
+      "path": "apps/console-web/_claude/instructions/README.md",
+      "role": "memory",
+      "sha": "eddacad121aef4fd",
+      "bytes": 108
+    },
+    {
+      "path": "apps/console-web/_claude/memory/README.md",
+      "role": "memory",
+      "sha": "12351dedc6503c73",
+      "bytes": 199
+    },
+    {
+      "path": "apps/console-web/_claude/rules/README.md",
+      "role": "memory",
+      "sha": "e3d1dafdb9aea688",
+      "bytes": 113
+    },
+    {
+      "path": "apps/demo/project.manifest.json",
+      "role": "manifest",
+      "sha": "e87a6026c92374a9",
+      "bytes": 875
+    },
+    {
+      "path": "apps/demo/_claude/README.md",
+      "role": "memory",
+      "sha": "ba980bc74e50d1a5",
+      "bytes": 1250
+    },
+    {
+      "path": "apps/demo/_claude/instructions/README.md",
+      "role": "memory",
+      "sha": "eddacad121aef4fd",
+      "bytes": 108
+    },
+    {
+      "path": "apps/demo/_claude/memory/README.md",
+      "role": "memory",
+      "sha": "12351dedc6503c73",
+      "bytes": 199
+    },
+    {
+      "path": "apps/demo/_claude/rules/README.md",
+      "role": "memory",
+      "sha": "e3d1dafdb9aea688",
+      "bytes": 113
+    },
+    {
+      "path": "apps/patches/project.manifest.json",
+      "role": "manifest",
+      "sha": "d955ca5aaac823a8",
+      "bytes": 759
+    },
+    {
+      "path": "apps/patches-web/project.manifest.json",
+      "role": "manifest",
+      "sha": "f5df23c15e2b5711",
+      "bytes": 778
+    },
+    {
+      "path": "apps/voicevault/project.manifest.json",
+      "role": "manifest",
+      "sha": "c8ba0f5101275cd2",
+      "bytes": 681
+    }
+  ],
+  "machines": [
+    {
+      "host": "console",
+      "collectedAt": "2026-10-22T15:42:09.456Z",
+      "files": 0
+    }
+  ],
+  "claudeAi": {
+    "items": 8,
+    "memory": false,
+    "updatedAt": ""
+  },
+  "files": [
+    {
+      "path": "context/CLAUDE.md",
+      "sha": "0cd5edca61016f2a"
+    },
+    {
+      "path": "context/claude__README.md",
+      "sha": "6407db9cb33f364b"
+    },
+    {
+      "path": "context/claude__shared__rules__RULES.md",
+      "sha": "6bb757ad7b4a1f52"
+    },
+    {
+      "path": "context/claude__rules__RULES.md",
+      "sha": "4de03b60fd8c3235"
+    },
+    {
+      "path": "context/claude__instructions__README.md",
+      "sha": "eddacad121aef4fd"
+    },
+    {
+      "path": "context/claude__memory__README.md",
+      "sha": "12351dedc6503c73"
+    },
+    {
+      "path": "context/claude__memory__amberx-axf.md",
+      "sha": "c7afbc94fb1b6232"
+    },
+    {
+      "path": "context/claude__memory__decisions.md",
+      "sha": "295dd4cbfd1b5b56"
+    },
+    {
+      "path": "context/claude__memory__docs__build-reporting.md",
+      "sha": "1daadd7b808c6dec"
+    },
+    {
+      "path": "context/claude__memory__docs__build-steps.md",
+      "sha": "c199776b050b9461"
+    },
+    {
+      "path": "context/claude__memory__docs__axf-architecture.md",
+      "sha": "5ecc0f2fec6b4878"
+    },
+    {
+      "path": "context/project.manifest.json",
+      "sha": "b1d6ce10c8339e0c"
+    },
+    {
+      "path": "context/framework__spec__PORTING.md",
+      "sha": "5bd1d3135c489825"
+    },
+    {
+      "path": "context/framework__spec__THEMING.md",
+      "sha": "05100ab5eaefeced"
+    },
+    {
+      "path": "context/framework__spec__INTEROP.md",
+      "sha": "669998a74a60971f"
+    },
+    {
+      "path": "context/apps__console-web__plugins__README.md",
+      "sha": "40e5273f073685b5"
+    },
+    {
+      "path": "user/console/settings-summary.json",
+      "sha": "7199f2fa8753380c"
+    },
+    {
+      "path": "sources/claude-ai.json",
+      "sha": "a4d000459e5e299b"
+    },
+    {
+      "path": "README.md",
+      "sha": "71fdde4f57bcaa00"
+    },
+    {
+      "path": "HANDOFF.md",
+      "sha": "11accb22f8d45f9e"
+    },
+    {
+      "path": "PROJECT.md",
+      "sha": "61ad128d5fa2e34f"
+    },
+    {
+      "path": "INSTRUCTIONS.md",
+      "sha": "cc74855fda0bedff"
+    },
+    {
+      "path": "FILES.md",
+      "sha": "e9ec850254a7958f"
+    },
+    {
+      "path": "USER-SCOPE.md",
+      "sha": "b5424f343815c48a"
+    },
+    {
+      "path": "CLAUDE-AI.md",
+      "sha": "0115ace31b587f94"
+    },
+    {
+      "path": "SECRETS.md",
+      "sha": "351d4d9ee2ffc02e"
+    },
+    {
+      "path": "SETUP.md",
+      "sha": "f07993d209b7c2b6"
+    },
+    {
+      "path": "PROMPT.md",
+      "sha": "6115fdfd1221f1d0"
+    },
+    {
+      "path": "handoff.json",
+      "sha": ""
+    }
+  ]
+}

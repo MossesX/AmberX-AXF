@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { FixPanel, StatusDot, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
 
 /*
@@ -11,19 +11,33 @@ import { FixPanel, StatusDot, call, guidedOrder, isKeyIssue, issues, loadSystemC
 export function KeysBanner() {
   const s = useSys();
   const rt = useRuntime();
-  const [hidden, setHidden] = useState(false);
+  // Launches expanded; "_" folds it to one short line (Brett, Oct 21 2026: error banners minimize, they don't close).
+  const [open, setOpen] = useBannerLaunchOpen();
   const need = useMemo(() => issues(s.report).filter(isKeyIssue), [s.report]);
-  if (hidden || s.unauthorized || need.length === 0) return null;
+  if (s.unauthorized || need.length === 0) return null;
   const names = need.map((c) => c.title).join(', ');
+  const count = need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`;
+  if (!open) {
+    return (
+      <div className="axp-systems-check-banner is-warn is-min" role="alert">
+        <div className="axp-systems-check-banner__row">
+          <Icon name="key" />
+          <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={false} onClick={() => setOpen(true)}>
+            {count}<Icon name="chevron-down" size={16} />
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="axp-systems-check-banner is-warn" role="alert">
       <div className="axp-systems-check-banner__row">
         <Icon name="key" />
-        <button type="button" className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
-          {need.length === 1 ? 'A key is needed' : `${need.length} keys are needed`}: {names}
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
+          {count}: {names}
         </button>
         <Button tone="primary" icon="key" onClick={() => rt.openDialog('keys-needed', {})}>Add {need.length === 1 ? 'it' : 'them'}</Button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => setHidden(true)}><Icon name="x" size={16} /></button>
+        <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
-import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
-import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
+import { createPortal } from 'react-dom';
+import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
+import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
 /* ---------------- time ---------------- */
@@ -24,6 +25,57 @@ const dur = (ms: number | null) => {
 /* ---------------- small pieces ---------------- */
 
 const SOURCE_ICON: Record<Source, string> = { pending: 'clock', queue: 'play', plan: 'layers' };
+const ORIGIN_ICON: Record<Origin, string> = { prompt: 'user', auto: 'zap' };
+
+const ORIGIN_SHORT: Record<Origin, string> = { prompt: 'Prompt', auto: 'Auto' };
+
+/** One toolbar toggle: icon over a short label, the count as a badge on the corner (Brett, Oct 22 2026: style #23 + count badges). */
+function ToolToggle({ icon, label, title, count, on, onClick, quiet, pressed }: { icon: string; label: string; title: string; count: number; on: boolean; onClick: () => void; quiet?: boolean; pressed?: boolean | null }) {
+  return (
+    <button type="button" className={`fx-chip axp-build-manager__tool${on ? ' is-on' : ''}`} title={title} aria-pressed={pressed === null ? undefined : (pressed ?? on)} aria-label={`${label}${count ? `, ${count}` : ''}`} onClick={onClick}>
+      <span className="axp-build-manager__tool-icon"><Icon name={icon} size={18} />{(!quiet || count > 0) && <span className="axp-build-manager__tool-n">{count > 999 ? '999+' : count}</span>}</span>
+      <span className="axp-build-manager__tool-label">{label}</span>
+    </button>
+  );
+}
+
+/** Model, Added by, Status and Sort in one dialog (they were four drop-downs above the list). */
+function FilterSortDialog(p: { onClose: () => void; model: string; setModel: (v: string) => void; addedBy: string; setAddedBy: (v: string) => void; adders: { value: string; label: string; count: number }[];
+  status: string; setStatus: (v: string) => void; statuses: { value: string; label: string }[]; sort: SortKey; setSort: (v: SortKey) => void; shown: number }) {
+  useEffect(() => { const k = (e: KeyboardEvent) => { if (e.key === 'Escape') p.onClose(); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [p.onClose]); // eslint-disable-line react-hooks/exhaustive-deps
+  const reset = () => { p.setModel(''); p.setAddedBy(''); p.setStatus(''); p.setSort(defaultSort()); };
+  return createPortal(
+    <div className="fx-backdrop" onPointerDown={(e) => e.target === e.currentTarget && p.onClose()}>
+      <div className="fx-dialog axp-build-manager__dialog" role="dialog" aria-modal="true" aria-label="Filter and sort">
+        <header className="fx-dialog__head">
+          <Icon name="sliders" size={18} />
+          <h2>Filter &amp; sort</h2>
+          <button type="button" className="fx-iconbtn" onClick={p.onClose} aria-label="Close"><Icon name="x" size={16} /></button>
+        </header>
+        <div className="fx-dialog__body axp-build-manager__dialog-body">
+          <label className="axp-build-manager__field"><span>Model</span>
+            <select className="fx-input" value={p.model} onChange={(e) => p.setModel(e.target.value)}><option value="">All</option>{MODELS.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field" title="Who or what added the item"><span>Added by</span>
+            <select className="fx-input" value={p.addedBy} onChange={(e) => p.setAddedBy(e.target.value)}><option value="">Anyone</option>{p.adders.map((x) => <option key={x.value} value={x.value}>{x.label} ({x.count})</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field"><span>Status</span>
+            <select className="fx-input" value={p.status} onChange={(e) => p.setStatus(e.target.value)}><option value="">All</option>{p.statuses.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select>
+          </label>
+          <label className="axp-build-manager__field"><span>Sort</span>
+            <select className="fx-input" value={p.sort} onChange={(e) => p.setSort(e.target.value as SortKey)}>{SORTS.map((k) => <option key={k} value={k}>{SORT_LABEL[k]}</option>)}</select>
+          </label>
+          <div className="axp-build-manager__dialog-foot">
+            <span className="fx-small fx-muted">{p.shown} shown</span>
+            <Button icon="refresh" onClick={reset}>Reset</Button>
+            <Button icon="check" onClick={p.onClose}>Done</Button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 function ModelChip({ model }: { model: string }) {
   return <span className={`axp-build-manager__model is-${model.toLowerCase()}`} title={`Build with ${model}`}>{model}</span>;
@@ -60,16 +112,29 @@ function TrackerEntry({ e, now, finished }: { e: LiveEntry; now: number; finishe
       </div>
       <div className="axp-build-manager__live-meta">
         {finished ? <Badge icon={failed ? 'x' : 'check'} tone={failed ? 'danger' : 'ok'}>{failed ? 'Failed' : 'Finished'}</Badge> : null}
-        <Badge icon="clock" tone={over ? 'warn' : undefined} title="Elapsed vs estimate">{dur(elapsed)}{e.estimate ? ` / ~${fmt(e.estimate)}` : ''}</Badge>
+        <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={over || isStuckLive(e, now) ? 'warn' : undefined} title="Elapsed vs estimate">{dur(elapsed)}{e.estimate ? ` / ~${fmt(e.estimate)}` : ''}</Badge>
         {e.row && e.row.stepsTotal > 0 && <Badge icon="list">{e.row.stepsDone}/{e.row.stepsTotal} steps</Badge>}
         {!e.row && <Badge tone="muted" title="Not linked to anything on the build list">{e.source || 'Running'}</Badge>}
         {e.row && e.via && <Badge tone="muted" title="How this was linked to the build">{e.via}</Badge>}
-        {e.row && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}><Icon name="arrow-right" size={11} />Item</button>}
-        {e.url && <a className="axp-build-manager__act" href={e.url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open</a>}
+        {e.row && <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}>Item</Button>}
+        {e.url && <a className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={e.url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Open</a>}
       </div>
       {e.currentStep && !finished && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
       {pct != null && !finished && <Bar value={pct} label={`${e.title} progress`} />}
     </li>
+  );
+}
+
+/** The trash can on a stuck build (no word for 10 min, or running 30+ min): failed (stalled) + closed everywhere. */
+function TrashBuild({ e }: { e: ChangeLive }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  return (
+    <button type="button" className="fx-iconbtn axp-build-manager__trash" disabled={busy} aria-label={`Remove stuck build "${e.title}"`}
+      title="Stuck: mark it failed (stalled) and take it off the banners on every device; it stays in the build log"
+      onClick={(ev) => { ev.stopPropagation(); setBusy(true); abandonBuild(e.changeId).catch((x: Error) => { setBusy(false); rt.toast(x.message, 'warning'); }); }}>
+      <Icon name="trash" size={14} />
+    </button>
   );
 }
 
@@ -86,6 +151,7 @@ function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
         <span className={e.stale || e.state === 'queued' ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={14} /></span>
         <span className="axp-build-manager__live-title">{e.title}</span>
         <ModelChip model={e.model === 'Other' ? 'Opus' : e.model} />
+        {isStuckLive(e, now) && <TrashBuild e={e} />}
       </div>
       <div className="axp-build-manager__live-meta">
         {e.stale ? <Badge icon="alert" tone="warn" title="No heartbeat from this session for over 10 minutes: it may have stopped">no word for {dur(quiet)}</Badge>
@@ -97,8 +163,8 @@ function SessionEntry({ e, now }: { e: ChangeLive; now: number }) {
         {e.stepsTotal > 0 && <Badge icon="list">{e.stepsDone}/{e.stepsTotal} steps</Badge>}
         <Badge tone="muted" title={`Where it runs${e.host ? `: ${e.host}` : ''}`}>{e.source}{e.host && e.host !== e.source ? ` · ${e.host}` : ''}</Badge>
         {e.branch && <Badge icon="git-branch" tone="muted">{e.branch}</Badge>}
-        {e.row && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}><Icon name="arrow-right" size={11} />Item</button>}
-        {rt.actions.get('codebase-changes.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}><Icon name="list" size={11} />Log</button>}
+        {e.row && <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(e.row!.key)}`)}>Item</Button>}
+        {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}>Log</Button>}
       </div>
       {e.currentStep && <p className="axp-build-manager__live-step"><Icon name="chevron-right" size={12} />{e.currentStep}</p>}
       {pct != null && <Bar value={pct} label={`${e.title} progress`} />}
@@ -127,12 +193,12 @@ export function LiveTracker({ compact, query = '' }: { compact?: boolean; query?
   return (
     <section className="axp-build-manager__tracker" aria-label="Building now" aria-live="polite">
       <div className="axp-build-manager__tracker-head">
-        <span className={n ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={n ? 'refresh' : 'check-circle'} size={16} /></span>
+        <span className={`fx-banner-icon${n ? ' axp-build-manager__spin' : ''}`} aria-hidden><Icon name={n ? 'refresh' : 'check-circle'} size={16} /></span>
         <strong>{n ? `${n} in progress` : query ? 'Nothing in progress matches' : 'Nothing building right now'}</strong>
         <Badge tone={s.realtime ? 'ok' : 'muted'} icon={s.realtime ? 'zap' : 'clock'} title={s.realtime ? 'Live: updates the moment any session (any machine) reports to axHub' : 'Checking every few seconds (live stream reconnecting)'}>{s.realtime ? 'live' : 'polling'}</Badge>
         {s.changesAvailable === false && <Badge tone="muted" title={s.changesError || 'The build log (axf.changes@1, Codebase changes plugin) isn’t available: sessions’ builds can’t be shown.'}>no build log</Badge>}
         {s.liveAvailable === false && <Badge tone="muted" title={s.liveError || 'The activity feed (axf.activity@1) isn’t available: install or switch on the Activity plugin for GitHub runs, console updates, assistant replies and VPS jobs.'}>no activity feed</Badge>}
-        <button type="button" className="axp-build-manager__act" onClick={() => { void loadLive(); void loadChanges(true); }} title="Check now"><Icon name="refresh" size={11} />Check</button>
+        <Button size="sm" tone="neutral" icon="refresh" onClick={() => { void loadLive(); void loadChanges(true); }} title="Check now">Check</Button>
       </div>
       {(n > 0 || fin.length > 0) && (
         <ul className="axp-build-manager__live-list">
@@ -193,7 +259,7 @@ export function StartPanel({ row, onClose }: { row: Row; onClose: () => void }) 
         <div className="axp-build-manager__job">
           <Badge icon={job.state === 'launched' ? 'check' : job.state === 'waiting' ? 'clock' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'x' : 'refresh'} tone={job.state === 'launched' ? 'ok' : job.state === 'waiting' ? 'warn' : ['rejected', 'expired', 'failed'].includes(job.state) ? 'danger' : undefined}>{JOB_LABEL[job.state] ?? job.state}</Badge>
           <span className="fx-small">{job.message}</span>
-          {job.approvalUrl && job.state === 'waiting' && <a className="axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
+          {job.approvalUrl && job.state === 'waiting' && <a className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={job.approvalUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />Approve on axHub</a>}
           {job.state === 'waiting' && <span className="fx-small fx-muted">Retrying by itself ({job.attempts ?? 0}): every 15 s, then every minute.</span>}
         </div>
       )}
@@ -267,10 +333,10 @@ function BuiltView({ query }: { query: string }) {
                     </span>
                     <span className="axp-build-manager__chips">
                       {r.branch && <Badge icon="git-branch" tone="muted">{r.branch}</Badge>}
-                      {r.commits.slice(-2).map((c) => <a key={c} className="axp-build-manager__act" href={`https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
-                      {Object.entries(r.links).slice(0, 3).map(([k, v]) => <a key={k} className="axp-build-manager__act" href={v.startsWith('https://') ? v : `https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/blob/main/${v}`} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{k}</a>)}
-                      {rt.actions.get('codebase-changes.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`codebase-changes.open:${r.id}`)}><Icon name="list" size={11} />Log</button>}
-                      {r.surface === 'console-launch' && r.status === 'done' && <button type="button" className="axp-build-manager__act" disabled={busy === r.id} onClick={() => void verify(r.id)}><Icon name="check-circle" size={11} />{busy === r.id ? 'Checking…' : 'Check nothing broke'}</button>}
+                      {r.commits.slice(-2).map((c) => <a key={c} className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={`https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
+                      {Object.entries(r.links).slice(0, 3).map(([k, v]) => <a key={k} className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={v.startsWith('https://') ? v : `https://github.com/${r.repos[0] ?? 'MossesX/AmberX-AXF'}/blob/main/${v}`} target="_blank" rel="noopener noreferrer"><Icon name="external" size={11} />{k}</a>)}
+                      {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${r.id}`)}>Log</Button>}
+                      {r.surface === 'console-launch' && r.status === 'done' && <Button size="sm" tone="neutral" icon="check-circle" disabled={busy === r.id} onClick={() => void verify(r.id)}>{busy === r.id ? 'Checking…' : 'Check nothing broke'}</Button>}
                     </span>
                   </div>
                 </li>
@@ -312,6 +378,84 @@ function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
   );
 }
 
+/** What taking a row off does, per source (shown before it happens). */
+const takeOffText = (row: Row, how: GoneKind) =>
+  row.source === 'pending' ? (how === 'built' ? 'marks the pending item complete' : 'deletes the pending item')
+    : row.source === 'queue' ? (how === 'built' ? 'completes the build-queue step (its plan features become built)' : 'drops the step from the plan')
+      : how === 'built' ? 'sets the plan feature to built' : 'drops the plan feature';
+
+/** Take one build off the list: Already built / Removed, then a confirm. */
+function TakeOffRow({ row }: { row: Row }) {
+  const rt = useRuntime();
+  const [ask, setAsk] = useState<GoneKind | null>(null);
+  const [busy, setBusy] = useState(false);
+  const go = async (how: GoneKind) => {
+    setBusy(true);
+    const r = await takeOff([{ row, how }]);
+    setBusy(false); setAsk(null);
+    rt.toast(r.errors.length ? r.errors.join('\n') : `${row.title}: taken off the list (${GONE_LABEL[how].toLowerCase()}).`, r.errors.length ? 'warning' : 'success');
+  };
+  if (ask) {
+    return (
+      <div className="axp-build-manager__takeoff" role="group" aria-label="Take off the list">
+        <span className="fx-small">Take off as <strong>{GONE_LABEL[ask].toLowerCase()}</strong>? This {takeOffText(row, ask)}.</span>
+        <Button size="sm" tone="danger" icon="check" disabled={busy} onClick={() => void go(ask)}>{busy ? 'Working…' : 'Yes, take it off'}</Button>
+        <Button size="sm" tone="neutral" icon="x" disabled={busy} onClick={() => setAsk(null)}>Cancel</Button>
+      </div>
+    );
+  }
+  return (
+    <div className="axp-build-manager__takeoff" role="group" aria-label="Take off the list">
+      {row.gone && <span className="fx-small fx-muted">Looks {row.gone.kind}: {row.gone.why}.</span>}
+      <Button size="sm" tone="neutral" icon="check-circle" onClick={() => setAsk('built')}>Already built</Button>
+      <Button size="sm" tone="neutral" icon="trash" onClick={() => setAsk('removed')}>Removed</Button>
+    </div>
+  );
+}
+
+/** The Clean up panel: every build that looks already built or removed, ticked, taken off in one go. */
+function CleanUp({ rows, onClose }: { rows: Row[]; onClose: () => void }) {
+  const rt = useRuntime();
+  const [picked, setPicked] = useState<Set<string>>(() => new Set(rows.map((r) => r.key)));
+  const [busy, setBusy] = useState(false);
+  const list = rows.filter((r) => picked.has(r.key));
+  const run = async () => {
+    setBusy(true);
+    const r = await takeOff(list.map((row) => ({ row, how: row.gone!.kind })));
+    setBusy(false);
+    rt.toast(r.errors.length ? `Took ${r.done} off; ${r.errors.length} failed:\n${r.errors.join('\n')}` : `Took ${r.done} build${r.done === 1 ? '' : 's'} off the list.`, r.errors.length ? 'warning' : 'success');
+    if (!r.errors.length) onClose();
+  };
+  return (
+    <section className="axp-build-manager__cleanup" aria-label="Clean up the build list">
+      <div className="axp-build-manager__tracker-head">
+        <Icon name="check-circle" size={16} />
+        <strong>{rows.length ? `${rows.length} look${rows.length === 1 ? 's' : ''} already built or removed` : 'Nothing looks built or removed'}</strong>
+      </div>
+      {rows.length > 0 && (
+        <>
+          <p className="fx-small fx-muted">Untick anything that should stay. Built ones are marked complete or built; removed ones are deleted (pending) or dropped (queue, plan). For anything else, open the build and use <em>Already built</em> or <em>Removed</em>.</p>
+          <ul className="axp-build-manager__cleanup-list">
+            {rows.map((r) => (
+              <li key={r.key}>
+                <label className="axp-build-manager__step">
+                  <input type="checkbox" checked={picked.has(r.key)} disabled={busy}
+                    onChange={(e) => setPicked((cur) => { const n = new Set(cur); if (e.target.checked) n.add(r.key); else n.delete(r.key); return n; })} />
+                  <span className="axp-build-manager__step-text"><strong>{r.title}</strong> <span className="fx-muted">· {SOURCE_LABEL[r.source]} · {GONE_LABEL[r.gone!.kind]}: {r.gone!.why}</span></span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <div className="axp-build-manager__actions">
+        {rows.length > 0 && <Button size="sm" tone="danger" icon="check" disabled={busy || !list.length} onClick={() => void run()}>{busy ? 'Working…' : `Take ${list.length} off the list`}</Button>}
+        <Button size="sm" tone="neutral" icon="x" disabled={busy} onClick={onClose}>Close</Button>
+      </div>
+    </section>
+  );
+}
+
 function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; onToggle: () => void; canTick: boolean }) {
   const rt = useRuntime();
   const s = useStore();
@@ -322,16 +466,18 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
   return (
     <li id={`axp-bm-${row.key.replace(/[^a-z0-9-]/gi, '-')}`} className={`axp-build-manager__row${open ? ' is-open' : ''}${row.building ? ' is-building' : ''}`}
       data-fx-ctx-target="axf-build-item" data-fx-ctx-payload={row.key}>
-      <button type="button" className="axp-build-manager__head" aria-expanded={open} onClick={onToggle}>
+      <button type="button" data-fx-row className="axp-build-manager__head" aria-expanded={open} onClick={onToggle}>
         <span className="axp-build-manager__title-line">
           <span className="axp-build-manager__title">{row.title}</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
         </span>
         <span className="axp-build-manager__chips">
           <Badge icon={SOURCE_ICON[row.source]}>{SOURCE_LABEL[row.source]}</Badge>
+          {row.origin === 'auto' && <Badge icon={ORIGIN_ICON.auto} title={`Added automatically by ${addedByLabel(row.addedBy)}`}>auto</Badge>}
           <ModelChip model={row.model} />
           {(row.building || row.statusLabel !== SOURCE_LABEL[row.source]) && <Badge tone={row.status === 'unsafe' || row.status === 'broken' || row.status === 'failed' || row.status === 'rework' ? 'warn' : row.building ? 'ok' : undefined}>{row.building ? 'Building' : row.statusLabel}</Badge>}
           <SplitBadge row={row} />
+          {row.gone && <Badge icon={row.gone.kind === 'built' ? 'check' : 'trash'} tone="muted" title={`Looks ${row.gone.kind}: ${row.gone.why}`}>Looks {row.gone.kind}</Badge>}
           {job && <Badge tone={job.state === 'waiting' ? 'warn' : job.state === 'launched' ? 'ok' : ['failed', 'rejected', 'expired'].includes(job.state) ? 'danger' : undefined} icon="play">{JOB_LABEL[job.state] ?? job.state}</Badge>}
           <span className="fx-grow" />
           <TimeLeft row={row} />
@@ -343,9 +489,9 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           </span>
         )}
       </button>
-      <button type="button" className="axp-build-manager__act axp-build-manager__start-btn" onClick={() => setStarting(true)} aria-label={`Start building ${row.title} now`} title="Start build now (dependencies first, never on top of a running build)">
-        <Icon name="play" size={11} />Start
-      </button>
+      <Button size="sm" tone="neutral" icon="play" className="axp-build-manager__start-btn" onClick={() => setStarting(true)} aria-label={`Start building ${row.title} now`} title="Start build now (dependencies first, never on top of a running build)">
+        Start
+      </Button>
       {starting && <StartPanel row={row} onClose={() => setStarting(false)} />}
       {open && (
         <div className="axp-build-manager__body">
@@ -360,9 +506,10 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           <StepsList row={row} canTick={canTick} />
           {row.features?.length ? <p className="fx-small fx-muted axp-build-manager__none">Plan features in this step: {row.features.filter((f) => f.status !== 'built').length} to build of {row.features.length}.</p> : null}
           <div className="axp-build-manager__actions">
-            <button type="button" className="axp-build-manager__act" onClick={go}><Icon name="arrow-right" size={11} />Open in {row.source === 'pending' ? 'Pending builds' : row.source === 'queue' ? 'Build queue' : 'Plan'}</button>
-            {row.fable && rt.actions.get('fable-rebuilds.open') && <button type="button" className="axp-build-manager__act" onClick={() => rt.dispatch(`fable-rebuilds.open:${encodeURIComponent(row.id)}`)}><Icon name="sparkles" size={11} />Fable rebuild</button>}
+            <Button size="sm" tone="neutral" icon="arrow-right" onClick={go}>Open in {row.source === 'pending' ? 'Pending builds' : row.source === 'queue' ? 'Build queue' : 'Plan'}</Button>
+            {row.fable && rt.actions.get('fable-rebuilds.open') && <Button size="sm" tone="neutral" icon="sparkles" onClick={() => rt.dispatch(`fable-rebuilds.open:${encodeURIComponent(row.id)}`)}>Fable rebuild</Button>}
           </div>
+          <TakeOffRow row={row} />
           {!canTick && row.steps.length > 0 && <p className="fx-small fx-muted axp-build-manager__none">Ticks are read-only on this console until the {row.source === 'pending' ? 'pending list' : 'build queue'} gets its step action.</p>}
         </div>
       )}
@@ -406,6 +553,8 @@ export function BuildManagerView() {
   const [sources, setSources] = useState<Source[]>(() => enabledSources());
   const [status, setStatus] = useState('');
   const [split, setSplit] = useState(false);
+  const [origins, setOrigins] = useState<Origin[]>([...ORIGINS]);
+  const [addedBy, setAddedBy] = useState('');
   const [sort, setSort] = useState<SortKey>(() => defaultSort());
   const [open, setOpen] = useState<Set<string>>(() => { const f = takeFocus(); return new Set(f ? [f] : []); });
   useEffect(() => { void loadList(); }, []);
@@ -414,7 +563,7 @@ export function BuildManagerView() {
   useEffect(() => { const f = [...open][0]; if (f) setTimeout(() => document.getElementById(`axp-bm-${f.replace(/[^a-z0-9-]/gi, '-')}`)?.scrollIntoView({ block: 'center' }), 50); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const allowed = enabledSources();
   const base = useMemo(() => s.rows.filter((r) => allowed.includes(r.source)), [s.rows, allowed.join()]); // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, status, split, sort, query]);
+  const shown = useMemo(() => sortRows(filterRows(base, { model, sources, origins, addedBy, status, split }), sort).filter((r) => matches(query, r)), [base, model, sources, origins, addedBy, status, split, sort, query]);
   // a search that hits only other tabs says so
   const hits = useMemo(() => query ? {
     remaining: base.filter((r) => matches(query, r)).length,
@@ -422,7 +571,13 @@ export function BuildManagerView() {
     built: builtRows(s.changes).filter((r) => matches(query, r)).length,
   } : null, [query, base, sessions, activity, s.changes]);
   const statuses = useMemo(() => statusesOf(base), [base]);
+  const adders = useMemo(() => addedByOf(base), [base]);
   const t = totalsByModel(base);
+  const gone = useMemo(() => goneRows(base), [base]);
+  const [cleaning, setCleaning] = useState(false);
+  const [sorting, setSorting] = useState(false);
+  // how many of the dialog's choices differ from their defaults (shown as the Filter & sort badge)
+  const picked = [model, addedBy, status].filter(Boolean).length + (sort !== defaultSort() ? 1 : 0);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const canTick = (r: Row) => (r.source === 'pending' ? s.canTickPending : r.source === 'queue' ? s.canTickQueue : false);
 
@@ -435,9 +590,12 @@ export function BuildManagerView() {
           <p className="fx-muted">Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.</p>
         </div>
         <div className="fx-row fx-row--wrap">
+          <Button icon="check-circle" onClick={() => setCleaning(!cleaning)} title="Take off builds that are already built or removed">Clean up{gone.length ? ` (${gone.length})` : ''}</Button>
           <Button icon="refresh" onClick={() => { void loadList(); void loadLive(); void loadChanges(true); }}>Refresh</Button>
         </div>
       </header>
+
+      {cleaning && <CleanUp rows={gone} onClose={() => setCleaning(false)} />}
 
       <div className="axp-build-manager__search" role="search">
         <Icon name="search" size={14} />
@@ -447,7 +605,7 @@ export function BuildManagerView() {
 
       <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
         {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle']] as const).map(([id, label, n, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={tab === id} className={`axp-build-manager__tab${tab === id ? ' is-on' : ''}${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
+          <button key={id} type="button" role="tab" aria-selected={tab === id} className={`fx-tab axp-build-manager__tab${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
             <Icon name={icon} size={12} />{label} <span className="axp-build-manager__tab-n">{hits ? `${hits[id]}/${n}` : n}</span>
           </button>
         ))}
@@ -459,28 +617,24 @@ export function BuildManagerView() {
       {tab === 'remaining' && <>
       <Totals rows={base} />
 
-      <div className="axp-build-manager__filters" role="group" aria-label="Filter and sort">
-        <label className="axp-build-manager__field"><span>Model</span>
-          <select className="fx-input" value={model} onChange={(e) => setModel(e.target.value)}><option value="">All</option>{MODELS.map((m) => <option key={m} value={m}>{m}</option>)}</select>
-        </label>
-        <label className="axp-build-manager__field"><span>Status</span>
-          <select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value)}><option value="">All</option>{statuses.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}</select>
-        </label>
-        <label className="axp-build-manager__field"><span>Sort</span>
-          <select className="fx-input" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>{SORTS.map((k) => <option key={k} value={k}>{SORT_LABEL[k]}</option>)}</select>
-        </label>
-        <div className="axp-build-manager__toggles">
-          {SOURCES.filter((x) => allowed.includes(x)).map((x) => (
-            <button key={x} type="button" className={`axp-build-manager__toggle${sources.includes(x) ? ' is-on' : ''}`} aria-pressed={sources.includes(x)}
-              onClick={() => setSources((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))}>
-              <Icon name={SOURCE_ICON[x]} size={11} />{SOURCE_LABEL[x]} <span className="fx-muted">{base.filter((r) => r.source === x).length}</span>
-            </button>
-          ))}
-          <button type="button" className={`axp-build-manager__toggle${split ? ' is-on' : ''}`} aria-pressed={split} onClick={() => setSplit(!split)}>
-            <Icon name="alert" size={11} />Needs split <span className="fx-muted">{base.filter((r) => r.needsSplit).length}</span>
-          </button>
-        </div>
+      <div className="axp-build-manager__tools" role="toolbar" aria-label="Filter the builds">
+        {SOURCES.filter((x) => allowed.includes(x)).map((x) => (
+          <ToolToggle key={x} icon={SOURCE_ICON[x]} label={SOURCE_LABEL[x]} title={`Show builds from the ${SOURCE_LABEL[x].toLowerCase()} list`} count={base.filter((r) => r.source === x).length} on={sources.includes(x)}
+            onClick={() => setSources((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))} />
+        ))}
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        {ORIGINS.map((x) => (
+          <ToolToggle key={x} icon={ORIGIN_ICON[x]} label={ORIGIN_SHORT[x]} count={base.filter((r) => r.origin === x).length} on={origins.includes(x)}
+            title={x === 'prompt' ? `${ORIGIN_LABEL[x]}: asked for in a chat or Claude Code session, the Add form or the claude.ai page` : `${ORIGIN_LABEL[x]}: parked by a tool (Fable rebuilds, feature assistant, plan sync), build-queue steps and plan features`}
+            onClick={() => setOrigins((cur) => (cur.includes(x) ? cur.filter((y) => y !== x) : [...cur, x]))} />
+        ))}
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        <ToolToggle icon="alert" label="Split" title="Only builds over 30 min that still need splitting into steps" count={base.filter((r) => r.needsSplit).length} on={split} onClick={() => setSplit(!split)} />
+        <span className="axp-build-manager__tools-sep" aria-hidden="true" />
+        <ToolToggle icon="sliders" label="Filter & sort" title="Model, who added it, status and sort order" count={picked} on={picked > 0} quiet onClick={() => setSorting(true)} pressed={null} />
       </div>
+      {sorting && <FilterSortDialog onClose={() => setSorting(false)} model={model} setModel={setModel} addedBy={addedBy} setAddedBy={setAddedBy} adders={adders}
+        status={status} setStatus={setStatus} statuses={statuses} sort={sort} setSort={setSort} shown={shown.length} />}
 
       {s.error && <p className="fx-small axp-build-manager__error" role="alert">{s.error}</p>}
       {s.offline && <p className="fx-small fx-muted">The console API is offline: showing the snapshot that came with the page.</p>}
@@ -501,7 +655,7 @@ export function BuildBanner() {
   const { sessions } = useLive();
   // Launches expanded; "_" folds it to its title line, the chevron unfolds it (Brett, Oct 21 2026: building banners
   // minimize, they don't close).
-  const [full, setFull] = useState(true);
+  const [full, setFull] = useBannerLaunchOpen();
   const fold = full
     ? <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setFull(false)}><Icon name="minimize" size={16} /></button>
     : <button type="button" className="fx-iconbtn" aria-label="Expand" title="Show the details" aria-expanded={false} onClick={() => setFull(true)}><Icon name="chevron-down" size={16} /></button>;
@@ -519,13 +673,13 @@ export function BuildBanner() {
     const more = running.length - 1 + live.filter((e) => !running.some((r) => r.row && r.row.key === e.row?.key)).length;
     return (
       <div className={`axp-build-manager-banner${first.stale ? ' is-failed' : ''}`} role="status" aria-live="polite">
-        <button type="button" className="axp-build-manager-banner__main" onClick={() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live')} title="Open the Build manager (Live)">
+        <button type="button" data-fx-row className="axp-build-manager-banner__main" onClick={() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live')} title="Open the Build manager (Live)">
           <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
           <span className="axp-build-manager-banner__text">
             <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
             {full && <span className="axp-build-manager-banner__meta">
               <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
-              <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
+              <Badge icon={isStuckLive(first, now) ? 'alert' : 'clock'} tone={isStuckLive(first, now) ? 'warn' : undefined}>{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}{first.stale && first.lastSeenAt ? ` · no word ${dur(now - first.lastSeenAt)}` : ''}</Badge>
               {cost != null && <Badge icon="zap">{first.costActual == null ? '~' : ''}{money(cost)}</Badge>}
               {first.stepsTotal > 0 && <Badge icon="list">{first.stepsDone}/{first.stepsTotal}</Badge>}
               <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
@@ -535,7 +689,22 @@ export function BuildBanner() {
             {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
           </span>
         </button>
+        {isStuckLive(first, now) && <TrashBuild e={first} />}
         {fold}
+        {full && running.length > 1 && (
+          // Every other build, each with its own trash can when stuck (Oct 22 2026: trashing the first one used to bring
+          // the next stuck build up in the same spot, so it looked like the trash did nothing).
+          <ul className="axp-build-manager-banner__more">
+            {running.slice(1).map((e) => (
+              <li key={e.changeId}>
+                <Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={12} />
+                <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}{e.title}</span>
+                <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={isStuckLive(e, now) ? 'warn' : undefined}>{dur(e.startedAt ? now - e.startedAt : null)}</Badge>
+                {isStuckLive(e, now) && <TrashBuild e={e} />}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
@@ -549,7 +718,7 @@ export function BuildBanner() {
   const summary = live.length ? `Building: ${first.row!.title}` : failed ? `Build failed: ${first.row!.title}` : `Built: ${first.row!.title}`;
   return (
     <div className={`axp-build-manager-banner${live.length ? '' : failed ? ' is-failed' : ' is-done'}`} role="status" aria-live="polite">
-      <button type="button" className="axp-build-manager-banner__main" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`)} title="Open the Build manager">
+      <button type="button" data-fx-row className="axp-build-manager-banner__main" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`)} title="Open the Build manager">
         <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : failed ? 'x-circle' : 'check-circle'} size={16} /></span>
         <span className="axp-build-manager-banner__text">
           <strong>{summary}</strong>

@@ -20,8 +20,8 @@ export function Slot({ name, props = {} }: { name: string; props?: Record<string
 
 export const useSlotFilled = (name: string) => (useContext(SlotsCtx)[name]?.length ?? 0) > 0;
 
-/** Slot for banners above the whole page (`app.frame.banners`): above app.frame.top (e.g. app tabs), so they stay
- * visible while another app covers the page. Contributed banners render nothing when idle; then the box collapses. */
+/** Slot for banners above the whole page (`app.frame.banners`): above app.frame.top (a plugin's page-wide bar), so they stay
+ * visible while a plugin covers the page. Contributed banners render nothing when idle; then the box collapses. */
 export const FRAME_BANNERS_SLOT = 'app.frame.banners';
 export function FrameBanners() {
   if (!useSlotFilled(FRAME_BANNERS_SLOT)) return null;

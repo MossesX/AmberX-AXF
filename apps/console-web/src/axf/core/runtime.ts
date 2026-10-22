@@ -9,10 +9,11 @@ import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
+import { detectEmbedFull, embedHostLabel, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -55,6 +56,12 @@ export interface AxfRuntimeOptions {
   assets: unknown[];
   /** localStorage key for persisting the user's hot-swap choices */
   storageKey?: string;
+  /**
+   * The embed this app runs in (embed@1, engines/embed.ts): a host app that shows some of its chrome (the banner by
+   * default). Omitted = detected from the page (`?axf-embed=` query, `AXF-Embed/` user agent) where there is one;
+   * `null` = standalone whatever the page says.
+   */
+  embed?: Embed | null;
 }
 
 /** Settings keys for roll overrides (values: true | false; absent = built-in default). */
@@ -184,11 +191,15 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
+  readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
   readonly diagnostics = new Diagnostics();
   /** Named counters toolbar items show as badges (`badge` on a toolbar item), e.g. `alerts.unread`. */
   private readonly badgeCounts = new Map<string, number>();
   readonly manifest: AxfManifest;
+  /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
+  readonly embedded: Embed | null;
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -197,6 +208,8 @@ export class AxfRuntime {
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
+    this.embedded = opts.embed !== undefined ? opts.embed : detectPageEmbed();
+    if (this.embedded) this.listenToHost();
     this.storageKey = opts.storageKey ?? `axf:${opts.manifest.app.id}`;
     this.settings = new SettingsRegistry(`${this.storageKey}:settings`);
     this.registry.onReplace = (r) => this.diagnostics.report({ kind: 'asset-conflict', ...r });
@@ -433,6 +446,8 @@ export class AxfRuntime {
       setting: (k) => this.settings.get(k),
       hidden: (t) => this.slotHidden(t as AssetType),
       providers: this.appMenuProviderIds(),
+      taken: (it) => this.takenByHost(it),
+      locked: (it) => this.lockedByHost(it) !== null,
     };
   }
 
@@ -576,7 +591,7 @@ export class AxfRuntime {
   /* ---------------- assets ---------------- */
 
   asset<K extends AssetType>(type: K): Asset<K> {
-    return this.registry.get(type, this.state.active[type])!;
+    return this.registry.get(type, this.state.active[type] ?? '')!;
   }
 
   /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
@@ -819,16 +834,27 @@ export class AxfRuntime {
     return hideable(type) && this.hiddenSlots().includes(type);
   }
 
-  /** Every hidden slot: the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
+  /** Chrome the host app shows while this one is embedded (embed@1): hidden here whatever the user chose. */
+  embedHiddenSlots(): AssetType[] {
+    return (this.embedded?.hidden ?? []) as AssetType[];
+  }
+
+  /** Is this slot hidden because a host app shows it (embed@1)? Settings grey such a row out instead of offering a choice. */
+  slotHiddenByHost(type: AssetType): boolean {
+    return this.embedHiddenSlots().includes(type);
+  }
+
+  /** Every hidden slot: the host's chrome (while embedded) over the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
-    return hiddenSlots(o, this.defaultHiddenSlots()) as AssetType[];
+    return hiddenSlots(o, this.defaultHiddenSlots(), this.embedHiddenSlots()) as AssetType[];
   }
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
     if (!hideable(type) || this.slotHidden(type) === hidden) return;
+    if (this.slotHiddenByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
     if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
     else this.settings.set(HIDE_KEY(type), hidden);
@@ -868,7 +894,7 @@ export class AxfRuntime {
   reset() {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
-    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]?.id ?? '';
+    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t] ?? '')) active[t] = this.registry.list(t)[0]?.id ?? '';
     if (this.principal) {
       // signed in: the account keeps deciding the policy and role
       active['uac-policy'] = this.principal.policy;
@@ -932,6 +958,11 @@ export class AxfRuntime {
   /* ---------------- views & overlays ---------------- */
 
   navigate(view: string) {
+    // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
+    if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
+    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    const lock = this.lockedByHost({ view });
+    if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
   }
 
@@ -966,7 +997,207 @@ export class AxfRuntime {
   }
 
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
+    // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
+    if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
+    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    const lock = this.lockedByHost({ action: spec });
+    if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
+  }
+
+  /* ---------------- embed@1: what the host takes over ---------------- */
+
+  /** Does the host this app runs in take this function over (`settings`, `notifications`)? */
+  hostTakes(fn: string): boolean { return embedTakesFn(this.embedded, fn); }
+
+  /**
+   * Is this action / view / live list a hook the host took over? Chrome drops such hooks (app menu, toolbar, nav,
+   * context menu, banner widgets), so the app shows none of its own hooks for a function the host does for it.
+   */
+  takenByHost(what: { action?: string; view?: string; provider?: string }): boolean {
+    return !!(embedTakenBy(this.embedded, what.action) || embedTakenView(this.embedded, what.view) || embedTakenProvider(this.embedded, what.provider));
+  }
+
+  /**
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
+   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * screen greyed out with the note as their tooltip.
+   */
+  lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
+    const e = this.embedded;
+    if (!e?.takes?.length) return null;
+    const fn = embedLockedBy(e, what.action) ?? embedTakenView(e, what.view, true) ?? embedTakenProvider(e, what.provider, true);
+    return embedLockNote(e, fn);
+  }
+
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
+
+  /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */
+
+  /**
+   * The plugins the host enabled for this app (`plugins-enabled` message), or null while the host hasn't said (or
+   * doesn't take plugins). An app loads only these while the host takes plugins; its own on/off switches don't apply.
+   */
+  hostPlugins: string[] | null = null;
+  private hostPluginSubs = new Set<(ids: string[]) => void>();
+  private reportedPlugins: EmbedPlugin[] | null = null;
+
+  /** Called whenever the host sends its list for this app. Returns the unsubscribe. */
+  onHostPlugins(fn: (ids: string[]) => void): () => void { this.hostPluginSubs.add(fn); return () => { this.hostPluginSubs.delete(fn); }; }
+
+  /** Tell the host which plugins this app has (and which it had on by itself). Kept, and sent again when the host asks. */
+  reportPluginsToHost(plugins: EmbedPlugin[]): boolean {
+    if (!this.hostTakes('plugins')) return false;
+    this.reportedPlugins = plugins.map((p) => ({ ...p }));
+    return this.postToHost({ $axf: EMBED_MESSAGE, type: 'plugins', plugins: this.reportedPlugins });
+  }
+
+  /** The host's list arrived (also used by tests and Android hosts through AxfEmbedGuest). */
+  receiveHostPlugins(ids: string[]): void {
+    this.hostPlugins = [...ids];
+    for (const f of this.hostPluginSubs) try { f(this.hostPlugins); } catch { /* a listener's own problem */ }
+    this.set({});
+  }
+
+  /** Send a message to the host (Android: its `AxfEmbedHost` bridge; web: the parent frame). False when there's no host. */
+  postToHost(msg: EmbedMessage): boolean {
+    if (!this.embedded) return false;
+    const g = globalThis as unknown as { AxfEmbedHost?: { post?: (json: string) => void }; parent?: { postMessage?: (m: unknown, o: string) => void }; window?: unknown };
+    try {
+      if (typeof g.AxfEmbedHost?.post === 'function') { g.AxfEmbedHost.post(JSON.stringify(msg)); return true; }
+      // The message only asks the host to do something it would do anyway; its content is checked on arrival.
+      if (g.parent && g.parent !== (globalThis as unknown) && typeof g.parent.postMessage === 'function') { g.parent.postMessage(msg, '*'); return true; }
+    } catch { /* no host to reach */ }
+    return false;
+  }
+
+  /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
+  private askHost(spec: string): boolean {
+    const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
+    if (fn === 'settings') {
+      const tab = settingsTabOf(spec);
+      if (this.postToHost(tab ? { $axf: EMBED_MESSAGE, type: 'open-settings', tab } : { $axf: EMBED_MESSAGE, type: 'open-settings' })) return true;
+    }
+    // Banner settings: the host shows every banner's settings in its own Banners tab (`banners` / `banners:<banner id>`).
+    if (fn === 'banners') {
+      const id = spec.startsWith('banners.settings:') ? spec.slice('banners.settings:'.length) : '';
+      const tab = /^[a-z0-9][a-z0-9._-]{0,54}$/i.test(id) ? `banners:${id}` : 'banners';
+      if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'open-settings', tab })) return true;
+    }
+    this.toast(`${this.embedded?.host ?? 'The host app'} has this app's settings: open them from its menu.`, 'info', 'Settings');
+    return false;
+  }
+
+  /** Messages from the host: a settings page opens the tab the host asks for. Web only; Android hosts evaluate the same. */
+  private listenToHost(): void {
+    const handle = (raw: unknown) => {
+      const m = parseEmbedMessage(raw);
+      if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
+      if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'run') this.runSharedMenuItem(m.id);
+      if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
+      if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+    };
+    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
+    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    // Android hosts can't post into the page; they call this instead (evaluateJavascript).
+    (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
+    const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
+    if (typeof g.addEventListener !== 'function') return;
+    g.addEventListener('message', (e) => {
+      // Only the frame this app runs in may ask; anything else (other frames, the page itself) is ignored.
+      if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
+      handle(e.data);
+    });
+  }
+
+  /**
+   * The launch log of libraries a host made unneeded (installLibraries calls this once per install): kept in
+   * `skippedLibraries` for Settings → Plugins and written to the terminal, one line each and one summary line.
+   */
+  noteSkippedLibraries(list: readonly { id: string; label: string; version: string; reason: string }[]): void {
+    const fresh = list.filter((s) => !this.skippedLibraries.some((x) => x.id === s.id));
+    if (!fresh.length) return;
+    this.skippedLibraries.push(...fresh);
+    for (const s of fresh) this.terminal.log('libraries', `${s.label} ${s.version} not loaded: ${s.reason}`);
+    this.terminal.warn('libraries', `inside ${this.embedded?.host ?? 'a host app'}: ${fresh.length} plugin(s) not loaded (${fresh.map((s) => s.label).join(', ')})`);
+  }
+
+  /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */
+
+  /** id → action of the menu last sent to the host: `run` messages can only run what this app offered. */
+  private sharedMenuRun = new Map<string, string>();
+  private sharedMenuText = '';
+  private sharedMenuTimer: ReturnType<typeof setTimeout> | null = null;
+  /** live lists as last loaded (refreshed on a host's request and every minute, not on every state change) */
+  private sharedMenuLists = new Map<string, CompiledMenuItem[]>();
+
+  /** Send the menu soon after start, after state changes (debounced) and every minute (live lists). */
+  private startMenuShare(): void {
+    // never keeps a non-browser host (tests, Node) alive
+    const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
+    const later = (ms: number, refresh = false) => {
+      if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      unref(this.sharedMenuTimer);
+    };
+    unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
+    unref(setInterval(() => later(0, true), 60_000));
+  }
+
+  /**
+   * Send this app's application menu to the host that took it over (`menu` message): data only (ids, labels, icons,
+   * check marks, counts, locks); the actions stay here. Unchanged menus aren't sent again unless `force`.
+   */
+  async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const run = new Map<string, string>();
+    const MAX_DEPTH = 4;
+    const list = async (provider: string): Promise<CompiledMenuItem[]> => {
+      if (!opts.refresh && this.sharedMenuLists.has(provider)) return this.sharedMenuLists.get(provider)!;
+      let items: CompiledMenuItem[] = [];
+      try { items = await this.loadAppMenuProvider(provider); } catch { items = this.sharedMenuLists.get(provider) ?? []; }
+      this.sharedMenuLists.set(provider, items);
+      return items;
+    };
+    const conv = async (it: CompiledMenuItem, id: string, depth: number): Promise<EmbedMenuItem | null> => {
+      if (it.separator) return { id, label: '', separator: true };
+      const kids = depth < MAX_DEPTH ? (it.provider ? await list(it.provider) : it.items ?? []) : [];
+      const out: EmbedMenuItem = { id, label: it.label };
+      if (it.icon) out.icon = it.icon;
+      if (it.locked) out.locked = true;
+      if (typeof it.check === 'boolean') out.check = it.check;
+      if (it.count) out.count = it.count;
+      if (kids.length) {
+        const sub = (await Promise.all(kids.map((k, i) => conv(k, `${id}.${i}`, depth + 1)))).filter((k): k is EmbedMenuItem => !!k);
+        if (sub.some((k) => !k.separator)) out.items = sub;
+      }
+      if (!out.items) {
+        if (!it.action) return null;
+        if (!it.locked) run.set(id, it.action);
+      }
+      return out;
+    };
+    const menus: EmbedMenu[] = [];
+    for (const [mi, m] of this.appMenu().menus.entries()) {
+      const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
+      if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    this.sharedMenuRun = run;
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The host's menu picked one of this app's items (`run` message): run it here, if this app offered it. */
+  runSharedMenuItem(id: string): boolean {
+    const action = this.sharedMenuRun.get(id);
+    if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
+    return this.dispatch(action);
   }
 
   /* ---------------- rendering ---------------- */
@@ -984,6 +1215,9 @@ export class AxfRuntime {
       toolbarStyle(this.asset('toolbar').data),
       navMenuStyle(this.asset('nav-menu').data),
       appMenuStyle(this.asset('app-menu').data),
+      // optional control types (older apps without them get the defaults)
+      gaugeStyle(this.assetOrNull('gauge')?.data),
+      meterStyle(this.assetOrNull('meter')?.data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -1064,6 +1298,12 @@ export class AxfRuntime {
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
+}
+
+/** The embed marker on the current page (browser only; nothing elsewhere). */
+function detectPageEmbed(): Embed | null {
+  const g = globalThis as { location?: { search?: string }; navigator?: { userAgent?: string } };
+  try { return detectEmbedFull(g.location?.search ?? null, g.navigator?.userAgent ?? null); } catch { return null; }
 }
 
 export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {

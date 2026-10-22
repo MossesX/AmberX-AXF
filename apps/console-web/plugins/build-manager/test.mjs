@@ -45,7 +45,7 @@ const features = [
 const queueState = { ...qc.emptyQueue(), steps: { 'x.a': { estimate: '1.5 h', steps: [{ text: 's1', estimate: '30 min', done: true, doneAt: '2026-10-21T09:00:00Z' }, { text: 's2', estimate: '30 min' }, { text: 's3', estimate: '30 min' }] } } };
 const queue = qc.computeQueue(features, queueState);
 const pending = [
-  { id: 'p-open', title: 'Open item', model: 'Fable', status: 'pending', planId: 'x.b', createdAt: '2026-10-20T00:00:00Z', estimate: '2 h', subPrompts: [] },
+  { id: 'p-open', title: 'Open item', model: 'Fable', status: 'pending', planId: 'x.b', createdAt: '2026-10-20T00:00:00Z', estimate: '2 h', subPrompts: [], source: 'chat' },
   { id: 'p-steps', title: 'Stepped item', model: 'Opus', status: 'unsafe', createdAt: '2026-10-19T00:00:00Z', subPrompts: [{ text: 'one', at: '', estimate: '20 min', done: true }, { text: 'two', at: '', estimate: '25 min' }] },
   { id: 'p-claim', title: 'Claims a feature', model: 'Sonnet', status: 'pending', planId: 'f.claimed', createdAt: '2026-10-18T00:00:00Z', subPrompts: [] },
   { id: 'p-done', title: 'Done item', model: 'Opus', status: 'complete', createdAt: '2026-10-17T00:00:00Z', subPrompts: [] },
@@ -79,6 +79,16 @@ ok(tot.all.noEstimate === rows.filter((r) => r.left == null).length && tot.all.n
 ok(m.filterRows(rows, { model: 'Fable' }).every((r) => r.model === 'Fable'), 'filter by model');
 ok(m.filterRows(rows, { sources: ['plan'] }).every((r) => r.source === 'plan'), 'filter by source');
 ok(m.filterRows(rows, { split: true }).every((r) => r.needsSplit), 'filter needs split');
+ok(m.originOf('pending', 'chat') === 'prompt' && m.originOf('pending', 'Console') === 'prompt' && m.originOf('pending', 'artifact') === 'prompt' && m.originOf('pending', 'claude-code') === 'prompt', 'chat, console, claude.ai and Claude Code pending items came from a prompt');
+ok(m.originOf('pending', 'fable-rebuilds') === 'auto' && m.originOf('pending', 'feature-assist') === 'auto' && m.originOf('pending', '') === 'auto' && m.originOf('queue', 'chat') === 'auto', 'tool-parked items, unknown sources and queue/plan rows are automatic');
+ok(rows.every((r) => m.ORIGINS.includes(r.origin)) && rows.filter((r) => r.source !== 'pending').every((r) => r.origin === 'auto'), 'every row has an origin; queue steps and plan features are automatic');
+ok(m.filterRows(rows, { origins: ['auto'] }).every((r) => r.origin === 'auto') && m.filterRows(rows, { origins: ['prompt'] }).every((r) => r.origin === 'prompt'), 'filter by origin');
+ok(rows.find((r) => r.key === 'pending:p-open').origin === 'prompt' && m.filterRows(rows, { origins: ['prompt'] }).some((r) => r.key === 'pending:p-open'), 'a pending item added from a chat shows under From a prompt');
+ok(rows.find((r) => r.key === 'pending:p-open').addedBy === 'chat' && rows.filter((r) => r.source === 'queue').every((r) => r.addedBy === 'build-queue') && rows.filter((r) => r.source === 'plan').every((r) => r.addedBy === 'plan-feature'), 'addedBy: pending source, build-queue, plan-feature');
+ok(m.addedByKey('') === 'unrecorded' && m.addedByKey(' Fable-Rebuilds ') === 'fable-rebuilds' && m.addedByLabel('chat') === 'Chat session' && m.addedByLabel('some-new-tool') === 'Some new tool', 'addedBy keys normalised; unknown sources get a label from their key');
+{ const opts = m.addedByOf(rows); ok(opts.reduce((n, o) => n + o.count, 0) === rows.length && opts.every((o, i) => i === 0 || opts[i - 1].count >= o.count), 'Added by choices cover every row, most first'); }
+ok(m.filterRows(rows, { addedBy: 'chat' }).every((r) => r.addedBy === 'chat') && m.filterRows(rows, { addedBy: 'chat' }).length === 1 && m.filterRows(rows, { addedBy: '' }).length === rows.length, 'filter by who added it');
+ok(m.filterRows(rows, { origins: [] }).length === 0 && m.filterRows(rows).length === rows.length, 'no origin ticked → nothing; default → everything');
 ok(m.filterRows(rows, { status: 'unsafe' }).length === 1, 'filter by status');
 const byLeft = m.sortRows(rows, 'left');
 ok(byLeft.at(-1).left == null && byLeft[0].left <= byLeft[1].left, 'sort by time left: shortest first, no estimate last');
@@ -130,6 +140,50 @@ ok(!m.probeTicks({ apply() { throw new Error('unknown action'); } }, { emptyQueu
   ok(q1.steps['x.e'].steps[0].done === true && !q1.steps['x.e'].steps[1].done, 'build-queue core applies the tick body');
 }
 
+/* ---------- already built or removed (Clean up) ---------- */
+{
+  const feats = [
+    { id: 'x.b', title: 'B', kind: 'epic', status: 'planned', catalog: ['f.b1', 'f.b2'] },
+    { id: 'f.b1', title: 'B1', kind: 'feature', status: 'built' }, { id: 'f.b2', title: 'B2', kind: 'feature', status: 'built' },
+    { id: 'x.c', title: 'C', kind: 'epic', status: 'planned', catalog: ['f.c1'] }, { id: 'f.c1', title: 'C1', kind: 'feature', status: 'planned' },
+    { id: 'f.d', title: 'D', kind: 'feature', status: 'built' }, { id: 'f.e', title: 'E', kind: 'feature', status: 'dropped' },
+    { id: 'f.lone', title: 'Lone', kind: 'feature', status: 'planned' },
+  ];
+  const q = qc.computeQueue(feats, qc.emptyQueue());
+  const pend = [
+    { id: 'p-built', title: 'PB', model: 'Opus', status: 'pending', planId: 'f.d', subPrompts: [] },
+    { id: 'p-dropped', title: 'PD', model: 'Opus', status: 'pending', planId: 'f.e', subPrompts: [] },
+    { id: 'p-missing', title: 'PM', model: 'Opus', status: 'pending', planId: 'f.nope', subPrompts: [] },
+    { id: 'p-ticked', title: 'PT', model: 'Opus', status: 'pending', subPrompts: [{ text: 'a', at: '', done: true }, { text: 'b', at: '', done: true }] },
+    { id: 'p-open', title: 'PO', model: 'Opus', status: 'pending', subPrompts: [{ text: 'a', at: '', done: true }, { text: 'b', at: '' }] },
+    { id: 'p-done', title: 'Done', model: 'Opus', status: 'complete', planId: 'f.lone', subPrompts: [] },
+  ];
+  const r = m.buildRows({ pending: pend, queue: q, queueState: qc.emptyQueue(), features: feats }, h);
+  const g = (k) => r.find((x) => x.key === k)?.gone;
+  ok(g('pending:p-built')?.kind === 'built', 'pending item whose plan entry is built → looks built');
+  ok(g('pending:p-dropped')?.kind === 'removed' && g('pending:p-missing')?.kind === 'removed', 'plan entry dropped or gone → looks removed');
+  ok(g('pending:p-ticked')?.kind === 'built' && !g('pending:p-open'), 'every step ticked → looks built; some open → stays');
+  ok(g('queue:x.b')?.kind === 'built' && !g('queue:x.c'), 'queue step whose features are all built → looks built');
+  ok(g('plan:f.lone')?.kind === 'built', 'plan feature with a complete pending item → looks built');
+  ok(m.goneRows(r).length === 6, 'goneRows lists exactly those (4 pending, 1 queue, 1 plan)');
+  const tp = m.takeOffRequests({ source: 'pending', id: 'p1' }, 'built');
+  ok(tp.length === 1 && tp[0].path === 'pending' && tp[0].body.action === 'status' && tp[0].body.status === 'complete', 'pending built → status complete');
+  ok(m.takeOffRequests({ source: 'pending', id: 'p1' }, 'removed')[0].body.action === 'remove', 'pending removed → remove');
+  const tq = m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'built')[0];
+  ok(tq.path === 'build-queue/step' && tq.body.action === 'complete', 'queue built → build-queue/step complete');
+  ok(m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'removed')[0].body.status === 'dropped', 'queue removed → status dropped');
+  const pl = m.takeOffRequests({ source: 'plan', id: 'f.lone' }, 'removed', feats.find((f) => f.id === 'f.lone'))[0];
+  ok(pl.path === 'plan/feature' && pl.body.feature.status === 'dropped' && pl.body.feature.title === 'Lone', 'plan removed → whole feature saved as dropped');
+  ok(m.takeOffRequests({ source: 'plan', id: 'f.lone' }, 'built').length === 0 && m.takeOffRequests({ source: 'pending', id: 'p' }, 'other').length === 0, 'no feature or bad choice → nothing sent');
+  // the bodies really work on the cores behind the routes
+  const ps = pc.normalizeState({ $axf: 'pending@1', updatedAt: '', artifact: '', items: [{ id: 'p1', title: 'P', subPrompts: [] }] });
+  ok(pc.apply(ps, tp[0].body).item.status === 'complete', 'pending core applies the built body');
+  ok(pc.apply(ps, m.takeOffRequests({ source: 'pending', id: 'p1' }, 'removed')[0].body).state.items.length === 0, 'pending core applies the removed body');
+  const sa = qc.stepAction(feats, qc.emptyQueue(), tq.body);
+  ok(sa.changes.some((c) => c.id === 'x.c' && c.status === 'built') && sa.changes.some((c) => c.id === 'f.c1' && c.status === 'built'), 'queue core completes the step and its features');
+  ok(qc.stepAction(feats, qc.emptyQueue(), m.takeOffRequests({ source: 'queue', id: 'x.c' }, 'removed')[0].body).changes[0].status === 'dropped', 'queue core drops the step');
+}
+
 /* ---------- the real data ---------- */
 const read = (f) => JSON.parse(readFileSync(join(REPO, 'framework/plan', f), 'utf8'));
 const plan = read('plan.json'); const qs = read('build-queue.json'); const pend = pc.normalizeState(read('pending.json'));
@@ -164,6 +218,13 @@ const v0 = lv.find((e) => e.changeId.endsWith('0001'));
 ok(v0.row?.key === 'pending:p-steps' && v0.estimate === 80 && v0.elapsed === 40 * 60_000 && v0.costEstimate === 11.2 && v0.model === 'Opus' && v0.source === 'VPS' && v0.host === 'vps1', 'Live entry: linked by buildRef, elapsed vs estimate, cost, model, surface + host');
 ok(v0.currentStep === 'Editing server/__init__.py' && v0.progress === 0.25 && !v0.stale, 'current activity + step progress');
 ok(lv.find((e) => e.changeId.endsWith('0002')).stale && lv.find((e) => e.changeId.endsWith('0002')).activityState === 'stale', 'a session silent for 10+ min shows "no word" (stale), not running forever');
+{
+  // closed in the Codebase changes banner + silent = not live any more; closed but still talking = still live
+  const closedQuiet = { ...sums[1], id: 'chg-20261021-aaaaaa0007', closed: iso(now - 60_000) };
+  const closedLive = { ...sums[0], id: 'chg-20261021-aaaaaa0008', closed: iso(now - 60_000) };
+  const l2 = hs.liveFromChanges([...sums, closedQuiet, closedLive], rows, now);
+  ok(!l2.some((e) => e.changeId.endsWith('0007')) && l2.some((e) => e.changeId.endsWith('0008')), 'Live: a closed entry that went quiet is gone; a closed one still reporting stays');
+}
 const bt = hs.builtRows(sums);
 ok(bt.length === 3 && !bt.some((r) => r.title === 'Just a question') && bt[0].id.endsWith('0006'), 'Built: finished builds newest first; question-only entries left out');
 const b3 = bt.find((r) => r.id.endsWith('0003'));

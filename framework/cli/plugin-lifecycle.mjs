@@ -37,7 +37,9 @@ const BACKUPS = join(ROOT, '.axf-console/plugin-backups');
 const FOLDER_RE = /^[a-z0-9][a-z0-9-]{1,47}$/;
 const REBUILDS_DIR = join(ROOT, '_claude', 'memory', 'docs', 'rebuilds');
 const HARVEST_DIR = join(ROOT, '_claude', 'memory', 'docs', 'harvest');
-const CHANGES_DIR = join(ROOT, 'changes'); // the Codebase changes log (change-log@1): Brett's permanent record of builds, history like the reports
+// The Codebase changes log (change-log@1, one JSON per request) is history too: an entry names the folders a build touched.
+const CHANGES_DIR = join(ROOT, 'changes');
+const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
@@ -112,7 +114,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/')) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/')) continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop());
@@ -301,6 +303,11 @@ export function publishAddition(folder, message, log = () => {}) {
     cpSync(p.dir, join(wt, rel), { recursive: true, verbatimSymlinks: true, filter: (src) => !SKIP_DIRS.has(src.split('/').pop()) });
     git(['-C', wt, 'add', '-A', '--', rel]);
   }, message || `Install plugin ${p.manifest?.name ?? folder} (${folder}) from the plugin catalog`, log, 'GitHub already has this plugin as installed');
+}
+
+/** Commit and push what `change(worktree, git)` stages, on origin's current branch (temporary worktree, GITHUB_TOKEN). */
+export function publishChange(change, message, log = () => {}, already = 'GitHub already has these files') {
+  return publishToSource(change, message, log, already);
 }
 
 /** Run `change(worktree, git)` in a temporary worktree of origin's current branch, then commit and push it. */

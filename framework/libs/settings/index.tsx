@@ -10,7 +10,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { Button, Chip, Container, Icon, Slider, Switch, useAsset, useAxfState, useRuntime } from '../../react';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, Note, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -24,10 +24,17 @@ export const SETTINGS_TABS = {
   account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
   connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
   plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
+  // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
+  banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
 } as const;
 
 /* ---------------- hooks ---------------- */
+
+/** Makes a greyed-out block unreachable (`inert`); a ref works with every React version's typings. */
+function setInert(el: HTMLElement | null): void {
+  if (el) el.inert = true;
+}
 
 function useSettingsRevision(rt: AxfRuntime): number {
   return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
@@ -89,10 +96,10 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       if ((spec.options ?? []).length > 1 && (spec.options ?? []).length <= 3) {
         const cur = typeof value === 'string' ? value : String(spec.default ?? '');
         control = (
-          <div className="axf-settings__seg" role="radiogroup" aria-label={spec.label}>
+          <div className="fx-seg" role="radiogroup" aria-label={spec.label}>
             {(spec.options ?? []).map((o) => (
               <button key={o.value} type="button" role="radio" aria-checked={cur === o.value} disabled={locked}
-                className={`axf-settings__segbtn${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
+                className={`fx-seg__opt${cur === o.value ? ' is-on' : ''}`} onClick={() => cur !== o.value && set(o.value)}>{o.label}</button>
             ))}
           </div>
         );
@@ -146,15 +153,17 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   const options = rt.registry.list(type);
   const canHide = hideable(type);
   const hidden = rt.slotHidden(type);
+  // embed@1: a host app (Patches) shows this chrome for the app; the choice is the host's until the app runs on its own.
+  const byHost = rt.slotHiddenByHost(type);
   const pick = (v: string) => {
     if (v === HIDDEN) return rt.setSlotHidden(type, true);
     if (hidden) rt.setSlotHidden(type, false);
     if (v !== state.active[type]) rt.swap(type, v);
   };
   return (
-    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || byHost || options.length + (canHide ? 1 : 0) < 2} title={byHost ? `Shown by ${rt.embedded?.host} while this app runs inside it` : undefined} onChange={(e) => pick(e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-      {canHide && <option value={HIDDEN}>Hidden</option>}
+      {canHide && <option value={HIDDEN}>{byHost ? `Shown by ${rt.embedded?.host}` : 'Hidden'}</option>}
     </select>
   );
 }
@@ -277,7 +286,7 @@ function LibrariesPanel() {
   useSettingsRevision(rt);
   const inv = useMemo(() => runtimeInventory(rt), [rt, rt.libraries.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const manager = Boolean(rt.actions.get('plugin-manager.open'));
-  if (!inv.items.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
+  if (!inv.items.length && !rt.skippedLibraries.length) return <p className="fx-muted" style={{ margin: 0 }}>No libraries installed.</p>;
   const tone = (h: string) => (h === 'ok' ? 'success' : h === 'partial' ? 'warning' : h === 'off' ? undefined : 'danger');
   return (
     <div className="fx-stack">
@@ -298,6 +307,19 @@ function LibrariesPanel() {
         })}
       </ul>
       {inv.conflicts.length > 0 && <p className="fx-muted axf-settings__hint">{inv.conflicts.length} clash{inv.conflicts.length > 1 ? 'es' : ''}: {inv.conflicts.map((c) => c.id).join(', ')}</p>}
+      {rt.skippedLibraries.length > 0 && (
+        <div className="fx-stack">
+          <p className="fx-muted axf-settings__hint" style={{ margin: 0 }}>Not loaded inside {rt.embedded?.host ?? 'the host app'} (it does their job, or hides what they draw). They load as usual when this app runs on its own.</p>
+          <ul className="axf-settings__list">
+            {rt.skippedLibraries.map((l) => (
+              <li key={l.id} className="fx-row fx-row--wrap">
+                <span className="fx-grow"><strong>{l.label}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+                <Chip>{l.reason}</Chip>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -326,7 +348,11 @@ export function SettingsView() {
   useSettingsRevision(rt);
   const tabs = rt.settings.topTabs();
   // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
+  // A banner plugin's own settings live inside Banners (one interface for every banner): its tab opens Banners on it.
+  const banners = useKnownBanners();
+  const folded = banners.length ? bannerSettingsTabs(rt) : new Set<string>();
   const resolve = (id: unknown): [string, string] => {
+    if (typeof id === 'string' && folded.has(id)) { askBannerTab(rt, id); return ['plugins', 'banners']; }
     const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
     if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
     if (t) return [t.id, ''];
@@ -340,43 +366,60 @@ export function SettingsView() {
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
-  const subs = current ? rt.settings.subTabs(current.id) : [];
+  const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const shown = (sub && subs.find((t) => t.id === sub)) || current;
-  const groups = shown ? rt.settings.groupsIn(shown.id) : [];
-  const panels = shown ? rt.settings.panelsIn(shown.id) : [];
+  // Plugins managed by the host app (Patches): Settings → Plugins and every plugin's sub-tab is greyed out (Banners stays:
+  // it's the banners' look, which the host shows through its own Banners tab).
+  const pluginLock = rt.hostLockNote('plugins');
+  const isPluginTab = (id: string) => id !== 'banners' && (id === 'plugins' || rt.settings.getTab(id)?.parent === 'plugins');
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>
       <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections">
         {tabs.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={t.id === current?.id} className={`axf-settings__tab ${t.id === current?.id ? 'is-active' : ''}`} onClick={() => choose(t.id)}>
-            <Icon name={t.icon} size={15} /> {t.label}
-          </button>
+          <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => choose(t.id)}>{t.label}</Button>
         ))}
       </nav>
       {subs.length > 0 && current && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
-          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`axf-settings__subtab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
             <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
           </button>
           {subs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`axf-settings__subtab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
+            <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`fx-tab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
               <Icon name={t.icon} size={13} /> {t.label}
             </button>
           ))}
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {/* panels and groups interleaved by `order` (panels first on a tie) */}
-      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? shown?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
+      {shown && (pluginLock && isPluginTab(shown.id)
+        // Inside a host that manages plugins (embed@1 take `plugins`, Patches): every plugin page stays visible, greyed out.
+        ? <><Note icon="lock">{pluginLock}: install them, switch them on or off and set them up from its own settings.</Note>
+          <div className="fx-locked" aria-disabled="true" ref={setInert}><TabContent id={shown.id} /></div></>
+        : <TabContent id={shown.id} />)}
+    </div>
+  );
+}
+
+/** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings. */
+export function TabContent({ id }: { id: string }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const tab = rt.settings.getTab(id);
+  const groups = rt.settings.groupsIn(id);
+  const panels = rt.settings.panelsIn(id);
+  return (
+    <>
+      {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
         ...groups.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
         .sort((a, b) => a.order - b.order || a.tie - b.tie)
         .map((x) => <Fragment key={x.key}>{x.node}</Fragment>)}
       {!panels.length && !groups.length && (
-        <p className="fx-muted">{shown?.id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
+        <p className="fx-muted">{id === 'connections' ? 'Libraries and plugins that talk to servers and services add their connection settings here.' : 'Nothing here yet.'}</p>
       )}
-    </div>
+    </>
   );
 }
 
@@ -395,14 +438,6 @@ function applyDisplay(rt: AxfRuntime): void {
 /* Theme-engine tokens only (framework/core/engines/theme.ts + framework/ui/axf.css): no literal colours,
    sizes come from --fx-space / radius / border tokens, so every color-theme and style-theme asset applies. */
 const CSS = `
-.axf-settings__tabs{display:flex;gap:var(--fx-space);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__tab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.75);white-space:nowrap;padding:var(--fx-space) calc(var(--fx-space)*1.5);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface);color:var(--fx-muted);font:inherit;cursor:pointer;transition:background var(--fx-motion),color var(--fx-motion)}
-.axf-settings__tab:hover{color:var(--fx-text)}
-.axf-settings__tab.is-active{background:var(--fx-accent);color:var(--fx-accent-text);border-color:transparent}
-.axf-settings__subtabs{display:flex;gap:calc(var(--fx-space)*.5);overflow-x:auto;padding-bottom:calc(var(--fx-space)/2);border-bottom:var(--fx-border-w) solid var(--fx-border);scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.axf-settings__subtab{display:inline-flex;align-items:center;gap:calc(var(--fx-space)*.5);white-space:nowrap;padding:calc(var(--fx-space)*.6) var(--fx-space);border:0;border-bottom:calc(var(--fx-border-w)*2) solid transparent;background:transparent;color:var(--fx-muted);font:inherit;cursor:pointer}
-.axf-settings__subtab:hover{color:var(--fx-text)}
-.axf-settings__subtab.is-active{color:var(--fx-text);border-bottom-color:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
 .axf-settings__row{display:flex;gap:calc(var(--fx-space)*1.5);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
@@ -418,12 +453,6 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{gap:var(--fx-space)}
-.axf-settings__seg{display:inline-flex;flex-wrap:wrap;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-sm);overflow:hidden}
-.axf-settings__segbtn{all:unset;cursor:pointer;padding:calc(var(--fx-space)*.4) calc(var(--fx-space)*1.1);font-size:.92em;color:var(--fx-text)}
-.axf-settings__segbtn+.axf-settings__segbtn{border-left:var(--fx-border-w) solid var(--fx-border)}
-.axf-settings__segbtn.is-on{background:var(--fx-accent);color:var(--fx-accent-text);font-weight:600}
-.axf-settings__segbtn:focus-visible{outline:2px solid var(--fx-accent);outline-offset:-2px}
-.axf-settings__segbtn[disabled]{cursor:default;opacity:var(--fx-opacity-disabled)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
@@ -468,6 +497,7 @@ export const library: AxfWebLibrary = {
   provides: ['axf.settings'],
   register(rt) {
     injectStyles();
+    setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} />);
     rt.settings.addGroup(appearanceGroup(rt));
     rt.settings.addGroup(rollGroup());
     applyDisplay(rt);
@@ -482,7 +512,11 @@ export const library: AxfWebLibrary = {
       }
     }, { label: 'Open a settings tab', params: true });
   },
-  views: { [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> } },
+  views: {
+    [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
+    // Banners on their own: the page a host shows in its own settings (embed@1 page `banners`, Patches' Banners tab).
+    [BANNERS_VIEW]: { title: 'Banners', icon: 'bell', render: () => <div className="fx-stack fx-stack--lg axf-settings"><header className="fx-pagehead"><div><p className="fx-eyebrow">Settings</p><h1>Banners</h1></div></header><BannerSettingsPanel /></div> },
+  },
   settingsTabs: Object.values(SETTINGS_TABS),
   settings: [
     {
@@ -503,6 +537,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
+    { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },
   ],
 };

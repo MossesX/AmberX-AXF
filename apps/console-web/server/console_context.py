@@ -2,7 +2,7 @@
 
     import console_context as cx
     cx.ROOT, cx.current_token(), cx.persist_root(), cx.PLUGINS, cx.log(channel, text, level), cx.GITHUB_REPO,
-    cx.terminal_lines()
+    cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys])
 
 Read-only by convention. Plugins never import main.py.
 """
@@ -19,6 +19,10 @@ persist_root: Callable[[], Path | None] = lambda: None  # noqa: E731
 log: Callable[..., None] = lambda *a, **k: None  # noqa: E731
 plugin_enabled: Callable[[str], bool] = lambda folder: True  # noqa: E731
 terminal_lines: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731 — copy of the console terminal (channel, level, text, at)
+# Developer alerts (alert@1, server/alerts.py): one alert per key, a repeat overwrites it instead of adding another.
+# No-ops until main.py wires the alert hub (it is created after the plugins load); plugins call them at request time.
+raise_alert: Callable[[dict[str, Any]], dict[str, Any]] = lambda inp: {}  # noqa: E731
+resolve_alerts: Callable[[list[str]], None] = lambda keys: None  # noqa: E731
 
 
 def set_context(**kw: Any) -> None:

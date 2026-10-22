@@ -50,8 +50,8 @@ export function AgentManagerView() {
           <span className="fx-small fx-muted">{status.counts.agents} agents · {status.counts.skills} skills · {status.counts.tools} tools · {status.addons.installed}/{status.addons.available} add-ons · {status.contract}</span>
         </div>
       )}
-      <div className="axp-agent-manager__tabs" role="tablist">
-        {TABS.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className="axp-agent-manager__tab" onClick={() => setTab(t.id)}><Icon name={t.icon} size={13} /> {t.label}</button>)}
+      <div className="fx-tabs axp-agent-manager__tabs" role="tablist">
+        {TABS.map((t) => <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab axp-agent-manager__tab${tab === t.id ? ' is-active' : ''}`} onClick={() => setTab(t.id)}><Icon name={t.icon} size={13} /> {t.label}</button>)}
       </div>
       {!cache ? <p className="fx-muted">Loading…</p> : (
         <>
@@ -113,9 +113,9 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
         </div>
         {describe && <DescribeIt coll={coll} onDraft={(it, warnings) => { setSel(''); setDraft(it); setMsg(warnings.length ? `Review before saving: ${warnings.join('; ')}` : ''); setDescribe(false); }} />}
         <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter" aria-label="Filter" />
-        {allTags.length > 0 && <div className="axp-agent-manager__picks">{allTags.map((t) => <button key={t} type="button" className={`axp-agent-manager__pick${tag === t ? ' is-active' : ''}`} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}</div>}
+        {allTags.length > 0 && <div className="axp-agent-manager__picks">{allTags.map((t) => <button key={t} type="button" className={`fx-chip axp-agent-manager__pick${tag === t ? ' is-on' : ''}`} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}</div>}
         {shown.map((it) => (
-          <button key={String(it.id)} type="button" className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
+          <button key={String(it.id)} type="button" data-fx-row className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
             <strong>{String(it.name ?? it.id)}{coll === 'tools' && isDangerousTool(it as { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status) ? <Chip tone="warning">dangerous</Chip> : null}{it.forkedFrom ? <Chip>fork</Chip> : null}</strong>
             <span className="fx-small fx-muted">{String(it.description ?? it.role ?? it.kind ?? it.mode ?? (it as unknown as Training).status ?? '')}{it.origin && it.origin !== 'user' ? ` · ${String(it.origin).replace('addon:', 'add-on ')}` : ''}</span>
           </button>
@@ -304,7 +304,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
         <div className="fx-row fx-row--wrap"><strong className="fx-grow">Agents ({cache.agents.length})</strong><Button icon="rocket" onClick={() => wizard('builder')}>Build</Button></div>
         {cache.agents.length > 4 && <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter agents" aria-label="Filter agents" />}
         {shown.map((a) => (
-          <button key={a.id} type="button" className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
+          <button key={a.id} type="button" data-fx-row className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
             <strong><Icon name={a.icon || 'user'} size={13} /> {a.name}{a.enabled === false ? ' (off)' : ''}{dangerous.has(a.id) && <Chip tone="warning">dangerous tools</Chip>}</strong>
             <span className="fx-small fx-muted">{a.memory?.type ?? 'hybrid'} memory · {(a.skillIds ?? []).length} skills{a.origin && a.origin !== 'user' ? ` · ${a.origin.replace('addon:', 'add-on ')}` : ''}</span>
           </button>
@@ -317,8 +317,8 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
             <div className="fx-row fx-row--wrap">
               <h3 className="fx-grow axp-agent-manager__h"><Icon name={draft.icon || 'user'} size={16} /> {draft.name}</h3>
               <OriginChip origin={draft.origin} />
-              <div className="axp-agent-manager__seg" role="tablist">
-                {(['edit', 'chat', 'prompt'] as const).map((v) => <button key={v} type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)}>{v === 'edit' ? 'Edit' : v === 'chat' ? 'Playground' : 'Prompt & tools'}</button>)}
+              <div className="fx-seg fx-seg--sm axp-agent-manager__seg" role="tablist">
+                {(['edit', 'chat', 'prompt'] as const).map((v) => <button key={v} type="button" role="tab" aria-selected={view === v} className={`fx-seg__opt${view === v ? ' is-on' : ''}`} onClick={() => setView(v)}>{v === 'edit' ? 'Edit' : v === 'chat' ? 'Playground' : 'Prompt & tools'}</button>)}
               </div>
             </div>
             {view === 'edit' && (
@@ -469,7 +469,7 @@ function WorkflowRunner({ wf }: { wf: Workflow }) {
         {busy && <Button icon="x" onClick={() => { stop.current?.(); setBusy(false); setErr('stopped'); }}>Stop watching</Button>}
       </div>
       {live.length > 0 && !res && (
-        <ol className="axp-agent-manager__steps">{live.map((l, i) => <li key={i} className={l.done ? 'is-done' : 'is-active'}><button type="button" disabled>{l.step} · {l.agent}{l.done ? ' ✓' : ' …'}</button></li>)}</ol>
+        <ol className="axp-agent-manager__steps">{live.map((l, i) => <li key={i} className={l.done ? 'is-done' : 'is-active'}><button type="button" disabled className={`fx-chip${l.done ? '' : ' is-on'}`}>{l.step} · {l.agent}{l.done ? ' ✓' : ' …'}</button></li>)}</ol>
       )}
       {err && <p className="axp-agent-manager__bad">{err}</p>}
       {res && (

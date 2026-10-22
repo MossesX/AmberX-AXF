@@ -1,8 +1,7 @@
 /* Agent manager plugin. Theme tokens only, axp-agent-manager prefix (framework/spec/THEMING.md). */
 .axp-agent-manager__dialog { width: min(820px, 92vw); max-width: 100% }
-.axp-agent-manager__tabs { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axp-agent-manager__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; border-bottom: calc(var(--fx-border-w) * 2) solid transparent }
-.axp-agent-manager__tab[aria-selected='true'] { color: var(--fx-text); border-bottom-color: var(--fx-accent) }
+.axp-agent-manager__tabs { flex-wrap: wrap }
+.axp-agent-manager__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 
 .axp-agent-manager__split { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: calc(var(--fx-space) * 2); align-items: start }
 .axp-agent-manager__list { padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); max-height: 75vh; overflow: auto }
@@ -12,9 +11,7 @@
 .axp-agent-manager__item strong { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 .axp-agent-manager__editor { min-width: 0; padding: calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-agent-manager__h { margin: 0; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__seg { display: inline-flex; border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; overflow: hidden }
-.axp-agent-manager__seg button { padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer }
-.axp-agent-manager__seg button[aria-selected='true'] { background: var(--fx-accent-soft); color: var(--fx-text) }
+.axp-agent-manager__seg { flex-wrap: nowrap }
 
 .axp-agent-manager__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); font-size: calc(var(--fx-font-size) * 13 / 14); color: var(--fx-muted); min-width: 0 }
 .axp-agent-manager__field > span:first-child { color: var(--fx-text) }
@@ -25,15 +22,15 @@
 .axp-agent-manager__toggle { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: center; font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-agent-manager__example { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: calc(var(--fx-space) * 0.5); align-items: start }
 .axp-agent-manager__picks { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axp-agent-manager__pick { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.4) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer }
-.axp-agent-manager__pick.is-active { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-agent-manager__pick { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25) }
 
 .axp-agent-manager__card { padding: calc(var(--fx-space) * 1.25); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
 .axp-agent-manager__card summary { cursor: pointer }
 .axp-agent-manager__card p { margin: 0 }
 .axp-agent-manager__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--fx-space) }
-.axp-agent-manager__tile { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); text-align: left; padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer }
-.axp-agent-manager__tile:hover { border-color: var(--fx-accent) }
+.axp-agent-manager__tile { display: flex; align-items: stretch; width: 100% }
+.axp-agent-manager__tile-card { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space) }
+.axp-agent-manager__tile:hover .axp-agent-manager__tile-card { border-color: var(--fx-accent) }
 .axp-agent-manager__tile strong { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 .axp-agent-manager__file { cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 
@@ -55,9 +52,6 @@
 .axp-agent-manager__memitem p { margin: calc(var(--fx-space) * 0.5) 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
 
 .axp-agent-manager__steps { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); list-style: none; margin: 0; padding: 0 }
-.axp-agent-manager__steps button { padding: calc(var(--fx-space) * 0.4) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted); font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14); cursor: pointer }
-.axp-agent-manager__steps .is-active button { border-color: var(--fx-accent); color: var(--fx-text); background: var(--fx-accent-soft) }
-.axp-agent-manager__steps .is-done button { color: var(--fx-text) }
 .axp-agent-manager__wizard-body { max-height: 62vh; overflow: auto; padding-right: calc(var(--fx-space) * 0.5) }
 .axp-agent-manager__wizard-nav { justify-content: space-between }
 

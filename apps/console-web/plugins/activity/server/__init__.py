@@ -4,7 +4,8 @@
   GET    detail?id=<id>         more about one item (GitHub runs: jobs and steps)
   POST   report                 {id, title, state?, detail?, progress?, steps?, url?, by?} add or update a reported item
   POST   finish                 {id, state?: done|failed|cancelled, detail?}
-  DELETE item?id=<id>           drop a reported item (e.g. one that went stale)
+  DELETE item?id=<id>           take an item off the banner everywhere (a reported one is deleted; any other
+                                is remembered as dismissed for a day): the trash can on a stuck item
   GET    config | PUT config    {sources: {github, update, assistant, services, reports}, repos, lingerS, reportTtlS}
 
 Provides ``axf.activity@1``: report(item), finish(id, state, detail), items(), register_source(name, label, fn).

@@ -7,8 +7,6 @@
 .axp-ai-assistant__side { display: flex; flex-direction: column; gap: var(--fx-space); padding: var(--fx-space); border-right: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); min-height: 0 }
 .axp-ai-assistant__side-head { display: flex; align-items: center; gap: var(--fx-space); justify-content: space-between }
 .axp-ai-assistant__tabs { display: flex; gap: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axp-ai-assistant__tab { padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; border-bottom: calc(var(--fx-border-w) * 2) solid transparent }
-.axp-ai-assistant__tab[aria-selected='true'] { color: var(--fx-text); border-bottom-color: var(--fx-accent) }
 .axp-ai-assistant__convs { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); overflow: auto; flex: 1; min-height: 0 }
 .axp-ai-assistant__conv { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent }
 .axp-ai-assistant__conv:hover { background: var(--fx-surface) }
@@ -60,7 +58,7 @@
 .axp-ai-assistant__inputrow { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-end }
 .axp-ai-assistant__textarea { flex: 1; resize: vertical; min-height: calc(var(--fx-row-h) * 2) }
 .axp-ai-assistant__chips { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
-.axp-ai-assistant__x { border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0 }
+.axp-ai-assistant__x { width: auto; height: auto }
 .axp-ai-assistant__slash { position: absolute; bottom: 100%; left: var(--fx-space); right: var(--fx-space); display: flex; flex-direction: column; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); box-shadow: var(--fx-shadow-md); overflow: hidden; z-index: 3 }
 .axp-ai-assistant__slash-item { display: flex; gap: var(--fx-space); align-items: baseline; padding: calc(var(--fx-space) * 0.75) var(--fx-space); border: 0; background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
 .axp-ai-assistant__slash-item:hover { background: var(--fx-surface2) }
@@ -86,13 +84,11 @@
 .axp-ai-assistant__facts dd { margin: 0 }
 
 .axp-ai-assistant__steps { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); list-style: none; margin: 0; padding: 0 }
-.axp-ai-assistant__steps button { padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted); font: inherit; cursor: pointer }
-.axp-ai-assistant__steps .is-active button { border-color: var(--fx-accent); color: var(--fx-text); background: var(--fx-accent-soft) }
-.axp-ai-assistant__steps .is-done button { color: var(--fx-text) }
 .axp-ai-assistant__wizard-nav { justify-content: space-between }
 .axp-ai-assistant__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--fx-space) }
-.axp-ai-assistant__pick { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; text-align: left; padding: var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer }
-.axp-ai-assistant__pick.is-active { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-ai-assistant__pick { display: flex; align-items: stretch; width: 100% }
+.axp-ai-assistant__pick-card { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; padding: var(--fx-space) }
+.axp-ai-assistant__pick.is-active .axp-ai-assistant__pick-card { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
 .axp-ai-assistant__bars { display: flex; align-items: flex-end; gap: calc(var(--fx-space) * 0.25); height: 120px; padding: var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface2) }
 .axp-ai-assistant__bar { flex: 1; min-width: 4px; border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; background: var(--fx-accent) }
 
@@ -106,8 +102,6 @@
 .axp-ai-assistant__write { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-warning); color: var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 12 / 14); font-weight: 600; white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis }
 .axp-ai-assistant__livepill { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.25) calc(var(--fx-space) * 0.75); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-accent); color: var(--fx-accent); background: var(--fx-accent-soft); font-size: calc(var(--fx-font-size) * 12 / 14); font-weight: 600; white-space: nowrap }
 .axp-ai-assistant__tagrow { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.25) }
-.axp-ai-assistant__tagchip { cursor: pointer; border: var(--fx-border-w) solid transparent; font: inherit; font-size: calc(var(--fx-font-size) * 12 / 14) }
-.axp-ai-assistant__tagchip.is-active { border-color: var(--fx-accent); color: var(--fx-accent) }
 .axp-ai-assistant__msg.is-interrupted .axp-ai-assistant__bubble { border-color: var(--fx-warning) }
 
 /* Activity icon in the title bars (activity.tsx): breathes while thinking, an accent arc orbits while working. */

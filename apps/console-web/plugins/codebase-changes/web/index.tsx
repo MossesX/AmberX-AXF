@@ -45,7 +45,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Codebase changes', icon: 'branch', view: VIEW }] },
   contextMenu: [{ id: 'codebase-changes.default', target: 'default', order: 92, items: [{ id: 'codebase-changes', label: 'Codebase changes', icon: 'branch', action: 'codebase-changes.open' }] }],
   // After Activity (4) and the Build manager (4.5), before the approvals banner (5).
-  banners: [{ id: 'codebase-changes', order: 4.7, render: () => <ChangesBanner /> }],
+  banners: [{ id: 'codebase-changes', label: 'Codebase changes', icon: 'branch', settingsTab: 'codebase-changes', order: 4.7, render: () => <ChangesBanner /> }],
   settingsTabs: [{ id: 'codebase-changes', label: 'Codebase changes', icon: 'branch', parent: 'plugins', order: 44, description: 'The changes log, its banner and the Claude Code hook.' }],
   settings: [{
     id: 'codebase-changes.prefs', label: 'Codebase changes', icon: 'branch', tab: 'codebase-changes', order: 10,

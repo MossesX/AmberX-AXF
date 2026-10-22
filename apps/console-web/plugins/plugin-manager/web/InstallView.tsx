@@ -5,7 +5,7 @@
  * installed from those apps. Any console plugin in this clone can be published to the catalog.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Segmented, useRuntime } from '@console/axf/react';
 import { getToken, post } from '@console/api';
 import { PLUGINS_CHANGED } from '@console/plugins';
 import type { ViewProps } from './views';
@@ -96,13 +96,8 @@ export function InstallView({ inv, onChanged }: ViewProps) {
           <strong><Icon name="download" size={14} /> Plugin catalog</strong>
           <span className="fx-muted fx-small">Kept on axHub (/projects/_shared/_data/plugin-catalog), shared by every app.{cat?.updatedAt ? ` Updated ${new Date(cat.updatedAt).toLocaleString()}.` : ''}</span>
         </div>
-        <div className="axp-plugin-manager-seg" role="radiogroup" aria-label="Plugins for">
-          {kinds.map(([k, label]) => (
-            <button key={k} type="button" role="radio" aria-checked={kind === k} className={`axp-plugin-manager-seg__opt ${kind === k ? 'is-active' : ''}`} onClick={() => setKind(k)}>
-              <span>{k === 'console' ? 'This console' : label.replace(/ plugin$/, '')}</span>
-            </button>
-          ))}
-        </div>
+        <Segmented label="Plugins for" value={kind} onChange={(k) => setKind(k)}
+          options={kinds.map(([k, label]) => ({ value: k, label: <span>{k === 'console' ? 'This console' : label.replace(/ plugin$/, '')}</span> }))} />
         <Button tone="ghost" icon="refresh" onClick={() => void reload()}>Refresh</Button>
       </div>
       {error && <p className="axp-plugin-manager-offline"><Icon name="cloud" size={14} /> {error}</p>}

@@ -12,6 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -71,9 +72,138 @@ write('hide.json', {
     { overrides: {}, defaults: ['toolbar'], hidden: hiddenSlots({}, ['toolbar']) },
     { overrides: { toolbar: false }, defaults: ['toolbar'], hidden: hiddenSlots({ toolbar: false }, ['toolbar']) },
     { overrides: { banner: true }, defaults: ['toolbar', 'layout'], hidden: hiddenSlots({ banner: true }, ['toolbar', 'layout']) },
+    // Forced by a host app (embed@1): hidden over any override; non-hideable names in `forced` are ignored.
+    { overrides: { banner: false }, defaults: [], forced: ['banner'], hidden: hiddenSlots({ banner: false }, [], ['banner']) },
+    { overrides: {}, defaults: ['toolbar'], forced: ['banner', 'layout'], hidden: hiddenSlots({}, ['toolbar'], ['banner', 'layout']) },
+    { overrides: { toolbar: false }, defaults: ['toolbar'], forced: ['toolbar', 'app-menu'], hidden: hiddenSlots({ toolbar: false }, ['toolbar'], ['toolbar', 'app-menu']) },
   ],
   defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
+// Embed marker (core/engines/embed.ts): a host app's mark on the pages it embeds, from the query or the user agent; the hidden chrome it implies.
+{
+  const hosts = ['patches', 'Patches', ' patches ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
+  const hiddenInputs: (string | string[] | null)[] = [null, '', 'banner', 'banner,toolbar', 'toolbar+banner', 'layout', 'banner,layout,nav-menu', ['toolbar', 'toolbar', 'Banner'], ' banner , toolbar ', 'none', 'banner,none', [], ['nothing']];
+  const queries = ['', '?', '?x=1', '?axf-embed=patches', '?axf-embed=patches&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Patches&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=patches&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
+  const agents = [
+    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches',
+    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar',
+    'Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36',
+    'Mozilla/5.0 AXF-Embed/Bad_Host',
+    'Mozilla/5.0 (AXF-Embed/dev-console; wv)',
+    'Mozilla/5.0 NotAXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches/none Chrome/130',
+    'Mozilla/5.0 Chrome/130',
+    '',
+  ];
+  write('embed.json', {
+    token: EMBED_UA_TOKEN,
+    defaultHidden: DEFAULT_HIDDEN,
+    hosts: hosts.map((h) => ({ input: h, host: embedHost(h) })),
+    hidden: hiddenInputs.map((h) => ({ input: h, hidden: embedHidden(h) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQuery(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgent(ua) })),
+    // The query wins over the user agent; either alone counts; neither = standalone.
+    detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
+    suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
+    urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+  });
+}
+// What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
+{
+  const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
+  const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
+  const queries = [
+    '?axf-embed=patches',
+    '?axf-embed=patches&axf-embed-take=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications',
+    '?axf-embed=patches&axf-embed-take=bogus',
+    '?axf-embed=patches&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-page=notifications',
+    '?axf-embed-take=settings',
+  ];
+  const agents = [
+    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
+    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
+    'Mozilla/5.0 AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu',
+    'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
+  ];
+  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
+  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
+  write('embed-takes.json', {
+    uaToken: EMBED_TAKE_UA_TOKEN,
+    ids: embedTakeIds(),
+    takes: takeInputs.map((t) => ({ input: t, takes: embedTakes(t) })),
+    pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
+    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications']), e(['settings', 'plugins'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
+    takenView: [e(['settings']), e(undefined), e(['plugins'])].flatMap((em) => ['settings', 'home', 'plugin-manager', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
+    takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
+    suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    urls: [
+      ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
+      ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
+      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
+      ['https://pilot.amberxai.com/', {}],
+      ['https://console.amberxai.com/', { takes: ['settings', 'app-menu'] }],
+    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
+    messages: [
+      { $axf: 'embed@1', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'appearance' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'bad tab!' },
+      { $axf: 'embed@1', type: 'notify', title: '  Build failed\n', body: 'x'.repeat(600), tag: 'ci:main', level: 'error', link: 'view:alerts' },
+      { $axf: 'embed@1', type: 'notify', title: '' },
+      { $axf: 'embed@1', type: 'notify', title: 'Hi', level: 'loud', link: 'javascript:x', tag: 'has space' },
+      { $axf: 'embed@1', type: 'ready', app: 'Console' },
+      { $axf: 'embed@1', type: 'open-tab', tab: 'plugins' },
+      { $axf: 'embed@1', type: 'open-tab' },
+      { $axf: 'embed@2', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'run-code', code: 'x' },
+      { $axf: 'embed@1', type: 'menu', menus: [
+        { id: 'm0', label: 'Builds', items: [
+          { id: 'm0.0', label: '  Pending builds\n', icon: 'clock', count: 12.7 },
+          { id: 'm0.1', separator: true },
+          { id: 'm0.2', label: 'Open pending items', items: [{ id: 'm0.2.0', label: 'Asset Designer', locked: true }, { id: 'bad id!', label: 'x' }, { id: 'm0.2.2', label: '' }] },
+          { id: 'm0.3', label: 'Toolbar', check: false, icon: 'Bad Icon', count: -3 },
+        ] },
+        { id: 'm1', label: 'Empty', items: [] },
+        { id: 'm2', label: 'x'.repeat(100), items: [{ id: 'm2.0', label: 'Deep', items: [{ id: 'm2.0.0', label: 'Deeper', items: [{ id: 'm2.0.0.0', label: 'Deepest', items: [{ id: 'm2.0.0.0.0', label: 'Too deep' }] }] }] }] },
+        { label: 'No id', items: [{ id: 'x', label: 'y' }] },
+      ] },
+      { $axf: 'embed@1', type: 'menu', menus: 'nope' },
+      { $axf: 'embed@1', type: 'menu-request' },
+      { $axf: 'embed@1', type: 'run', id: 'm0.2.0' },
+      { $axf: 'embed@1', type: 'run', id: 'm0 2' },
+      { $axf: 'embed@1', type: 'run' },
+      JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }).length > 4000 ? JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }) : 'too short',
+      JSON.stringify({ $axf: 'embed@1', type: 'notify', title: 'Long', body: 'z'.repeat(4100) }),
+      '{"$axf":"embed@1","type":"open-settings","tab":"about"}',
+      'not json',
+      ['array'],
+      null,
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Locked functions (plugins inside Patches): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
+    locked: [e(['settings', 'plugins']), e(['settings']), e(['plugins'], 'settings'), e(undefined)].flatMap((em) =>
+      ['plugin-manager.open', 'plugin-manager.view:cards', 'plugin-switches.open', 'plugin-catalog.install', 'nav:plugin-manager', 'app.settings', 'alerts.open', '', null]
+        .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
+    // Plugin messages (take `plugins`). Web only so far (Kotlin deferred, PORTING.md).
+    pluginMessages: [
+      { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: ' Activity\n', version: '0.1.0', on: true }, { id: 'ai.amberx.axf.example.alpha', name: 'dup' }, { id: 'bad id!', name: 'x' }, { id: 'ai.amberx.axf.example.beta', on: false, version: 'v'.repeat(60) }, 'nope'] },
+      { $axf: 'embed@1', type: 'plugins', plugins: 'nope' },
+      { $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha', 'ai.amberx.axf.example.alpha', 'bad id!', 7] },
+      { $axf: 'embed@1', type: 'plugins-enabled' },
+      { $axf: 'embed@1', type: 'plugins-request' },
+      JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
+  });
+}
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
 {
   const docs: Record<string, string> = {
@@ -850,6 +980,8 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },
       { case: 'context-menu-bad-items', raw: { $axf: 'asset@1', type: 'context-menu', id: 'bad-ctx', name: 'X', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: [{ id: 'a', provider: 'p', items: [] }], other: 'no' } } } },
     ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
+  });
+}
 // library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
 {
   const params: LibraryParam[] = [

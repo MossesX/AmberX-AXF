@@ -100,6 +100,16 @@ export interface AppMenuEnv {
   /** registered live-list provider ids */
   providers: readonly string[];
   maxDepth?: number;
+  /**
+   * Hooks the host app took over (embed@1 `takes`, e.g. settings inside Patches): an item whose action or live list is
+   * one of them is dropped. Absent = nothing taken.
+   */
+  taken?: (item: { action?: string; provider?: string }) => boolean;
+  /**
+   * Hooks of a function the host locks (embed@1 take with `lock`, e.g. plugins inside Patches): the item stays, greyed
+   * out (`locked`). Absent = nothing locked.
+   */
+  locked?: (item: { action?: string; provider?: string }) => boolean;
 }
 
 /* ---------------- helpers ---------------- */
@@ -273,7 +283,9 @@ function compileList(items: readonly MergedMenuItem[], env: AppMenuEnv, depth: n
     if (it.separator) { out.push({ id: it.id, label: '', separator: true, locked: false, origin: it.origin }); continue; }
     const gate = env.gate(it.requires);
     if (gate === 'hide') continue;
-    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), locked: gate === 'disable', origin: it.origin };
+    if (env.taken && (it.action !== undefined || it.provider !== undefined) && env.taken({ action: it.action, provider: it.provider })) continue;
+    const hostLock = !!env.locked && (it.action !== undefined || it.provider !== undefined) && env.locked({ action: it.action, provider: it.provider });
+    const c: CompiledMenuItem = { id: it.id, label: it.label ?? titleFromId(it.id), locked: gate === 'disable' || hostLock, origin: it.origin };
     if (it.icon !== undefined) c.icon = it.icon;
     if (it.action !== undefined) c.action = it.action;
     if (it.shortcut !== undefined) c.shortcut = it.shortcut;

@@ -4,8 +4,8 @@
  * AI is off). The seen point lives on the server and is shared by every viewer; only an admin (console token or hub
  * admin) gets "Got it", which clears it for everyone. Everyone else sees the banner until an admin clears it.
  */
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, Markdown } from '@console/axf/react';
+import { useEffect, useSyncExternalStore } from 'react';
+import { Button, Icon, Markdown, useBannerLaunchOpen } from '@console/axf/react';
 import * as api from '@console/api';
 import { SourceBadge } from './SystemCheck';
 
@@ -57,7 +57,7 @@ function pluginChanges(d: Resp, seen: Seen) {
 
 export function WhatsNewBanner() {
   const s = useWN();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { if (!open) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [open]);
   const d = s.data;
   const seen = s.seen;
@@ -76,7 +76,7 @@ export function WhatsNewBanner() {
     <div className="axp-systems-check-banner axp-systems-check-new" role="status">
       <div className="axp-systems-check-banner__row">
         <Icon name="sparkles" />
-        <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-systems-check-banner__title">What’s new</span>
           {d.summary?.text
             ? <SourceBadge ai title={`Made by AI: summary written by ${d.summary.agent ?? 'Mosses'}${d.summary.cached && !d.aiOn ? ' (saved earlier)' : ''}`} />

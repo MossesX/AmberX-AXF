@@ -21,7 +21,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -117,7 +117,7 @@ const shortSummary = (p: Pending) => {
 
 function ApprovalsBanner() {
   const s = useApprovals();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { start(); }, []);
   if (s.status !== 'ok' || s.count === 0) return null;
   const ids = s.pending.map((p) => p.id).join(',');
@@ -128,7 +128,7 @@ function ApprovalsBanner() {
     <div className="axp-approvals-banner" role="alert">
       <div className="axp-approvals-banner__row">
         <Icon name="shield" />
-        <button type="button" className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
@@ -141,7 +141,7 @@ function ApprovalsBanner() {
         <ul className="axp-approvals-banner__list">
           {s.pending.map((p) => (
             <li key={p.id}>
-              <button type="button" className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
+              <button type="button" data-fx-row className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
                 <span className="axp-approvals-banner__tool">{p.tool}</span>
                 <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
                 <span className="axp-approvals-banner__when">{ago(p.createdAt)}</span>
@@ -240,7 +240,7 @@ export const plugin: AxfWebLibrary = {
     // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
     rt.actions.register('approvals.review', ([id]) => { if (id && st.pending.some((x) => x.id === id)) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
-  banners: [{ id: 'approvals', order: 5, render: () => <ApprovalsBanner /> }],
+  banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
   },

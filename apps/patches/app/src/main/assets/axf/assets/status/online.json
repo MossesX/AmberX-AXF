@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "online",
+  "name": "Online",
+  "version": "1.0.0",
+  "description": "On while counter `app.online` is above zero.",
+  "author": "AmberX AXF",
+  "tags": [
+    "status"
+  ],
+  "data": {
+    "counter": "app.online",
+    "onLabel": "Online",
+    "offLabel": "Offline",
+    "onTone": "success",
+    "offTone": "muted"
+  }
+}

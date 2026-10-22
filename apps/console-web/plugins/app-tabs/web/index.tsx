@@ -1,12 +1,16 @@
 /**
  * App tabs console plugin (ai.amberx.axf.console.app-tabs).
  *
- * A tab group across the whole page (framework slot `app.frame.top`, below the banners): one tab per AmberX app picked
+ * A tab group across the whole page (framework slot `app.frame.head`, above the application menu): one tab per AmberX app picked
  * in Settings → Plugins → App tabs, Console, Pilot and axHub by default. The console's own tab shows the console; any other
  * tab covers the page below the tab bar (slot `app.frame.cover`) with that app in a frame. A frame stays loaded once
  * opened, so switching back and forth keeps its state. Apps: built-in list + project manifests with a deploy.url +
  * ones added in settings (https only). Choices are settings (`app-tabs.tabs`, `app-tabs.custom`, `app-tabs.active`),
  * so they follow the UI-editor rule (fresh on focus, last save wins). No server part.
+ *
+ * Inside a host app (embed@1, e.g. Patches) the tab group is gone: the host runs the tabs (Brett, Oct 21 2026: "keep
+ * console the way it was unless running inside Patches, then remove tab group and let Patches control tabs"). No bar,
+ * no cover, no Apps-menu tab entries there; settings and the saved choices stay for when the console runs on its own.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Icon, useEditorSync, useRuntime } from '@console/axf/react';
@@ -23,6 +27,7 @@ const FOLDER = 'app-tabs';
 const KEYS = { tabs: 'app-tabs.tabs', custom: 'app-tabs.custom', active: 'app-tabs.active' } as const;
 const SEEN_KEY = 'app-tabs.seenDefaults';
 const here = () => globalThis.location?.origin ?? '';
+/** Running inside a host app (embed@1): the host controls the tabs. Fixed for the page's life, like `rt.embedded`. */
 
 /* ---------------- shared state: the app list and the saved choices ---------------- */
 
@@ -82,11 +87,12 @@ function useAppTabs() {
   };
 }
 
-/* ---------------- the tab bar (app.frame.top) ---------------- */
+/* ---------------- the tab bar (app.frame.head, above the application menu) ---------------- */
 
 /**
- * Banners sit above the tab bar and come and go, so the cover can't start at a fixed height: publish where the bar
- * ends as `--axp-app-tabs-bottom` on the page frame (the cover is inside it). Follows the bar and everything above it.
+ * The tab bar sits above the application menu (Brett, Oct 22 2026); the menu bar and the live banners (which come and go)
+ * sit between it and the page, and stay visible over another app. So the cover starts where the page (`.fx-shell`)
+ * starts: publish that as `--axp-app-tabs-bottom` on the page frame (the cover is inside it), following everything above.
  */
 function useBarBottom(shown: boolean) {
   const ref = useRef<HTMLElement | null>(null);
@@ -94,11 +100,17 @@ function useBarBottom(shown: boolean) {
     const bar = ref.current;
     const frame = bar?.parentElement;
     if (!bar || !frame) return;
-    const set = () => frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom))}px`);
+    const shell = () => Array.from(frame.children).find((el) => el.classList.contains('fx-shell')) ?? null;
+    const set = () => {
+      const below = shell();
+      const y = below ? below.getBoundingClientRect().top : bar.getBoundingClientRect().bottom;
+      frame.style.setProperty('--axp-app-tabs-bottom', `${Math.max(0, Math.round(y))}px`);
+    };
     const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(set) : null;
     const watchAbove = () => {
       ro?.disconnect();
-      for (let el: Element | null = bar; el; el = el.previousElementSibling) ro?.observe(el);
+      const below = shell();
+      for (let el: Element | null = below?.previousElementSibling ?? bar; el; el = el.previousElementSibling) ro?.observe(el);
       set();
     };
     const mo = typeof MutationObserver === 'function' ? new MutationObserver(watchAbove) : null;
@@ -121,7 +133,7 @@ function TabBar() {
           const on = a === t.active;
           return (
             <button key={a.id} type="button" role="tab" aria-selected={on} title={a.note ?? a.url}
-              className={`axp-app-tabs__tab ${on ? 'is-active' : ''}`} onClick={() => t.setActive(a.id)}>
+              className={`fx-tab axp-app-tabs__tab${on ? ' is-active' : ''}`} onClick={() => t.setActive(a.id)}>
               <Icon name={a.icon} size={14} /><span>{a.name}</span>
             </button>
           );
@@ -235,7 +247,7 @@ function TabsPanel() {
   );
 }
 
-export const plugin: AxfWebLibrary = {
+const standalone: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'App tabs',
   version: '0.1.0',
@@ -263,7 +275,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('app-tabs.settings', () => rt.dispatch('settings.open:app-tabs'), { label: 'App tabs settings' });
   },
   slots: {
-    'app.frame.top': [{ id: 'app-tabs.bar', render: () => <TabBar /> }],
+    'app.frame.head': [{ id: 'app-tabs.bar', render: () => <TabBar /> }],
     'app.frame.cover': [{ id: 'app-tabs.cover', render: () => <Cover /> }],
   },
   settingsTabs: [{ id: 'app-tabs', label: 'App tabs', icon: 'layout', order: 7, parent: 'plugins' }],
@@ -272,3 +284,6 @@ export const plugin: AxfWebLibrary = {
     { id: 'app-tabs.lifecycle', tab: 'app-tabs', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };
+
+/** Inside a host app (Patches) the host runs the tabs, so the plugin isn't loaded there at all (embed@1 skipWhen). */
+export const plugin: AxfWebLibrary = { ...standalone, embed: { skipWhen: ['embedded'] } };

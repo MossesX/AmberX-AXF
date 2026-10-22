@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "patches-tabs",
+  "name": "Patches tabs",
+  "version": "1.0.0",
+  "description": "The three apps Patches shows: the Dev Console, Build Pilot and axHub.",
+  "author": "AmberX AXF build engine",
+  "tags": ["patches", "tabs"],
+  "data": {
+    "style": "pills",
+    "indicator": "bar",
+    "showIcons": true,
+    "sections": [
+      {
+        "items": [
+          { "id": "console", "label": "Console", "icon": "terminal", "view": "console" },
+          { "id": "pilot", "label": "Pilot", "icon": "rocket", "view": "pilot" },
+          { "id": "axhub", "label": "axHub", "icon": "layers", "view": "axhub" }
+        ]
+      }
+    ]
+  }
+}

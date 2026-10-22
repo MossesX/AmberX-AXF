@@ -20,7 +20,7 @@ export type EntryState = 'running' | 'done' | 'failed' | 'partial' | 'cancelled'
 export interface Step { text: string; state: StepState; startedAt?: string; finishedAt?: string; note?: string }
 export interface Result { state: Exclude<EntryState, 'running'>; summary: string; branch?: string; commits?: { sha: string; message?: string }[]; filesChanged?: number; tests?: Record<string, { before?: string; after?: string; state?: 'pass' | 'fail' | 'skip' }>; links?: Record<string, string> }
 export interface Entry { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; repos: string[]; model: string; who: { session?: string; where?: string; user?: string; host?: string }; state: EntryState; steps: Step[]; result: Result | null; closed: { at: string; by: string } | null }
-export interface Summary { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; state: EntryState; repos: string[]; model: string; where: string; steps: { total: number; done: number; failed: number; running: string }; result: { state: string; summary: string } | null; closed: string | null }
+export interface Summary { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; state: EntryState; repos: string[]; model: string; where: string; steps: { total: number; done: number; failed: number; running: string }; result: { state: string; summary: string } | null; closed: string | null; status?: string; startedAt?: string; lastSeenAt?: string }
 export interface Counts { total: number; open: number; byKind: Record<string, number>; byState: Record<string, number> }
 export interface Page { items: Summary[]; total: number; nextCursor: string | null; counts: Counts; where: string }
 
@@ -88,6 +88,24 @@ const changed = () => { globalThis.dispatchEvent(new Event(CHANGED)); void loadO
 export async function closeEntry(id: string): Promise<void> {
   set({ busy: id, open: st.open.filter((e) => e.id !== id), openTotal: Math.max(0, st.openTotal - 1) }); // gone at once; the server confirms
   try { await api.post(`entries/${encodeURIComponent(id)}/close`, {}); } finally { set({ busy: '' }); changed(); }
+}
+/** No word from its session for 10 min, or running for 30+ min (Brett, Oct 22 2026): the banner offers the trash can. */
+export const NO_WORD_MS = 10 * 60_000;
+export const STUCK_MS = 30 * 60_000;
+const msOf = (iso?: string) => { const t = iso ? Date.parse(iso) : NaN; return Number.isFinite(t) ? t : null; };
+export const startedMs = (e: Summary) => msOf(e.startedAt) ?? msOf(e.createdAt);
+export const quietMs = (e: Summary, now: number) => now - (msOf(e.lastSeenAt) ?? msOf(e.updatedAt) ?? now);
+export const isActive = (e: Summary) => !e.result && (e.status ?? e.state) !== 'done' && (e.status ?? e.state) !== 'failed';
+export function stuckWhy(e: Summary, now: number): '' | 'no-word' | 'long' {
+  if (!isActive(e)) return '';
+  if (quietMs(e, now) > NO_WORD_MS) return 'no-word';
+  const st = startedMs(e);
+  return st != null && now - st >= STUCK_MS ? 'long' : '';
+}
+/** Throw a stuck entry away: finished as failed (stalled) and closed on every device; it stays in the log. */
+export async function abandonEntry(id: string): Promise<void> {
+  set({ busy: id, open: st.open.filter((e) => e.id !== id), openTotal: Math.max(0, st.openTotal - 1) });
+  try { await api.post(`entries/${encodeURIComponent(id)}/abandon`, {}); } finally { set({ busy: '' }); changed(); }
 }
 export async function closeAll(): Promise<number> {
   set({ busy: '*' });

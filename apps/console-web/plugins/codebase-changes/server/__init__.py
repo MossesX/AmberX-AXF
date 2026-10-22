@@ -9,13 +9,15 @@ plugin is off, never on the console MCP; the console adds those checks).
   PATCH entries/{id}               {title?, kind?, asked?, repos?, model?, who?, steps? (whole list), step? {index?, text?,
                                    state?, note?} (one step, upserted), result? (merged; null clears)}
   POST  entries/{id}/close         {by?}  dismissed from the banner on every device (stored in the entry)
+  POST  entries/{id}/abandon       {by?}  the trash can on a stuck entry (no word, or running 30+ min): an entry with no
+                                   result is finished as failed ("stalled") and closed on every device; kept in the log
   POST  entries/{id}/reopen        back in the banner
   POST  close-all                  {ids?: [...]} every open entry (or just those)
   GET   where                      where the log is kept
 
 Where: AXF_CHANGES_DIR, else <shared data folder>/changes (the hub's /projects/amberx-axf/_data/changes in the console
 container; seeded once from the repo's changes/), else the repo's changes/. One file per entry; see store.py.
-Provides ``axf.changes@1``: open(entry, by), update(id, patch), close(id, by), reopen(id), get(id), query(**filters).
+Provides ``axf.changes@1``: open(entry, by), update(id, patch), close(id, by), reopen(id), abandon(id, by), get(id), query(**filters).
 """
 from __future__ import annotations
 
@@ -195,6 +197,20 @@ def set_closed(cid: str, by: str | None) -> dict[str, Any]:
     return store().put({**e, "closed": {"at": now_iso(), "by": by}, "updatedAt": now_iso()})
 
 
+STALLED = "Stalled: taken off the banners (no word from its session, or stuck 30+ minutes)."
+
+
+def abandon(cid: str, by: str) -> dict[str, Any]:
+    """A stuck entry thrown away from a banner: finished as failed (when it never said how it ended), then closed."""
+    e = store().get(cid)
+    if not e:
+        raise KeyError(cid)
+    if not e.get("result"):
+        steps = [{**st, "state": "skipped"} if st.get("state") in ("running", "queued") else st for st in e.get("steps") or []]
+        update_entry(cid, {"result": {"state": "failed", "summary": STALLED}, "status": "failed", "steps": steps})
+    return set_closed(cid, by)
+
+
 class Service:
     """axf.changes@1 — other plugins record or read changes through this, never by folder name."""
     version = 1
@@ -210,6 +226,10 @@ class Service:
 
     def reopen(self, cid: str) -> dict[str, Any]:
         return set_closed(cid, None)
+
+    def abandon(self, cid: str, by: str = "plugin") -> dict[str, Any]:
+        """Finish a stuck entry as failed (stalled) and close it everywhere; it stays in the log."""
+        return abandon(cid, by)
 
     def get(self, cid: str) -> dict[str, Any] | None:
         return store().get(cid) if ID_RE.match(cid or "") else None
@@ -301,6 +321,19 @@ async def close_entry(cid: str, request: Request) -> dict[str, Any]:
         return set_closed(cid, by)
     except KeyError:
         raise HTTPException(404, "no entry with that id") from None
+
+
+@router.post("/entries/{cid}/abandon")
+async def abandon_entry(cid: str, request: Request) -> dict[str, Any]:
+    _check_id(cid)
+    body = await _body(request)
+    by = redact(body.get("by"), 60) if body.get("by") else _who(request)
+    try:
+        return abandon(cid, by)
+    except KeyError:
+        raise HTTPException(404, "no entry with that id") from None
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
 
 
 @router.post("/entries/{cid}/reopen")

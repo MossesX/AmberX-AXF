@@ -1,0 +1,31 @@
+/* Patches (web): frames fill the main region; the combined settings' app tabs. Theme tokens only (THEMING.md). */
+.fx-main__inner--kept[data-axf-view="console"],
+.fx-main__inner--kept[data-axf-view="pilot"],
+.fx-main__inner--kept[data-axf-view="axhub"],
+.fx-main__inner--kept[data-axf-view="settings"] { padding: 0; max-width: none; height: 100%; }
+.pt-tab, .pt-settings__page { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.pt-frame { flex: 1 1 auto; width: 100%; height: 100%; min-height: 0; border: 0; display: block; background: var(--fx-bg); }
+.pt-strip { flex: 0 0 auto; overflow: hidden; border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-bg); }
+.pt-strip[aria-hidden="true"] { border-bottom: 0; }
+.pt-frame--strip { height: 100%; }
+.pt-settings { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.pt-settings__tabs { display: flex; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 1); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-x: auto; flex: 0 0 auto; }
+.pt-settings__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 1); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; white-space: nowrap; }
+.pt-settings__tab:hover { color: var(--fx-text); }
+.pt-settings__tab.is-active { color: var(--fx-accent-text); background: var(--fx-accent); border-color: var(--fx-accent); }
+.pt-settings__body { flex: 1 1 auto; min-height: 0; position: relative; }
+.pt-settings__page[hidden] { display: none; }
+.pt-settings__page--own { overflow: auto; padding: calc(var(--fx-space) * 1.5); display: block; }
+/* The app tabs above the application menu (page slot app.frame.head, Brett Oct 22 2026): one row, never a bottom bar. */
+.fx-frame > .patches-tabs { flex: none; height: auto; position: relative; z-index: 45; background: var(--fx-surface); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.fx-frame > .patches-tabs.fx-nav { flex-direction: row; padding: 4px calc(var(--fx-space) * 1.5); }
+
+/* Systems check entry: apps' plugins Patches doesn't have yet (layout only; the Note and Buttons are framework controls) */
+.pt-check { padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.75) 0; }
+.pt-check__line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); }
+.pt-check__title { min-width: 0; }
+.pt-check__err { margin-top: calc(var(--fx-space) * 0.4); color: var(--fx-danger); }
+.pt-check__list { list-style: none; margin: calc(var(--fx-space) * 0.5) 0 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.4); }
+.pt-check__list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); }
+.pt-plugins { display: grid; gap: calc(var(--fx-space) * 0.5); }
+.pt-plugins__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin: 0; font-size: var(--fx-font-size); }

@@ -19,11 +19,11 @@ export function WizardsPanel() {
   return (
     <div className="axp-agent-manager__grid">
       {Object.entries(WIZARDS).map(([k, w]) => (
-        <button key={k} type="button" className="axp-agent-manager__tile" onClick={() => rt.openDialog('agent-manager.wizard', { kind: k })}>
-          <strong><Icon name={w.icon} size={14} /> {w.title}</strong><span className="fx-small fx-muted">{w.description}</span>
+        <button key={k} type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => rt.openDialog('agent-manager.wizard', { kind: k })}>
+          <span className="fx-card axp-agent-manager__tile-card"><strong><Icon name={w.icon} size={14} /> {w.title}</strong><span className="fx-small fx-muted">{w.description}</span></span>
         </button>
       ))}
-      <button type="button" className="axp-agent-manager__tile" onClick={() => rt.navigate('agent-manager')}><strong><Icon name="layers" size={14} /> Open the agent manager</strong><span className="fx-small fx-muted">Agents, skills, tools, memory, workflows, runs.</span></button>
+      <button type="button" data-fx-row className="axp-agent-manager__tile" onClick={() => rt.navigate('agent-manager')}><span className="fx-card axp-agent-manager__tile-card"><strong><Icon name="layers" size={14} /> Open the agent manager</strong><span className="fx-small fx-muted">Agents, skills, tools, memory, workflows, runs.</span></span></button>
     </div>
   );
 }
