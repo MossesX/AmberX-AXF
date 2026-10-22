@@ -1,8 +1,10 @@
 """Push banner — server part. Mounted at /api/plugins/push-banner/ (console token on every method, 404 when the plugin
 is off, never on the console MCP; hub users never reach it: the plugin isn't user-grantable).
 
-    GET  /branches[?refresh=true]   every branch ahead of each watched repo's default branch: commits ahead/behind,
-                                    last commit, its open PR and that PR's CI; cached ~2 min
+    GET  /branches[?refresh=true]   every branch ahead of each watched repo's default branch (commits ahead/behind,
+                                    last commit, its open PR and that PR's CI) and every open pull request as its own
+                                    entry (head → base, fork, CI, mergeable, ready = CI passed + mergeable + not a
+                                    draft); cached ~2 min
     POST /pr     {repo, branch}     opens a PR into the default branch (or answers the one already open)
     POST /merge  {repo, number, confirm: "<repo>#<number>"}
                                     merges an open PR (merge commit) only when GitHub says it can and every check on
@@ -40,6 +42,7 @@ CACHE_S = 120
 MAX_REPOS = 10
 MAX_BRANCHES = 150  # per repo, newest first by GitHub's listing
 MAX_HIDDEN = 300
+MAX_PULLS = 60  # open PRs per repo
 BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
 TEXT_MAX = 200
 
@@ -111,7 +114,7 @@ class Pushes:
                 raise HTTPException(400, f"hidden: up to {MAX_HIDDEN} entries")
             for e in h:
                 repo, _, branch = str(e).partition(":")
-                if not (github.valid_repo(repo) and valid_branch(branch)):
+                if not (github.valid_repo(repo) and (valid_branch(branch) or re.fullmatch(r"#\d{1,9}", branch))):
                     raise HTTPException(400, f"hidden entries look like owner/name:branch ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden})
@@ -135,21 +138,22 @@ class Pushes:
         return data[0] if isinstance(data, list) and data and isinstance(data[0], dict) else {}
 
     def _repo(self, gh: github.GitHubClient, repo: str, hidden: set[str]) -> dict[str, Any]:
-        out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "error": ""}
+        out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "pulls": [], "error": ""}
         try:
             info = gh.repo(repo)
             base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
             out["base"] = base
             names = [b.get("name") for b in gh.paginate(github.repo_path(repo, "branches", query={"per_page": 100}), max_pages=3, max_items=MAX_BRANCHES)
                      if isinstance(b, dict)]
-            pulls = gh.paginate(github.repo_path(repo, "pulls", query={"state": "open", "base": base, "per_page": 100}), max_pages=2, max_items=200)
+            pulls = gh.paginate(github.repo_path(repo, "pulls", query={"state": "open", "per_page": 100}), max_pages=2, max_items=MAX_PULLS)
         except (github.GitHubError, ValueError) as e:
             out["error"] = _text(str(e))
             return out
         prs: dict[str, dict[str, Any]] = {}
         for p in pulls:
             head = p.get("head") if isinstance(p, dict) else None
-            if isinstance(head, dict) and (head.get("repo") or {}).get("full_name", "").lower() == repo.lower() and valid_branch(head.get("ref")):
+            same = isinstance(head, dict) and ((head.get("repo") or {}).get("full_name") or "").lower() == repo.lower()
+            if same and valid_branch(head.get("ref")) and ((p.get("base") or {}).get("ref") == base):
                 prs[head["ref"]] = p
         todo = [n for n in names if valid_branch(n) and n != base and n not in ALWAYS_HIDDEN]
 
@@ -185,6 +189,38 @@ class Pushes:
             got = [r for r in pool.map(one, todo) if r]
         got.sort(key=lambda b: b.get("date") or "", reverse=True)
         out["branches"] = got
+
+        def pull(p: dict[str, Any]) -> dict[str, Any] | None:
+            n = p.get("number")
+            if not isinstance(n, int):
+                return None
+            head = p.get("head") if isinstance(p.get("head"), dict) else {}
+            sha = _text(head.get("sha"), 40)
+            item: dict[str, Any] = {
+                "number": n, "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "draft": p.get("draft") is True,
+                "head": _text(head.get("ref"), 200), "base": _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200),
+                "fork": ((head.get("repo") or {}).get("full_name") or "").lower() != repo.lower(),
+                "author": _text((p.get("user") or {}).get("login") if isinstance(p.get("user"), dict) else "", 60),
+                "updated": _text(p.get("updated_at"), 40), "ci": "none", "mergeable": None, "ready": False,
+                "hidden": f"{repo}:#{n}" in hidden,
+            }
+            try:
+                item["ci"] = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+            except (github.GitHubError, ValueError):
+                item["ci"] = "unknown"
+            try:
+                full = gh.get(github.repo_path(repo, "pulls", n))
+                m = full.get("mergeable") if isinstance(full, dict) else None
+                item["mergeable"] = m if isinstance(m, bool) else None
+            except (github.GitHubError, ValueError):
+                pass
+            item["ready"] = item["ci"] == "success" and item["mergeable"] is True and not item["draft"]
+            return item
+
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            out["pulls"] = [x for x in pool.map(pull, [p for p in pulls if isinstance(p, dict)]) if x]
+        out["pulls"].sort(key=lambda x: x.get("updated") or "", reverse=True)
+        out["pulls"].sort(key=lambda x: not x["ready"])  # ready ones first, newest first within each group
         return out
 
     def branches(self, force: bool = False) -> dict[str, Any]:

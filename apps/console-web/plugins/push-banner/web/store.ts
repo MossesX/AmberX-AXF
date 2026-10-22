@@ -12,7 +12,9 @@ export const api = pluginApi(FOLDER, 'Push banner');
 
 export interface PullInfo { number: number | null; title: string; url: string; draft: boolean; ci: 'none' | 'running' | 'failure' | 'success' | 'unknown' }
 export interface Branch { name: string; ahead: number | null; behind: number | null; sha?: string; subject?: string; date?: string; url?: string; hidden?: boolean; pr: PullInfo | null; error: string }
-export interface RepoBranches { repo: string; base: string; url: string; branches: Branch[]; error: string }
+export interface Pull { number: number; title: string; url: string; draft: boolean; head: string; base: string; fork: boolean; author: string; updated: string; ci: PullInfo['ci']; mergeable: boolean | null; ready: boolean; hidden?: boolean }
+export interface RepoBranches { repo: string; base: string; url: string; branches: Branch[]; pulls?: Pull[]; error: string }
+export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
 export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string }
 export interface Row extends Branch { repo: string; base: string; key: string }
 
@@ -29,6 +31,17 @@ export function rows(a: Answer | null, withHidden = false): Row[] {
   const out: Row[] = [];
   for (const r of a?.repos ?? []) for (const b of r.branches) if (withHidden || !b.hidden) out.push({ ...b, repo: r.repo, base: r.base, key: keyOf(r.repo, b.name) });
   return out.sort((x, y) => (y.date ?? '').localeCompare(x.date ?? ''));
+}
+
+/** Every open pull request as its own entry (ready ones first), with its branch's ahead/behind when it has a row. */
+export function pullRows(a: Answer | null, withHidden = false): PullRow[] {
+  const out: PullRow[] = [];
+  for (const r of a?.repos ?? []) for (const p of r.pulls ?? []) {
+    if (!withHidden && p.hidden) continue;
+    const b = !p.fork ? r.branches.find((x) => x.name === p.head && p.base === r.base) : undefined;
+    out.push({ ...p, repo: r.repo, key: `${r.repo}:#${p.number}`, ahead: b?.ahead ?? null, behind: b?.behind ?? null });
+  }
+  return out.sort((x, y) => Number(y.ready) - Number(x.ready) || (y.updated ?? '').localeCompare(x.updated ?? ''));
 }
 
 export async function load(refresh = false): Promise<void> {
@@ -51,13 +64,13 @@ export const openPr = (r: Row) => act(r.key, async () => {
   return p.existing ? `PR #${p.number} was already open.` : `Opened PR #${p.number}.`;
 });
 
-export const mergePr = (r: Row) => act(r.key, async () => {
-  const n = r.pr?.number ?? 0;
+export const mergePr = (r: { key: string; repo: string; number: number; base: string }) => act(r.key, async () => {
+  const n = r.number;
   const m = await api.post<{ merged: boolean }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
   return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
 });
 
-export const setHidden = (r: Row, hide: boolean) => act(r.key, async () => {
+export const setHidden = (r: { key: string }, hide: boolean) => act(r.key, async () => {
   const cfg = await api.call<{ hidden: string[] }>('config');
   const hidden = hide ? [...new Set([...cfg.hidden, r.key])] : cfg.hidden.filter((k) => k !== r.key);
   await api.put('config', { hidden });

@@ -33,3 +33,16 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__act:disabled { opacity: var(--fx-opacity-disabled); cursor: default }
 .axp-push-banner__foot { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
 .axp-push-banner__min { margin-left: auto }
+/* pull requests as entries, grouped by what's ready (Oct 22 2026) */
+.axp-push-banner.is-ready { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-push-banner.is-ready .axp-push-banner__icon { color: var(--fx-success) }
+.axp-push-banner__group { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.axp-push-banner__group-title { margin: 0; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fx-muted) }
+.axp-push-banner__group-title span { font-variant-numeric: tabular-nums; color: var(--fx-text) }
+.axp-push-banner__item.is-ready { border-color: var(--fx-success) }
+.axp-push-banner__name.is-title { font-family: inherit }
+.axp-push-banner__ref { font-family: var(--fx-font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+.axp-push-banner__pill { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); padding: 0 calc(var(--fx-space) * 0.5); border-radius: 999px; font-weight: 600; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted) }
+.axp-push-banner__pill.is-ready, .axp-push-banner__pill.is-success { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-push-banner__pill.is-failure { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-push-banner__pill.is-running { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }

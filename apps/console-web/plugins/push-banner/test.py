@@ -28,8 +28,12 @@ SEEN: list[dict] = []
 STATE = {
     "branches": ["main", "site", "feat/a", "feat/b", "old/merged"],
     "ahead": {"feat/a": 3, "feat/b": 1, "old/merged": 0},
-    "pulls": [{"number": 18, "title": "Feature A", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/18", "draft": False,
-               "head": {"ref": "feat/a", "sha": "aaa111", "repo": {"full_name": "MossesX/AmberX-AXF"}}}],
+    "pulls": [{"number": 18, "title": "Feature A", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/18", "draft": False, "updated_at": "2026-10-22T07:00:00Z",
+               "base": {"ref": "main"}, "user": {"login": "MossesX"}, "head": {"ref": "feat/a", "sha": "aaa111", "repo": {"full_name": "MossesX/AmberX-AXF"}}},
+              {"number": 7, "title": "From a fork", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/7", "draft": False, "updated_at": "2026-10-22T08:00:00Z",
+               "base": {"ref": "main"}, "user": {"login": "someone"}, "head": {"ref": "patch-1", "sha": "fff999", "repo": {"full_name": "someone/AmberX-AXF"}}},
+              {"number": 9, "title": "Draft work", "html_url": "https://github.com/MossesX/AmberX-AXF/pull/9", "draft": True, "updated_at": "2026-10-21T08:00:00Z",
+               "base": {"ref": "feat/a"}, "user": {"login": "MossesX"}, "head": {"ref": "feat/a-sub", "sha": "ddd444", "repo": {"full_name": "MossesX/AmberX-AXF"}}}],
     "checks": {"aaa111": [{"status": "completed", "conclusion": "success"}]},
     "mergeable": True,
     "merged": [],
@@ -141,6 +145,7 @@ cfg = c.put("/p/config", json={"repos": ["MossesX/AmberX-AXF"]}).json()
 check(cfg["repos"] == ["MossesX/AmberX-AXF"], "repos are a setting")
 check(c.put("/p/config", json={"repos": ["not a repo"]}).status_code == 400, "a bad repo name is refused")
 check(c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:../x"]}).status_code == 400, "a bad hidden entry is refused")
+check(c.put("/p/config", json={"hidden": ["MossesX/AmberX-AXF:#7"]}).status_code == 200 and c.put("/p/config", json={"hidden": []}).status_code == 200, "a pull request can be hidden (owner/name:#N)")
 
 out = c.get("/p/branches?refresh=true").json()
 repo = out["repos"][0]
@@ -154,6 +159,14 @@ check(a["url"] == "https://github.com/MossesX/AmberX-AXF/compare/main...feat/a",
 check(any(s["path"] == R + "/compare/main...feat/a" for s in SEEN), "compare asked with the branch name quoted as one ref")
 check(all(s.get("auth") in (None, f"Bearer {TOKEN}") for s in SEEN), "the token goes to the API origin only")
 check(TOKEN not in json.dumps(out), "the token never comes back to the browser")
+
+pulls = repo["pulls"]
+check([p["number"] for p in pulls] == [18, 7, 9], "every open pull request is an entry: ready first, then newest")
+p18, p7, p9 = pulls
+check(p18["ready"] is True and p18["ci"] == "success" and p18["mergeable"] is True and p18["head"] == "feat/a" and p18["base"] == "main", "ready = CI passed + mergeable + not a draft")
+check(p7["fork"] is True and p7["ready"] is False and p7["ci"] == "none" and p7["author"] == "someone", "a PR from a fork is listed, with no CI it isn't ready")
+check(p9["draft"] is True and p9["base"] == "feat/a" and p9["ready"] is False, "a draft PR into another branch is listed, not ready")
+check(not any(b["name"] == "feat/a-sub" for b in repo["branches"]), "a PR's head that isn't ahead of main isn't a branch row")
 
 n = len(SEEN)
 c.get("/p/branches")
