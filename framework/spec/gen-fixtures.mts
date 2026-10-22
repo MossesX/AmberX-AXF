@@ -12,7 +12,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -132,7 +132,7 @@ write('hide.json', {
     'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
   ];
   const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
-  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', '', null];
+  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
   write('embed-takes.json', {
     uaToken: EMBED_TAKE_UA_TOKEN,
     ids: embedTakeIds(),
@@ -141,8 +141,8 @@ write('hide.json', {
     queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
     detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
-    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
-    takenView: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'home', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
+    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications']), e(['settings', 'plugins'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
+    takenView: [e(['settings']), e(undefined), e(['plugins'])].flatMap((em) => ['settings', 'home', 'plugin-manager', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
     takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
     suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
     urls: [
@@ -187,6 +187,19 @@ write('hide.json', {
       'not json',
       ['array'],
       null,
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Locked functions (plugins inside Patches): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
+    locked: [e(['settings', 'plugins']), e(['settings']), e(['plugins'], 'settings'), e(undefined)].flatMap((em) =>
+      ['plugin-manager.open', 'plugin-manager.view:cards', 'plugin-switches.open', 'plugin-catalog.install', 'nav:plugin-manager', 'app.settings', 'alerts.open', '', null]
+        .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
+    // Plugin messages (take `plugins`). Web only so far (Kotlin deferred, PORTING.md).
+    pluginMessages: [
+      { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: ' Activity\n', version: '0.1.0', on: true }, { id: 'ai.amberx.axf.example.alpha', name: 'dup' }, { id: 'bad id!', name: 'x' }, { id: 'ai.amberx.axf.example.beta', on: false, version: 'v'.repeat(60) }, 'nope'] },
+      { $axf: 'embed@1', type: 'plugins', plugins: 'nope' },
+      { $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha', 'ai.amberx.axf.example.alpha', 'bad id!', 7] },
+      { $axf: 'embed@1', type: 'plugins-enabled' },
+      { $axf: 'embed@1', type: 'plugins-request' },
+      JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
     settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
   });

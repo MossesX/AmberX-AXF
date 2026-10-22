@@ -154,25 +154,36 @@ export interface EmbedTakeSpec {
   page: boolean;
   /** chrome the app hides while the host takes this function (the app menu: the host's menu carries it instead) */
   hides: string[];
+  /**
+   * Lock instead of drop (plugins, Brett Oct 22 2026: "grey out all hooks in the apps to plugin related stuff with a
+   * note plugins are managed in Patches"): the app keeps showing this function's hooks, greyed out with a note that the
+   * host manages it, and running one shows that note instead of asking the host. False = the hooks are dropped.
+   */
+  lock: boolean;
 }
 
 const TAKES = new Map<string, EmbedTakeSpec>([
-  ['settings', { actions: ['app.settings', 'settings.open', 'nav:settings'], prefixes: ['settings.open:'], views: ['settings'], providers: ['settings'], page: true, hides: [] }],
+  ['settings', { actions: ['app.settings', 'settings.open', 'nav:settings'], prefixes: ['settings.open:'], views: ['settings'], providers: ['settings'], page: true, hides: [], lock: false }],
   // The host shows the app's notifications (Patches on Android): the app hands them over instead of posting its own.
-  ['notifications', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [] }],
+  ['notifications', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
   // The host's application menu carries the app's (Brett, Oct 22 2026: "all app menus are inherited by Patches' menu and
   // the apps in tabs hide theirs"): the app hides its own menu bar and sends its menu to the host (`menu` message); the
   // host runs a picked item back in the app (`run` message).
-  ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'] }],
+  ['app-menu', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['app-menu'], lock: false }],
   // The host shows every banner's settings in one place (Brett, Oct 22 2026: "Patches' settings renders the combined
   // banners interface in a tab"): Banner settings opens in the host, which shows the app's page `banners` on its own.
-  ['banners', { actions: ['banners.settings'], prefixes: ['banners.settings:'], views: ['banners'], providers: [], page: true, hides: [] }],
+  ['banners', { actions: ['banners.settings'], prefixes: ['banners.settings:'], views: ['banners'], providers: [], page: true, hides: [], lock: false }],
+  // The host manages the app's plugins (Brett, Oct 22 2026: "disable all plugins from the apps and only enable them in
+  // Patches"): the app loads only the plugins the host enabled for it (`plugins-enabled` message), reports the plugins
+  // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
+  // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
+  ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
 export function registerEmbedTake(id: string, spec: Partial<EmbedTakeSpec>): void {
   if (!HOST_ID.test(id) || id === HIDE_NONE) throw new Error(`embed: bad function id "${id}"`);
-  TAKES.set(id, { actions: [...(spec.actions ?? [])], prefixes: [...(spec.prefixes ?? [])], views: [...(spec.views ?? [])], providers: [...(spec.providers ?? [])], page: spec.page === true, hides: [...(spec.hides ?? [])] });
+  TAKES.set(id, { actions: [...(spec.actions ?? [])], prefixes: [...(spec.prefixes ?? [])], views: [...(spec.views ?? [])], providers: [...(spec.providers ?? [])], page: spec.page === true, hides: [...(spec.hides ?? [])], lock: spec.lock === true });
 }
 
 /** Functions a host can take over, in registry order. */
@@ -241,12 +252,21 @@ export function detectEmbedFull(search: string | null | undefined, userAgent: st
 /** Does the host take this function over? */
 export function embedTakesFn(e: Embed | null | undefined, fn: string): boolean { return !!e?.takes?.includes(fn); }
 
-/** Is this action one of a taken function's hooks? Returns the function id, or null. */
+/** Is this action one of a taken function's hooks? Returns the function id, or null. Locked functions never count. */
 export function embedTakenBy(e: Embed | null | undefined, action: string | null | undefined): string | null {
+  return actionOf(e, action, false);
+}
+
+/** Is this action a hook of a function the host locks (shown greyed out, with a note)? Returns the function id, or null. */
+export function embedLockedBy(e: Embed | null | undefined, action: string | null | undefined): string | null {
+  return actionOf(e, action, true);
+}
+
+function actionOf(e: Embed | null | undefined, action: string | null | undefined, lock: boolean): string | null {
   if (!e?.takes?.length || typeof action !== 'string' || !action) return null;
   for (const fn of e.takes) {
     const s = TAKES.get(fn);
-    if (!s) continue;
+    if (!s || s.lock !== lock) continue;
     if (s.actions.includes(action) || s.prefixes.some((p) => action.startsWith(p))) return fn;
     if (action.startsWith('nav:') && s.views.includes(action.slice(4))) return fn;
   }
@@ -254,18 +274,31 @@ export function embedTakenBy(e: Embed | null | undefined, action: string | null 
 }
 
 /** Is this view one a taken function owns? Returns the function id, or null. */
-export function embedTakenView(e: Embed | null | undefined, view: string | null | undefined): string | null {
+export function embedTakenView(e: Embed | null | undefined, view: string | null | undefined, lock = false): string | null {
   if (!e?.takes?.length || typeof view !== 'string') return null;
-  for (const fn of e.takes) if (TAKES.get(fn)?.views.includes(view)) return fn;
+  for (const fn of e.takes) { const s = TAKES.get(fn); if (s && s.lock === lock && s.views.includes(view)) return fn; }
   return null;
 }
 
 /** Is this app-menu live list one a taken function owns? */
-export function embedTakenProvider(e: Embed | null | undefined, provider: string | null | undefined): string | null {
+export function embedTakenProvider(e: Embed | null | undefined, provider: string | null | undefined, lock = false): string | null {
   if (!e?.takes?.length || typeof provider !== 'string') return null;
-  for (const fn of e.takes) if (TAKES.get(fn)?.providers.includes(provider)) return fn;
+  for (const fn of e.takes) { const s = TAKES.get(fn); if (s && s.lock === lock && s.providers.includes(provider)) return fn; }
   return null;
 }
+
+/** The host's name as people read it (`patches` → `Patches`). */
+export function embedHostLabel(e: Embed | null | undefined): string {
+  const h = e?.host ?? '';
+  return h ? h.charAt(0).toUpperCase() + h.slice(1) : 'the host app';
+}
+
+/** The note a locked hook shows (`Plugins are managed in Patches`), or null when the host doesn't lock that function. */
+export function embedLockNote(e: Embed | null | undefined, fn: string | null | undefined): string | null {
+  if (!fn || !embedTakesFn(e, fn) || !TAKES.get(fn)?.lock) return null;
+  return `${titleFromFn(fn)} are managed in ${embedHostLabel(e)}`;
+}
+const titleFromFn = (fn: string) => { const s = fn.replace(/[-_.]+/g, ' '); return s.charAt(0).toUpperCase() + s.slice(1); };
 
 /** Host side: user-agent suffix with the functions it takes (`AXF-Embed/<host>[/…] AXF-Embed-Take/<fn>+<fn>`). */
 export function userAgentSuffixFull(host: string, hidden: readonly string[] = DEFAULT_HIDDEN, takes: readonly string[] = []): string {
@@ -314,7 +347,16 @@ export type EmbedMessage =
   /** host → guest: send your menu now (the host just loaded, or the user is opening its menu) */
   | { $axf: typeof EMBED_MESSAGE; type: 'menu-request' }
   /** host → guest: the user picked this item of your menu in the host's menu; run it */
-  | { $axf: typeof EMBED_MESSAGE; type: 'run'; id: string };
+  | { $axf: typeof EMBED_MESSAGE; type: 'run'; id: string }
+  /** guest → host (the host takes `plugins`): every plugin this app has, and whether the app itself had it on */
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins'; plugins: EmbedPlugin[] }
+  /** host → guest (the host takes `plugins`): the plugins the host has installed and enabled for this app; load only these */
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
+  /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
+
+/** One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). */
+export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean }
 
 /**
  * One item of a menu an app sends its host. Data only: no action ids cross over. The app keeps id → action and runs
@@ -337,7 +379,7 @@ export interface EmbedMenuItem {
 }
 export interface EmbedMenu { id: string; label: string; items: EmbedMenuItem[] }
 
-export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40 } as const;
+export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40 } as const;
 const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
 const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
@@ -377,6 +419,27 @@ function parseMenus(raw: unknown): EmbedMenu[] | null {
   return menus;
 }
 const TAB_ID = /^[a-z0-9][a-z0-9._:-]{0,63}$/i;
+/** A plugin id (`ai.amberx.axf.example.alpha`): letters, digits, dot, dash, underscore; ≤ 120. */
+export const EMBED_PLUGIN_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/;
+
+/** A plugin list an app sent, checked and cut to size (bad entries dropped, repeats dropped, ≤ 200). */
+function parsePlugins(raw: unknown): EmbedPlugin[] | null {
+  if (!Array.isArray(raw)) return null;
+  const L = EMBED_MESSAGE_LIMITS;
+  const seen = new Set<string>();
+  const out: EmbedPlugin[] = [];
+  for (const v of raw) {
+    if (out.length >= L.plugins) break;
+    if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
+    const o = v as Record<string, unknown>;
+    if (typeof o.id !== 'string' || !EMBED_PLUGIN_ID.test(o.id) || seen.has(o.id)) continue;
+    seen.add(o.id);
+    const p: EmbedPlugin = { id: o.id, name: clip(o.name, L.label) ?? o.id, on: o.on !== false };
+    const ver = clip(o.version, L.version); if (ver) p.version = ver;
+    out.push(p);
+  }
+  return out;
+}
 const LEVELS = ['info', 'success', 'warning', 'error'] as const;
 
 function clip(v: unknown, max: number): string | undefined {
@@ -400,7 +463,9 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     // a menu may be long; every other message stays small
     if (raw.length > EMBED_MESSAGE_LIMITS.menuRaw) return null;
     try { m = JSON.parse(raw); } catch { return null; }
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && (m as { type?: unknown } | null)?.type !== 'menu') return null;
+    // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
+    const t = (m as { type?: unknown } | null)?.type;
+    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled') return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -435,6 +500,16 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     case 'run': {
       return typeof o.id === 'string' && MENU_ITEM_ID.test(o.id) ? { $axf: EMBED_MESSAGE, type: 'run', id: o.id } : null;
     }
+    case 'plugins': {
+      const plugins = parsePlugins(o.plugins);
+      return plugins ? { $axf: EMBED_MESSAGE, type: 'plugins', plugins } : null;
+    }
+    case 'plugins-enabled': {
+      if (!Array.isArray(o.plugins)) return null;
+      const ids = [...new Set(o.plugins.filter((x): x is string => typeof x === 'string' && EMBED_PLUGIN_ID.test(x)))].slice(0, EMBED_MESSAGE_LIMITS.plugins);
+      return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
+    }
+    case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
     default: return null;
   }
 }

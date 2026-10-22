@@ -124,17 +124,20 @@ export function Toolbar({ views }: { views: ViewMap }) {
             if (gate === 'hide') return null;
             if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
             const count = it.badge ? rt.badge(it.badge) : 0;
+            // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
+            const hostLock = rt.lockedByHost({ action: it.action });
+            const off = gate === 'disable' || !!hostLock;
             return (
               <button
                 key={it.id}
                 type="button"
                 className="fx-toolbtn"
-                disabled={gate === 'disable'}
-                title={gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
+                disabled={off}
+                title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
                 aria-label={count ? `${it.label} (${count} new)` : it.label}
                 onClick={() => rt.dispatch(it.action)}
               >
-                {tb.data.variant !== 'labels' && <Icon name={gate === 'disable' ? 'lock' : it.icon} size={16} />}
+                {tb.data.variant !== 'labels' && <Icon name={off ? 'lock' : it.icon} size={16} />}
                 {tb.data.variant !== 'icons' && <span>{it.label}</span>}
                 {count > 0 && <span className="fx-toolbtn__badge" aria-hidden="true">{count > 99 ? '99+' : count}</span>}
               </button>
@@ -175,7 +178,8 @@ export function NavMenu({ views }: { views: ViewMap }) {
           <div key={i} className="fx-nav__section">
             {sec.label && <div className="fx-nav__label">{sec.label}</div>}
             {items.map((it) => {
-              const locked = rt.gate(it.requires) === 'disable';
+              const hostLock = rt.lockedByHost({ view: it.view });
+              const locked = rt.gate(it.requires) === 'disable' || !!hostLock;
               return (
                 <button
                   key={it.id}
@@ -183,7 +187,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   className={`fx-nav__item ${state.view === it.view ? 'is-active' : ''}`}
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
-                  title={it.label}
+                  title={hostLock ? `${it.label} — ${hostLock}` : it.label}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
                   onClick={() => rt.navigate(it.view)}
