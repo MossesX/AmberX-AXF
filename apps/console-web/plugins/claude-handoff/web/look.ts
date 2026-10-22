@@ -174,4 +174,16 @@ export function resetLook(defaults: Partial<Record<LookType, string>>): void {
   save({ ...emptyDoc(), marks: st.doc.marks, treeOpen: st.doc.treeOpen });
 }
 
+/** The saved look document as text, for the Files dialog (read from the hub with this browser's session, else settings). */
+export async function lookDocText(): Promise<string> {
+  if (hub) {
+    const r = await fetch(hubUrl(), { credentials: 'include', cache: 'no-store', redirect: 'error', headers: { Accept: 'application/json' } });
+    if (r.status === 404) return '(not saved yet: it is made the first time you change the installer look)';
+    if (!r.ok) throw new Error(`${hub} answered ${r.status}.`);
+    return JSON.stringify(JSON.parse((await r.text()) || '{}'), null, 2);
+  }
+  const raw = rt?.settings.get(LOCAL_KEY);
+  return typeof raw === 'string' && raw ? JSON.stringify(JSON.parse(raw), null, 2) : '(not saved yet)';
+}
+
 export const lookWhere = () => (st.where === 'hub' ? `axHub (${hub}/data/${LOOK_PROJECT}/${LOOK_PATH})` : st.where === 'local' ? 'this app’s settings (no hub configured)' : 'loading…');

@@ -9,6 +9,7 @@ Data only in .axf-console/plugins/claude-handoff/ (state, config, claude.ai list
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -404,3 +405,112 @@ def reminder_check() -> dict[str, Any]:
     fired = check_reminder()
     return {"fired": fired, "reminder": _reminder_view(_state(), _config())}
 
+
+
+# ---------------- files the plugin makes or edits (Files dialog) ----------------
+
+TEXT_MAX = 400_000
+LOOK_DOC = ("shared", "settings/claude-handoff-look.json")
+
+
+def _fid(section: str, path: str) -> str:
+    return hashlib.sha1(f"{section}:{path}".encode()).hexdigest()[:16]
+
+
+def _entry(section: str, label: str, path: Path, made: str, by: str, shown: str | None = None) -> dict[str, Any]:
+    st = path.stat() if path.is_file() and not path.is_symlink() else None
+    rel = shown or str(path)
+    return {"id": _fid(section, rel), "section": section, "label": label, "path": rel, "made": made, "by": by,
+            "exists": st is not None, "bytes": st.st_size if st else 0, "modifiedAt": int(st.st_mtime * 1000) if st else None}
+
+
+def _walk(base: Path) -> list[Path]:
+    if not base.is_dir() or base.is_symlink():
+        return []
+    out = []
+    for p in sorted(base.rglob("*")):
+        if p.is_symlink() or not p.is_file():
+            continue
+        if any(part.startswith(".") and part.endswith(".tmp") for part in p.parts):
+            continue
+        out.append(p)
+    return out
+
+
+def file_list() -> list[dict[str, Any]]:
+    """Every file this plugin writes or changes, with what writes it. Paths are shown relative to the repo / data folder."""
+    root, data = _root(), _data()
+    items: list[dict[str, Any]] = []
+    kit = root / "_claude" / "handoff"
+    for p in _walk(kit):
+        if "preview" in p.relative_to(kit).parts[:1]:
+            continue
+        items.append(_entry("kit", p.name, p, "makes", "Publish / Assemble prompt (handoff.mjs build), committed to GitHub", str(p.relative_to(root))))
+    names = {"state.json": "Reminder + last publish (the server)", "config.json": "Settings → Plugins → Claude handoff", "claude-ai.json": "claude.ai items (Tools → Claude handoff)"}
+    for p in _walk(data):
+        rel = p.relative_to(data)
+        if rel.parts[0] == "preview":
+            by = "Preview / Installer preview (handoff.mjs build --out)"
+        elif rel.parts[0] == "machines":
+            by = "Each machine's handoff.mjs collect (SessionStart hook or the console)"
+        else:
+            by = names.get(rel.name, "The plugin's server part")
+        items.append(_entry("data", p.name, p, "makes", by, f".axf-console/plugins/{FOLDER}/{rel}"))
+    for m in ("CLAUDE.md", "apps/console-web/plugins/README.md"):
+        items.append(_entry("docs", Path(m).name, root / m, "edits", "Its status line (marked axf-plugin:claude-handoff); uninstall --all takes it out", m))
+    look_local = Path(os.environ.get("AXHUB_PROJECTS_DIR", "/projects")) / "_shared" / "_data" / LOOK_DOC[1]
+    look = _entry("hub", "claude-handoff-look.json", look_local, "makes", "Installer look (layout, roll switches, rolled themes) on axHub's data server", f"axHub: /data/{LOOK_DOC[0]}/{LOOK_DOC[1]}")
+    look["remote"] = not look["exists"]
+    items.append(look)
+    settings = Path.home() / ".claude" / "settings.json"
+    items.append(_entry("machine", "settings.json", settings, "edits", "handoff.mjs hooks install adds one SessionStart hook (this machine)", "~/.claude/settings.json"))
+    queue = Path.home() / ".axf-handoff"
+    for p in _walk(queue):
+        items.append(_entry("machine", p.name, p, "makes", "handoff.mjs collect: the copy waiting to be sent, and the hourly stamp", f"~/.axf-handoff/{p.relative_to(queue)}"))
+    return items
+
+
+def _locate(fid: str) -> tuple[dict[str, Any], Path | None]:
+    root, data = _root(), _data()
+    for it in file_list():
+        if it["id"] != fid:
+            continue
+        shown = it["path"]
+        if it["section"] == "kit" or it["section"] == "docs":
+            return it, root / shown
+        if it["section"] == "data":
+            return it, data / shown.split(f".axf-console/plugins/{FOLDER}/", 1)[1]
+        if it["section"] == "hub":
+            return it, None if it.get("remote") else Path(os.environ.get("AXHUB_PROJECTS_DIR", "/projects")) / "_shared" / "_data" / LOOK_DOC[1]
+        if shown.startswith("~/"):
+            return it, Path.home() / shown[2:]
+    raise HTTPException(404, "not one of this plugin's files")
+
+
+@router.get("/files")
+def get_files() -> dict[str, Any]:
+    return {"files": file_list(), "look": {"project": LOOK_DOC[0], "path": LOOK_DOC[1]}}
+
+
+@router.get("/files/read")
+def read_file(id: str) -> dict[str, Any]:
+    """One file from the list above (by id only: never an arbitrary path)."""
+    if not re.fullmatch(r"[0-9a-f]{16}", id):
+        raise HTTPException(400, "bad id")
+    it, path = _locate(id)
+    if path is None:
+        return {**it, "text": None, "remote": True}
+    if not path.is_file() or path.is_symlink():
+        return {**it, "text": None, "missing": True}
+    raw = path.read_bytes()[:TEXT_MAX]
+    text = raw.decode("utf-8", errors="replace")
+    if it["section"] == "machine" and path.name == "settings.json":
+        # only this plugin's entry matters here, and env values may be secrets: show names, never values
+        try:
+            j = json.loads(text)
+            if isinstance(j, dict) and isinstance(j.get("env"), dict):
+                j["env"] = {k: "[hidden]" for k in j["env"]}
+            text = json.dumps(j, indent=2)
+        except ValueError:
+            text = "(not valid JSON)"
+    return {**it, "text": text, "truncated": len(raw) >= TEXT_MAX}

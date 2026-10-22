@@ -15,6 +15,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './claude-handoff.css';
 import { appMenu } from './menu';
 import { InstallerDialog } from './installer';
+import { FILES_DIALOG, FILE_TAB_KIND, FileTab, FilesDialog } from './files';
 import { loadLook } from './look';
 import { LookDialog } from './lookDialog';
 import { FOLDER, ID, VERSION, VIEW, publish, start } from './store';
@@ -32,6 +33,7 @@ export const plugin: AxfWebLibrary = {
     start(rt);
     void loadLook(rt); // the installer look (layout, rolled themes) from axHub's data server
     rt.actions.register('claude-handoff.look', () => rt.openDialog(LOOK), { label: 'Installer look: layouts, gauges, meters, themes, roll' });
+    rt.actions.register('claude-handoff.files', () => rt.openDialog(FILES_DIALOG), { label: 'Files the Claude handoff plugin makes or edits' });
     rt.actions.register('claude-handoff.preview', () => rt.navigate('claude-handoff-preview'), { label: 'Watch the Claude handoff installer run (preview)' });
     rt.actions.register('claude-handoff.open', () => rt.navigate(VIEW), { label: 'Open Claude handoff' });
     rt.actions.register('claude-handoff.assemble', () => rt.openDialog(INSTALLER), { label: 'Assemble the Claude handoff prompt' });
@@ -45,8 +47,14 @@ export const plugin: AxfWebLibrary = {
   dialogs: {
     [INSTALLER]: { title: 'Claude handoff installer', icon: 'rocket', searchable: false, render: (_p, close) => <InstallerDialog close={close} /> },
     [LOOK]: { title: 'Installer look', icon: 'palette', render: () => <LookDialog /> },
+    [FILES_DIALOG]: { title: 'Claude handoff files', icon: 'file', render: () => <FilesDialog /> },
   },
-  contextMenu: [{ id: 'claude-handoff.default', target: 'default', order: 93, items: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', action: 'claude-handoff.open' }] }],
+  // the file window's tabs (one floating window, a tab per file)
+  tabs: { [FILE_TAB_KIND]: (t) => <FileTab tab={t} /> },
+  contextMenu: [{ id: 'claude-handoff.default', target: 'default', order: 93, items: [
+    { id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', action: 'claude-handoff.open' },
+    { id: 'claude-handoff-files', label: 'Claude handoff files…', icon: 'file', action: 'claude-handoff.files' },
+  ] }],
   // After Codebase changes (4.7) and the push banner (4.8), before approvals (5).
   banners: [{ id: 'claude-handoff', label: 'Claude handoff reminder', icon: 'rocket', settingsTab: 'claude-handoff', order: 4.9, render: () => <HandoffBanner /> }],
   settingsTabs: [{ id: 'claude-handoff', label: 'Claude handoff', icon: 'rocket', parent: 'plugins', order: 46, description: 'The handoff kit for a new Claude account and its reminder.' }],

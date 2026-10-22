@@ -165,6 +165,26 @@ check(any(f["path"] == "HANDOFF.md" for f in p["files"]) and "MossesX/test-hando
 check(c.get("/p/preview/file", params={"path": "HANDOFF.md"}).status_code == 200, "preview file readable")
 check(c.get("/p/preview/file", params={"path": "../../state.json"}).status_code == 404, "preview can't read outside the kit")
 
+# files the plugin makes or edits
+(HOME / ".claude").mkdir(exist_ok=True)
+(HOME / ".claude" / "settings.json").write_text(json.dumps({"env": {"SOME_TOKEN": "ghp_" + "y" * 36}, "hooks": {}}))
+fl = c.get("/p/files").json()["files"]
+secs = {f["section"] for f in fl}
+check({"kit", "data", "docs", "hub", "machine"} <= secs, f"files list covers kit, data, docs, axHub and this machine ({sorted(secs)})")
+kit_md = next(f for f in fl if f["section"] == "kit" and f["path"].endswith("HANDOFF.md"))
+check(kit_md["made"] == "makes" and kit_md["exists"] and kit_md["bytes"] > 0, "the kit's HANDOFF.md is listed with its size")
+check(any(f["section"] == "data" and f["path"].endswith("state.json") for f in fl), "plugin data files are listed")
+check(any(f["section"] == "docs" and f["made"] == "edits" for f in fl), "docs it edits are marked edits")
+r = c.get("/p/files/read", params={"id": kit_md["id"]}).json()
+check(r["text"] and "Handoff" in r["text"], "a listed file reads by id")
+st = next(f for f in fl if f["section"] == "machine" and f["path"] == "~/.claude/settings.json")
+r = c.get("/p/files/read", params={"id": st["id"]}).json()
+check("ghp_" not in r["text"] and "[hidden]" in r["text"], "~/.claude/settings.json shows env names, never values")
+check(c.get("/p/files/read", params={"id": "0" * 16}).status_code == 404, "an id not in the list is refused")
+check(c.get("/p/files/read", params={"id": "../../etc/passwd"}).status_code == 400, "a path instead of an id is refused")
+hub = next(f for f in fl if f["section"] == "hub")
+check(c.get("/p/files/read", params={"id": hub["id"]}).json().get("remote") is True, "the axHub look document is read by the browser (remote)")
+
 # no token: assemble still gives the last published prompt and says why
 os.environ.pop("GITHUB_TOKEN")
 a = c.post("/p/assemble", json={"publish": True}).json()
