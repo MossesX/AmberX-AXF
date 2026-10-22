@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { filterRows, MODELS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
-import { bannerOn, defaultSort, enabledSources, fmt, hideBanner, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
+import { bannerOn, defaultSort, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
 /* ---------------- time ---------------- */
@@ -499,6 +499,12 @@ export function BuildBanner() {
   const s = useStore();
   const now = useNow(true);
   const { sessions } = useLive();
+  // Launches expanded; "_" folds it to its title line, the chevron unfolds it (Brett, Oct 21 2026: building banners
+  // minimize, they don't close).
+  const [full, setFull] = useState(true);
+  const fold = full
+    ? <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setFull(false)}><Icon name="minimize" size={16} /></button>
+    : <button type="button" className="fx-iconbtn" aria-label="Expand" title="Show the details" aria-expanded={false} onClick={() => setFull(true)}><Icon name="chevron-down" size={16} /></button>;
   const live = s.live.filter((e) => e.row);
   const fin = s.finished.filter((e) => e.row);
   if (!bannerOn()) return null;
@@ -517,19 +523,19 @@ export function BuildBanner() {
           <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
           <span className="axp-build-manager-banner__text">
             <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
-            <span className="axp-build-manager-banner__meta">
+            {full && <span className="axp-build-manager-banner__meta">
               <ModelChip model={first.model === 'Other' ? 'Opus' : first.model} />
               <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
               {cost != null && <Badge icon="zap">{first.costActual == null ? '~' : ''}{money(cost)}</Badge>}
               {first.stepsTotal > 0 && <Badge icon="list">{first.stepsDone}/{first.stepsTotal}</Badge>}
               <Badge tone="muted">{first.source}{first.host && first.host !== first.source ? ` · ${first.host}` : ''}</Badge>
               {more > 0 && <Badge>+{more} more</Badge>}
-            </span>
-            {first.currentStep && <span className="axp-build-manager-banner__step">{first.currentStep}</span>}
-            {first.progress != null && <Bar value={first.progress} label="Build progress" />}
+            </span>}
+            {full && first.currentStep && <span className="axp-build-manager-banner__step">{first.currentStep}</span>}
+            {full && first.progress != null && <Bar value={first.progress} label="Build progress" />}
           </span>
         </button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until a new build starts" title="Hide until a new build starts" onClick={() => hideBanner(key)}><Icon name="x" size={16} /></button>
+        {fold}
       </div>
     );
   }
@@ -547,16 +553,16 @@ export function BuildBanner() {
         <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : failed ? 'x-circle' : 'check-circle'} size={16} /></span>
         <span className="axp-build-manager-banner__text">
           <strong>{summary}</strong>
-          <span className="axp-build-manager-banner__meta">
+          {full && <span className="axp-build-manager-banner__meta">
             <ModelChip model={first.row!.model} />
             <Badge icon="clock">{dur(elapsed)}{first.estimate ? ` / ~${fmt(first.estimate)}` : ''}</Badge>
             {first.row!.stepsTotal > 0 && <Badge icon="list">{first.row!.stepsDone}/{first.row!.stepsTotal}</Badge>}
             {live.length > 1 && <Badge>+{live.length - 1} more</Badge>}
-          </span>
-          {pct != null && <Bar value={pct} label="Build progress" />}
+          </span>}
+          {full && pct != null && <Bar value={pct} label="Build progress" />}
         </span>
       </button>
-      <button type="button" className="fx-iconbtn" aria-label="Hide until a new build starts" title="Hide until a new build starts" onClick={() => hideBanner(key)}><Icon name="x" size={16} /></button>
+      {fold}
     </div>
   );
 }
