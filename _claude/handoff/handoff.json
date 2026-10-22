@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-22T15:05:24.806Z",
+  "generatedAt": "2026-10-22T15:42:11.586Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "5e528ef7a7e18b74ba92d50a9a0ccb7c35d08910",
-  "fingerprint": "678dfbfcebcc53eb",
+  "commit": "81972ad5d1087ec36c820b153a3d1129f6c8b92e",
+  "fingerprint": "57c0c4924c9a54fe",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "5bebca0c96e9ab4a",
-      "bytes": 168789
+      "sha": "0cd5edca61016f2a",
+      "bytes": 169457
     },
     {
       "path": "project.manifest.json",
@@ -546,7 +546,7 @@
   "machines": [
     {
       "host": "console",
-      "collectedAt": "2026-10-22T14:57:23.067Z",
+      "collectedAt": "2026-10-22T15:42:09.456Z",
       "files": 0
     }
   ],
@@ -558,7 +558,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "5bebca0c96e9ab4a"
+      "sha": "0cd5edca61016f2a"
     },
     {
       "path": "context/claude__README.md",
@@ -630,43 +630,43 @@
     },
     {
       "path": "README.md",
-      "sha": "0ae2b6b58ad29bbc"
+      "sha": "71fdde4f57bcaa00"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "a3f71ef5a7f57b1a"
+      "sha": "11accb22f8d45f9e"
     },
     {
       "path": "PROJECT.md",
-      "sha": "b7857380a3e3ece2"
+      "sha": "61ad128d5fa2e34f"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "40f00837216760c2"
+      "sha": "cc74855fda0bedff"
     },
     {
       "path": "FILES.md",
-      "sha": "147f205cf9021c6d"
+      "sha": "e9ec850254a7958f"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "527a3e32ae755b36"
+      "sha": "b5424f343815c48a"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "bed3e3b2ad276496"
+      "sha": "0115ace31b587f94"
     },
     {
       "path": "SECRETS.md",
-      "sha": "353c0407de7842d7"
+      "sha": "351d4d9ee2ffc02e"
     },
     {
       "path": "SETUP.md",
-      "sha": "7c2f81d62350d6d8"
+      "sha": "f07993d209b7c2b6"
     },
     {
       "path": "PROMPT.md",
-      "sha": "1054bde436daa19b"
+      "sha": "6115fdfd1221f1d0"
     },
     {
       "path": "handoff.json",
