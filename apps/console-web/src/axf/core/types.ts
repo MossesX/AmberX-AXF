@@ -404,7 +404,10 @@ export interface AssetDataMap {
 }
 
 export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
-export type ActiveAssets = { [K in AssetType]: string };
+/** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter) may be absent from an app's manifest. */
+export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
+/** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
+export type LateOptionalType = 'gauge' | 'meter';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

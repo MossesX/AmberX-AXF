@@ -590,7 +590,7 @@ export class AxfRuntime {
   /* ---------------- assets ---------------- */
 
   asset<K extends AssetType>(type: K): Asset<K> {
-    return this.registry.get(type, this.state.active[type])!;
+    return this.registry.get(type, this.state.active[type] ?? '')!;
   }
 
   /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
@@ -893,7 +893,7 @@ export class AxfRuntime {
   reset() {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
-    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]?.id ?? '';
+    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t] ?? '')) active[t] = this.registry.list(t)[0]?.id ?? '';
     if (this.principal) {
       // signed in: the account keeps deciding the policy and role
       active['uac-policy'] = this.principal.policy;
