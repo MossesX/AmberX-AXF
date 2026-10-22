@@ -22,7 +22,7 @@ export interface Status {
 export interface Config { remindHours: number; onlyWhenChanged: boolean; autoPublish: boolean; collectConsole: boolean; context: string[] }
 export interface ClaudeItem { id: string; kind: string; name: string; url: string; notes: string; recreate: string }
 export interface ClaudeAi { items: ClaudeItem[]; memory: string; projectInstructions: string; updatedAt?: string }
-export interface Assembled { prompt: string; current: boolean; note: string; published: { pushed?: boolean; sha?: string } | null }
+export interface Assembled { prompt: string; current: boolean; note: string; published: { pushed?: boolean; sha?: string } | null; results?: { id?: string; url?: string; error?: string } }
 /** How the installer's run went (sent when it finishes, kept with the last assembly). */
 export interface RunSummary { elapsed: number; read: number; written: number; filesDone: number; failed: string; log: string[] }
 /** The last assembly on this console (GET last-assembly): its result, the plan its installer walked and the run. */

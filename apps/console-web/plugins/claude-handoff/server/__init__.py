@@ -22,6 +22,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
+from . import results as hub_results
+
 import console_context as cx
 
 FOLDER = "claude-handoff"
@@ -234,8 +236,25 @@ def post_assemble(req: AssembleReq) -> dict[str, Any]:
     prompt = (published or {}).get("prompt") or _node("build", "--out", str(_data() / "preview" / "handoff"))["prompt"]
     _set_state(lastAssembledAt=_now_ms())
     out = {"prompt": prompt, "current": bool(status.get("current")), "published": published, "note": note, "kit": status.get("kit")}
+    kit = _root() / "_claude" / "handoff" if (published or status.get("current")) else _data() / "preview" / "handoff"
+    out["results"] = _publish_results(out, kit, str(status.get("head") or ""))
     _save_last(out)
     return out
+
+
+def _publish_results(result: dict[str, Any], kit: Path, commit: str, run: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Put this assembly on axHub's results browser (the hub's shared data folder); never fails the assembly."""
+    folder = hub_results.results_dir()
+    if folder is None:
+        return {"error": "No results folder here (axHub's /projects isn't mounted), so the results browser on axHub wasn't updated."}
+    man = _read(_root() / "project.manifest.json", {})
+    repo = man.get("repo") or {}
+    try:
+        return hub_results.publish(folder, at_ms=_now_ms(), project=str(man.get("displayName") or man.get("name") or "the project"),
+                                   repo=f"{repo.get('owner', 'MossesX')}/{repo.get('name', 'AmberX-AXF')}", commit=commit,
+                                   result=result, kit=kit, run=run)
+    except OSError as e:
+        return {"error": f"Couldn't write the results for axHub: {e.strerror or e}"}
 
 
 # ---------------- the last assembly (Tools → Claude handoff → Last assembly reopens its results) ----------------
@@ -304,6 +323,13 @@ async def post_last_run(request: Request) -> dict[str, Any]:
         last["run"] = {"elapsed": r.get("elapsed", 0), "read": r.get("read", 0), "written": r.get("written", 0),
                        "filesDone": r.get("filesDone", 0), "failed": r.get("failed", ""), "log": r.get("log", [])}
         _write(_last_path(), last)
+        rid = ((last.get("result") or {}).get("results") or {}).get("id")
+        folder = hub_results.results_dir()
+        if rid and folder is not None:
+            try:
+                hub_results.attach_run(folder, str(rid), last["run"])
+            except OSError:
+                pass  # the results browser keeps the run without its log
     return {"ok": True}
 
 
@@ -533,6 +559,12 @@ def file_list() -> list[dict[str, Any]]:
     look = _entry("hub", "claude-handoff-look.json", look_local, "makes", "Installer look (layout, roll switches, rolled themes) on axHub's data server", f"axHub: /data/{LOOK_DOC[0]}/{LOOK_DOC[1]}")
     look["remote"] = not look["exists"]
     items.append(look)
+    res = hub_results.results_dir()
+    if res is not None:
+        by = "Each assembly: axHub's results browser (/handoff), the last 10 runs"
+        items.append(_entry("hub", "index.json", res / "index.json", "makes", by, "axHub: _shared/_data/handoff/index.json"))
+        for p in sorted((res / "runs").glob("*/run.json")) if (res / "runs").is_dir() else []:
+            items.append(_entry("hub", f"{p.parent.name}/run.json", p, "makes", f"{by} (kit copies in files/)", f"axHub: _shared/_data/handoff/runs/{p.parent.name}/run.json"))
     settings = Path.home() / ".claude" / "settings.json"
     items.append(_entry("machine", "settings.json", settings, "edits", "handoff.mjs hooks install adds one SessionStart hook (this machine)", "~/.claude/settings.json"))
     queue = Path.home() / ".axf-handoff"

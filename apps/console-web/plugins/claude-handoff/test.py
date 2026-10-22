@@ -58,7 +58,8 @@ git("init", "-q", "--bare", "-b", "main", str(BARE))
 git("push", "-q", str(BARE), "main", cwd=ROOT)
 git("remote", "add", "origin", "https://github.com/MossesX/test-handoff.git", cwd=ROOT)
 
-os.environ.update({"AXF_ROOT": str(ROOT), "AXF_HANDOFF_DATA": str(DATA), "AXF_HANDOFF_NO_THREAD": "1", "GITHUB_TOKEN": "test-token",
+RESULTS = Path(tempfile.mkdtemp(prefix="axf-handoff-results-"))
+os.environ.update({"AXF_HANDOFF_RESULTS": str(RESULTS), "AXF_WALL_HUB": "https://hub.example.com", "AXF_ROOT": str(ROOT), "AXF_HANDOFF_DATA": str(DATA), "AXF_HANDOFF_NO_THREAD": "1", "GITHUB_TOKEN": "test-token",
                    "AXF_LIFECYCLE_PUSH_URL": str(BARE), "AXF_LIFECYCLE_BRANCH": "main", "HOME": str(HOME)})
 sys.path.insert(0, str(REPO / "apps/console-web/server"))
 import alerts  # noqa: E402
@@ -150,6 +151,26 @@ check(c.post("/p/last-assembly/run", json={**run, "extra": 1}).status_code == 40
 check(c.post("/p/last-assembly/run", json={**run, "log": ["x" * 401]}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "log": ["x"] * 201}).status_code == 400, "over-long log refused")
 check(c.post("/p/last-assembly/run", json={**run, "elapsed": -1}).status_code == 400 and c.post("/p/last-assembly/run", json={**run, "filesDone": True}).status_code == 400, "bad numbers refused")
 check(oct((mod._data() / "last-assembly.json").stat().st_mode & 0o777) == "0o600", "last-assembly.json is private (0600)")
+
+# the results browser on axHub: one run per assembly in the hub's shared folder, read by the hub (claude-handoff-results@1)
+res = a.get("results") or {}
+check(res.get("id") and res.get("url") == f"https://hub.example.com/handoff/{res['id']}", "assemble publishes the results and returns the hub link")
+idx = json.loads((RESULTS / "index.json").read_text())
+rec = json.loads((RESULTS / "runs" / res["id"] / "run.json").read_text())
+check(idx["$axf"] == "claude-handoff-results@1" and idx["runs"][0]["id"] == res["id"], "index lists the run, newest first")
+check(rec["prompt"] == a["prompt"] and "same repo" in rec["instructions"] and any(f["path"] == "HANDOFF.md" for f in rec["files"]), "run: prompt, instructions, kit file list")
+check((RESULTS / "runs" / res["id"] / "files" / "HANDOFF.md").is_file() and rec["run"]["log"][-1].endswith("ready"), "kit files copied; the installer's log attached")
+check(oct((RESULTS / "index.json").stat().st_mode & 0o777) == "0o664" and oct((RESULTS / "runs").stat().st_mode & 0o7777) == "0o2775", "readable by the hub's group (0664 / 2775)")
+hr = sys.modules[mod.__name__ + ".results"]
+kit_dir = ROOT / "_claude" / "handoff"
+ids = [hr.publish(RESULTS, at_ms=1_700_000_000_000 + i * 1000, project="P", repo="o/r", commit="c", result={"prompt": "p"}, kit=kit_dir)["id"] for i in range(12)]
+listed = [r["id"] for r in json.loads((RESULTS / "index.json").read_text())["runs"]]
+check(len(listed) == 10 and listed[0] == res["id"] and ids[-1] in listed and ids[0] not in listed, "only the last 10 runs are kept (newest first)")
+check(not (RESULTS / "runs" / ids[0]).exists() and (RESULTS / "runs" / ids[-1]).is_dir(), "dropped runs' folders are removed")
+check(not hr.attach_run(RESULTS, "../x", {}) and not hr.attach_run(RESULTS, "20260101-000000-zzzz", {}), "attach refuses bad or unknown run ids")
+(kit_dir / "evil-link").symlink_to("/etc/hostname")
+check(all(rel != "evil-link" for rel, _ in hr.kit_files(kit_dir)), "symlinks in the kit are never copied")
+(kit_dir / "evil-link").unlink()
 
 # claude.ai items
 ca = c.get("/p/claude-ai").json()
