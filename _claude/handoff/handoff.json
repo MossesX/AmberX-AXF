@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-22T11:10:16.835Z",
+  "generatedAt": "2026-10-22T14:19:52.384Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "57be91bc7b1a1b223bbc92e680940146f834b9c3",
-  "fingerprint": "069197bd99ee1ef4",
+  "commit": "cc349db424e21c08ae6ccc1c778172471014ec4f",
+  "fingerprint": "1fb1e376547a3cf7",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "2e1fc25e6471aba9",
-      "bytes": 162530
+      "sha": "eda0cd6e468e683e",
+      "bytes": 167984
     },
     {
       "path": "project.manifest.json",
@@ -401,20 +401,20 @@
     {
       "path": "framework/spec/PORTING.md",
       "role": "spec",
-      "sha": "9ecc3f72b88a4147",
-      "bytes": 8637
+      "sha": "5bd1d3135c489825",
+      "bytes": 9199
     },
     {
       "path": "framework/spec/THEMING.md",
       "role": "spec",
-      "sha": "dca72c6280ff9a9f",
-      "bytes": 8476
+      "sha": "05100ab5eaefeced",
+      "bytes": 9320
     },
     {
       "path": "apps/console-web/plugins/README.md",
       "role": "spec",
-      "sha": "ab799e0732ca7d2e",
-      "bytes": 21359
+      "sha": "40e5273f073685b5",
+      "bytes": 21966
     },
     {
       "path": "framework/boilerplates/README.md",
@@ -543,7 +543,13 @@
       "bytes": 681
     }
   ],
-  "machines": [],
+  "machines": [
+    {
+      "host": "console",
+      "collectedAt": "2026-10-22T14:19:50.641Z",
+      "files": 0
+    }
+  ],
   "claudeAi": {
     "items": 8,
     "memory": false,
@@ -552,7 +558,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "2e1fc25e6471aba9"
+      "sha": "eda0cd6e468e683e"
     },
     {
       "path": "context/claude__README.md",
@@ -600,11 +606,11 @@
     },
     {
       "path": "context/framework__spec__PORTING.md",
-      "sha": "9ecc3f72b88a4147"
+      "sha": "5bd1d3135c489825"
     },
     {
       "path": "context/framework__spec__THEMING.md",
-      "sha": "dca72c6280ff9a9f"
+      "sha": "05100ab5eaefeced"
     },
     {
       "path": "context/framework__spec__INTEROP.md",
@@ -612,7 +618,11 @@
     },
     {
       "path": "context/apps__console-web__plugins__README.md",
-      "sha": "ab799e0732ca7d2e"
+      "sha": "40e5273f073685b5"
+    },
+    {
+      "path": "user/console/settings-summary.json",
+      "sha": "7199f2fa8753380c"
     },
     {
       "path": "sources/claude-ai.json",
@@ -620,43 +630,43 @@
     },
     {
       "path": "README.md",
-      "sha": "35c01ec3e6b8cf7f"
+      "sha": "6e1b78f94310677e"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "2e699597b5288f7f"
+      "sha": "fd24a84e6146feaf"
     },
     {
       "path": "PROJECT.md",
-      "sha": "a79f82d64fba0870"
+      "sha": "54fb1af026357174"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "28715a41c876bda0"
+      "sha": "c929f72fd8febc8e"
     },
     {
       "path": "FILES.md",
-      "sha": "738b5d863ddcfc3d"
+      "sha": "b714904d7f0135e9"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "22ee77b7f950f025"
+      "sha": "ae5d61490e1dd7dd"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "f5ac4ca7756c47ef"
+      "sha": "da1c6cec75155e7f"
     },
     {
       "path": "SECRETS.md",
-      "sha": "e446b37629418038"
+      "sha": "6988b570d18cd180"
     },
     {
       "path": "SETUP.md",
-      "sha": "f33a20aec8a3a162"
+      "sha": "3391edb1f476acd0"
     },
     {
       "path": "PROMPT.md",
-      "sha": "16d5bc604365d79f"
+      "sha": "45a367d9aa19e91c"
     },
     {
       "path": "handoff.json",
