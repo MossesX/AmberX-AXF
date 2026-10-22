@@ -7,8 +7,8 @@ import { Icon, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
 import type { AxfRuntime } from './axf/core';
 import {
-  BANNERS_KEY, SETTINGS_APPS, SETTINGS_APP_KEY, TABS, fromApp, isSettingsApp, openTabMessage, parseStripMessage,
-  settingsUrl, stripUrl, tabOrigin, tabUrl, type PatchTab, type SettingsApp,
+  BANNERS_KEY, SETTINGS_APPS, SETTINGS_APP_KEY, TABS, fromApp, guestMenuCounters, guestMenuItems, isSettingsApp, openTabMessage, parseStripMessage,
+  runMessage, settingsUrl, stripUrl, tabOrigin, tabUrl, type PatchTab, type SettingsApp,
 } from './patches';
 
 /* ---------------- shared state: which app's tab the combined settings shows, and a sub-tab to open ---------------- */
@@ -167,11 +167,33 @@ export function useAppMessages() {
       const m = fromApp(e.data);
       if (!m) return;
       if (m.type === 'open-settings') openSettings(rt, f.tab.id, m.tab);
+      else if (m.type === 'menu' && f.kind === 'app') showGuestMenu(rt, f.tab, m.menus);
       else if (m.type === 'notify') rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level === 'warning' ? 'warning' : m.level === 'success' ? 'success' : 'info', `${f.tab.label}: ${m.title}`);
     };
     window.addEventListener('message', onMsg);
     return () => window.removeEventListener('message', onMsg);
   }, [rt]);
+}
+
+/* ---------------- the apps' menus in Patches' application menu (embed@1 take `app-menu`) ---------------- */
+
+/** Put an app's menu into Patches' application menu as one top-level menu (replacing what it sent before). */
+function showGuestMenu(rt: AxfRuntime, t: PatchTab, menus: Parameters<typeof guestMenuItems>[1]) {
+  const module = `patches.guest.${t.id}`;
+  for (const [name, n] of Object.entries(guestMenuCounters(t.id, menus))) rt.setBadge(name, n);
+  rt.removeAppMenuItems(module);
+  const items = guestMenuItems(t.id, menus);
+  if (!items.length) return;
+  rt.addAppMenuItems({ id: module, module, menu: `app-${t.id}`, menuLabel: t.label, menuOrder: 20 + TABS.indexOf(t), items });
+}
+
+/** A picked item of an app's menu: bring its tab up, then ask the app to run it (it runs only what it offered). */
+function runGuestItem(rt: AxfRuntime, tabId: string, id: string) {
+  const t = TABS.find((x) => x.id === tabId);
+  if (!t || !id) return;
+  rt.navigate(t.id);
+  const origin = tabOrigin(t, t.key ? rt.settings.get(t.key) : null);
+  for (const [w, f] of frames) if (f.kind === 'app' && f.tab.id === t.id) try { w.postMessage(runMessage(id), origin); } catch { /* frame gone */ }
 }
 
 /* ---------------- the library ---------------- */
@@ -193,6 +215,7 @@ export const patchesLibrary: AxfWebLibrary = {
       if (!t) return rt.toast('Pick a tab first.', 'info', 'Open');
       window.open(`${tabOrigin(t, t.key ? rt.settings.get(t.key) : null)}${t.path}`, '_blank', 'noopener');
     }, { label: 'Open the tab in front in a new tab' });
+    rt.actions.register('patches.menu', ([tab, id]) => runGuestItem(rt, tab ?? '', id ?? ''), { label: 'Run an item of a tab app\'s menu', params: true, searchable: false });
     rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
   },
   settings: [{

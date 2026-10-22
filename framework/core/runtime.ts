@@ -13,7 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMessage } from './engines/embed';
+import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -1037,7 +1037,11 @@ export class AxfRuntime {
     const handle = (raw: unknown) => {
       const m = parseEmbedMessage(raw);
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
+      if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
+      if (m?.type === 'run') this.runSharedMenuItem(m.id);
     };
+    // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
+    if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
     // Android hosts can't post into the page; they call this instead (evaluateJavascript).
     (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
     const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
@@ -1047,6 +1051,81 @@ export class AxfRuntime {
       if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
       handle(e.data);
     });
+  }
+
+  /* ---------------- embed@1: the host's menu carries this app's (take `app-menu`) ---------------- */
+
+  /** id → action of the menu last sent to the host: `run` messages can only run what this app offered. */
+  private sharedMenuRun = new Map<string, string>();
+  private sharedMenuText = '';
+  private sharedMenuTimer: ReturnType<typeof setTimeout> | null = null;
+  /** live lists as last loaded (refreshed on a host's request and every minute, not on every state change) */
+  private sharedMenuLists = new Map<string, CompiledMenuItem[]>();
+
+  /** Send the menu soon after start, after state changes (debounced) and every minute (live lists). */
+  private startMenuShare(): void {
+    // never keeps a non-browser host (tests, Node) alive
+    const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
+    const later = (ms: number, refresh = false) => {
+      if (this.sharedMenuTimer) clearTimeout(this.sharedMenuTimer);
+      this.sharedMenuTimer = setTimeout(() => { this.sharedMenuTimer = null; void this.shareAppMenu({ refresh }); }, ms);
+      unref(this.sharedMenuTimer);
+    };
+    unref(setTimeout(() => { later(0, true); this.subscribe(() => later(1500)); }, 600));
+    unref(setInterval(() => later(0, true), 60_000));
+  }
+
+  /**
+   * Send this app's application menu to the host that took it over (`menu` message): data only (ids, labels, icons,
+   * check marks, counts, locks); the actions stay here. Unchanged menus aren't sent again unless `force`.
+   */
+  async shareAppMenu(opts: { force?: boolean; refresh?: boolean } = {}): Promise<boolean> {
+    if (!this.hostTakes('app-menu') || this.embedded?.page) return false;
+    const run = new Map<string, string>();
+    const MAX_DEPTH = 4;
+    const list = async (provider: string): Promise<CompiledMenuItem[]> => {
+      if (!opts.refresh && this.sharedMenuLists.has(provider)) return this.sharedMenuLists.get(provider)!;
+      let items: CompiledMenuItem[] = [];
+      try { items = await this.loadAppMenuProvider(provider); } catch { items = this.sharedMenuLists.get(provider) ?? []; }
+      this.sharedMenuLists.set(provider, items);
+      return items;
+    };
+    const conv = async (it: CompiledMenuItem, id: string, depth: number): Promise<EmbedMenuItem | null> => {
+      if (it.separator) return { id, label: '', separator: true };
+      const kids = depth < MAX_DEPTH ? (it.provider ? await list(it.provider) : it.items ?? []) : [];
+      const out: EmbedMenuItem = { id, label: it.label };
+      if (it.icon) out.icon = it.icon;
+      if (it.locked) out.locked = true;
+      if (typeof it.check === 'boolean') out.check = it.check;
+      if (it.count) out.count = it.count;
+      if (kids.length) {
+        const sub = (await Promise.all(kids.map((k, i) => conv(k, `${id}.${i}`, depth + 1)))).filter((k): k is EmbedMenuItem => !!k);
+        if (sub.some((k) => !k.separator)) out.items = sub;
+      }
+      if (!out.items) {
+        if (!it.action) return null;
+        if (!it.locked) run.set(id, it.action);
+      }
+      return out;
+    };
+    const menus: EmbedMenu[] = [];
+    for (const [mi, m] of this.appMenu().menus.entries()) {
+      const items = (await Promise.all(m.items.map((it, i) => conv(it, `m${mi}.${i}`, 1)))).filter((k): k is EmbedMenuItem => !!k);
+      if (items.some((k) => !k.separator)) menus.push({ id: `m${mi}`, label: m.label, items });
+    }
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'menu', menus };
+    const text = JSON.stringify(msg);
+    this.sharedMenuRun = run;
+    if (!opts.force && text === this.sharedMenuText) return false;
+    this.sharedMenuText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The host's menu picked one of this app's items (`run` message): run it here, if this app offered it. */
+  runSharedMenuItem(id: string): boolean {
+    const action = this.sharedMenuRun.get(id);
+    if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
+    return this.dispatch(action);
   }
 
   /* ---------------- rendering ---------------- */

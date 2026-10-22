@@ -128,6 +128,8 @@ write('hide.json', {
     'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
     'Mozilla/5.0 AXF-Embed-Take/settings',
     'Mozilla/5.0 AXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu',
+    'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
   ];
   const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
   const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', '', null];
@@ -138,16 +140,17 @@ write('hide.json', {
     pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
     queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
     userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
-    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
     takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
     takenView: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'home', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
     takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
-    suffix: [['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
     urls: [
       ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
       ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
       ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
       ['https://pilot.amberxai.com/', {}],
+      ['https://console.amberxai.com/', { takes: ['settings', 'app-menu'] }],
     ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
     links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
     messages: [
@@ -162,6 +165,24 @@ write('hide.json', {
       { $axf: 'embed@1', type: 'open-tab' },
       { $axf: 'embed@2', type: 'open-settings' },
       { $axf: 'embed@1', type: 'run-code', code: 'x' },
+      { $axf: 'embed@1', type: 'menu', menus: [
+        { id: 'm0', label: 'Builds', items: [
+          { id: 'm0.0', label: '  Pending builds\n', icon: 'clock', count: 12.7 },
+          { id: 'm0.1', separator: true },
+          { id: 'm0.2', label: 'Open pending items', items: [{ id: 'm0.2.0', label: 'Asset Designer', locked: true }, { id: 'bad id!', label: 'x' }, { id: 'm0.2.2', label: '' }] },
+          { id: 'm0.3', label: 'Toolbar', check: false, icon: 'Bad Icon', count: -3 },
+        ] },
+        { id: 'm1', label: 'Empty', items: [] },
+        { id: 'm2', label: 'x'.repeat(100), items: [{ id: 'm2.0', label: 'Deep', items: [{ id: 'm2.0.0', label: 'Deeper', items: [{ id: 'm2.0.0.0', label: 'Deepest', items: [{ id: 'm2.0.0.0.0', label: 'Too deep' }] }] }] }] },
+        { label: 'No id', items: [{ id: 'x', label: 'y' }] },
+      ] },
+      { $axf: 'embed@1', type: 'menu', menus: 'nope' },
+      { $axf: 'embed@1', type: 'menu-request' },
+      { $axf: 'embed@1', type: 'run', id: 'm0.2.0' },
+      { $axf: 'embed@1', type: 'run', id: 'm0 2' },
+      { $axf: 'embed@1', type: 'run' },
+      JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }).length > 4000 ? JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }) : 'too short',
+      JSON.stringify({ $axf: 'embed@1', type: 'notify', title: 'Long', body: 'z'.repeat(4100) }),
       '{"$axf":"embed@1","type":"open-settings","tab":"about"}',
       'not json',
       ['array'],

@@ -14,7 +14,24 @@ public data class EmbedTakeSpec(
     val views: List<String> = emptyList(),
     val providers: List<String> = emptyList(),
     val page: Boolean = false,
+    /** chrome the app hides while the host takes this function (app-menu: the host's menu carries the app's) */
+    val hides: List<String> = emptyList(),
 )
+
+/** One item of a menu an app sends its host (embed@1 `menu`): data only, the app keeps id → action. */
+public data class EmbedMenuItem(
+    val id: String,
+    val label: String,
+    val icon: String? = null,
+    val separator: Boolean = false,
+    val locked: Boolean = false,
+    /** check mark state; null = not a checkable item */
+    val check: Boolean? = null,
+    val count: Int? = null,
+    /** a submenu; null when it has none */
+    val items: List<EmbedMenuItem>? = null,
+)
+public data class EmbedMenu(val id: String, val label: String, val items: List<EmbedMenuItem>)
 
 /** A message between a host and an app it embeds (embed@1), checked and cut to size by [EmbedTakes.parseMessage]. */
 public sealed interface EmbedMessage {
@@ -26,6 +43,12 @@ public sealed interface EmbedMessage {
     public data class Ready(val app: String? = null) : EmbedMessage
     /** host → settings page: open this settings tab */
     public data class OpenTab(val tab: String) : EmbedMessage
+    /** guest → host (the host takes `app-menu`): the app's application menu */
+    public data class Menu(val menus: List<EmbedMenu>) : EmbedMessage
+    /** host → guest: send your menu now */
+    public data object MenuRequest : EmbedMessage
+    /** host → guest: the user picked this item of your menu in the host's menu; run it */
+    public data class Run(val id: String) : EmbedMessage
 }
 
 /**
@@ -47,6 +70,8 @@ public object EmbedTakes {
     private val registry = linkedMapOf(
         "settings" to EmbedTakeSpec(listOf("app.settings", "settings.open", "nav:settings"), listOf("settings.open:"), listOf("settings"), listOf("settings"), page = true),
         "notifications" to EmbedTakeSpec(),
+        // The host's application menu carries the app's (Oct 22 2026): the app hides its menu bar and sends its menu.
+        "app-menu" to EmbedTakeSpec(hides = listOf("app-menu")),
     )
     private val fnId = Regex("^[a-z0-9][a-z0-9-]{0,31}$")
     private val tabId = Regex("^[a-z0-9][a-z0-9._:-]{0,63}$", RegexOption.IGNORE_CASE)
@@ -78,8 +103,17 @@ public object EmbedTakes {
         return if (registry[id]?.page == true) id else null
     }
 
-    private fun withExtras(types: AssetTypeRegistry, e: Embed, takes: List<String>, page: String?): Embed =
-        Embed(e.host, if (page != null) HideEngine.hideableTypes(types) else e.hidden, if (page != null) takes.filter { it != page } else takes, page)
+    private fun withExtras(types: AssetTypeRegistry, e: Embed, takes: List<String>, page: String?): Embed {
+        val t = if (page != null) takes.filter { it != page } else takes
+        // a taken function may hide chrome too (app-menu); spec order, like EmbedEngine.hidden
+        val extra = t.flatMap { registry[it]?.hides ?: emptyList() }.toSet()
+        val hidden = when {
+            page != null -> HideEngine.hideableTypes(types)
+            extra.isNotEmpty() -> HideEngine.hideableTypes(types).filter { it in e.hidden || it in extra }
+            else -> e.hidden
+        }
+        return Embed(e.host, hidden, t, page)
+    }
 
     private fun params(search: String): Map<String, String> {
         val q = if (search.startsWith("?")) search.substring(1) else search
@@ -168,9 +202,51 @@ public object EmbedTakes {
 
     /** A message as it arrived (JSON text from the page's bridge call), checked and cut to size; null when it isn't one. */
     public fun parseMessage(raw: String?): EmbedMessage? {
-        if (raw == null || raw.length > 4000) return null
+        // a menu may be long; every other message stays small
+        if (raw == null || raw.length > MENU_RAW) return null
         val o = runCatching { kotlinx.serialization.json.Json.parseToJsonElement(raw) }.getOrNull() as? JsonObject ?: return null
+        if (raw.length > 4000 && str(o["type"]) != "menu") return null
         return parseMessage(o)
+    }
+
+    public const val MENU_RAW: Int = 131072
+    private const val MENUS = 16
+    private const val MENU_ITEMS = 600
+    private const val MENU_DEPTH = 4
+    private val menuItemId = Regex("^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$")
+    private val iconId = Regex("^[a-z0-9][a-z0-9-]{0,39}$")
+
+    /** A menu an app sent, checked and cut to size (bad entries dropped, never the whole menu); null when not a list. */
+    private fun parseMenus(raw: JsonElement?): List<EmbedMenu>? {
+        val list = raw as? kotlinx.serialization.json.JsonArray ?: return null
+        var budget = MENU_ITEMS
+        fun item(v: JsonElement, depth: Int): EmbedMenuItem? {
+            val o = v as? JsonObject ?: return null
+            if (budget <= 0) return null
+            val id = str(o["id"])?.takeIf { menuItemId.matches(it) } ?: return null
+            if ((o["separator"] as? JsonPrimitive)?.let { !it.isString && it.content == "true" } == true) { budget--; return EmbedMenuItem(id, "", separator = true) }
+            val label = clip(o["label"], 80) ?: return null
+            budget--
+            val check = (o["check"] as? JsonPrimitive)?.takeIf { !it.isString && (it.content == "true" || it.content == "false") }?.content?.toBoolean()
+            val n = (o["count"] as? JsonPrimitive)?.takeIf { !it.isString }?.content?.toDoubleOrNull()
+            val count = if (n != null && n.isFinite() && n > 0) minOf(kotlin.math.floor(n), 99999.0).toInt() else null
+            val kids = if (depth < MENU_DEPTH) (o["items"] as? kotlinx.serialization.json.JsonArray)?.mapNotNull { item(it, depth + 1) }?.takeIf { it.isNotEmpty() } else null
+            return EmbedMenuItem(
+                id, label,
+                icon = str(o["icon"])?.takeIf { iconId.matches(it) },
+                locked = (o["locked"] as? JsonPrimitive)?.let { !it.isString && it.content == "true" } == true,
+                check = check, count = count, items = kids,
+            )
+        }
+        val out = mutableListOf<EmbedMenu>()
+        for (m in list.take(MENUS)) {
+            val o = m as? JsonObject ?: continue
+            val id = str(o["id"])?.takeIf { menuItemId.matches(it) } ?: continue
+            val label = clip(o["label"], 80) ?: continue
+            val items = (o["items"] as? kotlinx.serialization.json.JsonArray)?.mapNotNull { item(it, 1) } ?: continue
+            if (items.isNotEmpty()) out += EmbedMenu(id, label, items)
+        }
+        return out
     }
 
     public fun parseMessage(o: JsonObject): EmbedMessage? {
@@ -189,12 +265,21 @@ public object EmbedTakes {
             }
             "ready" -> EmbedMessage.Ready(EmbedEngine.host(str(o["app"])))
             "open-tab" -> str(o["tab"])?.takeIf { tabId.matches(it) }?.let { EmbedMessage.OpenTab(it) }
+            "menu" -> parseMenus(o["menus"])?.let { EmbedMessage.Menu(it) }
+            "menu-request" -> EmbedMessage.MenuRequest
+            "run" -> str(o["id"])?.takeIf { menuItemId.matches(it) }?.let { EmbedMessage.Run(it) }
             else -> null
         }
     }
 
     /** The JSON a host sends a settings page to open one of its tabs (`AxfEmbedGuest.receive(<this>)`). */
     public fun openTab(tab: String): String? = if (tabId.matches(tab)) buildJsonObject { put("\$axf", MESSAGE); put("type", "open-tab"); put("tab", tab) }.toString() else null
+
+    /** The JSON a host sends an app to run one of the menu items it sent (`AxfEmbedGuest.receive(<this>)`). */
+    public fun run(id: String): String? = if (menuItemId.matches(id)) buildJsonObject { put("\$axf", MESSAGE); put("type", "run"); put("id", id) }.toString() else null
+
+    /** The JSON a host sends an app to have it send its menu now. */
+    public fun menuRequest(): String = buildJsonObject { put("\$axf", MESSAGE); put("type", "menu-request") }.toString()
 
     /** The settings tab an action names (`settings.open:<tab>`), or null. */
     public fun settingsTabOf(action: String): String? = Regex("^settings\\.open:([^:\\s]+)").find(action)?.groupValues?.get(1)?.takeIf { tabId.matches(it) }

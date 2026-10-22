@@ -200,7 +200,8 @@ internal class EmbedHostBridge(private val view: WebView, private val allowed: L
     private val main = Handler(Looper.getMainLooper())
     @JavascriptInterface
     fun post(json: String?) {
-        if (json == null || json.length > 4000) return
+        // a menu (host takes `app-menu`) may be long; EmbedTakes.parseMessage keeps every other message under 4000
+        if (json == null || json.length > EmbedTakes.MENU_RAW) return
         main.post {
             val here = view.url ?: return@post
             if (allowed.none { HubRules.isHub(it, here) }) return@post

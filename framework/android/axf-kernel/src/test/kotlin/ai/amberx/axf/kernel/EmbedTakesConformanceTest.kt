@@ -3,6 +3,8 @@ package ai.amberx.axf.kernel
 import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 import ai.amberx.axf.kernel.asset.parseJsonObject
 import ai.amberx.axf.kernel.engine.Embed
+import ai.amberx.axf.kernel.engine.EmbedMenu
+import ai.amberx.axf.kernel.engine.EmbedMenuItem
 import ai.amberx.axf.kernel.engine.EmbedMessage
 import ai.amberx.axf.kernel.engine.EmbedTakes
 import kotlinx.serialization.json.JsonArray
@@ -36,9 +38,20 @@ class EmbedTakesConformanceTest {
             "notify" -> EmbedMessage.Notify(str(o["title"])!!, str(o["body"]), str(o["tag"]), str(o["level"]), str(o["link"]))
             "ready" -> EmbedMessage.Ready(str(o["app"]))
             "open-tab" -> EmbedMessage.OpenTab(str(o["tab"])!!)
+            "menu" -> EmbedMessage.Menu(o.getValue("menus").jsonArray.map { m -> m.jsonObject.let { EmbedMenu(str(it["id"])!!, str(it["label"])!!, it.getValue("items").jsonArray.map { i -> menuItem(i.jsonObject) }) } })
+            "menu-request" -> EmbedMessage.MenuRequest
+            "run" -> EmbedMessage.Run(str(o["id"])!!)
             else -> error("unknown type in fixture")
         }
     }
+    private fun menuItem(o: JsonObject): EmbedMenuItem = EmbedMenuItem(
+        str(o["id"])!!, str(o["label"])!!, str(o["icon"]),
+        separator = o["separator"]?.jsonPrimitive?.content == "true",
+        locked = o["locked"]?.jsonPrimitive?.content == "true",
+        check = o["check"]?.jsonPrimitive?.content?.toBoolean(),
+        count = o["count"]?.jsonPrimitive?.content?.toInt(),
+        items = (o["items"] as? JsonArray)?.map { menuItem(it.jsonObject) },
+    )
 
     @Test fun `takes, pages and markers match the reference engine`() {
         assertEquals(str(f["uaToken"]), EmbedTakes.UA_TOKEN)
@@ -82,5 +95,8 @@ class EmbedTakesConformanceTest {
         }
         assertEquals("""{"${'$'}axf":"embed@1","type":"open-tab","tab":"plugins"}""", EmbedTakes.openTab("plugins"))
         assertEquals(null, EmbedTakes.openTab("bad tab"))
+        assertEquals("""{"${'$'}axf":"embed@1","type":"run","id":"m0.2"}""", EmbedTakes.run("m0.2"))
+        assertEquals(null, EmbedTakes.run("m0 2"))
+        assertEquals("""{"${'$'}axf":"embed@1","type":"menu-request"}""", EmbedTakes.menuRequest())
     }
 }

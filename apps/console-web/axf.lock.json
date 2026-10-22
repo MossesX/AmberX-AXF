@@ -12,7 +12,7 @@
     "src/axf/core/engines/windows.ts": "df573bacebd8e950",
     "src/axf/core/index.ts": "68959fd3bc64e7a4",
     "src/axf/core/registry.ts": "8cf580aca5b3988e",
-    "src/axf/core/runtime.ts": "9e2969759d6998e9",
+    "src/axf/core/runtime.ts": "0a3700cfc6fe1141",
     "src/axf/core/terminal.ts": "4c1f41ef61f20c0c",
     "src/axf/core/types.ts": "940a4f26aae2b3e2",
     "src/axf/core/validate.ts": "eb3309a5fed5777f",

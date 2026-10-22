@@ -138,4 +138,32 @@ for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old 
   delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
 }
 
+// embed@1 take `app-menu`: the app hides its menu bar, sends its menu (data only) and runs only what it sent.
+{
+  const posted: { type?: string; menus?: { id: string; label: string; items: { id: string; label: string; items?: unknown[] }[] }[] }[] = [];
+  (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost = { post: (j: string) => posted.push(JSON.parse(j)) };
+  const guest = make({ host: 'patches', hidden: ['app-menu', 'banner'], takes: ['settings', 'app-menu'] });
+  eq(guest.slotHidden('app-menu'), true, 'app-menu taken: the app hides its menu bar');
+  let ran = 0;
+  guest.actions.register('test.menu-item', () => { ran++; }, { label: 'Test item' });
+  guest.addAppMenuItems({ id: 'test.menu', module: 'test', menu: 'test', menuLabel: 'Test', items: [{ id: 'one', label: 'One', action: 'test.menu-item' }] });
+  eq(await guest.shareAppMenu({ force: true }), true, 'app-menu: menu sent to the host');
+  const sent = posted.at(-1)!;
+  eq(sent.type, 'menu', 'app-menu: a menu message');
+  eq(JSON.stringify(sent).includes('test.menu-item'), false, 'app-menu: no action ids cross over');
+  const menu = sent.menus!.find((m) => m.label === 'Test')!;
+  eq(!!menu, true, 'app-menu: contributed menu included');
+  eq(JSON.stringify(sent).includes('"app.settings"') || /"label":"Settings"/.test(JSON.stringify(sent)), false, 'app-menu: taken settings hooks stay out');
+  const item = menu.items.find((i) => i.label === 'One')!;
+  (globalThis as unknown as { AxfEmbedGuest?: { receive: (j: string) => void } }).AxfEmbedGuest!.receive(JSON.stringify({ $axf: 'embed@1', type: 'run', id: item.id }));
+  eq(ran, 1, 'app-menu: run runs the item it sent');
+  eq(guest.runSharedMenuItem('m99.0'), false, 'app-menu: an id it never sent runs nothing');
+  eq(await guest.shareAppMenu(), false, 'app-menu: unchanged menu not sent again');
+  const pageGuest = make({ host: 'patches', hidden: ['app-menu', 'banner'], takes: ['app-menu'], page: 'settings' });
+  eq(await pageGuest.shareAppMenu({ force: true }), false, 'app-menu: a settings page never shares its menu');
+  const solo3 = make(null);
+  eq(await solo3.shareAppMenu({ force: true }), false, 'app-menu: standalone app shares nothing');
+  delete (globalThis as unknown as { AxfEmbedHost?: unknown }).AxfEmbedHost;
+}
+
 console.log(`check-embed: ${checks} checks passed`);
