@@ -200,8 +200,21 @@ export function embedTakes(named: readonly string[] | string | null | undefined)
   return embedTakeIds().filter((t) => wanted.has(t));
 }
 
-/** A page a host may show on its own (a known function with `page: true`), or null. */
+/**
+ * A view page: one view of the app on its own (`view:<view id>`), e.g. a tabable plugin's page as a tab of its own in the
+ * host (Brett, Oct 22 2026: plugins declared `tabable` can be added to Patches' tab group). Same as any page: all chrome
+ * hidden, never skips libraries.
+ */
+export const EMBED_VIEW_PAGE = /^view:[a-z0-9][a-z0-9._-]{0,63}$/i;
+
+/** The view a page names (`view:<id>` → id), else null. */
+export function embedPageView(page: string | null | undefined): string | null {
+  return page && EMBED_VIEW_PAGE.test(page) ? page.slice(5) : null;
+}
+
+/** A page a host may show on its own (a known function with `page: true`, or a view page `view:<id>`), or null. */
 export function embedPage(raw: unknown): string | null {
+  if (typeof raw === 'string' && EMBED_VIEW_PAGE.test(raw.trim())) return raw.trim();
   if (typeof raw !== 'string') return null;
   const id = raw.trim().toLowerCase();
   return TAKES.get(id)?.page ? id : null;
@@ -355,8 +368,24 @@ export type EmbedMessage =
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
 
-/** One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). */
-export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean }
+/**
+ * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
+ * plugin (plugin.json → `tabable`) also says which of its views a host may show as a tab of its own (`tab`), opened as
+ * the view page `view:<view>`.
+ */
+export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean; tab?: EmbedPluginTab }
+export interface EmbedPluginTab { view: string; label?: string; icon?: string }
+
+/** A plugin's tab as reported (view id checked; label and icon cut to size), or undefined. */
+export function parsePluginTab(raw: unknown): EmbedPluginTab | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const o = raw as Record<string, unknown>;
+  if (typeof o.view !== 'string' || !EMBED_VIEW_PAGE.test(`view:${o.view}`)) return undefined;
+  const out: EmbedPluginTab = { view: o.view };
+  const label = clip(o.label, EMBED_MESSAGE_LIMITS.label); if (label) out.label = label;
+  if (typeof o.icon === 'string' && ICON_ID.test(o.icon)) out.icon = o.icon;
+  return out;
+}
 
 /**
  * One item of a menu an app sends its host. Data only: no action ids cross over. The app keeps id → action and runs
@@ -436,6 +465,7 @@ function parsePlugins(raw: unknown): EmbedPlugin[] | null {
     seen.add(o.id);
     const p: EmbedPlugin = { id: o.id, name: clip(o.name, L.label) ?? o.id, on: o.on !== false };
     const ver = clip(o.version, L.version); if (ver) p.version = ver;
+    const tab = parsePluginTab(o.tab); if (tab) p.tab = tab;
     out.push(p);
   }
   return out;

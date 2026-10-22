@@ -38,3 +38,12 @@ user; themes = the hub permission `APP_THEMES_PERM`, default `patches-web.themes
 
 State on the VPS: `$DIR/.app/` (0700): `env` (APP_TOKEN, 0600), `wall`, `wall-users`, `data/` (mounted at `/data`).
 The wall secret is the hub's one (`AXHUB_WALL_SECRET`), reused from the Dev Console when it has one.
+
+## Tab group (patches-tabs@1)
+
+The tabs above the menu are a list kept on this server (`GET/PUT /api/tabs`, `data/tabs.json`, 0600), so every device
+shows the same ones. A tab is an app (Console, Pilot, axHub: the whole app) or a **plugin tab**: a plugin whose
+`plugin.json` says `tabable`, shown as its app's view page (`axf-embed-page=view:<view>`: only that page, no chrome).
+Settings → Patches → **Tabs** orders and removes them; **Add tab…** (also the **+** at the end of the tab bar and the
+tab context menu) lists every app and every tabable plugin the apps reported. Adding a plugin tab installs the plugin in
+Patches for its app or switches it on there when needed, because the apps run only the plugins Patches enabled.

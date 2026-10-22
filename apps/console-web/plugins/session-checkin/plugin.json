@@ -10,5 +10,6 @@
   "targets": ["axf-console"],
   "provides": ["view:sessions", "settings-tab:session-checkin"],
   "scopes": ["ROUTES", "FILES"],
-  "enabledByDefault": true
+  "enabledByDefault": true,
+  "tabable": false
 }
