@@ -1,6 +1,6 @@
 /* Settings → Plugins → Container access panels. Theme tokens only, axp-container-access prefix. */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon } from '@console/axf/react';
+import { Button, Chip, Icon, Segmented } from '@console/axf/react';
 import { ChangeBatchCard, type Batch } from '@console/changeBatch';
 import { batchActions, call, kb, put, when, type AuditEntry, type Container, type Entry, type Settings, type Status } from './api';
 
@@ -77,7 +77,7 @@ function Browser({ c, close }: { c: Container; close: () => void }) {
         <ul className={`${P}__entries`}>
           {(entries ?? []).map((e) => (
             <li key={e.name} data-fx-ctx-target="axf-container-path" data-fx-ctx-payload={`${c.name}|${path === '/' ? '' : path}/${e.name}`}>
-              <button type="button" onClick={() => void (e.type === 'dir' ? go(`${path === '/' ? '' : path}/${e.name}`) : open(`${path === '/' ? '' : path}/${e.name}`))}>
+              <button type="button" data-fx-row onClick={() => void (e.type === 'dir' ? go(`${path === '/' ? '' : path}/${e.name}`) : open(`${path === '/' ? '' : path}/${e.name}`))}>
                 <Icon name={e.type === 'dir' ? 'folder' : 'file'} size={14} /><span className="fx-grow fx-mono">{e.name}{e.type === 'link' ? ' →' : ''}</span>
                 {e.type === 'file' && <span className="fx-small fx-muted">{kb(e.size)}</span>}
               </button>
@@ -173,11 +173,8 @@ export function BatchesPanel() {
   return (
     <div className="fx-stack">
       <div className={`${P}__row`}>
-        <div className={`${P}__seg`} role="tablist">
-          {['pending', 'applied', 'partial', 'failed', 'rejected', 'undone', ''].map((f) => (
-            <button key={f || 'all'} type="button" role="tab" aria-selected={filter === f} onClick={() => setFilter(f)}>{f || 'all'}</button>
-          ))}
-        </div>
+        <Segmented size="sm" label="Show batches" value={filter} onChange={setFilter}
+          options={['pending', 'applied', 'partial', 'failed', 'rejected', 'undone', ''].map((f) => ({ value: f, label: f || 'all' }))} />
         <span className="fx-grow" />
         <Button tone="ghost" icon="refresh" onClick={() => void load()}>Refresh</Button>
       </div>

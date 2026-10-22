@@ -133,7 +133,7 @@ function TabBar() {
           const on = a === t.active;
           return (
             <button key={a.id} type="button" role="tab" aria-selected={on} title={a.note ?? a.url}
-              className={`axp-app-tabs__tab ${on ? 'is-active' : ''}`} onClick={() => t.setActive(a.id)}>
+              className={`fx-tab axp-app-tabs__tab${on ? ' is-active' : ''}`} onClick={() => t.setActive(a.id)}>
               <Icon name={a.icon} size={14} /><span>{a.name}</span>
             </button>
           );

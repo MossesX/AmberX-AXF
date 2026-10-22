@@ -201,7 +201,7 @@ function Row({ it, now }: { it: Item; now: number }) {
   return (
     <li className={`axp-activity__item axp-activity__item--${it.state}`}>
       <div className="axp-activity__headrow">
-      <button type="button" className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button type="button" data-fx-row className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <StateIcon state={it.state} />
         <Icon name={icon} size={14} />
         <span className="axp-activity__title">
@@ -253,7 +253,7 @@ function ActivityBanner() {
     <div className={`axp-activity${failed ? ' axp-activity--failed' : ''}${active.length ? '' : ' axp-activity--idle'}`} role="status" aria-live="polite">
       <div className="axp-activity__row">
         <span className={`fx-banner-icon${active.length ? ' axp-activity__spin' : ''}`}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
-        <button type="button" className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
+        <button type="button" data-fx-row className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
           <span className="axp-activity__top">
             <strong>{summary}</strong>
             {active.length > 0 && Number.isFinite(oldest) && <span className="axp-activity__time">{dur(now - oldest)}</span>}
@@ -270,7 +270,7 @@ function ActivityBanner() {
             : <p className="fx-small fx-muted" style={{ margin: 0 }}>Nothing is running right now.</p>}
           {finished.length > 0 && (
             <>
-              <button type="button" className="axp-activity__more" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>
+              <button type="button" data-fx-row className="axp-activity__more" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>
                 Just finished ({finished.length}) <Icon name={showDone ? 'chevron-up' : 'chevron-down'} size={14} />
               </button>
               {showDone && <ul className="axp-activity__list">{finished.map((i) => <Row key={i.id} it={i} now={now} />)}</ul>}

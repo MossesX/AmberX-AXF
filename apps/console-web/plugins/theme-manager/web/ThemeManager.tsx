@@ -127,18 +127,18 @@ export function ThemeManager() {
         <div className={`${P}__row ${sel === n.id ? 'is-sel' : ''} ${off ? 'is-off' : ''}`} style={{ paddingLeft: `calc(var(--fx-space) * ${depth * 1.25})` }}>
           <input type="checkbox" className={`${P}__tick`} aria-label={`Roll ${n.label}`} checked={st === 'on'} disabled={off} ref={(el) => { if (el) el.indeterminate = st === 'some'; }} onChange={() => setTicked(toggle(n, ticked))} />
           {n.children.length > 0 ? (
-            <button type="button" className={`${P}__twisty`} aria-expanded={isOpen} onClick={() => (narrow ? setPath([...path, n.id]) : setOpen((o) => { const x = new Set(o); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; }))}>
+            <button type="button" data-fx-row className={`${P}__twisty`} aria-expanded={isOpen} onClick={() => (narrow ? setPath([...path, n.id]) : setOpen((o) => { const x = new Set(o); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; }))}>
               <Icon name={narrow ? 'chevron-right' : isOpen ? 'chevron-down' : 'chevron-right'} size={13} />{n.icon && <Icon name={n.icon} size={13} />}<span>{n.label}</span>
             </button>
           ) : (
-            <button type="button" className={`${P}__twisty`} onClick={() => setSel(n.id)}>
+            <button type="button" data-fx-row className={`${P}__twisty`} onClick={() => setSel(n.id)}>
               {n.leaf?.kind === 'color' && <span className={`${P}__swatch`} style={{ background: String(getAt(active[n.type] ?? {}, n.leaf.path) ?? '') }} aria-hidden />}
               <span>{n.label}</span>
               <span className="fx-small fx-muted fx-mono">{String(getAt(active[n.type] ?? {}, n.leaf?.path ?? '') ?? '').slice(0, 28)}</span>
             </button>
           )}
-          {n.leaf && <button type="button" className={`${P}__lock ${lockedLeaf ? 'is-on' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
-          {!n.leaf && !narrow && <button type="button" className={`${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
+          {n.leaf && <button type="button" className={`fx-iconbtn ${P}__lock ${lockedLeaf ? 'is-active' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
+          {!n.leaf && !narrow && <button type="button" className={`fx-chip ${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
           {top && !n.leaf && hideable(n.type) && (
             <Switch hideLabel className={`${P}__hide`} label={`Show ${n.label}`} text={off ? 'Hidden' : 'Shown'} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}
               checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(on) => rt.setSlotHidden(n.type as AssetType, !on)} />
@@ -174,8 +174,8 @@ export function ThemeManager() {
         <div className={`${P}__pins`}>
           {pins.map((p, i) => (
             <span key={p.at} className={`${P}__pin`}>
-              <button type="button" onClick={() => { applySnap(p.snap); push(p.snap); }} title="Apply this pinned roll"><Icon name="star" size={12} /> {p.name}</button>
-              <button type="button" aria-label={`Unpin ${p.name}`} onClick={() => setPins(pins.filter((_, j) => j !== i))}><Icon name="x" size={11} /></button>
+              <button type="button" className="fx-chip fx-chip--accent" onClick={() => { applySnap(p.snap); push(p.snap); }} title="Apply this pinned roll"><Icon name="star" size={12} /> {p.name}</button>
+              <button type="button" className="fx-iconbtn" aria-label={`Unpin ${p.name}`} onClick={() => setPins(pins.filter((_, j) => j !== i))}><Icon name="x" size={11} /></button>
             </span>
           ))}
         </div>
@@ -188,14 +188,14 @@ export function ThemeManager() {
             <input className="fx-input fx-grow" placeholder="Filter the tree" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter the tree" />
           </div>
           <div className={`${P}__bar fx-small`}>
-            {Object.keys(PRESETS).map((k) => <button key={k} type="button" className={`${P}__chip`} onClick={() => setTicked(new Set(PRESETS[k]!(tree)))}>{k}</button>)}
-            <button type="button" className={`${P}__chip`} onClick={() => setTicked(new Set(allLeafIds(tree).filter((x) => !ticked.has(x))))}>invert</button>
-            {Object.entries(presets).map(([k, ids]) => <button key={k} type="button" className={`${P}__chip is-saved`} onClick={() => setTicked(new Set(ids))} title="Saved preset">{k}</button>)}
+            {Object.keys(PRESETS).map((k) => <button key={k} type="button" className="fx-chip" onClick={() => setTicked(new Set(PRESETS[k]!(tree)))}>{k}</button>)}
+            <button type="button" className="fx-chip" onClick={() => setTicked(new Set(allLeafIds(tree).filter((x) => !ticked.has(x))))}>invert</button>
+            {Object.entries(presets).map(([k, ids]) => <button key={k} type="button" className="fx-chip fx-chip--accent" onClick={() => setTicked(new Set(ids))} title="Saved preset">{k}</button>)}
             <PresetSaver ticked={ticked} presets={presets} setPresets={setPresets} />
           </div>
           {narrow && path.length > 0 && (
             <div className={`${P}__crumbs`}>
-              <button type="button" onClick={() => setPath(path.slice(0, -1))}><Icon name="arrow-left" size={13} /> Back</button>
+              <Button tone="ghost" size="sm" icon="arrow-left" onClick={() => setPath(path.slice(0, -1))}>Back</Button>
               <span className="fx-small fx-muted">{path.map((p) => byId.get(p)?.label).join(' › ')}</span>
             </div>
           )}
@@ -249,7 +249,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
 
 function PresetSaver({ ticked, presets, setPresets }: { ticked: Set<string>; presets: Record<string, string[]>; setPresets: (p: Record<string, string[]>) => void }) {
   const [name, setName] = useState<string | null>(null);
-  if (name === null) return <button type="button" className={`${P}__chip`} onClick={() => setName('')}>+ save as preset</button>;
+  if (name === null) return <button type="button" className="fx-chip" onClick={() => setName('')}>+ save as preset</button>;
   const save = async () => { const r = await put<{ presets: Record<string, string[]> }>('presets', { ...presets, [name.trim()]: [...ticked] }); setPresets(r.presets); setName(null); };
   return (
     <form className={`${P}__bar`} onSubmit={(e) => { e.preventDefault(); if (name.trim()) void save(); }}>
@@ -318,7 +318,7 @@ function SavedThemes({ onApply }: { onApply: (type: string, id: string) => void 
     <section className="fx-stack">
       <div className={`${P}__bar`}>
         <strong className="fx-grow">Saved themes</strong>
-        <label className={`${P}__chip`}><Icon name="upload" size={12} /> Import asset JSON<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} /></label>
+        <label className="fx-chip"><Icon name="upload" size={12} /> Import asset JSON<input type="file" accept="application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFile(f); }} /></label>
       </div>
       {items && !items.length && <p className="fx-small fx-muted">Nothing saved yet. Roll something you like, then “Save as asset”. Saved themes are standard asset@1 files every AXF app and port can load.</p>}
       <ul className={`${P}__saved`}>

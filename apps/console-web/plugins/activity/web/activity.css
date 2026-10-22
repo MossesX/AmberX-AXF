@@ -3,7 +3,8 @@
 .axp-activity--idle { border-color: var(--fx-success) }
 .axp-activity--failed { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
 .axp-activity__row { display: flex; align-items: center; gap: var(--fx-space); min-width: 0 }
-.axp-activity__summary { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
+/* a row you tap (data-fx-row); `button.` outranks the framework row reset */
+button.axp-activity__summary { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); cursor: pointer }
 .axp-activity__top { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
 .axp-activity__summary:focus-visible, .axp-activity__head:focus-visible, .axp-activity__more:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
 .axp-activity__lead { color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100% }
@@ -14,7 +15,7 @@
 .axp-activity__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.5); max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto }
 .axp-activity__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
 .axp-activity__item { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
-.axp-activity__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); min-width: 0 }
+button.axp-activity__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); min-width: 0 }
 .axp-activity__head:hover { background: var(--fx-surface2) }
 .axp-activity__title { flex: 1; min-width: 0; display: flex; flex-direction: column }
 .axp-activity__title > span:first-child { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
@@ -39,12 +40,12 @@
 .axp-activity__jobs .axp-activity__steps { padding: calc(var(--fx-space) * 0.5) 0 0 calc(var(--fx-space) * 1.5) }
 .axp-activity__jobs .axp-activity__bar { margin: 0 }
 .axp-activity__link { text-decoration: none; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
-.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 13 / 14) }
+button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axp-activity__errors { margin: 0 }
 .axp-activity__cmd { margin: 0; padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: calc(var(--fx-font-size) * 12 / 14); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all }
 /* stuck items (No word, or active 30+ min): a trash can next to the row, the timer in the warning colour */
 .axp-activity__headrow { display: flex; align-items: center; min-width: 0 }
 .axp-activity__headrow > .axp-activity__head { flex: 1 1 auto }
-.axp-activity__trash { flex: none; margin-right: calc(var(--fx-space) * 0.25); color: var(--fx-danger) }
+.axp-activity__trash { flex: none; margin-right: calc(var(--fx-space) * 0.25) }
 .axp-activity__time { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25) }
 .axp-activity__time.is-stuck { color: var(--fx-warning) }

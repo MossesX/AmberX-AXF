@@ -1,7 +1,7 @@
 /* Feature assistant UI: the “Describe a feature” box (slot plan.top), the feature-detail buttons (slot plan.feature),
    the Build with Mosses dialog and the settings panels. Theme tokens only, axp-feature-assist prefix. */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
 import { call, getStatus, onStatus, planChanged, post, refreshStatus, rememberFeatures, type BuildPlan, type Draft, type DraftResult, type Status } from './api';
 
 const P = 'axp-feature-assist';
@@ -18,7 +18,7 @@ function DraftEditor({ d, set, onRemove, depth = 0 }: { d: Draft; set: (d: Draft
         <select className={`fx-input ${P}__narrow`} value={d.kind} onChange={(e) => set({ ...d, kind: e.target.value as Draft['kind'] })} aria-label="Kind">{['epic', 'feature', 'task'].map((k) => <option key={k}>{k}</option>)}</select>
         <select className={`fx-input ${P}__narrow`} value={d.priority} onChange={(e) => set({ ...d, priority: e.target.value })} aria-label="Priority">{['P0', 'P1', 'P2', 'P3'].map((k) => <option key={k}>{k}</option>)}</select>
         <select className={`fx-input ${P}__narrow`} value={d.model} onChange={(e) => set({ ...d, model: e.target.value as Draft['model'] })} aria-label="Build with" title={d.modelReason}>{Object.entries(MODEL_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-        <button type="button" className={`${P}__ib`} title="Remove" onClick={onRemove}><Icon name="x" size={14} /></button>
+        <IconButton icon="x" label="Remove" onClick={onRemove} />
       </div>
       <textarea className="fx-input" rows={2} value={d.summary} onChange={(e) => set({ ...d, summary: e.target.value })} aria-label="Summary" />
       <div className="fx-small fx-muted">
@@ -60,7 +60,7 @@ export function DescribeBox({ features }: { features?: { id: string; status: str
   };
   return (
     <section className={P}>
-      <button type="button" className={`${P}__head`} aria-expanded={open || !!res} onClick={() => setOpen(!open)}>
+      <button type="button" data-fx-row className={`${P}__head`} aria-expanded={open || !!res} onClick={() => setOpen(!open)}>
         <Icon name="sparkles" size={15} /><strong>Describe a feature</strong>
         <span className="fx-small fx-muted fx-grow">in your own words; the {s.expertName ?? 'AXF expert'} turns it into plan entries</span>
         <Icon name={open || res ? 'chevron-up' : 'chevron-down'} size={14} />
