@@ -84,3 +84,15 @@
 - **Oct 21 2026 — Banners above the app tabs (Brett, Opus).** Every banner (the banner asset and all `AxfWebLibrary.banners`) sits at the very top of the page, above the app tab group, so it stays visible whichever app tab is open. Framework AppShell order is now: banner asset → `app.frame.banners` slot (`FrameBanners`, scrolls past 45vh) → `app.frame.top` → layout → `app.frame.cover`. The app-tabs cover starts where the bar ends (`--axp-app-tabs-bottom`). Compose AppShell twin deferred (Android hold).
 - **Oct 21 2026 — Voice Vault always listens for a global trigger.** While the app runs but isn't on screen (screen off included) it listens only for the global trigger he sets (Settings → Global trigger and commands), then pops the app open at the unlock step. On-device recognition only; nothing else it hears is kept. The Voice screen lists exactly what can be said at each step and how the background listener is doing. Spoken passwords never contain spaces.
 - **Oct 21 2026 — Patches: one banner, three tabs (Brett, Fable).** "Remove the tab group from the console app … make a new app that wraps them … one banner in the new app." The Console / Pilot / axHub tab group (App tabs plugin) is gone from the Dev Console: the Console, Build Pilot and axHub are each their own app with their own banner. The new app **Patches** (`apps/patches`, Android first — his pick: native shell, web tabs) is just the Patches banner and a tab row; each tab is that web app in an origin-locked web view kept alive across tabs (lib-hub `WebAppView` / `WebAppHolder`). **embed@1**: a host marks the pages it embeds (`AXF-Embed/<host>` user agent or `?axf-embed=<host>`), and the embedded app hides the chrome the host shows — its banner by default — over the user's own choice, which stays saved for standalone runs (hide engine `forced` layer, `AxfRuntime.embedded`, both ports; fixture `embed.json`). Android hold lifted for Patches only. Report `_claude/memory/docs/rebuilds/patches-wrapper.md`.
+
+## Oct 21 2026 — the axHub web app is an AXF developer app (Opus)
+
+Brett: "the axhub web app … build now with opus but fable later". `apps/axhub-web` is a react-ts **developer app**
+(`developer: { hub }`): approvals, the hub's state, app downloads and a route per planned hub area. It holds no hub
+token — the browser's own hub session reads the feeds, and approving still happens on the hub's own page. Download
+links are rebuilt from the hub address and checked, never taken from a reply. The hub's `/apps.json` gained
+cross-site reads for the owner's own sites (axHub decision #90). The Fable follow-up (harvest the catalog rules into
+lib-hub with a fixture and a Kotlin twin) is pending item `axhub-web-hub-rules`.
+
+Also recorded that day: the **Patches web app** must follow the hub's appearance document like the other developer
+apps — noted on pending item `patches-web-settings-notify`, which another session was building at the time.

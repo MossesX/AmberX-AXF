@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T16:56:55.399Z",
+ "updatedAt": "2026-10-22T01:57:53.687Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1373,6 +1373,50 @@
    "updatedAt": "2026-10-21T16:56:55.399Z",
    "planId": "x.app.patches",
    "source": "chat"
+  },
+  {
+   "id": "axhub-web-hub-rules",
+   "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
+   "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
+   "model": "Fable",
+   "status": "pending",
+   "estimate": "2 h",
+   "notes": [
+    {
+     "at": "2026-10-22T01:57:53.687Z",
+     "text": "Opus build Oct 21 2026: apps/axhub-web (approvals, apps, hub status, planned areas), hub-side cross-site reads for /apps.json (axHub decision #90). Report: _claude/memory/docs/axhub-web.md. Android is on hold, so the Kotlin twin waits for the hold to lift — record it in spec/PORTING.md meanwhile."
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Move interpretApps + the build/link rules out of apps/axhub-web/src/hub/feed.ts into framework/libs/hub/hub.ts (appsFeedUrl, fetchHubApps, interpretApps, APPS caps); keep the app importing them. Web self-test still green.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Add an `apps` section to spec/fixtures/hub-approvals.json (good reply, 401, 403, bad file names, foreign link, caps, dedupe, sorting) and replay it from framework/spec/check-hub.mts; move the 52 app checks onto the fixture.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin twin in framework/android/lib-hub (HubRules.interpretApps + HubClient.apps) replaying the same fixture — only when the Android hold has lifted; otherwise record the gap in framework/spec/PORTING.md and tick this step.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Point the Android AXHub app’s Apps tab at the shared rules (it reads /apps.json itself today), and the web app at the library; both show the same sizes, times and short hashes.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Report _claude/memory/docs/rebuilds/axhub-web-hub-rules.md (what moved, what the fixture pins, what the Android side still owes), LOG.md line, CLAUDE.md Status, pending complete.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T01:57:53.687Z",
+   "updatedAt": "2026-10-22T01:57:53.687Z",
+   "source": "session"
   }
  ]
 }
