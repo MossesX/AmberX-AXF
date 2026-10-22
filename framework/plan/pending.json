@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T20:20:34.515Z",
+ "updatedAt": "2026-10-22T20:34:25.869Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1668,6 +1668,36 @@
    "builtAt": "2026-10-22T20:20:34.515Z",
    "updatedAt": "2026-10-22T20:20:34.515Z",
    "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-claude-on-fail",
+   "title": "Systems check: launch headless Claude Code on the VPS when a fix fails, shown in the building banner",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Setting + server launcher (brief, command, axHub approval, change-log entry)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Triggers: failed VPS Auto fix, failed server fix, Fix all failures; settings UI",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, docs, push",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:34:25.869Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T20:34:25.869Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
