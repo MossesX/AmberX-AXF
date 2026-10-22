@@ -1,7 +1,8 @@
 """Claude on failure for the push banner (Oct 22 2026): a Pull main in that hits conflicts, or a Merge that GitHub refuses
 (conflicts, failed CI, a GitHub error), is handed to headless Claude Code on the VPS when the setting is on.
 
-Setting `claudeOnFail` (off). The launch goes through axHub's `vps.run`, so nothing starts until Brett approves it on
+Setting `claudeOnFail` (off). The launch is handed to Mosses (his `axhub_call` tool), who passes it to axHub's
+`vps.run`, so nothing starts until Brett approves it on
 the hub (the approval page shows the whole command, brief included). The command keeps one clone per repo in
 `/root/axf-fixes/repos/<owner>-<name>` (git's own credentials on the VPS), makes a worktree on the entry's branch and
 starts `claude -p` there in the background with the reporting variables set (`AXF_SURFACE=console-launch`,
@@ -22,12 +23,9 @@ import os
 import re
 import threading
 import time
-import uuid
 from typing import Any, Callable
 
 import plugin_services
-import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http
 
 CHANGES = "axf.changes@1"
 COOLDOWN_S = 6 * 3600
@@ -120,61 +118,43 @@ def fitted_command(t: dict[str, Any], change_id: str) -> str:
     raise HubError("The brief is too long to send through axHub.")
 
 
-# ---------------------------------------------------------------- axHub (`call` meta-tool over MCP)
-
-def _hub() -> tuple[str, str]:
-    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
-    tok = os.environ.get("AXHUB_TOKEN", "")
-    if not tok:
-        raise HubError("Add the axHub token first (Keys needed → axHub connection), so the console can ask the hub.")
-    if not url.startswith("https://"):
-        raise HubError("The axHub address must be https.")
-    return url, tok
+# ---------------------------------------------------------------- through Mosses (Brett, Oct 22 2026)
+# Every Auto fix goes through Mosses, the agent with root and build permission: the push banner never calls axHub
+# itself. His `axhub_call` tool (agent manager, capability axf.agents@1) passes the launch to axHub's vps.run, where it
+# still waits for Brett's approval.
+AGENTS = "axf.agents@1"
+MOSSES = os.environ.get("AXF_MOSSES_AGENT", "coder")  # the Mosses add-on agent's id
+TOOL = "axhub_call"
 
 
-def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
-    body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
-    headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-    if session:
-        headers["mcp-session-id"] = session
-    try:  # https only, never follows a redirect: the token goes nowhere else
-        r = axf_http.request("POST", f"{url}/mcp", headers=headers, body=body, timeout=timeout, max_bytes=2_000_000, truncate=True)
-    except axf_http.HttpError as e:
-        raise HubError(f"Couldn't reach axHub ({type(e).__name__})") from None
-    if not r.ok:
-        raise HubError(f"axHub answered {r.status}" + (" (check the axHub token)" if r.status in (401, 403) else ""))
-    raw = r.text()
-    if "text/event-stream" in r.headers.get("content-type", ""):
-        msgs = [json.loads(ln[5:].strip()) for ln in raw.splitlines() if ln.startswith("data:") and ln[5:].strip()]
-        msg = next((m for m in reversed(msgs) if "result" in m or "error" in m), {})
-    else:
-        msg = json.loads(raw or "{}")
-    if "error" in msg:
-        raise HubError(str(msg["error"].get("message", "axHub error"))[:300])
-    return msg.get("result") or {}, r.headers.get("mcp-session-id") or session
+def mosses_ready() -> tuple[bool, str]:
+    svc = plugin_services.get(AGENTS)
+    a = svc.get_agent(MOSSES) if svc else None
+    if not a:
+        return False, "Fixes go through Mosses: install the agent manager with Mosses (the “coder” add-on)."
+    if not any(t.get("name") == TOOL for t in a.get("tools") or []):
+        return False, "Mosses can't reach axHub yet: allow him dangerous tools in Settings → Plugins → Agent manager → Safety, and update his add-on to 2.1 or later."
+    return True, ""
 
 
 def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 180) -> dict[str, Any]:
-    """{"ok": text}, {"confirm": id} (waiting for approval), or HubError. The launch returns at once (nohup), so no job."""
-    url, tok = _hub()
-    sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-push-banner", "version": "1"}}, 30)[1]
-    args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
+    """axHub's `call`, through Mosses: {"ok": text} | {"confirm": id} (waiting for approval), else HubError."""
+    ok, why = mosses_ready()
+    if not ok:
+        raise HubError(why)
+    args: dict[str, Any] = {"tool": tool, "arguments": {**arguments, "timeout_seconds": int(arguments.get("timeout_seconds") or timeout)},
+                            "wait": False, "reason": "Push banner: fix a failed pull or merge"}
     if confirmation_id:
         args["confirmation_id"] = confirmation_id
-    res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
-    text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
-    if res.get("isError"):
-        try:
-            err = json.loads(text).get("error", {})
-        except Exception:  # noqa: BLE001
-            err = {"message": text}
-        if err.get("code") == "confirmation_required":
-            cid = str((err.get("details") or {}).get("confirmationId", ""))
-            if not re.match(r"^[0-9a-f-]{36}$", cid):
-                raise HubError("axHub asked for an approval without an id")
-            return {"confirm": cid}
-        raise HubError(str(err.get("message") or text)[:400])
-    return {"ok": text}
+    try:
+        r = json.loads(plugin_services.get(AGENTS).run_tool(MOSSES, TOOL, args))
+    except Exception as e:  # noqa: BLE001 — the agent manager's own refusal, or an answer that isn't JSON
+        raise HubError(f"Mosses couldn't take it: {str(e)[:200]}") from None
+    if r.get("status") == "confirm" and r.get("confirmationId"):
+        return {"confirm": str(r["confirmationId"])}
+    if r.get("status") == "ok":
+        return {"ok": str(r.get("output", ""))}
+    raise HubError(str(r.get("message") or "axHub refused it")[:400])
 
 
 def retry_delays() -> list[float]:
@@ -220,7 +200,7 @@ class Launches:
                 return self.get(key)
             if cur and not force and time.time() - float(cur.get("startedAt", 0)) < COOLDOWN_S:
                 return self.get(key)
-            self.jobs[key] = {"key": key, "state": "asking", "message": "Asking axHub to start Claude Code on the VPS…", "changeId": "",
+            self.jobs[key] = {"key": key, "state": "asking", "message": "Handing it to Mosses, who asks axHub to start Claude Code on the VPS…", "changeId": "",
                               "startedAt": time.time(), "title": t.get("title") or t["branch"], "repo": t["repo"], "branch": t["branch"],
                               "failure": str(t.get("failure", ""))[:300]}
         t = {**t, "shell": bool(s.get("claudeShell"))}

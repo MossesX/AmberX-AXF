@@ -23,7 +23,7 @@ export interface Detail { commits: { sha: string; subject: string; author: strin
 export interface Row extends Branch { repo: string; base: string; key: string }
 
 export interface ClaudeJob { key: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; repo?: string; branch?: string; changeId?: string; startedAt?: number }
-export interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; changes: boolean; jobs: ClaudeJob[] }
+export interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; mosses?: boolean; mossesWhy?: string; changes: boolean; jobs: ClaudeJob[] }
 interface State { claude: ClaudeState | null; answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null; details: Record<string, { loading: boolean; data?: Detail; error?: string }> }
 let state: State = { claude: null, answer: null, loading: false, error: '', busy: '', note: null, details: {} };
 const subs = new Set<() => void>();

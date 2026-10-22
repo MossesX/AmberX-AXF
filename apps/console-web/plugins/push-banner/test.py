@@ -180,6 +180,25 @@ class FakeChanges:
     def update(self, cid, patch): self.updates.append(patch); return {}
 fch = FakeChanges()
 mod.CLAUDE.call, mod.CLAUDE.delays, mod.CLAUDE.changes = fake_hub, (lambda: [0.01] * 5), (lambda: fch)
+# The real route goes through Mosses (axf.agents@1 → axhub_call): the push banner never calls axHub itself
+import plugin_services  # noqa: E402
+class FakeMosses:
+    def __init__(self, tools=("axhub_call",)): self.tools, self.runs = tools, []
+    def get_agent(self, aid): return {"id": aid, "tools": [{"name": t} for t in self.tools]} if aid == "coder" else None
+    def run_tool(self, aid, name, args, ctx=None):
+        self.runs.append((aid, name, args))
+        return json.dumps({"status": "confirm", "confirmationId": "11111111-2222-3333-4444-555555555555"} if "confirmation_id" not in args else {"status": "ok", "output": "exit 0"})
+check("agent manager" in cf.mosses_ready()[1], "no Mosses: the fix can't be handed over (it says why)")
+fmo = FakeMosses()
+plugin_services.provide("axf.agents@1", fmo, "fake-mosses")
+r1 = cf.call_hub("vps.run", {"command": "echo hi"})
+r2 = cf.call_hub("vps.run", {"command": "echo hi"}, "11111111-2222-3333-4444-555555555555")
+check(r1 == {"confirm": "11111111-2222-3333-4444-555555555555"} and r2 == {"ok": "exit 0"} and fmo.runs[0][:2] == ("coder", "axhub_call")
+      and fmo.runs[0][2]["wait"] is False and fmo.runs[0][2]["tool"] == "vps.run", "the launch goes through Mosses's axhub_call (approval id, then the output)")
+plugin_services.withdraw("fake-mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(tools=("repo_read",)), "fake-mosses")
+check("Safety" in cf.mosses_ready()[1], "Mosses without axhub_call: says to allow him dangerous tools")
+plugin_services.withdraw("fake-mosses")
 def settle(key):
     for _ in range(300):
         j = mod.CLAUDE.get(key)

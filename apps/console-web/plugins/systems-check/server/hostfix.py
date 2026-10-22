@@ -1,26 +1,21 @@
-"""Auto fix for VPS host checks, through axHub (Oct 20 2026).
+"""Auto fix for VPS host checks, through Mosses and axHub (Oct 20 2026; through Mosses since Oct 22 2026).
 
-The console can't change the host from its container. For the host checks listed in FIX_COMMANDS, Auto fix asks
-axHub to run that check's exact, fixed command on the VPS with the hub's `vps.run` tool. `vps.run` always needs
+The console can't change the host from its container. For the host checks listed in FIX_COMMANDS, Auto fix hands that
+check's exact, fixed command to Mosses (his `axhub_call` tool, mosses.py), who passes it to axHub's `vps.run`. `vps.run` always needs
 Brett's approval on the hub, and the approval page shows the whole command: it pops up in the console by itself
 (approvals banner), he approves or rejects it, and this job sends the same call again with the confirmation id and
 reports the result. Nothing runs on the host without that approval, and only commands from this table are ever sent.
 
 Checks that need him at the machine (sign-ins, the Moshi key's fingerprint, a Coolify volume) are not here.
-Needs AXHUB_URL + AXHUB_TOKEN (Keys banner → axHub connection). One job per check at a time; jobs live in memory.
+Needs the agent manager with Mosses (allowed dangerous tools) and AXHUB_URL + AXHUB_TOKEN (Keys banner → axHub connection). One job per check at a time; jobs live in memory.
 """
 from __future__ import annotations
 
-import json
-import os
 import re
 import threading
 import time
-import uuid
 from typing import Any, Callable
 
-import axf_framework  # noqa: F401 — framework/python on sys.path
-from axf_server import http as axf_http
 
 # Each fix ends by refreshing the host report, so the console sees the result at once (not after the 15-minute cron).
 _REPORT = "bash /opt/axf/deploy/console-doctor.sh --report"
@@ -45,117 +40,16 @@ class HubError(Exception):
     pass
 
 
-def _hub() -> tuple[str, str]:
-    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
-    tok = os.environ.get("AXHUB_TOKEN", "")
-    if not tok:
-        raise HubError("Add the axHub token first (Keys needed → axHub connection), so the console can ask the hub.")
-    if not url.startswith("https://"):
-        raise HubError("The axHub address must be https.")
-    return url, tok
-
-
-def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
-    body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
-    headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-    if session:
-        headers["mcp-session-id"] = session
-    try:  # axf_server.http: https only (checked in _hub too), never follows a redirect: the token must not go anywhere else
-        r = axf_http.request("POST", f"{url}/mcp", headers=headers, body=body, timeout=timeout, max_bytes=2_000_000, truncate=True)
-    except axf_http.HttpError as e:
-        raise HubError(f"Couldn't reach axHub ({type(e).__name__})") from None
-    if not r.ok:
-        raise HubError(f"axHub answered {r.status}" + (" (check the axHub token)" if r.status in (401, 403) else ""))
-    sid = r.headers.get("mcp-session-id") or session
-    raw = r.text()
-    ctype = r.headers.get("content-type", "")
-    if "text/event-stream" in ctype:
-        msgs = [json.loads(line[5:].strip()) for line in raw.splitlines() if line.startswith("data:") and line[5:].strip()]
-        msg = next((m for m in reversed(msgs) if "result" in m or "error" in m), {})
-    else:
-        msg = json.loads(raw or "{}")
-    if "error" in msg:
-        raise HubError(str(msg["error"].get("message", "axHub error"))[:300])
-    return msg.get("result") or {}, sid
-
-
 def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600) -> dict[str, Any]:
-    """axHub's `call` meta-tool. Returns {"ok": text}, {"confirm": id} (waiting for approval), or raises HubError."""
-    url, tok = _hub()
-    def init() -> str | None:
-        return _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-autofix", "version": "1"}}, 30)[1]
-    sid = init()
-    args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
-    if confirmation_id:
-        args["confirmation_id"] = confirmation_id
-    res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
-    text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
-    job_id = _started_job(res, text)
-    if job_id:  # the hub answers after 25 s with a job; follow it until the command has finished
-        return _follow_job(url, tok, sid, job_id, timeout, reinit=init)
-    if res.get("isError"):
-        try:
-            err = json.loads(text).get("error", {})
-        except Exception:  # noqa: BLE001
-            err = {"message": text}
-        if err.get("code") == "confirmation_required":
-            cid = str((err.get("details") or {}).get("confirmationId", ""))
-            if not re.match(r"^[0-9a-f-]{36}$", cid):
-                raise HubError("axHub asked for an approval without an id")
-            return {"confirm": cid}
-        raise HubError(str(err.get("message") or text)[:400])
-    return {"ok": text}
+    """axHub's `call`, through Mosses (mosses.py): {"ok": text} | {"confirm": id} (waiting for approval), or HubError.
+    Imported late: mosses.py imports this module for HubError."""
+    from . import mosses
+    return mosses.call(tool, arguments, confirmation_id, timeout)
 
 
-def _started_job(res: dict[str, Any], text: str) -> str | None:
-    """A call that runs longer than the hub's sync wait (25 s) comes back as {"status": "started", "job_id": …}."""
-    if res.get("isError"):
-        return None
-    jid = str((res.get("_meta") or {}).get("axhub/jobId") or "")
-    if not jid:
-        try:
-            body = json.loads(text)
-        except Exception:  # noqa: BLE001
-            return None
-        if isinstance(body, dict) and body.get("status") == "started":
-            jid = str(body.get("job_id") or "")
-    if jid and not re.match(r"^[0-9a-f-]{36}$", jid):
-        raise HubError("axHub started a job without a valid id")
-    return jid or None
-
-
-def _follow_job(url: str, tok: str, sid: str | None, job_id: str, timeout: float, poll_s: float = 5,
-                rpc: Callable[..., tuple[dict[str, Any], str | None]] | None = None,
-                reinit: Callable[[], str | None] | None = None) -> dict[str, Any]:
-    """Poll get_job until the command finishes: {"ok": its output} when it succeeded, HubError otherwise."""
-    rpc = rpc or _rpc
-    deadline = time.time() + timeout + 120
-    reinits = 0
-    while True:
-        try:
-            res, sid = rpc(url, tok, sid, "tools/call", {"name": "get_job", "arguments": {"job_id": job_id}}, 60)
-        except HubError as e:
-            if "404" not in str(e) or not reinit or reinits >= 3:  # 404 = the MCP session expired: open a new one, keep following
-                raise
-            reinits += 1
-            sid = reinit()
-            continue
-        parts = [c.get("text", "") for c in res.get("content", []) if isinstance(c, dict)]
-        if res.get("isError"):
-            raise HubError(("\n".join(parts) or "axHub couldn't read the job")[:400])
-        try:
-            head = json.loads(parts[0]) if parts else {}
-        except Exception:  # noqa: BLE001
-            head = {}
-        state = head.get("state") or (res.get("_meta") or {}).get("axhub/jobState")
-        if state == "succeeded":
-            return {"ok": "\n".join(parts[1:])}
-        if state in ("failed", "cancelled"):
-            err = head.get("error") or {}
-            raise HubError(str(err.get("message") or f"The job {state} on axHub.")[:400])
-        if time.time() > deadline:
-            raise HubError("The command is still running on the VPS after its time limit; check it there.")
-        time.sleep(poll_s)
+def ready() -> tuple[bool, str]:
+    from . import mosses
+    return mosses.ready()
 
 
 class Jobs:
@@ -187,12 +81,14 @@ class Jobs:
         cmd = command(cid)
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
-        _hub()  # fail fast without a token
+        ok, why = ready()  # fail fast: no Mosses (or he can't reach axHub) = no Auto fix
+        if not ok:
+            raise HubError(why)
         with self.lock:
             cur = self.jobs.get(cid)
             if cur and cur["state"] in ("asking", "waiting", "running"):
                 return dict(cur)
-            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Asking axHub…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": cmd}
+            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Handing it to Mosses for axHub…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": cmd}
         threading.Thread(target=self._run, args=(cid, cmd), daemon=True).start()
         return self.get(cid) or {}
 

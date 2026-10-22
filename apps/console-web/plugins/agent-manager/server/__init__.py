@@ -34,6 +34,7 @@ if str(_PY) not in sys.path:
 from axf.contracts import agents as contract  # noqa: E402
 
 from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
+from . import hubtools  # noqa: E402,F401 — registers Mosses's axhub_call builtin before add-ons are checked
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -108,7 +109,8 @@ def _migrate_mosses() -> None:
     """Coder 1.x → Mosses 2.x (same add-on id `coder`): reinstall keeps the agent's memory, swaps persona, skills and tools."""
     try:
         rec = store.addon_records().get("coder")
-        if rec and str(rec.get("version", "")).startswith("1.") and "coder" in addons.bundles():
+        # 1.x → Mosses 2; 2.0 → 2.1 (Oct 22 2026: his axhub_call tool, which every console Auto fix goes through)
+        if rec and str(rec.get("version", "")).startswith(("1.", "2.0")) and "coder" in addons.bundles():
             addons.install("coder", run_training=False)
     except Exception:  # noqa: BLE001 — never block the console start
         pass

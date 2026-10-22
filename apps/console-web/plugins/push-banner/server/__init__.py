@@ -24,7 +24,7 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     Fix with Claude by hand (setting on; skips the 6 h cooldown, never a running one)
 
 Claude on failure (server/claudefix.py, setting claudeOnFail, off): a Pull main in that hits conflicts or a Merge that
-GitHub refuses (conflicts, failed CI, a GitHub error) asks axHub vps.run (Brett approves) to start headless Claude Code
+GitHub refuses (conflicts, failed CI, a GitHub error) is handed to Mosses, who asks axHub vps.run (Brett approves) to start headless Claude Code
 on the VPS on that branch; it shows in the Build manager's building banner. It never pushes to the default branch.
 
 A successful Merge or Pull main in is remembered as a finished entry (`done` in /branches, every device, 7 days) until
@@ -589,7 +589,8 @@ def remove_done(body: Any = Body(None)) -> dict[str, Any]:
 @router.get("/claude")
 def claude_jobs() -> dict[str, Any]:
     cfg = PUSHES.config()
-    return {"on": cfg["claudeOnFail"], "shell": cfg["claudeShell"], "hubToken": bool(os.environ.get("AXHUB_TOKEN")),
+    ok, why = claudefix.mosses_ready()
+    return {"on": cfg["claudeOnFail"], "shell": cfg["claudeShell"], "hubToken": bool(os.environ.get("AXHUB_TOKEN")), "mosses": ok, "mossesWhy": why,
             "changes": claudefix.plugin_services.get(claudefix.CHANGES) is not None, "jobs": CLAUDE.all()}
 
 

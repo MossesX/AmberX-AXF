@@ -150,7 +150,7 @@ export function RoutinePanel() {
 }
 
 interface ClaudeJob { id: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; changeId?: string; branch?: string; startedAt?: number }
-interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; changes: boolean; jobs: Record<string, ClaudeJob> }
+interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; mosses?: boolean; mossesWhy?: string; changes: boolean; jobs: Record<string, ClaudeJob> }
 
 /** Claude on failure: hand a failed fix to headless Claude Code on the VPS (through axHub, approved per launch). */
 export function ClaudePanel() {
@@ -167,10 +167,11 @@ export function ClaudePanel() {
   const jobs = Object.values(s.jobs).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
   return (
     <div className="fx-stack">
-      <Switch label="Hand failed fixes to Claude Code on the VPS" checked={s.on} onChange={(v) => void save({ claudeOnFail: v })}
-        hint="When an Auto fix, a console fix or a Fix all item fails, the console asks axHub to start headless Claude Code (Opus) on the VPS with the check's details, on its own branch fix/syscheck-<check>. Nothing starts until you approve it on axHub. It shows in the building banner while it works." />
+      <Switch label="Hand failed fixes to Mosses (Claude Code on the VPS)" checked={s.on} onChange={(v) => void save({ claudeOnFail: v })}
+        hint="When an Auto fix, a console fix or a Fix all item fails, it's handed to Mosses (every Auto fix goes through him), who asks axHub to start headless Claude Code (Opus) on the VPS with the check's details, on its own branch fix/syscheck-<check>. Nothing starts until you approve it on axHub. It shows in the building banner while it works." />
       <Switch label="Let it run shell commands on the VPS" checked={s.shell} disabled={!s.on} onChange={(v) => void save({ claudeShell: v })}
         hint="Off: it can read and edit files only, and ends with the commands for you to run. On: it may run commands on the VPS as root (each launch still needs your approval). Never pushes to main or merges." />
+      {s.mosses === false && <p className="fx-small axp-systems-check-bad"><Icon name="alert" size={12} /> {s.mossesWhy} Every Auto fix goes through Mosses.</p>}
       {s.on && !s.hubToken && <p className="fx-small axp-systems-check-bad"><Icon name="alert" size={12} /> Needs the axHub token (Keys needed → axHub connection) to start anything.</p>}
       {s.on && !s.changes && <p className="fx-small fx-muted"><Icon name="info" size={12} /> The Codebase changes plugin is off, so the session won’t show in the building banner (Activity still shows the launch).</p>}
       {jobs.length > 0 && (

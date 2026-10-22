@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T22:37:36.833Z",
+ "updatedAt": "2026-10-22T22:55:27.752Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1777,6 +1777,54 @@
    "builtAt": "2026-10-22T22:37:36.773Z",
    "updatedAt": "2026-10-22T22:37:36.833Z",
    "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "autofix-through-mosses",
+   "title": "Route every Auto fix through Mosses: axhub_call tool for Mosses; systems check + push banner send vps.run through him",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T22:55:27.752Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "axhub_call tool in agent-manager (hub call, job follow, approval), coder add-on 2.1 + migration",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.428Z"
+    },
+    {
+     "text": "Systems check: VPS Auto fix + Claude on failure through Mosses",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.491Z"
+    },
+    {
+     "text": "Push banner: Fix with Claude through Mosses",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.553Z"
+    },
+    {
+     "text": "Tests, docs, push",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.612Z"
+    }
+   ],
+   "createdAt": "2026-10-22T22:49:40.096Z",
+   "builtAt": "2026-10-22T22:55:27.670Z",
+   "updatedAt": "2026-10-22T22:55:27.752Z",
+   "estimate": "2 h",
    "source": "chat"
   }
  ]

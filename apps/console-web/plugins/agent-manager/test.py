@@ -250,7 +250,7 @@ counts_before = {k: len(c.get(f"/am/c/{k}").json()["items"]) for k in ("agents",
 r = post("addons/coder/uninstall")
 counts_after = {k: len(c.get(f"/am/c/{k}").json()["items"]) for k in counts_before}
 removed = {k: counts_before[k] - counts_after[k] for k in counts_before}
-check(removed["agents"] == 1 and removed["skills"] == 7 and removed["tools"] == 14 and removed["workflows"] == 1, f"uninstalling coder removes exactly its entities {removed}")
+check(removed["agents"] == 1 and removed["skills"] == 8 and removed["tools"] == 15 and removed["workflows"] == 1, f"uninstalling coder removes exactly its entities {removed}")
 check(not (Path(os.environ["AXF_AGENT_MANAGER_DIR"]) / "memory" / "coder.json").exists(), "…and its memory")
 check(c.post("/am/c/agents", json={"id": "coder.persona"}).status_code == 400, "names are required")
 lib = c.get("/am/export").json()
@@ -328,7 +328,8 @@ post("addons/coder/install")
 ag = svc.get_agent("coder")
 check(ag["name"] == "Mosses" and (ag.get("voice") or {}).get("hint", "").startswith("cat"), "coder add-on is now Mosses, with a voice slot")
 res = c.get("/am/agents/coder/resolved").json()
-check(res["dropped"] == [] and res["writeMode"] is False and not any(t.get("dangerous") for t in res["tools"]), "resolved view reports dropped tools and write mode")
+check(res["dropped"] == [] and res["writeMode"] is False and not any(t.get("dangerous") and t["name"].startswith("container_") for t in res["tools"])
+      and any(t["name"] == "axhub_call" for t in res["tools"]), "resolved view reports dropped tools and write mode (no container tools; axhub_call kept)")
 check(not any(t["name"].startswith("container_") for t in ag["tools"]) and ag["writeMode"] is None, "no container tools without Container access")
 plugin_services.provide("axf.containers@1", FakeCS(), "fake-container-access")
 ag = svc.get_agent("coder")
@@ -369,7 +370,11 @@ scope = am.memory.config(am.store.get("agents", "coder"))["scope"]
 am.memory.add(scope, "Brett likes tabs", "fact", [], source="test")
 recs = am.store.addon_records(); recs["coder"]["version"] = "1.0.0"; am.store.save_addon_records(recs)
 am._migrate_mosses()
-check(am.store.addon_records()["coder"]["version"] == "2.0.0", "Coder 1.x is migrated to Mosses on start")
+check(am.store.addon_records()["coder"]["version"] == "2.1.0", "Coder 1.x is migrated to Mosses on start")
+recs = am.store.addon_records(); recs["coder"]["version"] = "2.0.0"; am.store.save_addon_records(recs)
+am._migrate_mosses()
+check(am.store.addon_records()["coder"]["version"] == "2.1.0" and any(t["name"] == "axhub_call" for t in c.get("/am/agents/coder/resolved").json()["tools"]),
+      "Mosses 2.0 is updated to 2.1 on start (gets axhub_call)")
 check(any("tabs" in h["text"] for h in am.memory.search(scope, "tabs", 5, "keyword")), "…and keeps what he learned")
 plugin_services.withdraw("fake-container-access")
 plugin_services.withdraw("fake-snapshot-manager")
@@ -408,4 +413,44 @@ c.post("/am/c/agents", json={"id": "voice-a", "name": "Voice A", "personaId": pv
 check(svc.get_agent("voice-a")["voice"]["hint"] == "cat-like" and "Sample replies" in svc.get_agent("voice-a")["system_prompt"], "agents inherit the persona's voice slot and samples")
 c.delete("/am/c/skills/lib.skill")
 check(c.get("/am/c/skills/lib.skill/versions").json()["items"] == [], "deleting an item deletes its versions")
+
+# Mosses's axhub_call: every console Auto fix goes through it (never approves; the hub decides)
+ht = sys.modules["axf_console_plugins.agent_manager.hubtools"]
+tk = sys.modules["axf_console_plugins.agent_manager.toolkit"]
+check("axhub_call" in tk.BUILTINS and tk.is_dangerous({"kind": "builtin", "config": {"builtin": "axhub_call"}}), "axhub_call is a builtin and a dangerous tool (Settings → Safety)")
+bundle = json.loads((PLUGINS / "agent-manager" / "addons" / "coder" / "addon.json").read_text())
+check(bundle["version"] == "2.1.0" and any(t["config"].get("builtin") == "axhub_call" for t in bundle["provides"]["tools"])
+      and "coder.vps" in next(a for a in bundle["provides"]["agents"] if a["id"] == "coder")["skillIds"], "Mosses 2.1 carries axhub_call through his VPS skill")
+seen = []
+def hub(states):
+    def f(tool, arguments, conf=None, timeout=None):
+        seen.append((tool, arguments, conf))
+        st_ = states.pop(0)
+        if st_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if st_ == "reject": raise ht.HubError("The user rejected this call.")
+        return {"ok": "$ ufw allow 60000:61000/udp\nexit 0 · 12 ms"}
+    return f
+r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "ufw allow 60000:61000/udp"}, "wait": False}, {}, call=hub(["confirm"])))
+check(r["status"] == "confirm" and r["link"].endswith("/auth/admin/approvals/11111111-2222-3333-4444-555555555555"), "wait=false: answers at once with the approval id + link")
+r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "confirmation_id": "11111111-2222-3333-4444-555555555555", "wait": False}, {}, call=hub(["ok"])))
+check(r["status"] == "ok" and "exit 0" in r["output"] and seen[-1][2] == "11111111-2222-3333-4444-555555555555", "retried with the approval id → the output")
+r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, call=hub(["confirm", "confirm", "ok"]), delays=lambda: [0, 0, 0], sleep=lambda s: None))
+check(r["status"] == "ok", "wait=true (a model): waits for the approval, then runs")
+r = json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}, call=hub(["confirm", "reject"]), delays=lambda: [0], sleep=lambda s: None))
+check(r["status"] == "error" and r["message"] == "Rejected on the hub.", "rejected on the hub → an error the model can read")
+check(json.loads(ht.run({"tool": "rm -rf", "arguments": {}}, {}))["status"] == "error", "the tool name must be service.tool")
+check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x" * 4000}}, {}))["status"] == "error", "arguments too long for an approval are refused")
+check(json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}, "confirmation_id": "nope"}, {}))["status"] == "error", "a bad approval id is refused")
+JID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+check(ht.started_job({"_meta": {"axhub/jobId": JID}}, "") == JID and ht.started_job({}, '{"status": "started", "job_id": "%s"}' % JID) == JID and ht.started_job({}, "exit 0") is None,
+      "a call over the hub's 25 s comes back as a job")
+replies = [({"content": [{"type": "text", "text": json.dumps({"state": "running"})}]}, "s1"), ht.HubError("axHub answered 404"),
+           ({"content": [{"type": "text", "text": json.dumps({"state": "succeeded"})}, {"type": "text", "text": "exit 0"}]}, "s2")]
+def rpc(sid, method, params, t):
+    x = replies.pop(0)
+    if isinstance(x, Exception): raise x
+    return x
+check(ht.follow_job(rpc, "s0", JID, 60, reinit=lambda: "s9", poll_s=0) == "exit 0", "the job is followed (new session on 404) to its output")
+os.environ.pop("AXHUB_TOKEN", None)
+check("axHub token" in json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}))["message"], "without the axHub token it says to add it")
 print(f"all {ok} checks passed")

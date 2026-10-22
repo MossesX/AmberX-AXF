@@ -13,7 +13,8 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST check/{id}                   re-run one check
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
-  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command through axHub's vps.run (approval pops up)
+  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command handed to Mosses (axhub_call), who sends it to
+                                    axHub's vps.run (approval pops up). Every Auto fix goes through Mosses (mosses.py).
   GET  claude | POST claude/{id}    Claude on failure: a failed fix handed to headless Claude Code on the VPS (setting
                                     claudeOnFail; vps.run, so it needs approval; reports on a change-log entry = building banner)
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
@@ -37,7 +38,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, hostfix, routine, store, whatsnew
+from . import claudefix, derive, hostfix, mosses, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck
 
 router = APIRouter()
@@ -224,7 +225,8 @@ class ClaudeReq(BaseModel):
 def claude_list() -> dict[str, Any]:
     """The setting, and every hand-over to headless Claude Code (state, approval, entry id, branch)."""
     s = store.settings()
-    return {"on": bool(s.get("claudeOnFail")), "shell": bool(s.get("claudeShell")), "hubToken": bool(os.environ.get("AXHUB_TOKEN")),
+    ok, why = mosses.ready()
+    return {"on": bool(s.get("claudeOnFail")), "shell": bool(s.get("claudeShell")), "hubToken": bool(os.environ.get("AXHUB_TOKEN")), "mosses": ok, "mossesWhy": why,
             "changes": plugin_services.get(claudefix.CHANGES) is not None,
             "jobs": {j["id"]: {k: v for k, v in j.items() if k != "command"} for j in CLAUDE.all()}}
 

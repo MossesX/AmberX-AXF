@@ -111,7 +111,7 @@ check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved b
 check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
 c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
 
-# Auto fix for VPS checks: only commands from the table, sent to axHub's vps.run, run once approved there
+# Auto fix for VPS checks: only commands from the table, handed to Mosses for axHub's vps.run, run once approved there
 hf = sys.modules.get(spec.name + ".hostfix")
 check(hf is not None, "hostfix module loaded with the plugin")
 calls = []
@@ -124,6 +124,40 @@ def fake_call(states):
         return {"ok": "$ cmd\nexit 0 · 10 ms\n"}
     return f
 os.environ["AXHUB_TOKEN"] = "hub-token-for-test"
+
+
+class FakeMosses:
+    """axf.agents@1 with Mosses holding axhub_call: every Auto fix goes through him."""
+    def __init__(self, tools=("axhub_call",), answers=None):
+        self.tools, self.answers, self.runs = tools, list(answers or []), []
+    def get_agent(self, aid):
+        return {"id": aid, "name": "Mosses", "system_prompt": "You are Mosses.", "tools": [{"name": t} for t in self.tools]} if aid == "coder" else None
+    def run_tool(self, aid, name, args, ctx=None):
+        self.runs.append((aid, name, args))
+        return json.dumps(self.answers.pop(0)) if self.answers else json.dumps({"status": "ok", "output": "$ x\nexit 0 · 1 ms"})
+
+
+ms = sys.modules.get(spec.name + ".mosses")
+fm = FakeMosses(answers=[{"status": "confirm", "confirmationId": "11111111-2222-3333-4444-555555555555", "link": "https://hub/a"}, {"status": "ok", "output": "$ ufw\nexit 0 · 2 ms"}])
+plugin_services.provide("axf.agents@1", fm, "fake-mosses")
+r1 = ms.call("vps.run", {"command": "ufw allow 60000:61000/udp"})
+r2 = ms.call("vps.run", {"command": "ufw allow 60000:61000/udp"}, "11111111-2222-3333-4444-555555555555")
+aid, tool, a1 = fm.runs[0]
+check(r1 == {"confirm": "11111111-2222-3333-4444-555555555555"} and r2["ok"].endswith("exit 0 · 2 ms"), "Auto fix goes through Mosses: approval id, then the output")
+check(aid == "coder" and tool == "axhub_call" and a1["tool"] == "vps.run" and a1["wait"] is False and a1["arguments"]["command"] == "ufw allow 60000:61000/udp"
+      and fm.runs[1][2]["confirmation_id"] == "11111111-2222-3333-4444-555555555555", "…as Mosses's axhub_call (the exact command, no waiting, then the approval id)")
+fm.answers = [{"status": "error", "message": "Rejected on the hub."}]
+try:
+    ms.call("vps.run", {"command": "x"}); rej = ""
+except hf.HubError as e:
+    rej = str(e)
+check(rej == "Rejected on the hub.", "the hub's answer comes back through Mosses")
+plugin_services.withdraw("fake-mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(tools=("repo_read",)), "fake-mosses")
+check("Safety" in ms.ready()[1], "Mosses without axhub_call: says to allow him dangerous tools")
+plugin_services.withdraw("fake-mosses")
+check("agent manager" in ms.ready()[1], "no agent manager: says Auto fix needs Mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(), "fake-mosses")
 rechecked = []
 jobs = hf.Jobs(lambda cid: rechecked.append(cid), fake_call(["confirm", "confirm", "ok"]), poll_s=0.01)
 jobs.start("host-mosh-ports")
@@ -144,28 +178,6 @@ try:
 except hf.HubError:
     refused = True
 check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
-# Fixes that run longer than the hub's 25 s sync wait come back as a job: follow it to the command's real output
-JID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-started = {"content": [{"type": "text", "text": json.dumps({"status": "started", "job_id": JID})}], "_meta": {"axhub/status": "started", "axhub/jobId": JID}}
-check(hf._started_job(started, started["content"][0]["text"]) == JID, "a started job is recognised (not taken as the output)")
-check(hf._started_job({"content": []}, "$ cmd\nexit 0") is None, "a direct answer isn't a job")
-def job_reply(state, out=None, err=None):
-    head = {"job_id": JID, "state": state, **({"error": err} if err else {})}
-    return {"content": [{"type": "text", "text": json.dumps(head)}] + ([{"type": "text", "text": out}] if out else []), "_meta": {"axhub/jobState": state}}
-def fake_rpc(replies):
-    def f(url, tok, sid, method, params, timeout):
-        r = replies.pop(0)
-        if isinstance(r, Exception): raise r
-        assert params == {"name": "get_job", "arguments": {"job_id": JID}}
-        return r, sid
-    return f
-r = hf._follow_job("https://hub", "t", "s1", JID, 60, poll_s=0, rpc=fake_rpc([job_reply("running"), hf.HubError("axHub answered 404"), job_reply("succeeded", "$ apt-get install -y mosh\nexit 0 · 40000 ms\n")]), reinit=lambda: "s2")
-check(r["ok"].splitlines()[1].startswith("exit 0"), "running → session expired (new session) → succeeded: the command's output comes back")
-try:
-    hf._follow_job("https://hub", "t", "s1", JID, 60, poll_s=0, rpc=fake_rpc([job_reply("failed", err={"message": "The command didn't finish"})])); bad = ""
-except hf.HubError as e:
-    bad = str(e)
-check("didn't finish" in bad, "a failed job reports the hub's reason")
 # Claude on failure: a failed fix goes to headless Claude Code on the VPS through vps.run (approved), reporting on an entry
 cf = sys.modules.get(spec.name + ".claudefix")
 check(cf is not None, "claudefix module loaded with the plugin")
@@ -238,7 +250,9 @@ check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refu
 check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
-check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
+plugin_services.withdraw("fake-mosses")
+r = c.post("/p/autofix/host-mosh")
+check(r.status_code == 409 and "Mosses" in r.json()["detail"], "without Mosses there's no Auto fix (it says so)")
 
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()

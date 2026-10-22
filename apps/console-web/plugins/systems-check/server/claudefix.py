@@ -3,7 +3,7 @@
 Setting `claudeOnFail` (off by default). Any failed fix starts it: a VPS Auto fix that ran and failed, a server-side fix
 that failed or left the check failing, or an item Fix all marks failed. A fix Brett *rejected* on the hub never does.
 
-The launch goes through axHub's `vps.run`, so nothing starts until Brett approves it on the hub (the approval page
+The launch is handed to Mosses (his `axhub_call` tool, mosses.py), who passes it to axHub's `vps.run`, so nothing starts until Brett approves it on the hub (the approval page
 shows the whole command, the brief included). The command makes a worktree of the console's clone on branch
 `fix/syscheck-<check>`, writes the brief there and starts `claude -p` in the background with the reporting variables
 set (`AXF_SURFACE=console-launch`, `AXF_ADOPT_CHANGE=<entry id>`), so the session's Claude Code hooks report onto the
@@ -161,7 +161,7 @@ class Launches:
                 return dict(cur)
             if cur and not force and time.time() - float(cur.get("startedAt", 0)) < COOLDOWN_S:
                 return dict(cur)
-            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Asking axHub to start Claude Code on the VPS…", "changeId": "",
+            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Handing it to Mosses, who asks axHub to start Claude Code on the VPS…", "changeId": "",
                               "confirmationId": None, "startedAt": time.time(), "title": check.get("title") or cid, "failure": failure[:300]}
         shell = bool(s.get("claudeShell"))
         change_id = self._open_entry(check, failure, shell)
