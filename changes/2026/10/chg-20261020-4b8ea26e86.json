@@ -1,0 +1,50 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-4b8ea26e86",
+  "createdAt": "2026-10-20T21:59:00.000Z",
+  "updatedAt": "2026-10-20T23:59:00.000Z",
+  "kind": "build",
+  "title": "AI Agent Manager plugin (Fable rebuild)",
+  "asked": "Backfilled from the pending list (complete) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Create/edit/manage/orchestrate agents with skills, personas, lingo, tools and per-agent persistent memory. Wizards: new agent, new skill, new tool, all-in-one agent builder, auto-training (Firecrawl, MCP tools, other sources). Add-on agents install as bundles; 3 add-ons: React/TS/Python coder, Amber",
+    "commits": [
+      {
+        "sha": "c38adb8",
+        "message": "Agent manager: Fable rebuild on the agent-definition@1 framework contract"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/agent-manager-plugin.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-20T23:59:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "agent-manager-plugin"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T21:59:00.000Z",
+  "finishedAt": "2026-10-20T23:59:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

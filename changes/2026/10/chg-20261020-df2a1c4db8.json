@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261020-df2a1c4db8",
+  "createdAt": "2026-10-20T14:00:00.000Z",
+  "updatedAt": "2026-10-20T16:00:00.000Z",
+  "kind": "build",
+  "title": "Designed assets at init",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`init` takes `assets: [asset@1 …]` (`checkDesignedAssets`: validated like framework assets, own ids only — a framework starter's id is refused —, ≤ 40, ≤ 200 KB each) written into the new app's assets folder, and `slots` may pick them (`checkSlotPicks(slots, template, designed)`); engine-rpc/console",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-20T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "designed-assets-at-init"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T14:00:00.000Z",
+  "finishedAt": "2026-10-20T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 33
+  },
+  "costEstimated": true
+}

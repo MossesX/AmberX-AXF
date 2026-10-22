@@ -1,0 +1,52 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-0e19bac33c",
+  "createdAt": "2026-10-19T13:45:01.000Z",
+  "updatedAt": "2026-10-19T15:45:01.000Z",
+  "kind": "build",
+  "title": "Plugin catalog — plugin-catalog@1",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "plugins any of Brett's apps can install, kept on axHub at `/projects/_shared/_data/plugin-catalog` (`catalog.json` index + `packages/<kind>/<folder>/<version>.json` = `plugin-package@1`, files base64 with a content hash; the console mounts `/projects`, axHub serves the same folder via `axhub.memory_",
+    "commits": [
+      {
+        "sha": "590dd58",
+        "message": "Plugin catalog on axHub (plugin-catalog@1): install, update and publish plugins"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T15:45:01.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "plugin-catalog-plugin-catalog-1"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-19T13:45:01.000Z",
+  "finishedAt": "2026-10-19T15:45:01.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/plugin-catalog.mjs",
+    "framework/spec/check-plugin-catalog.mjs"
+  ]
+}

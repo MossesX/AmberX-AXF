@@ -57,7 +57,7 @@ function pluginChanges(d: Resp, seen: Seen) {
 
 export function WhatsNewBanner() {
   const s = useWN();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true); // every banner launches expanded (Brett, Oct 21 2026)
   useEffect(() => { if (!open) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); }; addEventListener('keydown', k); return () => removeEventListener('keydown', k); }, [open]);
   const d = s.data;
   const seen = s.seen;

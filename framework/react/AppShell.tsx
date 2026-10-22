@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
@@ -28,13 +28,18 @@ export interface AppShellProps {
   inspector?: ReactNode;
   /** tab renderers (kind → component) for the windowing engine; `terminal` and `placeholder` are built in */
   tabs?: TabRenderers;
+  /**
+   * Views kept mounted once shown (hidden while another view is in front) instead of being rebuilt on every switch:
+   * for views holding a live page (Patches' app tabs are frames; moving or remounting a frame reloads it).
+   */
+  keep?: readonly string[];
 }
 
 /**
  * The application shell. Regions are placed by the layout engine
  * (CSS grid vars compiled from the active `layout` asset).
  */
-export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShellProps) {
+export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
@@ -49,6 +54,14 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(views, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
+  // Kept views (`keep`): mounted the first time they're shown, then only hidden, so their state (a frame) survives.
+  const [kept, setKept] = useState<string[]>([]);
+  const keepKey = keep.join('|');
+  useEffect(() => {
+    if (keep.includes(state.view) && !kept.includes(state.view)) setKept((k) => [...k, state.view]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.view, keepKey]);
+  const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
   if (state.appearance && state.appearance.status !== 'ready') {
@@ -56,6 +69,25 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
       <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
         <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>
       </div>
+    );
+  }
+
+  // Page mode (embed@1 `page`): the host shows one page of this app on its own, e.g. its settings inside Patches' combined
+  // settings. Only that view, full page, no chrome, no banners; dialogs and toasts still work.
+  const page = rt.embedded?.page ? views[rt.embedded.page] : undefined;
+  if (page) {
+    return (
+      <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
+      <div className="fx-frame fx-frame--page" data-axf-embed={rt.embedded?.host} data-axf-embed-page={rt.embedded?.page}>
+        <div className="fx-shell fx-shell--page">
+          <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+            <div className="fx-main__inner">{page.render()}</div>
+          </main>
+          <DialogHost dialogs={allDialogs} />
+          <ToastHost />
+        </div>
+      </div>
+      </TabRenderersProvider>
     );
   }
 
@@ -88,9 +120,16 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {} }: AppShell
         </div>
       )}
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
-        <div className="fx-main__inner" key={state.view}>
-          {view?.render()}
-        </div>
+        {keptNow.map((id) => (
+          <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
+            {views[id]?.render()}
+          </div>
+        ))}
+        {!keep.includes(state.view) && (
+          <div className="fx-main__inner" key={state.view}>
+            {view?.render()}
+          </div>
+        )}
       </main>
       {layout.inspector !== 'none' && (
         <aside className="fx-region fx-region--inspector" style={{ gridArea: 'inspector' }} data-side={layout.inspector}>

@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-14f9deedc1",
+  "createdAt": "2026-10-18T10:17:14.449Z",
+  "updatedAt": "2026-10-18T14:17:14.449Z",
+  "kind": "build",
+  "title": "Project manifests, Standards and the /projects tree",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Every project has a validated project.manifest.json (project-manifest@1); the build engine never loads or compiles a project without one. Rules live in the Dev Console under Standards. Claude files and shared data sync with the hub at /projects/<name>/{_claude,_data}.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T14:17:14.449Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.projects"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T10:17:14.449Z",
+  "finishedAt": "2026-10-18T14:17:14.449Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true
+}

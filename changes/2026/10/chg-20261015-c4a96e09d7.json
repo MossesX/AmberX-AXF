@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261015-c4a96e09d7",
+  "createdAt": "2026-10-15T12:47:47.000Z",
+  "updatedAt": "2026-10-15T16:47:47.000Z",
+  "kind": "build",
+  "title": "Library templates (build, port, compile new libraries)",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Boilerplates for libraries: feature screens, service provider, data feature, device capability, integration, UI kit, background worker, blank — generating Android, web and Python ports, compiling each, and porting a library to another port from its library.json. (built before the build queue existed",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-15T16:47:47.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.librarytemplates"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-15T12:47:47.000Z",
+  "finishedAt": "2026-10-15T16:47:47.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true
+}

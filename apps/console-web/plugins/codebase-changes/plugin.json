@@ -37,7 +37,10 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md",
       "_claude/rules/RULES.md",
-      "_claude/memory/docs/codebase-changes.md"
+      "_claude/memory/docs/codebase-changes.md",
+      "_claude/memory/docs/build-reporting.md",
+      "_claude/shared/rules/RULES.md",
+      "deploy/claude-pick.sh"
     ],
     "keeps": [
       "changes/ in the shared data folder (/projects/amberx-axf/_data/changes on axHub, and the repo's changes/ snapshot): Brett's permanent record, never deleted by uninstall"

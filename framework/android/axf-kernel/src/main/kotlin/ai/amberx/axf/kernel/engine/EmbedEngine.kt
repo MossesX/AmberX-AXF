@@ -2,8 +2,11 @@ package ai.amberx.axf.kernel.engine
 
 import ai.amberx.axf.kernel.asset.AssetTypeRegistry
 
-/** The host app this one runs inside (embed@1): its id and the chrome it shows for the app (forced hidden here). */
-public data class Embed(val host: String, val hidden: List<String>)
+/**
+ * The host app this one runs inside (embed@1): its id, the chrome it shows for the app (forced hidden here), the app
+ * functions it takes over ([EmbedTakes]: `settings`, `notifications`) and the one page it shows on its own, if any.
+ */
+public data class Embed(val host: String, val hidden: List<String>, val takes: List<String> = emptyList(), val page: String? = null)
 
 /**
  * Embed engine (embed@1) — an app running inside another app's frame. Mirrors core/engines/embed.ts.

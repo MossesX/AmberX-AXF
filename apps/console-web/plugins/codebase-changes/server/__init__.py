@@ -38,8 +38,10 @@ router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 SELF = "axf.changes@1"
 MAX_BODY = 128 * 1024
-ENTRY_KEYS = {"$axf", "id", "createdAt", "updatedAt", "kind", "title", "asked", "repos", "model", "who", "steps", "result", "closed", "state"}
-PATCH_KEYS = {"title", "kind", "asked", "repos", "model", "who", "steps", "step", "result"}
+BUILD_KEYS = {"status", "buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "doing",
+              "parent", "progress", "verify"}
+ENTRY_KEYS = {"$axf", "id", "createdAt", "updatedAt", "kind", "title", "asked", "repos", "model", "who", "steps", "result", "closed", "state"} | BUILD_KEYS
+PATCH_KEYS = {"title", "kind", "asked", "repos", "model", "who", "steps", "step", "result", "beat"} | BUILD_KEYS
 _DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _stores: dict[str, Store] = {}
 
@@ -146,9 +148,14 @@ def update_entry(cid: str, patch: dict[str, Any]) -> dict[str, Any]:
         raise KeyError(cid)
     now = now_iso()
     nxt = dict(e)
-    for k in ("title", "kind", "asked", "repos", "model", "who", "steps"):
+    for k in ("title", "kind", "asked", "repos", "model", "who", "steps", *sorted(BUILD_KEYS)):
         if k in patch:
-            nxt[k] = patch[k]
+            if patch[k] is None and k in BUILD_KEYS:
+                nxt.pop(k, None)
+            else:
+                nxt[k] = patch[k]
+    if patch.get("beat"):  # heartbeat: the session is still working on it
+        nxt["lastSeenAt"] = now
     if "step" in patch:
         s = patch["step"]
         if not isinstance(s, dict) or set(s) - {"index", "text", "state", "note"}:
@@ -166,6 +173,11 @@ def update_entry(cid: str, patch: dict[str, Any]) -> dict[str, Any]:
             nxt["result"] = {**(e.get("result") or {}), **r}
         else:
             raise ValueError("result is an object or null")
+    # every write from a working session counts as a heartbeat; finishing stamps finishedAt (and the actual minutes)
+    if not nxt.get("result"):
+        nxt["lastSeenAt"] = now
+    elif not e.get("result"):
+        nxt.setdefault("finishedAt", now)
     nxt["updatedAt"] = now
     return store().put(nxt)
 
@@ -204,6 +216,18 @@ class Service:
 
     def query(self, **kw: Any) -> dict[str, Any]:
         return store().query(**kw)
+
+    def summaries(self) -> list[dict[str, Any]]:
+        """Every entry's summary with its build stats (status, estimate, actual, surface, host, areas, …), newest first."""
+        return store().summaries()
+
+    def stamp(self) -> str:
+        """Changes whenever any entry changes (for cheap live polling)."""
+        return store().stamp()
+
+    def cli(self) -> str:
+        """The recording CLI, relative to the repo (so other plugins can tell sessions how to report without naming it)."""
+        return str((Path(__file__).resolve().parents[1] / "changes.mjs").relative_to(cx.ROOT)) if str(Path(__file__)).startswith(str(cx.ROOT)) else "changes.mjs"
 
 
 plugin_services.provide(SELF, Service(), FOLDER)

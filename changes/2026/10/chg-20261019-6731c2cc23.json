@@ -1,0 +1,73 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-6731c2cc23",
+  "createdAt": "2026-10-18T22:30:38.000Z",
+  "updatedAt": "2026-10-19T00:30:38.000Z",
+  "kind": "build",
+  "title": "Pending builds manager",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`framework/plan/pending.json` (`pending@1`) is the repo's pending build list: builds parked until their model is available. It mirrors Brett's claude.ai \"AXF Pending Builds\" page (artifact `HTwGSP7HcEt5yBd3MNz2Ye`, db collection `builds`) field for field, with ISO dates plus `builtAt` (stamped when",
+    "commits": [
+      {
+        "sha": "6d0df87",
+        "message": "Pending: systems-check rebuild notes icon-only source badges"
+      },
+      {
+        "sha": "595de39",
+        "message": "Banner, badge and clock asset types (framework, both ports): thin banner above the layout that hosts attached badges and clocks; Claude badge plugin tests the AI connection on load (green Powered by <"
+      },
+      {
+        "sha": "439d71f",
+        "message": "Theme manager: Shown/Hidden switch on each chrome type in the token tree (greys out and skips hidden types)"
+      },
+      {
+        "sha": "c12aaad",
+        "message": "Live sessions (live-session@1): assistant sessions stay live when the browser closes"
+      },
+      {
+        "sha": "8ce90cd",
+        "message": "Widgets: clock + search-bar on banners and toolbars; console-wide search in the banner"
+      },
+      {
+        "sha": "1ac0660",
+        "message": "Pending: note admin-only What's new on systems-check-plugin"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T00:30:38.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "pending-builds-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T22:30:38.000Z",
+  "finishedAt": "2026-10-19T00:30:38.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/plan/pending.json",
+    "framework/plan/pending-core.mjs",
+    "framework/spec/check-build-steps.mjs"
+  ]
+}

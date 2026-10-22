@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-ec540dc027",
+  "createdAt": "2026-10-20T23:35:33.000Z",
+  "updatedAt": "2026-10-21T02:35:33.000Z",
+  "kind": "build",
+  "title": "Fable rebuilds plugin (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/fable-rebuilds` (`ai.amberx.axf.console.fable-rebuilds`). View **Builds → Fable rebuilds**: every pending item with model Fable (counts, filters Not rebuilt/Pending/Unsafe/Rebuilt/All, expandable rows): what it replaces (the Opus console plugin, matched by id = folder / `-p",
+    "commits": [
+      {
+        "sha": "154b625",
+        "message": "Fable rebuilds console plugin + hooks across the console"
+      },
+      {
+        "sha": "3dce2a0",
+        "message": "Integration fixes: lifecycle check skips rebuild history + other plugins' tests, fixture generator merge, Android console validates (plain app/ folder accepted)"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T02:35:33.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "fable-rebuilds"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-20T23:35:33.000Z",
+  "finishedAt": "2026-10-21T02:35:33.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/fable-rebuilds"
+  ]
+}

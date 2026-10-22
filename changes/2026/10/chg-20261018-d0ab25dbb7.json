@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-d0ab25dbb7",
+  "createdAt": "2026-10-18T18:20:37.000Z",
+  "updatedAt": "2026-10-18T20:20:37.000Z",
+  "kind": "build",
+  "title": "Plugin lifecycle — plugin-lifecycle@1",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "every plugin can be removed with nothing left behind, so a newer build (e.g. a Fable rebuild) installs cleanly. Code only in `plugins/<folder>/`, data only in `lifecycle.dataDir` (`.axf-console/plugins/<folder>/`), doc lines outside carry ``, cross-plugin features only through capability services (`",
+    "commits": [
+      {
+        "sha": "c6158a3",
+        "message": "Add AI assistant + agent manager console plugins and plugin-lifecycle@1"
+      },
+      {
+        "sha": "78bc5f1",
+        "message": "Harden the AI assistant, agent manager and plugin lifecycle (independent review fixes)"
+      },
+      {
+        "sha": "917714a",
+        "message": "Systems check becomes a plugin: checks declared by the codebase, What's new banner, AI switches (assistant + Mosses) that save Mosses's checks as a routine that runs without AI"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T20:20:37.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "plugin-lifecycle-plugin-lifecycle-1"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T18:20:37.000Z",
+  "finishedAt": "2026-10-18T20:20:37.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/cli/plugin-lifecycle.mjs"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-d609588373",
+  "createdAt": "2026-10-18T22:12:56.000Z",
+  "updatedAt": "2026-10-19T01:12:56.000Z",
+  "kind": "build",
+  "title": "Claude badge plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/claude-badge` (`ai.amberx.axf.console.claude-badge`). On every console load it tests the AI connection (`POST /api/plugins/claude-badge/test`: one tiny request through `axf.llm@1`) and attaches badge asset `claude` to the banner's left: green + a 5-second pop-out to its rig",
+    "commits": [
+      {
+        "sha": "595de39",
+        "message": "Banner, badge and clock asset types (framework, both ports): thin banner above the layout that hosts attached badges and clocks; Claude badge plugin tests the AI connection on load (green Powered by <"
+      },
+      {
+        "sha": "c2a54c3",
+        "message": "Hub users in the console: review fixes (only userGrantable plugins with exact grants, fail closed on bad sessions, admin-only /data and /panel, no WebSockets for users, no host path in health, spacing"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T01:12:56.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "claude-badge"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T22:12:56.000Z",
+  "finishedAt": "2026-10-19T01:12:56.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/claude-badge"
+  ]
+}
