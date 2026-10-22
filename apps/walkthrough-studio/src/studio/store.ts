@@ -5,7 +5,8 @@
  */
 import { useSyncExternalStore } from 'react';
 import { duplicateProject, newProject, normalizeProject, type DragItem, type Project } from './model';
-import { DeviceStore, HubStore, type ProjectStore, type ProjectSummary } from './persist';
+import type { DocStore } from '../axf/libs/docstore';
+import { projectStore, summary, type ProjectSummary } from './persist';
 import { compile, type Compiled } from './compiler';
 import { seedProject } from './seed';
 
@@ -43,13 +44,13 @@ export class StudioStore {
   private lastLabel = '';
   private lastAt = 0;
   private saveTimer: ReturnType<typeof setTimeout> | undefined;
-  readonly device = new DeviceStore();
-  hubStore: HubStore | null = null;
+  private _docs: DocStore<Project> | null = null;
+  /** made on first use, after the libraries are installed (so lib-docstore's installed config applies) */
+  get docs(): DocStore<Project> { return (this._docs ??= projectStore(this.s.hub.address, this.s.hub.on)); }
 
   constructor(hubAddress: string) {
     const on = safe(() => localStorage.getItem(HUB_ON) === '1', false);
     this.s = { projects: [], project: null, selection: { piece: null, section: null, multi: [] }, dirty: false, saving: false, savedAt: null, undo: 0, redo: 0, compiled: null, log: [], playing: null, recording: null, hub: { on, address: hubAddress, error: null } };
-    if (on && hubAddress) this.hubStore = new HubStore(hubAddress);
   }
 
   /* ---- subscription ---- */
@@ -62,8 +63,6 @@ export class StudioStore {
   }
 
   /* ---- projects ---- */
-  private stores(): ProjectStore[] { return [this.device, ...(this.hubStore ? [this.hubStore] : [])]; }
-
   private booting: Promise<void> | null = null;
   /** load the project list and open the last project (once, however many callers ask) */
   boot(): Promise<void> { return (this.booting ??= this.doBoot()); }
@@ -71,7 +70,7 @@ export class StudioStore {
     await this.refreshList();
     if (!this.s.projects.length) {
       const seed = seedProject();
-      await this.device.save(seed);
+      await this.docs.save(seed, summary(seed));
       this.log(`Created the seed project "${seed.name}" with ${Object.keys(seed.pieces).length} pieces.`, 'ok');
       await this.refreshList();
     }
@@ -80,22 +79,13 @@ export class StudioStore {
   }
 
   async refreshList() {
-    const lists = await Promise.all(this.stores().map((st) => st.list().catch((e) => { this.set({ hub: { ...this.s.hub, error: (e as Error).message } }); return [] as ProjectSummary[]; })));
-    const map = new Map<string, ProjectSummary>();
-    for (const l of lists) for (const x of l) {
-      const had = map.get(x.id);
-      map.set(x.id, had ? { ...(had.updatedAt >= x.updatedAt ? had : x), where: 'both' } : x);
-    }
-    this.set({ projects: [...map.values()].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)) });
+    const projects = await this.docs.list();
+    this.set({ projects, hub: { ...this.s.hub, error: this.docs.hubError } });
   }
 
   async open(id: string) {
     await this.flush();
-    let best: Project | null = null;
-    for (const st of this.stores()) {
-      const p = await st.load(id).catch(() => null);
-      if (p && (!best || p.updatedAt > best.updatedAt)) best = p;
-    }
+    const best = await this.docs.load(id);
     if (!best) { this.log(`Project ${id} could not be loaded.`, 'error'); return; }
     this.past = []; this.future = [];
     safe(() => localStorage.setItem(LAST, id), undefined);
@@ -113,7 +103,7 @@ export class StudioStore {
   }
   async duplicate(id = this.s.project?.id) {
     if (!id) return;
-    const src = id === this.s.project?.id ? this.s.project : await this.device.load(id);
+    const src = id === this.s.project?.id ? this.s.project : await this.docs.load(id);
     if (!src) return;
     const copy = duplicateProject(src);
     await this.persist(copy); await this.refreshList(); await this.open(copy.id);
@@ -121,11 +111,11 @@ export class StudioStore {
   }
   async rename(id: string, name: string) {
     if (this.s.project?.id === id) return this.edit('Rename project', (p) => ({ ...p, name, root: { ...p.root, title: name } }));
-    const p = await this.device.load(id); if (!p) return;
+    const p = await this.docs.load(id); if (!p) return;
     await this.persist({ ...p, name, updatedAt: new Date().toISOString() }); await this.refreshList();
   }
   async remove(id: string) {
-    for (const st of this.stores()) await st.remove(id).catch(() => undefined);
+    await this.docs.remove(id);
     await this.refreshList();
     if (this.s.project?.id === id) { if (this.s.projects[0]) await this.open(this.s.projects[0].id); else await this.create(); }
     this.log('Project deleted.', 'warn');
@@ -167,11 +157,9 @@ export class StudioStore {
   /* ---- saving ---- */
   private scheduleSave() { clearTimeout(this.saveTimer); this.saveTimer = setTimeout(() => void this.flush(), 700); }
   private async persist(p: Project) {
-    await this.device.save(p);
-    if (this.hubStore) {
-      try { await this.hubStore.save(p); if (this.s.hub.error) this.set({ hub: { ...this.s.hub, error: null } }); }
-      catch (e) { this.set({ hub: { ...this.s.hub, error: (e as Error).message } }); this.log(`axHub: ${(e as Error).message}`, 'warn'); }
-    }
+    await this.docs.save(p, summary(p));
+    if (this.docs.hubError !== this.s.hub.error) this.set({ hub: { ...this.s.hub, error: this.docs.hubError } });
+    if (this.docs.hubError) this.log(`axHub: ${this.docs.hubError}`, 'warn');
   }
   async flush() {
     clearTimeout(this.saveTimer);
@@ -183,7 +171,7 @@ export class StudioStore {
   }
   setHub(on: boolean) {
     safe(() => localStorage.setItem(HUB_ON, on ? '1' : '0'), undefined);
-    this.hubStore = on && this.s.hub.address ? new HubStore(this.s.hub.address) : null;
+    this.docs.setHub(on);
     this.set({ hub: { ...this.s.hub, on, error: null } });
     if (on && this.s.project) { this.set({ dirty: true }); void this.flush(); }
     void this.refreshList();

@@ -174,7 +174,8 @@ export function registerCommands(rt: AxfRuntime) {
 
 /* ---------- describing a spec (toolbars, customizer, menus) ---------- */
 
-export interface SpecInfo { spec: string; label: string; icon: string; category: string; path: string[]; checked?: boolean; shortcut?: string }
+/** = lib-workspace's SpecInfo, plus the category */
+export interface SpecInfo { spec: string; label: string; icon: string; category: string; path: string[]; checked?: boolean; disabled?: boolean; shortcut?: string; active?: { icon: string; label: string } }
 
 export function describe(rt: AxfRuntime, spec: string): SpecInfo {
   const [id = '', ...args] = spec.split(':');
@@ -192,7 +193,10 @@ export function describe(rt: AxfRuntime, spec: string): SpecInfo {
     if (id === 'ws.record.toggle') checked = !!studio().get().recording;
     if (id === 'ws.grid.compact') checked = ui.s.grid.compact;
     if (id === 'ws.hub.toggle') checked = studio().get().hub.on;
-    return { spec, label, icon, category: c.category, path: ['Studio', c.category], checked, shortcut: c.shortcut };
+    const st = studio().get();
+    const disabled = (id === 'ws.undo' && !st.undo) || (id === 'ws.redo' && !st.redo);
+    const active = id === 'ws.record.toggle' && st.recording ? { icon: 'pause', label: 'Stop' } : undefined;
+    return { spec, label, icon, category: c.category, path: ['Studio', c.category], checked, disabled, shortcut: c.shortcut, active };
   }
   if (id === 'nav') return { spec, label: `Go to ${a0}`, icon: 'arrow-right', category: 'Views', path: ['Framework', 'Views'] };
   if (id === 'swap') return { spec, label: `${assetTypeSpecs[a0 as keyof typeof assetTypeSpecs]?.label ?? a0}: ${args[1] ?? ''}`, icon: 'palette', category: 'Look', path: ['Framework', 'Look', assetTypeSpecs[a0 as keyof typeof assetTypeSpecs]?.label ?? a0] };
@@ -208,7 +212,7 @@ export function catalog(rt: AxfRuntime): SpecInfo[] {
   const PARAM = new Set(['ws.status', 'ws.pane', 'ws.pane.move', 'ws.layout', 'ws.grid.col', 'ws.grid.sort', 'ws.export', 'ws.zoom', 'ws.toolbar.toggle', 'ws.toolbar.dock', 'ws.toolbar.labels', 'ws.toolbar.remove', 'ws.project.open', 'ws.piece.select', 'ws.filter.status', 'ws.project.compileOne', 'ws.project.exportOne', 'ws.piece.status', 'ws.piece.script', 'ws.piece.browser', 'ws.piece.record', 'ws.item.dup', 'ws.section.addPiece', 'ws.section.addSub', 'ws.section.fold']);
   for (const c of registered) if (!PARAM.has(c.id)) push(c.id);
   for (const st of STATUSES) { push(`ws.status:${st.id}`, ['Studio', 'Edit', 'Set status']); push(`ws.filter.status:${st.id}`, ['Studio', 'Index', 'Filter']); }
-  for (const pd of PANES) { push(`ws.pane:${pd.id}`, ['Studio', 'Panes', pd.group]); push(`ws.pane.move:${pd.id}:float`, ['Studio', 'Panes', 'Float']); }
+  for (const pd of PANES) { push(`ws.pane:${pd.id}`, ['Studio', 'Panes', pd.group ?? 'Panes']); push(`ws.pane.move:${pd.id}:float`, ['Studio', 'Panes', 'Float']); }
   for (const l of LAYOUTS) push(`ws.layout:${l.id}`, ['Studio', 'Layouts']);
   for (const a of ['left', 'center', 'right', 'bottom'] as const) push(`ws.zoom:${a}`, ['Studio', 'View', 'Maximise']);
   for (const col of COLUMNS.filter((x) => !x.fixed)) push(`ws.grid.col:${col.id}`, ['Studio', 'Grid', 'Columns']);

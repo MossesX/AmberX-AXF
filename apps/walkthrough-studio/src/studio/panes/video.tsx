@@ -8,7 +8,7 @@ import { Button, Icon, IconButton, Slider, Switch, useRuntime } from '../../axf/
 import { at, toClaudeBrief, toEdl, toScript, toShotList, toSrt, toVtt, type Compiled, type Segment } from '../compiler';
 import { fmtDur, moveItem, statusInfo } from '../model';
 import { controllers, EXPORTS, exportNow } from '../commands';
-import { registerZone, startDrag } from '../dnd';
+import { registerZone, startDrag } from '../../axf/libs/dnd';
 import { studio, useStudio } from '../store';
 import { CursorLayer, type ReplayFrame } from './capture';
 import { hush, speak } from './writing';
@@ -133,7 +133,7 @@ export function TimelinePane() {
             {c.segments.map((s) => (
               <div key={s.id} className={`ws-tl__block ws-tl__block--${s.kind} ${s.pieceId && s.pieceId === sel ? 'is-active' : ''} ${s.status ? `ws-tone-edge--${statusInfo(s.status).tone}` : ''} ${s.reused ? '' : 'is-fresh'}`}
                 style={{ left: `${s.start * scale}px`, width: `${Math.max(3, (s.end - s.start) * scale)}px` }} title={`${s.title} · ${fmtDur(s.end - s.start)}${s.reused ? ' · reused' : ' · rebuilt'}`}
-                data-ws-drop={s.pieceId ? 'timeline' : undefined} data-ws-drop-id={s.pieceId} data-fx-ctx-target={s.pieceId ? 'ws-piece' : undefined} data-fx-ctx-payload={s.pieceId}
+                data-axf-drop={s.pieceId ? 'timeline' : undefined} data-axf-drop-id={s.pieceId} data-fx-ctx-target={s.pieceId ? 'ws-piece' : undefined} data-fx-ctx-payload={s.pieceId}
                 onPointerDown={(e) => s.pieceId && startDrag(e, { kind: 'piece', id: s.pieceId, label: s.title, icon: 'play', trashable: true })}
                 onClick={() => s.pieceId && studio().select({ piece: s.pieceId, section: null })}>
                 <span className="ws-ellipsis">{s.title}</span>

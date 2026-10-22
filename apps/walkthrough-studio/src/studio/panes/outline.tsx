@@ -1,9 +1,9 @@
 /** Outline panes: Projects (the column of projects), Index (the categorized tree) and the Inspector. */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Highlight, TreeSearch, TreeView, type TreeBranch } from '../../axf/libs/tree';
 import { Button, Icon, IconButton, Meter, SelectField, Slider, Switch, TextField, useRuntime } from '../../axf/react';
-import { KINDS, STATUSES, autoProgress, estimateSec, findSection, fmtDur, kindInfo, moveItem, parseDur, piecesUnder, statusInfo, totals, updatePiece, updateSection, words, type Piece, type Project, type Section } from '../model';
+import { KINDS, STATUSES, autoProgress, estimateSec, findSection, fmtDur, kindInfo, moveItem, parseDur, statusInfo, totals, trashItem, updatePiece, updateSection, words, type Piece, type Project, type Section } from '../model';
 import { controllers } from '../commands';
-import { registerZone, startDrag } from '../dnd';
 import { studio, useStudio } from '../store';
 import { ui, useUi } from '../ui';
 
@@ -16,18 +16,6 @@ export function StatusDot({ s }: { s: Piece['status'] }) {
 export function StatusChip({ s }: { s: Piece['status'] }) {
   const i = statusInfo(s);
   return <span className={`ws-status ws-tone--${i.tone}`}><Icon name={i.icon} size={12} />{i.label}</span>;
-}
-
-/** the one drop zone for moving pieces / sections, shared by the index, the grid and the timeline */
-export function useTreeZone() {
-  useEffect(() => registerZone('tree', {
-    accepts: (p, target) => (p.kind === 'piece' || p.kind === 'section') && p.id !== target.split(':')[1],
-    positions: (_p, target) => (target.startsWith('piece:') ? ['before', 'after'] : target === 'section:root' ? ['inside'] : ['before', 'inside', 'after']),
-    drop: (p, target, pos) => {
-      const [kind, id] = target.split(':') as ['piece' | 'section', string];
-      studio().edit('Move', (q) => moveItem(q, { kind: p.kind as 'piece' | 'section', id: p.id }, { kind, id }, pos));
-    },
-  }), []);
 }
 
 /** does a piece pass the index filters? */
@@ -91,10 +79,9 @@ export function ProjectsPane() {
   );
 }
 
-/* ---------- Index ---------- */
+/* ---------- Index (lib-tree) ---------- */
 
 export function IndexPane() {
-  useTreeZone();
   const rt = useRuntime();
   const project = useStudio((s) => s.project)!;
   const sel = useStudio((s) => s.selection);
@@ -103,65 +90,26 @@ export function IndexPane() {
   useEffect(() => { controllers.indexSearch = () => searchRef.current?.focus(); return () => { controllers.indexSearch = undefined; }; }, []);
   const active = filtering(f);
   const kinds = useMemo(() => [...new Set(Object.values(project.pieces).map((p) => p.kind))].sort(), [project.pieces]);
-  const match = (s: Section): boolean => piecesUnder(s).some((id) => project.pieces[id] && passes(project.pieces[id]!, project, f));
   const count = Object.values(project.pieces).filter((p) => passes(p, project, f)).length;
-
-  const renderSection = (s: Section, depth: number): ReactNode => {
-    if (active && !match(s)) return null;
-    const open = active || !s.collapsed;
+  const branch = (s: Section): TreeBranch => {
     const tt = totals(project, s);
-    return (
-      <li key={s.id} role="treeitem" aria-expanded={open} aria-selected={sel.section === s.id}>
-        <div className={`ws-tree__row ws-tree__row--section ${sel.section === s.id ? 'is-active' : ''}`} style={{ paddingInlineStart: `calc(var(--fx-space) * ${depth * 1.6 + 0.5})` }}
-          data-ws-drop="tree" data-ws-drop-id={`section:${s.id}`} data-fx-ctx-target="ws-section" data-fx-ctx-payload={s.id}
-          onPointerDown={(e) => startDrag(e, { kind: 'section', id: s.id, label: s.title, icon: 'folder', trashable: true })}>
-          <IconButton icon={open ? 'chevron-down' : 'chevron-right'} label={open ? 'Collapse' : 'Expand'} onClick={() => studio().edit('Fold', (p) => updateSection(p, s.id, { collapsed: !s.collapsed }))} />
-          <span className="ws-grip"><Icon name={s.icon ?? 'folder'} size={14} /></span>
-          <button type="button" className="ws-tree__label" data-fx-row onClick={() => studio().select({ section: s.id, piece: null })}><Highlight text={s.title} q={f.q} /></button>
-          <span className="ws-tree__meta fx-small fx-muted">{tt.pieces} · {fmtDur(tt.est)}</span>
-          <span className="ws-tree__meter"><Meter value={tt.progress} small done={tt.progress >= 100} label={`${Math.round(tt.progress)}% of ${s.title}`} /></span>
-        </div>
-        {open && (
-          <ul role="group">
-            {s.pieces.map((id) => project.pieces[id]).filter((p): p is Piece => !!p && (!active || passes(p, project, f))).map((p) => (
-              <li key={p.id} role="treeitem" aria-selected={sel.piece === p.id}>
-                <div className={`ws-tree__row ${sel.piece === p.id ? 'is-active' : ''} ${sel.multi.includes(p.id) ? 'is-multi' : ''}`} style={{ paddingInlineStart: `calc(var(--fx-space) * ${depth * 1.6 + 3})` }}
-                  data-ws-drop="tree" data-ws-drop-id={`piece:${p.id}`} data-fx-ctx-target="ws-piece" data-fx-ctx-payload={p.id}
-                  onPointerDown={(e) => startDrag(e, { kind: 'piece', id: p.id, label: p.title, icon: kindInfo(p.kind).icon, trashable: true })}>
-                  <span className="ws-grip"><StatusDot s={p.status} /></span>
-                  <button type="button" className="ws-tree__label" data-fx-row onClick={(e) => (e.ctrlKey || e.metaKey ? studio().toggleMulti(p.id) : studio().select({ piece: p.id, section: null, multi: [] }))}>
-                    <Icon name={kindInfo(p.kind).icon} size={13} /> <Highlight text={p.title} q={f.q} />
-                  </button>
-                  <span className="ws-tree__meta fx-small fx-muted">{fmtDur(estimateSec(p, project.settings))}</span>
-                </div>
-              </li>
-            ))}
-            {s.children.map((c) => renderSection(c, depth + 1))}
-          </ul>
-        )}
-      </li>
-    );
+    return {
+      id: s.id, label: s.title, icon: s.icon, collapsed: s.collapsed, progress: tt.progress, meta: `${tt.pieces} · ${fmtDur(tt.est)}`, fixed: s.id === 'root',
+      ctx: { target: 'ws-section', payload: s.id },
+      leaves: s.pieces.map((id) => project.pieces[id]).filter((p): p is Piece => !!p).map((p) => ({ id: p.id, label: p.title, icon: kindInfo(p.kind).icon, dot: <StatusDot s={p.status} />, meta: fmtDur(estimateSec(p, project.settings)), ctx: { target: 'ws-piece', payload: p.id } })),
+      branches: s.children.map(branch),
+    };
   };
-
+  const branches = [...(project.root.pieces.length ? [branch({ ...project.root, title: 'Loose pieces', children: [] })] : []), ...project.root.children.map(branch)];
   return (
     <div className="ws-pane">
-      <div className="ws-pane__tools">
-        <div className="fx-search ws-grow">
-          <Icon name="search" size={14} />
-          <input ref={searchRef} className="fx-input" placeholder="Search titles, narration, tags, pages" value={f.q} onChange={(e) => ui.patchIndex({ q: e.target.value })} aria-label="Search the index" />
-        </div>
+      <TreeSearch query={f.q} onQuery={(q) => ui.patchIndex({ q })} inputRef={searchRef}
+        chips={STATUSES.map((s) => ({ id: s.id, label: <><span className={`ws-dot ws-tone--${s.tone}`} />{s.label}</>, on: f.statuses.includes(s.id), onToggle: () => rt.dispatch(`ws.filter.status:${s.id}`) }))}>
         <IconButton icon="chevron-down" label="Expand all" onClick={() => rt.dispatch('ws.index.expand')} />
         <IconButton icon="chevron-right" label="Collapse all" onClick={() => rt.dispatch('ws.index.collapse')} />
         <IconButton icon="folder" label="Add section" onClick={() => rt.dispatch('ws.section.add')} />
         <IconButton icon="plus" label="Add piece" onClick={() => rt.dispatch('ws.piece.add')} />
-      </div>
-      <div className="ws-pane__tools ws-chips">
-        {STATUSES.map((s) => (
-          <button key={s.id} type="button" className={`fx-chip ${f.statuses.includes(s.id) ? 'is-on' : ''}`} aria-pressed={f.statuses.includes(s.id)} onClick={() => rt.dispatch(`ws.filter.status:${s.id}`)}>
-            <span className={`ws-dot ws-tone--${s.tone}`} />{s.label}
-          </button>
-        ))}
-      </div>
+      </TreeSearch>
       <div className="ws-pane__tools">
         <select className="fx-input ws-grow" value={f.kinds[0] ?? ''} onChange={(e) => ui.patchIndex({ kinds: e.target.value ? [e.target.value] : [] })} aria-label="Kind">
           <option value="">Every kind</option>
@@ -173,22 +121,21 @@ export function IndexPane() {
         {active && <Button size="sm" tone="quiet" icon="x" onClick={() => rt.dispatch('ws.index.clear')}>{count}</Button>}
       </div>
       <div className="ws-pane__scroll">
-        <ul className="ws-tree" role="tree" aria-label="Walkthrough index">
-          <li role="none"><div className="ws-tree__root fx-small fx-muted" data-ws-drop="tree" data-ws-drop-id="section:root">{project.name} · drop here for the top level</div></li>
-          {project.root.pieces.length > 0 && renderSection({ ...project.root, title: 'Loose pieces', children: [] }, 0)}
-          {project.root.children.map((s) => renderSection(s, 0))}
-        </ul>
+        <TreeView label="Walkthrough index" zone="ws-index" branches={branches} rootDrop={{ id: 'root', label: `${project.name} · drop here for the top level` }}
+          selected={{ leaf: sel.piece, branch: sel.section, multi: sel.multi }} query={f.q} filtering={active}
+          filter={(l) => { const p = project.pieces[l.id]; return !!p && passes(p, project, f); }}
+          onToggle={(id) => studio().edit('Fold', (q) => { const c = structuredClone(q); const t = findSection(c.root, id); if (t) t.collapsed = !t.collapsed; return c; })}
+          onSelectLeaf={(id, add) => (add ? studio().toggleMulti(id) : studio().select({ piece: id, section: null, multi: [] }))}
+          onSelectBranch={(id) => studio().select({ section: id, piece: null })}
+          onMove={(item, target, pos) => studio().edit('Move', (q) => moveItem(q, { kind: item.kind === 'leaf' ? 'piece' : 'section', id: item.id }, { kind: target.kind === 'leaf' ? 'piece' : 'section', id: target.id }, pos))}
+          onTrash={(item) => { studio().edit('Delete', (q) => trashItem(q, { kind: item.kind === 'leaf' ? 'piece' : 'section', id: item.id })); rt.toast(`"${item.label}" moved to the trash.`, 'info', 'Deleted'); }}
+        />
       </div>
     </div>
   );
 }
 
-export function Highlight({ text, q }: { text: string; q: string }) {
-  if (!q) return <>{text}</>;
-  const i = text.toLowerCase().indexOf(q.toLowerCase());
-  if (i < 0) return <>{text}</>;
-  return <>{text.slice(0, i)}<mark className="ws-mark">{text.slice(i, i + q.length)}</mark>{text.slice(i + q.length)}</>;
-}
+export { Highlight };
 
 /* ---------- Inspector ---------- */
 

@@ -100,5 +100,108 @@
       "path": "test.mts",
       "purpose": "Self-test of the model and the compiler (npx -y tsx test.mts)."
     }
-  ]
+  ],
+  "libraries": {
+    "dnd": {
+      "parts": {
+        "zones": {},
+        "touch": {},
+        "ghost": {
+          "offset": 12
+        },
+        "trash": {
+          "label": "Drop here to delete",
+          "overLabel": "Let go to delete",
+          "side": "bottom"
+        }
+      }
+    },
+    "$installed": [
+      "ai.amberx.axf.dnd",
+      "ai.amberx.axf.tree",
+      "ai.amberx.axf.datagrid",
+      "ai.amberx.axf.workspace",
+      "ai.amberx.axf.recorder",
+      "ai.amberx.axf.docstore"
+    ],
+    "tree": {
+      "parts": {
+        "search": {
+          "placeholder": "Search"
+        },
+        "chips": {},
+        "meters": {},
+        "drag": {
+          "trash": true
+        }
+      }
+    },
+    "datagrid": {
+      "parts": {
+        "groups": {},
+        "column-menu": {
+          "hidden": [
+            "url",
+            "notes",
+            "updated",
+            "tags"
+          ]
+        },
+        "sort": {},
+        "expand": {},
+        "drag": {
+          "trash": true
+        },
+        "compact": {}
+      }
+    },
+    "workspace": {
+      "parts": {
+        "areas": {},
+        "splitters": {},
+        "layouts": {
+          "default": "ide"
+        },
+        "floating-panes": {},
+        "maximise": {},
+        "toolbars": {
+          "max": 0,
+          "labels": false
+        },
+        "floating-toolbars": {},
+        "customizer": {},
+        "phone": {
+          "breakpoint": 760
+        }
+      }
+    },
+    "recorder": {
+      "parts": {
+        "capture-layer": {},
+        "same-site": {},
+        "keys": {},
+        "screen-video": {},
+        "replay": {
+          "cursor": "arrow",
+          "ripples": true
+        },
+        "cues": {
+          "waitAfter": 1.5
+        }
+      }
+    },
+    "docstore": {
+      "folder": "projects",
+      "parts": {
+        "device": {},
+        "hub": {
+          "project": "walkthrough-studio",
+          "chunk": 48000
+        },
+        "blobs": {
+          "db": "walkthrough-studio"
+        }
+      }
+    }
+  }
 }

@@ -1,14 +1,12 @@
 /**
- * Workspace state: which panes show where, in which workspace layout, plus the toolbars (two by default, any number
- * more, each docked to an edge or floating). Kept per viewer on this device (a convenience, not project data);
- * every change is one call here so menus, toolbars, context menus and the panes themselves all drive the same state.
+ * The studio's workspace on lib-workspace (panes, layouts, two default toolbars + any number more, docked or floating),
+ * plus the studio's own view state (grid columns, sort, expanded rows; index filters). Kept per viewer on this device.
+ * `ui` keeps one call per change, so menus, toolbars, context menus and the panes all drive the same state.
  */
 import { useSyncExternalStore } from 'react';
+import { createWorkspace, defineLayout, type Area, type Dock, type PaneDef, type ToolbarDef, type Workspace, type WorkLayout } from '../axf/libs/workspace';
 
-export type Area = 'left' | 'center' | 'right' | 'bottom' | 'float';
-export type Dock = 'top' | 'bottom' | 'left' | 'right' | 'float';
-
-export interface PaneDef { id: string; title: string; icon: string; group: string; description: string }
+export type { Area, Dock, PaneDef, ToolbarDef, WorkLayout };
 export const PANES: PaneDef[] = [
   { id: 'projects', title: 'Projects', icon: 'folder', group: 'Project', description: 'Every saved project. Pick one and the whole studio shows it.' },
   { id: 'index', title: 'Index', icon: 'list', group: 'Outline', description: 'Categorized outline with sub trees, filters, search and drag-and-drop.' },
@@ -31,21 +29,8 @@ export const PANES: PaneDef[] = [
 ];
 export const paneDef = (id: string) => PANES.find((p) => p.id === id);
 
-export interface PanePlace { area: Area; order: number; hidden?: boolean }
-export interface WorkLayout {
-  id: string;
-  label: string;
-  icon: string;
-  description: string;
-  panes: Record<string, PanePlace>;
-  sizes: { left: number; right: number; bottom: number };
-}
-const L = (id: string, label: string, icon: string, description: string, areas: Partial<Record<Area, string[]>>, sizes = { left: 300, right: 320, bottom: 280 }): WorkLayout => {
-  const panes: Record<string, PanePlace> = {};
-  for (const pd of PANES) panes[pd.id] = { area: 'center', order: 99, hidden: true };
-  for (const [area, ids] of Object.entries(areas)) ids!.forEach((id, i) => { panes[id] = { area: area as Area, order: i }; });
-  return { id, label, icon, description, panes, sizes };
-};
+
+const L = (id: string, label: string, icon: string, description: string, areas: Partial<Record<Area, string[]>>, sizes?: { left: number; right: number; bottom: number }): WorkLayout => defineLayout(PANES, id, label, icon, description, areas, sizes);
 export const LAYOUTS: WorkLayout[] = [
   L('ide', 'IDE', 'layout', 'Everything: outline left, stage center, inspector right, grid and timeline below.', { left: ['projects', 'index', 'files'], center: ['browser', 'preview', 'script'], right: ['inspector', 'dashboard', 'review', 'settings'], bottom: ['grid', 'timeline', 'captions', 'events', 'log'] }),
   L('grid', 'Grid', 'grid', 'The status grid in front, outline and inspector beside it.', { left: ['projects', 'index'], center: ['grid'], right: ['inspector', 'dashboard'], bottom: ['timeline', 'log'] }, { left: 260, right: 320, bottom: 200 }),
@@ -56,110 +41,73 @@ export const LAYOUTS: WorkLayout[] = [
   L('focus', 'Focus', 'minimize', 'One pane at a time, nothing else.', { center: ['grid', 'script', 'browser', 'preview', 'timeline'] }),
 ];
 
-/* ---------- toolbars ---------- */
-
-export interface ToolbarDef {
-  id: string;
-  name: string;
-  dock: Dock;
-  /** floating position (px from the workspace's top-left) */
-  x: number;
-  y: number;
-  /** action specs; '|' is a separator */
-  items: string[];
-  labels: boolean;
-  visible: boolean;
-  /** order among toolbars on the same edge */
-  order: number;
-}
 export const DEFAULT_TOOLBARS: ToolbarDef[] = [
   { id: 'tb-main', name: 'Main', dock: 'top', x: 40, y: 60, labels: false, visible: true, order: 0, items: ['ws.project.new', 'ws.project.save', 'ws.undo', 'ws.redo', '|', 'ws.piece.add', 'ws.section.add', 'ws.piece.duplicate', 'ws.item.delete', '|', 'ws.compile', 'ws.compile.full', 'ws.preview.play', 'ws.preview.stop', '|', 'ws.record.toggle', 'ws.browser.open', '|', 'ws.export.dialog', 'ws.toolbars.customize'] },
   { id: 'tb-pieces', name: 'Pieces', dock: 'top', x: 40, y: 120, labels: true, visible: true, order: 1, items: ['ws.status:built', 'ws.status:partial', 'ws.status:failed', 'ws.status:skipped', 'ws.status:review', 'ws.status:planned', '|', 'ws.index.expand', 'ws.index.collapse', '|', 'ws.piece.prev', 'ws.piece.next'] },
 ];
 
-export interface UiState {
-  layout: string;
-  /** user changes on top of each layout preset */
-  custom: Record<string, Partial<WorkLayout>>;
-  /** front tab per area */
-  front: Partial<Record<Area, string>>;
-  floats: Record<string, { x: number; y: number; w: number; h: number; z: number }>;
-  toolbars: ToolbarDef[];
-  /** grid column visibility + order + sort */
-  grid: { hidden: string[]; order: string[]; sort: { col: string; dir: 1 | -1 } | null; expanded: string[]; compact: boolean };
+
+export interface ViewState {
+  /** grid column visibility + sort + expanded rows */
+  grid: { hidden: string[]; sort: { col: string; dir: 1 | -1 } | null; expanded: string[]; compact: boolean };
   /** index filters */
   index: { q: string; statuses: string[]; kinds: string[]; only: 'all' | 'recorded' | 'unrecorded' | 'noNarration' | 'overTarget' };
-  /** maximised area */
-  zoom: Area | null;
 }
+/** what panes read through useUi: the workspace's state + the studio's view state */
+export type UiState = ReturnType<Workspace['get']> & ViewState;
 
-const KEY = 'ws:ui';
-const fresh = (): UiState => ({ layout: 'ide', custom: {}, front: {}, floats: {}, toolbars: structuredClone(DEFAULT_TOOLBARS), grid: { hidden: ['url', 'notes', 'updated', 'tags'], order: [], sort: null, expanded: [], compact: false }, index: { q: '', statuses: [], kinds: [], only: 'all' }, zoom: null });
-function load(): UiState {
-  try { const r = JSON.parse(localStorage.getItem(KEY) ?? 'null') as Partial<UiState> | null; if (r) { const f = fresh(); return { ...f, ...r, grid: { ...f.grid, ...r.grid }, index: { ...f.index, ...r.index } }; } } catch { /* fresh */ }
-  return fresh();
+const KEY = 'ws:view';
+const freshView = (): ViewState => ({ grid: { hidden: ['url', 'notes', 'updated', 'tags'], sort: null, expanded: [], compact: false }, index: { q: '', statuses: [], kinds: [], only: 'all' } });
+function loadView(): ViewState {
+  try { const r = JSON.parse(localStorage.getItem(KEY) ?? 'null') as Partial<ViewState> | null; if (r) { const f = freshView(); return { grid: { ...f.grid, ...r.grid }, index: { ...f.index, ...r.index } }; } } catch { /* fresh */ }
+  return freshView();
 }
 
 class Ui {
-  s: UiState = load();
+  private view: ViewState = loadView();
+  private _ws: Workspace | null = null;
+  private merged: UiState | null = null;
   private ls = new Set<() => void>();
+  /** made on first use, after the libraries are installed (so the installed workspace config applies) */
+  get ws(): Workspace {
+    if (!this._ws) {
+      this._ws = createWorkspace({ id: 'studio', panes: PANES, layouts: LAYOUTS, toolbars: DEFAULT_TOOLBARS, storageKey: 'ws:workspace', defaultLayout: 'ide' });
+      this._ws.sub(() => { this.merged = null; this.ls.forEach((l) => l()); });
+    }
+    return this._ws;
+  }
+  get s(): UiState { return (this.merged ??= { ...this.ws.get(), ...this.view }); }
   get = () => this.s;
-  sub = (l: () => void) => { this.ls.add(l); return () => { this.ls.delete(l); }; };
-  set(fn: (s: UiState) => UiState) {
-    this.s = fn(this.s);
-    try { localStorage.setItem(KEY, JSON.stringify(this.s)); } catch { /* per-viewer convenience only */ }
+  sub = (l: () => void) => { this.ws; this.ls.add(l); return () => { this.ls.delete(l); }; };
+  private setView(fn: (v: ViewState) => ViewState) {
+    this.view = fn(this.view); this.merged = null;
+    try { localStorage.setItem(KEY, JSON.stringify(this.view)); } catch { /* per-viewer convenience only */ }
     this.ls.forEach((l) => l());
   }
 
-  layout(): WorkLayout {
-    const base = LAYOUTS.find((l) => l.id === this.s.layout) ?? LAYOUTS[0]!;
-    const c = this.s.custom[base.id];
-    return { ...base, panes: { ...base.panes, ...(c?.panes ?? {}) }, sizes: { ...base.sizes, ...(c?.sizes ?? {}) } };
-  }
-  setLayout(id: string) { this.set((s) => ({ ...s, layout: id, zoom: null })); }
-  resetLayout() { this.set((s) => { const custom = { ...s.custom }; delete custom[s.layout]; return { ...s, custom }; }); }
-  private patchPanes(fn: (p: Record<string, PanePlace>) => Record<string, PanePlace>) {
-    const lay = this.layout();
-    this.set((s) => ({ ...s, custom: { ...s.custom, [lay.id]: { ...s.custom[lay.id], panes: fn(lay.panes), sizes: lay.sizes } } }));
-  }
-  paneShown(id: string) { return !this.layout().panes[id]?.hidden; }
-  togglePane(id: string, on?: boolean) {
-    const show = on ?? !this.paneShown(id);
-    this.patchPanes((p) => ({ ...p, [id]: { ...(p[id] ?? { area: 'center', order: 99 }), hidden: !show } }));
-    if (show) this.front(id);
-  }
-  movePane(id: string, area: Area) {
-    this.patchPanes((p) => ({ ...p, [id]: { area, order: 99, hidden: false } }));
-    if (area === 'float' && !this.s.floats[id]) this.set((s) => ({ ...s, floats: { ...s.floats, [id]: { x: 80 + Object.keys(s.floats).length * 24, y: 80, w: 420, h: 320, z: Date.now() } } }));
-    this.front(id);
-  }
-  front(id: string) { const a = this.layout().panes[id]?.area; if (!a) return; this.set((s) => ({ ...s, front: { ...s.front, [a]: id }, floats: s.floats[id] ? { ...s.floats, [id]: { ...s.floats[id]!, z: Date.now() } } : s.floats })); }
-  setSize(which: 'left' | 'right' | 'bottom', px: number) {
-    const lay = this.layout();
-    this.set((s) => ({ ...s, custom: { ...s.custom, [lay.id]: { ...s.custom[lay.id], panes: lay.panes, sizes: { ...lay.sizes, [which]: Math.round(px) } } } }));
-  }
-  setFloat(id: string, r: Partial<UiState['floats'][string]>) { this.set((s) => ({ ...s, floats: { ...s.floats, [id]: { ...(s.floats[id] ?? { x: 80, y: 80, w: 420, h: 320, z: 0 }), ...r } } })); }
-  zoom(a: Area | null) { this.set((s) => ({ ...s, zoom: s.zoom === a ? null : a })); }
+  // workspace (lib-workspace)
+  layout() { return this.ws.layout(); }
+  setLayout(id: string) { this.ws.setLayout(id); }
+  resetLayout() { this.ws.resetLayout(); }
+  paneShown(id: string) { return this.ws.paneShown(id); }
+  togglePane(id: string, on?: boolean) { this.ws.togglePane(id, on); }
+  movePane(id: string, area: Area) { this.ws.movePane(id, area); }
+  front(id: string) { this.ws.front(id); }
+  zoom(a: Area | null) { this.ws.zoom(a); }
+  toolbar(id: string) { return this.ws.toolbar(id); }
+  addToolbar(name?: string, dock: Dock = 'top', items: string[] = []) { return this.ws.addToolbar(name, dock, items); }
+  patchToolbar(id: string, patch: Partial<ToolbarDef>) { this.ws.patchToolbar(id, patch); }
+  removeToolbar(id: string) { this.ws.removeToolbar(id); }
+  resetToolbars() { this.ws.resetToolbars(); }
 
-  /* toolbars */
-  toolbar(id: string) { return this.s.toolbars.find((t) => t.id === id); }
-  addToolbar(name = `Toolbar ${this.s.toolbars.length + 1}`, dock: Dock = 'top', items: string[] = []): string {
-    const id = `tb-${Date.now().toString(36)}`;
-    this.set((s) => ({ ...s, toolbars: [...s.toolbars, { id, name, dock, x: 120, y: 120, items, labels: false, visible: true, order: s.toolbars.length }] }));
-    return id;
-  }
-  patchToolbar(id: string, patch: Partial<ToolbarDef>) { this.set((s) => ({ ...s, toolbars: s.toolbars.map((t) => (t.id === id ? { ...t, ...patch } : t)) })); }
-  removeToolbar(id: string) { this.set((s) => ({ ...s, toolbars: s.toolbars.filter((t) => t.id !== id) })); }
-  resetToolbars() { this.set((s) => ({ ...s, toolbars: structuredClone(DEFAULT_TOOLBARS) })); }
-
-  /* grid */
-  patchGrid(patch: Partial<UiState['grid']>) { this.set((s) => ({ ...s, grid: { ...s.grid, ...patch } })); }
+  // the studio's view state
+  patchGrid(patch: Partial<ViewState['grid']>) { this.setView((v) => ({ ...v, grid: { ...v.grid, ...patch } })); }
   toggleColumn(col: string, on?: boolean) {
-    const hidden = this.s.grid.hidden; const show = on ?? hidden.includes(col);
+    const hidden = this.view.grid.hidden; const show = on ?? hidden.includes(col);
     this.patchGrid({ hidden: show ? hidden.filter((c) => c !== col) : [...hidden, col] });
   }
-  toggleExpanded(id: string) { const e = this.s.grid.expanded; this.patchGrid({ expanded: e.includes(id) ? e.filter((x) => x !== id) : [...e, id] }); }
-  patchIndex(patch: Partial<UiState['index']>) { this.set((s) => ({ ...s, index: { ...s.index, ...patch } })); }
+  toggleExpanded(id: string) { const e = this.view.grid.expanded; this.patchGrid({ expanded: e.includes(id) ? e.filter((x) => x !== id) : [...e, id] }); }
+  patchIndex(patch: Partial<ViewState['index']>) { this.setView((v) => ({ ...v, index: { ...v.index, ...patch } })); }
 }
 export const ui = new Ui();
 export function useUi<T>(sel: (s: UiState) => T): T { return useSyncExternalStore(ui.sub, () => sel(ui.s), () => sel(ui.s)); }

@@ -47,6 +47,15 @@ narrated walkthrough; the final render is later (the compiler's Claude brief / E
 - Banner: built %, recording status, review count, search, Compile, day/night, clock. App menu: Project, Edit, View,
   Index, Grid, Record, Video, Help (check marks bound to runtime counters). Settings → Plugins → Walkthrough Studio.
 
+## Libraries it runs on (harvested Oct 22 2026, Opus; pending `walkthrough-harvest`)
+The studio's reusable parts are framework libraries now, each with **parts** (library@1: features inside a library you
+include and configure one by one — Build Pilot lists them under the library's Customize… sheet):
+`lib-dnd` (drag-and-drop + pop-up trash), `lib-tree` (index tree), `lib-datagrid` (status grid), `lib-workspace` (panes,
+layouts, docked/floating toolbars, customizer), `lib-recorder` (mouse/key recorder, replay, cues), `lib-docstore` (device +
+axHub data server, chunked; device blobs). Installed in `axf.manifest.json → libraries.*` with their parts
+(`axf install <lib> <app> --parts a,b --part a.key=value`). The studio keeps only its own model, compiler, panes and
+commands. Contract: `core/library.ts` parts helpers = CLI `resolveParts`, fixture `spec/fixtures/library-parts.json`.
+
 ## Tests
 `npx -y tsx apps/walkthrough-studio/test.mts` (38: seed coverage, moves, trash/restore, incremental compile, exports,
 round trip) + typecheck/build in CI (`android.yml`). Checked with `check-theme.mjs` and `check-controls.mjs`.
@@ -54,7 +63,7 @@ round trip) + typecheck/build in CI (`android.yml`). Checked with `check-theme.m
 ## Not yet
 - Rendering a real video file (the plan + captions + EDL + brief are the hand-off; a renderer is a later build).
 - Deploy (Coolify app + DNS + `AXHUB_DATA_ORIGINS`).
-- Fable rebuild parked: `walkthrough-studio-fable` (dockable/floating toolbars + pane workspace as a framework engine).
+- Fable rebuild parked: `walkthrough-studio-fable` (review the harvested libraries + the parts contract; workspace layouts / toolbars as asset types; Kotlin twins later).
 
 ## Screenshots
 ![IDE](walkthrough-studio/desktop-ide.png) ![Grid header menu](walkthrough-studio/03-header-ctx.png)

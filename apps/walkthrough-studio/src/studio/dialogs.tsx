@@ -1,12 +1,12 @@
 /** The studio's dialogs (opened through the framework dialog engine by id). */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Icon, IconButton, Markdown, SelectField, Switch, TextField, useRuntime, type DialogMap } from '../axf/react';
+import { useState } from 'react';
+import { Button, Markdown, SelectField, Switch, TextField, useRuntime, type DialogMap } from '../axf/react';
 import { COLUMNS } from './columns';
-import { EXPORTS, catalog, describe, exportNow, type SpecInfo } from './commands';
-import { registerZone, startDrag } from './dnd';
+import { EXPORTS, catalog, describe, exportNow } from './commands';
+import { ToolbarCustomizer } from '../axf/libs/workspace';
 import { fmtDur, now, updatePiece, uid, type Cue } from './model';
 import { studio, useStudio } from './store';
-import { ui, useUi, type Dock } from './ui';
+import { ui, useUi } from './ui';
 
 function NewProject({ close }: { close: () => void }) {
   const [name, setName] = useState('My walkthrough');
@@ -75,127 +75,11 @@ function Columns({ close }: { close: () => void }) {
   );
 }
 
-/* ---------- toolbar customizer ---------- */
-
-interface Node { name: string; path: string; children: Map<string, Node>; items: SpecInfo[] }
-function treeOf(list: SpecInfo[]): Node {
-  const root: Node = { name: '', path: '', children: new Map(), items: [] };
-  for (const it of list) {
-    let n = root;
-    for (const seg of it.path) { const p = `${n.path}/${seg}`; if (!n.children.has(seg)) n.children.set(seg, { name: seg, path: p, children: new Map(), items: [] }); n = n.children.get(seg)!; }
-    n.items.push(it);
-  }
-  return root;
-}
-const countOf = (n: Node): number => n.items.length + [...n.children.values()].reduce((a, c) => a + countOf(c), 0);
+/* ---------- toolbar customizer (lib-workspace) ---------- */
 
 function Toolbars({ id, close }: { id?: string; close: () => void }) {
   const rt = useRuntime();
-  const toolbars = useUi((s) => s.toolbars);
-  const [cur, setCur] = useState(id && toolbars.some((t) => t.id === id) ? id : toolbars[0]?.id);
-  const [q, setQ] = useState('');
-  const [cat, setCat] = useState('');
-  const [sort, setSort] = useState<'tree' | 'az' | 'za'>('tree');
-  const [open, setOpen] = useState<string[]>(['/Studio', '/Studio/Project', '/Studio/Edit']);
-  const all = useMemo(() => catalog(rt), [rt, toolbars.length]); // eslint-disable-line react-hooks/exhaustive-deps
-  const tb = toolbars.find((t) => t.id === cur);
-  useEffect(() => registerZone('cust', {
-    accepts: (p) => p.kind === 'command' || p.kind === 'cust-item', positions: () => ['before', 'after'],
-    drop: (p, target, pos) => {
-      const t = ui.toolbar(cur!); if (!t) return;
-      const items = [...t.items]; let at = Number(target) + (pos === 'after' ? 1 : 0); let spec = p.id;
-      if (p.kind === 'cust-item') { const from = Number(p.id); spec = items[from]!; items.splice(from, 1); if (from < at) at--; }
-      items.splice(at, 0, spec); ui.patchToolbar(t.id, { items });
-    },
-  }), [cur]);
-  useEffect(() => registerZone('cust-end', { accepts: (p) => p.kind === 'command', positions: () => ['inside'], drop: (p) => { const t = ui.toolbar(cur!); if (t) ui.patchToolbar(t.id, { items: [...t.items, p.id] }); } }), [cur]);
-
-  const cats = [...new Set(all.map((x) => x.path.join(' › ')))].sort();
-  const filtered = all.filter((x) => (!cat || x.path.join(' › ').startsWith(cat)) && (!q || `${x.label} ${x.spec} ${x.path.join(' ')}`.toLowerCase().includes(q.toLowerCase())));
-  const add = (spec: string) => tb && ui.patchToolbar(tb.id, { items: [...tb.items, spec] });
-  const row = (it: SpecInfo, showPath = false) => (
-    <li key={it.spec}>
-      <div className="ws-cmd" onPointerDown={(e) => startDrag(e, { kind: 'command', id: it.spec, label: it.label, icon: it.icon })} onDoubleClick={() => add(it.spec)}>
-        <span className="ws-grip"><Icon name={it.icon} size={14} /></span>
-        <span className="ws-grow ws-col"><span className="ws-ellipsis">{it.label}</span><span className="fx-small fx-muted fx-mono ws-ellipsis">{showPath ? `${it.path.join(' › ')} · ` : ''}{it.spec}</span></span>
-        {tb?.items.includes(it.spec) && <Icon name="check" size={12} />}
-        <IconButton icon="plus" label={`Add ${it.label}`} onClick={() => add(it.spec)} />
-      </div>
-    </li>
-  );
-  const renderNode = (n: Node, depth: number): ReactNode => {
-    const kids = [...n.children.values()].sort((a, b) => a.name.localeCompare(b.name));
-    return (
-      <>
-        {kids.map((k) => {
-          const o = open.includes(k.path) || !!q;
-          return (
-            <li key={k.path}>
-              <button type="button" data-fx-row className="ws-tree__row ws-tree__row--section" style={{ paddingInlineStart: `calc(var(--fx-space) * ${depth * 1.4 + 0.4})` }} onClick={() => setOpen((x) => (o ? x.filter((y) => y !== k.path) : [...x, k.path]))} aria-expanded={o}>
-                <Icon name={o ? 'chevron-down' : 'chevron-right'} size={12} /> <strong>{k.name}</strong> <span className="fx-small fx-muted">{countOf(k)}</span>
-              </button>
-              {o && <ul className="ws-cmdtree__group">{renderNode(k, depth + 1)}</ul>}
-            </li>
-          );
-        })}
-        {[...n.items].sort((a, b) => a.label.localeCompare(b.label)).map((it) => row(it))}
-      </>
-    );
-  };
-  const sorted = sort === 'tree' ? null : [...filtered].sort((a, b) => a.label.localeCompare(b.label) * (sort === 'az' ? 1 : -1));
-  return (
-    <div className="ws-cust">
-      <section className="ws-cust__col">
-        <h3 className="ws-h">Toolbars</h3>
-        {toolbars.map((t) => (
-          <button key={t.id} type="button" data-fx-row className={`ws-row ${t.id === cur ? 'is-active' : ''}`} onClick={() => setCur(t.id)}>
-            <Icon name={t.dock === 'float' ? 'layers' : 'layout'} size={14} /><span className="ws-grow ws-ellipsis">{t.name}</span><span className="fx-small fx-muted">{t.dock} · {t.items.length}</span>
-          </button>
-        ))}
-        <div className="fx-row fx-row--wrap">
-          <Button size="sm" icon="plus" onClick={() => setCur(ui.addToolbar())}>Add toolbar</Button>
-          <Button size="sm" tone="quiet" icon="refresh" onClick={() => { ui.resetToolbars(); setCur(ui.s.toolbars[0]?.id); }}>Two defaults</Button>
-        </div>
-        {tb && (
-          <div className="fx-stack">
-            <TextField label="Name" value={tb.name} onChange={(v) => ui.patchToolbar(tb.id, { name: v })} />
-            <SelectField label="Place" value={tb.dock} onChange={(v) => ui.patchToolbar(tb.id, { dock: v as Dock })} options={[{ value: 'top', label: 'Docked top' }, { value: 'bottom', label: 'Docked bottom' }, { value: 'left', label: 'Docked left' }, { value: 'right', label: 'Docked right' }, { value: 'float', label: 'Floating' }]} />
-            <Switch label="Show labels" checked={tb.labels} onChange={(v) => ui.patchToolbar(tb.id, { labels: v })} />
-            <Switch label="Shown" checked={tb.visible} onChange={(v) => ui.patchToolbar(tb.id, { visible: v })} />
-            <Button size="sm" tone="danger" icon="trash" onClick={() => { ui.removeToolbar(tb.id); setCur(ui.s.toolbars[0]?.id); }}>Remove this toolbar</Button>
-          </div>
-        )}
-      </section>
-      <section className="ws-cust__col">
-        <h3 className="ws-h">On “{tb?.name}” <span className="fx-small fx-muted">drag to reorder</span></h3>
-        <ol className="ws-cust__items">
-          {tb?.items.map((spec, i) => {
-            const d = spec === '|' ? { label: 'Separator', icon: 'minus', spec } : describe(rt, spec);
-            return (
-              <li key={`${spec}-${i}`} className="ws-cmd" data-ws-drop="cust" data-ws-drop-id={String(i)} onPointerDown={(e) => startDrag(e, { kind: 'cust-item', id: String(i), label: d.label, icon: d.icon })}>
-                <span className="ws-grip"><Icon name={d.icon} size={14} /></span><span className="ws-grow ws-ellipsis">{d.label}</span>
-                <IconButton icon="chevron-up" label="Earlier" onClick={() => { const it = [...tb.items]; if (i > 0) { [it[i - 1], it[i]] = [it[i]!, it[i - 1]!]; ui.patchToolbar(tb.id, { items: it }); } }} />
-                <IconButton icon="chevron-down" label="Later" onClick={() => { const it = [...tb.items]; if (i < it.length - 1) { [it[i + 1], it[i]] = [it[i]!, it[i + 1]!]; ui.patchToolbar(tb.id, { items: it }); } }} />
-                <IconButton icon="x" label="Remove" onClick={() => ui.patchToolbar(tb.id, { items: tb.items.filter((_, k) => k !== i) })} />
-              </li>
-            );
-          })}
-          <li className="ws-cust__drop fx-small fx-muted" data-ws-drop="cust-end" data-ws-drop-id="end">Drop a command here, or tap + in the list</li>
-        </ol>
-        {tb && <Button size="sm" tone="quiet" icon="minus" onClick={() => add('|')}>Add a separator</Button>}
-      </section>
-      <section className="ws-cust__col ws-cust__col--wide">
-        <h3 className="ws-h">Every command, action, view and setting <span className="fx-small fx-muted">{filtered.length}</span></h3>
-        <div className="fx-search"><Icon name="search" size={14} /><input className="fx-input" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search commands" autoFocus /></div>
-        <div className="fx-row">
-          <select className="fx-input ws-grow" value={cat} onChange={(e) => setCat(e.target.value)} aria-label="Category"><option value="">Every category</option>{cats.map((c) => <option key={c}>{c}</option>)}</select>
-          <select className="fx-input" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort"><option value="tree">Tree</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
-        </div>
-        <ul className="ws-cmdtree">{sorted ? sorted.map((it) => row(it, true)) : renderNode(treeOf(filtered), 0)}</ul>
-      </section>
-      <div className="fx-row fx-row--end ws-cust__foot"><Button tone="primary" onClick={close}>Done</Button></div>
-    </div>
-  );
+  return <ToolbarCustomizer ws={ui.ws} initial={id} close={close} catalog={() => catalog(rt)} describe={(spec) => describe(rt, spec)} />;
 }
 
 /* ---------- process a recording with Claude ---------- */
