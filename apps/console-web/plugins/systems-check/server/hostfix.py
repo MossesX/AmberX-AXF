@@ -56,8 +56,10 @@ class Jobs:
     """One background job per host check: ask the hub, wait for the approval, run, report."""
 
     def __init__(self, recheck: Callable[[str], Any], call: Callable[..., dict[str, Any]] = call_hub, poll_s: float = 4,
-                 on_fail: Callable[[str, str], Any] | None = None) -> None:
+                 on_fail: Callable[[str, str], Any] | None = None, ready_check: Callable[[], tuple[bool, str]] | None = None) -> None:
         self.recheck = recheck
+        # Is Mosses there to take it? Part of the default route (call_hub); a caller passing its own `call` checks itself.
+        self.ready = ready_check or (ready if call is call_hub else (lambda: (True, "")))
         self.on_fail = on_fail  # a fix that ran (or couldn't) and failed; never called for one Brett rejected
         self.call = call
         self.poll_s = poll_s
@@ -81,7 +83,7 @@ class Jobs:
         cmd = command(cid)
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
-        ok, why = ready()  # fail fast: no Mosses (or he can't reach axHub) = no Auto fix
+        ok, why = self.ready()  # fail fast: no Mosses (or he can't reach axHub) = no Auto fix
         if not ok:
             raise HubError(why)
         with self.lock:
