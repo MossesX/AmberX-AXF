@@ -74,7 +74,9 @@ let menuListener: (() => void) | null = null;
 
 function refreshMenu(rt: AxfRuntime): void {
   void fetchPluginStatus().then((s) => {
-    const manage = bundledPlugins.some((p) => p.folder === 'plugin-manager') && (s?.find((x) => x.folder === 'plugin-manager')?.enabled ?? true) ? 'nav:plugin-manager' : 'settings.open:plugins';
+    // whichever plugin provides the plugin-manager view (by capability, never by folder name), when it's switched on
+    const pm = bundledPlugins.find((p) => p.manifest.provides?.includes('view:plugin-manager'));
+    const manage = pm && (s?.find((x) => x.folder === pm.folder)?.enabled ?? true) ? 'nav:plugin-manager' : 'settings.open:plugins';
     rt.addContextItems({ id: 'plugins-menu.default', module: ID, target: 'default', order: 89, items: [pluginsSubmenu(toRows(s), { manage })] });
   });
 }

@@ -61,7 +61,7 @@ check("swap needs the typed confirm", c.post("/api/plugin-catalog/swap", headers
 check("swap needs the token", c.post("/api/plugin-catalog/swap", json={"folder": "plugin-switches", "confirm": "replace plugin-switches"}).status_code == 401)
 check("loaded plugins carry builtWith + opens", main.PLUGINS["plugin-switches"].get("builtWith", {}).get("model") == "opus" and main.PLUGINS["plugin-switches"].get("opens") == "main")
 import build_defaults  # noqa: E402
-check("python twin: a second build of a loaded plugin is refused", bool(build_defaults.instance_clash("plugin-switches-fable", {"id": "x.y.z", "name": "Other", "builtWith": {"model": "fable"}}, {"plugin-switches": {"id": "ai.amberx.axf.console.plugin-switches", "name": "Plugin switches"}})))
+check("python twin: a second build of a loaded plugin is refused", bool(build_defaults.instance_clash("plugin-switches-fable", {"id": "x.y.z", "name": "Other", "builtWith": {"model": "fable"}}, {"plugin-switches": {"id": "x.loaded.plugin", "name": "Plugin switches"}})))
 check("python twin: required model", any(p["rule"] == "plugin.builtWith.model" for p in build_defaults.apply_defaults("plugin", {"provides": ["view:x"]})["problems"]))
 check("python twin: UI plugin opens in the main area", build_defaults.apply_defaults("plugin", {"provides": ["view:x"], "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["value"]["opens"] == "main")
 check("python twin: false stays a valid opens value", not build_defaults.apply_defaults("plugin", {"opens": False, "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["problems"])
