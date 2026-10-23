@@ -27,12 +27,32 @@ FIX_COMMANDS: dict[str, str] = {
     "host-claude-cli": "curl -fsSL https://claude.ai/install.sh | bash",
     "host-docker": "bash /opt/axf/deploy/install-console.sh",
     "host-update-cron": "bash /opt/axf/deploy/install-console.sh",
+    # Oct 23 2026 (Brett: every check gets a fix): what can run unattended
+    "host-report": "true",  # the report itself is the fix (appended below)
+    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"user\"}'",
 }
+# A Moshi public key saved in the console (MOSHI_SSH_PUBKEY, not secret) is added to root's authorized_keys; the approval
+# page shows the exact key line, so approving it on the hub is the "allow this key" step the doctor used to ask for.
+MOSHI_KEY_RE = re.compile(r"(ssh-ed25519|ecdsa-sha2-nistp(?:256|384|521)|ssh-rsa) ([A-Za-z0-9+/=]{20,1000})( [A-Za-z0-9@._ -]{1,80})?\Z")
+
+
+def _sq(v: str) -> str:
+    return "'" + v.replace("'", "'\\''") + "'"
+
+
+def moshi_command() -> str | None:
+    import os
+    m = MOSHI_KEY_RE.match((os.environ.get("MOSHI_SSH_PUBKEY") or "").strip())
+    if not m:
+        return None
+    line = f"{m.group(1)} {m.group(2)}{m.group(3) or ' moshi'}"
+    return ("install -d -m 700 /root/.ssh && touch /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && "
+            f"(grep -qsF {_sq(m.group(2))} /root/.ssh/authorized_keys || printf '%s\\n' {_sq(line)} >> /root/.ssh/authorized_keys)")
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 
 
 def command(cid: str) -> str | None:
-    c = FIX_COMMANDS.get(cid)
+    c = moshi_command() if cid == "moshi-key" else FIX_COMMANDS.get(cid)
     return f"{c} && {_REPORT}" if c else None
 
 
@@ -68,7 +88,7 @@ class Jobs:
 
     @staticmethod
     def allowed(cid: str) -> bool:
-        return cid in FIX_COMMANDS
+        return command(cid) is not None
 
     def get(self, cid: str) -> dict[str, Any] | None:
         with self.lock:

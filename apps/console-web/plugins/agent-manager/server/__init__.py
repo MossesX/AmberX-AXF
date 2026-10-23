@@ -92,6 +92,17 @@ class AgentsService:
         return toolkit.execute(t, args, {"agent": c["agent"], "scope": c["memory"]["scope"], "depth": 0, "run_agent": engine.run_agent, "run_workflow": engine.run_workflow,
                                          "stage": (ctx or {}).get("stage")})
 
+    def run_task(self, agent_id: str, task: str, on_event: Any = None) -> dict[str, Any]:
+        """One headless turn with the agent's tools and memory (Oct 23 2026: the systems check hands a check to Mosses to
+        fix; his axhub_call waits for Brett's approval on the hub for every command). Returns {text, tools, ms}; the turn is
+        recorded in his memory like a chat turn. Raises when the agent is missing or can't reach a model."""
+        r = engine.run_agent(agent_id, task, on_event=on_event)
+        try:
+            memory.record(store.get("agents", agent_id), task[:4000], str(r.get("text", ""))[:8000], {"source": "task"})
+        except Exception:  # noqa: BLE001 — memory never fails the task
+            pass
+        return {"text": str(r.get("text", "")), "tools": r.get("tools") or [], "ms": r.get("ms")}
+
     def record_turn(self, agent_id: str, user_text: str, reply: str, meta: dict[str, Any] | None = None) -> None:
         memory.record(store.get("agents", agent_id), user_text, reply, meta)
 

@@ -467,4 +467,6 @@ check(len(got) == 1 and got[0]["command"] == "ufw allow 60000:61000/udp" and got
 check(hr.get(got[0]["id"])["id"] == got[0]["id"] and hr.runs(got[0]["at"]) == [], "runs are read back by id and by time")
 os.environ.pop("AXHUB_TOKEN", None)
 check("axHub token" in json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}))["message"], "without the axHub token it says to add it")
+rt_ = svc.run_task("coder", "Say hi in one line.")
+check(isinstance(rt_["text"], str) and isinstance(rt_["tools"], list), "run_task: one headless turn as Mosses (the systems check hands him checks to fix)")
 print(f"all {ok} checks passed")

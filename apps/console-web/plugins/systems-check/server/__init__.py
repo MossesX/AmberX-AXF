@@ -13,6 +13,8 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST check/{id}                   re-run one check
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
+  POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
+                                    axHub, each approved); GET says whether he can take one and, if not, exactly why
   POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command handed to Mosses (axhub_call), who sends it to
                                     axHub's vps.run (approval pops up). Every Auto fix goes through Mosses (mosses.py).
   GET  claude | POST claude/{id}    Claude on failure: a failed fix handed to headless Claude Code on the VPS (setting
@@ -66,6 +68,11 @@ class Service:
                         "title": f"VPS Auto fix: {labels.get(j['id']) or j['id']}",
                         "detail": f"{j.get('message', '')}\n$ {j.get('command', '')}".strip(),
                         "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
+                        "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
+        for j in TASKS.all():  # checks handed to Mosses
+            state = {"asking": "running", "working": "running", "done": "done", "failed": "failed"}.get(j.get("state"), "running")
+            out.append({"id": f"syscheck:mosses:{j['id']}", "kind": "fix", "state": state, "title": f"Mosses fixing: {j.get('title') or j['id']}",
+                        "detail": str(j.get("message", "")), "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
                         "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
         for j in CLAUDE.all():  # sessions handed to headless Claude Code; once launched, its change-log entry reports instead
             if j.get("state") not in ("asking", "waiting", "failed"):
@@ -452,13 +459,41 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
 
+TASKS = mosses.Tasks(lambda cid: SVC.invalidate())
+
+
+@router.get("/mosses")
+def mosses_jobs() -> dict[str, Any]:
+    """Checks handed to Mosses (every check without a fixed command), and whether he can take one now (and if not, why)."""
+    ok, why = mosses.task_ready()
+    return {"ready": ok, "why": why, "jobs": {j["id"]: j for j in TASKS.all()}}
+
+
+@router.post("/mosses/{cid:path}")
+def mosses_start(cid: str) -> dict[str, Any]:
+    """Auto fix for a check with no fixed command: Mosses works it out and runs it through axHub (each command approved)."""
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    if c.get("status") in ("ok", "info"):
+        return {"id": cid, "state": "done", "message": "It passes now."}
+    try:
+        job = TASKS.start(c)
+    except hostfix.HubError as e:
+        raise HTTPException(409, str(e)) from None
+    cx.log("system", f"{cid}: handed to Mosses (he runs commands through axHub; approve them there)", "info")
+    return job
+
+
 HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate(), on_fail=lambda cid, why: _hand_to_claude(cid, why))
 
 
 @router.get("/autofix")
 def autofix_list() -> dict[str, Any]:
     """Which host checks Auto fix can run (and their exact commands), and every job's state."""
-    return {"commands": {k: hostfix.command(k) for k in hostfix.FIX_COMMANDS}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
+    cmds = {k: hostfix.command(k) for k in [*hostfix.FIX_COMMANDS, "moshi-key"]}
+    return {"commands": {k: v for k, v in cmds.items() if v}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
 
 
 @router.post("/autofix/{cid}")

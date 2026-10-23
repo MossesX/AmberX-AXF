@@ -107,7 +107,11 @@ check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": "ssh-ed25519
 PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi"
 check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": PUB}).status_code == 200, "Moshi public key saved")
 m = moshi_report("error")
-check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved but not on the VPS: says the command that installs it")
+check(m["status"] == "warn" and "Auto fix" in m["summary"] and m["fix"]["type"] == "host", "saved but not on the VPS: Auto fix adds it")
+hfm = sys.modules.get(spec.name + ".hostfix")
+mc = hfm.command("moshi-key")
+check(mc and "authorized_keys" in mc and "'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi'" in mc
+      and "grep -qsF" in mc and hfm.Jobs.allowed("moshi-key"), "the Moshi key command adds exactly the saved key line, once")
 check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
 c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
 
@@ -248,6 +252,31 @@ check(cf.launch_command("x", "host-mosh; rm -rf /", "bad id", False).count("AXF_
       "odd ids never reach the shell unquoted")
 check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refuses while the setting is off")
 check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
+# Every check gets a fix (Oct 23 2026): fixed commands for what can run unattended, Mosses for the rest
+cmds = c.get("/p/autofix").json()["commands"]
+check("host-report" in cmds and "host-session-checkin" in cmds and "--json" in cmds["host-session-checkin"], "host report + session check-in have fixed VPS commands")
+ms_ = sys.modules.get(spec.name + ".mosses")
+done = []
+tk = ms_.Tasks(lambda cid: done.append(cid), run=lambda aid, prompt: {"text": "Ran claude-sync install.\nFixed.", "tools": [{"name": "axhub_call"}]})
+j = tk.start({"id": "host-claude-sync", "title": "claude-sync", "service": "claude", "status": "warn", "summary": "not installed",
+              "instructions": ["git clone https://github.com/MossesX/axHub ~/axHub"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-claude-sync"}})
+for _ in range(200):
+    if (tk.get("host-claude-sync") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+j = tk.get("host-claude-sync")
+check(j["state"] == "done" and j["message"] == "Fixed." and j["commands"] == 1 and done == ["host-claude-sync"], "a check with no fixed command goes to Mosses; then it's checked again")
+p_ = ms_.task_prompt({"id": "x", "title": "T", "service": "vps", "status": "warn", "summary": "S", "details": ["d1"], "instructions": ["i1"], "fix": {"type": "host", "command": "do-it"}})
+check("axhub_call" in p_ and "vps.run" in p_ and "d1" in p_ and "i1" in p_ and "Known fix command: do-it" in p_ and "console-doctor.sh --report" in p_, "Mosses gets the check's details and how to work")
+bad = ms_.Tasks(lambda cid: None, run=lambda aid, prompt: (_ for _ in ()).throw(RuntimeError("no provider")))
+bad.start({"id": "y", "title": "Y"})
+for _ in range(200):
+    if (bad.get("y") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(bad.get("y")["state"] == "failed" and "no provider" in bad.get("y")["message"], "when Mosses can't finish it says why")
+plugin_services.withdraw("fake-mosses")
+r = c.post("/p/mosses/host-claude-sync")
+check(r.status_code == 409 and "Mosses" in r.json()["detail"] and c.get("/p/mosses").json()["ready"] is False, "without Mosses the badge says exactly what's missing")
+plugin_services.provide("axf.agents@1", FakeMosses(), "fake-mosses")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
 plugin_services.withdraw("fake-mosses")

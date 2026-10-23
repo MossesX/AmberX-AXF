@@ -141,12 +141,12 @@ export async function fixAll() {
     set(c.id, 'working');
     try {
       if (c.autoFix) { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); st.runMsg[c.id] = r.message; }
-      else if (c.fix?.type === 'host') {
+      else if (c.fix?.type !== 'secrets' && c.fix?.type !== 'settings') {
         await loadHostAuto();
-        if (hostAuto.has(c.id)) { // VPS fix through axHub: approve it in the pop-up, the run follows the job
-          const j = await runHostJob(c);
-          set(c.id, 'working', j.message); // then the check below decides: passes = done, else you're asked to run it
-        }
+        // VPS fix with a fixed command through axHub, else Mosses works it out (each command approved on axHub);
+        // then the check below decides: passes = done, else you're asked
+        const j = c.fix?.type === 'host' && hostAuto.has(c.id) ? await runHostJob(c) : await runMossesJob(c);
+        set(c.id, 'working', j.message);
       }
       await new Promise((res) => setTimeout(res, 350)); // let the badge show
       let after = await recheck(c.id);
@@ -194,26 +194,42 @@ function loadClaude() {
 }
 export const claudeConnected = () => { loadClaude(); return claudeOk === true; };
 
-/** With Claude connected, an issue no built-in fix covers goes to Mosses in the assistant: it gets the check's details
- *  and works through approval cards (container changes) and axHub approvals (VPS commands) — nothing runs unapproved. */
-function claudeFix(c: Check, rt: ReturnType<typeof useRuntime>) {
-  const parts = [
-    `Fix this AXF Dev Console setup issue: **${c.title}** (${c.status}).`, c.summary,
-    c.details.length ? `Details:\n- ${c.details.join('\n- ')}` : '',
-    c.instructions.length ? `How it's fixed by hand:\n- ${c.instructions.join('\n- ')}` : '',
-    c.fix?.type === 'host' ? `Command for the VPS:\n\n    ${c.fix.command}\n\nRun VPS commands through axHub (vps.run) so Brett approves them first.` : '',
-    'Propose every change through approval cards; never change anything without approval. When done, say what you did so the check can be re-run.',
-  ].filter(Boolean);
-  rt.dispatch(`ai.chat.start:${encodeURIComponent(JSON.stringify({ agentId: 'coder', title: `Fix: ${c.title}`, message: parts.join('\n\n') }))}`);
-  st.runMsg = { ...st.runMsg, [c.id]: 'Handed to Claude: approve its changes in the chat' }; emit();
-}
-
+/** Every issue gets a fix badge (Brett, Oct 23 2026): a key to add, a setting to open, or Auto fix (its own fix, a fixed VPS
+ *  command through Mosses + axHub, or Mosses working it out). Nothing is left with no button. */
 export const autoFixLabel = (c: Check) => {
   void loadHostAuto();
-  if (claudeConnected()) return 'Auto fix'; // Brett, Oct 20 2026: every issue gets Auto fix while Claude is connected
-  return c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open'
-    : c.fix?.type === 'host' ? (hostAuto.has(c.id) ? 'Auto fix' : 'Copy fix') : null;
+  return c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open' : 'Auto fix';
 };
+
+interface MossesJob { state: 'asking' | 'working' | 'done' | 'failed'; message: string; reply?: string }
+/** Hand a check to Mosses (server: POST mosses/{id}) and follow it until he's done; refusals say exactly what's missing. */
+async function runMossesJob(c: Check): Promise<{ state: string; message: string }> {
+  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Handing it to Mosses…'; emit();
+  let j = await call<MossesJob>(`mosses/${c.id}`, { method: 'POST' });
+  const until = Date.now() + 90 * 60_000; // his commands each wait for an approval
+  while ((j.state === 'asking' || j.state === 'working') && Date.now() < until) {
+    st.run[c.id] = 'working'; st.runMsg[c.id] = j.message; emit();
+    await new Promise((r) => setTimeout(r, 3000));
+    try {
+      const all = await call<{ jobs: Record<string, MossesJob> }>('mosses');
+      const now = all.jobs[c.id];
+      if (!now) return { state: 'failed', message: 'The console restarted while Mosses worked: check again.' };
+      j = now;
+    } catch { /* the console is restarting: keep following */ }
+  }
+  return j;
+}
+
+async function mossesFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+  try {
+    const j = await runMossesJob(c);
+    await loadSystemCheck(true);
+    const now = st.report?.checks.find((x) => x.id === c.id);
+    const fixed = !!now && (now.status === 'ok' || now.status === 'info');
+    st.run[c.id] = fixed ? 'done' : 'failed'; st.runMsg[c.id] = fixed ? 'Fixed by Mosses.' : j.message; if (fixed) markFixed(c.id); emit();
+    rt.toast(`${c.title}: ${fixed ? 'fixed by Mosses' : j.message}`, fixed ? 'success' : 'warning');
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+}
 
 interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
 /** VPS fix: the hub runs the check's exact command once you approve it in the pop-up. Start the server's Auto fix job for a VPS check and follow it until it's done or failed (approval included). */
@@ -247,15 +263,11 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
 
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   const f = c.fix;
-  if (!f) { if (claudeConnected()) claudeFix(c, rt); return; }
-  if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
-  if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
-  if (f.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
-  if (f.type !== 'action' && claudeConnected()) { claudeFix(c, rt); return; }
-  if (f.type === 'host') {
-    await navigator.clipboard?.writeText(f.command).then(() => rt.toast('Fix command copied: run it on the VPS (mosh or the console terminal)', 'info'), () => rt.toast(f.command, 'info'));
-    return;
-  }
+  if (f?.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
+  if (f?.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
+  await loadHostAuto();
+  if (f?.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
+  if (!f || f.type !== 'action') { await mossesFix(c, rt); return; } // no fixed command: Mosses works it out through axHub
   st.run[c.id] = 'working'; st.runMsg[c.id] = ''; emit();
   try {
     const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' });
@@ -331,11 +343,7 @@ export function SystemBanner() {
                 </button>
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
                   ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
-                  : label
-                    ? <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />
-                    : claudeConnected()
-                      ? <ActBadge icon="zap" label="Auto fix" onClick={() => void autoFix(c, rt)} />
-                      : <ActBadge icon="settings" label="Fix…" onClick={() => rt.openDialog('system-check', { focus: c.id })} />}
+                  : <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />}
               </li>
             );
           })}
@@ -365,7 +373,7 @@ const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', w
 function ActBadge({ icon, label, onClick, disabled, title }: { icon: string; label: string; onClick: () => void; disabled?: boolean; title?: string }) {
   return <Button size="sm" tone="primary" icon={icon} disabled={disabled} title={title ?? label} onClick={onClick}>{label}</Button>;
 }
-const fixIcon = (c: Check) => (claudeConnected() ? 'zap' : c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
+const fixIcon = (c: Check) => (c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
 
 function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
@@ -424,7 +432,7 @@ export function FixPanel({ c }: { c: Check }) {
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
-        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
+        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
       </div>
     </div>
