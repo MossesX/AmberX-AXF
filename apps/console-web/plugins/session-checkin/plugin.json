@@ -11,5 +11,6 @@
   "provides": ["view:sessions", "settings-tab:session-checkin"],
   "scopes": ["ROUTES", "FILES"],
   "enabledByDefault": true,
+  "banner": false,
   "tabable": false
 }

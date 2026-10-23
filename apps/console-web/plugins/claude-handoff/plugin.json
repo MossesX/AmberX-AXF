@@ -28,6 +28,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["claude-handoff"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

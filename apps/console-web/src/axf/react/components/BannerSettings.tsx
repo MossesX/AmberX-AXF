@@ -10,13 +10,22 @@
  * The frame is a context-menu target (`axf-banner`, payload = banner id): right-click / long-press → Banner settings opens
  * dialog `axf.banners.settings` on that banner's tab. The banner's own settings (its plugin's settings tab) are a button
  * away on the same tab. Choices are one setting, `axf.banners.prefs` ({ <banner id>: prefs }), per browser like any setting.
+ *
+ * Hide (Oct 23 2026, plugin@1 `banner`): every banner's tab starts with Hide (the banner stays mounted, hidden, so its
+ * plugin keeps working; what it would have shown is logged to the terminal, channel `banners`), an indented Hide all
+ * banners (tooltip lists them) and a timer (a hide lasts N minutes). One state, `axf.banners.hide`
+ * (core/engines/bannerhide.ts), the same in every interface and every frame of the app (storage events), last change wins.
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
 import type { BannerDef, SlotDef } from '../library';
 import type { DialogMap } from './Overlays';
 import { Button } from './Controls';
-import { Section, SelectField, Switch } from './Forms';
+import { Checkbox, Section, SelectField, Switch } from './Forms';
+import {
+  BANNER_HIDE_KEY, TIMER_DEFAULT, allBannersHidden, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
+  setAllBannersHidden, setBannerHidden, setBannerTimer, type BannerHideState,
+} from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
 import { useAxfState, useRuntime } from '../AxfProvider';
 
@@ -83,6 +92,35 @@ export function useBannerPrefsTick(): unknown {
   return useSyncExternalStore(sub, get, get);
 }
 
+/* ---------------- hide / hide all / timer (one state for every interface) ---------------- */
+
+export function bannerHideState(rt: AxfRuntime): BannerHideState { return parseBannerHide(rt.settings.get(BANNER_HIDE_KEY)); }
+function saveHide(rt: AxfRuntime, next: BannerHideState): void { rt.settings.set(BANNER_HIDE_KEY, next as never); }
+/** Hide or show one banner (everywhere this app runs in this browser; the last switch touched wins). */
+export function setBannerHide(rt: AxfRuntime, id: string, on: boolean): void { saveHide(rt, setBannerHidden(bannerHideState(rt), id, on, Date.now())); }
+/** Hide or show every banner the app has. */
+export function setAllBannersHide(rt: AxfRuntime, on: boolean): void { saveHide(rt, setAllBannersHidden(bannerHideState(rt), knownBanners(rt).map((b) => b.id), on, Date.now())); }
+export function setBannerHideTimer(rt: AxfRuntime, patch: { on?: boolean; minutes?: number }): void { saveHide(rt, setBannerTimer(bannerHideState(rt), patch, Date.now())); }
+/** Is this banner hidden right now (its Hide, Hide all, the timer not run out)? */
+export function isBannerHidden(rt: AxfRuntime, id: string): boolean { return bannerHidden(bannerHideState(rt), id, Date.now()); }
+
+/** Re-renders when the hide state changes, and again when a timed hide runs out. */
+export function useBannerHideTick(): BannerHideState {
+  const rt = useRuntime();
+  const sub = useCallback((fn: () => void) => rt.settings.onChange(BANNER_HIDE_KEY, fn), [rt]);
+  const get = useCallback(() => rt.settings.get(BANNER_HIDE_KEY), [rt]);
+  const raw = useSyncExternalStore(sub, get, get);
+  const s = parseBannerHide(raw);
+  const [, setNow] = useState(0);
+  const next = nextHideEnd(s, Object.keys(s.banners), Date.now());
+  useEffect(() => {
+    if (next === null) return;
+    const t = setTimeout(() => setNow(Date.now()), Math.min(2 ** 31 - 1, Math.max(0, next - Date.now()) + 50));
+    return () => clearTimeout(t);
+  }, [next]);
+  return s;
+}
+
 /* ---------------- the banners an app has (for the dialog's tabs) ---------------- */
 
 const known = new WeakMap<AxfRuntime, BannerDef[]>();
@@ -110,6 +148,8 @@ function install(rt: AxfRuntime): void {
     if (rt.embedded?.page === 'banners') { setWantTab(pick); return; }
     rt.openDialog(BANNER_SETTINGS_DIALOG, pick ? { id: pick } : {});
   }, { label: 'Banner settings' });
+  // Every frame of this app (a host's Banners tab, its banner strip, the app's own tab) shows the same choices at once.
+  globalThis.addEventListener?.('storage', (e: StorageEvent) => { if (e.key === null || e.storageArea === globalThis.localStorage) rt.settings.reload(); });
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
 }
 
@@ -123,13 +163,27 @@ export function bannerSlotDefs(rt: AxfRuntime, all: BannerDef[], shown: BannerDe
   const before = known.get(rt) ?? EMPTY;
   if (before.length !== all.length || before.some((b, i) => b.id !== all[i]?.id)) {
     known.set(rt, all);
-    queueMicrotask(() => knownSubs.forEach((f) => f()));
+    queueMicrotask(() => { migrateShow(rt); knownSubs.forEach((f) => f()); });
   }
   return shown
     .map((b) => ({ b, p: bannerPrefs(rt, b.id) }))
-    .filter(({ p }) => p.show && !(p.hideInHost && rt.embedded))
+    .filter(({ p }) => !(p.hideInHost && rt.embedded))
     .map(({ b, p }) => ({ id: b.id, order: p.order ?? b.order, render: () => <BannerFrame id={b.id}>{b.render()}</BannerFrame> }))
     .sort((x, y) => (x.order ?? 100) - (y.order ?? 100));
+}
+
+/** Before Oct 23 2026 a banner was switched off with "Show this banner" (`show: false`, dropped from the page); that is
+ * Hide now (still mounted, still logging). Moved over once; the old field is dropped. */
+function migrateShow(rt: AxfRuntime): void {
+  const all = allPrefs(rt);
+  const off = Object.entries(all).filter(([, p]) => p && p.show === false).map(([id]) => id);
+  if (!off.length) return;
+  let h = bannerHideState(rt);
+  for (const id of off) h = setBannerHidden(h, id, true, Date.now());
+  saveHide(rt, h);
+  const next = { ...all };
+  for (const id of off) { const { show: _s, ...rest } = next[id]!; next[id] = rest; }
+  rt.settings.set(BANNER_PREFS_KEY, next as never);
 }
 
 /* ---------------- the frame around each banner ---------------- */
@@ -146,8 +200,25 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   const rt = useRuntime();
   useBannerPrefsTick();
   const p = bannerPrefs(rt, id);
+  const hide = useBannerHideTick();
+  const hiddenNow = bannerHidden(hide, id, Date.now());
   const ref = useRef<HTMLDivElement>(null);
   const [asleep, setAsleep] = useState(false);
+  // Hidden (Hide / Hide all): still mounted, so its plugin keeps working; what it would show is logged instead.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !hiddenNow) return;
+    let last = (el.textContent ?? '').trim();
+    let at = 0;
+    const obs = new MutationObserver(() => {
+      const now = (el.textContent ?? '').trim();
+      if (now === last || Date.now() - at < 10_000) return;
+      last = now; at = Date.now();
+      rt.terminal.log('banners', `${id} (hidden): ${now.slice(0, 160) || 'empty'}`);
+    });
+    obs.observe(el, { subtree: true, childList: true, characterData: true });
+    return () => obs.disconnect();
+  }, [hiddenNow, id, rt]);
   // Hides itself after `autoHide` seconds with nothing new; any change in what it shows brings it back.
   useEffect(() => {
     const el = ref.current;
@@ -169,7 +240,8 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     <div
       ref={ref}
       className="fx-banner-frame"
-      hidden={asleep}
+      hidden={asleep || hiddenNow}
+      data-fx-banner-hidden={hiddenNow ? 'on' : undefined}
       data-fx-ctx-target={BANNER_CTX_TARGET}
       data-fx-ctx-payload={id}
       data-fx-banner-id={id}
@@ -220,6 +292,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   const rt = useRuntime();
   useAxfState();
   useBannerPrefsTick();
+  const hide = useBannerHideTick();
   const list = useKnownBanners();
   const asked = useWantTab();
   const [tab, setTab] = useState(() => (initial && list.some((b) => b.id === initial) ? initial : list[0]?.id ?? ''));
@@ -248,6 +321,9 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
       </div>
       {b && (
         <div className="fx-stack">
+          <Section title="Hide">
+            <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
+          </Section>
           <Section title="Look">
             <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
             <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
@@ -255,7 +331,6 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
             <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
           </Section>
           <Section title="Behaviour">
-            <Switch label="Show this banner" checked={p.show} onChange={(v) => set({ show: v })} hint="Off hides it on this device; it still works everywhere else." />
             <SelectField label="When it appears" value={p.launch} options={[{ value: 'expanded', label: 'Open, with its list' }, { value: 'minimized', label: 'Minimized to one line' }]} onChange={(v) => set({ launch: v === 'minimized' ? 'minimized' : 'expanded' })} />
             <SelectField label="Hide itself" value={String(p.autoHide)} options={AUTO_HIDE.map((s) => ({ value: String(s), label: autoHideLabel(s) }))} onChange={(v) => set({ autoHide: Number(v) })} />
             <div className="fx-row fx-row--wrap">
@@ -274,6 +349,38 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Hide, Hide all banners (indented under it, tooltip = every banner it hides) and the timer (a tick box enabling two
+ * digits of minutes). The same state wherever it is shown; the last switch touched wins.
+ */
+function HideControls({ id, label, list, hide }: { id: string; label: string; list: BannerDef[]; hide: BannerHideState }) {
+  const rt = useRuntime();
+  const now = Date.now();
+  const ids = list.map((x) => x.id);
+  const all = allBannersHidden(hide, ids, now);
+  const names = list.map(bannerLabel).join(', ');
+  const [text, setText] = useState(String(hide.timer.minutes));
+  useEffect(() => { setText(String(hide.timer.minutes)); }, [hide.timer.minutes]);
+  const commit = () => { const m = minutesFrom(text); if (m !== null && m !== hide.timer.minutes) setBannerHideTimer(rt, { minutes: m }); else setText(String(hide.timer.minutes)); };
+  return (
+    <>
+      <Switch label={`Hide the ${label} banner`} checked={bannerHidden(hide, id, now)} onChange={(v) => setBannerHide(rt, id, v)} hint="It keeps working and logging its activity (terminal, banners); it just isn't shown." />
+      <div className="fx-banner-settings__indent">
+        <Switch label="Hide all banners" checked={all} onChange={(v) => setAllBannersHide(rt, v)} title={`Hides: ${names}`} hint={`${list.length} banner${list.length === 1 ? '' : 's'}: ${names}`} />
+      </div>
+      <div className="fx-banner-settings__timer">
+        <Checkbox label="Hide for" checked={hide.timer.on} onChange={(v) => setBannerHideTimer(rt, { on: v, minutes: minutesFrom(text) ?? TIMER_DEFAULT })} />
+        <input
+          className="fx-input fx-banner-settings__minutes" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
+          aria-label="Minutes" value={text} disabled={!hide.timer.on}
+          onChange={(e) => setText(minutesInput(e.target.value))} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
+        />
+        <span>minutes, then show again</span>
+      </div>
+    </>
   );
 }
 

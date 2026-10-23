@@ -374,7 +374,12 @@ export type EmbedMessage =
  * the view page `view:<view>`.
  */
 export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean; tab?: EmbedPluginTab }
-export interface EmbedPluginTab { view: string; label?: string; icon?: string }
+export interface EmbedPluginTab {
+  view: string; label?: string; icon?: string;
+  /** the plugin's own settings tab in its app (Oct 23 2026): the host's combined settings gets a tab for it, opening the
+   * app's settings page on this tab */
+  settings?: string;
+}
 
 /** A plugin's tab as reported (view id checked; label and icon cut to size), or undefined. */
 export function parsePluginTab(raw: unknown): EmbedPluginTab | undefined {
@@ -384,6 +389,7 @@ export function parsePluginTab(raw: unknown): EmbedPluginTab | undefined {
   const out: EmbedPluginTab = { view: o.view };
   const label = clip(o.label, EMBED_MESSAGE_LIMITS.label); if (label) out.label = label;
   if (typeof o.icon === 'string' && ICON_ID.test(o.icon)) out.icon = o.icon;
+  if (typeof o.settings === 'string' && EMBED_VIEW_PAGE.test(`view:${o.settings}`)) out.settings = o.settings;
   return out;
 }
 
