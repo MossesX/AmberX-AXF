@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
 import './systems-check.css';
@@ -71,13 +72,32 @@ export async function call<T>(path: string, init: RequestInit = {}): Promise<T> 
   return j;
 }
 
+let runtime: AxfRuntime | null = null;
+let shownSwitch = '';
+/** The runtime the credits check opens the assistant's providers with (set by the plugin's register). */
+export function setSystemCheckRuntime(rt: AxfRuntime) { runtime = rt; }
+
+/** Claude out of credits: the server already switched to a key that has credit (or found none); show the assistant's
+ *  Providers so Brett sees the pick and can change it (Brett, Oct 23 2026). Once per switch. */
+function showCreditsSwitch(r: Report | null) {
+  const c = r?.checks.find((x) => x.id === 'claude-credits') as (Check & { switched?: { to: string } }) | undefined;
+  if (!c || c.status === 'ok' || c.status === 'info' || !runtime) return;
+  const key = c.switched ? `to:${c.switched.to}` : c.status === 'error' ? 'none' : '';
+  if (!key || key === shownSwitch) return;
+  shownSwitch = key;
+  runtime.toast(c.summary, c.switched ? 'warning' : 'danger', 'Claude credits');
+  runtime.dispatch(`settings.open:${c.fix?.type === 'settings' ? c.fix.tab : 'plugins'}`);
+}
+
+/** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
 export async function loadSystemCheck(force = false) {
   if (!api.isBackendUp()) return;
   st.loading = true; emit();
-  try { st.report = await call<Report>(`check${force ? '?force=1' : ''}`); st.error = ''; st.unauthorized = false; }
+  try { st.report = await call<Report>(force ? 'check?force=1' : 'check?keys=1'); st.error = ''; st.unauthorized = false; }
   catch (e) { st.error = (e as Error).message; }
   st.loading = false; emit();
   const r = st.report;
+  showCreditsSwitch(r);
   if (force && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
 }
 
@@ -429,7 +449,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const [view, setView] = useState<View>('grid');
   const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
   const [filter, setFilter] = useState<'issues' | 'all'>('issues');
-  useEffect(() => { if (!s.report && !s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
   if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
   const r = s.report;

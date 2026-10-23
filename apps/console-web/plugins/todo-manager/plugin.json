@@ -1,0 +1,42 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.todo-manager",
+  "name": "Todo manager",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), shown as a tree (by lists, kind, status, priority, tag or due date) or a grid, with group actions and Markdown export. Ported from xGallery's developer task manager. Tabable: Patches can show it as a tab of its own.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:todo-manager",
+    "dialog:todo-manager.entry",
+    "settings-tab:todo-manager"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "tabable": {
+    "view": "todo-manager",
+    "label": "Todos",
+    "icon": "list"
+  },
+  "builtWith": {
+    "model": "opus"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/todo-manager",
+    "env": [
+      "AXF_TODO_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}

@@ -194,3 +194,93 @@ export function missingSummary(label: string, missing: readonly EmbedPlugin[], s
   const more = missing.length - names.length;
   return `${label}: ${names.join(', ')}${more > 0 ? ` and ${more} more` : ''}`;
 }
+
+/* ---------------- Patches' tab group: apps and tabable plugins (patches-tabs@1) ----------------
+ *
+ * Brett, Oct 22 2026: "Give all plugins a field … to declare it as tabable, meaning it can be added to a tab group. Then
+ * add to Patches' tab group. Every plugin that can be tabable appears in Patches settings where you select from a list
+ * of apps or plugins to have a tab. The available tab things are selected from a dialog."
+ *
+ * A tab is an app (its whole app, as before) or a plugin tab: one tabable plugin of an app (plugin.json `tabable`,
+ * reported with its plugin list as `tab`), shown as that app's view page (`axf-embed-page=view:<view>`), so only that
+ * page, no chrome. The list is kept on Patches' server (`/api/tabs`) so every device shows the same tabs.
+ */
+
+export type TabEntry =
+  | { kind: 'app'; app: PatchTab['id'] }
+  | { kind: 'plugin'; app: PatchTab['id']; plugin: string; view: string; label: string; icon?: string };
+
+export const DEFAULT_TABS: TabEntry[] = TABS.map((t) => ({ kind: 'app', app: t.id }));
+export const MAX_TABS = 20;
+
+/** A tab's view id in Patches: the app's id for an app tab, `tab.<app>.<view>` for a plugin tab. */
+export function tabViewId(e: TabEntry): string { return e.kind === 'app' ? e.app : `tab.${e.app}.${e.view}`; }
+/** The same tab, whichever device added it (an app once, a plugin page of an app once). */
+export function tabKey(e: TabEntry): string { return e.kind === 'app' ? e.app : `${e.app}:${e.view}`; }
+export const appOf = (id: string): PatchTab | undefined => TABS.find((t) => t.id === id);
+export function tabLabel(e: TabEntry): string { return e.kind === 'app' ? appOf(e.app)?.label ?? e.app : e.label; }
+export function tabIcon(e: TabEntry): string { return e.kind === 'app' ? appOf(e.app)?.icon ?? 'layers' : e.icon ?? 'box'; }
+
+/** A tabable plugin's page in a tab: the app, marked as embedded in Patches, showing only that view. */
+export function pluginTabUrl(t: PatchTab, origin: string, view: string): string {
+  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAKES], page: `view:${view}` });
+}
+
+/** The tab list Patches' server answered, checked (unknown entries dropped, each tab once, ≤ 20). */
+export function readTabs(raw: unknown): TabEntry[] {
+  const list = Array.isArray(raw) ? raw : [];
+  const out: TabEntry[] = [];
+  const seen = new Set<string>();
+  for (const v of list) {
+    if (!v || typeof v !== 'object') continue;
+    const o = v as Record<string, unknown>;
+    if (!appOf(String(o.app))) continue;
+    const app = o.app as PatchTab['id'];
+    let e: TabEntry | null = null;
+    if (o.kind === 'app') e = { kind: 'app', app };
+    else if (o.kind === 'plugin' && typeof o.plugin === 'string' && typeof o.view === 'string' && /^[a-z0-9][a-z0-9._-]{0,63}$/.test(o.view)) {
+      e = { kind: 'plugin', app, plugin: o.plugin, view: o.view, label: typeof o.label === 'string' && o.label.trim() ? o.label.trim().slice(0, 80) : o.view, ...(typeof o.icon === 'string' ? { icon: o.icon } : {}) };
+    }
+    if (e && !seen.has(tabKey(e)) && out.length < MAX_TABS) { seen.add(tabKey(e)); out.push(e); }
+  }
+  return out;
+}
+
+/** Something the Add tab dialog offers: an app not in the group yet, or a tabable plugin an app reported. */
+export interface TabChoice {
+  entry: TabEntry;
+  /** already a tab */
+  added: boolean;
+  /** plugin tabs: installed in Patches for that app and switched on (it runs only then) */
+  enabled?: boolean;
+  /** plugin tabs: installed in Patches for that app at all */
+  installed?: boolean;
+}
+
+/**
+ * Everything that can be a tab: the apps, then every tabable plugin each app reported (only plugins whose plugin.json
+ * says `tabable`; every other plugin never shows here). `reports` = what each app's pages last reported.
+ */
+export function tabChoices(current: readonly TabEntry[], reports: Partial<Record<PatchTab['id'], EmbedPlugin[]>>, state: PluginsState | null): { apps: TabChoice[]; plugins: { app: PatchTab; choices: TabChoice[] }[] } {
+  const have = new Set(current.map(tabKey));
+  const apps = TABS.map((t) => { const entry: TabEntry = { kind: 'app', app: t.id }; return { entry, added: have.has(tabKey(entry)) }; });
+  const plugins = TABS.map((t) => {
+    const choices = (reports[t.id] ?? []).filter((p) => p.tab).map((p) => {
+      const entry: TabEntry = { kind: 'plugin', app: t.id, plugin: p.id, view: p.tab!.view, label: p.tab!.label ?? p.name, ...(p.tab!.icon ? { icon: p.tab!.icon } : {}) };
+      const mine = state?.apps[t.id]?.plugins[p.id];
+      return { entry, added: have.has(tabKey(entry)), installed: !!mine, enabled: !!mine?.enabled };
+    }).sort((a, b) => tabLabel(a.entry).localeCompare(tabLabel(b.entry)));
+    return { app: t, choices };
+  }).filter((g) => g.choices.length > 0);
+  return { apps, plugins };
+}
+
+/** Move a tab one place up (-1) or down (+1); the list is returned unchanged at either end. */
+export function moveTab(list: readonly TabEntry[], key: string, by: -1 | 1): TabEntry[] {
+  const i = list.findIndex((e) => tabKey(e) === key);
+  const j = i + by;
+  if (i < 0 || j < 0 || j >= list.length) return [...list];
+  const out = [...list];
+  [out[i], out[j]] = [out[j]!, out[i]!];
+  return out;
+}
