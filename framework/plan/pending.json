@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T04:06:51.531Z",
+ "updatedAt": "2026-10-23T05:33:18.970Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2222,6 +2222,20 @@
    "updatedAt": "2026-10-23T02:09:40.159Z",
    "estimate": "30 min",
    "source": "mcp"
+  },
+  {
+   "id": "axhub-web-rebuild",
+   "title": "Rebuild axHub web on the current framework so the hub look matches the other Patches apps",
+   "detail": "Branch ccr-46e5de6c-d9d9wh: re-bake + all console themes/assets shipped.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T05:32:20.790Z",
+   "builtAt": "2026-10-23T05:33:18.963Z",
+   "updatedAt": "2026-10-23T05:33:18.970Z",
+   "estimate": "45 min",
+   "source": "chat"
   }
  ]
 }
