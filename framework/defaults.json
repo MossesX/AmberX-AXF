@@ -28,5 +28,6 @@
   "spacer": "gap",
   "divider": "rule",
   "badge": "new",
+  "settings": "standard",
   "uac-policy": "standard"
 }

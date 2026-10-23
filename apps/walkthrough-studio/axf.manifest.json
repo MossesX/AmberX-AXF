@@ -29,6 +29,7 @@
     "container": "soft-card",
     "gauge": "classic-arc",
     "meter": "striped-pill",
+    "settings": "standard",
     "banner": "walkthrough-studio",
     "clock": "digital-12h",
     "search-bar": "everything",

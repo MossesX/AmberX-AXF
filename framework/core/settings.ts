@@ -115,6 +115,7 @@ export class SettingsRegistry {
     }
     this.groups.set(group.id, group); this.changed();
   }
+  removeTab(id: string): void { if (this.tabs.delete(id)) this.changed(); }
   removeGroup(id: string): void { if (this.groups.delete(id)) this.changed(); }
   addPanel(panel: SettingsPanel): void { this.clash('panel', panel.id, this.panels.get(panel.id), panel); this.panels.set(panel.id, panel); this.changed(); }
   removePanel(id: string): void { if (this.panels.delete(id)) this.changed(); }
