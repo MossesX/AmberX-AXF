@@ -5,7 +5,7 @@
  */
 import {
   allBannersHidden, bannerHidden, hideEndsAt, minutesFrom, minutesInput, nextHideEnd, parseBannerHide, setAllBannersHidden,
-  setBannerHidden, setBannerTimer, TIMER_DEFAULT,
+  hideBannerFor, QUICK_HIDE_MINUTES, setBannerHidden, setBannerTimer, TIMER_DEFAULT,
 } from '../core/engines/bannerhide';
 import { parsePluginTab } from '../core/engines/embed';
 // @ts-expect-error plain .mjs
@@ -52,6 +52,20 @@ eq('next end', nextHideEnd(s, ids, t0), t0 + 5 * MIN);
 eq('no next end after it', nextHideEnd(s, ids, t0 + 6 * MIN), null);
 eq('hide all reads off once run out', allBannersHidden(setAllBannersHidden(s, ids, true, t0), ids, t0 + 6 * MIN), false);
 
+// quick hide from the right-click menu: its own end, ignores the shared timer, any switch clears it
+eq('quick hide minutes', [...QUICK_HIDE_MINUTES], [1, 5, 10]);
+let q = hideBannerFor(parseBannerHide(null), 'activity', 5, t0);
+eq('quick hide ends', hideEndsAt(q, 'activity'), t0 + 5 * MIN);
+eq('quick hide on', bannerHidden(q, 'activity', t0 + 5 * MIN - 1), true);
+eq('quick hide over', bannerHidden(q, 'activity', t0 + 5 * MIN), false);
+eq('quick hide only that banner', bannerHidden(q, 'build-manager', t0), false);
+eq('quick hide survives a save', hideEndsAt(parseBannerHide(JSON.parse(JSON.stringify(q))), 'activity'), t0 + 5 * MIN);
+q = setBannerTimer(q, { on: true, minutes: 60 }, t0 + MIN);
+eq('timer leaves a quick hide alone', hideEndsAt(q, 'activity'), t0 + 5 * MIN);
+eq('next end = quick hide', nextHideEnd(q, ['activity'], t0 + MIN), t0 + 5 * MIN);
+q = setBannerHidden(q, 'activity', false, t0 + 2 * MIN);
+eq('unhide clears it', bannerHidden(q, 'activity', t0 + 2 * MIN), false);
+eq('bad id refused', hideBannerFor(q, 'Bad Id!', 1, t0), q);
 // switching the timer on restarts the time of a hide that's on now (an old hide doesn't end at once)
 let h = setBannerHidden(parseBannerHide(null), 'activity', true, t0);
 h = setBannerTimer(h, { on: true, minutes: 10 }, t0 + 60 * MIN);
