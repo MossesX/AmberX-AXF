@@ -44,7 +44,7 @@ export interface Tracker { frameworkVersion?: string; generatedAt: string; summa
 
 /* ================================================================== library@1 + libraries@1 */
 
-import type { LibraryParam, LibraryParamType } from './library';
+import type { LibraryParam, LibraryParamType, LibraryPart } from './library';
 export type { LibraryParam, LibraryParamType } from './library';
 export interface LibraryInstall { gradle?: string; module?: string; import?: string; routes?: string[] }
 export interface LibraryPort { status: string; dir?: string; note?: string; checkedAt?: string }
@@ -53,6 +53,8 @@ export interface LibraryPlaceholder { capability: string; note: string }
 export interface LibraryDescriptor {
   id: string; module: string; name: string; description: string; features: string[]; dependsOn: string[]; manifestKey: string; params: LibraryParam[];
   install?: LibraryInstall; ports?: Record<string, LibraryPort>; placeholders?: LibraryPlaceholder[]; template?: string;
+  /** library@1 parts: features inside the library an app includes and configures one by one (core/library.ts). */
+  parts?: LibraryPart[];
   /** UI-kit ports (console Explorer): which source it came from and what it covers. */
   port?: { source?: { kind: string; url?: string; coordinate?: string; path?: string }; version?: string; covers?: string[]; ported?: boolean };
 }
@@ -203,6 +205,14 @@ export function parseLibrary(json: unknown): LibraryDescriptor {
   if (Array.isArray(o.placeholders)) lib.placeholders = objList(o, 'placeholders').map((p) => ({ capability: str(p, 'capability'), note: str(p, 'note') }));
   if (strOrNull(o, 'template') !== null) lib.template = str(o, 'template');
   if (objOrNull(o.port)) lib.port = o.port as LibraryDescriptor['port'];
+  if (Array.isArray(o.parts)) lib.parts = objList(o, 'parts').map((p) => {
+    const part: LibraryPart = { id: str(p, 'id'), label: str(p, 'label', str(p, 'id')) };
+    if (strOrNull(p, 'description') !== null) part.description = str(p, 'description');
+    if (typeof p.default === 'boolean') part.default = p.default;
+    if (Array.isArray(p.requires)) part.requires = strList(p, 'requires');
+    if (Array.isArray(p.params)) part.params = objList(p, 'params').map(parseLibraryParam);
+    return part;
+  });
   return lib;
 }
 

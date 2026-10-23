@@ -1027,7 +1027,22 @@ def _read_plugin_manifest(folder: Path) -> dict[str, Any]:
     if "axf-console" not in (raw.get("targets") or []):
         raise ValueError('plugin.json targets must include "axf-console"')
     _plugin_tab(raw)  # a wrong "tabable" is the plugin's own problem, reported like any other
+    _plugin_banners(raw)
     return raw
+
+
+_BANNER_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
+
+
+def _plugin_banners(m: dict[str, Any]) -> list[str]:
+    """plugin@1 `banner` (Oct 23 2026; = framework/cli/plugins.mjs checkBanner): the ids of the banners the plugin
+    includes ([] = none; a manifest without the field counts as none). Raises ValueError on a wrong declaration."""
+    b = m.get("banner", False)
+    if b is False:
+        return []
+    if not isinstance(b, list) or not b or len(set(map(str, b))) != len(b) or not all(isinstance(x, str) and _BANNER_ID.match(x) for x in b):
+        raise ValueError('"banner" is false or a list of banner ids')
+    return list(b)
 
 
 _VIEW_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
@@ -1085,7 +1100,7 @@ def load_plugins() -> None:
                 "author": m.get("author", ""), "provides": m.get("provides", []), "scopes": m.get("scopes", []),
                 "enabledByDefault": m.get("enabledByDefault", True) is not False,
                 "wallUsers": m.get("wallUsers") is True, "userGrantable": m.get("userGrantable") is True,
-                "tabable": _plugin_tab(m),
+                "tabable": _plugin_tab(m), "banner": _plugin_banners(m),
             })
             entry = folder / "server" / "__init__.py"
             if entry.exists():

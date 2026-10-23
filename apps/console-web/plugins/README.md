@@ -37,6 +37,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `codebase-changes` — every request to build, edit, remove or fix something as an entry (change-log@1: what was asked, steps, result) opened by a Claude Code hook (`changes.mjs hooks install`) and filled in by Claude; a banner on every load until each entry is closed (closed everywhere), the permanent log under Builds → Codebase changes, stored on axHub (`/projects/amberx-axf/_data/changes`, never deleted by uninstall); entries carry build stats (estimate, actual tokens + cost, status, heartbeat, surface, host, areas) and are written from any machine straight to axHub; `backfill.mjs` records what was built before; provides `axf.changes@1`; settings tab "Codebase changes"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:codebase-changes -->
 - `claude-handoff` — Tools → Claude handoff: builds and keeps current `_claude/handoff/` (everything a new Claude account needs: reading order, claude.ai Project instructions + knowledge, each machine's `~/.claude` copies, claude.ai-only items, secret names) and assembles the one prompt that moves the project to a new account; publishes the kit to GitHub; reminds every 6 h with one banner + one alert (fixed key, overwritten); `handoff.mjs collect` / `hooks install` on each machine; opens the console's **Tools** menu; Tools → Installer preview (runs with example data) and Installer look… (layouts, gauge/meter styles, light/dark themes, roll with a token tree; saved on axHub); settings tab "Claude handoff"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:claude-handoff -->
 - `todo-manager` — Todos (ported from xGallery's developer task manager): lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), a tree (by lists, kind, status, priority, tag or due date) or a grid, group actions (done, status, move, duplicate, delete), Markdown export; what each kind must / may hold is set in its settings tab "Todo manager"; data `.axf-console/plugins/todo-manager/store.json` (todo-store@1); **tabable** (Patches can give it a tab); self-test `test.py`. <!-- axf-plugin:todo-manager -->
+- `voice-notes` — only a settings interface (Settings → Plugins → Voice notes) for a voice-activated notes pusher: start / stop / list-of-lists / cancel triggers (typed or recorded), beep, recording limits, the "where should I store it" prompt, numbered lists with subcategories and question sets opened by a number or a recorded trigger, and a conversation preview. Settings and lists live on axHub through lib-hubstore (`settings/voice-notes.json`, table `voice-notes/lists` in the amberx-axf hub project), nothing on the console server or in the browser; the listener is a placeholder; self-test `test.py`. <!-- axf-plugin:voice-notes -->
 - `plugin-switches` — a pop-up dialog listing every plugin with an on/off switch; its own switch is greyed out; asks before switching off a plugin a running plugin needs; opened from the default context menu, action `plugin-switches.open`, search, or its settings tab "Plugin switches". <!-- axf-plugin:plugin-switches -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
@@ -54,6 +55,17 @@ tabable. The console reports each plugin's tab to its host with its plugin list;
 view page (`?axf-embed-page=view:<id>`: only that page, no chrome, settings still taken by the host). Patches lists the
 tabable ones in Settings → Patches → Tabs → **Add tab…**. Checked by `node framework/cli/plugins.mjs --check` (CI) and
 the console's plugin loader (a wrong `tabable` is reported as the plugin's error).
+
+## Plugins with a banner (plugin@1 `banner`, Oct 23 2026)
+
+Every plugin.json says whether the plugin includes a banner (the live banners above every page): `"banner": false`, or
+the ids of the banners its web library contributes (`"banner": ["my-banner"]`). `node framework/cli/plugins.mjs --check`
+(CI) checks the list against the plugin's `banners: [...]` in `web/`, and the console loader refuses a wrong value.
+Every declared banner gets the shared banner settings in its tab of Settings → Plugins → Banners (and Banner settings,
+and Patches' Banners tab): **Hide** (the banner is hidden but stays mounted, so the plugin keeps working and its
+activity is still logged to the terminal), **Hide all banners** under it (tooltip lists every banner it hides) and
+**Hide for … minutes** (a hide lasts that long, then the banner shows again). One state for every interface; the last
+change wins.
 
 ## Sharing and installing (plugin-catalog@1)
 

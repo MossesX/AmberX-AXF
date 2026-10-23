@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T11:45:08.570Z",
+ "updatedAt": "2026-10-23T13:27:34.331Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1622,7 +1622,12 @@
    "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 23 2026 (patches-settings-banner-hide): inside a host, settings are no longer greyed out; the Settings → Plugins overview is dropped instead and plugin sub-tabs render normally. Keep that when reworking the lock mode.",
+     "at": "2026-10-23T12:52:32.760Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Read the Opus build (branch claude/project-thread-eew3jm, its PR and report) and write a design note: what stays, what changes in the contract.",
@@ -1657,7 +1662,7 @@
    ],
    "createdAt": "2026-10-22T18:37:44.308Z",
    "builtAt": "",
-   "updatedAt": "2026-10-22T18:37:44.308Z",
+   "updatedAt": "2026-10-23T12:52:32.760Z",
    "estimate": "3 h",
    "source": "chat"
   },
@@ -2312,6 +2317,210 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T05:43:56.671Z",
    "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "hubstore-voice-notes",
+   "title": "lib-hubstore (settings + app data on axHub, pick tables) + Voice notes console plugin (settings only)",
+   "detail": "Brett Oct 23 2026: one library, two classes (HubSettings, HubData); in Pilot pick settings only, all data or some tables. Voice notes plugin: settings interface for a voice-activated notes pusher (start/stop triggers, beep, lists with numbers, per-list questions on a number or recorded trigger, subcategories), all stored on axHub. Branch claude/project-thread-l3b0qo.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
+     "at": "2026-10-23T12:30:55.337Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "lib-hubstore: core rules + HubSettings + HubData + library.json + catalog",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "check-hubstore.mts with a fake hub data server, CI line",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "voice-notes plugin: config model + settings tab UI on the library",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "plugin self-test, lifecycle, menu, docs, status/tracker, PR",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    }
+   ],
+   "createdAt": "2026-10-23T12:18:42.098Z",
+   "builtAt": "2026-10-23T12:30:55.345Z",
+   "updatedAt": "2026-10-23T12:30:55.345Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "hubstore-fable",
+   "title": "lib-hubstore as a cross-port contract (Fable rebuild)",
+   "detail": "Fable was offered for the voice notes / hub storage build and Opus was chosen (Oct 23 2026, branch claude/project-thread-l3b0qo). Start by reviewing/replacing the Opus lib-hubstore: hub-settings@1 + hub-table@1 frames as a fixture, a SettingsRegistry storage seam instead of mirroring, live follow via /data-events, Kotlin twin recorded (Android on hold).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus lib-hubstore + voice-notes store; list what changes",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Fixture spec/fixtures/hubstore.json (frames, merge, table chunking, config from parts) + checker",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "SettingsRegistry storage seam (hub-backed values) replacing mirror()",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Live follow through /data-events (axf.hubstore.live)",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Differences report + rebuild log; PORTING.md Kotlin twin notes",
+     "at": "",
+     "estimate": "15 min"
+    }
+   ],
+   "createdAt": "2026-10-23T12:30:10.672Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T12:30:10.672Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-settings-banner-hide",
+   "title": "Patches settings tab group (every app + plugin tab) + banner hide / hide all / hide-for-N-minutes",
+   "detail": "Brett, Oct 23 2026. (1) Apps inside Patches: no greyed-out settings; their settings UI is a tab of Patches settings (a tab for Patches and every app / plugin tab with a settings UI); the settings hook opens Patches settings on that tab; Patches context menu gets a Settings submenu, one entry per tab. (2) plugin@1 `banner` field; every banner has Hide (keeps logging), indented Hide all banners (tooltip lists them), synced everywhere, last change wins; a timer checkbox + 2-digit minutes field: a hide lasts N minutes, then the banner shows again.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-t9zktq (draft PR).",
+     "at": "2026-10-23T13:04:14.157Z"
+    },
+    {
+     "text": "Oct 23 2026 follow-up (Brett: settings that affect the UI render at once): every settings change re-renders the app (runtime state bump, coalesced), unchanged saves are no-ops, other frames/tabs saving are read at once (storage events in the runtime). Same branch / PR #42.",
+     "at": "2026-10-23T13:27:34.324Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Report build, save decision, park Fable rebuild",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.116Z"
+    },
+    {
+     "text": "Guest settings: nothing greyed inside a host (plugins overview + host chrome rows removed)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.124Z"
+    },
+    {
+     "text": "Patches settings tab group from the tab group + plugin settings tabs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.129Z"
+    },
+    {
+     "text": "Settings hook focuses the tab it came from; context menu Settings submenu",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.134Z"
+    },
+    {
+     "text": "plugin@1 `banner` field + check",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.140Z"
+    },
+    {
+     "text": "Banner hide / hide all / timer settings + frame (keeps logging)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.146Z"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T13:04:14.151Z"
+    }
+   ],
+   "createdAt": "2026-10-23T12:52:32.715Z",
+   "builtAt": "2026-10-23T13:04:14.162Z",
+   "updatedAt": "2026-10-23T13:27:34.324Z",
+   "source": "chat"
+  },
+  {
+   "id": "patches-settings-banner-hide-fable",
+   "title": "Patches settings tab group + banner hide switches (Fable rebuild)",
+   "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Include hot render: Kotlin AxfRuntime re-composes on every settings change (one bump per change, unchanged saves ignored); web side built on Opus in PR #42.",
+     "at": "2026-10-23T13:27:34.331Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Read the Opus build and write a design note",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Banner hide state as an engine in framework/core + fixture",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "embed@1 settings take: tab group + focus messages, fixtures",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Patches web + console on the reworked contract",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Differences report + screenshots",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-23T12:52:32.722Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T13:27:34.331Z",
    "source": "chat"
   },
   {

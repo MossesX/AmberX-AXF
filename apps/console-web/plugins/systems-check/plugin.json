@@ -30,6 +30,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["keys-needed", "systems-check", "whats-new"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

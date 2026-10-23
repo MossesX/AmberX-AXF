@@ -14,6 +14,7 @@
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
   "builtWith": { "model": "opus" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

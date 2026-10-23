@@ -11,5 +11,6 @@
   "provides": ["view:project-wizard", "settings-tab:project-wizard"],
   "scopes": ["ROUTES", "FILES", "NETWORK"],
   "enabledByDefault": true,
+  "banner": false,
   "tabable": false
 }
