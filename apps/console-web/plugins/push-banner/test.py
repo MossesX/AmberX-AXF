@@ -390,9 +390,9 @@ import base64 as _b64, gzip as _gz
 _raw = _b64.b64decode(cmd.split("echo '")[1].split("'")[0])
 b = (_gz.decompress(_raw) if "gunzip" in cmd else _raw).decode()
 check("finish the banner's Pull all" in b and "`feat/x`" in b, "Pull all hand-over: the brief lists the rest")
-many = [f"feat/n{i:02d}-{'x' * 60}" for i in range(20)]
+many = [f"feat/n{i:02d}-{'x' * 60}" for i in range(80)]
 cmd2, sent = cf.fit({"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "x", "rest": many}, "")
-check(len(cmd2) <= cf.MAX_COMMAND and 0 < len(sent) < 20 and sent == many[:len(sent)], "Pull all hand-over: trimmed to fit the hub, extra branches dropped from the end")
+check(len(cmd2) <= cf.MAX_COMMAND and 0 < len(sent) < 80 and sent == many[:len(sent)], "Pull all hand-over: trimmed to fit the hub, extra branches dropped from the end")
 check(c.post("/p/failed/remove", json={"key": "MossesX/AmberX-AXF:feat/conflict"}).json()["ok"], "failed/remove: takes it off")
 check(not c.get("/p/branches").json()["failed"], "failed/remove: gone from the banner")
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
