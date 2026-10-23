@@ -42,6 +42,8 @@
     "spacer": "gap",
     "divider": "rule",
     "badge": "new",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
     "uac-policy": "standard"
   },
   "hidden": [],
