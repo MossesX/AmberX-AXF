@@ -14,6 +14,7 @@ Integration (plugin_services, capability names only — never another plugin's f
   provides  axf.live-sessions@1  read-only session views + register_host() for new session hosts
   consumes  axf.agents@1         when an agent manager is installed: chat *as* one of its agents (its prompt, tools, memory)
   consumes  axf.containers@1     change batches (approval cards) for write-mode agents
+  consumes  axf.ai-keys@1         when a keyring plugin is installed: its active key replaces the profile's own for that kind
   consumes  axf.live-host@1      a module's session host (e.g. axHub's workers) replaces the axHub placeholder
 """
 from __future__ import annotations
@@ -67,7 +68,14 @@ def _private_roots() -> set[str]:
         return set()
 
 
+def _key_override(profile: dict[str, Any]) -> str:
+    """The active key of a keyring plugin (axf.ai-keys@1) for this profile's kind, when one is installed."""
+    svc = plugin_services.get("axf.ai-keys@1")
+    return str(svc.active_key(str(profile.get("kind") or "")) or "") if svc else ""
+
+
 providers.stored_secret_names = _stored_secret_names
+providers.key_override = _key_override
 providers.PRIVATE_ROOTS = _private_roots
 providers.reload_catalog()  # the registry is read once at import with the default hooks; read again with ours
 

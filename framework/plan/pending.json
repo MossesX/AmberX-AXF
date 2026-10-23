@@ -1733,6 +1733,20 @@
    "source": "chat"
   },
   {
+   "id": "ai-keys",
+   "title": "AI keys plugin: several Anthropic keys, pick the active one for the assistant",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:40:17.479Z",
+   "builtAt": "2026-10-23T00:40:17.479Z",
+   "updatedAt": "2026-10-23T00:40:17.479Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
    "id": "syscheck-live-keys-credits",
    "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
    "detail": "",
