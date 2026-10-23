@@ -12,7 +12,7 @@
   "optional": ["service:axf.llm@1", "service:axf.agents@1", "service:axf.containers@1", "service:axf.snapshots@1"],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus" },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -20,5 +20,6 @@
     "dataDir": ".axf-console/plugins/feature-assist",
     "env": ["AXF_FEATURE_ASSIST_DIR", "AXF_FEATURE_EXPERT", "AXF_FEATURE_BUILDER"],
     "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
-  }
+  },
+  "opens": "main"
 }

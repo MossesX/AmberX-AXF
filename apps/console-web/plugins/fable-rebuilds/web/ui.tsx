@@ -1,6 +1,6 @@
 /* Fable rebuilds — the view, the report dialog and the small hooks shown in other views. */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, ModelBadge, useRuntime } from '@console/axf/react';
 import { pendingPost } from '@console/api';
 import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
 
@@ -64,7 +64,7 @@ export function FableView() {
                   <div className="axp-fable__body">
                     {r.detail && <p className="axp-fable__detail">{r.detail}</p>}
                     <dl className="axp-fable__kv">
-                      <dt>Replaces</dt><dd>{r.replaces ? <>{r.replaces.name} <code>{r.replaces.uninstall}</code></> : 'nothing (new build)'}</dd>
+                      <dt>Replaces</dt><dd>{r.replaces ? <>{r.replaces.name} <ModelBadge model={r.replaces.model} compact /> <code>{r.replaces.uninstall}</code></> : 'nothing (new build)'}</dd>
                       <dt>Branch</dt><dd><code>{r.branch}</code> (Android before/after screenshots run when it’s pushed)</dd>
                       <dt>Report</dt><dd>{r.report ? 'written' : 'not yet'}{r.android ? ' · Android screenshots' : ''}</dd>
                       {r.log.length > 0 && <><dt>Log</dt><dd>{r.log.map((l, i) => <div key={i} className="fx-small fx-mono">{l}</div>)}</dd></>}

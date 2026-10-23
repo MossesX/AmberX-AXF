@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T13:27:34.331Z",
+ "updatedAt": "2026-10-23T15:25:41.808Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -184,9 +184,9 @@
    ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.592Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.assets.designer",
-   "estimate": "1 d",
+   "estimate": "8 h",
    "source": "plan"
   },
   {
@@ -501,8 +501,8 @@
    ],
    "createdAt": "2026-10-18T16:13:56.087Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.593Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "8 h",
    "source": "chat"
   },
   {
@@ -958,8 +958,8 @@
    ],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
-   "estimate": "1.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "10 h",
    "source": "chat"
   },
   {
@@ -1073,8 +1073,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.159Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "9.5 h",
    "source": "chat"
   },
   {
@@ -1288,8 +1288,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.160Z",
-   "estimate": "2.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "19.5 h",
    "source": "chat"
   },
   {
@@ -1375,8 +1375,9 @@
    ],
    "createdAt": "2026-10-21T16:26:16.023Z",
    "builtAt": "2026-10-21T16:56:48.038Z",
-   "updatedAt": "2026-10-21T16:56:55.399Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.app.patches",
+   "estimate": "4 h",
    "source": "chat"
   },
   {
@@ -1384,8 +1385,13 @@
    "title": "Build manager: global live tracking, Built history, search, Start build now",
    "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
@@ -1494,9 +1500,9 @@
     }
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-21T17:11:28.623Z",
-   "estimate": "6.5 h",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "7 h",
    "source": "claude-code"
   },
   {
@@ -1548,8 +1554,8 @@
    ],
    "createdAt": "2026-10-22T01:57:53.687Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T04:11:01.776Z",
-   "estimate": "2 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "2.5 h",
    "source": "session"
   },
   {
@@ -1951,8 +1957,8 @@
    ],
    "createdAt": "2026-10-23T00:04:16.316Z",
    "builtAt": "2026-10-23T00:09:00.415Z",
-   "updatedAt": "2026-10-23T00:09:00.474Z",
-   "estimate": "1 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "55 min",
    "source": "chat"
   },
   {
@@ -2223,12 +2229,17 @@
    "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
    "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-23T02:09:40.159Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "estimate": "30 min",
    "source": "mcp"
   },
@@ -2514,6 +2525,241 @@
    "createdAt": "2026-10-23T12:52:32.722Z",
    "builtAt": "",
    "updatedAt": "2026-10-23T13:27:34.331Z",
+   "source": "chat"
+  },
+  {
+   "id": "plugin-model-badges-update",
+   "title": "Plugin model badges, open-in setting, build-engine default rules + Plugin Update plugin",
+   "detail": "Brett, Oct 23 2026: plugin@1 records the model that built each plugin (all new + existing), shown as a badge wherever plugin info shows; field + setting for where a UI plugin opens (main area default, floating window, dialog, tab group); build engine applies default-config rules from a registry on every build; new Plugin Update plugin (installed list with model/built date/version, axHub catalog check + one-click update, Rebuild with another model with confirmed removal + install); never two installs of the same plugin, never one plugin built by two models.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T14:55:49.072Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Report build, rule in _claude, plan the fields",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.423Z"
+    },
+    {
+     "text": "plugin@1 builtWith + builtAt + openIn fields; schema, loader, plugins.mjs --check; every plugin.json",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.486Z"
+    },
+    {
+     "text": "Build-engine default-rules registry (build-defaults@1) applied by plugins.mjs / axf build paths; first rule: UI plugins open in the main area",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.543Z"
+    },
+    {
+     "text": "Open-in setting per UI plugin (main / floating window / dialog / tab group) in its settings, hot render",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.597Z"
+    },
+    {
+     "text": "Model badges: Plugin Manager, plugin switches, Settings → Plugins, app tabs/Patches plugin lists",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.653Z"
+    },
+    {
+     "text": "One-instance rule: console loader, plugin-catalog install, lifecycle install refuse a second copy of an id",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.714Z"
+    },
+    {
+     "text": "Plugin Update plugin: server (installed list, axHub catalog check, update)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.777Z"
+    },
+    {
+     "text": "Plugin Update: Rebuild with <model> (park a from-scratch rebuild, confirmed swap: uninstall old, install new)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.829Z"
+    },
+    {
+     "text": "Plugin Update web UI + menu + settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.885Z"
+    },
+    {
+     "text": "Tests, docs, CLAUDE.md status, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.943Z"
+    }
+   ],
+   "createdAt": "2026-10-23T14:29:44.678Z",
+   "builtAt": "2026-10-23T14:55:49.000Z",
+   "updatedAt": "2026-10-23T14:55:49.072Z",
+   "estimate": "4.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "plugins-menu",
+   "title": "Plugins context menu + settings browser + plugin installer with archives",
+   "detail": "Right-click → Plugins ▸ Install, Settings, Manage, Enable ▸, Disable ▸. Settings browser (dialog by default, floating window switch; plugin column + the selected plugin's settings; own parameters + placeholders for every parameter type). Install dialog: plugin browser over configurable archive locations with credentials (axHub permanent, needs credentials), download + install, own settings. New plugin apps/console-web/plugins/plugins-menu.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T15:09:52.146Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Server: archive store (credentials server-side only), axHub permanent archive, test",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.640Z"
+    },
+    {
+     "text": "Server: browse + install from folder / https / console / axHub archives",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.710Z"
+    },
+    {
+     "text": "CLI: install-package from any archive with the same checks",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.771Z"
+    },
+    {
+     "text": "Context menu Plugins submenu with live Enable/Disable lists",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.832Z"
+    },
+    {
+     "text": "Settings browser dialog/window + own parameters + placeholders",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.896Z"
+    },
+    {
+     "text": "Install dialog: browser, archives tab, its settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.952Z"
+    },
+    {
+     "text": "Self-tests, checks, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:52.016Z"
+    }
+   ],
+   "createdAt": "2026-10-23T14:57:50.296Z",
+   "builtAt": "2026-10-23T15:09:52.083Z",
+   "updatedAt": "2026-10-23T15:09:52.146Z",
+   "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "ashes-ui",
+   "title": "AshesUI: live UI inspector for any app (hover tooltip + inspector window)",
+   "detail": "Framework library framework/libs/ashes (ai.amberx.axf.ashes) any web app installs. Context-menu toggle AshesUI with a check mark; while on, a small headless tooltip follows the pointer with live info about the element under it (component, asset, plugin it belongs to, size, colours, contrast, tokens). Double-click / double-tap expands into a draggable, resizable floating inspector window: tree of every rendered element on screen (selection in focus and expanded), and a tab group (Grid / Tree) with every parameter of the picked element; live style edits with revert; search, filters, copy, stats. Installed in the console with a plugin resolver (which plugin an element belongs to).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Pure core: component/asset map, owner resolution, contrast, parameter rows, tree search",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.419Z"
+    },
+    {
+     "text": "DOM snapshot + live listener + tooltip + highlight overlay",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.493Z"
+    },
+    {
+     "text": "Inspector window: element tree with focus + expand, Grid/Tree tabs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.570Z"
+    },
+    {
+     "text": "Live edits, copy, stats, filters, keyboard navigation, settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.636Z"
+    },
+    {
+     "text": "Context-menu check marks in MenuList; console install with plugin resolver",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.693Z"
+    },
+    {
+     "text": "Tests, checks, catalog entry, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.750Z"
+    }
+   ],
+   "createdAt": "2026-10-23T15:12:02.179Z",
+   "builtAt": "2026-10-23T15:25:41.808Z",
+   "updatedAt": "2026-10-23T15:25:41.808Z",
+   "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "build-list-estimates-usd",
+   "title": "Build lists: fix the time estimates and show costs in dollars",
+   "detail": "Pending list, build queue, Build manager (Remaining), CLIs and MCP: steps added up win over an item's own estimate, hours instead of 8-hour days, missing estimates added, cost estimates in USD (model-pricing.json per-minute heuristic), never tokens.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
+     "at": "2026-10-23T11:45:08.570Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T11:45:08.570Z",
+   "builtAt": "2026-10-23T11:45:08.570Z",
+   "updatedAt": "2026-10-23T11:45:08.570Z",
+   "estimate": "45 min",
    "source": "chat"
   },
   {

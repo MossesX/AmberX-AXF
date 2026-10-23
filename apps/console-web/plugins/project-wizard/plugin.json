@@ -12,5 +12,7 @@
   "scopes": ["ROUTES", "FILES", "NETWORK"],
   "enabledByDefault": true,
   "banner": false,
-  "tabable": false
+  "tabable": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "opens": "main"
 }

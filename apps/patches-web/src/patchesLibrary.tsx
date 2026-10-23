@@ -3,9 +3,12 @@
  * Settings (one tab per app), the settings hook in the application menu + the context menu, and the actions behind them.
  */
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, IconButton, Note, Switch, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
+import { Button, Icon, IconButton, ModelBadge, modelLabel, Note, Switch, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import type { EmbedPlugin } from './axf/core';
 import { api } from './api';
+
+/** "built with Opus" for a plugin's row (Switch hints are text), or nothing when its model isn't known. */
+const builtWithText = (model?: string) => (model ? `built with ${modelLabel(model)}` : '');
 import { library as settingsLibrary } from './axf/libs/settings';
 import type { AxfRuntime } from './axf/core';
 import {
@@ -139,7 +142,7 @@ export function AddTabDialog() {
   const row = (c: TabChoice, hint?: string) => (
     <li key={tabKey(c.entry)} className="pt-addtab__row">
       <Icon name={tabIcon(c.entry)} size={16} />
-      <span className="pt-addtab__name"><strong>{tabLabel(c.entry)}</strong>{hint && <span className="fx-muted">{hint}</span>}</span>
+      <span className="pt-addtab__name"><strong>{tabLabel(c.entry)}</strong> {c.entry.kind === 'plugin' && <ModelBadge compact model={pv.reports[c.entry.app]?.find((r) => r.id === (c.entry as { plugin: string }).plugin)?.model ?? pv.state?.apps[c.entry.app]?.plugins[c.entry.plugin]?.model} />}{hint && <span className="fx-muted">{hint}</span>}</span>
       {c.added ? <span className="fx-muted">Already a tab</span> : <Button size="sm" icon="plus" tone="primary" disabled={full || pv.busy} onClick={() => void addTab(rt, c)}>Add</Button>}
     </li>
   );
@@ -484,7 +487,7 @@ function PluginsPanel() {
             <h3 className="pt-plugins__head"><Icon name={t.icon} size={14} /> {t.label}</h3>
             {!installed.length && !missing.length && <p className="fx-muted" style={{ margin: 0 }}>{v.reports[t.id] ? 'No plugins.' : 'Open its tab once: it reports its plugins.'}</p>}
             {installed.map(([id, p]) => (
-              <Switch key={id} checked={p.enabled} onChange={(on) => void switchPlugin(t, id, on)} label={p.name} hint={p.version ? `${id} · ${p.version}` : id} />
+              <Switch key={id} checked={p.enabled} onChange={(on) => void switchPlugin(t, id, on)} label={p.name} hint={[id, p.version, builtWithText(v.reports[t.id]?.find((r) => r.id === id)?.model ?? p.model)].filter(Boolean).join(' · ')} />
             ))}
             {missing.length > 0 && (
               <Note tone="warning">

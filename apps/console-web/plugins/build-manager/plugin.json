@@ -29,9 +29,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
   "banner": ["build-manager"],
   "tabable": false,
   "lifecycle": {
@@ -43,5 +41,6 @@
       "apps/console-web/plugins/README.md",
       "_claude/memory/docs/build-manager.md"
     ]
-  }
+  },
+  "opens": "main"
 }

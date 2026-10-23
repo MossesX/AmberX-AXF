@@ -3,7 +3,7 @@ export type Source = 'pending' | 'queue' | 'plan';
 export type Origin = 'prompt' | 'auto';
 export type Model = 'Fable' | 'Opus' | 'Sonnet';
 export type SortKey = 'order' | 'left' | 'model';
-export interface Helpers { estimateMinutes(text: unknown): number | null; formatMinutes(min: number | null | undefined): string }
+export interface Helpers { estimateMinutes(text: unknown): number | null; formatMinutes(min: number | null | undefined): string; cost?(model: string, minutes: number): number | null }
 export interface Step { text: string; estimate: number | null; estimateText: string; done: boolean; doneAt: string }
 export interface Timing { total: number | null; left: number | null; stepsDone: number; stepsTotal: number; needsSplit: boolean; estimateText: string }
 export interface Row extends Timing {
@@ -14,9 +14,11 @@ export interface Row extends Timing {
   building: boolean; startedAt: number; fable: boolean; aliases: string[];
   /** Set when the list thinks it's already built or removed (the Clean up button). */
   gone?: { kind: GoneKind; why: string };
+  /** USD for the time left / the whole build on its model (helpers.cost), null without a price or a time. */
+  costLeft: number | null; costTotal: number | null;
 }
 export type GoneKind = 'built' | 'removed';
-export interface Totals { left: number; count: number; noEstimate: number; needsSplit: number }
+export interface Totals { left: number; cost: number; count: number; noEstimate: number; needsSplit: number }
 export interface ActivityItem { id: string; source?: string; title: string; detail?: string; state: string; progress?: number; startedAt: number; updatedAt?: number; finishedAt?: number; url?: string; steps?: { name: string; state: string }[] }
 export interface LiveEntry {
   id: string; title: string; state: string; activityState: string; startedAt: number; finishedAt: number; url: string; source: string;

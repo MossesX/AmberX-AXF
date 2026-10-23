@@ -141,7 +141,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/index.tsx",
@@ -162,8 +162,8 @@
         "id": "ai.amberx.axf.console.hello-world",
         "name": "Hello world",
         "version": "1.0.0",
-        "sha256": "a591795c337ae135eb67e4c90374d10c31b9e0c27f4e0ad137d846f06a5392e4",
-        "bytes": 110
+        "sha256": "da50a5b6ecc724d6974212e78cd7ac0270a916a928438068f9a4ec05d22f6f23",
+        "bytes": 162
       }
     },
     {
@@ -203,7 +203,7 @@
           },
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
@@ -212,8 +212,8 @@
         "id": "ai.amberx.axf.console.hello-world",
         "name": "Hello world",
         "version": "1.0.0",
-        "sha256": "46f0661c17afacc7261a95055617a26843af5cb580e2e6f62988828b568802b9",
-        "bytes": 106
+        "sha256": "734ddefebfdf5bfe55ff6ece5466ec5785f279f78de3ed35e7842001f7dbaac2",
+        "bytes": 158
       }
     },
     {
@@ -341,7 +341,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": ".env",
@@ -363,7 +363,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "server/certs/key.pem",
@@ -385,7 +385,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "secrets.env",
@@ -407,7 +407,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "server/credentials.json",
@@ -429,7 +429,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "id_ed25519",
@@ -451,7 +451,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "../outside.txt",
@@ -473,7 +473,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/./a.ts",
@@ -495,7 +495,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/.hidden",
@@ -517,7 +517,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "/etc/passwd",
@@ -539,7 +539,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web\\a.ts",
@@ -561,7 +561,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "node_modules/x/index.js",
@@ -583,7 +583,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "server/__pycache__/a.pyc",
@@ -605,7 +605,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/ünï.txt",
@@ -627,7 +627,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -679,7 +679,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/A.ts",
@@ -705,7 +705,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web",
@@ -833,7 +833,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IkhlbGxvIiwibmFtZSI6IiAgIiwidmVyc2lvbiI6IjEuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IkhlbGxvIiwibmFtZSI6IiAgIiwidmVyc2lvbiI6IjEuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
@@ -851,7 +851,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImZvbGRlciI6Im90aGVyIn0="
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9LCJmb2xkZXIiOiJvdGhlciJ9"
           }
         ]
       },
@@ -869,7 +869,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/x.ts",
@@ -892,7 +892,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/x.ts",
@@ -915,7 +915,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           },
           {
             "path": "web/x.ts",
@@ -937,7 +937,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IngiLCJuYW1lIjoibiIsInZlcnNpb24iOiJ2In0="
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6IngiLCJuYW1lIjoibiIsInZlcnNpb24iOiJ2IiwiYnVpbHRXaXRoIjp7Im1vZGVsIjoib3B1cyIsImJ1aWx0QXQiOiIyMDI2LTEwLTIzIn19"
           },
           {
             "path": "../a",
@@ -963,7 +963,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
@@ -980,7 +980,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
@@ -998,7 +998,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
@@ -1015,7 +1015,7 @@
         "files": [
           {
             "path": "plugin.json",
-            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCJ9"
+            "b64": "eyIkYXhmIjoicGx1Z2luQDEiLCJpZCI6ImFpLmFtYmVyeC5heGYuY29uc29sZS5oZWxsby13b3JsZCIsIm5hbWUiOiJIZWxsbyB3b3JsZCIsInZlcnNpb24iOiIxLjAuMCIsImJ1aWx0V2l0aCI6eyJtb2RlbCI6Im9wdXMiLCJidWlsdEF0IjoiMjAyNi0xMC0yMyJ9fQ=="
           }
         ]
       },
