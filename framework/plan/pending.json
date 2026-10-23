@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T05:33:18.970Z",
+ "updatedAt": "2026-10-23T05:40:04.677Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2235,6 +2235,42 @@
    "builtAt": "2026-10-23T05:33:18.963Z",
    "updatedAt": "2026-10-23T05:33:18.970Z",
    "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-rebake",
+   "title": "Systems check: one entry per app whose baked framework is out of date, Auto fix re-bakes it",
+   "detail": "Branch ccr-46e5de6c-d9d9wh (PR to follow): framework/cli/rebake.mjs + systems-check rebake rows with Auto fix.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Detect stale baked apps (lock vs framework) + derive checks",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.657Z"
+    },
+    {
+     "text": "Auto fix: re-bake + commit/push to a branch",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.664Z"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.669Z"
+    }
+   ],
+   "createdAt": "2026-10-23T05:37:28.383Z",
+   "builtAt": "2026-10-23T05:40:04.677Z",
+   "updatedAt": "2026-10-23T05:40:04.677Z",
+   "estimate": "1 h",
    "source": "chat"
   }
  ]
