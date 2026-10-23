@@ -9,8 +9,8 @@
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, Note, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -31,11 +31,6 @@ export const SETTINGS_TABS = {
 
 /* ---------------- hooks ---------------- */
 
-/** Makes a greyed-out block unreachable (`inert`); a ref works with every React version's typings. */
-function setInert(el: HTMLElement | null): void {
-  if (el) el.inert = true;
-}
-
 function useSettingsRevision(rt: AxfRuntime): number {
   return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
 }
@@ -47,8 +42,10 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
-  // A setting about a hidden slot is greyed out (and its control disabled) until the slot is shown again.
-  const off = !!spec.slot && rt.slotHidden(spec.slot as AssetType);
+  // Inside a host app (embed@1), settings about chrome the host owns aren't shown at all (never greyed out).
+  if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
+  // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
+  const off = !!spec.slot && rt.slotHiddenOwn(spec.slot as AssetType);
   return (
     <div data-axf-anchor={`setting:${spec.key}`} className={off ? 'axf-settings__off' : undefined} aria-disabled={off || undefined}>
       <SettingControl spec={spec} off={off} />
@@ -152,18 +149,17 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   const state = useAxfState();
   const options = rt.registry.list(type);
   const canHide = hideable(type);
-  const hidden = rt.slotHidden(type);
-  // embed@1: a host app (Patches) shows this chrome for the app; the choice is the host's until the app runs on its own.
-  const byHost = rt.slotHiddenByHost(type);
+  // The app's own choice (a host app's chrome never shows here: those rows are left out, see SettingRow).
+  const hidden = rt.slotHiddenOwn(type);
   const pick = (v: string) => {
     if (v === HIDDEN) return rt.setSlotHidden(type, true);
     if (hidden) rt.setSlotHidden(type, false);
     if (v !== state.active[type]) rt.swap(type, v);
   };
   return (
-    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || byHost || options.length + (canHide ? 1 : 0) < 2} title={byHost ? `Shown by ${rt.embedded?.host} while this app runs inside it` : undefined} onChange={(e) => pick(e.target.value)}>
+    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
       {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-      {canHide && <option value={HIDDEN}>{byHost ? `Shown by ${rt.embedded?.host}` : 'Hidden'}</option>}
+      {canHide && <option value={HIDDEN}>Hidden</option>}
     </select>
   );
 }
@@ -207,11 +203,11 @@ function RollAssetsPanel() {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
-  const types = ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t));
+  const types = ASSET_TYPES.filter((t) => !rollNever(t) && !attachable(t) && !rt.slotOwnedByHost(t));
   const [type, setType] = useState<AssetType>('context-menu');
   const locked = rt.gate('assets.swap') !== 'allow';
   const slotOn = rt.rollSlotIncluded(type);
-  const hidden = rt.slotHidden(type);
+  const hidden = rt.slotHiddenOwn(type);
   return (
     <div className="axf-settings__rows">
       <div className="axf-settings__row">
@@ -298,6 +294,8 @@ function LibrariesPanel() {
           return (
             <li key={l.id} className="fx-row fx-row--wrap">
               <span className="fx-grow"><strong>{l.name}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+              <ModelBadge model={lib?.builtWith?.model} builtAt={lib?.builtWith?.builtAt} compact />
+              {lib?.opens && <Chip>opens in {PLACEMENT_LABELS[rt.placementOf(l.id) ?? lib.opens].toLowerCase()}</Chip>}
               <Chip tone={tone(l.health)}>{l.health === 'ok' ? 'healthy' : l.health}</Chip>
               {l.dependents.length > 0 && <Chip>used by {l.dependents.length}</Chip>}
               {tab && <Button tone="ghost" icon="settings" onClick={() => rt.dispatch(`settings.open:${tab.id}`)}>Settings</Button>}
@@ -346,7 +344,10 @@ function AboutPanel() {
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
-  const tabs = rt.settings.topTabs();
+  // Inside a host that manages plugins (embed@1 take `plugins`, Patches) the plugin list (Settings → Plugins itself) isn't
+  // shown: the host installs and switches them. Each plugin's own settings stay, as usual (never greyed out).
+  const pluginLock = rt.hostLockNote('plugins');
+  const tabs = rt.settings.topTabs().filter((t) => !(pluginLock && t.id === 'plugins' && !rt.settings.subTabs('plugins').length));
   // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
   // A banner plugin's own settings live inside Banners (one interface for every banner): its tab opens Banners on it.
   const banners = useKnownBanners();
@@ -367,11 +368,8 @@ export function SettingsView() {
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
   const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
-  const shown = (sub && subs.find((t) => t.id === sub)) || current;
-  // Plugins managed by the host app (Patches): Settings → Plugins and every plugin's sub-tab is greyed out (Banners stays:
-  // it's the banners' look, which the host shows through its own Banners tab).
-  const pluginLock = rt.hostLockNote('plugins');
-  const isPluginTab = (id: string) => id !== 'banners' && (id === 'plugins' || rt.settings.getTab(id)?.parent === 'plugins');
+  const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
+  const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
 
   return (
     <div className="fx-stack fx-stack--lg axf-settings">
@@ -383,9 +381,11 @@ export function SettingsView() {
       </nav>
       {subs.length > 0 && current && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
-          <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
-            <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
-          </button>
+          {!noOverview && (
+            <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
+              <Icon name={current.icon} size={13} /> {current.id === 'plugins' ? 'All plugins' : 'Overview'}
+            </button>
+          )}
           {subs.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={t.id === shown?.id} className={`fx-tab ${t.id === shown?.id ? 'is-active' : ''}`} onClick={() => choose(current.id, t.id)}>
               <Icon name={t.icon} size={13} /> {t.label}
@@ -394,11 +394,7 @@ export function SettingsView() {
         </nav>
       )}
       {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
-      {shown && (pluginLock && isPluginTab(shown.id)
-        // Inside a host that manages plugins (embed@1 take `plugins`, Patches): every plugin page stays visible, greyed out.
-        ? <><Note icon="lock">{pluginLock}: install them, switch them on or off and set them up from its own settings.</Note>
-          <div className="fx-locked" aria-disabled="true" ref={setInert}><TabContent id={shown.id} /></div></>
-        : <TabContent id={shown.id} />)}
+      {shown && <TabContent id={shown.id} />}
     </div>
   );
 }

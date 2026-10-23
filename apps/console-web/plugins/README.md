@@ -56,6 +56,17 @@ view page (`?axf-embed-page=view:<id>`: only that page, no chrome, settings stil
 tabable ones in Settings → Patches → Tabs → **Add tab…**. Checked by `node framework/cli/plugins.mjs --check` (CI) and
 the console's plugin loader (a wrong `tabable` is reported as the plugin's error).
 
+## Plugins with a banner (plugin@1 `banner`, Oct 23 2026)
+
+Every plugin.json says whether the plugin includes a banner (the live banners above every page): `"banner": false`, or
+the ids of the banners its web library contributes (`"banner": ["my-banner"]`). `node framework/cli/plugins.mjs --check`
+(CI) checks the list against the plugin's `banners: [...]` in `web/`, and the console loader refuses a wrong value.
+Every declared banner gets the shared banner settings in its tab of Settings → Plugins → Banners (and Banner settings,
+and Patches' Banners tab): **Hide** (the banner is hidden but stays mounted, so the plugin keeps working and its
+activity is still logged to the terminal), **Hide all banners** under it (tooltip lists every banner it hides) and
+**Hide for … minutes** (a hide lasts that long, then the banner shows again). One state for every interface; the last
+change wins.
+
 ## Sharing and installing (plugin-catalog@1)
 
 The plugin catalog on axHub (`/projects/_shared/_data/plugin-catalog`) holds plugins other consoles and apps can install.
@@ -66,6 +77,21 @@ the console rebuilds with it). From a terminal: `node framework/cli/plugin-catal
 version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
+
+## Who built it, where it opens, one instance (plugin@1 `builtWith`, `opens`; Oct 23 2026)
+
+Every plugin.json says which model built it: `"builtWith": { "model": "opus", "builtAt": "2026-10-23" }` (fable, opus,
+sonnet, haiku; optional `rebuildOf`, `replaces`, `branch`). The build engine requires it (build-defaults@1 rules in
+`framework/schemas/build-defaults.json`, applied by `framework/cli/build-defaults.mjs` at install, catalog pack/install,
+`plugins.mjs --check` and the console loader) and fills `opens` (`"main"` for a plugin with a view or dialog, `false`
+without one). Users pick where a plugin opens in its settings (**Opens in**: main area, floating window, dialog, tab
+group). A model badge shows wherever plugin info appears. Only **one instance** of a plugin is ever installed: the same
+id, a `builtWith.replaces` link, the same folder once `-fable`/`-opus`/`-plugin` is taken off, or the same name is the
+same plugin, and a second one is refused (`framework/cli/plugin-instances.mjs`). A build by another model replaces the
+installed one in place: **Plugin Update** → Replace (`plugin-catalog.mjs swap <folder>`). New plugins from `_template`
+fill in `builtWith` before they install.
+
+**Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
 
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 

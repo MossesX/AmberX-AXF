@@ -35,7 +35,7 @@ export interface PluginRow extends PluginInventoryItem {
   description: string;
   author: string;
   kind: string;
-  builtWith: { model?: string; replacedBy?: string } | null;
+  builtWith: { model?: string; builtAt?: string; rebuildOf?: string; replacedBy?: string } | null;
   enabledByDefault: boolean;
   removed: boolean;
   loaded: boolean;

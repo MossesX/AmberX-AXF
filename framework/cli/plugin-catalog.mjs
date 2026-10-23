@@ -34,6 +34,13 @@
  *        unpack into apps/console-web/plugins/<folder>, run its lifecycle install, and with --publish commit it to the
  *        repo on GitHub (needs GITHUB_TOKEN) so the console keeps it after its 5-minute reset and rebuilds with it
  *   node framework/cli/plugin-catalog.mjs install <kind> <folder> --into <plugins dir> [--update]
+ *   node framework/cli/plugin-catalog.mjs swap <folder> [--version v] [--keep-data] [--publish]
+ *        replace the installed console plugin with another build of it (another model): remove the old build (its
+ *        hook + data, backed up, unless --keep-data), install the new one in the same folder. An update whose model
+ *        differs from the installed build is refused unless it goes through swap (one instance per plugin)
+ *   node framework/cli/plugin-catalog.mjs install-package <file|-> [--update] [--replace [--keep-data]] [--publish] [--sha256 h]
+ *        install a console plugin package read from any archive (the Plugins installer: folder, https, another console);
+ *        same checks as install (verified, one instance per plugin, other-model builds only with --replace = swap)
  *   node framework/cli/plugin-catalog.mjs remove <kind> <folder>                   take it out of the catalog (packages kept)
  *   add --json for one JSON result on stdout
  */
@@ -41,6 +48,8 @@ import { createHash, randomBytes } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { applyDefaults, applyToPluginFile } from './build-defaults.mjs';
+import { installClash } from './plugin-instances.mjs';
 
 export const SCHEMA = 'plugin-catalog@1';
 export const PACKAGE_SCHEMA = 'plugin-package@1';
@@ -124,6 +133,9 @@ export function checkManifest(kind, m, folder) {
   if (typeof m.name !== 'string' || !m.name.trim() || m.name.length > 80) problems.push('plugin.json needs a name (≤ 80 characters)');
   if (typeof m.version !== 'string' || !VERSION_RE.test(m.version)) problems.push('plugin.json needs a version like 1.2.3');
   if (folder && m.folder && m.folder !== folder) problems.push(`plugin.json folder "${m.folder}" differs from "${folder}"`);
+  // Console plugins follow the build engine's default rules (build-defaults@1): a package that misses a required field
+  // (e.g. the model that built it, builtWith.model) is refused; missing defaults are filled when it is installed.
+  if (kind === 'console') for (const x of applyDefaults('plugin', m).problems) problems.push(`plugin.json: ${x.message}`);
   return problems;
 }
 
@@ -280,11 +292,14 @@ export function publishPackage(pkg, { from = '' } = {}) {
       ...(Array.isArray(m.stacks) ? { stacks: m.stacks.filter((s) => typeof s === 'string').slice(0, 20) } : {}),
       ...(Array.isArray(m.requires) ? { requires: m.requires.filter((s) => typeof s === 'string').slice(0, 20) } : {}),
       ...(Array.isArray(m.provides) ? { provides: m.provides.filter((s) => typeof s === 'string').slice(0, 20) } : {}),
+      ...(m.builtWith && typeof m.builtWith.model === 'string' ? { builtWith: { model: m.builtWith.model.slice(0, 20), ...(typeof m.builtWith.builtAt === 'string' ? { builtAt: m.builtWith.builtAt.slice(0, 10) } : {}) } } : {}),
       sha256: v.sha256, bytes: v.bytes, files: v.files.length, publishedAt: now, publishedFrom: stored.publishedFrom,
       versions: [...new Set([...(prev?.versions ?? []), v.version])].sort(compareVersions),
+      // the model that built each version, so a host sees "a Fable rebuild is out" (Plugin Update)
+      models: { ...(prev?.models ?? {}), ...(m.builtWith?.model ? { [v.version]: String(m.builtWith.model).slice(0, 20) } : {}) },
     };
     // The index shows the newest version; publishing an older one only adds it to `versions`.
-    const keep = prev && compareVersions(prev.version, v.version) > 0 ? { ...prev, versions: item.versions } : item;
+    const keep = prev && compareVersions(prev.version, v.version) > 0 ? { ...prev, versions: item.versions, models: item.models } : item;
     cat.items = [...cat.items.filter((it) => it !== prev), keep].sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name));
     cat.updatedAt = now;
     delete cat.reachable;
@@ -337,15 +352,16 @@ export function getPackage(kind, folder, version) {
 
 /* ------------------------------------------------------------------ install */
 
-function manifestIdIn(dir) {
-  try { return JSON.parse(readFileSync(join(dir, 'plugin.json'), 'utf8')).id ?? null; } catch { return null; }
+function manifestIn(dir) {
+  try { return JSON.parse(readFileSync(join(dir, 'plugin.json'), 'utf8')); } catch { return null; }
 }
+function manifestIdIn(dir) { return manifestIn(dir)?.id ?? null; }
 
 /**
  * Unpack a verified package into `<pluginsDir>/<folder>`. New folders only, unless `update` (then only over the same
  * plugin id). Written to a hidden sibling first and swapped in, so a failed install leaves the old folder as it was.
  */
-export function unpack(pkg, pluginsDir, { update = false } = {}) {
+export function unpack(pkg, pluginsDir, { update = false, replaceModel = false } = {}) {
   const v = verifyPackage(pkg);
   const base = resolve(pluginsDir);
   const bst = lstatSync(base);
@@ -356,12 +372,22 @@ export function unpack(pkg, pluginsDir, { update = false } = {}) {
   if (st?.isSymbolicLink()) throw new Error(`${v.folder} is a symlink; refusing to touch it`);
   if (st && !update) throw new Error(`${v.folder} is already installed; use update`);
   if (st && manifestIdIn(dest) !== v.id) throw new Error(`${v.folder} holds another plugin (${manifestIdIn(dest) ?? 'no plugin.json'}); not overwriting it`);
+  // An update built by another model is a replacement: only with replaceModel (Plugin Update's confirmed swap).
+  const was = st ? manifestIn(dest)?.builtWith?.model : null;
+  const now = v.manifest?.builtWith?.model;
+  if (st && was && now && was !== now && !replaceModel) throw new Error(`${v.folder} is installed as the ${was} build and this is the ${now} build: replacing one build with the other needs the confirmed swap (Plugin Update → Replace, plugin-catalog.mjs swap)`);
+  const installed = [];
   for (const name of readdirSync(base)) {
     if (name === v.folder || name.startsWith('.') || name.startsWith('_')) continue;
     const other = join(base, name);
     try { if (!lstatSync(other).isDirectory()) continue; } catch { continue; }
     if (manifestIdIn(other) === v.id) throw new Error(`${v.id} is already installed as "${name}"`);
+    const om = manifestIn(other);
+    if (om) installed.push({ folder: name, manifest: om });
   }
+  // One instance per plugin (Brett, Oct 23 2026): never next to another build of the same plugin, whatever its model.
+  const clash = installClash({ folder: v.folder, manifest: v.manifest }, installed);
+  if (clash) throw new Error(clash);
   const tmp = join(base, `.${v.folder}.incoming-${randomBytes(4).toString('hex')}`);
   mkdirSync(tmp);
   try {
@@ -379,20 +405,63 @@ export function unpack(pkg, pluginsDir, { update = false } = {}) {
     rmSync(tmp, { recursive: true, force: true });
     throw e;
   }
+  // build-defaults@1: fill what the package left to the defaults (e.g. where its UI opens) in the installed plugin.json
+  if (v.kind === 'console') applyToPluginFile(join(dest, 'plugin.json'), { write: true });
   return { installed: v.folder, id: v.id, name: v.name, version: v.version, updated: !!st, files: v.files.length, dir: dest };
 }
 
 /** Console plugin from the catalog: unpack, run its lifecycle install, optionally commit it to the repo on GitHub. */
-export async function installConsole(folder, { update = false, publish = false, version, noState = false } = {}, log = () => {}) {
+export async function installConsole(folder, opts = {}, log = () => {}) {
+  return installConsolePackage(getPackage('console', folder, opts.version), opts, log);
+}
+
+/**
+ * A console plugin package from anywhere (the catalog on axHub, another archive the Plugins installer reads): verified
+ * (and checked against `sha256` when the archive's index gives one), unpacked with every install rule (one instance,
+ * model swap only with replaceModel, build defaults), lifecycle install, optionally committed to GitHub.
+ */
+export async function installConsolePackage(raw, { update = false, publish = false, noState = false, replaceModel = false, sha256 } = {}, log = () => {}) {
   const lc = await import(pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), 'plugin-lifecycle.mjs')).href);
-  const pkg = getPackage('console', folder, version);
-  const r = unpack(pkg, lc.PLUGINS_DIR, { update });
+  const pkg = verifyPackage(raw, sha256 ? { sha256 } : {});
+  if (pkg.kind !== 'console') throw new Error(`this is a ${pkg?.kind ?? 'unknown'} plugin, not a console plugin`);
+  const folder = pkg.folder;
+  const r = unpack(pkg, lc.PLUGINS_DIR, { update, replaceModel });
   log(`${r.updated ? 'updated' : 'installed'} ${r.name} ${r.version} in apps/console-web/plugins/${folder}`);
   const life = await lc.install(folder, { noState }, log);
   let published = null;
   if (publish) published = lc.publishAddition(folder, `${r.updated ? 'Update' : 'Install'} plugin ${r.name} ${r.version} (${folder}) from the plugin catalog`, log);
   else log('in this clone only: publish it (--publish) or the console\'s 5-minute reset keeps it but other clones won\'t get it');
   return { ...r, dir: relative(ROOT, r.dir), lifecycle: life, published };
+}
+
+/**
+ * Replace an installed console plugin with another build of it from the catalog (e.g. the Opus build with its Fable
+ * rebuild): Plugin Update's confirmed swap. 1) remove the old build: its onUninstall hook and, unless `keepData`, its
+ * data folder (backed up first); 2) install the new build in the same folder (atomic swap, so never two copies) and run
+ * its lifecycle install; 3) optionally commit it to GitHub. If step 2 fails, the old code is still in place (the folder
+ * swap never happened) and its backed-up data can be restored from the lifecycle panel.
+ */
+export async function swapConsole(folder, { version, keepData = false, publish = false, noState = false } = {}, log = () => {}) {
+  return swapConsolePackage(getPackage('console', folder, version), { keepData, publish, noState }, log);
+}
+
+/** swapConsole with a package from any archive. */
+export async function swapConsolePackage(raw, { keepData = false, publish = false, noState = false, sha256 } = {}, log = () => {}) {
+  const lc = await import(pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), 'plugin-lifecycle.mjs')).href);
+  const pkg = verifyPackage(raw, sha256 ? { sha256 } : {});
+  if (pkg.kind !== 'console') throw new Error(`this is a ${pkg.kind} plugin, not a console plugin`);
+  const folder = pkg.folder;
+  const cur = manifestIn(join(lc.PLUGINS_DIR, folder));
+  if (!cur) throw new Error(`${folder} is not installed: install it instead`);
+  if (cur.id !== pkg.id) throw new Error(`${folder} holds another plugin (${cur.id}); not replacing it`);
+  const from = { model: cur.builtWith?.model ?? '?', version: cur.version };
+  const to = { model: pkg.manifest?.builtWith?.model ?? '?', version: pkg.version };
+  log(`replacing ${pkg.name} ${from.version} (${from.model}) with ${to.version} (${to.model})`);
+  let removed = null;
+  if (!keepData) { removed = await lc.uninstall(folder, { data: true, noState: true }, log); log('removed the old build\'s data (backed up)'); }
+  else log('keeping its data folder');
+  const r = await installConsolePackage(pkg, { update: true, replaceModel: true, publish, noState }, log);
+  return { ...r, swapped: true, from, to, removed: removed ? { data: removed.data, backup: removed.backup } : null };
 }
 
 /* ------------------------------------------------------------------ CLI */
@@ -415,7 +484,7 @@ export async function main(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) { args.push(a); continue; }
     const k = a.slice(2);
-    if (['kind', 'out', 'from', 'console', 'version', 'into'].includes(k)) flags[k] = argv[++i]; else flags[k] = true;
+    if (['kind', 'out', 'from', 'console', 'version', 'into', 'sha256'].includes(k)) flags[k] = argv[++i]; else flags[k] = true;
   }
   const [cmd, a1, a2] = args;
   const lines = [];
@@ -446,6 +515,17 @@ export async function main(argv) {
       if (a1 === 'console' && !flags.into) return out(await installConsole(a2, { update: !!flags.update, publish: !!flags.publish, version: flags.version, noState: !!flags['no-state'] }, log));
       if (!flags.into) throw new Error(`installing a ${a1} plugin needs --into <its app's plugins folder>`);
       return out(unpack(getPackage(a1, a2, flags.version), flags.into, { update: !!flags.update }));
+    }
+    if (cmd === 'swap') {
+      checkFolder(a1);
+      return out(await swapConsole(a1, { version: flags.version, keepData: !!flags['keep-data'], publish: !!flags.publish, noState: !!flags['no-state'] }, log));
+    }
+    if (cmd === 'install-package') {
+      const text = !a1 || a1 === '-' ? readFileSync(0, 'utf8') : readFileSync(a1, 'utf8');
+      const pkg = JSON.parse(text);
+      const o = { publish: !!flags.publish, noState: !!flags['no-state'], ...(flags.sha256 ? { sha256: flags.sha256 } : {}) };
+      if (flags.replace) return out(await swapConsolePackage(pkg, { ...o, keepData: !!flags['keep-data'] }, log));
+      return out(await installConsolePackage(pkg, { ...o, update: !!flags.update }, log));
     }
     if (cmd === 'remove') return out(removeEntry(a1, a2));
     throw new Error('usage: plugin-catalog.mjs where | list | show | pack | publish | publish-package | package | install | remove (see the header)');

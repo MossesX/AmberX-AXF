@@ -52,10 +52,48 @@ export const TABS: PatchTab[] = [
   { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
 ];
 
-/** The settings tabs of Patches' combined settings, in order: Patches itself, Banners (every banner shown above the tabs), then one per app. */
-export const SETTINGS_APPS = [{ id: 'patches', label: 'Patches', icon: 'layers' }, { id: 'banners', label: 'Banners', icon: 'bell' }, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))] as const;
-export type SettingsApp = (typeof SETTINGS_APPS)[number]['id'];
-export const isSettingsApp = (v: unknown): v is SettingsApp => SETTINGS_APPS.some((a) => a.id === v);
+/**
+ * Patches' combined Settings is a tab group (Brett, Oct 23 2026): a tab for Patches itself, Banners (every banner shown
+ * above the tabs), then one for every tab in Patches' tab group that has a settings interface: each app (its own
+ * settings page) and each plugin tab whose plugin has settings (its app's settings page opened on that plugin's tab).
+ */
+export interface SettingsTabSpec {
+  /** `patches`, `banners`, an app id, or a plugin tab's view id (`tab.<app>.<view>`) */
+  id: string;
+  label: string;
+  icon: string;
+  kind: 'own' | 'banners' | 'app' | 'plugin';
+  app?: PatchTab['id'];
+  /** the settings tab to open inside the app's settings page (a plugin's own tab) */
+  sub?: string;
+}
+export const OWN_SETTINGS: SettingsTabSpec[] = [{ id: 'patches', label: 'Patches', icon: 'layers', kind: 'own' }, { id: 'banners', label: 'Banners', icon: 'bell', kind: 'banners' }];
+/** @deprecated the fixed list before Oct 23 2026; use settingsTabs(tabs, reports) */
+export const SETTINGS_APPS = [...OWN_SETTINGS, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon, kind: 'app' as const, app: t.id }))];
+
+/** The combined settings' tabs for this tab group, in its order (Patches and Banners first). */
+export function settingsTabs(tabs: readonly TabEntry[], reports: Partial<Record<PatchTab['id'], EmbedPlugin[]>> = {}): SettingsTabSpec[] {
+  const out = [...OWN_SETTINGS];
+  const seen = new Set(out.map((x) => x.id));
+  for (const e of tabs) {
+    let spec: SettingsTabSpec | null = null;
+    if (e.kind === 'app') { const t = appOf(e.app); if (t) spec = { id: t.id, label: t.label, icon: t.icon, kind: 'app', app: t.id }; }
+    else {
+      const sub = reports[e.app]?.find((p) => p.id === e.plugin)?.tab?.settings;
+      if (sub) spec = { id: tabViewId(e), label: e.label, icon: e.icon ?? 'box', kind: 'plugin', app: e.app, sub };
+    }
+    if (spec && !seen.has(spec.id)) { seen.add(spec.id); out.push(spec); }
+  }
+  return out;
+}
+
+/** The settings tab for the tab in front (an app tab, or a plugin tab with settings), else Patches' own. */
+export function settingsTabFor(view: string | null | undefined, list: readonly SettingsTabSpec[]): string {
+  return (view && list.some((x) => x.id === view && x.kind !== 'own' && x.kind !== 'banners') ? view : 'patches');
+}
+
+export type SettingsApp = string;
+export const isSettingsApp = (v: unknown): v is SettingsApp => typeof v === 'string' && (/^(patches|banners|console|pilot|axhub)$/.test(v) || /^tab\.[a-z]+\.[a-z0-9][a-z0-9._-]{0,63}$/.test(v));
 
 export const BANNERS_KEY = 'patches.banners';
 export const SETTINGS_APP_KEY = 'patches.settings.app';
@@ -164,7 +202,7 @@ export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED
 /* ---------------- plugins Patches manages for the apps in its tabs (embed@1 take `plugins`) ---------------- */
 
 /** One plugin installed in Patches for an app (server/main.py → patches-plugins@1). */
-export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string }
+export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string; /** the model that built it, as its app reported (plugin@1 builtWith.model) */ model?: string }
 export interface PluginsState { $axf: 'patches-plugins@1'; apps: Record<string, { plugins: Record<string, InstalledPlugin> }> }
 
 /** Setting: try to install an app's missing plugins into Patches by itself (on by default). */

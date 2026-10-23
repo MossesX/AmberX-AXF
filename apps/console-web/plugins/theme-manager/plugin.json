@@ -24,9 +24,8 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -39,5 +38,6 @@
       "apps/console-web/plugins/README.md"
     ]
   },
-  "userGrantable": true
+  "userGrantable": true,
+  "opens": "main"
 }

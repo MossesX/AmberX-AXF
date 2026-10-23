@@ -27,9 +27,8 @@
     "NETWORK"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "banner": ["keys-needed", "systems-check", "whats-new"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -43,5 +42,6 @@
       "apps/console-web/plugins/README.md",
       ".github/workflows/android.yml"
     ]
-  }
+  },
+  "opens": "main"
 }

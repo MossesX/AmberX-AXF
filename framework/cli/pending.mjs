@@ -14,6 +14,10 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/pending-core.mjs';
 import { dataPath } from './persist.mjs';
+import { loadPricing } from './model-pricing.mjs';
+
+const PRICING = loadPricing();
+const usd = (model, min) => (min ? core.formatUsd(core.costForMinutes(model, min, PRICING)) : '');
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const PENDING = dataPath('framework/plan/pending.json');
@@ -45,7 +49,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const open = s.items.filter(OPEN);
     const left = {};
     for (const it of open) { const p = core.stepsProgress(it); left[it.model] = (left[it.model] ?? 0) + p.minutesLeft; }
-    console.log(`pending: ${open.length} open build(s) · time left ${Object.entries(left).map(([m, n]) => `${m} ${core.formatMinutes(n) || '0 min'}`).join(' · ')}`);
+    console.log(`pending: ${open.length} open build(s) · time left ${Object.entries(left).map(([m, n]) => `${m} ${core.formatMinutes(n) || '0 min'}${usd(m, n) ? ` (~${usd(m, n)})` : ''}`).join(' · ')}`);
     for (const b of bad) console.log(`  ⚠ ${b.id} (${b.model}, ~${b.estimate || '?'}): ${b.reasons.join('; ')}`);
     if (!bad.length) console.log('  every open build over 30 min is split into steps of 30 min or less');
     else console.log(`  ${bad.length} build(s) break the small-steps rule (builds over 30 min are split into steps of ≤ 30 min, each with an estimate)`);
@@ -56,8 +60,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const est = core.itemEstimate(it);
     const p = core.stepsProgress(it);
     const prog = p.total ? ` [${p.done}/${p.total} steps${p.minutesLeft ? `, ${core.formatMinutes(p.minutesLeft)} left` : ''}]` : '';
-    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${(est ? `~${est}` : '').padEnd(8)} ${it.title}  (${it.id})${prog}`);
-    if (process.argv.includes('--steps')) for (const [k, sp] of it.subPrompts.entries()) console.log(`    ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
+    const cost = usd(it.model, it.status === 'complete' ? core.entryMinutes(it) : p.minutesLeft);
+    console.log(`${core.STATUS_LABEL[it.status].padEnd(9)} ${it.model.padEnd(7)} ${d.label} ${d.at.slice(0, 10)}  ${(est ? `~${est}` : '').padEnd(8)} ${(cost ? `~${cost}` : '').padEnd(7)} ${it.title}  (${it.id})${prog}`);
+    if (process.argv.includes('--steps')) for (const [k, sp] of it.subPrompts.entries()) { const c = usd(it.model, core.estimateMinutes(sp.estimate)); console.log(`    ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${(c ? `~${c}` : '').padEnd(7)} ${sp.text.slice(0, 110)}`); }
   }
+  const open = s.items.filter(OPEN);
+  const leftBy = {};
+  for (const it of open) leftBy[it.model] = (leftBy[it.model] ?? 0) + core.stepsProgress(it).minutesLeft;
+  const total = Object.entries(leftBy).reduce((a, [m, n]) => a + (core.costForMinutes(m, n, PRICING) ?? 0), 0);
   console.log(Object.entries(core.counts(s.items)).map(([k, n]) => `${k} ${n}`).join(' · '));
+  console.log(`left: ${Object.entries(leftBy).map(([m, n]) => `${m} ${core.formatMinutes(n) || '0 min'} (~${usd(m, n) || '$0.00'})`).join(' · ')} · all ~${core.formatUsd(total) || '$0.00'} (estimate: minutes × the model's price per working minute, framework/schemas/model-pricing.json)`);
 }

@@ -12,12 +12,14 @@
   "optional": [],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus" },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-20" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/fable-rebuilds",
     "env": [],
     "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
-  }
+  },
+  "opens": "main"
 }

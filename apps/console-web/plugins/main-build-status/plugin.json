@@ -20,9 +20,8 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-21" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -34,5 +33,6 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "opens": false
 }
