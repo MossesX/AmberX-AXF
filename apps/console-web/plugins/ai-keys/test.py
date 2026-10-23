@@ -90,6 +90,29 @@ check(any(k["label"] == "Renamed" for k in c.get("/p/keys").json()["keys"]), "re
 c.delete(f"/p/keys/{k2}")
 check(svc().active_key("anthropic") == A1, "removing the active key hands over to the next of its kind")
 check(c.delete("/p/keys/nope").status_code == 404, "unknown id: 404")
+# Credits switch (systems check, via the assistant): the active key is out of credits → the next saved key with credit.
+A3, A4 = "sk-ant-api03-" + "d" * 40, "sk-ant-api03-" + "e" * 40
+GOOD |= {A3, A4}
+c.post("/p/keys", json={"key": A3, "label": "Empty too"})
+k4 = c.post("/p/keys", json={"key": A4, "label": "Has credit"}).json()["key"]["id"]
+EMPTY = {A1, A3}
+def probe(kind, key, model):
+    if key in EMPTY:
+        raise RuntimeError(f"400 Your credit balance is too low {key}")
+mod.CREDIT_PROBE = probe
+nc = lambda m: "credit balance" in m  # noqa: E731
+r = svc().credit_switch("anthropic", None, nc)
+check(r["switched"] and r["switched"]["to"] == k4 and svc().active_key("anthropic") == A4, "credits: switches to the first saved key with credit")
+check(all(k not in json.dumps(r) for k in (A1, A3, A4)), "credits: no key in the answer")
+check(svc().active_key("claude-code") == S1, "credits: the other kind is untouched")
+EMPTY.add(A4)
+r = svc().credit_switch("anthropic", None, nc)
+check(r["switched"] is None and svc().active_key("anthropic") == A4, "credits: none with credit leaves the active key alone")
+mod.CREDIT_PROBE = lambda kind, key, model: (_ for _ in ()).throw(RuntimeError("connection refused"))
+r = svc().credit_switch("anthropic", None, nc)
+check(r["switched"] is None and all(t["state"] == "error" for t in r["tried"]), "credits: a non-credit error never switches")
+check(svc().open_action == "ai-keys.open", "credits: the systems check opens this dialog")
+c.post("/p/active", json={"id": next(k["id"] for k in c.get("/p/keys").json()["keys"] if k["hint"] == "…aaaa")})
 f = Path(os.environ["AXF_AI_KEYS_DIR"]) / "keys.json"
 check((f.stat().st_mode & 0o777) == 0o600, "keys file is private (0600)")
 # The assistant runtime's hook: the active key wins over a profile's own key, except for noKeyOverride tests.

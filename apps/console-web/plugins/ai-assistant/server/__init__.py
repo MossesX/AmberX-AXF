@@ -198,7 +198,20 @@ class LlmService:
             return {**out, "state": "none"}
         default = out["default"] if out["default"] in claude else claude[0]
         order = [default] + [p for p in claude if p != default]
+        keys = plugin_services.get("axf.ai-keys@1")
+        dkind = str(profs[default].get("kind") or "")
         for i, pid in enumerate(order):
+            if i == 1 and keys and hasattr(keys, "credit_switch") and keys.active_key(dkind):
+                # A keyring's active key replaces every profile key of this kind: switch among its saved keys first.
+                r = keys.credit_switch(dkind, profs[default].get("defaultModel"), lambda m: bool(_NO_CREDIT.search(m)))
+                out["profiles"] += [{"id": t["id"], "label": t["label"], "kind": dkind, "state": t["state"], "error": t["error"]} for t in r["tried"]]
+                out["open"] = getattr(keys, "open_action", "")
+                if r["switched"]:
+                    out["switched"] = {**r["switched"], "via": "keys"}
+                    return out
+            if i > 0 and keys and keys.active_key(dkind) and str(profs[pid].get("kind") or "") == dkind:
+                continue  # same keyring key as the default: already out of credits
+
             st = _credit_state(pid, profs[pid])
             out["profiles"].append({"id": pid, "label": profs[pid].get("label") or pid, "kind": profs[pid].get("kind"), **st})
             if i == 0:

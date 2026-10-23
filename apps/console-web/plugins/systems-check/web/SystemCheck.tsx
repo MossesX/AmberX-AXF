@@ -15,7 +15,7 @@ import './systems-check.css';
 
 type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
 interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
-type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string } | null;
+type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
 interface Service { id: string; label: string; icon: string; description: string }
 interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
@@ -86,7 +86,8 @@ function showCreditsSwitch(r: Report | null) {
   if (!key || key === shownSwitch) return;
   shownSwitch = key;
   runtime.toast(c.summary, c.switched ? 'warning' : 'danger', 'Claude credits');
-  runtime.dispatch(`settings.open:${c.fix?.type === 'settings' ? c.fix.tab : 'plugins'}`);
+  const f = c.fix?.type === 'settings' ? c.fix : null;
+  runtime.dispatch(f?.action || `settings.open:${f?.tab ?? 'plugins'}`);
 }
 
 /** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
@@ -243,7 +244,7 @@ export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Prom
   const f = c.fix;
   if (!f) { if (claudeConnected()) claudeFix(c, rt); return; }
   if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
-  if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
+  if (f.type === 'settings') { rt.dispatch(f.action || `settings.open:${f.tab}`); return; }
   if (f.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
   if (f.type !== 'action' && claudeConnected()) { claudeFix(c, rt); return; }
   if (f.type === 'host') {
@@ -416,7 +417,7 @@ export function FixPanel({ c }: { c: Check }) {
           <div className="fx-row fx-row--wrap"><code className="axp-systems-check-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
         </div>
       )}
-      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
+      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(f.action || `settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
         {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}

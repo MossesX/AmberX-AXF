@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T00:51:52.239Z",
+ "updatedAt": "2026-10-23T01:13:32.733Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1757,6 +1757,20 @@
    "createdAt": "2026-10-23T00:49:33.693Z",
    "builtAt": "2026-10-23T00:51:52.239Z",
    "updatedAt": "2026-10-23T00:51:52.239Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "credits-switch-ai-keys",
+   "title": "Credits check switches among AI keys saved keys and opens the AI keys dialog",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T01:13:32.733Z",
+   "builtAt": "2026-10-23T01:13:32.733Z",
+   "updatedAt": "2026-10-23T01:13:32.733Z",
    "estimate": "30 min",
    "source": "chat"
   }
