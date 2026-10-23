@@ -364,6 +364,25 @@ check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][1] == {"merge
 check(not any(s["method"] in ("PUT", "POST") and s["path"].endswith("/git/refs/heads/main") for s in SEEN), "merge-branch: never writes main directly")
 check("MossesX/AmberX-AXF:cleanx" in [d["key"] for d in c.get("/p/branches").json()["done"]], "merge-branch: shows in Done")
 
+# ---- Pull failed group + Repair (Oct 23 2026)
+c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+fl = {d["key"]: d for d in c.get("/p/branches").json()["failed"]}
+check("MossesX/AmberX-AXF:feat/conflict" in fl and "conflicts" in fl["MossesX/AmberX-AXF:feat/conflict"]["error"], "failed pull: listed under Pull failed with its error")
+check(c.post("/p/failed/remove", json={"key": "../x"}).status_code == 400, "failed/remove: checks the key")
+c.put("/p/config", json={"claudeOnFail": False})
+R0 = {"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"}
+check(c.post("/p/claude", json=R0).status_code == 409, "setting off: Fix with Claude still refused")
+n_hub = len(hub_calls)
+r = c.post("/p/claude", json={**R0, "repair": True})
+check(r.status_code == 200 and r.json()["job"]["state"] in ("asking", "waiting", "launched"), "Repair: hands it to Claude even with the setting off")
+j = settle("MossesX/AmberX-AXF:feat/conflict")
+check(len(hub_calls) > n_hub and j["state"] == "launched", "Repair: launched through vps.run")
+check(c.post("/p/claude", json={**R0, "repair": "yes"}).status_code in (200, 409), "Repair: only true counts")
+check(c.post("/p/failed/remove", json={"key": "MossesX/AmberX-AXF:feat/conflict"}).json()["ok"], "failed/remove: takes it off")
+check(not c.get("/p/branches").json()["failed"], "failed/remove: gone from the banner")
+c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(c.get("/p/branches").json()["failed"], "failed again: back in Pull failed")
+
 os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999
 out = c.get("/p/branches").json()

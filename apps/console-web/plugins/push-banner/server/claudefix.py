@@ -180,18 +180,30 @@ class Launches:
             return {k: v for k, v in j.items() if k != "command"} if j else None
 
     def all(self) -> list[dict[str, Any]]:
+        """Every hand-over; a launched one carries `fixed` = its change-log entry's status (running / done / failed), so the
+        banner knows when to try the pull again."""
         with self.lock:
-            return [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
+            out = [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
+        svc = plugin_services.get(CHANGES)
+        for j in out:
+            if j["state"] == "launched" and j.get("changeId") and svc is not None:
+                try:
+                    e = svc.get(j["changeId"]) or {}
+                except Exception:  # noqa: BLE001
+                    e = {}
+                st = e.get("status") or (e.get("result") or {}).get("state")
+                j["fixed"] = "done" if st == "done" else "failed" if st in ("failed", "partial", "cancelled") else "running"
+        return out
 
     def _set(self, key: str, **kw: Any) -> None:
         with self.lock:
             self.jobs[key].update(kw, updatedAt=time.time())
 
-    def maybe_launch(self, t: dict[str, Any], *, force: bool = False) -> dict[str, Any] | None:
+    def maybe_launch(self, t: dict[str, Any], *, force: bool = False, by_hand: bool = False) -> dict[str, Any] | None:
         """t = {repo, branch, base, number?, title?, url?, kind: conflict|merge, action, failure}. None when the setting is
         off or the names are odd; the running/recent job when one exists (`force` skips the cooldown, never a running one)."""
         s = self.settings()
-        if not s.get("claudeOnFail") or not REPO_RE.match(str(t.get("repo", ""))) or not BRANCH_RE.match(str(t.get("branch", ""))):
+        if not (s.get("claudeOnFail") or by_hand) or not REPO_RE.match(str(t.get("repo", ""))) or not BRANCH_RE.match(str(t.get("branch", ""))):
             return None
         key = entry_key(t["repo"], t.get("number"), t["branch"])
         with self.lock:
