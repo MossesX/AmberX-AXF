@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T05:40:04.677Z",
+ "updatedAt": "2026-10-23T05:43:56.671Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2271,6 +2271,36 @@
    "builtAt": "2026-10-23T05:40:04.677Z",
    "updatedAt": "2026-10-23T05:40:04.677Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio-deploy",
+   "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Dockerfile + nginx + installer (axf-deploy helpers, wall, auto-update)",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Merge, run the installer on the VPS through axHub",
+     "at": "",
+     "estimate": "15 min"
+    },
+    {
+     "text": "DNS + verify",
+     "at": "",
+     "estimate": "10 min"
+    }
+   ],
+   "createdAt": "2026-10-23T05:43:56.671Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T05:43:56.671Z",
+   "estimate": "45 min",
    "source": "chat"
   }
  ]
