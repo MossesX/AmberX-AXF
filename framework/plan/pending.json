@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T14:29:44.678Z",
+ "updatedAt": "2026-10-23T14:55:49.072Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2429,63 +2429,88 @@
    "title": "Plugin model badges, open-in setting, build-engine default rules + Plugin Update plugin",
    "detail": "Brett, Oct 23 2026: plugin@1 records the model that built each plugin (all new + existing), shown as a badge wherever plugin info shows; field + setting for where a UI plugin opens (main area default, floating window, dialog, tab group); build engine applies default-config rules from a registry on every build; new Plugin Update plugin (installed list with model/built date/version, axHub catalog check + one-click update, Rebuild with another model with confirmed removal + install); never two installs of the same plugin, never one plugin built by two models.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T14:55:49.072Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Report build, rule in _claude, plan the fields",
      "at": "",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.423Z"
     },
     {
      "text": "plugin@1 builtWith + builtAt + openIn fields; schema, loader, plugins.mjs --check; every plugin.json",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.486Z"
     },
     {
      "text": "Build-engine default-rules registry (build-defaults@1) applied by plugins.mjs / axf build paths; first rule: UI plugins open in the main area",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.543Z"
     },
     {
      "text": "Open-in setting per UI plugin (main / floating window / dialog / tab group) in its settings, hot render",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.597Z"
     },
     {
      "text": "Model badges: Plugin Manager, plugin switches, Settings → Plugins, app tabs/Patches plugin lists",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.653Z"
     },
     {
      "text": "One-instance rule: console loader, plugin-catalog install, lifecycle install refuse a second copy of an id",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.714Z"
     },
     {
      "text": "Plugin Update plugin: server (installed list, axHub catalog check, update)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.777Z"
     },
     {
      "text": "Plugin Update: Rebuild with <model> (park a from-scratch rebuild, confirmed swap: uninstall old, install new)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.829Z"
     },
     {
      "text": "Plugin Update web UI + menu + settings",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.885Z"
     },
     {
      "text": "Tests, docs, CLAUDE.md status, PR",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T14:55:48.943Z"
     }
    ],
    "createdAt": "2026-10-23T14:29:44.678Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T14:29:44.678Z",
+   "builtAt": "2026-10-23T14:55:49.000Z",
+   "updatedAt": "2026-10-23T14:55:49.072Z",
    "estimate": "4.5 h",
    "source": "chat"
   }
