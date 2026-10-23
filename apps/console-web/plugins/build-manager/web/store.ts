@@ -11,13 +11,19 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import * as queueCore from '@console/axf/plan/build-queue-core.mjs';
 import type { QFeature } from '@console/axf/plan/build-queue-core.mjs';
 import { followSse } from '@console/axf/core/sse';
+import pricing from '@console/axf/schemas/model-pricing.json';
 import { buildRows, liveEntries, probeTicks as probe, SOURCES, takeOffRequests, tickRequest, type ActivityItem, type GoneKind, type Helpers, type LiveEntry, type Row, type SortKey, type Source } from './merge.mjs';
 import type { ChangeSummary } from './history.mjs';
 
 export const FOLDER = 'build-manager';
 export const ID = 'ai.amberx.axf.console.build-manager';
 export const VERSION = '0.3.0';
-export const helpers: Helpers = { estimateMinutes: pendingCore.estimateMinutes, formatMinutes: pendingCore.formatMinutes };
+export const helpers: Helpers = {
+  estimateMinutes: pendingCore.estimateMinutes, formatMinutes: pendingCore.formatMinutes,
+  cost: (model, minutes) => pendingCore.costForMinutes(model, minutes, pricing),
+};
+/** Dollars for the list (estimates): "$0.84", "$23", "$1,234"; '' without a price. */
+export const usd = (v: number | null | undefined) => pendingCore.formatUsd(v ?? null);
 export const fmt = (min: number | null | undefined) => (min === 0 ? '0 min' : pendingCore.formatMinutes(min ?? null) || '');
 
 const LIVE_MS = 4_000;
