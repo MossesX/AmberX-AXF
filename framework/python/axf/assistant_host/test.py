@@ -337,4 +337,35 @@ with socket.socket() as s:
     threading.Thread(target=serve_once, daemon=True).start()
     status, ctype, text = safety.fetch(f"http://127.0.0.1:{port}/", allow_private=True, timeout=3, deadline=5)
 check(status == 200 and text == "hello" and ctype.startswith("text/plain"), "fetch works when a host allows private addresses on purpose")
+# A save racing a close: the reply thread is writing the session's log when the user closes it. close() must wait for
+# the write and then delete the file, never leave a closed session's log behind (it flaked the ai-assistant test).
+race = sessions.LocalHost(Path(tempfile.mkdtemp(prefix="axf-race-")))
+rs = race.get("race-1", "Race", create=True)
+race._save(rs)
+check(race._path("race-1").exists(), "race: the session's log is on disk")
+in_write, release = threading.Event(), threading.Event()
+real_write = race._write
+
+
+def slow_write(sess):
+    in_write.set()
+    release.wait(5)
+    real_write(sess)
+
+
+race._write = slow_write
+saver = threading.Thread(target=race._save, args=(rs,))
+saver.start()
+in_write.wait(5)
+closer = threading.Thread(target=race.close, args=("race-1",))
+closer.start()
+time.sleep(0.15)
+check(closer.is_alive(), "race: close waits for a save that is already writing")
+release.set()
+saver.join(5)
+closer.join(5)
+check(not race._path("race-1").exists(), "race: a closed session's log is gone after a save that raced the close")
+race._write = real_write
+race._save(rs)
+check(not race._path("race-1").exists(), "race: a save after the close writes nothing")
 print(f"all {n} checks passed")

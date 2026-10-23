@@ -3703,5 +3703,157 @@
       "action": "settings.open:a b",
       "tab": "a"
     }
+  ],
+  "viewPages": [
+    {
+      "input": "view:todos",
+      "page": "view:todos",
+      "view": "todos"
+    },
+    {
+      "input": " view:todos ",
+      "page": "view:todos",
+      "view": "todos"
+    },
+    {
+      "input": "view:",
+      "page": null,
+      "view": null
+    },
+    {
+      "input": "view:bad id",
+      "page": null,
+      "view": null
+    },
+    {
+      "input": "view:a/b",
+      "page": null,
+      "view": null
+    },
+    {
+      "input": "view:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "page": null,
+      "view": null
+    },
+    {
+      "input": "View:Alerts",
+      "page": "View:Alerts",
+      "view": "Alerts"
+    }
+  ],
+  "viewUrls": [
+    {
+      "url": "https://console.amberxai.com/",
+      "host": "patches",
+      "opts": {
+        "takes": [
+          "settings",
+          "banners",
+          "plugins"
+        ],
+        "page": "view:todos"
+      },
+      "out": "https://console.amberxai.com/?axf-embed=patches&axf-embed-take=settings,banners,plugins&axf-embed-page=view%3Atodos"
+    }
+  ],
+  "viewDetect": [
+    {
+      "search": "?axf-embed=patches&axf-embed-take=settings,plugins&axf-embed-page=view:todos",
+      "embed": {
+        "host": "patches",
+        "hidden": [
+          "app-menu",
+          "toolbar",
+          "nav-menu",
+          "context-menu",
+          "banner"
+        ],
+        "takes": [
+          "settings",
+          "plugins"
+        ],
+        "page": "view:todos"
+      }
+    }
+  ],
+  "pluginTabs": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.example.alpha",
+            "name": "Todos",
+            "on": true,
+            "tab": {
+              "view": "todos",
+              "label": " Todos\n",
+              "icon": "list"
+            }
+          },
+          {
+            "id": "ai.amberx.axf.example.beta",
+            "name": "Beta",
+            "on": true,
+            "tab": {
+              "view": "bad view!",
+              "label": "x"
+            }
+          },
+          {
+            "id": "ai.amberx.axf.example.gamma",
+            "name": "Gamma",
+            "on": false,
+            "tab": {
+              "view": "gamma",
+              "icon": "Bad Icon",
+              "label": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+            }
+          },
+          {
+            "id": "ai.amberx.axf.example.delta",
+            "name": "Delta",
+            "on": true,
+            "tab": true
+          }
+        ]
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "plugins",
+        "plugins": [
+          {
+            "id": "ai.amberx.axf.example.alpha",
+            "name": "Todos",
+            "on": true,
+            "tab": {
+              "view": "todos",
+              "label": "Todos",
+              "icon": "list"
+            }
+          },
+          {
+            "id": "ai.amberx.axf.example.beta",
+            "name": "Beta",
+            "on": true
+          },
+          {
+            "id": "ai.amberx.axf.example.gamma",
+            "name": "Gamma",
+            "on": false,
+            "tab": {
+              "view": "gamma",
+              "label": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+            }
+          },
+          {
+            "id": "ai.amberx.axf.example.delta",
+            "name": "Delta",
+            "on": true
+          }
+        ]
+      }
+    }
   ]
 }

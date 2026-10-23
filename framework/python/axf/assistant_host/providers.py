@@ -21,6 +21,7 @@ Host hooks (module attributes a host sets once at start; defaults are safe for a
   extra_kinds            () -> list of ai-providers@1 kinds merged over the registry (open registry)
   stored_secret_names    () -> names of environment variables the host loaded from its own credential store, removed
                          from the Claude Code CLI's environment along with every secret-looking variable
+  key_override           (profile) -> key that replaces the profile's own ("" = none), e.g. a keyring's active key
   PRIVATE_DIRS           folder names the CLI may never read (relative and absolute deny rules), e.g. ".axf-console"
   PRIVATE_ROOTS          () -> extra absolute roots whose private folders are denied (the host's repo root)
   ENV_PREFIXES_HIDDEN    env var prefixes dropped from the CLI's environment ("AXF_" + the host's own)
@@ -52,6 +53,8 @@ _SCHEMA = Path(os.environ.get("AXF_PROVIDERS_FILE") or Path(__file__).resolve().
 # ---------------------------------------------------------------- host hooks (see the module docstring)
 extra_kinds: Callable[[], list[dict[str, Any]]] = lambda: []  # noqa: E731
 stored_secret_names: Callable[[], set[str]] = lambda: set()  # noqa: E731
+# () host hook: (profile) -> a key that replaces the profile's own (e.g. the active key of a host keyring), or "".
+key_override: Callable[[dict[str, Any]], str] = lambda profile: ""  # noqa: E731
 PRIVATE_DIRS: list[str] = [".axf-console"]
 PRIVATE_ROOTS: Callable[[], set[str]] = lambda: set()  # noqa: E731
 ENV_PREFIXES_HIDDEN: list[str] = ["AXF_"]
@@ -111,7 +114,15 @@ class ProviderError(Exception):
 # ---------------------------------------------------------------- profile helpers
 
 def resolve_key(profile: dict[str, Any]) -> str:
-    """Stored key first, then the profile's environment variable. Never logged, never returned to the browser."""
+    """The host's key override first (unless the profile says noKeyOverride), then the stored key, then the profile's
+    environment variable. Never logged, never returned to the browser."""
+    if not profile.get("noKeyOverride"):
+        try:
+            k = key_override(profile)
+        except Exception:  # noqa: BLE001
+            k = ""
+        if k:
+            return str(k)
     if profile.get("key"):
         return str(profile["key"])
     env = profile.get("keyEnv") or BY_KIND.get(profile.get("kind", ""), {}).get("keyEnv") or ""

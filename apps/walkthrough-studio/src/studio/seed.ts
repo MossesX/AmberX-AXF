@@ -163,7 +163,7 @@ const OUTLINE: T[] = [
 
   t('Follow one click', 'arrow-right', [
     p('From the toolbar button to the handler', 'actionflow', 'Follow one click. The button names an action; the runtime checks the UAC role; the registry calls the handler with the context target and payload.', ['click Systems check · Auto fix', 'say button → action → UAC → handler'], C),
-    p('Into the plugin server', 'actionflow', 'The handler posts to the plugin route with the console token. The server checks the token, the plugin is enabled, and the route is in its fix table.', ['say POST /api/plugins/systems-check/autofix/mosh'], ''),
+    p('Into the plugin server', 'actionflow', 'The handler posts to the plugin route with the console token. The server checks the token, the plugin is enabled, and the route is in its fix table.', ['say POST to the systems check autofix route for mosh'], ''),
     p('Out to axHub', 'actionflow', 'The plugin calls axHub\'s vps dot run through the MCP front door. The policy gate sees a destructive tool and creates an approval bound to this caller, tool and arguments.', ['nav ' + HUB + '/auth/admin/approvals', 'hl pending approval'], HUB),
     p('Approved on the phone', 'actionflow', 'The approval pops up in the console and on the phone. Approving runs the command once over SSH, under a server-side timeout, with secrets redacted from the output.', ['click Approve'], HUB),
     p('Back to the console', 'actionflow', 'The job result returns to the plugin, the check re-runs, the banner item shows Fixed for three seconds and leaves. The Activity banner showed every step on the way.', ['hl Fixed', 'wait 3'], C, 'Watch the item turn green and leave the drop-down.'),

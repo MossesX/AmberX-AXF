@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T00:13:26.948Z",
+ "updatedAt": "2026-10-23T04:37:08.190Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1652,6 +1652,129 @@
    "source": "chat"
   },
   {
+   "id": "todo-manager-tabs",
+   "title": "Todo manager plugin (from xGallery) + tabable plugins + Patches plugin tabs",
+   "detail": "Port xGallery tasks/todo manager to a console plugin; plugin@1 `tabable` field (default false); Patches web settings lists apps + tabable plugins, Add tab dialog.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
+     "at": "2026-10-22T23:25:53.960Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "tabable field: plugin@1 schema, validator, template, README, every existing plugin",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.002Z"
+    },
+    {
+     "text": "todo-manager server (FastAPI router, JSON store, lists/entries CRUD)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.041Z"
+    },
+    {
+     "text": "todo-manager web: lists, tree/grid views, entry editor, settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.080Z"
+    },
+    {
+     "text": "console: page mode for a single view",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.120Z"
+    },
+    {
+     "text": "Patches web: tab list setting, Add tab dialog (apps + tabable plugins), plugin tabs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.161Z"
+    },
+    {
+     "text": "tests, docs, status, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.201Z"
+    }
+   ],
+   "createdAt": "2026-10-22T23:08:37.968Z",
+   "builtAt": "2026-10-22T23:25:53.915Z",
+   "updatedAt": "2026-10-22T23:25:54.201Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "session-close-race",
+   "title": "Fix: a closed assistant session log can be written back (save/close race)",
+   "detail": "LocalHost._save checks closed outside the lock; close() can unlink in between and the save writes the file back. Flakes ai-assistant test.py.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
+     "at": "2026-10-23T00:08:41.756Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:07:55.175Z",
+   "builtAt": "2026-10-23T00:08:41.711Z",
+   "updatedAt": "2026-10-23T00:08:41.756Z",
+   "estimate": "15 min",
+   "source": "chat"
+  },
+  {
+   "id": "ai-keys",
+   "title": "AI keys plugin: several Anthropic keys, pick the active one for the assistant",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:40:17.479Z",
+   "builtAt": "2026-10-23T00:40:17.479Z",
+   "updatedAt": "2026-10-23T00:40:17.479Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-live-keys-credits",
+   "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:49:33.693Z",
+   "builtAt": "2026-10-23T00:51:52.239Z",
+   "updatedAt": "2026-10-23T00:51:52.239Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "credits-switch-ai-keys",
+   "title": "Credits check switches among AI keys saved keys and opens the AI keys dialog",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T01:13:32.733Z",
+   "builtAt": "2026-10-23T01:13:32.733Z",
+   "updatedAt": "2026-10-23T01:13:32.733Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
    "id": "walkthrough-studio",
    "title": "Walkthrough Studio: narrated framework walkthrough video assembly suite",
    "detail": "apps/walkthrough-studio (react-ts on AXF). Projects column, categorized index tree (filters, search, drag-and-drop), status grid (built/partial/failed/skipped/needs review, progress, clip lengths, drag to trash, hideable columns), IDE layouts with show/hide panes, unlimited dockable/floating toolbars with a command picker, file browser, live browser with mouse recorder, narration script per piece, compiler plan (narrate + assemble, swap + recompile). Branch claude/framework-walkthrough-video-builder-qocfr1.",
@@ -1854,45 +1977,59 @@
    "source": "chat"
   },
   {
-   "id": "patches-app-tabs",
-   "title": "Patches: pick any framework app to appear as a tab (Console, Pilot, axHub, Walkthrough Studio, …)",
-   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "id": "assistant-cli-errors",
+   "title": "Assistant: show the real Claude Code error instead of \"exited with code 1\"",
+   "detail": "Chat Oct 23 2026, branch claude/framework-walkthrough-video-builder-qocfr1",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [],
-   "createdAt": "2026-10-23T00:13:22.055Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T00:13:22.055Z",
+   "createdAt": "2026-10-23T04:37:07.781Z",
+   "builtAt": "2026-10-23T04:37:08.119Z",
+   "updatedAt": "2026-10-23T04:37:08.119Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "patches-app-tabs",
+   "title": "Patches: any framework app can be a tab (lib-apps app directory feeds the tab group)",
+   "detail": "Chat Oct 23 2026, branch claude/framework-walkthrough-video-builder-qocfr1. Built on the tab group from d22bfb3 (Todo manager build).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T04:37:07.881Z",
+   "builtAt": "2026-10-23T04:37:08.190Z",
+   "updatedAt": "2026-10-23T04:37:08.190Z",
    "estimate": "1.5 h",
    "source": "chat"
   },
   {
    "id": "walkthrough-deploy",
    "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
-   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "detail": "Chat Oct 23 2026, branch claude/framework-walkthrough-video-builder-qocfr1",
    "model": "Opus",
    "status": "pending",
    "notes": [],
    "subPrompts": [],
-   "createdAt": "2026-10-23T00:13:22.142Z",
+   "createdAt": "2026-10-23T04:37:07.964Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T00:13:22.142Z",
+   "updatedAt": "2026-10-23T04:37:07.964Z",
    "estimate": "45 min",
    "source": "chat"
   },
   {
-   "id": "assistant-cli-errors",
-   "title": "Assistant: show the real Claude Code error instead of \"exited with code 1\"",
-   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "id": "key-manager",
+   "title": "Key manager: named Claude subscription tokens + API keys, pick the active one from a dialog; drives the AI assistant and Claude Code on the VPS",
+   "detail": "Chat Oct 23 2026. Extends the ai-keys plugin (Anthropic API keys for the assistant, complete) instead of a second plugin: adds subscription tokens and the VPS side (claude-pick).",
    "model": "Opus",
    "status": "pending",
    "notes": [],
    "subPrompts": [],
-   "createdAt": "2026-10-23T00:13:26.948Z",
+   "createdAt": "2026-10-23T04:37:08.042Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T00:13:26.948Z",
-   "estimate": "30 min",
+   "updatedAt": "2026-10-23T04:37:08.042Z",
+   "estimate": "2 h",
    "source": "chat"
   }
  ]

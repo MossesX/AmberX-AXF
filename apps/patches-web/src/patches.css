@@ -29,3 +29,11 @@
 .pt-check__list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); }
 .pt-plugins { display: grid; gap: calc(var(--fx-space) * 0.5); }
 .pt-plugins__head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); margin: 0; font-size: var(--fx-font-size); }
+
+/* Tab group: plugin tabs fill the main region like app tabs; the Add tab dialog and Settings → Patches → Tabs rows. */
+.fx-main__inner--kept[data-axf-view^="tab."] { padding: 0; max-width: none; height: 100%; }
+.patches-tabs__add { opacity: var(--fx-opacity-muted); }
+.patches-tabs__add:hover { opacity: 1; }
+.pt-addtab__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.4); }
+.pt-addtab__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; }
+.pt-addtab__name { flex: 1; min-width: 0; display: flex; flex-direction: column; }

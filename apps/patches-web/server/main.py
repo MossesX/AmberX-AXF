@@ -116,7 +116,8 @@ def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
 
 PLUGINS_FILE = DATA / "plugins.json"
 # Any app Patches shows as a tab (lib-apps tab ids: console, pilot, axhub, walkthrough, apps added by hand …).
-APP_ID = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
+TAB_ID = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
+PLUGIN_APPS = ("console", "pilot", "axhub")  # the first tabs (always listed, the default tab group)
 MAX_APPS = 40
 PLUGIN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$")
 MAX_PLUGINS = 200
@@ -135,7 +136,7 @@ def _read_plugins() -> dict[str, Any]:
     apps: dict[str, Any] = {}
     saved = raw.get("apps") if isinstance(raw, dict) and isinstance(raw.get("apps"), dict) else {}
     # the first three tabs are always listed (empty until something is installed); then every other app saved
-    ids = list(dict.fromkeys(["console", "pilot", "axhub", *[k for k in saved if isinstance(k, str) and APP_ID.match(k)]]))[:MAX_APPS]
+    ids = list(dict.fromkeys(["console", "pilot", "axhub", *[k for k in saved if isinstance(k, str) and TAB_ID.match(k)]]))[:MAX_APPS]
     for app_id in ids:
         got = saved.get(app_id)
         items = (got or {}).get("plugins") if isinstance(got, dict) else None
@@ -167,7 +168,7 @@ def _write_plugins(state: dict[str, Any]) -> None:
 
 def _app_of(body: dict[str, Any]) -> str:
     app_id = body.get("app")
-    if not isinstance(app_id, str) or not APP_ID.match(app_id):
+    if not isinstance(app_id, str) or not TAB_ID.match(app_id):
         raise HTTPException(400, "app must be a tab id: lowercase letters, digits and dashes, up to 24 characters")
     return app_id
 
@@ -238,6 +239,100 @@ def plugins_remove(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dic
         state = _read_plugins()
         if isinstance(pid, str) and state["apps"].get(app_id, {}).get("plugins", {}).pop(pid, None) is not None:
             _write_plugins(state)
+    return state
+
+
+# ---------------------------------------------------------------- Patches' tab group (patches-tabs@1)
+#
+# Brett, Oct 22 2026: "every plugin that can be tabable appears in Patches settings where you select from a list of apps
+# or plugins to have a tab; the available tab things are selected from a dialog". The tab group is kept here so every
+# device shows the same tabs: app tabs (any app in the framework's app directory) and plugin tabs (a tabable plugin of one of those apps,
+# shown as that app's view page `view:<id>`). Ids, labels and icons only.
+
+TABS_FILE = DATA / "tabs.json"
+VIEW_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}$")
+ICON_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+MAX_TABS = 20
+DEFAULT_TABS = [{"kind": "app", "app": a} for a in PLUGIN_APPS]
+_tabs_lock = threading.Lock()
+
+
+def _clean_tab(t: Any) -> dict[str, Any] | None:
+    """One tab, checked; None when it isn't one."""
+    # any app in the framework's app directory (lib-apps tab ids: console, pilot, axhub, walkthrough, demo, …)
+    if not isinstance(t, dict) or not isinstance(t.get("app"), str) or not TAB_ID.match(t["app"]):
+        return None
+    if t.get("kind") == "app":
+        return {"kind": "app", "app": t["app"]}
+    if t.get("kind") != "plugin" or not isinstance(t.get("plugin"), str) or not PLUGIN_ID.match(t["plugin"]):
+        return None
+    if not isinstance(t.get("view"), str) or not VIEW_ID.match(t["view"]):
+        return None
+    out = {"kind": "plugin", "app": t["app"], "plugin": t["plugin"], "view": t["view"], "label": _clip(t.get("label"), 80) or t["view"]}
+    if isinstance(t.get("icon"), str) and ICON_ID.match(t["icon"]):
+        out["icon"] = t["icon"]
+    return out
+
+
+def _tab_key(t: dict[str, Any]) -> str:
+    return t["app"] if t["kind"] == "app" else f"{t['app']}:{t['view']}"
+
+
+def _clean_tabs(raw: Any) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for t in raw if isinstance(raw, list) else []:
+        c = _clean_tab(t)
+        if c and _tab_key(c) not in seen and len(out) < MAX_TABS:
+            seen.add(_tab_key(c))
+            out.append(c)
+    return out
+
+
+def _read_tabs() -> dict[str, Any]:
+    try:
+        raw = json.loads(TABS_FILE.read_text())
+    except (OSError, ValueError):
+        return {"$axf": "patches-tabs@1", "tabs": [dict(t) for t in DEFAULT_TABS]}
+    return {"$axf": "patches-tabs@1", "tabs": _clean_tabs(raw.get("tabs") if isinstance(raw, dict) else None)}
+
+
+def _write_json(path: Path, state: dict[str, Any]) -> None:
+    DATA.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=DATA, prefix=f".{path.stem}-", suffix=".json")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(state, f, indent=1)
+            f.flush()
+            os.fsync(f.fileno())
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+@app.get("/api/tabs")
+def tabs_list(_c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    with _tabs_lock:
+        return _read_tabs()
+
+
+@app.put("/api/tabs")
+def tabs_save(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    """Save the whole tab group, in order. Anything that isn't a tab is refused (not dropped), so a typo never loses tabs."""
+    raw = body.get("tabs")
+    if not isinstance(raw, list) or len(raw) > MAX_TABS:
+        raise HTTPException(400, f"tabs must be a list of at most {MAX_TABS}")
+    tabs = _clean_tabs(raw)
+    if len(tabs) != len(raw):
+        raise HTTPException(400, "every tab is {kind: app, app} or {kind: plugin, app, plugin, view, label, icon?}, each once")
+    state = {"$axf": "patches-tabs@1", "tabs": tabs}
+    with _tabs_lock:
+        _write_json(TABS_FILE, state)
     return state
 
 
