@@ -176,22 +176,55 @@ export const pullMain = (r: { key: string; repo: string; number?: number; branch
 
 export const PULL_ALL = 'pull-all';
 
-/** Pull main into every entry of "Needs main pulled in", one at a time (each the same server action as its own button);
- *  a failure (a conflict GitHub only finds now, a refused branch) is noted and the rest go on. One reload at the end. */
-export async function pullAll(list: { key: string; repo: string; number?: number; branch?: string; base: string }[]): Promise<void> {
+type PullEntry = { key: string; repo: string; number?: number; branch?: string; head?: string; base: string };
+
+/** Pull main into every entry of "Needs main pulled in", one at a time (each the same server action as its own button).
+ *  At the first failure it stops (Brett, Oct 23 2026): the failed entry moves to Pull failed (the server keeps it there)
+ *  and that one plus every entry not tried yet go to headless Claude Code on the VPS, one session per repo (each
+ *  approved on axHub), which repairs it and pulls main into the rest. */
+export async function pullAll(list: PullEntry[]): Promise<void> {
   if (state.busy || !list.length) return;
   set({ busy: PULL_ALL, note: null });
-  const failed: string[] = [];
   let done = 0;
-  for (const r of list) {
-    set({ note: { key: PULL_ALL, text: `Pulling main into ${done + failed.length + 1} of ${list.length}…`, tone: 'ok' } });
+  let text = '';
+  let bad = false;
+  for (const [i, r] of list.entries()) {
+    set({ note: { key: PULL_ALL, text: `Pulling main into ${i + 1} of ${list.length}…`, tone: 'ok' } });
     const body = r.number ? { repo: r.repo, number: r.number, confirm: `${r.repo}#${r.number}` } : { repo: r.repo, branch: r.branch, confirm: `${r.repo}:${r.branch}` };
-    try { await api.post('update', body); done++; }
-    catch (e) { failed.push(`${r.number ? `#${r.number}` : r.branch} (${e instanceof Error ? e.message : String(e)})`); }
+    try { await api.post('update', body); done++; continue; }
+    catch (e) {
+      bad = true;
+      const name = r.number ? `#${r.number}` : r.branch;
+      text = `Pulled main into ${done} of ${list.length}; ${name} failed (${e instanceof Error ? e.message : String(e)}) and moved to Pull failed. ${await handOver(r, list.slice(i + 1))}`;
+      break;
+    }
   }
-  const text = `Pulled main into ${done} of ${list.length}.${failed.length ? ` Not pulled (moved to Pull failed, Repair them there): ${failed.join('; ')}` : ' CI runs again on each.'}`;
+  if (!bad) text = `Pulled main into ${done} of ${list.length}. CI runs again on each.`;
   set({ details: {} });
-  try { await load(true); } finally { set({ busy: '', note: { key: PULL_ALL, text, tone: failed.length ? 'danger' : 'ok' } }); }
+  try { await load(true); } finally { set({ busy: '', note: { key: PULL_ALL, text, tone: bad ? 'danger' : 'ok' } }); }
+}
+
+/** The failed entry and the ones not tried yet → one headless session per repo (the failed one leads its repo's). */
+async function handOver(failed: PullEntry, rest: PullEntry[]): Promise<string> {
+  const groups = new Map<string, PullEntry[]>([[failed.repo, [failed]]]);
+  for (const r of rest) groups.set(r.repo, [...(groups.get(r.repo) ?? []), r]);
+  let sessions = 0, handed = 0;
+  const notes: string[] = [];
+  for (const [repo, [lead, ...more]] of groups) {
+    if (!lead) continue;
+    const branches = more.map((r) => r.branch ?? r.head).filter((b): b is string => !!b);
+    const body = lead.number ? { repo, number: lead.number, confirm: `${repo}#${lead.number}` } : { repo, branch: lead.branch, confirm: `${repo}:${lead.branch}` };
+    try {
+      const j = await api.post<{ job: ClaudeJob & { rest?: string[] } }>('claude', { ...body, repair: true, ...(branches.length ? { rest: branches } : {}) });
+      if (j.job.state === 'failed') { notes.push(`${repo.split('/')[1]}: ${j.job.message}`); continue; }
+      sessions++;
+      handed += 1 + (j.job.rest?.length ?? 0);
+    } catch (e) { notes.push(`${repo.split('/')[1]}: ${e instanceof Error ? e.message : String(e)}`); }
+  }
+  const total = rest.length + 1;
+  const left = total - handed;
+  return (sessions ? `Handed ${handed} to Claude Code on the VPS (${sessions} session${sessions === 1 ? '' : 's'}: approve on axHub); it repairs it and pulls main into the rest.` : 'Couldn\'t hand it to Claude Code on the VPS.')
+    + (left > 0 ? ` ${left} left for later.` : '') + (notes.length ? ` ${notes.join('; ')}` : '');
 }
 
 /** Behind its base and nothing in the way of pulling it in (no conflicts GitHub knows of). */

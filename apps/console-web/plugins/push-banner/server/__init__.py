@@ -627,9 +627,12 @@ class Pushes:
 
     def claude_fix(self, body: Any) -> dict[str, Any]:
         """Fix with Claude by hand: any watched PR or branch (not a fork, never the default branch)."""
-        if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm", "repair"}:
-            raise HTTPException(400, "send {repo, number | branch, confirm, repair?}")
-        repair = body.get("repair") is True  # the Repair badge on a failed pull: asked for by hand, so the setting isn't needed
+        if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm", "repair", "rest"}:
+            raise HTTPException(400, "send {repo, number | branch, confirm, repair?, rest?}")
+        repair = body.get("repair") is True
+        rest = body.get("rest", [])  # Pull all stopped here: the other branches of this repo the session pulls main into too
+        if not isinstance(rest, list) or len(rest) > 20 or not all(valid_branch(b) for b in rest) or (rest and not repair):
+            raise HTTPException(400, "rest is a list of up to 20 branch names (with repair: true)")  # the Repair badge on a failed pull: asked for by hand, so the setting isn't needed
         if not repair and not self.config()["claudeOnFail"]:
             raise HTTPException(409, "Turn on “Hand failures to Claude Code” in Settings → Plugins → Push banner first")
         repo, number, branch = body.get("repo"), body.get("number"), body.get("branch")
@@ -659,7 +662,10 @@ class Pushes:
         if not task.get("branch") or task["branch"] == task["base"]:
             raise HTTPException(400, "forks and the default branch can't be handed over")
         if repair:
-            task = {**task, "kind": "conflict", "action": "pull main in", "failure": "the banner's Pull main in failed; Brett tapped Repair"}
+            task = {**task, "kind": "conflict", "action": "pull main in", "failure": "the banner's Pull main in failed; Brett tapped Repair",
+                    "rest": [b for b in dict.fromkeys(rest) if b not in (task["branch"], task["base"])]}
+            if rest:
+                task["failure"] = "the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session"
         job = CLAUDE.maybe_launch(task, force=True, by_hand=repair)
         if not job:
             raise HTTPException(400, "that can't be handed over")

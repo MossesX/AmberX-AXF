@@ -58,3 +58,9 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-push-banner__sec li.is-failure, .axp-push-banner__sec li.is-timed_out, .axp-push-banner__sec li.is-cancelled { color: var(--fx-danger) }
 .axp-push-banner__sec li.is-running { color: var(--fx-accent) }
 .axp-push-banner__item.is-done { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
+/* Pull failed: orange (the theme's warning colour) */
+.axp-push-banner__pill.is-warning { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-push-banner__group.is-warning .axp-push-banner__group-title { color: var(--fx-warning) }
+.axp-push-banner__item.is-failed { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-warning); padding-left: calc(var(--fx-space) * 0.5); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-push-banner__warn { color: var(--fx-warning) }
+.axp-push-banner__item.is-manual { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-danger); padding-left: calc(var(--fx-space) * 0.5); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }

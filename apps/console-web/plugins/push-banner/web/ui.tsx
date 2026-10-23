@@ -240,18 +240,23 @@ function FailedItem({ f, base }: { f: Failed; base: string }) {
   const phase = !fresh ? '' : j.state === 'asking' ? 'Repair: asking axHub…' : j.state === 'waiting' ? 'Repair: approve on axHub'
     : j.state === 'failed' ? `Repair failed: ${j.message}` : j.fixed === 'done' ? 'Repaired, pulling again…' : j.fixed === 'failed' ? 'Repair session failed' : 'Repairing on the VPS…';
   const canRepair = !fresh || j.state === 'failed' || j.fixed === 'failed';
+  // Claude connected and it still fails (the repair failed, or the pull failed again after a repair): red, needs a person.
+  // Without Claude it stays orange.
+  const stillFails = !!j && ((fresh && (j.state === 'failed' || j.fixed === 'failed')) || (!fresh && j.state === 'launched' && j.fixed === 'done'));
+  const manual = !!s.claude?.mosses && stillFails;
   const name = f.number ? `#${f.number}` : f.branch ?? '';
   return (
-    <li className="axp-push-banner__item">
+    <li className={`axp-push-banner__item ${manual ? 'is-manual' : 'is-failed'}`}>
       <div className="axp-push-banner__entry">
         <span className="axp-push-banner__line">
           <span className="axp-push-banner__chip" title={f.repo}>{short(f.repo)}</span>
           <span className="axp-push-banner__name is-title">{name}</span>
         </span>
         <span className="axp-push-banner__line axp-push-banner__meta">
-          <span className={`axp-push-banner__pill ${phase && !canRepair ? 'is-running' : 'is-failure'}`}><Icon name={phase && !canRepair ? 'refresh' : 'hammer'} size={11} />{phase || `Pulling ${base} in failed`}</span>
+          <span className={`axp-push-banner__pill ${manual ? 'is-failure' : phase && !canRepair ? 'is-running' : 'is-warning'}`}><Icon name={manual ? 'alert' : phase && !canRepair ? 'refresh' : 'hammer'} size={11} />{manual ? 'Needs manual review' : phase || `Pulling ${base} in failed`}</span>
+          {manual && phase && <span>{phase}</span>}
           <span>{ago(new Date(f.at).toISOString())}</span>
-          {f.error && <span className="is-danger">{f.error}</span>}
+          {f.error && <span className={manual ? 'is-danger' : 'axp-push-banner__warn'}>{f.error}</span>}
         </span>
         <Note k={f.key} />
       </div>
@@ -259,7 +264,7 @@ function FailedItem({ f, base }: { f: Failed; base: string }) {
         {canRepair && (sure
           ? <><Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} onClick={() => { setSure(false); void repair(f); }}>Repair on the VPS?</Button>
               <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button></>
-          : <Button size="sm" tone="danger" icon="hammer" disabled={!!s.busy} title="Headless Claude Code on the VPS merges main in and fixes it (you approve on axHub); the pull runs again when it's done" onClick={() => setSure(true)}>Repair</Button>)}
+          : <Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} title="Headless Claude Code on the VPS merges main in and fixes it (you approve on axHub); the pull runs again when it's done" onClick={() => setSure(true)}>{manual ? 'Repair again' : 'Repair'}</Button>)}
         <button type="button" className="fx-iconbtn" aria-label={`Remove ${name} from Pull failed`} title="Remove from Pull failed (every device)" disabled={s.busy === f.key} onClick={() => void removeFailed(f)}><Icon name="trash" size={14} /></button>
       </div>
     </li>
@@ -278,11 +283,11 @@ function RepairAllButton({ list }: { list: Failed[] }) {
       <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
     </span>
   );
-  return <span className="axp-push-banner__group-act"><Button size="sm" tone="danger" icon="hammer" disabled={!!s.busy} title="Hand every failed pull to headless Claude Code on the VPS" onClick={() => setSure(true)}>{s.busy === REPAIR_ALL ? 'Repairing…' : 'Repair all'}</Button></span>;
+  return <span className="axp-push-banner__group-act"><Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} title="Hand every failed pull to headless Claude Code on the VPS" onClick={() => setSure(true)}>{s.busy === REPAIR_ALL ? 'Repairing…' : 'Repair all'}</Button></span>;
 }
 
 /** "Pull all" on the Needs main pulled in group (tap twice): main into every entry there, one at a time. */
-function PullAllButton({ list }: { list: { key: string; repo: string; number?: number; branch?: string; base: string }[] }) {
+function PullAllButton({ list }: { list: { key: string; repo: string; number?: number; branch?: string; head?: string; base: string }[] }) {
   const s = useStore();
   const [sure, setSure] = useState(false);
   if (list.length < 2) return null;
@@ -296,10 +301,10 @@ function PullAllButton({ list }: { list: { key: string; repo: string; number?: n
   return <span className="axp-push-banner__group-act"><Button size="sm" tone="neutral" icon="download" disabled={busy} title="Bring main's newer commits into every entry in this group" onClick={() => setSure(true)}>{s.busy === PULL_ALL ? 'Pulling…' : 'Pull all'}</Button></span>;
 }
 
-function Group({ title, count, action, children }: { title: string; count: number; action?: ReactNode; children: ReactNode }) {
+function Group({ title, count, action, tone, children }: { title: string; count: number; action?: ReactNode; tone?: 'warning'; children: ReactNode }) {
   if (!count) return null;
   return (
-    <section className="axp-push-banner__group" aria-label={title}>
+    <section className={`axp-push-banner__group${tone ? ` is-${tone}` : ''}`} aria-label={title}>
       <div className="axp-push-banner__group-head">
         <h4 className="axp-push-banner__group-title">{title} <span>{count}</span></h4>
         {action}
@@ -358,11 +363,11 @@ export function PushBanner() {
       {open && (
         <div className="axp-push-banner__body">
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
-          <Group title="Pull failed" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
+          <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
           <Group title="Can merge cleanly" count={clean.length}>{clean.map((r) => <CleanItem key={r.key} r={r} />)}</Group>
           <Group title="Needs main pulled in" count={behindCount} action={<PullAllButton list={[
-            ...behindPulls.map((p) => ({ key: p.key, repo: p.repo, number: p.number, base: p.base })),
+            ...behindPulls.map((p) => ({ key: p.key, repo: p.repo, number: p.number, head: p.head, base: p.base })),
             ...behindBare.map((r) => ({ key: r.key, repo: r.repo, branch: r.name, base: r.base })),
           ]} />}>
             {behindPulls.map((p) => <PullItem key={p.key} p={p} />)}
