@@ -442,6 +442,25 @@ check(hf.command("host-claude-sync") and "git clone -q https://github.com/Mosses
 check('"onDevice\\":true' in hf.command("host-session-checkin") or '"onDevice":true' in hf.command("host-session-checkin").replace("\\", ""), "session check-in Auto fix installs for the VPS user on the device")
 r = c.post("/p/fix/plugin:nope")
 check(r.status_code == 400, "fix: an unknown codebase check has no Auto fix")
+# ---- one row per app whose baked framework is behind (Oct 23 2026)
+_it = lambda cid, svc, title, st, summ, **k: {"id": cid, "title": title, "status": st, "summary": summ, "fix": k.get("fix"), "autoFix": False, **k}
+dv.FIXES.clear()
+row = dv._rebake_row(_it, {"dir": "apps/x", "app": "X", "state": "stale", "changed": ["core/a.ts"], "missing": [], "extra": [], "edited": []})
+check(row["status"] == "warn" and row["autoFix"] and "rebake:apps/x" in dv.FIXES and "re-bake" in row["title"], "stale app: its own warn row with Auto fix")
+row = dv._rebake_row(_it, {"dir": "apps/y", "app": "Y", "state": "edited", "edited": ["core/b.ts"]})
+check(row["status"] == "warn" and "rebake:apps/y" not in dv.FIXES and row.get("instructions"), "edited copy: no Auto fix (edits would be lost), instructions instead")
+check(dv._rebake_row(_it, {"dir": "apps/z", "state": "current"})["status"] == "ok", "current app: ok row")
+_old_node = dv._node
+dv._node = lambda args, timeout=30: {"pushed": True, "pr": "https://github.com/o/r/pull/9"} if args[1] == "publish" and args[2] == "apps/x" else None
+check("pull/9" in dv.FIXES["rebake:apps/x"](), "Auto fix publishes the re-bake as a pull request")
+dv._node = lambda args, timeout=30: {"error": "re-baking needs GITHUB_TOKEN"}
+try:
+    dv.FIXES["rebake:apps/x"]()
+    check(False, "a failed re-bake raises")
+except RuntimeError as e:
+    check("GITHUB_TOKEN" in str(e), "a failed re-bake says why")
+dv._node = _old_node
+dv.FIXES.clear()
 doctor = (Path(__file__).resolve().parents[4] / "deploy" / "console-doctor.sh").read_text()
 check('export PATH="$USER_HOME/.local/bin:$PATH"' in doctor, "doctor sees ~/.local/bin (claude, claude-pick, claude-sync) from cron and vps.run")
 
