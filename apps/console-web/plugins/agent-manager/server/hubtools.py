@@ -25,10 +25,15 @@ import time
 import uuid
 from typing import Any, Callable
 
+import threading
+from pathlib import Path
+
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import http as axf_http
 
-from . import toolkit
+import plugin_services
+
+from . import store, toolkit
 
 TOOL = "axhub_call"
 TOOL_RE = re.compile(r"[a-z][a-z0-9_-]{0,40}\.[A-Za-z0-9_./-]{1,120}\Z")
@@ -167,6 +172,49 @@ def retry_delays() -> list[float]:
     return [15.0] * 10 + [60.0] * 40
 
 
+# ---------------------------------------------------------------- approved shell runs (Oct 23 2026)
+# Brett: once an approved VPS or shell command has run, open the terminal with the command and its output. Every run of
+# a shell tool (vps.run, vps.logs, any <service>.run/.exec/.shell) that went through an approval on the hub is kept here
+# (last RUNS_KEEP, in the plugin's data folder, 0600) and served as capability `axf.hub-runs@1`; the terminal plugin
+# shows each new one in an output tab. The hub has already hidden secret-looking values in the output.
+RUNS_KEEP = 50
+RUNS_FILE = "hub-runs.json"
+_runs_lock = threading.Lock()
+
+
+def shell_tool(tool: str) -> bool:
+    svc, _, name = tool.partition(".")
+    return svc == "vps" and name != "check" or name.split("/")[-1] in ("run", "exec", "shell")
+
+
+def record_run(tool: str, arguments: dict[str, Any], output: str, reason: str, agent: str, confirmation_id: str) -> dict[str, Any]:
+    cmd = arguments.get("command") if isinstance(arguments.get("command"), str) else json.dumps(arguments, ensure_ascii=False)
+    m = re.search(r"^exit (-?\d+)\b", output, re.M)
+    run = {"id": uuid.uuid4().hex[:16], "at": int(time.time() * 1000), "tool": tool, "command": str(cmd)[:4000], "output": output[-200_000:],
+           "exit": int(m.group(1)) if m else None, "reason": reason[:300], "agent": agent[:80], "confirmationId": confirmation_id}
+    with _runs_lock:
+        runs = store._read(store.DATA / RUNS_FILE, [])  # noqa: SLF001 — the plugin's own data folder
+        runs = [r for r in runs if isinstance(r, dict)][-(RUNS_KEEP - 1):] + [run]
+        store._write(store.DATA / RUNS_FILE, runs)  # noqa: SLF001
+    return run
+
+
+class HubRuns:
+    """axf.hub-runs@1 — approved shell runs through Mosses's axhub_call, newest last."""
+    version = 1
+
+    def runs(self, since: int = 0) -> list[dict[str, Any]]:
+        with _runs_lock:
+            runs = store._read(store.DATA / RUNS_FILE, [])  # noqa: SLF001
+        return [r for r in runs if isinstance(r, dict) and int(r.get("at") or 0) > int(since or 0)]
+
+    def get(self, run_id: str) -> dict[str, Any] | None:
+        return next((r for r in self.runs() if r.get("id") == run_id), None)
+
+
+plugin_services.provide("axf.hub-runs@1", HubRuns(), Path(__file__).resolve().parents[1].name)
+
+
 def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str, Any]] = call_once,
         delays: Callable[[], list[float]] = retry_delays, sleep: Callable[[float], None] = time.sleep) -> str:
     """The tool. Never raises for hub answers: errors come back as {"status": "error"} so a model can read them."""
@@ -181,10 +229,12 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
         return json.dumps({"status": "error", "message": f"arguments are over {MAX_ARGS} characters: axHub can't show them for approval"})
     timeout = float(arguments.get("timeout_seconds") or 600) if isinstance(arguments.get("timeout_seconds"), (int, float)) else 600.0
     wait = args.get("wait") is not False
+    approved = conf if isinstance(conf, str) else ""
     try:
         r = call(tool, arguments, conf, timeout)
         if "confirm" in r and wait:
             cid = r["confirm"]
+            approved = cid
             deadline = time.time() + WAIT_S
             waits = iter(delays())
             while "confirm" in r:
@@ -198,7 +248,13 @@ def run(args: dict[str, Any], ctx: dict[str, Any], call: Callable[..., dict[str,
                     return json.dumps({"status": "error", "message": "Rejected on the hub." if "reject" in m else "The approval expired." if "expired" in m else str(e)})
         if "confirm" in r:
             return json.dumps({"status": "confirm", "confirmationId": r["confirm"], "link": approval_link(r["confirm"])})
-        return json.dumps({"status": "ok", "output": str(r.get("ok", ""))[-40_000:]})
+        out = str(r.get("ok", ""))
+        if approved and shell_tool(tool):  # an approved shell command ran: the terminal shows it (axf.hub-runs@1)
+            try:
+                record_run(tool, arguments, out, str(args.get("reason") or ""), str((ctx.get("agent") or {}).get("name") or ""), approved)
+            except Exception:  # noqa: BLE001 — the log never breaks the call
+                pass
+        return json.dumps({"status": "ok", "output": out[-40_000:]})
     except HubError as e:
         return json.dumps({"status": "error", "message": str(e)[:400]})
 
