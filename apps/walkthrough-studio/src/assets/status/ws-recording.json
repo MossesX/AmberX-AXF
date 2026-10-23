@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "ws-recording",
+  "name": "Recording",
+  "version": "1.0.0",
+  "description": "On while the live browser records (counter `ws.recording`).",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "counter": "ws.recording",
+    "onLabel": "REC",
+    "offLabel": "Idle",
+    "onTone": "danger",
+    "offTone": "muted",
+    "link": "ws.record.toggle"
+  }
+}

@@ -1,5 +1,5 @@
 /* Plugin switches. Theme tokens only, axp-plugin-switches prefix, shared is-* states. */
-.axp-plugin-switches { --axp-plugin-switches-w: calc(var(--fx-space) * 2.75); --axp-plugin-switches-h: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); width: 100%; min-width: min(calc(var(--fx-font-size) * 26), 80vw); max-height: 70vh; min-width: 0; color: var(--fx-text) }
+.axp-plugin-switches { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); width: 100%; min-width: min(calc(var(--fx-font-size) * 26), 80vw); max-height: 70vh; min-width: 0; color: var(--fx-text) }
 .axp-plugin-switches__summary { margin: 0; color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
 .axp-plugin-switches__empty { margin: 0; padding: calc(var(--fx-space) * 2); text-align: center; color: var(--fx-muted) }
 .axp-plugin-switches__notice { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 13 / 14) }
@@ -16,13 +16,6 @@
 .axp-plugin-switches__note.is-warn { color: var(--fx-warning) }
 .axp-plugin-switches__note.is-error { color: var(--fx-danger) }
 
-/* ---------- switch ---------- */
-.axp-plugin-switches__switch { position: relative; display: inline-flex; flex: none; cursor: pointer }
-.axp-plugin-switches__switch.is-locked { cursor: not-allowed }
-.axp-plugin-switches__input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit }
-.axp-plugin-switches__track { display: inline-flex; align-items: center; width: var(--axp-plugin-switches-w); height: var(--axp-plugin-switches-h); padding: calc(var(--fx-space) * 0.15); border-radius: 999px; background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); box-sizing: border-box; transition: background var(--fx-motion), border-color var(--fx-motion) }
-.axp-plugin-switches__thumb { width: calc(var(--axp-plugin-switches-h) - var(--fx-space) * 0.3 - var(--fx-border-w) * 2); height: calc(var(--axp-plugin-switches-h) - var(--fx-space) * 0.3 - var(--fx-border-w) * 2); border-radius: 999px; background: var(--fx-muted); box-shadow: var(--fx-shadow-sm); transition: transform var(--fx-motion), background var(--fx-motion) }
-.axp-plugin-switches__input:checked + .axp-plugin-switches__track { background: var(--fx-accent); border-color: var(--fx-accent) }
-.axp-plugin-switches__input:checked + .axp-plugin-switches__track .axp-plugin-switches__thumb { background: var(--fx-accent-text); transform: translateX(calc(var(--axp-plugin-switches-w) - var(--axp-plugin-switches-h))) }
-.axp-plugin-switches__input:disabled + .axp-plugin-switches__track { opacity: var(--fx-opacity-disabled) }
-.axp-plugin-switches__input:focus-visible + .axp-plugin-switches__track { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+/* The switch itself is the framework's `Switch` (`.fx-switch`); only its slot in the row is styled here. */
+.axp-plugin-switches__switch { flex: none; }
+.axp-plugin-switches__switch.is-disabled { opacity: 1; }

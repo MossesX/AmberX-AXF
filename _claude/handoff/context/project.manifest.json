@@ -1,0 +1,61 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "amberx-axf",
+  "displayName": "AmberX AXF",
+  "description": "Cross-platform app framework where every UI piece is a hot-swappable JSON asset (asset@1). Web port (TypeScript reference engines + React) and Android port (Kotlin/Compose, pure-Kotlin kernel); Python port planned.",
+  "kind": "framework",
+  "status": "active",
+  "version": "0.2.0",
+  "platforms": [
+    "web",
+    "android",
+    "desktop",
+    "server",
+    "cli"
+  ],
+  "framework": {
+    "relation": "core",
+    "version": "0.2.0"
+  },
+  "repo": {
+    "host": "github",
+    "owner": "MossesX",
+    "name": "AmberX-AXF",
+    "exists": true,
+    "visibility": "private",
+    "defaultBranch": "main",
+    "url": "https://github.com/MossesX/AmberX-AXF"
+  },
+  "location": {
+    "repo": "MossesX/AmberX-AXF",
+    "path": "."
+  },
+  "deploy": {
+    "demo": "https://axf.amberxai.com",
+    "console": "https://console.amberxai.com",
+    "via": "coolify"
+  },
+  "data": {
+    "shared": [
+      "framework/plan/pending.json",
+      "framework/plan/plan.json",
+      "framework/plan/build-queue.json",
+      "framework/plan/media/",
+      "framework/catalog/status.json",
+      "framework/catalog/libraries.json",
+      "framework/schemas/project-rules.json",
+      "tracker.json",
+      "sessions/",
+      "changes/"
+    ]
+  },
+  "owners": [
+    "MossesX"
+  ],
+  "created": "2026-10-13",
+  "links": {
+    "pendingBuilds": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
+    "kernelChecklist": "https://claude.ai/artifact/DvUPLjKSM3tEVTsL8pPtE2"
+  },
+  "notes": "Holds several projects: this one (the framework) plus apps/demo, apps/console-web and apps/console, each with its own manifest. Manifests for projects whose repos aren't here are kept in projects/<name>/."
+}

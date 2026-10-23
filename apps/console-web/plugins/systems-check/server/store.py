@@ -1,13 +1,14 @@
 """Systems check — settings, the saved AI routine and What's-new summaries, all inside the plugin's dataDir."""
 from __future__ import annotations
 
-import json
 import os
 import threading
 from pathlib import Path
 from typing import Any
 
 import console_context as cx
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 _lock = threading.RLock()
 SERVICE_IDS = {"console", "github", "claude", "vps", "hostinger", "coolify", "axhub", "data", "plugins", "routine"}
@@ -18,22 +19,15 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_suffix(p.suffix + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=1)
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, p)
+    storage.write_json(p, data, indent=1)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def _read(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text("utf-8"))
-    except (OSError, ValueError):
-        return default
+    return storage.read_json(p, default)
 
 
-DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True}
+DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True,
+                           "claudeOnFail": False, "claudeShell": False}
 
 
 def settings() -> dict[str, Any]:
@@ -48,8 +42,9 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             for k in ("systems", "whatsnew"):
                 if k in patch["ai"]:
                     s["ai"][k] = bool(patch["ai"][k])
-        if "whatsNewBanner" in patch:
-            s["whatsNewBanner"] = bool(patch["whatsNewBanner"])
+        for k in ("whatsNewBanner", "claudeOnFail", "claudeShell"):
+            if k in patch:
+                s[k] = bool(patch[k])
         _write(data_dir() / "settings.json", s)
         return s
 

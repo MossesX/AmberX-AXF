@@ -8,8 +8,6 @@
 .axf-mcp__summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-space) }
 .axf-mcp__instructions p { white-space: pre-wrap; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
 .axf-mcp__tabs { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axf-mcp__tab { padding: calc(var(--fx-space) * 0.75) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; border-bottom: calc(var(--fx-border-w) * 2) solid transparent }
-.axf-mcp__tab[aria-selected='true'] { color: var(--fx-text); border-bottom-color: var(--fx-accent) }
 .axf-mcp__split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: calc(var(--fx-space) * 2); align-items: start }
 .axf-mcp__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); max-height: calc(var(--fx-row-h) * 16); overflow: auto }
 .axf-mcp__item { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); text-align: left; padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid transparent; background: transparent; color: var(--fx-text); font: inherit; cursor: pointer }

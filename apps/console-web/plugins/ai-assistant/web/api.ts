@@ -2,7 +2,7 @@
  * framework/core/assistant.ts); this file binds them to the console (pluginFetch adds the console token) and adds the
  * plugin's extra routes (config, profiles, compare, usage, batches). Build Pilot and other apps use the same core. */
 import { HttpAssistantClient, type AssistantStatus, type ProviderKind, type ProviderProfile } from '@console/axf/core';
-import { pluginFetch } from '@console/plugins';
+import { pluginApi, pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'ai-assistant';
 export const ID = 'ai.amberx.axf.console.ai-assistant';
@@ -11,7 +11,7 @@ export type {
   AgentRef, ChatContext as Ctx, ChatImage as Image, Conversation, ConversationSettings as ConvSettings, ConversationSummary as ConvSummary,
   LiveReply, Message, ProviderKind, ProviderProfile as Profile, StreamEvent, ToolLogEntry as ToolLog, TurnEvent, WriteMode,
 } from '@console/axf/core';
-export { applyStreamEvent, emptyLiveReply, watchReply } from '@console/axf/core';
+export { applyStreamEvent, contextExtra, emptyLiveReply, normalizeChatContext, watchReply } from '@console/axf/core';
 export type { LiveSessionInfo } from '@console/axf/core';
 export type Status = AssistantStatus;
 
@@ -38,11 +38,13 @@ export const client = new HttpAssistantClient({
   messages: { unauthorized: 'Console token required (Settings → Account & security).', unavailable: 'The AI assistant plugin is disabled or its server part is not running.' },
 });
 
-export const call = <T,>(path: string, init?: RequestInit) => client.call<T>(path, init);
-export const post = <T,>(path: string, body: unknown) => client.post<T>(path, body);
-export const put = <T,>(path: string, body: unknown) => client.put<T>(path, body);
-export const patch = <T,>(path: string, body: unknown) => client.patch<T>(path, body);
-export const del = <T,>(path: string) => client.del<T>(path);
+/** JSON calls for the plugin's own routes (the console's pluginApi: same token, same messages as the client above). */
+const api = pluginApi(FOLDER, 'The AI assistant plugin');
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
+export const post = <T,>(path: string, body: unknown) => api.post<T>(path, body);
+export const put = <T,>(path: string, body: unknown) => api.put<T>(path, body);
+export const patch = <T,>(path: string, body: unknown) => api.patch<T>(path, body);
+export const del = <T,>(path: string) => api.del<T>(path);
 
 /* A tiny shared store so the view, the dialog and the settings tab see the same status/config. */
 type Listener = () => void;

@@ -11,12 +11,13 @@
  * plugin removes every trace of it.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useRuntime } from '@console/axf/react';
+import { Button, Icon, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './plugin-switches.css';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.plugin-switches';
 /** This plugin's folder under plugins/ — its row is the greyed-out one. */
@@ -133,15 +134,8 @@ function SwitchList() {
                 {!self && r.problem && <span className="axp-plugin-switches__note is-error">{r.problem}</span>}
                 {!self && missing.length > 0 && <span className="axp-plugin-switches__note is-warn">Needs {missing.map(serviceName).join(', ')}</span>}
               </div>
-              <label className={`axp-plugin-switches__switch ${locked ? 'is-locked' : ''}`} title={self ? "Can't switch itself off" : r.enabled ? 'Turn off' : 'Turn on'}>
-                <input
-                  type="checkbox" role="switch" className="axp-plugin-switches__input"
-                  aria-label={`${r.name} ${r.enabled ? 'on' : 'off'}`}
-                  checked={r.enabled} disabled={locked || busy === r.folder}
-                  onChange={(e) => flip(r, e.target.checked)}
-                />
-                <span className="axp-plugin-switches__track" aria-hidden="true"><span className="axp-plugin-switches__thumb" /></span>
-              </label>
+              <Switch hideLabel label={`${r.name} ${r.enabled ? 'on' : 'off'}`} title={self ? "Can't switch itself off" : r.enabled ? 'Turn off' : 'Turn on'}
+                checked={r.enabled} disabled={locked || busy === r.folder} onChange={(on) => flip(r, on)} className="axp-plugin-switches__switch" />
             </li>
           );
         })}
@@ -167,6 +161,7 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Plugin switches',
   version: '0.1.0',
+  appMenu,
   register(rt) {
     rt.actions.register('plugin-switches.open', () => rt.openDialog(DIALOG), { label: 'Plugin switches' });
   },

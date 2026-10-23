@@ -47,7 +47,7 @@ export type SearchFocuser = (entry: SearchEntry) => boolean | void;
 
 /** Labels shown next to results, per kind. */
 export const SEARCH_KIND_LABELS: Record<string, string> = {
-  view: 'Page', action: 'Action', setting: 'Setting', 'settings-tab': 'Settings', dialog: 'Dialog', asset: 'Asset', window: 'Window', text: 'On page',
+  view: 'Page', action: 'Action', setting: 'Setting', 'settings-tab': 'Settings', dialog: 'Dialog', asset: 'Asset', window: 'Window', text: 'On page', menu: 'Menu',
 };
 
 const norm = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
@@ -87,6 +87,8 @@ export class SearchIndex {
     this.add('axf.settings', () => this.settingsEntries());
     this.add('axf.assets', () => this.assetEntries());
     this.add('axf.windows', () => this.windowEntries());
+    // Contributed application-menu items with an action (engines/appmenu.ts); asset items and listed actions are skipped.
+    this.add('axf.app-menu', () => this.rt.appMenuSearchEntries());
   }
 
   /** Add (or replace) a provider. Returns a remover. */

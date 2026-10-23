@@ -4,8 +4,9 @@ Create, edit, manage and orchestrate AI agents built from reusable parts — per
 with its own persistent memory (type and settings per agent), trained from Firecrawl, web pages, the repo, pasted text
 and MCP servers. Add-on agents install as bundles (three ship with the plugin: coder = Mosses, axf-expert, ai-expert).
 
-The definition format is the framework contract agent-definition@1 (framework/core/agents.ts; here server/contract.py;
-Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps load the same agents.
+The definition format is the framework contract agent-definition@1 (framework/core/agents.ts = Python
+`axf.contracts.agents` in framework/python = Kotlin ai.amberx.axf.kernel.agents), so Build Pilot and other AXF apps
+load the same agents; the safety helpers come from `axf.assistant_host.safety` (harvested Oct 21 2026).
 
 Integration (plugin_services, capability names only — never another plugin's folder):
   provides  axf.agents@1  list_agents / get_agent / memory_context / run_tool / record_turn — the AI assistant uses it
@@ -16,6 +17,7 @@ from __future__ import annotations
 
 import json
 import queue
+import sys
 import threading
 from pathlib import Path
 from typing import Any, Iterator
@@ -25,7 +27,14 @@ from fastapi.responses import StreamingResponse
 
 import plugin_services
 
-from . import addons, containers, contract, engine, library, llm, memory, store, toolkit, training
+_PY = Path(__file__).resolve().parents[5] / "framework" / "python"
+if str(_PY) not in sys.path:
+    sys.path.insert(0, str(_PY))
+
+from axf.contracts import agents as contract  # noqa: E402
+
+from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
+from . import hubtools  # noqa: E402,F401 — registers Mosses's axhub_call builtin before add-ons are checked
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -83,6 +92,17 @@ class AgentsService:
         return toolkit.execute(t, args, {"agent": c["agent"], "scope": c["memory"]["scope"], "depth": 0, "run_agent": engine.run_agent, "run_workflow": engine.run_workflow,
                                          "stage": (ctx or {}).get("stage")})
 
+    def run_task(self, agent_id: str, task: str, on_event: Any = None) -> dict[str, Any]:
+        """One headless turn with the agent's tools and memory (Oct 23 2026: the systems check hands a check to Mosses to
+        fix; his axhub_call waits for Brett's approval on the hub for every command). Returns {text, tools, ms}; the turn is
+        recorded in his memory like a chat turn. Raises when the agent is missing or can't reach a model."""
+        r = engine.run_agent(agent_id, task, on_event=on_event)
+        try:
+            memory.record(store.get("agents", agent_id), task[:4000], str(r.get("text", ""))[:8000], {"source": "task"})
+        except Exception:  # noqa: BLE001 — memory never fails the task
+            pass
+        return {"text": str(r.get("text", "")), "tools": r.get("tools") or [], "ms": r.get("ms")}
+
     def record_turn(self, agent_id: str, user_text: str, reply: str, meta: dict[str, Any] | None = None) -> None:
         memory.record(store.get("agents", agent_id), user_text, reply, meta)
 
@@ -100,7 +120,8 @@ def _migrate_mosses() -> None:
     """Coder 1.x → Mosses 2.x (same add-on id `coder`): reinstall keeps the agent's memory, swaps persona, skills and tools."""
     try:
         rec = store.addon_records().get("coder")
-        if rec and str(rec.get("version", "")).startswith("1.") and "coder" in addons.bundles():
+        # 1.x → Mosses 2; 2.0 → 2.1 (Oct 22 2026: his axhub_call tool, which every console Auto fix goes through)
+        if rec and str(rec.get("version", "")).startswith(("1.", "2.0")) and "coder" in addons.bundles():
             addons.install("coder", run_training=False)
     except Exception:  # noqa: BLE001 — never block the console start
         pass

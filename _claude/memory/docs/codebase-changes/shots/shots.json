@@ -1,0 +1,62 @@
+[
+ {
+  "name": "banner",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const now=Date.now();const iso=(m)=>new Date(now-m*60000).toISOString();const post=(b)=>fetch(base,{method:'POST',headers:h,body:JSON.stringify(b)});\nawait post({id:'chg-20261021-5ee0000001',title:'Codebase changes plugin',kind:'build',asked:'Add another banner to the console listing every new build, edit or removal, with a permanent log on axHub.',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'vps',session:'4f2a9c1d'},createdAt:iso(95),steps:[{text:'Record format change-log@1 + validators',state:'done',startedAt:iso(95),finishedAt:iso(80)},{text:'Server routes + hub storage',state:'done',startedAt:iso(80),finishedAt:iso(60)},{text:'CLI + Claude Code hook',state:'done',startedAt:iso(60),finishedAt:iso(40)},{text:'Banner + log browser',state:'running',startedAt:iso(40)},{text:'Screenshots + docs',state:'queued'}]});\nawait post({id:'chg-20261021-5ee0000002',title:'Fix the CI build after the work@1 harvest',kind:'fix',asked:'fix the CI build errors issue',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(300),steps:[{text:'Read the CI build errors issue',state:'done'},{text:'Fix the import in lib-work',state:'done'},{text:'Re-run kernel tests',state:'done'}],result:{state:'done',summary:'lib-work compiled again: a missing coroutines-test import. Kernel tests green.',branch:'fix/ci-lib-work',commits:['3f9a2c1'],filesChanged:2,tests:{'kernel tests':{before:'fail',after:'412/412'}},links:{run:'https://github.com/MossesX/AmberX-AXF/actions'}}});\nawait post({id:'chg-20261020-5ee0000003',title:'Remove the old Opus agent manager',kind:'remove',asked:'remove the Opus agent manager before the Fable rebuild',repos:['MossesX/AmberX-AXF'],model:'fable',createdAt:iso(1500),steps:[{text:'uninstall --all',state:'done'},{text:'check --after-uninstall',state:'failed',note:'one stale doc line in README'}],result:{state:'failed',summary:'A stale doc line was left; fixed in the next entry.'}});\nconst r=await post({id:'chg-20261019-5ee0000004',title:'Rename Build queue view labels',kind:'edit',repos:['MossesX/AmberX-AXF'],createdAt:iso(3000),steps:[{text:'Rename labels',state:'done'}],result:{state:'done',summary:'Labels renamed everywhere.'}});const j=await r.json();await fetch(base+'/'+j.id+'/close',{method:'POST',headers:h,body:'{}'});\ndispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('home')",
+    "wait": 2500
+   },
+   {
+    "eval": "(async()=>{for(let i=0;i<20;i++){const b=document.querySelector('.axp-codebase-changes-banner__main');if(b){b.click();return;}dispatchEvent(new Event('focus'));await new Promise(r=>setTimeout(r,500));}})()",
+    "wait": 1200
+   }
+  ]
+ },
+ {
+  "name": "log",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const now=Date.now();const iso=(m)=>new Date(now-m*60000).toISOString();const post=(b)=>fetch(base,{method:'POST',headers:h,body:JSON.stringify(b)});\nawait post({id:'chg-20261021-5ee0000001',title:'Codebase changes plugin',kind:'build',asked:'Add another banner to the console listing every new build, edit or removal, with a permanent log on axHub.',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'vps',session:'4f2a9c1d'},createdAt:iso(95),steps:[{text:'Record format change-log@1 + validators',state:'done',startedAt:iso(95),finishedAt:iso(80)},{text:'Server routes + hub storage',state:'done',startedAt:iso(80),finishedAt:iso(60)},{text:'CLI + Claude Code hook',state:'done',startedAt:iso(60),finishedAt:iso(40)},{text:'Banner + log browser',state:'running',startedAt:iso(40)},{text:'Screenshots + docs',state:'queued'}]});\nawait post({id:'chg-20261021-5ee0000002',title:'Fix the CI build after the work@1 harvest',kind:'fix',asked:'fix the CI build errors issue',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(300),steps:[{text:'Read the CI build errors issue',state:'done'},{text:'Fix the import in lib-work',state:'done'},{text:'Re-run kernel tests',state:'done'}],result:{state:'done',summary:'lib-work compiled again: a missing coroutines-test import. Kernel tests green.',branch:'fix/ci-lib-work',commits:['3f9a2c1'],filesChanged:2,tests:{'kernel tests':{before:'fail',after:'412/412'}},links:{run:'https://github.com/MossesX/AmberX-AXF/actions'}}});\nawait post({id:'chg-20261020-5ee0000003',title:'Remove the old Opus agent manager',kind:'remove',asked:'remove the Opus agent manager before the Fable rebuild',repos:['MossesX/AmberX-AXF'],model:'fable',createdAt:iso(1500),steps:[{text:'uninstall --all',state:'done'},{text:'check --after-uninstall',state:'failed',note:'one stale doc line in README'}],result:{state:'failed',summary:'A stale doc line was left; fixed in the next entry.'}});\nconst r=await post({id:'chg-20261019-5ee0000004',title:'Rename Build queue view labels',kind:'edit',repos:['MossesX/AmberX-AXF'],createdAt:iso(3000),steps:[{text:'Rename labels',state:'done'}],result:{state:'done',summary:'Labels renamed everywhere.'}});const j=await r.json();await fetch(base+'/'+j.id+'/close',{method:'POST',headers:h,body:'{}'});\ndispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('codebase-changes')",
+    "wait": 2500
+   }
+  ]
+ },
+ {
+  "name": "entry",
+  "steps": [
+   {
+    "eval": "(async()=>{const t=localStorage.getItem('axf-console:token');const h={authorization:'Bearer '+t,'content-type':'application/json'};const base='/api/plugins/'+['codebase','changes'].join('-')+'/entries';const now=Date.now();const iso=(m)=>new Date(now-m*60000).toISOString();const post=(b)=>fetch(base,{method:'POST',headers:h,body:JSON.stringify(b)});\nawait post({id:'chg-20261021-5ee0000001',title:'Codebase changes plugin',kind:'build',asked:'Add another banner to the console listing every new build, edit or removal, with a permanent log on axHub.',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'vps',session:'4f2a9c1d'},createdAt:iso(95),steps:[{text:'Record format change-log@1 + validators',state:'done',startedAt:iso(95),finishedAt:iso(80)},{text:'Server routes + hub storage',state:'done',startedAt:iso(80),finishedAt:iso(60)},{text:'CLI + Claude Code hook',state:'done',startedAt:iso(60),finishedAt:iso(40)},{text:'Banner + log browser',state:'running',startedAt:iso(40)},{text:'Screenshots + docs',state:'queued'}]});\nawait post({id:'chg-20261021-5ee0000002',title:'Fix the CI build after the work@1 harvest',kind:'fix',asked:'fix the CI build errors issue',repos:['MossesX/AmberX-AXF'],model:'opus',who:{where:'cloud'},createdAt:iso(300),steps:[{text:'Read the CI build errors issue',state:'done'},{text:'Fix the import in lib-work',state:'done'},{text:'Re-run kernel tests',state:'done'}],result:{state:'done',summary:'lib-work compiled again: a missing coroutines-test import. Kernel tests green.',branch:'fix/ci-lib-work',commits:['3f9a2c1'],filesChanged:2,tests:{'kernel tests':{before:'fail',after:'412/412'}},links:{run:'https://github.com/MossesX/AmberX-AXF/actions'}}});\nawait post({id:'chg-20261020-5ee0000003',title:'Remove the old Opus agent manager',kind:'remove',asked:'remove the Opus agent manager before the Fable rebuild',repos:['MossesX/AmberX-AXF'],model:'fable',createdAt:iso(1500),steps:[{text:'uninstall --all',state:'done'},{text:'check --after-uninstall',state:'failed',note:'one stale doc line in README'}],result:{state:'failed',summary:'A stale doc line was left; fixed in the next entry.'}});\nconst r=await post({id:'chg-20261019-5ee0000004',title:'Rename Build queue view labels',kind:'edit',repos:['MossesX/AmberX-AXF'],createdAt:iso(3000),steps:[{text:'Rename labels',state:'done'}],result:{state:'done',summary:'Labels renamed everywhere.'}});const j=await r.json();await fetch(base+'/'+j.id+'/close',{method:'POST',headers:h,body:'{}'});\ndispatchEvent(new Event('focus'));})()",
+    "wait": 2500
+   },
+   {
+    "eval": "AXF.navigate('codebase-changes')",
+    "wait": 2500
+   },
+   {
+    "eval": "[...document.querySelectorAll('.axp-codebase-changes__head')].find(b=>/Fix the CI/.test(b.textContent))?.click()",
+    "wait": 1200
+   },
+   {
+    "eval": "[...document.querySelectorAll('.axp-codebase-changes__head')].find(b=>/Fix the CI/.test(b.textContent))?.scrollIntoView({block:'start'})",
+    "wait": 600
+   }
+  ]
+ },
+ {
+  "name": "settings",
+  "steps": [
+   {
+    "eval": "AXF.dispatch('settings.open:codebase-changes')",
+    "wait": 5000
+   }
+  ]
+ }
+]

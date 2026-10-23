@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-fca568f817",
+  "createdAt": "2026-10-18T14:00:00.000Z",
+  "updatedAt": "2026-10-18T16:00:00.000Z",
+  "kind": "build",
+  "title": "Claude files + shared data on the hub: axhub-projects@1",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "the axHub container has `/projects` (its own Docker volume, `axhub-projects`): `/projects/<name>/_claude/{memory,instructions,rules,shared}` and `/projects/<name>/_data/<same paths as in the project>`, plus `/projects/_shared/_claude` for every project. Every project folder here has `_claude/` (root",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "claude-files-shared-data-on-the-hub-axhub-projects-1"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T14:00:00.000Z",
+  "finishedAt": "2026-10-18T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

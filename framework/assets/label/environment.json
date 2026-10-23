@@ -1,0 +1,17 @@
+{
+  "$axf": "asset@1",
+  "type": "label",
+  "id": "environment",
+  "name": "Environment",
+  "version": "1.0.0",
+  "description": "A warning-tone environment name (e.g. STAGING).",
+  "author": "AmberX AXF",
+  "tags": [
+    "label"
+  ],
+  "data": {
+    "text": "STAGING",
+    "tone": "warning",
+    "bold": true
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-4ec60abfc8",
+  "createdAt": "2026-10-18T17:16:25.000Z",
+  "updatedAt": "2026-10-18T19:16:25.000Z",
+  "kind": "build",
+  "title": "Developer alerts library",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`framework/libs/alerts` (`ai.amberx.axf.alerts`), engine `framework/core/engines/alerts.ts` (alert@1) = Kotlin `ai.amberx.axf.kernel.alerts.AlertEngine` = Python `apps/console-web/server/alerts.py`, all replaying `spec/fixtures/alerts.json` (Kotlin `AlertConformanceTest`, written without a compiler:",
+    "commits": [
+      {
+        "sha": "741f774",
+        "message": "Add the developer alerts library: one alert feed with a toolbar bell, ntfy and web push to the phone, and alerts for CI, deploys, the systems check, builds, plugins, conflicts and crashes"
+      },
+      {
+        "sha": "915e2ab",
+        "message": "Harden alerts after an independent review: no alert spam from random URLs, phones get titles not tracebacks, clean restarts, module-only conflicts"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T19:16:25.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "developer-alerts-library"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T17:16:25.000Z",
+  "finishedAt": "2026-10-18T19:16:25.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/libs/alerts",
+    "framework/core/engines/alerts.ts",
+    "apps/console-web/server/alerts.py",
+    "framework/spec/check-alerts.mts"
+  ]
+}

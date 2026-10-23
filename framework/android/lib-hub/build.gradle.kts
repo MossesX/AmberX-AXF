@@ -1,5 +1,5 @@
 plugins { id("axf.android.compose.library") }
-description = "AmberX AXF hub library — connects an app to axHub: hub address rules, the approvals feed (axHub decision #85) read with the app's own hub session, sign-out on the hub, watch prefs + seen ids, HubState flows, a web view locked to one origin, hub APK downloads; hub credentials seam (session cookie or token, held by the app, never stored here). The hub protocol (AXPP) is a placeholder (parked for Fable)."
+description = "AmberX AXF hub library — connects an app to axHub: appearance + settings documents from the hub's data server for developer apps (appearance@1 over the data API, live change feed, backoff, waiting screen while the hub is unreachable), hub address rules, the approvals feed (axHub decision #85) read with the app's own hub session, sign-out on the hub, watch prefs + seen ids, HubState flows, a web view locked to one origin, hub APK downloads; hub credentials seam (session cookie or token, held by the app, never stored here). The hub protocol (AXPP) is a placeholder (parked for Fable)."
 dependencies {
     api(project(":axf-kernel"))
     implementation(project(":axf-network"))

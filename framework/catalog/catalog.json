@@ -310,6 +310,14 @@
               "tag": "lock",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.source",
+              "title": "Appearance source: developer apps take their appearance + settings documents from the axHub data server (appearance@1), waiting screen while the hub is unreachable",
+              "note": "core/engines/appearance.ts = kernel AppearanceEngine; web HubAppearanceSource, Android lib-hub; opt-in per app (manifest developer: { hub })",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },
@@ -600,6 +608,14 @@
               "tag": "lock",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "f.pyserver",
+              "title": "Shared Python server helpers (axf_server): sign-in wall, private storage, safe outbound HTTP, credentials, console client, plugin package checks",
+              "note": "One copy for every AXF app server (console, plugins, Build Pilot); cross-language parts pinned by spec/fixtures (wall-signature, plugin-package).",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
@@ -841,6 +857,22 @@
               "note": "",
               "tag": "lib",
               "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "k.embed",
+              "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
+              "note": "framework/core/engines/embed.ts = ai.amberx.axf.kernel.engine.EmbedEngine, hide engine `forced` layer, AxfRuntime.embedded / slotHiddenByHost on both ports; fixture spec/fixtures/embed.json (spec/check-embed.mts, EmbedConformanceTest); first host: apps/patches (Oct 21 2026, Fable; Kotlin written without a compiler)",
+              "tag": "lib",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "k.appmenu",
+              "title": "Application-menu engine: run-time contributions, live lists (providers), placement, badges, check marks, chrome toggles",
+              "note": "Web built (core/engines/appmenu.ts); Android twin deferred (port on hold, Oct 21 2026).",
+              "tag": "core",
+              "recommended": true,
               "suggests": []
             },
             {
@@ -2583,7 +2615,20 @@
               "note": "ai.amberx.axf.settings",
               "tag": "core",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-settings",
+                "id": "ai.amberx.axf.settings",
+                "label": "Settings",
+                "description": "Schema-driven settings + generated UI",
+                "features": [
+                  "s.settings",
+                  "s.prefs",
+                  "s.scopes",
+                  "s.secure",
+                  "s.searchable"
+                ]
+              }
             },
             {
               "id": "m.logging",
@@ -2591,7 +2636,22 @@
               "note": "ai.amberx.axf.logging",
               "tag": "core",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-logging",
+                "id": "ai.amberx.axf.logging",
+                "label": "Logging",
+                "description": "Levels, sinks, viewer, crash capture, diagnostics",
+                "features": [
+                  "l.log",
+                  "l.viewer",
+                  "l.crash",
+                  "l.net",
+                  "l.perf",
+                  "l.remote",
+                  "l.diag"
+                ]
+              }
             },
             {
               "id": "m.admin",
@@ -2599,7 +2659,21 @@
               "note": "ai.amberx.axf.admin",
               "tag": "ph",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-admin",
+                "id": "ai.amberx.axf.admin",
+                "label": "Administration",
+                "description": "Roles, policies, flags, remote config, module toggles, audit",
+                "features": [
+                  "a.admin",
+                  "a.audit",
+                  "a.users",
+                  "a.content",
+                  "a.maint",
+                  "a.devicemgmt"
+                ]
+              }
             },
             {
               "id": "m.accounts",
@@ -2607,7 +2681,23 @@
               "note": "ai.amberx.axf.accounts",
               "tag": "ph",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-accounts",
+                "id": "ai.amberx.axf.accounts",
+                "label": "Accounts",
+                "description": "Sign-in, OAuth, passkeys, biometrics, sessions, 2FA, GDPR",
+                "features": [
+                  "u.accounts",
+                  "u.auth",
+                  "u.bio",
+                  "u.sessions",
+                  "u.recovery",
+                  "u.roles",
+                  "u.guest",
+                  "u.gdpr"
+                ]
+              }
             },
             {
               "id": "m.profile",
@@ -2615,7 +2705,20 @@
               "note": "ai.amberx.axf.profile",
               "tag": "ph",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-profile",
+                "id": "ai.amberx.axf.profile",
+                "label": "Profile",
+                "description": "Avatar, details, privacy, sync, public profile",
+                "features": [
+                  "p.profile",
+                  "p.avatar",
+                  "p.sync",
+                  "p.public",
+                  "p.activity"
+                ]
+              }
             },
             {
               "id": "m.billing",
@@ -2623,7 +2726,42 @@
               "note": "ai.amberx.axf.billing",
               "tag": "ph",
               "recommended": true,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-billing",
+                "id": "ai.amberx.axf.billing",
+                "label": "Billing",
+                "description": "Plans, paywall, Play Billing, entitlements, IAP, promos",
+                "features": [
+                  "b.subs",
+                  "b.billing",
+                  "b.entitle",
+                  "b.iap",
+                  "b.promo",
+                  "b.license",
+                  "b.ads",
+                  "b.stripe"
+                ]
+              }
+            },
+            {
+              "id": "m.browser",
+              "title": "lib-browser \u2014 Floating tab-group browser: two panes, multi-select, compare \u2192 undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+              "note": "ai.amberx.axf.browser",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-browser",
+                "id": "ai.amberx.axf.browser",
+                "label": "Library browser",
+                "description": "Floating tab-group browser: two panes, multi-select, compare \u2192 undock / split / grid; attaches to any tab group in the manifest; installable with a wizard",
+                "features": [
+                  "lib.browser",
+                  "ui.windows",
+                  "ui.explorer"
+                ]
+              }
             },
             {
               "id": "m.media",
@@ -2631,7 +2769,23 @@
               "note": "ai.amberx.axf.media",
               "tag": "ph",
               "recommended": false,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-media",
+                "id": "ai.amberx.axf.media",
+                "label": "Media",
+                "description": "Video/audio playback, camera, streaming, PiP",
+                "features": [
+                  "dv.media",
+                  "dv.stream",
+                  "dv.camera",
+                  "dv.audio",
+                  "c.video",
+                  "c.vpsstream",
+                  "c.camera",
+                  "c.music"
+                ]
+              }
             },
             {
               "id": "m.location",
@@ -2639,7 +2793,38 @@
               "note": "ai.amberx.axf.location",
               "tag": "ph",
               "recommended": false,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-location",
+                "id": "ai.amberx.axf.location",
+                "label": "Location",
+                "description": "GPS, geofences, maps, trails",
+                "features": [
+                  "dv.loc",
+                  "dv.maps",
+                  "c.gps"
+                ]
+              }
+            },
+            {
+              "id": "m.editor",
+              "title": "lib-editor \u2014 Rich text, markdown, code editor, diff",
+              "note": "ai.amberx.axf.editor",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-editor",
+                "id": "ai.amberx.axf.editor",
+                "label": "Editors",
+                "description": "Rich text, markdown, code editor, diff",
+                "features": [
+                  "ui.editor",
+                  "c.texteditor",
+                  "c.json",
+                  "c.pdf"
+                ]
+              }
             },
             {
               "id": "m.ai",
@@ -2647,7 +2832,19 @@
               "note": "ai.amberx.axf.ai",
               "tag": "ph",
               "recommended": false,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-ai",
+                "id": "ai.amberx.axf.ai",
+                "label": "AI assistant",
+                "description": "Claude/OpenAI/Gemini providers, streaming, tools, MCP",
+                "features": [
+                  "w.ai",
+                  "w.mcp",
+                  "c.ai",
+                  "c.aiimage"
+                ]
+              }
             },
             {
               "id": "m.vps",
@@ -2655,7 +2852,168 @@
               "note": "ai.amberx.axf.vps",
               "tag": "ph",
               "recommended": false,
-              "suggests": []
+              "suggests": [],
+              "library": {
+                "module": "lib-vps",
+                "id": "ai.amberx.axf.vps",
+                "label": "VPS & deploy",
+                "description": "SSH/SFTP, deploy wizard, server monitoring, Coolify, Hostinger",
+                "features": [
+                  "w.vps",
+                  "w.coolify",
+                  "w.hostinger",
+                  "c.terminal",
+                  "c.deploy",
+                  "c.servermon",
+                  "c.logtail",
+                  "c.dns",
+                  "c.cron"
+                ]
+              }
+            },
+            {
+              "id": "m.github",
+              "title": "lib-github \u2014 Repos, commits, Actions, releases, tracker sync",
+              "note": "ai.amberx.axf.github",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-github",
+                "id": "ai.amberx.axf.github",
+                "label": "GitHub",
+                "description": "Repos, commits, Actions, releases, tracker sync",
+                "features": [
+                  "w.github",
+                  "c.github",
+                  "cx.github"
+                ]
+              }
+            },
+            {
+              "id": "m.work",
+              "title": "lib-work \u2014 WorkManager scheduler, alarms, foreground services",
+              "note": "ai.amberx.axf.work",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-work",
+                "id": "ai.amberx.axf.work",
+                "label": "Background work",
+                "description": "WorkManager scheduler, alarms, foreground services",
+                "features": [
+                  "dv.bg",
+                  "lib.work",
+                  "k.scheduler"
+                ]
+              }
+            },
+            {
+              "id": "m.notifications",
+              "title": "lib-notifications \u2014 Channels, actions, scheduled, FCM/self-hosted push",
+              "note": "ai.amberx.axf.notifications",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-notifications",
+                "id": "ai.amberx.axf.notifications",
+                "label": "Notifications & push",
+                "description": "Channels, actions, scheduled, FCM/self-hosted push",
+                "features": [
+                  "dv.notif",
+                  "lib.notifications",
+                  "w.push",
+                  "c.notifications",
+                  "c.push"
+                ]
+              }
+            },
+            {
+              "id": "m.sensors",
+              "title": "lib-sensors \u2014 Sensors, BLE, NFC, Wi-Fi tools",
+              "note": "ai.amberx.axf.sensors",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-sensors",
+                "id": "ai.amberx.axf.sensors",
+                "label": "Sensors & connectivity",
+                "description": "Sensors, BLE, NFC, Wi-Fi tools",
+                "features": [
+                  "dv.sensors",
+                  "dv.ble",
+                  "dv.nfc",
+                  "dv.wifi",
+                  "c.sensors",
+                  "c.ble",
+                  "c.nfc",
+                  "c.wifi"
+                ]
+              }
+            },
+            {
+              "id": "m.files",
+              "title": "lib-files \u2014 File manager, transfer, backup, offline sync",
+              "note": "ai.amberx.axf.files",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-files",
+                "id": "ai.amberx.axf.files",
+                "label": "Files & sync",
+                "description": "File manager, transfer, backup, offline sync",
+                "features": [
+                  "d.files",
+                  "d.sync",
+                  "d.backup",
+                  "c.files",
+                  "c.transfer",
+                  "c.backup",
+                  "c.offline"
+                ]
+              }
+            },
+            {
+              "id": "m.charts",
+              "title": "lib-charts \u2014 Charts, data grids, dashboards",
+              "note": "ai.amberx.axf.charts",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-charts",
+                "id": "ai.amberx.axf.charts",
+                "label": "Charts & tables",
+                "description": "Charts, data grids, dashboards",
+                "features": [
+                  "ui.charts",
+                  "ui.tables",
+                  "c.charts"
+                ]
+              }
+            },
+            {
+              "id": "m.plugins",
+              "title": "lib-plugins \u2014 Plugin loader, packs, OTA asset packs, designer bridge",
+              "note": "ai.amberx.axf.plugins",
+              "tag": "ph",
+              "recommended": false,
+              "suggests": [],
+              "library": {
+                "module": "lib-plugins",
+                "id": "ai.amberx.axf.plugins",
+                "label": "Plugins & add-ons",
+                "description": "Plugin loader, packs, OTA asset packs, designer bridge",
+                "features": [
+                  "k.plugins",
+                  "k.nocode",
+                  "w.ota"
+                ]
+              }
             },
             {
               "id": "m.devtools",
@@ -3130,6 +3488,14 @@
               "title": "In-app browser / WebView running the web demo (axf.amberxai.com)",
               "note": "",
               "tag": "lib",
+              "recommended": false,
+              "suggests": []
+            },
+            {
+              "id": "c.patches",
+              "title": "Patches: one banner, three tabs \u2014 the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+              "note": "apps/patches (android-compose developer app) + lib-hub WebAppView / WebAppHolder (Oct 21 2026, Fable; written without a compiler)",
+              "tag": "app",
               "recommended": false,
               "suggests": []
             },

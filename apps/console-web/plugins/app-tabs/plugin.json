@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.app-tabs",
   "name": "App tabs",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -21,6 +21,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/app-tabs",

@@ -1,0 +1,35 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.alerts-bell",
+  "name": "Alerts bell",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The developer alerts bell on the banner (it used to sit on the toolbar): a bell button that opens the Alerts view and, next to it, the number of unread alerts (hidden at zero, 99+ past 99). Built from the framework's action-button and counter widgets; the alerts library (Alerts view, Settings → Alerts, delivery) stays in the framework. Show/hide and side in its settings.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "asset:action-button/alerts-bell",
+    "asset:counter/alerts-bell",
+    "banner:right",
+    "settings-tab:alerts-bell"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/alerts-bell",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}

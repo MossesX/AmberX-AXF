@@ -1,0 +1,3 @@
+[
+ { "name": "menubar-build", "steps": [ { "press": "Escape", "wait": 500 }, { "click": ".fx-menubar__btn >> text='Build'", "wait": 900 } ], "settle": 5000 }
+]

@@ -1,0 +1,14 @@
+{
+  "$axf": "build-options@1",
+  "description": "Build options: the --switches every UI build accepts, whatever drives it (CLI `axf init --<flag>`, `axf options`, engine-rpc, `axf serve` HTTP, the console API/UI and the console MCP). Each option writes a token into the app's assets, so the engines (both ports) read it like any other token. New options are added here only; every driver reads this file. Values: --flag (on), --flag on|off|true|false, --no-flag (off).",
+  "options": {
+    "wrap-groups": {
+      "label": "Wrap groups",
+      "description": "Every section / group (Container) gets a small collapse toggle in its top-right corner, e.g. Role, Access policy and Console token in Settings.",
+      "type": "boolean",
+      "default": false,
+      "token": { "assetType": "style-theme", "field": "wrapGroups" },
+      "since": "0.2.0"
+    }
+  }
+}

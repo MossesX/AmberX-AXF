@@ -33,6 +33,10 @@ import ai.amberx.axf.kernel.engine.LayoutEngine
 import ai.amberx.axf.kernel.engine.WidgetEngine
 import ai.amberx.axf.kernel.engine.HideEngine
 import ai.amberx.axf.kernel.engine.Spacing
+import ai.amberx.axf.kernel.engine.AppearanceChange
+import ai.amberx.axf.kernel.engine.AppearanceDocument
+import ai.amberx.axf.kernel.engine.AppearanceEngine
+import ai.amberx.axf.kernel.engine.AppearanceSourceState
 import ai.amberx.axf.kernel.engine.BannerAttachment
 import ai.amberx.axf.kernel.engine.BannerData
 import ai.amberx.axf.kernel.engine.BannerEngine
@@ -76,6 +80,31 @@ public data class Compiled(
 }
 
 /**
+ * Where a developer app's appearance selection lives: the axHub data server (`shared/settings/appearance.json`,
+ * AppearanceEngine). Off by default: an ordinary AXF app never attaches one. Mirrors runtime.ts `AppearanceSource`.
+ * While the source isn't [AppearanceSourceState.Ready] the app shows its waiting screen: a developer app doesn't run
+ * without the hub (no local fallback, no default theme). Android implementation: lib-hub `HubAppearanceSource`.
+ */
+public interface AppearanceSource {
+    public fun state(): AppearanceSourceState
+    /** Emits the document (null = none saved yet) whenever it loads or changes, and the state on every change. */
+    public fun subscribe(listener: (AppearanceEvent) -> Unit): () -> Unit
+    public fun start()
+    public fun stop()
+    /** Re-read now (UI-editor rule: fresh on resume). */
+    public fun refresh()
+    /** Save this app's keys; the source merges into the latest document (last write wins per key). */
+    public fun save(change: AppearanceChange)
+    /** The hub's origin, for the waiting screen. */
+    public val origin: String? get() = null
+}
+
+public sealed interface AppearanceEvent {
+    public data class Document(val doc: AppearanceDocument?, val version: String?) : AppearanceEvent
+    public data class State(val state: AppearanceSourceState) : AppearanceEvent
+}
+
+/**
  * AxfRuntime — the single source of truth for an AXF app. Holds the asset registry, the active asset
  * per slot, the UAC role, the current view, overlays, and compiles everything through the engines.
  * Framework-agnostic: axf-ui only subscribes to [state] and [compiled]. Mirrors runtime.ts one to one.
@@ -88,6 +117,8 @@ public class AxfRuntime(
     private val clock: AxfClock = SystemClock,
     private val random: Random = Random.Default,
     storageKey: String? = null,
+    /** The host app this one is embedded in (embed@1, EmbedEngine.detect), or null standalone. Fixed for the runtime's life. */
+    public val embedded: ai.amberx.axf.kernel.engine.Embed? = null,
 ) {
     private val key = storageKey ?: "axf:${manifest.appId}"
     public val loadErrors: MutableList<Pair<String, List<String>>> = mutableListOf()
@@ -159,6 +190,7 @@ public class AxfRuntime(
      * open, load or come back into focus. Returns the slots that changed (plus "role" when the role did).
      */
     public fun refreshFromSaved(): List<String> {
+        appearanceSource?.refresh() // developer apps: the saved values live on the hub
         val saved = Persisted.fromJson(store.get(key)) ?: return emptyList()
         val now = _state.value
         val changed = saved.active.filter { (t, id) -> t != AssetTypes.UAC_POLICY && now.active[t] != id && registry.has(t, id) }
@@ -228,11 +260,93 @@ public class AxfRuntime(
         terminal.ok("hot-swap", "$type: ${cur ?: "(none)"} → $next")
         if (type == AssetTypes.UI_KIT) terminal.forget("kit:")
         roleNote?.let { toast("This policy has no \"$cur\" role, so you're now $it.", ToastKind.INFO, "Role changed") }
+        if (type != AssetTypes.UAC_POLICY) pushAppearance(AppearanceChange(slots = mapOf(type to next), palette = if (type == AssetTypes.COLOR_THEME) appearancePalette() else null))
         return true
     }
 
     public fun swapAll(targets: Map<String, String>) {
-        set({ s -> s.copy(active = s.active + targets.filter { (t, id) -> t != AssetTypes.UAC_POLICY && registry.has(t, id) }, swaps = s.swaps + 1) }, persist = true, recompile = true)
+        val pushed = targets.filter { (t, id) -> t != AssetTypes.UAC_POLICY && registry.has(t, id) }
+        set({ s -> s.copy(active = s.active + pushed, swaps = s.swaps + 1) }, persist = true, recompile = true)
+        if (pushed.isNotEmpty()) pushAppearance(AppearanceChange(slots = pushed, palette = if (AssetTypes.COLOR_THEME in pushed) appearancePalette() else null))
+    }
+
+    /* ---------------- appearance source (AppearanceEngine; web: attachAppearanceSource) ---------------- */
+
+    private var appearanceSource: AppearanceSource? = null
+    private var appearanceOff: (() -> Unit)? = null
+    private var applyingAppearance = false
+    private var lastAppearance: AppearanceDocument? = null
+    private val _appearance = MutableStateFlow<AppearanceSourceState?>(null)
+    /** The source's state; null = no source (an ordinary app). UI: show the waiting screen unless Ready. */
+    public val appearance: StateFlow<AppearanceSourceState?> get() = _appearance.asStateFlow()
+
+    /** Make this a developer app: its appearance comes from the source and goes back to it. */
+    public fun attachAppearanceSource(source: AppearanceSource) {
+        detachAppearanceSource()
+        appearanceSource = source
+        appearanceOff = source.subscribe { ev ->
+            when (ev) {
+                is AppearanceEvent.State -> _appearance.value = ev.state
+                is AppearanceEvent.Document -> applyAppearance(ev.doc)
+            }
+        }
+        _appearance.value = source.state()
+        source.start()
+    }
+
+    public fun detachAppearanceSource() {
+        appearanceOff?.invoke(); appearanceOff = null
+        appearanceSource?.stop(); appearanceSource = null
+        lastAppearance = null
+        _appearance.value = null
+    }
+
+    public fun hasAppearanceSource(): Boolean = appearanceSource != null
+    public fun appearanceReady(): Boolean = appearanceSource == null || _appearance.value is AppearanceSourceState.Ready
+    public fun appearanceHub(): String? = appearanceSource?.origin
+    public fun appearanceSkipped(): List<String> = AppearanceEngine.resolve(lastAppearance, registry.types) { t, id -> registry.has(t, id) }.skipped
+
+    /**
+     * Apply a document: every appearance slot starts from the app's own default, then takes the document's id when
+     * the app has that asset (unknown = the default, never a crash); spacing and hidden go through the same stores
+     * the UI uses. No permission check: the document *is* the saved setting; changing it is gated (swap, setSpacing…).
+     */
+    private fun applyAppearance(doc: AppearanceDocument?) {
+        lastAppearance = doc
+        val r = AppearanceEngine.resolve(doc, registry.types) { t, id -> registry.has(t, id) }
+        applyingAppearance = true
+        try {
+            val active = LinkedHashMap(current.active)
+            for (t in registry.types.ids()) {
+                if (t == AssetTypes.UAC_POLICY) continue
+                val want = r.slots[t] ?: manifest.defaults[t]
+                if (want != null && registry.has(t, want)) active[t] = want
+                else if (want == null && registry.types.get(t)?.optional == true) active.remove(t)
+            }
+            val hidden = LinkedHashMap<String, Boolean>()
+            for (t in HideEngine.hideableTypes(registry.types)) r.hidden[t]?.let { hidden[t] = it }
+            if (hidden.isEmpty()) store.remove(hideKey) else store.put(hideKey, JsonObject(hidden.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }).toString())
+            val sp = r.spacing ?: Spacing.DEFAULT
+            if (spacing() != sp) store.put(spacingKey, sp.id)
+            val changed = active != current.active
+            set({ s -> s.copy(active = active, swaps = s.swaps + if (changed) 1 else 0) }, persist = true, recompile = true)
+            if (r.skipped.isNotEmpty()) terminal.warn("appearance", "not in this app, kept the default: ${r.skipped.joinToString()}")
+            terminal.ok("appearance", "applied from the hub" + (doc?.updatedBy?.let { " (saved by $it)" } ?: ""))
+        } finally { applyingAppearance = false }
+    }
+
+    private fun pushAppearance(change: AppearanceChange) {
+        val src = appearanceSource ?: return
+        if (applyingAppearance) return
+        src.save(change)
+    }
+
+    private fun appearancePalette(): Map<String, String> = AppearanceEngine.paletteFromColorTheme(asset(AssetTypes.COLOR_THEME)?.data)
+
+    /** The document this app would write for its whole current look. */
+    public fun currentAppearance(): AppearanceDocument {
+        val slots = current.active.filterKeys { it != AssetTypes.UAC_POLICY }
+        return AppearanceEngine.merge(null, AppearanceChange(slots = slots, spacing = spacing(), hidden = hideOverrides(), palette = appearancePalette()), manifest.appId, java.time.Instant.ofEpochMilli(clock.nowMillis()).toString())
     }
 
     /* ---------------- randomize rolls (RollEngine) ---------------- */
@@ -376,6 +490,7 @@ public class AxfRuntime(
         store.put(spacingKey, s.id)
         terminal.ok("hot-swap", "spacing: ${s.id}")
         set({ it }, recompile = true)
+        pushAppearance(AppearanceChange(spacing = s))
     }
 
     /* ---------------- collapsible toolbar (asset `collapsible: true`; web setting axf.toolbar.collapsed) ---------------- */
@@ -404,14 +519,21 @@ public class AxfRuntime(
         }
     }
 
-    /** Every hidden slot (only hideable types: the chrome): the user's overrides over the app's defaults. */
-    public fun hiddenSlots(): List<String> = HideEngine.hiddenSlots(registry.types, hideOverrides(), defaultHiddenSlots())
+    /** Chrome the host app shows while this one is embedded (embed@1): hidden here whatever the user chose. */
+    public fun embedHiddenSlots(): List<String> = embedded?.hidden ?: emptyList()
+
+    /** Is this slot hidden because a host app shows it (embed@1)? Settings grey such a row out instead of offering a choice. */
+    public fun slotHiddenByHost(type: String): Boolean = type in embedHiddenSlots()
+
+    /** Every hidden slot (only hideable types: the chrome): the host's chrome (while embedded) over the user's overrides over the app's defaults. */
+    public fun hiddenSlots(): List<String> = HideEngine.hiddenSlots(registry.types, hideOverrides(), defaultHiddenSlots(), embedHiddenSlots())
 
     public fun slotHidden(type: String): Boolean = type in hiddenSlots()
 
     /** Hide or show a slot's chrome; ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
     public fun setSlotHidden(type: String, hidden: Boolean) {
         if (!HideEngine.hideable(registry.types, type) || slotHidden(type) == hidden) return
+        if (slotHiddenByHost(type)) { toast("${embedded?.host} shows the $type for this app while it runs inside it.", ToastKind.INFO, "Shown by the host app"); return }
         if (!can("assets.swap")) { toast("Your role cannot change the layout.", ToastKind.DANGER, "Permission denied"); return }
         val next = hideOverrides().toMutableMap()
         if (hidden == (type in defaultHiddenSlots())) next.remove(type) else next[type] = hidden
@@ -419,6 +541,7 @@ public class AxfRuntime(
         else store.put(hideKey, kotlinx.serialization.json.JsonObject(next.mapValues { kotlinx.serialization.json.JsonPrimitive(it.value) }).toString())
         terminal.ok("hot-swap", "$type ${if (hidden) "hidden" else "shown"}")
         set({ s -> if (hidden && type == AssetTypes.CONTEXT_MENU) s.copy(context = null) else s }, recompile = true)
+        pushAppearance(AppearanceChange(hidden = mapOf(type to if (hidden == (type in defaultHiddenSlots())) null else hidden)))
     }
 
     /** "Randomize all": rolls every included slot over its included assets; excluded and hidden slots keep their asset. */
@@ -436,9 +559,23 @@ public class AxfRuntime(
         store.remove(hideKey)
         val active = LinkedHashMap<String, String>()
         for (t in registry.types.ids()) { val d = manifest.defaults[t]; val id = if (d != null && registry.has(t, d)) d else registry.list(t).firstOrNull()?.id; if (id != null) active[t] = id }
-        principal?.let { p -> active[AssetTypes.UAC_POLICY] = p.policy; set({ s -> s.copy(active = active, role = p.role, swaps = s.swaps + 1) }, persist = true, recompile = true); return }
-        val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, active.getValue(AssetTypes.UAC_POLICY))!!.data)
-        set({ s -> s.copy(active = active, role = policy.defaultRole, swaps = s.swaps + 1) }, persist = true, recompile = true)
+        val p = principal
+        if (p != null) { active[AssetTypes.UAC_POLICY] = p.policy; set({ s -> s.copy(active = active, role = p.role, swaps = s.swaps + 1) }, persist = true, recompile = true) }
+        else {
+            val policy = UacPolicy.fromJson(registry.get(AssetTypes.UAC_POLICY, active.getValue(AssetTypes.UAC_POLICY))!!.data)
+            set({ s -> s.copy(active = active, role = policy.defaultRole, swaps = s.swaps + 1) }, persist = true, recompile = true)
+        }
+        pushAppearance(AppearanceChange(slots = active.filterKeys { it != AssetTypes.UAC_POLICY }, hidden = HideEngine.hideableTypes(registry.types).associateWith { null }, palette = appearancePalette()))
+    }
+
+    /**
+     * Replace a module's own asset in place (e.g. Patches' application menu, rebuilt from the menus the apps in its tabs
+     * send): registered, recompiled when it's the active one, never persisted, swapped or pushed to the hub.
+     */
+    public fun replaceAsset(raw: JsonObject, origin: String): RegisterResult {
+        val r = registry.register(raw, AssetSource.BUILTIN, origin)
+        r.asset?.let { a -> set({ it }, recompile = current.active[a.type] == a.id) }
+        return r
     }
 
     public fun importAsset(raw: JsonObject, activate: Boolean = true, origin: String? = null): RegisterResult {

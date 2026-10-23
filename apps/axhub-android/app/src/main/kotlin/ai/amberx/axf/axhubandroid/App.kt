@@ -3,7 +3,6 @@ package ai.amberx.axf.axhubandroid
 import ai.amberx.axf.kernel.module.AxfModule
 import ai.amberx.axf.platform.AxfApplication
 import ai.amberx.axf.devtools.DevtoolsModule
-import android.webkit.WebView
 import ai.amberx.axf.lock.LockMode
 import ai.amberx.axf.lock.LockModule
 import ai.amberx.axf.lock.LockWording
@@ -28,16 +27,15 @@ import ai.amberx.axf.ui.windows.WindowsModule
  */
 class App : AxfApplication() {
     val appModule: AppModule by lazy { AppModule(this) }
-
-    override fun onCreate() {
-        super.onCreate()
-        WebView.setWebContentsDebuggingEnabled(false) // the hub session lives in the WebView
-    }
+    // The hub session lives in the WebView: axf.manifest.json → android.secureWindow turns WebView debugging off
+    // (AxfApplication) and sets FLAG_SECURE (AxfActivity).
 
     override fun modules(): List<AxfModule> = listOf(
         DataModule(this), NetworkModule(), NavModule(), SettingsModule(), LoggingModule(), DevtoolsModule(), WindowsModule(),
-        LockModule(LockWording(groupLabel = "Unlock", groupDescription = "This app holds your hub admin session. Ask for a fingerprint or PIN before it opens.", modeLabel = "Open AXHub with"), defaultMode = LockMode.BIOMETRIC),
-        // lib-hub: the hub session the in-app sign-in left in the WebView cookie store (never stored by the library).
+        LockModule(this, LockWording(groupLabel = "Unlock", groupDescription = "This app holds your hub admin session. Ask for a fingerprint or PIN before it opens.", modeLabel = "Open AXHub with", pinNeeded = "Set a PIN first, then choose PIN."), defaultMode = LockMode.BIOMETRIC),
+        // Developer app (decision Oct 20 2026): its look and settings come from axHub's data server, and lib-hub reads
+        // approvals, with the hub session the in-app sign-in left in the WebView cookie store (never stored by the
+        // library); the app waits for the hub rather than running without it.
         HubModule(hub = hubPrefs(this).base, credentials = cookieCredentials { hubPrefs(this).base }),
         NotificationsModule(this, Alerts.channelSpecs),
         // lib-work: the approval watcher is a registered poll job; the foreground service, back-off and boot restart are the framework's.

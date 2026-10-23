@@ -24,10 +24,11 @@
  *      and parks the port on the pending build list for Fable, with the choice recorded in the manifest;
  *   6. syncs _claude/ with the hub when claude-sync is installed.
  *
- * Tokens: GITHUB_TOKEN / GH_TOKEN or `gh auth token`; passed to git through the environment, never written down.
+ * Tokens: GITHUB_TOKEN / GH_TOKEN or `gh auth token`; GitHub calls go through lib-github (./github.mjs): the token goes
+ * to the GitHub API only (no redirects) and to git through the environment (GIT_CONFIG_*), never argv or a file.
  * GITHUB_API_URL and CLAUDE_PROJECT_GIT_BASE point it at other servers (tests).
  */
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -36,9 +37,11 @@ import { fileURLToPath } from 'node:url';
 import { draftManifest, formatProjectValidation, loadRules, PROJECT_MANIFEST_FILE, validateProjectManifest } from './project.mjs';
 import { actPending, loadPending } from './pending.mjs';
 import { REPO_ROOT } from './persist.mjs';
+import { apiBaseFromEnv, createGitHub, gitAuthEnv, githubToken, parseRepo, scrub, validName, validOwner } from './github.mjs';
+
+export { githubToken };
 
 export const CLAUDE_APP_URL = 'https://github.com/apps/claude/installations/select_target';
-const API = () => (process.env.GITHUB_API_URL || 'https://api.github.com').replace(/\/+$/, '');
 const GIT_BASE = () => (process.env.CLAUDE_PROJECT_GIT_BASE || 'https://github.com').replace(/\/+$/, '');
 const WHERE = ['github', 'vps', 'device'];
 const PORT_MODES = ['bake', 'rebuild', 'no'];
@@ -97,24 +100,13 @@ export function detect(dir) {
 
 /* ─── GitHub ──────────────────────────────────────────────────────────────── */
 
-export function githubToken() {
-  const t = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  if (t) return t.trim();
-  try { return execFileSync('gh', ['auth', 'token'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 10_000 }).trim(); } catch { return ''; }
-}
-
-async function gh(token, method, path, body) {
-  const res = await fetch(`${API()}${path}`, {
-    method,
-    headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'axf-claude-project', ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(30_000),
-  });
-  const text = await res.text();
-  let data = null;
-  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-  if (!res.ok) { const e = new Error(`GitHub ${res.status}: ${data?.message ?? text.slice(0, 200)}`); e.status = res.status; throw e; }
-  return data;
+/** One GitHub API call (lib-github: API origin only, no redirects, 30 s, size cap; GitHubError carries .status). */
+const gh = (token, method, path, body) => createGitHub({ token, base: apiBaseFromEnv(), userAgent: 'axf-claude-project', timeoutMs: 30_000 }).json(method, path, body);
+/** owner/name from an API answer, checked before it reaches a URL or git. */
+function repoSlug(repo) {
+  const slug = parseRepo(String(repo?.full_name ?? ''));
+  if (!slug) throw new Error('GitHub answered with a repository name that isn\'t owner/name');
+  return slug;
 }
 
 /** Create the repository unless it exists; an existing one with commits is refused unless it is already this project's origin. */
@@ -130,7 +122,7 @@ async function githubRepo(token, { owner, name, visibility, description, allowEx
   } catch (e) {
     if (e.status !== 404) throw e;
     const body = { name, description: description.slice(0, 300), private: visibility !== 'public', has_wiki: false, auto_init: false };
-    repo = await gh(token, 'POST', owner.toLowerCase() === me.login.toLowerCase() ? '/user/repos' : `/orgs/${owner}/repos`, body);
+    repo = await gh(token, 'POST', owner.toLowerCase() === String(me.login).toLowerCase() ? '/user/repos' : `/orgs/${owner}/repos`, body);
     log(`GitHub: created ${repo.full_name} (${body.private ? 'private' : 'public'})`);
   }
   return { repo, me };
@@ -149,6 +141,7 @@ async function claudeAppAccess(token, owner, repo, log) {
   const manage = inst.account.type === 'Organization' ? `https://github.com/organizations/${inst.account.login}/settings/installations/${inst.id}` : `https://github.com/settings/installations/${inst.id}`;
   if (inst.repository_selection === 'all') { log('Claude app: already has access to every repository'); return { ok: true }; }
   try {
+    if (!Number.isInteger(inst.id) || !Number.isInteger(repo.id)) throw new Error('unexpected ids from GitHub');
     await gh(token, 'PUT', `/user/installations/${inst.id}/repositories/${repo.id}`);
     log(`Claude app: ${repo.full_name} added`);
     return { ok: true };
@@ -160,15 +153,13 @@ async function claudeAppAccess(token, owner, repo, log) {
 /* ─── git ─────────────────────────────────────────────────────────────────── */
 
 function git(dir, args, { token, env } = {}) {
-  const e = { ...process.env, GIT_TERMINAL_PROMPT: '0', ...env };
-  if (token) {
-    const basic = Buffer.from(`x-access-token:${token}`).toString('base64');
-    Object.assign(e, { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'http.extraHeader', GIT_CONFIG_VALUE_0: `Authorization: Basic ${basic}` });
-  }
+  // lib-github: an Authorization header scoped to https://github.com/ + no redirects, through GIT_CONFIG_* only
+  const base = { ...process.env, ...env };
+  const e = { ...base, GIT_TERMINAL_PROMPT: '0', ...(token ? gitAuthEnv(token, GIT_BASE(), base) : {}) };
   const r = spawnSync('git', args, { cwd: dir, env: e, encoding: 'utf8', timeout: 300_000 });
-  const scrub = (s) => (token ? String(s).split(token).join('***') : String(s));
-  if (r.status !== 0) throw new Error(scrub(`git ${args[0]} failed: ${(r.stderr || r.stdout || r.error?.message || '').trim().slice(-800)}`));
-  return scrub(r.stdout.trim());
+  const clean = (s) => scrub(s, token ? [token] : []);
+  if (r.status !== 0) throw new Error(clean(`git ${args[0]} failed: ${(r.stderr || r.stdout || r.error?.message || '').trim().slice(-800)}`));
+  return clean(r.stdout.trim());
 }
 const gitOk = (dir, args) => spawnSync('git', args, { cwd: dir, encoding: 'utf8' }).status === 0;
 
@@ -373,6 +364,8 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
     }
     const owner = flags.owner ?? d.manifest?.repo?.owner ?? me?.login ?? 'MossesX';
     const repoName = flags.repo ?? d.manifest?.repo?.name ?? name;
+    if (!validOwner(owner)) throw new Error(`"${owner}" isn't a GitHub owner name`);
+    if (!validName(repoName)) throw new Error(`"${repoName}" can't be a repository name: letters, digits, ., - and _, not starting with . or -, no ..`);
     const visibility = flags.visibility ?? (where.includes('github') ? await ask(rl, 'Visibility: private or public', d.manifest?.repo?.visibility ?? 'private') : 'private');
     let port = 'no';
     if (d.relation === 'none') {
@@ -458,17 +451,18 @@ export async function run(argv = process.argv.slice(2), { log = (m) => console.l
       const origin = gitOk(dir, ['remote', 'get-url', 'origin']) ? git(dir, ['remote', 'get-url', 'origin']) : '';
       const sameOrigin = origin.toLowerCase().replace(/\.git$/, '').endsWith(`/${owner}/${repoName}`.toLowerCase());
       const { repo } = await githubRepo(token, { owner, name: repoName, visibility, description: description || display, allowExisting: sameOrigin }, log);
-      const url = `${GIT_BASE()}/${repo.full_name}.git`;
+      const slug = repoSlug(repo);
+      const url = `${GIT_BASE()}/${slug}.git`;
       // A folder cloned from somewhere else keeps its origin; the new repository becomes the "github" remote.
       const remote = !origin || sameOrigin ? 'origin' : 'github';
-      if (!origin || (remote === 'github' && !gitOk(dir, ['remote', 'get-url', 'github']))) git(dir, ['remote', 'add', remote, `https://github.com/${repo.full_name}.git`]);
+      if (!origin || (remote === 'github' && !gitOk(dir, ['remote', 'get-url', 'github']))) git(dir, ['remote', 'add', remote, `https://github.com/${slug}.git`]);
       if (hasCommit) git(dir, ['push', '-q', url, `${branch}:${branch}`], { token: GIT_BASE().startsWith('https://') ? token : '' });
       if (hasCommit && remote === 'origin') { git(dir, ['fetch', '-q', url, `+${branch}:refs/remotes/origin/${branch}`], { token: GIT_BASE().startsWith('https://') ? token : '' }); gitOk(dir, ['branch', `--set-upstream-to=origin/${branch}`]); }
       if (remote === 'github') notes.push(`origin still points at ${origin}; the new repository is the remote "github"`);
       log(c.ok(`  ✓ GitHub: ${repo.html_url}${hasCommit ? ` (${branch} pushed)` : ''}`));
-      Object.assign(m.repo, { host: 'github', owner: repo.owner?.login ?? owner, name: repo.name, exists: true, visibility: repo.private ? 'private' : 'public', defaultBranch: branch, url: repo.html_url });
+      Object.assign(m.repo, { host: 'github', owner: slug.split('/')[0], name: slug.split('/')[1], exists: true, visibility: repo.private ? 'private' : 'public', defaultBranch: branch, url: repo.html_url });
       result.github = repo.html_url;
-      result.claudeApp = await claudeAppAccess(token, repo.owner?.login ?? owner, repo, log);
+      result.claudeApp = await claudeAppAccess(token, slug.split('/')[0], repo, log);
       if (result.claudeApp.ok) log(c.ok('  ✓ Claude app can see it: it shows up in Claude.ai and Claude Code on the web'));
       else notes.push(`Claude app: ${result.claudeApp.why}. Give it access to ${repo.full_name}: ${result.claudeApp.url}`);
     }

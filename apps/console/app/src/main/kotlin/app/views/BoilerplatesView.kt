@@ -2,6 +2,7 @@ package ai.amberx.axf.console.views
 
 import ai.amberx.axf.console.Boilerplate
 import ai.amberx.axf.console.BoilerplateScreen
+import ai.amberx.axf.console.LibraryCard
 import ai.amberx.axf.kernel.runtime.ToastKind
 import ai.amberx.axf.ui.LocalAxfActions
 import ai.amberx.axf.ui.LocalAxfRuntime
@@ -107,8 +108,8 @@ fun BoilerplatesView() {
                     for (f in g.items) item(key = "bf-${f.id}") { AxfCheckbox(f.id in newFeatures, { on -> newFeatures = if (on) newFeatures + f.id else newFeatures - f.id }, label = f.title) }
                 }
                 item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
-                    AxfButton("Preview", { selected = assemble(newName, newCategory, newFeatures, newScreens); mode = "browse"; category = null }, icon = "eye")
-                    AxfButton("Save boilerplate", { val b = assemble(newName, newCategory, newFeatures, newScreens); if (b.name.isBlank()) runtime.toast("Give it a name first.", ToastKind.WARNING) else { repo.saveBoilerplate(b); runtime.toast("Saved. Copy its boilerplate.json from Browse to add it to the repo.", ToastKind.SUCCESS, b.name); mode = "browse"; category = "custom" } }, tone = ButtonTone.PRIMARY, icon = "save")
+                    AxfButton("Preview", { selected = assemble(repo.libraryCards(), newName, newCategory, newFeatures, newScreens); mode = "browse"; category = null }, icon = "eye")
+                    AxfButton("Save boilerplate", { val b = assemble(repo.libraryCards(), newName, newCategory, newFeatures, newScreens); if (b.name.isBlank()) runtime.toast("Give it a name first.", ToastKind.WARNING) else { repo.saveBoilerplate(b); runtime.toast("Saved. Copy its boilerplate.json from Browse to add it to the repo.", ToastKind.SUCCESS, b.name); mode = "browse"; category = "custom" } }, tone = ButtonTone.PRIMARY, icon = "save")
                 } }
             }
             else -> {
@@ -129,10 +130,10 @@ fun BoilerplatesView() {
 
 val SCREEN_KINDS = listOf("landing", "list-detail", "dashboard", "wizard", "settings", "feed", "editor", "player", "map", "chat", "profile", "custom")
 
-private fun assemble(name: String, category: String, features: Set<String>, screens: List<BoilerplateScreen>): Boilerplate =
-    Boilerplate(name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').ifEmpty { "custom-${System.currentTimeMillis().toString(36)}" }, name, category, "Assembled in the Dev Console from ${features.size} features.", features.toList(), screens, inferModules(features), emptyMap(), "planned", "console")
+private fun assemble(libraries: List<LibraryCard>, name: String, category: String, features: Set<String>, screens: List<BoilerplateScreen>): Boilerplate =
+    Boilerplate(name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').ifEmpty { "custom-${System.currentTimeMillis().toString(36)}" }, name, category, "Assembled in the Dev Console from ${features.size} features.", features.toList(), screens, inferModules(libraries, features), emptyMap(), "planned", "console")
 
-private fun inferModules(features: Set<String>): List<String> = LIBRARIES.filter { lib -> lib.features.any { it in features } }.map { it.module }
+private fun inferModules(libraries: List<LibraryCard>, features: Set<String>): List<String> = libraries.filter { lib -> lib.features.any { it in features } }.map { it.module }
 
 /** Renders the chosen screen kind with real framework components, inside a phone-shaped frame, with the boilerplate's nav as bottom tabs. */
 @Composable

@@ -1,0 +1,46 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261017-604ee7188a",
+  "createdAt": "2026-10-17T14:00:00.000Z",
+  "updatedAt": "2026-10-17T16:00:00.000Z",
+  "kind": "build",
+  "title": "Console plugins",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/<folder>/` (plugin@1 manifest + `web/index.tsx` exporting an `AxfWebLibrary` + optional `server/__init__.py` router at `/api/plugins/<folder>/`). Server routes always need the console token and 404 when disabled; never exposed via the console MCP. Libraries can now contribu",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-17T16:00:00.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "console-plugins"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-17T14:00:00.000Z",
+  "finishedAt": "2026-10-17T16:00:00.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/catalog/plugins.json"
+  ]
+}

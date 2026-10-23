@@ -14,6 +14,15 @@ port follows the same rules with Compose tokens.
 | layout (`core/engines/layout.ts`) | `layout` | `--fx-grid-*`, `--fx-content-max` and the shell's regions |
 | components (`core/engines/components.ts`) | `button`, `slider`, `container`, … | `--fx-btn-*`, `--fx-slider-*`, … plus `data-fx-*` attributes |
 
+**Controls come from the framework (Oct 22 2026, rule "Plugins inherit the app's style").** A plugin or library never
+draws its own button, tab, chip or toggle: it uses `<Button tone size icon>` (`fx-btn`, `fx-btn--sm`, tones primary /
+neutral / danger / success / ghost / quiet), `<IconButton icon label>` (`fx-iconbtn`), `<Segmented>` (`fx-seg`,
+`fx-seg__opt`), `fx-chip` on a `<button>` (`is-on` = pressed), `fx-tab` (page tabs), `fx-menu__item` or `fx-nav__item`,
+so the button asset, style theme and spacing restyle it with the app. A whole row or card you tap is marked
+`data-fx-row` (no chrome; the plugin lays it out). A plugin's own class on a control may lay it out (margin, flex,
+width…) but never set its background, colour, border, radius, padding, font size/weight, shadow or case.
+CI: `node framework/cli/check-controls.mjs`.
+
 ## Transparency tokens
 
 Part of the style theme (optional fields, 0–1; defaults in `OPACITY_DEFAULTS`, identical on Android):
@@ -36,6 +45,28 @@ Chip, Card) edit these live.
 `framework/ui/axf.css` is the base stylesheet. It reads only these variables and provides the shared layout
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
 the React controls (`Button`, `Chip`, `Container`, …) render through them.
+
+## Shared form controls (Oct 21 2026)
+
+Apps and plugins never hand-roll a switch, a labelled field, a choice grid, a callout or a Markdown renderer: the
+framework ships them on both ports with the same names, props and behaviour, and they size themselves from the style
+theme (`--fx-space`, `--fx-font-size`, `--fx-row-h`, radii), so the Spacing choice applies.
+
+| Web (`framework/react`, `.fx-*` in axf.css) | Compose (`axf-ui/components`) | What |
+| --- | --- | --- |
+| `Switch` (`.fx-switch`, `role="switch"` + `aria-checked`) | `AxfSwitch` | on/off with label + hint, or bare (`hideLabel`, `text`) |
+| `Field` (`.fx-field`) | `AxfField` | label / control / hint-or-error wrapper (`aria-describedby`, `role="alert"` error) |
+| `TextField` | `AxfTextField` | single- or multi-line input (`rows`), `mono`, `required`, `error` |
+| `SelectField` | `AxfSelectField` | drop-down inside a Field (`empty` adds a blank choice) |
+| `ChoiceGrid` (`.fx-choices`, radiogroup / group) | `AxfChoiceGrid` | tappable cards, single or `multiple` |
+| `Note` (`.fx-note`, tones info / warning / danger / success) | `AxfNote` | inline callout |
+| `Section` (`.fx-section`) | `AxfSection` | titled block without card chrome |
+| `Markdown` (`.fx-md`, `compact`) | `AxfMarkdown` | safe Markdown: elements only, http(s)/mailto links only |
+| `LibraryParamField` | `AxfLibraryParamField` | a library@1 parameter by type (`core/library.ts` = Kotlin `LibraryParams`) |
+
+None of them is a component-style engine input: they read the compiled tokens only (no asset of their own). A kit
+replaces them by overriding the corresponding `ComponentKind` (SWITCH, TEXT_FIELD, SELECT_FIELD, CHOICE_GRID,
+LIBRARY_PARAM, SECTION, NOTE, MARKDOWN). The web Components view and the Android Component gallery show every one.
 
 ## Plugin and library UIs
 

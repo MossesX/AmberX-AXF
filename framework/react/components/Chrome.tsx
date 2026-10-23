@@ -1,9 +1,9 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
-import { MenuList } from './MenuList';
+import { AppMenuDropdown } from './AppMenu';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
@@ -12,12 +12,14 @@ import { WidgetView } from './Widgets';
 
 export function MenuBar() {
   const rt = useRuntime();
-  const menu = useAsset('app-menu');
+  useAsset('app-menu');
   const state = useAxfState();
   const [open, setOpen] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const policy = rt.asset('uac-policy').data;
   const role = policy.roles.find((r) => r.id === state.role);
+  // The compiled menu: the asset's menus + every contribution + live lists, gated for the current role (core/engines/appmenu.ts).
+  const menus = rt.appMenu().menus;
 
   useEffect(() => {
     if (!open) return;
@@ -28,30 +30,36 @@ export function MenuBar() {
     return () => window.removeEventListener('pointerdown', close);
   }, [open]);
 
+  // Left / Right move between menus while one is open (a submenu list handles its own arrows first).
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!open || !menus.length) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const i = menus.findIndex((m) => m.id === open);
+    const next = menus[(i + (e.key === 'ArrowRight' ? 1 : -1) + menus.length) % menus.length];
+    if (next) { e.preventDefault(); setOpen(next.id); }
+  };
+
   return (
-    <div className="fx-menubar" ref={ref} role="menubar">
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
       <div className="fx-brand">
         <span className="fx-brand__mark" aria-hidden="true" />
         <span className="fx-brand__name">{rt.manifest.app.name}</span>
       </div>
       <div className="fx-menubar__menus">
-        {menu.data.menus.map((m) => (
+        {menus.map((m) => (
           <div key={m.id} className="fx-menubar__item">
             <button
               type="button"
               className={`fx-menubar__btn ${open === m.id ? 'is-open' : ''}`}
               aria-haspopup="menu"
               aria-expanded={open === m.id}
+              data-axf-menu-btn={m.id}
               onClick={() => setOpen((o) => (o === m.id ? null : m.id))}
               onMouseEnter={() => open && setOpen(m.id)}
             >
               {m.label}
             </button>
-            {open === m.id && (
-              <div className="fx-dropdown fx-popover">
-                <MenuList items={m.items} onDone={() => setOpen(null)} />
-              </div>
-            )}
+            {open === m.id && <AppMenuDropdown key={m.id} menu={m} onDone={() => setOpen(null)} />}
           </div>
         ))}
       </div>
@@ -114,18 +122,22 @@ export function Toolbar({ views }: { views: ViewMap }) {
           {g.items.map((it) => {
             const gate = rt.gate(it.requires);
             if (gate === 'hide') return null;
+            if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
             const count = it.badge ? rt.badge(it.badge) : 0;
+            // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
+            const hostLock = rt.lockedByHost({ action: it.action });
+            const off = gate === 'disable' || !!hostLock;
             return (
               <button
                 key={it.id}
                 type="button"
                 className="fx-toolbtn"
-                disabled={gate === 'disable'}
-                title={gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
+                disabled={off}
+                title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
                 aria-label={count ? `${it.label} (${count} new)` : it.label}
                 onClick={() => rt.dispatch(it.action)}
               >
-                {tb.data.variant !== 'labels' && <Icon name={gate === 'disable' ? 'lock' : it.icon} size={16} />}
+                {tb.data.variant !== 'labels' && <Icon name={off ? 'lock' : it.icon} size={16} />}
                 {tb.data.variant !== 'icons' && <span>{it.label}</span>}
                 {count > 0 && <span className="fx-toolbtn__badge" aria-hidden="true">{count > 99 ? '99+' : count}</span>}
               </button>
@@ -160,13 +172,14 @@ export function NavMenu({ views }: { views: ViewMap }) {
     <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {[...nav.data.sections, ...rt.navExtras].map((sec, i) => {
-        const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide');
+        const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
         return (
           <div key={i} className="fx-nav__section">
             {sec.label && <div className="fx-nav__label">{sec.label}</div>}
             {items.map((it) => {
-              const locked = rt.gate(it.requires) === 'disable';
+              const hostLock = rt.lockedByHost({ view: it.view });
+              const locked = rt.gate(it.requires) === 'disable' || !!hostLock;
               return (
                 <button
                   key={it.id}
@@ -174,7 +187,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   className={`fx-nav__item ${state.view === it.view ? 'is-active' : ''}`}
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
-                  title={it.label}
+                  title={hostLock ? `${it.label} — ${hostLock}` : it.label}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
                   onClick={() => rt.navigate(it.view)}

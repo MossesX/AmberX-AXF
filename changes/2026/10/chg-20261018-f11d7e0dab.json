@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-f11d7e0dab",
+  "createdAt": "2026-10-18T18:10:02.000Z",
+  "updatedAt": "2026-10-18T21:10:02.000Z",
+  "kind": "build",
+  "title": "Agent manager plugin (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/agent-manager` (`ai.amberx.axf.console.agent-manager`, v0.2.0). Agents = persona + lingo packs + skills (instructions, triggers, few-shot, needed tools) + tools (builtin repo/web/memory/Firecrawl/time/calculator, HTTP with env:VAR secrets, MCP, prompt, delegate-to-agent, wo",
+    "commits": [
+      {
+        "sha": "78bc5f1",
+        "message": "Harden the AI assistant, agent manager and plugin lifecycle (independent review fixes)"
+      },
+      {
+        "sha": "855d354",
+        "message": "Plugin settings are sub-tabs of Settings → Plugins, never top-level tabs"
+      },
+      {
+        "sha": "786f773",
+        "message": "WIP Mosses: coder add-on becomes Mosses (persona, voice slot, migration), container tools behind a safety allow list, change batches from assistant turns (chat card UI and CLI bridge not done yet)"
+      },
+      {
+        "sha": "7901261",
+        "message": "Mosses: approval cards and write-mode badge in the assistant chat, Claude Code CLI gets the console tools over an MCP bridge, Safety panel and voice slot in the agent manager"
+      },
+      {
+        "sha": "b5e23cd",
+        "message": "Agent manager library: used by, fork for one agent, duplicate, export/import, versions with diff and rollback, plain-English drafts by the AXF expert, persona samples and voice slot, dangerous tool ma"
+      },
+      {
+        "sha": "f6a1e40",
+        "message": "Independent review fixes: Claude Code CLI gets no secrets and can't read /proc or the console's private folder; exact base hashes for big files, explicit accept for changes the card can't show, comman"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T21:10:02.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "agent-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T18:10:02.000Z",
+  "finishedAt": "2026-10-18T21:10:02.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/agent-manager"
+  ]
+}

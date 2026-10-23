@@ -1,6 +1,6 @@
 /** The views (Install is in InstallView.tsx). Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
 import { useMemo, useState } from 'react';
-import { Chip, Icon, useRuntime } from '@console/axf/react';
+import { Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi } from './actions';
 import { DetailPane, HealthChip, Monogram, QuickActions } from './Detail';
 import { fmtBytes, HEALTH_LABEL, HEALTH_RANK, type Inventory, type PluginRow } from './model';
@@ -28,7 +28,7 @@ export function CardsView({ rows, layout, selected, onSelect, onChanged }: ViewP
     <div className="axp-plugin-manager-cards">
       {rows.map((r) => (
         <div key={r.folder} className={`axp-plugin-manager-card is-${r.health} ${selected === r.folder ? 'is-selected' : ''} ${r.enabled ? '' : 'is-disabled'}`} {...ctx(r)}>
-          <button type="button" className="axp-plugin-manager-card__hit" onClick={() => onSelect(r.folder)} aria-label={`Show ${r.name}`} />
+          <button type="button" data-fx-row className="axp-plugin-manager-card__hit" onClick={() => onSelect(r.folder)} aria-label={`Show ${r.name}`} />
           <div className="axp-plugin-manager-card__cover"><Monogram row={r} size={layout === 'catalog' ? 'lg' : 'md'} /></div>
           <div className="axp-plugin-manager-card__body">
             <div className="axp-plugin-manager-card__title">
@@ -81,7 +81,7 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
           <tr>
             {COLS.map((c) => (
               <th key={c.id} className={c.num ? 'is-num' : ''} aria-sort={sort.col === c.id ? (sort.dir === 1 ? 'ascending' : 'descending') : 'none'}>
-                <button type="button" className="axp-plugin-manager-th" onClick={() => setSort((s) => ({ col: c.id, dir: s.col === c.id ? (s.dir === 1 ? -1 : 1) : 1 }))}>
+                <button type="button" data-fx-row className="axp-plugin-manager-th" onClick={() => setSort((s) => ({ col: c.id, dir: s.col === c.id ? (s.dir === 1 ? -1 : 1) : 1 }))}>
                   {c.label}{sort.col === c.id && <Icon name={sort.dir === 1 ? 'chevron-up' : 'chevron-down'} size={12} />}
                 </button>
               </th>
@@ -103,8 +103,8 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
               <td className="is-num">{r.logCount}</td>
               <td onClick={(e) => e.stopPropagation()}>
                 <span className="axp-plugin-manager-iconbtns">
-                  <button type="button" className="axp-plugin-manager-iconbtn" title="Open its UI" disabled={!hasUi(r) || !r.enabled} onClick={() => openUi(rt, r)}><Icon name="external" size={14} /></button>
-                  <button type="button" className="axp-plugin-manager-iconbtn" title="Open its settings" disabled={!hasSettings(r) || !r.enabled} onClick={() => openSettings(rt, r)}><Icon name="settings" size={14} /></button>
+                  <IconButton icon="external" label="Open its UI" disabled={!hasUi(r) || !r.enabled} onClick={() => openUi(rt, r)} />
+                  <IconButton icon="settings" label="Open its settings" disabled={!hasSettings(r) || !r.enabled} onClick={() => openSettings(rt, r)} />
                 </span>
               </td>
             </tr>
@@ -125,7 +125,7 @@ export function MasterDetailView(props: ViewProps) {
     <div className="axp-plugin-manager-md">
       <nav className="axp-plugin-manager-md__list" aria-label="Plugins">
         {rows.map((r) => (
-          <button key={r.folder} type="button" className={`axp-plugin-manager-md__item ${row?.folder === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
+          <button key={r.folder} type="button" data-fx-row className={`axp-plugin-manager-md__item ${row?.folder === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
             <Monogram row={r} size="sm" />
             <span className="axp-plugin-manager-md__name">{r.name}<span className="fx-muted fx-small">{r.version}</span></span>
             <span className={`axp-plugin-manager-dot is-${r.health}`} title={HEALTH_LABEL[r.health]} />

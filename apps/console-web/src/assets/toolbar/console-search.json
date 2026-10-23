@@ -3,8 +3,8 @@
   "type": "toolbar",
   "id": "console-search",
   "name": "Console Search",
-  "version": "1.0.0",
-  "description": "Console shortcuts with a live search box that finds any page, action, setting, dialog, asset or word in the console as you type and brings it into focus.",
+  "version": "1.1.0",
+  "description": "Console shortcuts with a live search box that finds any page, action, setting, dialog, asset or word in the console as you type and brings it into focus. The alerts bell is on the banner (Alerts bell plugin).",
   "author": "AmberX AXF",
   "tags": [
     "search",
@@ -39,7 +39,7 @@
           {
             "id": "build",
             "icon": "play",
-            "label": "Build",
+            "label": "Build queue",
             "action": "nav:build"
           },
           {
@@ -77,13 +77,6 @@
       {
         "id": "tools",
         "items": [
-          {
-            "id": "alerts",
-            "icon": "bell",
-            "label": "Alerts",
-            "action": "alerts.open",
-            "badge": "alerts.unread"
-          },
           {
             "id": "terminal",
             "icon": "terminal",

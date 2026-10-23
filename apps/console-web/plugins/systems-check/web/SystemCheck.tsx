@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
 import './systems-check.css';
@@ -14,7 +15,7 @@ import './systems-check.css';
 
 type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
 interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
-type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string } | null;
+type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
 interface Service { id: string; label: string; icon: string; description: string }
 interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
@@ -71,13 +72,33 @@ export async function call<T>(path: string, init: RequestInit = {}): Promise<T> 
   return j;
 }
 
+let runtime: AxfRuntime | null = null;
+let shownSwitch = '';
+/** The runtime the credits check opens the assistant's providers with (set by the plugin's register). */
+export function setSystemCheckRuntime(rt: AxfRuntime) { runtime = rt; }
+
+/** Claude out of credits: the server already switched to a key that has credit (or found none); show the assistant's
+ *  Providers so Brett sees the pick and can change it (Brett, Oct 23 2026). Once per switch. */
+function showCreditsSwitch(r: Report | null) {
+  const c = r?.checks.find((x) => x.id === 'claude-credits') as (Check & { switched?: { to: string } }) | undefined;
+  if (!c || c.status === 'ok' || c.status === 'info' || !runtime) return;
+  const key = c.switched ? `to:${c.switched.to}` : c.status === 'error' ? 'none' : '';
+  if (!key || key === shownSwitch) return;
+  shownSwitch = key;
+  runtime.toast(c.summary, c.switched ? 'warning' : 'danger', 'Claude credits');
+  const f = c.fix?.type === 'settings' ? c.fix : null;
+  runtime.dispatch(f?.action || `settings.open:${f?.tab ?? 'plugins'}`);
+}
+
+/** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
 export async function loadSystemCheck(force = false) {
   if (!api.isBackendUp()) return;
   st.loading = true; emit();
-  try { st.report = await call<Report>(`check${force ? '?force=1' : ''}`); st.error = ''; st.unauthorized = false; }
+  try { st.report = await call<Report>(force ? 'check?force=1' : 'check?keys=1'); st.error = ''; st.unauthorized = false; }
   catch (e) { st.error = (e as Error).message; }
   st.loading = false; emit();
   const r = st.report;
+  showCreditsSwitch(r);
   if (force && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
 }
 
@@ -125,7 +146,15 @@ export async function fixAll() {
   if (st.fixing || !st.report) return;
   const queue = guidedOrder(issues(st.report));
   st.fixing = true; st.prompt = null; st.run = Object.fromEntries(queue.map((c) => [c.id, 'queued' as Run])); st.runMsg = {}; emit();
-  const set = (id: string, r: Run, msg?: string) => { st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; if (r === 'done') markFixed(id); emit(); };
+  // Claude on failure (setting): an item Fix all marks failed goes to headless Claude Code on the VPS (the server dedups).
+  const handOver = await call<{ on: boolean }>('claude').then((x) => x.on, () => false);
+  const set = (id: string, r: Run, msg?: string) => {
+    st.run = { ...st.run, [id]: r }; if (msg !== undefined) st.runMsg = { ...st.runMsg, [id]: msg }; if (r === 'done') markFixed(id); emit();
+    if (r === 'failed' && handOver) {
+      void call<{ job: { message?: string } | null }>(`claude/${id}`, { method: 'POST', body: JSON.stringify({ reason: `Fix all: ${msg ?? 'failed'}`.slice(0, 400) }) })
+        .then((x) => { if (x.job?.message) { st.runMsg = { ...st.runMsg, [id]: `${msg ?? ''} · ${x.job.message}` }; emit(); } }, () => undefined);
+    }
+  };
   const passes = (c: Check) => c.status === 'ok' || c.status === 'info';
   let stopped = false;
   for (let k = 0; k < queue.length && !stopped; k++) {
@@ -133,6 +162,13 @@ export async function fixAll() {
     set(c.id, 'working');
     try {
       if (c.autoFix) { const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' }); st.runMsg[c.id] = r.message; }
+      else if (c.fix?.type !== 'secrets' && c.fix?.type !== 'settings') {
+        await loadHostAuto();
+        // VPS fix with a fixed command through axHub, else Mosses works it out (each command approved on axHub);
+        // then the check below decides: passes = done, else you're asked
+        const j = c.fix?.type === 'host' && hostAuto.has(c.id) ? await runHostJob(c) : await runMossesJob(c);
+        set(c.id, 'working', j.message);
+      }
       await new Promise((res) => setTimeout(res, 350)); // let the badge show
       let after = await recheck(c.id);
       if (passes(after)) { set(c.id, 'done'); continue; }
@@ -179,40 +215,67 @@ function loadClaude() {
 }
 export const claudeConnected = () => { loadClaude(); return claudeOk === true; };
 
-/** With Claude connected, an issue no built-in fix covers goes to Mosses in the assistant: it gets the check's details
- *  and works through approval cards (container changes) and axHub approvals (VPS commands) — nothing runs unapproved. */
-function claudeFix(c: Check, rt: ReturnType<typeof useRuntime>) {
-  const parts = [
-    `Fix this AXF Dev Console setup issue: **${c.title}** (${c.status}).`, c.summary,
-    c.details.length ? `Details:\n- ${c.details.join('\n- ')}` : '',
-    c.instructions.length ? `How it's fixed by hand:\n- ${c.instructions.join('\n- ')}` : '',
-    c.fix?.type === 'host' ? `Command for the VPS:\n\n    ${c.fix.command}\n\nRun VPS commands through axHub (vps.run) so Brett approves them first.` : '',
-    'Propose every change through approval cards; never change anything without approval. When done, say what you did so the check can be re-run.',
-  ].filter(Boolean);
-  rt.dispatch(`ai.chat.start:${encodeURIComponent(JSON.stringify({ agentId: 'coder', title: `Fix: ${c.title}`, message: parts.join('\n\n') }))}`);
-  st.runMsg = { ...st.runMsg, [c.id]: 'Handed to Claude: approve its changes in the chat' }; emit();
-}
-
+/** Every issue gets a fix badge (Brett, Oct 23 2026): a key to add, a setting to open, or Auto fix (its own fix, a fixed VPS
+ *  command through Mosses + axHub, or Mosses working it out). Nothing is left with no button. */
 export const autoFixLabel = (c: Check) => {
   void loadHostAuto();
-  if (claudeConnected()) return 'Auto fix'; // Brett, Oct 20 2026: every issue gets Auto fix while Claude is connected
-  return c.fix?.type === 'action' ? 'Auto fix' : c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open'
-    : c.fix?.type === 'host' ? (hostAuto.has(c.id) ? 'Auto fix' : 'Copy fix') : null;
+  return c.fix?.type === 'secrets' ? 'Add key' : c.fix?.type === 'settings' ? 'Open' : 'Auto fix';
 };
 
-interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
-/** VPS fix: the hub runs the check's exact command once you approve it in the pop-up; we follow the job here. */
-async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
-  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Asking axHub…'; emit();
+interface MossesJob { state: 'asking' | 'working' | 'done' | 'failed'; message: string; reply?: string }
+/** Hand a check to Mosses (server: POST mosses/{id}) and follow it until he's done; refusals say exactly what's missing. */
+async function runMossesJob(c: Check): Promise<{ state: string; message: string }> {
+  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Handing it to Mosses…'; emit();
+  let j = await call<MossesJob>(`mosses/${c.id}`, { method: 'POST' });
+  const until = Date.now() + 90 * 60_000; // his commands each wait for an approval
+  while ((j.state === 'asking' || j.state === 'working') && Date.now() < until) {
+    st.run[c.id] = 'working'; st.runMsg[c.id] = j.message; emit();
+    await new Promise((r) => setTimeout(r, 3000));
+    try {
+      const all = await call<{ jobs: Record<string, MossesJob> }>('mosses');
+      const now = all.jobs[c.id];
+      if (!now) return { state: 'failed', message: 'The console restarted while Mosses worked: check again.' };
+      j = now;
+    } catch { /* the console is restarting: keep following */ }
+  }
+  return j;
+}
+
+async function mossesFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   try {
-    let j = await call<HostJob>(`autofix/${c.id}`, { method: 'POST' });
-    const until = Date.now() + 31 * 60_000;
-    while ((j.state === 'asking' || j.state === 'waiting' || j.state === 'running') && Date.now() < until) {
-      st.run[c.id] = j.state === 'waiting' ? 'waiting' : 'working'; st.runMsg[c.id] = j.message; emit();
-      await new Promise((r) => setTimeout(r, 3000));
+    const j = await runMossesJob(c);
+    await loadSystemCheck(true);
+    const now = st.report?.checks.find((x) => x.id === c.id);
+    const fixed = !!now && (now.status === 'ok' || now.status === 'info');
+    st.run[c.id] = fixed ? 'done' : 'failed'; st.runMsg[c.id] = fixed ? 'Fixed by Mosses.' : j.message; if (fixed) markFixed(c.id); emit();
+    rt.toast(`${c.title}: ${fixed ? 'fixed by Mosses' : j.message}`, fixed ? 'success' : 'warning');
+  } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
+}
+
+interface HostJob { state: 'asking' | 'waiting' | 'running' | 'done' | 'failed'; message: string }
+/** VPS fix: the hub runs the check's exact command once you approve it in the pop-up. Start the server's Auto fix job for a VPS check and follow it until it's done or failed (approval included). */
+async function runHostJob(c: Check): Promise<HostJob> {
+  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Asking axHub…'; emit();
+  let j = await call<HostJob>(`autofix/${c.id}`, { method: 'POST' });
+  const until = Date.now() + 50 * 60_000; // 30 min to approve + up to 15 min to run + the report
+  while (j.state === 'asking' || j.state === 'waiting' || j.state === 'running') {
+    if (Date.now() > until) return { state: 'failed', message: 'Still not finished: check the VPS, then check again.' };
+    st.run[c.id] = j.state === 'waiting' ? 'waiting' : 'working'; st.runMsg[c.id] = j.message; emit();
+    await new Promise((r) => setTimeout(r, 3000));
+    try {
       const all = await call<{ jobs: Record<string, HostJob | null> }>('autofix');
-      j = all.jobs[c.id] ?? j;
-    }
+      const now = all.jobs[c.id];
+      // A reinstall fix restarts the console, which forgets its jobs: check again instead of waiting forever.
+      if (!now) return { state: 'failed', message: 'The console restarted while the fix ran: check again to see if it worked.' };
+      j = now;
+    } catch { /* the console is restarting (a reinstall fix): keep following */ }
+  }
+  return j;
+}
+
+async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
+  try {
+    const j = await runHostJob(c);
     st.run[c.id] = j.state === 'done' ? 'done' : 'failed'; st.runMsg[c.id] = j.message; if (j.state === 'done') markFixed(c.id); emit();
     rt.toast(`${c.title}: ${j.message}`, j.state === 'done' ? 'success' : 'warning');
     await loadSystemCheck(true);
@@ -221,15 +284,11 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
 
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   const f = c.fix;
-  if (!f) { if (claudeConnected()) claudeFix(c, rt); return; }
-  if (f.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
-  if (f.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
-  if (f.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
-  if (f.type !== 'action' && claudeConnected()) { claudeFix(c, rt); return; }
-  if (f.type === 'host') {
-    await navigator.clipboard?.writeText(f.command).then(() => rt.toast('Fix command copied: run it on the VPS (mosh or the console terminal)', 'info'), () => rt.toast(f.command, 'info'));
-    return;
-  }
+  if (f?.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
+  if (f?.type === 'settings') { rt.dispatch(f.action || `settings.open:${f.tab}`); return; }
+  await loadHostAuto();
+  if (f?.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
+  if (!f || f.type !== 'action') { await mossesFix(c, rt); return; } // no fixed command: Mosses works it out through axHub
   st.run[c.id] = 'working'; st.runMsg[c.id] = ''; emit();
   try {
     const r = await call<{ message: string; check: Check }>(`fix/${c.id}`, { method: 'POST' });
@@ -246,7 +305,8 @@ export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Prom
 export function SystemBanner() {
   const s = useSys();
   const rt = useRuntime();
-  const [open, setOpen] = useState(false);
+  // Launches expanded; "_" folds it to its one-line summary (Brett, Oct 21 2026: error banners minimize, they don't close).
+  const [open, setOpen] = useBannerLaunchOpen();
   // Issues, plus anything just fixed: it stays (badge "Fixed") for FIXED_LINGER_MS so you see it worked, then leaves.
   const list = useMemo(() => {
     const open = issues(s.report).filter((c) => !isKeyIssue(c));
@@ -281,12 +341,12 @@ export function SystemBanner() {
     <div className={`axp-systems-check-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
       <div className="axp-systems-check-banner__row">
         <Icon name="alert" />
-        <button type="button" className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
         <Button tone="primary" icon="settings" onClick={() => rt.openDialog('system-check')}>Fix…</Button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until the console reloads" title="Hide until the console reloads" onClick={() => { st.dismissed = true; emit(); }}><Icon name="x" size={16} /></button>
+        {open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>}
       </div>
       {open && (
         <ul className="axp-systems-check-banner__list">
@@ -299,16 +359,12 @@ export function SystemBanner() {
             const label = autoFixLabel(c);
             return (
               <li key={c.id} className="axp-systems-check-banner__li">
-                <button type="button" className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+                <button type="button" data-fx-row className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                 </button>
                 {s.run[c.id] === 'working' || s.run[c.id] === 'waiting' || (s.fixedUntil[c.id] && !isIssue(c))
                   ? <RunBadge r={s.fixedUntil[c.id] && !isIssue(c) ? 'done' : s.run[c.id]} />
-                  : label
-                    ? <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />
-                    : claudeConnected()
-                      ? <ActBadge icon="zap" label="Auto fix" onClick={() => void autoFix(c, rt)} />
-                      : <ActBadge icon="settings" label="Fix…" onClick={() => rt.openDialog('system-check', { focus: c.id })} />}
+                  : <ActBadge icon={fixIcon(c)} label={label} onClick={() => void autoFix(c, rt)} />}
               </li>
             );
           })}
@@ -336,9 +392,9 @@ function StatusChip({ s }: { s: Status }) { return <Chip tone={s === 'ok' ? 'suc
 const RUN_LABEL: Record<Run, string> = { queued: 'Queued', working: 'Working', waiting: 'Waiting for you', done: 'Completed', failed: 'Failed', 'needs-you': 'Needs you', skipped: 'Skipped' };
 /** A small action badge (icon + a word) for the banner's drop-down rows: same height as the run badges. */
 function ActBadge({ icon, label, onClick, disabled, title }: { icon: string; label: string; onClick: () => void; disabled?: boolean; title?: string }) {
-  return <button type="button" className="axp-systems-check-act" disabled={disabled} title={title ?? label} onClick={onClick}><Icon name={icon} size={11} />{label}</button>;
+  return <Button size="sm" tone="primary" icon={icon} disabled={disabled} title={title ?? label} onClick={onClick}>{label}</Button>;
 }
-const fixIcon = (c: Check) => (claudeConnected() ? 'zap' : c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
+const fixIcon = (c: Check) => (c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap');
 
 function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
@@ -395,9 +451,9 @@ export function FixPanel({ c }: { c: Check }) {
           <div className="fx-row fx-row--wrap"><code className="axp-systems-check-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
         </div>
       )}
-      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
+      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(f.action || `settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
-        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={c.fix?.type === 'host' && !hostAuto.has(c.id) ? 'copy' : c.fix?.type === 'secrets' ? 'key' : c.fix?.type === 'settings' ? 'settings' : 'zap'} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
+        {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
       </div>
     </div>
@@ -428,7 +484,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const [view, setView] = useState<View>('grid');
   const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
   const [filter, setFilter] = useState<'issues' | 'all'>('issues');
-  useEffect(() => { if (!s.report && !s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
   if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
   const r = s.report;
@@ -463,7 +519,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
       <div className="axp-systems-check__tabs" role="tablist">
         {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={view === id} className="axp-systems-check__tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
+          <button key={id} type="button" role="tab" aria-selected={view === id} className="fx-tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
         ))}
       </div>
 
@@ -505,7 +561,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                 <header className="axp-systems-check-card__head"><Icon name={sv.icon} /><strong className="fx-grow">{sv.label}</strong><StatusChip s={worst} /></header>
                 <p className="fx-small fx-muted" style={{ margin: 0 }}>{sv.description}</p>
                 <ul className="axp-systems-check-card__list">
-                  {cs.map((c) => <li key={c.id}><button type="button" className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span><SourceBadge ai={isAiCheck(c)} />{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
+                  {cs.map((c) => <li key={c.id}><button type="button" data-fx-row className="axp-systems-check-card__item" onClick={() => goGrid(c.id)}><StatusDot s={c.status} /><span className="fx-grow">{c.title}</span><SourceBadge ai={isAiCheck(c)} />{s.run[c.id] && <RunBadge r={s.run[c.id]} />}</button></li>)}
                 </ul>
               </section>
             );
@@ -554,7 +610,7 @@ function Guided({ list }: { list: Check[] }) {
       <ol className="axp-systems-check-guided__steps">
         {list.map((x, k) => {
           const now = s.report?.checks.find((y) => y.id === x.id) ?? x;
-          return <li key={x.id}><button type="button" className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
+          return <li key={x.id}><button type="button" data-fx-row className={`axp-systems-check-guided__step ${k === idx ? 'is-active' : ''} ${now.status === 'ok' ? 'is-done' : ''}`} onClick={() => setI(k)}>
             <StatusDot s={now.status} /><span className="fx-grow">{k + 1}. {x.title}</span><SourceBadge ai={isAiCheck(x)} />{skipped.has(x.id) && <span className="fx-small fx-muted">skipped</span>}{s.run[x.id] && <RunBadge r={s.run[x.id]} />}</button></li>;
         })}
       </ol>

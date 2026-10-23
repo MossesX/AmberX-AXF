@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, Container, Icon, Slider, useRuntime } from '../axf/react';
+import { Button, Chip, Container, Icon, Slider, Switch, useRuntime } from '../axf/react';
 import { BUILD_OPTIONS, buildOptionFlags, resolveBuildOptions, type BuildOptionValues } from '../axf/core';
 import { useStore } from '../store';
 import * as api from '../api';
@@ -59,7 +59,7 @@ function ScreenKindPreview({ s }: { s: BoilerplateScreen }) {
     case 'landing': return <div className="fx-stack" style={{ alignItems: 'center', textAlign: 'center' }}><span className="cx-brandmark" /><h3 style={{ margin: 0 }}>{s.label}</h3><p className="fx-muted fx-small">Landing / loading screen with brand mark and primary action</p><Button tone="primary">Get started</Button></div>;
     case 'list-detail': return <div className="fx-stack"><div className="fx-search"><Icon name="search" /><input placeholder={`Search ${s.label.toLowerCase()}`} readOnly /></div>{rows(4)}</div>;
     case 'dashboard': return <div className="fx-stack"><div className="fx-grid cx-tiles">{['Users', 'Revenue', 'Errors', 'Uptime'].map((t, k) => <Container key={t} title={t}><strong>{[1284, '$9.1k', 3, '99.98%'][k]}</strong></Container>)}</div><div className="cx-chart">{[40, 70, 55, 90, 30, 60].map((h, k) => <span key={k} style={{ height: `${h}%` }} />)}</div></div>;
-    case 'settings': return <div className="fx-stack">{['Appearance', 'Account', 'Notifications', 'Privacy'].map((t) => <div key={t} className="cx-item"><Icon name="settings" /><div className="fx-grow">{t}</div><label className="cx-switch"><input type="checkbox" defaultChecked readOnly /><span /></label></div>)}</div>;
+    case 'settings': return <div className="fx-stack">{['Appearance', 'Account', 'Notifications', 'Privacy'].map((t) => <div key={t} className="cx-item"><Icon name="settings" /><div className="fx-grow">{t}</div><Switch hideLabel label={t} checked onChange={() => undefined} /></div>)}</div>;
     case 'feed': return <div className="fx-stack">{[1, 2].map((k) => <Container key={k} title={`Post ${k}`} icon="user"><div className="cx-imageph" /><p className="fx-small fx-muted" style={{ margin: 0 }}>Caption text for the feed post.</p></Container>)}</div>;
     case 'editor': return <div className="fx-stack"><div className="fx-row">{['B', 'I', 'U', '•', '#'].map((t) => <button key={t} className="fx-iconbtn">{t}</button>)}</div><textarea className="fx-input fx-mono" rows={8} readOnly defaultValue={`# ${s.label}\n\nType here…`} /></div>;
     case 'player': return <div className="fx-stack"><div className="cx-video"><Icon name="play" size={28} /></div><Slider label="Position" value={35} onChange={() => {}} /><div className="fx-row" style={{ justifyContent: 'center' }}><button className="fx-iconbtn"><Icon name="chevron-left" /></button><Button tone="primary" icon="play">Play</Button><button className="fx-iconbtn"><Icon name="chevron-right" /></button></div></div>;

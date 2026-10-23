@@ -3,7 +3,8 @@
   "app": {
     "id": "axhub-android",
     "name": "AXHub",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "about": "Approve and manage your axHub from this phone."
   },
   "framework": {
     "version": "0.2.0",
@@ -20,7 +21,7 @@
     "layout": "classic-ide",
     "app-menu": "standard-desktop",
     "toolbar": "standard-icons",
-    "nav-menu": "blank-nav",
+    "nav-menu": "axhub-nav",
     "context-menu": "compact-classic",
     "dialog": "centered-modal",
     "popup": "corner-solid",
@@ -30,6 +31,17 @@
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "settings",
+    "label": "version",
+    "status": "online",
+    "counter": "alerts",
+    "progress": "build",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
     "badge": "new",
     "uac-policy": "standard"
   },
@@ -113,7 +125,8 @@
       "ai.amberx.axf.work"
     ],
     "minSdk": 26,
-    "targetSdk": 35
+    "targetSdk": 35,
+    "secureWindow": true
   },
   "libraries": {
     "lock": {

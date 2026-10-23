@@ -1,0 +1,52 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-f92e1d4ce6",
+  "createdAt": "2026-10-21T07:39:26.000Z",
+  "updatedAt": "2026-10-21T11:39:26.000Z",
+  "kind": "build",
+  "title": "app-menu-hooks (rebuild)",
+  "asked": "Backfilled from the rebuild log (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "fable",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "Application menu becomes a merge of the asset + run-time contributions + live lists (one engine, one fixture, 113 checks); React menubar with flyouts / phone drill-down, badges, checks, keyboard. Android twin deferred.",
+    "branch": "fable/app-menu-hooks",
+    "commits": [
+      {
+        "sha": "336f681",
+        "message": "Application-menu hooks: run-time contributions, live lists and a merge engine for the app menu (web)"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "_claude/memory/docs/rebuilds/app-menu-hooks.md"
+    }
+  },
+  "closed": {
+    "at": "2026-10-21T11:39:26.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "pending",
+    "id": "app-menu-hooks"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T07:39:26.000Z",
+  "finishedAt": "2026-10-21T11:39:26.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 66
+  },
+  "costEstimated": true,
+  "branch": "fable/app-menu-hooks"
+}

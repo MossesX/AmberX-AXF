@@ -3,6 +3,7 @@ import { Button, Container } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { appMenu } from './menu';
 
 /** The folder name under plugins/ — this plugin's server routes live at /api/plugins/<FOLDER>/. */
 const FOLDER = 'example';
@@ -23,6 +24,7 @@ export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.example', // must equal plugin.json "id"
   label: 'Example',
   version: '0.1.0',
+  appMenu, // web/menu.ts: its entries in the console's application menu
   views: { example: { title: 'Example', icon: 'box', render: () => <ExampleView /> } },
   nav: { label: 'Plugins', items: [{ id: 'example', label: 'Example', icon: 'box', view: 'example' }] },
   // Plugins never ship their own settings screen: they add a tab to the app's settings, with the shared lifecycle panel.

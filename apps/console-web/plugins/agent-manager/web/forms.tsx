@@ -34,7 +34,7 @@ export function Pick<T extends { id: string; name: string; origin?: string }>({ 
     <div className="axp-agent-manager__picks">
       {items.map((it) => {
         const on = v.includes(it.id);
-        return <button key={it.id} type="button" className={`axp-agent-manager__pick${on ? ' is-active' : ''}`} aria-pressed={on} onClick={() => onChange(on ? v.filter((x) => x !== it.id) : [...v, it.id])}>{on && <Icon name="check" size={11} />}{it.name}</button>;
+        return <button key={it.id} type="button" className={`fx-chip axp-agent-manager__pick${on ? ' is-on' : ''}`} aria-pressed={on} onClick={() => onChange(on ? v.filter((x) => x !== it.id) : [...v, it.id])}>{on && <Icon name="check" size={11} />}{it.name}</button>;
       })}
     </div>
   );
@@ -147,7 +147,7 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
       </label>
       <Field label="Kind">
         <div className="axp-agent-manager__picks">
-          {(status?.toolKinds ?? Object.keys(KIND_HELP)).map((k) => <button key={k} type="button" className={`axp-agent-manager__pick${kind === k ? ' is-active' : ''}`} aria-pressed={kind === k} title={KIND_HELP[k]} onClick={() => set({ ...v, kind: k, config: {} })}>{k}</button>)}
+          {(status?.toolKinds ?? Object.keys(KIND_HELP)).map((k) => <button key={k} type="button" className={`fx-chip axp-agent-manager__pick${kind === k ? ' is-on' : ''}`} aria-pressed={kind === k} title={KIND_HELP[k]} onClick={() => set({ ...v, kind: k, config: {} })}>{k}</button>)}
         </div>
         <span className="fx-small fx-muted">{KIND_HELP[kind]}</span>
       </Field>
@@ -284,7 +284,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
         <div className="fx-stack">
           <Field label="Memory type">
             <div className="axp-agent-manager__picks">
-              {(status?.memoryTypes ?? Object.keys(MEMORY_HELP)).map((t) => <button key={t} type="button" className={`axp-agent-manager__pick${(mem.type ?? 'hybrid') === t ? ' is-active' : ''}`} aria-pressed={(mem.type ?? 'hybrid') === t} onClick={() => setMem({ type: t })}>{t}</button>)}
+              {(status?.memoryTypes ?? Object.keys(MEMORY_HELP)).map((t) => <button key={t} type="button" className={`fx-chip axp-agent-manager__pick${(mem.type ?? 'hybrid') === t ? ' is-on' : ''}`} aria-pressed={(mem.type ?? 'hybrid') === t} onClick={() => setMem({ type: t })}>{t}</button>)}
             </div>
             <span className="fx-small fx-muted">{MEMORY_HELP[mem.type ?? 'hybrid']}</span>
           </Field>

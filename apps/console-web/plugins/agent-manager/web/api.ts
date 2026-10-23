@@ -1,5 +1,6 @@
 /* Agent manager — web API layer and shared types. */
-import { pluginFetch } from '@console/plugins';
+import { readSse } from '@console/axf/core/sse';
+import { pluginApi, pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'agent-manager';
 export const ID = 'ai.amberx.axf.console.agent-manager';
@@ -38,14 +39,8 @@ export interface Settings {
   safety: { dangerousAgents: string[] };
 }
 
-export async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Settings → Account & security).');
-  if (r.status === 404 && !j.detail) throw new Error('The agent manager plugin is disabled or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+const api = pluginApi(FOLDER, 'The agent manager plugin');
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 export const post = <T,>(path: string, body: unknown = {}) => call<T>(path, { method: 'POST', body: JSON.stringify(body) });
 export const put = <T,>(path: string, body: unknown) => call<T>(path, { method: 'PUT', body: JSON.stringify(body) });
 export const del = <T,>(path: string) => call<T>(path, { method: 'DELETE' });
@@ -65,21 +60,7 @@ export function streamWorkflow(id: string, input: string, on: (event: string, da
     try {
       const r = await pluginFetch(FOLDER, `workflows/${id}/run/stream`, { method: 'POST', body: JSON.stringify({ input }), signal: ac.signal });
       if (!r.ok || !r.body) { on('error', { error: r.status === 404 ? 'workflow not found' : `HTTP ${r.status}` }); return; }
-      const reader = r.body.getReader();
-      const dec = new TextDecoder();
-      let buf = '';
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let i: number;
-        while ((i = buf.indexOf('\n\n')) >= 0) {
-          const block = buf.slice(0, i); buf = buf.slice(i + 2);
-          const ev = /^event: (.+)$/m.exec(block)?.[1] ?? 'message';
-          const dl = block.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).join('\n');
-          try { on(ev, JSON.parse(dl || '{}') as Record<string, unknown>); } catch { on(ev, { raw: dl }); }
-        }
-      }
+      await readSse(r.body, (f) => { try { on(f.event, JSON.parse(f.data || '{}') as Record<string, unknown>); } catch { on(f.event, { raw: f.data }); } }, ac.signal);
     } catch (e) { if (!ac.signal.aborted) on('error', { error: (e as Error).message }); }
   })();
   return () => ac.abort();

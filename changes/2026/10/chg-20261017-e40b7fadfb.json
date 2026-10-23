@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261017-e40b7fadfb",
+  "createdAt": "2026-10-17T14:21:12.015Z",
+  "updatedAt": "2026-10-17T16:21:12.015Z",
+  "kind": "build",
+  "title": "Build manager (build queue)",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "The plan's epics as an ordered build queue: drag to reorder, reprocess to restore dependency order, rework flags on built steps whose dependencies changed, a suggested model per step and per feature (Fable 5.1 / Opus 5.5 / Sonnet 5.5), and two-way status sync with the feature tracker on every consol",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-17T16:21:12.015Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.console.build"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-17T14:21:12.015Z",
+  "finishedAt": "2026-10-17T16:21:12.015Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

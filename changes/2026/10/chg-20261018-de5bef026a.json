@@ -1,0 +1,59 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-de5bef026a",
+  "createdAt": "2026-10-18T16:03:08.000Z",
+  "updatedAt": "2026-10-18T19:03:08.000Z",
+  "kind": "build",
+  "title": "Project wizard console plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/project-wizard` (`ai.amberx.axf.console.project-wizard`), nav → Plugins → **New project**. Five steps: Source (GitHub repo, VPS repo in `/srv/git`, a folder on the console server inside the allowed roots, or a new AXF app from a template + boilerplate; each with a Browse li",
+    "commits": [
+      {
+        "sha": "9827499",
+        "message": "Add the project wizard console plugin: turn a repo, folder or new AXF app into a Claude project with GitHub, VPS and local homes and a Claude.ai project kit"
+      },
+      {
+        "sha": "2dcbea8",
+        "message": "Harden the project wizard and claude-project: no writes through symlinks, safer folder sources, only their own files committed"
+      },
+      {
+        "sha": "855d354",
+        "message": "Plugin settings are sub-tabs of Settings → Plugins, never top-level tabs"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T19:03:08.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "project-wizard"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T16:03:08.000Z",
+  "finishedAt": "2026-10-18T19:03:08.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/project-wizard"
+  ]
+}

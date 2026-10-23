@@ -1,0 +1,63 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-d006e5b2fa",
+  "createdAt": "2026-10-18T22:12:56.000Z",
+  "updatedAt": "2026-10-19T01:12:56.000Z",
+  "kind": "build",
+  "title": "Theme manager plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/theme-manager` (`ai.amberx.axf.console.theme-manager`), nav → Plugins → Theme manager and Settings → Plugins → Themes. Roll colour / style / layout themes or every ticked part at once; a token tree built from `asset-types.json` + registered assets (new types appear by thems",
+    "commits": [
+      {
+        "sha": "443d077",
+        "message": "Theme manager plugin: roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets, phone drill-down), sane contrast-checked rolls, live preview, undo/redo, pins, hand edits, sav"
+      },
+      {
+        "sha": "5e0e93a",
+        "message": "Plugin Manager plugin (Opus): 4 views × 4 layouts, default context-menu link, plugin UI/settings access, detailed dependencies"
+      },
+      {
+        "sha": "439d71f",
+        "message": "Theme manager: Shown/Hidden switch on each chrome type in the token tree (greys out and skips hidden types)"
+      },
+      {
+        "sha": "c2a54c3",
+        "message": "Hub users in the console: review fixes (only userGrantable plugins with exact grants, fail closed on bad sessions, admin-only /data and /panel, no WebSockets for users, no host path in health, spacing"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T01:12:56.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "theme-manager"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T22:12:56.000Z",
+  "finishedAt": "2026-10-19T01:12:56.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/theme-manager"
+  ]
+}

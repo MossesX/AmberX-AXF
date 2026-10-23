@@ -4,6 +4,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
+import { appMenu } from './menu';
 
 /*
  * Theme manager (web part): nav → Plugins → Theme manager, and Settings → Plugins → Themes. On start it registers
@@ -17,6 +18,9 @@ async function loadSaved(rt: AxfRuntime) {
   try {
     const r = await call<{ items: SavedTheme[] }>('themes');
     for (const a of r.items) rt.registry.register(a, 'imported', 'theme-manager');
+    // Developer app with the look on axHub: the hub document is the truth, so only make the saved themes available
+    // (an id it names now resolves) and let the runtime re-apply the document; without a source, re-apply the local pick.
+    if (rt.hasAppearanceSource()) { rt.refreshFromSaved(); return; }
     for (const [type, id] of Object.entries(lastApplied())) {
       if (rt.registry.has(type as never, id) && (rt.getState().active as Record<string, string>)[type] !== id) rt.swap(type as never, id);
     }
@@ -27,6 +31,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Theme manager',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.theme-manager'],
   register(rt) {
     void loadSaved(rt);

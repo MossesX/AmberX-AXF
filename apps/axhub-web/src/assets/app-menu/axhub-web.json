@@ -1,0 +1,186 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "axhub-web",
+  "name": "AXHub menu",
+  "version": "0.1.0",
+  "description": "AXHub: its views, the hub's own pages, the look and help.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "menus": [
+      {
+        "id": "axhub",
+        "label": "AXHub",
+        "items": [
+          {
+            "id": "go-home",
+            "label": "Approvals",
+            "icon": "shield",
+            "action": "nav:home"
+          },
+          {
+            "id": "go-hub",
+            "label": "Hub",
+            "icon": "external",
+            "action": "nav:hub"
+          },
+          {
+            "id": "go-apps",
+            "label": "Apps",
+            "icon": "download",
+            "action": "nav:apps"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "check",
+            "label": "Check the hub now",
+            "icon": "refresh",
+            "action": "axhub.check"
+          },
+          {
+            "id": "open-approvals",
+            "label": "Approvals on the hub",
+            "icon": "external",
+            "action": "axhub.open:approvals"
+          },
+          {
+            "id": "open-apps",
+            "label": "Apps on the hub",
+            "icon": "external",
+            "action": "axhub.open:apps"
+          },
+          {
+            "id": "open-account",
+            "label": "Your hub account",
+            "icon": "key",
+            "action": "axhub.open:account"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          }
+        ]
+      },
+      {
+        "id": "manage",
+        "label": "Manage",
+        "items": [
+          {
+            "id": "m-services",
+            "label": "Services",
+            "icon": "layers",
+            "action": "nav:services"
+          },
+          {
+            "id": "m-jobs",
+            "label": "Jobs",
+            "icon": "clock",
+            "action": "nav:jobs"
+          },
+          {
+            "id": "m-audit",
+            "label": "Audit log",
+            "icon": "list",
+            "action": "nav:audit"
+          },
+          {
+            "id": "m-vault",
+            "label": "Vault",
+            "icon": "lock",
+            "action": "nav:vault"
+          },
+          {
+            "id": "m-users",
+            "label": "Users",
+            "icon": "user",
+            "action": "nav:users"
+          },
+          {
+            "id": "m-projects",
+            "label": "Projects",
+            "icon": "folder",
+            "action": "nav:projects"
+          },
+          {
+            "id": "m-devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "action": "nav:devices"
+          }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          {
+            "id": "go-assets",
+            "label": "Assets",
+            "icon": "layers",
+            "action": "nav:assets"
+          },
+          {
+            "id": "appearance",
+            "label": "Appearance settings",
+            "icon": "palette",
+            "action": "settings.open:appearance"
+          },
+          {
+            "id": "s3",
+            "separator": true
+          },
+          {
+            "id": "banner",
+            "label": "Banner",
+            "icon": "layout",
+            "action": "slot.hide:banner:toggle",
+            "checked": "slot:banner"
+          },
+          {
+            "id": "nav",
+            "label": "Side navigation",
+            "icon": "menu",
+            "action": "slot.hide:nav-menu:toggle",
+            "checked": "slot:nav-menu"
+          },
+          {
+            "id": "toolbar",
+            "label": "Toolbar",
+            "icon": "sliders",
+            "action": "slot.hide:toolbar:toggle",
+            "checked": "slot:toolbar"
+          }
+        ]
+      },
+      {
+        "id": "help",
+        "label": "Help",
+        "items": [
+          {
+            "id": "shortcuts",
+            "label": "Shortcuts",
+            "icon": "keyboard",
+            "action": "view.shortcuts",
+            "shortcut": "Alt+K"
+          },
+          {
+            "id": "about",
+            "label": "About",
+            "icon": "info",
+            "action": "help.about"
+          }
+        ]
+      }
+    ]
+  }
+}

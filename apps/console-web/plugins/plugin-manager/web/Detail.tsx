@@ -66,7 +66,7 @@ export function DetailPane({ row, inv, onChanged, onSelect, initialTab }: { row:
       </header>
       <div className="axp-plugin-manager-tabs" role="tablist">
         {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`axp-plugin-manager-tabs__tab ${tab === t.id ? 'is-active' : ''}`} onClick={() => setTab(t.id)}>
+          <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`fx-tab ${tab === t.id ? 'is-active' : ''}`} onClick={() => setTab(t.id)}>
             <Icon name={t.icon} size={14} /> {t.label}
             {t.id === 'deps' && row.dependencies.some((d) => d.required && (d.status === 'missing' || d.status === 'disabled')) && <span className="axp-plugin-manager-dot is-error" />}
             {t.id === 'logs' && row.logCount > 0 && <span className="axp-plugin-manager-count">{row.logCount}</span>}
@@ -163,9 +163,9 @@ function Dependencies({ row, conflicts, onSelect }: { row: PluginRow; conflicts:
                 <div className="fx-row fx-row--wrap">
                   <span className="fx-muted fx-small">Provided by</span>
                   {d.providers.map((p) => (
-                    <button key={p.folder} type="button" className="axp-plugin-manager-link" onClick={() => onSelect(p.folder)}>
+                    <Button key={p.folder} size="sm" tone="quiet" onClick={() => onSelect(p.folder)}>
                       {p.name}{p.enabled ? '' : ' (off)'}{p.live === false ? ' · not registered yet' : ''}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -178,7 +178,7 @@ function Dependencies({ row, conflicts, onSelect }: { row: PluginRow; conflicts:
       {row.dependents.map((d) => (
         <div key={`${d.folder}:${d.service}`} className="axp-plugin-manager-dep">
           <div className="axp-plugin-manager-dep__top">
-            <button type="button" className="axp-plugin-manager-link" onClick={() => onSelect(d.folder)}>{d.name}</button>
+            <Button size="sm" tone="quiet" onClick={() => onSelect(d.folder)}>{d.name}</Button>
             <Chip>{d.required ? 'requires' : 'optional'}</Chip>
             <code className="fx-small">{d.service}</code>
           </div>

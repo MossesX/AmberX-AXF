@@ -9,7 +9,7 @@
  * This file is pure: validation and normalisation of every collection, the system-prompt composer, memory config
  * resolution, the memory text engine (tokens, BM25 ranking, chunking), workflow template filling, router parsing and
  * the add-on risk rules. Nothing here talks to a model, the network or storage; hosts do that. Mirrors:
- * Kotlin `ai.amberx.axf.kernel.agents` (Agents.kt) and the console agent manager's Python `contract.py`,
+ * Kotlin `ai.amberx.axf.kernel.agents` (Agents.kt) and the Python port `framework/python/axf/contracts/agents.py`,
  * all replaying spec/fixtures/agents.json (generated from this file by spec/gen-fixtures.mts).
  *
  * Every list here is an open registry: a host may know more builtin tools, memory types or source types than the

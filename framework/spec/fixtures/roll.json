@@ -12,9 +12,22 @@
     "button": true,
     "slider": true,
     "container": true,
+    "gauge": true,
+    "meter": true,
     "banner": true,
     "clock": false,
     "search-bar": false,
+    "action-button": false,
+    "logo": false,
+    "label": false,
+    "status": false,
+    "counter": false,
+    "progress": false,
+    "avatar": false,
+    "link": false,
+    "theme-switch": false,
+    "spacer": false,
+    "divider": false,
     "badge": false,
     "uac-policy": false
   },
@@ -25,7 +38,11 @@
         "color-theme": [
           "amber-ember",
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -76,6 +93,20 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
         ],
         "banner": [
           "amberx-accent",
@@ -93,7 +124,11 @@
         "color-theme": [
           "amber-ember",
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -144,6 +179,20 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
         ],
         "banner": [
           "amberx-accent",
@@ -164,7 +213,11 @@
         "color-theme": [
           "amber-ember",
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -219,6 +272,20 @@
           "frosted-glass",
           "soft-card"
         ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-thin"
@@ -235,7 +302,11 @@
         "color-theme": [
           "amber-ember",
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -286,6 +357,20 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
         ],
         "banner": [
           "amberx-accent",
@@ -305,7 +390,11 @@
       "plan": {
         "color-theme": [
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -352,6 +441,20 @@
           "frosted-glass",
           "soft-card"
         ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-thin"
@@ -368,7 +471,11 @@
         "color-theme": [
           "amber-ember",
           "arctic-daylight",
-          "neon-tide"
+          "coral-studio",
+          "graphite-lime",
+          "midnight-ink",
+          "neon-tide",
+          "sage-paper"
         ],
         "style-theme": [
           "glass-orbit",
@@ -419,6 +526,20 @@
           "divided-panel",
           "frosted-glass",
           "soft-card"
+        ],
+        "gauge": [
+          "classic-arc",
+          "digital",
+          "level-bar",
+          "ring",
+          "tick-arc"
+        ],
+        "meter": [
+          "gradient-soft",
+          "hairline",
+          "segments",
+          "steps",
+          "striped-pill"
         ],
         "banner": [
           "amberx-accent",

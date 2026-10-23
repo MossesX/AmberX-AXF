@@ -1,0 +1,16 @@
+{
+  "$manifest": "project-manifest@1",
+  "name": "{{APP_ID}}",
+  "displayName": "AXF App",
+  "description": "",
+  "kind": "app",
+  "status": "active",
+  "version": "0.1.0",
+  "platforms": ["web", "server"],
+  "framework": { "relation": "built-on", "version": "{{FRAMEWORK_VERSION}}", "template": "web-fastapi-wall", "appManifest": "axf.manifest.json" },
+  "repo": { "host": "github", "owner": "MossesX", "name": "{{APP_ID}}", "exists": false, "visibility": "private" },
+  "location": { "repo": "MossesX/{{APP_ID}}", "path": "." },
+  "data": { "shared": [] },
+  "owners": ["MossesX"],
+  "created": "2026-01-01"
+}

@@ -1,0 +1,132 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "patches",
+  "name": "Patches",
+  "version": "1.0.0",
+  "description": "Patches' application menu: the combined settings (one tab per app), the apps, the tab in front.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "patches",
+    "app-menu"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "patches",
+        "label": "Patches",
+        "order": 10,
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings",
+            "shortcut": "Ctrl+,",
+            "order": 10
+          },
+          {
+            "id": "settings-apps",
+            "label": "Settings for",
+            "icon": "sliders",
+            "order": 11,
+            "items": [
+              {
+                "id": "settings-patches",
+                "label": "Patches",
+                "icon": "layers",
+                "action": "patches.settings:patches"
+              },
+              {
+                "id": "settings-console",
+                "label": "Console",
+                "icon": "terminal",
+                "action": "patches.settings:console"
+              },
+              {
+                "id": "settings-pilot",
+                "label": "Pilot",
+                "icon": "rocket",
+                "action": "patches.settings:pilot"
+              },
+              {
+                "id": "settings-axhub",
+                "label": "axHub",
+                "icon": "shield",
+                "action": "patches.settings:axhub"
+              }
+            ]
+          },
+          {
+            "id": "sep1",
+            "separator": true,
+            "order": 20
+          },
+          {
+            "id": "open",
+            "label": "Open the tab in front in the browser",
+            "icon": "external",
+            "action": "patches.open"
+          },
+          {
+            "id": "reload",
+            "label": "Reload the tab in front",
+            "icon": "refresh",
+            "action": "patches.reload",
+            "order": 30
+          },
+          {
+            "id": "sep2",
+            "separator": true,
+            "order": 40
+          },
+          {
+            "id": "about",
+            "label": "About Patches",
+            "icon": "info",
+            "action": "help.about",
+            "order": 50
+          }
+        ]
+      },
+      {
+        "id": "apps",
+        "label": "Apps",
+        "order": 20,
+        "items": [
+          {
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "action": "nav:console"
+          },
+          {
+            "id": "pilot",
+            "label": "Pilot",
+            "icon": "rocket",
+            "action": "nav:pilot"
+          },
+          {
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "layers",
+            "action": "nav:axhub"
+          }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "order": 30,
+        "items": [
+          {
+            "id": "banners",
+            "label": "Console banners above every tab",
+            "icon": "bell",
+            "action": "settings.open:patches"
+          }
+        ]
+      }
+    ]
+  }
+}

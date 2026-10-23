@@ -220,7 +220,7 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
   const term = termRef.current;
   const close = () => { const sid = tabSessions.get(tab.id); tabSessions.delete(tab.id); if (sid) void call(`sessions/${sid}`, { method: 'DELETE' }).catch(() => undefined); wm.closeTab(tab.id); };
   const menuItem = (label: string, icon: string, fn: () => void, disabled = false): ReactNode => (
-    <button type="button" role="menuitem" className={`${P}__mi`} disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
+    <button type="button" role="menuitem" className="fx-menu__item" disabled={disabled} onClick={() => { setMenu(null); fn(); }}><Icon name={icon} size={13} /> {label}</button>
   );
 
   if (confirm) {
@@ -248,26 +248,26 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
             <input className="fx-input" autoFocus value={renaming} onChange={(e) => setRenaming(e.target.value)} onBlur={() => setRenaming(null)} aria-label="Tab name" />
           </form>
         ) : (
-          <button type="button" className={`${P}__title`} title="Rename" onClick={() => setRenaming(tab.title)}>{tab.title}{info?.cwd ? <span className="fx-muted"> · {info.cwd}</span> : null}</button>
+          <button type="button" data-fx-row className={`${P}__title`} title="Rename" onClick={() => setRenaming(tab.title)}>{tab.title}{info?.cwd ? <span className="fx-muted"> · {info.cwd}</span> : null}</button>
         )}
         {info?.badge && <span className={`${P}__badge ${info.badge === 'HOST ROOT' ? 'is-host' : 'is-protected'}`}>{info.badge}</span>}
         <span className="fx-grow" />
-        <button type="button" className={`${P}__ib ${mouse ? 'is-on' : ''}`} title="Mouse mode: click moves the cursor; clicks go to apps that use the mouse" aria-pressed={mouse} onClick={() => setMouse(!mouse)}><Icon name="monitor" size={14} /></button>
-        <button type="button" className={`${P}__ib ${mosh ? 'is-on' : ''}`} title="Mosh mode: the session lives on the server, survives dropped signal, reconnects by itself" aria-pressed={mosh} onClick={() => setMosh(!mosh)}><Icon name="zap" size={14} /></button>
-        <button type="button" className={`${P}__ib`} title="Search (Ctrl+Shift+F)" onClick={() => setSearch(search === null ? '' : null)}><Icon name="search" size={14} /></button>
-        <button type="button" className={`${P}__ib`} title="Smaller text" onClick={() => setFontSize((f) => Math.max(9, f - 1))}>A−</button>
-        <button type="button" className={`${P}__ib`} title="Bigger text" onClick={() => setFontSize((f) => Math.min(28, f + 1))}>A+</button>
+        <button type="button" className={`fx-iconbtn ${mouse ? 'is-active' : ''}`} title="Mouse mode: click moves the cursor; clicks go to apps that use the mouse" aria-pressed={mouse} onClick={() => setMouse(!mouse)}><Icon name="monitor" size={14} /></button>
+        <button type="button" className={`fx-iconbtn ${mosh ? 'is-active' : ''}`} title="Mosh mode: the session lives on the server, survives dropped signal, reconnects by itself" aria-pressed={mosh} onClick={() => setMosh(!mosh)}><Icon name="zap" size={14} /></button>
+        <button type="button" className="fx-iconbtn" title="Search (Ctrl+Shift+F)" onClick={() => setSearch(search === null ? '' : null)}><Icon name="search" size={14} /></button>
+        <button type="button" className="fx-iconbtn" title="Smaller text" onClick={() => setFontSize((f) => Math.max(9, f - 1))}>A−</button>
+        <button type="button" className="fx-iconbtn" title="Bigger text" onClick={() => setFontSize((f) => Math.min(28, f + 1))}>A+</button>
         <div className={`${P}__plusw`}>
-          <button type="button" className={`${P}__ib`} title="New terminal tab" aria-expanded={plus} onClick={() => setPlus(!plus)}><Icon name="plus" size={14} /></button>
+          <button type="button" className="fx-iconbtn" title="New terminal tab" aria-expanded={plus} onClick={() => setPlus(!plus)}><Icon name="plus" size={14} /></button>
           {plus && <PlusMenu groupId={wm.groupOf(tab.id)} done={() => setPlus(false)} />}
         </div>
       </div>
       {search !== null && (
         <form className={`${P}__search`} onSubmit={(e) => { e.preventDefault(); searchRef.current?.findNext(search); }}>
           <input className="fx-input" autoFocus placeholder="Find in terminal" value={search} onChange={(e) => { setSearch(e.target.value); searchRef.current?.findNext(e.target.value); }} />
-          <button type="button" className={`${P}__ib`} onClick={() => searchRef.current?.findPrevious(search)}><Icon name="chevron-up" size={14} /></button>
-          <button type="button" className={`${P}__ib`} onClick={() => searchRef.current?.findNext(search)}><Icon name="chevron-down" size={14} /></button>
-          <button type="button" className={`${P}__ib`} onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
+          <button type="button" className="fx-iconbtn" onClick={() => searchRef.current?.findPrevious(search)}><Icon name="chevron-up" size={14} /></button>
+          <button type="button" className="fx-iconbtn" onClick={() => searchRef.current?.findNext(search)}><Icon name="chevron-down" size={14} /></button>
+          <button type="button" className="fx-iconbtn" onClick={() => setSearch(null)}><Icon name="x" size={14} /></button>
         </form>
       )}
       {pasteAsk !== null && (
@@ -287,13 +287,13 @@ export function TerminalTab({ tab }: { tab: TabSpec }) {
       )}
       <div className={`${P}__keys`} role="toolbar" aria-label="Extra keys">
         {KEYS.map((k) => (
-          <button key={k.label} type="button" className={`${P}__key ${k.mod && ctrlOn ? 'is-on' : ''}`} onClick={() => {
+          <button key={k.label} type="button" className={`fx-chip ${P}__key ${k.mod && ctrlOn ? 'is-on' : ''}`} onClick={() => {
             if (k.mod) { ctrl.current = !ctrl.current; setCtrlOn(ctrl.current); } else if (k.seq) send(k.seq);
             term?.focus();
           }}>{k.label}</button>
         ))}
-        <button type="button" className={`${P}__key`} title="Copy" onClick={() => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }}><Icon name="copy" size={12} /></button>
-        <button type="button" className={`${P}__key`} title="Paste" onClick={() => void pasteFromClipboard(false)}><Icon name="paste" size={12} /></button>
+        <button type="button" className={`fx-chip ${P}__key`} title="Copy" onClick={() => { if (term?.hasSelection()) void navigator.clipboard?.writeText(term.getSelection()); }}><Icon name="copy" size={12} /></button>
+        <button type="button" className={`fx-chip ${P}__key`} title="Paste" onClick={() => void pasteFromClipboard(false)}><Icon name="paste" size={12} /></button>
       </div>
       {menu && (
         <>
@@ -327,12 +327,12 @@ function PlusMenu({ groupId, done }: { groupId: string | null; done: () => void 
   const add = (o: Open) => { newTab(rt, o, groupId); done(); };
   return (
     <div className="axp-terminal__menu axp-terminal__plus fx-popover" role="menu">
-      <button type="button" role="menuitem" className="axp-terminal__mi" onClick={() => add({ kind: 'console' })}><Icon name="terminal" size={13} /> Console (this container)</button>
-      <button type="button" role="menuitem" className="axp-terminal__mi" disabled={!status?.vps.ready} title={status?.vps.ready ? '' : 'Set up the VPS host in Settings → Plugins → Terminal'} onClick={() => add({ kind: 'vps' })}><Icon name="monitor" size={13} /> VPS host (root)</button>
-      <button type="button" role="menuitem" className="axp-terminal__mi" disabled={!status?.claude} onClick={() => add({ kind: 'claude' })}><Icon name="sparkles" size={13} /> Claude Code</button>
+      <button type="button" role="menuitem" className="fx-menu__item" onClick={() => add({ kind: 'console' })}><Icon name="terminal" size={13} /> Console (this container)</button>
+      <button type="button" role="menuitem" className="fx-menu__item" disabled={!status?.vps.ready} title={status?.vps.ready ? '' : 'Set up the VPS host in Settings → Plugins → Terminal'} onClick={() => add({ kind: 'vps' })}><Icon name="monitor" size={13} /> VPS host (root)</button>
+      <button type="button" role="menuitem" className="fx-menu__item" disabled={!status?.claude} onClick={() => add({ kind: 'claude' })}><Icon name="sparkles" size={13} /> Claude Code</button>
       {status?.containers && <div className="axp-terminal__mh">Containers</div>}
       {(targets ?? []).map((t) => (
-        <button key={t.name} type="button" role="menuitem" className="axp-terminal__mi" onClick={() => add({ kind: 'container', container: t.name })}>
+        <button key={t.name} type="button" role="menuitem" className="fx-menu__item" onClick={() => add({ kind: 'container', container: t.name })}>
           <Icon name={t.protected ? 'lock' : 'box'} size={13} /> {t.name}{t.protected ? <span className="fx-muted"> · protected</span> : null}
         </button>
       ))}

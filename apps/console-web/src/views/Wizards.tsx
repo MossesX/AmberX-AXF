@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Button, Chip, useRuntime } from '../axf/react';
+import { Button, Chip, LibraryParamField, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import * as api from '../api';
-import type { EngineResult, InstallableLibrary, LibraryParam } from '../api';
-import { LIBRARIES, UI_LIBRARIES } from './Libraries';
+import type { EngineResult, InstallableLibrary } from '../api';
+import { UI_LIBRARIES } from './Libraries';
 
 const now = () => new Date().toISOString();
 const Code = ({ children }: { children: string }) => <pre className="fx-code" style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{children}</pre>;
@@ -46,7 +46,7 @@ export function LibraryPickerDialog({ libraryId, close }: { libraryId: string; c
   const s = useStore();
   const rt = useRuntime();
   const term = useTerminal('build');
-  const lib = LIBRARIES.find((l) => l.id === libraryId);
+  const lib = s.libraryCards.find((l) => l.id === libraryId);
   const [include, setInclude] = useState<Set<string>>(() => new Set(lib?.features.filter((f) => s.isChecked(f) || s.status(f) !== 'built')));
   const [template, setTemplate] = useState(DEMO_TEMPLATES[0]!);
   const [name, setName] = useState(`AXF Demo — ${lib?.label ?? ''}`);
@@ -80,14 +80,6 @@ export function LibraryPickerDialog({ libraryId, close }: { libraryId: string; c
 /* ------------------------------------------------------------------ */
 /* install wizard                                                       */
 /* ------------------------------------------------------------------ */
-
-function ParamField({ p, value, onChange }: { p: LibraryParam; value: string; onChange: (v: string) => void }) {
-  const err = api.paramError(p, value);
-  const def = api.paramDefaultText(p);
-  if (p.type === 'bool') return <label className="fx-row"><input type="checkbox" checked={/^(true|yes|on|1)$/i.test(value || def)} onChange={(e) => onChange(String(e.target.checked))} /> {p.label}{p.help && <span className="fx-muted fx-small"> — {p.help}</span>}</label>;
-  if (p.type === 'choice') return <div className="fx-stack" style={{ gap: 'calc(var(--fx-space) * .5)' }}><span>{p.label}</span>{p.help && <span className="fx-muted fx-small">{p.help}</span>}<div className="fx-row fx-row--wrap">{p.choices?.map((c) => <button key={c} className={`fx-chip ${(value || def) === c ? 'is-selected' : ''}`} onClick={() => onChange(c)}>{c}</button>)}</div></div>;
-  return <label className="fx-field">{p.label}{p.required ? ' *' : ''}{p.type === 'list' ? <textarea className="fx-input fx-mono" rows={2} value={value} onChange={(e) => onChange(e.target.value)} placeholder={def || p.help} /> : <input className="fx-input" value={value} onChange={(e) => onChange(e.target.value)} placeholder={def || p.help} />}{p.help && <span className="fx-muted fx-small">{p.help}</span>}{err && <span className="fx-no fx-small">{err}</span>}</label>;
-}
 
 /**
  * The interactive install wizard: walks every parameter the library's `library.json` declares (one step each,
@@ -124,7 +116,7 @@ export function InstallWizardDialog({ libraryId, close }: { libraryId: string; c
       <div className="fx-row"><strong className="fx-grow">{lib.name}</strong><Chip tone="accent">{summary ? 'review' : `step ${step + 1}/${params.length}`}</Chip></div>
       <p className="fx-muted" style={{ margin: 0 }}>{lib.description}</p>
       <p className="fx-mono fx-small fx-muted" style={{ margin: 0 }}>project: {s.project || 'none open'} · manifest key {lib.manifestKey} · module {lib.module}</p>
-      {!summary ? <ParamField p={params[step]!} value={answers[params[step]!.key] ?? ''} onChange={(v) => setAnswers({ ...answers, [params[step]!.key]: v })} /> : (
+      {!summary ? <LibraryParamField p={params[step]!} value={answers[params[step]!.key] ?? ''} onChange={(v) => setAnswers({ ...answers, [params[step]!.key]: v })} /> : (
         <>
           <p className="fx-eyebrow">What the installer writes</p>
           <Code>{`axf.manifest.json → ${lib.manifestKey} = ${JSON.stringify(cfg)}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.install?.gradle ?? ''}\nApp.kt modules() += ${lib.install?.module ?? ''}\ngenerated: app/src/main/kotlin/<pkg>/axf/${slug[0]!.toUpperCase() + slug.slice(1)}Setup.kt (parameters as typed Kotlin)`}</Code>

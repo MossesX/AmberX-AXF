@@ -26,7 +26,8 @@ _PLUGIN = Path(__file__).resolve().parents[1]
 _ROOT = _PLUGIN.parents[3]
 _INSTALL = _PLUGIN / "install.mjs"
 _CHECKIN = _PLUGIN / "checkin.mjs"
-_PRICING = _PLUGIN / "baseline" / "pricing.json"
+_PRICING = _PLUGIN / "baseline" / "pricing.json"  # fallback copy (older checkouts)
+_SHARED_PRICING = _ROOT / "framework" / "schemas" / "model-pricing.json"  # model-pricing@1, shared with the changes hooks + Build manager
 _ID = re.compile(r"^[\w.-]{1,80}$")
 _MODELS = ("fable", "opus", "sonnet")
 
@@ -140,9 +141,17 @@ def pricing(req: PricingReq) -> dict[str, Any]:
     """Set the per-million-token prices used for the baseline estimate (copied from docs.claude.com)."""
     data = {"asOf": req.asOf, "source": req.source, "unit": "USD per million tokens",
             "models": {k: v.model_dump(exclude_none=True) for k, v in req.models.items()}}
-    tmp = _PRICING.with_suffix(".tmp")
+    target = _SHARED_PRICING if _SHARED_PRICING.is_file() else _PRICING
+    if target == _SHARED_PRICING:  # keep the shared file's other parts (format tag, cache-write prices, heuristic)
+        try:
+            cur = json.loads(_SHARED_PRICING.read_text())
+        except (OSError, ValueError):
+            cur = {}
+        models = {k: {**(cur.get("models") or {}).get(k, {}), **v} for k, v in data["models"].items()}
+        data = {**cur, **data, "models": {**(cur.get("models") or {}), **models}}
+    tmp = target.with_suffix(".tmp")
     tmp.write_text(json.dumps(data, indent=2) + "\n")
-    tmp.replace(_PRICING)
+    tmp.replace(target)
     return {"ok": True, "pricing": data}
 
 

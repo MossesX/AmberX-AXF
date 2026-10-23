@@ -8,12 +8,18 @@ import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
 import ai.amberx.axf.ui.components.AxfCheckbox
+import ai.amberx.axf.ui.components.AxfChoiceGrid
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfDivider
 import ai.amberx.axf.ui.components.AxfEmptyState
 import ai.amberx.axf.ui.components.AxfErrorState
 import ai.amberx.axf.ui.components.AxfIconButton
+import ai.amberx.axf.ui.components.AxfLibraryParamField
 import ai.amberx.axf.ui.components.AxfListItem
+import ai.amberx.axf.ui.components.AxfMarkdown
+import ai.amberx.axf.ui.components.AxfNote
+import ai.amberx.axf.ui.components.AxfSection
+import ai.amberx.axf.ui.components.AxfSelectField
 import ai.amberx.axf.ui.components.AxfLoadingState
 import ai.amberx.axf.ui.components.AxfPageHead
 import ai.amberx.axf.ui.components.AxfSegmented
@@ -23,6 +29,11 @@ import ai.amberx.axf.ui.components.AxfSwitch
 import ai.amberx.axf.ui.components.AxfText
 import ai.amberx.axf.ui.components.AxfTextField
 import ai.amberx.axf.ui.components.ButtonTone
+import ai.amberx.axf.ui.components.Choice
+import ai.amberx.axf.ui.components.NoteTone
+import ai.amberx.axf.ui.components.SelectOption
+import ai.amberx.axf.kernel.library.LibraryParam
+import kotlinx.serialization.json.JsonPrimitive
 import ai.amberx.axf.ui.kit.LocalAxfUiKits
 import ai.amberx.axf.ui.theme.Axf
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +65,10 @@ public fun ComponentGallery(modifier: Modifier = Modifier) {
     var checked by remember { mutableStateOf(false) }
     var slider by remember { mutableFloatStateOf(40f) }
     var seg by remember { mutableStateOf("a") }
+    var pick by remember { mutableStateOf("a") }
+    var picks by remember { mutableStateOf(setOf("a")) }
+    var boolParam by remember { mutableStateOf("true") }
+    var numParam by remember { mutableStateOf("6") }
     val kitName = { kind: ComponentKind -> kits.kitFor(kind).spec.label }
     LazyColumn(modifier.fillMaxWidth(), contentPadding = PaddingValues(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.oneHalf)) {
         item {
@@ -81,6 +96,23 @@ public fun ComponentGallery(modifier: Modifier = Modifier) {
                 AxfSegmented(listOf("a" to "One", "b" to "Two", "c" to "Three"), seg, { seg = it })
                 AxfSlider("Slider", slider, { slider = it }, unit = "%")
             }
+        } }
+        item { AxfCard(title = "Forms", actions = { AxfBadge(kitName(ComponentKind.SWITCH)) }) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AxfSelectField("Select field", pick, listOf(SelectOption("a", "One"), SelectOption("b", "Two"), SelectOption("c", "Three")), { pick = it }, hint = "A drop-down inside a field")
+                AxfChoiceGrid(listOf(Choice("a", "First", text = "A card with text", icon = "zap"), Choice("b", "Second", tag = "tag"), Choice("c", "Disabled", enabled = false)), picks, { id -> picks = if (id in picks) picks - id else picks + id }, multiple = true, label = "Choices")
+                AxfNote("Info note (accent tint).")
+                AxfNote("Warning note.", tone = NoteTone.WARNING)
+                AxfNote("Danger note.", tone = NoteTone.DANGER)
+                AxfNote("Success note.", tone = NoteTone.SUCCESS)
+                AxfSection("Section title", aside = { AxfText("aside", muted = true) }) { AxfText("Body of the section.") }
+                AxfLibraryParamField(LibraryParam("on", "Bool parameter", "bool", default = JsonPrimitive(true), help = "A bool renders as a switch"), boolParam, { boolParam = it })
+                AxfLibraryParamField(LibraryParam("mode", "Choice parameter", "choice", choices = listOf("a", "b", "c"), default = JsonPrimitive("a")), pick, { pick = it })
+                AxfLibraryParamField(LibraryParam("n", "Number parameter", "number", min = 1.0, max = 12.0, default = JsonPrimitive(6)), numParam, { numParam = it })
+            }
+        } }
+        item { AxfCard(title = "Markdown") {
+            AxfMarkdown("### Heading\nSome **bold**, _italic_ and `code`, a [link](https://amberxai.com).\n\n- one\n- two\n  - nested\n- [x] done\n\n```kotlin\nval x = 1\n```")
         } }
         item { AxfCard(title = "Chips & badges", actions = { AxfBadge(kitName(ComponentKind.CHIP)) }) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

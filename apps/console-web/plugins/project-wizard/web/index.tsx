@@ -3,6 +3,7 @@ import { Button, Chip, Container, Icon, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
+import { appMenu } from './menu';
 
 /** Plugin folder: server routes live at /api/plugins/project-wizard/. */
 const FOLDER = 'project-wizard';
@@ -169,7 +170,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   return (
     <div className="fx-stack">
       <ol className={`${P}__steps`}>
-        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
+        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
       </ol>
 
       {step === 0 && <SourceStep st={st} plan={plan} setSource={setSource} info={info} />}
@@ -206,7 +207,7 @@ function SourceStep({ st, plan, setSource, info }: { st: Status; plan: Plan; set
       <legend>Where does the project come from?</legend>
       <div className={`${P}__cards`} role="radiogroup" aria-label="Source">
         {SOURCES.map(([k, label, help, icon]) => (
-          <button key={k} type="button" role="radio" aria-checked={s.kind === k} disabled={off(k)} className={`${P}__card ${s.kind === k ? 'is-selected' : ''}`} onClick={() => setSource({ kind: k })}>
+          <button key={k} type="button" role="radio" aria-checked={s.kind === k} data-fx-row disabled={off(k)} className={`${P}__card ${s.kind === k ? 'is-selected' : ''}`} onClick={() => setSource({ kind: k })}>
             <Icon name={icon} /><strong>{label}</strong><span>{off(k) ? 'not available here' : help}</span>
           </button>
         ))}
@@ -267,7 +268,7 @@ function Picker({ location, label, value, onChange, placeholder, hint }: { locat
           {items && !shown.length && <p className="fx-muted" style={{ margin: 0 }}>Nothing found.</p>}
           <div className={`${P}__items`} role="listbox" aria-label={label}>
             {shown.slice(0, 80).map((i) => (
-              <button key={i.id} type="button" role="option" aria-selected={value === i.id} className={`${P}__item ${value === i.id ? 'is-selected' : ''}`} onClick={() => { onChange(i.id); setOpen(false); }}>
+              <button key={i.id} type="button" role="option" aria-selected={value === i.id} data-fx-row className={`${P}__item ${value === i.id ? 'is-selected' : ''}`} onClick={() => { onChange(i.id); setOpen(false); }}>
                 <span className={`${P}__item-label`}>{i.label}</span><span className={`${P}__item-note`}>{i.note}</span>
               </button>
             ))}
@@ -512,7 +513,7 @@ function Projects({ st, reload }: { st: Status; reload: () => void }) {
     <div className={`${P}__list`} role="list">
       {st.projects.map((p) => (
         <div key={p.name} role="listitem">
-          <button type="button" className={`${P}__row ${open === p.name ? 'is-selected' : ''}`} aria-expanded={open === p.name} onClick={() => setOpen(open === p.name ? null : p.name)}>
+          <button type="button" data-fx-row className={`${P}__row ${open === p.name ? 'is-selected' : ''}`} aria-expanded={open === p.name} onClick={() => setOpen(open === p.name ? null : p.name)}>
             <span className={`${P}__main`}>
               <span className={`${P}__name`}>{p.display}</span>
               <span className={`${P}__sub`}>{[p.github?.replace('https://github.com/', ''), p.vps ? 'VPS' : '', p.dir].filter(Boolean).join(' · ')}</span>
@@ -560,6 +561,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Project wizard',
   version: '1.0.0',
+  appMenu,
   views: { 'project-wizard': { title: 'New project', icon: 'rocket', render: () => <ProjectWizardView /> } },
   nav: { label: 'Plugins', items: [{ id: 'project-wizard', label: 'New project', icon: 'rocket', view: 'project-wizard' }] },
   settingsTabs: [{ id: 'project-wizard', label: 'Project wizard', icon: 'rocket', order: 37, description: 'What the New project wizard can reach from the console server: GitHub, VPS git, the workspace and allowed folders.' }],

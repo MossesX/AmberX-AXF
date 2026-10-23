@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261015-593c7c0ae7",
+  "createdAt": "2026-10-15T12:47:47.000Z",
+  "updatedAt": "2026-10-15T16:47:47.000Z",
+  "kind": "build",
+  "title": "Planning section",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "This view: every framework feature with capabilities, ports, dependencies, acceptance, screenshots, previews, warnings, recommendations and history; list and board views; auto warnings for blocked dependencies and port gaps. (built before the build queue existed; date = the first commits)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-15T16:47:47.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.console.plan"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-15T12:47:47.000Z",
+  "finishedAt": "2026-10-15T16:47:47.000Z",
+  "estimate": {
+    "minutes": 240,
+    "costUsd": 33.6
+  },
+  "costEstimated": true
+}

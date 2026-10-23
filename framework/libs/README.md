@@ -65,3 +65,33 @@ from the id) and `seenPlan` (ring once per new approval). `libs/hub/index.ts` ad
 focus, one check at a time). Mirrored by the Kotlin `lib-hub` (`HubRules`); both replay `spec/fixtures/hub-approvals.json`.
 Self-test: `npx -y tsx framework/spec/check-hub.mts`. The console's approvals banner plugin runs on it. The hub protocol
 contract (AXPP) is a named placeholder (`HUB_PLACEHOLDERS`), parked for Fable.
+
+## apiclient (`ai.amberx.axf.apiclient`)
+
+The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
+and Build Pilot). Core in `libs/apiclient/client.ts` (no React): `createTokenStore({ key, event? })` keeps the app's token in
+localStorage (every access in try/catch, a change event on window, `subscribe` also follows other tabs);
+`createApiClient({ url, tokens, messages })` gives Bearer `call` / `post` / `put` / `patch` / `del`, `fetch` (raw Response),
+`download(path, fallbackName)` (Content-Disposition name, plain names only) and `blob(path, init, accept)`. Failures are
+`ApiError(message, status)`: 401 → `messages.unauthorized`, 404 without `detail` → `messages.unavailable`, a fetch that
+never reached the server → `messages.unreachable` (status 0), otherwise the server's string `detail`
+(`STANDARD_MESSAGES.unauthorized(where)` / `.unavailable(what)` word the console's). `<TokenDialog tokens close … />` /
+`tokenDialog({ title, tokens, … })` is the paste/change/forget dialog, framework controls and `fx-*` classes only. The token
+only ever travels in the Authorization header. Server-Sent Events are in `core/sse.ts` (`readSse`, `followSse` with
+2 s → 60 s back-off, `parseSseText` shared with assistant@1). Self-test: `npx -y tsx framework/spec/check-web-client.mts`.
+The `apiclient` boilerplate installs it (web-only library: `axf install` records it in the manifest, no Gradle/App.kt).
+
+## Harvested from Walkthrough Studio (Oct 22 2026): dnd, tree, datagrid, workspace, recorder, docstore
+
+Six web libraries, each with **parts** (library@1: features inside the library an app includes or leaves out and configures
+one by one; the installer writes `libraries.<key>.parts`, Build Pilot shows them as features under the library). Every one
+reads its parts in `register` (install it with `installLibraries`), and exports `configure<Name>()` for apps that don't.
+
+| Library | What it gives | Parts |
+| --- | --- | --- |
+| `dnd` (`ai.amberx.axf.dnd`) | Pointer drag-and-drop (mouse + touch grip), zones with before / after / inside markers, ghost, pop-up trash can (`startDrag`, `registerZone`, `<DragLayer/>`) | zones, touch, ghost {offset}, trash {label, overLabel, side} |
+| `tree` (`ai.amberx.axf.tree`) | `<TreeView>` (branches + leaves, folding, search highlight that keeps matches open, meters, multi-select, drag) and `<TreeSearch>` | search {placeholder}, chips, meters, drag {trash}, multi |
+| `datagrid` (`ai.amberx.axf.datagrid`) | `<DataGrid>`: categorized sub-grids with totals + meters, hideable columns (header context menu `axf-grid-header:<id>`), sort, expandable rows, status edges, drag | groups, column-menu {hidden}, sort, expand, drag {trash}, compact |
+| `workspace` (`ai.amberx.axf.workspace`) | `createWorkspace` + `<WorkspaceHost>`: pane areas with tabs + splitters, floating panes, layouts, maximise, default + unlimited docked / floating toolbars, `<ToolbarCustomizer>`, `registerWorkspaceMenus`, action `axf.ws:<id>:…` | areas, splitters, layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint} |
+| `recorder` (`ai.amberx.axf.recorder`) | `useRecorder` (pointer, keys, page changes, markers, optional screen video), `<CaptureLayer>`, `<CursorLayer>`, `<Replay>`, `eventsToCues`, `frameAt` | capture-layer, same-site, keys, screen-video, replay {cursor, ripples}, cues {waitAfter} |
+| `docstore` (`ai.amberx.axf.docstore`) | `createDocStore` (this device + axHub data server, chunked under 64 KB, newest copy wins), `putBlob` / `getBlob` (IndexedDB) | device, hub {project, chunk}, blobs {db} |

@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261017-1ec7ac9b0e",
+  "createdAt": "2026-10-17T14:21:12.015Z",
+  "updatedAt": "2026-10-17T16:21:12.015Z",
+  "kind": "build",
+  "title": "MCP server (Model Context Protocol)",
+  "asked": "Backfilled from the build queue (done step) (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "The console API as MCP tools for Claude: plan search/edit, build queue (next, reorder, reprocess, complete), catalog status, libraries, templates, app init/validate, terminal. Remote at console.amberxai.com/mcp (streamable HTTP, Bearer AXF_TOKEN) or local over stdio via .mcp.json.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-17T16:21:12.015Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "queue",
+    "id": "x.console.mcp"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-17T14:21:12.015Z",
+  "finishedAt": "2026-10-17T16:21:12.015Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true
+}

@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, useRuntime } from './axf/react';
 import { CopyLink } from './commandText';
+import { getToken } from './api';
 import './pluginLifecycle.css';
 
 interface Ref { file: string; line: number; text: string; managed: boolean }
@@ -21,9 +22,7 @@ interface Status {
 }
 interface Result { ok: boolean; log?: string[]; stale?: Ref[]; backup?: string | null; problems?: string[]; checks?: { id: string; ok: boolean; detail: string }[]; restartNeeded?: boolean; published?: { pushed: boolean; sha?: string } | null }
 
-function token(): string {
-  try { return localStorage.getItem('axf-console:token') ?? ''; } catch { return ''; }
-}
+const token = (): string => getToken();
 async function api<T>(path: string, body?: unknown): Promise<T> {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   const t = token();

@@ -45,7 +45,8 @@
       "framework/catalog/libraries.json",
       "framework/schemas/project-rules.json",
       "tracker.json",
-      "sessions/"
+      "sessions/",
+      "changes/"
     ]
   },
   "owners": [

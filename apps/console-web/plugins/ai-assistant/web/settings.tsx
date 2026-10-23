@@ -200,7 +200,7 @@ export function SetupWizard() {
   };
   return (
     <div className="axp-ai-assistant__wizard fx-stack">
-      <ol className="axp-ai-assistant__steps">{STEPS.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" onClick={() => setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
+      <ol className="axp-ai-assistant__steps">{STEPS.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
 
       {step === 0 && (
         <div className="fx-stack">
@@ -225,10 +225,12 @@ export function SetupWizard() {
               const on = picked.includes(k.kind);
               const have = cfg.profiles.some((p) => p.kind === k.kind && p.keyReady);
               return (
-                <button key={k.kind} type="button" className={`axp-ai-assistant__pick${on ? ' is-active' : ''}`} onClick={() => setPicked((x) => (on ? x.filter((y) => y !== k.kind) : [...x, k.kind]))} aria-pressed={on}>
-                  <strong>{k.label}</strong>
-                  <span className="fx-small fx-muted">{k.local ? 'local · no key' : k.protocol === 'claude-cli' ? (cat.cliInstalled ? 'CLI found' : 'needs the claude CLI') : k.keyEnv}</span>
-                  {have && <Chip tone="success">connected</Chip>}
+                <button key={k.kind} type="button" data-fx-row className={`axp-ai-assistant__pick${on ? ' is-active' : ''}`} onClick={() => setPicked((x) => (on ? x.filter((y) => y !== k.kind) : [...x, k.kind]))} aria-pressed={on}>
+                  <span className="fx-card axp-ai-assistant__pick-card">
+                    <strong>{k.label}</strong>
+                    <span className="fx-small fx-muted">{k.local ? 'local · no key' : k.protocol === 'claude-cli' ? (cat.cliInstalled ? 'CLI found' : 'needs the claude CLI') : k.keyEnv}</span>
+                    {have && <Chip tone="success">connected</Chip>}
+                  </span>
                 </button>
               );
             })}

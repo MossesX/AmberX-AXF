@@ -28,8 +28,13 @@ import ai.amberx.axf.ui.studio.ComponentGallery
 import ai.amberx.axf.ui.studio.LayoutGallery
 import ai.amberx.axf.ui.studio.RolePanel
 import ai.amberx.axf.ui.studio.ThemeDesigner
+import ai.amberx.axf.hub.HubOrigin
+import ai.amberx.axf.hub.HubSignInView
 
 class MainActivity : AxfActivity() {
+    /** Developer app: the waiting screen's "Sign in on the hub" shows the hub's sign-in page (session cookie → data API). */
+    override val hubSignIn: @Composable (done: () -> Unit) -> Unit = { done -> HubSignInView(HubOrigin.DEFAULT, done = done) }
+
     @Composable
     override fun Content() {
         AppShell(

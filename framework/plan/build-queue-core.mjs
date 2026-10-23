@@ -2,10 +2,15 @@
  * build-queue-core — the build queue's logic, pure and IO-free so the CLI, the console API, the MCP server and the
  * browser console all compute the same thing.  State lives in framework/plan/build-queue.json (build-queue@1):
  *
- *   { $axf, order: [epicId…], steps: { [epicId]: { completedAt, completedBy, deps, rework, reopenedAt } }, dirty, updatedAt, history }
+ *   { $axf, order: [epicId…], steps: { [epicId]: StepRecord }, dirty, updatedAt, history }
+ *   StepRecord = { completedAt, completedBy, deps, rework, reopenedAt, estimate?, steps?: [{ text, estimate?, done?, doneAt? }] }
  *
  * Steps are the plan's epics; each step carries the catalog features linked to it (feature.epic === step, or listed in
  * epic.catalog). A step is "done" when its epic is `built`.
+ *
+ * Small steps for big builds (Oct 21 2026): a queue step estimated at more than 30 minutes carries `steps`, the pieces
+ * of at most 30 minutes it is worked on in (same shape as a pending item's sub prompts: text, estimate, done, doneAt).
+ * `splitCheck` from pending-core flags a big step without them; the console's Build manager shows progress.
  *
  * Rules
  *   order      done steps keep their place as history; remaining steps run in queue order. A remaining step that sits
@@ -17,6 +22,8 @@
  *   sync       feature tracker → build: a step whose linked features are all built is completed; some built → partial.
  *              build → feature tracker: completing a step marks the epic and every linked feature built.
  */
+
+import { estimateMinutes, formatMinutes, iso, splitCheck, stepsProgress } from './pending-core.mjs';
 
 export const MODEL_TIER = { fable: 3, opus: 2, sonnet: 1 };
 export const MODEL_LABEL = { fable: 'Fable 5.1', opus: 'Opus 5.5', sonnet: 'Sonnet 5.5' };
@@ -136,19 +143,87 @@ export function computeQueue(features, queue) {
       progress: feats.length ? Math.round((feats.filter(isDone).length / feats.length) * 100) : (isDone(epic) ? 100 : epic.status === 'partial' ? 50 : 0),
       acceptance: epic.acceptance ?? [],
       completedAt: rec.completedAt && rec.completedAt !== BASELINE ? rec.completedAt : null, completedBy: rec.completedBy ?? null, rework: rec.rework ?? null,
+      ...stepsView(rec),
     };
   });
   const remaining = steps.filter((s) => s.state !== 'done' && s.state !== 'rework' && s.state !== 'dropped');
   const next = remaining.find((s) => s.ready) ?? null;
   const counts = steps.reduce((a, s) => ((a[s.state] = (a[s.state] ?? 0) + 1), a), {});
   const byModel = remaining.reduce((a, s) => ((a[s.model] = (a[s.model] ?? 0) + 1), a), {});
+  const minutesLeftByModel = remaining.reduce((a, s) => ((a[s.model] = (a[s.model] ?? 0) + s.minutesLeft), a), {});
   return {
-    steps, order, next: next?.id ?? null, counts, byModel,
+    steps, order, next: next?.id ?? null, counts, byModel, minutesLeftByModel,
+    unsplit: remaining.filter((s) => s.needsSplit).map((s) => s.id),
     violations: steps.filter((s) => s.violations.length).length,
     rework: steps.filter((s) => s.rework).length,
     dirty: !!queue?.dirty, updatedAt: queue?.updatedAt ?? '',
   };
 }
+
+/** Normalised `steps` of a record (tolerant of hand edits), the record's estimate, and the split/progress numbers. */
+export function recordSteps(rec) {
+  return (Array.isArray(rec?.steps) ? rec.steps : []).map((s) => ({
+    text: String(s?.text ?? ''),
+    ...(String(s?.estimate ?? '').trim() ? { estimate: String(s.estimate).trim() } : {}),
+    ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) } : {}),
+  })).filter((s) => s.text);
+}
+function stepsView(rec) {
+  const steps = recordSteps(rec);
+  const estimate = String(rec?.estimate ?? '').trim();
+  const entry = { estimate, steps };
+  const p = stepsProgress(entry);
+  const c = splitCheck(entry);
+  return { estimate: estimate || formatMinutes(p.minutesTotal), steps, stepsDone: p.done, minutesTotal: p.minutesTotal, minutesLeft: p.minutesLeft, needsSplit: c.needsSplit, splitReasons: c.reasons };
+}
+
+/**
+ * Edit a step's build-time estimate and its small steps (Oct 21 2026). Pure: returns the new queue state.
+ *   { id, estimate }                                      set / clear ('' or null) the step's estimate
+ *   { id, steps: [{ text, estimate?, done?, doneAt? }] }  replace the whole list (keeps done/doneAt where given)
+ *   { id, add: { text, estimate? } }                      append one small step
+ *   { id, index, done?, text?, estimate? }                tick / untick, reword or re-estimate one small step (0-based)
+ *   { id, removeIndex }                                   drop one small step
+ * Throws on an unknown epic, an empty text or an index out of range.
+ */
+export function stepsAction(features, queue, a, now = new Date().toISOString(), by = 'console') {
+  const epic = features.find((f) => f.id === a?.id && f.kind === 'epic');
+  if (!epic) throw new Error(`no build step "${a?.id}"`);
+  const q = structuredClone(queue ?? emptyQueue());
+  const rec = (q.steps[epic.id] = { ...(q.steps[epic.id] ?? {}) });
+  let steps = recordSteps(rec);
+  const what = [];
+  const clean = (s) => { const text = String(s?.text ?? '').trim(); if (!text) throw new Error('text is required'); const e = String(s?.estimate ?? '').trim(); return { text, ...(e ? { estimate: e } : {}), ...(s?.done === true ? { done: true, doneAt: iso(s?.doneAt) || now } : {}) }; };
+  if (a.estimate !== undefined) { const e = String(a.estimate ?? '').trim(); if (e) rec.estimate = e; else delete rec.estimate; what.push(e ? `~${e}` : 'estimate cleared'); }
+  if (a.steps !== undefined) { if (!Array.isArray(a.steps)) throw new Error('steps must be an array'); steps = a.steps.map(clean); what.push(`${steps.length} step(s) set`); }
+  if (a.add !== undefined) { steps.push(clean(a.add)); what.push(`step ${steps.length} added`); }
+  if (a.index !== undefined) {
+    const k = Number(a.index);
+    if (!Number.isInteger(k) || k < 0 || k >= steps.length) throw new Error(`no step ${a.index} on "${epic.id}" (it has ${steps.length})`);
+    const sp = { ...steps[k] };
+    if (a.text !== undefined) { const text = String(a.text).trim(); if (!text) throw new Error('text is required'); sp.text = text; what.push(`step ${k + 1} reworded`); }
+    if (a.stepEstimate !== undefined) { const e = String(a.stepEstimate ?? '').trim(); if (e) sp.estimate = e; else delete sp.estimate; what.push(`step ${k + 1} ~${e || 'cleared'}`); }
+    if (a.done !== undefined) { if (a.done) { if (!sp.done) { sp.done = true; sp.doneAt = now; } what.push(`step ${k + 1} done`); } else { delete sp.done; delete sp.doneAt; what.push(`step ${k + 1} not done`); } }
+    steps[k] = sp;
+  }
+  if (a.removeIndex !== undefined) {
+    const k = Number(a.removeIndex);
+    if (!Number.isInteger(k) || k < 0 || k >= steps.length) throw new Error(`no step ${a.removeIndex} on "${epic.id}" (it has ${steps.length})`);
+    steps.splice(k, 1); what.push(`step ${k + 1} removed`);
+  }
+  if (steps.length) rec.steps = steps; else delete rec.steps;
+  if (!Object.keys(rec).length) delete q.steps[epic.id];
+  q.updatedAt = now;
+  q.history = [...(q.history ?? []), { at: now, by, text: `${epic.title}: ${what.join(', ') || 'steps unchanged'}` }].slice(-200);
+  return q;
+}
+
+/** Queue steps (remaining ones) that break the small-steps rule, for `--check-steps` and the console. */
+export function unsplitSteps(features, queue) {
+  const v = computeQueue(features, queue);
+  return v.steps.filter((s) => s.needsSplit && s.state !== 'done' && s.state !== 'rework' && s.state !== 'dropped').map((s) => ({ id: s.id, title: s.title, estimate: s.estimate, reasons: s.splitReasons }));
+}
+export { estimateMinutes, formatMinutes };
 
 /** What a reprocess would do: new order, moves with reasons, rework flags. Pure — apply with applyReprocess. */
 export function proposeReprocess(features, queue) {

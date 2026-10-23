@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.push-banner",
+  "name": "Push banner",
+  "version": "0.2.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF, axHub and Build-Pilot (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: a branch reaches main only through its PR, merged once CI has passed (checked again on the server, head commit pinned). Shown above every tab in Patches through the console's banner strip. The console server talks to GitHub with its own token, which never reaches the browser.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "banner:push-banner",
+    "settings-tab:push-banner"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/push-banner",
+    "env": [
+      "AXF_PUSH_BANNER_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+/* Build manager: same look as the console banners (small pill badges, phone first). Theme tokens only. */
+.axp-build-manager { display: flex; flex-direction: column; gap: var(--fx-space) }
+
+/* badges + small action buttons (the systems check's axp-systems-check-act look) */
+.axp-build-manager__badge, .axp-build-manager__model, .axp-build-manager__toggle { box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-text); background: var(--fx-surface2); font-variant-numeric: tabular-nums }
+.axp-build-manager__badge.is-warn { color: var(--fx-warning); border-color: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-build-manager__badge.is-ok { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-build-manager__badge.is-danger { color: var(--fx-danger); border-color: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-build-manager__badge.is-muted { color: var(--fx-muted) }
+a.axp-build-manager__act { text-decoration: none }
+.axp-build-manager__head:focus-visible, .axp-build-manager__toggle:focus-visible, .axp-build-manager-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-build-manager__model.is-fable { color: var(--fx-info); border-color: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-build-manager__model.is-opus { color: var(--fx-accent); border-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent); background: var(--fx-accent-soft) }
+.axp-build-manager__model.is-sonnet { color: var(--fx-success); border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+
+.axp-build-manager__bar { display: block; flex: 1; min-width: calc(var(--fx-space) * 4); height: calc(var(--fx-space) * 0.4); border-radius: 999px; background: var(--fx-surface2); overflow: hidden }
+.axp-build-manager__bar > span { display: block; height: 100%; background: var(--fx-accent); transition: width .4s }
+.axp-build-manager__spin { display: inline-flex; color: var(--fx-accent); animation: axp-build-manager-spin 1.2s linear infinite }
+@keyframes axp-build-manager-spin { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) { .axp-build-manager__spin { animation: none } .axp-build-manager__bar > span { transition: none } }
+
+/* live tracker */
+.axp-build-manager__tracker { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-build-manager__tracker-head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
+.axp-build-manager__tracker-head > strong { flex: 1; min-width: 0 }
+.axp-build-manager__live-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__live { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-manager__live.is-done { border-color: var(--fx-success) }
+.axp-build-manager__live.is-failed { border-color: var(--fx-danger) }
+.axp-build-manager__live-head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-build-manager__live-title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager__live-meta { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3); align-items: center }
+.axp-build-manager__live-step { margin: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.3); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); overflow-wrap: anywhere }
+
+/* totals by model */
+.axp-build-manager__totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.axp-build-manager__total { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.axp-build-manager__total > strong { font-size: calc(var(--fx-font-size) * 17 / 14); font-variant-numeric: tabular-nums }
+.axp-build-manager__total-label { font-size: calc(var(--fx-font-size) * 11 / 14); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-muted) }
+.axp-build-manager__total.is-fable { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-info) }
+.axp-build-manager__total.is-opus { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-accent) }
+.axp-build-manager__total.is-sonnet { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-success) }
+.axp-build-manager__total.is-all { border-left: calc(var(--fx-border-w) * 3) solid var(--fx-text) }
+
+/* filters */
+.axp-build-manager__filters { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); align-items: flex-end }
+.axp-build-manager__field { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted) }
+.axp-build-manager__field select { min-width: calc(var(--fx-space) * 8) }
+.axp-build-manager__toggles { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) }
+.axp-build-manager__toggle { cursor: pointer; font-family: inherit }
+.axp-build-manager__toggle.is-on { color: var(--fx-accent); border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+
+/* list */
+.axp-build-manager__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__row { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+.axp-build-manager__row.is-building { border-color: var(--fx-accent) }
+/* a row you tap (data-fx-row); `button.` outranks the framework row reset */
+button.axp-build-manager__head { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.35); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75) }
+.axp-build-manager__head:hover { background: var(--fx-surface2) }
+.axp-build-manager__title-line { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-build-manager__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere }
+.axp-build-manager__chips { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3); align-items: center }
+.axp-build-manager__left { font-size: calc(var(--fx-font-size) * 12 / 14); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-build-manager__progress { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-build-manager__count { font-size: calc(var(--fx-font-size) * 11 / 14); color: var(--fx-muted); white-space: nowrap; font-variant-numeric: tabular-nums }
+.axp-build-manager__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.75); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: calc(var(--fx-space) * 0.5) }
+.axp-build-manager__detail { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-build-manager__facts { display: grid; grid-template-columns: max-content 1fr; gap: calc(var(--fx-space) * 0.2) var(--fx-space); margin: 0; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-build-manager__facts dt { color: var(--fx-muted) }
+.axp-build-manager__facts dd { margin: 0; overflow-wrap: anywhere }
+.axp-build-manager__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); counter-reset: step }
+.axp-build-manager__steps > li { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; justify-content: space-between; font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-build-manager__steps > li.is-done .axp-build-manager__step-text { color: var(--fx-muted); text-decoration: line-through }
+.axp-build-manager__step { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; flex: 1; min-width: 0; cursor: pointer }
+.axp-build-manager__step input { margin-top: calc(var(--fx-space) * 0.2); flex: none; accent-color: var(--fx-accent) }
+.axp-build-manager__step-text { overflow-wrap: anywhere }
+.axp-build-manager__step-time { flex: none; font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums; white-space: nowrap }
+.axp-build-manager__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) }
+.axp-build-manager__none { margin: 0 }
+.axp-build-manager__error { margin: 0; color: var(--fx-danger) }
+
+/* banner (after the Activity banner) */
+.axp-build-manager-banner { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-bottom: var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-build-manager-banner.is-done { border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-build-manager-banner.is-failed { border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+button.axp-build-manager-banner__main { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); cursor: pointer }
+.axp-build-manager-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.axp-build-manager-banner__text > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-build-manager-banner__meta { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.3) }
+
+.axp-build-manager-banner__step { font-size: calc(var(--fx-font-size) * 12 / 14); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+
+/* search + tabs (Remaining / Live / Built) */
+.axp-build-manager__search { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: 0 calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); color: var(--fx-muted) }
+.axp-build-manager__search:focus-within { border-color: var(--fx-focus) }
+.axp-build-manager__search input { flex: 1; min-width: 0; border: 0; background: transparent; box-shadow: none; outline: none; padding-left: 0; padding-right: 0 }
+.axp-build-manager__search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none }
+.axp-build-manager__tabs { display: flex; gap: calc(var(--fx-space) * 0.3); border-bottom: var(--fx-border-w) solid var(--fx-border); overflow-x: auto }
+/* tabs are framework tabs (fx-tab); this class only lays them out */
+.axp-build-manager__tab { flex: none }
+.axp-build-manager__tab.is-busy .axp-build-manager__tab-n { color: var(--fx-accent) }
+.axp-build-manager__tab-n { font-size: calc(var(--fx-font-size) * 11 / 14); font-variant-numeric: tabular-nums; color: var(--fx-muted) }
+
+/* live session entries */
+.axp-build-manager__live.is-stale { border-color: var(--fx-warning) }
+.axp-build-manager__live.is-child { margin-left: var(--fx-space) }
+
+/* Start build now */
+.axp-build-manager__row { position: relative }
+.axp-build-manager__start-btn { position: absolute; top: calc(var(--fx-space) * 0.55); right: calc(var(--fx-space) * 2.2) }
+.axp-build-manager__row .axp-build-manager__title-line { padding-right: calc(var(--fx-space) * 4.5) }
+.axp-build-manager__start { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); margin: 0 calc(var(--fx-space) * 0.75) calc(var(--fx-space) * 0.75); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-accent); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), var(--fx-surface)) }
+.axp-build-manager__start-head { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__job { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.4) }
+
+/* built history */
+.axp-build-manager__built { display: flex; flex-direction: column; gap: var(--fx-space) }
+.axp-build-manager__head.is-static { cursor: default }
+.axp-build-manager__head.is-static:hover { background: transparent }
+.axp-build-manager__row.is-failed { border-color: var(--fx-danger) }
+
+@media (max-width: 720px) {
+  .axp-build-manager__totals { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .axp-build-manager__field { flex: 1 1 calc(50% - var(--fx-space)) }
+  .axp-build-manager__field select { min-width: 0; width: 100% }
+}
+/* Clean up: take builds off the list (already built / removed) */
+.axp-build-manager__takeoff { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.4); margin-top: calc(var(--fx-space) * 0.5) }
+.axp-build-manager__cleanup { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-build-manager__cleanup p { margin: 0 }
+.axp-build-manager__cleanup-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.3); max-height: calc(var(--fx-space) * 24); overflow: auto }
+/* Filter toolbar (Oct 22 2026, Brett: style #23 with count badges; Model / Added by / Status / Sort moved into the Filter & sort dialog) */
+.axp-build-manager__tools { display: flex; align-items: stretch; gap: calc(var(--fx-space) * 0.25); padding: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow-x: auto; scrollbar-width: thin }
+.axp-build-manager__tools-sep { flex: none; width: var(--fx-border-w); margin: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.15); background: var(--fx-border) }
+/* toolbar toggles are framework chips (fx-chip, is-on when pressed); this class only lays them out: icon over label */
+button.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space) * 5.5); display: flex; flex-direction: column; align-items: center; gap: calc(var(--fx-space) * 0.25); white-space: nowrap }
+.axp-build-manager__tool-icon { position: relative; display: inline-flex }
+.axp-build-manager__tool-n { position: absolute; top: calc(var(--fx-space) * -0.7); left: calc(100% - var(--fx-space) * 0.5); min-width: calc(var(--fx-space) * 1.7); padding: 0 calc(var(--fx-space) * 0.35); border-radius: 999px; border: var(--fx-border-w) solid var(--fx-surface); background: var(--fx-surface3); color: var(--fx-text); font-size: calc(var(--fx-font-size) * 10 / 14); font-weight: 700; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums }
+.axp-build-manager__tool.is-on .axp-build-manager__tool-n { background: var(--fx-accent); color: var(--fx-surface) }
+.axp-build-manager__dialog { width: min(calc(var(--fx-space) * 48), 100%) }
+.axp-build-manager__dialog-body { display: grid; gap: calc(var(--fx-space) * 0.9) }
+.axp-build-manager__dialog-body .axp-build-manager__field select { width: 100%; min-width: 0 }
+.axp-build-manager__dialog-foot { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin-top: calc(var(--fx-space) * 0.4) }
+.axp-build-manager__dialog-foot > span { flex: 1 }
+/* the trash can on a stuck live build (no word / running 30+ min) */
+.axp-build-manager__trash { flex: none }
+/* the other running builds under the first, each with its own trash can when stuck (Oct 22 2026) */
+.axp-build-manager-banner:has(> .axp-build-manager-banner__more) { flex-wrap: wrap }
+.axp-build-manager-banner__more { flex: 1 0 100%; list-style: none; margin: 0; padding: calc(var(--fx-space) * 0.4) 0 0; border-top: var(--fx-border-w) solid var(--fx-border); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.axp-build-manager-banner__more li { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); min-width: 0; font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-build-manager-banner__more-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }

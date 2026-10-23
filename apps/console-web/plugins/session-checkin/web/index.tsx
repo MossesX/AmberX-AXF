@@ -3,6 +3,7 @@ import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
+import { appMenu } from './menu';
 
 /** Plugin folder: server routes live at /api/plugins/session-checkin/. */
 const FOLDER = 'session-checkin';
@@ -105,7 +106,7 @@ function SessionsView() {
       </div>
 
       <div className={`${P}__filters`} role="group" aria-label="Filter sessions">
-        {FILTERS.map(([id, label]) => <button key={id} type="button" className={`${P}__filter ${filter === id ? 'is-active' : ''}`} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>)}
+        {FILTERS.map(([id, label]) => <button key={id} type="button" className={`fx-chip ${filter === id ? 'is-on' : ''}`} aria-pressed={filter === id} onClick={() => setFilter(id)}>{label}</button>)}
       </div>
 
       {rows && shown.length === 0 && <p className="fx-muted">{rows.length ? 'No sessions match this filter.' : 'No check-ins archived yet. They appear here after the next new Claude Code session with the check-in installed.'}</p>}
@@ -113,7 +114,7 @@ function SessionsView() {
         <div className={`${P}__list`} role="list">
           {shown.map((r) => (
             <div key={r.id} role="listitem">
-              <button type="button" className={`${P}__row ${sel === r.id ? 'is-selected' : ''}`} onClick={() => setSel(sel === r.id ? null : r.id)} aria-expanded={sel === r.id}>
+              <button type="button" data-fx-row className={`${P}__row ${sel === r.id ? 'is-selected' : ''}`} onClick={() => setSel(sel === r.id ? null : r.id)} aria-expanded={sel === r.id}>
                 <span className={`${P}__when`}>{when(r.startedAt)}</span>
                 <span className={`${P}__main`}>
                   <span className={`${P}__where`}>{r.unattended ? 'Unattended' : LOCATIONS[r.location] ?? r.location}{r.skipped ? ' · skipped' : ''}</span>
@@ -261,7 +262,7 @@ function InstallWizard() {
   return (
     <div className="fx-stack">
       <ol className={`${P}__steps`}>
-        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" onClick={() => void go(i)} disabled={busy}>{i + 1}. {s}</button></li>)}
+        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} onClick={() => void go(i)} disabled={busy}>{i + 1}. {s}</button></li>)}
       </ol>
 
       {step === 0 && (
@@ -391,6 +392,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Session check-in',
   version: '1.0.0',
+  appMenu,
   views: { 'session-checkin': { title: 'Sessions', icon: 'list', render: () => <SessionsView /> } },
   nav: { label: 'Plugins', items: [{ id: 'session-checkin', label: 'Sessions', icon: 'list', view: 'session-checkin' }] },
   settingsTabs: [{ id: 'session-checkin', label: 'Session check-in', icon: 'check-circle', order: 36, description: 'The questions every new Claude Code session opens with, where they are installed, and the baseline build costs they quote.' }],

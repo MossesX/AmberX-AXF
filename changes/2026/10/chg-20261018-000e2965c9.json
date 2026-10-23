@@ -1,0 +1,56 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261018-000e2965c9",
+  "createdAt": "2026-10-18T12:42:39.000Z",
+  "updatedAt": "2026-10-18T14:42:39.000Z",
+  "kind": "build",
+  "title": "Build options / `--wrap-groups`",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "every UI build takes `--switches` from one registry, `framework/schemas/build-options.json` (`build-options@1`); each option writes an asset token, so both ports' engines read it like any other token. Drivers: `axf init … --wrap-groups` (`--x`, `--x on|off`, `--no-x`), `axf options <dir> [--framewor",
+    "commits": [
+      {
+        "sha": "c0652da",
+        "message": "Build options: --wrap-groups switch + style-theme wrapGroups token"
+      },
+      {
+        "sha": "2295c71",
+        "message": "Project manifests + Standards + shared data on the hub's /projects"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-18T14:42:39.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "build-options-wrap-groups"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T12:42:39.000Z",
+  "finishedAt": "2026-10-18T14:42:39.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "framework/schemas/build-options.json",
+    "apps/demo"
+  ]
+}
