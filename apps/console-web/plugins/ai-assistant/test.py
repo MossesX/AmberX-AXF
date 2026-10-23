@@ -687,4 +687,37 @@ check(not _os.path.exists(seen_args["cwd"]), "the CLI's throwaway folder is remo
 st_mod = sys.modules["axf_console_plugins.ai_assistant.store"]
 check(st_mod.load_config().get("schema") == st_mod.SCHEMA, "config carries the data schema version")
 check(json.load(open(HERE / "plugin.json"))["lifecycle"]["$axf"] == "plugin-lifecycle@1" and (HERE / "uninstall.mjs").exists() and (HERE / "install.mjs").exists() and (HERE / "hooks.mjs").exists(), "plugin-lifecycle@1 files present")
+
+# ---- Claude credits probe + auto-switch (axf.llm@1 credits, used by the systems check on every load)
+_st, _prov = mod.store, mod.providers
+_cfg0 = _st.load_config()
+_cfg = _st.load_config()
+_cfg["profiles"] = {"cr-a": {"kind": "anthropic", "label": "Key A", "key": "sk-ant-api-x"}, "cr-b": {"kind": "openai", "label": "GPT", "key": "x"},
+                    "cr-c": {"kind": "anthropic", "label": "Key C", "key": "sk-ant-api-y"}}
+_cfg["defaultProfile"] = "cr-a"
+_st.save_config(_cfg)
+_answers = {"sk-ant-api-x": "Your credit balance is too low to access the Anthropic API.", "sk-ant-api-y": ""}
+_orig_test = _prov.test_profile
+def _fake_test(prof, model=None):
+    if _answers.get(prof.get("key")):
+        raise RuntimeError(_answers[prof["key"]])
+    return {"ok": True}
+_prov.test_profile = _fake_test
+_llm = mod.LlmService()
+r = _llm.credits(auto_switch=True)
+check(r["state"] == "no-credit" and r["switched"] and r["switched"]["to"] == "cr-c", "credits: out-of-credit default switches to the next Claude key")
+check(_st.load_config()["defaultProfile"] == "cr-c", "credits: the new key is the default")
+check(all(p["kind"] == "anthropic" for p in r["profiles"]), "credits: only Claude providers are tested")
+r = _llm.credits(auto_switch=True)
+check(r["state"] == "ok" and r["switched"] is None and len(r["profiles"]) == 1, "credits: a default with credit tests only itself")
+_answers["sk-ant-api-y"] = "connection refused"
+r = _llm.credits(auto_switch=True)
+check(r["state"] == "error" and r["switched"] is None, "credits: a non-credit error never switches")
+_answers["sk-ant-api-y"] = "credit balance is too low"
+r = _llm.credits(auto_switch=True)
+check(r["state"] == "no-credit" and r["switched"] is None and _st.load_config()["defaultProfile"] == "cr-c", "credits: none with credit leaves the default alone")
+check("sk-ant" not in json.dumps(r), "credits: never returns keys")
+_prov.test_profile = _orig_test
+_st.save_config(_cfg0)
+
 print(f"all {ok} checks passed")

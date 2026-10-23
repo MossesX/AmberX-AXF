@@ -173,6 +173,7 @@ def _err(e: Exception) -> HTTPException:
 class LlmService:
     """Model access for other plugins. Same profiles, same fallback chain, usage counted here."""
     version = 1
+    settings_tab = FOLDER  # where its providers are picked (the systems check opens it when Claude is out of credits)
 
     def profiles(self) -> list[dict[str, Any]]:
         return store.public_config()["profiles"]
@@ -185,9 +186,50 @@ class LlmService:
         store.add_usage(pid, m or "", out["usage"])
         return {**out, "profile": pid, "model": m}
 
+    def credits(self, auto_switch: bool = True) -> dict[str, Any]:
+        """Is Claude out of credits? Tests the default Claude provider with one tiny request (16 tokens). When it is out of
+        credits (or its usage limit is reached), tests the other Claude providers in order and, with `auto_switch`, makes
+        the first one that answers the default. Never returns keys or reply text."""
+        cfg = store.load_config()
+        profs = cfg.get("profiles", {})
+        claude = [pid for pid, p in profs.items() if providers.protocol_of(p) in CLAUDE_PROTOCOLS]
+        out: dict[str, Any] = {"default": cfg.get("defaultProfile") or "", "claude": len(claude), "profiles": [], "switched": None}
+        if not claude:
+            return {**out, "state": "none"}
+        default = out["default"] if out["default"] in claude else claude[0]
+        order = [default] + [p for p in claude if p != default]
+        for i, pid in enumerate(order):
+            st = _credit_state(pid, profs[pid])
+            out["profiles"].append({"id": pid, "label": profs[pid].get("label") or pid, "kind": profs[pid].get("kind"), **st})
+            if i == 0:
+                out["state"] = st["state"]
+                if st["state"] != "no-credit":
+                    return out  # only a default that is out of credits makes us look further
+            elif st["state"] == "ok":
+                if auto_switch:
+                    store.set_default_profile(pid)
+                    out["switched"] = {"from": default, "to": pid, "label": profs[pid].get("label") or pid}
+                return out
+        return out
+
     def embed(self, texts: list[str], profile: str | None = None, model: str | None = None) -> list[list[float]]:
         _pid, prof = store.get_profile(profile)
         return providers.embed(prof, texts, model)
+
+
+CLAUDE_PROTOCOLS = ("anthropic", "claude-cli")
+_NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota", re.I)
+
+
+def _credit_state(pid: str, prof: dict[str, Any]) -> dict[str, Any]:
+    try:
+        providers.test_profile(prof, prof.get("defaultModel"))
+        store.record_test(pid, {"ok": True})
+        return {"state": "ok", "error": ""}
+    except Exception as e:  # noqa: BLE001 — classified, never raised
+        msg = contract.redact_secrets(str(e))[:300]
+        store.record_test(pid, {"ok": False, "error": msg})
+        return {"state": "no-credit" if _NO_CREDIT.search(msg) else "error", "error": msg}
 
 
 def tools_root() -> Path:

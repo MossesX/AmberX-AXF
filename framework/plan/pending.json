@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T00:40:17.479Z",
+ "updatedAt": "2026-10-23T00:51:52.239Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1744,6 +1744,20 @@
    "builtAt": "2026-10-23T00:40:17.479Z",
    "updatedAt": "2026-10-23T00:40:17.479Z",
    "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-live-keys-credits",
+   "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:49:33.693Z",
+   "builtAt": "2026-10-23T00:51:52.239Z",
+   "updatedAt": "2026-10-23T00:51:52.239Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]
