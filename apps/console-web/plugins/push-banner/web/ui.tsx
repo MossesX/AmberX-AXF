@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergeBranch, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -316,6 +316,13 @@ function Group({ title, count, action, tone, children }: { title: string; count:
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
+/** Doing work: a push, pull, merge or PR in flight, a check running, or Claude Code on the VPS asked / waiting / running (launched in the last 2 h). */
+function pushWorking(s: ReturnType<typeof useStore>): boolean {
+  if (s.busy || s.loading) return true;
+  const now = Date.now();
+  return !!s.claude?.jobs.some((j) => j.state === 'asking' || j.state === 'waiting' || (j.state === 'launched' && !!j.startedAt && now - j.startedAt < 2 * 3600_000));
+}
+
 export function PushBanner() {
   const rt = useRuntime();
   useAxfState();
@@ -351,7 +358,7 @@ export function PushBanner() {
   return (
     <div className={`axp-push-banner${mergeable ? ' is-ready' : ''}`} role="status" aria-live="polite">
       <div className="axp-push-banner__row">
-        <span className="axp-push-banner__icon" aria-hidden><Icon name="branch" size={18} /></span>
+        <BannerIcon className="axp-push-banner__icon" icon="branch" working={pushWorking(s)} />
         <button type="button" data-fx-row className="axp-push-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-push-banner__top">
             <strong>{headline}</strong>
