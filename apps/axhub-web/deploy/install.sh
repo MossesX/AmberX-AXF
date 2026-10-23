@@ -90,7 +90,8 @@ if axf_coolify_proxy_running; then
     say "Sign-in wall OFF (APP_WALL=on bash $APP/deploy/install.sh turns it back on). The pages still need a hub session to show anything."
   elif [ "$WALL" = "on" ]; then
     rm -f "$STATE/wall-waiting"
-    say "Sign-in wall ON (${USER_PATHS:+signed-in hub users}${USER_PATHS:-hub admins only}). Rollback: bash $APP/deploy/install.sh --remove"
+    if [ -n "$USER_PATHS" ]; then WHO="signed-in hub users"; else WHO="hub admins only"; fi
+    say "Sign-in wall ON ($WHO). Rollback: bash $APP/deploy/install.sh --remove"
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
   else
     touch "$STATE/wall-waiting"
