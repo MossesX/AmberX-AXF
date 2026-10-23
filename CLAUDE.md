@@ -203,7 +203,7 @@ Deploy: pushing to `main` runs `deploy.yml`, which builds `apps/demo` and force-
 
 ## Related repos
 
-- **`MossesX/axHub`**: standalone connector hub at `axhub.amberxai.com`. axHub never depends on AXF. AXF plugs in from its side via `lib-hub` (protocol defined by axHub: AXPP) and the `axhub-adapter-axf` plugin, which lives in **this** repo. axHub's step 3 proxies this console's `/mcp` as its first downstream service.
+- **`MossesX/axHub`**: standalone connector hub at `axhub.amberxai.com`. axHub's server core never depends on AXF; its UI may be built on AXF (axHub decision #93, Oct 23 2026), as static files the hub only hosts. AXF plugs in from its side via `lib-hub` (protocol defined by axHub: AXPP) and the `axhub-adapter-axf` plugin, which lives in **this** repo. axHub's step 3 proxies this console's `/mcp` as its first downstream service.
 - **`MossesX/Build-Pilot`**: Build Pilot, the plugin-driven app designer (web first, Android later) built on AXF. Its plugins (`pilot-plugin@1`) serve one stack, several, or all (`*`); it builds through this repo's engine via the Dev Console. Android is the first stack.
 - **`MossesX/studiox`**: AmberX AI Studio (Next.js), an earlier, separate `@axf/core` line. It does not consume this repo.
 - **`MossesX/amberx`**: earlier PyQt6 desktop AmberX framework (dormant). This repo's planned `python` port (`x.python.port`) is separate from it.
