@@ -305,7 +305,8 @@ private fun HowItWorks(session: VaultSession) {
     val phrases = session.wakePhrases()
     AxfCard(Modifier.fillMaxWidth(), title = "In the background", icon = "bell") {
         val (line, tone) = when (val w = wake) {
-            is WakeState.Listening -> "Listening for your global trigger." to null
+            is WakeState.Listening -> "Listening for your global trigger${'$'}{if (w.phrases.size > phrases.size) " and voice notes" else ""}." to null
+            WakeState.TakingNote -> "Taking a voice note." to null
             WakeState.PausedInApp -> "Paused while the app is open. Close it or turn off the screen and it listens for your global trigger." to null
             is WakeState.Heard -> "Heard your trigger and opened the app." to null
             is WakeState.Off -> w.why to Axf.colors.warning

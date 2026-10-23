@@ -2,8 +2,8 @@
  * Voice notes — the pure model (no React, no fetch): the settings a voice-activated notes pusher reads, its lists with
  * numbers, subcategories and question sets, and the rules a listener applies to what it hears (strip the stop trigger,
  * "give me the list of lists", a spoken number → a list, which question set a trigger opens). The settings interface
- * edits this; a listener (Voice Vault style, not built: placeholder `axf.voice-notes.listener`) reads the same data
- * from axHub.
+ * edits this; the listener (Voice Vault on Android: `apps/voicevault/.../notes/`, a Kotlin twin of these rules) reads the
+ * same data from axHub and saves notes to table `notes`.
  *
  * Stored on axHub through lib-hubstore: settings = `settings/voice-notes.json` (one key per field below, so two devices
  * editing different fields never overwrite each other), lists = table `lists`, notes = table `notes`, both in folder

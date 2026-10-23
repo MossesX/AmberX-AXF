@@ -40,5 +40,10 @@ dependencies {
     implementation("ai.amberx.axf:axf-devtools:$axf")
     implementation("ai.amberx.axf:lib-voice:$axf")
     implementation("ai.amberx.axf:lib-lock:$axf")
+    // Voice notes: axHub sign-in + session cookie (lib-hub) and the hub's data API (OkHttp, JSON).
+    implementation("ai.amberx.axf:lib-hub:$axf")
+    implementation(libs.okhttp)
+    implementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.junit)
     // axf:modules ["ai.amberx.axf.platform"]
 }

@@ -21,6 +21,8 @@ sealed interface WakeState {
     data object PausedInApp : WakeState
     /** Listening in the background for these phrases only. */
     data class Listening(val phrases: List<String>) : WakeState
+    /** Heard a voice-notes start trigger: taking a note (beep, the note, where to store it). */
+    data object TakingNote : WakeState
     /** Heard the trigger at [at] (epoch ms) and asked Android to open the app. */
     data class Heard(val at: Long) : WakeState
 }
@@ -58,7 +60,7 @@ object WakeListener {
 
     /** Why it can't run right now, or null when it can. */
     fun blocker(c: Context, settingOn: Boolean): String? = when {
-        !settingOn -> "Off in Settings → Voice Vault → Listen in the background."
+        !settingOn -> "Off in Settings → Voice Vault → Listen in the background (and Voice notes → Listen for voice notes)."
         !hasMic(c) -> "Needs the microphone permission. Tap the mic once to allow it."
         !onDevice(c) -> "This phone has no on-device speech recognition, so it won't listen in the background (it never sends an always-on mic to the cloud)."
         else -> null
