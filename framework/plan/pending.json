@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T01:13:32.733Z",
+ "updatedAt": "2026-10-23T02:09:40.262Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1509,6 +1509,10 @@
     {
      "text": "Opus build Oct 21 2026: apps/axhub-web (approvals, apps, hub status, planned areas), hub-side cross-site reads for /apps.json (axHub decision #90). Report: _claude/memory/docs/axhub-web.md. Android is on hold, so the Kotlin twin waits for the hold to lift — record it in spec/PORTING.md meanwhile.",
      "at": "2026-10-22T01:57:53.687Z"
+    },
+    {
+     "text": "Oct 23 2026: branch claude/axhub-web-on-hub (Opus) changed apps/axhub-web (manifest hidden: [], deploy/install.sh now targets axhub.amberxai.com page paths). Rebase on it; no clash with the lib-hub harvest itself.",
+     "at": "2026-10-23T02:09:40.262Z"
     }
    ],
    "subPrompts": [
@@ -1540,7 +1544,7 @@
    ],
    "createdAt": "2026-10-22T01:57:53.687Z",
    "builtAt": "",
-   "updatedAt": "2026-10-22T01:57:53.687Z",
+   "updatedAt": "2026-10-23T02:09:40.262Z",
    "estimate": "2 h",
    "source": "session"
   },
@@ -1975,6 +1979,20 @@
    "updatedAt": "2026-10-22T23:20:51.984Z",
    "estimate": "4 h",
    "source": "chat"
+  },
+  {
+   "id": "axhub-web-app-live-at-axhub-amberxai-com-banner-",
+   "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
+   "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "estimate": "30 min",
+   "source": "mcp"
   }
  ]
 }
