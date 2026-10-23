@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T05:43:56.671Z",
+ "updatedAt": "2026-10-23T12:30:55.345Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2301,6 +2301,94 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T05:43:56.671Z",
    "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "hubstore-voice-notes",
+   "title": "lib-hubstore (settings + app data on axHub, pick tables) + Voice notes console plugin (settings only)",
+   "detail": "Brett Oct 23 2026: one library, two classes (HubSettings, HubData); in Pilot pick settings only, all data or some tables. Voice notes plugin: settings interface for a voice-activated notes pusher (start/stop triggers, beep, lists with numbers, per-list questions on a number or recorded trigger, subcategories), all stored on axHub. Branch claude/project-thread-l3b0qo.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
+     "at": "2026-10-23T12:30:55.337Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "lib-hubstore: core rules + HubSettings + HubData + library.json + catalog",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "check-hubstore.mts with a fake hub data server, CI line",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "voice-notes plugin: config model + settings tab UI on the library",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    },
+    {
+     "text": "plugin self-test, lifecycle, menu, docs, status/tracker, PR",
+     "at": "2026-10-23T12:30:10.679Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T12:30:10.679Z"
+    }
+   ],
+   "createdAt": "2026-10-23T12:18:42.098Z",
+   "builtAt": "2026-10-23T12:30:55.345Z",
+   "updatedAt": "2026-10-23T12:30:55.345Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "hubstore-fable",
+   "title": "lib-hubstore as a cross-port contract (Fable rebuild)",
+   "detail": "Fable was offered for the voice notes / hub storage build and Opus was chosen (Oct 23 2026, branch claude/project-thread-l3b0qo). Start by reviewing/replacing the Opus lib-hubstore: hub-settings@1 + hub-table@1 frames as a fixture, a SettingsRegistry storage seam instead of mirroring, live follow via /data-events, Kotlin twin recorded (Android on hold).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus lib-hubstore + voice-notes store; list what changes",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Fixture spec/fixtures/hubstore.json (frames, merge, table chunking, config from parts) + checker",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "SettingsRegistry storage seam (hub-backed values) replacing mirror()",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Live follow through /data-events (axf.hubstore.live)",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Differences report + rebuild log; PORTING.md Kotlin twin notes",
+     "at": "",
+     "estimate": "15 min"
+    }
+   ],
+   "createdAt": "2026-10-23T12:30:10.672Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T12:30:10.672Z",
+   "estimate": "2 h",
    "source": "chat"
   }
  ]

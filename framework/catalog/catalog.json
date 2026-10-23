@@ -1661,6 +1661,19 @@
               ]
             },
             {
+              "id": "lib.hubstore",
+              "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+              "note": "framework/libs/hubstore + library.json (parts settings {file, mirror}, data {mode all|some, tables, folder}); check spec/check-hubstore.mts; first used by the console's Voice notes plugin (Oct 23 2026, Opus; Android twin deferred)",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": [
+                {
+                  "id": "lib.hubstore.live",
+                  "title": "Follow other devices' saves live through /data-events"
+                }
+              ]
+            },
+            {
               "id": "lib.notifications",
               "title": "Notifications library: channels, POST_NOTIFICATIONS and full-screen checks, ongoing \"watching\" notification, high-priority alerts whose lock-screen version is a private public text, notices, post/cancel by tag; fills the platform's android.notifications placeholder",
               "note": "framework/android/lib-notifications + library.json; harvested from apps/axhub-android watch/Alerts.kt (Oct 20 2026, written without a compiler)",

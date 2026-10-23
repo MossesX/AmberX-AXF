@@ -1,0 +1,32 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.voice-notes",
+  "name": "Voice notes",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Only a settings interface: sets up a voice-activated notes pusher. A start trigger, a beep, the note, a stop trigger (cut from the text and the recording), then it asks where to store it: say a list, or \"give me the list of lists\" and it reads them with their numbers, and you say a number. Each list can ask its own questions, opened by a number or a recorded trigger, and file notes into subcategories. Settings and lists live on axHub's data server through the framework's lib-hubstore, never on this device. The listener itself is a placeholder (axf.voice-notes.listener).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:voice-notes"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/voice-notes",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  }
+}
