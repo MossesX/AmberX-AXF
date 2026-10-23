@@ -1,8 +1,12 @@
 package ai.amberx.axf.axhubandroid.watch
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import ai.amberx.axf.axhubandroid.MainActivity
 import ai.amberx.axf.axhubandroid.R
 import ai.amberx.axf.hub.HubApproval
@@ -26,7 +30,10 @@ fun hubPrefs(context: Context): WatchPrefs = WatchPrefs(context, "axhub_watch")
 object Alerts {
     const val CH_WATCH = "axhub.watch"
     const val CH_APPROVAL = "axhub.approvals"
-    const val CH_AUTO = "axhub.autoApproved"
+    /** The old quiet auto-approved channel (deleted on start: a channel's sound can't change once created). */
+    const val CH_AUTO_OLD = "axhub.autoApproved"
+    /** Auto-approved, with the alarm sound (Brett, Oct 22 2026). */
+    const val CH_AUTO = "axhub.autoApprovedAlarm"
     const val EXTRA_APPROVAL = "axhub.approvalId"
     const val EXTRA_OPEN_LIST = "axhub.openApprovals"
     const val ID_WATCH = 1
@@ -35,10 +42,29 @@ object Alerts {
     val channelSpecs: List<ChannelSpec> = listOf(
         ChannelSpec(CH_WATCH, "Watching for approvals", ChannelImportance.MIN, "Shown while AXHub checks the hub", lockScreen = null, showBadge = false),
         ChannelSpec(CH_APPROVAL, "Approvals waiting", ChannelImportance.HIGH, "A call on axHub needs your approval", LockScreen.PRIVATE, vibrate = true),
-        ChannelSpec(CH_AUTO, "Auto-approved", ChannelImportance.DEFAULT, "A call on axHub was approved by auto-approval", LockScreen.PRIVATE),
     )
 
-    fun channels(context: Context) = AxfNotifications.channels(context, channelSpecs)
+    fun channels(context: Context) {
+        AxfNotifications.channels(context, channelSpecs)
+        alarmChannel(context)
+    }
+
+    /** lib-notifications channels carry no sound choice (framework Android code is on hold), so this one is made here.
+     *  Also called before each post, so a watcher started at boot (no activity yet) never posts to a missing channel. */
+    fun alarmChannel(context: Context) {
+        val nm = context.getSystemService(NotificationManager::class.java) ?: return
+        nm.deleteNotificationChannel(CH_AUTO_OLD)
+        if (nm.getNotificationChannel(CH_AUTO) == null) {
+            val ch = NotificationChannel(CH_AUTO, "Auto-approved (alarm)", NotificationManager.IMPORTANCE_HIGH)
+            ch.description = "A call on axHub was approved by auto-approval. Plays the alarm sound."
+            ch.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            ch.enableVibration(true)
+            val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            ch.setSound(sound, AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build())
+            nm.createNotificationChannel(ch)
+        }
+    }
+
     fun canPost(context: Context): Boolean = AxfNotifications.canPost(context)
     fun canFullScreen(context: Context): Boolean = AxfNotifications.canFullScreen(context)
 
@@ -86,6 +112,7 @@ object Alerts {
     )
 
     fun autoApproved(context: Context, a: HubApproval) {
+        alarmChannel(context)
         AxfNotifications.alert(context, autoApprovedSpec(a), openIntent(context, a.id.hashCode(), a.id))
     }
 

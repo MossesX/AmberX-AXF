@@ -25,6 +25,16 @@ class AutoApproveTest {
         assertTrue(AutoApprove.matches(listOf("*"), "vps.run"))
     }
 
+    @Test fun approveEverythingSkipsVpsRun() {
+        assertTrue(AutoApprove.applies(false, "", "github.repos/get", all = true))
+        assertTrue(AutoApprove.applies(false, "", "vps.logs", all = true))
+        assertFalse(AutoApprove.applies(false, "", "vps.run", all = true))
+        assertFalse(AutoApprove.applies(false, "", "", all = true))
+        assertFalse(AutoApprove.applies(false, "*", "github.repos/get", all = false))
+        // the explicit tool list still decides on its own, as before
+        assertTrue(AutoApprove.applies(true, "vps.run", "vps.run", all = true))
+    }
+
     @Test fun onlyTheHubsApprovedAnswerCounts() {
         assertTrue(AutoApprove.approvedReply(303, "/auth/admin/approvals/x?ok=approved"))
         assertFalse(AutoApprove.approvedReply(303, "/auth/admin/approvals/x?err=decidedAlready"))
@@ -40,6 +50,7 @@ class AutoApproveTest {
         assertEquals("Auto-approval approved", spec.publicTitle)
         assertFalse("lines" in spec.publicTitle + spec.publicText)
         assertEquals(Alerts.CH_AUTO, spec.channel)
+        assertTrue(Alerts.CH_AUTO != Alerts.CH_AUTO_OLD) // a new channel: its alarm sound can't be set on the old one
         assertTrue(spec.tag != Alerts.tag(a.id)) // survives the waiting alert being cleared
     }
 }

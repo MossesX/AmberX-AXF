@@ -59,9 +59,14 @@ object ApprovalWatch {
             plan.gone.forEach { Alerts.clearApproval(context, it) } // decided elsewhere or expired
             val auto = AutoApprovePrefs(context)
             f.pending.filter { it.id in plan.fresh }.forEach {
-                // Auto-approval only when it's on and the tool matches; if the hub doesn't confirm it, ask as usual.
-                if (auto.applies(it.tool) && AutoApprove.approve(prefs.base, it.id)) Alerts.autoApproved(context, it)
-                else Alerts.approval(context, it, prefs.fullScreen)
+                // The waiting alert always goes out first. Auto-approval only when it's on and the tool matches: once the hub
+                // confirms, the waiting alert is replaced by "approved" with the alarm sound; otherwise it stays and asks as usual.
+                val autoOk = auto.applies(it.tool)
+                Alerts.approval(context, it, prefs.fullScreen && !autoOk)
+                if (autoOk && AutoApprove.approve(prefs.base, it.id)) {
+                    Alerts.clearApproval(context, it.id)
+                    Alerts.autoApproved(context, it)
+                }
             }
         }
         return f.status.id

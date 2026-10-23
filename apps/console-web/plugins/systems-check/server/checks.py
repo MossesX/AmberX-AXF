@@ -333,8 +333,9 @@ class SysCheck:
             return self.item("moshi-key", "vps", "Moshi key", "ok", str(r.get("summary", ""))[:300], **base)
         if not r:
             return self.item("moshi-key", "vps", "Moshi key", "unknown", "The VPS hasn't reported its sign-in keys yet.", **base)
-        if saved:
-            return self.item("moshi-key", "vps", "Moshi key", "warn", f"Saved here, not on the VPS yet. Run on the VPS: {cmd}", **base)
+        if saved:  # saved: Auto fix adds it on the VPS through Mosses + axHub (the approval page shows the key line)
+            return self.item("moshi-key", "vps", "Moshi key", "warn", "Saved here, not on the VPS yet: Auto fix adds it (you approve it on axHub).",
+                             **{**base, "fix": {"type": "host", "command": cmd}})
         return self.item("moshi-key", "vps", "Moshi key", "error", "No Moshi key can sign in to the VPS: paste Moshi's public key.", **base)
 
     def c_host(self, hid: str) -> Check:

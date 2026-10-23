@@ -11,6 +11,7 @@ import os
 import sys
 import tempfile
 import threading
+import time
 import types
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -79,7 +80,7 @@ class Fake(BaseHTTPRequestHandler):
             return self._send(200, {**x, "state": "open", "mergeable": STATE["mergeable"]} if x else {"message": "Not Found"})
         if p.startswith(R + "/compare/"):
             head = p.split("...", 1)[1]
-            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": 2, "commits": [{"sha": "x"}], "files": []})
+            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE.get("behind", {}).get(head, 2), "commits": [{"sha": "x"}], "files": []})
         if p == R + "/commits":
             b = q["sha"][0]
             return self._send(200, [{"sha": f"{b}-head", "commit": {"message": f"Last on {b}\n\nbody", "committer": {"date": "2026-10-22T06:00:00Z" if b == "feat/b" else "2026-10-21T06:00:00Z"}}}])
@@ -166,6 +167,78 @@ u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conf
 check(u.status_code == 409 and "conflicts" in u.json()["detail"], "conflicts: says to merge by hand")
 u = c.post("/p/update", json={"repo": "Someone/Else", "branch": "x", "confirm": "Someone/Else:x"})
 check(u.status_code == 400, "only watched repos")
+
+# Claude on failure: a conflicted pull / refused merge goes to headless Claude Code on the VPS (approved on axHub)
+cf = sys.modules[spec.name + ".claudefix"]
+hub_calls = []
+def fake_hub(tool, args, conf=None, timeout=None):
+    hub_calls.append((tool, args["command"], conf))
+    return {"confirm": "11111111-2222-3333-4444-555555555555"} if conf is None else {"ok": "$ …\nexit 0 · 40 ms\nstarted pid 7"}
+class FakeChanges:
+    def __init__(self): self.opened, self.updates = [], []
+    def open(self, e, by): self.opened.append(e); return {"id": "chg-20261022-abcdef1234"}
+    def update(self, cid, patch): self.updates.append(patch); return {}
+fch = FakeChanges()
+mod.CLAUDE.call, mod.CLAUDE.delays, mod.CLAUDE.changes = fake_hub, (lambda: [0.01] * 5), (lambda: fch)
+# The real route goes through Mosses (axf.agents@1 → axhub_call): the push banner never calls axHub itself
+import plugin_services  # noqa: E402
+class FakeMosses:
+    def __init__(self, tools=("axhub_call",)): self.tools, self.runs = tools, []
+    def get_agent(self, aid): return {"id": aid, "tools": [{"name": t} for t in self.tools]} if aid == "coder" else None
+    def run_tool(self, aid, name, args, ctx=None):
+        self.runs.append((aid, name, args))
+        return json.dumps({"status": "confirm", "confirmationId": "11111111-2222-3333-4444-555555555555"} if "confirmation_id" not in args else {"status": "ok", "output": "exit 0"})
+check("agent manager" in cf.mosses_ready()[1], "no Mosses: the fix can't be handed over (it says why)")
+fmo = FakeMosses()
+plugin_services.provide("axf.agents@1", fmo, "fake-mosses")
+r1 = cf.call_hub("vps.run", {"command": "echo hi"})
+r2 = cf.call_hub("vps.run", {"command": "echo hi"}, "11111111-2222-3333-4444-555555555555")
+check(r1 == {"confirm": "11111111-2222-3333-4444-555555555555"} and r2 == {"ok": "exit 0"} and fmo.runs[0][:2] == ("coder", "axhub_call")
+      and fmo.runs[0][2]["wait"] is False and fmo.runs[0][2]["tool"] == "vps.run", "the launch goes through Mosses's axhub_call (approval id, then the output)")
+plugin_services.withdraw("fake-mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(tools=("repo_read",)), "fake-mosses")
+check("Safety" in cf.mosses_ready()[1], "Mosses without axhub_call: says to allow him dangerous tools")
+plugin_services.withdraw("fake-mosses")
+def settle(key):
+    for _ in range(300):
+        j = mod.CLAUDE.get(key)
+        if j and j["state"] in ("launched", "failed"): return j
+        time.sleep(0.01)
+    return mod.CLAUDE.get(key)
+check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b", "confirm": "MossesX/AmberX-AXF:feat/b"}).status_code == 409 and not hub_calls, "setting off: nothing handed over, Fix with Claude refused")
+check(c.put("/p/config", json={"claudeOnFail": "yes"}).status_code == 400, "the switches are true/false")
+check(c.put("/p/config", json={"claudeOnFail": True}).json()["claudeOnFail"] is True, "Hand failures to Claude Code is a setting")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(u.status_code == 409 and "Handed to Claude Code" in u.json()["detail"], "a conflicted Pull main in is handed to Claude (the error says so)")
+j = settle("MossesX/AmberX-AXF:feat/conflict")
+cmd = hub_calls[0][1]
+check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "vps.run, waits for the approval, retries with its id, launched")
+check(len(cmd) <= cf.MAX_COMMAND and "git clone -q 'https://github.com/MossesX/AmberX-AXF.git'" in cmd and "-B 'feat/conflict'" in cmd
+      and "'origin/feat/conflict'" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd, "one clone per repo, a worktree on that branch, reports on its entry")
+check("'Bash(git push origin HEAD:feat/conflict)'" in cmd and "--allowedTools Bash " not in cmd and "push origin HEAD:main" not in cmd, "shell off: edits + git, a push only to that branch")
+b = __import__("base64").b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
+check("Never push to `main`" in b and "never force-push" in b and "never merge the PR" in b and "secrets" in b, "the brief: never main, never force, never merge, no secrets")
+check(fch.opened and fch.opened[0]["surface"] == "console-launch" and fch.opened[0]["kind"] == "fix" and any(p.get("status") == "running" for p in fch.updates), "a change-log entry: it shows in the building banner")
+u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(len(hub_calls) == 2, "not handed over again within the cooldown")
+r = c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
+check(r.status_code == 200 and settle("MossesX/AmberX-AXF:feat/conflict")["state"] == "launched" and len(hub_calls) == 4, "Fix with Claude by hand skips the cooldown")
+check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "never the default branch")
+STATE["mergeable"] = False
+m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+STATE["mergeable"] = True
+check(m.status_code == 409 and "conflicts" in m.json()["detail"] and "Handed to Claude Code" in m.json()["detail"], "a Merge GitHub refuses for conflicts is handed over")
+check(settle("MossesX/AmberX-AXF:#18")["branch"] == "feat/a", "…on the PR's own branch")
+c.put("/p/config", json={"claudeShell": True})
+try:
+    cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "x; rm -rf /", "base": "main", "kind": "conflict", "action": "x", "failure": ""}, "")
+    odd = False
+except cf.HubError:
+    odd = True
+check(odd, "odd branch names never reach the shell")
+check("--allowedTools Bash " in cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "feat/a", "base": "main", "kind": "merge", "action": "merge it", "failure": "", "shell": True}, ""), "shell on: any command")
+check(c.get("/p/claude").json()["on"] is True and all("command" not in j for j in c.get("/p/claude").json()["jobs"]), "GET claude: the setting and the jobs (no commands)")
+c.put("/p/config", json={"claudeOnFail": False, "claudeShell": False})
 
 cfg = c.put("/p/config", json={"repos": ["MossesX/AmberX-AXF"]}).json()
 check(cfg["repos"] == ["MossesX/AmberX-AXF"], "repos are a setting")
@@ -261,6 +334,35 @@ clock["t"] += 8 * 24 * 3600
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 clock["t"] += 8 * 24 * 3600
 check(c.get("/p/branches").json()["done"] == [], "finished entries expire after 7 days")
+
+# ---- branches without a PR that merge cleanly (not behind main)
+STATE["branches"] += ["cleanx", "waitx"]
+STATE["ahead"].update({"cleanx": 2, "waitx": 1})
+STATE["behind"] = {"cleanx": 0, "waitx": 0}
+STATE["checks"]["cleanx-head"] = [{"status": "completed", "conclusion": "success", "name": "CI"}]
+STATE["checks"]["waitx-head"] = [{"status": "in_progress", "conclusion": None, "name": "CI"}]
+clock["t"] += 999
+bs = {b["name"]: b for b in c.get("/p/branches").json()["repos"][0]["branches"]}
+check(bs["cleanx"].get("clean") is True and bs["cleanx"]["canMerge"] is True and bs["cleanx"]["ci"] == "success", "clean: a PR-less branch not behind main with CI passed can merge")
+check(bs["waitx"].get("clean") is True and bs["waitx"]["canMerge"] is False and bs["waitx"]["ci"] == "running", "clean: CI still running = listed, Merge waits")
+check(not bs["feat/b"].get("clean"), "clean: a branch behind main isn't listed as clean")
+M = "/p/merge-branch"
+check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx"}).status_code == 400, "merge-branch: needs the typed confirm")
+check(c.post(M, json={"repo": "x/y", "branch": "cleanx", "confirm": "x/y:cleanx"}).status_code == 400, "merge-branch: only watched repos")
+check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "merge-branch: never the default branch")
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "waitx", "confirm": "MossesX/AmberX-AXF:waitx"})
+check(r.status_code == 409 and "running" in r.json()["detail"], "merge-branch: refused while CI runs")
+STATE["behind"]["cleanx"] = 1
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
+check(r.status_code == 409 and "behind" in r.json()["detail"], "merge-branch: re-checked: behind main now = refused")
+STATE["behind"]["cleanx"] = 0
+n_created, n_merged = len(STATE["created"]), len(STATE["merged"])
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
+check(r.status_code == 200 and r.json()["merged"] is True and r.json()["number"] == 19, "merge-branch: merged through its new PR")
+check(len(STATE["created"]) == n_created + 1 and STATE["created"][-1]["head"] == "cleanx" and STATE["created"][-1]["base"] == "main", "merge-branch: opened a PR cleanx → main")
+check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "cleanx-head"}, "merge-branch: merged with the head commit pinned")
+check(not any(s["method"] in ("PUT", "POST") and s["path"].endswith("/git/refs/heads/main") for s in SEEN), "merge-branch: never writes main directly")
+check("MossesX/AmberX-AXF:cleanx" in [d["key"] for d in c.get("/p/branches").json()["done"]], "merge-branch: shows in Done")
 
 os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999
