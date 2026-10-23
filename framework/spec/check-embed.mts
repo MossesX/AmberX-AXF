@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -99,6 +99,12 @@ for (const c of t.links) eq(embedLinkOk(c.link), c.ok, `link ${c.link}`);
 for (const c of t.messages) eq(parseEmbedMessage(c.input), c.message, `message ${JSON.stringify(c.input).slice(0, 60)}`);
 for (const c of t.locked) { eq(embedLockedBy(c.embed, c.action), c.fn, `lockedBy ${JSON.stringify(c.embed.takes)} ${c.action}`); eq(embedLockNote(c.embed, c.fn), c.note, `lock note ${c.action}`); }
 for (const c of t.pluginMessages) eq(parseEmbedMessage(c.input), c.message, `plugin message ${JSON.stringify(c.input).slice(0, 60)}`);
+// View pages (a tabable plugin as a host's tab) + plugin tabs in a report (web only so far; Kotlin deferred, PORTING.md).
+for (const c of t.viewPages) { eq(embedPage(c.input), c.page, `view page ${c.input}`); eq(embedPageView(embedPage(c.input)), c.view, `page view ${c.input}`); }
+for (const c of t.viewUrls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `view url ${c.url}`);
+for (const c of t.viewDetect) eq(embedFromQueryFull(c.search), c.embed, `view detect ${c.search}`);
+for (const c of t.pluginTabs) eq(parseEmbedMessage(c.input), c.message, 'plugin tabs');
+eq(skipReason({ host: 'patches', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
 for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);

@@ -1652,6 +1652,87 @@
    "source": "chat"
   },
   {
+   "id": "todo-manager-tabs",
+   "title": "Todo manager plugin (from xGallery) + tabable plugins + Patches plugin tabs",
+   "detail": "Port xGallery tasks/todo manager to a console plugin; plugin@1 `tabable` field (default false); Patches web settings lists apps + tabable plugins, Add tab dialog.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
+     "at": "2026-10-22T23:25:53.960Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "tabable field: plugin@1 schema, validator, template, README, every existing plugin",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.002Z"
+    },
+    {
+     "text": "todo-manager server (FastAPI router, JSON store, lists/entries CRUD)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.041Z"
+    },
+    {
+     "text": "todo-manager web: lists, tree/grid views, entry editor, settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.080Z"
+    },
+    {
+     "text": "console: page mode for a single view",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.120Z"
+    },
+    {
+     "text": "Patches web: tab list setting, Add tab dialog (apps + tabable plugins), plugin tabs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.161Z"
+    },
+    {
+     "text": "tests, docs, status, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.201Z"
+    }
+   ],
+   "createdAt": "2026-10-22T23:08:37.968Z",
+   "builtAt": "2026-10-22T23:25:53.915Z",
+   "updatedAt": "2026-10-22T23:25:54.201Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "session-close-race",
+   "title": "Fix: a closed assistant session log can be written back (save/close race)",
+   "detail": "LocalHost._save checks closed outside the lock; close() can unlink in between and the save writes the file back. Flakes ai-assistant test.py.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
+     "at": "2026-10-23T00:08:41.756Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:07:55.175Z",
+   "builtAt": "2026-10-23T00:08:41.711Z",
+   "updatedAt": "2026-10-23T00:08:41.756Z",
+   "estimate": "15 min",
+   "source": "chat"
+  },
+  {
    "id": "syscheck-autofix-jobs",
    "title": "Fix systems check Auto fix (VPS fixes over 25 s marked failed; Fix all skipped VPS Auto fix)",
    "detail": "",

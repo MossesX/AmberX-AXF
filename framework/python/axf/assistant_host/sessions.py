@@ -242,8 +242,14 @@ class LocalHost(SessionHost):
         return self.folder / f"{safe}.json"
 
     def _save(self, s: Session) -> None:
-        if s.state == "closed" or self.sessions.get(s.id) is not s:
-            return  # closed or forgotten: never write it back
+        # Under the host lock: close() / forget() drop the session and delete its file under the same lock, so a reply
+        # thread finishing at that moment can't pass the check and then write a closed session's log back.
+        with self.lock:
+            if s.state == "closed" or self.sessions.get(s.id) is not s:
+                return  # closed or forgotten: never write it back
+            self._write(s)
+
+    def _write(self, s: Session) -> None:
         try:
             self.folder.mkdir(parents=True, exist_ok=True)
             p = self._path(s.id)
@@ -418,10 +424,10 @@ class LocalHost(SessionHost):
     def forget(self, sid: str) -> None:
         with self.lock:
             self.sessions.pop(sid, None)
-        try:
-            self._path(sid).unlink(missing_ok=True)
-        except (OSError, KeyError):
-            pass
+            try:
+                self._path(sid).unlink(missing_ok=True)
+            except (OSError, KeyError):
+                pass
 
     def running(self, sid: str) -> bool:
         s = self.get(sid)

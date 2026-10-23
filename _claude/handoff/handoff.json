@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-22T15:42:11.586Z",
+  "generatedAt": "2026-10-22T22:34:19.308Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "81972ad5d1087ec36c820b153a3d1129f6c8b92e",
-  "fingerprint": "57c0c4924c9a54fe",
+  "commit": "992abfcab3560243e68ddd4b8e4a68c80eacef09",
+  "fingerprint": "30f0604880ddcace",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "0cd5edca61016f2a",
-      "bytes": 169457
+      "sha": "8c0ec2170a794955",
+      "bytes": 172395
     },
     {
       "path": "project.manifest.json",
@@ -59,8 +59,8 @@
     {
       "path": "_claude/memory/decisions.md",
       "role": "memory",
-      "sha": "295dd4cbfd1b5b56",
-      "bytes": 31153
+      "sha": "04585a1bc2ea500b",
+      "bytes": 32213
     },
     {
       "path": "_claude/memory/docs/Building-baseline.md",
@@ -305,8 +305,8 @@
     {
       "path": "_claude/rules/RULES.md",
       "role": "rules",
-      "sha": "4de03b60fd8c3235",
-      "bytes": 14715
+      "sha": "8ec1e58ff15b0533",
+      "bytes": 14888
     },
     {
       "path": "_claude/shared/instructions/README.md",
@@ -365,8 +365,8 @@
     {
       "path": "_claude/shared/rules/RULES.md",
       "role": "rules",
-      "sha": "6bb757ad7b4a1f52",
-      "bytes": 10123
+      "sha": "0bde4e776dec0fd0",
+      "bytes": 10668
     },
     {
       "path": "_claude/shared/rules/preferences.md",
@@ -401,8 +401,8 @@
     {
       "path": "framework/spec/PORTING.md",
       "role": "spec",
-      "sha": "5bd1d3135c489825",
-      "bytes": 9199
+      "sha": "af2f057b668d8d49",
+      "bytes": 9893
     },
     {
       "path": "framework/spec/THEMING.md",
@@ -546,7 +546,7 @@
   "machines": [
     {
       "host": "console",
-      "collectedAt": "2026-10-22T15:42:09.456Z",
+      "collectedAt": "2026-10-22T22:33:29.301Z",
       "files": 0
     }
   ],
@@ -558,7 +558,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "0cd5edca61016f2a"
+      "sha": "8c0ec2170a794955"
     },
     {
       "path": "context/claude__README.md",
@@ -566,11 +566,11 @@
     },
     {
       "path": "context/claude__shared__rules__RULES.md",
-      "sha": "6bb757ad7b4a1f52"
+      "sha": "0bde4e776dec0fd0"
     },
     {
       "path": "context/claude__rules__RULES.md",
-      "sha": "4de03b60fd8c3235"
+      "sha": "8ec1e58ff15b0533"
     },
     {
       "path": "context/claude__instructions__README.md",
@@ -586,7 +586,7 @@
     },
     {
       "path": "context/claude__memory__decisions.md",
-      "sha": "295dd4cbfd1b5b56"
+      "sha": "04585a1bc2ea500b"
     },
     {
       "path": "context/claude__memory__docs__build-reporting.md",
@@ -606,7 +606,7 @@
     },
     {
       "path": "context/framework__spec__PORTING.md",
-      "sha": "5bd1d3135c489825"
+      "sha": "af2f057b668d8d49"
     },
     {
       "path": "context/framework__spec__THEMING.md",
@@ -630,43 +630,43 @@
     },
     {
       "path": "README.md",
-      "sha": "71fdde4f57bcaa00"
+      "sha": "68dc0d5ccd443e59"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "11accb22f8d45f9e"
+      "sha": "c362a08e7f49ec50"
     },
     {
       "path": "PROJECT.md",
-      "sha": "61ad128d5fa2e34f"
+      "sha": "99c23666fb7da1d8"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "cc74855fda0bedff"
+      "sha": "7aee60d8570ec0cc"
     },
     {
       "path": "FILES.md",
-      "sha": "e9ec850254a7958f"
+      "sha": "c8dc1ac30d19ef62"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "b5424f343815c48a"
+      "sha": "d1257c1d224cefdf"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "0115ace31b587f94"
+      "sha": "d12208fd64394e43"
     },
     {
       "path": "SECRETS.md",
-      "sha": "351d4d9ee2ffc02e"
+      "sha": "3a4a3cadca27ec2f"
     },
     {
       "path": "SETUP.md",
-      "sha": "f07993d209b7c2b6"
+      "sha": "65b83e60dfbee8e5"
     },
     {
       "path": "PROMPT.md",
-      "sha": "6115fdfd1221f1d0"
+      "sha": "2c44814dde911af6"
     },
     {
       "path": "handoff.json",

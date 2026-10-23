@@ -124,4 +124,24 @@ check("ai.amberx.axf.example.alpha" not in r["apps"]["console"]["plugins"], "rem
 main.PLUGINS_FILE.write_text("{broken")
 check(c.get("/api/plugins", headers=TOKEN).json()["apps"]["console"]["plugins"] == {}, "damaged store reads as empty")
 
+# Patches' tab group (patches-tabs@1): the apps by default; plugin tabs for tabable plugins
+r = c.get("/api/tabs", headers=TOKEN).json()
+check(r["$axf"] == "patches-tabs@1" and [t["app"] for t in r["tabs"]] == ["console", "pilot", "axhub"], "tabs: the three apps to start")
+check(c.get("/api/tabs").status_code == 401, "tabs: needs a caller")
+check(c.get("/api/tabs", headers=session("conrad", "user")).status_code == 403, "tabs: users can't read")
+todo = {"kind": "plugin", "app": "console", "plugin": "ai.amberx.axf.example.todos", "view": "todos", "label": " Todos\n", "icon": "list"}
+r = c.put("/api/tabs", headers=TOKEN, json={"tabs": [{"kind": "app", "app": "console"}, todo, {"kind": "app", "app": "axhub"}]}).json()
+check([t.get("view", t["app"]) for t in r["tabs"]] == ["console", "todos", "axhub"] and r["tabs"][1]["label"] == "Todos", "tabs: saved in order, label cleaned")
+check(c.get("/api/tabs", headers=TOKEN).json() == r, "tabs: read back")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [todo, todo]}).status_code == 400, "tabs: a tab twice refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [{**todo, "view": "bad view"}]}).status_code == 400, "tabs: bad view refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [{"kind": "app", "app": "elsewhere"}]}).status_code == 400, "tabs: unknown app refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": "x"}).status_code == 400, "tabs: not a list refused")
+check(c.put("/api/tabs", headers={**session("brett", "admin"), "origin": "https://other.example"}, json={"tabs": []}).status_code == 403, "tabs: cross-site refused")
+r = c.put("/api/tabs", headers=TOKEN, json={"tabs": [{**todo, "icon": "Bad Icon"}]}).json()
+check("icon" not in r["tabs"][0], "tabs: bad icon dropped")
+check(oct(main.TABS_FILE.stat().st_mode & 0o777) == "0o600", "tabs: file 0600")
+main.TABS_FILE.write_text("{broken")
+check([t["app"] for t in c.get("/api/tabs", headers=TOKEN).json()["tabs"]] == ["console", "pilot", "axhub"], "tabs: damaged file reads as the defaults")
+
 print(f"server self-test: {passed} checks passed")
