@@ -201,8 +201,45 @@ def set_active(body: dict[str, Any]) -> dict[str, Any]:
     return listing(db)
 
 
+def _credit_probe(kind: str, key: str, model: str | None) -> None:
+    """One tiny request that spends credit (listing models is free, so it can't tell an empty balance). Raises on failure."""
+    from axf.assistant_host import providers
+    providers.test_profile({"kind": kind, "key": key, "noKeyOverride": True}, model or ("haiku" if kind == "claude-code" else None))
+
+
+CREDIT_PROBE: Callable[[str, str, str | None], None] = _credit_probe  # replaced by the self-test
+
+
 class KeysService:
     """axf.ai-keys@1: the active key per provider kind (anthropic, claude-code) and a safe listing (no keys)."""
+    settings_tab = FOLDER
+    open_action = "ai-keys.open"  # the dialog the systems check opens after a credits switch
+
+    def credit_switch(self, kind: str, model: str | None, is_no_credit: Callable[[str], bool]) -> dict[str, Any]:
+        """The active key of `kind` is out of credits: test the other saved keys of that kind (newest first) with one tiny
+        request each and make the first that answers the active one (Brett, Oct 23 2026). Never returns keys."""
+        with _lock:
+            db = _load()
+        was = db["active"].get(kind) or ""
+        cands = sorted(((k, v) for k, v in db["keys"].items() if v.get("kind") == kind and k != was), key=lambda kv: -(kv[1].get("createdAt") or 0))
+        tried: list[dict[str, Any]] = []
+        for kid, rec in cands:
+            err = ""
+            try:
+                CREDIT_PROBE(kind, rec["key"], model)
+            except Exception as e:  # noqa: BLE001 — classified below, never raised
+                err = (str(e).strip("'\"") or e.__class__.__name__).replace(rec["key"], "…")[:300]
+            state = "ok" if not err else "no-credit" if is_no_credit(err) else "error"
+            tried.append({"id": kid, "label": rec.get("label") or kid, "state": state, "error": err})
+            if state == "ok":
+                with _lock:
+                    db = _load()
+                    if kid in db["keys"]:
+                        db["active"][kind] = kid
+                        _save(db)
+                cx.log("system", f"AI keys: {KINDS.get(kind, kind)} out of credits, switched to {rec.get('label')}", "warn")
+                return {"switched": {"from": was, "to": kid, "label": rec.get("label") or kid}, "tried": tried}
+        return {"switched": None, "tried": tried}
 
     def active_key(self, kind: str) -> str:
         with _lock:
