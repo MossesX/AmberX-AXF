@@ -7,7 +7,7 @@
 import { Button, Chip, Container, Note } from '../axf/react';
 import { accountUrl, appsUrl, approvalsUrl, loginUrl, logoutUrl } from '../axf/libs/hub';
 import { HUB, useApprovals } from '../hub/useHub';
-import { formatWhen } from '../hub/feed';
+import { formatWhen } from '../axf/libs/hub';
 
 const LINKS: { label: string; path: string; icon: string; note: string }[] = [
   { label: 'Approvals', path: '/auth/admin/approvals', icon: 'shield', note: 'Decide what is waiting' },

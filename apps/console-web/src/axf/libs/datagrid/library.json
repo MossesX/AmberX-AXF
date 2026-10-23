@@ -1,0 +1,21 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.datagrid",
+  "module": "lib-datagrid",
+  "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
+  "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.datagrid",
+  "params": [],
+  "parts": [
+    { "id": "groups", "label": "Categorized sub-grids", "description": "Rows grouped under category headers (folding, totals, a meter per group)." },
+    { "id": "column-menu", "label": "Hideable columns", "description": "Right-click (or long-press) a column header to hide it or pick columns; a chooser dialog for everything.", "params": [ { "key": "hidden", "label": "Columns hidden at first", "type": "list", "default": [] } ] },
+    { "id": "sort", "label": "Sort by column", "description": "Tap a header to sort inside each group; again to reverse, a third time for the original order." },
+    { "id": "expand", "label": "Expandable rows", "description": "A chevron (or double-tap) opens a detail panel under the row." },
+    { "id": "drag", "label": "Drag rows", "description": "Rows and groups drag to rearrange, or onto the trash can (needs lib-dnd).", "params": [ { "key": "trash", "label": "Deleting by dropping on the trash can", "type": "bool", "default": true } ] },
+    { "id": "compact", "label": "Compact rows switch", "description": "A switch for tighter rows.", "default": false }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/datagrid" } },
+  "placeholders": [ { "capability": "axf.datagrid.android", "note": "Compose port — Android on hold." }, { "capability": "axf.datagrid.virtual", "note": "Windowed rendering for 10k+ rows — not built." }, { "capability": "axf.datagrid.resize", "note": "Column resizing by dragging the header edge — not built." } ]
+}

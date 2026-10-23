@@ -64,6 +64,27 @@ export function Switch({ label, checked, onChange, disabled, hint, hideLabel, te
   );
 }
 
+/* ---------------- Checkbox ---------------- */
+
+export interface CheckboxProps {
+  label: ReactNode;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  disabled?: boolean;
+  title?: string;
+  className?: string;
+}
+
+/** A tick box with its label (for an option that enables another control next to it, e.g. a timer's minutes). */
+export function Checkbox({ label, checked, onChange, disabled, title, className }: CheckboxProps) {
+  return (
+    <label className={`fx-checkrow ${disabled ? 'is-disabled' : ''} ${className ?? ''}`} title={title}>
+      <input type="checkbox" className="fx-check" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} />
+      <span className="fx-checkrow__label">{label}</span>
+    </label>
+  );
+}
+
 /* ---------------- Field / TextField / SelectField ---------------- */
 
 export interface FieldProps {

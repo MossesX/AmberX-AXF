@@ -52,7 +52,8 @@
   "x.plugins.manager",
   "x.assets.templates",
   "x.console.pending",
-  "x.lib.mcp"
+  "x.lib.mcp",
+  "x.lib.hub"
  ],
  "steps": {
   "x.kernel": {
@@ -224,6 +225,13 @@
    "completedAt": "2026-10-18T14:17:14.449Z",
    "completedBy": "feature-tracker",
    "deps": []
+  },
+  "x.lib.mcp": {
+   "completedAt": "2026-10-21T04:48:23.349Z",
+   "completedBy": "feature-tracker",
+   "deps": [
+    "x.plugins"
+   ]
   },
   "x.modules": {
    "estimate": "4 h",
@@ -493,7 +501,7 @@
    ]
   },
   "x.python.port": {
-   "estimate": "1 d",
+   "estimate": "8.5 h",
    "steps": [
     {
      "text": "Plan the port (no code): `_claude/memory/docs/python-port.md` — engines in fixture order (theme → layout → components → UAC → actions → hide/spacing/roll/search → banner/widgets), package layout `framework/python/axf/engines/`, dataclasses mirroring the Kotlin models, how fixtures are replayed (`framework/python/axf/spec/replay.py`), what the PyQt6 layer covers in the first slice.",
@@ -959,7 +967,7 @@
    ]
   },
   "x.assets.designer": {
-   "estimate": "1 d",
+   "estimate": "8 h",
    "steps": [
     {
      "text": "Plugin skeleton: copy `apps/console-web/plugins/_template` to `plugins/asset-designer` (id `ai.amberx.axf.console.asset-designer`, `uiEditor: \"builder\"`, lifecycle block, `install.mjs`/`uninstall.mjs`), nav → Plugins → Asset designer, Settings → Plugins sub-tab (parent `plugins`). `node framework/cli/plugin-lifecycle.mjs check asset-designer` passes; console tsc + vite build pass.",
@@ -1136,16 +1144,38 @@
   "x.plugins.manager": {
    "estimate": "30 min"
   },
-  "x.lib.mcp": {
-   "completedAt": "2026-10-21T04:48:23.349Z",
-   "completedBy": "feature-tracker",
-   "deps": [
-    "x.plugins"
-   ]
+  "x.lib.hub": {
+   "steps": [
+    {
+     "text": "AXPP design note with axHub: typed call / job / event shapes, errors mapped to the INTEROP wire codes, what the hub serves first",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AXPP pure contract in framework/libs/hub (web) + fixture section in spec/fixtures; check script in CI",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AXPP client (web): calls and jobs over the app's hub session or a bearer from the host, redirects refused, jobs followed",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hub push: event-stream client (followSse) in HubWatcher so approvals and events arrive pushed, polling only as fallback",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Switch the approvals-banner plugin and the AXHub web app to push; keep their polling fallback",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, PORTING.md deferred Kotlin twin (Android on hold), docs + CLAUDE.md Status",
+     "estimate": "30 min"
+    }
+   ],
+   "estimate": "3 h"
   }
  },
  "dirty": true,
- "updatedAt": "2026-10-21T04:48:23.349Z",
+ "updatedAt": "2026-10-23T11:42:15.830Z",
  "history": [
   {
    "at": "2026-10-17T16:12:45.936Z",
@@ -1180,6 +1210,11 @@
   {
    "at": "2026-10-18T14:17:14.449Z",
    "by": "feature-tracker",
+   "text": "Synced with the feature tracker: 1 change(s)"
+  },
+  {
+   "at": "2026-10-21T04:41:36.489Z",
+   "by": "cli",
    "text": "Synced with the feature tracker: 1 change(s)"
   },
   {
@@ -1321,6 +1356,16 @@
    "at": "2026-10-21T04:48:23.349Z",
    "by": "cli",
    "text": "Synced with the feature tracker: 1 change(s)"
+  },
+  {
+   "at": "2026-10-23T11:42:15.805Z",
+   "by": "cli",
+   "text": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view): 6 step(s) set"
+  },
+  {
+   "at": "2026-10-23T11:42:15.830Z",
+   "by": "cli",
+   "text": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view): ~3 h"
   }
  ]
 }

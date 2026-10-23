@@ -20,14 +20,13 @@
   ],
   "enabledByDefault": true,
   "optional": [],
+  "banner": false,
   "tabable": {
     "view": "todo-manager",
     "label": "Todos",
     "icon": "list"
   },
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/todo-manager",
@@ -38,5 +37,6 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "opens": "main"
 }

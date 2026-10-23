@@ -4,7 +4,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { SystemBanner, SystemCheckDialog, loadSystemCheck, setSystemCheckRuntime } from './SystemCheck';
 import { KeysBanner, KeysDialog } from './KeysBanner';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
-import { AiPanel, BannersPanel, RoutinePanel } from './panels';
+import { AiPanel, BannersPanel, ClaudePanel, RoutinePanel } from './panels';
 import { appMenu } from './menu';
 
 /*
@@ -52,6 +52,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'systems-check.ai', tab: 'systems-check', title: 'AI', icon: 'sparkles', order: 10, render: () => <AiPanel /> },
     { id: 'systems-check.routine', tab: 'systems-check', title: 'Saved AI routine', icon: 'list', order: 20, render: () => <RoutinePanel /> },
+    { id: 'systems-check.claude', tab: 'systems-check', title: 'When a fix fails', icon: 'zap', order: 25, render: () => <ClaudePanel /> },
     { id: 'systems-check.banners', tab: 'systems-check', title: 'Banners', icon: 'bell', order: 30, render: () => <BannersPanel /> },
     { id: 'systems-check.lifecycle', tab: 'systems-check', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

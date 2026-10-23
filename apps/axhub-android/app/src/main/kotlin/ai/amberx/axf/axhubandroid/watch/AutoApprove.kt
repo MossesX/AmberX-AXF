@@ -13,7 +13,9 @@ import kotlinx.coroutines.withContext
 
 /**
  * Auto-approval (off by default): when it's on, an approval whose tool matches one of the user's patterns is approved by
- * this phone as soon as the watcher sees it, and the alert says "Auto-approval approved" instead of asking.
+ * this phone as soon as the watcher sees it. The "Approval waiting" alert goes out first; once the hub confirms, it is
+ * replaced by "Auto-approval approved" on a channel with the alarm sound. "Approve everything" covers every tool except
+ * [NOT_IN_ALL] (vps.run).
  *
  * Patterns are separated by commas, spaces or new lines: an exact tool (`vps.logs`), a whole service (`github.*`), or
  * `*` for every tool. An empty list approves nothing. Approving posts the hub's own approval form with this phone's hub
@@ -33,7 +35,15 @@ object AutoApprove {
         }
     }
 
-    fun applies(on: Boolean, raw: String?, tool: String): Boolean = on && matches(patterns(raw), tool)
+    /** "Approve everything" never covers these: a root shell on the VPS still needs a tap (Brett, Oct 22 2026). */
+    val NOT_IN_ALL: Set<String> = setOf("vps.run")
+
+    /**
+     * [all] = "Approve everything except vps.run" (works by itself); [on] + [raw] = the tool list (where `*` or an
+     * explicit `vps.run` still counts, as before).
+     */
+    fun applies(on: Boolean, raw: String?, tool: String, all: Boolean = false): Boolean =
+        (all && tool.isNotBlank() && tool !in NOT_IN_ALL) || (on && matches(patterns(raw), tool))
 
     /**
      * Approves [id] on the hub. True only when the hub answered with its "approved" confirmation; anything else (expired,
@@ -75,9 +85,14 @@ class AutoApprovePrefs(context: Context) {
         get() = p.getString(K_TOOLS, "") ?: ""
         set(v) { p.edit().putString(K_TOOLS, v.take(2000)).apply() }
 
-    fun applies(tool: String): Boolean = AutoApprove.applies(on, tools, tool)
+    var all: Boolean
+        get() = p.getBoolean(K_ALL, false)
+        set(v) { p.edit().putBoolean(K_ALL, v).apply() }
+
+    fun applies(tool: String): Boolean = AutoApprove.applies(on, tools, tool, all)
 
     companion object {
+        const val K_ALL = "autoApproveAll"
         const val K_ON = "autoApprove"
         const val K_TOOLS = "autoApproveTools"
     }

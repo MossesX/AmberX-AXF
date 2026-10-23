@@ -1,12 +1,12 @@
 /**
- * Self-test for the AXHub web app's hub rules (`src/hub/feed.ts`): what a reply from the hub means,
- * what is thrown away, and how times and sizes are shown.
+ * Self-test for the hub rules the AXHub web app uses (lib-hub `framework/libs/hub/apps.ts`, harvested from this app
+ * Oct 23 2026): what a reply from the hub means, what is thrown away, and how times and sizes are shown.
  *
  *   npx -y tsx apps/axhub-web/test.mjs
  *
  * Nothing here touches the network: every case is a hand-written reply.
  */
-import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from './src/hub/feed.ts';
+import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
 let failed = 0;
@@ -112,6 +112,17 @@ ok(statusNote('signed-out', '').includes('Sign in'), 'signed out asks for a sign
 ok(statusNote('not-admin', '').includes('users page'), 'no permission points at the users page');
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
+
+// The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
+// the console (the other app in Patches) ships: a missing one would fall back to this app's default.
+{
+  const { readdirSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  for (const type of ['color-theme', 'style-theme', 'gauge', 'meter']) {
+    const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
+    for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
+  }
+}
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

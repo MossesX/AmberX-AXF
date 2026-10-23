@@ -107,11 +107,15 @@ check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": "ssh-ed25519
 PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi"
 check(c.post("/p/secret", json={"key": "MOSHI_SSH_PUBKEY", "value": PUB}).status_code == 200, "Moshi public key saved")
 m = moshi_report("error")
-check(m["status"] == "warn" and "--fix host-moshi-key" in m["summary"], "saved but not on the VPS: says the command that installs it")
+check(m["status"] == "warn" and "Auto fix" in m["summary"] and m["fix"]["type"] == "host", "saved but not on the VPS: Auto fix adds it")
+hfm = sys.modules.get(spec.name + ".hostfix")
+mc = hfm.command("moshi-key")
+check(mc and "authorized_keys" in mc and "'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGOC/N77BgvtZdG/uidgdTbvzLfmJuahdbTZgOlB2FC moshi'" in mc
+      and "grep -qsF" in mc and hfm.Jobs.allowed("moshi-key"), "the Moshi key command adds exactly the saved key line, once")
 check(moshi_report("ok")["status"] == "ok", "on the VPS: ok")
 c.post("/p/secret/clear", json={"key": "MOSHI_SSH_PUBKEY"})
 
-# Auto fix for VPS checks: only commands from the table, sent to axHub's vps.run, run once approved there
+# Auto fix for VPS checks: only commands from the table, handed to Mosses for axHub's vps.run, run once approved there
 hf = sys.modules.get(spec.name + ".hostfix")
 check(hf is not None, "hostfix module loaded with the plugin")
 calls = []
@@ -124,6 +128,40 @@ def fake_call(states):
         return {"ok": "$ cmd\nexit 0 · 10 ms\n"}
     return f
 os.environ["AXHUB_TOKEN"] = "hub-token-for-test"
+
+
+class FakeMosses:
+    """axf.agents@1 with Mosses holding axhub_call: every Auto fix goes through him."""
+    def __init__(self, tools=("axhub_call",), answers=None):
+        self.tools, self.answers, self.runs = tools, list(answers or []), []
+    def get_agent(self, aid):
+        return {"id": aid, "name": "Mosses", "system_prompt": "You are Mosses.", "tools": [{"name": t} for t in self.tools]} if aid == "coder" else None
+    def run_tool(self, aid, name, args, ctx=None):
+        self.runs.append((aid, name, args))
+        return json.dumps(self.answers.pop(0)) if self.answers else json.dumps({"status": "ok", "output": "$ x\nexit 0 · 1 ms"})
+
+
+ms = sys.modules.get(spec.name + ".mosses")
+fm = FakeMosses(answers=[{"status": "confirm", "confirmationId": "11111111-2222-3333-4444-555555555555", "link": "https://hub/a"}, {"status": "ok", "output": "$ ufw\nexit 0 · 2 ms"}])
+plugin_services.provide("axf.agents@1", fm, "fake-mosses")
+r1 = ms.call("vps.run", {"command": "ufw allow 60000:61000/udp"})
+r2 = ms.call("vps.run", {"command": "ufw allow 60000:61000/udp"}, "11111111-2222-3333-4444-555555555555")
+aid, tool, a1 = fm.runs[0]
+check(r1 == {"confirm": "11111111-2222-3333-4444-555555555555"} and r2["ok"].endswith("exit 0 · 2 ms"), "Auto fix goes through Mosses: approval id, then the output")
+check(aid == "coder" and tool == "axhub_call" and a1["tool"] == "vps.run" and a1["wait"] is False and a1["arguments"]["command"] == "ufw allow 60000:61000/udp"
+      and fm.runs[1][2]["confirmation_id"] == "11111111-2222-3333-4444-555555555555", "…as Mosses's axhub_call (the exact command, no waiting, then the approval id)")
+fm.answers = [{"status": "error", "message": "Rejected on the hub."}]
+try:
+    ms.call("vps.run", {"command": "x"}); rej = ""
+except hf.HubError as e:
+    rej = str(e)
+check(rej == "Rejected on the hub.", "the hub's answer comes back through Mosses")
+plugin_services.withdraw("fake-mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(tools=("repo_read",)), "fake-mosses")
+check("Safety" in ms.ready()[1], "Mosses without axhub_call: says to allow him dangerous tools")
+plugin_services.withdraw("fake-mosses")
+check("agent manager" in ms.ready()[1], "no agent manager: says Auto fix needs Mosses")
+plugin_services.provide("axf.agents@1", FakeMosses(), "fake-mosses")
 rechecked = []
 jobs = hf.Jobs(lambda cid: rechecked.append(cid), fake_call(["confirm", "confirm", "ok"]), poll_s=0.01)
 jobs.start("host-mosh-ports")
@@ -144,9 +182,106 @@ try:
 except hf.HubError:
     refused = True
 check(refused and not hf.Jobs.allowed("host-moshi-key") and not hf.Jobs.allowed("host-mosh; rm -rf /"), "checks not in the table (Moshi key, anything else) are refused")
+# Claude on failure: a failed fix goes to headless Claude Code on the VPS through vps.run (approved), reporting on an entry
+cf = sys.modules.get(spec.name + ".claudefix")
+check(cf is not None, "claudefix module loaded with the plugin")
+fails = []
+jf = hf.Jobs(lambda cid: None, lambda tool, args, conf=None: {"ok": "$ cmd\nexit 1 · 5 ms\nE: no mosh"}, poll_s=0.01, on_fail=lambda cid, why: fails.append((cid, why)))
+jf.start("host-mosh")
+for _ in range(200):
+    if (jf.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+time.sleep(0.02)
+check(fails and fails[0][0] == "host-mosh" and "no mosh" in fails[0][1], "a VPS fix that ran and failed is handed on, with the output's last lines")
+fails.clear()
+jr = hf.Jobs(lambda cid: None, fake_call(["confirm", "reject"]), poll_s=0.01, on_fail=lambda cid, why: fails.append(cid))
+jr.start("host-mosh")
+for _ in range(200):
+    if (jr.get("host-mosh") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(not fails, "a fix Brett rejected on the hub is never handed to Claude")
+
+class FakeChanges:
+    def __init__(self): self.opened, self.updates = [], []
+    def open(self, e, by): self.opened.append((e, by)); return {"id": "chg-20261022-abcdef1234"}
+    def update(self, cid, patch): self.updates.append((cid, patch)); return {}
+fc = FakeChanges()
+sett = {"claudeOnFail": False, "claudeShell": False}
+hub_calls = []
+def claude_call(states):
+    def f(tool, args, conf=None, timeout=None):
+        hub_calls.append((tool, args["command"], conf))
+        s_ = states.pop(0)
+        if s_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if s_ == "reject": raise hf.HubError("The user rejected this call.")
+        return {"ok": "$ …\nexit 0 · 30 ms\nstarted pid 42 in /root/axf-fixes/fix-syscheck-host-mosh"}
+    return f
+L = cf.Launches(lambda: sett, claude_call(["confirm", "ok"]), delays=lambda: [0.01] * 5, changes=lambda: fc)
+bad = {"id": "host-mosh", "service": "vps", "title": "mosh server", "status": "error", "summary": "mosh-server not installed",
+       "details": ["x" * 300] * 12, "instructions": ["sudo apt-get install -y mosh"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-mosh"}}
+check(L.maybe_launch(bad, "apt failed") is None and not hub_calls, "setting off: nothing is handed over")
+sett["claudeOnFail"] = True
+check(L.maybe_launch({**bad, "status": "ok"}, "x") is None, "a check that passes is never handed over")
+j = L.maybe_launch(bad, "apt failed")
+for _ in range(300):
+    if (L.get("host-mosh") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+j = L.get("host-mosh")
+cmd = hub_calls[0][1]
+check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "asks vps.run, waits for the approval, retries with its id, launched")
+check(len(cmd) <= cf.MAX_COMMAND and "base64 -d > .axf-brief.md" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd and "AXF_SURFACE=console-launch" in cmd,
+      "the command fits axHub's limit, carries the brief in base64 and reports on the opened entry")
+check("--allowedTools" not in cmd and "fix/syscheck-host-mosh" in cmd and "origin/main" in cmd and " main" not in cmd.replace("origin/main", ""),
+      "shell off: read + edit only, on its own fix branch from origin/main")
+check(fc.opened and fc.opened[0][0]["surface"] == "console-launch" and fc.opened[0][0]["kind"] == "fix" and any(p.get("status") == "running" for _, p in fc.updates),
+      "a change-log entry is opened (building banner) and marked running once launched")
+import base64 as _b64
+b = _b64.b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
+check("mosh server" in b and "never main" in b and "secrets" in b, "the brief names the check, the branch rule and the secrets rule")
+check(L.maybe_launch(bad, "again")["state"] == "launched" and len(hub_calls) == 2, "not handed over again within the cooldown")
+sett["claudeShell"] = True
+L2 = cf.Launches(lambda: sett, claude_call(["confirm", "reject"]), delays=lambda: [0.01], changes=lambda: fc)
+L2.maybe_launch({**bad, "id": "host-docker"}, "x")
+for _ in range(300):
+    if (L2.get("host-docker") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+check("--allowedTools Bash" in hub_calls[-1][1], "shell on: Bash is allowed")
+check(L2.get("host-docker")["state"] == "failed" and "Rejected" in L2.get("host-docker")["message"]
+      and any(p.get("status") == "failed" for _, p in fc.updates), "rejected on the hub → failed, and the entry says so")
+check(cf.launch_command("x", "host-mosh; rm -rf /", "bad id", False).count("AXF_ADOPT_CHANGE") == 0 and "rm -rf" not in cf.branch_for("host-mosh; rm -rf /"),
+      "odd ids never reach the shell unquoted")
+check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refuses while the setting is off")
+check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
+# Every check gets a fix (Oct 23 2026): fixed commands for what can run unattended, Mosses for the rest
+cmds = c.get("/p/autofix").json()["commands"]
+check("host-report" in cmds and "host-session-checkin" in cmds and "--json" in cmds["host-session-checkin"], "host report + session check-in have fixed VPS commands")
+ms_ = sys.modules.get(spec.name + ".mosses")
+done = []
+tk = ms_.Tasks(lambda cid: done.append(cid), run=lambda aid, prompt: {"text": "Ran claude-sync install.\nFixed.", "tools": [{"name": "axhub_call"}]})
+j = tk.start({"id": "host-claude-sync", "title": "claude-sync", "service": "claude", "status": "warn", "summary": "not installed",
+              "instructions": ["git clone https://github.com/MossesX/axHub ~/axHub"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-claude-sync"}})
+for _ in range(200):
+    if (tk.get("host-claude-sync") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+j = tk.get("host-claude-sync")
+check(j["state"] == "done" and j["message"] == "Fixed." and j["commands"] == 1 and done == ["host-claude-sync"], "a check with no fixed command goes to Mosses; then it's checked again")
+p_ = ms_.task_prompt({"id": "x", "title": "T", "service": "vps", "status": "warn", "summary": "S", "details": ["d1"], "instructions": ["i1"], "fix": {"type": "host", "command": "do-it"}})
+check("axhub_call" in p_ and "vps.run" in p_ and "d1" in p_ and "i1" in p_ and "Known fix command: do-it" in p_ and "console-doctor.sh --report" in p_, "Mosses gets the check's details and how to work")
+bad = ms_.Tasks(lambda cid: None, run=lambda aid, prompt: (_ for _ in ()).throw(RuntimeError("no provider")))
+bad.start({"id": "y", "title": "Y"})
+for _ in range(200):
+    if (bad.get("y") or {}).get("state") in ("done", "failed"): break
+    time.sleep(0.01)
+check(bad.get("y")["state"] == "failed" and "no provider" in bad.get("y")["message"], "when Mosses can't finish it says why")
+plugin_services.withdraw("fake-mosses")
+r = c.post("/p/mosses/host-claude-sync")
+check(r.status_code == 409 and "Mosses" in r.json()["detail"] and c.get("/p/mosses").json()["ready"] is False, "without Mosses the badge says exactly what's missing")
+plugin_services.provide("axf.agents@1", FakeMosses(), "fake-mosses")
 check(c.post("/p/autofix/host-claude-login").status_code == 400, "route refuses checks that need you at the machine")
 del os.environ["AXHUB_TOKEN"]
-check(c.post("/p/autofix/host-mosh").status_code == 409, "without the axHub token it says to add it")
+plugin_services.withdraw("fake-mosses")
+r = c.post("/p/autofix/host-mosh")
+check(r.status_code == 409 and "Mosses" in r.json()["detail"], "without Mosses there's no Auto fix (it says so)")
 
 # AI switches need the assistant + Mosses
 a = c.get("/p/ai").json()
@@ -291,6 +426,44 @@ if _chk is not None:
     from axf_server import http as _h
     check(_h.target_ok("http://coolify:8080", _chk.COOLIFY_INTERNAL_HOSTS) and _h.target_ok("https://coolify.example.com", _chk.COOLIFY_INTERNAL_HOSTS)
           and not _h.target_ok("http://31.97.13.252:8000", _chk.COOLIFY_INTERNAL_HOSTS), "Coolify URL: https or http://coolify only, never http to an IP")
+# ---- plugin rows get real Auto fixes (Oct 23 2026)
+dv = sys.modules.get(spec.name + ".derive")
+tmpd = Path(tempfile.mkdtemp()) / "data"; (tmpd / "sub").mkdir(parents=True); (tmpd / "sub" / "f.json").write_text("{}")
+os.chmod(tmpd, 0o755); os.chmod(tmpd / "sub", 0o755); os.chmod(tmpd / "sub" / "f.json", 0o644)
+dv._lock_down(tmpd)
+check(all((q.stat().st_mode & 0o077) == 0 for q in [tmpd, *tmpd.rglob("*")]), "plugin data folder Auto fix: folders 700, files 600")
+flips = []
+_old_set = cx.set_plugin_enabled
+cx.set_plugin_enabled = lambda f, on: flips.append((f, on))
+check(dv._enable(["container-access"])() == "switched on container-access" and flips == [("container-access", True)], "a needed plugin that's off: Auto fix switches it on")
+cx.set_plugin_enabled = _old_set
+check(hf.command("host-claude-sync") and "git clone -q https://github.com/MossesX/axHub" in hf.command("host-claude-sync") and "claude-sync.mjs install" in hf.command("host-claude-sync"),
+      "claude-sync gets a VPS Auto fix (clone or update ~/axHub, then install)")
+check('"onDevice\\":true' in hf.command("host-session-checkin") or '"onDevice":true' in hf.command("host-session-checkin").replace("\\", ""), "session check-in Auto fix installs for the VPS user on the device")
+r = c.post("/p/fix/plugin:nope")
+check(r.status_code == 400, "fix: an unknown codebase check has no Auto fix")
+# ---- one row per app whose baked framework is behind (Oct 23 2026)
+_it = lambda cid, svc, title, st, summ, **k: {"id": cid, "title": title, "status": st, "summary": summ, "fix": k.get("fix"), "autoFix": False, **k}
+dv.FIXES.clear()
+row = dv._rebake_row(_it, {"dir": "apps/x", "app": "X", "state": "stale", "changed": ["core/a.ts"], "missing": [], "extra": [], "edited": []})
+check(row["status"] == "warn" and row["autoFix"] and "rebake:apps/x" in dv.FIXES and "re-bake" in row["title"], "stale app: its own warn row with Auto fix")
+row = dv._rebake_row(_it, {"dir": "apps/y", "app": "Y", "state": "edited", "edited": ["core/b.ts"]})
+check(row["status"] == "warn" and "rebake:apps/y" not in dv.FIXES and row.get("instructions"), "edited copy: no Auto fix (edits would be lost), instructions instead")
+check(dv._rebake_row(_it, {"dir": "apps/z", "state": "current"})["status"] == "ok", "current app: ok row")
+_old_node = dv._node
+dv._node = lambda args, timeout=30: {"pushed": True, "pr": "https://github.com/o/r/pull/9"} if args[1] == "publish" and args[2] == "apps/x" else None
+check("pull/9" in dv.FIXES["rebake:apps/x"](), "Auto fix publishes the re-bake as a pull request")
+dv._node = lambda args, timeout=30: {"error": "re-baking needs GITHUB_TOKEN"}
+try:
+    dv.FIXES["rebake:apps/x"]()
+    check(False, "a failed re-bake raises")
+except RuntimeError as e:
+    check("GITHUB_TOKEN" in str(e), "a failed re-bake says why")
+dv._node = _old_node
+dv.FIXES.clear()
+doctor = (Path(__file__).resolve().parents[4] / "deploy" / "console-doctor.sh").read_text()
+check('export PATH="$USER_HOME/.local/bin:$PATH"' in doctor, "doctor sees ~/.local/bin (claude, claude-pick, claude-sync) from cron and vps.run")
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

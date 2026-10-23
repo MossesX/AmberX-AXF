@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-22T19:33:34.797Z",
+  "generatedAt": "2026-10-23T18:08:33.331Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -12,12 +12,12 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 81,
+      "built": 82,
       "partial": 11,
       "placeholder": 91,
       "planned": 0,
-      "total": 183,
-      "coverage": 44
+      "total": 184,
+      "coverage": 45
     },
     "console": {
       "built": 14,
@@ -2313,6 +2313,29 @@
       "wave": 3,
       "module": "lib-hub",
       "notes": "Capability placeholder axf.hub.push"
+    },
+    {
+      "id": "lib.hubstore",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-hubstore",
+      "notes": "Oct 23 2026 (Opus): web framework/libs/hubstore (HubSettings + HubData, parts settings/data with table picking), check-hubstore.mts; Voice notes console plugin is the first user. Android twin deferred (Android on hold)."
+    },
+    {
+      "id": "lib.hubstore.live",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.hubstore",
+      "title": "Follow other devices' saves live through /data-events",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 3,
+      "module": "lib-hubstore",
+      "notes": "Capability placeholder axf.hubstore.live"
     },
     {
       "id": "lib.notifications",

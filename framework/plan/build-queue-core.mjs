@@ -23,7 +23,7 @@
  *              build → feature tracker: completing a step marks the epic and every linked feature built.
  */
 
-import { estimateMinutes, formatMinutes, iso, splitCheck, stepsProgress } from './pending-core.mjs';
+import { estimateMinutes, formatMinutes, iso, itemEstimate, splitCheck, stepsProgress } from './pending-core.mjs';
 
 export const MODEL_TIER = { fable: 3, opus: 2, sonnet: 1 };
 export const MODEL_LABEL = { fable: 'Fable 5.1', opus: 'Opus 5.5', sonnet: 'Sonnet 5.5' };
@@ -174,7 +174,7 @@ function stepsView(rec) {
   const entry = { estimate, steps };
   const p = stepsProgress(entry);
   const c = splitCheck(entry);
-  return { estimate: estimate || formatMinutes(p.minutesTotal), steps, stepsDone: p.done, minutesTotal: p.minutesTotal, minutesLeft: p.minutesLeft, needsSplit: c.needsSplit, splitReasons: c.reasons };
+  return { estimate: itemEstimate(entry) || formatMinutes(p.minutesTotal), steps, stepsDone: p.done, minutesTotal: p.minutesTotal, minutesLeft: p.minutesLeft, needsSplit: c.needsSplit, splitReasons: c.reasons };
 }
 
 /**

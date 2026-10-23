@@ -1027,7 +1027,27 @@ def _read_plugin_manifest(folder: Path) -> dict[str, Any]:
     if "axf-console" not in (raw.get("targets") or []):
         raise ValueError('plugin.json targets must include "axf-console"')
     _plugin_tab(raw)  # a wrong "tabable" is the plugin's own problem, reported like any other
-    return raw
+    _plugin_banners(raw)
+    # build-defaults@1 (Oct 23 2026): fill the build engine's defaults (e.g. where its UI opens) and refuse what a rule
+    # requires (the model that built it)
+    d = build_defaults.apply_defaults("plugin", raw)
+    if d["problems"]:
+        raise ValueError("; ".join(p["message"] for p in d["problems"]))
+    return d["value"]
+
+
+_BANNER_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
+
+
+def _plugin_banners(m: dict[str, Any]) -> list[str]:
+    """plugin@1 `banner` (Oct 23 2026; = framework/cli/plugins.mjs checkBanner): the ids of the banners the plugin
+    includes ([] = none; a manifest without the field counts as none). Raises ValueError on a wrong declaration."""
+    b = m.get("banner", False)
+    if b is False:
+        return []
+    if not isinstance(b, list) or not b or len(set(map(str, b))) != len(b) or not all(isinstance(x, str) and _BANNER_ID.match(x) for x in b):
+        raise ValueError('"banner" is false or a list of banner ids')
+    return list(b)
 
 
 _VIEW_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
@@ -1071,6 +1091,7 @@ def load_plugins() -> None:
         pkg = _types.ModuleType("axf_console_plugins")
         pkg.__path__ = []  # type: ignore[attr-defined]
         _sys.modules["axf_console_plugins"] = pkg
+    loaded_manifests: dict[str, dict[str, Any]] = {}
     for folder in sorted(PLUGINS_DIR.iterdir()):
         if not folder.is_dir() or folder.name.startswith(("_", ".")) or not (folder / "plugin.json").exists():
             continue
@@ -1080,12 +1101,21 @@ def load_plugins() -> None:
             if not _PLUGIN_FOLDER.match(folder.name):
                 raise ValueError("plugin folder names are lowercase letters, digits and dashes")
             m = _read_plugin_manifest(folder)
+            # One instance per plugin (Brett, Oct 23 2026): a second build of a plugin that is already loaded (same id,
+            # or the same plugin built by another model) never loads next to it.
+            clash = build_defaults.instance_clash(folder.name, m, loaded_manifests)
+            if clash:
+                raise ValueError(clash)
+            loaded_manifests[folder.name] = m
+            bw = m.get("builtWith") if isinstance(m.get("builtWith"), dict) else {}
             info.update({
                 "id": m["id"], "name": m["name"], "version": m["version"], "description": m.get("description", ""),
                 "author": m.get("author", ""), "provides": m.get("provides", []), "scopes": m.get("scopes", []),
                 "enabledByDefault": m.get("enabledByDefault", True) is not False,
                 "wallUsers": m.get("wallUsers") is True, "userGrantable": m.get("userGrantable") is True,
-                "tabable": _plugin_tab(m),
+                "tabable": _plugin_tab(m), "banner": _plugin_banners(m),
+                "builtWith": {k: bw[k] for k in ("model", "builtAt", "rebuildOf", "replacedBy") if isinstance(bw.get(k), str)},
+                "opens": m.get("opens", False), "opensUi": m.get("opensUi") if isinstance(m.get("opensUi"), str) else None,
             })
             entry = folder / "server" / "__init__.py"
             if entry.exists():
@@ -1141,6 +1171,9 @@ def set_plugin_enabled(folder: str, body: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "folder": folder, "enabled": on}
 
 
+import build_defaults  # noqa: E402 — build-defaults@1 + one instance per plugin (framework/schemas/build-defaults.json)
+
+build_defaults.RULES_FILE = ROOT / "framework" / "schemas" / "build-defaults.json"
 import plugin_services  # noqa: E402 — generic cross-plugin services (capability names, never plugin folders)
 
 plugin_services.configure(plugin_enabled)
@@ -1151,7 +1184,7 @@ import credentials  # noqa: E402
 
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
-                            log=log, plugin_enabled=plugin_enabled, terminal_lines=lambda: list(_state.get("terminal", [])))
+                            log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()
 _prune_plugin_state()
@@ -1256,7 +1289,8 @@ def _local_plugin(folder: str) -> dict[str, Any] | None:
         if f.parent.is_symlink():
             return None
         m = json.loads(f.read_text())
-        return {"id": m.get("id"), "version": m.get("version")}
+        bw = m.get("builtWith") if isinstance(m.get("builtWith"), dict) else {}
+        return {"id": m.get("id"), "version": m.get("version"), "model": bw.get("model"), "builtAt": bw.get("builtAt")}
     except (OSError, ValueError):
         return None
 
@@ -1276,6 +1310,7 @@ def catalog_list(kind: str = "") -> dict[str, Any]:
         if it.get("kind") == "console":
             local = _local_plugin(str(it.get("folder", "")))
             it["installed"] = local["version"] if local and local.get("id") == it.get("id") else None
+            it["installedModel"] = local.get("model") if local and local.get("id") == it.get("id") else None
             it["clash"] = bool(local and local.get("id") != it.get("id"))
             it["loaded"] = it.get("folder") in PLUGINS and not PLUGINS[it["folder"]].get("removed")
     return out
@@ -1323,6 +1358,45 @@ def catalog_install(body: dict[str, Any]) -> dict[str, Any]:
         out["note"] = ("Committed to GitHub: the console rebuilds with it within about 5 minutes." if (out.get("published") or {}).get("pushed")
                        else "Already on GitHub: the console loads it at its next rebuild." if publish
                        else "Unpacked in this clone only (no GITHUB_TOKEN): it loads after the next rebuild of this console, but other clones won't get it.")
+        return out
+    finally:
+        _lifecycle_lock.release()
+        _catalog_lock.release()
+
+
+@app.post("/api/plugin-catalog/swap", dependencies=[Depends(auth_always)])
+def catalog_swap(body: dict[str, Any]) -> dict[str, Any]:
+    """Replace an installed console plugin with another build of it from the catalog (e.g. its Fable rebuild): Plugin
+    Update's confirmed swap. Removes the old build (its hook, and its data unless keepData; backed up) and installs the
+    new one in the same folder, so there is never a second copy (one instance per plugin, Brett, Oct 23 2026).
+    Needs {"folder", "confirm": "replace <folder>"}."""
+    folder = str(body.get("folder", ""))
+    _catalog_args("console", folder)
+    version = str(body.get("version", "") or "")
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    if body.get("confirm") != f"replace {folder}":
+        raise HTTPException(400, f'replacing removes the installed build and runs the new one\'s code on this server: confirm with "replace {folder}"')
+    if not _catalog_lock.acquire(blocking=False):
+        raise HTTPException(409, "another catalog install is running")
+    if not _lifecycle_lock.acquire(blocking=False):
+        _catalog_lock.release()
+        raise HTTPException(409, "a plugin install/uninstall is running")
+    try:
+        args = ["swap", folder, "--no-state"]
+        if body.get("keepData"):
+            args.append("--keep-data")
+        publish = body.get("publish", True) is not False and bool(os.environ.get("GITHUB_TOKEN"))
+        if publish:
+            args.append("--publish")
+        if version:
+            args += ["--version", version]
+        out = _catalog(args, timeout=600)
+        _state.setdefault("plugins", {})[folder] = True
+        _save_state()
+        f, t = out.get("from") or {}, out.get("to") or {}
+        log("plugins", f"{folder} replaced: {f.get('version')} ({f.get('model')}) → {t.get('version')} ({t.get('model')}) from the plugin catalog")
+        out["restartNeeded"] = True
         return out
     finally:
         _lifecycle_lock.release()
