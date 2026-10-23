@@ -66,9 +66,34 @@ def _minutes(text: Any) -> int:
     return round(n * (480 if u.startswith("d") else 60 if u.startswith("h") else 1))
 
 
+_PRICING_FILE = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parent.parent.parent.parent)) / "framework" / "schemas" / "model-pricing.json"
+
+
+def _minute_usd(model: Any) -> float | None:
+    """USD of one working minute on a model: the per-minute heuristic in model-pricing.json priced with the model's
+    token prices (mirrors pending-core minuteCostUsd). Estimates are shown in dollars, never tokens (Oct 23 2026)."""
+    try:
+        doc = json.loads(_PRICING_FILE.read_text())
+    except (OSError, ValueError):
+        return None
+    key = next((k for k in ("fable", "opus", "sonnet", "haiku") if k in str(model or "").lower()), "")
+    p = (doc.get("models") or {}).get(key)
+    if not p or p.get("input") is None or p.get("output") is None:
+        return None
+    t = (doc.get("heuristic") or {}).get("tokensPerMinute") or {"input": 5000, "output": 3000, "cacheRead": 300000, "cacheWrite": 0}
+    return (t.get("input", 0) * p["input"] + t.get("output", 0) * p["output"]
+            + t.get("cacheRead", 0) * p.get("cacheRead", p["input"]) + t.get("cacheWrite", 0) * p.get("cacheWrite", p["input"])) / 1e6
+
+
+def _usd(model: Any, minutes: Any) -> float | None:
+    m = _minute_usd(model)
+    return None if m is None or not isinstance(minutes, (int, float)) or minutes < 0 else round(m * minutes, 2)
+
+
 def _step(s: dict[str, Any], features: bool = True, steps: bool = True) -> dict[str, Any]:
     out = {k: s.get(k) for k in ("position", "id", "title", "state", "status", "model", "modelLabel", "modelReason", "ready", "progress", "violations", "rework", "completedAt",
                                  "estimate", "stepsDone", "minutesLeft", "needsSplit")}
+    out["costLeftUsd"] = _usd(s.get("model"), s.get("minutesLeft"))
     out["deps"] = [f"{d['id']} ({d['status']})" for d in s.get("deps", [])]
     if features:
         out["features"] = [f"{f['id']} [{f['status']}, {f.get('model', 'opus')}] {f['title']}" for f in s.get("features", [])]
@@ -194,6 +219,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         v = (await run("build-queue"))["view"]
         steps = [s for s in v["steps"] if include_done or s["state"] not in ("done",)]
         return {"next": v["next"], "counts": v["counts"], "remainingByModel": v["byModel"], "minutesLeftByModel": v.get("minutesLeftByModel", {}),
+                "costLeftByModelUsd": {m: _usd(m, n) for m, n in v.get("minutesLeftByModel", {}).items()},
                 "unsplit": v.get("unsplit", []), "needsReprocess": v["dirty"] or v["violations"] > 0,
                 "steps": [_step(s, features=False, steps=False) | {"features": len(s["features"]), "steps": len(s.get("steps") or [])} for s in steps]}
 
@@ -298,6 +324,13 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
             items.sort(key=lambda i: order.get(i.get("status"), 9))
         elif sort == "built":
             items.sort(key=lambda i: i.get("builtAt", ""), reverse=True)  # ISO dates sort as text; unbuilt ("") land last
+        for i in items:  # time left and its estimated cost in dollars (steps added up when every step has an estimate)
+            steps = i.get("subPrompts") or []
+            mins = [_minutes(x.get("estimate")) for x in steps]
+            total = sum(mins) if steps and all(mins) else _minutes(i.get("estimate"))
+            left = sum(n for n, x in zip(mins, steps) if not x.get("done")) if steps and all(mins) else (0 if i.get("status") == "complete" else total)
+            i["minutesTotal"], i["minutesLeft"] = total, left
+            i["costUsd"], i["costLeftUsd"] = _usd(i.get("model"), total), _usd(i.get("model"), left)
         return {"artifact": r.get("artifact"), "count": len(items), "items": items}
 
     @mcp.tool(annotations=WRITE)
@@ -340,6 +373,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         left = sum(_minutes(s.get("estimate")) for s in steps if not s.get("done"))
         return {"id": it["id"], "title": it["title"], "model": it.get("model"), "status": it.get("status"), "estimate": it.get("estimate"),
                 "stepsDone": sum(1 for s in steps if s.get("done")), "minutesTotal": total, "minutesLeft": left,
+                "costUsd": _usd(it.get("model"), total), "costLeftUsd": _usd(it.get("model"), left),
                 "next": next((i for i, s in enumerate(steps) if not s.get("done")), None),
                 "steps": [{"index": i, "text": s.get("text"), "estimate": s.get("estimate"), "done": bool(s.get("done")), "doneAt": s.get("doneAt")} for i, s in enumerate(steps)]}
 
