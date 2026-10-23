@@ -32,3 +32,4 @@ export * from './agents';
 export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
+export * from './engines/placement';

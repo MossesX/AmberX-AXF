@@ -87,6 +87,8 @@ jobs:
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
           # Build with the plugin template installed, so the template and the plugin loader stay valid.
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
+          # a plugin made from the template records the model that built it (build-defaults@1 plugin.builtWith.*)
+          sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
         working-directory: apps/axhub-web

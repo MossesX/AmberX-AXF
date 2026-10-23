@@ -56,6 +56,15 @@ check("publish an unknown folder = 404", c.post("/api/plugin-catalog/publish", h
 items = c.get("/api/plugin-catalog", headers=H).json()["items"]
 sw = next(i for i in items if i["folder"] == "plugin-switches")
 check("installed console plugin is marked", sw["installed"] == sw["version"] and sw["clash"] is False)
+check("catalog entry + installed build carry the model", sw.get("builtWith", {}).get("model") == "opus" and sw.get("installedModel") == "opus" and sw.get("models", {}).get(sw["version"]) == "opus")
+check("swap needs the typed confirm", c.post("/api/plugin-catalog/swap", headers=H, json={"folder": "plugin-switches", "confirm": "plugin-switches"}).status_code == 400)
+check("swap needs the token", c.post("/api/plugin-catalog/swap", json={"folder": "plugin-switches", "confirm": "replace plugin-switches"}).status_code == 401)
+check("loaded plugins carry builtWith + opens", main.PLUGINS["plugin-switches"].get("builtWith", {}).get("model") == "opus" and main.PLUGINS["plugin-switches"].get("opens") == "main")
+import build_defaults  # noqa: E402
+check("python twin: a second build of a loaded plugin is refused", bool(build_defaults.instance_clash("plugin-switches-fable", {"id": "x.y.z", "name": "Other", "builtWith": {"model": "fable"}}, {"plugin-switches": {"id": "ai.amberx.axf.console.plugin-switches", "name": "Plugin switches"}})))
+check("python twin: required model", any(p["rule"] == "plugin.builtWith.model" for p in build_defaults.apply_defaults("plugin", {"provides": ["view:x"]})["problems"]))
+check("python twin: UI plugin opens in the main area", build_defaults.apply_defaults("plugin", {"provides": ["view:x"], "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["value"]["opens"] == "main")
+check("python twin: false stays a valid opens value", not build_defaults.apply_defaults("plugin", {"opens": False, "builtWith": {"model": "opus", "builtAt": "2026-10-23"}})["problems"])
 check("kind filter", [i["kind"] for i in c.get("/api/plugin-catalog?kind=pilot", headers=H).json()["items"]] == ["pilot"])
 r = c.get("/api/plugin-catalog/package?kind=pilot&folder=extra-steps", headers=H)
 check("package served", r.status_code == 200 and r.json()["sha256"] and len(r.json()["files"]) == 2)

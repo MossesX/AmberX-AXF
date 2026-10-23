@@ -6,6 +6,7 @@
 import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
 import type { AppMenuContribution } from '../core/engines/appmenu';
 import { embedSkipReason } from '../core/engines/embed';
+import { isPlacement, placementKey, placementOptions, PLACEMENT_LABELS, primaryUi, type Placement } from '../core/engines/placement';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -58,6 +59,16 @@ export interface AxfWebLibrary {
   embed?: { skipWhen: string[] };
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
   slots?: Record<string, SlotDef[]>;
+  /** The model that built it (plugin@1 `builtWith`): shown as a badge wherever its info shows (components/ModelBadge.tsx). */
+  builtWith?: { model: string; builtAt?: string };
+  /**
+   * Where its primary UI opens by default (engines/placement.ts: main / window / dialog / tab; plugin@1 `opens`, filled by
+   * the build engine's default rules: main). Set = installLibraries adds an "Opens in" choice to its first settings tab
+   * and the runtime opens that UI where the choice says. Unset or false = it opens the way it was declared.
+   */
+  opens?: Placement | false;
+  /** Which UI moves (`view:<id>` / `dialog:<id>`); default its first page, else its first dialog. */
+  opensUi?: string;
 }
 
 /** Content for a named slot; `props` are what the view passes to `<Slot name=… props=… />`. */
@@ -104,6 +115,8 @@ export function installedLibraryRecord(l: AxfWebLibrary): InstalledLibrary {
     ...(l.dependsOn?.length ? { dependsOn: [...l.dependsOn] } : {}),
     ...(l.provides?.length ? { provides: [...l.provides] } : {}),
     ...(l.uiEditor?.length ? { uiEditor: [...l.uiEditor] } : {}),
+    ...(l.builtWith?.model ? { builtWith: { ...l.builtWith } } : {}),
+    ...(isPlacement(l.opens) ? { opens: l.opens } : {}),
     contributes: [...views.map((v) => `view:${v.id}`), ...dialogs.map((d) => `dialog:${d.id}`), ...tabs.map((t) => `settings-tab:${t.id}`)],
     ui: {
       views, dialogs, settingsTabs: tabs,
@@ -139,6 +152,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     for (const t of l.settingsTabs ?? []) rt.settings.addTab({ module: l.id, ...t });
     for (const g of l.settings ?? []) rt.settings.addGroup({ module: l.id, ...g });
     for (const p of l.settingsPanels ?? []) rt.settings.addPanel({ module: l.id, ...p });
+    placeLibrary(rt, l);
     if (!rt.libraries.some((x) => x.id === l.id)) rt.libraries.push(installedLibraryRecord(l));
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
@@ -147,4 +161,25 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };
+}
+
+/**
+ * Placement (engines/placement.ts; Brett, Oct 23 2026): a library with `opens` gets its primary UI placed and an
+ * "Opens in" choice in its first settings tab (main area / floating window / dialog / tab group). The runtime reads the
+ * choice on every open, so changing it applies at once.
+ */
+function placeLibrary(rt: AxfRuntime, l: AxfWebLibrary) {
+  if (!isPlacement(l.opens)) return;
+  const provides = [...Object.keys(l.views ?? {}).map((v) => `view:${v}`), ...Object.keys(l.dialogs ?? {}).map((d) => `dialog:${d}`)];
+  const ui = primaryUi(provides, l.opensUi);
+  if (!ui || !provides.includes(`${ui.kind}:${ui.id}`)) return;
+  const title = ui.kind === 'view' ? l.views?.[ui.id]?.title : l.dialogs?.[ui.id]?.title;
+  rt.setPlacement(l.id, ui, l.opens, title ?? l.label);
+  const tab = l.settingsTabs?.[0]?.id;
+  if (!tab) return;
+  rt.settings.addGroup({
+    id: `${l.id}.placement`, label: 'Opens in', icon: 'layout', module: l.id, order: 1, tab,
+    description: `Where ${title ?? l.label} opens. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
+    settings: [{ key: placementKey(l.id), label: 'Open it in', kind: 'choice', default: l.opens, options: placementOptions() }],
+  });
 }

@@ -23,9 +23,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-20" },
   "banner": ["activity"],
   "tabable": false,
   "lifecycle": {
@@ -37,5 +35,6 @@
     "mentions": [
       "CLAUDE.md"
     ]
-  }
+  },
+  "opens": false
 }

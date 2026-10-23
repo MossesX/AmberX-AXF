@@ -125,6 +125,11 @@ def _clip(v: Any, n: int) -> str:
     return re.sub(r"[\x00-\x1f\x7f]+", " ", v).strip()[:n] if isinstance(v, str) else ""
 
 
+def _model(v: Any) -> str:
+    """The model that built a plugin (plugin@1 builtWith.model, as the app reports it): a short lowercase name, else ""."""
+    return v if isinstance(v, str) and re.fullmatch(r"[a-z][a-z0-9.-]{0,31}", v) else ""
+
+
 def _read_plugins() -> dict[str, Any]:
     try:
         raw = json.loads(PLUGINS_FILE.read_text())
@@ -137,7 +142,7 @@ def _read_plugins() -> dict[str, Any]:
         clean: dict[str, Any] = {}
         for pid, p in (items.items() if isinstance(items, dict) else []):
             if PLUGIN_ID.match(str(pid)) and isinstance(p, dict) and len(clean) < MAX_PLUGINS:
-                clean[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "enabled": p.get("enabled") is True, "installedAt": _clip(p.get("installedAt"), 40)}
+                clean[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(p.get("model")), "enabled": p.get("enabled") is True, "installedAt": _clip(p.get("installedAt"), 40)}
         apps[app_id] = {"plugins": clean}
     return {"$axf": "patches-plugins@1", "apps": apps}
 
@@ -192,7 +197,7 @@ def plugins_install(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> di
                 continue
             if len(mine) >= MAX_PLUGINS:
                 raise HTTPException(400, f"at most {MAX_PLUGINS} plugins per app")
-            mine[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "enabled": p.get("on") is not False, "installedAt": now}
+            mine[pid] = {"name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(p.get("model")), "enabled": p.get("on") is not False, "installedAt": now}
             added.append(pid)
         if added:
             _write_plugins(state)

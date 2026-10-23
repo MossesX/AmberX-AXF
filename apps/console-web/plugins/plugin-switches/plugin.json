@@ -17,9 +17,7 @@
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-19" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -30,5 +28,6 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "opens": "main"
 }

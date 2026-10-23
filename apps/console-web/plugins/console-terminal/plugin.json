@@ -12,7 +12,7 @@
   "optional": ["service:axf.containers@1"],
   "scopes": ["ROUTES", "SHELL"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus" },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -20,5 +20,6 @@
     "dataDir": ".axf-console/plugins/console-terminal",
     "env": ["AXF_TERMINAL_DIR", "AXF_VPS_HOST", "CLAUDE_BIN"],
     "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
-  }
+  },
+  "opens": false
 }

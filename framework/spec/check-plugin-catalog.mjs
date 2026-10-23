@@ -22,7 +22,7 @@ const throws = (name, fn, re) => { try { fn(); check(name, false); } catch (e) {
 // a small console plugin to publish
 const src = join(tmp, 'src', 'hello-world');
 mkdirSync(join(src, 'web'), { recursive: true });
-const man = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.hello-world', name: 'Hello world', version: '1.0.0', lifecycle: { $axf: 'plugin-lifecycle@1' } };
+const man = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.hello-world', name: 'Hello world', version: '1.0.0', builtWith: { model: 'opus', builtAt: '2026-10-23' }, lifecycle: { $axf: 'plugin-lifecycle@1' } };
 writeFileSync(join(src, 'plugin.json'), JSON.stringify(man));
 writeFileSync(join(src, 'web/index.tsx'), 'export const plugin = {};');
 writeFileSync(join(src, '.env'), 'SECRET=1');
@@ -30,6 +30,10 @@ writeFileSync(join(src, 'secrets.env'), 'SECRET=1');
 mkdirSync(join(src, 'node_modules/x'), { recursive: true });
 writeFileSync(join(src, 'node_modules/x/i.js'), '');
 
+// build-defaults@1: a console plugin that doesn't say which model built it is refused
+writeFileSync(join(src, 'plugin.json'), JSON.stringify({ ...man, builtWith: undefined }));
+throws('package without builtWith.model refused', () => cat.pack(src, 'console'), /builtWith\.model/);
+writeFileSync(join(src, 'plugin.json'), JSON.stringify(man));
 const pkg = cat.pack(src, 'console');
 check('pack leaves out secrets and node_modules', pkg.files.map((f) => f.path).sort().join(',') === 'plugin.json,web/index.tsx');
 check('pack hashes the content', /^[0-9a-f]{64}$/.test(pkg.sha256));
@@ -41,6 +45,7 @@ writeFileSync(join(src, 'plugin.json'), JSON.stringify({ ...man, version: '1.1.0
 check('new version published', cat.publishPackage(cat.pack(src, 'console')).item.version === '1.1.0');
 const e = cat.entry('console', 'hello-world');
 check('index shows newest + all versions', e.version === '1.1.0' && e.versions.join() === '1.0.0,1.1.0');
+check('index records the model per version', e.builtWith?.model === 'opus' && e.models?.['1.0.0'] === 'opus' && e.models?.['1.1.0'] === 'opus');
 check('old version still readable', cat.getPackage('console', 'hello-world', '1.0.0').version === '1.0.0');
 throws('id under another folder refused', () => cat.publishPackage({ ...cat.pack(src, 'console'), folder: 'hello-two' }), /already in the catalog/);
 check('list filters by kind', cat.list({ kind: 'pilot' }).items.length === 0 && cat.list({ kind: 'console' }).items.length === 1);
@@ -78,10 +83,32 @@ check('console install runs the lifecycle install', existsSync(join(root, '.axf-
 let again = null; try { await cat.installConsole('hello-world', { noState: true }); } catch (x) { again = x; }
 check('second install refused without update', /already installed/.test(again?.message ?? ''));
 check('update over the same plugin', (await cat.installConsole('hello-world', { noState: true, update: true, version: '1.0.0' })).updated === true);
+check('install fills the build defaults (opens)', JSON.parse(readFileSync(join(dest, 'plugin.json'), 'utf8')).opens === false);
+
+// one instance per plugin (Brett, Oct 23 2026): a Fable rebuild is a replacement, never a second install
+writeFileSync(join(src, 'plugin.json'), JSON.stringify({ ...man, version: '2.0.0', builtWith: { model: 'fable', builtAt: '2026-10-24' } }));
+check('Fable rebuild published', cat.publishPackage(cat.pack(src, 'console')).item.models['2.0.0'] === 'fable');
+let swapNeeded = null; try { await cat.installConsole('hello-world', { noState: true, update: true }); } catch (x) { swapNeeded = x; }
+check('update to another model refused without the swap', /confirmed swap/.test(swapNeeded?.message ?? ''));
+const twin = join(tmp, 'src', 'hello-world-fable');
+mkdirSync(twin, { recursive: true });
+writeFileSync(join(twin, 'plugin.json'), JSON.stringify({ ...man, id: 'ai.amberx.axf.console.hello-world-fable', version: '1.0.0', builtWith: { model: 'fable', builtAt: '2026-10-24' } }));
+throws('same plugin under another folder (another model) refused', () => cat.unpack(cat.pack(twin, 'console'), join(root, 'apps/console-web/plugins')), /Only one instance/);
+writeFileSync(join(root, '.axf-console/plugins/hello-world/note.txt'), 'old data');
+const sw = await cat.swapConsole('hello-world', { noState: true });
+const after = JSON.parse(readFileSync(join(dest, 'plugin.json'), 'utf8'));
+check('swap installs the other build in place', sw.swapped && after.version === '2.0.0' && after.builtWith.model === 'fable' && sw.from.model === 'opus' && sw.to.model === 'fable');
+check('swap removes the old build\'s data (backed up)', !existsSync(join(root, '.axf-console/plugins/hello-world/note.txt')) && !!sw.removed?.backup);
+const inst = await import('../cli/plugin-instances.mjs');
+check('folder stem drops model suffixes', inst.folderStem('theme-manager-fable') === 'theme-manager' && inst.folderStem('a-plugin-opus') === 'a');
+check('instanceClashes finds two builds of one plugin', inst.instanceClashes([{ folder: 'x', manifest: { id: 'a.b.x', name: 'X', builtWith: { model: 'opus' } } }, { folder: 'x-fable', manifest: { id: 'a.b.x2', name: 'X two', builtWith: { model: 'fable' } } }]).length === 1);
+check('replaces counts as the same plugin', !!inst.samePlugin({ folder: 'n', manifest: { id: 'a.b.n', name: 'N', builtWith: { replaces: ['a.b.o'] } } }, { folder: 'o', manifest: { id: 'a.b.o', name: 'O' } }));
+check('different plugins are fine', inst.instanceClashes([{ folder: 'x', manifest: { id: 'a.b.x', name: 'X' } }, { folder: 'y', manifest: { id: 'a.b.y', name: 'Y' } }]).length === 0);
+
 // a different plugin in that folder is never overwritten
 const other = join(root, 'apps/console-web/plugins/someone-else');
 mkdirSync(other);
-writeFileSync(join(other, 'plugin.json'), JSON.stringify({ ...man, id: 'ai.x.someone-else' }));
+writeFileSync(join(other, 'plugin.json'), JSON.stringify({ ...man, id: 'ai.x.someone-else', name: 'Someone else' }));
 const p2 = cat.pack(src, 'console', 'someone-else');
 throws('different plugin in the folder not overwritten', () => cat.unpack({ ...p2 }, join(root, 'apps/console-web/plugins'), { update: true }), /another plugin|already installed as/);
 const linkPlugins = join(tmp, 'link-plugins');
