@@ -13,7 +13,7 @@ import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyl
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedHostLabel, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
+import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -205,6 +205,7 @@ export class AxfRuntime {
   private listeners = new Set<() => void>();
   private storageKey: string;
   private toastSeq = 0;
+  private settingsBump = false;
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -219,7 +220,20 @@ export class AxfRuntime {
         : { kind: 'contribution-conflict', what: `settings ${c.what}`, id: c.id, was: c.was, now: c.now },
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
-    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); this.set({}); });
+    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
+    // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
+    // pages) re-renders at once, wherever it was changed. Coalesced: several changes in one task = one render.
+    this.settings.subscribe(() => {
+      if (this.settingsBump) return;
+      this.settingsBump = true;
+      queueMicrotask(() => { this.settingsBump = false; this.set({}); });
+    });
+    // Another frame or tab of this app saved (a host's Settings tab, its banner strip, a second window): read it now.
+    globalThis.addEventListener?.('storage', (e: StorageEvent) => {
+      if (e.key !== null && e.key !== this.settings.savedUnder && e.key !== this.storageKey) return;
+      this.reloadSaved();
+    });
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -566,6 +580,11 @@ export class AxfRuntime {
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
+    return this.reloadSaved();
+  }
+
+  /** refreshFromSaved without asking the appearance source (another frame of this app saved in this browser). */
+  private reloadSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     const settings = this.settings.reload();
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
@@ -844,6 +863,28 @@ export class AxfRuntime {
     return this.embedHiddenSlots().includes(type);
   }
 
+  /**
+   * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
+   * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
+   * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
+   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
+   * settings").
+   */
+  slotOwnedByHost(type: AssetType): boolean {
+    const e = this.embedded;
+    if (!e) return false;
+    if (!e.page) return this.slotHiddenByHost(type);
+    return type === 'banner' || (e.takes ?? []).some((fn) => embedTakeSpec(fn)?.hides.includes(type));
+  }
+
+  /** Hidden by the user's own choice (or the app's default), leaving out the chrome a host forces off. Settings show this. */
+  slotHiddenOwn(type: AssetType): boolean {
+    if (!hideable(type)) return false;
+    const o: Record<string, boolean | undefined> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
+    return (hiddenSlots(o, this.defaultHiddenSlots(), []) as AssetType[]).includes(type);
+  }
+
   /** Every hidden slot: the host's chrome (while embedded) over the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
@@ -853,8 +894,8 @@ export class AxfRuntime {
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
-    if (!hideable(type) || this.slotHidden(type) === hidden) return;
-    if (this.slotHiddenByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
+    if (!hideable(type) || this.slotHiddenOwn(type) === hidden) return;
+    if (this.slotOwnedByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
     if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
     else this.settings.set(HIDE_KEY(type), hidden);

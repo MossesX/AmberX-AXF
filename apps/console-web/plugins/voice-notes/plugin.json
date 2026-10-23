@@ -20,6 +20,7 @@
     "model": "opus"
   },
   "tabable": false,
+  "banner": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/voice-notes",

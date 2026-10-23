@@ -32,6 +32,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["build-manager"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

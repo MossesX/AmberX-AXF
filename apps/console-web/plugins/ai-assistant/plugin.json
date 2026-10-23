@@ -34,6 +34,7 @@
     "model": "fable",
     "rebuiltFrom": "Opus build of Oct 18 2026 (pending item ai-assistant-plugin)"
   },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

@@ -56,6 +56,17 @@ view page (`?axf-embed-page=view:<id>`: only that page, no chrome, settings stil
 tabable ones in Settings → Patches → Tabs → **Add tab…**. Checked by `node framework/cli/plugins.mjs --check` (CI) and
 the console's plugin loader (a wrong `tabable` is reported as the plugin's error).
 
+## Plugins with a banner (plugin@1 `banner`, Oct 23 2026)
+
+Every plugin.json says whether the plugin includes a banner (the live banners above every page): `"banner": false`, or
+the ids of the banners its web library contributes (`"banner": ["my-banner"]`). `node framework/cli/plugins.mjs --check`
+(CI) checks the list against the plugin's `banners: [...]` in `web/`, and the console loader refuses a wrong value.
+Every declared banner gets the shared banner settings in its tab of Settings → Plugins → Banners (and Banner settings,
+and Patches' Banners tab): **Hide** (the banner is hidden but stays mounted, so the plugin keeps working and its
+activity is still logged to the terminal), **Hide all banners** under it (tooltip lists every banner it hides) and
+**Hide for … minutes** (a hide lasts that long, then the banner shows again). One state for every interface; the last
+change wins.
+
 ## Sharing and installing (plugin-catalog@1)
 
 The plugin catalog on axHub (`/projects/_shared/_data/plugin-catalog`) holds plugins other consoles and apps can install.

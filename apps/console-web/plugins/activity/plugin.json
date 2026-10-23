@@ -26,6 +26,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["activity"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

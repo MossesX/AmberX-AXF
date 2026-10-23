@@ -106,7 +106,10 @@ export function pluginTab(p: BundledPlugin): EmbedPluginTab | null {
 export function pluginReport(status: PluginStatus[] | null): EmbedPlugin[] {
   const on = new Set(enabledPlugins(status));
   return bundledPlugins.filter((p) => p.library).map((p) => {
-    const tab = pluginTab(p);
+    const t = pluginTab(p);
+    // its own settings tab rides along, so a host (Patches) can give that plugin tab a settings tab of its own
+    const settings = p.library?.settingsTabs?.[0]?.id;
+    const tab = t && settings ? { ...t, settings } : t;
     return { id: p.manifest.id, name: p.manifest.name, ...(p.manifest.version ? { version: p.manifest.version } : {}), on: on.has(p), ...(tab ? { tab } : {}) };
   });
 }
