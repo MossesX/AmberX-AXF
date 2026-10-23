@@ -454,7 +454,9 @@ def rpc(sid, method, params, t):
 check(ht.follow_job(rpc, "s0", JID, 60, reinit=lambda: "s9", poll_s=0) == "exit 0", "the job is followed (new session on 404) to its output")
 # Approved shell runs are kept for the terminal (axf.hub-runs@1): only after an approval, only shell tools
 hr = ht.HubRuns()  # the service object itself (an earlier check withdraws the plugin's services on purpose)
-t0 = int(time.time() * 1000) - 1
+# Start after every run the checks above logged (they can land in the same millisecond), then let the clock move on
+t0 = max([int(time.time() * 1000)] + [int(r.get("at") or 0) for r in hr.runs()])
+time.sleep(0.005)
 ht.run({"tool": "vps.run", "arguments": {"command": "uptime"}, "wait": False}, {}, call=hub(["ok"]))
 check(hr.runs(t0) == [], "a command that ran without an approval isn't logged")
 ht.run({"tool": "vps.check", "arguments": {"name": "disk"}, "confirmation_id": "11111111-2222-3333-4444-555555555555", "wait": False}, {}, call=hub(["ok"]))
