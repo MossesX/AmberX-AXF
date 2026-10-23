@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T02:09:40.262Z",
+ "updatedAt": "2026-10-23T04:23:17.214Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1513,6 +1513,10 @@
     {
      "text": "Oct 23 2026: branch claude/axhub-web-on-hub (Opus) changed apps/axhub-web (manifest hidden: [], deploy/install.sh now targets axhub.amberxai.com page paths). Rebase on it; no clash with the lib-hub harvest itself.",
      "at": "2026-10-23T02:09:40.262Z"
+    },
+    {
+     "text": "Oct 23 2026: axhub-web-console-look (Opus, branch claude/project-thread-j1ri9d, PR #30) does the web half of this harvest: catalog rules move into framework/libs/hub with an apps fixture section, web app switched. What stays for Fable: the Kotlin twin replaying that fixture and the Android Apps tab, once the Android hold lifts.",
+     "at": "2026-10-23T04:11:01.776Z"
     }
    ],
    "subPrompts": [
@@ -1544,7 +1548,7 @@
    ],
    "createdAt": "2026-10-22T01:57:53.687Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.262Z",
+   "updatedAt": "2026-10-23T04:11:01.776Z",
    "estimate": "2 h",
    "source": "session"
   },
@@ -1993,6 +1997,68 @@
    "updatedAt": "2026-10-23T02:09:40.159Z",
    "estimate": "30 min",
    "source": "mcp"
+  },
+  {
+   "id": "axhub-web-console-look",
+   "title": "axHub web app: Dev Console / Patches look and layout + web harvest into lib-hub",
+   "detail": "From a chat prompt (Brett, Oct 22 2026): rebuild the axHub web app (served at axhub.amberxai.com since Oct 23) with the framework, look and layout matching the Dev Console and Patches, and harvest reusable libraries from it. Web only (Android on hold). Branch claude/project-thread-j1ri9d, PR #30. The Kotlin twin of the catalog rules stays with axhub-web-hub-rules (Fable).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 23 2026 on Opus: branch claude/project-thread-j1ri9d, PR #30. Nav + toolbar kept (Brett). Report _claude/memory/docs/rebuilds/axhub-web-console-look.md.",
+     "at": "2026-10-23T04:23:17.154Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Banner like the console: logo, search in the middle, approvals counter, day/night switch and clock on the right (banner asset axhub)",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.782Z"
+    },
+    {
+     "text": "Application menu like the console: Hub, Approvals (live list + badge), Apps (live list), Manage, View (bar toggles, look, spacing), Help; menu bar above the banners",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.851Z"
+    },
+    {
+     "text": "Layout + views: console page structure on Approvals, Hub, Apps, Manage; layout per Brett pick",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.909Z"
+    },
+    {
+     "text": "Harvest: app-catalog rules out of the app into lib-hub (web) with an apps section in the hub fixture; PORTING.md gap for the Kotlin twin",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.969Z"
+    },
+    {
+     "text": "Harvest: approvals + catalog React hooks and the approvals list into lib-hub web views the console approvals banner and other apps can use",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:17.028Z"
+    },
+    {
+     "text": "Tests (app test.mjs, check-hub, typecheck + build), docs, CLAUDE.md status, pending/notes",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:17.085Z"
+    }
+   ],
+   "createdAt": "2026-10-23T04:10:49.533Z",
+   "builtAt": "2026-10-23T04:23:17.214Z",
+   "updatedAt": "2026-10-23T04:23:17.214Z",
+   "estimate": "3 h",
+   "source": "chat"
   }
  ]
 }

@@ -1,12 +1,12 @@
 /**
- * Self-test for the AXHub web app's hub rules (`src/hub/feed.ts`): what a reply from the hub means,
- * what is thrown away, and how times and sizes are shown.
+ * Self-test for the hub rules the AXHub web app uses (lib-hub `framework/libs/hub/apps.ts`, harvested from this app
+ * Oct 23 2026): what a reply from the hub means, what is thrown away, and how times and sizes are shown.
  *
  *   npx -y tsx apps/axhub-web/test.mjs
  *
  * Nothing here touches the network: every case is a hand-written reply.
  */
-import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from './src/hub/feed.ts';
+import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
 let failed = 0;

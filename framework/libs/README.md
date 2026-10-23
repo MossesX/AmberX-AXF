@@ -66,6 +66,14 @@ focus, one check at a time). Mirrored by the Kotlin `lib-hub` (`HubRules`); both
 Self-test: `npx -y tsx framework/spec/check-hub.mts`. The console's approvals banner plugin runs on it. The hub protocol
 contract (AXPP) is a named placeholder (`HUB_PLACEHOLDERS`), parked for Fable.
 
+**App catalog + hub views (Oct 23 2026, Opus, harvested from the AXHub web app):** `libs/hub/apps.ts` reads `/apps.json`
+(decision #90: `fetchHubApps`, `interpretApps`, `appDownloadUrl` rebuilds every download link from hub + project + file;
+caps 100 apps / 5 builds / 512 KB) and the words for hub data (`formatSize`, `formatWhen`, `expiry`, `statusNote`); pinned by
+the fixture's `apps` section (web only for now). `libs/hub/react.tsx`: `useHubApprovals`, `useHubApps`, `useHubBannerCount`
+(counter `approvals.waiting` + an optional banner counter), `HubApprovalList`, `HubStatusNote`, `checkHubNow`.
+`libs/hub/menu.ts`: `installHubMenu(rt, { hub })` = app-menu live lists `hub.approvals` / `hub.apps` and actions
+`hub.open:<page>`, `hub.review:<id>`, `hub.download:<project>:<file>`.
+
 ## apiclient (`ai.amberx.axf.apiclient`)
 
 The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
