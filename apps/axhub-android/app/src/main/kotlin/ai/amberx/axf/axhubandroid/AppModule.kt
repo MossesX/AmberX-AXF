@@ -96,7 +96,8 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
             SettingSpec(K_BASE, "Hub address", SettingKind.TEXT, "https only, no path", JsonPrimitive(HubRules.DEFAULT), icon = "link"),
             SettingSpec(K_INTERVAL, "Check every", SettingKind.CHOICE, default = JsonPrimitive("30"), options = listOf("15" to "15 s", "30" to "30 s", "60" to "1 min", "300" to "5 min"), icon = "clock"),
             SettingSpec(K_FULL, "Full-screen alerts", SettingKind.TOGGLE, "Pop the approval up like an alarm when Android allows it", JsonPrimitive(true), icon = "bell"),
-            SettingSpec(K_AUTO, "Auto-approve", SettingKind.TOGGLE, "Approve matching calls from this phone without asking; the alert says \"Auto-approval approved\"", JsonPrimitive(false), icon = "check"),
+            SettingSpec(K_AUTO_ALL, "Approve everything except vps.run", SettingKind.TOGGLE, "Every approval request is approved from this phone as soon as it arrives, except vps.run (root shell on the VPS), which still needs your tap. You get the waiting alert, then an \"approved\" one with the alarm sound", JsonPrimitive(false), icon = "check"),
+            SettingSpec(K_AUTO, "Auto-approve listed tools", SettingKind.TOGGLE, "Approve matching calls from this phone without asking; the alert says \"Auto-approval approved\"", JsonPrimitive(false), icon = "check"),
             SettingSpec(K_AUTO_TOOLS, "Auto-approve tools", SettingKind.TEXT, "Comma-separated: vps.logs, github.* (a whole service) or * (everything). Empty = nothing", JsonPrimitive(""), icon = "list"),
             SettingSpec("axhub.signoutAction", "Sign out of the hub", SettingKind.ACTION, target = "axhub.signout", icon = "logout"),
             SettingSpec("axhub.lockAction", "Lock now", SettingKind.ACTION, target = "axhub.lock", icon = "lock"),
@@ -107,7 +108,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
 
     override suspend fun start(ctx: ModuleContext) {
         val s = ctx.service(SettingsEngine::class) ?: return
-        listOf(K_BASE, K_INTERVAL, K_FULL, K_AUTO, K_AUTO_TOOLS).forEach { k -> mirror(k, s.string(k), null) }
+        listOf(K_BASE, K_INTERVAL, K_FULL, K_AUTO_ALL, K_AUTO, K_AUTO_TOOLS).forEach { k -> mirror(k, s.string(k), null) }
     }
 
     private fun mirror(key: String, v: String?, runtime: AxfRuntime?) {
@@ -129,6 +130,11 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
                 )
             }
             K_AUTO_TOOLS -> auto.tools = v.orEmpty()
+            K_AUTO_ALL -> v?.toBooleanStrictOrNull()?.let {
+                val was = auto.all
+                auto.all = it
+                if (it && !was && runtime != null) runtime.toast("Every approval except vps.run is now approved from this phone without asking.", ToastKind.WARNING, "AXHub")
+            }
         }
     }
 
@@ -138,6 +144,7 @@ class AppModule(private val context: Context) : BaseModule("ai.amberx.axf.axhuba
         const val K_FULL = "axhub.fullScreen"
         const val K_AUTO = "axhub.autoApprove"
         const val K_AUTO_TOOLS = "axhub.autoApproveTools"
+        const val K_AUTO_ALL = "axhub.autoApproveAll"
 
         /** Capabilities the app will fill as the hub grows; declared now so later work plugs in without reshuffling. */
         fun placeholders(): List<PlaceholderModule> = listOf(

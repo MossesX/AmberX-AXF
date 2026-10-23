@@ -4,6 +4,7 @@ import { FOLDER, ID } from './api';
 import { openFromContext } from './open';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
 import { TerminalTab } from './TerminalTab';
+import { RunOutputTab, watchHubRuns } from './RunOutputTab';
 import './terminal.css';
 import { appMenu } from './menu';
 
@@ -13,6 +14,7 @@ import { appMenu } from './menu';
  *  - "Open terminal" on every right-click / long-press (runtime contextExtras key `*:terminal`); on a container or a
  *    folder the console marks (data-fx-ctx-target axf-container / axf-container-path) it opens right there
  *  - actions terminal.open[:<target>:<payload>], terminal.new
+ *  - approved VPS / shell commands (axf.hub-runs@1) open in a read-only output tab once they've run (RunOutputTab.tsx)
  *  - Settings → Plugins → Terminal
  */
 export const plugin: AxfWebLibrary = {
@@ -24,9 +26,10 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     rt.actions.register('terminal.open', ([target, payload]) => openFromContext(rt, target, payload), { label: 'Open terminal', params: true });
     rt.actions.register('terminal.new', () => openFromContext(rt), { label: 'Open a terminal' });
+    watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     rt.contextExtras.set('*:terminal', (target, payload) => [{ id: 'terminal.open', label: 'Open terminal', icon: 'terminal', action: `terminal.open:${encodeURIComponent(target ?? '')}:${encodeURIComponent(payload ?? '')}` }]);
   },
-  tabs: { terminal: (t) => <TerminalTab tab={t} /> },
+  tabs: { terminal: (t) => <TerminalTab tab={t} />, 'terminal-output': (t) => <RunOutputTab tab={t} /> },
   settingsTabs: [{ id: 'terminal', label: 'Terminal', icon: 'terminal', parent: 'plugins', order: 42, description: 'Terminal windows: options, the VPS host key, Claude Code, Mosh / Moshi, open sessions and the session log.' }],
   settingsPanels: [
     { id: 'terminal.general', tab: 'terminal', title: 'Terminal', icon: 'terminal', order: 10, render: () => <div className="axp-terminal-settings"><GeneralPanel /></div> },

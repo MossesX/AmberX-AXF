@@ -4,7 +4,7 @@
  * the same steps through --json.
  *
  *   node install.mjs                         interactive (asks where, which questions, behaviour, expected values)
- *   node install.mjs --json '<request>'      non-interactive; request = { action, target, dir?, config? }
+ *   node install.mjs --json '<request>'      non-interactive; request = { action, target, dir?, config?, onDevice? }
  *                                            action: install | uninstall | preview | status   → prints one JSON result
  *   node install.mjs --uninstall [--target local|shared|user]
  *   node install.mjs --status
@@ -146,7 +146,9 @@ async function jsonMode(raw) {
       if (publish) { publishShared({ remove: true, log }); console.log(JSON.stringify({ ok: true, changed: true, log: lines })); return; }
       const changed = uninstall(req.target, req.dir, log); console.log(JSON.stringify({ ok: true, changed, log: lines })); return;
     }
-    if (req.target === 'user') throw new Error('the "user" target is installed on the device itself: run the installer there in a terminal');
+    // the console runs --json in its own container (another machine), so "user" needs onDevice: true = this command runs
+    // on the device itself (the systems check's VPS Auto fix sends it through vps.run on the host)
+    if (req.target === 'user' && req.onDevice !== true) throw new Error('the "user" target is installed on the device itself: run the installer there in a terminal');
     const p = plan(req.target, req.dir, req.config);
     const result = { settings: show(p.paths.settings), config: show(p.paths.config), before: p.before, after: p.after, configJson: p.config };
     if (action === 'preview') { console.log(JSON.stringify({ ok: true, preview: result })); return; }

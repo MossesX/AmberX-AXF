@@ -52,6 +52,7 @@ esac
 if [[ "${1:-}" == "--install" ]]; then
   mkdir -p "$HOME/.local/bin" "$HOME/.claude"
   install -m 0755 "${BASH_SOURCE[0]}" "$HOME/.local/bin/claude-pick"
+  [[ -f "$HOME/.bashrc" || -f "$HOME/.zshrc" ]] || touch "$HOME/.bashrc"  # no rc file yet: the alias still needs a home
   for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
     [[ -f "$rc" ]] || continue
     grep -q "alias claude='claude-pick'" "$rc" || printf "\n# AXF: ask how to sign in and which model before starting Claude Code\nalias claude='claude-pick'\n" >> "$rc"

@@ -18,6 +18,7 @@ import json
 import os
 import shlex
 import subprocess
+import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
@@ -142,6 +143,16 @@ async def attach(ws: WebSocket, sid: str) -> None:
     finally:
         task.cancel()
         s.detach(loop, q)
+
+
+@router.get("/hub-runs")
+def hub_runs(since: int = 0) -> dict[str, Any]:
+    """Approved VPS / shell commands that ran through Mosses's axhub_call (capability axf.hub-runs@1, the agent manager),
+    newer than `since` (epoch ms): the browser opens an output tab for each new one. Empty without the capability."""
+    svc = plugin_services.get("axf.hub-runs@1")
+    on = bool(store.settings().get("showHubRuns", True))
+    items = svc.runs(max(0, int(since))) if svc and on else []
+    return {"available": svc is not None, "on": on, "items": items[-20:], "now": int(time.time() * 1000)}
 
 
 @router.get("/settings")
