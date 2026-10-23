@@ -165,6 +165,7 @@ def _err(e: Exception) -> HTTPException:
 class LlmService:
     """Model access for other plugins. Same profiles, same fallback chain, usage counted here."""
     version = 1
+    settings_tab = FOLDER  # where its providers are picked (the systems check opens it when Claude is out of credits)
 
     def profiles(self) -> list[dict[str, Any]]:
         return store.public_config()["profiles"]

@@ -197,10 +197,11 @@ class SysCheck:
         """Claude has credits: one tiny request through the AI assistant (axf.llm@1). When the default Claude provider is
         out of credits, the assistant switches to the first other Claude provider that answers (Brett, Oct 23 2026)."""
         import plugin_services  # core module; imported here so the check file loads without the console
-        base = dict(fix={"type": "settings", "tab": "ai-assistant", "label": "Pick a key"},
+        llm = plugin_services.get("axf.llm@1")
+        tab = getattr(llm, "settings_tab", "") or "plugins"
+        base = dict(fix={"type": "settings", "tab": tab, "label": "Pick a key"},
                     instructions=["Settings → Plugins → AI assistant → Providers: add another Claude key or top up this one."],
                     links=[{"label": "Anthropic Console → Billing", "url": "https://console.anthropic.com/settings/billing"}], order=21)
-        llm = plugin_services.get("axf.llm@1")
         if llm is None or not hasattr(llm, "credits"):
             return self.item("claude-credits", "claude", "Claude credits", "info", "The AI assistant isn't installed, so nothing uses Claude here.", order=21)
         r = llm.credits(auto_switch=True)

@@ -86,7 +86,7 @@ function showCreditsSwitch(r: Report | null) {
   if (!key || key === shownSwitch) return;
   shownSwitch = key;
   runtime.toast(c.summary, c.switched ? 'warning' : 'danger', 'Claude credits');
-  runtime.dispatch('settings.open:ai-assistant');
+  runtime.dispatch(`settings.open:${c.fix?.type === 'settings' ? c.fix.tab : 'plugins'}`);
 }
 
 /** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
