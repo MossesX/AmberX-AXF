@@ -1,0 +1,1068 @@
+{
+  "$id": "axf/asset-types",
+  "frameworkVersion": "0.2.0",
+  "envelope": {
+    "frame": "asset@1",
+    "required": [
+      "$axf",
+      "type",
+      "id",
+      "name",
+      "version",
+      "data"
+    ],
+    "idPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
+    "optional_fields": {
+      "description": "string",
+      "author": "string",
+      "tags": "string[]",
+      "roll": "boolean — whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
+    }
+  },
+  "types": {
+    "color-theme": {
+      "label": "Color theme",
+      "group": "Themes",
+      "icon": "palette",
+      "required": [
+        "scheme",
+        "tokens"
+      ],
+      "enums": {
+        "scheme": [
+          "light",
+          "dark"
+        ]
+      },
+      "nested": {
+        "tokens": [
+          "bg",
+          "surface",
+          "surface2",
+          "surface3",
+          "text",
+          "muted",
+          "border",
+          "accent",
+          "accentText",
+          "accentSoft",
+          "danger",
+          "success",
+          "warning",
+          "info",
+          "focus",
+          "shadow"
+        ]
+      }
+    },
+    "style-theme": {
+      "label": "Style theme",
+      "group": "Themes",
+      "icon": "type",
+      "required": [
+        "fontFamily",
+        "fontDisplay",
+        "fontMono",
+        "fontSize",
+        "radius",
+        "space",
+        "borderWidth",
+        "shadow",
+        "density",
+        "motion",
+        "blur",
+        "headingWeight",
+        "tracking"
+      ],
+      "enums": {
+        "density": [
+          "compact",
+          "comfortable",
+          "spacious"
+        ]
+      },
+      "nested": {
+        "radius": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shadow": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      "optional_fields": {
+        "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
+      }
+    },
+    "layout": {
+      "label": "Layout",
+      "group": "Themes",
+      "icon": "layout",
+      "required": [
+        "nav",
+        "navWidth",
+        "showMenubar",
+        "showToolbar",
+        "toolbarPosition",
+        "showStatusbar",
+        "inspector",
+        "inspectorWidth",
+        "contentMaxWidth"
+      ],
+      "enums": {
+        "nav": [
+          "left",
+          "right",
+          "top"
+        ],
+        "toolbarPosition": [
+          "top",
+          "bottom"
+        ],
+        "inspector": [
+          "left",
+          "right",
+          "none"
+        ]
+      },
+      "slots": {
+        "regions": [
+          "menubar",
+          "toolbar",
+          "nav",
+          "main",
+          "inspector",
+          "status",
+          "fab",
+          "sheet",
+          "overlay"
+        ],
+        "defaults": {
+          "menubar": [
+            "app-menu"
+          ],
+          "toolbar": [
+            "toolbar"
+          ],
+          "nav": [
+            "nav-menu"
+          ],
+          "main": [],
+          "inspector": [],
+          "status": [],
+          "fab": [],
+          "sheet": [],
+          "overlay": [
+            "dialog",
+            "popup",
+            "context-menu"
+          ]
+        }
+      },
+      "optional_fields": {
+        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types."
+      }
+    },
+    "app-menu": {
+      "label": "Application menu",
+      "group": "Navigation",
+      "icon": "menu",
+      "required": [
+        "menus"
+      ],
+      "enums": {
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "surface": [
+          "flat",
+          "raised",
+          "glass"
+        ]
+      },
+      "optional_fields": {
+        "density": "compact | regular (default) | roomy — menubar height",
+        "surface": "flat (default) | raised | glass",
+        "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
+        "items[].provider|badge|checked|order|before|after": "see menuItems"
+      },
+      "hideable": true
+    },
+    "toolbar": {
+      "label": "Toolbar",
+      "group": "Navigation",
+      "icon": "sliders",
+      "required": [
+        "variant",
+        "align",
+        "groups",
+        "showSearch"
+      ],
+      "enums": {
+        "variant": [
+          "icons",
+          "icons-labels",
+          "labels"
+        ],
+        "align": [
+          "start",
+          "center",
+          "spread"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "surface": [
+          "flat",
+          "raised",
+          "glass"
+        ]
+      },
+      "optional_fields": {
+        "window": "id or kind of the window this toolbar is attached to (`main` by default); the window-settings icon renders only when the toolbar is inside a floating window",
+        "density": "compact | regular (default) | roomy — toolbar padding and button height",
+        "surface": "flat (default) | raised | glass",
+        "divider": "boolean, default true — rule between item groups",
+        "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
+        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
+        "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
+        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)"
+      },
+      "hideable": true,
+      "widgets": {
+        "_doc": "Widget host: only widget types (\"widget\": true) are placed; missing assets are skipped.",
+        "sides": [
+          "start",
+          "end"
+        ]
+      }
+    },
+    "nav-menu": {
+      "label": "Navigation menu",
+      "group": "Navigation",
+      "icon": "grid",
+      "required": [
+        "style",
+        "sections"
+      ],
+      "enums": {
+        "style": [
+          "list",
+          "pills",
+          "rail"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "indicator": [
+          "auto",
+          "bar",
+          "fill",
+          "none"
+        ]
+      },
+      "optional_fields": {
+        "density": "compact | regular (default) | roomy — item padding",
+        "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
+        "showIcons": "boolean, default true"
+      },
+      "hideable": true
+    },
+    "context-menu": {
+      "label": "Context menu",
+      "group": "Navigation",
+      "icon": "chevron-right",
+      "required": [
+        "variant",
+        "showIcons",
+        "showShortcuts",
+        "targets"
+      ],
+      "enums": {
+        "variant": [
+          "compact",
+          "roomy",
+          "glass"
+        ]
+      },
+      "nested": {
+        "targets": [
+          "default"
+        ]
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "hideable": true
+    },
+    "dialog": {
+      "label": "Dialog",
+      "group": "Overlays",
+      "icon": "box",
+      "required": [
+        "variant",
+        "width",
+        "backdrop",
+        "animation",
+        "header",
+        "closeOnBackdrop"
+      ],
+      "enums": {
+        "variant": [
+          "modal",
+          "drawer",
+          "sheet"
+        ],
+        "backdrop": [
+          "dim",
+          "blur",
+          "none"
+        ],
+        "animation": [
+          "scale",
+          "slide",
+          "fade"
+        ],
+        "header": [
+          "plain",
+          "accent-bar",
+          "filled"
+        ]
+      }
+    },
+    "popup": {
+      "label": "Popup / toast",
+      "group": "Overlays",
+      "icon": "bell",
+      "required": [
+        "position",
+        "variant",
+        "duration",
+        "showIcon",
+        "maxVisible"
+      ],
+      "enums": {
+        "position": [
+          "top-right",
+          "bottom-right",
+          "bottom-center",
+          "top-center"
+        ],
+        "variant": [
+          "solid",
+          "outline",
+          "minimal"
+        ]
+      }
+    },
+    "button": {
+      "label": "Button",
+      "group": "Controls",
+      "icon": "zap",
+      "required": [
+        "shape",
+        "fill",
+        "weight",
+        "uppercase",
+        "size",
+        "elevation"
+      ],
+      "enums": {
+        "shape": [
+          "rounded",
+          "pill",
+          "square"
+        ],
+        "fill": [
+          "solid",
+          "soft",
+          "outline",
+          "gradient"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      }
+    },
+    "slider": {
+      "label": "Slider",
+      "group": "Controls",
+      "icon": "sliders",
+      "required": [
+        "track",
+        "thumb",
+        "thumbSize",
+        "fill",
+        "showValue",
+        "ticks"
+      ],
+      "enums": {
+        "thumb": [
+          "circle",
+          "square",
+          "bar"
+        ],
+        "fill": [
+          "solid",
+          "gradient",
+          "none"
+        ],
+        "showValue": [
+          "always",
+          "hover",
+          "never"
+        ]
+      }
+    },
+    "container": {
+      "label": "Container",
+      "group": "Controls",
+      "icon": "box",
+      "required": [
+        "variant",
+        "header",
+        "padding",
+        "elevation",
+        "collapsible"
+      ],
+      "enums": {
+        "variant": [
+          "card",
+          "panel",
+          "glass",
+          "outline"
+        ],
+        "header": [
+          "plain",
+          "divided",
+          "accent"
+        ],
+        "padding": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      }
+    },
+    "gauge": {
+      "label": "Gauge",
+      "group": "Controls",
+      "icon": "chart",
+      "description": "How gauges look (speed, files, data dials): shape, thickness, needle, ticks, ends and readout. Every gauge in every app follows the active gauge asset.",
+      "required": [
+        "shape",
+        "thickness",
+        "needle",
+        "ticks",
+        "cap",
+        "readout"
+      ],
+      "enums": {
+        "shape": [
+          "arc",
+          "ring",
+          "bar",
+          "digital"
+        ],
+        "cap": [
+          "round",
+          "square"
+        ],
+        "readout": [
+          "big",
+          "small",
+          "none"
+        ]
+      },
+      "optional": true
+    },
+    "meter": {
+      "label": "Progress meter",
+      "group": "Controls",
+      "icon": "chart",
+      "description": "How progress meters look (install bars, step bars): shape, height, corners, stripes, motion and fill. Every progress meter in every app follows the active meter asset.",
+      "required": [
+        "shape",
+        "height",
+        "radius",
+        "stripes",
+        "animated",
+        "fill"
+      ],
+      "enums": {
+        "shape": [
+          "bar",
+          "segments",
+          "steps",
+          "line"
+        ],
+        "radius": [
+          "pill",
+          "soft",
+          "square"
+        ],
+        "fill": [
+          "solid",
+          "gradient",
+          "soft"
+        ]
+      },
+      "optional": true
+    },
+    "banner": {
+      "label": "Banner",
+      "group": "Chrome",
+      "icon": "menu",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
+      "required": [
+        "height",
+        "surface",
+        "logo",
+        "attach"
+      ],
+      "enums": {
+        "surface": [
+          "flat",
+          "raised",
+          "accent"
+        ]
+      },
+      "nested": {
+        "logo": [
+          "show",
+          "text"
+        ]
+      },
+      "optional": true,
+      "hideable": true,
+      "attach": {
+        "_doc": "data.attach = [{type, id, at: left|center|right, order?}]. Every attachable type (\"attachable\": true: badges and all widgets) is placed; an entry whose asset doesn't exist is skipped. Runtime attachments (rt.attachToBanner) with the same type+id replace the asset's own.",
+        "sides": [
+          "left",
+          "center",
+          "right"
+        ]
+      },
+      "optional_fields": {
+        "divider": "boolean — line under the banner (default true)",
+        "height": "number — px, 16 to 48 (thin = 24)"
+      }
+    },
+    "clock": {
+      "label": "Clock",
+      "group": "Widgets",
+      "icon": "clock",
+      "description": "A clock widget: attaches to banners and toolbars (any widget host).",
+      "required": [
+        "format",
+        "seconds",
+        "date"
+      ],
+      "enums": {
+        "format": [
+          "24h",
+          "12h"
+        ],
+        "date": [
+          "none",
+          "short",
+          "weekday"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "timezone": "string — IANA zone (e.g. America/New_York); default the device's",
+        "mono": "boolean — monospace digits (default true)"
+      },
+      "widget": true
+    },
+    "search-bar": {
+      "label": "Search bar",
+      "group": "Widgets",
+      "icon": "search",
+      "description": "A search bar widget: searches the whole app (views, settings, actions, assets, windows, words on the page, and anything a module adds, e.g. the console's plan features, pending builds and plugins). Attaches to banners and toolbars.",
+      "required": [
+        "placeholder",
+        "maxResults",
+        "width"
+      ],
+      "enums": {
+        "width": [
+          "compact",
+          "regular",
+          "wide"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "kinds": "string[] — only these result kinds (default: all)",
+        "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)"
+      }
+    },
+    "action-button": {
+      "label": "Action button",
+      "group": "Widgets",
+      "icon": "zap",
+      "description": "An action button widget: one action with an icon and/or label (e.g. Settings, Build, Open terminal). Its look follows the active button style (the `button` control asset).",
+      "required": [
+        "icon",
+        "label",
+        "action",
+        "show"
+      ],
+      "enums": {
+        "show": [
+          "icon",
+          "label",
+          "both"
+        ],
+        "tone": [
+          "neutral",
+          "accent",
+          "danger"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "tone": "neutral (default) | accent | danger",
+        "tooltip": "string"
+      }
+    },
+    "logo": {
+      "label": "Logo",
+      "group": "Widgets",
+      "icon": "star",
+      "description": "A logo widget: the app's wordmark, an image or an icon, for banners and toolbars. The banner's own logo (data.logo) stays; this one goes anywhere a widget goes.",
+      "required": [
+        "kind",
+        "text",
+        "size"
+      ],
+      "enums": {
+        "kind": [
+          "text",
+          "image",
+          "icon"
+        ],
+        "size": [
+          "small",
+          "regular",
+          "large"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "image": "string — image URL or app path (https:, data:, or a path the app serves) when kind is image",
+        "icon": "string — icon name when kind is icon (falls back to the text when the icon is unknown)",
+        "link": "string — action spec run on tap (e.g. app.settings, view.open:home)",
+        "bold": "boolean — bold wordmark (default true)",
+        "tooltip": "string"
+      }
+    },
+    "label": {
+      "label": "Label",
+      "group": "Widgets",
+      "icon": "type",
+      "description": "A label widget: a short static text (caption, version, environment name) in a tone.",
+      "required": [
+        "text",
+        "tone"
+      ],
+      "enums": {
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "bold": "boolean (default false)",
+        "mono": "boolean — monospace (default false)",
+        "tooltip": "string"
+      }
+    },
+    "status": {
+      "label": "Status",
+      "group": "Widgets",
+      "icon": "eye",
+      "description": "A status widget: a dot + text bound to a runtime counter (runtime.setBadge): on while the counter is above zero (e.g. ai.connected, build.running), off otherwise.",
+      "required": [
+        "counter",
+        "onLabel",
+        "offLabel",
+        "onTone",
+        "offTone"
+      ],
+      "enums": {
+        "onTone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ],
+        "offTone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "link": "string — action spec run on tap",
+        "dot": "boolean — show the dot (default true)"
+      }
+    },
+    "counter": {
+      "label": "Counter",
+      "group": "Widgets",
+      "icon": "bell",
+      "description": "A counter widget: a number bound to a runtime counter (runtime.setBadge), e.g. unread alerts or waiting approvals; 99+ past max.",
+      "required": [
+        "counter",
+        "tone",
+        "hideAtZero"
+      ],
+      "enums": {
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "icon": "string — icon before the number",
+        "label": "string — text after the number",
+        "link": "string — action spec run on tap",
+        "max": "number — cap shown as max+ (default 99)"
+      }
+    },
+    "progress": {
+      "label": "Progress",
+      "group": "Widgets",
+      "icon": "chart",
+      "description": "A progress widget: a bar bound to a runtime counter (0 to max), e.g. a build or a download.",
+      "required": [
+        "counter",
+        "max",
+        "width"
+      ],
+      "enums": {
+        "width": [
+          "compact",
+          "regular",
+          "wide"
+        ],
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "label": "string — text before the bar",
+        "tone": "neutral | success | … (default accent)",
+        "showValue": "boolean — percent after the bar (default false)"
+      }
+    },
+    "avatar": {
+      "label": "Avatar",
+      "group": "Widgets",
+      "icon": "user",
+      "description": "An avatar widget: the signed-in account's initials (runtime.bindPrincipal) or a fixed text/image.",
+      "required": [
+        "source",
+        "size",
+        "shape"
+      ],
+      "enums": {
+        "source": [
+          "account",
+          "text",
+          "image"
+        ],
+        "size": [
+          "small",
+          "regular",
+          "large"
+        ],
+        "shape": [
+          "circle",
+          "rounded"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "text": "string — initials or a name (initials are derived) when source is text, and the fallback when no account is bound",
+        "image": "string — image URL or app path when source is image",
+        "link": "string — action spec run on tap (e.g. settings.open:account)",
+        "tooltip": "string"
+      }
+    },
+    "link": {
+      "label": "Link",
+      "group": "Widgets",
+      "icon": "external",
+      "description": "A link widget: opens a web address (https, http, mailto, tel) in the browser; anything else is refused and the widget is not drawn.",
+      "required": [
+        "label",
+        "href",
+        "external"
+      ],
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "icon": "string — icon before the label",
+        "tooltip": "string",
+        "external": "boolean — open in a new tab / outside the app (default true)"
+      }
+    },
+    "theme-switch": {
+      "label": "Theme switch",
+      "group": "Widgets",
+      "icon": "sun",
+      "description": "A theme switch widget: toggles the active color theme between a light and a dark one (runtime.swap).",
+      "required": [
+        "light",
+        "dark",
+        "show"
+      ],
+      "enums": {
+        "show": [
+          "icon",
+          "label",
+          "both"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "lightLabel": "string (default Light)",
+        "darkLabel": "string (default Dark)",
+        "tooltip": "string"
+      }
+    },
+    "spacer": {
+      "label": "Spacer",
+      "group": "Widgets",
+      "icon": "minus",
+      "description": "A spacer widget: a gap between widgets; flex pushes what follows to the other end.",
+      "required": [
+        "size"
+      ],
+      "enums": {
+        "size": [
+          "small",
+          "regular",
+          "large",
+          "flex"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      }
+    },
+    "divider": {
+      "label": "Divider",
+      "group": "Widgets",
+      "icon": "layout",
+      "description": "A divider widget: a thin vertical rule between widgets.",
+      "required": [
+        "inset"
+      ],
+      "optional": true,
+      "attachable": true,
+      "widget": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "inset": "boolean — shorter than the host (default true)"
+      }
+    },
+    "badge": {
+      "label": "Badge",
+      "group": "Chrome",
+      "icon": "star",
+      "description": "A small status badge (icon, label, tone) that attaches to the banner. Plugins supply their own badges.",
+      "required": [
+        "icon",
+        "label",
+        "tone",
+        "shape"
+      ],
+      "enums": {
+        "tone": [
+          "neutral",
+          "success",
+          "warning",
+          "danger",
+          "accent",
+          "muted"
+        ],
+        "shape": [
+          "pill",
+          "icon",
+          "dot"
+        ]
+      },
+      "optional": true,
+      "attachable": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "tooltip": "string — shown on hover/long-press",
+        "link": "string — action spec run on tap (e.g. settings.open:x)"
+      }
+    },
+    "uac-policy": {
+      "label": "User account control",
+      "group": "System",
+      "icon": "shield",
+      "required": [
+        "defaultRole",
+        "gating",
+        "roles",
+        "permissions"
+      ],
+      "enums": {
+        "gating": [
+          "hide",
+          "disable"
+        ]
+      }
+    }
+  },
+  "rollDefaults": {
+    "_doc": "Randomize rolls. slot = the slot takes part in a roll (randomize all); asset = default for an asset's own `roll` flag. Types may override with their own `roll` block. uac-policy is never rolled.",
+    "slot": true,
+    "asset": true,
+    "never": [
+      "uac-policy"
+    ]
+  },
+  "hideDefaults": {
+    "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
+  },
+  "attachDefaults": {
+    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+  },
+  "menuItems": {
+    "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More… entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",
+    "optional_fields": {
+      "provider": "string — id of a registered live-list provider",
+      "badge": "string — runtime counter name",
+      "checked": "string — setting:<key> | counter:<name> | slot:<type> | hidden:<type>",
+      "order": "number — placement among siblings (default 100)",
+      "before": "string — sibling id to go before",
+      "after": "string — sibling id to go after"
+    },
+    "checkedKinds": [
+      "setting",
+      "counter",
+      "slot",
+      "hidden"
+    ],
+    "maxDepth": 4,
+    "providerMax": 12,
+    "defaultOrder": 100
+  }
+}
