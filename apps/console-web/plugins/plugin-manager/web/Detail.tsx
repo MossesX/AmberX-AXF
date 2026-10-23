@@ -1,6 +1,6 @@
 /** One plugin, everything about it: overview, dependencies in detail, its UI and settings, logs, files, install. */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, ModelBadge, useRuntime } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import {
@@ -58,7 +58,7 @@ export function DetailPane({ row, inv, onChanged, onSelect, initialTab }: { row:
             {row.server === 'loaded' && <Chip tone="accent">server part</Chip>}
             {row.server === 'error' && <Chip tone="danger">server failed</Chip>}
             {row.uiEditor.length > 0 && <Chip tone="accent">UI editor: {row.uiEditor.join(', ')}</Chip>}
-            {row.builtWith?.model && <Chip>built on {row.builtWith.model}</Chip>}
+            <ModelBadge model={row.builtWith?.model} builtAt={row.builtWith?.builtAt} />
             {conflicts.length > 0 && <Chip tone="warning">{conflicts.length} clash{conflicts.length > 1 ? 'es' : ''}</Chip>}
           </div>
         </div>

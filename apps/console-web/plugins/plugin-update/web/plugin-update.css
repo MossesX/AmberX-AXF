@@ -1,0 +1,9 @@
+/* Plugin Update. Layout only (controls are framework components), theme tokens, axp-plugin-update prefix. */
+.axp-plugin-update__summary { margin: 0; }
+.axp-plugin-update__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); }
+.axp-plugin-update__row { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); }
+.axp-plugin-update__row.is-off { opacity: var(--fx-opacity-muted); }
+.axp-plugin-update__head { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0; }
+.axp-plugin-update__acts { align-items: center; }
+.axp-plugin-update__confirm { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.75); border-color: var(--fx-warning); }
+.axp-plugin-update__steps { margin: 0; padding-left: calc(var(--fx-space) * 2); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); }

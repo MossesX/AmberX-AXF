@@ -13,7 +13,7 @@
   "optional": [],
   "scopes": ["ROUTES"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus" },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -21,5 +21,6 @@
     "dataDir": ".axf-console/plugins/snapshot-manager",
     "env": ["AXF_SNAPSHOT_MANAGER_DIR"],
     "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
-  }
+  },
+  "opens": false
 }

@@ -67,7 +67,8 @@ export const activeTab = (g: TabGroup) => g.tabs[g.active];
 export interface TabDrag { tabId: string; fromGroup: string; x: number; y: number }
 export interface WindowState { windows: WindowSpec[]; groups: Record<string, TabGroup>; layouts: Record<string, Pane>; focused: string | null; drag: TabDrag | null }
 
-export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; items?: MenuEntry[] }
+/** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
+export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[] }
 
 /** Even distribution: the first `size % n` groups get one extra tab (5 → 3 + 2, 7 in four → 2,2,2,1). Empty parts are kept so the grid has every cell. */
 export function distribute<T>(items: T[], n: number): T[][] {
