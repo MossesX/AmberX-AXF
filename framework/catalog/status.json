@@ -2161,6 +2161,18 @@
     "module": "lib-hub",
     "notes": "Capability placeholder axf.hub.push"
   },
+  "lib.hubstore": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-hubstore",
+    "notes": "Oct 23 2026 (Opus): web framework/libs/hubstore (HubSettings + HubData, parts settings/data with table picking), check-hubstore.mts; Voice notes console plugin is the first user. Android twin deferred (Android on hold)."
+  },
+  "lib.hubstore.live": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-hubstore",
+    "notes": "Capability placeholder axf.hubstore.live"
+  },
   "lib.notifications": {
     "status": "built",
     "wave": 1,
