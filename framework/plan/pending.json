@@ -1,15 +1,101 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T15:25:41.808Z",
+ "updatedAt": "2026-10-23T18:22:53.000Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
+  {
+   "id": "settings-asset",
+   "title": "Settings interface as an asset type (settings-ui@1)",
+   "detail": "Brett (Oct 23 2026): make the settings interface an asset type so several apps use the same settings interface with the same options. New optional asset type `settings`: layout tabs-top / tabs-side / list, header, search, descriptions, tab order + labels, hide (tab/group/panel/setting ids), data-only option groups the app gets while the asset is active. Engine core/engines/settingsui.ts, fixture settings-ui.json, web settings library reads it, starters standard (default) / side-tabs / developer-apps. Android twin deferred.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-55oakl.",
+     "at": "2026-10-23T18:22:53.000Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Asset type + types + engine",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Settings library reads the asset (layout, header, search, hide, groups)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Starters, app manifests, re-bakes, fixture + checker, CI, docs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T18:22:53.000Z"
+    }
+   ],
+   "createdAt": "2026-10-23T18:22:53.000Z",
+   "builtAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "settings-asset-fable",
+   "title": "Settings interface asset type (Fable rebuild)",
+   "detail": "Fable was suggested for the settings asset type and Opus was chosen (Oct 23 2026, branch claude/project-thread-55oakl). Start by reviewing/replacing the Opus build: settings-ui@1 as a full cross-port contract, a validator check for groups/tabs in all three validators, Settings → Appearance preview of each settings asset, theme-manager / asset designer support, Kotlin twin recorded (Android on hold). Build together with patches-settings-banner-hide-fable (same settings code).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus settings-ui engine + library changes; list what changes",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Validators (core/validate.ts, build-engine.mjs, spec-driven Kotlin) check tabs/hide/groups from asset-types.json limits",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Settings asset preview + picker cards in Appearance; designer hooks",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Hub-shared settings asset per developer app (appearance@1 slot) + Patches settings tab group reads it",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixture extensions, differences report + rebuild log, PORTING.md",
+     "at": "",
+     "estimate": "20 min"
+    }
+   ],
+   "createdAt": "2026-10-23T18:22:53.000Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "estimate": "2.2 h",
+   "source": "chat"
+  },
   {
    "id": "named-asset-rule",
    "title": "Every UI element is a named asset",
    "detail": "Apply the rule across schemas/asset-types.json, the web and Android ports, the 39 starter assets and the conformance fixtures.\n\n- Two tiers: element assets (button, slider, toggle, input, icon, label...) and parent assets (toolbar, menu, nav, app menu, dialog, container, window). A standalone element in a layout is its own named asset; groups only exist inside a parent asset.\n- Namespaced ids for every asset (e.g. axf.button.save, axf.toolbar.editor); layouts and parents reference ids.\n- Split instance (label, icon, action, state) from skin (style asset + theme tokens).\n- Slots with type contracts in layout regions and parents; hot-swap and drag-and-drop = rebinding a slot to a compatible asset id.\n- Kernel unchanged (open type registry).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
+     "at": "2026-10-23T18:22:53.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Design note first: write `_claude/memory/docs/named-assets.md` — the two tiers (element assets: button, slider, toggle, input, icon, label; parent assets: toolbar, menu, nav, app-menu, dialog, container, window), the id namespace rule (`<ns>.<type>.<name>`, e.g. `axf.button.save`), instance vs skin split, and which existing starter ids change. List every file the rule touches. No code.",
@@ -89,7 +175,7 @@
    ],
    "createdAt": "2026-10-18T04:05:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.591Z",
+   "updatedAt": "2026-10-23T18:22:53.000Z",
    "estimate": "7.5 h",
    "source": "artifact"
   },
@@ -284,7 +370,12 @@
    "detail": "At least 10 editable templates/boilerplates for every asset type the designer covers, plus a default asset per type.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
+     "at": "2026-10-23T18:22:53.000Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Template index: `framework/assets/templates/index.json` (`asset-templates@1`: id, type, label, tags, file) + loader `listAssetTemplates(type)` in `framework/cli/build-engine.mjs`; engine-rpc `asset-templates`, console `GET /api/asset-templates?type=`. Empty list works end to end.",
@@ -359,7 +450,7 @@
    ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.593Z",
+   "updatedAt": "2026-10-23T18:22:53.000Z",
    "planId": "x.assets.templates",
    "estimate": "7 h",
    "source": "plan"
@@ -2489,6 +2580,10 @@
     {
      "text": "Include hot render: Kotlin AxfRuntime re-composes on every settings change (one bump per change, unchanged saves ignored); web side built on Opus in PR #42.",
      "at": "2026-10-23T13:27:34.331Z"
+    },
+    {
+     "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
+     "at": "2026-10-23T18:22:53.000Z"
     }
    ],
    "subPrompts": [
@@ -2520,7 +2615,7 @@
    ],
    "createdAt": "2026-10-23T12:52:32.722Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T13:27:34.331Z",
+   "updatedAt": "2026-10-23T18:22:53.000Z",
    "source": "chat"
   },
   {

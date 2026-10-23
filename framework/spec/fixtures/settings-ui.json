@@ -1,0 +1,665 @@
+{
+  "$comment": "settings-ui@1 golden outputs from framework/core/engines/settingsui.ts (check-settings-ui.mts --write). Tabs/group used by arrange/filter/match are in the checker.",
+  "tabs": [
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "icon": "palette",
+      "order": 10
+    },
+    {
+      "id": "account",
+      "label": "Account & security",
+      "icon": "shield",
+      "order": 20
+    },
+    {
+      "id": "connections",
+      "label": "Connections",
+      "icon": "cloud",
+      "order": 30
+    },
+    {
+      "id": "plugins",
+      "label": "Plugins",
+      "icon": "package",
+      "order": 40
+    },
+    {
+      "id": "banners",
+      "label": "Banners",
+      "icon": "bell",
+      "order": 1,
+      "parent": "plugins"
+    },
+    {
+      "id": "about",
+      "label": "About",
+      "icon": "info",
+      "order": 90
+    }
+  ],
+  "group": {
+    "id": "axf.display",
+    "label": "Display",
+    "tab": "appearance",
+    "settings": [
+      {
+        "key": "axf.display.fontScale",
+        "label": "Text size",
+        "kind": "slider"
+      },
+      {
+        "key": "axf.display.animations",
+        "label": "Animations",
+        "kind": "toggle",
+        "description": "Off reduces motion."
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "nothing = defaults",
+      "fn": "normalize",
+      "input": null,
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": []
+      }
+    },
+    {
+      "name": "bad enums fall back",
+      "fn": "normalize",
+      "input": {
+        "layout": "grid",
+        "header": 7,
+        "search": "yes",
+        "descriptions": false
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": false,
+        "tabs": [],
+        "hide": [],
+        "groups": []
+      }
+    },
+    {
+      "name": "tabs: bad ids + duplicates dropped",
+      "fn": "normalize",
+      "input": {
+        "layout": "list",
+        "header": "none",
+        "search": true,
+        "descriptions": true,
+        "tabs": [
+          {
+            "id": "about"
+          },
+          {
+            "id": "about",
+            "label": "Again"
+          },
+          {
+            "id": "bad id"
+          },
+          7,
+          {
+            "id": "dev",
+            "label": "Developer",
+            "icon": "code",
+            "parent": "dev",
+            "hidden": "x"
+          }
+        ]
+      },
+      "expected": {
+        "layout": "list",
+        "header": "none",
+        "search": true,
+        "descriptions": true,
+        "tabs": [
+          {
+            "id": "about"
+          },
+          {
+            "id": "dev",
+            "label": "Developer",
+            "icon": "code"
+          }
+        ],
+        "hide": [],
+        "groups": []
+      }
+    },
+    {
+      "name": "groups: data-only kinds, options, defaults",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-side",
+        "header": "compact",
+        "search": false,
+        "descriptions": true,
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "a",
+                "label": "A",
+                "kind": "toggle",
+                "default": "no"
+              },
+              {
+                "key": "b",
+                "label": "B",
+                "kind": "secret"
+              },
+              {
+                "key": "c",
+                "label": "C",
+                "kind": "choice",
+                "default": "z",
+                "options": [
+                  {
+                    "value": "x",
+                    "label": "X"
+                  },
+                  {
+                    "value": "",
+                    "label": "Empty"
+                  }
+                ]
+              },
+              {
+                "key": "d",
+                "label": "D",
+                "kind": "slider",
+                "min": 5,
+                "max": 1,
+                "step": -1,
+                "default": 3
+              },
+              {
+                "key": "e",
+                "label": "E",
+                "kind": "link",
+                "target": "javascript:alert(1)"
+              },
+              {
+                "key": "f",
+                "label": "F",
+                "kind": "link",
+                "target": "https://example.com"
+              },
+              {
+                "key": "a",
+                "label": "A again",
+                "kind": "text"
+              },
+              {
+                "key": "m",
+                "label": "M",
+                "kind": "multi_choice",
+                "default": [
+                  "x",
+                  "q"
+                ],
+                "options": [
+                  {
+                    "value": "x",
+                    "label": "X"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "empty",
+            "label": "Empty",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "z",
+                "label": "Z",
+                "kind": "custom"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "layout": "tabs-side",
+        "header": "compact",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "a",
+                "label": "A",
+                "kind": "toggle"
+              },
+              {
+                "key": "c",
+                "label": "C",
+                "kind": "choice",
+                "options": [
+                  {
+                    "value": "x",
+                    "label": "X"
+                  }
+                ]
+              },
+              {
+                "key": "d",
+                "label": "D",
+                "kind": "slider",
+                "min": 5
+              },
+              {
+                "key": "f",
+                "label": "F",
+                "kind": "link",
+                "target": "https://example.com"
+              },
+              {
+                "key": "m",
+                "label": "M",
+                "kind": "multi_choice",
+                "options": [
+                  {
+                    "value": "x",
+                    "label": "X"
+                  }
+                ],
+                "default": [
+                  "x"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "errors: clean asset",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true
+      },
+      "expected": []
+    },
+    {
+      "name": "errors: dropped entries",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [
+          {
+            "id": "!"
+          }
+        ],
+        "hide": "about",
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "t",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle"
+              },
+              {
+                "key": "x",
+                "kind": "toggle"
+              }
+            ]
+          },
+          {
+            "id": "h"
+          }
+        ]
+      },
+      "expected": [
+        "data.hide must be a list",
+        "data.tabs: 1 entry dropped (bad id, duplicate or over 40)",
+        "data.groups: 1 group(s) dropped (needs id, label, tab and at least one valid setting)",
+        "data.groups[0].settings: 1 setting(s) dropped (needs key, label and a data-only kind: toggle, text, number, slider, choice, multi_choice, color, link, section)"
+      ]
+    },
+    {
+      "name": "arrange: defaults keep the app order",
+      "fn": "arrange",
+      "input": {},
+      "expected": [
+        {
+          "id": "banners",
+          "label": "Banners",
+          "icon": "bell",
+          "order": 1,
+          "parent": "plugins"
+        },
+        {
+          "id": "appearance",
+          "label": "Appearance",
+          "icon": "palette",
+          "order": 2
+        },
+        {
+          "id": "account",
+          "label": "Account & security",
+          "icon": "shield",
+          "order": 3
+        },
+        {
+          "id": "connections",
+          "label": "Connections",
+          "icon": "cloud",
+          "order": 4
+        },
+        {
+          "id": "plugins",
+          "label": "Plugins",
+          "icon": "package",
+          "order": 5
+        },
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "name": "arrange: asset order first, relabel, hide, new tab",
+      "fn": "arrange",
+      "input": {
+        "tabs": [
+          {
+            "id": "plugins",
+            "label": "Add-ons"
+          },
+          {
+            "id": "dev",
+            "label": "Developer",
+            "icon": "code"
+          },
+          {
+            "id": "nolabel"
+          },
+          {
+            "id": "appearance"
+          }
+        ],
+        "hide": [
+          "account"
+        ]
+      },
+      "expected": [
+        {
+          "id": "plugins",
+          "label": "Add-ons",
+          "icon": "package",
+          "order": 1
+        },
+        {
+          "id": "dev",
+          "label": "Developer",
+          "icon": "code",
+          "order": 2,
+          "module": "asset:settings"
+        },
+        {
+          "id": "appearance",
+          "label": "Appearance",
+          "icon": "palette",
+          "order": 3
+        },
+        {
+          "id": "banners",
+          "label": "Banners",
+          "icon": "bell",
+          "order": 4,
+          "parent": "plugins"
+        },
+        {
+          "id": "connections",
+          "label": "Connections",
+          "icon": "cloud",
+          "order": 5
+        },
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "name": "arrange: hiding a parent hides its sub-tabs",
+      "fn": "arrange",
+      "input": {
+        "tabs": [
+          {
+            "id": "plugins",
+            "hidden": true
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "appearance",
+          "label": "Appearance",
+          "icon": "palette",
+          "order": 1
+        },
+        {
+          "id": "account",
+          "label": "Account & security",
+          "icon": "shield",
+          "order": 2
+        },
+        {
+          "id": "connections",
+          "label": "Connections",
+          "icon": "cloud",
+          "order": 3
+        },
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "name": "arrange: explicit order wins",
+      "fn": "arrange",
+      "input": {
+        "tabs": [
+          {
+            "id": "about",
+            "order": 0
+          },
+          {
+            "id": "connections",
+            "order": 15
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "order": 1
+        },
+        {
+          "id": "banners",
+          "label": "Banners",
+          "icon": "bell",
+          "order": 2,
+          "parent": "plugins"
+        },
+        {
+          "id": "appearance",
+          "label": "Appearance",
+          "icon": "palette",
+          "order": 3
+        },
+        {
+          "id": "connections",
+          "label": "Connections",
+          "icon": "cloud",
+          "order": 4
+        },
+        {
+          "id": "account",
+          "label": "Account & security",
+          "icon": "shield",
+          "order": 5
+        },
+        {
+          "id": "plugins",
+          "label": "Plugins",
+          "icon": "package",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "name": "filter: setting key hidden",
+      "fn": "filter",
+      "input": {
+        "hide": [
+          "axf.display.fontScale"
+        ]
+      },
+      "expected": {
+        "id": "axf.display",
+        "label": "Display",
+        "tab": "appearance",
+        "settings": [
+          {
+            "key": "axf.display.animations",
+            "label": "Animations",
+            "kind": "toggle",
+            "description": "Off reduces motion."
+          }
+        ]
+      }
+    },
+    {
+      "name": "filter: whole group hidden",
+      "fn": "filter",
+      "input": {
+        "hide": [
+          "axf.display"
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "filter: every setting hidden",
+      "fn": "filter",
+      "input": {
+        "hide": [
+          "axf.display.fontScale",
+          "axf.display.animations"
+        ]
+      },
+      "expected": null
+    },
+    {
+      "name": "groups: owned by the asset",
+      "fn": "groups",
+      "input": {
+        "groups": [
+          {
+            "id": "g",
+            "label": "G",
+            "tab": "dev",
+            "settings": [
+              {
+                "key": "k",
+                "label": "K",
+                "kind": "toggle",
+                "default": true
+              }
+            ]
+          }
+        ]
+      },
+      "expected": [
+        {
+          "id": "g",
+          "label": "G",
+          "tab": "dev",
+          "settings": [
+            {
+              "key": "k",
+              "label": "K",
+              "kind": "toggle",
+              "default": true
+            }
+          ],
+          "module": "asset:settings/shared"
+        }
+      ]
+    },
+    {
+      "name": "match: every word must hit",
+      "fn": "match",
+      "input": "reduces anim",
+      "expected": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "match: option labels",
+      "fn": "match",
+      "input": "xyz",
+      "expected": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "match: empty query",
+      "fn": "match",
+      "input": "  ",
+      "expected": [
+        true,
+        true
+      ]
+    }
+  ]
+}

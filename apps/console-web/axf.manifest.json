@@ -29,6 +29,7 @@
     "container": "frosted-glass",
     "gauge": "classic-arc",
     "meter": "striped-pill",
+    "settings": "standard",
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",

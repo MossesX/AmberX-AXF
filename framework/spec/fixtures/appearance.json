@@ -28,7 +28,8 @@
     "theme-switch",
     "spacer",
     "divider",
-    "badge"
+    "badge",
+    "settings"
   ],
   "parsed": {
     "full": {

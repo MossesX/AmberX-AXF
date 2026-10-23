@@ -29,6 +29,7 @@
     "spacer": false,
     "divider": false,
     "badge": false,
+    "settings": false,
     "uac-policy": false
   },
   "cases": {

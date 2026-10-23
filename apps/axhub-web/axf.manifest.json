@@ -44,6 +44,7 @@
     "badge": "new",
     "gauge": "classic-arc",
     "meter": "striped-pill",
+    "settings": "standard",
     "uac-policy": "standard"
   },
   "hidden": [],
