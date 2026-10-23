@@ -18,6 +18,7 @@ One session per entry at a time; an entry isn't handed over again within COOLDOW
 from __future__ import annotations
 
 import base64
+import gzip
 import json
 import os
 import re
@@ -31,7 +32,7 @@ CHANGES = "axf.changes@1"
 COOLDOWN_S = 6 * 3600
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 WORK_ROOT = "/root/axf-fixes"
-MAX_COMMAND = 3400  # axHub's ssh run refuses commands over 3500 characters
+MAX_COMMAND = 6800  # axHub's ssh run refuses commands over 7000 characters (doubled Oct 23 2026, axHub needs the matching change)
 REPO_RE = re.compile(r"[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}\Z")
 BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!-)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
 _CHG = re.compile(r"^chg-\d{8}-[0-9a-f]{6,16}$")
@@ -70,25 +71,36 @@ def brief(t: dict[str, Any]) -> str:
               "- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).",
               "- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.",
               "- Record steps and the result on your change-log entry (the hooks do most of it)."]
+    rest = [b for b in t.get("rest") or [] if b != t["branch"]]
+    if rest:  # Pull all stopped at this one: the session finishes it (Brett, Oct 23 2026)
+        lines[len(lines) - 6:len(lines) - 6] = [  # before "Rules:"
+            "", f"Then finish the banner's Pull all: pull `{t['base']}` into each of these branches too, one at a time:",
+            *[f"- `{b}`" for b in rest],
+            f"For each: `git checkout -B <branch> origin/<branch>`, `git merge origin/{t['base']}`, resolve, run the checks, "
+            f"`git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end."]
+        lines.append(f"- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.")
     if not t.get("shell"):
         lines.append("- You can edit files and run git only; list any other command Brett should run at the end.")
     return "\n".join(lines)
 
 
-def launch_command(t: dict[str, Any], change_id: str) -> str:
+def launch_command(t: dict[str, Any], change_id: str, packed: bool = False) -> str:
     """The one command axHub's vps.run gets (Brett sees all of it on the approval page)."""
     repo, branch = t["repo"], t["branch"]
-    if not REPO_RE.match(repo) or not BRANCH_RE.match(branch) or not BRANCH_RE.match(t["base"]):
+    if not REPO_RE.match(repo) or not all(BRANCH_RE.match(b) for b in [branch, t["base"], *(t.get("rest") or [])]) or t["base"] in (t.get("rest") or []):
         raise HubError("odd repo or branch name: not handed over")
     clone = f"{WORK_ROOT}/repos/{repo.replace('/', '-')}"
     work = f"{WORK_ROOT}/{repo.replace('/', '-')}--{re.sub(r'[^A-Za-z0-9._-]', '-', branch)[:80]}"
-    b64 = base64.b64encode(brief(t).encode()).decode()
+    raw = brief(t).encode()
+    b64 = base64.b64encode(gzip.compress(raw, mtime=0) if packed else raw).decode()
     adopt = f" AXF_ADOPT_CHANGE={change_id}" if _CHG.match(change_id or "") else ""
     if t.get("shell"):
         tools = "--allowedTools Bash"
     else:  # git only, and a push of HEAD to this one branch
         allowed = ["Bash(git fetch:*)", "Bash(git merge:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
                    "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout -- :*)", f"Bash(git push origin HEAD:{branch})"]
+        if t.get("rest"):  # switching branches is local; each push still names its one branch
+            allowed += ["Bash(git checkout -B:*)", *[f"Bash(git push origin HEAD:{b})" for b in t["rest"]]]
         tools = "--allowedTools " + " ".join(sq(a) for a in allowed)
     return "; ".join([
         "set -e",
@@ -99,7 +111,7 @@ def launch_command(t: dict[str, Any], change_id: str) -> str:
         f"if [ -d {sq(work)} ]; then git -C {sq(work)} checkout -q -B {sq(branch)} {sq('origin/' + branch)}; "
         f"else git -C {sq(clone)} worktree add -q -B {sq(branch)} {sq(work)} {sq('origin/' + branch)}; fi",
         f"cd {sq(work)}",
-        f"echo {sq(b64)} | base64 -d > .axf-brief.md",
+        f"echo {sq(b64)} | base64 -d{' | gunzip' if packed else ''} > .axf-brief.md",
         f"export AXF_SURFACE=console-launch AXF_MODEL=opus{adopt} AXF_CLAUDE_AUTH=${{AXF_CLAUDE_AUTH:-plan}}",
         f'nohup claude -p --model opus --permission-mode acceptEdits {tools} "$(cat .axf-brief.md)" > .axf-fix.log 2>&1 &',
         'echo "started pid $! in $(pwd)"',
@@ -107,12 +119,22 @@ def launch_command(t: dict[str, Any], change_id: str) -> str:
 
 
 def fitted_command(t: dict[str, Any], change_id: str) -> str:
-    """launch_command with the failure and title trimmed until the command fits the hub's limit."""
-    t = dict(t)
-    for _ in range(30):
+    return fit(t, change_id)[0]
+
+
+def fit(t: dict[str, Any], change_id: str) -> tuple[str, list[str]]:
+    """launch_command trimmed until it fits the hub's limit (extra Pull all branches first, then failure and title);
+    also the extra branches that made it in."""
+    t = {**t, "rest": list(t.get("rest") or [])}
+    for _ in range(60):
         cmd = launch_command(t, change_id)
+        if len(cmd) > MAX_COMMAND and t["rest"]:  # a Pull all hand-over: gzip the brief before dropping branches
+            cmd = launch_command(t, change_id, packed=True)
         if len(cmd) <= MAX_COMMAND:
-            return cmd
+            return cmd, t["rest"]
+        if t.get("rest"):  # drop the last extra branch first: it stays in "Needs main pulled in"
+            t["rest"] = t["rest"][:-1]
+            continue
         t["failure"] = str(t.get("failure", ""))[:-80]
         t["title"] = str(t.get("title", ""))[:-40]
     raise HubError("The brief is too long to send through axHub.")
@@ -180,18 +202,30 @@ class Launches:
             return {k: v for k, v in j.items() if k != "command"} if j else None
 
     def all(self) -> list[dict[str, Any]]:
+        """Every hand-over; a launched one carries `fixed` = its change-log entry's status (running / done / failed), so the
+        banner knows when to try the pull again."""
         with self.lock:
-            return [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
+            out = [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
+        svc = plugin_services.get(CHANGES)
+        for j in out:
+            if j["state"] == "launched" and j.get("changeId") and svc is not None:
+                try:
+                    e = svc.get(j["changeId"]) or {}
+                except Exception:  # noqa: BLE001
+                    e = {}
+                st = e.get("status") or (e.get("result") or {}).get("state")
+                j["fixed"] = "done" if st == "done" else "failed" if st in ("failed", "partial", "cancelled") else "running"
+        return out
 
     def _set(self, key: str, **kw: Any) -> None:
         with self.lock:
             self.jobs[key].update(kw, updatedAt=time.time())
 
-    def maybe_launch(self, t: dict[str, Any], *, force: bool = False) -> dict[str, Any] | None:
+    def maybe_launch(self, t: dict[str, Any], *, force: bool = False, by_hand: bool = False) -> dict[str, Any] | None:
         """t = {repo, branch, base, number?, title?, url?, kind: conflict|merge, action, failure}. None when the setting is
         off or the names are odd; the running/recent job when one exists (`force` skips the cooldown, never a running one)."""
         s = self.settings()
-        if not s.get("claudeOnFail") or not REPO_RE.match(str(t.get("repo", ""))) or not BRANCH_RE.match(str(t.get("branch", ""))):
+        if not (s.get("claudeOnFail") or by_hand) or not REPO_RE.match(str(t.get("repo", ""))) or not BRANCH_RE.match(str(t.get("branch", ""))):
             return None
         key = entry_key(t["repo"], t.get("number"), t["branch"])
         with self.lock:
@@ -206,11 +240,11 @@ class Launches:
         t = {**t, "shell": bool(s.get("claudeShell"))}
         change_id = self._open_entry(t)
         try:
-            cmd = fitted_command(t, change_id)
+            cmd, sent = fit(t, change_id)
         except HubError as e:
             self._fail(key, change_id, str(e))
             return self.get(key)
-        self._set(key, changeId=change_id, command=cmd)
+        self._set(key, changeId=change_id, command=cmd, rest=sent)
         threading.Thread(target=self._run, args=(key, cmd, change_id), daemon=True).start()
         return self.get(key)
 

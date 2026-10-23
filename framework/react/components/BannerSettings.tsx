@@ -15,15 +15,21 @@
  * plugin keeps working; what it would have shown is logged to the terminal, channel `banners`), an indented Hide all
  * banners (tooltip lists them) and a timer (a hide lasts N minutes). One state, `axf.banners.hide`
  * (core/engines/bannerhide.ts), the same in every interface and every frame of the app (storage events), last change wins.
+ *
+ * Quick hide (Oct 23 2026): right-click / long-press a banner → an entry named after that banner (only that one) with
+ * Hide for 1 / 5 / 10 minutes. While hidden that way the banner leaves a one-line note in its place (its name, when it's
+ * back, Unhide) carrying the same menu, so it is unhidden the same way. Actions `banners.hide:<id>:<minutes>`,
+ * `banners.unhide:<id>`.
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
 import type { BannerDef, SlotDef } from '../library';
+import type { MenuEntry } from '../../core/engines/windows';
 import type { DialogMap } from './Overlays';
 import { Button } from './Controls';
 import { Checkbox, Section, SelectField, Switch } from './Forms';
 import {
-  BANNER_HIDE_KEY, TIMER_DEFAULT, allBannersHidden, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
+  BANNER_HIDE_KEY, QUICK_HIDE_MINUTES, TIMER_DEFAULT, allBannersHidden, hideBannerFor, hideEndsAt, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
   setAllBannersHidden, setBannerHidden, setBannerTimer, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
@@ -101,6 +107,8 @@ export function setBannerHide(rt: AxfRuntime, id: string, on: boolean): void { s
 /** Hide or show every banner the app has. */
 export function setAllBannersHide(rt: AxfRuntime, on: boolean): void { saveHide(rt, setAllBannersHidden(bannerHideState(rt), knownBanners(rt).map((b) => b.id), on, Date.now())); }
 export function setBannerHideTimer(rt: AxfRuntime, patch: { on?: boolean; minutes?: number }): void { saveHide(rt, setBannerTimer(bannerHideState(rt), patch, Date.now())); }
+/** Hide one banner for N minutes (its right-click menu). */
+export function hideBannerForMinutes(rt: AxfRuntime, id: string, minutes: number): void { saveHide(rt, hideBannerFor(bannerHideState(rt), id, minutes, Date.now())); }
 /** Is this banner hidden right now (its Hide, Hide all, the timer not run out)? */
 export function isBannerHidden(rt: AxfRuntime, id: string): boolean { return bannerHidden(bannerHideState(rt), id, Date.now()); }
 
@@ -150,7 +158,22 @@ function install(rt: AxfRuntime): void {
   }, { label: 'Banner settings' });
   // Every frame of this app (a host's Banners tab, its banner strip, the app's own tab) shows the same choices at once:
   // the runtime re-reads settings when another frame saves (storage events) and re-renders on any settings change.
+  rt.actions.register('banners.hide', ([id, min]) => {
+    const m = Number(min);
+    if (id && Number.isFinite(m) && m > 0) hideBannerForMinutes(rt, id, m);
+  }, { label: 'Hide banner for a while' });
+  rt.actions.register('banners.unhide', ([id]) => { if (id) setBannerHide(rt, id, false); }, { label: 'Unhide banner' });
+  // One entry, named after the banner that was right-clicked (payload = its id), never the others.
+  rt.contextExtras.set(BANNER_CTX_TARGET, (_t, id) => (id ? [bannerMenu(rt, id)] : []));
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
+}
+
+function bannerMenu(rt: AxfRuntime, id: string): MenuEntry {
+  const b = knownBanners(rt).find((x) => x.id === id);
+  const hidden = isBannerHidden(rt, id);
+  const hides: MenuEntry[] = QUICK_HIDE_MINUTES.map((m) => ({ id: `axf-banner-hide-${m}`, label: `Hide for ${m} minute${m === 1 ? '' : 's'}`, icon: 'clock', action: `banners.hide:${id}:${m}` }));
+  const items = hidden ? [{ id: 'axf-banner-unhide', label: 'Unhide', icon: 'eye', action: `banners.unhide:${id}` }, { id: 'axf-banner-hide-sep', separator: true }, ...hides] : hides;
+  return { id: 'axf-banner-quick', label: b ? bannerLabel(b) : bannerLabel({ id }), icon: b?.icon ?? 'eye', items };
 }
 
 /**
@@ -236,7 +259,8 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     obs.observe(el, { subtree: true, childList: true, characterData: true });
     return () => { clearTimeout(timer); obs.disconnect(); };
   }, [p.autoHide]);
-  return (
+  const until = hiddenNow ? hide.banners[id]?.until : undefined;
+  const frame = (
     <div
       ref={ref}
       className="fx-banner-frame"
@@ -251,6 +275,22 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
       style={p.maxRows ? { maxHeight: `calc(var(--fx-row-h) * ${p.maxRows})`, overflow: 'auto' } : undefined}
     >
       <LaunchCtx.Provider value={p.launch}>{children}</LaunchCtx.Provider>
+    </div>
+  );
+  if (until === undefined) return frame;
+  return <>{frame}<QuickHideNote id={id} until={hideEndsAt(hide, id) ?? until} /></>;
+}
+
+/** What a banner hidden from its right-click menu leaves in its place: its name, when it's back, Unhide (same menu). */
+function QuickHideNote({ id, until }: { id: string; until: number }) {
+  const rt = useRuntime();
+  const b = useKnownBanners().find((x) => x.id === id);
+  const at = new Date(until).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  return (
+    <div className="fx-banner-snoozed fx-row" data-fx-ctx-target={BANNER_CTX_TARGET} data-fx-ctx-payload={id} data-fx-banner-id={id}>
+      <Icon name="clock" />
+      <span className="fx-muted">{b ? bannerLabel(b) : bannerLabel({ id })} hidden until {at}</span>
+      <Button size="sm" tone="quiet" onClick={() => setBannerHide(rt, id, false)}>Unhide</Button>
     </div>
   );
 }

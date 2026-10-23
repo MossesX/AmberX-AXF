@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, Switch, useAxfState, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
-import { ago, bannerOn, doneKeys, doneRows, fixWithClaude, load, loadDetail, mergeBranch, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, type Done, type PullRow, type Row } from './store';
+import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergeBranch, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
 const CI_ICON: Record<string, string> = { success: 'check-circle', failure: 'x-circle', running: 'refresh', none: 'clock', unknown: 'help' };
@@ -230,8 +230,64 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
   );
 }
 
+/** A pull that failed: its Repair badge (instead of Pull main in) hands it to headless Claude Code on the VPS, and the
+ *  pull runs again by itself once that session is done. */
+function FailedItem({ f, base }: { f: Failed; base: string }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  const j = jobOf(f.key);
+  const fresh = j && (j.startedAt ?? 0) * 1000 >= f.at;
+  const phase = !fresh ? '' : j.state === 'asking' ? 'Repair: asking axHub…' : j.state === 'waiting' ? 'Repair: approve on axHub'
+    : j.state === 'failed' ? `Repair failed: ${j.message}` : j.fixed === 'done' ? 'Repaired, pulling again…' : j.fixed === 'failed' ? 'Repair session failed' : 'Repairing on the VPS…';
+  const canRepair = !fresh || j.state === 'failed' || j.fixed === 'failed';
+  // Claude connected and it still fails (the repair failed, or the pull failed again after a repair): red, needs a person.
+  // Without Claude it stays orange.
+  const stillFails = !!j && ((fresh && (j.state === 'failed' || j.fixed === 'failed')) || (!fresh && j.state === 'launched' && j.fixed === 'done'));
+  const manual = !!s.claude?.mosses && stillFails;
+  const name = f.number ? `#${f.number}` : f.branch ?? '';
+  return (
+    <li className={`axp-push-banner__item ${manual ? 'is-manual' : 'is-failed'}`}>
+      <div className="axp-push-banner__entry">
+        <span className="axp-push-banner__line">
+          <span className="axp-push-banner__chip" title={f.repo}>{short(f.repo)}</span>
+          <span className="axp-push-banner__name is-title">{name}</span>
+        </span>
+        <span className="axp-push-banner__line axp-push-banner__meta">
+          <span className={`axp-push-banner__pill ${manual ? 'is-failure' : phase && !canRepair ? 'is-running' : 'is-warning'}`}><Icon name={manual ? 'alert' : phase && !canRepair ? 'refresh' : 'hammer'} size={11} />{manual ? 'Needs manual review' : phase || `Pulling ${base} in failed`}</span>
+          {manual && phase && <span>{phase}</span>}
+          <span>{ago(new Date(f.at).toISOString())}</span>
+          {f.error && <span className={manual ? 'is-danger' : 'axp-push-banner__warn'}>{f.error}</span>}
+        </span>
+        <Note k={f.key} />
+      </div>
+      <div className="axp-push-banner__acts">
+        {canRepair && (sure
+          ? <><Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} onClick={() => { setSure(false); void repair(f); }}>Repair on the VPS?</Button>
+              <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button></>
+          : <Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} title="Headless Claude Code on the VPS merges main in and fixes it (you approve on axHub); the pull runs again when it's done" onClick={() => setSure(true)}>{manual ? 'Repair again' : 'Repair'}</Button>)}
+        <button type="button" className="fx-iconbtn" aria-label={`Remove ${name} from Pull failed`} title="Remove from Pull failed (every device)" disabled={s.busy === f.key} onClick={() => void removeFailed(f)}><Icon name="trash" size={14} /></button>
+      </div>
+    </li>
+  );
+}
+
+/** "Repair all" on the Pull failed group (tap twice). */
+function RepairAllButton({ list }: { list: Failed[] }) {
+  const s = useStore();
+  const [sure, setSure] = useState(false);
+  const todo = list.filter((f) => { const j = jobOf(f.key); return !j || (j.startedAt ?? 0) * 1000 < f.at || j.state === 'failed' || j.fixed === 'failed'; });
+  if (todo.length < 2) return null;
+  if (sure) return (
+    <span className="axp-push-banner__group-act">
+      <Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} onClick={() => { setSure(false); void repairAll(todo); }}>Repair all {todo.length} on the VPS?</Button>
+      <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>
+    </span>
+  );
+  return <span className="axp-push-banner__group-act"><Button size="sm" tone="primary" icon="hammer" disabled={!!s.busy} title="Hand every failed pull to headless Claude Code on the VPS" onClick={() => setSure(true)}>{s.busy === REPAIR_ALL ? 'Repairing…' : 'Repair all'}</Button></span>;
+}
+
 /** "Pull all" on the Needs main pulled in group (tap twice): main into every entry there, one at a time. */
-function PullAllButton({ list }: { list: { key: string; repo: string; number?: number; branch?: string; base: string }[] }) {
+function PullAllButton({ list }: { list: { key: string; repo: string; number?: number; branch?: string; head?: string; base: string }[] }) {
   const s = useStore();
   const [sure, setSure] = useState(false);
   if (list.length < 2) return null;
@@ -245,10 +301,10 @@ function PullAllButton({ list }: { list: { key: string; repo: string; number?: n
   return <span className="axp-push-banner__group-act"><Button size="sm" tone="neutral" icon="download" disabled={busy} title="Bring main's newer commits into every entry in this group" onClick={() => setSure(true)}>{s.busy === PULL_ALL ? 'Pulling…' : 'Pull all'}</Button></span>;
 }
 
-function Group({ title, count, action, children }: { title: string; count: number; action?: ReactNode; children: ReactNode }) {
+function Group({ title, count, action, tone, children }: { title: string; count: number; action?: ReactNode; tone?: 'warning'; children: ReactNode }) {
   if (!count) return null;
   return (
-    <section className="axp-push-banner__group" aria-label={title}>
+    <section className={`axp-push-banner__group${tone ? ` is-${tone}` : ''}`} aria-label={title}>
       <div className="axp-push-banner__group-head">
         <h4 className="axp-push-banner__group-title">{title} <span>{count}</span></h4>
         {action}
@@ -268,7 +324,9 @@ export function PushBanner() {
   const [open, setOpen] = useBannerLaunchOpen();
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
-  const gone = doneKeys(s.answer);
+  const fails = failedRows(s.answer).filter((f) => !doneKeys(s.answer).has(f.key));
+  // a failed pull shows only in Pull failed (with its Repair badge), a finished entry only in Done
+  const gone = new Set([...doneKeys(s.answer), ...failedKeys(s.answer)]);
   // a finished entry shows only in Done (its trash can hides the open one until its next commit)
   const allPulls = pullRows(s.answer);
   const allRows = rows(s.answer);
@@ -283,7 +341,8 @@ export function PushBanner() {
   const cleanReady = clean.filter((r) => r.canMerge).length;
   const bare = allBare.filter((r) => !needsPull(r.behind) && !r.clean);
   const behindCount = behindPulls.length + behindBare.length;
-  if (!pulls.length && !allBare.length && !finished.length) return null;
+  const baseOf = (key: string) => allPulls.find((p) => p.key === key)?.base ?? allRows.find((r) => r.key === key)?.base ?? 'main';
+  if (!pulls.length && !allBare.length && !finished.length && !fails.length) return null;
   const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...allBare.map((r) => short(r.repo)), ...finished.map((d) => short(d.repo))])];
   const mergeable = ready.length + cleanReady;
   const headline = mergeable ? `${plural(mergeable, 'merge', 'merges')} ready to go`
@@ -298,16 +357,17 @@ export function PushBanner() {
             <strong>{headline}</strong>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} can merge cleanly` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
+          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} can merge cleanly` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
       </div>
       {open && (
         <div className="axp-push-banner__body">
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
+          <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>
           <Group title="Can merge cleanly" count={clean.length}>{clean.map((r) => <CleanItem key={r.key} r={r} />)}</Group>
           <Group title="Needs main pulled in" count={behindCount} action={<PullAllButton list={[
-            ...behindPulls.map((p) => ({ key: p.key, repo: p.repo, number: p.number, base: p.base })),
+            ...behindPulls.map((p) => ({ key: p.key, repo: p.repo, number: p.number, head: p.head, base: p.base })),
             ...behindBare.map((r) => ({ key: r.key, repo: r.repo, branch: r.name, base: r.base })),
           ]} />}>
             {behindPulls.map((p) => <PullItem key={p.key} p={p} />)}
@@ -319,6 +379,7 @@ export function PushBanner() {
             <Button size="sm" tone="quiet" icon="refresh" disabled={s.loading} onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button>
             <Button size="sm" tone="quiet" icon="settings" onClick={() => rt.dispatch('settings.open:push-banner')}>Settings</Button>
             <Note k={PULL_ALL} />
+            <Note k={REPAIR_ALL} />
             {s.error && <span className="axp-push-banner__note is-danger">{s.error}</span>}
             <button type="button" className="fx-iconbtn axp-push-banner__min" aria-label="Minimize" title="Minimize to one line" onClick={() => setOpen(false)}><Icon name="minimize" size={16} /></button>
           </div>
