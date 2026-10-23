@@ -12,7 +12,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, useBannerLaunchOpen } from '@console/axf/react';
+import { Button, Chip, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -252,7 +252,7 @@ function ActivityBanner() {
   return (
     <div className={`axp-activity${failed ? ' axp-activity--failed' : ''}${active.length ? '' : ' axp-activity--idle'}`} role="status" aria-live="polite">
       <div className="axp-activity__row">
-        <span className={`fx-banner-icon${active.length ? ' axp-activity__spin' : ''}`}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
+        <BannerIcon icon={failed ? 'alert' : 'check-circle'} working={active.length > 0} />
         <button type="button" data-fx-row className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
           <span className="axp-activity__top">
             <strong>{summary}</strong>

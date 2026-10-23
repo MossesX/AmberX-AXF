@@ -4,7 +4,8 @@
  *
  * Every banner a library contributes (AxfWebLibrary.banners) is wrapped in a frame that applies the person's choices
  * for it, the same for every banner, whatever plugin drew it:
- *   look      tone (accent / info / success / warning / danger / neutral, or the banner's own), density, icon, max height
+ *   look      tone (accent / info / success / warning / danger / neutral, or the banner's own), density, icon, icon +
+ *             animation while working (BannerIcon), max height
  *   behaviour shown or not, launches expanded or minimized, hides itself after N seconds with nothing new, its place
  *             among the banners, hidden inside a host app (embed@1)
  * The frame is a context-menu target (`axf-banner`, payload = banner id): right-click / long-press → Banner settings opens
@@ -44,11 +45,19 @@ export interface BannerPrefs {
   /** place among the banners (lower = higher up); null = the banner's own order */
   order: number | null;
   hideInHost: boolean;
+  /** icon shown while the banner is doing work ('' = the banner's own working icon) */
+  workIcon: string;
+  /** how that icon moves while working ('' = the banner's own, else spin) */
+  workAnim: BannerWorkAnim | '';
 }
+export type BannerWorkAnim = 'spin' | 'pulse' | 'bounce' | 'blink' | 'off';
+const WORK_ANIMS: BannerWorkAnim[] = ['spin', 'pulse', 'bounce', 'blink', 'off'];
+/** icons offered for "While working" (any Icon name works) */
+export const BANNER_WORK_ICONS = ['refresh', 'zap', 'hammer', 'sparkles', 'rocket', 'branch', 'upload', 'download', 'clock', 'cloud', 'terminal', 'star', 'sun', 'shuffle'];
 export const BANNER_PREFS_KEY = 'axf.banners.prefs';
 export const BANNER_SETTINGS_DIALOG = 'axf.banners.settings';
 export const BANNER_CTX_TARGET = 'axf-banner';
-export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'regular', icon: true, maxRows: 0, show: true, launch: 'expanded', autoHide: 0, order: null, hideInHost: false };
+export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'regular', icon: true, maxRows: 0, show: true, launch: 'expanded', autoHide: 0, order: null, hideInHost: false, workIcon: '', workAnim: '' };
 const TONES: BannerTone[] = ['own', 'accent', 'info', 'success', 'warning', 'danger', 'neutral'];
 const DENSITIES: BannerDensity[] = ['compact', 'regular', 'roomy'];
 
@@ -71,6 +80,8 @@ export function bannerPrefs(rt: AxfRuntime, id: string): BannerPrefs {
     autoHide: num(p.autoHide, 0, 3600, 0),
     order: typeof p.order === 'number' && Number.isFinite(p.order) ? p.order : null,
     hideInHost: p.hideInHost === true,
+    workIcon: typeof p.workIcon === 'string' && /^[a-z][a-z0-9-]{0,31}$/.test(p.workIcon) ? p.workIcon : '',
+    workAnim: WORK_ANIMS.includes(p.workAnim as BannerWorkAnim) ? (p.workAnim as BannerWorkAnim) : '',
   };
 }
 
@@ -189,6 +200,28 @@ function migrateShow(rt: AxfRuntime): void {
 /* ---------------- the frame around each banner ---------------- */
 
 const LaunchCtx = createContext<'expanded' | 'minimized'>('expanded');
+const IdCtx = createContext('');
+
+/**
+ * A banner's corner icon (Brett, Oct 23 2026: "whenever a banner is doing any work, animate its icon"). Pass `working`
+ * while the banner's plugin is doing anything (a push, a pull, a fix, a headless session on the VPS ...): the icon swaps to
+ * the working icon picked in its Banner settings (default: the banner's `workIcon`, else refresh) and moves as picked
+ * (default: the banner's `workAnim`, else spin; still under reduced motion). Every banner plugin draws its icon with this.
+ */
+export function BannerIcon({ icon, working = false, size = 18, className = '' }: { icon: string; working?: boolean; size?: number; className?: string }) {
+  const rt = useRuntime();
+  const id = useContext(IdCtx);
+  useBannerPrefsTick();
+  const p = bannerPrefs(rt, id);
+  const def = knownBanners(rt).find((b) => b.id === id);
+  const how = p.workAnim || def?.workAnim || 'spin';
+  const anim = working && how !== 'off' ? how : undefined;
+  return (
+    <span className={`fx-banner-icon${className ? ` ${className}` : ''}`} data-fx-working={working ? anim ?? 'still' : undefined} aria-hidden>
+      <Icon name={working ? p.workIcon || def?.workIcon || 'refresh' : icon} size={size} />
+    </span>
+  );
+}
 
 /** For a banner that can fold to one line: whether it starts open, as its Banner settings say (default open). */
 export function useBannerLaunchOpen(): [boolean, (v: boolean) => void] {
@@ -250,7 +283,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
       data-icon={p.icon ? undefined : 'off'}
       style={p.maxRows ? { maxHeight: `calc(var(--fx-row-h) * ${p.maxRows})`, overflow: 'auto' } : undefined}
     >
-      <LaunchCtx.Provider value={p.launch}>{children}</LaunchCtx.Provider>
+      <IdCtx.Provider value={id}><LaunchCtx.Provider value={p.launch}>{children}</LaunchCtx.Provider></IdCtx.Provider>
     </div>
   );
 }
@@ -284,6 +317,7 @@ export function bannerSettingsTabs(rt: AxfRuntime): Set<string> {
 /* ---------------- the dialog: one tab per banner ---------------- */
 
 const TONE_LABEL: Record<BannerTone, string> = { own: 'Its own colour', accent: 'Accent', info: 'Info (blue)', success: 'Success (green)', warning: 'Warning (amber)', danger: 'Danger (red)', neutral: 'Neutral (grey)' };
+const WORK_ANIM_LABEL: Record<BannerWorkAnim, string> = { spin: 'Spin', pulse: 'Pulse', bounce: 'Bounce', blink: 'Blink', off: 'Still (no animation)' };
 const AUTO_HIDE = [0, 10, 30, 60, 300, 900];
 const autoHideLabel = (s: number) => (s === 0 ? 'Never' : s < 60 ? `After ${s} s with nothing new` : `After ${s / 60} min with nothing new`);
 
@@ -328,6 +362,8 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
             <SelectField label="Colour" value={p.tone} options={TONES.map((t) => ({ value: t, label: TONE_LABEL[t] }))} onChange={(v) => set({ tone: v as BannerTone })} />
             <SelectField label="Density" value={p.density} options={DENSITIES.map((d) => ({ value: d, label: d[0]!.toUpperCase() + d.slice(1) }))} onChange={(v) => set({ density: v as BannerDensity })} />
             <Switch label="Show its icon" checked={p.icon} onChange={(v) => set({ icon: v })} />
+            <SelectField label="Icon while working" value={p.workIcon} options={[{ value: '', label: `Its own (${b.workIcon ?? 'refresh'})` }, ...BANNER_WORK_ICONS.map((i) => ({ value: i, label: i[0]!.toUpperCase() + i.slice(1) }))]} onChange={(v) => set({ workIcon: v })} />
+            <SelectField label="Working animation" value={p.workAnim} options={[{ value: '', label: `Its own (${WORK_ANIM_LABEL[b.workAnim ?? 'spin']})` }, ...WORK_ANIMS.map((a) => ({ value: a, label: WORK_ANIM_LABEL[a] }))]} onChange={(v) => set({ workAnim: v as BannerWorkAnim | '' })} />
             <SelectField label="Maximum height" value={String(p.maxRows)} options={[0, 4, 6, 8, 12, 18].map((n) => ({ value: String(n), label: n === 0 ? 'Its own' : `${n} rows (scrolls past that)` }))} onChange={(v) => set({ maxRows: Number(v) })} />
           </Section>
           <Section title="Behaviour">

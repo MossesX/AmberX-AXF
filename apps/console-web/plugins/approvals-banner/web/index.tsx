@@ -21,7 +21,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon, useBannerLaunchOpen } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -127,7 +127,7 @@ function ApprovalsBanner() {
   return (
     <div className="axp-approvals-banner" role="alert">
       <div className="axp-approvals-banner__row">
-        <Icon name="shield" />
+        <BannerIcon icon="shield" working={s.count > 0} size={20} />
         <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}

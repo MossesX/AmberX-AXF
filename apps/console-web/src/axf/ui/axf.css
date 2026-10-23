@@ -64,6 +64,17 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-banner-frame[data-density='compact'] { zoom: 0.88; }
 .fx-banner-frame[data-density='roomy'] { zoom: 1.12; }
 .fx-banner-frame[data-icon='off'] .fx-banner-icon, .fx-banner-frame[data-icon='off'] [class*='banner__icon'], .fx-banner-frame[data-icon='off'] [class*='-banner-icon'] { display: none; }
+/* banner icon while working (BannerIcon) */
+.fx-banner-icon { display: inline-flex; align-items: center; justify-content: center; }
+.fx-banner-icon[data-fx-working] > * { transform-origin: 50% 50%; }
+.fx-banner-icon[data-fx-working='spin'] > * { animation: fx-spin 1s linear infinite; }
+.fx-banner-icon[data-fx-working='pulse'] > * { animation: fx-banner-pulse 1.2s ease-in-out infinite; }
+.fx-banner-icon[data-fx-working='bounce'] > * { animation: fx-banner-bounce .9s ease-in-out infinite; }
+.fx-banner-icon[data-fx-working='blink'] > * { animation: fx-banner-blink 1s steps(2, jump-none) infinite; }
+@keyframes fx-banner-pulse { 50% { transform: scale(.78); opacity: var(--fx-opacity-muted); } }
+@keyframes fx-banner-bounce { 50% { transform: translateY(calc(var(--fx-space) * -0.3)); } }
+@keyframes fx-banner-blink { 50% { opacity: var(--fx-opacity-muted); } }
+@media (prefers-reduced-motion: reduce) { .fx-banner-icon[data-fx-working] > * { animation: none; } }
 /* Banner settings dialog */
 .fx-banner-settings { display: grid; gap: var(--fx-space); }
 .fx-banner-settings__indent { margin-inline-start: calc(var(--fx-space) * 2); }

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T15:25:41.808Z",
+ "updatedAt": "2026-10-23T17:50:04.987Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2726,6 +2726,45 @@
    "builtAt": "2026-10-23T15:25:41.808Z",
    "updatedAt": "2026-10-23T15:25:41.808Z",
    "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "banner-working-icon",
+   "title": "Banner working icon animation (all banners)",
+   "detail": "BannerIcon + Icon while working / Working animation in Banner settings; every banner plugin animates its icon while busy (push banner: push/pull/merge/check/Claude on VPS). Branch claude/project-thread-c4954d.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T17:50:04.908Z",
+   "builtAt": "2026-10-23T17:50:04.908Z",
+   "updatedAt": "2026-10-23T17:50:04.908Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-working-icon-fable",
+   "title": "Fable rebuild: banner working icon animation",
+   "detail": "Rebuild the Opus build (branch claude/project-thread-c4954d) of BannerIcon / workIcon / workAnim in framework BannerSettings: a runtime working signal on banners instead of per-plugin props, fixtures. Starts by replacing the Opus version.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus BannerIcon + prefs; design a runtime working signal",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Implement, move banner plugins to it, tests",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-23T17:50:04.987Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T17:50:04.987Z",
+   "estimate": "50 min",
    "source": "chat"
   }
  ]
