@@ -37,7 +37,17 @@ t('step empty text throws', () => assert.throws(() => pc.apply(s, { action: 'ste
 t('split check clean after fix', () => { const c = pc.splitCheck(s.items[0]); assert.equal(c.needsSplit, false); assert.deepEqual(c.reasons, []); });
 t('stepsProgress', () => { const p = pc.stepsProgress(s.items[0]); assert.deepEqual(p, { done: 1, total: 2, minutesTotal: 55, minutesLeft: 30, minutesDone: 25 }); });
 t('stepsProgress without steps = whole estimate left', () => assert.deepEqual(pc.stepsProgress({ estimate: '1 h' }), { done: 0, total: 0, minutesTotal: 60, minutesLeft: 60, minutesDone: 0 }));
-t('itemEstimate prefers the item estimate', () => assert.equal(pc.itemEstimate(s.items[0]), '2 h'));
+t('itemEstimate = the steps added up when every step has one (Oct 23 2026)', () => assert.equal(pc.itemEstimate(s.items[0]), '55 min'));
+t('itemEstimate keeps its own estimate while a step has none', () => assert.equal(pc.itemEstimate({ estimate: '2 h', subPrompts: [{ text: 'a', estimate: '20 min' }, { text: 'b' }] }), '2 h'));
+t('stepsProgress: unestimated steps share what the own estimate leaves', () => assert.deepEqual(pc.stepsProgress({ estimate: '2 h', subPrompts: [{ text: 'a', estimate: '20 min', done: true }, { text: 'b' }] }), { done: 1, total: 2, minutesTotal: 120, minutesLeft: 100, minutesDone: 20 }));
+t('formatMinutes: hours past an hour, never 8-hour days', () => { assert.equal(pc.formatMinutes(45), '45 min'); assert.equal(pc.formatMinutes(150), '2.5 h'); assert.equal(pc.formatMinutes(1170), '19.5 h'); assert.equal(pc.formatMinutes(0), ''); });
+t('cost in dollars from the pricing file', () => {
+  const pricing = { models: { opus: { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 } }, heuristic: { tokensPerMinute: { input: 5000, output: 3000, cacheRead: 300000, cacheWrite: 0 } } };
+  assert.equal(pc.minuteCostUsd('Opus', pricing), 0.14);
+  assert.equal(pc.costForMinutes('claude-opus-5-5', 60, pricing), 8.4);
+  assert.equal(pc.costForMinutes('Fable', 60, pricing), null);
+  assert.equal(pc.formatUsd(8.4), '$8.40'); assert.equal(pc.formatUsd(1650.2), '$1,650'); assert.equal(pc.formatUsd(null), '');
+});
 t('update replaces subPrompts', () => { const r = pc.apply(s, { action: 'update', id: 'big-build', estimate: '', subPrompts: [{ text: 'a', estimate: '20 min' }, { text: 'b', estimate: '30 min', done: true, doneAt: T0 }] }, T1); const it = r.state.items[0]; assert.equal(it.estimate, undefined); assert.equal(it.subPrompts.length, 2); assert.equal(it.subPrompts[0].at, T1); assert.equal(it.subPrompts[1].doneAt, T0); assert.equal(pc.itemEstimate(it), '50 min'); });
 t('update subPrompts refuses empty text', () => assert.throws(() => pc.apply(s, { action: 'update', id: 'big-build', subPrompts: [{ text: '' }] }), /needs text/));
 t('normalize keeps done/doneAt, drops false', () => { const it = pc.normalize({ title: 'x', subPrompts: [{ text: 'a', done: true, doneAt: T0 }, { text: 'b', done: false }] }, T1); assert.equal(it.subPrompts[0].doneAt, T0); assert.equal('done' in it.subPrompts[1], false); });
@@ -53,7 +63,7 @@ const features = [
 ];
 let q = null;
 t('stepsAction sets estimate + steps', () => { q = qc.stepsAction(features, q, { id: 'x.a', estimate: '2 h', steps: [{ text: 'one', estimate: '30 min' }, { text: 'two', estimate: '1 h' }] }, T0, 'test'); assert.equal(q.steps['x.a'].estimate, '2 h'); assert.equal(q.steps['x.a'].steps.length, 2); assert.match(q.history.at(-1).text, /A: ~2 h, 2 step\(s\) set/); });
-t('view carries steps and flags the big one', () => { const v = qc.computeQueue(features, q); const a = v.steps.find((x) => x.id === 'x.a'); assert.equal(a.estimate, '2 h'); assert.equal(a.needsSplit, true); assert.match(a.splitReasons[0], /step 2 is 1 h/); assert.equal(a.minutesLeft, 90); assert.deepEqual(v.unsplit, ['x.a']); assert.equal(v.minutesLeftByModel.opus, 90); assert.equal(v.minutesLeftByModel.fable, 0); });
+t('view carries steps and flags the big one', () => { const v = qc.computeQueue(features, q); const a = v.steps.find((x) => x.id === 'x.a'); assert.equal(a.estimate, '1.5 h'); /* the steps added up (Oct 23 2026) */ assert.equal(a.needsSplit, true); assert.match(a.splitReasons[0], /step 2 is 1 h/); assert.equal(a.minutesLeft, 90); assert.deepEqual(v.unsplit, ['x.a']); assert.equal(v.minutesLeftByModel.opus, 90); assert.equal(v.minutesLeftByModel.fable, 0); });
 t('unsplitSteps lists only remaining steps', () => { const u = qc.unsplitSteps(features, q); assert.deepEqual(u.map((x) => x.id), ['x.a']); });
 t('index edit: re-estimate + tick', () => { q = qc.stepsAction(features, q, { id: 'x.a', index: 1, stepEstimate: '30 min', done: true }, T1, 'test'); const st = q.steps['x.a'].steps[1]; assert.equal(st.estimate, '30 min'); assert.equal(st.done, true); assert.equal(st.doneAt, T1); const v = qc.computeQueue(features, q); const a = v.steps.find((x) => x.id === 'x.a'); assert.equal(a.needsSplit, false); assert.equal(a.stepsDone, 1); assert.equal(a.minutesLeft, 30); assert.deepEqual(v.unsplit, []); });
 t('add + removeIndex', () => { q = qc.stepsAction(features, q, { id: 'x.a', add: { text: 'three', estimate: '15 min' } }, T1); assert.equal(q.steps['x.a'].steps.length, 3); q = qc.stepsAction(features, q, { id: 'x.a', removeIndex: 2 }, T1); assert.equal(q.steps['x.a'].steps.length, 2); });

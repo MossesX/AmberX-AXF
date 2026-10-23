@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T05:43:56.671Z",
+ "updatedAt": "2026-10-23T11:45:08.570Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -184,9 +184,9 @@
    ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.592Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.assets.designer",
-   "estimate": "1 d",
+   "estimate": "8 h",
    "source": "plan"
   },
   {
@@ -501,8 +501,8 @@
    ],
    "createdAt": "2026-10-18T16:13:56.087Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.593Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "8 h",
    "source": "chat"
   },
   {
@@ -958,8 +958,8 @@
    ],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
-   "estimate": "1.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "10 h",
    "source": "chat"
   },
   {
@@ -1073,8 +1073,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.159Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "9.5 h",
    "source": "chat"
   },
   {
@@ -1288,8 +1288,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.160Z",
-   "estimate": "2.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "19.5 h",
    "source": "chat"
   },
   {
@@ -1375,8 +1375,9 @@
    ],
    "createdAt": "2026-10-21T16:26:16.023Z",
    "builtAt": "2026-10-21T16:56:48.038Z",
-   "updatedAt": "2026-10-21T16:56:55.399Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.app.patches",
+   "estimate": "4 h",
    "source": "chat"
   },
   {
@@ -1384,8 +1385,13 @@
    "title": "Build manager: global live tracking, Built history, search, Start build now",
    "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
@@ -1494,9 +1500,9 @@
     }
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-21T17:11:28.623Z",
-   "estimate": "6.5 h",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "7 h",
    "source": "claude-code"
   },
   {
@@ -1544,8 +1550,8 @@
    ],
    "createdAt": "2026-10-22T01:57:53.687Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.262Z",
-   "estimate": "2 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "2.5 h",
    "source": "session"
   },
   {
@@ -1942,8 +1948,8 @@
    ],
    "createdAt": "2026-10-23T00:04:16.316Z",
    "builtAt": "2026-10-23T00:09:00.415Z",
-   "updatedAt": "2026-10-23T00:09:00.474Z",
-   "estimate": "1 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "55 min",
    "source": "chat"
   },
   {
@@ -2214,12 +2220,17 @@
    "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
    "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-23T02:09:40.159Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "estimate": "30 min",
    "source": "mcp"
   },
@@ -2300,6 +2311,25 @@
    "createdAt": "2026-10-23T05:43:56.671Z",
    "builtAt": "",
    "updatedAt": "2026-10-23T05:43:56.671Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "build-list-estimates-usd",
+   "title": "Build lists: fix the time estimates and show costs in dollars",
+   "detail": "Pending list, build queue, Build manager (Remaining), CLIs and MCP: steps added up win over an item's own estimate, hours instead of 8-hour days, missing estimates added, cost estimates in USD (model-pricing.json per-minute heuristic), never tokens.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
+     "at": "2026-10-23T11:45:08.570Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T11:45:08.570Z",
+   "builtAt": "2026-10-23T11:45:08.570Z",
+   "updatedAt": "2026-10-23T11:45:08.570Z",
    "estimate": "45 min",
    "source": "chat"
   }

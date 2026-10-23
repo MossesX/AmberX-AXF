@@ -17,6 +17,11 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadPlan, setStatuses } from './plan.mjs';
 import * as core from '../plan/build-queue-core.mjs';
+import { costForMinutes, formatUsd } from '../plan/pending-core.mjs';
+import { loadPricing } from './model-pricing.mjs';
+
+const PRICING = loadPricing();
+const usd = (model, min) => (min ? formatUsd(costForMinutes(model, min, PRICING)) : '');
 import { dataPath } from './persist.mjs';
 
 const FRAMEWORK_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -92,7 +97,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     // Read-only: no sync, so CI never rewrites the shared data file.
     const view = core.computeQueue(loadPlan().features, loadQueueState());
     const bad = core.unsplitSteps(loadPlan().features, loadQueueState());
-    const left = Object.entries(view.minutesLeftByModel).map(([m, n]) => `${core.MODEL_LABEL[m] ?? m} ${core.formatMinutes(n) || '0 min'}`).join(' · ');
+    const left = Object.entries(view.minutesLeftByModel).map(([m, n]) => `${core.MODEL_LABEL[m] ?? m} ${core.formatMinutes(n) || '0 min'}${usd(m, n) ? ` (~${usd(m, n)})` : ''}`).join(' · ');
     console.log(`build queue: ${view.steps.length - (view.counts.done ?? 0) - (view.counts.rework ?? 0) - (view.counts.dropped ?? 0)} remaining step(s) · time left ${left || '—'}`);
     for (const b of bad) console.log(`  ⚠ ${b.id} (~${b.estimate || '?'}): ${b.reasons.join('; ')}`);
     if (!bad.length) console.log('  every remaining step over 30 min is split into small steps of 30 min or less');
@@ -103,9 +108,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const { view } = syncBuildQueue({ by: 'cli', log });
   if (process.argv.includes('--next')) { const s = view.steps.find((x) => x.id === view.next); console.log(JSON.stringify(s, null, 2)); }
   else for (const s of view.steps) {
-    const prog = s.steps.length ? `  [${s.stepsDone}/${s.steps.length} steps${s.minutesLeft ? `, ${core.formatMinutes(s.minutesLeft)} left` : ''}]` : s.estimate ? `  [~${s.estimate}]` : '';
+    const c = usd(s.model, s.state === 'done' ? s.minutesTotal : s.minutesLeft);
+    const prog = (s.steps.length ? `  [${s.stepsDone}/${s.steps.length} steps${s.minutesLeft ? `, ${core.formatMinutes(s.minutesLeft)} left` : ''}]` : s.estimate ? `  [~${s.estimate}]` : '') + (c ? ` ~${c}` : '');
     console.log(`${String(s.position).padStart(2)}. ${s.state.padEnd(7)} ${s.modelLabel.padEnd(10)} ${s.title}${prog}${s.needsSplit && s.state !== 'done' ? '  ⚠ needs splitting' : ''}${s.violations.length ? '  ⚠ ' + s.violations.join('; ') : ''}${s.rework ? '  ↻ ' + s.rework.reasons[0] : ''}`);
-    if (process.argv.includes('--steps')) for (const [k, sp] of s.steps.entries()) console.log(`      ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${sp.text.slice(0, 110)}`);
+    if (process.argv.includes('--steps')) for (const [k, sp] of s.steps.entries()) { const sc = usd(s.model, core.estimateMinutes(sp.estimate)); console.log(`      ${sp.done ? '✓' : ' '}${String(k + 1).padStart(2)}. ${(sp.estimate ? `~${sp.estimate}` : '').padEnd(8)} ${(sc ? `~${sc}` : '').padEnd(7)} ${sp.text.slice(0, 110)}`); }
   }
-  console.log(`next: ${view.next ?? '—'} · ${JSON.stringify(view.counts)} · remaining by model ${JSON.stringify(view.byModel)} · time left ${JSON.stringify(Object.fromEntries(Object.entries(view.minutesLeftByModel).map(([m, n]) => [m, core.formatMinutes(n) || '0 min'])))}`);
+  console.log(`next: ${view.next ?? '—'} · ${JSON.stringify(view.counts)} · remaining by model ${JSON.stringify(view.byModel)} · time left ${JSON.stringify(Object.fromEntries(Object.entries(view.minutesLeftByModel).map(([m, n]) => [m, `${core.formatMinutes(n) || '0 min'}${usd(m, n) ? ` ~${usd(m, n)}` : ''}`])))}`);
 }

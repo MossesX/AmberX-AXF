@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
-import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, takeOff, tickStep, useStore, onStore, verifyBuild, type StartPlan, type Store } from './store';
+import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
 import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
 
 /* ---------------- time ---------------- */
@@ -92,7 +92,9 @@ function SplitBadge({ row }: { row: Row }) {
 }
 function TimeLeft({ row }: { row: Row }) {
   if (row.left == null) return <Badge icon="clock" tone="muted" title="No build-time estimate yet">no estimate</Badge>;
-  return <span className="axp-build-manager__left" title={row.total != null ? `${fmt(row.left)} left of ${fmt(row.total)}` : ''}>{row.left === 0 ? 'steps done' : `${fmt(row.left)} left`}</span>;
+  const price = row.left > 0 && row.costLeft != null ? ` · ~${usd(row.costLeft)}` : '';
+  const title = row.total != null ? `${fmt(row.left)} left of ${fmt(row.total)}${row.costTotal != null ? ` · ~${usd(row.costLeft)} left of ~${usd(row.costTotal)} on ${row.model} (estimate at the model's price per working minute)` : ''}` : '';
+  return <span className="axp-build-manager__left" title={title}>{row.left === 0 ? 'steps done' : `${fmt(row.left)} left${price}`}</span>;
 }
 
 /* ---------------- live tracker ---------------- */
@@ -371,7 +373,7 @@ function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
               aria-label={`${st.done ? 'Done' : 'Not done'}: step ${i + 1}`} title={canTick ? 'Tick when done' : 'Read-only: this console has no step action yet'} />
             <span className="axp-build-manager__step-text">{st.text}</span>
           </label>
-          <span className="axp-build-manager__step-time">{st.estimateText ? `~${st.estimateText}` : <span className="fx-muted">no estimate</span>}</span>
+          <span className="axp-build-manager__step-time">{st.estimateText ? `~${st.estimateText}${st.estimate != null && helpers.cost ? ` · ~${usd(helpers.cost(row.model, st.estimate))}` : ''}` : <span className="fx-muted">no estimate</span>}</span>
         </li>
       ))}
     </ol>
@@ -498,7 +500,7 @@ function BuildRow({ row, open, onToggle, canTick }: { row: Row; open: boolean; o
           {row.detail && <p className="axp-build-manager__detail">{row.detail.length > 400 ? `${row.detail.slice(0, 400)}…` : row.detail}</p>}
           <dl className="axp-build-manager__facts">
             <dt>Id</dt><dd><code>{row.id}</code></dd>
-            <dt>Estimate</dt><dd>{row.total != null ? `${fmt(row.total)}${row.estimateText && row.steps.length ? ' (steps added up or its own)' : ''}` : 'none yet'}</dd>
+            <dt>Estimate</dt><dd>{row.total != null ? `${fmt(row.total)}${row.costTotal != null ? ` · ~${usd(row.costTotal)} on ${row.model}` : ''}${row.steps.length && row.steps.every((x) => x.estimate != null) ? ' (its steps added up)' : ''}` : 'none yet'}</dd>
             {row.queuePosition ? <><dt>Build queue</dt><dd>step {row.queuePosition}</dd></> : null}
             {row.planId ? <><dt>Plan</dt><dd><code>{row.planId}</code></dd></> : null}
             {row.effort ? <><dt>Effort</dt><dd>{row.effort}</dd></> : null}
@@ -525,12 +527,14 @@ function Totals({ rows }: { rows: Row[] }) {
         <div key={m} role="listitem" className={`axp-build-manager__total is-${m.toLowerCase()}`}>
           <span className="axp-build-manager__total-label">{m}</span>
           <strong>{fmt(t[m].left) || '0 min'}</strong>
+          <span className="fx-small">~{usd(t[m].cost) || '$0.00'}</span>
           <span className="fx-small fx-muted">{t[m].count} builds{t[m].noEstimate ? ` · ${t[m].noEstimate} no estimate` : ''}</span>
         </div>
       ))}
       <div role="listitem" className="axp-build-manager__total is-all">
         <span className="axp-build-manager__total-label">All</span>
         <strong>{fmt(t.all.left) || '0 min'}</strong>
+        <span className="fx-small">~{usd(t.all.cost) || '$0.00'}</span>
         <span className="fx-small fx-muted">{t.all.count} builds{t.all.needsSplit ? ` · ${t.all.needsSplit} need split` : ''}</span>
       </div>
     </div>
@@ -585,7 +589,7 @@ export function BuildManagerView() {
     <div className="fx-page axp-build-manager">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">{t.all.count} to build · {fmt(t.all.left) || '0 min'} left{t.all.noEstimate ? ` · ${t.all.noEstimate} without an estimate` : ''}{t.all.needsSplit ? ` · ${t.all.needsSplit} need split` : ''}</p>
+          <p className="fx-eyebrow">{t.all.count} to build · {fmt(t.all.left) || '0 min'} left · ~{usd(t.all.cost) || '$0.00'}{t.all.noEstimate ? ` · ${t.all.noEstimate} without an estimate` : ''}{t.all.needsSplit ? ` · ${t.all.needsSplit} need split` : ''}</p>
           <h1>Build manager</h1>
           <p className="fx-muted">Everything still to build, from the pending list, the build queue and the plan, with what’s building right now.</p>
         </div>
@@ -744,7 +748,7 @@ export function SettingsSummary() {
   return (
     <div className="fx-stack">
       <p style={{ margin: 0 }}>Everything still to build in one list (nav → Builds → Build manager), with a live tracker of what’s building and a banner while a build from the list is in progress.</p>
-      <p className="fx-small" style={{ margin: 0 }}><strong>{t.all.count} builds · {fmt(t.all.left) || '0 min'} left</strong> · Fable {fmt(t.Fable.left) || '0 min'} · Opus {fmt(t.Opus.left) || '0 min'} · Sonnet {fmt(t.Sonnet.left) || '0 min'}</p>
+      <p className="fx-small" style={{ margin: 0 }}><strong>{t.all.count} builds · {fmt(t.all.left) || '0 min'} left · ~{usd(t.all.cost) || '$0.00'}</strong> · Fable {fmt(t.Fable.left) || '0 min'} (~{usd(t.Fable.cost) || '$0.00'}) · Opus {fmt(t.Opus.left) || '0 min'} (~{usd(t.Opus.cost) || '$0.00'}) · Sonnet {fmt(t.Sonnet.left) || '0 min'} (~{usd(t.Sonnet.cost) || '$0.00'})</p>
       <p className="fx-small fx-muted" style={{ margin: 0 }}>
         Live builds come from the activity feed (<code>axf.activity@1</code>{s.liveAvailable === false ? ': not available right now' : ''}); a run is linked to its build by its branch
         (<code>fable/&lt;id&gt;</code>, <code>rebuild/&lt;id&gt;</code>, <code>harvest/…</code>, <code>pilot/…</code>) or a report naming it.
