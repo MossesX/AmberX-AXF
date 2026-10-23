@@ -71,7 +71,7 @@ navigations to the hub and work either way.
   priority 1000 (`AXF_ROUTER_PATHS` / `AXF_ROUTER_PRIORITY` in `framework/deploy/axf-deploy.sh`); every other path
   (`/mcp`, `/healthz`, `/auth/*`, `/data*`, `/data-events`, `/apps*`, `/handoff*`) still reaches the hub's own container,
   untouched (axHub keeps no AXF code). Behind the wall with `user_paths=/`: signed-in hub users get the page, as the hub's
-  `/` (a redirect to `/auth/account`) did. Banner, toolbar and nav are shown (`hidden: []`).
+  `/` (a redirect to `/auth/account`) did. Banner, toolbar and nav are shown (`hidden: []`). The app ships only its own nav/app menus and the layouts that show them (`classic-ide`, `studio-dock`): the shared hub look names `focus-top` (no toolbar) and `icon-rail`/`developer` (another app's items), and an id the app doesn't ship keeps the app's default (appearance@1).
   Install / update: `sudo bash apps/axhub-web/deploy/install.sh`; **rollback:** `sudo bash
   /opt/axhub-web/apps/axhub-web/deploy/install.sh --remove` (container, update script and cron gone; Traefik drops the
   routes and the hub answers `/` again). The Mosses agent tab was asked for and then scratched by Brett (Oct 23 2026).
