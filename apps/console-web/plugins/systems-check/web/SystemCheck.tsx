@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { BannerIcon, Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
@@ -340,7 +340,7 @@ export function SystemBanner() {
   return (
     <div className={`axp-systems-check-banner ${errors ? 'is-error' : 'is-warn'}`} role="alert">
       <div className="axp-systems-check-banner__row">
-        <Icon name="alert" />
+        <BannerIcon icon="alert" working={s.loading || s.fixing || Object.values(s.run).includes('working')} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {openCount ? <>{openCount} setup issue{openCount === 1 ? '' : 's'}{errors ? ` (${errors} blocking)` : ''}: the console isn't fully configured</> : <>All fixed</>}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
