@@ -25,9 +25,7 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
   "banner": ["claude-handoff"],
   "tabable": false,
   "lifecycle": {
@@ -49,5 +47,6 @@
     "theme",
     "style",
     "layout"
-  ]
+  ],
+  "opens": "main"
 }

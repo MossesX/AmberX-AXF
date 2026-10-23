@@ -12,7 +12,7 @@
   "optional": ["service:axf.snapshots@1"],
   "scopes": ["ROUTES", "DOCKER"],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus" },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -20,5 +20,6 @@
     "dataDir": ".axf-console/plugins/container-access",
     "env": ["AXF_DOCKER_PROXY", "AXF_DOCKER_PROXY_IMAGE", "AXF_CONSOLE_CONTAINER", "AXF_CONTAINER_ACCESS_DIR"],
     "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md", "deploy/install-console.sh"]
-  }
+  },
+  "opens": false
 }

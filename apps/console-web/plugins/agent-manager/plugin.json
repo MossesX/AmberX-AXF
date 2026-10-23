@@ -29,10 +29,7 @@
   "uiEditor": [
     "builder"
   ],
-  "builtWith": {
-    "model": "fable",
-    "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)"
-  },
+  "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)" },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -47,5 +44,6 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "opens": "main"
 }

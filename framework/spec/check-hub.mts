@@ -11,6 +11,7 @@ import {
   accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, fetchHubFeed, hubOrigin, interpretFeed, isHub,
   loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed,
 } from '../libs/hub/hub';
+import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, expiry, fetchHubApps, formatSize, interpretApps, shortSha, statusNote } from '../libs/hub/apps';
 // tsx loads these as CommonJS, where `export *` re-exports aren't visible to named imports: take the watcher from index directly
 import { HubWatcher } from '../libs/hub/index';
 
@@ -37,6 +38,15 @@ for (const c of f.csrf) eq(csrfFromPage(c.html), c.token, `csrf ${c.html}`);
 for (const c of f.feeds) eq(interpretFeed(c.base, c.status, c.body), c.feed, `feed ${c.name}`);
 eq(unreachableFeed(f.unreachable.base, f.unreachable.error), f.unreachable.feed, 'unreachable');
 for (const c of f.seen) eq(seenPlan(c.seen, c.current), c.plan, `seen ${c.current}`);
+
+// the app catalog (apps section; the Kotlin twin waits for the Android hold to lift)
+const A = f.apps;
+eq([APPS_FEED_PATH, appsFeedUrl(f.default)], [A.path, A.url], 'apps feed path + url');
+eq({ appsMax: APPS_MAX, versionsMax: VERSIONS_MAX, feedMaxBytes: APPS_FEED_MAX_BYTES }, A.limits, 'apps limits');
+for (const c of A.feeds) eq(interpretApps(c.base, c.status, c.body), c.feed, `apps ${c.name}`);
+for (const c of A.feeds) for (const a of c.feed.apps) for (const b of [a.latest, ...a.earlier]) {
+  eq(isHub(c.base, b.url) && b.url === `${c.base}/apps/download/${a.project}/${b.file}`, true, `apps ${c.name}: ${b.file} link rebuilt on the hub`);
+}
 
 /* ---------- 2. the client against a fake fetch ---------- */
 const ID = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';
@@ -82,4 +92,19 @@ eq([w.state.phase, w.state.hub, w.state.status, w.state.pending.length, calls.at
 const p3 = w.check(); await new Promise((r) => setTimeout(r, 0)); release(); await p3;
 eq(resolves, 1, 'hub resolved only once');
 
-console.log(`✓ lib-hub (web): ${checks} checks (fixture hub-approvals.json + client + watcher)`);
+// catalog client: same transport rules as the feed
+const apOk = await fetchHubApps(HUB_DEFAULT, { fetch: fake(() => new Response(A.feeds[0].body, { status: 200 })) });
+eq([apOk.status, apOk.apps.length], ['ok', 1], 'apps client ok');
+const ca = calls.at(-1)!;
+eq([ca.url, ca.init.credentials, ca.init.redirect, ca.init.cache], [`${HUB_DEFAULT}/apps.json`, 'include', 'error', 'no-store'], 'apps: credentials included, redirects refused, no cache');
+eq((await fetchHubApps(HUB_DEFAULT, { fetch: fake(() => new Response(null, { status: 302, headers: { location: 'https://evil.example' } })) })).status, 'unreachable', 'apps redirect never followed');
+eq((await fetchHubApps(HUB_DEFAULT, { fetch: fake(() => new Response('x'.repeat(APPS_FEED_MAX_BYTES + 1), { status: 200 })) })).status, 'unreachable', 'apps size cap');
+eq((await fetchHubApps(HUB_DEFAULT, { fetch: fake(() => new Response('{}', { status: 401 })) })).status, 'signed-out', 'apps 401');
+const nApps = calls.length;
+eq([(await fetchHubApps('http://axhub.amberxai.com', { fetch: fake(() => new Response('{}')) })).status, calls.length], ['unreachable', nApps], 'apps: a bad hub address is never fetched');
+// display words
+eq([formatSize(512), formatSize(7_340_032), formatSize(-1), shortSha('a'.repeat(64)), shortSha('x')], ['512 B', '7.0 MB', '—', 'aaaaaaaaaaaa', ''], 'sizes + short hash');
+eq(expiry({ expiresAt: '2026-10-21T18:02:00.000Z' }, Date.parse('2026-10-21T18:00:00.000Z')), { text: '2 min left', soon: true, expired: false }, 'expiry soon');
+eq([statusNote('signed-out', ''), statusNote('unreachable', ''), statusNote('ok', '')], ['Sign in to the hub to see this.', HUB_MESSAGES.unreachable, ''], 'status notes');
+
+console.log(`✓ lib-hub (web): ${checks} checks (fixture hub-approvals.json incl. apps + clients + watcher)`);

@@ -66,6 +66,14 @@ focus, one check at a time). Mirrored by the Kotlin `lib-hub` (`HubRules`); both
 Self-test: `npx -y tsx framework/spec/check-hub.mts`. The console's approvals banner plugin runs on it. The hub protocol
 contract (AXPP) is a named placeholder (`HUB_PLACEHOLDERS`), parked for Fable.
 
+**App catalog + hub views (Oct 23 2026, Opus, harvested from the AXHub web app):** `libs/hub/apps.ts` reads `/apps.json`
+(decision #90: `fetchHubApps`, `interpretApps`, `appDownloadUrl` rebuilds every download link from hub + project + file;
+caps 100 apps / 5 builds / 512 KB) and the words for hub data (`formatSize`, `formatWhen`, `expiry`, `statusNote`); pinned by
+the fixture's `apps` section (web only for now). `libs/hub/react.tsx`: `useHubApprovals`, `useHubApps`, `useHubBannerCount`
+(counter `approvals.waiting` + an optional banner counter), `HubApprovalList`, `HubStatusNote`, `checkHubNow`.
+`libs/hub/menu.ts`: `installHubMenu(rt, { hub })` = app-menu live lists `hub.approvals` / `hub.apps` and actions
+`hub.open:<page>`, `hub.review:<id>`, `hub.download:<project>:<file>`.
+
 ## apiclient (`ai.amberx.axf.apiclient`)
 
 The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
@@ -80,6 +88,10 @@ never reached the server → `messages.unreachable` (status 0), otherwise the se
 only ever travels in the Authorization header. Server-Sent Events are in `core/sse.ts` (`readSse`, `followSse` with
 2 s → 60 s back-off, `parseSseText` shared with assistant@1). Self-test: `npx -y tsx framework/spec/check-web-client.mts`.
 The `apiclient` boilerplate installs it (web-only library: `axf install` records it in the manifest, no Gradle/App.kt).
+
+## ashes (`ai.amberx.axf.ashes`): AshesUI, the live element inspector (Oct 23 2026, Opus)
+
+Right-click anywhere → **AshesUI** (a check mark while on; `ashes.toggle`, also View → AshesUI). While on, a small headless tooltip follows the pointer (touches too) with what is under it: framework component + variant, the active asset that styles it, **the plugin or library it belongs to and the model that built it**, size, colours + WCAG contrast, font, spacing, role, React component + handlers, selector. A box outlines it (margin / padding shaded). **Double-click or double-tap** opens the inspector, a draggable, resizable framework window: every element on screen in a tree (the selected one expanded and scrolled into view; search, All / Framework / Plugins filter), and its parameters in a tab group, **Grid** and **Tree** (identity, framework, owner, asset data, box, computed style by group, inline style, accessibility, content, attributes, theme tokens, React). Extras: pick mode, F freezes, arrows walk parent / child / siblings, Enter inspects, Esc turns it off, live style / attribute edits (on* attributes refused) with revert, copy selector / JSON / HTML, stats (components and owners on screen), settings under Settings → Plugins → AshesUI (tooltip fields, offset, delay, touch, box, box model, tree size, off-screen elements, tokens). Pure rules in `core.ts` (open registries: `registerComponent`, owners from `ownersFrom(plugins, libraries)` or an app's own `resolveOwner`), checked by `framework/spec/check-ashes.mts` (53). A plugin is recognised by its `axp-<folder>` classes or `data-axf-plugin`; the console passes every bundled plugin with its `builtWith.model`. Context-menu entries now take `checked` (same bindings as app-menu items) and `MenuList` draws the check mark. Android twin deferred (PORTING.md).
 
 ## Harvested from Walkthrough Studio (Oct 22 2026): dnd, tree, datagrid, workspace, recorder, docstore
 
