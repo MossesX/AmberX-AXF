@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T23:25:54.201Z",
+ "updatedAt": "2026-10-23T00:08:41.756Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1711,6 +1711,25 @@
    "builtAt": "2026-10-22T23:25:53.915Z",
    "updatedAt": "2026-10-22T23:25:54.201Z",
    "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "session-close-race",
+   "title": "Fix: a closed assistant session log can be written back (save/close race)",
+   "detail": "LocalHost._save checks closed outside the lock; close() can unlink in between and the save writes the file back. Flakes ai-assistant test.py.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
+     "at": "2026-10-23T00:08:41.756Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:07:55.175Z",
+   "builtAt": "2026-10-23T00:08:41.711Z",
+   "updatedAt": "2026-10-23T00:08:41.756Z",
+   "estimate": "15 min",
    "source": "chat"
   }
  ]
