@@ -6,6 +6,8 @@ import { Approvals } from './views/Approvals';
 import { Apps } from './views/Apps';
 import { HubView } from './views/HubView';
 import { PLANNED, Planned } from './views/Planned';
+import { useHubBannerCount } from './axf/libs/hub/react';
+import { HUB } from './hub/useHub';
 
 /**
  * Views the shell can show; the nav-menu asset `axhub-web` references these ids. Approvals is home,
@@ -32,5 +34,8 @@ const libraries = [settingsLibrary];
 export function App() {
   const rt = useRuntime();
   const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
+  // Approvals waiting: counter `approvals.waiting` (toolbar + menu badges) and the counter widget on the banner, next to
+  // the day/night switch and the clock, the way the console shows its alerts bell.
+  useHubBannerCount(HUB, { banner: { id: 'approvals', at: 'right', order: 29 }, origin: 'axhub-web' });
   return <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />;
 }
