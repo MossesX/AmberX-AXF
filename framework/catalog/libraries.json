@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-22T23:17:43.986Z",
+  "generatedAt": "2026-10-23T04:32:18.511Z",
   "items": [
     {
       "$axf": "library@1",
@@ -436,6 +436,45 @@
         {
           "capability": "axf.apiclient.refresh",
           "note": "Token refresh / OAuth sign-in — not built; bearer tokens pasted by a person only."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.apps",
+      "module": "lib-apps",
+      "name": "App directory (every framework app, and a picker for hosts)",
+      "description": "The framework's app directory (app-directory@1: every web app built with or for AmberX that has a home on the web, generated from the project manifests' deploy.url + x.app and external.json) and an app picker: switch apps on or off, put them in order, add your own (https only). Patches uses it to choose its tabs; the console's App tabs plugin reads the same list. Harvested Oct 23 2026 from Patches and the App tabs plugin.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.apps",
+      "params": [],
+      "parts": [
+        {
+          "id": "custom",
+          "label": "Add your own apps",
+          "description": "A form under the list adds any https site (or AXF app) by name and address."
+        },
+        {
+          "id": "reorder",
+          "label": "Put apps in order",
+          "description": "Up / down buttons on every picked app."
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/apps"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.apps.android",
+          "note": "Compose port — Android on hold (Patches Android keeps its own three tabs for now)."
+        },
+        {
+          "capability": "axf.apps.live",
+          "note": "Reading the directory live from axHub instead of the baked copy — not built."
         }
       ]
     },

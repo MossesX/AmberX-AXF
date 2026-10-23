@@ -1,0 +1,12 @@
+/* lib-apps — theme tokens only; layout only (the controls are the framework's) */
+.axf-apps { display: flex; flex-direction: column; gap: var(--fx-space); }
+.axf-apps__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); }
+.axf-apps__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-height: var(--fx-row-h); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); }
+.axf-apps__row:not(.is-on) { color: var(--fx-muted); }
+.axf-apps__text { flex: 1; min-width: 0; }
+.axf-apps__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axf-apps__sub { font-weight: 400; color: var(--fx-muted); }
+.axf-apps__meta { font-size: calc(var(--fx-font-size) * 0.82); color: var(--fx-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axf-apps__move { display: inline-flex; gap: calc(var(--fx-space) * 0.25); }
+.axf-apps__add { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; }
+.axf-apps__add-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--fx-space); width: 100%; }

@@ -39,5 +39,15 @@
     "MossesX"
   ],
   "created": "2026-10-16",
-  "notes": "Its own repo (axf-console) is reserved, not created: Brett decides when the console moves out."
+  "notes": "Its own repo (axf-console) is reserved, not created: Brett decides when the console moves out.",
+  "x": {
+    "app": {
+      "tab": "console",
+      "label": "Console",
+      "icon": "terminal",
+      "path": "/",
+      "settingsPath": "/",
+      "embed": "axf"
+    }
+  }
 }

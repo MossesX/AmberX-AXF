@@ -32,5 +32,18 @@
   "owners": [
     "MossesX"
   ],
-  "created": "2026-10-22"
+  "created": "2026-10-22",
+  "deploy": {
+    "url": "https://walkthrough.amberxai.com"
+  },
+  "x": {
+    "app": {
+      "tab": "walkthrough",
+      "label": "Walkthrough",
+      "icon": "play",
+      "path": "/",
+      "settingsPath": "/",
+      "embed": "axf"
+    }
+  }
 }

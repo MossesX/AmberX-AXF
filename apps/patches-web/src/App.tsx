@@ -1,30 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AppShell, SlotsProvider, installLibraries, useRuntime, type ViewMap } from './axf/react';
+import { AppShell, SlotsProvider, installLibraries, useAxfState, useRuntime } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
-import { AppTab, CombinedSettings, patchesLibrary, useAppMessages } from './patchesLibrary';
-import { TABS } from './patches';
+import { currentTabs, patchesLibrary, useAppMessages, useSettingsRev } from './patchesLibrary';
+import { viewsFor } from './views';
+import { library as appsLibrary } from './axf/libs/apps';
 
 /** The access policy a signed-in hub account is bound to (framework starter uac-policy/hub-accounts). */
 export const POLICY = 'hub-accounts';
 
-/**
- * Patches' views: one per app (frames, kept alive: switching tabs never reloads an app) and the combined Settings
- * (Patches · Console · Pilot · axHub). The nav-menu asset `patches-tabs` shows the three app tabs.
- */
-const views: ViewMap = {
-  ...Object.fromEntries(TABS.map((t) => [t.id, { title: t.label, icon: t.icon, render: () => <AppTab id={t.id} /> }])),
-  settings: { title: 'Settings', icon: 'settings', keywords: ['patches', 'console', 'pilot', 'axhub', 'preferences'], render: () => <CombinedSettings /> },
-};
-const KEEP = [...TABS.map((t) => t.id), 'settings'];
-
 /** lib-settings (its view is Patches' tab of the combined settings) + Patches itself (installed last: its hooks win). */
-const libraries = [settingsLibrary, patchesLibrary];
+const libraries = [settingsLibrary, appsLibrary, patchesLibrary];
 
 export function App() {
   const rt = useRuntime();
   const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
+  useAxfState();
+  useSettingsRev();
+  const tabs = currentTabs(rt);
+  const ids = tabs.map((t) => t.id).join(',');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const views = useMemo(() => viewsFor(tabs), [ids]);
+  const keep = useMemo(() => [...tabs.map((t) => t.id), 'settings'], [ids]); // eslint-disable-line react-hooks/exhaustive-deps
   const [me, setMe] = useState<Me | null>(null);
   useEffect(() => { void api<Me>('/me').then((r) => setMe(r.data)); }, []);
   // Behind the wall the hub account decides the role (admin | themes | user); without it nothing is bound.
@@ -37,7 +35,7 @@ export function App() {
   // banners, app.frame.top) and the app in the tab.
   return (
     <SlotsProvider slots={contributed.slots}>
-      <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} keep={KEEP} />
+      <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} keep={keep} />
     </SlotsProvider>
   );
 }

@@ -11,6 +11,7 @@
  */
 import { embedUrlFull, parseEmbedMessage, EMBED_MESSAGE, type EmbedPlugin, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type MenuItem } from './axf/core';
 import manifest from '../axf.manifest.json';
+import { availableApps, directoryApps, pickedApps, type AppEntry } from './axf/libs/apps/apps';
 
 export const HOST_ID = 'patches';
 
@@ -27,35 +28,68 @@ export const TAKES = ['settings', 'banners', 'plugins'] as const;
  */
 export const TAB_TAKES = [...TAKES, 'app-menu'] as const;
 
-export interface PatchTab {
-  id: 'console' | 'pilot' | 'axhub';
-  label: string;
-  icon: string;
-  /** settings key holding its address ('' = the hub, from the manifest) */
+/**
+ * One tab: an app from the framework's app directory (lib-apps, app-directory@1) or one added by hand. Brett, Oct 23
+ * 2026: "select any app from the framework to appear in tabs like console, build, axhub". The tab id is the
+ * directory's short `tab` id (console, pilot, axhub, walkthrough, demo, …): it names the view, its settings tab and
+ * its plugins in Patches' store.
+ */
+export type PatchTab = Omit<AppEntry, 'id'> & {
+  /** the tab id (= the directory's `tab`): view id, settings tab, plugins key */
+  id: string;
+  /** the directory id (project name) */
+  appId: string;
+  /** settings key holding an address that replaces the directory's ('' = none; axHub is always the app's hub) */
   key: string;
   /** default address (https host only) */
   fallback: string;
-  /** the page the tab opens on */
-  path: string;
-  /** its settings page inside Patches' combined settings */
-  settingsPath: string;
-  /** is it an AXF app (understands embed@1 page mode)? axHub reads the marker by convention */
+  /** an AXF app (understands embed@1 page mode, takes, menus, plugins)? axHub reads the marker by convention */
   axf: boolean;
-}
+};
+
+/** Which apps are tabs, in order (tab ids); not set = DEFAULT_TABS. */
+export const TABS_KEY = 'patches.tabs';
+/** Apps added by hand (lib-apps CustomApp list). */
+export const CUSTOM_KEY = 'patches.apps.custom';
+export const DEFAULT_TABS = ['console', 'pilot', 'axhub'];
+/** Address settings kept from the first Patches (Console / Pilot addresses in Settings → Patches). */
+const ADDRESS_KEYS: Record<string, string> = { console: 'patches.console', pilot: 'patches.pilot' };
 
 /** The hub's address (manifest developer.hub, else axHub's public address). */
 export const HUB = normalizeOrigin((manifest as { developer?: { hub?: string } }).developer?.hub) ?? 'https://axhub.amberxai.com';
 
-export const TABS: PatchTab[] = [
-  { id: 'console', label: 'Console', icon: 'terminal', key: 'patches.console', fallback: 'https://console.amberxai.com', path: '/', settingsPath: '/', axf: true },
-  { id: 'pilot', label: 'Pilot', icon: 'rocket', key: 'patches.pilot', fallback: 'https://pilot.amberxai.com', path: '/', settingsPath: '/', axf: true },
-  { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
-];
+function asTab(a: AppEntry): PatchTab {
+  const hub = a.tab === 'axhub';
+  return { ...a, id: a.tab, appId: a.id, origin: hub ? HUB : a.origin, key: ADDRESS_KEYS[a.tab] ?? '', fallback: hub ? HUB : a.origin, axf: a.embed === 'axf' };
+}
+
+/** Every app Patches can show as a tab (the directory, minus Patches itself, plus apps added by hand). */
+export function availableTabs(custom: unknown): PatchTab[] { return availableApps(custom).map(asTab); }
+
+/** The tabs Patches shows, in order. With nothing picked, the Console (its banners are above every tab anyway). */
+export function pickTabs(saved: unknown, custom: unknown): PatchTab[] {
+  const all = availableTabs(custom);
+  const got = pickedApps(all, saved, DEFAULT_TABS);
+  return got.length ? got : all.filter((t) => t.tab === 'console');
+}
+
+/** The Dev Console: the banner strip and the Banners settings come from it whether or not it is a tab. */
+export const CONSOLE: PatchTab = asTab(directoryApps().find((a) => a.tab === 'console') ?? { id: 'axf-console-web', tab: 'console', label: 'Console', name: 'AXF Dev Console', icon: 'terminal', origin: 'https://console.amberxai.com', path: '/', settingsPath: '/', embed: 'axf', host: false, description: '', from: 'manifest', order: 10 });
+
+/** Tab ids Patches' own views use, which an app's tab id can never be. */
+export const RESERVED_VIEWS = new Set(['settings', 'patches', 'banners']);
+
+/** The first three tabs as before (kept for code that wants a known tab; the live list is pickTabs). */
+export const TABS: PatchTab[] = DEFAULT_TABS.map((id) => availableTabs([]).find((t) => t.tab === id)).filter((t): t is PatchTab => !!t);
 
 /** The settings tabs of Patches' combined settings, in order: Patches itself, Banners (every banner shown above the tabs), then one per app. */
-export const SETTINGS_APPS = [{ id: 'patches', label: 'Patches', icon: 'layers' }, { id: 'banners', label: 'Banners', icon: 'bell' }, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))] as const;
-export type SettingsApp = (typeof SETTINGS_APPS)[number]['id'];
-export const isSettingsApp = (v: unknown): v is SettingsApp => SETTINGS_APPS.some((a) => a.id === v);
+export type SettingsApp = string;
+export interface SettingsAppDef { id: SettingsApp; label: string; icon: string }
+/** Patches, Banners, then every tab that has a settings page Patches can show. */
+export function settingsApps(tabs: readonly PatchTab[]): SettingsAppDef[] {
+  return [{ id: 'patches', label: 'Patches', icon: 'layers' }, { id: 'banners', label: 'Banners', icon: 'bell' }, ...tabs.filter((t) => t.settingsPath).map((t) => ({ id: t.tab, label: t.label, icon: t.icon }))];
+}
+export const isSettingsApp = (v: unknown, tabs: readonly PatchTab[]): v is SettingsApp => typeof v === 'string' && settingsApps(tabs).some((a) => a.id === v);
 
 export const BANNERS_KEY = 'patches.banners';
 export const SETTINGS_APP_KEY = 'patches.settings.app';
@@ -72,8 +106,8 @@ export function normalizeOrigin(raw: unknown): string | null {
 
 /** A tab's origin: its saved address (https host only; anything else = its default). */
 export function tabOrigin(t: PatchTab, saved: unknown): string {
-  if (!t.key) return HUB;
-  return normalizeOrigin(saved) ?? normalizeOrigin(t.fallback)!;
+  if (t.tab === 'axhub') return HUB;
+  return (t.key ? normalizeOrigin(saved) : null) ?? t.origin;
 }
 
 /** The page a tab shows: its app, marked as embedded in Patches, with Patches taking its settings. */
@@ -83,7 +117,7 @@ export function tabUrl(t: PatchTab, origin: string): string {
 
 /** An app's settings page for the combined settings (page mode; all its chrome hidden). */
 export function settingsUrl(t: PatchTab, origin: string): string {
-  return embedUrlFull(`${origin}${t.settingsPath}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
+  return embedUrlFull(`${origin}${t.settingsPath ?? '/'}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
 }
 
 /** The Banners settings page: the console's every-banner settings on its own (its banners are the ones above the tabs). */
@@ -122,7 +156,7 @@ export function fromApp(data: unknown): EmbedMessage | null { return parseEmbedM
  * submenus. Items carry no action of the app's: picking one runs `patches.menu:<tab>:<item id>`, which hands the id
  * back to the app (`run`). Check marks and counts become Patches counters (`counterName`).
  */
-export function guestMenuItems(tab: PatchTab['id'], menus: readonly EmbedMenu[]): MenuItem[] {
+export function guestMenuItems(tab: string, menus: readonly EmbedMenu[]): MenuItem[] {
   // levels under the app's menu: its menus are level 0, so items nest to level 3 (app-menu maxDepth 4)
   const conv = (it: EmbedMenuItem, level: number): MenuItem | null => {
     if (it.separator) return { id: `g.${it.id}`, label: '', separator: true };

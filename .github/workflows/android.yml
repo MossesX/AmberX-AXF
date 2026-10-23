@@ -98,6 +98,12 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
           npm install --no-audit --no-fund --silent && npm run build
+      - name: patches-web — re-bake the framework into it, build it, server self-test
+        working-directory: apps/patches-web
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs deploy; do cp -r ../../framework/$d src/axf/; done
+          npm install --no-audit --no-fund --silent && npm run build
+          pip install --quiet -r server/requirements.txt httpx && python3 server/test_server.py
       - name: Theme swap — every colour and transparency follows the active colour and style themes
         working-directory: apps/console-web
         run: |
@@ -122,6 +128,7 @@ jobs:
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
+            npx -y tsx framework/spec/check-apps.mts                   # lib-apps: app directory in sync with the manifests, picker rules
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
             python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)

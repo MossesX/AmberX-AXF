@@ -1,0 +1,8 @@
+{
+  "$axf": "app-directory-external@1",
+  "note": "Framework apps whose project manifest lives in another repo. Everything else in the app directory comes from the project manifests in this repo (deploy.url + x.app). Regenerate with node framework/cli/app-directory.mjs.",
+  "apps": [
+    { "id": "build-pilot", "tab": "pilot", "label": "Pilot", "name": "Build Pilot", "icon": "rocket", "url": "https://pilot.amberxai.com", "path": "/", "settingsPath": "/", "embed": "axf", "description": "The plugin-driven app designer built on AXF.", "repo": "MossesX/Build-Pilot" },
+    { "id": "axhub", "tab": "axhub", "label": "axHub", "name": "axHub", "icon": "layers", "url": "https://axhub.amberxai.com", "path": "/apps", "settingsPath": "/auth/account", "embed": "marker", "description": "The connector hub: app catalog, approvals, account. Reads the embed@1 marker by convention.", "repo": "MossesX/axHub" }
+  ]
+}

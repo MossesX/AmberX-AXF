@@ -3,7 +3,7 @@
   "type": "app-menu",
   "id": "patches",
   "name": "Patches",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Patches' application menu: the combined settings (one tab per app), the apps, the tab in front, the look.",
   "author": "AmberX AXF build engine",
   "tags": [
@@ -96,22 +96,16 @@
         "order": 20,
         "items": [
           {
-            "id": "console",
-            "label": "Console",
-            "icon": "terminal",
-            "action": "nav:console"
+            "id": "sep-choose",
+            "separator": true,
+            "order": 90
           },
           {
-            "id": "pilot",
-            "label": "Pilot",
-            "icon": "rocket",
-            "action": "nav:pilot"
-          },
-          {
-            "id": "axhub",
-            "label": "axHub",
+            "id": "choose",
+            "label": "Choose the apps in the tabs…",
             "icon": "layers",
-            "action": "nav:axhub"
+            "action": "patches.apps",
+            "order": 91
           }
         ]
       },

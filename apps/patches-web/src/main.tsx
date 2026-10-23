@@ -19,7 +19,9 @@ registerActions(axf);
 // Developer app (manifest `developer: { hub }`): its look and settings come from axHub's data server, shared with the
 // Console, Pilot and the phone apps; it waits for the hub instead of running without it.
 const developer = (manifest as AxfManifest).developer;
-if (developer?.hub) axf.attachAppearanceSource(new HubAppearanceSource({ hub: developer.hub, appId: manifest.app.id }));
+// VITE_AXF_HUB overrides the hub for local development (`off` = no hub: the look stays local).
+const hub = (import.meta.env.VITE_AXF_HUB as string | undefined) ?? developer?.hub;
+if (hub && hub !== 'off') axf.attachAppearanceSource(new HubAppearanceSource({ hub, appId: manifest.app.id }));
 
 if (axf.loadErrors.length) console.warn('[axf] assets skipped:', axf.loadErrors);
 

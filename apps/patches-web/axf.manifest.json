@@ -81,16 +81,12 @@
       "purpose": "Hot-swappable assets, one folder per asset type."
     },
     {
-      "path": "src/views",
-      "purpose": "The app's views; nav assets reference them by id."
-    },
-    {
       "path": "src/actions.ts",
       "purpose": "Binds this app's handlers to the standard action vocabulary."
     },
     {
       "path": "src/dialogs.tsx",
-      "purpose": "The app's dialogs (id \u2192 component)."
+      "purpose": "The app's dialogs (id → component)."
     },
     {
       "path": "src/api.ts",
@@ -115,10 +111,14 @@
     {
       "path": "deploy/install.sh",
       "purpose": "VPS installer (root): clone/update, token, image, Coolify + Traefik + the wall, 5-minute auto-update. Sources src/axf/deploy/axf-deploy.sh."
-    },
-    {
-      "path": "public",
-      "purpose": "Static files."
     }
-  ]
+  ],
+  "libraries": {
+    "apps": {
+      "parts": {
+        "custom": {},
+        "reorder": {}
+      }
+    }
+  }
 }

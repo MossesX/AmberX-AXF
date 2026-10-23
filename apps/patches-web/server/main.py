@@ -115,7 +115,9 @@ def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
 # apps then run only the ones switched on here (`plugins-enabled`). Ids and names only: no plugin code is stored.
 
 PLUGINS_FILE = DATA / "plugins.json"
-PLUGIN_APPS = ("console", "pilot", "axhub")
+# Any app Patches shows as a tab (lib-apps tab ids: console, pilot, axhub, walkthrough, apps added by hand …).
+APP_ID = re.compile(r"^[a-z][a-z0-9-]{0,23}$")
+MAX_APPS = 40
 PLUGIN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$")
 MAX_PLUGINS = 200
 _plugins_lock = threading.Lock()
@@ -131,8 +133,11 @@ def _read_plugins() -> dict[str, Any]:
     except (OSError, ValueError):
         raw = {}
     apps: dict[str, Any] = {}
-    for app_id in PLUGIN_APPS:
-        got = (raw.get("apps") or {}).get(app_id) if isinstance(raw, dict) else None
+    saved = raw.get("apps") if isinstance(raw, dict) and isinstance(raw.get("apps"), dict) else {}
+    # the first three tabs are always listed (empty until something is installed); then every other app saved
+    ids = list(dict.fromkeys(["console", "pilot", "axhub", *[k for k in saved if isinstance(k, str) and APP_ID.match(k)]]))[:MAX_APPS]
+    for app_id in ids:
+        got = saved.get(app_id)
         items = (got or {}).get("plugins") if isinstance(got, dict) else None
         clean: dict[str, Any] = {}
         for pid, p in (items.items() if isinstance(items, dict) else []):
@@ -162,9 +167,19 @@ def _write_plugins(state: dict[str, Any]) -> None:
 
 def _app_of(body: dict[str, Any]) -> str:
     app_id = body.get("app")
-    if app_id not in PLUGIN_APPS:
-        raise HTTPException(400, f"app must be one of: {', '.join(PLUGIN_APPS)}")
-    return str(app_id)
+    if not isinstance(app_id, str) or not APP_ID.match(app_id):
+        raise HTTPException(400, "app must be a tab id: lowercase letters, digits and dashes, up to 24 characters")
+    return app_id
+
+
+def _mine(state: dict[str, Any], app_id: str) -> dict[str, Any]:
+    """That app's installed plugins (made on first use; at most MAX_APPS apps)."""
+    apps = state["apps"]
+    if app_id not in apps:
+        if len(apps) >= MAX_APPS:
+            raise HTTPException(400, f"at most {MAX_APPS} apps")
+        apps[app_id] = {"plugins": {}}
+    return apps[app_id]["plugins"]
 
 
 @app.get("/api/plugins")
@@ -184,7 +199,7 @@ def plugins_install(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> di
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     with _plugins_lock:
         state = _read_plugins()
-        mine = state["apps"][app_id]["plugins"]
+        mine = _mine(state, app_id)
         added: list[str] = []
         for p in wanted:
             pid = p.get("id") if isinstance(p, dict) else None
@@ -206,7 +221,7 @@ def plugins_enabled(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> di
     pid = body.get("id")
     with _plugins_lock:
         state = _read_plugins()
-        mine = state["apps"][app_id]["plugins"]
+        mine = _mine(state, app_id)
         if not isinstance(pid, str) or pid not in mine:
             raise HTTPException(404, "that plugin isn't installed in Patches")
         mine[pid]["enabled"] = body.get("enabled") is True
@@ -221,7 +236,7 @@ def plugins_remove(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dic
     pid = body.get("id")
     with _plugins_lock:
         state = _read_plugins()
-        if isinstance(pid, str) and state["apps"][app_id]["plugins"].pop(pid, None) is not None:
+        if isinstance(pid, str) and state["apps"].get(app_id, {}).get("plugins", {}).pop(pid, None) is not None:
             _write_plugins(state)
     return state
 

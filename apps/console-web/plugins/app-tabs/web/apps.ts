@@ -5,14 +5,16 @@
  *  3. apps added in Settings → Plugins → App tabs (https only)
  * The app whose address is this page's own origin is "home": its tab shows this page, not a frame.
  */
+import { directoryApps } from '@console/axf/libs/apps/apps';
+
 export interface AppDef { id: string; name: string; url: string; icon: string; from: 'built-in' | 'manifest' | 'custom'; note?: string }
 
-export const BUILT_IN: AppDef[] = [
-  { id: 'axf-console-web', name: 'Console', url: 'https://console.amberxai.com', icon: 'terminal', from: 'built-in', note: 'AXF Dev Console' },
-  { id: 'build-pilot', name: 'Pilot', url: 'https://pilot.amberxai.com', icon: 'rocket', from: 'built-in', note: 'Build Pilot app designer' },
-  { id: 'axhub', name: 'axHub', url: 'https://axhub.amberxai.com/apps', icon: 'layers', from: 'built-in', note: 'axHub: apps catalog (approvals open in a new tab)' },
-  { id: 'axf-demo', name: 'Demo', url: 'https://axf.amberxai.com', icon: 'layout', from: 'built-in', note: 'AXF demo site' },
-];
+/**
+ * The framework's app directory (lib-apps, app-directory@1): the same list Patches picks its tabs from. Ids stay the
+ * project names (axf-console-web, build-pilot, axhub, axf-demo, …), so saved choices keep working. Hosts (Patches) are
+ * left out: they show the console, not the other way round.
+ */
+export const BUILT_IN: AppDef[] = directoryApps().filter((a) => !a.host).map((a) => ({ id: a.id, name: a.label, url: `${a.origin}${a.path === '/' ? '' : a.path}`, icon: a.icon, from: 'built-in' as const, note: a.description || a.name }));
 
 /** Default tabs, in order: the console, Build Pilot and axHub. */
 export const DEFAULT_TABS = ['axf-console-web', 'build-pilot', 'axhub'];

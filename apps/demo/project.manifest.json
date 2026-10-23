@@ -38,5 +38,14 @@
   "owners": [
     "MossesX"
   ],
-  "created": "2026-10-15"
+  "created": "2026-10-15",
+  "x": {
+    "app": {
+      "tab": "demo",
+      "label": "Demo",
+      "icon": "layout",
+      "path": "/",
+      "embed": "axf"
+    }
+  }
 }

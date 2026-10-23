@@ -33,5 +33,18 @@
   "owners": [
     "MossesX"
   ],
-  "created": "2026-10-21"
+  "created": "2026-10-21",
+  "deploy": {
+    "url": "https://patches.amberxai.com"
+  },
+  "x": {
+    "app": {
+      "tab": "patches",
+      "label": "Patches",
+      "icon": "layers",
+      "path": "/",
+      "embed": "axf",
+      "host": true
+    }
+  }
 }
