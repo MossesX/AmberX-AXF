@@ -33,6 +33,7 @@
     "model": "fable",
     "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)"
   },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

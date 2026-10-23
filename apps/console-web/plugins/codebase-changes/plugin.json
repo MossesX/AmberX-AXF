@@ -25,6 +25,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["codebase-changes"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",

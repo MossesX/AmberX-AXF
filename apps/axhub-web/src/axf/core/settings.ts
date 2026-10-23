@@ -160,7 +160,12 @@ export class SettingsRegistry {
     } else {
       // Last write wins, per key: merge into what storage holds now, so a stale copy (another tab, an editor
       // opened earlier) never reverts keys it didn't touch.
-      this.values = { ...readValues(this.storageKey), [key]: value };
+      const fresh = readValues(this.storageKey);
+      const same = Object.hasOwn(fresh, key) && Object.hasOwn(this.values, key)
+        && JSON.stringify(fresh[key]) === JSON.stringify(value) && JSON.stringify(this.values[key]) === JSON.stringify(value);
+      this.values = { ...fresh, [key]: value };
+      // Nothing changed: no write, no re-render (a component that saves on every render can't loop).
+      if (same) return;
       writeValues(this.storageKey, this.values);
     }
     for (const w of this.watchers.get(key) ?? []) w(value);
@@ -209,6 +214,8 @@ export class SettingsRegistry {
     return () => { this.listeners.delete(fn); };
   };
   getRevision = (): number => this.rev;
+  /** Where the values are saved (the runtime listens for other frames and tabs saving there). */
+  get savedUnder(): string { return this.storageKey; }
 
   private changed(): void {
     this.rev += 1;

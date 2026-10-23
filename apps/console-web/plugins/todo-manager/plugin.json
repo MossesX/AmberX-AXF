@@ -20,6 +20,7 @@
   ],
   "enabledByDefault": true,
   "optional": [],
+  "banner": false,
   "tabable": {
     "view": "todo-manager",
     "label": "Todos",

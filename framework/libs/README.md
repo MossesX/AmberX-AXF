@@ -103,3 +103,14 @@ reads its parts in `register` (install it with `installLibraries`), and exports 
 | `workspace` (`ai.amberx.axf.workspace`) | `createWorkspace` + `<WorkspaceHost>`: pane areas with tabs + splitters, floating panes, layouts, maximise, default + unlimited docked / floating toolbars, `<ToolbarCustomizer>`, `registerWorkspaceMenus`, action `axf.ws:<id>:…` | areas, splitters, layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint} |
 | `recorder` (`ai.amberx.axf.recorder`) | `useRecorder` (pointer, keys, page changes, markers, optional screen video), `<CaptureLayer>`, `<CursorLayer>`, `<Replay>`, `eventsToCues`, `frameAt` | capture-layer, same-site, keys, screen-video, replay {cursor, ripples}, cues {waitAfter} |
 | `docstore` (`ai.amberx.axf.docstore`) | `createDocStore` (this device + axHub data server, chunked under 64 KB, newest copy wins), `putBlob` / `getBlob` (IndexedDB) | device, hub {project, chunk}, blobs {db} |
+
+## axHub storage (Oct 23 2026): hubstore
+
+| Library | What it gives | Parts |
+| --- | --- | --- |
+| `hubstore` (`ai.amberx.axf.hubstore`) | Settings and app data on axHub's data server instead of this device. `HubSettings` (one `hub-settings@1` document: `load`, `get`, `set`, `patch`, per key last save wins, 409 re-merge; `mirror(rt.settings)` keeps the app's Settings screen values on axHub) and `HubData` (`table(name)` → `rows`, `get`, `put`, `remove`, `replace`; `hub-table@1`, chunked past 64 KB; `where(name)` says hub or device). The hub down is a `HubError` + state (`unauthorized` / `unreachable`), never a quiet local copy. | settings {file, mirror}, data {mode all \| some, tables, folder} |
+
+Install it with `installLibraries` (it reads `libraries.hubstore` and, with the settings part's `mirror` on, mirrors the
+app's Settings screen) or construct the classes with explicit `hub` / `project` (the console's Voice notes plugin does).
+Picking parts in Build Pilot: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
+The app's origin must be in the hub's `AXHUB_DATA_ORIGINS`.

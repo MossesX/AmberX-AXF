@@ -20,6 +20,7 @@
   "builtWith": {
     "model": "opus"
   },
+  "banner": ["approvals"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
