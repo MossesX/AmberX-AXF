@@ -1,0 +1,67 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-eb3b96a3a0",
+  "createdAt": "2026-10-21T01:50:46.000Z",
+  "updatedAt": "2026-10-21T03:50:46.000Z",
+  "kind": "build",
+  "title": "Voice Vault + lib-voice + lib-lock",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/voicevault` (`voice-vault`, `android-compose` + `voice` boilerplate): voice password vault. Say the unlock code (salted PBKDF2 hash in the secure store; typed fallback; lockout), then the second step from Settings → Unlock (voice only / + fingerprint / + PIN). \"Store password\" → site → passwor",
+    "commits": [
+      {
+        "sha": "a614388",
+        "message": "Voice Vault app + lib-voice + lib-lock (Android)"
+      },
+      {
+        "sha": "a61ae49",
+        "message": "Voice Vault: fixes from independent review (security + compile risks)"
+      },
+      {
+        "sha": "4249824",
+        "message": "App catalog on axHub (app-catalog@1), axHub console tab, AXHub app fixes + Apps tab"
+      },
+      {
+        "sha": "84bea6a",
+        "message": "Fix frozen Android apps; light theme + no toolbar by default; collapsible toolbar; designed assets at init"
+      },
+      {
+        "sha": "6949cc2",
+        "message": "Widget kinds: eleven attachable widget types for banners and toolbars"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T03:50:46.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "voice-vault-lib-voice-lib-lock"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:50:46.000Z",
+  "finishedAt": "2026-10-21T03:50:46.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/voicevault"
+  ]
+}

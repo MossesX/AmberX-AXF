@@ -96,8 +96,10 @@ export function ContextMenuHost() {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
       if (start) { e.preventDefault(); return; }
       const t = e.target as Element;
-      if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
-      if (!t.closest('.fx-shell')) return;
+      // A banner (outside the shell, in a box that otherwise ignores the menu) is always a target: Banner settings.
+      const banner = !!t.closest('[data-fx-ctx-target="axf-banner"]') && !t.closest('input, textarea, .fx-ctx');
+      if (!banner && t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
+      if (!banner && !t.closest('.fx-shell')) return;
       if (rt.slotHidden('context-menu')) return; // hidden: the browser's own menu
       e.preventDefault();
       open(t, e.clientX, e.clientY);
@@ -108,7 +110,8 @@ export function ContextMenuHost() {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType !== 'touch' || rt.slotHidden('context-menu')) return;
       const t = e.target as Element;
-      if (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell')) return;
+      const banner = !!t.closest('[data-fx-ctx-target="axf-banner"]') && !t.closest('input, textarea, .fx-ctx');
+      if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
       start = { x: e.clientX, y: e.clientY };
       timer = setTimeout(() => open(t, e.clientX, e.clientY), 550);
     };

@@ -1,5 +1,5 @@
 /* Fable rebuilds — web API layer plus a small cache the context menu reads synchronously. */
-import { pluginFetch } from '@console/plugins';
+import { pluginApi } from '@console/plugins';
 
 export const FOLDER = 'fable-rebuilds';
 export const ID = 'ai.amberx.axf.console.fable-rebuilds';
@@ -12,14 +12,8 @@ export interface Rebuild {
 }
 export interface Data { items: Rebuild[]; counts: Record<string, number>; log: string[]; byPlugin: Record<string, string>; byPlan: Record<string, string> }
 
-export async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await pluginFetch(FOLDER, path, init);
-  const j = (await r.json().catch(() => ({}))) as T & { detail?: unknown };
-  if (r.status === 401) throw new Error('Console token required (Settings → Account & security).');
-  if (r.status === 404 && !j.detail) throw new Error('Fable rebuilds is switched off or its server part is not running.');
-  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail ?? r.statusText));
-  return j;
-}
+const api = pluginApi(FOLDER, 'Fable rebuilds', { unavailable: 'Fable rebuilds is switched off or its server part is not running.' });
+export const call = <T,>(path: string, init?: RequestInit) => api.call<T>(path, init);
 
 let data: Data | null = null;
 let focus = '';

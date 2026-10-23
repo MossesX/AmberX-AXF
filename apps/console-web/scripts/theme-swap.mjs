@@ -37,7 +37,14 @@ try {
   await page.route('**/api/me', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ wall: false, hub: 'https://axhub.amberxai.com', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] }) }));
   await page.goto(`http://127.0.0.1:${PORT}/`);
   await page.waitForTimeout(1500);
-  await page.getByRole('button', { name: 'Settings' }).first().click();
+  // Open Settings: the side navigation is hidden by default since Oct 21 2026, so go through the application menu
+  // (Console → Settings); fall back to a visible Settings button for layouts that still show the navigation.
+  const navSettings = page.getByRole('button', { name: 'Settings' }).first();
+  if (await navSettings.isVisible().catch(() => false)) await navSettings.click();
+  else {
+    await page.locator('[data-axf-menu-btn="console"]').click();
+    await page.getByRole('menuitem', { name: 'Settings', exact: true }).first().click();
+  }
   await page.waitForTimeout(500);
 
   const selects = page.locator('select');

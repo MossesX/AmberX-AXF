@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { AuditPanel, BatchesPanel, ContainersPanel, ProtectionPanel, StatusPanel } from './panels';
 import './container-access.css';
+import { appMenu } from './menu';
 
 /*
  * Container access plugin (web part): Settings → Plugins → Container access.
@@ -12,6 +13,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Container access',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.container-access'],
   settingsTabs: [{ id: 'container-access', label: 'Container access', icon: 'box', parent: 'plugins', order: 40, description: 'Which containers on the VPS the console can reach, the protected list, change batches waiting for approval and the audit log.' }],
   settingsPanels: [

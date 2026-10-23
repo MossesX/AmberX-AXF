@@ -18,7 +18,8 @@
  * claude.ai has no API for creating Projects, so the kit is pasted/uploaded by Brett (the UI opens the page).
  *
  * Kept in .axf-console/project-wizard.json (0600): the non-secret facts of each project made here.
- * Tokens: GITHUB_TOKEN / GH_TOKEN (or `gh auth token`), passed to git through the environment only.
+ * Tokens: GITHUB_TOKEN / GH_TOKEN (or `gh auth token`). GitHub calls and git auth go through the framework's lib-github
+ * (framework/cli/github.mjs): API origin only, no redirects, git gets the token through GIT_CONFIG_* environment only.
  * Env: AXF_WIZARD_WORKSPACE (where clones and new apps go, default ~/projects), AXF_WIZARD_ROOTS (colon list of
  * folders a "folder" source may come from; default the workspace and this repo), AXF_VPS_HOST/AXF_VPS_USER (VPS git
  * over SSH; without them /srv/git on this machine is used when it exists), AXF_VPS_GIT_DIR (default /srv/git).
@@ -28,19 +29,18 @@ import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync,
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { apiBaseFromEnv, createGitHub, gitAuthEnv, githubToken, parseRepo, scrub, validName, validOwner } from '../../../../framework/cli/github.mjs';
 
 export const PLUGIN_DIR = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(PLUGIN_DIR, '../../../..');
 const CLI = join(REPO_ROOT, 'framework', 'cli');
-const API = () => (process.env.GITHUB_API_URL || 'https://api.github.com').replace(/\/+$/, '');
 const GIT_BASE = () => (process.env.CLAUDE_PROJECT_GIT_BASE || 'https://github.com').replace(/\/+$/, '');
 export const CLAUDE_NEW_PROJECT_URL = 'https://claude.ai/projects/new';
 export const KIT_DIR = '_claude/claude-ai';
 
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,62}$/;
-const OWNER_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
-// no leading '.' or '-', no '..' (git would read a leading '-' as an option; '..' walks out of /srv/git)
-const REPO_RE = /^(?!.*\.\.)[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$/;
+// owner / repo names: lib-github's validOwner / validName (no leading '.' or '-': git would read '-' as an option;
+// no '..': it walks out of /srv/git)
 const USER_RE = /^[a-z_][a-z0-9_-]{0,31}$/;
 const HOST_RE = /^[A-Za-z0-9.-]{1,253}$/;
 const ANSI = /\x1b\[[0-9;]*m/g;
@@ -97,26 +97,17 @@ function putProject(rec) { const s = loadStore(); s.projects[rec.name] = { ...(s
 
 let tokenCache;
 function token() {
-  if (tokenCache !== undefined) return tokenCache;
-  const t = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  if (t) return (tokenCache = t.trim());
-  const r = spawnSync('gh', ['auth', 'token'], { encoding: 'utf8', timeout: 10_000 });
-  return (tokenCache = r.status === 0 ? r.stdout.trim() : '');
+  if (tokenCache === undefined) tokenCache = githubToken();
+  return tokenCache;
 }
 async function gh(method, path, body) {
   const t = token();
   if (!t) fail('No GitHub token on the console server: set GITHUB_TOKEN (Systems check → GitHub), classic with repo + workflow scopes');
-  const res = await fetch(`${API()}${path}`, {
-    method,
-    headers: { Authorization: `Bearer ${t}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'axf-project-wizard', ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(20_000),
-  });
-  const text = await res.text();
-  let data = null;
-  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-  if (!res.ok) throw Object.assign(new Error(`GitHub ${res.status}: ${data?.message ?? String(text).slice(0, 200)}`), { status: res.status, user: true });
-  return data;
+  try {
+    return await createGitHub({ token: t, base: apiBaseFromEnv(), userAgent: 'axf-project-wizard', timeoutMs: 20_000 }).json(method, path, body);
+  } catch (e) {
+    throw Object.assign(new Error(e.message), { status: e.status, user: true });
+  }
 }
 /** free | empty | exists | unknown, with the repo's facts when it exists. */
 async function githubState(owner, name) {
@@ -132,10 +123,10 @@ async function githubState(owner, name) {
 }
 /** "owner/name", "https://github.com/owner/name(.git)" or "git@github.com:owner/name.git" → { owner, name } */
 export function parseGithub(s) {
-  const t = str(s, 300).replace(/\.git$/, '').replace(/\/+$/, '');
-  const m = t.match(/^(?:https?:\/\/(?:www\.)?github\.com\/|git@github\.com:)?([^/\s:]+)\/([^/\s]+)$/i);
-  if (!m || !OWNER_RE.test(m[1]) || !REPO_RE.test(m[2])) return null;
-  return { owner: m[1], name: m[2] };
+  const slug = parseRepo(str(s, 300));
+  if (!slug) return null;
+  const [owner, name] = slug.split('/');
+  return { owner, name };
 }
 
 const slugOfRepo = (r) => (r ? `${r.owner}/${r.name}`.toLowerCase() : '');
@@ -149,14 +140,13 @@ function originRepo(dir) {
 /* ─── git + the VPS ──────────────────────────────────────────────────────── */
 
 function git(cwd, args, { auth = false, timeout = 300_000 } = {}) {
-  const env = { ...process.env, GIT_TERMINAL_PROMPT: '0' };
   const t = auth ? token() : '';
-  const basic = t ? Buffer.from(`x-access-token:${t}`).toString('base64') : '';
-  if (basic) Object.assign(env, { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'http.extraHeader', GIT_CONFIG_VALUE_0: `Authorization: Basic ${basic}` });
+  // lib-github: header scoped to https://github.com/ + no redirects, through GIT_CONFIG_* (never argv or a URL)
+  const env = { ...process.env, GIT_TERMINAL_PROMPT: '0', ...(t ? gitAuthEnv(t, GIT_BASE()) : {}) };
   const r = spawnSync('git', args, { cwd, env, encoding: 'utf8', timeout });
-  const scrub = (s) => (t ? String(s).split(t).join('***').split(basic).join('***') : String(s));
-  if (r.status !== 0) fail(scrub(`git ${args[0]} failed: ${(r.stderr || r.stdout || r.error?.message || '').trim().slice(-800)}`));
-  return scrub(r.stdout.trim());
+  const clean = (s) => scrub(s, t ? [t] : []);
+  if (r.status !== 0) fail(clean(`git ${args[0]} failed: ${(r.stderr || r.stdout || r.error?.message || '').trim().slice(-800)}`));
+  return clean(r.stdout.trim());
 }
 const gitOk = (cwd, args) => spawnSync('git', args, { cwd, encoding: 'utf8' }).status === 0;
 
@@ -183,7 +173,7 @@ function vpsSh(cmd) {
 const vpsPath = (name) => `${vpsInfo().dir.replace(/\/+$/, '')}/${name}.git`;
 const vpsUrl = (name) => { const v = vpsInfo(); return v.mode === 'ssh' ? `ssh://${v.user}@${v.host}${vpsPath(name)}` : vpsPath(name); };
 function vpsState(name) {
-  if (!REPO_RE.test(name)) return { state: 'unknown', note: 'bad name' };
+  if (!validName(name)) return { state: 'unknown', note: 'bad name' };
   try {
     const out = vpsSh(`p=${q(vpsPath(name))}; if [ -d "$p" ]; then if git --git-dir="$p" rev-parse -q --verify HEAD >/dev/null 2>&1 || [ -n "$(git --git-dir="$p" for-each-ref --count=1)" ]; then echo exists; else echo empty; fi; else echo free; fi`).trim();
     return { state: ['free', 'empty', 'exists'].includes(out) ? out : 'unknown', path: vpsPath(name), url: vpsUrl(name) };
@@ -260,7 +250,7 @@ export async function inspect(src = {}) {
   }
   if (kind === 'vps') {
     const name = str(src.repo, 100).replace(/\.git$/, '');
-    if (!REPO_RE.test(name)) fail('Pick a repository on the VPS');
+    if (!validName(name)) fail('Pick a repository on the VPS');
     const st = vpsState(name);
     if (st.state === 'free') fail(`${vpsPath(name)} doesn't exist on the VPS`);
     if (st.state === 'unknown') fail(st.note ?? 'Could not check the VPS repository');
@@ -307,7 +297,7 @@ async function normalise(plan = {}) {
 
   // the source itself
   if (source.kind === 'github' && !parseGithub(source.repo)) problems.push('Source: give the GitHub repository as owner/name or its link');
-  if (source.kind === 'vps' && !REPO_RE.test(str(source.repo, 100).replace(/\.git$/, ''))) problems.push('Source: pick a repository on the VPS');
+  if (source.kind === 'vps' && !validName(str(source.repo, 100).replace(/\.git$/, ''))) problems.push('Source: pick a repository on the VPS');
   if (!['github', 'vps', 'folder', 'new'].includes(source.kind)) problems.push('Pick a source');
   out.commitAll = plan.commitAll === true;
 
@@ -335,10 +325,10 @@ async function normalise(plan = {}) {
   if (g.mode === 'new' || g.mode === 'existing') {
     const owner = str(g.owner, 39) || (token() ? (await gh('GET', '/user').catch(() => ({}))).login ?? '' : '');
     const repoName = str(g.name, 100) || name;
-    if (!OWNER_RE.test(owner)) problems.push('GitHub: the owner must be a GitHub account or organisation');
-    if (!REPO_RE.test(repoName)) problems.push('GitHub: the repository name may use letters, digits, ., - and _');
+    if (!validOwner(owner)) problems.push('GitHub: the owner must be a GitHub account or organisation');
+    if (!validName(repoName)) problems.push('GitHub: the repository name may use letters, digits, ., - and _');
     if (!token()) problems.push('GitHub: no token on the console server (Systems check → GitHub)');
-    else if (OWNER_RE.test(owner) && REPO_RE.test(repoName)) {
+    else if (validOwner(owner) && validName(repoName)) {
       const st = await githubState(owner, repoName);
       const target = `${owner}/${repoName}`.toLowerCase();
       const isSource = source.kind === 'github' && slugOfRepo(parseGithub(source.repo)) === target;
@@ -354,7 +344,7 @@ async function normalise(plan = {}) {
   // VPS home
   if (v.mode === 'new' || v.mode === 'existing') {
     const repoName = str(v.name, 100).replace(/\.git$/, '') || name;
-    if (!REPO_RE.test(repoName)) problems.push('VPS: the repository name may use letters, digits, ., - and _');
+    if (!validName(repoName)) problems.push('VPS: the repository name may use letters, digits, ., - and _');
     else if (vpsInfo().mode === 'off') problems.push(`VPS: ${vpsInfo().why}`);
     else {
       const st = vpsState(repoName);

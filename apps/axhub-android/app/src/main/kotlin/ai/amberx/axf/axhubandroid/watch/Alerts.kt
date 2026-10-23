@@ -1,100 +1,133 @@
 package ai.amberx.axf.axhubandroid.watch
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import ai.amberx.axf.axhubandroid.MainActivity
 import ai.amberx.axf.axhubandroid.R
-import ai.amberx.axf.axhubandroid.hub.PendingApproval
+import ai.amberx.axf.hub.HubApproval
+import ai.amberx.axf.hub.WatchPrefs
+import ai.amberx.axf.notifications.AlertSpec
+import ai.amberx.axf.notifications.AxfNotifications
+import ai.amberx.axf.notifications.ChannelImportance
+import ai.amberx.axf.notifications.ChannelSpec
+import ai.amberx.axf.notifications.LockScreen
+import ai.amberx.axf.notifications.NoticeSpec
+import ai.amberx.axf.notifications.OngoingSpec
+
+/** AXHub's watcher settings live in the app's original preferences file, so saved values carry over. */
+fun hubPrefs(context: Context): WatchPrefs = WatchPrefs(context, "axhub_watch")
 
 /**
- * Notifications: a quiet ongoing one while watching, and a loud one per new approval that opens its page
- * in the app (full screen when Android allows it). The lock screen only ever shows "Approval waiting";
+ * AXHub's notifications on top of lib-notifications: a quiet ongoing one while watching, and a loud one per new approval
+ * that opens its page in the app (full screen when Android allows it). The lock screen only ever shows "Approval waiting";
  * the command itself appears after the phone is unlocked, and the app never shows over the lock screen.
  */
 object Alerts {
     const val CH_WATCH = "axhub.watch"
     const val CH_APPROVAL = "axhub.approvals"
+    /** The old quiet auto-approved channel (deleted on start: a channel's sound can't change once created). */
+    const val CH_AUTO_OLD = "axhub.autoApproved"
+    /** Auto-approved, with the alarm sound (Brett, Oct 22 2026). */
+    const val CH_AUTO = "axhub.autoApprovedAlarm"
     const val EXTRA_APPROVAL = "axhub.approvalId"
     const val EXTRA_OPEN_LIST = "axhub.openApprovals"
     const val ID_WATCH = 1
     private const val ID_SIGNIN = 2
 
+    val channelSpecs: List<ChannelSpec> = listOf(
+        ChannelSpec(CH_WATCH, "Watching for approvals", ChannelImportance.MIN, "Shown while AXHub checks the hub", lockScreen = null, showBadge = false),
+        ChannelSpec(CH_APPROVAL, "Approvals waiting", ChannelImportance.HIGH, "A call on axHub needs your approval", LockScreen.PRIVATE, vibrate = true),
+    )
+
     fun channels(context: Context) {
+        AxfNotifications.channels(context, channelSpecs)
+        alarmChannel(context)
+    }
+
+    /** lib-notifications channels carry no sound choice (framework Android code is on hold), so this one is made here.
+     *  Also called before each post, so a watcher started at boot (no activity yet) never posts to a missing channel. */
+    fun alarmChannel(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        nm.createNotificationChannel(NotificationChannel(CH_WATCH, "Watching for approvals", NotificationManager.IMPORTANCE_MIN).apply {
-            description = "Shown while AXHub checks the hub"; setShowBadge(false)
-        })
-        nm.createNotificationChannel(NotificationChannel(CH_APPROVAL, "Approvals waiting", NotificationManager.IMPORTANCE_HIGH).apply {
-            description = "A call on axHub needs your approval"; enableVibration(true); lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        })
+        nm.deleteNotificationChannel(CH_AUTO_OLD)
+        if (nm.getNotificationChannel(CH_AUTO) == null) {
+            val ch = NotificationChannel(CH_AUTO, "Auto-approved (alarm)", NotificationManager.IMPORTANCE_HIGH)
+            ch.description = "A call on axHub was approved by auto-approval. Plays the alarm sound."
+            ch.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            ch.enableVibration(true)
+            val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            ch.setSound(sound, AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build())
+            nm.createNotificationChannel(ch)
+        }
     }
 
-    fun canPost(context: Context): Boolean = Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    fun canPost(context: Context): Boolean = AxfNotifications.canPost(context)
+    fun canFullScreen(context: Context): Boolean = AxfNotifications.canFullScreen(context)
 
-    /** Android 14+ asks the user to allow full-screen alerts per app. */
-    fun canFullScreen(context: Context): Boolean = Build.VERSION.SDK_INT < 34 || context.getSystemService(NotificationManager::class.java)?.canUseFullScreenIntent() == true
+    private fun openIntent(context: Context, requestCode: Int, approvalId: String?): PendingIntent =
+        if (approvalId != null) AxfNotifications.activityIntent(context, MainActivity::class.java, requestCode, extras = mapOf(EXTRA_APPROVAL to approvalId))
+        else AxfNotifications.activityIntent(context, MainActivity::class.java, requestCode, flags = mapOf(EXTRA_OPEN_LIST to true))
 
-    private fun openIntent(context: Context, requestCode: Int, approvalId: String?): PendingIntent {
-        val i = Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        if (approvalId != null) i.putExtra(EXTRA_APPROVAL, approvalId) else i.putExtra(EXTRA_OPEN_LIST, true)
-        return PendingIntent.getActivity(context, requestCode, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    fun watching(context: Context, waiting: Int, note: String? = null): Notification = AxfNotifications.ongoing(
+        context,
+        OngoingSpec(CH_WATCH, if (waiting > 0) "$waiting approval${if (waiting == 1) "" else "s"} waiting" else "Watching axHub", note ?: "Tap to open AXHub", R.drawable.ic_axhub_notify),
+        openIntent(context, 0, null),
+    )
+
+    fun updateWatching(context: Context, waiting: Int, note: String? = null) = AxfNotifications.postOngoing(context, ID_WATCH, watching(context, waiting, note))
+
+    /** The alert for one approval (pure apart from the icon id; tested in AlertsTest). */
+    fun approvalSpec(a: HubApproval, fullScreen: Boolean): AlertSpec = AlertSpec(
+        channel = CH_APPROVAL,
+        tag = tag(a.id),
+        title = "Approve ${a.tool}?",
+        text = a.summary.lineSequence().firstOrNull()?.take(120) ?: "Tap to review",
+        bigText = a.summary.take(400),
+        smallIcon = R.drawable.ic_axhub_notify,
+        publicTitle = "Approval waiting",
+        publicText = "Unlock to review",
+        fullScreen = fullScreen,
+        actionLabel = "Review",
+    )
+
+    fun approval(context: Context, a: HubApproval, fullScreen: Boolean) {
+        AxfNotifications.alert(context, approvalSpec(a, fullScreen), openIntent(context, a.id.hashCode(), a.id))
     }
 
-    fun watching(context: Context, waiting: Int, note: String? = null): Notification =
-        NotificationCompat.Builder(context, CH_WATCH)
-            .setSmallIcon(R.drawable.ic_axhub_notify)
-            .setContentTitle(if (waiting > 0) "$waiting approval${if (waiting == 1) "" else "s"} waiting" else "Watching axHub")
-            .setContentText(note ?: "Tap to open AXHub")
-            .setOngoing(true).setOnlyAlertOnce(true).setSilent(true)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setContentIntent(openIntent(context, 0, null))
-            .build()
+    /** Shown instead of the approval alert when auto-approval approved the call (pure apart from the icon; tested in AlertsTest). */
+    fun autoApprovedSpec(a: HubApproval): AlertSpec = AlertSpec(
+        channel = CH_AUTO,
+        tag = autoTag(a.id),
+        title = "Auto-approval approved ${a.tool}",
+        text = a.summary.lineSequence().firstOrNull()?.take(120) ?: a.tool,
+        bigText = a.summary.take(400),
+        smallIcon = R.drawable.ic_axhub_notify,
+        publicTitle = "Auto-approval approved",
+        publicText = "Unlock to see the call",
+        actionLabel = "View",
+    )
 
-    @SuppressLint("MissingPermission") // canPost() checks POST_NOTIFICATIONS first
-    fun approval(context: Context, a: PendingApproval, fullScreen: Boolean) {
-        if (!canPost(context)) return
-        val open = openIntent(context, a.id.hashCode(), a.id)
-        val public = NotificationCompat.Builder(context, CH_APPROVAL).setSmallIcon(R.drawable.ic_axhub_notify).setContentTitle("Approval waiting").setContentText("Unlock to review").build()
-        val n = NotificationCompat.Builder(context, CH_APPROVAL)
-            .setSmallIcon(R.drawable.ic_axhub_notify)
-            .setContentTitle("Approve ${a.tool}?")
-            .setContentText(a.summary.lineSequence().firstOrNull()?.take(120) ?: "Tap to review")
-            .setStyle(NotificationCompat.BigTextStyle().bigText(a.summary.take(400)))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE).setPublicVersion(public)
-            .setAutoCancel(true)
-            .setContentIntent(open)
-            .addAction(0, "Review", open)
-            .apply { if (fullScreen && canFullScreen(context)) setFullScreenIntent(open, true) }
-            .build()
-        runCatching { NotificationManagerCompat.from(context).notify(tag(a.id), 0, n) }
+    fun autoApproved(context: Context, a: HubApproval) {
+        alarmChannel(context)
+        AxfNotifications.alert(context, autoApprovedSpec(a), openIntent(context, a.id.hashCode(), a.id))
     }
 
-    fun clearApproval(context: Context, id: String) { NotificationManagerCompat.from(context).cancel(tag(id), 0) }
+    fun clearApproval(context: Context, id: String) = AxfNotifications.cancelTag(context, tag(id))
 
     /** Not urgent: on the quiet channel. [notAdmin] = signed in, but the account can't approve. */
-    @SuppressLint("MissingPermission") // canPost() checks POST_NOTIFICATIONS first
     fun signedOut(context: Context, notAdmin: Boolean = false) {
-        if (!canPost(context)) return
-        val n = NotificationCompat.Builder(context, CH_WATCH)
-            .setSmallIcon(R.drawable.ic_axhub_notify).setContentTitle(if (notAdmin) "This hub account can't approve" else "Sign in to AXHub")
-            .setContentText(if (notAdmin) "Sign in with an admin account (or finish the hub's password change)." else "Your hub session ended, so approvals can't be watched.")
-            .setAutoCancel(true).setContentIntent(openIntent(context, ID_SIGNIN, null)).build()
-        runCatching { NotificationManagerCompat.from(context).notify(ID_SIGNIN, n) }
+        AxfNotifications.notice(context, NoticeSpec(
+            CH_WATCH, ID_SIGNIN,
+            if (notAdmin) "This hub account can't approve" else "Sign in to AXHub",
+            if (notAdmin) "Sign in with an admin account (or finish the hub's password change)." else "Your hub session ended, so approvals can't be watched.",
+            R.drawable.ic_axhub_notify,
+        ), openIntent(context, ID_SIGNIN, null))
     }
 
-    private fun tag(id: String) = "approval:$id"
+    fun tag(id: String) = "approval:$id"
+    fun autoTag(id: String) = "auto-approved:$id"
 }

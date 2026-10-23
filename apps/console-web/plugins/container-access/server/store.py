@@ -11,6 +11,8 @@ import threading
 import time
 from pathlib import Path
 from typing import Any
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_CONTAINER_ACCESS_DIR", ROOT / ".axf-console" / "plugins" / "container-access"))
@@ -72,19 +74,11 @@ def reachable(c: dict[str, Any], settings: dict[str, Any]) -> bool:
 
 # ---------------------------------------------------------------- files
 def _write_json(p: Path, data: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_suffix(p.suffix + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, p)
+    storage.write_json(p, data)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    try:
-        return json.loads(p.read_text("utf-8"))
-    except (OSError, ValueError):
-        return default
+    return storage.read_json(p, default)
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "container-access-settings@1", "reach": "all", "allow": [], "protect": [],
@@ -130,12 +124,7 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
 def audit(entry: dict[str, Any]) -> dict[str, Any]:
     e = {"at": int(time.time() * 1000), **entry}
     with _lock:
-        DATA.mkdir(parents=True, exist_ok=True, mode=0o700)
-        if AUDIT.exists() and AUDIT.stat().st_size > AUDIT_MAX:
-            os.replace(AUDIT, AUDIT.with_suffix(".1.jsonl"))
-        fd = os.open(AUDIT, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
-        with os.fdopen(fd, "a", encoding="utf-8") as f:
-            f.write(json.dumps(e, ensure_ascii=False) + "\n")
+        storage.append_jsonl(AUDIT, e, rotate_at=AUDIT_MAX, ensure_ascii=False)
     return e
 
 

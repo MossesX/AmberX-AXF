@@ -1,0 +1,55 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-f8efad2389",
+  "createdAt": "2026-10-21T01:47:17.000Z",
+  "updatedAt": "2026-10-21T04:47:17.000Z",
+  "kind": "build",
+  "title": "Activity plugin",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/console-web/plugins/activity` (`ai.amberx.axf.console.activity`). A banner at the top of every view (order 4) whenever anything is in progress; tap it for every item, tap an item for its details (detail text, status, started/elapsed, last update, who, source, steps, link; GitHub runs load thei",
+    "commits": [
+      {
+        "sha": "ae289bb",
+        "message": "Activity banner plugin: everything in progress (GitHub runs, console update, AI replies, VPS Auto fix, Claude Code on the VPS) with full details"
+      },
+      {
+        "sha": "ddb246d",
+        "message": "Console + plugins on axf_server: one wall, one private writer, one outbound HTTP"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T04:47:17.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "plugin",
+    "id": "activity"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T01:47:17.000Z",
+  "finishedAt": "2026-10-21T04:47:17.000Z",
+  "estimate": {
+    "minutes": 180,
+    "costUsd": 25.2
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/plugins/activity"
+  ]
+}

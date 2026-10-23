@@ -1,0 +1,4 @@
+[
+  { "name": "libraries", "steps": [ { "eval": "location.hash=''", "wait": 300 }, { "search": "Libraries", "wait": 2500 } ] },
+  { "name": "token-dialog", "steps": [ { "search": "Home", "wait": 1500 }, { "click": "text=Console token", "wait": 1200 } ] }
+]

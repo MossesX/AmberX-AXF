@@ -11,7 +11,8 @@ the Apps page:
       apks/<project>/<project>-<version>-b<build>.apk
 
 The last KEEP builds of each app are kept. `AXF_APP_CATALOG` overrides the folder (`off` = none).
-Needs GITHUB_TOKEN (Actions: read) to download artifacts; the token goes to api.github.com only.
+Needs GITHUB_TOKEN (Actions: read) to download artifacts; GitHub calls go through lib-github (axf_server.github): the
+token goes to api.github.com only and the artifact's redirect is fetched without it.
 """
 from __future__ import annotations
 
@@ -20,7 +21,6 @@ import io
 import json
 import os
 import re
-import tempfile
 import threading
 import time
 import zipfile
@@ -28,9 +28,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 import app_ci
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import github, http as axf_http, storage
 
 KEEP = 3
-MAX_BUNDLE = app_ci.MAX_APK  # the download helper caps reads at this size
+MAX_BUNDLE = app_ci.MAX_APK  # the bundle download is capped at this size
 MAX_APP = 300 * 1024 * 1024
 PROJECT_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
 VERSION_RE = re.compile(r"^[0-9A-Za-z][0-9A-Za-z.+_-]{0,31}$")
@@ -52,9 +54,11 @@ class CatalogError(Exception):
 
 class AppCatalog:
     def __init__(self, repo: str, token: Callable[[], str], folder: Path | None,
-                 http: Callable[..., tuple[int, dict[str, str], bytes]] | None = None, workflow: str = "android.yml"):
+                 transport: axf_http.Transport | None = None, workflow: str = "android.yml"):
+        if not github.valid_repo(repo):
+            raise CatalogError("the repo must look like owner/name")
         self.repo, self.token, self.folder, self.workflow = repo, token, folder, workflow
-        self.http = http or _http
+        self.gh = github.GitHubClient(token, user_agent="axf-console", timeout=120, max_bytes=MAX_BUNDLE, transport=transport)
         self.lock = threading.Lock()
         self.last: dict[str, Any] = {"state": "idle"}
 
@@ -66,10 +70,8 @@ class AppCatalog:
         p = self.index_path()
         if not p or not p.exists():
             return {"$axf": "app-catalog@1", "apps": [], "updatedAt": None}
-        try:
-            return json.loads(p.read_text())
-        except (OSError, ValueError):
-            return {"$axf": "app-catalog@1", "apps": [], "updatedAt": None, "damaged": True}
+        cat = storage.read_json(p, None)
+        return cat if isinstance(cat, dict) else {"$axf": "app-catalog@1", "apps": [], "updatedAt": None, "damaged": True}
 
     def status(self) -> dict[str, Any]:
         cat = self.read()
@@ -78,13 +80,13 @@ class AppCatalog:
 
     # ---------- GitHub ----------
     def _api(self, path: str) -> Any:
-        t = self.token()
-        if not t:
+        if not self.token():
             raise CatalogError("GITHUB_TOKEN isn't set on the console")
-        code, _h, raw = self.http("GET", f"https://api.github.com/repos/{self.repo}{path}", {"Authorization": f"Bearer {t}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}, None)
-        if code >= 400:
-            raise CatalogError(f"GitHub {code} on {path.split('?')[0]}")
-        return json.loads(raw or b"{}")
+        try:
+            data = self.gh.get(f"/repos/{self.repo}{path}")
+        except github.GitHubError as e:
+            raise CatalogError(f"GitHub {e.status or 'unreachable'} on {path.split('?')[0]}") from None
+        return data if isinstance(data, dict) else {}
 
     def latest_run(self) -> dict[str, Any] | None:
         runs = self._api(f"/actions/workflows/{self.workflow}/runs?branch=main&status=success&per_page=1").get("workflow_runs", [])
@@ -113,9 +115,11 @@ class AppCatalog:
                 return self.last
             if int(art.get("size_in_bytes") or 0) > MAX_BUNDLE:
                 raise CatalogError("bundle too large")
-            code, _h, raw = self.http("GET", art["archive_download_url"], {"Authorization": f"Bearer {self.token()}"}, None)
-            if code >= 400:
-                raise CatalogError(f"GitHub {code} downloading the bundle")
+            try:
+                # the zip URL must be on api.github.com (the token goes nowhere else); its redirect is fetched without it
+                raw = self.gh.download(str(art.get("archive_download_url") or ""), max_bytes=MAX_BUNDLE)
+            except github.GitHubError as e:
+                raise CatalogError(f"GitHub {e.status or ''} downloading the bundle: {e}".replace("  ", " ")) from None
             added = self._file_bundle(raw, run)
             self.last = {"state": "updated", "at": _now(), "runId": run["id"], "added": added}
             return self.last
@@ -160,11 +164,7 @@ class AppCatalog:
             _chmod(target_dir, 0o2775)
             target = target_dir / name
             if not target.exists():
-                fd, tmp = tempfile.mkstemp(dir=target_dir, prefix=".tmp-", suffix=".apk")
-                with os.fdopen(fd, "wb") as f:
-                    f.write(data)
-                _chmod(Path(tmp), 0o664)
-                os.replace(tmp, target)
+                storage.write_bytes(target, data, mode=0o664, dir_mode=None)  # atomic; shared with axHub
             entry = {"version": version, "build": build, "versionCode": a.get("versionCode") if isinstance(a.get("versionCode"), int) else build,
                      "file": f"apks/{project}/{name}", "size": len(data), "sha256": sha, "builtAt": run.get("updated_at") or bundle.get("builtAt"),
                      "commit": (run.get("head_sha") or "")[:12], "runUrl": run.get("html_url")}
@@ -191,12 +191,8 @@ class AppCatalog:
         assert self.folder
         self.folder.mkdir(parents=True, exist_ok=True)
         _chmod(self.folder, 0o2775)
-        fd, tmp = tempfile.mkstemp(dir=self.folder, prefix=".tmp-", suffix=".json")
-        with os.fdopen(fd, "w") as f:
-            json.dump(cat, f, indent=2)
-            f.write("\n")
-        _chmod(Path(tmp), 0o664)
-        os.replace(tmp, self.folder / "catalog.json")
+        # shared with axHub (group-readable on purpose): atomic, 0664, folder mode set above (axf_server.storage)
+        storage.write_json(self.folder / "catalog.json", cat, trailing_newline=True, mode=0o664, dir_mode=None)
 
     # ---------- background ----------
     def start(self, every: int = 600) -> None:
@@ -227,7 +223,3 @@ def _chmod(p: Path, mode: int) -> None:
 
 def _now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-
-
-def _http(method: str, url: str, headers: dict[str, str], body: bytes | None) -> tuple[int, dict[str, str], bytes]:
-    return app_ci._http(method, url, headers, body)

@@ -26,6 +26,8 @@ export interface Me {
   plugins: string[];
 }
 
+/** The console's own copy of the framework starter `uac-policy/hub-accounts` (same roles admin / themes / user and the
+ *  same permission set); kept separate so the console's descriptions and its hub permission `console.themes` stay as they are. */
 export const POLICY = 'console-access';
 export const THEMES_PERM = 'console.themes';
 export const pluginPerm = (folder: string) => `console.plugin.${folder}`;

@@ -23,6 +23,7 @@ voice.commands.match(h.alternatives, among = listOf("notes.new"))  // → Comman
 - **SpeechInput.listen(ListenOptions)**: one utterance, main thread, cancellable. `secret = true` uses the on-device recognizer on API 31+ when present and never asks for partial results.
 - **Speaker.say(text)** returns when speech has finished, so the next listen never hears the phone.
 - **VoiceCommands**: open registry; user phrases persisted in the kernel KV store (`axf.voice.triggers`). A phrase belongs to one command; a command always keeps one phrase.
+- **SpokenText**: pure Kotlin field normalisers: `site("Gmail dot com")` = `gmail.com` (drops `www.`), `password` (trimmed, kept as heard), `code` (words only, case and punctuation ignored: use it on both save and check of spoken codes).
 - **PhraseMatcher**: pure Kotlin (`normalize`, `triggerScore`, `labelScore`, `best`, `ranked`); "gmail dot com" = "gmail.com" = "gmail".
 - **VoiceTriggersScreen()**: route `voice-triggers` (Settings → Voice → Voice triggers): record, type, switch defaults off/on, reset.
 - Settings group **Voice**: speak prompts, prefer on-device recognition, speech language.

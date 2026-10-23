@@ -7,6 +7,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Icon } from './axf/react';
+import { readSse, sseJson } from './axf/core/sse';
 import './changeBatch.css';
 
 export interface BatchItem {
@@ -29,26 +30,9 @@ export interface BatchActions {
   openSnapshot?: (id: string) => void;
 }
 
-/** Read a text/event-stream response (data: JSON lines) and hand each event over. */
+/** Read a text/event-stream response (data: JSON lines) and hand each event over (framing: the framework's readSse). */
 export async function readEventStream(r: Response, onEvent: (e: BatchEvent) => void): Promise<void> {
-  if (!r.ok || !r.body) {
-    const j = (await r.json().catch(() => ({}))) as { detail?: unknown };
-    throw new Error(typeof j.detail === 'string' ? j.detail : `request failed (${r.status})`);
-  }
-  const reader = r.body.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    let i;
-    while ((i = buf.indexOf('\n\n')) >= 0) {
-      const chunk = buf.slice(0, i);
-      buf = buf.slice(i + 2);
-      for (const line of chunk.split('\n')) if (line.startsWith('data: ')) { try { onEvent(JSON.parse(line.slice(6)) as BatchEvent); } catch { /* skip */ } }
-    }
-  }
+  await readSse(r, (f) => { const e = sseJson<BatchEvent>(f); if (e !== undefined) onEvent(e); });
 }
 
 const KIND: Record<string, { icon: string; label: string }> = {

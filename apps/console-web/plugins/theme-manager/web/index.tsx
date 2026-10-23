@@ -4,6 +4,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
+import { appMenu } from './menu';
 
 /*
  * Theme manager (web part): nav → Plugins → Theme manager, and Settings → Plugins → Themes. On start it registers
@@ -30,6 +31,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Theme manager',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.theme-manager'],
   register(rt) {
     void loadSaved(rt);

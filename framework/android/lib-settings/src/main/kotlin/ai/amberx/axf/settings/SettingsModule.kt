@@ -21,6 +21,9 @@ import ai.amberx.axf.kernel.module.RouteContribution
 import ai.amberx.axf.kernel.module.SettingsContribution
 import ai.amberx.axf.kernel.platform.SecureStore
 import ai.amberx.axf.kernel.runtime.AxfRuntime
+import ai.amberx.axf.kernel.runtime.ToastKind
+import ai.amberx.axf.ui.AxfUiPoints
+import ai.amberx.axf.ui.ViewContribution
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -30,8 +33,9 @@ import kotlinx.serialization.json.JsonPrimitive
 /**
  * Settings engine: collects every `SettingsGroup` from `ExtensionPoints.SETTINGS`, keeps values in
  * DataStore (SECRET kind in the secure store), mirrors them into the kernel Config (USER layer) and
- * contributes the `settings` route, the `app.settings` action and the framework's own groups
- * (Appearance = every asset slot, General, About).
+ * contributes the `settings` route and view (apps no longer register their own), the `app.settings` action, a default
+ * `help.about` (app name, version and framework version from the manifest, plus `app.about` when the manifest has
+ * one; an app's own `help.about` replaces it) and the framework's own groups (Appearance = every asset slot, General, About).
  */
 public class SettingsModule : BaseModule(ID, "Settings") {
     override val provides: List<Capability> = listOf(Capability("axf.settings", "Schema-driven settings with generated UI"))
@@ -41,8 +45,14 @@ public class SettingsModule : BaseModule(ID, "Settings") {
     override fun register(ctx: ModuleContext) {
         ctx.services.register(SettingsEngine::class, engine, "axf.settings")
         val runtime = ctx.service(AxfRuntime::class)
-        ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec("settings", "Settings", icon = "settings", module = id)))
-        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("app.settings", ActionMeta("Settings", module = id)) { _, _ -> runtime?.navigate("settings") })
+        ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(RouteSpec(ROUTE, "Settings", icon = "settings", module = id)))
+        ctx.extensions.contribute(AxfUiPoints.VIEWS, id, ViewContribution(ROUTE, "Settings", "settings") { SettingsScreen() })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("app.settings", ActionMeta("Settings", module = id)) { _, _ -> runtime?.navigate(ROUTE) })
+        // Lowest order, so an app module's own help.about (registered later) replaces it.
+        val manifest = ctx.service(AxfKernel::class)?.manifest
+        if (manifest != null) ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("help.about", ActionMeta("About", module = id)) { _, _ ->
+            runtime?.toast(aboutText(manifest.appName, manifest.appVersion, manifest.frameworkVersion, ((manifest.raw["app"] as? kotlinx.serialization.json.JsonObject)?.get("about") as? JsonPrimitive)?.takeIf { it.isString }?.content), ToastKind.INFO, "About")
+        }, order = 0)
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(appearanceGroup(runtime)), order = 10)
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(generalGroup()), order = 20)
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(aboutGroup()), order = 999)
@@ -93,6 +103,10 @@ public class SettingsModule : BaseModule(ID, "Settings") {
 
     public companion object {
         public const val ID: String = "ai.amberx.axf.settings"
+        public const val ROUTE: String = "settings"
+        /** "AXHub 0.1.0 on AmberX AXF 0.2.0. <about>" — the default About toast. */
+        public fun aboutText(name: String, version: String, framework: String, about: String?): String =
+            "$name $version on AmberX AXF $framework." + (about?.trim()?.takeIf { it.isNotEmpty() }?.let { " $it" } ?: "")
         /** Same key as the web port (core/runtime.ts SPACING_KEY). */
         public const val SPACING_KEY: String = "axf.appearance.spacing"
     }

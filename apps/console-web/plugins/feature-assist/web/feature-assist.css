@@ -3,8 +3,6 @@
 .axp-feature-assist__head { all: unset; cursor: pointer; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
 .axp-feature-assist__row { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
 .axp-feature-assist__narrow { width: auto; max-width: 130px }
-.axp-feature-assist__ib { all: unset; cursor: pointer; display: inline-flex; padding: calc(var(--fx-space) * 0.25); border-radius: var(--fx-radius-sm); color: var(--fx-muted) }
-.axp-feature-assist__ib:hover { color: var(--fx-text); background: var(--fx-surface2) }
 .axp-feature-assist__draft { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); padding: var(--fx-space); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
 .axp-feature-assist__draft.is-sub { margin-left: calc(var(--fx-space) * 1.5); background: var(--fx-surface2) }
 .axp-feature-assist__acc, .axp-feature-assist__list { margin: 0; padding-left: calc(var(--fx-space) * 1.5); font-size: calc(var(--fx-font-size) * 13 / 14); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); overflow-wrap: anywhere }

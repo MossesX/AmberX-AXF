@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Container, Icon, useRuntime } from '../axf/react';
 import * as api from '../api';
+import { TokenDialog as ApiTokenDialog } from '../axf/libs/apiclient';
 import * as core from '../axf/plan/build-queue-core.mjs';
 import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build-queue-core.mjs';
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
+import { formatMinutes } from '../axf/plan/pending-core.mjs';
+import pricing from '../axf/schemas/model-pricing.json';
 
 /*
- * Build manager: the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
+ * Build queue (nav: Build queue; the Build manager plugin lists everything still to build): the plan's epics as an ordered build queue. Done steps stay put as history; the rest can be dragged
  * into a new order, after which the console prompts to reprocess (dependency order + rework check on built steps).
  * Completing a step marks the epic and its linked features built in the feature tracker; the feature tracker feeds
  * back (all features built → step complete). Both sync when the console starts.
@@ -14,6 +17,34 @@ import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } f
  */
 
 const LOCAL_KEY = 'build-queue';
+
+/* ---------------- expected build time and price (Brett, Oct 22 2026) ---------------- */
+// Price = minutes × the model's cost of one working minute: the documented heuristic in framework/schemas/model-pricing.json
+// (tokens a build session uses per minute, priced with that model's token prices) — the same rule as estimateCost() in
+// framework/cli/model-pricing.mjs, which the Build manager and the build log use for their estimates.
+type Price = { input?: number; output?: number; cacheRead?: number; cacheWrite?: number };
+const PRICES = (pricing as { models?: Record<string, Price> }).models ?? {};
+const PER_MIN = (pricing as { heuristic?: { tokensPerMinute?: Price } }).heuristic?.tokensPerMinute ?? { input: 5000, output: 3000, cacheRead: 300000, cacheWrite: 0 };
+export function minutePrice(model: string): number | null {
+  const p = PRICES[model];
+  if (!p || p.input == null || p.output == null) return null;
+  return ((PER_MIN.input ?? 0) * p.input + (PER_MIN.output ?? 0) * p.output + (PER_MIN.cacheRead ?? 0) * (p.cacheRead ?? p.input) + (PER_MIN.cacheWrite ?? 0) * (p.cacheWrite ?? p.input)) / 1e6;
+}
+export const priceFor = (model: string, minutes: number) => { const m = minutePrice(model); return m == null || !(minutes > 0) ? null : m * minutes; };
+const usd = (v: number | null) => (v == null ? '' : v < 10 ? `$${v.toFixed(2)}` : `$${Math.round(v).toLocaleString('en-US')}`);
+const mins = (n: number) => formatMinutes(n) || '0 min';
+/** A step's expected time and price: what's left while it's being built, the whole of it once built. */
+function stepCost(s: StepView): { minutes: number; price: number | null; left: boolean } {
+  const done = s.state === 'done';
+  const minutes = done ? s.minutesTotal : s.minutesLeft;
+  return { minutes, price: priceFor(s.model, minutes), left: !done && s.stepsDone > 0 };
+}
+function TimePrice({ s }: { s: StepView }) {
+  const c = stepCost(s);
+  if (!s.minutesTotal) return <span className="bm-cost is-none" title="No build-time estimate yet: add one (or small steps) with build_steps">no estimate</span>;
+  const title = `${s.state === 'done' ? 'Estimated build time' : c.left ? `Time left (${s.stepsDone}/${s.steps.length} steps done of ~${mins(s.minutesTotal)})` : 'Expected build time'} on ${api.modelLabel(s.model)}${c.price != null ? `, ~${usd(c.price)} at the model's price per working minute` : ''}`;
+  return <span className="bm-cost" title={title}><Icon name="clock" size={12} />~{mins(c.minutes)}{c.left ? ' left' : ''}{c.price != null ? <span className="bm-cost__price"> · ~{usd(c.price)}</span> : null}</span>;
+}
 type Log = (t: string, l?: 'info' | 'ok' | 'warn' | 'error' | 'note') => void;
 
 /* ---------------- queue state store (shared by the view, the dialog and the console's init) ---------------- */
@@ -99,6 +130,8 @@ function brief(s: StepView) {
     s.features.length ? `\nFeatures in this step:\n${s.features.map((f) => `- ${f.id} [${f.status}] ${f.title} (${api.modelLabel(f.model)})`).join('\n')}` : '',
     s.acceptance.length ? `\nAcceptance:\n${s.acceptance.map((x) => `- [${x.done ? 'x' : ' '}] ${x.text}`).join('\n')}` : '',
     s.rework ? `\nRework needed:\n${s.rework.reasons.map((r) => `- ${r}`).join('\n')}` : '',
+    s.minutesTotal ? `\nExpected: ~${mins(s.minutesLeft)} left${priceFor(s.model, s.minutesLeft) != null ? `, ~${usd(priceFor(s.model, s.minutesLeft))}` : ''} on ${api.modelLabel(s.model)}` : '',
+    s.steps.length ? `\nSmall steps (${s.stepsDone}/${s.steps.length} done, ~${s.estimate}; tick each off with build_steps(id="${s.id}", index=N, done=true)):\n${s.steps.map((x, i) => `${x.done ? '[x]' : '[ ]'} ${i + 1}. ${x.estimate ? `(~${x.estimate}) ` : ''}${x.text}`).join('\n')}` : s.estimate ? `\nBuild time: ~${s.estimate}` : '',
     `\nWhen done, mark it built in the console's Build view or with the AXF MCP tool build_step(id="${s.id}", action="${s.rework ? 'resolve-rework' : 'complete'}").`,
   ].filter(Boolean).join('\n');
 }
@@ -148,7 +181,7 @@ export function BuildManager() {
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
-          <p className="fx-eyebrow">Build manager · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
+          <p className="fx-eyebrow">Build queue · {view.steps.length} steps · {done.length} built · {remaining.length} to go{view.updatedAt ? ` · updated ${view.updatedAt.slice(0, 16).replace('T', ' ')}` : ''}</p>
           <h1>Build queue</h1>
           <p className="fx-muted">Everything left in the plan, in the order it will be built. Drag steps to reorder; the console then checks dependencies and flags built steps that need rework. Each step names the model to build it with.</p>
         </div>
@@ -171,7 +204,7 @@ export function BuildManager() {
         <Container title="Next up" icon="play">
           {next ? (
             <div className="fx-stack">
-              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /></div>
+              <div className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.75)' }}><strong>{next.position}. {next.title}</strong><ModelChip model={next.model} reason={next.modelReason} long /><TimePrice s={next} /></div>
               <p className="fx-small fx-muted" style={{ margin: 0 }}>{next.modelReason}</p>
               <p className="fx-small" style={{ margin: 0 }}>{next.summary}</p>
               <div className="fx-row fx-row--wrap">
@@ -186,6 +219,16 @@ export function BuildManager() {
           <table className="fx-table"><tbody>
             {Object.entries(view.counts).map(([k, n]) => <tr key={k}><th>{STATE_LABEL[k] ?? k}</th><td>{n}</td></tr>)}
             <tr><th>Remaining by model</th><td className="fx-row fx-row--wrap" style={{ gap: 'calc(var(--fx-space) * 0.5)' }}>{api.MODELS.filter((m) => view.byModel[m.id]).map((m) => <span key={m.id}><ModelChip model={m.id} /> {view.byModel[m.id]}</span>)}</td></tr>
+            {api.MODELS.filter((m) => view.byModel[m.id]).map((m) => {
+              const left = view.minutesLeftByModel?.[m.id] ?? 0;
+              return <tr key={`t-${m.id}`}><th>{m.label}: time left</th><td>~{mins(left)}{priceFor(m.id, left) != null ? <span className="bm-cost__price"> · ~{usd(priceFor(m.id, left))}</span> : null}</td></tr>;
+            })}
+            {(() => {
+              const left = remaining.reduce((a, s) => a + s.minutesLeft, 0);
+              const cost = remaining.reduce((a, s) => a + (priceFor(s.model, s.minutesLeft) ?? 0), 0);
+              const none = remaining.filter((s) => !s.minutesTotal).length;
+              return <tr><th>All of it</th><td><strong>~{mins(left)}</strong>{cost ? <span className="bm-cost__price"> · ~{usd(cost)}</span> : null}{none ? <span className="fx-muted"> · {none} step{none === 1 ? '' : 's'} without an estimate</span> : null}</td></tr>;
+            })()}
           </tbody></table>
         </Container>
         <Container title={`Rework (${reworks.length})`} icon="undo">
@@ -235,6 +278,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
         </button>
         <span className={`bm-state is-${s.state}`}>{STATE_LABEL[s.state]}</span>
         <ModelChip model={s.model} reason={s.modelReason} />
+        <TimePrice s={s} />
         <span className="bm-progress" title={`${s.progress}%${s.features.length ? ` · ${builtFeatures}/${s.features.length} features built` : ''}`}><span style={{ width: `${s.progress}%` }} /></span>
         {!s.ready && s.state !== 'done' && s.state !== 'rework' && <span title={`Waits on ${s.deps.filter((d) => !d.done).map((d) => d.title).join(', ')}`}><Icon name="lock" size={14} /></span>}
         {(s.violations.length > 0 || s.rework) && <span className="pl-warn" title={[...s.violations, ...(s.rework?.reasons ?? [])].join('\n')}><Icon name="alert" size={14} /></span>}
@@ -274,8 +318,10 @@ export function ReprocessDialog({ close }: { close: () => void }) {
   const [p, setP] = useState<Proposal | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const dirty = !!useQueueState()?.dirty;
   useEffect(() => { act({ kind: 'reprocess', apply: false }, (t, l) => { if (l === 'error') setErr(t); log(t, l); }).then(setP); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const apply = async () => { setBusy(true); const r = await act({ kind: 'reprocess', apply: true }, log); setBusy(false); if (r) { log(`reprocessed: ${r.moves.length} move(s), ${r.rework.length} step(s) flagged for rework`, 'ok'); close(); } };
+  const done = async () => { setBusy(true); if (dirty) await act({ kind: 'reprocess', apply: true }, log); setBusy(false); close(); };
   if (err) return <div className="fx-stack"><p className="pl-note is-error">{err}</p><Button onClick={close}>Close</Button></div>;
   if (!p) return <div className="fx-empty">Checking dependencies…</div>;
   const nothing = !p.changed && !p.moves.length && !p.rework.length;
@@ -287,7 +333,8 @@ export function ReprocessDialog({ close }: { close: () => void }) {
       {p.rework.length > 0 && <><h4 style={{ margin: 0 }}>Built steps to refactor ({p.rework.length})</h4><ul className="fx-small bm-list">{p.rework.map((r) => <li key={r.id}><strong>{r.title}</strong> <ModelChip model={r.model} />{r.already ? <span className="fx-muted"> (already flagged)</span> : ''}<br /><span className="fx-muted">{r.reasons.join('; ')}</span></li>)}</ul></>}
       {p.cycles.length > 0 && <p className="pl-note is-warn"><Icon name="alert" size={14} />Dependency cycle broken at: {p.cycles.map((c) => c.title).join(', ')} — fix the dependencies in the feature tracker.</p>}
       <div className="fx-row fx-row--wrap" style={{ justifyContent: 'flex-end' }}>
-        <Button onClick={close}>{nothing ? 'Close' : 'Later'}</Button>
+        {/* Nothing to move: the check itself is the reprocess, so closing clears "the queue changed" and its message. */}
+        <Button disabled={busy} onClick={nothing ? done : close}>{nothing ? 'Close' : 'Later'}</Button>
         {!nothing && <Button tone="primary" icon="shuffle" disabled={busy} onClick={apply}>Apply</Button>}
       </div>
     </div>
@@ -315,15 +362,13 @@ export function BuildSummaryCard() {
   );
 }
 
-/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one. */
+/** Dialog: the console token (AXF_TOKEN) for writes when the API is deployed with one (the API client library's TokenDialog). */
 export function TokenDialog({ close }: { close: () => void }) {
   const rt = useRuntime();
-  const [t, setT] = useState(api.getToken());
   return (
-    <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); api.setToken(t.trim()); rt.toast(t.trim() ? 'Console token saved in this browser' : 'Console token cleared', 'success'); close(); initBuildSync((m, l) => rt.terminal.log('build', m, l)); }}>
-      <p className="fx-muted" style={{ margin: 0 }}>Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp.</p>
-      <input className="fx-input fx-mono" type="password" autoComplete="off" value={t} onChange={(e) => setT(e.target.value)} placeholder="AXF_TOKEN" aria-label="Console token" />
-      <div className="fx-row" style={{ justifyContent: 'flex-end' }}><Button onClick={close}>Cancel</Button><Button tone="primary" icon="save" type="submit">Save</Button></div>
-    </form>
+    <ApiTokenDialog tokens={api.consoleTokens} close={close} placeholder="AXF_TOKEN" ariaLabel="Console token"
+      description="Writes (plan edits, the build queue, installs) need the AXF_TOKEN that install-console.sh printed. It is kept only in this browser. The same token connects Claude to this console's MCP endpoint at /mcp."
+      savedToast="Console token saved in this browser" clearedToast="Console token cleared"
+      onChange={() => { initBuildSync((m, l) => rt.terminal.log('build', m, l)); }} />
   );
 }

@@ -20,6 +20,9 @@ esac
 [ -t 0 ] || [ "$MODE" = "report" ] || MODE="report"   # no terminal → never ask
 
 USER_HOME="${SUDO_USER:+$(getent passwd "$SUDO_USER" | cut -d: -f6)}"; USER_HOME="${USER_HOME:-$HOME}"
+# claude, claude-pick and claude-sync install into ~/.local/bin, which cron's and vps.run's PATH don't have: without
+# this every check below said they were missing even right after an Auto fix installed them.
+export PATH="$USER_HOME/.local/bin:$PATH"
 declare -A ST SUM
 ORDER=()
 put() { ST[$1]="$2"; SUM[$1]="$(printf '%s' "$3" | tr -d '"\\' | tr '\n' ' ' | cut -c1-280)"; [[ " ${ORDER[*]} " == *" $1 "* ]] || ORDER+=("$1"); }
@@ -46,7 +49,11 @@ check_all() {
   if have claude; then put host-claude-cli ok "Claude Code $(claude --version 2>/dev/null | head -1)"; else put host-claude-cli error "Claude Code (claude) is not installed"; fi
   if [ -s "$USER_HOME/.claude/.credentials.json" ] || [ -s "$USER_HOME/.anthropic-key" ]; then put host-claude-login ok "signed in (plan credentials or API key file present)"
   else put host-claude-login warn "no Claude sign-in found for $(basename "$USER_HOME"): run claude and /login"; fi
-  if have claude && grep -qs "claude-pick" "$(command -v claude)" 2>/dev/null; then put host-claude-pick ok "claude asks for model + sign-in at launch"
+  # claude-pick --install puts the launcher in ~/.local/bin and an alias in ~/.bashrc / ~/.zshrc. Cron and vps.run are
+  # non-interactive shells that never load aliases, so `command -v claude` alone always finds the real binary here.
+  if [ -x "$USER_HOME/.local/bin/claude-pick" ] && { grep -qs "alias claude='claude-pick'" "$USER_HOME/.bashrc" "$USER_HOME/.zshrc" \
+       || grep -qs "claude-pick" "$(command -v claude 2>/dev/null)"; }; then put host-claude-pick ok "claude asks for model + sign-in at launch"
+  elif [ -x "$USER_HOME/.local/bin/claude-pick" ]; then put host-claude-pick warn "claude-pick is installed but no shell alias points claude at it"
   else put host-claude-pick warn "claude-pick isn't installed: launches don't ask for the model"; fi
   if have claude-sync; then put host-claude-sync ok "claude-sync installed"; else put host-claude-sync warn "claude-sync isn't installed: rules and memory don't sync from the hub"; fi
   if grep -qs "session-checkin/checkin.mjs" "$USER_HOME/.claude/settings.json" "$DIR/.claude/settings.json" "$DIR/.claude/settings.local.json"; then put host-session-checkin ok "session check-in hook installed"

@@ -12,19 +12,25 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
-import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
 import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/live-session';
-import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, frameToEvent, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
+import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
+import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
+import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
+import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -66,9 +72,151 @@ write('hide.json', {
     { overrides: {}, defaults: ['toolbar'], hidden: hiddenSlots({}, ['toolbar']) },
     { overrides: { toolbar: false }, defaults: ['toolbar'], hidden: hiddenSlots({ toolbar: false }, ['toolbar']) },
     { overrides: { banner: true }, defaults: ['toolbar', 'layout'], hidden: hiddenSlots({ banner: true }, ['toolbar', 'layout']) },
+    // Forced by a host app (embed@1): hidden over any override; non-hideable names in `forced` are ignored.
+    { overrides: { banner: false }, defaults: [], forced: ['banner'], hidden: hiddenSlots({ banner: false }, [], ['banner']) },
+    { overrides: {}, defaults: ['toolbar'], forced: ['banner', 'layout'], hidden: hiddenSlots({}, ['toolbar'], ['banner', 'layout']) },
+    { overrides: { toolbar: false }, defaults: ['toolbar'], forced: ['toolbar', 'app-menu'], hidden: hiddenSlots({ toolbar: false }, ['toolbar'], ['toolbar', 'app-menu']) },
   ],
   defaults: Object.fromEntries([[['toolbar'], defaultHidden(['toolbar'])], [['layout', 'app-menu', 'app-menu'], defaultHidden(['layout', 'app-menu', 'app-menu'])], [[], defaultHidden(undefined)]].map(([k, v]) => [(k as string[]).join(',') || '(none)', v])),
 });
+// Embed marker (core/engines/embed.ts): a host app's mark on the pages it embeds, from the query or the user agent; the hidden chrome it implies.
+{
+  const hosts = ['patches', 'Patches', ' patches ', 'dev-console', 'a', '', '-bad', 'bad id', 'x'.repeat(32), 'x'.repeat(33), 'UPPER-9', null, 12];
+  const hiddenInputs: (string | string[] | null)[] = [null, '', 'banner', 'banner,toolbar', 'toolbar+banner', 'layout', 'banner,layout,nav-menu', ['toolbar', 'toolbar', 'Banner'], ' banner , toolbar ', 'none', 'banner,none', [], ['nothing']];
+  const queries = ['', '?', '?x=1', '?axf-embed=patches', '?axf-embed=patches&axf-embed-hide=banner,toolbar', '?a=b&axf-embed=Patches&axf-embed-hide=layout', '?axf-embed=bad%20id', '?axf-embed=', 'axf-embed=patches&axf-embed-hide=toolbar', '?axf-embed-hide=toolbar'];
+  const agents = [
+    'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36 AXF-Embed/patches',
+    'Mozilla/5.0 (Linux; Android 16) Chrome/130 Mobile AXF-Embed/patches/banner+toolbar',
+    'Mozilla/5.0 (X11; Linux) AXF-Embed/patches/layout Safari/537.36',
+    'Mozilla/5.0 AXF-Embed/Bad_Host',
+    'Mozilla/5.0 (AXF-Embed/dev-console; wv)',
+    'Mozilla/5.0 NotAXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches/none Chrome/130',
+    'Mozilla/5.0 Chrome/130',
+    '',
+  ];
+  write('embed.json', {
+    token: EMBED_UA_TOKEN,
+    defaultHidden: DEFAULT_HIDDEN,
+    hosts: hosts.map((h) => ({ input: h, host: embedHost(h) })),
+    hidden: hiddenInputs.map((h) => ({ input: h, hidden: embedHidden(h) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQuery(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgent(ua) })),
+    // The query wins over the user agent; either alone counts; neither = standalone.
+    detect: [['?axf-embed=patches', agents[2]], ['?x=1', agents[0]], ['', agents[1]], ['?axf-embed=bad%20id', agents[0]], ['', agents[6]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbed(q, ua) })),
+    suffix: [['patches', undefined], ['patches', ['banner']], ['patches', ['banner', 'toolbar']], ['patches', ['toolbar', 'banner', 'layout']], ['dev-console', []], ['patches', ['nothing']], ['patches', ['none']]].map(([h, hid]) => ({ host: h, hidden: hid ?? null, suffix: userAgentSuffix(h as string, hid as string[] | undefined) })),
+    urls: [['https://console.amberxai.com/', 'patches', undefined], ['https://console.amberxai.com/?x=1#view', 'patches', undefined], ['https://pilot.amberxai.com/app?axf-embed=old&axf-embed-hide=toolbar', 'patches', ['banner']], ['https://axhub.amberxai.com/apps', 'patches', ['banner', 'toolbar']], ['https://h/p#only-hash', 'patches', ['layout']]].map(([u, h, hid]) => ({ url: u, host: h, hidden: hid ?? null, out: embedUrl(u as string, h as string, hid as string[] | undefined) })),
+  });
+}
+// What a host takes over + page mode + host/guest messages (embed@1 extension, core/engines/embed.ts; Oct 21 2026).
+{
+  const takeInputs: (string | string[] | null)[] = [null, '', 'settings', 'notifications,settings', 'settings+notifications', 'Settings', 'nothing', 'settings,none', ['settings', 'settings'], ' notifications '];
+  const pageInputs: unknown[] = [null, '', 'settings', 'SETTINGS', 'notifications', 'nothing', 3];
+  const queries = [
+    '?axf-embed=patches',
+    '?axf-embed=patches&axf-embed-take=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications',
+    '?axf-embed=patches&axf-embed-take=bogus',
+    '?axf-embed=patches&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-take=settings,notifications&axf-embed-page=settings',
+    '?axf-embed=patches&axf-embed-page=notifications',
+    '?axf-embed-take=settings',
+  ];
+  const agents = [
+    'Mozilla/5.0 Chrome/130 AXF-Embed/patches AXF-Embed-Take/settings+notifications',
+    'Mozilla/5.0 AXF-Embed/patches/banner+toolbar AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/none',
+    'Mozilla/5.0 AXF-Embed-Take/settings',
+    'Mozilla/5.0 AXF-Embed/patches',
+    'Mozilla/5.0 AXF-Embed/patches AXF-Embed-Take/settings+notifications+app-menu',
+    'Mozilla/5.0 AXF-Embed/patches/none AXF-Embed-Take/app-menu',
+  ];
+  const e = (takes: string[] | undefined, page?: string) => ({ host: 'patches', hidden: ['banner'], ...(takes ? { takes } : {}), ...(page ? { page } : {}) });
+  const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
+  write('embed-takes.json', {
+    uaToken: EMBED_TAKE_UA_TOKEN,
+    ids: embedTakeIds(),
+    takes: takeInputs.map((t) => ({ input: t, takes: embedTakes(t) })),
+    pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
+    queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),
+    userAgents: agents.map((ua) => ({ input: ua, embed: embedFromUserAgentFull(ua) })),
+    detect: [['?axf-embed=patches', agents[0]], ['?axf-embed=patches&axf-embed-page=settings', agents[0]], ['?axf-embed=patches&axf-embed-take=notifications', agents[0]], ['', agents[1]], ['?axf-embed=other', agents[0]], ['?axf-embed=patches', agents[5]], ['?axf-embed=patches&axf-embed-page=settings', agents[5]]].map(([q, ua]) => ({ search: q, userAgent: ua, embed: detectEmbedFull(q, ua) })),
+    takenBy: [e(['settings']), e(['notifications']), e(undefined), e(['settings', 'notifications']), e(['settings', 'plugins'])].flatMap((em) => takenActions.map((a) => ({ embed: em, action: a, fn: embedTakenBy(em, a) }))),
+    takenView: [e(['settings']), e(undefined), e(['plugins'])].flatMap((em) => ['settings', 'home', 'plugin-manager', ''].map((v) => ({ embed: em, view: v, fn: embedTakenView(em, v) }))),
+    takenProvider: [e(['settings']), e(undefined)].flatMap((em) => ['settings', 'views'].map((pv) => ({ embed: em, provider: pv, fn: embedTakenProvider(em, pv) }))),
+    suffix: [['patches', null, ['settings', 'notifications', 'app-menu']], ['patches', null, ['settings', 'notifications']], ['patches', ['banner'], []], ['patches', ['banner', 'toolbar'], ['settings']], ['patches', null, ['bogus']]].map(([h, hid, t]) => ({ host: h, hidden: hid, takes: t, suffix: userAgentSuffixFull(h as string, (hid as string[] | null) ?? undefined, t as string[]) })),
+    urls: [
+      ['https://console.amberxai.com/', { takes: ['settings', 'notifications'] }],
+      ['https://console.amberxai.com/?x=1#a', { takes: ['settings'], page: 'settings' }],
+      ['https://pilot.amberxai.com/?axf-embed-take=old&axf-embed-page=old', { page: 'settings' }],
+      ['https://pilot.amberxai.com/', {}],
+      ['https://console.amberxai.com/', { takes: ['settings', 'app-menu'] }],
+    ].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    links: ['https://axhub.amberxai.com/apps', 'http://x.example/', 'view:alerts', 'settings:appearance', 'javascript:alert(1)', 'https://u:p@h/', 'view:', ''].map((l) => ({ link: l, ok: embedLinkOk(l) })),
+    messages: [
+      { $axf: 'embed@1', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'appearance' },
+      { $axf: 'embed@1', type: 'open-settings', tab: 'bad tab!' },
+      { $axf: 'embed@1', type: 'notify', title: '  Build failed\n', body: 'x'.repeat(600), tag: 'ci:main', level: 'error', link: 'view:alerts' },
+      { $axf: 'embed@1', type: 'notify', title: '' },
+      { $axf: 'embed@1', type: 'notify', title: 'Hi', level: 'loud', link: 'javascript:x', tag: 'has space' },
+      { $axf: 'embed@1', type: 'ready', app: 'Console' },
+      { $axf: 'embed@1', type: 'open-tab', tab: 'plugins' },
+      { $axf: 'embed@1', type: 'open-tab' },
+      { $axf: 'embed@2', type: 'open-settings' },
+      { $axf: 'embed@1', type: 'run-code', code: 'x' },
+      { $axf: 'embed@1', type: 'menu', menus: [
+        { id: 'm0', label: 'Builds', items: [
+          { id: 'm0.0', label: '  Pending builds\n', icon: 'clock', count: 12.7 },
+          { id: 'm0.1', separator: true },
+          { id: 'm0.2', label: 'Open pending items', items: [{ id: 'm0.2.0', label: 'Asset Designer', locked: true }, { id: 'bad id!', label: 'x' }, { id: 'm0.2.2', label: '' }] },
+          { id: 'm0.3', label: 'Toolbar', check: false, icon: 'Bad Icon', count: -3 },
+        ] },
+        { id: 'm1', label: 'Empty', items: [] },
+        { id: 'm2', label: 'x'.repeat(100), items: [{ id: 'm2.0', label: 'Deep', items: [{ id: 'm2.0.0', label: 'Deeper', items: [{ id: 'm2.0.0.0', label: 'Deepest', items: [{ id: 'm2.0.0.0.0', label: 'Too deep' }] }] }] }] },
+        { label: 'No id', items: [{ id: 'x', label: 'y' }] },
+      ] },
+      { $axf: 'embed@1', type: 'menu', menus: 'nope' },
+      { $axf: 'embed@1', type: 'menu-request' },
+      { $axf: 'embed@1', type: 'run', id: 'm0.2.0' },
+      { $axf: 'embed@1', type: 'run', id: 'm0 2' },
+      { $axf: 'embed@1', type: 'run' },
+      JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }).length > 4000 ? JSON.stringify({ $axf: 'embed@1', type: 'menu', menus: [{ id: 'm0', label: 'Long', items: Array.from({ length: 80 }, (_, i) => ({ id: `m0.${i}`, label: `Item ${i} ${'y'.repeat(40)}` })) }] }) : 'too short',
+      JSON.stringify({ $axf: 'embed@1', type: 'notify', title: 'Long', body: 'z'.repeat(4100) }),
+      '{"$axf":"embed@1","type":"open-settings","tab":"about"}',
+      'not json',
+      ['array'],
+      null,
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Locked functions (plugins inside Patches): hooks kept greyed out with a note. Web only so far (Kotlin deferred, PORTING.md).
+    locked: [e(['settings', 'plugins']), e(['settings']), e(['plugins'], 'settings'), e(undefined)].flatMap((em) =>
+      ['plugin-manager.open', 'plugin-manager.view:cards', 'plugin-switches.open', 'plugin-catalog.install', 'nav:plugin-manager', 'app.settings', 'alerts.open', '', null]
+        .map((a) => ({ embed: em, action: a, fn: embedLockedBy(em, a), note: embedLockNote(em, embedLockedBy(em, a)) }))),
+    // Plugin messages (take `plugins`). Web only so far (Kotlin deferred, PORTING.md).
+    pluginMessages: [
+      { $axf: 'embed@1', type: 'plugins', plugins: [{ id: 'ai.amberx.axf.example.alpha', name: ' Activity\n', version: '0.1.0', on: true }, { id: 'ai.amberx.axf.example.alpha', name: 'dup' }, { id: 'bad id!', name: 'x' }, { id: 'ai.amberx.axf.example.beta', on: false, version: 'v'.repeat(60) }, 'nope'] },
+      { $axf: 'embed@1', type: 'plugins', plugins: 'nope' },
+      { $axf: 'embed@1', type: 'plugins-enabled', plugins: ['ai.amberx.axf.example.alpha', 'ai.amberx.axf.example.alpha', 'bad id!', 7] },
+      { $axf: 'embed@1', type: 'plugins-enabled' },
+      { $axf: 'embed@1', type: 'plugins-request' },
+      JSON.stringify({ $axf: 'embed@1', type: 'plugins', plugins: Array.from({ length: 250 }, (_, i) => ({ id: `ai.amberx.axf.p${i}`, name: `Plugin ${i}`, on: i % 2 === 0 })) }),
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
+    // View pages (`view:<id>`: one view alone, e.g. a tabable plugin as a host's tab) and plugin tabs in a plugin report.
+    // Web only so far (Kotlin deferred, PORTING.md).
+    viewPages: ['view:todos', ' view:todos ', 'view:', 'view:bad id', 'view:a/b', `view:${'x'.repeat(70)}`, 'View:Alerts'].map((p) => ({ input: p, page: embedPage(p), view: embedPageView(embedPage(p)) })),
+    viewUrls: [['https://console.amberxai.com/', { takes: ['settings', 'banners', 'plugins'], page: 'view:todos' }]].map(([u, o]) => ({ url: u, host: 'patches', opts: o, out: embedUrlFull(u as string, 'patches', o as never) })),
+    viewDetect: ['?axf-embed=patches&axf-embed-take=settings,plugins&axf-embed-page=view:todos'].map((q) => ({ search: q, embed: embedFromQueryFull(q) })),
+    pluginTabs: [
+      { $axf: 'embed@1', type: 'plugins', plugins: [
+        { id: 'ai.amberx.axf.example.alpha', name: 'Todos', on: true, tab: { view: 'todos', label: ' Todos\n', icon: 'list' } },
+        { id: 'ai.amberx.axf.example.beta', name: 'Beta', on: true, tab: { view: 'bad view!', label: 'x' } },
+        { id: 'ai.amberx.axf.example.gamma', name: 'Gamma', on: false, tab: { view: 'gamma', icon: 'Bad Icon', label: 'y'.repeat(100) } },
+        { id: 'ai.amberx.axf.example.delta', name: 'Delta', on: true, tab: true },
+      ] },
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+  });
+}
 // Appearance document (core/engines/appearance.ts): parse → resolve against a registry → merge → serialize; same on every port.
 {
   const docs: Record<string, string> = {
@@ -146,7 +294,7 @@ write('spacing.json', {
 }
 // Widgets (core/engines/widgets.ts): the toolbar as a widget host (start / end), widgets only.
 {
-  const exists = new Set([...load('clock').map((a) => `clock:${a.id}`), ...load('search-bar').map((a) => `search-bar:${a.id}`), ...load('badge').map((a) => `badge:${a.id}`)]);
+  const exists = new Set(ATTACHABLE_ASSET_TYPES.flatMap((t) => load(t as never).map((a) => `${t}:${a.id}`)));
   const has = (t: string, id: string) => exists.has(`${t}:${id}`);
   const cases = {
     'none': { toolbar: { widgets: [] }, extra: [] },
@@ -155,7 +303,24 @@ write('spacing.json', {
     'badges-are-not-widgets': { toolbar: { widgets: [{ type: 'badge', id: 'new', at: 'start' }, { type: 'search-bar', id: 'missing', at: 'end' }, { type: 'clock', id: 'digital-24h', at: 'left' }] }, extra: [] },
     'no-widgets-field': { toolbar: {}, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
     'no-toolbar': { toolbar: null, extra: [{ type: 'search-bar', id: 'compact', at: 'start' }] },
+    'widget-kinds': { toolbar: { widgets: [{ type: 'logo', id: 'wordmark', at: 'start' }, { type: 'spacer', id: 'push', at: 'start' }, { type: 'counter', id: 'alerts', at: 'end' }, { type: 'theme-switch', id: 'day-night', at: 'end', order: -1 }, { type: 'badge', id: 'new', at: 'end' }] }, extra: [{ type: 'avatar', id: 'account', at: 'end', origin: 'account' }] },
   } as const;
+  // Widget kinds (Oct 20 2026): the pure rules logo, counter, status, progress, avatar, link, spacer and theme switch draw from.
+  const kinds = {
+    tones: WIDGET_TONES,
+    tone: Object.fromEntries(['neutral', 'success', 'warning', 'danger', 'accent', 'muted', 'loud', '', 7, null].map((t) => [String(t), { in: t, out: widgetTone(t as never), accentFallback: widgetTone(t as never, 'accent') }])),
+    counter: [[0, 99, true], [0, 99, false], [0, undefined, undefined], [7, 99, true], [99, 99, true], [100, 99, true], [1234, 999, true], [5, 0, true], [5, -3, false], [3.9, 99, true], [-2, 99, false], ['x', 99, true], [12, 'y', true], [12, 1, true]].map(([n, max, hide]) => ({ n, max, hideAtZero: hide, text: counterText(n, max, hide) })),
+    status: [0, 1, -1, 2.5, 'x', null].map((n) => ({ n, on: statusOn(n) })),
+    progress: [[0, 100], [50, 100], [100, 100], [150, 100], [-5, 100], [1, 3], [2, 3], [7, 0], [7, -1], ['x', 10], [7, 'y'], [0.4, 100], [0.5, 100]].map(([n, max]) => ({ n, max, percent: progressPercent(n, max) })),
+    initials: ['Brett', 'Brett Mosses', 'brett m', '  Ada   Lovelace  ', 'x', '', '   ', 'Jean-Luc Picard de la Rue', 7, null].map((name) => ({ name, initials: avatarInitials(name) })),
+    link: ['https://amberxai.com', 'http://localhost:8080/x', ' https://a.b/c?d=1#e ', 'mailto:brett@example.com', 'tel:+1 (555) 010-0100', 'javascript:alert(1)', 'ftp://x.y', 'amberxai.com', 'https://', 'mailto:nope', 'tel:12', '', 7].map((href) => ({ href, out: linkHref(href) })),
+    image: ['https://x.y/logo.png', 'http://x.y/l.webp', '/logo.svg', './img/logo.png', 'data:image/png;base64,iVBORw0KGgo=', 'data:text/html;base64,PGI+', 'javascript:x', 'logo.png', '', 7].map((src) => ({ src, out: imageSrc(src) })),
+    spacer: SPACER_UNITS,
+    logo: LOGO_SIZE,
+    avatar: AVATAR_SIZE,
+    progressWidth: PROGRESS_WIDTH,
+    themeSwitch: [['arctic-daylight', 'arctic-daylight', 'amber-ember'], ['amber-ember', 'arctic-daylight', 'amber-ember'], ['neon-tide', 'arctic-daylight', 'amber-ember'], [undefined, 'a', 'b']].map(([active, light, dark]) => ({ active, light, dark, next: themeSwitchNext(active, light, dark) })),
+  };
   // Search bar config normalization + host attachment validation (Fable rebuild Oct 20 2026; every port agrees).
   const searchBars: Record<string, unknown> = {
     everything: load('search-bar').find((a) => a.id === 'everything')!.data,
@@ -183,6 +348,7 @@ write('spacing.json', {
     searchBarWidth: SEARCH_BAR_WIDTH,
     exists: [...exists].sort(),
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
+    kinds,
   });
 }
 write('components.json', {
@@ -433,6 +599,24 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const reply = emptyLiveReply('Connecting…');
   const folds = events.map((e) => { applyStreamEvent(reply, e); return JSON.parse(JSON.stringify(reply)); });
   const interrupted = applyStreamEvent(emptyLiveReply(), { event: 'interrupted', data: null, seq: 2 });
+  // ChatContext: the open `extra` bag passes through (well-known + unknown keys, order kept) within shape/size limits.
+  const deep = (d: number): unknown => (d === 0 ? 'leaf' : { n: deep(d - 1) });
+  const chatContext: { case: string; raw: unknown }[] = [
+    { case: 'plain', raw: { view: 'designer', title: 'Pilot', selection: 'sel', note: 'n' } },
+    { case: 'projectId passes through', raw: { view: 'designer', extra: { projectId: 'apk-1' } } },
+    { case: 'unknown keys preserved in order', raw: { extra: { zeta: 1, projectId: 'p', alpha: { nested: [1, 'two', true, null] }, flag: false } } },
+    { case: 'bad extra keys dropped', raw: { extra: { 'ok.key-1_': 'x', 'bad key': 'y', '': 'z', ['k'.repeat(65)]: 'w' } } },
+    { case: 'strings cut, numbers and null kept', raw: { view: 'v'.repeat(300), selection: 's'.repeat(5000), extra: { long: 'L'.repeat(3000), none: null, n: 2.5, i: -3 } } }, // NaN/Infinity can't travel in JSON: each port tests that rule itself
+    { case: 'too many keys kept to 32', raw: { extra: Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`k${i}`, i])) } },
+    { case: 'too deep pruned', raw: { extra: { d: deep(6), shallow: deep(2) } } },
+    { case: 'oversized extra dropped whole', raw: { view: 'v', extra: Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`k${i}`, 'x'.repeat(1500)])) } },
+    { case: 'extra must be an object', raw: { view: 'v', extra: ['projectId'] } },
+    { case: 'empty strings and empty extra drop out', raw: { view: '', extra: {} } },
+    { case: 'not an object', raw: 'projectId=1' },
+    { case: 'null', raw: null },
+    { case: 'array', raw: [{ view: 'x' }] },
+    { case: 'non-string known fields ignored', raw: { view: 7, title: { a: 1 }, extra: { projectId: 42 } } },
+  ].map((c) => { const context = normalizeChatContext(c.raw); return { ...c, context, projectId: contextExtra(context, 'projectId') }; });
   write('assistant.json', {
     contract: 'assistant@1',
     providers: PROVIDER_KINDS.map((p) => ({ kind: p.kind, protocol: p.protocol, keyEnv: p.keyEnv, auth: p.auth, baseUrl: p.baseUrl })),
@@ -441,6 +625,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     sse: { text: sseText, frames: sse.frames, rest: sse.rest, events: sse.frames.map(frameToEvent) },
     liveReply: { events, folds, interrupted },
     reconnect: [1, 2, 3, 5, 8, 20].map((a) => ({ attempt: a, delayMs: reconnectDelayMs(a) })),
+    chatContext,
   });
 }
 
@@ -699,5 +884,394 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     // the same records with off-provider enabled: the ui-editor clash appears, needs-off unblocks
     enabledOffProvider: { items: inventoryOn.items.map((i) => ({ folder: i.folder, health: i.health, conflicts: i.conflicts })), conflicts: inventoryOn.conflicts, counts: inventoryOn.counts },
     graph: pluginGraph(inventory.items, ctx.live),
+  });
+}
+
+// Application menu (core/engines/appmenu.ts): asset menus + run-time contributions + live lists → one compiled tree.
+// Every port merges, places, gates, resolves badges / check marks and prunes exactly like this.
+{
+  const standardPolicy = load('uac-policy').find((p) => p.id === 'standard').data;
+  const developer = load('app-menu').find((a) => a.id === 'developer').data;
+  const asset = {
+    menus: [
+      { id: 'file', label: 'File', items: [
+        { id: 'new', label: 'New file', icon: 'plus', action: 'file.new', shortcut: 'Alt+N' },
+        { id: 'save', label: 'Save', icon: 'save', action: 'file.save', requires: 'files.write' },
+        { id: 's1', separator: true },
+        { id: 'exports', label: 'Export', icon: 'share', items: [{ id: 'json', label: 'As JSON', action: 'file.export:json' }] },
+        { id: 'admin-only', label: 'Wipe', action: 'file.wipe', requires: 'uac.manage' },
+      ] },
+      { id: 'view', label: 'View', order: 50, items: [
+        { id: 'reload', label: 'Reload', action: 'view.reload' },
+        { id: 'legacy-list', label: 'Legacy list', provider: 'nobody-registered' },
+        { id: 'deep', label: 'Deep', items: [{ id: 'd2', label: 'D2', items: [{ id: 'd3', label: 'D3', items: [{ id: 'd4', label: 'D4', items: [{ id: 'd5', label: 'D5', action: 'deep.five' }] }] }] }] },
+      ] },
+      { id: 'empty', label: 'Empty', items: [{ id: 'hidden-sub', label: 'Hidden', items: [{ id: 'x', label: 'X', action: 'x', requires: 'uac.manage' }] }] },
+    ],
+  };
+  const contributions: AppMenuContribution[] = [
+    // new top-level menu, created with its label and order, under an item path that is created too
+    { id: 'builds.pending', module: 'builds', menu: 'builds', menuLabel: 'Builds', menuOrder: 60, path: [{ id: 'manager', label: 'Build manager', icon: 'hammer' }], items: [
+      { id: 'pending', label: 'Pending builds', icon: 'clock', action: 'nav:pending', badge: 'builds.pending' },
+      { id: 'queue', label: 'Build queue', icon: 'list', action: 'nav:build-queue' },
+    ] },
+    // live lists in that menu, plus a check-bound item
+    { id: 'builds.lists', module: 'builds', menu: 'builds', items: [
+      { id: 'sep', separator: true },
+      { id: 'features', label: 'Features', icon: 'star', provider: 'features' },
+      { id: 'auto', label: 'Auto build', action: 'builds.auto:toggle', checked: 'setting:builds.auto' },
+    ] },
+    // placement: before / after a sibling and explicit order in the asset's File menu; replaces the asset's Save (no conflict)
+    { id: 'files.extra', module: 'files', menu: 'file', items: [
+      { id: 'open', label: 'Open…', icon: 'folder', action: 'file.open', before: 'save' },
+      { id: 'recent', label: 'Recent', provider: 'recent', after: 'open' },
+      { id: 'first', label: 'First', action: 'file.first', order: 1 },
+      { id: 'save', label: 'Save (plugin)', icon: 'save', action: 'files.save' },
+    ] },
+    // under the asset's existing Export submenu
+    { id: 'files.export', module: 'files', menu: 'file', path: ['exports'], items: [{ id: 'csv', label: 'As CSV', action: 'file.export:csv' }] },
+    // two modules, one id in the View menu: the later wins and a conflict is reported; same module twice is silent
+    { id: 'a.view', module: 'mod-a', menu: 'view', items: [{ id: 'theme', label: 'Theme (A)', action: 'a.theme' }] },
+    { id: 'b.view', module: 'mod-b', menu: 'view', items: [{ id: 'theme', label: 'Theme (B)', action: 'b.theme' }] },
+    { id: 'b.view2', module: 'mod-b', menu: 'view', items: [{ id: 'theme', label: 'Theme (B2)', action: 'b.theme2' }] },
+    // chrome visibility toggles and the role-gated Account (dropped for guests), both in View
+    { id: 'view.chrome', module: 'axf', menu: 'view', order: 200, items: [{ id: 'sep', separator: true }, ...chromeToggleItems(['toolbar', 'nav-menu', 'banner']), { id: 'sep2', separator: true }, { id: 'hidden-state', label: 'Toolbar hidden?', action: 'noop', checked: 'hidden:toolbar' }] },
+    // no menu named: lands in the default menu; a counter-bound check; ordered ahead of everything
+    { id: 'help.about', module: 'help', order: 1, items: [{ id: 'about', label: 'About', icon: 'info', action: 'dialog:about', checked: 'counter:about.seen' }, { id: 'alerts', label: 'Alerts', action: 'alerts.open', badge: 'alerts.unread' }] },
+    // a path step that is a live list: items go beside it
+    { id: 'files.recent-extra', module: 'files', menu: 'file', path: ['recent'], items: [{ id: 'clear-recent', label: 'Clear recent', action: 'file.recent.clear' }] },
+    // a bad binding and unknown kinds resolve to no check
+    { id: 'bad.checks', module: 'help', menu: 'more', items: [{ id: 'bad1', label: 'Bad 1', action: 'noop', checked: 'nope:x' }, { id: 'bad2', label: 'Bad 2', action: 'noop', checked: 'setting:' }] },
+  ];
+  const merged = mergeAppMenu(asset, contributions);
+  const hidePolicy = { ...standardPolicy, gating: 'hide' };
+  const envFor = (role: string, hidden: string[] = ['toolbar'], settings: Record<string, unknown> = { 'builds.auto': 'true' }, counters: Record<string, number> = { 'builds.pending': 3, 'alerts.unread': 0, 'about.seen': 1 }, policy = standardPolicy): AppMenuEnv => {
+    const granted = resolvePermissions(policy, role);
+    return { gate: (r) => gateFor(policy, granted, r), counter: (n) => counters[n] ?? 0, setting: (k) => settings[k], hidden: (t) => hidden.includes(t), providers: ['features', 'recent'] };
+  };
+  const roles = standardPolicy.roles.map((r: { id: string }) => r.id) as string[];
+  const providerItems = [
+    { id: 'f1', label: 'Feature 1', action: 'nav:f1' }, { id: 'f2', label: 'Feature 2', action: 'nav:f2', requires: 'uac.manage' }, { id: 'f3', label: 'Feature 3', action: 'nav:f3' },
+    { id: 'f4', label: 'Feature 4', action: 'nav:f4', badge: 'builds.pending' }, { id: 'f5', label: 'Feature 5', action: 'nav:f5' }, { id: 'sep', separator: true }, { id: 'f6', label: 'Feature 6', action: 'nav:f6' },
+  ];
+  write('app-menu.json', {
+    spec: { maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: CHECKED_KINDS, itemFields: MENU_ITEM_FIELDS, defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN },
+    titles: Object.fromEntries(['pending-builds', 'build_queue', 'a.b.c', 'x', '', '--'].map((id) => [id, titleFromId(id)])),
+    truthy: Object.fromEntries(([true, false, 0, 1, -2, '', 'false', 'FALSE', '0', 'off', 'no', 'yes', 'x', ' on '] as const).map((v) => [JSON.stringify(v), truthy(v)])),
+    checked: Object.fromEntries(['setting:a', 'counter:c', 'slot:toolbar', 'hidden:toolbar', 'slot:nav-menu', 'nope:x', 'setting:', ':x', 'plain', ''].map((b) => [b, { parsed: parseChecked(b), resolved: resolveChecked(b, { counter: (n) => (n === 'c' ? 2 : 0), setting: (k) => (k === 'a' ? 'yes' : undefined), hidden: (t) => t === 'toolbar' }) }])),
+    asset,
+    contributions,
+    merged,
+    compiled: Object.fromEntries(roles.map((r) => [r, compileAppMenu(merged, envFor(r))])),
+    // the toolbar shown + the auto setting off: check marks flip
+    compiledShown: compileAppMenu(merged, envFor('admin', [], { 'builds.auto': 'off' })),
+    // the same policy gating by hiding: denied items vanish and the submenus / menus left empty go with them
+    compiledHideGate: Object.fromEntries(roles.map((r) => [r, compileAppMenu(merged, envFor(r, ['toolbar'], { 'builds.auto': 'true' }, { 'builds.pending': 3, 'alerts.unread': 0, 'about.seen': 1 }, hidePolicy))])),
+    // a depth cap of 2 cuts the Export and Deep submenus
+    compiledDepth2: compileAppMenu(merged, { ...envFor('admin'), maxDepth: 2 }),
+    // the real developer asset with no contributions passes through unchanged (ids, order) for every role
+    developer: Object.fromEntries(roles.map((r) => [r, buildAppMenu(developer, [], envFor(r, []))])),
+    providers: {
+      'cap-3-more-action': compileProviderItems(providerItems, envFor('admin'), { id: 'features', max: 3, moreAction: 'nav:features' }),
+      'cap-3-no-action': compileProviderItems(providerItems, envFor('admin'), { id: 'features', max: 3 }),
+      'fits-guest': compileProviderItems(providerItems, envFor('guest'), { id: 'features', max: 12 }),
+      'fits-exactly': compileProviderItems(providerItems.slice(0, 3), envFor('admin'), { id: 'features', max: 3 }),
+    },
+    chrome: { types: chromeToggleTypes(), all: chromeToggleTypes(true), items: chromeToggleItems(), labelled: chromeToggleItems(['toolbar', 'color-theme', 'nav-menu'], { toolbar: 'Top toolbar' }) },
+    search: { entries: appMenuSearchEntries(compileAppMenu(merged, envFor('admin')), new Set(['file.first'])) },
+    validation: Object.entries({
+      'ok-fields': [{ id: 'a', provider: 'p' }, { id: 'b', badge: 'n', checked: 'slot:toolbar', order: 5, before: 'a' }],
+      'bad-strings': [{ id: 'a', provider: '' }, { id: 'b', badge: 3 }, { id: 'c', before: '' }, { id: 'd', after: 1 }],
+      'bad-checked': [{ id: 'a', checked: 'nope:x' }, { id: 'b', checked: 'setting:' }, { id: 'c', checked: 7 }],
+      'bad-order': [{ id: 'a', order: 'first' }],
+      'provider-and-items': [{ id: 'a', provider: 'p', items: [] }],
+      'too-deep': [{ id: 'a', items: [{ id: 'b', items: [{ id: 'c', items: [{ id: 'd', items: [{ id: 'e' }] }] }] }] }],
+      'not-a-list': 'x',
+      'not-objects': [1, null],
+    }).map(([k, items]) => ({ case: k, items, errors: validateMenuItems(items, 'data.menus[0].items') })),
+    assets: [
+      { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },
+      { case: 'context-menu-bad-items', raw: { $axf: 'asset@1', type: 'context-menu', id: 'bad-ctx', name: 'X', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: [{ id: 'a', provider: 'p', items: [] }], other: 'no' } } } },
+    ].map((c) => ({ ...c, result: validateAsset(c.raw) })),
+  });
+}
+// library@1 parameters (core/library.ts = Kotlin LibraryParams): the text an install wizard collects → typed value / error.
+{
+  const params: LibraryParam[] = [
+    { key: 'name', label: 'Name', type: 'text', required: true },
+    { key: 'title', label: 'Title', type: 'text', default: 'Hello' },
+    { key: 'tags', label: 'Tags', type: 'list', default: ['a', 'b'] },
+    { key: 'on', label: 'On', type: 'bool', default: true },
+    { key: 'off', label: 'Off', type: 'bool' },
+    { key: 'count', label: 'Count', type: 'number', min: 1, max: 12, default: 6 },
+    { key: 'ratio', label: 'Ratio', type: 'number', min: 0.5 },
+    { key: 'mode', label: 'Mode', type: 'choice', choices: ['a', 'b', 'c'], default: 'a' },
+    { key: 'free', label: 'Free choice', type: 'choice', required: true },
+  ];
+  const texts = ['', '  ', 'x', 'Hello', 'a, b ,,c', 'yes', 'Y', 'ON', '1', 'no', '0', 'true', '6', '0', '13', '2.5', '0.25', 'abc', 'a', 'd', 'one\ntwo'];
+  write('library-params.json', {
+    types: [...LIBRARY_PARAM_TYPES],
+    trueWords: [...PARAM_TRUE_WORDS],
+    defaults: paramDefaults(params),
+    cases: params.flatMap((p) => texts.map((text) => ({ key: p.key, text, defaultText: paramDefaultText(p), bool: p.type === 'bool' ? paramBool(p, text) : undefined, json: paramToJson(p, text) ?? null, error: paramError(p, text) }))),
+    params,
+  });
+}
+
+/* lib-hub first slice (libs/hub/hub.ts = Kotlin lib-hub HubRules): address rules, URLs, the approvals feed, seen ids. */
+{
+  const B = HUB_DEFAULT;
+  const ID1 = 'dfe44a5d-15ab-47bf-8128-9843d37cd6ec';
+  const ID2 = '0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b';
+  const ID3 = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d';
+  const normalize = [
+    ' https://AXHUB.amberxai.com/ ', '\t https://axhub.amberxai.com \n', '\u00a0https://axhub.amberxai.com', 'https://axhub.amberxai.com', 'https://axhub.amberxai.com///', 'https://axhub.amberxai.com:443', 'https://hub.example.test:8443',
+    'HTTPS://Hub.Example.Test', 'http://axhub.amberxai.com', 'https://axhub.amberxai.com/evil', 'https://user@axhub.amberxai.com', 'https://user:pw@axhub.amberxai.com',
+    'https://axhub.amberxai.com?x=1', 'https://axhub.amberxai.com#frag', 'https://axhub.amberxai.com\\evil', 'https://', 'https://:443', 'https://axhub.amberxai.com:0',
+    'https://axhub.amberxai.com:65536', 'https://axhub.amberxai.com:44a', 'https://[::1]', 'https://exa mple.com', 'https://bücher.example', 'https://a..b', 'https://.a.b', 'not a url', '', 'ftp://axhub.amberxai.com', 'hTTps://axhub.amberxai.com', 'https\u212a://x', 'https://axhub.amberxai.com\u212a',
+  ];
+  const isHubCases = [
+    `${B}/auth/login`, `${B}`, `${B}/`, `${B}?x=1`, `${B}#a`, 'https://AXHUB.AMBERXAI.COM/auth', 'https://axhub.amberxai.com:443/auth/admin/approvals',
+    'https://axhub.amberxai.com.evil.example/auth', 'https://evil.example/https://axhub.amberxai.com', 'http://axhub.amberxai.com/auth', 'https://axhub.amberxai.com:8443/auth',
+    'https://user@axhub.amberxai.com/auth', 'https://axhub.amberxai.com@evil.example/', 'https://evil.example\\@axhub.amberxai.com', '//axhub.amberxai.com/auth', '/auth/login', 'javascript:alert(1)', '',
+  ];
+  const ids = [ID1, ID1.toUpperCase(), '../../auth/logout', `${ID1}/x`, 'dfe44a5d15ab47bf81289843d37cd6ec', '', 'x'.repeat(36)];
+  const returnPaths = ['/auth/admin/approvals', '/apps', '/auth/admin/approvals/' + ID1, '//evil.example', 'https://evil.example', '/a/../../x', '/a b', ''];
+  const apk = [
+    `${B}/apps/download/voice-vault/voice-vault-0.1.0-b12.apk`, `${B}/apps/download/voice-vault/voice-vault.apk?x=1`, `${B}/apps/download/voice-vault/voice-vault.apk#a`,
+    `${B}/apps/download/Voice/voice.apk`, `${B}/apps/download/voice-vault/../evil.apk`, `${B}/apps/download/voice-vault/evil.exe`, `${B}/apps/voice.apk`,
+    'https://evil.example/apps/download/voice-vault/voice-vault.apk', `http://axhub.amberxai.com/apps/download/x/x.apk`, `${B}/apps/download/x/.hidden.apk`, `${B}?x=/apps/download/a/b.apk`, `${B}#/apps/download/a/b.apk`, 'HTTPS://AXHUB.AMBERXAI.COM/apps/download/a/b.apk',
+  ];
+  const csrf = ['<form><input type="hidden" name="csrf" value="abc123-XYZ"></form>', '<input name="csrf" value="">', '<p>no form</p>', ''];
+  const item = (id: string, extra: Record<string, unknown> = {}) => ({ id, tool: 'vps.run', summary: `vps.run with arguments {"command":"docker ps"}`, createdAt: '2026-10-20T10:00:00.000Z', expiresAt: '2026-10-20T10:30:00.000Z', url: `${B}/auth/admin/approvals/${id}`, ...extra });
+  const big = (n: number) => 'x'.repeat(n);
+  const feeds: [string, number, string][] = [
+    ['ok-one', 200, JSON.stringify({ signedIn: true, admin: true, count: 1, approvalsUrl: `${B}/auth/admin/approvals`, pending: [item(ID1)] })],
+    ['ok-empty', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [] })],
+    ['ok-count-more-than-items', 200, JSON.stringify({ signedIn: true, admin: true, count: 25, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-missing', 200, JSON.stringify({ signedIn: true, admin: true, pending: [item(ID1), item(ID2)] })],
+    ['ok-count-too-small', 200, JSON.stringify({ signedIn: true, admin: true, count: 0, pending: [item(ID1)] })],
+    ['ok-count-negative-or-fraction', 200, JSON.stringify({ count: -3.7, pending: [] })],
+    ['ok-count-string', 200, JSON.stringify({ count: '5', pending: [item(ID1)] })],
+    ['ok-foreign-link-dropped', 200, JSON.stringify({ count: 3, pending: [item(ID1), item(ID2, { url: `https://evil.example/auth/admin/approvals/${ID2}` }), item(ID3, { url: `http://axhub.amberxai.com/auth/admin/approvals/${ID3}` })] })],
+    ['ok-missing-link-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1, { url: undefined }), item(ID2, { url: null })] })],
+    ['ok-link-rebuilt-from-id', 200, JSON.stringify({ count: 1, pending: [item(ID1, { url: `${B}/auth/logout?next=${ID1}` })] })],
+    ['ok-bad-ids-dropped', 200, JSON.stringify({ count: 4, pending: [item('../../auth/logout'), item(ID1.toUpperCase()), { tool: 'x' }, 'str', null, [1], item(ID2)] })],
+    ['ok-duplicates-dropped', 200, JSON.stringify({ count: 2, pending: [item(ID1), item(ID1, { tool: 'other' })] })],
+    ['ok-fields-defaulted-and-capped', 200, JSON.stringify({ count: 1, pending: [{ id: ID1, url: `${B}/auth/admin/approvals/${ID1}`, tool: 5, summary: big(900), createdAt: big(100) }, item(ID2, { tool: big(300), summary: null })] })],
+    ['ok-too-many-items', 200, JSON.stringify({ count: 60, pending: Array.from({ length: 60 }, (_, i) => item(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)) })],
+    ['ok-pending-not-array', 200, JSON.stringify({ count: 2, pending: { id: ID1 } })],
+    ['body-signed-out', 200, JSON.stringify({ signedIn: false, approvalsUrl: `${B}/auth/admin/approvals` })],
+    ['body-not-admin', 200, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-401', 401, JSON.stringify({ signedIn: false })],
+    ['status-403', 403, JSON.stringify({ signedIn: true, admin: false })],
+    ['status-403-origin-refused', 403, JSON.stringify({ error: { code: 'denied', message: 'Not allowed from this site.' } })],
+    ['status-500', 500, 'oops'],
+    ['status-302', 302, ''],
+    ['not-json', 200, '<html>sign in</html>'],
+    ['json-array', 200, '[1,2]'],
+    ['json-null', 200, 'null'],
+    ['json-string', 200, '"x"'],
+  ];
+  const seen: [string[], string[]][] = [
+    [[], [ID1]],
+    [[ID1], [ID1, ID2]],
+    [[ID1, ID2], [ID2]],
+    [[ID1], []],
+    [[ID1, ID1], [ID2, ID2]],
+    [Array.from({ length: HUB_SEEN_CAP }, (_, i) => `id-${i}`), ['id-5', 'new-1']],
+  ];
+  write('hub-approvals.json', {
+    default: B,
+    paths: HUB_PATHS,
+    limits: { feedMaxBytes: HUB_FEED_MAX_BYTES, feedMaxItems: HUB_FEED_MAX_ITEMS, seenCap: HUB_SEEN_CAP, fieldCaps: HUB_FIELD_CAPS },
+    statuses: HUB_FEED_STATUSES,
+    messages: HUB_MESSAGES,
+    normalize: normalize.map((raw) => ({ raw, hub: normalizeHub(raw) })),
+    origin: [...normalize, ...isHubCases].map((url) => ({ url, origin: hubOrigin(url) })),
+    isHub: isHubCases.map((url) => ({ base: B, url, isHub: isHub(B, url) })),
+    urls: { base: B, approvals: approvalsUrl(B), apps: appsUrl(B), account: accountUrl(B), logout: logoutUrl(B), feed: feedUrl(B), login: loginUrl(B) },
+    approval: ids.map((id) => ({ base: B, id, url: approvalUrl(B, id) })),
+    login: returnPaths.map((path) => ({ base: B, path, url: loginUrl(B, path) })),
+    apk: apk.map((url) => ({ base: B, url, name: apkDownloadName(B, url) })),
+    csrf: csrf.map((html) => ({ html, token: csrfFromPage(html) })),
+    feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
+    unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
+    seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
+  });
+}
+
+// catalog@1 / status / tracker@1 / library@1 / libraries@1 / boilerplate@1 / boilerplates@1 (core/catalog.ts = Kotlin kernel.catalog).
+// Inputs are a frozen snapshot of the real files (spec/catalog-samples.json), so this fixture moves only when the parsers do.
+{
+  const s = JSON.parse(readFileSync(join(root, 'spec/catalog-samples.json'), 'utf8'));
+  const catalog = parseCatalog(s.catalog);
+  const libraries = parseLibrariesIndex(s.libraries);
+  const tracker = parseTracker(s.tracker);
+  const params = [...libraries.items.flatMap((l) => l.params), ...parseLibrary(s.lenient.library).params];
+  const answers = ['', ' ', 'yes', 'off', '0', '6', '0.5', '13', '1e3', '0x10', '6d', 'Infinity', '-2', 'abc', 'a, b,\nc', 'pin', 'none', 'floating', 'other'];
+  write('catalog.json', {
+    inputs: s,
+    catalog, status: parseStatusMap(s.status), tracker, libraries,
+    boilerplates: s.boilerplates.map(parseBoilerplate), boilerplateIndex: parseBoilerplateIndex(s.boilerplateIndex),
+    lenient: { catalog: parseCatalog(s.lenient.catalog), library: parseLibrary(s.lenient.library), empty: { catalog: parseCatalog(null), tracker: parseTracker('x'), libraries: parseLibrariesIndex([]), boilerplate: parseBoilerplate(7) } },
+    params: params.map((p) => ({ param: p, defaultText: paramDefaultText(p), answers: answers.map((text) => ({ text, json: paramToJson(p, text) ?? null, error: paramError(p, text) })) })),
+    libraryCards: libraryCards(catalog, libraries.items, tracker),
+    libraryCardsNoTracker: libraryCards(catalog, libraries.items, null),
+  });
+}
+
+// Work engine (work@1, core/engines/work.ts): job kinds, spec validation, interval clamping, conditions, delay rules and
+// the job state machine replayed over scenarios (the AXHub approval watcher is the first). Kotlin: WorkConformanceTest.
+{
+  const approvals = {
+    id: 'axhub.approvals', kind: 'poll', label: 'Watch axHub approvals', module: 'ai.amberx.axf.axhubandroid',
+    interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 300_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' }, endsSpell: true },
+      'signed-out': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      'not-admin': { delay: { kind: 'fixed', ms: 300_000 }, notice: 'sign-in' },
+      unreachable: { delay: { kind: 'interval' } },
+    },
+    conditions: [{ flag: 'watching' }],
+    foreground: true, restartOnBoot: true,
+  };
+  const backoff = {
+    id: 'demo.backoff', kind: 'poll',
+    interval: { defaultMs: 10_000, minMs: 1_000, maxMs: 60_000 },
+    outcomes: {
+      ok: { delay: { kind: 'interval' } },
+      error: { delay: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } },
+      fatal: { delay: { kind: 'interval' }, stop: true },
+      '*': { delay: { kind: 'fixed', ms: 5_000 }, notice: 'odd' },
+    },
+    conditions: [],
+    foreground: false, restartOnBoot: false,
+  };
+  const okSpec = (raw: unknown) => { const r = validateJobSpec(raw); if (!r.ok || !r.spec) throw new Error(`fixture spec invalid: ${r.errors.join('; ')}`); return r.spec; };
+  const A = okSpec(approvals);
+  const D = okSpec(backoff);
+  const invalid: [string, unknown][] = [
+    ['not-object', 'poll'],
+    ['bad-id', { ...approvals, id: 'Axhub Approvals' }],
+    ['unknown-kind', { ...approvals, kind: 'cron' }],
+    ['placeholder-kind', { ...approvals, kind: 'alarm' }],
+    ['no-interval', { ...approvals, interval: undefined }],
+    ['interval-min-zero', { ...approvals, interval: { defaultMs: 30_000, minMs: 0, maxMs: 300_000 } }],
+    ['interval-max-below-min', { ...approvals, interval: { defaultMs: 30_000, minMs: 15_000, maxMs: 10_000 } }],
+    ['interval-default-outside', { ...approvals, interval: { defaultMs: 5_000, minMs: 15_000, maxMs: 300_000 } }],
+    ['outcomes-missing', { ...approvals, outcomes: undefined }],
+    ['delay-unknown', { ...approvals, outcomes: { ok: { delay: { kind: 'random' } } } }],
+    ['fixed-no-ms', { ...approvals, outcomes: { ok: { delay: { kind: 'fixed' } } } }],
+    ['exponential-max-below-base', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 5_000, maxMs: 1_000 } } } }],
+    ['exponential-factor-below-one', { ...approvals, outcomes: { ok: { delay: { kind: 'exponential', baseMs: 1_000, maxMs: 5_000, factor: 0.5 } } } }],
+    ['notice-empty', { ...approvals, outcomes: { ok: { delay: { kind: 'interval' }, notice: '' } } }],
+    ['condition-no-flag', { ...approvals, conditions: [{ equals: true }] }],
+    ['condition-unknown-kind', { ...approvals, conditions: [{ kind: 'battery', flag: 'charging' }] }],
+    ['foreground-not-boolean', { ...approvals, foreground: 'yes' }],
+    ['minimal-ok', { id: 'x', kind: 'poll', interval: { defaultMs: 1, minMs: 1, maxMs: 1 }, outcomes: {} }],
+    ['equals-false-ok', { ...approvals, conditions: [{ flag: 'paused', equals: false }] }],
+  ];
+  const clamp = [-1, 0, 14_999, 15_000, 30_000, 299_999, 300_000, 300_001, 12.7, Number.NaN, 'abc', null];
+  const flagsCases: Record<string, boolean>[] = [{}, { watching: true }, { watching: false }, { watching: true, other: false }];
+  const delays: { rule: DelayRule; intervalMs: number; streak: number }[] = [
+    { rule: { kind: 'interval' }, intervalMs: 30_000, streak: 3 },
+    { rule: { kind: 'fixed', ms: 300_000 }, intervalMs: 30_000, streak: 1 },
+    ...[0, 1, 2, 3, 4, 5, 9].map((streak) => ({ rule: { kind: 'exponential', baseMs: 2_000, maxMs: 20_000 } as DelayRule, intervalMs: 10_000, streak })),
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 3, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+    { rule: { kind: 'exponential', baseMs: 1_000, factor: 1, maxMs: 100_000 }, intervalMs: 10_000, streak: 4 },
+  ];
+  type Ev = { event: JobEvent; flags?: Record<string, boolean> };
+  const on = { watching: true };
+  const off = { watching: false };
+  const scenarios: { name: string; spec: JobSpec; intervalMs?: number; events: Ev[] }[] = [
+    { name: 'approvals: ok, signed out once, not-admin keeps quiet, back to ok, check now, stop', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'not-admin' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'signed-out' }, flags: on },
+      { event: { type: 'check-now' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'stop' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+    ] },
+    { name: 'approvals: watching off blocks start, turned off while sleeping, off at wake', spec: A, events: [
+      { event: { type: 'start' }, flags: off },
+      { event: { type: 'start' }, flags: {} },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'wake' }, flags: off },
+      { event: { type: 'check-now' }, flags: off },
+    ] },
+    { name: 'approvals: start while running is a no-op, start with checkNow restarts, interval changes clamp and apply at the next sleep', spec: A, intervalMs: 60_000, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'start', checkNow: true }, flags: on },
+      { event: { type: 'interval', ms: 5_000 }, flags: on },
+      { event: { type: 'outcome', outcome: 'ok' }, flags: on },
+      { event: { type: 'interval', ms: 900_000 }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'outcome', outcome: 'unreachable' }, flags: on },
+      { event: { type: 'flags' }, flags: on },
+    ] },
+    { name: 'approvals: host refused the foreground start; boot restart only when watching', spec: A, events: [
+      { event: { type: 'start' }, flags: on },
+      { event: { type: 'host-refused' }, flags: on },
+      { event: { type: 'wake' }, flags: on },
+      { event: { type: 'flags' }, flags: off },
+    ] },
+    { name: 'backoff: exponential streak resets on another outcome, fallback rule with a notice, stop outcome', spec: D, events: [
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'ok' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'weird' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'outcome', outcome: 'fatal' } },
+      { event: { type: 'wake' } },
+      { event: { type: 'start' } },
+      { event: { type: 'outcome', outcome: 'error' } },
+    ] },
+  ];
+  write('work.json', {
+    contract: WORK_CONTRACT,
+    pollCapability: WORK_POLL_CAPABILITY,
+    kinds: workKinds(),
+    placeholders: WORK_PLACEHOLDERS,
+    delayKinds: DELAY_KINDS,
+    conditionKinds: CONDITION_KINDS,
+    phases: JOB_PHASES,
+    eventTypes: JOB_EVENT_TYPES,
+    effects: JOB_EFFECTS,
+    stopReasons: STOP_REASONS,
+    fallbackOutcome: FALLBACK_OUTCOME,
+    defaultBackoffFactor: DEFAULT_BACKOFF_FACTOR,
+    specs: { approvals: A, backoff: D },
+    validate: invalid.map(([name, raw]) => ({ name, raw: raw === undefined ? null : raw, result: validateJobSpec(raw) })),
+    clamp: clamp.map((ms) => ({ ms: typeof ms === 'number' && Number.isNaN(ms) ? 'NaN' : ms, clamped: clampInterval(A.interval, ms) })),
+    conditions: flagsCases.map((flags) => ({ flags, unmet: unmetConditions(A, flags), restart: shouldRestart(A, flags), restartNoBoot: shouldRestart(D, flags) })),
+    delays: delays.map((d) => ({ ...d, ms: delayFor(d.rule, d.intervalMs, d.streak) })),
+    scenarios: scenarios.map((s) => ({ name: s.name, spec: s.spec.id, intervalMs: s.intervalMs ?? null, initial: initialJobState(s.spec, s.intervalMs), steps: replayJob(s.spec, s.events, s.intervalMs).map((step, i) => ({ event: s.events[i].event, flags: s.events[i].flags ?? {}, state: step.state, effects: step.effects })) })),
   });
 }

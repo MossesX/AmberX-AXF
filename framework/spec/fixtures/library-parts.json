@@ -1,0 +1,27 @@
+{
+  "$comment": "library@1 parts: features inside a library, each included or left out and configured on its own. Replayed by spec/check-library-parts.mts against core/library.ts and the CLI installer (cli/libraries.mjs). Kotlin twin deferred (PORTING.md).",
+  "parts": [
+    { "id": "core", "label": "Core", "params": [] },
+    { "id": "trash", "label": "Trash can", "requires": ["core"], "params": [ { "key": "label", "label": "Label", "type": "text", "default": "Drop here to delete" }, { "key": "side", "label": "Side", "type": "choice", "choices": ["bottom", "top"], "default": "bottom" } ] },
+    { "id": "ghost", "label": "Ghost", "default": false, "params": [ { "key": "offset", "label": "Offset", "type": "number", "min": 0, "max": 40, "default": 12 } ] },
+    { "id": "touch", "label": "Touch", "default": false, "requires": ["trash"] }
+  ],
+  "defaults": ["core", "trash"],
+  "cases": [
+    { "name": "no answers = defaults", "answers": null, "included": ["core", "trash"], "config": { "core": {}, "trash": { "label": "Drop here to delete", "side": "bottom" } }, "errors": [] },
+    { "name": "empty answers = nothing chosen", "answers": {}, "included": [], "config": {}, "errors": [] },
+    { "name": "requires pull in", "answers": { "touch": true }, "included": ["core", "trash", "touch"], "config": { "core": {}, "trash": { "label": "Drop here to delete", "side": "bottom" }, "touch": {} }, "errors": [] },
+    { "name": "false leaves out", "answers": { "trash": false, "ghost": true }, "included": ["ghost"], "config": { "ghost": { "offset": 12 } }, "errors": [] },
+    { "name": "params from text", "answers": { "trash": { "side": "top", "label": "Bin" }, "ghost": { "offset": "20" } }, "included": ["core", "trash", "ghost"], "config": { "core": {}, "trash": { "label": "Bin", "side": "top" }, "ghost": { "offset": 20 } }, "errors": [] },
+    { "name": "bad choice", "answers": { "trash": { "side": "left" } }, "errors": ["Trash can › Side: One of bottom, top"] },
+    { "name": "out of range", "answers": { "ghost": { "offset": "99" } }, "errors": ["Ghost › Offset: Must be ≤ 40"] },
+    { "name": "unknown part", "answers": { "nope": true }, "errors": ["Unknown part \"nope\""] }
+  ],
+  "neededBy": [ { "included": ["core", "trash", "touch"], "id": "trash", "by": ["touch"] }, { "included": ["core", "trash"], "id": "core", "by": ["trash"] } ],
+  "runtime": [
+    { "config": null, "id": "trash", "on": true },
+    { "config": null, "id": "ghost", "on": false },
+    { "config": { "parts": { "ghost": { "offset": 5 } } }, "id": "trash", "on": false },
+    { "config": { "parts": { "ghost": { "offset": 5 } } }, "id": "ghost", "on": true }
+  ]
+}

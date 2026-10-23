@@ -1,8 +1,19 @@
 {
   "attachable": [
-    "badge",
     "clock",
-    "search-bar"
+    "search-bar",
+    "action-button",
+    "logo",
+    "label",
+    "status",
+    "counter",
+    "progress",
+    "avatar",
+    "link",
+    "theme-switch",
+    "spacer",
+    "divider",
+    "badge"
   ],
   "sides": [
     "left",

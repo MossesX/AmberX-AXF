@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Fake openssl: a fixed "random" secret so before/after runs compare byte for byte.
+echo "=== openssl $*" >> "$HARNESS_LOG"
+echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

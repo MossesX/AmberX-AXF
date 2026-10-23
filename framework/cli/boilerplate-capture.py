@@ -192,7 +192,15 @@ def main() -> int:
             adb("shell", *cmd)
         except RuntimeError:
             pass
-    adb("install", "-r", "-g", a.apk, timeout=240)
+    try:
+        LAUNCH_LOG.append("install: " + " ".join(str(adb("install", "-r", "-g", a.apk, timeout=240)).split())[:200])
+    except RuntimeError as e:
+        LAUNCH_LOG.append(f"install failed: {str(e)[:300]}")
+    try:
+        LAUNCH_LOG.append("packages: " + " ".join(ln.strip() for ln in str(adb("shell", "pm", "list", "packages", "amberx", timeout=30)).splitlines())[:300])
+        LAUNCH_LOG.append("apk: " + str(Path(a.apk).stat().st_size) + " bytes " + Path(a.apk).name)
+    except (RuntimeError, subprocess.TimeoutExpired, OSError) as e:
+        LAUNCH_LOG.append(f"pm failed: {str(e)[:200]}")
     # Let the system finish its post-boot work before the app competes with it (a busy launcher ANRs on slow runners).
     for _ in range(60):
         try:
@@ -229,7 +237,7 @@ def main() -> int:
     debug = {"focus": focus[:200], "packages": sorted({n.get("package", "") for n in nodes(root)})[:10],
              "texts": [t[:60] for t in texts(root)][:40],
              "descs": [n.get("content-desc", "")[:60] for n in nodes(root) if n.get("content-desc")][:20],
-             "launch": LAUNCH_LOG[-3:], "crash": crash_lines(a.package)}
+             "launch": LAUNCH_LOG[-6:], "crash": crash_lines(a.package)}
     if a.start_shot:
         (out / "start.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True, timeout=60))  # type: ignore[arg-type]
         shrink(out / "start.png", a.width)

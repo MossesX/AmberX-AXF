@@ -1,0 +1,51 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-095ad5a00e",
+  "createdAt": "2026-10-18T22:18:43.000Z",
+  "updatedAt": "2026-10-19T00:18:43.000Z",
+  "kind": "build",
+  "title": "Widgets + search bar (Opus build)",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "a framework category of asset types with `\"widget\": true` (group \"Widgets\"): **clock** and **search-bar** (`placeholder`, `maxResults` 1–50, `width` compact/regular/wide = 18/30/46 × `--fx-space`, optional `kinds`, `shortcut`; `searchBarConfig()` normalizes it the same on both ports). Widgets attach",
+    "commits": [
+      {
+        "sha": "8ce90cd",
+        "message": "Widgets: clock + search-bar on banners and toolbars; console-wide search in the banner"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T00:18:43.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "widgets-search-bar"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T22:18:43.000Z",
+  "finishedAt": "2026-10-19T00:18:43.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/console-web/src/consoleSearch.ts"
+  ]
+}

@@ -11,6 +11,7 @@ import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfChip
 import ai.amberx.axf.ui.components.AxfEmptyState
+import ai.amberx.axf.ui.components.AxfLibraryParamField
 import ai.amberx.axf.ui.components.AxfSectionHeader
 import ai.amberx.axf.ui.components.AxfSwitch
 import ai.amberx.axf.ui.components.AxfText
@@ -35,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ai.amberx.axf.console.InstallableLibrary
-import ai.amberx.axf.console.LibraryParam
 import ai.amberx.axf.console.PortRecord
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonArray
@@ -75,22 +75,6 @@ fun OpenProjectDialog() {
 /* Install wizard                                                       */
 /* ------------------------------------------------------------------ */
 
-/** One typed input for a library parameter; the same widget the import wizard reuses. */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun ParamField(p: LibraryParam, value: String, onChange: (String) -> Unit) {
-    val err = p.validate(value)
-    when (p.type) {
-        "bool" -> AxfSwitch(value.ifBlank { p.defaultText }.lowercase() in setOf("true", "yes", "on", "1"), { onChange(it.toString()) }, label = p.label, description = p.help)
-        "choice" -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            AxfText(p.label); p.help?.let { AxfText(it, muted = true) }
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) { for (c in p.choices) AxfChip(c, selected = value.ifBlank { p.defaultText } == c, onClick = { onChange(c) }) }
-        }
-        else -> AxfTextField(value, onChange, Modifier.fillMaxWidth(), label = p.label + if (p.required) " *" else "", placeholder = p.defaultText.ifBlank { p.help }, monospace = p.type == "list", singleLine = p.type != "list", minLines = if (p.type == "list") 2 else 1, error = err)
-    }
-    if (p.help != null && p.type !in setOf("bool", "choice")) AxfText(p.help, muted = true)
-}
-
 /**
  * Dialog `install`: the interactive install wizard. Walks every parameter the library's `library.json` declares
  * (one step each, validated), shows the resulting manifest block + install script, then runs `POST /install` on
@@ -122,10 +106,10 @@ fun InstallWizardDialog(libraryId: String) {
         AxfText("project: ${project.ifBlank { "none open — set one from the inspector or Home" }} · manifest key ${lib.manifestKey} · module ${lib.module}", mono = true, muted = true)
         if (!summary) {
             val p = params[step]
-            ParamField(p, answers[p.key] ?: "", { answers[p.key] = it })
+            AxfLibraryParamField(p.asLibraryParam(), answers[p.key] ?: "", { answers[p.key] = it })
         } else {
             AxfSectionHeader("What the installer writes", accent = true)
-            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.gradle}\nApp.kt modules() += ${lib.moduleCtor}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
+            CodeBlock("axf.manifest.json → ${lib.manifestKey} = ${paramsJson()}\nandroid.modules += ${lib.id}\napp/build.gradle.kts += ${lib.install?.gradle.orEmpty()}\nApp.kt modules() += ${lib.install?.module.orEmpty()}\ngenerated: app/src/main/kotlin/<pkg>/axf/${lib.module.removePrefix("lib-").replaceFirstChar(Char::uppercase)}Setup.kt (parameters as typed Kotlin)")
             CodeBlock(script)
             if (log.isNotBlank()) CodeBlock(log)
         }

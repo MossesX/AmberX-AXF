@@ -4,7 +4,7 @@
  * the same steps through --json.
  *
  *   node install.mjs                         interactive (asks where, which questions, behaviour, expected values)
- *   node install.mjs --json '<request>'      non-interactive; request = { action, target, dir?, config? }
+ *   node install.mjs --json '<request>'      non-interactive; request = { action, target, dir?, config?, onDevice? }
  *                                            action: install | uninstall | preview | status   → prints one JSON result
  *   node install.mjs --uninstall [--target local|shared|user]
  *   node install.mjs --status
@@ -29,6 +29,7 @@ import { spawnSync } from 'node:child_process';
 import { createInterface } from 'node:readline/promises';
 import { relative, resolve } from 'node:path';
 import * as L from './lib.mjs';
+import { gitAuthEnv, scrub } from '../../../../framework/cli/github.mjs';
 
 const TARGETS = {
   local: 'This clone only (.claude/settings.local.json, not committed)',
@@ -89,7 +90,7 @@ function publishShared({ remove = false, config, log }) {
   if (!token) throw new Error('Publishing for every clone needs the console\'s GITHUB_TOKEN with Contents: write access. Re-run deploy/install-console.sh with GITHUB_TOKEN=… set, or use "This clone".');
   const git = (args, opts = {}) => {
     const r = spawnSync('git', ['-c', 'safe.directory=*', ...args], { encoding: 'utf8', timeout: 120000, cwd: opts.cwd, env: { ...process.env, ...opts.env, GIT_TERMINAL_PROMPT: '0' } });
-    if (r.status !== 0 && !opts.ok) throw new Error(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ').replace(token, '***')}`);
+    if (r.status !== 0 && !opts.ok) throw new Error(scrub(`git ${args[0]} failed: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' ')}`, [token]));
     return { ok: r.status === 0, out: (r.stdout || '').trim(), err: (r.stderr || '').trim() };
   };
   const root = L.REPO_ROOT;
@@ -98,10 +99,8 @@ function publishShared({ remove = false, config, log }) {
   const branch = git(['-C', root, 'rev-parse', '--abbrev-ref', 'HEAD']).out || 'main';
   const url = process.env.AXF_CHECKIN_PUSH_URL || `https://github.com/${slug}.git`; // override for tests
   const tmp = mkdtempSync(join(tmpdir(), 'axf-checkin-'));
-  const askpass = join(tmp, 'askpass.sh');
-  writeFileSync(askpass, '#!/bin/sh\ncase "$1" in Username*) echo x-access-token ;; *) printf %s "$AXF_GIT_PUSH_TOKEN" ;; esac\n');
-  chmodSync(askpass, 0o700);
-  const auth = { env: { GIT_ASKPASS: askpass, AXF_GIT_PUSH_TOKEN: token } };
+  // lib-github: the token reaches git only through GIT_CONFIG_* (header scoped to https://github.com/, no redirects)
+  const auth = { env: gitAuthEnv(token) };
   const wt = join(tmp, 'wt');
   try {
     git(['-C', root, 'fetch', '-q', url, branch], auth);
@@ -147,7 +146,9 @@ async function jsonMode(raw) {
       if (publish) { publishShared({ remove: true, log }); console.log(JSON.stringify({ ok: true, changed: true, log: lines })); return; }
       const changed = uninstall(req.target, req.dir, log); console.log(JSON.stringify({ ok: true, changed, log: lines })); return;
     }
-    if (req.target === 'user') throw new Error('the "user" target is installed on the device itself: run the installer there in a terminal');
+    // the console runs --json in its own container (another machine), so "user" needs onDevice: true = this command runs
+    // on the device itself (the systems check's VPS Auto fix sends it through vps.run on the host)
+    if (req.target === 'user' && req.onDevice !== true) throw new Error('the "user" target is installed on the device itself: run the installer there in a terminal');
     const p = plan(req.target, req.dir, req.config);
     const result = { settings: show(p.paths.settings), config: show(p.paths.config), before: p.before, after: p.after, configJson: p.config };
     if (action === 'preview') { console.log(JSON.stringify({ ok: true, preview: result })); return; }

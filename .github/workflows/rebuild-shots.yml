@@ -16,7 +16,7 @@ name: Rebuild screenshots (Android, before/after)
 
 on:
   push:
-    branches: ['fable/**', 'rebuild/**']
+    branches: ['fable/**', 'rebuild/**', 'harvest/**']
   workflow_dispatch:
     inputs:
       head: { description: 'Branch or commit with the rebuild', required: true }

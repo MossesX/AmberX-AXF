@@ -16,6 +16,8 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 
 import console_context as cx
+import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf_server import storage
 
 router = APIRouter()
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,59}$")
@@ -32,12 +34,7 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, value: Any) -> None:
-    p.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    tmp = p.with_suffix(".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as f:
-        json.dump(value, f, indent=2)
-    os.replace(tmp, p)
+    storage.write_json(p, value)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def asset_types() -> set[str]:

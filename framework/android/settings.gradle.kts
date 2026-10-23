@@ -37,6 +37,8 @@ include(":lib-voice")
 include(":lib-lock")
 include(":lib-mcp")
 include(":lib-hub")
+include(":lib-notifications")
+include(":lib-work")
 // Tooling
 include(":axf-devtools")
 include(":axf-testing")

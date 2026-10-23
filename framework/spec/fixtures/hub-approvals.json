@@ -1,0 +1,1994 @@
+{
+  "default": "https://axhub.amberxai.com",
+  "paths": {
+    "feed": "/auth/admin/approvals.json",
+    "approvals": "/auth/admin/approvals",
+    "login": "/auth/login",
+    "account": "/auth/account",
+    "logout": "/auth/logout",
+    "apps": "/apps"
+  },
+  "limits": {
+    "feedMaxBytes": 262144,
+    "feedMaxItems": 50,
+    "seenCap": 200,
+    "fieldCaps": {
+      "tool": 120,
+      "summary": 600,
+      "time": 64
+    }
+  },
+  "statuses": [
+    "ok",
+    "signed-out",
+    "not-admin",
+    "unreachable"
+  ],
+  "messages": {
+    "answered": "The hub answered {status}.",
+    "unexpected": "The hub sent something unexpected.",
+    "tooLarge": "Reply too large.",
+    "unreachable": "Can't reach the hub."
+  },
+  "normalize": [
+    {
+      "raw": " https://AXHUB.amberxai.com/ ",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": "\t https://axhub.amberxai.com \n",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": " https://axhub.amberxai.com",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": "https://axhub.amberxai.com///",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": "https://axhub.amberxai.com:443",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": "https://hub.example.test:8443",
+      "hub": "https://hub.example.test:8443"
+    },
+    {
+      "raw": "HTTPS://Hub.Example.Test",
+      "hub": "https://hub.example.test"
+    },
+    {
+      "raw": "http://axhub.amberxai.com",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com/evil",
+      "hub": null
+    },
+    {
+      "raw": "https://user@axhub.amberxai.com",
+      "hub": null
+    },
+    {
+      "raw": "https://user:pw@axhub.amberxai.com",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com?x=1",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com#frag",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com\\evil",
+      "hub": null
+    },
+    {
+      "raw": "https://",
+      "hub": null
+    },
+    {
+      "raw": "https://:443",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com:0",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com:65536",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.com:44a",
+      "hub": null
+    },
+    {
+      "raw": "https://[::1]",
+      "hub": null
+    },
+    {
+      "raw": "https://exa mple.com",
+      "hub": null
+    },
+    {
+      "raw": "https://bücher.example",
+      "hub": null
+    },
+    {
+      "raw": "https://a..b",
+      "hub": null
+    },
+    {
+      "raw": "https://.a.b",
+      "hub": null
+    },
+    {
+      "raw": "not a url",
+      "hub": null
+    },
+    {
+      "raw": "",
+      "hub": null
+    },
+    {
+      "raw": "ftp://axhub.amberxai.com",
+      "hub": null
+    },
+    {
+      "raw": "hTTps://axhub.amberxai.com",
+      "hub": "https://axhub.amberxai.com"
+    },
+    {
+      "raw": "httpsK://x",
+      "hub": null
+    },
+    {
+      "raw": "https://axhub.amberxai.comK",
+      "hub": null
+    }
+  ],
+  "origin": [
+    {
+      "url": " https://AXHUB.amberxai.com/ ",
+      "origin": null
+    },
+    {
+      "url": "\t https://axhub.amberxai.com \n",
+      "origin": null
+    },
+    {
+      "url": " https://axhub.amberxai.com",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com///",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com:443",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://hub.example.test:8443",
+      "origin": "https://hub.example.test:8443"
+    },
+    {
+      "url": "HTTPS://Hub.Example.Test",
+      "origin": "https://hub.example.test"
+    },
+    {
+      "url": "http://axhub.amberxai.com",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com/evil",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://user@axhub.amberxai.com",
+      "origin": null
+    },
+    {
+      "url": "https://user:pw@axhub.amberxai.com",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com?x=1",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com#frag",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com\\evil",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://",
+      "origin": null
+    },
+    {
+      "url": "https://:443",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com:0",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com:65536",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com:44a",
+      "origin": null
+    },
+    {
+      "url": "https://[::1]",
+      "origin": null
+    },
+    {
+      "url": "https://exa mple.com",
+      "origin": null
+    },
+    {
+      "url": "https://bücher.example",
+      "origin": null
+    },
+    {
+      "url": "https://a..b",
+      "origin": null
+    },
+    {
+      "url": "https://.a.b",
+      "origin": null
+    },
+    {
+      "url": "not a url",
+      "origin": null
+    },
+    {
+      "url": "",
+      "origin": null
+    },
+    {
+      "url": "ftp://axhub.amberxai.com",
+      "origin": null
+    },
+    {
+      "url": "hTTps://axhub.amberxai.com",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "httpsK://x",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.comK",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com/auth/login",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com/",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com?x=1",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com#a",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://AXHUB.AMBERXAI.COM/auth",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com:443/auth/admin/approvals",
+      "origin": "https://axhub.amberxai.com"
+    },
+    {
+      "url": "https://axhub.amberxai.com.evil.example/auth",
+      "origin": "https://axhub.amberxai.com.evil.example"
+    },
+    {
+      "url": "https://evil.example/https://axhub.amberxai.com",
+      "origin": "https://evil.example"
+    },
+    {
+      "url": "http://axhub.amberxai.com/auth",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com:8443/auth",
+      "origin": "https://axhub.amberxai.com:8443"
+    },
+    {
+      "url": "https://user@axhub.amberxai.com/auth",
+      "origin": null
+    },
+    {
+      "url": "https://axhub.amberxai.com@evil.example/",
+      "origin": null
+    },
+    {
+      "url": "https://evil.example\\@axhub.amberxai.com",
+      "origin": "https://evil.example"
+    },
+    {
+      "url": "//axhub.amberxai.com/auth",
+      "origin": null
+    },
+    {
+      "url": "/auth/login",
+      "origin": null
+    },
+    {
+      "url": "javascript:alert(1)",
+      "origin": null
+    },
+    {
+      "url": "",
+      "origin": null
+    }
+  ],
+  "isHub": [
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/auth/login",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com?x=1",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com#a",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://AXHUB.AMBERXAI.COM/auth",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com:443/auth/admin/approvals",
+      "isHub": true
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com.evil.example/auth",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://evil.example/https://axhub.amberxai.com",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "http://axhub.amberxai.com/auth",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com:8443/auth",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://user@axhub.amberxai.com/auth",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com@evil.example/",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://evil.example\\@axhub.amberxai.com",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "//axhub.amberxai.com/auth",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "/auth/login",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "javascript:alert(1)",
+      "isHub": false
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "",
+      "isHub": false
+    }
+  ],
+  "urls": {
+    "base": "https://axhub.amberxai.com",
+    "approvals": "https://axhub.amberxai.com/auth/admin/approvals",
+    "apps": "https://axhub.amberxai.com/apps",
+    "account": "https://axhub.amberxai.com/auth/account",
+    "logout": "https://axhub.amberxai.com/auth/logout",
+    "feed": "https://axhub.amberxai.com/auth/admin/approvals.json",
+    "login": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+  },
+  "approval": [
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+      "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "DFE44A5D-15AB-47BF-8128-9843D37CD6EC",
+      "url": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "../../auth/logout",
+      "url": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec/x",
+      "url": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "dfe44a5d15ab47bf81289843d37cd6ec",
+      "url": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "",
+      "url": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "url": null
+    }
+  ],
+  "login": [
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "/auth/admin/approvals",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "/apps",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fapps"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals%2Fdfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "//evil.example",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "https://evil.example",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "/a/../../x",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "/a b",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "path": "",
+      "url": "https://axhub.amberxai.com/auth/login?rd=%2Fauth%2Fadmin%2Fapprovals"
+    }
+  ],
+  "apk": [
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/voice-vault/voice-vault-0.1.0-b12.apk",
+      "name": "voice-vault-0.1.0-b12.apk"
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/voice-vault/voice-vault.apk?x=1",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/voice-vault/voice-vault.apk#a",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/Voice/voice.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/voice-vault/../evil.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/voice-vault/evil.exe",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/voice.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://evil.example/apps/download/voice-vault/voice-vault.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "http://axhub.amberxai.com/apps/download/x/x.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com/apps/download/x/.hidden.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com?x=/apps/download/a/b.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "https://axhub.amberxai.com#/apps/download/a/b.apk",
+      "name": null
+    },
+    {
+      "base": "https://axhub.amberxai.com",
+      "url": "HTTPS://AXHUB.AMBERXAI.COM/apps/download/a/b.apk",
+      "name": "b.apk"
+    }
+  ],
+  "csrf": [
+    {
+      "html": "<form><input type=\"hidden\" name=\"csrf\" value=\"abc123-XYZ\"></form>",
+      "token": "abc123-XYZ"
+    },
+    {
+      "html": "<input name=\"csrf\" value=\"\">",
+      "token": null
+    },
+    {
+      "html": "<p>no form</p>",
+      "token": null
+    },
+    {
+      "html": "",
+      "token": null
+    }
+  ],
+  "feeds": [
+    {
+      "name": "ok-one",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"count\":1,\"approvalsUrl\":\"https://axhub.amberxai.com/auth/admin/approvals\",\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-empty",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"count\":0,\"pending\":[]}",
+      "feed": {
+        "status": "ok",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-count-more-than-items",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"count\":25,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 25,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          },
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-count-missing",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 2,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          },
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-count-too-small",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":true,\"count\":0,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-count-negative-or-fraction",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":-3.7,\"pending\":[]}",
+      "feed": {
+        "status": "ok",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-count-string",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":\"5\",\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-foreign-link-dropped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":3,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://evil.example/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"},{\"id\":\"a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"http://axhub.amberxai.com/auth/admin/approvals/a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 3,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-missing-link-dropped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":2,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\"},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":null}]}",
+      "feed": {
+        "status": "ok",
+        "count": 2,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-link-rebuilt-from-id",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":1,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/logout?next=dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 1,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-bad-ids-dropped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":4,\"pending\":[{\"id\":\"../../auth/logout\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/../../auth/logout\"},{\"id\":\"DFE44A5D-15AB-47BF-8128-9843D37CD6EC\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/DFE44A5D-15AB-47BF-8128-9843D37CD6EC\"},{\"tool\":\"x\"},\"str\",null,[1],{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 4,
+        "pending": [
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-duplicates-dropped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":2,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"},{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":\"other\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 2,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-fields-defaulted-and-capped",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":1,\"pending\":[{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec\",\"tool\":5,\"summary\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"createdAt\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},{\"id\":\"0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\",\"tool\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"summary\":null,\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 2,
+        "pending": [
+          {
+            "id": "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+            "tool": "call",
+            "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "createdAt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "expiresAt": "",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+          },
+          {
+            "id": "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+            "tool": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "summary": "",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-too-many-items",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":60,\"pending\":[{\"id\":\"00000000-0000-4000-8000-000000000000\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000000\"},{\"id\":\"00000000-0000-4000-8000-000000000001\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000001\"},{\"id\":\"00000000-0000-4000-8000-000000000002\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000002\"},{\"id\":\"00000000-0000-4000-8000-000000000003\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000003\"},{\"id\":\"00000000-0000-4000-8000-000000000004\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000004\"},{\"id\":\"00000000-0000-4000-8000-000000000005\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000005\"},{\"id\":\"00000000-0000-4000-8000-000000000006\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000006\"},{\"id\":\"00000000-0000-4000-8000-000000000007\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000007\"},{\"id\":\"00000000-0000-4000-8000-000000000008\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000008\"},{\"id\":\"00000000-0000-4000-8000-000000000009\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000009\"},{\"id\":\"00000000-0000-4000-8000-000000000010\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000010\"},{\"id\":\"00000000-0000-4000-8000-000000000011\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000011\"},{\"id\":\"00000000-0000-4000-8000-000000000012\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000012\"},{\"id\":\"00000000-0000-4000-8000-000000000013\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000013\"},{\"id\":\"00000000-0000-4000-8000-000000000014\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000014\"},{\"id\":\"00000000-0000-4000-8000-000000000015\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000015\"},{\"id\":\"00000000-0000-4000-8000-000000000016\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000016\"},{\"id\":\"00000000-0000-4000-8000-000000000017\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000017\"},{\"id\":\"00000000-0000-4000-8000-000000000018\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000018\"},{\"id\":\"00000000-0000-4000-8000-000000000019\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000019\"},{\"id\":\"00000000-0000-4000-8000-000000000020\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000020\"},{\"id\":\"00000000-0000-4000-8000-000000000021\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000021\"},{\"id\":\"00000000-0000-4000-8000-000000000022\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000022\"},{\"id\":\"00000000-0000-4000-8000-000000000023\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000023\"},{\"id\":\"00000000-0000-4000-8000-000000000024\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000024\"},{\"id\":\"00000000-0000-4000-8000-000000000025\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000025\"},{\"id\":\"00000000-0000-4000-8000-000000000026\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000026\"},{\"id\":\"00000000-0000-4000-8000-000000000027\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000027\"},{\"id\":\"00000000-0000-4000-8000-000000000028\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000028\"},{\"id\":\"00000000-0000-4000-8000-000000000029\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000029\"},{\"id\":\"00000000-0000-4000-8000-000000000030\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000030\"},{\"id\":\"00000000-0000-4000-8000-000000000031\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000031\"},{\"id\":\"00000000-0000-4000-8000-000000000032\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000032\"},{\"id\":\"00000000-0000-4000-8000-000000000033\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000033\"},{\"id\":\"00000000-0000-4000-8000-000000000034\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000034\"},{\"id\":\"00000000-0000-4000-8000-000000000035\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000035\"},{\"id\":\"00000000-0000-4000-8000-000000000036\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000036\"},{\"id\":\"00000000-0000-4000-8000-000000000037\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000037\"},{\"id\":\"00000000-0000-4000-8000-000000000038\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000038\"},{\"id\":\"00000000-0000-4000-8000-000000000039\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000039\"},{\"id\":\"00000000-0000-4000-8000-000000000040\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000040\"},{\"id\":\"00000000-0000-4000-8000-000000000041\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000041\"},{\"id\":\"00000000-0000-4000-8000-000000000042\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000042\"},{\"id\":\"00000000-0000-4000-8000-000000000043\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000043\"},{\"id\":\"00000000-0000-4000-8000-000000000044\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000044\"},{\"id\":\"00000000-0000-4000-8000-000000000045\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000045\"},{\"id\":\"00000000-0000-4000-8000-000000000046\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000046\"},{\"id\":\"00000000-0000-4000-8000-000000000047\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000047\"},{\"id\":\"00000000-0000-4000-8000-000000000048\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000048\"},{\"id\":\"00000000-0000-4000-8000-000000000049\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000049\"},{\"id\":\"00000000-0000-4000-8000-000000000050\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000050\"},{\"id\":\"00000000-0000-4000-8000-000000000051\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000051\"},{\"id\":\"00000000-0000-4000-8000-000000000052\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000052\"},{\"id\":\"00000000-0000-4000-8000-000000000053\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000053\"},{\"id\":\"00000000-0000-4000-8000-000000000054\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000054\"},{\"id\":\"00000000-0000-4000-8000-000000000055\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000055\"},{\"id\":\"00000000-0000-4000-8000-000000000056\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000056\"},{\"id\":\"00000000-0000-4000-8000-000000000057\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000057\"},{\"id\":\"00000000-0000-4000-8000-000000000058\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000058\"},{\"id\":\"00000000-0000-4000-8000-000000000059\",\"tool\":\"vps.run\",\"summary\":\"vps.run with arguments {\\\"command\\\":\\\"docker ps\\\"}\",\"createdAt\":\"2026-10-20T10:00:00.000Z\",\"expiresAt\":\"2026-10-20T10:30:00.000Z\",\"url\":\"https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000059\"}]}",
+      "feed": {
+        "status": "ok",
+        "count": 60,
+        "pending": [
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000000"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000001"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000002",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000002"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000003"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000004",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000004"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000005",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000005"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000006",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000006"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000007",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000007"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000008",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000008"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000009",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000009"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000010",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000010"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000011",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000011"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000012",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000012"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000013",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000013"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000014",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000014"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000015",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000015"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000016",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000016"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000017",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000017"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000018",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000018"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000019",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000019"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000020",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000020"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000021",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000021"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000022",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000022"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000023",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000023"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000024",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000024"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000025",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000025"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000026",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000026"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000027",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000027"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000028",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000028"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000029",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000029"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000030",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000030"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000031",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000031"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000032",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000032"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000033",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000033"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000034",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000034"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000035",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000035"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000036",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000036"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000037",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000037"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000038",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000038"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000039",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000039"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000040",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000040"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000041",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000041"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000042",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000042"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000043",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000043"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000044",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000044"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000045",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000045"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000046",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000046"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000047",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000047"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000048",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000048"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000049",
+            "tool": "vps.run",
+            "summary": "vps.run with arguments {\"command\":\"docker ps\"}",
+            "createdAt": "2026-10-20T10:00:00.000Z",
+            "expiresAt": "2026-10-20T10:30:00.000Z",
+            "url": "https://axhub.amberxai.com/auth/admin/approvals/00000000-0000-4000-8000-000000000049"
+          }
+        ],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "ok-pending-not-array",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"count\":2,\"pending\":{\"id\":\"dfe44a5d-15ab-47bf-8128-9843d37cd6ec\"}}",
+      "feed": {
+        "status": "ok",
+        "count": 2,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "body-signed-out",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":false,\"approvalsUrl\":\"https://axhub.amberxai.com/auth/admin/approvals\"}",
+      "feed": {
+        "status": "signed-out",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "body-not-admin",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "{\"signedIn\":true,\"admin\":false}",
+      "feed": {
+        "status": "not-admin",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "status-401",
+      "base": "https://axhub.amberxai.com",
+      "status": 401,
+      "body": "{\"signedIn\":false}",
+      "feed": {
+        "status": "signed-out",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "status-403",
+      "base": "https://axhub.amberxai.com",
+      "status": 403,
+      "body": "{\"signedIn\":true,\"admin\":false}",
+      "feed": {
+        "status": "not-admin",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "status-403-origin-refused",
+      "base": "https://axhub.amberxai.com",
+      "status": 403,
+      "body": "{\"error\":{\"code\":\"denied\",\"message\":\"Not allowed from this site.\"}}",
+      "feed": {
+        "status": "not-admin",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": ""
+      }
+    },
+    {
+      "name": "status-500",
+      "base": "https://axhub.amberxai.com",
+      "status": 500,
+      "body": "oops",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub answered 500."
+      }
+    },
+    {
+      "name": "status-302",
+      "base": "https://axhub.amberxai.com",
+      "status": 302,
+      "body": "",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub answered 302."
+      }
+    },
+    {
+      "name": "not-json",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "<html>sign in</html>",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub sent something unexpected."
+      }
+    },
+    {
+      "name": "json-array",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "[1,2]",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub sent something unexpected."
+      }
+    },
+    {
+      "name": "json-null",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "null",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub sent something unexpected."
+      }
+    },
+    {
+      "name": "json-string",
+      "base": "https://axhub.amberxai.com",
+      "status": 200,
+      "body": "\"x\"",
+      "feed": {
+        "status": "unreachable",
+        "count": 0,
+        "pending": [],
+        "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+        "error": "The hub sent something unexpected."
+      }
+    }
+  ],
+  "unreachable": {
+    "base": "https://axhub.amberxai.com",
+    "error": "Reply too large.",
+    "feed": {
+      "status": "unreachable",
+      "count": 0,
+      "pending": [],
+      "approvalsUrl": "https://axhub.amberxai.com/auth/admin/approvals",
+      "error": "Reply too large."
+    }
+  },
+  "seen": [
+    {
+      "seen": [],
+      "current": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+      ],
+      "plan": {
+        "fresh": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+        ],
+        "gone": [],
+        "next": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+        ]
+      }
+    },
+    {
+      "seen": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+      ],
+      "current": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+        "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+      ],
+      "plan": {
+        "fresh": [
+          "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+        ],
+        "gone": [],
+        "next": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+          "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+        ]
+      }
+    },
+    {
+      "seen": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+        "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+      ],
+      "current": [
+        "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+      ],
+      "plan": {
+        "fresh": [],
+        "gone": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+        ],
+        "next": [
+          "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+        ]
+      }
+    },
+    {
+      "seen": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+      ],
+      "current": [],
+      "plan": {
+        "fresh": [],
+        "gone": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+        ],
+        "next": []
+      }
+    },
+    {
+      "seen": [
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec",
+        "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+      ],
+      "current": [
+        "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b",
+        "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+      ],
+      "plan": {
+        "fresh": [
+          "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+        ],
+        "gone": [
+          "dfe44a5d-15ab-47bf-8128-9843d37cd6ec"
+        ],
+        "next": [
+          "0b6f3c2e-9a41-4d7e-8f10-2c3d4e5f6a7b"
+        ]
+      }
+    },
+    {
+      "seen": [
+        "id-0",
+        "id-1",
+        "id-2",
+        "id-3",
+        "id-4",
+        "id-5",
+        "id-6",
+        "id-7",
+        "id-8",
+        "id-9",
+        "id-10",
+        "id-11",
+        "id-12",
+        "id-13",
+        "id-14",
+        "id-15",
+        "id-16",
+        "id-17",
+        "id-18",
+        "id-19",
+        "id-20",
+        "id-21",
+        "id-22",
+        "id-23",
+        "id-24",
+        "id-25",
+        "id-26",
+        "id-27",
+        "id-28",
+        "id-29",
+        "id-30",
+        "id-31",
+        "id-32",
+        "id-33",
+        "id-34",
+        "id-35",
+        "id-36",
+        "id-37",
+        "id-38",
+        "id-39",
+        "id-40",
+        "id-41",
+        "id-42",
+        "id-43",
+        "id-44",
+        "id-45",
+        "id-46",
+        "id-47",
+        "id-48",
+        "id-49",
+        "id-50",
+        "id-51",
+        "id-52",
+        "id-53",
+        "id-54",
+        "id-55",
+        "id-56",
+        "id-57",
+        "id-58",
+        "id-59",
+        "id-60",
+        "id-61",
+        "id-62",
+        "id-63",
+        "id-64",
+        "id-65",
+        "id-66",
+        "id-67",
+        "id-68",
+        "id-69",
+        "id-70",
+        "id-71",
+        "id-72",
+        "id-73",
+        "id-74",
+        "id-75",
+        "id-76",
+        "id-77",
+        "id-78",
+        "id-79",
+        "id-80",
+        "id-81",
+        "id-82",
+        "id-83",
+        "id-84",
+        "id-85",
+        "id-86",
+        "id-87",
+        "id-88",
+        "id-89",
+        "id-90",
+        "id-91",
+        "id-92",
+        "id-93",
+        "id-94",
+        "id-95",
+        "id-96",
+        "id-97",
+        "id-98",
+        "id-99",
+        "id-100",
+        "id-101",
+        "id-102",
+        "id-103",
+        "id-104",
+        "id-105",
+        "id-106",
+        "id-107",
+        "id-108",
+        "id-109",
+        "id-110",
+        "id-111",
+        "id-112",
+        "id-113",
+        "id-114",
+        "id-115",
+        "id-116",
+        "id-117",
+        "id-118",
+        "id-119",
+        "id-120",
+        "id-121",
+        "id-122",
+        "id-123",
+        "id-124",
+        "id-125",
+        "id-126",
+        "id-127",
+        "id-128",
+        "id-129",
+        "id-130",
+        "id-131",
+        "id-132",
+        "id-133",
+        "id-134",
+        "id-135",
+        "id-136",
+        "id-137",
+        "id-138",
+        "id-139",
+        "id-140",
+        "id-141",
+        "id-142",
+        "id-143",
+        "id-144",
+        "id-145",
+        "id-146",
+        "id-147",
+        "id-148",
+        "id-149",
+        "id-150",
+        "id-151",
+        "id-152",
+        "id-153",
+        "id-154",
+        "id-155",
+        "id-156",
+        "id-157",
+        "id-158",
+        "id-159",
+        "id-160",
+        "id-161",
+        "id-162",
+        "id-163",
+        "id-164",
+        "id-165",
+        "id-166",
+        "id-167",
+        "id-168",
+        "id-169",
+        "id-170",
+        "id-171",
+        "id-172",
+        "id-173",
+        "id-174",
+        "id-175",
+        "id-176",
+        "id-177",
+        "id-178",
+        "id-179",
+        "id-180",
+        "id-181",
+        "id-182",
+        "id-183",
+        "id-184",
+        "id-185",
+        "id-186",
+        "id-187",
+        "id-188",
+        "id-189",
+        "id-190",
+        "id-191",
+        "id-192",
+        "id-193",
+        "id-194",
+        "id-195",
+        "id-196",
+        "id-197",
+        "id-198",
+        "id-199"
+      ],
+      "current": [
+        "id-5",
+        "new-1"
+      ],
+      "plan": {
+        "fresh": [
+          "new-1"
+        ],
+        "gone": [
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-4",
+          "id-6",
+          "id-7",
+          "id-8",
+          "id-9",
+          "id-10",
+          "id-11",
+          "id-12",
+          "id-13",
+          "id-14",
+          "id-15",
+          "id-16",
+          "id-17",
+          "id-18",
+          "id-19",
+          "id-20",
+          "id-21",
+          "id-22",
+          "id-23",
+          "id-24",
+          "id-25",
+          "id-26",
+          "id-27",
+          "id-28",
+          "id-29",
+          "id-30",
+          "id-31",
+          "id-32",
+          "id-33",
+          "id-34",
+          "id-35",
+          "id-36",
+          "id-37",
+          "id-38",
+          "id-39",
+          "id-40",
+          "id-41",
+          "id-42",
+          "id-43",
+          "id-44",
+          "id-45",
+          "id-46",
+          "id-47",
+          "id-48",
+          "id-49",
+          "id-50",
+          "id-51",
+          "id-52",
+          "id-53",
+          "id-54",
+          "id-55",
+          "id-56",
+          "id-57",
+          "id-58",
+          "id-59",
+          "id-60",
+          "id-61",
+          "id-62",
+          "id-63",
+          "id-64",
+          "id-65",
+          "id-66",
+          "id-67",
+          "id-68",
+          "id-69",
+          "id-70",
+          "id-71",
+          "id-72",
+          "id-73",
+          "id-74",
+          "id-75",
+          "id-76",
+          "id-77",
+          "id-78",
+          "id-79",
+          "id-80",
+          "id-81",
+          "id-82",
+          "id-83",
+          "id-84",
+          "id-85",
+          "id-86",
+          "id-87",
+          "id-88",
+          "id-89",
+          "id-90",
+          "id-91",
+          "id-92",
+          "id-93",
+          "id-94",
+          "id-95",
+          "id-96",
+          "id-97",
+          "id-98",
+          "id-99",
+          "id-100",
+          "id-101",
+          "id-102",
+          "id-103",
+          "id-104",
+          "id-105",
+          "id-106",
+          "id-107",
+          "id-108",
+          "id-109",
+          "id-110",
+          "id-111",
+          "id-112",
+          "id-113",
+          "id-114",
+          "id-115",
+          "id-116",
+          "id-117",
+          "id-118",
+          "id-119",
+          "id-120",
+          "id-121",
+          "id-122",
+          "id-123",
+          "id-124",
+          "id-125",
+          "id-126",
+          "id-127",
+          "id-128",
+          "id-129",
+          "id-130",
+          "id-131",
+          "id-132",
+          "id-133",
+          "id-134",
+          "id-135",
+          "id-136",
+          "id-137",
+          "id-138",
+          "id-139",
+          "id-140",
+          "id-141",
+          "id-142",
+          "id-143",
+          "id-144",
+          "id-145",
+          "id-146",
+          "id-147",
+          "id-148",
+          "id-149",
+          "id-150",
+          "id-151",
+          "id-152",
+          "id-153",
+          "id-154",
+          "id-155",
+          "id-156",
+          "id-157",
+          "id-158",
+          "id-159",
+          "id-160",
+          "id-161",
+          "id-162",
+          "id-163",
+          "id-164",
+          "id-165",
+          "id-166",
+          "id-167",
+          "id-168",
+          "id-169",
+          "id-170",
+          "id-171",
+          "id-172",
+          "id-173",
+          "id-174",
+          "id-175",
+          "id-176",
+          "id-177",
+          "id-178",
+          "id-179",
+          "id-180",
+          "id-181",
+          "id-182",
+          "id-183",
+          "id-184",
+          "id-185",
+          "id-186",
+          "id-187",
+          "id-188",
+          "id-189",
+          "id-190",
+          "id-191",
+          "id-192",
+          "id-193",
+          "id-194",
+          "id-195",
+          "id-196",
+          "id-197",
+          "id-198",
+          "id-199"
+        ],
+        "next": [
+          "id-5",
+          "new-1"
+        ]
+      }
+    }
+  ]
+}

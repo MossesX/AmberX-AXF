@@ -1,0 +1,46 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.build-manager",
+  "name": "Build manager",
+  "version": "0.3.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Everything about builds in one place. Remaining: pending items not complete, build-queue steps not done and plan features nothing else covers, one row per build, with model, status, time left, steps and 'needs split'; Start build now (row button + context menu) plans it (dependencies first, queue reordered, never on top of a running build or its folders), asks axHub vps.run (Brett approves) to run headless Claude Code on the VPS on its own branch, then checks nothing broke. Live: every build any session on any machine reported to axHub (VPS, other computers, claude.ai, console launches, subagents), in real time, with elapsed vs estimate, cost, model, where it runs and a 'no word' flag when a session goes quiet, plus the activity feed. Built: every finished build with time and cost (actual or estimated), totals by model and week, filters. One search bar across all three. Banner while something builds.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "action:build-manager.built",
+    "action:build-manager.live",
+    "action:build-manager.open",
+    "action:build-manager.start",
+    "banner:build-manager",
+    "search:build-manager.items",
+    "search:build-manager.log",
+    "settings-tab:build-manager",
+    "view:build-manager"
+  ],
+  "optional": [
+    "service:axf.activity@1",
+    "service:axf.changes@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus"
+  },
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/build-manager",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md",
+      "_claude/memory/docs/build-manager.md"
+    ]
+  }
+}

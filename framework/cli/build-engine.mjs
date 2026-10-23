@@ -83,6 +83,16 @@ export function validateAsset(raw) {
     if (isObj(raw.data[k])) for (const nk of keys) if (!(nk in raw.data[k])) errors.push(`data.${k}.${nk} is required`);
   }
   if (raw.type === 'layout' && 'slots' in raw.data) errors.push(...validateSlots(raw.data.slots));
+  if (raw.type === 'app-menu' && Array.isArray(raw.data.menus)) {
+    raw.data.menus.forEach((m, i) => {
+      if (!isObj(m)) return;
+      if ('order' in m && (typeof m.order !== 'number' || !Number.isFinite(m.order))) errors.push(`data.menus[${i}].order must be a number`);
+      if ('items' in m) errors.push(...validateMenuItems(m.items, `data.menus[${i}].items`));
+    });
+  }
+  if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
+    for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
+  }
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {
@@ -91,12 +101,56 @@ export function validateAsset(raw) {
   return { ok: errors.length === 0, errors };
 }
 
+/* Menu items — mirrors validateMenuItems / parseChecked in core/engines/appmenu.ts (asset-types.json → menuItems). */
+/** JSON Schema of one menu item (recursive through `items`), for the generated editor schemas. */
+export function menuItemSchema() {
+  return {
+    type: 'object', required: ['id'],
+    properties: {
+      id: { type: 'string' }, label: { type: 'string' }, icon: { type: 'string' }, action: { type: 'string' }, shortcut: { type: 'string' }, requires: { type: 'string' },
+      separator: { type: 'boolean' }, items: { type: 'array', items: { $ref: '#/$defs/menuItem' } },
+      provider: { type: 'string', minLength: 1, description: MENU_SPEC.optional_fields.provider },
+      badge: { type: 'string', minLength: 1, description: MENU_SPEC.optional_fields.badge },
+      checked: { type: 'string', pattern: `^(${MENU_SPEC.checkedKinds.join('|')}):.+$`, description: MENU_SPEC.optional_fields.checked },
+      order: { type: 'number', description: MENU_SPEC.optional_fields.order },
+      before: { type: 'string', minLength: 1 }, after: { type: 'string', minLength: 1 },
+    },
+  };
+}
+const MENU_SPEC = spec.menuItems;
+export function parseChecked(binding) {
+  if (typeof binding !== 'string') return null;
+  const i = binding.indexOf(':');
+  if (i <= 0) return null;
+  const kind = binding.slice(0, i);
+  const ref = binding.slice(i + 1);
+  return MENU_SPEC.checkedKinds.includes(kind) && ref ? { kind, ref } : null;
+}
+export function validateMenuItems(items, path, depth = 0) {
+  if (!Array.isArray(items)) return [`${path} must be a list of menu items`];
+  const errors = [];
+  items.forEach((o, i) => {
+    const p = `${path}[${i}]`;
+    if (!isObj(o)) { errors.push(`${p} must be a menu item object`); return; }
+    for (const k of ['provider', 'badge', 'before', 'after']) if (k in o && (typeof o[k] !== 'string' || !o[k])) errors.push(`${p}.${k} must be a non-empty string`);
+    if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${MENU_SPEC.checkedKinds.map((k) => `${k}:<ref>`).join(', ')}`);
+    if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
+    if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
+    if ('items' in o) {
+      if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);
+      else errors.push(...validateMenuItems(o.items, `${p}.items`, depth + 1));
+    }
+  });
+  return errors;
+}
+
 /* Widget hosts — mirrors hostSpec / validateHostAttachments in core/engines/widgets.ts (banner.attach, toolbar.widgets). */
 const WIDGET_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].widget === true);
+const ATTACHABLE_TYPES = Object.keys(spec.types).filter((t) => spec.types[t].attachable === true);
 export function hostSpec(type) {
   const t = spec.types[type];
   if (!t) return undefined;
-  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? WIDGET_TYPES, sides: t.attach.sides ?? [] };
+  if (t.attach) return { host: type, field: 'attach', types: t.attach.types ?? ATTACHABLE_TYPES, sides: t.attach.sides ?? [] };
   if (t.widgets) return { host: type, field: 'widgets', types: WIDGET_TYPES, sides: t.widgets.sides ?? [] };
   return undefined;
 }
@@ -198,7 +252,7 @@ function walk(dir) {
 }
 
 const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 16);
-const TEXT = /\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml)$/;
+const TEXT = /(\.(json|tsx?|jsx?|mjs|css|html|md|txt|gitignore|kts?|xml|pro|properties|toml|sh|py|ya?ml)|(^|[\\/])Dockerfile)$/;
 
 /** Token values are free text (an app named "Notes & Todo"): escape them for the file they land in, so the generated
  * app still compiles. Android string resources: XML entities + Android's own quote rules; Kotlin/Java string literals:
@@ -214,7 +268,7 @@ const ktStr = (v) => tokenEscaper('x.kt')(String(v ?? ''));
 function copyTemplate(src, dest, tokens) {
   for (const file of walk(src)) {
     // `src/main/kotlin/app/…` in a template lands at the app's real package path.
-    const rel = relative(src, file).replace(/^_gitignore$/, '.gitignore').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
+    const rel = relative(src, file).replace(/^_(gitignore|dockerignore)$/, '.$1').replace(/^(app\/src\/main\/kotlin\/)app\//, (_, pre) => pre + (tokens.APPLICATION_ID ?? 'app').replace(/\./g, '/') + '/');
     const target = join(dest, rel);
     mkdirSync(dirname(target), { recursive: true });
     if (TEXT.test(file) || basename(file).startsWith('_')) {
@@ -539,7 +593,13 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   const written = [];
   for (const [type, ts] of Object.entries(spec.types)) {
     const props = Object.fromEntries(ts.required.map((k) => [k, ts.enums?.[k] ? { enum: ts.enums[k] } : ts.nested?.[k] ? { type: 'object', required: ts.nested[k] } : {}]));
+    // Menu items (asset-types.json → menuItems): a recursive definition for editors, where menu items appear.
+    const menuItem = { $ref: '#/$defs/menuItem' };
+    if (type === 'app-menu') props.menus = { type: 'array', items: { type: 'object', required: ['id', 'label', 'items'], properties: { id: { type: 'string' }, label: { type: 'string' }, order: { type: 'number' }, items: { type: 'array', items: menuItem } } } };
+    if (type === 'context-menu') props.targets = { type: 'object', required: ts.nested?.targets ?? [], additionalProperties: { type: 'array', items: menuItem } };
+    const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
+      ...($defs ? { $defs } : {}),
       $schema: 'https://json-schema.org/draft/2020-12/schema',
       $id: `axf/${type}.schema.json`,
       title: `AmberX AXF ${ts.label} asset`,
@@ -616,7 +676,10 @@ export function listModules() {
   return [...settings.matchAll(/include\("(:[^"]+)"\)/g)].map((m) => m[1].slice(1)).map((name) => {
     const readme = join(ANDROID_DIR, name, 'README.md');
     const first = existsSync(readme) ? readFileSync(readme, 'utf8').split('\n').find((l) => l && !l.startsWith('#'))?.trim() ?? '' : '';
-    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first };
+    // Modules this one builds on: its Gradle `project(":x")` dependencies (Build Pilot highlights them when one is picked).
+    const gradle = join(ANDROID_DIR, name, 'build.gradle.kts');
+    const dependsOn = existsSync(gradle) ? [...new Set([...readFileSync(gradle, 'utf8').matchAll(/project\(\s*"(:[^"]+)"\s*\)/g)].map((m) => m[1].slice(1)).filter((d) => d !== name))] : [];
+    return { name, kind: name.startsWith('lib-') ? 'library' : name.startsWith('axf-') ? 'framework' : 'other', description: first, dependsOn };
   });
 }
 

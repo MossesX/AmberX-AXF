@@ -45,11 +45,11 @@ public class AxfVoice internal constructor(context: Context, kv: KeyValueStore?,
         return p.request(listOf(Manifest.permission.RECORD_AUDIO), rationale)[Manifest.permission.RECORD_AUDIO] == PermissionState.GRANTED
     }
 
-    /** Speaks [prompt] (when prompts are on), then listens once. */
-    public suspend fun ask(prompt: String?, secret: Boolean = false): Heard {
+    /** Speaks [prompt] (when prompts are on), then listens once; [onPartial] gets the words heard so far, live. */
+    public suspend fun ask(prompt: String?, secret: Boolean = false, onPartial: ((String) -> Unit)? = null): Heard {
         if (!ensureMic()) return Heard.Failed(-1, "Microphone permission is off.")
         if (prompt != null && speakPrompts) speaker.say(prompt, language)
-        return input.listen(ListenOptions(language = language, preferOffline = preferOffline, secret = secret, allowOnlineSecret = allowOnlineSecret))
+        return input.listen(ListenOptions(language = language, preferOffline = preferOffline, secret = secret, allowOnlineSecret = allowOnlineSecret, onPartial = onPartial))
     }
 
     public companion object {

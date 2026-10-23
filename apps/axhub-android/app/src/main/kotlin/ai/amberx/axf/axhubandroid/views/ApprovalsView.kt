@@ -24,16 +24,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleResumeEffect
-import ai.amberx.axf.axhubandroid.hub.Feed
-import ai.amberx.axf.axhubandroid.hub.HubAddress
-import ai.amberx.axf.axhubandroid.hub.HubClient
-import ai.amberx.axf.axhubandroid.hub.HubState
-import ai.amberx.axf.axhubandroid.hub.WatchPrefs
 import ai.amberx.axf.axhubandroid.watch.Alerts
-import ai.amberx.axf.axhubandroid.watch.ApprovalWatchService
+import ai.amberx.axf.axhubandroid.watch.ApprovalWatch
+import ai.amberx.axf.axhubandroid.watch.hubPrefs
+import ai.amberx.axf.hub.HubClient
+import ai.amberx.axf.hub.HubFeedStatus
+import ai.amberx.axf.hub.HubRules
+import ai.amberx.axf.hub.HubState
+import ai.amberx.axf.hub.WatchPrefs
 import ai.amberx.axf.kernel.platform.PermissionGateway
-import ai.amberx.axf.ui.LocalAxfKernel
 import ai.amberx.axf.ui.LocalAxfRuntime
+import ai.amberx.axf.ui.rememberService
 import ai.amberx.axf.ui.components.AxfBadge
 import ai.amberx.axf.ui.components.AxfButton
 import ai.amberx.axf.ui.components.AxfCard
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
 fun ApprovalsView() {
     val ctx = LocalContext.current
     val runtime = LocalAxfRuntime.current
-    val prefs = remember { WatchPrefs(ctx) }
+    val prefs = remember { hubPrefs(ctx) }
     val feed by HubState.feed.collectAsState()
     val running by HubState.watcherRunning.collectAsState()
     val scope = rememberCoroutineScope()
@@ -58,7 +59,7 @@ fun ApprovalsView() {
 
     fun openPage(url: String?) { HubState.open(url); runtime.navigate("hub") }
     LifecycleResumeEffect(refreshTick) {
-        scope.launch { HubState.update(HubClient.feed(prefs.base)) }
+        scope.launch { HubState.update(HubClient.Default.feed(prefs.base)) }
         onPauseOrDispose { }
     }
 
@@ -66,26 +67,27 @@ fun ApprovalsView() {
         AxfPageHead("Approvals", eyebrow = "AXHub", description = "Calls on your hub that wait for you. Tap one to review it on the hub's own page.") {
             AxfButton("Refresh", { refreshTick++ }, tone = ButtonTone.GHOST, icon = "refresh")
         }
-        when (val f = feed) {
-            null -> AxfText("Checking the hub…", muted = true)
-            Feed.SignedOut -> AxfCard(Modifier.fillMaxWidth(), title = "Sign in to your hub", icon = "user") {
+        val f = feed
+        if (f == null) AxfText("Checking the hub…", muted = true)
+        else when (f.status) {
+            HubFeedStatus.SIGNED_OUT -> AxfCard(Modifier.fillMaxWidth(), title = "Sign in to your hub", icon = "user") {
                 AxfText("Sign in once with your hub account. The session stays in this app only.", muted = true)
-                AxfButton("Sign in", { openPage(HubAddress.login(prefs.base)) }, tone = ButtonTone.PRIMARY, icon = "unlock")
+                AxfButton("Sign in", { openPage(HubRules.loginUrl(prefs.base)) }, tone = ButtonTone.PRIMARY, icon = "unlock")
             }
-            Feed.NotAdmin -> AxfCard(Modifier.fillMaxWidth(), title = "Not a hub admin", icon = "shield") {
+            HubFeedStatus.NOT_ADMIN -> AxfCard(Modifier.fillMaxWidth(), title = "Not a hub admin", icon = "shield") {
                 AxfText("Only admins can approve. If the hub asked you to pick a new password, open it and finish that first.", muted = true)
-                AxfButton("Open the hub", { openPage("${prefs.base}/auth/account") }, icon = "external")
+                AxfButton("Open the hub", { openPage(HubRules.accountUrl(prefs.base)) }, icon = "external")
             }
-            is Feed.Error -> AxfCard(Modifier.fillMaxWidth(), title = "Can't reach the hub", icon = "wifi") {
-                AxfText(f.message, muted = true)
+            HubFeedStatus.UNREACHABLE -> AxfCard(Modifier.fillMaxWidth(), title = "Can't reach the hub", icon = "wifi") {
+                AxfText(f.error.ifEmpty { HubRules.MSG_UNREACHABLE }, muted = true)
                 AxfButton("Try again", { refreshTick++ }, icon = "refresh")
             }
-            is Feed.Ok -> {
+            HubFeedStatus.OK -> {
                 if (f.pending.isEmpty()) AxfEmptyState("Nothing is waiting", message = "You'll get an alert the moment the hub asks.", icon = "check-circle")
                 f.pending.forEach { a ->
-                    AxfListItem(a.tool, subtitle = a.summary.lineSequence().firstOrNull()?.take(140), icon = "shield", onClick = { HubAddress.approval(prefs.base, a.id)?.let(::openPage) }, trailing = { AxfBadge("review") })
+                    AxfListItem(a.tool, subtitle = a.summary.lineSequence().firstOrNull()?.take(140), icon = "shield", onClick = { openPage(a.url) }, trailing = { AxfBadge("review") })
                 }
-                AxfButton("All approvals on the hub", { openPage(HubAddress.approvals(prefs.base)) }, tone = ButtonTone.GHOST, icon = "list")
+                AxfButton("All approvals on the hub", { openPage(HubRules.approvalsUrl(prefs.base)) }, tone = ButtonTone.GHOST, icon = "list")
             }
         }
         WatchCard(prefs, running)
@@ -95,23 +97,23 @@ fun ApprovalsView() {
 @Composable
 private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
     val ctx = LocalContext.current
-    val kernel = LocalAxfKernel.current
+    val permissions = rememberService<PermissionGateway>()
     val scope = rememberCoroutineScope()
     var tick by remember { mutableIntStateOf(0) }
     val canPost = remember(tick) { Alerts.canPost(ctx) }
     val canFull = remember(tick) { Alerts.canFullScreen(ctx) }
     LifecycleResumeEffect(Unit) { tick++; onPauseOrDispose { } }
     val feed by HubState.feed.collectAsState()
-    LaunchedEffect(Unit) { if (prefs.watching && !running) ApprovalWatchService.start(ctx) }
+    LaunchedEffect(Unit) { if (prefs.watching && !running) ApprovalWatch.start(ctx) }
     // First successful sign-in turns watching on, unless the user already chose.
-    LaunchedEffect(feed) { if (feed is Feed.Ok && !prefs.watchingChosen) { prefs.watching = true; ApprovalWatchService.start(ctx); tick++ } }
+    LaunchedEffect(feed) { if (feed?.status == HubFeedStatus.OK && !prefs.watchingChosen) { prefs.watching = true; ApprovalWatch.start(ctx); tick++ } }
 
     AxfCard(Modifier.fillMaxWidth(), title = if (running) "Watching for approvals" else "Not watching", icon = "bell") {
         AxfText(if (running) "AXHub checks the hub every ${prefs.intervalSec} s and alerts you the moment something needs approval." else "Turn watching on to get an alert for every new approval.", muted = true)
         if (!canPost) {
             AxfText("Notifications are off, so alerts can't show.", color = Axf.colors.warning)
             AxfButton("Allow notifications", {
-                if (Build.VERSION.SDK_INT >= 33) scope.launch { kernel?.services?.get<PermissionGateway>()?.request(listOf(Manifest.permission.POST_NOTIFICATIONS), "AXHub alerts you when an approval is waiting."); tick++ }
+                if (Build.VERSION.SDK_INT >= 33) scope.launch { permissions?.request(listOf(Manifest.permission.POST_NOTIFICATIONS), "AXHub alerts you when an approval is waiting."); tick++ }
             }, tone = ButtonTone.PRIMARY, icon = "bell")
         }
         if (canPost && prefs.fullScreen && !canFull) {
@@ -122,9 +124,9 @@ private fun WatchCard(prefs: WatchPrefs, running: Boolean) {
         }
         Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
             if (running) {
-                AxfButton("Check now", { ApprovalWatchService.start(ctx, checkNow = true) }, icon = "refresh")
-                AxfButton("Stop watching", { prefs.watching = false; ApprovalWatchService.stop(ctx); tick++ }, tone = ButtonTone.GHOST, icon = "pause")
-            } else AxfButton("Start watching", { prefs.watching = true; ApprovalWatchService.start(ctx); tick++ }, tone = ButtonTone.PRIMARY, icon = "play")
+                AxfButton("Check now", { ApprovalWatch.start(ctx, checkNow = true) }, icon = "refresh")
+                AxfButton("Stop watching", { prefs.watching = false; ApprovalWatch.stop(ctx); tick++ }, tone = ButtonTone.GHOST, icon = "pause")
+            } else AxfButton("Start watching", { prefs.watching = true; ApprovalWatch.start(ctx); tick++ }, tone = ButtonTone.PRIMARY, icon = "play")
         }
     }
 }

@@ -299,7 +299,7 @@
     "result": {
       "ok": false,
       "errors": [
-        "data.attach[0].type must be one of: badge, clock, search-bar",
+        "data.attach[0].type must be one of: clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge",
         "data.attach[1].at must be one of: left, center, right"
       ]
     }
@@ -358,7 +358,7 @@
     "result": {
       "ok": false,
       "errors": [
-        "data.widgets[0].type must be one of: clock, search-bar"
+        "data.widgets[0].type must be one of: clock, search-bar, action-button, logo, label, status, counter, progress, avatar, link, theme-switch, spacer, divider"
       ]
     }
   }

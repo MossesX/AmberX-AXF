@@ -5,13 +5,13 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, useAxfState, useRuntime } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
-import { Markdown } from './markdown';
+import { ActivityIcon, useReportActivity } from './activity';
 import { ChatSettingsDialog } from './settings';
 import {
-  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, post, statusStore, watchReply,
+  FOLDER, call, client, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
@@ -58,6 +58,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const name = status?.assistantName || 'Assistant';
+  const activity = useReportActivity(live);
 
   const loadList = () => Promise.all([
     client.listConversations(q, archived).then((items) => setList(tag ? items.filter((c) => c.tags.includes(tag)) : items), (e: Error) => setErr(e.message)),
@@ -200,7 +201,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
-    const body: Record<string, unknown> = { content, images, context: ctx };
+    const body: Record<string, unknown> = { content, images, context: normalizeChatContext(ctx) ?? undefined };
     if (editing) body.editMessageId = editing;
     const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content, images, createdAt: Date.now(), meta: { context: ctx ?? null } };
     setText(''); setImages([]); setFiles([]); setEditing(''); setCtx(undefined);
@@ -283,13 +284,13 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <button type="button" className="fx-iconbtn" aria-label="Hide conversations" onClick={() => setShowList(false)}><Icon name="x" size={14} /></button>
           </div>
           <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search conversations" aria-label="Search conversations" />
-          <div className="axp-ai-assistant__tabs" role="tablist">
-            <button type="button" role="tab" className="axp-ai-assistant__tab" aria-selected={!archived} onClick={() => setArchived(false)}>Chats</button>
-            <button type="button" role="tab" className="axp-ai-assistant__tab" aria-selected={archived} onClick={() => setArchived(true)}>Archived</button>
+          <div className="fx-tabs axp-ai-assistant__tabs" role="tablist">
+            <button type="button" role="tab" className={`fx-tab axp-ai-assistant__tab${!archived ? ' is-active' : ''}`} aria-selected={!archived} onClick={() => setArchived(false)}>Chats</button>
+            <button type="button" role="tab" className={`fx-tab axp-ai-assistant__tab${archived ? ' is-active' : ''}`} aria-selected={archived} onClick={() => setArchived(true)}>Archived</button>
           </div>
           {tags.length > 0 && (
             <div className="axp-ai-assistant__tagrow" role="group" aria-label="Filter by tag">
-              {tags.slice(0, 12).map((t) => <button key={t} type="button" className={`fx-chip axp-ai-assistant__tagchip${tag === t ? ' is-active' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
+              {tags.slice(0, 12).map((t) => <button key={t} type="button" className={`fx-chip axp-ai-assistant__tagchip${tag === t ? ' is-on' : ''}`} aria-pressed={tag === t} onClick={() => setTag(tag === t ? '' : t)}>#{t}</button>)}
             </div>
           )}
           <div className="axp-ai-assistant__convs">
@@ -305,7 +306,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
                     onBlur={(e) => { void client.patchConversation(c.id, { tags: e.target.value.split(/[\s,]+/).filter(Boolean) }).then(() => { setTagging(''); void loadList(); if (conv?.id === c.id) void open(c.id, false); }); }}
                     onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); if (e.key === 'Escape') setTagging(''); }} />
                 ) : (
-                  <button type="button" className="axp-ai-assistant__conv-main" onClick={() => void open(c.id)}>
+                  <button type="button" data-fx-row className="axp-ai-assistant__conv-main" onClick={() => void open(c.id)}>
                     <strong>{c.pinned && <Icon name="star" size={11} />} {c.title}</strong>
                     <span className="fx-small fx-muted">{c.messages} msgs · {fmtTime(c.updatedAt)}{c.agentId ? ` · ${agents.find((a) => a.id === c.agentId)?.name ?? c.agentId}` : ''}{c.owner ? ` · ${c.owner}` : ''}</span>
                     {c.tags.length > 0 && <span className="fx-small fx-muted">{c.tags.map((t) => `#${t}`).join(' ')}</span>}
@@ -329,7 +330,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
         <header className="axp-ai-assistant__head">
           {!showList && <button type="button" className="fx-iconbtn" title="Conversations" onClick={() => setShowList(true)}><Icon name="list" size={16} /></button>}
           <div className="axp-ai-assistant__title">
-            <Icon name={activeAgent?.icon || 'sparkles'} size={16} />
+            <ActivityIcon icon={activeAgent?.icon || 'sparkles'} size={16} state={activity} />
             <div className="fx-stack axp-ai-assistant__title-text">
               <strong>{conv?.title ?? (activeAgent ? `Chat with ${activeAgent.name}` : `Chat with ${name}`)}</strong>
               <span className="fx-small fx-muted">{activeAgent ? `${activeAgent.name} · ` : ''}{settings.model || status?.defaultProfile?.defaultModel || ''}{settings.profileId ? ` · ${settings.profileId}` : status?.defaultProfile ? ` · ${status.defaultProfile.label}` : ''}</span>
@@ -392,7 +393,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           {slashMatches.length > 0 && (
             <div className="axp-ai-assistant__slash" role="listbox">
               {slashMatches.map((p) => (
-                <button key={p.shortcut} type="button" role="option" aria-selected="false" className="axp-ai-assistant__slash-item"
+                <button key={p.shortcut} type="button" role="option" aria-selected="false" data-fx-row className="axp-ai-assistant__slash-item"
                   onClick={() => { if (p.text) setText(p.text); else if (p.shortcut.endsWith(' ')) setText(p.shortcut); else { slash(p.shortcut); setText(''); } inputRef.current?.focus(); }}>
                   <span className="fx-mono">{p.shortcut.trim()}</span><span className="fx-small fx-muted">{p.title}</span>
                 </button>
@@ -401,10 +402,10 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           )}
           {(editing || ctx || images.length > 0 || files.length > 0) && (
             <div className="axp-ai-assistant__chips">
-              {editing && <span className="fx-chip">Editing a message <button type="button" className="axp-ai-assistant__x" aria-label="Cancel edit" onClick={() => { setEditing(''); setText(''); }}><Icon name="x" size={10} /></button></span>}
-              {ctx && <span className="fx-chip"><Icon name="monitor" size={10} /> {ctx.view ? `View: ${ctx.view}` : 'Context'}{ctx.selection ? ` · “${ctx.selection.slice(0, 40)}”` : ''} <button type="button" className="axp-ai-assistant__x" aria-label="Remove context" onClick={() => setCtx(undefined)}><Icon name="x" size={10} /></button></span>}
-              {images.map((im, i) => <span key={i} className="fx-chip"><Icon name="eye" size={10} /> {im.name || 'image'} <button type="button" className="axp-ai-assistant__x" aria-label="Remove image" onClick={() => setImages((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
-              {files.map((f, i) => <span key={i} className="fx-chip"><Icon name="file" size={10} /> {f.name} <button type="button" className="axp-ai-assistant__x" aria-label="Remove file" onClick={() => setFiles((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
+              {editing && <span className="fx-chip">Editing a message <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Cancel edit" onClick={() => { setEditing(''); setText(''); }}><Icon name="x" size={10} /></button></span>}
+              {ctx && <span className="fx-chip"><Icon name="monitor" size={10} /> {ctx.view ? `View: ${ctx.view}` : 'Context'}{ctx.selection ? ` · “${ctx.selection.slice(0, 40)}”` : ''} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove context" onClick={() => setCtx(undefined)}><Icon name="x" size={10} /></button></span>}
+              {images.map((im, i) => <span key={i} className="fx-chip"><Icon name="eye" size={10} /> {im.name || 'image'} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove image" onClick={() => setImages((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
+              {files.map((f, i) => <span key={i} className="fx-chip"><Icon name="file" size={10} /> {f.name} <button type="button" className="fx-iconbtn axp-ai-assistant__x" aria-label="Remove file" onClick={() => setFiles((x) => x.filter((_, j) => j !== i))}><Icon name="x" size={10} /></button></span>)}
             </div>
           )}
           <div className="axp-ai-assistant__inputrow">

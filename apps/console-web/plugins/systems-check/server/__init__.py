@@ -13,7 +13,12 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
   POST check/{id}                   re-run one check
   POST secret | secret/clear        save / remove a console credential (core credential store; never returned)
   POST fix/{id}                     run a check's automatic fix
-  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command through axHub's vps.run (approval pops up)
+  POST mosses/{id} | GET mosses     Auto fix for every other check: handed to Mosses as a task (he runs commands through
+                                    axHub, each approved); GET says whether he can take one and, if not, exactly why
+  POST autofix/{id} | GET autofix   Auto fix a VPS host check: its fixed command handed to Mosses (axhub_call), who sends it to
+                                    axHub's vps.run (approval pops up). Every Auto fix goes through Mosses (mosses.py).
+  GET  claude | POST claude/{id}    Claude on failure: a failed fix handed to headless Claude Code on the VPS (setting
+                                    claudeOnFail; vps.run, so it needs approval; reports on a change-log entry = building banner)
   GET  ai                           the AI switches + what they need (and which plugin would provide it)
   PUT  settings                     {ai: {systems, whatsnew}, whatsNewBanner}
   GET  routine | POST routine/run | DELETE routine
@@ -22,8 +27,10 @@ Plus What's new (whatsnew.py). Provides ``axf.syscheck@1`` (run_all) for the con
 """
 from __future__ import annotations
 
+import os
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +41,7 @@ import console_context as cx
 import plugin_services
 from credentials import CREDENTIALS
 
-from . import derive, hostfix, routine, store, whatsnew
+from . import claudefix, derive, hostfix, mosses, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck
 
 router = APIRouter()
@@ -63,11 +70,31 @@ class Service:
                         "detail": f"{j.get('message', '')}\n$ {j.get('command', '')}".strip(),
                         "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
                         "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
+        for j in TASKS.all():  # checks handed to Mosses
+            state = {"asking": "running", "working": "running", "done": "done", "failed": "failed"}.get(j.get("state"), "running")
+            out.append({"id": f"syscheck:mosses:{j['id']}", "kind": "fix", "state": state, "title": f"Mosses fixing: {j.get('title') or j['id']}",
+                        "detail": str(j.get("message", "")), "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
+                        "finishedAt": j.get("updatedAt") if state in ("done", "failed") else None})
+        for j in CLAUDE.all():  # sessions handed to headless Claude Code; once launched, its change-log entry reports instead
+            if j.get("state") not in ("asking", "waiting", "failed"):
+                continue
+            state = {"asking": "running", "waiting": "waiting", "failed": "failed"}[j["state"]]
+            out.append({"id": f"syscheck:claude:{j['id']}", "kind": "build", "state": state, "title": f"Claude on the VPS: {j.get('title') or j['id']}",
+                        "detail": str(j.get("message", "")), "startedAt": j.get("startedAt"), "updatedAt": j.get("updatedAt") or j.get("startedAt"),
+                        "finishedAt": j.get("updatedAt") if state == "failed" else None})
         return out
 
-    def run_all(self, force: bool = False) -> list[dict[str, Any]]:
+    def run_all(self, force: bool = False, keys: bool = False) -> list[dict[str, Any]]:
         if self._cache and not force and time.time() - self._cache[0] < 60:
-            return self._cache[1]
+            if not keys:
+                return self._cache[1]
+            # Every banner load tests the keys and tokens live (Brett, Oct 23 2026); the rest keeps the 60 s cache.
+            ids = [c for c in KEY_CHECKS if c in self.core.checks]
+            with ThreadPoolExecutor(max_workers=8) as ex:
+                fresh = dict(zip(ids, ex.map(self.core.run_one, ids)))
+            items = sorted([fresh.get(c["id"], c) for c in self._cache[1]], key=lambda c: (c["order"], c["id"]))
+            self._cache = (self._cache[0], items)
+            return items
         items = self.core.run_all(force=True)
         try:
             items += derive.derive(self.core.item)
@@ -91,6 +118,9 @@ class Service:
         self.core._cache = None  # noqa: SLF001
 
 
+# Checks that test a key or token against its service: run live on every banner load (`GET /check?keys=1`).
+KEY_CHECKS = ("console-token", "github-token", "github-repo", "anthropic-key", "claude-credits", "hostinger-token", "coolify", "axhub")
+
 SVC = Service()
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
 
@@ -105,7 +135,7 @@ def _report(items: list[dict[str, Any]], extra: dict[str, Any] | None = None) ->
 
 
 @router.get("/check")
-def check(force: bool = False, ai: bool = False) -> dict[str, Any]:
+def check(force: bool = False, ai: bool = False, keys: bool = False) -> dict[str, Any]:
     note = None
     if ai and _ai_allowed("systems") and routine.stale():
         try:
@@ -115,7 +145,7 @@ def check(force: bool = False, ai: bool = False) -> dict[str, Any]:
         except Exception as e:  # noqa: BLE001 — the check still runs without the new routine
             note = f"AI routine not refreshed: {str(e)[:200]}"
     r = store.routine()
-    return _report(SVC.run_all(force), {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
+    return _report(SVC.run_all(force, keys), {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
                                                     "stale": routine.stale()} if r else None, "aiNote": note, "aiOn": _ai_allowed("systems")})
 
 
@@ -169,13 +199,78 @@ def clear_secret(req: ClearReq) -> dict[str, Any]:
 
 @router.post("/fix/{cid}")
 def fix(cid: str) -> dict[str, Any]:
-    fn = SVC.core.fixes.get(cid)
+    fn = SVC.core.fixes.get(cid) or derive.FIXES.get(cid)
+    if not fn and cid.startswith("plugin:"):  # the codebase checks register theirs while they run
+        SVC.run_all(force=True)
+        fn = derive.FIXES.get(cid)
     if not fn:
         raise HTTPException(400, "this check has no automatic fix")
-    msg = fn()
+    try:
+        msg = fn()
+    except HTTPException as e:
+        _hand_to_claude(cid, f"the console's fix failed: {e.detail}")
+        raise
+    except Exception as e:  # noqa: BLE001
+        _hand_to_claude(cid, f"the console's fix failed: {str(e)[:200]}")
+        raise HTTPException(500, f"the fix failed: {str(e)[:200]}") from None
     SVC.invalidate()
     cx.log("system", f"{cid}: {msg}", "ok")
-    return {"ok": True, "message": msg, "check": SVC.core.run_one(cid)}
+    try:
+        after = SVC.run_one(cid)
+    except KeyError:  # a codebase check that no longer shows up = nothing left to fix
+        after = {"id": cid, "status": "ok", "summary": "fixed"}
+    claude = _hand_to_claude(cid, f"the console's fix ran ({msg}) but the check still fails: {after.get('summary', '')}", after) \
+        if after.get("status") not in ("ok", "info") else None
+    return {"ok": True, "message": msg, "check": after, "claude": claude}
+
+
+# ---------------------------------------------------------------- Claude on failure (headless Claude Code on the VPS)
+
+CLAUDE = claudefix.Launches(store.settings)
+
+
+def _hand_to_claude(cid: str, why: str, check: dict[str, Any] | None = None, force: bool = False) -> dict[str, Any] | None:
+    """Hand a failed fix to headless Claude Code on the VPS when the setting is on (never raises)."""
+    try:
+        c = check or SVC.run_one(cid)
+        job = CLAUDE.maybe_launch(c, why, force=force)
+        if job and job.get("state") == "asking":
+            cx.log("system", f"{cid}: fix failed, asked axHub to start Claude Code on the VPS (needs your approval)", "info")
+        return job
+    except Exception:  # noqa: BLE001
+        return None
+
+
+class ClaudeReq(BaseModel):
+    reason: str = Field(default="", max_length=400)
+    force: bool = False
+
+
+@router.get("/claude")
+def claude_list() -> dict[str, Any]:
+    """The setting, and every hand-over to headless Claude Code (state, approval, entry id, branch)."""
+    s = store.settings()
+    ok, why = mosses.ready()
+    return {"on": bool(s.get("claudeOnFail")), "shell": bool(s.get("claudeShell")), "hubToken": bool(os.environ.get("AXHUB_TOKEN")), "mosses": ok, "mossesWhy": why,
+            "changes": plugin_services.get(claudefix.CHANGES) is not None,
+            "jobs": {j["id"]: {k: v for k, v in j.items() if k != "command"} for j in CLAUDE.all()}}
+
+
+@router.post("/claude/{cid:path}")
+def claude_start(cid: str, req: ClaudeReq) -> dict[str, Any]:
+    """A fix failed in the browser (Fix all): hand it over if the setting is on. `force` = by hand, skips the cooldown."""
+    if not store.settings().get("claudeOnFail"):
+        raise HTTPException(409, "Turn on “Hand failed fixes to Claude Code on the VPS” first")
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    if c.get("status") in ("ok", "info"):
+        return {"ok": True, "job": None, "message": "It passes now: nothing to hand over."}
+    job = _hand_to_claude(cid, req.reason or "a fix failed in the console", c, req.force)
+    if not job:
+        raise HTTPException(400, "This check can't be handed over")
+    return {"ok": True, "job": {k: v for k, v in job.items() if k != "command"}}
 
 
 # ---------------------------------------------------------------- AI switches + routine
@@ -245,7 +340,8 @@ def _create_page(key: str) -> str:
         return "https://hpanel.hostinger.com/profile/api"
     if key == "COOLIFY_TOKEN":
         base = (os.environ.get("COOLIFY_URL") or "").rstrip("/")
-        return f"{base}/security/api-tokens" if re.match(r"^https?://[^\s/]+(:\d+)?$", base) else ""
+        # http://coolify:8080 only works inside the VPS, so there's no page to open from a phone for it.
+        return f"{base}/security/api-tokens" if re.match(r"^https?://[^\s/]+(:\d+)?$", base) and "//coolify:" not in base else ""
     if key == "AXHUB_TOKEN":
         base = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
         return base if re.match(r"^https://[^\s/]+$", base) else ""
@@ -381,13 +477,41 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
 
-HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate())
+TASKS = mosses.Tasks(lambda cid: SVC.invalidate())
+
+
+@router.get("/mosses")
+def mosses_jobs() -> dict[str, Any]:
+    """Checks handed to Mosses (every check without a fixed command), and whether he can take one now (and if not, why)."""
+    ok, why = mosses.task_ready()
+    return {"ready": ok, "why": why, "jobs": {j["id"]: j for j in TASKS.all()}}
+
+
+@router.post("/mosses/{cid:path}")
+def mosses_start(cid: str) -> dict[str, Any]:
+    """Auto fix for a check with no fixed command: Mosses works it out and runs it through axHub (each command approved)."""
+    try:
+        c = SVC.run_one(cid)
+    except KeyError:
+        raise HTTPException(404, f"no check {cid}") from None
+    if c.get("status") in ("ok", "info"):
+        return {"id": cid, "state": "done", "message": "It passes now."}
+    try:
+        job = TASKS.start(c)
+    except hostfix.HubError as e:
+        raise HTTPException(409, str(e)) from None
+    cx.log("system", f"{cid}: handed to Mosses (he runs commands through axHub; approve them there)", "info")
+    return job
+
+
+HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate(), on_fail=lambda cid, why: _hand_to_claude(cid, why))
 
 
 @router.get("/autofix")
 def autofix_list() -> dict[str, Any]:
     """Which host checks Auto fix can run (and their exact commands), and every job's state."""
-    return {"commands": {k: hostfix.command(k) for k in hostfix.FIX_COMMANDS}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
+    cmds = {k: hostfix.command(k) for k in [*hostfix.FIX_COMMANDS, "moshi-key"]}
+    return {"commands": {k: v for k, v in cmds.items() if v}, "jobs": {k: HOSTFIX.get(k) for k in list(HOSTFIX.jobs)}}
 
 
 @router.post("/autofix/{cid}")

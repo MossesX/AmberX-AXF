@@ -1,5 +1,6 @@
 package ai.amberx.axf.lock
 
+import ai.amberx.axf.kernel.platform.KeyValueStore
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
@@ -42,9 +43,9 @@ public object PinHasher {
 
 /**
  * Failed-attempt lockout: after [freeTries] misses, each further miss locks for a doubling delay
- * (30 s, 60 s, 120 s … up to [maxDelayMs]). Pure; the caller persists [state].
+ * (30 s, 60 s, 120 s … up to [maxDelayMs]). Pure; [PersistedLockout] keeps [state] across restarts.
  */
-public class Lockout(private val freeTries: Int = 5, private val baseDelayMs: Long = 30_000, private val maxDelayMs: Long = 15 * 60_000L) {
+public class Lockout(public val freeTries: Int = 5, private val baseDelayMs: Long = 30_000, private val maxDelayMs: Long = 15 * 60_000L) {
     public data class State(val failures: Int = 0, val lockedUntil: Long = 0)
     public var state: State = State()
 
@@ -55,5 +56,36 @@ public class Lockout(private val freeTries: Int = 5, private val baseDelayMs: Lo
         val over = f - freeTries
         val until = if (over > 0) now + minOf(maxDelayMs, baseDelayMs shl minOf(over - 1, 20)) else 0
         state = State(f, until)
+    }
+}
+
+/**
+ * A [Lockout] saved in the kernel's key-value store under [key] after every change, so killing the app
+ * never resets the count. Stored form `failures:lockedUntil` (the format AppLock and Voice Vault used
+ * before, so saved lockouts carry over). A damaged value reads as no failures; without a store the
+ * lockout still works for the life of the process.
+ */
+public class PersistedLockout(private val kv: KeyValueStore?, public val key: String, private val lockout: Lockout = Lockout()) {
+    init { lockout.state = parse(kv?.get(key)) }
+
+    public val state: Lockout.State get() = lockout.state
+    public val failures: Int get() = lockout.state.failures
+    /** Tries left before the first lockout, or null once lockouts have begun. */
+    public val triesLeft: Int? get() = (lockout.freeTries - lockout.state.failures).takeIf { it > 0 }
+
+    public fun remainingMs(now: Long): Long = lockout.remainingMs(now)
+    public fun onFailure(now: Long) { lockout.onFailure(now); save() }
+    public fun onSuccess() { lockout.onSuccess(); save() }
+    /** Clears the count (a successful unlock, or erasing what it protected). */
+    public fun reset(): Unit = onSuccess()
+
+    private fun save() { kv?.put(key, format(lockout.state)) }
+
+    public companion object {
+        public fun format(s: Lockout.State): String = "${s.failures}:${s.lockedUntil}"
+        public fun parse(raw: String?): Lockout.State {
+            val p = raw?.split(':') ?: return Lockout.State()
+            return Lockout.State((p.getOrNull(0)?.toIntOrNull() ?: 0).coerceAtLeast(0), p.getOrNull(1)?.toLongOrNull() ?: 0)
+        }
     }
 }

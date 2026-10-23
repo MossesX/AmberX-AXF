@@ -16,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import ai.amberx.axf.ui.LocalAxfRuntime
 import ai.amberx.axf.ui.components.AxfButton
+import ai.amberx.axf.ui.rememberService
+import ai.amberx.axf.voicevault.vault.VaultSession
 import ai.amberx.axf.ui.components.AxfEmptyState
 import ai.amberx.axf.ui.components.AxfIconButton
 import ai.amberx.axf.ui.components.AxfListItem
@@ -30,7 +32,7 @@ import java.util.Date
 /** Saved sites (vault unlocked): search, copy (the tap is the confirmation), edit, delete. Passwords never show here. */
 @Composable
 fun VaultListView() {
-    val session = rememberSession() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
+    val session = rememberService<VaultSession>() ?: run { AxfEmptyState("Vault unavailable", icon = "lock"); return }
     val runtime = LocalAxfRuntime.current
     val entries by session.entries.collectAsState()
     val note by session.note.collectAsState()

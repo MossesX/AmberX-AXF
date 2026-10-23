@@ -1,25 +1,21 @@
-"""Auto fix for VPS host checks, through axHub (Oct 20 2026).
+"""Auto fix for VPS host checks, through Mosses and axHub (Oct 20 2026; through Mosses since Oct 22 2026).
 
-The console can't change the host from its container. For the host checks listed in FIX_COMMANDS, Auto fix asks
-axHub to run that check's exact, fixed command on the VPS with the hub's `vps.run` tool. `vps.run` always needs
+The console can't change the host from its container. For the host checks listed in FIX_COMMANDS, Auto fix hands that
+check's exact, fixed command to Mosses (his `axhub_call` tool, mosses.py), who passes it to axHub's `vps.run`. `vps.run` always needs
 Brett's approval on the hub, and the approval page shows the whole command: it pops up in the console by itself
 (approvals banner), he approves or rejects it, and this job sends the same call again with the confirmation id and
 reports the result. Nothing runs on the host without that approval, and only commands from this table are ever sent.
 
 Checks that need him at the machine (sign-ins, the Moshi key's fingerprint, a Coolify volume) are not here.
-Needs AXHUB_URL + AXHUB_TOKEN (Keys banner → axHub connection). One job per check at a time; jobs live in memory.
+Needs the agent manager with Mosses (allowed dangerous tools) and AXHUB_URL + AXHUB_TOKEN (Keys banner → axHub connection). One job per check at a time; jobs live in memory.
 """
 from __future__ import annotations
 
-import json
-import os
 import re
 import threading
 import time
-import urllib.error
-import urllib.request
-import uuid
 from typing import Any, Callable
+
 
 # Each fix ends by refreshing the host report, so the console sees the result at once (not after the 15-minute cron).
 _REPORT = "bash /opt/axf/deploy/console-doctor.sh --report"
@@ -31,12 +27,35 @@ FIX_COMMANDS: dict[str, str] = {
     "host-claude-cli": "curl -fsSL https://claude.ai/install.sh | bash",
     "host-docker": "bash /opt/axf/deploy/install-console.sh",
     "host-update-cron": "bash /opt/axf/deploy/install-console.sh",
+    # Oct 23 2026 (Brett: every check gets a fix): what can run unattended
+    "host-report": "true",  # the report itself is the fix (appended below)
+    # claude-sync lives in the axHub repo: clone it to ~/axHub when missing (the VPS's git credentials), else update it
+    "host-claude-sync": "export PATH=/root/.local/bin:$PATH && if [ -f /root/axHub/clients/claude-code/claude-sync.mjs ]; then git -C /root/axHub pull -q --ff-only || true; "
+                        "else git clone -q https://github.com/MossesX/axHub /root/axHub; fi && node /root/axHub/clients/claude-code/claude-sync.mjs install",
+    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"user\",\"onDevice\":true}' | grep -q '\"ok\":true'",
 }
+# A Moshi public key saved in the console (MOSHI_SSH_PUBKEY, not secret) is added to root's authorized_keys; the approval
+# page shows the exact key line, so approving it on the hub is the "allow this key" step the doctor used to ask for.
+MOSHI_KEY_RE = re.compile(r"(ssh-ed25519|ecdsa-sha2-nistp(?:256|384|521)|ssh-rsa) ([A-Za-z0-9+/=]{20,1000})( [A-Za-z0-9@._ -]{1,80})?\Z")
+
+
+def _sq(v: str) -> str:
+    return "'" + v.replace("'", "'\\''") + "'"
+
+
+def moshi_command() -> str | None:
+    import os
+    m = MOSHI_KEY_RE.match((os.environ.get("MOSHI_SSH_PUBKEY") or "").strip())
+    if not m:
+        return None
+    line = f"{m.group(1)} {m.group(2)}{m.group(3) or ' moshi'}"
+    return ("install -d -m 700 /root/.ssh && touch /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && "
+            f"(grep -qsF {_sq(m.group(2))} /root/.ssh/authorized_keys || printf '%s\\n' {_sq(line)} >> /root/.ssh/authorized_keys)")
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 
 
 def command(cid: str) -> str | None:
-    c = FIX_COMMANDS.get(cid)
+    c = moshi_command() if cid == "moshi-key" else FIX_COMMANDS.get(cid)
     return f"{c} && {_REPORT}" if c else None
 
 
@@ -44,77 +63,27 @@ class HubError(Exception):
     pass
 
 
-def _hub() -> tuple[str, str]:
-    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
-    tok = os.environ.get("AXHUB_TOKEN", "")
-    if not tok:
-        raise HubError("Add the axHub token first (Keys needed → axHub connection), so the console can ask the hub.")
-    if not url.startswith("https://"):
-        raise HubError("The axHub address must be https.")
-    return url, tok
-
-
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *a: Any, **k: Any) -> None:  # never follow: the token must not go anywhere else
-        return None
-
-
-_OPENER = urllib.request.build_opener(_NoRedirect)
-
-
-def _rpc(url: str, tok: str, session: str | None, method: str, params: dict[str, Any], timeout: float) -> tuple[dict[str, Any], str | None]:
-    body = json.dumps({"jsonrpc": "2.0", "id": str(uuid.uuid4()), "method": method, "params": params}).encode()
-    headers = {"authorization": f"Bearer {tok}", "content-type": "application/json", "accept": "application/json, text/event-stream"}
-    if session:
-        headers["mcp-session-id"] = session
-    req = urllib.request.Request(f"{url}/mcp", data=body, headers=headers, method="POST")
-    try:
-        with _OPENER.open(req, timeout=timeout) as r:
-            sid = r.headers.get("mcp-session-id") or session
-            raw = r.read(2_000_000).decode("utf-8", "replace")
-            ctype = r.headers.get("content-type", "")
-    except urllib.error.HTTPError as e:
-        raise HubError(f"axHub answered {e.code}" + (" (check the axHub token)" if e.code in (401, 403) else "")) from None
-    except Exception as e:  # noqa: BLE001
-        raise HubError(f"Couldn't reach axHub ({type(e).__name__})") from None
-    if "text/event-stream" in ctype:
-        msgs = [json.loads(line[5:].strip()) for line in raw.splitlines() if line.startswith("data:") and line[5:].strip()]
-        msg = next((m for m in reversed(msgs) if "result" in m or "error" in m), {})
-    else:
-        msg = json.loads(raw or "{}")
-    if "error" in msg:
-        raise HubError(str(msg["error"].get("message", "axHub error"))[:300])
-    return msg.get("result") or {}, sid
-
-
 def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 600) -> dict[str, Any]:
-    """axHub's `call` meta-tool. Returns {"ok": text}, {"confirm": id} (waiting for approval), or raises HubError."""
-    url, tok = _hub()
-    _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-autofix", "version": "1"}}, 30)
-    args: dict[str, Any] = {"tool": tool, "arguments": arguments, "timeout_seconds": int(timeout)}
-    if confirmation_id:
-        args["confirmation_id"] = confirmation_id
-    res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": args}, timeout + 30)
-    text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
-    if res.get("isError"):
-        try:
-            err = json.loads(text).get("error", {})
-        except Exception:  # noqa: BLE001
-            err = {"message": text}
-        if err.get("code") == "confirmation_required":
-            cid = str((err.get("details") or {}).get("confirmationId", ""))
-            if not re.match(r"^[0-9a-f-]{36}$", cid):
-                raise HubError("axHub asked for an approval without an id")
-            return {"confirm": cid}
-        raise HubError(str(err.get("message") or text)[:400])
-    return {"ok": text}
+    """axHub's `call`, through Mosses (mosses.py): {"ok": text} | {"confirm": id} (waiting for approval), or HubError.
+    Imported late: mosses.py imports this module for HubError."""
+    from . import mosses
+    return mosses.call(tool, arguments, confirmation_id, timeout)
+
+
+def ready() -> tuple[bool, str]:
+    from . import mosses
+    return mosses.ready()
 
 
 class Jobs:
     """One background job per host check: ask the hub, wait for the approval, run, report."""
 
-    def __init__(self, recheck: Callable[[str], Any], call: Callable[..., dict[str, Any]] = call_hub, poll_s: float = 4) -> None:
+    def __init__(self, recheck: Callable[[str], Any], call: Callable[..., dict[str, Any]] = call_hub, poll_s: float = 4,
+                 on_fail: Callable[[str, str], Any] | None = None, ready_check: Callable[[], tuple[bool, str]] | None = None) -> None:
         self.recheck = recheck
+        # Is Mosses there to take it? Part of the default route (call_hub); a caller passing its own `call` checks itself.
+        self.ready = ready_check or (ready if call is call_hub else (lambda: (True, "")))
+        self.on_fail = on_fail  # a fix that ran (or couldn't) and failed; never called for one Brett rejected
         self.call = call
         self.poll_s = poll_s
         self.jobs: dict[str, dict[str, Any]] = {}
@@ -122,7 +91,7 @@ class Jobs:
 
     @staticmethod
     def allowed(cid: str) -> bool:
-        return cid in FIX_COMMANDS
+        return command(cid) is not None
 
     def get(self, cid: str) -> dict[str, Any] | None:
         with self.lock:
@@ -137,12 +106,14 @@ class Jobs:
         cmd = command(cid)
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
-        _hub()  # fail fast without a token
+        ok, why = self.ready()  # fail fast: no Mosses (or he can't reach axHub) = no Auto fix
+        if not ok:
+            raise HubError(why)
         with self.lock:
             cur = self.jobs.get(cid)
             if cur and cur["state"] in ("asking", "waiting", "running"):
                 return dict(cur)
-            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Asking axHub…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": cmd}
+            self.jobs[cid] = {"id": cid, "state": "asking", "message": "Handing it to Mosses for axHub…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": cmd}
         threading.Thread(target=self._run, args=(cid, cmd), daemon=True).start()
         return self.get(cid) or {}
 
@@ -175,7 +146,19 @@ class Jobs:
             except Exception:  # noqa: BLE001
                 pass
             self._set(cid, state="done" if ok else "failed", output=out[-4000:], message="Fixed." if ok else "The fix command failed: see the output.")
+            if not ok:
+                tail = [ln for ln in out.strip().splitlines() if ln.strip()][-3:]
+                self._failed(cid, "the VPS fix command failed: " + " / ".join(tail)[:240])
         except HubError as e:
             self._set(cid, state="failed", message=str(e))
+            self._failed(cid, str(e))
         except Exception as e:  # noqa: BLE001
             self._set(cid, state="failed", message=f"Auto fix stopped ({type(e).__name__}).")
+            self._failed(cid, f"Auto fix stopped ({type(e).__name__})")
+
+    def _failed(self, cid: str, why: str) -> None:
+        if self.on_fail:
+            try:
+                self.on_fail(cid, why)
+            except Exception:  # noqa: BLE001 — the hand-over never breaks the job
+                pass

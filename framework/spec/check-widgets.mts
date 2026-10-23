@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { ATTACHABLE_ASSET_TYPES, SEARCH_BAR_WIDTH, TOOLBAR_SIDES, WIDGET_TYPES, hostSpecs, placeToolbarWidgets, searchBarConfig, validateHostAttachments } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
 
@@ -106,6 +106,24 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   ok(rt.getState().bannerPopup?.text === 'hi', 'popup shown');
   rt.dismissBannerPopup();
   ok(rt.getState().bannerPopup === null, 'popup dismissed');
+}
+
+// widgets.json → kinds (Oct 20 2026): the pure rules logo, counter, status, progress, avatar, link, spacer, theme switch draw from.
+{
+  const k = read('widgets.json').kinds;
+  eq([...WIDGET_TONES], k.tones, 'widget tones');
+  for (const [name, c] of Object.entries<any>(k.tone)) { eq(widgetTone(c.in), c.out, `tone ${name}`); eq(widgetTone(c.in, 'accent'), c.accentFallback, `tone fallback ${name}`); }
+  for (const c of k.counter) eq(counterText(c.n, c.max, c.hideAtZero), c.text, `counter ${JSON.stringify(c)}`);
+  for (const c of k.status) eq(statusOn(c.n), c.on, `status ${c.n}`);
+  for (const c of k.progress) eq(progressPercent(c.n, c.max), c.percent, `progress ${c.n}/${c.max}`);
+  for (const c of k.initials) eq(avatarInitials(c.name), c.initials, `initials ${JSON.stringify(c.name)}`);
+  for (const c of k.link) eq(linkHref(c.href), c.out, `link ${JSON.stringify(c.href)}`);
+  for (const c of k.image) eq(imageSrc(c.src), c.out, `image ${JSON.stringify(c.src)}`);
+  eq(SPACER_UNITS, k.spacer, 'spacer units'); eq(LOGO_SIZE, k.logo, 'logo sizes'); eq(AVATAR_SIZE, k.avatar, 'avatar sizes'); eq(PROGRESS_WIDTH, k.progressWidth, 'progress widths');
+  for (const c of k.themeSwitch) eq(themeSwitchNext(c.active, c.light, c.dark), c.next, `theme switch ${c.active}`);
+  // every widget type has a starter asset of its own, and the banner takes all of them
+  const banner = hostSpecs().find((h) => h.host === 'banner')!;
+  for (const t of WIDGET_TYPES) { ok(readdirSync(join(root, 'assets', t)).length > 0, `starter for ${t}`); ok(banner.types.includes(t), `banner takes ${t}`); }
 }
 
 console.log(`check-widgets: ${checks} checks ok`);

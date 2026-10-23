@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from . import safety
+from axf.assistant_host import safety  # framework/python (the plugin __init__ puts it on sys.path first)
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 _DENY_DIRS = {".git", ".axf-console", "node_modules", "dist", "dist-single", "__pycache__", ".gradle", "build"}
