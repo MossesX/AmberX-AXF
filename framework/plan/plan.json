@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-23T15:08:44.011Z",
+ "generatedAt": "2026-10-23T17:25:32.850Z",
  "statuses": [
   "built",
   "partial",
@@ -12206,6 +12206,98 @@
    ],
    "model": "opus",
    "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hubstore",
+   "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/libs/hubstore + library.json (parts settings {file, mirror}, data {mode all|some, tables, folder}); check spec/check-hubstore.mts; first used by the console's Voice notes plugin (Oct 23 2026, Opus; Android twin deferred)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-hubstore"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.hubstore"
+   ],
+   "modules": [
+    "lib-hubstore"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: Follow other devices' saves live through /data-events (lib.hubstore.live)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "Oct 23 2026 (Opus): web framework/libs/hubstore (HubSettings + HubData, parts settings/data with table picking), check-hubstore.mts; Voice notes console plugin is the first user. Android twin deferred (Android on hold).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-23",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "lib.hubstore.live",
+   "title": "Follow other devices' saves live through /data-events",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.hubstore",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.hubstore"
+   ],
+   "catalog": [
+    "lib.hubstore.live"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "Capability placeholder axf.hubstore.live",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-23",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
    "id": "lib.notifications",

@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Self-test for the Voice notes plugin (web-only settings interface on lib-hubstore).
+
+    python3 apps/console-web/plugins/voice-notes/test.py
+"""
+from __future__ import annotations
+
+import json
+import shutil
+import subprocess
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[3]
+ID = "ai.amberx.axf.console.voice-notes"
+ok = 0
+
+
+def check(cond, msg):
+    global ok
+    if not cond:
+        raise SystemExit(f"FAIL: {msg}")
+    ok += 1
+    print(f"  ✓ {msg}")
+
+
+print("voice-notes self-test")
+man = json.loads((HERE / "plugin.json").read_text("utf-8"))
+check(man["id"] == ID and "axf-console" in man["targets"] and man["lifecycle"]["dataDir"] == ".axf-console/plugins/voice-notes", "plugin@1 manifest: id, target, data folder")
+check(man["provides"] == ["settings-tab:voice-notes"] and man["tabable"] is False, "only a settings interface: no view, no tab")
+check(not (HERE / "server").exists(), "web-only: no server part")
+web = (HERE / "web" / "index.tsx").read_text("utf-8")
+check("views:" not in web and "nav:" not in web and "dialogs:" not in web, "no views, nav or dialogs")
+check("parent: 'plugins'" in web and "PluginLifecyclePanel" in web, "settings are a Plugins sub-tab with the lifecycle panel")
+st = (HERE / "web" / "store.ts").read_text("utf-8")
+check("libs/hubstore" in st and "localStorage" not in st and "localStorage" not in web, "settings and lists go through lib-hubstore, nothing in this browser")
+css = (HERE / "web" / "voice-notes.css").read_text("utf-8")
+check("#" not in css.replace("/*", "").split("*/")[-1] and "--fx-" in css and "--fx-space:" not in css, "CSS: layout with theme tokens only, no colours")
+
+npx = shutil.which("npx")
+if not npx:
+    print("  - model checks skipped (no node/npx)")
+else:
+    out = subprocess.run([npx, "-y", "tsx", str(HERE / "core-check.mts")], capture_output=True, text=True, timeout=300, cwd=str(REPO))
+    if out.returncode != 0:
+        raise SystemExit(f"FAIL: core check crashed\n{out.stderr[-2000:]}")
+    e = json.loads(out.stdout.strip().splitlines()[-1])
+    check(e["defaults"], "defaults: start + stop triggers, beep on")
+    check(e["clamps"], "out-of-range beep, length and language fall back or clamp")
+    check(e["dedupe"] == "Stop note|end", "phrases: duplicates and empties dropped")
+    check(e["strip"] == {"text": "Buy milk and eggs", "cut": "stop note"}, "stop trigger cut from the note text")
+    check(e["stripMid"] == "remember the stop note thing", "only the last stop trigger ends the note")
+    check(e["stripNone"] is None, "no stop trigger: nothing cut")
+    check(e["numbers"] == [3, 3, 12, 21, 2, 7, None], "spoken numbers: digits, words, twenty one, ordinals")
+    check(e["pickNum"] == "w" and e["pickName"] == "g" and e["pickTwelve"] == "d" and e["pickNone"] is None, "a reply picks a list by number, name or alias")
+    check(e["asks"] and e["cancel"], "list-of-lists and cancel triggers heard")
+    check(e["sub"] == "veg" and e["subAlias"] == "dairy", "subcategory by number or alias")
+    check(e["setPhrase"] == "b" and e["setNumber"] == "n" and e["setAlways"] == "a", "question sets opened by a recorded trigger, a number, else the always set")
+    check(e["read"] == ["1: Groceries", "2: Work ideas", "12: Dentist"], "lists read with their numbers, in order")
+    check(e["problemsOk"] == [], "a good setup has no problems")
+    bad = " ".join(e["problemsBad"])
+    check("start trigger" in bad and "both a stop and a cancel" in bad and "number 1" in bad and "has no name" in bad, "problems: missing start trigger, clashing triggers, duplicate numbers, unnamed list")
+    check(e["newNumber"] == 3, "a new list takes the first free number")
+    check(e["roundTrip"] and e["badRow"] is None, "a stored list reads back the same; junk rows are dropped")
+    pv = " ".join(e["preview"])
+    check("take a note" in pv and "beep" in pv and "1: Groceries" in pv and "Which store?" in pv and "Saved to Groceries" in pv, "preview walks the whole conversation")
+
+    hs = subprocess.run([npx, "-y", "tsx", str(REPO / "framework/spec/check-hubstore.mts")], capture_output=True, text=True, timeout=300, cwd=str(REPO))
+    check(hs.returncode == 0, "lib-hubstore checks pass")
+print(f"all {ok} checks passed")
