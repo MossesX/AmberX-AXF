@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T13:04:14.162Z",
+ "updatedAt": "2026-10-23T13:27:34.331Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2318,6 +2318,10 @@
     {
      "text": "Built on Opus, branch claude/project-thread-t9zktq (draft PR).",
      "at": "2026-10-23T13:04:14.157Z"
+    },
+    {
+     "text": "Oct 23 2026 follow-up (Brett: settings that affect the UI render at once): every settings change re-renders the app (runtime state bump, coalesced), unchanged saves are no-ops, other frames/tabs saving are read at once (storage events in the runtime). Same branch / PR #42.",
+     "at": "2026-10-23T13:27:34.324Z"
     }
    ],
    "subPrompts": [
@@ -2373,7 +2377,7 @@
    ],
    "createdAt": "2026-10-23T12:52:32.715Z",
    "builtAt": "2026-10-23T13:04:14.162Z",
-   "updatedAt": "2026-10-23T13:04:14.162Z",
+   "updatedAt": "2026-10-23T13:27:34.324Z",
    "source": "chat"
   },
   {
@@ -2382,7 +2386,12 @@
    "detail": "Fable rebuild of the Opus build `patches-settings-banner-hide` (Brett, Oct 23 2026: Fable suggested, Opus chosen). Revisit the embed@1 settings take (tab group, settings hook focus), the banner hide state as a cross-port contract (Kotlin twin when the Android hold lifts). Start by reading the Opus build report (branch claude/project-thread-t9zktq) and replacing it in place.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Include hot render: Kotlin AxfRuntime re-composes on every settings change (one bump per change, unchanged saves ignored); web side built on Opus in PR #42.",
+     "at": "2026-10-23T13:27:34.331Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Read the Opus build and write a design note",
@@ -2412,7 +2421,7 @@
    ],
    "createdAt": "2026-10-23T12:52:32.722Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T12:52:32.722Z",
+   "updatedAt": "2026-10-23T13:27:34.331Z",
    "source": "chat"
   }
  ]

@@ -148,8 +148,8 @@ function install(rt: AxfRuntime): void {
     if (rt.embedded?.page === 'banners') { setWantTab(pick); return; }
     rt.openDialog(BANNER_SETTINGS_DIALOG, pick ? { id: pick } : {});
   }, { label: 'Banner settings' });
-  // Every frame of this app (a host's Banners tab, its banner strip, the app's own tab) shows the same choices at once.
-  globalThis.addEventListener?.('storage', (e: StorageEvent) => { if (e.key === null || e.storageArea === globalThis.localStorage) rt.settings.reload(); });
+  // Every frame of this app (a host's Banners tab, its banner strip, the app's own tab) shows the same choices at once:
+  // the runtime re-reads settings when another frame saves (storage events) and re-renders on any settings change.
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
 }
 

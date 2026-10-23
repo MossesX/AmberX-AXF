@@ -86,5 +86,49 @@ eq('source ids', bannerIdsInSource(`banners: [\n { id: 'keys', render: () => <K 
 eq('plugin tab settings', parsePluginTab({ view: 'todo-manager', settings: 'todo-manager' }), { view: 'todo-manager', settings: 'todo-manager' });
 eq('plugin tab bad settings dropped', parsePluginTab({ view: 'todo', settings: 'Bad Tab!' }), { view: 'todo' });
 
+// hot render (Oct 23 2026): any settings change re-renders at once (one state bump per task), an unchanged save doesn't,
+// and a save from another frame of the app (storage event) is read straight away.
+{
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const mem = new Map<string, string>();
+  const g = globalThis as unknown as Record<string, unknown>;
+  g.localStorage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { mem.set(k, v); }, removeItem: (k: string) => { mem.delete(k); } };
+  const bus = new EventTarget();
+  g.addEventListener = bus.addEventListener.bind(bus);
+  const root = join(import.meta.dirname, '..');
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(root, 'assets', t, f), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const { AxfRuntime } = await import('../core/runtime');
+  const rt = new AxfRuntime({ manifest: { app: { id: 'hot', name: 'Hot' }, defaults } as never, assets, storageKey: 'test:hot' });
+  let renders = 0;
+  rt.subscribe(() => { renders++; });
+  const tick = () => new Promise((r) => setTimeout(r, 0));
+  const rev0 = rt.getState().rev;
+  rt.settings.set('axf.banners.hide', { banners: { activity: { on: true, at: 1 } }, timer: { on: false, minutes: 15 } } as never);
+  rt.settings.set('demo.other', 1 as never);
+  await tick();
+  eq('hot: a settings change re-renders', renders, 1);
+  eq('hot: state rev moved', rt.getState().rev > rev0, true);
+  rt.settings.set('demo.other', 1 as never);
+  await tick();
+  eq('hot: unchanged save = no render', renders, 1);
+  // another frame saves: storage holds a new value, then a storage event
+  const key = 'test:hot:settings';
+  const saved = JSON.parse(mem.get(key) ?? '{}');
+  mem.set(key, JSON.stringify({ ...saved, 'demo.other': 2 }));
+  const ev = new Event('storage') as Event & { key: string };
+  Object.defineProperty(ev, 'key', { value: key });
+  bus.dispatchEvent(ev);
+  await tick();
+  eq('hot: another frame saved → read at once', rt.settings.get('demo.other'), 2);
+  eq('hot: … and re-rendered', renders, 2);
+  const other = new Event('storage');
+  Object.defineProperty(other, 'key', { value: 'someone-else' });
+  bus.dispatchEvent(other);
+  await tick();
+  eq('hot: other apps\' keys ignored', renders, 2);
+}
+
 if (fails.length) { for (const f of fails) console.error(`✗ ${f}`); process.exit(1); }
 console.log(`check-banner-hide: ${n} checks passed`);

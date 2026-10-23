@@ -205,6 +205,7 @@ export class AxfRuntime {
   private listeners = new Set<() => void>();
   private storageKey: string;
   private toastSeq = 0;
+  private settingsBump = false;
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -219,7 +220,20 @@ export class AxfRuntime {
         : { kind: 'contribution-conflict', what: `settings ${c.what}`, id: c.id, was: c.was, now: c.now },
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
-    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); this.set({}); });
+    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
+    // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
+    // pages) re-renders at once, wherever it was changed. Coalesced: several changes in one task = one render.
+    this.settings.subscribe(() => {
+      if (this.settingsBump) return;
+      this.settingsBump = true;
+      queueMicrotask(() => { this.settingsBump = false; this.set({}); });
+    });
+    // Another frame or tab of this app saved (a host's Settings tab, its banner strip, a second window): read it now.
+    globalThis.addEventListener?.('storage', (e: StorageEvent) => {
+      if (e.key !== null && e.key !== this.settings.savedUnder && e.key !== this.storageKey) return;
+      this.reloadSaved();
+    });
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -566,6 +580,11 @@ export class AxfRuntime {
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
+    return this.reloadSaved();
+  }
+
+  /** refreshFromSaved without asking the appearance source (another frame of this app saved in this browser). */
+  private reloadSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     const settings = this.settings.reload();
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
