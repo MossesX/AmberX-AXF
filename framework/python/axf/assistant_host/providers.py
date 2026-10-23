@@ -557,6 +557,32 @@ class _Bridge:
         shutil.rmtree(self.dir, ignore_errors=True)
 
 
+_SECRET_TEXT = re.compile(r"(sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|(?i:bearer)\s+[A-Za-z0-9._~+/=-]{16,})")
+
+
+def _redact(text: str) -> str:
+    return _SECRET_TEXT.sub("[redacted]", text)
+
+
+def cli_error_message(text: str | None, status: int | None, model: str, code: int | None = None, stderr: str = "", stdout: list[str] | None = None) -> tuple[str, int]:
+    """Turn what Claude Code said (its error result, the API status it retried on, stderr, stray stdout) into one
+    message a person can act on, with the HTTP-ish status the turn engine uses for the fallback chain."""
+    said = " ".join(x for x in [_redact((text or "").strip()), _redact(stderr.strip()) if stderr else "", *(_redact(x) for x in stdout or [])] if x).strip()
+    said = re.sub(r"\s+", " ", said)[:400]
+    low = said.lower()
+    if status == 401 or re.search(r"invalid api key|please run /login|oauth|unauthori[sz]ed|failed to authenticate|\b401\b", low):
+        return ("Claude Code rejected the token. Run `claude setup-token` on the VPS (sign in when asked), copy the long-lived sk-ant-oat01-… token it prints, and paste it into this provider (Edit → Save & test). A token copied from ~/.claude after /login expires and won't work here", 400)
+    if status == 404 or re.search(r"model.{0,60}(not found|not available|does not exist|may not exist|not have access|invalid|isn't available|not supported)|unknown model|\b404\b", low):
+        return (f"Claude Code can't use the model `{model}` with this account. Pick another model for this profile (Edit → Model) or set the profile's default to one your plan includes" + (f". Claude Code said: {said}" if said else ""), 400)
+    if status in (429, 529) or re.search(r"usage limit|rate limit|limit reached|overloaded|too many requests|\b429\b|\b529\b", low):
+        return ("Claude Code hit a usage or rate limit" + (f": {said}" if said else "") + ". Try again later, or let the fallback chain move to another provider", 429)
+    if status == 403 or re.search(r"forbidden|permission denied|not allowed|\b403\b", low):
+        return ("Claude Code was refused (403)" + (f": {said}" if said else "") + ". Check that the token belongs to an account with Claude Code access", 403)
+    if said:
+        return (f"Claude Code failed" + (f" (exit code {code})" if code else "") + f": {said}", 502)
+    return (f"Claude Code exited with code {code} without saying why. On {HOST_LABEL}, run `claude -p hi` as the console's user to see the error (a missing sign-in, an outdated CLI or a full disk are the usual causes)", 502)
+
+
 def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True):
     import tempfile
     token = resolve_key(profile)
@@ -609,6 +635,9 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
     killer = threading.Timer(CLI_DEADLINE, proc.kill)
     killer.start()
     streamed = 0
+    cli_error: str | None = None  # what Claude Code itself said went wrong (result / synthetic message)
+    status_code: int | None = None
+    loose: list[str] = []  # stdout lines that aren't JSON (older CLIs print argument errors there)
     try:
         try:
             proc.stdin.write(prompt)  # type: ignore[union-attr]
@@ -625,6 +654,10 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
             try:
                 ev = json.loads(line)
             except ValueError:
+                if line.strip():
+                    loose = (loose + [line.strip()[:300]])[-5:]
+                continue
+            if not isinstance(ev, dict):
                 continue
             t = ev.get("type")
             if t == "stream_event":
@@ -633,8 +666,15 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
                 if e.get("type") == "content_block_delta" and d.get("type") == "text_delta" and d.get("text"):
                     streamed += len(d["text"])
                     yield {"type": "text", "text": d["text"]}
+            elif t == "system" and ev.get("subtype") == "api_retry" and isinstance(ev.get("error_status"), int):
+                status_code = ev["error_status"]
             elif t == "assistant":
-                for b in (ev.get("message") or {}).get("content") or []:
+                msg = ev.get("message") or {}
+                if msg.get("model") == "<synthetic>" and streamed == 0:
+                    # an error Claude Code made up a reply for (failed sign-in, API error): keep it as the reason
+                    cli_error = " ".join(str(b.get("text") or "") for b in msg.get("content") or [] if b.get("type") == "text").strip() or cli_error
+                    continue
+                for b in msg.get("content") or []:
                     if b.get("type") == "tool_use":
                         inp = b.get("input") or {}
                         hint = next((str(inp[k]) for k in ("file_path", "path", "pattern", "query") if isinstance(inp.get(k), str)), "")
@@ -644,16 +684,16 @@ def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=Non
             elif t == "result":
                 u = ev.get("usage") or {}
                 yield {"type": "usage", "input": int(u.get("input_tokens", 0) or 0), "output": int(u.get("output_tokens", 0) or 0)}
-                if ev.get("is_error") and streamed == 0 and isinstance(ev.get("result"), str):
-                    if re.search(r"invalid api key|please run /login|oauth|unauthori[sz]ed|401", ev["result"], re.I):
-                        raise ProviderError("Claude Code rejected the token. Run `claude setup-token` on the VPS (sign in when asked), copy the long-lived sk-ant-oat01-… token it prints, and paste it into this provider (Edit → Save & test). A token copied from ~/.claude after /login expires and won't work here", 400)
-                    yield {"type": "text", "text": ev["result"]}
+                if ev.get("is_error") and streamed == 0:
+                    if isinstance(ev.get("api_error_status"), int):
+                        status_code = ev["api_error_status"]
+                    raise ProviderError(*cli_error_message(ev.get("result") if isinstance(ev.get("result"), str) else cli_error, status_code, model))
         proc.wait(timeout=10)
         if bridge:
             yield from bridge.drain()
         if proc.returncode and streamed == 0:
             err.seek(0)
-            raise ProviderError(f"Claude Code exited with code {proc.returncode}: {err.read()[-300:].strip()}")
+            raise ProviderError(*cli_error_message(cli_error, status_code, model, code=proc.returncode, stderr=err.read()[-600:], stdout=loose))
         yield {"type": "stop", "reason": "end_turn"}
     finally:
         killer.cancel()

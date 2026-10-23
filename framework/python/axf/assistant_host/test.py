@@ -250,6 +250,61 @@ check("Read(.my-host/**)" in deny and "Grep(**/.axf-console/**)" in deny and "LS
 absd = providers._cli_abs_deny("/work/repo")
 check("Read(//proc/**)" in absd and "Read(//work/repo/.axf-console/**)" in absd and "Read(//srv/host/.my-host/**)" in absd and "Grep(~/.ssh/**)" in absd, "absolute deny rules: /proc, every private folder under cwd and the host's roots, SSH keys")
 
+# Claude Code CLI failures: the reason Claude Code gives reaches the person (never a bare "exited with code 1")
+fake_dir = Path(tempfile.mkdtemp(prefix="axf-fake-cli-"))
+fake = fake_dir / "claude"
+fake.write_text("""#!/usr/bin/env python3
+import json, os, sys
+sys.stdin.read()
+mode = os.environ.get("FAKE_CLI_MODE", "")
+def out(o): print(json.dumps(o), flush=True)
+out({"type": "system", "subtype": "init"})
+if mode == "auth":
+    out({"type": "system", "subtype": "api_retry", "error_status": 401, "error": "authentication_failed"})
+    out({"type": "assistant", "message": {"model": "<synthetic>", "content": [{"type": "text", "text": "Failed to authenticate. API Error: 401 OAuth access token is invalid."}]}})
+    out({"type": "result", "subtype": "success", "is_error": True, "api_error_status": 401, "result": "Failed to authenticate. API Error: 401 OAuth access token is invalid.", "usage": {}})
+    sys.exit(1)
+if mode == "model":
+    out({"type": "result", "is_error": True, "api_error_status": 404, "result": "There's an issue with the selected model (claude-nope). It may not exist or you may not have access to it.", "usage": {}})
+    sys.exit(1)
+if mode == "limit":
+    out({"type": "result", "is_error": True, "result": "Claude AI usage limit reached|1761200000", "usage": {}})
+    sys.exit(1)
+if mode == "stderr":
+    print("error: unknown option '--bogus' (token sk-ant-oat01-SECRETSECRETSECRET)", file=sys.stderr)
+    sys.exit(1)
+if mode == "silent":
+    sys.exit(1)
+out({"type": "assistant", "message": {"model": "m", "content": [{"type": "text", "text": "fine"}]}})
+out({"type": "result", "is_error": False, "result": "fine", "usage": {"input_tokens": 3, "output_tokens": 1}})
+""")
+fake.chmod(0o755)
+os.environ["CLAUDE_BIN"] = str(fake)
+cli_profile = {"kind": "claude-code", "key": "sk-ant-oat01-faketoken"}
+
+
+def cli_turn(mode: str):
+    os.environ["FAKE_CLI_MODE"] = mode
+    try:
+        return "ok", providers.collect(providers._stream_cli(cli_profile, [{"role": "user", "content": "hi"}], "", "claude-test", {}, None, str(fake_dir)))
+    except providers.ProviderError as e:
+        return "error", (str(e), e.status)
+
+
+kind, got = cli_turn("auth")
+check(kind == "error" and "rejected the token" in got[0] and got[1] == 400, "CLI: a refused token says so (not \"exited with code 1\")")
+kind, got = cli_turn("model")
+check(kind == "error" and "can't use the model `claude-test`" in got[0] and "may not exist" in got[0], "CLI: a model the account can't use names the model and what Claude Code said")
+kind, got = cli_turn("limit")
+check(kind == "error" and "usage or rate limit" in got[0] and got[1] == 429, "CLI: a usage limit is a 429, so the fallback chain can move on")
+kind, got = cli_turn("stderr")
+check(kind == "error" and "unknown option '--bogus'" in got[0] and "SECRETSECRET" not in got[0] and "exit code 1" in got[0], "CLI: stderr is shown, with secrets hidden")
+kind, got = cli_turn("silent")
+check(kind == "error" and "without saying why" in got[0] and "claude -p hi" in got[0], "CLI: a silent failure says how to see the error")
+kind, got = cli_turn("ok")
+check(kind == "ok" and got["text"] == "fine", "CLI: a working turn still streams its reply")
+del os.environ["CLAUDE_BIN"], os.environ["FAKE_CLI_MODE"]
+
 # ---------------------------------------------------------------- 3. safety
 print("safety")
 for bomb in ("((9**999)**999)**999", "2**" * 60 + "2", "9**9**9**9", "(10**4000)*(10**4000)", "__import__('os')", "1 if 1 else 2"):

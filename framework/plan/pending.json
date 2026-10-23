@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-22T23:20:51.984Z",
+ "updatedAt": "2026-10-23T00:13:26.948Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1851,6 +1851,48 @@
    "builtAt": "2026-10-22T23:20:51.501Z",
    "updatedAt": "2026-10-22T23:20:51.984Z",
    "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-app-tabs",
+   "title": "Patches: pick any framework app to appear as a tab (Console, Pilot, axHub, Walkthrough Studio, …)",
+   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:13:22.055Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T00:13:22.055Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-deploy",
+   "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
+   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:13:22.142Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T00:13:22.142Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "assistant-cli-errors",
+   "title": "Assistant: show the real Claude Code error instead of \"exited with code 1\"",
+   "detail": "Started from chat Oct 23 2026 on branch claude/framework-walkthrough-video-builder-qocfr1",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:13:26.948Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T00:13:26.948Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]
