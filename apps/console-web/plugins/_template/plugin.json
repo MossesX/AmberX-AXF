@@ -29,5 +29,7 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "builtWith": { "model": "", "builtAt": "" },
+  "opens": "main"
 }

@@ -9,7 +9,8 @@
     "name",
     "version",
     "kind",
-    "apiLevel"
+    "apiLevel",
+    "builtWith"
   ],
   "properties": {
     "$axf": {
@@ -117,8 +118,18 @@
       "description": "Does this plugin include a banner (the live banners above every page, AxfWebLibrary.banners)? false (default) = none; otherwise the ids of the banners it contributes. Every declared banner gets the shared banner settings (Hide, Hide all banners, the hide timer). Checked against the plugin's web code by plugins.mjs --check.",
       "default": false,
       "oneOf": [
-        { "const": false },
-        { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" } }
+        {
+          "const": false
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          }
+        }
       ]
     },
     "tabable": {
@@ -153,12 +164,69 @@
       ]
     },
     "builtWith": {
+      "description": "The model that built this plugin and when (Brett, Oct 23 2026): every plugin, new and existing, records it; it shows as a badge wherever plugin info shows. Required by the build engine (build-defaults@1 rules plugin.builtWith.model / plugin.builtWith.builtAt). Only one copy of a plugin is ever installed: the same plugin built by two models is never installed twice (a rebuild replaces the old build, see Plugin Update).",
       "type": "object",
-      "description": "model that built it and what replaces it (e.g. a pending Fable rebuild)"
+      "required": [
+        "model",
+        "builtAt"
+      ],
+      "properties": {
+        "model": {
+          "enum": [
+            "fable",
+            "opus",
+            "sonnet",
+            "haiku"
+          ],
+          "description": "the model family that built this version"
+        },
+        "builtAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "the date this version was built (YYYY-MM-DD)"
+        },
+        "rebuildOf": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "what it rebuilds (e.g. the Opus build it replaced)"
+        },
+        "replacedBy": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "the build that will replace it (e.g. a parked Fable rebuild)"
+        },
+        "replaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ids of other plugins this one replaces: never installed next to them"
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 120
+        }
+      }
     },
     "lifecycle": {
       "type": "object",
       "description": "plugin-lifecycle@1: dataDir, env, mentions"
+    },
+    "opens": {
+      "description": "Where the plugin's primary UI (opensUi, else its first page, else its first dialog) opens by default: the main application area, a floating window, a dialog or a tab group (engines/placement.ts). Its settings tab carries the choice (setting axf.placement.<id>), which wins. false = it has no page or dialog. Filled by the build engine (build-defaults@1 plugin.opens.main: main).",
+      "default": "main",
+      "enum": [
+        "main",
+        "window",
+        "dialog",
+        "tab",
+        false
+      ]
+    },
+    "opensUi": {
+      "type": "string",
+      "pattern": "^(view|dialog):[a-z0-9][a-z0-9._-]{0,63}$",
+      "description": "which of its UIs moves with opens (default: its first page, else its first dialog)"
     }
   }
 }

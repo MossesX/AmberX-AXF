@@ -177,7 +177,7 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // Patches"): the app loads only the plugins the host enabled for it (`plugins-enabled` message), reports the plugins
   // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
   // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
-  ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
+  ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.', 'plugins-menu.', 'plugin-update.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
@@ -373,7 +373,7 @@ export type EmbedMessage =
  * plugin (plugin.json → `tabable`) also says which of its views a host may show as a tab of its own (`tab`), opened as
  * the view page `view:<view>`.
  */
-export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean; tab?: EmbedPluginTab }
+export interface EmbedPlugin { id: string; name: string; version?: string; on: boolean; tab?: EmbedPluginTab; /** the model that built it (plugin@1 builtWith.model, Oct 23 2026): a lowercase family name */ model?: string }
 export interface EmbedPluginTab {
   view: string; label?: string; icon?: string;
   /** the plugin's own settings tab in its app (Oct 23 2026): the host's combined settings gets a tab for it, opening the
@@ -472,6 +472,7 @@ function parsePlugins(raw: unknown): EmbedPlugin[] | null {
     const p: EmbedPlugin = { id: o.id, name: clip(o.name, L.label) ?? o.id, on: o.on !== false };
     const ver = clip(o.version, L.version); if (ver) p.version = ver;
     const tab = parsePluginTab(o.tab); if (tab) p.tab = tab;
+    if (typeof o.model === 'string' && /^[a-z][a-z0-9.-]{0,31}$/.test(o.model)) p.model = o.model;
     out.push(p);
   }
   return out;

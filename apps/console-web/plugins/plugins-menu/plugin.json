@@ -1,0 +1,41 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.plugins-menu",
+  "name": "Plugins menu",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Right-click (or long-press) anywhere → Plugins: Install… (a plugin browser over every archive location: axHub, the permanent one, needs its credentials; folders, https servers and other consoles can be added with their credentials, kept on the console server only; download and install from there, with the installer's own settings), Settings… (the settings browser: every installed plugin in a collapsible column and the picked plugin's own settings beside it; a dialog by default, switchable to a floating window; its own basic, style, switch and behaviour settings plus a placeholder for every parameter type), Manage (the Plugin Manager), Enable ▸ (the switched-off plugins: pick one to turn it on) and Disable ▸ (the opposite).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "dialog:plugins-menu.settings",
+    "dialog:plugins-menu.install",
+    "settings-tab:plugins-menu",
+    "action:plugins-menu.settings",
+    "action:plugins-menu.install"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-23" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/plugins-menu",
+    "env": [
+      "AXF_PLUGINS_MENU_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": "dialog",
+  "opensUi": "dialog:plugins-menu.settings"
+}

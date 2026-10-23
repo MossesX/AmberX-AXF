@@ -6,6 +6,7 @@
 import { installLibrary } from './libraries.mjs';
 import { createHash } from 'node:crypto';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
+import { enforceDefaults } from './build-defaults.mjs';
 import { PROJECT_MANIFEST_FILE, checkProject, requireProject } from './project.mjs';
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -406,6 +407,10 @@ export function init({ dir, name = 'AXF App', id, template = 'react-ts', targets
   };
   if (bp) manifest.boilerplate = { id: bp.id, name: bp.name, category: bp.category, screens: bp.screens, features: bp.features ?? [] };
   if (targets.includes('android')) manifest.android = { applicationId: pkg, scheme: 'axf', modules, minSdk: 26, targetSdk: 35 };
+  // The build engine's default rules for apps (build-defaults@1, kind "app"): filled here, refused when a rule requires more.
+  const appDefaults = enforceDefaults('app', manifest, 'axf.manifest.json');
+  Object.assign(manifest, appDefaults.value);
+  for (const f of appDefaults.filled) log(`  build default: ${f.field} = ${JSON.stringify(f.value)} (${f.rule})`);
   const manifestText = JSON.stringify(manifest, null, 2) + '\n';
   writeFileSync(join(dest, 'axf.manifest.json'), manifestText);
   // Android apps also carry the manifest inside the APK assets so the kernel can read it at runtime.

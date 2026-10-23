@@ -12,6 +12,7 @@ import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
@@ -139,6 +140,10 @@ export interface InstalledLibrary {
   contributes?: string[];
   /** The library's nav items / views / dialogs / settings tabs, for "Open" and "Settings" in the Plugin Manager. */
   ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number; /** app-menu items it contributes (engines/appmenu.ts) */ appMenuItems?: number };
+  /** The model that built it (plugin@1 `builtWith`, Oct 23 2026), shown as a badge wherever its info shows. */
+  builtWith?: { model: string; builtAt?: string };
+  /** Where its primary UI opens by default (engines/placement.ts); the setting `axf.placement.<id>` wins. */
+  opens?: Placement;
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */
@@ -191,6 +196,14 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Primary UIs that move with their owner's placement (engines/placement.ts): `view:<id>` / `dialog:<id>` → owner + default. */
+  private readonly placements = new Map<string, { owner: string; ui: UiRef; fallback: Placement; title: string }>();
+  /** Props of dialogs placed in a page / window tab (they don't fit in a tab payload string), by dialog id. */
+  readonly placedProps = new Map<string, Record<string, unknown> | undefined>();
+  /** The view to go back to when a dialog placed in the main area closes. */
+  placedReturn: string | null = null;
+  /** The shared tab-group window `tab` placements open in (while it's open). */
+  private placementTabWindow: string | null = null;
   /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
   readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
@@ -998,7 +1011,71 @@ export class AxfRuntime {
 
   /* ---------------- views & overlays ---------------- */
 
+  /**
+   * Let `owner`'s primary UI open where its placement says (engines/placement.ts). `fallback` = the manifest default
+   * (`opens`); the person's pick (`axf.placement.<owner>`) wins and is read on every open, so a change applies at once.
+   */
+  setPlacement(owner: string, ui: UiRef, fallback: Placement, title = ui.id) {
+    this.placements.set(`${ui.kind}:${ui.id}`, { owner, ui, fallback, title });
+  }
+
+  /** Forget `owner`'s placement (its library was switched off). */
+  removePlacement(owner: string) {
+    for (const [k, v] of this.placements) if (v.owner === owner) this.placements.delete(k);
+  }
+
+  /** Where `owner`'s primary UI opens now: the person's pick, else its default (null = nothing placed for it). */
+  placementOf(owner: string): Placement | null {
+    const p = [...this.placements.values()].find((x) => x.owner === owner);
+    return p ? normalizePlacement(this.settings.get(placementKey(owner)), p.fallback) : null;
+  }
+
+  /** The placed primary UIs (for settings and the Plugin Manager). */
+  placedUis(): { owner: string; ui: UiRef; fallback: Placement; title: string }[] {
+    return [...this.placements.values()];
+  }
+
+  /** Open a placed UI where its placement says; false = open it the normal way. */
+  private openPlaced(ref: string, props?: Record<string, unknown>): boolean {
+    const p = this.placements.get(ref);
+    if (!p) return false;
+    const r = placementRoute(p.ui, normalizePlacement(this.settings.get(placementKey(p.owner)), p.fallback));
+    if (r.via === 'natural') return false;
+    if (p.ui.kind === 'dialog') this.placedProps.set(p.ui.id, props);
+    if (r.via === 'page') {
+      this.placedReturn = this.state.view;
+      this.set({ view: r.view, context: null, dialog: null });
+    } else if (r.via === 'dialog') {
+      this.set({ dialog: { id: r.dialog }, context: null });
+    } else {
+      const wm = this.windows;
+      // already open somewhere: bring it up instead of opening it twice
+      const open = Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === r.tabKind && t.payload === r.payload));
+      if (open) {
+        wm.activate(open.id, open.tabs.findIndex((t) => t.kind === r.tabKind && t.payload === r.payload));
+        wm.focus(open.windowId);
+      } else {
+        const tab = { id: `placed-${p.ui.id}-${Date.now().toString(36)}`, title: p.title, kind: r.tabKind, payload: r.payload };
+        const shared = r.via === 'tab' && this.placementTabWindow ? wm.state.windows.find((w) => w.id === this.placementTabWindow) : undefined;
+        const group = shared && Object.values(wm.state.groups).find((g) => g.windowId === shared.id);
+        if (group) { wm.addTab(group.id, tab); wm.activate(group.id, group.tabs.length); wm.focus(shared!.id); }
+        else {
+          const wid = wm.openFloating([tab], r.via === 'tab' ? PLACEMENT_TAB_GROUP : p.title, 'floating', 640, 520);
+          if (r.via === 'tab') this.placementTabWindow = wid;
+        }
+      }
+      this.set({ context: null, ...(p.ui.kind === 'dialog' ? { dialog: null } : {}) });
+    }
+    return true;
+  }
+
+  /** Open a view the way it was declared (in the main area), past its placement: what a placed UI's "go to page" uses. */
+  navigateHere(view: string) {
+    this.set({ view, context: null });
+  }
+
   navigate(view: string) {
+    if (this.openPlaced(`view:${view}`)) return;
     // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
     // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
@@ -1008,6 +1085,7 @@ export class AxfRuntime {
   }
 
   openDialog(id: string, props?: Record<string, unknown>) {
+    if (this.openPlaced(`dialog:${id}`, props)) return;
     this.set({ dialog: { id, props }, context: null });
   }
 

@@ -34,5 +34,7 @@
       "apps/console-web/plugins/README.md",
       "_claude/memory/docs/rebuilds/lib-mcp.md"
     ]
-  }
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-10-20" },
+  "opens": "main"
 }

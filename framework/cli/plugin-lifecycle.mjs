@@ -29,6 +29,8 @@ import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { gitAuthEnv, scrub } from './github.mjs';
+import { applyToPluginFile } from './build-defaults.mjs';
+import { installClash } from './plugin-instances.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 export const PLUGINS_DIR = join(ROOT, 'apps/console-web/plugins');
@@ -186,6 +188,15 @@ export function list() {
 export async function install(folder, { noState = false } = {}, log = () => {}) {
   const p = readManifest(folder);
   if (!p.present) throw new Error(`plugin ${folder} is not in apps/console-web/plugins (its code must be there first, e.g. from a git pull)`);
+  // The build engine's default rules (build-defaults@1): fill missing defaults, refuse what a rule requires.
+  const d = applyToPluginFile(join(p.dir, 'plugin.json'), { write: true });
+  if (d.problems.length) throw new Error(`${folder}/plugin.json: ${d.problems.map((x) => x.message).join('; ')}`);
+  for (const f of d.filled) log(`build default: ${f.field} = ${JSON.stringify(f.value)} (${f.rule})`);
+  // One instance per plugin (Brett, Oct 23 2026): never next to another build of the same plugin.
+  const others = readdirSync(PLUGINS_DIR).filter((n) => n !== folder && !n.startsWith('.') && !n.startsWith('_') && existsSync(join(PLUGINS_DIR, n, 'plugin.json')))
+    .map((n) => { try { return { folder: n, manifest: JSON.parse(readFileSync(join(PLUGINS_DIR, n, 'plugin.json'), 'utf8')) }; } catch { return null; } }).filter(Boolean);
+  const clash = installClash({ folder, manifest: JSON.parse(readFileSync(join(p.dir, 'plugin.json'), 'utf8')) }, others);
+  if (clash) throw new Error(clash);
   const data = safeDataDir(p);
   mkdirSync(data, { recursive: true, mode: 0o700 });
   try { chmodSync(data, 0o700); } catch { /* not ours */ }

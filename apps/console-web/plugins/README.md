@@ -78,6 +78,21 @@ version never changes: raise `version` in plugin.json to publish new code. Keep 
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
 
+## Who built it, where it opens, one instance (plugin@1 `builtWith`, `opens`; Oct 23 2026)
+
+Every plugin.json says which model built it: `"builtWith": { "model": "opus", "builtAt": "2026-10-23" }` (fable, opus,
+sonnet, haiku; optional `rebuildOf`, `replaces`, `branch`). The build engine requires it (build-defaults@1 rules in
+`framework/schemas/build-defaults.json`, applied by `framework/cli/build-defaults.mjs` at install, catalog pack/install,
+`plugins.mjs --check` and the console loader) and fills `opens` (`"main"` for a plugin with a view or dialog, `false`
+without one). Users pick where a plugin opens in its settings (**Opens in**: main area, floating window, dialog, tab
+group). A model badge shows wherever plugin info appears. Only **one instance** of a plugin is ever installed: the same
+id, a `builtWith.replaces` link, the same folder once `-fable`/`-opus`/`-plugin` is taken off, or the same name is the
+same plugin, and a second one is refused (`framework/cli/plugin-instances.mjs`). A build by another model replaces the
+installed one in place: **Plugin Update** → Replace (`plugin-catalog.mjs swap <folder>`). New plugins from `_template`
+fill in `builtWith` before they install.
+
+**Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a
