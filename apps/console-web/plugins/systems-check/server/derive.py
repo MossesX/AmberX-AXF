@@ -4,6 +4,8 @@
     `requires` are provided, its data folder is private, and its own declared self-checks (hooks.mjs → checks(ctx),
     run through framework/cli/plugin-lifecycle.mjs checks <folder>);
   * every project manifest in the repo (framework/cli/project.mjs validate --all);
+  * every app whose baked framework copy (src/axf) is behind the framework (framework/cli/rebake.mjs): one row each,
+    Auto fix re-bakes it on branch rebake/<app> and opens a pull request (an app with edited baked files gets none);
   * the shared data files the root manifest declares (data.shared) exist where the console reads them.
 
 New plugins, projects and shared files are picked up automatically: nothing here names one.
@@ -54,6 +56,36 @@ def _install(folder: str) -> Callable[[], str]:
             raise RuntimeError((r.stderr or r.stdout or "install failed").strip().splitlines()[-1][:200])
         return f"ran {folder}'s install script"
     return run
+
+
+def _rebake(app_dir: str) -> Callable[[], str]:
+    """Re-bake one app on branch rebake/<app> from origin's main and open a PR (the checkout here is never touched)."""
+    def run() -> str:
+        r = _node(["framework/cli/rebake.mjs", "publish", app_dir, "--json"], timeout=180) or {}
+        if r.get("error"):
+            raise RuntimeError(str(r["error"])[:200])
+        return f"re-baked {app_dir}: pull request {r['pr']}" if r.get("pushed") else str(r.get("note") or "already current")
+    return run
+
+
+def _rebake_row(item: Callable[..., Check], a: dict[str, Any]) -> Check:
+    d, app, state = a.get("dir", "?"), a.get("app") or a.get("dir", "?"), a.get("state")
+    cid = f"rebake:{d}"
+    files = [f"changed {f}" for f in a.get("changed", [])] + [f"new {f}" for f in a.get("missing", [])] + [f"removed {f}" for f in a.get("extra", [])]
+    if state == "current":
+        return item(cid, "data", f"{app}: baked framework", "ok", "current", details=[d], order=65)
+    if state == "stale":
+        FIXES[cid] = _rebake(d)
+        n = len(files)
+        row = item(cid, "data", f"{app}: needs a re-bake", "warn", f"{n} framework file{'s' * (n != 1)} behind; Auto fix re-bakes it on a branch and opens a pull request",
+                   details=[d, *files[:12]], fix=AUTO, instructions=[f"node framework/cli/rebake.mjs apply {d}"], order=65)
+        row["autoFix"] = True
+        return row
+    if state == "edited":
+        return item(cid, "data", f"{app}: needs a re-bake (edited copy)", "warn",
+                    "its baked framework was edited in the app, so it isn't re-baked automatically: move the edits into the framework, then re-bake",
+                    details=[d, *[f"edited {f}" for f in a.get("edited", [])][:12]], instructions=[f"node framework/cli/rebake.mjs apply {d} --force   (drops the edits)"], order=65)
+    return item(cid, "data", f"{app}: baked framework", "unknown", str(a.get("error") or "couldn't read it")[:200], details=[d], order=65)
 
 
 def _node(args: list[str], timeout: float = 30) -> Any:
@@ -161,6 +193,13 @@ def derive(item: Callable[..., Check]) -> list[Check]:
                             instructions=[f"node framework/cli/project.mjs validate {p.get('rel')}"], order=63))
     except Exception as e:  # noqa: BLE001
         out.append(item("project:all", "data", "Project manifests", "unknown", f"couldn't validate: {str(e)[:160]}", order=63))
+
+    # apps whose baked framework copy (src/axf, from `axf init`) is behind the framework: one row each
+    try:
+        for a in _node(["framework/cli/rebake.mjs", "status", "--json"], timeout=30) or []:
+            out.append(_rebake_row(item, a))
+    except Exception as e:  # noqa: BLE001
+        out.append(item("rebake:all", "data", "Baked framework in apps", "unknown", f"couldn't compare: {str(e)[:160]}", order=65))
 
     # shared data declared by the root manifest
     try:

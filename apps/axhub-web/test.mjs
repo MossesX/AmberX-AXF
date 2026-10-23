@@ -113,5 +113,16 @@ ok(statusNote('not-admin', '').includes('users page'), 'no permission points at 
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 
+// The look comes from axHub's shared appearance document, so this app must ship every colour and style theme
+// the console (the other app in Patches) ships: a missing one would fall back to this app's default.
+{
+  const { readdirSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  for (const type of ['color-theme', 'style-theme', 'gauge', 'meter']) {
+    const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
+    for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
+  }
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);
