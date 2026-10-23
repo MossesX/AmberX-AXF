@@ -717,6 +717,25 @@ _answers["sk-ant-api-y"] = "credit balance is too low"
 r = _llm.credits(auto_switch=True)
 check(r["state"] == "no-credit" and r["switched"] is None and _st.load_config()["defaultProfile"] == "cr-c", "credits: none with credit leaves the default alone")
 check("sk-ant" not in json.dumps(r), "credits: never returns keys")
+# With a keyring (axf.ai-keys@1) holding the active key, the switch happens among its saved keys, not the profiles.
+class _FakeKeys:
+    open_action = "keys.open"
+    def __init__(self): self.calls = []
+    def active_key(self, kind): return "sk-ant-api-x" if kind == "anthropic" else ""
+    def credit_switch(self, kind, model, is_no_credit):
+        self.calls.append(kind)
+        ok = is_no_credit("Your credit balance is too low")
+        return {"switched": {"from": "k1", "to": "k2", "label": "Spare"} if ok else None, "tried": [{"id": "k2", "label": "Spare", "state": "ok", "error": ""}]}
+_fk = _FakeKeys()
+plugin_services.provide("axf.ai-keys@1", _fk, "ai-assistant")
+_answers["sk-ant-api-x"] = "Your credit balance is too low"
+_answers["sk-ant-api-y"] = ""
+_cfg = _st.load_config(); _cfg["defaultProfile"] = "cr-a"; _st.save_config(_cfg)
+r = _llm.credits(auto_switch=True)
+check(_fk.calls == ["anthropic"] and r["switched"]["via"] == "keys" and r["switched"]["label"] == "Spare", "credits: with a keyring, switches among its saved keys")
+check(r["open"] == "keys.open" and _st.load_config()["defaultProfile"] == "cr-a", "credits: keyring switch leaves the default profile and says which dialog to open")
+plugin_services.withdraw("ai-assistant")
+plugin_services.provide("axf.llm@1", mod.LlmService(), "ai-assistant")
 _prov.test_profile = _orig_test
 _st.save_config(_cfg0)
 

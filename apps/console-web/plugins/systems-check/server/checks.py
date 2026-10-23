@@ -207,10 +207,13 @@ class SysCheck:
         r = llm.credits(auto_switch=True)
         details = [f"{p['label']}: {'has credit' if p['state'] == 'ok' else 'out of credits' if p['state'] == 'no-credit' else 'error: ' + p['error'][:120]}" for p in r.get("profiles", [])]
         sw = r.get("switched")
+        if r.get("open"):
+            base["fix"] = {"type": "settings", "tab": tab, "label": "Pick a key", "action": r["open"]}
         if r.get("state") == "none":
             return self.item("claude-credits", "claude", "Claude credits", "warn", "No Claude provider is set up in the AI assistant.", **base)
         if sw:
-            c = self.item("claude-credits", "claude", "Claude credits", "warn", f"Out of credits: switched the assistant to {sw['label']}.", details=details, **base)
+            where = "the saved key" if sw.get("via") == "keys" else "the assistant to"
+            c = self.item("claude-credits", "claude", "Claude credits", "warn", f"Out of credits: switched {where} {sw['label']}.", details=details, **base)
             c["switched"] = sw
             return c
         if r.get("state") == "ok":
