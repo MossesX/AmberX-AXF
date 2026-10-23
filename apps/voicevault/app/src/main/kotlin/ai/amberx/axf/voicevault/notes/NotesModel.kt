@@ -9,7 +9,7 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
 /**
- * Voice notes — the model the listener reads (Kotlin twin of the console plugin's `plugins/voice-notes/web/core.ts`,
+ * Voice notes — the model the listener reads (Kotlin twin of the console Voice notes plugin's web core rules,
  * same defaults, limits and rules): the settings and lists edited in Dev Console → Settings → Plugins → Voice notes,
  * kept on axHub, and what the listener does with what it hears (strip the stop trigger, "give me the list of lists",
  * a spoken number → a list, which question set a trigger opens). Pure Kotlin, no Android.
