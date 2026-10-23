@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T02:09:40.262Z",
+ "updatedAt": "2026-10-23T02:21:53.081Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1985,12 +1985,17 @@
    "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
    "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Done Oct 23 2026: PR #36 merged (370ebc8), deployed via vps.run (approved). Hub routes unchanged before/after; / = AXF app (Traefik priority 1000). Rollback: sudo DOMAIN=axhub-web.amberxai.com bash /opt/axhub-web/apps/axhub-web/deploy/install.sh. Log-line follow-up PR #37.",
+     "at": "2026-10-23T02:21:53.081Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-23T02:09:40.159Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "2026-10-23T02:21:52.935Z",
+   "updatedAt": "2026-10-23T02:21:53.081Z",
    "estimate": "30 min",
    "source": "mcp"
   }
