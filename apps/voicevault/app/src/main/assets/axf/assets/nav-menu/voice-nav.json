@@ -3,8 +3,8 @@
   "type": "nav-menu",
   "id": "voice-nav",
   "name": "Voice Vault navigation",
-  "version": "0.1.0",
-  "description": "Voice Vault: voice screen, saved sites, voice triggers, settings.",
+  "version": "0.2.0",
+  "description": "Voice Vault: voice screen, saved sites, voice notes, voice triggers, settings.",
   "author": "AmberX AXF build engine",
   "tags": [
     "boilerplate"
@@ -27,6 +27,12 @@
             "label": "Saved sites",
             "icon": "lock",
             "view": "vault"
+          },
+          {
+            "id": "voice-notes",
+            "label": "Voice notes",
+            "icon": "edit",
+            "view": "voice-notes"
           },
           {
             "id": "voice-triggers",

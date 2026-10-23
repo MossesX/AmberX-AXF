@@ -5,7 +5,7 @@
  * the recording), then "where should I store it?" — say a list, or "give me the list of lists" and it reads them with
  * their numbers; say a number. Each list can ask its own questions, opened by a number or a recorded trigger, and can
  * file notes into subcategories. Everything (settings and lists) lives on axHub's data server through the framework's
- * lib-hubstore, never on this device. The listener that does the talking is a placeholder (`axf.voice-notes.listener`).
+ * lib-hubstore, never on this device. The listener that does the talking is Voice Vault on Android.
  *
  * Settings → Plugins → Voice notes.
  */
@@ -140,7 +140,7 @@ function WherePanel() {
       {s.state.status === 'unreachable' && <Note tone="danger">{s.state.reason}</Note>}
       {issues.length > 0 && <Note tone="warning">{issues.map((x) => <div key={x}>{x}</div>)}</Note>}
       {s.loaded && !issues.length && s.state.status === 'ready' && <Note tone="success">Everything the listener needs is set.</Note>}
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>The listener that hears the triggers isn't built yet; this is its setup.</p>
+      <p className="fx-small fx-muted" style={{ margin: 0 }}>Voice Vault on Android is the listener: it hears these triggers (in the background too) and saves notes here.</p>
     </div>
   );
 }

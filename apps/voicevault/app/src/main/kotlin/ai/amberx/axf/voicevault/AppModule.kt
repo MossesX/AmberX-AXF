@@ -23,6 +23,7 @@ import ai.amberx.axf.voice.VoiceCommand
 import ai.amberx.axf.voicevault.vault.Cmd
 import ai.amberx.axf.voicevault.vault.Keys
 import ai.amberx.axf.voicevault.vault.VaultSession
+import ai.amberx.axf.voicevault.notes.VoiceNotes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -34,6 +35,8 @@ import kotlinx.serialization.json.JsonPrimitive
 class AppModule(private val context: Context, private val scope: CoroutineScope) : BaseModule("ai.amberx.axf.voicevault", "Voice Vault") {
     override val dependsOn: List<String> = listOf("ai.amberx.axf.settings", "ai.amberx.axf.logging", "ai.amberx.axf.voice", "ai.amberx.axf.lock")
     lateinit var session: VaultSession
+        private set
+    lateinit var notes: VoiceNotes
         private set
 
     override fun register(ctx: ModuleContext) {
@@ -49,11 +52,22 @@ class AppModule(private val context: Context, private val scope: CoroutineScope)
         }
         session = VaultSession(context, scope, voice, ctx.service(AppLock::class), ctx.service(SecureStore::class), ctx.service(KeyValueStore::class), (context as AxfApplication).ready) { ctx.service(Config::class) }
         ctx.services.register(VaultSession::class, session, "voicevault.session")
+        // Voice notes: the listener for the console's Voice notes setup on axHub (separate from the vault).
+        notes = VoiceNotes(scope, voice, { ctx.service(Config::class) }, VoiceNotes.DEVICE)
+        ctx.services.register(VoiceNotes::class, notes, "voicevault.notes")
 
-        for (r in listOf(RouteSpec("home", "Voice", icon = "mic", module = id), RouteSpec("vault", "Saved sites", icon = "lock", module = id), RouteSpec(UNLOCK_CODE_ROUTE, "Unlock code", icon = "shield", module = id)))
+        for (r in listOf(RouteSpec("home", "Voice", icon = "mic", module = id), RouteSpec("vault", "Saved sites", icon = "lock", module = id), RouteSpec(UNLOCK_CODE_ROUTE, "Unlock code", icon = "shield", module = id),
+            RouteSpec(VoiceNotes.ROUTE, "Voice notes", icon = "edit", module = id), RouteSpec(VoiceNotes.SIGN_IN_ROUTE, "Sign in to axHub", icon = "user", module = id)))
             ctx.extensions.contribute(ExtensionPoints.ROUTES, id, RouteContribution(r))
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("vault.allowPopup", ActionMeta("Let it pop open", module = id)) { _, _ -> ai.amberx.axf.voicevault.background.WakeListener.openPopupSettings(context) })
         ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("vault.lock", ActionMeta("Lock now", module = id)) { _, _ -> session.lock(clearClipboard = true); runtime?.navigate("home") })
+        ctx.extensions.contribute(ExtensionPoints.ACTIONS, id, ActionContribution("notes.take", ActionMeta("Take a voice note", module = id)) { _, _ -> notes.takeNow() })
+        ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("voicevault.notes", "Voice notes", "edit", id, order = 26, description = "Notes you say, filed into the lists you set up in the Dev Console (kept on axHub).", settings = listOf(
+            SettingSpec(VoiceNotes.KEY_LISTEN, "Listen for voice notes", SettingKind.TOGGLE, "Hear your start triggers in the background too (screen off included), then take the note", JsonPrimitive(true), icon = "mic"),
+            SettingSpec("voicevault.notes.open", "Voice notes", SettingKind.LINK, "What you can say, your lists, the last note", target = VoiceNotes.ROUTE, icon = "edit"),
+            SettingSpec("voicevault.notes.signIn", "Sign in to axHub", SettingKind.LINK, "The notes and their setup live on axHub", target = VoiceNotes.SIGN_IN_ROUTE, icon = "user"),
+            SettingSpec(VoiceNotes.KEY_HUB, "axHub address", SettingKind.TEXT, "Where the setup and notes live", JsonPrimitive("https://axhub.amberxai.com"), icon = "cloud"),
+        ))))
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("voicevault", "Voice Vault", "lock", id, order = 25, description = "How the vault listens and handles copied passwords.", settings = listOf(
             SettingSpec(UNLOCK_CODE_ROUTE, "Unlock code", SettingKind.LINK, "Record or type the phrase that opens the vault", target = UNLOCK_CODE_ROUTE, icon = "shield"),
             SettingSpec(Keys.BACKGROUND, "Listen in the background", SettingKind.TOGGLE, "While Voice Vault runs but isn't on screen (screen off too), listen only for your global trigger, then pop the app open", JsonPrimitive(true), icon = "bell"),

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T15:25:41.808Z",
+ "updatedAt": "2026-10-23T15:47:07.297Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2865,6 +2865,51 @@
    "createdAt": "2026-10-23T04:10:49.533Z",
    "builtAt": "2026-10-23T04:23:17.214Z",
    "updatedAt": "2026-10-23T04:23:17.214Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "voicevault-voice-notes",
+   "title": "Voice notes listener in Voice Vault (start/stop triggers, list of lists, questions, saved to axHub)",
+   "detail": "Brett Oct 23 2026: bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Pure notes model (Kotlin port of voice-notes core rules) + unit test",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub data client in app code (settings doc, lists table, notes table write with If-Match)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Note conversation (beep, record to stop trigger, list of lists, subcategory, questions, confirm)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Background service: start triggers heard alongside the global trigger",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Notes screen: hub sign-in, status, take a note, last saved; settings + route",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Docs, status, CI, PR",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-23T15:47:07.297Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T15:47:07.297Z",
    "estimate": "3 h",
    "source": "chat"
   }
