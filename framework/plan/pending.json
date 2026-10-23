@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T15:25:41.808Z",
+ "updatedAt": "2026-10-23T17:46:25.439Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2726,6 +2726,50 @@
    "builtAt": "2026-10-23T15:25:41.808Z",
    "updatedAt": "2026-10-23T15:25:41.808Z",
    "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "banner-group",
+   "title": "Banner group window (one wrapper, floating, draggable, resizable)",
+   "detail": "Built on Opus in this chat: framework/react/components/BannerGroup.tsx, branch claude/project-thread-1d9f6k.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T17:46:25.430Z",
+   "builtAt": "2026-10-23T17:46:25.430Z",
+   "updatedAt": "2026-10-23T17:46:25.430Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-group-fable",
+   "title": "Banner group window: Fable rebuild",
+   "detail": "Rebuild of the Opus banner group (branch claude/project-thread-1d9f6k, BannerGroup.tsx). Start by replacing the Opus version. Fable suggested, Opus chosen.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus BannerGroup and decide the group state contract (setting axf.banners.group), as a pure engine in core",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Move parse/clamp into core/engines with a fixture + check script; record the Android twin in PORTING.md",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Replace the React component on the engine; keyboard move/resize, phone layout, screenshots + differences report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-23T17:46:25.439Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T17:46:25.439Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
