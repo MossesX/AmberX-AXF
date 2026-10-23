@@ -17,9 +17,9 @@
   "defaults": {
     "color-theme": "arctic-daylight",
     "style-theme": "glass-orbit",
-    "layout": "classic-ide",
+    "layout": "axhub-console",
     "app-menu": "axhub-web",
-    "toolbar": "standard-icons",
+    "toolbar": "axhub-web",
     "nav-menu": "axhub-web",
     "context-menu": "compact-classic",
     "dialog": "centered-modal",

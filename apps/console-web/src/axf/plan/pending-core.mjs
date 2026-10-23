@@ -55,16 +55,56 @@ export function estimateMinutes(text) {
   const u = m[2].toLowerCase();
   return Math.round(n * (u.startsWith('d') ? 480 : u.startsWith('h') ? 60 : 1));
 }
+/** Minutes → "45 min", "2.5 h", "19.5 h". Always hours past an hour (Oct 23 2026: "2.5 d" read as 60 hours, it meant 8-hour days). */
 export function formatMinutes(min) {
   if (min == null || !Number.isFinite(min) || min <= 0) return '';
-  if (min < 60) return `${min} min`;
-  if (min < 480) { const h = Math.round(min / 30) / 2; return `${h} h`; }
-  return `${Math.round(min / 240) / 2} d`;
+  if (min < 60) return `${Math.round(min)} min`;
+  return `${Math.round(min / 30) / 2} h`;
+}
+/**
+ * An entry's build time in minutes (Oct 23 2026): when every step carries an estimate, the steps added up (so the item
+ * and its steps never disagree); otherwise its own estimate, else whatever steps have one; null when nothing gives a time.
+ */
+const stepsOfEntry = (entry) => (Array.isArray(entry?.subPrompts) ? entry.subPrompts : Array.isArray(entry?.steps) ? entry.steps : []);
+export function entryMinutes(entry) {
+  const steps = stepsOfEntry(entry);
+  const mins = steps.map((s) => estimateMinutes(s?.estimate));
+  if (steps.length && mins.every((n) => n != null)) return mins.reduce((a, b) => a + b, 0);
+  const own = estimateMinutes(entry?.estimate);
+  if (own != null) return own;
+  const known = mins.filter((n) => n != null);
+  return known.length ? known.reduce((a, b) => a + b, 0) : null;
 }
 export function itemEstimate(it) {
+  const steps = stepsOfEntry(it);
+  if (steps.length && steps.every((s) => estimateMinutes(s?.estimate) != null)) return formatMinutes(entryMinutes(it));
   if (str(it?.estimate).trim()) return str(it.estimate).trim();
-  const subs = (it?.subPrompts ?? []).map((s) => estimateMinutes(s.estimate)).filter((n) => n != null);
-  return subs.length ? formatMinutes(subs.reduce((a, b) => a + b, 0)) : '';
+  const m = entryMinutes(it);
+  return m != null ? formatMinutes(m) : '';
+}
+
+/**
+ * Cost in dollars (Oct 23 2026, Brett: "cost estimates in dollars, not tokens"). A working minute of a build session is
+ * priced with the model's token prices and the per-minute heuristic in framework/schemas/model-pricing.json (the same
+ * rule as estimateCost() in framework/cli/model-pricing.mjs). Pure: callers pass the pricing file's JSON.
+ */
+const DEFAULT_PER_MINUTE = { input: 5000, output: 3000, cacheRead: 300000, cacheWrite: 0 };
+const modelKeyOf = (m) => { const s = str(m).toLowerCase(); return ['fable', 'opus', 'sonnet', 'haiku'].find((k) => s.includes(k)) ?? ''; };
+export function minuteCostUsd(model, pricing) {
+  const p = pricing?.models?.[modelKeyOf(model)];
+  if (!p || p.input == null || p.output == null) return null;
+  const t = pricing?.heuristic?.tokensPerMinute ?? DEFAULT_PER_MINUTE;
+  return ((t.input ?? 0) * p.input + (t.output ?? 0) * p.output + (t.cacheRead ?? 0) * (p.cacheRead ?? p.input) + (t.cacheWrite ?? 0) * (p.cacheWrite ?? p.input)) / 1e6;
+}
+/** USD for `minutes` on `model`; null without a price or a time. */
+export function costForMinutes(model, minutes, pricing) {
+  const m = minuteCostUsd(model, pricing);
+  return m == null || minutes == null || !Number.isFinite(minutes) || minutes < 0 ? null : Math.round(m * minutes * 100) / 100;
+}
+/** 0.84 → "$0.84", 23.1 → "$23", 1234 → "$1,234"; '' for null. */
+export function formatUsd(v) {
+  if (v == null || !Number.isFinite(v)) return '';
+  return v < 10 ? `$${v.toFixed(2)}` : `$${Math.round(v).toLocaleString('en-US')}`;
 }
 
 /**
@@ -76,9 +116,8 @@ export const SPLIT_LIMIT_MINUTES = 30;
 const stepsOf = (entry) => (Array.isArray(entry?.subPrompts) ? entry.subPrompts : Array.isArray(entry?.steps) ? entry.steps : []);
 export function splitCheck(entry, limit = SPLIT_LIMIT_MINUTES) {
   const steps = stepsOf(entry);
-  const own = estimateMinutes(entry?.estimate);
   const stepMins = steps.map((s) => estimateMinutes(s?.estimate));
-  const total = own ?? (stepMins.some((n) => n != null) ? stepMins.reduce((a, b) => a + (b ?? 0), 0) : null);
+  const total = entryMinutes(entry);
   const reasons = [];
   if (total != null && total > limit && !steps.length) reasons.push(`estimated at ${formatMinutes(total)} with no steps`);
   steps.forEach((s, i) => {
@@ -94,8 +133,12 @@ export function stepsProgress(entry) {
   const steps = stepsOf(entry);
   const mins = (s) => estimateMinutes(s?.estimate) ?? 0;
   const done = steps.filter((s) => s?.done === true);
-  const total = steps.length ? steps.reduce((a, s) => a + mins(s), 0) : estimateMinutes(entry?.estimate) ?? 0;
-  const left = steps.length ? steps.filter((s) => s?.done !== true).reduce((a, s) => a + mins(s), 0) : total;
+  const total = entryMinutes(entry) ?? 0;
+  // steps without an estimate share what the own estimate leaves over the estimated ones
+  const unest = steps.filter((s) => estimateMinutes(s?.estimate) == null);
+  const share = unest.length ? Math.max(0, total - steps.reduce((a, s) => a + mins(s), 0)) / unest.length : 0;
+  const cost = (s) => estimateMinutes(s?.estimate) ?? share;
+  const left = steps.length ? Math.round(steps.filter((s) => s?.done !== true).reduce((a, s) => a + cost(s), 0)) : total;
   return { done: done.length, total: steps.length, minutesTotal: total, minutesLeft: left, minutesDone: total - left };
 }
 
@@ -245,6 +288,6 @@ export function toArtifact(it) {
     notes: it.notes.map((n) => ({ text: n.text, at: ms(n.at) })),
     subPrompts: it.subPrompts.map((n) => ({ text: n.text, at: ms(n.at), ...(n.estimate ? { estimate: n.estimate } : {}), ...(n.done ? { done: true, doneAt: ms(n.doneAt) } : {}) })),
     createdAt: ms(it.createdAt), ...(it.builtAt ? { builtAt: ms(it.builtAt) } : {}), updatedAt: ms(it.updatedAt), ...(it.planId ? { planId: it.planId } : {}),
-    ...(it.estimate ? { estimate: it.estimate } : {}),
+    ...(itemEstimate(it) ? { estimate: itemEstimate(it) } : {}),
   };
 }

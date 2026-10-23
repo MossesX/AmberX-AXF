@@ -184,9 +184,9 @@
    ],
    "createdAt": "2026-10-18T04:10:00.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.592Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.assets.designer",
-   "estimate": "1 d",
+   "estimate": "8 h",
    "source": "plan"
   },
   {
@@ -501,8 +501,8 @@
    ],
    "createdAt": "2026-10-18T16:13:56.087Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.593Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "8 h",
    "source": "chat"
   },
   {
@@ -958,8 +958,8 @@
    ],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
-   "estimate": "1.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "10 h",
    "source": "chat"
   },
   {
@@ -1073,8 +1073,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.159Z",
-   "estimate": "1 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "9.5 h",
    "source": "chat"
   },
   {
@@ -1288,8 +1288,8 @@
    ],
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T10:20:04.160Z",
-   "estimate": "2.5 d",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "19.5 h",
    "source": "chat"
   },
   {
@@ -1375,8 +1375,9 @@
    ],
    "createdAt": "2026-10-21T16:26:16.023Z",
    "builtAt": "2026-10-21T16:56:48.038Z",
-   "updatedAt": "2026-10-21T16:56:55.399Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "planId": "x.app.patches",
+   "estimate": "4 h",
    "source": "chat"
   },
   {
@@ -1384,8 +1385,13 @@
    "title": "Build manager: global live tracking, Built history, search, Start build now",
    "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "All 15 steps done: Build manager 0.2.0 (Live, Built, search, Start build now) is built and merged (see CLAUDE.md Status). Marked complete while fixing the estimates (Oct 23 2026).",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
@@ -1494,9 +1500,9 @@
     }
    ],
    "createdAt": "2026-10-21T16:02:06.336Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-21T17:11:28.623Z",
-   "estimate": "6.5 h",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "7 h",
    "source": "claude-code"
   },
   {
@@ -1513,6 +1519,10 @@
     {
      "text": "Oct 23 2026: branch claude/axhub-web-on-hub (Opus) changed apps/axhub-web (manifest hidden: [], deploy/install.sh now targets axhub.amberxai.com page paths). Rebase on it; no clash with the lib-hub harvest itself.",
      "at": "2026-10-23T02:09:40.262Z"
+    },
+    {
+     "text": "Oct 23 2026: axhub-web-console-look (Opus, branch claude/project-thread-j1ri9d, PR #30) does the web half of this harvest: catalog rules move into framework/libs/hub with an apps fixture section, web app switched. What stays for Fable: the Kotlin twin replaying that fixture and the Android Apps tab, once the Android hold lifts.",
+     "at": "2026-10-23T04:11:01.776Z"
     }
    ],
    "subPrompts": [
@@ -1544,8 +1554,8 @@
    ],
    "createdAt": "2026-10-22T01:57:53.687Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.262Z",
-   "estimate": "2 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "2.5 h",
    "source": "session"
   },
   {
@@ -1947,8 +1957,8 @@
    ],
    "createdAt": "2026-10-23T00:04:16.316Z",
    "builtAt": "2026-10-23T00:09:00.415Z",
-   "updatedAt": "2026-10-23T00:09:00.474Z",
-   "estimate": "1 h",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "estimate": "55 min",
    "source": "chat"
   },
   {
@@ -2219,12 +2229,17 @@
    "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
    "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Live at https://axhub.amberxai.com/ since Oct 23 2026 (CLAUDE.md Status: AXHub web app). Marked complete while fixing the estimates.",
+     "at": "2026-10-23T11:41:00.284Z"
+    }
+   ],
    "subPrompts": [],
    "createdAt": "2026-10-23T02:09:40.159Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-23T11:41:00.284Z",
    "estimate": "30 min",
    "source": "mcp"
   },
@@ -2726,6 +2741,131 @@
    "builtAt": "2026-10-23T15:25:41.808Z",
    "updatedAt": "2026-10-23T15:25:41.808Z",
    "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "build-list-estimates-usd",
+   "title": "Build lists: fix the time estimates and show costs in dollars",
+   "detail": "Pending list, build queue, Build manager (Remaining), CLIs and MCP: steps added up win over an item's own estimate, hours instead of 8-hour days, missing estimates added, cost estimates in USD (model-pricing.json per-minute heuristic), never tokens.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-32ym2e (Opus, Oct 23 2026).",
+     "at": "2026-10-23T11:45:08.570Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T11:45:08.570Z",
+   "builtAt": "2026-10-23T11:45:08.570Z",
+   "updatedAt": "2026-10-23T11:45:08.570Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-group",
+   "title": "Banner group window (one wrapper, floating, draggable, resizable)",
+   "detail": "Built on Opus in this chat: framework/react/components/BannerGroup.tsx, branch claude/project-thread-1d9f6k.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T17:46:25.430Z",
+   "builtAt": "2026-10-23T17:46:25.430Z",
+   "updatedAt": "2026-10-23T17:46:25.430Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-group-fable",
+   "title": "Banner group window: Fable rebuild",
+   "detail": "Rebuild of the Opus banner group (branch claude/project-thread-1d9f6k, BannerGroup.tsx). Start by replacing the Opus version. Fable suggested, Opus chosen.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus BannerGroup and decide the group state contract (setting axf.banners.group), as a pure engine in core",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Move parse/clamp into core/engines with a fixture + check script; record the Android twin in PORTING.md",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Replace the React component on the engine; keyboard move/resize, phone layout, screenshots + differences report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-23T17:46:25.439Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T17:46:25.439Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-web-console-look",
+   "title": "axHub web app: Dev Console / Patches look and layout + web harvest into lib-hub",
+   "detail": "From a chat prompt (Brett, Oct 22 2026): rebuild the axHub web app (served at axhub.amberxai.com since Oct 23) with the framework, look and layout matching the Dev Console and Patches, and harvest reusable libraries from it. Web only (Android on hold). Branch claude/project-thread-j1ri9d, PR #30. The Kotlin twin of the catalog rules stays with axhub-web-hub-rules (Fable).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 23 2026 on Opus: branch claude/project-thread-j1ri9d, PR #30. Nav + toolbar kept (Brett). Report _claude/memory/docs/rebuilds/axhub-web-console-look.md.",
+     "at": "2026-10-23T04:23:17.154Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Banner like the console: logo, search in the middle, approvals counter, day/night switch and clock on the right (banner asset axhub)",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.782Z"
+    },
+    {
+     "text": "Application menu like the console: Hub, Approvals (live list + badge), Apps (live list), Manage, View (bar toggles, look, spacing), Help; menu bar above the banners",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.851Z"
+    },
+    {
+     "text": "Layout + views: console page structure on Approvals, Hub, Apps, Manage; layout per Brett pick",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.909Z"
+    },
+    {
+     "text": "Harvest: app-catalog rules out of the app into lib-hub (web) with an apps section in the hub fixture; PORTING.md gap for the Kotlin twin",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:16.969Z"
+    },
+    {
+     "text": "Harvest: approvals + catalog React hooks and the approvals list into lib-hub web views the console approvals banner and other apps can use",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:17.028Z"
+    },
+    {
+     "text": "Tests (app test.mjs, check-hub, typecheck + build), docs, CLAUDE.md status, pending/notes",
+     "at": "2026-10-23T04:10:49.607Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T04:23:17.085Z"
+    }
+   ],
+   "createdAt": "2026-10-23T04:10:49.533Z",
+   "builtAt": "2026-10-23T04:23:17.214Z",
+   "updatedAt": "2026-10-23T04:23:17.214Z",
+   "estimate": "3 h",
    "source": "chat"
   }
  ]

@@ -195,6 +195,17 @@ ok(real.every((r) => !(r.source !== 'pending' && claimedIds.has(r.id))), 'real d
 ok(real.filter((r) => r.source === 'pending').length === pend.items.filter((i) => i.status !== 'complete').length, 'real data: every open pending item listed');
 const rt = m.totalsByModel(real);
 ok(Number.isFinite(rt.all.left) && rt.Fable.count + rt.Opus.count + rt.Sonnet.count === rt.all.count, `real data totals: Fable ${pc.formatMinutes(rt.Fable.left)}, Opus ${pc.formatMinutes(rt.Opus.left) || '0'}, Sonnet ${pc.formatMinutes(rt.Sonnet.left) || '0'}`);
+/* ---------- dollars, not tokens (Oct 23 2026) ---------- */
+{
+  const pricing = JSON.parse((await import('node:fs')).readFileSync(join(REPO, 'framework/schemas/model-pricing.json'), 'utf8'));
+  const hc = { ...h, cost: (model, minutes) => pc.costForMinutes(model, minutes, pricing) };
+  const rows = m.buildRows({ pending: [{ id: 'c1', title: 'C', model: 'Opus', status: 'pending', estimate: '2 h', subPrompts: [{ text: 'a', estimate: '30 min', done: true }, { text: 'b', estimate: '30 min' }] }] }, hc);
+  ok(rows[0].total === 60 && rows[0].left === 30, 'every step estimated → the steps added up win over the item’s own 2 h');
+  ok(rows[0].costTotal === pc.costForMinutes('Opus', 60, pricing) && rows[0].costLeft === pc.costForMinutes('Opus', 30, pricing) && rows[0].costLeft > 0, `row cost in dollars: ${pc.formatUsd(rows[0].costLeft)} left of ${pc.formatUsd(rows[0].costTotal)}`);
+  const tt = m.totalsByModel(rows);
+  ok(tt.Opus.cost === rows[0].costLeft && tt.all.cost === rows[0].costLeft, 'totals add up the dollars left per model');
+  ok(m.buildRows({ pending: [{ id: 'c2', title: 'D', model: 'Opus', status: 'pending', estimate: '1 h' }] }, h)[0].costLeft === null, 'no cost helper → no cost (never tokens)');
+}
 /* ---------- build log: Live + Built (history.mjs) ---------- */
 const hs = await import('./web/history.mjs');
 const iso = (t) => new Date(t).toISOString();

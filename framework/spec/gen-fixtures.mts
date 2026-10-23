@@ -29,6 +29,7 @@ import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, par
 import { validateAsset } from '../core/validate';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
+import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
 import { libraryCards, paramDefaultText, paramError, paramToJson, parseBoilerplate, parseBoilerplateIndex, parseCatalog, parseLibrariesIndex, parseLibrary, parseStatusMap, parseTracker } from '../core/catalog';
 import { CONDITION_KINDS, DEFAULT_BACKOFF_FACTOR, DELAY_KINDS, FALLBACK_OUTCOME, JOB_EFFECTS, JOB_EVENT_TYPES, JOB_PHASES, STOP_REASONS, WORK_CONTRACT, WORK_PLACEHOLDERS, WORK_POLL_CAPABILITY, clampInterval, delayFor, initialJobState, replayJob, shouldRestart, unmetConditions, validateJobSpec, workKinds, type DelayRule, type JobEvent, type JobSpec } from '../core/engines/work';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
@@ -1081,6 +1082,36 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     [[ID1, ID1], [ID2, ID2]],
     [Array.from({ length: HUB_SEEN_CAP }, (_, i) => `id-${i}`), ['id-5', 'new-1']],
   ];
+  // The app catalog (libs/hub/apps.ts, harvested from apps/axhub-web Oct 23 2026). Kotlin twin deferred (PORTING.md).
+  const SHA = 'a'.repeat(64);
+  const bld = (over: Record<string, unknown> = {}) => ({ version: '0.1.0', build: 12, file: 'patches-0.1.0-b12.apk', size: 7_340_032, sha256: SHA, builtAt: '2026-10-21T18:00:00.000Z', ...over });
+  const app = (over: Record<string, unknown> = {}) => ({ project: 'patches', name: 'Patches', platform: 'android', latest: bld(), versions: [bld()], ...over });
+  const cat = (apps: unknown, updatedAt: unknown = '2026-10-21T18:05:00.000Z') => JSON.stringify({ updatedAt, apps });
+  const appsCases: [string, number, string][] = [
+    ['ok-one', 200, cat([app()])],
+    ['ok-empty', 200, cat([])],
+    ['ok-earlier-builds', 200, cat([app({ versions: [bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' }), bld({ version: '0.0.8', build: 10, file: 'patches-0.0.8-b10.apk' })] })])],
+    ['ok-sorted-by-name', 200, cat([app({ project: 'voice-vault', name: 'Voice Vault', latest: bld({ file: 'voice-vault-0.1.0-b3.apk' }), versions: [] }), app({ project: 'axhub-android', name: 'AXHub', latest: bld({ file: 'axhub-android-0.1.0-b9.apk' }), versions: [] })])],
+    ['ok-name-and-platform-default', 200, cat([app({ name: undefined, platform: 42 })])],
+    ['ok-latest-from-versions', 200, cat([app({ latest: null })])],
+    ['bad-project-dropped', 200, cat([app({ project: '../etc' }), app({ project: 'Patches' }), app({ project: '' }), app()])],
+    ['duplicate-project-dropped', 200, cat([app(), app({ name: 'Again' })])],
+    ['bad-file-dropped', 200, cat([app({ latest: bld({ file: '../../etc/passwd' }), versions: [bld({ file: 'evil.sh' }), bld({ file: 'patches.apk' })] })])],
+    ['bad-size-dropped', 200, cat([app({ latest: bld({ size: -1 }), versions: [bld({ size: 'big', file: 'patches-0.1.0-b13.apk' }), bld({ size: 5e9, file: 'patches-0.1.0-b14.apk' })] })])],
+    ['foreign-url-ignored', 200, cat([app({ latest: bld({ url: 'https://evil.example/x.apk' }) })])],
+    ['bad-sha-and-build', 200, cat([app({ latest: bld({ sha256: 'xyz', build: -4 }) })])],
+    ['duplicate-files-dropped', 200, cat([app({ versions: [bld(), bld(), bld({ version: '0.0.9', build: 11, file: 'patches-0.0.9-b11.apk' })] })])],
+    ['too-many-versions', 200, cat([app({ versions: Array.from({ length: 9 }, (_, i) => bld({ build: i + 1, file: `patches-0.1.0-b${i + 1}.apk` })) })])],
+    ['too-many-apps', 200, cat(Array.from({ length: APPS_MAX + 5 }, (_, i) => app({ project: `app-${String(i).padStart(3, '0')}`, name: `App ${String(i).padStart(3, '0')}`, latest: bld({ file: `app-${String(i).padStart(3, '0')}-0.1.0-b1.apk` }), versions: [] })))],
+    ['apps-not-array', 200, cat({ project: 'patches' })],
+    ['entries-not-objects', 200, cat(['x', null, [1], 5, app()])],
+    ['updated-at-capped', 200, cat([], 'x'.repeat(100))],
+    ['status-401', 401, JSON.stringify({ signedIn: false })],
+    ['status-403', 403, JSON.stringify({ allowed: false })],
+    ['status-500', 500, 'oops'],
+    ['not-json', 200, '<html>sign in</html>'],
+    ['json-array', 200, '[]'],
+  ];
   write('hub-approvals.json', {
     default: B,
     paths: HUB_PATHS,
@@ -1098,6 +1129,12 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     feeds: feeds.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretFeed(B, status, body) })),
     unreachable: { base: B, error: 'Reply too large.', feed: unreachableFeed(B, HUB_MESSAGES.tooLarge) },
     seen: seen.map(([was, current]) => ({ seen: was, current, plan: seenPlan(was, current) })),
+    apps: {
+      path: APPS_FEED_PATH,
+      url: appsFeedUrl(B),
+      limits: { appsMax: APPS_MAX, versionsMax: VERSIONS_MAX, feedMaxBytes: APPS_FEED_MAX_BYTES },
+      feeds: appsCases.map(([name, status, body]) => ({ name, base: B, status, body, feed: interpretApps(B, status, body) })),
+    },
   });
 }
 
