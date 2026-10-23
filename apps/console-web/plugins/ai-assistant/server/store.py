@@ -256,6 +256,16 @@ def get_profile(pid: str | None) -> tuple[str, dict[str, Any]]:
     return pid, profiles[pid]
 
 
+def set_default_profile(pid: str) -> None:
+    """Make `pid` the default provider (the systems check's credits auto-switch)."""
+    with _lock:
+        cfg = load_config()
+        if pid not in cfg.get("profiles", {}):
+            raise KeyError(pid)
+        cfg["defaultProfile"] = pid
+        save_config(cfg)
+
+
 def record_test(pid: str, result: dict[str, Any]) -> None:
     with _lock:
         cfg = load_config()
