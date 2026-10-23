@@ -55,6 +55,7 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 .fx-frame-banners:empty { display: none; }
 /* Banner settings (Oct 22 2026): every banner sits in a frame that applies its look choices, whatever plugin drew it. */
 .fx-banner-frame[hidden] { display: none; }
+.fx-banner-snoozed { padding: 0 var(--fx-space); min-height: var(--fx-row-h); border-bottom: var(--fx-border-w) solid var(--fx-border); font-size: calc(var(--fx-font-size) * 0.9); }
 .fx-banner-frame[data-tone='accent'] { --fx-info: var(--fx-accent); --fx-success: var(--fx-accent); --fx-warning: var(--fx-accent); --fx-danger: var(--fx-accent); }
 .fx-banner-frame[data-tone='info'] { --fx-accent: var(--fx-info); --fx-success: var(--fx-info); --fx-warning: var(--fx-info); --fx-danger: var(--fx-info); --fx-accent-soft: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-banner-frame[data-tone='success'] { --fx-accent: var(--fx-success); --fx-info: var(--fx-success); --fx-warning: var(--fx-success); --fx-danger: var(--fx-success); --fx-accent-soft: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
