@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { filterMenu, type MenuItem } from '../../core';
+import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
@@ -37,6 +37,8 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
         const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
         const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
         const hasSub = !!item.items?.length;
+        // a check mark bound to a setting / counter / slot (context-menu toggles such as AshesUI)
+        const check = resolveChecked(item.checked, { counter: (n) => rt.badge(n), setting: (k) => rt.settings.get(k), hidden: (t) => rt.slotHidden(t as AssetType) });
         return (
           <li
             key={item.id}
@@ -45,7 +47,8 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
           >
             <button
               type="button"
-              role="menuitem"
+              role={check === null ? 'menuitem' : 'menuitemcheckbox'}
+              aria-checked={check === null ? undefined : check}
               className="fx-menu__item"
               disabled={locked}
               title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
@@ -63,6 +66,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
                 <span className="fx-menu__icon">{locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>
               )}
               <span className="fx-menu__label">{item.label}</span>
+              {check !== null && <span className="fx-menu__check">{check && <Icon name="check" size={14} />}</span>}
               {showShortcuts && item.shortcut && <Kbd>{item.shortcut}</Kbd>}
               {hasSub && <Icon name="chevron-right" size={14} />}
             </button>

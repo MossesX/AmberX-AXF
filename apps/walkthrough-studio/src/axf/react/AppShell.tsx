@@ -14,6 +14,7 @@ import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
 import { Note } from './components/Forms';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
+import { placedParts } from './placement';
 
 export interface ViewDef {
   title: string;
@@ -42,20 +43,25 @@ export interface AppShellProps {
  * The application shell. Regions are placed by the layout engine
  * (CSS grid vars compiled from the active `layout` asset).
  */
-export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] }: AppShellProps) {
+export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [] }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
   const slots = compileSlots(layout);
   // Hidden slots (Settings → Appearance → Assets → Hidden) drop out the same way.
   const rt = useRuntime();
+  // Placed UIs (engines/placement.ts): a plugin's page shown in a dialog / window / tab group, or its dialog as a page.
+  const placed = placedParts(rt, declaredViews, declaredDialogs);
+  const views = { ...placed.views, ...declaredViews };
+  const dialogs = { ...placed.dialogs, ...declaredDialogs };
+  const tabs = { ...placed.tabs, ...declaredTabs };
   const showMenubar = layout.showMenubar && regionAccepts(slots, 'menubar', 'app-menu') && !rt.slotHidden('app-menu');
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
   const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
-  useSearchHost(views, allDialogs);
+  useSearchHost(declaredViews, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
   // Kept views (`keep`): mounted the first time they're shown, then only hidden, so their state (a frame) survives.
   const [kept, setKept] = useState<string[]>([]);

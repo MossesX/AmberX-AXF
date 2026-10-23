@@ -17,10 +17,11 @@ import { BuildManager } from './views/BuildManager';
 import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
-import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type PluginStatus } from './plugins';
+import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
+import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
@@ -30,6 +31,13 @@ import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from 
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
+// AshesUI (live element inspector): every bundled plugin is known by its axp-<folder> class prefix, with the model that built it
+const ashesLibrary = createAshesLibrary({
+  owners: (rt) => ownersFrom(
+    bundledPlugins.map((p) => ({ folder: p.folder, name: p.manifest.name, id: p.manifest.id, version: p.manifest.version, ...(p.manifest.builtWith?.model ? { model: p.manifest.builtWith.model } : {}) })),
+    rt.libraries.map((l) => ({ id: l.id, label: l.label, version: l.version, ...(l.builtWith?.model ? { model: l.builtWith.model } : {}) })),
+  ),
+});
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
@@ -61,9 +69,19 @@ function OpenSettingsTab({ tab }: { tab: string }) {
  * Plugins never get a top-level settings tab: every tab a plugin contributes becomes a sub-tab of Settings → Plugins
  * (Brett's rule, Oct 18 2026). Enforced here for every plugin, so a plugin can't opt out by forgetting `parent`.
  */
-function underPlugins(lib: AxfWebLibrary): AxfWebLibrary {
-  if (!lib.settingsTabs?.length) return lib;
-  return { ...lib, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) };
+function underPlugins(p: BundledPlugin): AxfWebLibrary {
+  const lib = p.library!;
+  const m = p.manifest;
+  // plugin@1 (Oct 23 2026): the model that built it (badges) and where its UI opens (main area by default; the
+  // build engine's default rules fill `opens` in every plugin.json, its settings tab gets the "Opens in" choice).
+  const out: AxfWebLibrary = {
+    ...lib,
+    ...(m.builtWith?.model ? { builtWith: { model: m.builtWith.model, ...(m.builtWith.builtAt ? { builtAt: m.builtWith.builtAt } : {}) } } : {}),
+    ...(m.opens ? { opens: m.opens } : {}),
+    ...(m.opensUi ? { opensUi: m.opensUi } : {}),
+  };
+  if (!lib.settingsTabs?.length) return out;
+  return { ...out, settingsTabs: lib.settingsTabs.map((t) => ({ ...t, parent: 'plugins' })) };
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
@@ -99,8 +117,8 @@ function usePlugins() {
   const contributed = useMemo(() => {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
-    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map((p) => underPlugins(p.library!))]);
+    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }

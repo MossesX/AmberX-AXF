@@ -202,7 +202,7 @@ export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED
 /* ---------------- plugins Patches manages for the apps in its tabs (embed@1 take `plugins`) ---------------- */
 
 /** One plugin installed in Patches for an app (server/main.py → patches-plugins@1). */
-export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string }
+export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string; /** the model that built it, as its app reported (plugin@1 builtWith.model) */ model?: string }
 export interface PluginsState { $axf: 'patches-plugins@1'; apps: Record<string, { plugins: Record<string, InstalledPlugin> }> }
 
 /** Setting: try to install an app's missing plugins into Patches by itself (on by default). */

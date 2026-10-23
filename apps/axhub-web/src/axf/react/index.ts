@@ -1,6 +1,7 @@
 export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
+export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { Switch, Checkbox, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';

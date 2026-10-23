@@ -10,6 +10,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dataPath } from './persist.mjs';
+import { applyDefaults } from './build-defaults.mjs';
+import { instanceClashes } from './plugin-instances.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const INDEX = 'framework/catalog/plugins.json';
@@ -27,7 +29,7 @@ export function builtPlugins(root = ROOT) {
       try {
         const m = readJson(f);
         if (m.$axf !== 'plugin@1') continue;
-        out.push({ id: m.id, name: m.name, version: m.version, target: (m.targets ?? [])[0] ?? '', description: m.description ?? '', folder: `apps/${app}/plugins/${folder}`, status: 'built', tabable: pluginTab(m), banner: pluginBanners(m), manifest: m });
+        out.push({ id: m.id, name: m.name, version: m.version, target: (m.targets ?? [])[0] ?? '', description: m.description ?? '', folder: `apps/${app}/plugins/${folder}`, status: 'built', tabable: pluginTab(m), banner: pluginBanners(m), builtWith: m.builtWith?.model ? { model: m.builtWith.model, builtAt: m.builtWith.builtAt ?? '' } : null, opens: m.opens ?? false, manifest: m });
       } catch { /* a broken manifest is the plugin's own problem; the console reports it */ }
     }
   }
@@ -158,9 +160,20 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     for (const it of readJson(join(ROOT, INDEX)).items ?? []) if (done.includes(it.id)) console.log(`note: ${it.id} is built now; its planned entry can go`);
     for (const p of builtPlugins()) for (const x of checkTabable(p.manifest)) problems.push(`${p.folder}/plugin.json: ${x}`);
     for (const p of builtPlugins()) for (const x of checkBanner(p.manifest, webBannerIds(join(ROOT, p.folder)))) problems.push(`${p.folder}/plugin.json: ${x}`);
+    // build-defaults@1 (Oct 23 2026): every rule for plugins holds (a missing default = run build-defaults.mjs apply --write)
+    for (const p of builtPlugins()) {
+      const r = applyDefaults('plugin', p.manifest);
+      for (const x of r.problems) problems.push(`${p.folder}/plugin.json: ${x.message} (${x.rule})`);
+      for (const f of r.filled) problems.push(`${p.folder}/plugin.json: "${f.field}" is missing; the build engine's default is ${JSON.stringify(f.value)} (${f.rule}; node framework/cli/build-defaults.mjs apply --write)`);
+    }
+    // one instance per plugin (Brett, Oct 23 2026): never two folders with one plugin, whatever model built them
+    for (const c of instanceClashes(builtPlugins().map((p) => ({ folder: p.folder, manifest: p.manifest })))) problems.push(c.message);
     if (problems.length) { for (const p of problems) console.error(`✗ ${p}`); process.exit(1); }
     const tabs = builtPlugins().filter((p) => p.tabable);
     const withBanner = builtPlugins().filter((p) => p.banner.length);
+    const byModel = {};
+    for (const p of builtPlugins()) byModel[p.builtWith?.model ?? '?'] = (byModel[p.builtWith?.model ?? '?'] ?? 0) + 1;
+    console.log(`✓ built with: ${Object.entries(byModel).map(([k, n]) => `${k} ${n}`).join(', ')}; one instance of every plugin`);
     console.log(`✓ ${INDEX} ok; every plugin declares tabable (${tabs.length} tabable: ${tabs.map((p) => p.name).join(', ') || 'none'}) and banner (${withBanner.length} with banners: ${withBanner.map((p) => p.name).join(', ') || 'none'})`);
   } else if (args.includes('--json')) {
     console.log(JSON.stringify({ items: allPlugins().map(({ manifest, ...p }) => p) }, null, 2));

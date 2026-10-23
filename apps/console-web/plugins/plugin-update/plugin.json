@@ -1,0 +1,34 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.plugin-update",
+  "name": "Plugin Update",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every installed plugin with the model that built it, when it was built and its version, checked against the plugin catalog on axHub. A newer version by the same model installs with one click (Update); a build by another model offers Replace, which lists the removal of the old build and the installation of the new one and swaps them in the same folder once confirmed; Rebuild with <model> parks a from-scratch rebuild on the pending list for the Build manager. Never two builds of one plugin. Nav → Plugins → Plugin Update, Settings → Plugins → Plugin Update.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:plugin-update",
+    "settings-tab:plugin-update",
+    "action:plugin-update.open"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-23" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/plugin-update",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": "main"
+}

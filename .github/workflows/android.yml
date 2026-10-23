@@ -87,6 +87,8 @@ jobs:
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
           # Build with the plugin template installed, so the template and the plugin loader stay valid.
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
+          # a plugin made from the template records the model that built it (build-defaults@1 plugin.builtWith.*)
+          sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
         working-directory: apps/axhub-web
@@ -132,6 +134,7 @@ jobs:
             npx -y tsx framework/spec/check-plugin-inventory.mts
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
             npx -y tsx framework/spec/check-library-parts.mts          # library@1 parts (features inside a library): core/library.ts = CLI installer (Kotlin twin deferred)
+            npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             python apps/console-web/server/test_alerts.py
@@ -151,6 +154,9 @@ jobs:
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
+      - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
+        run: |
+          for t in apps/console-web/plugins/[!_]*/test.mts; do [ -f "$t" ] || continue; echo "== $t"; node --experimental-strip-types "$t"; done
       - name: Library templates — generate every template for web + Python and compile them
         run: |
           set -e
