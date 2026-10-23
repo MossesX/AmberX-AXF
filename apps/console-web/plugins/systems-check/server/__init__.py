@@ -187,7 +187,10 @@ def clear_secret(req: ClearReq) -> dict[str, Any]:
 
 @router.post("/fix/{cid}")
 def fix(cid: str) -> dict[str, Any]:
-    fn = SVC.core.fixes.get(cid)
+    fn = SVC.core.fixes.get(cid) or derive.FIXES.get(cid)
+    if not fn and cid.startswith("plugin:"):  # the codebase checks register theirs while they run
+        SVC.run_all(force=True)
+        fn = derive.FIXES.get(cid)
     if not fn:
         raise HTTPException(400, "this check has no automatic fix")
     try:
@@ -200,7 +203,10 @@ def fix(cid: str) -> dict[str, Any]:
         raise HTTPException(500, f"the fix failed: {str(e)[:200]}") from None
     SVC.invalidate()
     cx.log("system", f"{cid}: {msg}", "ok")
-    after = SVC.core.run_one(cid)
+    try:
+        after = SVC.run_one(cid)
+    except KeyError:  # a codebase check that no longer shows up = nothing left to fix
+        after = {"id": cid, "status": "ok", "summary": "fixed"}
     claude = _hand_to_claude(cid, f"the console's fix ran ({msg}) but the check still fails: {after.get('summary', '')}", after) \
         if after.get("status") not in ("ok", "info") else None
     return {"ok": True, "message": msg, "check": after, "claude": claude}

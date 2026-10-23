@@ -29,7 +29,10 @@ FIX_COMMANDS: dict[str, str] = {
     "host-update-cron": "bash /opt/axf/deploy/install-console.sh",
     # Oct 23 2026 (Brett: every check gets a fix): what can run unattended
     "host-report": "true",  # the report itself is the fix (appended below)
-    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"user\"}'",
+    # claude-sync lives in the axHub repo: clone it to ~/axHub when missing (the VPS's git credentials), else update it
+    "host-claude-sync": "export PATH=/root/.local/bin:$PATH && if [ -f /root/axHub/clients/claude-code/claude-sync.mjs ]; then git -C /root/axHub pull -q --ff-only || true; "
+                        "else git clone -q https://github.com/MossesX/axHub /root/axHub; fi && node /root/axHub/clients/claude-code/claude-sync.mjs install",
+    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"user\",\"onDevice\":true}' | grep -q '\"ok\":true'",
 }
 # A Moshi public key saved in the console (MOSHI_SSH_PUBKEY, not secret) is added to root's authorized_keys; the approval
 # page shows the exact key line, so approving it on the hub is the "allow this key" step the doctor used to ask for.

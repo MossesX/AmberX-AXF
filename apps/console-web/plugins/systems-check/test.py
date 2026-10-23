@@ -426,6 +426,25 @@ if _chk is not None:
     from axf_server import http as _h
     check(_h.target_ok("http://coolify:8080", _chk.COOLIFY_INTERNAL_HOSTS) and _h.target_ok("https://coolify.example.com", _chk.COOLIFY_INTERNAL_HOSTS)
           and not _h.target_ok("http://31.97.13.252:8000", _chk.COOLIFY_INTERNAL_HOSTS), "Coolify URL: https or http://coolify only, never http to an IP")
+# ---- plugin rows get real Auto fixes (Oct 23 2026)
+dv = sys.modules.get(spec.name + ".derive")
+tmpd = Path(tempfile.mkdtemp()) / "data"; (tmpd / "sub").mkdir(parents=True); (tmpd / "sub" / "f.json").write_text("{}")
+os.chmod(tmpd, 0o755); os.chmod(tmpd / "sub", 0o755); os.chmod(tmpd / "sub" / "f.json", 0o644)
+dv._lock_down(tmpd)
+check(all((q.stat().st_mode & 0o077) == 0 for q in [tmpd, *tmpd.rglob("*")]), "plugin data folder Auto fix: folders 700, files 600")
+flips = []
+_old_set = cx.set_plugin_enabled
+cx.set_plugin_enabled = lambda f, on: flips.append((f, on))
+check(dv._enable(["container-access"])() == "switched on container-access" and flips == [("container-access", True)], "a needed plugin that's off: Auto fix switches it on")
+cx.set_plugin_enabled = _old_set
+check(hf.command("host-claude-sync") and "git clone -q https://github.com/MossesX/axHub" in hf.command("host-claude-sync") and "claude-sync.mjs install" in hf.command("host-claude-sync"),
+      "claude-sync gets a VPS Auto fix (clone or update ~/axHub, then install)")
+check('"onDevice\\":true' in hf.command("host-session-checkin") or '"onDevice":true' in hf.command("host-session-checkin").replace("\\", ""), "session check-in Auto fix installs for the VPS user on the device")
+r = c.post("/p/fix/plugin:nope")
+check(r.status_code == 400, "fix: an unknown codebase check has no Auto fix")
+doctor = (Path(__file__).resolve().parents[4] / "deploy" / "console-doctor.sh").read_text()
+check('export PATH="$USER_HOME/.local/bin:$PATH"' in doctor, "doctor sees ~/.local/bin (claude, claude-pick, claude-sync) from cron and vps.run")
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

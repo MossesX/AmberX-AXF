@@ -20,6 +20,9 @@ esac
 [ -t 0 ] || [ "$MODE" = "report" ] || MODE="report"   # no terminal → never ask
 
 USER_HOME="${SUDO_USER:+$(getent passwd "$SUDO_USER" | cut -d: -f6)}"; USER_HOME="${USER_HOME:-$HOME}"
+# claude, claude-pick and claude-sync install into ~/.local/bin, which cron's and vps.run's PATH don't have: without
+# this every check below said they were missing even right after an Auto fix installed them.
+export PATH="$USER_HOME/.local/bin:$PATH"
 declare -A ST SUM
 ORDER=()
 put() { ST[$1]="$2"; SUM[$1]="$(printf '%s' "$3" | tr -d '"\\' | tr '\n' ' ' | cut -c1-280)"; [[ " ${ORDER[*]} " == *" $1 "* ]] || ORDER+=("$1"); }

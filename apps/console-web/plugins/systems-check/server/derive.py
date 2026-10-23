@@ -23,6 +23,38 @@ import plugin_services
 
 Check = dict[str, Any]
 
+# Auto fixes for the checks found here, rebuilt on every run (check id → fn returning what it did); /fix/{id} reads it.
+FIXES: dict[str, Callable[[], str]] = {}
+AUTO = {"type": "action", "label": "Fix automatically"}
+
+
+def _lock_down(path: Path) -> str:
+    """A plugin's data folder: owner only (folders 700, files 600), never following links."""
+    n = 0
+    for p in [path, *path.rglob("*")]:
+        if p.is_symlink():
+            continue
+        os.chmod(p, 0o700 if p.is_dir() else 0o600)
+        n += 1
+    return f"made {path.name} owner-only ({n} entries)"
+
+
+def _enable(folders: list[str]) -> Callable[[], str]:
+    def run() -> str:
+        for f in folders:
+            cx.set_plugin_enabled(f, True)
+        return "switched on " + ", ".join(folders)
+    return run
+
+
+def _install(folder: str) -> Callable[[], str]:
+    def run() -> str:
+        r = subprocess.run(["node", "framework/cli/plugin-lifecycle.mjs", "install", folder], cwd=str(cx.ROOT), capture_output=True, text=True, timeout=120)
+        if r.returncode != 0:
+            raise RuntimeError((r.stderr or r.stdout or "install failed").strip().splitlines()[-1][:200])
+        return f"ran {folder}'s install script"
+    return run
+
 
 def _node(args: list[str], timeout: float = 30) -> Any:
     r = subprocess.run(["node", *args], cwd=str(cx.ROOT), capture_output=True, text=True, timeout=timeout)
@@ -52,6 +84,7 @@ def derive(item: Callable[..., Check]) -> list[Check]:
     """``item`` = SysCheck.item (same check format as the built-ins)."""
     out: list[Check] = []
     mans = plugin_manifests()
+    FIXES.clear()
 
     def one_plugin(m: dict[str, Any]) -> list[Check]:
         f = m["folder"]
@@ -75,26 +108,39 @@ def derive(item: Callable[..., Check]) -> list[Check]:
             details.append("optional, not installed: " + ", ".join(opt_missing))
         data_dir = (m.get("lifecycle") or {}).get("dataDir")
         status, summary = "ok", "loaded and working"
+        row_fix = fix
         if missing:
             status, summary = "warn", "needs " + ", ".join(missing) + " (install a plugin that provides it)"
+            # a plugin here that provides it but is switched off: Auto fix switches it on
+            off = [x["folder"] for x in mans if x["folder"] != f and not cx.plugin_enabled(x["folder"]) and not cx.PLUGINS.get(x["folder"], {}).get("error")
+                   and any(f"service:{cap}" in (x.get("provides") or []) for cap in missing)]
+            if off:
+                summary = f"needs {', '.join(missing)}: {', '.join(off)} provides it but is switched off"
+                FIXES[cid], row_fix = _enable(off), AUTO
         if data_dir:
             p = cx.ROOT / data_dir
             if p.is_dir():
                 mode = stat.S_IMODE(p.stat().st_mode)
                 details.append(f"data {data_dir} ({oct(mode)})")
                 if mode & 0o077 and status == "ok":
-                    status, summary = "warn", f"data folder {data_dir} is readable by other users ({oct(mode)}); chmod 700 it"
-        res.append(item(cid, "plugins", f"{name} plugin", status, summary, details=details, fix=fix, order=71))
+                    status, summary = "warn", f"data folder {data_dir} is readable by other users ({oct(mode)}); Auto fix makes it owner-only"
+                    FIXES[cid], row_fix = (lambda q=p: _lock_down(q)), AUTO
+        row = item(cid, "plugins", f"{name} plugin", status, summary, details=details, fix=row_fix, order=71)
+        row["autoFix"] = cid in FIXES
+        res.append(row)
         if m.get("hasHooks"):
             try:
                 r = _node(["framework/cli/plugin-lifecycle.mjs", "checks", f, "--json"], timeout=20) or {}
                 for c in r.get("checks", []):
                     if c["id"] == "data-folder" and not c["ok"]:  # never installed: its data folder appears on first use
-                        res.append(item(f"{cid}:{c['id']}", "plugins", f"{name}: install script", "info", "not run yet (Install & uninstall → Install)",
-                                        fix=fix, order=72))
+                        FIXES[f"{cid}:{c['id']}"] = _install(f)
+                        res.append({**item(f"{cid}:{c['id']}", "plugins", f"{name}: install script", "info", "not run yet: Auto fix runs it",
+                                           fix=AUTO, order=72), "autoFix": True})
                         continue
-                    res.append(item(f"{cid}:{c['id']}", "plugins", f"{name}: {c['id'].replace('-', ' ')}", "ok" if c["ok"] else "warn",
-                                    c.get("detail") or ("ok" if c["ok"] else "failed"), fix=fix, order=72))
+                    sub = item(f"{cid}:{c['id']}", "plugins", f"{name}: {c['id'].replace('-', ' ')}", "ok" if c["ok"] else "warn",
+                               c.get("detail") or ("ok" if c["ok"] else "failed"), fix=AUTO if f"{cid}:{c['id']}" in FIXES else fix, order=72)
+                    sub["autoFix"] = f"{cid}:{c['id']}" in FIXES
+                    res.append(sub)
             except Exception as e:  # noqa: BLE001
                 res.append(item(f"{cid}:checks", "plugins", f"{name}: self-checks", "unknown", f"couldn't run its declared checks: {str(e)[:160]}", order=72))
         return res
