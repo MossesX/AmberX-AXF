@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "progress",
+  "id": "ws-built",
+  "name": "Built",
+  "version": "1.0.0",
+  "description": "Percent of the open project built (counter `ws.built`).",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "counter": "ws.built",
+    "max": 100,
+    "width": "regular",
+    "label": "Built",
+    "tone": "accent",
+    "showValue": true
+  }
+}

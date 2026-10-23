@@ -91,6 +91,7 @@ class SysCheck:
             "github-token": self.c_github_token,
             "github-repo": self.c_github_repo,
             "anthropic-key": self.c_anthropic_key,
+            "claude-credits": self.c_claude_credits,
             "hostinger-token": self.c_hostinger,
             "coolify": self.c_coolify,
             "axhub": self.c_axhub,
@@ -191,6 +192,35 @@ class SysCheck:
         if code in (401, 403):
             return self.item("anthropic-key", "claude", "Anthropic API key", "error", f"Rejected by the Anthropic API ({code}).", **base)
         return self.item("anthropic-key", "claude", "Anthropic API key", "unknown", f"Couldn't reach the Anthropic API ({code or 'network'}).", **base)
+
+    def c_claude_credits(self) -> Check:
+        """Claude has credits: one tiny request through the AI assistant (axf.llm@1). When the default Claude provider is
+        out of credits, the assistant switches to the first other Claude provider that answers (Brett, Oct 23 2026)."""
+        import plugin_services  # core module; imported here so the check file loads without the console
+        llm = plugin_services.get("axf.llm@1")
+        tab = getattr(llm, "settings_tab", "") or "plugins"
+        base = dict(fix={"type": "settings", "tab": tab, "label": "Pick a key"},
+                    instructions=["Settings → Plugins → AI assistant → Providers: add another Claude key or top up this one."],
+                    links=[{"label": "Anthropic Console → Billing", "url": "https://console.anthropic.com/settings/billing"}], order=21)
+        if llm is None or not hasattr(llm, "credits"):
+            return self.item("claude-credits", "claude", "Claude credits", "info", "The AI assistant isn't installed, so nothing uses Claude here.", order=21)
+        r = llm.credits(auto_switch=True)
+        details = [f"{p['label']}: {'has credit' if p['state'] == 'ok' else 'out of credits' if p['state'] == 'no-credit' else 'error: ' + p['error'][:120]}" for p in r.get("profiles", [])]
+        sw = r.get("switched")
+        if r.get("open"):
+            base["fix"] = {"type": "settings", "tab": tab, "label": "Pick a key", "action": r["open"]}
+        if r.get("state") == "none":
+            return self.item("claude-credits", "claude", "Claude credits", "warn", "No Claude provider is set up in the AI assistant.", **base)
+        if sw:
+            where = "the saved key" if sw.get("via") == "keys" else "the assistant to"
+            c = self.item("claude-credits", "claude", "Claude credits", "warn", f"Out of credits: switched {where} {sw['label']}.", details=details, **base)
+            c["switched"] = sw
+            return c
+        if r.get("state") == "ok":
+            return self.item("claude-credits", "claude", "Claude credits", "ok", "Claude answered: credits are available.", details=details, order=21)
+        if r.get("state") == "no-credit":
+            return self.item("claude-credits", "claude", "Claude credits", "error", "Out of credits, and no other Claude key has any.", details=details, **base)
+        return self.item("claude-credits", "claude", "Claude credits", "unknown", "Couldn't test Claude (not a credits problem).", details=details, **base)
 
     # -------------------------------------------------------- Hostinger / Coolify / axHub
 

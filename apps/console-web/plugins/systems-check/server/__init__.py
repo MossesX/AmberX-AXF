@@ -30,6 +30,7 @@ from __future__ import annotations
 import os
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -83,9 +84,17 @@ class Service:
                         "finishedAt": j.get("updatedAt") if state == "failed" else None})
         return out
 
-    def run_all(self, force: bool = False) -> list[dict[str, Any]]:
+    def run_all(self, force: bool = False, keys: bool = False) -> list[dict[str, Any]]:
         if self._cache and not force and time.time() - self._cache[0] < 60:
-            return self._cache[1]
+            if not keys:
+                return self._cache[1]
+            # Every banner load tests the keys and tokens live (Brett, Oct 23 2026); the rest keeps the 60 s cache.
+            ids = [c for c in KEY_CHECKS if c in self.core.checks]
+            with ThreadPoolExecutor(max_workers=8) as ex:
+                fresh = dict(zip(ids, ex.map(self.core.run_one, ids)))
+            items = sorted([fresh.get(c["id"], c) for c in self._cache[1]], key=lambda c: (c["order"], c["id"]))
+            self._cache = (self._cache[0], items)
+            return items
         items = self.core.run_all(force=True)
         try:
             items += derive.derive(self.core.item)
@@ -109,6 +118,9 @@ class Service:
         self.core._cache = None  # noqa: SLF001
 
 
+# Checks that test a key or token against its service: run live on every banner load (`GET /check?keys=1`).
+KEY_CHECKS = ("console-token", "github-token", "github-repo", "anthropic-key", "claude-credits", "hostinger-token", "coolify", "axhub")
+
 SVC = Service()
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
 
@@ -123,7 +135,7 @@ def _report(items: list[dict[str, Any]], extra: dict[str, Any] | None = None) ->
 
 
 @router.get("/check")
-def check(force: bool = False, ai: bool = False) -> dict[str, Any]:
+def check(force: bool = False, ai: bool = False, keys: bool = False) -> dict[str, Any]:
     note = None
     if ai and _ai_allowed("systems") and routine.stale():
         try:
@@ -133,7 +145,7 @@ def check(force: bool = False, ai: bool = False) -> dict[str, Any]:
         except Exception as e:  # noqa: BLE001 — the check still runs without the new routine
             note = f"AI routine not refreshed: {str(e)[:200]}"
     r = store.routine()
-    return _report(SVC.run_all(force), {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
+    return _report(SVC.run_all(force, keys), {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
                                                     "stale": routine.stale()} if r else None, "aiNote": note, "aiOn": _ai_allowed("systems")})
 
 

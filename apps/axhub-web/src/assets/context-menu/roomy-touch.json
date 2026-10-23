@@ -75,12 +75,6 @@
               "action": "swap:layout:classic-ide"
             },
             {
-              "id": "layout-focus-top",
-              "label": "Focus Top",
-              "icon": "layout",
-              "action": "swap:layout:focus-top"
-            },
-            {
               "id": "layout-studio-dock",
               "label": "Studio Dock",
               "icon": "layout",
@@ -131,7 +125,7 @@
         },
         {
           "id": "import",
-          "label": "Import asset…",
+          "label": "Import asset\u2026",
           "icon": "upload",
           "action": "dialog:import-asset",
           "requires": "assets.import"

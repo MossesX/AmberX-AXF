@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
 import './systems-check.css';
@@ -14,7 +15,7 @@ import './systems-check.css';
 
 type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
 interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
-type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string } | null;
+type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean }
 interface Service { id: string; label: string; icon: string; description: string }
 interface RoutineInfo { source: string; generatedAt: number; checks: number; stale: boolean }
@@ -71,13 +72,33 @@ export async function call<T>(path: string, init: RequestInit = {}): Promise<T> 
   return j;
 }
 
+let runtime: AxfRuntime | null = null;
+let shownSwitch = '';
+/** The runtime the credits check opens the assistant's providers with (set by the plugin's register). */
+export function setSystemCheckRuntime(rt: AxfRuntime) { runtime = rt; }
+
+/** Claude out of credits: the server already switched to a key that has credit (or found none); show the assistant's
+ *  Providers so Brett sees the pick and can change it (Brett, Oct 23 2026). Once per switch. */
+function showCreditsSwitch(r: Report | null) {
+  const c = r?.checks.find((x) => x.id === 'claude-credits') as (Check & { switched?: { to: string } }) | undefined;
+  if (!c || c.status === 'ok' || c.status === 'info' || !runtime) return;
+  const key = c.switched ? `to:${c.switched.to}` : c.status === 'error' ? 'none' : '';
+  if (!key || key === shownSwitch) return;
+  shownSwitch = key;
+  runtime.toast(c.summary, c.switched ? 'warning' : 'danger', 'Claude credits');
+  const f = c.fix?.type === 'settings' ? c.fix : null;
+  runtime.dispatch(f?.action || `settings.open:${f?.tab ?? 'plugins'}`);
+}
+
+/** Every load tests the keys and tokens live (`keys=1`); `force` re-runs everything. */
 export async function loadSystemCheck(force = false) {
   if (!api.isBackendUp()) return;
   st.loading = true; emit();
-  try { st.report = await call<Report>(`check${force ? '?force=1' : ''}`); st.error = ''; st.unauthorized = false; }
+  try { st.report = await call<Report>(force ? 'check?force=1' : 'check?keys=1'); st.error = ''; st.unauthorized = false; }
   catch (e) { st.error = (e as Error).message; }
   st.loading = false; emit();
   const r = st.report;
+  showCreditsSwitch(r);
   if (force && r?.aiOn && (!r.routine || r.routine.stale) && !st.aiBusy) void refreshRoutine();
 }
 
@@ -264,7 +285,7 @@ async function hostAutoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise
 export async function autoFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<void> {
   const f = c.fix;
   if (f?.type === 'secrets') { rt.openDialog('keys-needed', {}); return; }
-  if (f?.type === 'settings') { rt.dispatch(`settings.open:${f.tab}`); return; }
+  if (f?.type === 'settings') { rt.dispatch(f.action || `settings.open:${f.tab}`); return; }
   await loadHostAuto();
   if (f?.type === 'host' && hostAuto.has(c.id)) { await hostAutoFix(c, rt); return; }
   if (!f || f.type !== 'action') { await mossesFix(c, rt); return; } // no fixed command: Mosses works it out through axHub
@@ -430,7 +451,7 @@ export function FixPanel({ c }: { c: Check }) {
           <div className="fx-row fx-row--wrap"><code className="axp-systems-check-cmd">{f.command}</code><Button icon="copy" onClick={() => copy(f.command)}>Copy</Button></div>
         </div>
       )}
-      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(`settings.open:${f.tab}`)}>{f.label}</Button>}
+      {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(f.action || `settings.open:${f.tab}`)}>{f.label}</Button>}
       <div className="fx-row fx-row--wrap">
         {c.status !== 'ok' && autoFixLabel(c) && <Button tone="primary" icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}
         <Button icon="refresh" disabled={busy || s.fixing} onClick={() => void again()}>Check again</Button>{msg && <span className="fx-small" role="status">{msg}</span>}
@@ -463,7 +484,7 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
   const [view, setView] = useState<View>('grid');
   const [open, setOpen] = useState<Set<string>>(() => new Set(focus ? [focus] : []));
   const [filter, setFilter] = useState<'issues' | 'all'>('issues');
-  useEffect(() => { if (!s.report && !s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!s.loading) void loadSystemCheck(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (s.unauthorized) return <p>Set the console token (Settings → Account &amp; security) to run the systems check.</p>;
   if (!s.report) return <p className="fx-muted">{s.error || 'Running the systems check…'}</p>;
   const r = s.report;

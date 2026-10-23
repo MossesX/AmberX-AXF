@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-22T19:33:34.800Z",
+  "generatedAt": "2026-10-22T23:17:43.986Z",
   "items": [
     {
       "$axf": "library@1",
@@ -436,6 +436,546 @@
         {
           "capability": "axf.apiclient.refresh",
           "note": "Token refresh / OAuth sign-in — not built; bearer tokens pasted by a person only."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.datagrid",
+      "module": "lib-datagrid",
+      "name": "Data grid (categorized sub-grids, hideable columns, expandable rows)",
+      "description": "A grid of rows grouped into categories and sub-categories, each group with its own header, totals and progress meter. Columns hide and show from the header's context menu or a chooser, sort from the header, rows expand into a detail panel, rows carry a status edge, and rows / groups drag to rearrange or onto lib-dnd's trash can. Harvested Oct 22 2026 from Walkthrough Studio's status grid.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.datagrid",
+      "params": [],
+      "parts": [
+        {
+          "id": "groups",
+          "label": "Categorized sub-grids",
+          "description": "Rows grouped under category headers (folding, totals, a meter per group)."
+        },
+        {
+          "id": "column-menu",
+          "label": "Hideable columns",
+          "description": "Right-click (or long-press) a column header to hide it or pick columns; a chooser dialog for everything.",
+          "params": [
+            {
+              "key": "hidden",
+              "label": "Columns hidden at first",
+              "type": "list",
+              "default": []
+            }
+          ]
+        },
+        {
+          "id": "sort",
+          "label": "Sort by column",
+          "description": "Tap a header to sort inside each group; again to reverse, a third time for the original order."
+        },
+        {
+          "id": "expand",
+          "label": "Expandable rows",
+          "description": "A chevron (or double-tap) opens a detail panel under the row."
+        },
+        {
+          "id": "drag",
+          "label": "Drag rows",
+          "description": "Rows and groups drag to rearrange, or onto the trash can (needs lib-dnd).",
+          "params": [
+            {
+              "key": "trash",
+              "label": "Deleting by dropping on the trash can",
+              "type": "bool",
+              "default": true
+            }
+          ]
+        },
+        {
+          "id": "compact",
+          "label": "Compact rows switch",
+          "description": "A switch for tighter rows.",
+          "default": false
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/datagrid"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.datagrid.android",
+          "note": "Compose port — Android on hold."
+        },
+        {
+          "capability": "axf.datagrid.virtual",
+          "note": "Windowed rendering for 10k+ rows — not built."
+        },
+        {
+          "capability": "axf.datagrid.resize",
+          "note": "Column resizing by dragging the header edge — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.dnd",
+      "module": "lib-dnd",
+      "name": "Drag and drop (mouse + touch, pop-up trash can)",
+      "description": "One pointer drag-and-drop engine for every list, tree, grid, timeline and toolbar of an app: works with a mouse and with a finger (drag from a grip), drop markers before / after / inside, zones that say what they accept, a ghost under the pointer, and a trash can that pops up at the bottom while something deletable is dragged. Harvested Oct 22 2026 from Walkthrough Studio.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.dnd",
+      "params": [],
+      "parts": [
+        {
+          "id": "zones",
+          "label": "Drop zones + markers",
+          "description": "Elements marked data-axf-drop accept drops; the hovered one shows a before / after / inside marker."
+        },
+        {
+          "id": "touch",
+          "label": "Touch dragging",
+          "description": "On a phone a drag starts from a grip (class axf-dnd-grip), so scrolling still works everywhere else.",
+          "requires": [
+            "zones"
+          ]
+        },
+        {
+          "id": "ghost",
+          "label": "Drag ghost",
+          "description": "A label with the item's icon follows the pointer.",
+          "params": [
+            {
+              "key": "offset",
+              "label": "Distance from the pointer (px)",
+              "type": "number",
+              "min": 0,
+              "max": 48,
+              "default": 12
+            }
+          ]
+        },
+        {
+          "id": "trash",
+          "label": "Pop-up trash can",
+          "description": "While something deletable is dragged, a trash can pops up; dropping on it deletes.",
+          "requires": [
+            "zones"
+          ],
+          "params": [
+            {
+              "key": "label",
+              "label": "Label",
+              "type": "text",
+              "default": "Drop here to delete"
+            },
+            {
+              "key": "overLabel",
+              "label": "Label while over it",
+              "type": "text",
+              "default": "Let go to delete"
+            },
+            {
+              "key": "side",
+              "label": "Where it pops up",
+              "type": "choice",
+              "choices": [
+                "bottom",
+                "top"
+              ],
+              "default": "bottom"
+            }
+          ]
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/dnd"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.dnd.android",
+          "note": "Compose port (Modifier.dragAndDrop + the same zones) — Android on hold."
+        },
+        {
+          "capability": "axf.dnd.keyboard",
+          "note": "Keyboard moves (pick up with Space, arrows, drop with Space) — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.docstore",
+      "module": "lib-docstore",
+      "name": "Document store (this device + axHub data server, big files on the device)",
+      "description": "Keeps an app's documents (projects, drafts, any JSON) with an index of them: always on this device, and when switched on also on axHub's data server (GET/PUT /data/<project>/<folder>/…, the browser's own hub session, If-Match, last save wins). A document bigger than the hub's 64 KB limit is split into a head and chunks automatically. Big binary files (videos, images) stay on the device in IndexedDB. Harvested Oct 22 2026 from Walkthrough Studio's project storage.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.docstore",
+      "params": [
+        {
+          "key": "folder",
+          "label": "Folder name",
+          "type": "text",
+          "default": "docs",
+          "help": "Where documents live: a localStorage prefix on the device, a folder under the hub project."
+        }
+      ],
+      "parts": [
+        {
+          "id": "device",
+          "label": "This device",
+          "description": "Documents and their index in localStorage (errors say when the device is full)."
+        },
+        {
+          "id": "hub",
+          "label": "axHub data server",
+          "description": "Also save to axHub's data server; the newer copy wins when loading. Needs the app's origin in AXHUB_DATA_ORIGINS.",
+          "default": false,
+          "params": [
+            {
+              "key": "project",
+              "label": "Hub project",
+              "type": "text",
+              "default": ""
+            },
+            {
+              "key": "chunk",
+              "label": "Chunk size (bytes)",
+              "type": "number",
+              "min": 8000,
+              "max": 60000,
+              "default": 48000
+            }
+          ]
+        },
+        {
+          "id": "blobs",
+          "label": "Files on the device",
+          "description": "Big binary files (screen videos, images) in IndexedDB, never sent anywhere.",
+          "params": [
+            {
+              "key": "db",
+              "label": "Database name",
+              "type": "text",
+              "default": ""
+            }
+          ]
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/docstore"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.docstore.android",
+          "note": "Android port (KV store + lib-hub data client) — Android on hold."
+        },
+        {
+          "capability": "axf.docstore.live",
+          "note": "Follow other devices' saves live through /data-events — not built."
+        },
+        {
+          "capability": "axf.docstore.delete",
+          "note": "Removing a document's files on the hub (the data API has no delete for app documents yet; it leaves the index)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.recorder",
+      "module": "lib-recorder",
+      "name": "Screen recorder (mouse + keys, cursor replay, cues)",
+      "description": "Records what a person does over a stage (a page in a frame, or any element): pointer moves, clicks, scrolls, keys, page changes and markers, with times and positions as fractions of the stage; optionally the screen as video (the browser's screen-share prompt, kept on the device). Replays a recording as an animated cursor with click ripples and key captions, and turns events into a cue track (move, click, type, key, scroll, wait, highlight, open page). Harvested Oct 22 2026 from Walkthrough Studio's live browser.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.recorder",
+      "params": [],
+      "parts": [
+        {
+          "id": "capture-layer",
+          "label": "Capture layer",
+          "description": "A transparent layer over the stage records every move and click anywhere (the page under it doesn't get them)."
+        },
+        {
+          "id": "same-site",
+          "label": "Same-site page events",
+          "description": "When the framed page is from this site, its own clicks and keys are recorded while you use it."
+        },
+        {
+          "id": "keys",
+          "label": "Keys",
+          "description": "Keys pressed while recording (typed text becomes one cue)."
+        },
+        {
+          "id": "screen-video",
+          "label": "Screen video",
+          "description": "Also record the screen (getDisplayMedia + MediaRecorder); the video stays on the device.",
+          "default": false
+        },
+        {
+          "id": "replay",
+          "label": "Cursor replay",
+          "description": "Play a recording back as an animated cursor.",
+          "params": [
+            {
+              "key": "cursor",
+              "label": "Cursor",
+              "type": "choice",
+              "choices": [
+                "arrow",
+                "dot",
+                "ring"
+              ],
+              "default": "arrow"
+            },
+            {
+              "key": "ripples",
+              "label": "Click ripples",
+              "type": "bool",
+              "default": true
+            }
+          ]
+        },
+        {
+          "id": "cues",
+          "label": "Events → cue track",
+          "description": "Turn a recording into cues (move, click, type, key, scroll, wait, highlight, open page).",
+          "params": [
+            {
+              "key": "waitAfter",
+              "label": "Pause that becomes a wait (s)",
+              "type": "number",
+              "min": 0.3,
+              "max": 10,
+              "default": 1.5
+            }
+          ]
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/recorder"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.recorder.android",
+          "note": "Android port (MediaProjection + accessibility events) — Android on hold."
+        },
+        {
+          "capability": "axf.recorder.audio",
+          "note": "Microphone narration while recording — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.tree",
+      "module": "lib-tree",
+      "name": "Tree view (categorized outline with search, filters, drag-and-drop)",
+      "description": "A multi-level tree of branches and leaves for any outline: fold / unfold, search that highlights and keeps the path to every match open, filter chips, a meta column and a progress meter per branch, multi-select, context-menu targets and drag-and-drop through lib-dnd (before / after / into a branch). Harvested Oct 22 2026 from Walkthrough Studio's index.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.tree",
+      "params": [],
+      "parts": [
+        {
+          "id": "search",
+          "label": "Search box",
+          "description": "Search the labels (and anything the app adds); matches are highlighted and their branches stay open.",
+          "params": [
+            {
+              "key": "placeholder",
+              "label": "Placeholder",
+              "type": "text",
+              "default": "Search"
+            }
+          ]
+        },
+        {
+          "id": "chips",
+          "label": "Filter chips",
+          "description": "Tappable chips that narrow the leaves (status, kind… the app names them)."
+        },
+        {
+          "id": "meters",
+          "label": "Branch meters",
+          "description": "A small progress meter on every branch (the framework's meter asset)."
+        },
+        {
+          "id": "drag",
+          "label": "Drag to rearrange",
+          "description": "Leaves and branches drag before / after / into a branch (needs lib-dnd).",
+          "params": [
+            {
+              "key": "trash",
+              "label": "Deleting by dropping on the trash can",
+              "type": "bool",
+              "default": true
+            }
+          ]
+        },
+        {
+          "id": "multi",
+          "label": "Multi-select",
+          "description": "Ctrl / Cmd + click adds leaves to a selection.",
+          "default": false
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/tree"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.tree.android",
+          "note": "Compose port — Android on hold."
+        },
+        {
+          "capability": "axf.tree.virtual",
+          "note": "Windowed rendering for very large trees — not built."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.workspace",
+      "module": "lib-workspace",
+      "name": "Workspace (IDE panes, layouts, docked + floating toolbars)",
+      "description": "An IDE-style workspace for any app: panes in four areas (left, center, right, bottom) with tabs and splitters, floating pane windows, named workspace layouts, maximise, any pane shown / hidden / moved / floated at any time (tab drag, pane menu, context menu, app menu, toolbar). Toolbars: the app's defaults plus as many as a person adds, each docked on any edge or floating (drag the grip; drop near an edge to dock), items dragged to reorder or onto the trash, and a customizer listing every command in a categorized, sortable, searchable tree. On a phone every pane becomes a tab of one area. Kept per viewer on the device. Harvested Oct 22 2026 from Walkthrough Studio.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.workspace",
+      "params": [],
+      "parts": [
+        {
+          "id": "areas",
+          "label": "Pane areas + tabs",
+          "description": "Left, center, right and bottom areas; panes are tabs; drag a tab to another area."
+        },
+        {
+          "id": "splitters",
+          "label": "Resizable areas",
+          "description": "Drag the edges between areas.",
+          "requires": [
+            "areas"
+          ]
+        },
+        {
+          "id": "layouts",
+          "label": "Workspace layouts",
+          "description": "Named arrangements of the panes (the app defines them); each remembers its changes.",
+          "requires": [
+            "areas"
+          ],
+          "params": [
+            {
+              "key": "default",
+              "label": "Layout at first start (id)",
+              "type": "text",
+              "default": ""
+            }
+          ]
+        },
+        {
+          "id": "floating-panes",
+          "label": "Floating panes",
+          "description": "Any pane can float as a window you drag and resize.",
+          "requires": [
+            "areas"
+          ]
+        },
+        {
+          "id": "maximise",
+          "label": "Maximise an area",
+          "description": "One area fills the workspace until you go back.",
+          "requires": [
+            "areas"
+          ]
+        },
+        {
+          "id": "toolbars",
+          "label": "Toolbars",
+          "description": "The app's default toolbars plus any number a person adds, docked top / bottom / left / right.",
+          "params": [
+            {
+              "key": "max",
+              "label": "Most toolbars (0 = no limit)",
+              "type": "number",
+              "min": 0,
+              "max": 50,
+              "default": 0
+            },
+            {
+              "key": "labels",
+              "label": "Labels on new toolbars",
+              "type": "bool",
+              "default": false
+            }
+          ]
+        },
+        {
+          "id": "floating-toolbars",
+          "label": "Floating toolbars",
+          "description": "Drag a toolbar's grip to float it; drop it near an edge to dock it again.",
+          "requires": [
+            "toolbars"
+          ]
+        },
+        {
+          "id": "customizer",
+          "label": "Toolbar customizer",
+          "description": "Every command, pane, layout, framework action, view, setting and look in a categorized, sortable, searchable tree; drag or tap + to add.",
+          "requires": [
+            "toolbars"
+          ]
+        },
+        {
+          "id": "phone",
+          "label": "Phone layout",
+          "description": "Below the breakpoint every visible pane is a tab of one area and side toolbars hide.",
+          "params": [
+            {
+              "key": "breakpoint",
+              "label": "Phone below (px)",
+              "type": "number",
+              "min": 320,
+              "max": 1200,
+              "default": 760
+            }
+          ]
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/workspace"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.workspace.android",
+          "note": "Compose port — Android on hold."
+        },
+        {
+          "capability": "axf.workspace.assets",
+          "note": "Workspace layouts and user toolbars as asset@1 types (hot-swappable, shareable) — parked for the Fable rebuild."
+        },
+        {
+          "capability": "axf.workspace.hub",
+          "note": "Workspace state kept on axHub's data server for every device — not built."
         }
       ]
     }

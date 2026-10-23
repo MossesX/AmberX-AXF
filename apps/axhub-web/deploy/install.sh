@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
-# The AXHub web app on the VPS at https://$DOMAIN behind Coolify's Traefik and axHub's sign-in wall (hub admins only).
+# The AXHub web app on the VPS at https://$DOMAIN behind Coolify's Traefik and axHub's sign-in wall.
 #
-#   sudo bash apps/axhub-web/deploy/install.sh        (from any AmberX-AXF checkout; DOMAIN defaults to axhub-web.amberxai.com)
+#   sudo bash apps/axhub-web/deploy/install.sh        (from any AmberX-AXF checkout; DOMAIN defaults to axhub.amberxai.com)
+#   sudo bash apps/axhub-web/deploy/install.sh --remove   (rollback: container, update script and cron gone; the hub
+#                                                          answers / again exactly as before)
+#
+# On the hub's own host (Brett, Oct 23 2026: "the same way it's there now") the app takes ONLY its page paths
+# (APP_PATHS: /, /index.html, /assets/…) with a higher Traefik priority; every other path (/mcp, /healthz, /auth/*,
+# /data*, /apps*, /handoff*, …) still goes to the hub's own container, which this never touches. axHub knows nothing
+# about AXF. Signed-in hub users get the page (APP_USER_PATHS=/, as the hub's / did); the feeds still decide by role.
 #   (The app lives in AmberX-AXF/apps/axhub-web, no repo of its own: this clones AmberX-AXF into $DIR and builds the app
 #    folder. Private repo: GITHUB_TOKEN=… or the Dev Console's saved one; never written to .git/config.)
 #   DNS: an A record for $DOMAIN pointing at the VPS. The site must sit under the hub's cookie domain (amberxai.com)
@@ -14,7 +21,7 @@
 #   4. installs a cron that pulls the branch every 5 minutes and re-runs this when it changed
 set -euo pipefail
 
-DOMAIN="${DOMAIN:-axhub-web.amberxai.com}"
+DOMAIN="${DOMAIN:-axhub.amberxai.com}"
 REPO="${REPO:-https://github.com/MossesX/AmberX-AXF.git}"
 SUB="${SUB:-apps/axhub-web}"
 BRANCH="${BRANCH:-main}"
@@ -26,6 +33,14 @@ STATE="$DIR/.app"
 
 say() { echo -e "\033[1;36m[axhub-web]\033[0m $*"; }
 [ "$(id -u)" -eq 0 ] || { echo "Run this as root."; exit 1; }
+
+if [ "${1:-}" = "--remove" ]; then
+  docker stop "$NAME" >/dev/null 2>&1 || true
+  docker rm -f "$NAME" >/dev/null 2>&1 || true
+  rm -f "/etc/cron.d/$NAME" "/usr/local/bin/$NAME-update"
+  say "Removed $NAME (container, update script, cron). Traefik drops its routes; $DOMAIN is served by the hub alone again."
+  exit 0
+fi
 command -v docker >/dev/null || { say "Docker is required (Coolify installs it)."; exit 1; }
 command -v git >/dev/null || { apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git; }
 
@@ -60,6 +75,14 @@ if axf_coolify_proxy_running; then
   WALLF="$STATE/wall"
   axf_save_choice "$WALLF" "${APP_WALL:-}"
   WALL_HUB="${APP_WALL_HUB:-https://axhub.amberxai.com}"
+  # On the hub's host: only the app's page paths, above the hub's catch-all router; signed-in hub users get the page.
+  if [ "https://$DOMAIN" = "$WALL_HUB" ]; then
+    export AXF_ROUTER_PATHS="${APP_PATHS:-Path(\`/\`) || Path(\`/index.html\`) || PathPrefix(\`/assets/\`)}"
+    export AXF_ROUTER_PRIORITY="${APP_PRIORITY:-1000}"
+    USER_PATHS="${APP_USER_PATHS-/}"
+  else
+    USER_PATHS="${APP_USER_PATHS:-}"
+  fi
   WALL="$(axf_wall_mode "$WALLF" "$WALL_HUB")"
   WALL_ARGS=()
   if [ "$WALL" = "off" ]; then
@@ -67,8 +90,8 @@ if axf_coolify_proxy_running; then
     say "Sign-in wall OFF (APP_WALL=on bash $APP/deploy/install.sh turns it back on). The pages still need a hub session to show anything."
   elif [ "$WALL" = "on" ]; then
     rm -f "$STATE/wall-waiting"
-    say "Sign-in wall ON: hub admins only. Locked out because the hub is down? APP_WALL=off bash $APP/deploy/install.sh"
-    axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "")"
+    say "Sign-in wall ON (${USER_PATHS:+signed-in hub users}${USER_PATHS:-hub admins only}). Rollback: bash $APP/deploy/install.sh --remove"
+    axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
   else
     touch "$STATE/wall-waiting"
     say "Sign-in wall waiting: $WALL_HUB can't sign anyone in yet; the 5-minute update turns it on"
