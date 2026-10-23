@@ -113,6 +113,37 @@
       },
       "description": "UI-editing plugin kinds: last save wins per key; reload current values on open/load/focus (useEditorSync / refreshFromSaved)"
     },
+    "tabable": {
+      "description": "Can a host app add this plugin to its tab group (e.g. Patches' tabs)? false (default) = never. true = its first page; {view, label?, icon?} = that page. Only plugins with a page (a view other than settings) can be tabable. Every plugin with a GUI other than settings starts not tabable.",
+      "default": false,
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "required": [
+            "view"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "view": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+              "description": "the view id the tab shows (embed@1 page view:<id>)"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "icon": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+            }
+          }
+        }
+      ]
+    },
     "builtWith": {
       "type": "object",
       "description": "model that built it and what replaces it (e.g. a pending Fable rebuild)"

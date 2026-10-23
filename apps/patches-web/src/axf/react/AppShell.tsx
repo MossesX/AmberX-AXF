@@ -12,6 +12,8 @@ import { useSearchHost } from './components/Search';
 import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
 import { WaitingForHub } from './components/Waiting';
+import { Note } from './components/Forms';
+import { embedHostLabel, embedPageView } from '../core/engines/embed';
 
 export interface ViewDef {
   title: string;
@@ -75,7 +77,10 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] 
 
   // Page mode (embed@1 `page`): the host shows one page of this app on its own, e.g. its settings inside Patches' combined
   // settings. Only that view, full page, no chrome, no banners; dialogs and toasts still work.
-  const page = rt.embedded?.page ? views[rt.embedded.page] : undefined;
+  // A view page (`view:<id>`, e.g. a tabable plugin shown as a host's tab) names one view; a missing view (its plugin is
+  // off or not loaded yet) shows a note instead of the whole app.
+  const pageView = embedPageView(rt.embedded?.page);
+  const page = rt.embedded?.page ? views[pageView ?? rt.embedded.page] ?? (pageView ? { title: pageView, render: () => <MissingPage view={pageView} host={embedHostLabel(rt.embedded)} /> } : undefined) : undefined;
   if (page) {
     return (
       <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
@@ -155,5 +160,14 @@ export function AppShell({ views, dialogs = {}, inspector, tabs = {}, keep = [] 
     <Slot name="app.frame.cover" />
     </div>
     </TabRenderersProvider>
+  );
+}
+
+/** A view page whose view isn't here (its plugin is still loading, or off for this app in the host): say so, plainly. */
+function MissingPage({ view, host }: { view: string; host: string }) {
+  return (
+    <Note tone="info" icon="info">
+      “{view}” isn’t loaded here yet. If it doesn’t appear, its plugin is off for this app: switch it on in {host}’s plugin settings.
+    </Note>
   );
 }

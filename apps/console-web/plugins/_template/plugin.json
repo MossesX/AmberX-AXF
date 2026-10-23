@@ -19,6 +19,7 @@
   ],
   "enabledByDefault": true,
   "optional": [],
+  "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/example",
