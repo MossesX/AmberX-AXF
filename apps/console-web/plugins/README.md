@@ -90,6 +90,8 @@ same plugin, and a second one is refused (`framework/cli/plugin-instances.mjs`).
 installed one in place: **Plugin Update** → Replace (`plugin-catalog.mjs swap <folder>`). New plugins from `_template`
 fill in `builtWith` before they install.
 
+**Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
+
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
 Brett's rule (Oct 18 2026): a plugin must be removable **completely**, with no stale code, so a newer build (e.g. a

@@ -13,7 +13,7 @@
     "src/axf/core/engines/banner.ts": "3a7c51ecb0f72e25",
     "src/axf/core/engines/bannerhide.ts": "1ef5219fcafae0f3",
     "src/axf/core/engines/components.ts": "08a598cce4bb2fe5",
-    "src/axf/core/engines/embed.ts": "c7479483312705a2",
+    "src/axf/core/engines/embed.ts": "451589f7b5d7bb73",
     "src/axf/core/engines/hide.ts": "d7a969db7c5e98a4",
     "src/axf/core/engines/layout.ts": "6c6df0b1313ab0bb",
     "src/axf/core/engines/mcp.ts": "b5534a64b2063b25",

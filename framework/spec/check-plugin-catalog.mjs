@@ -99,6 +99,14 @@ const sw = await cat.swapConsole('hello-world', { noState: true });
 const after = JSON.parse(readFileSync(join(dest, 'plugin.json'), 'utf8'));
 check('swap installs the other build in place', sw.swapped && after.version === '2.0.0' && after.builtWith.model === 'fable' && sw.from.model === 'opus' && sw.to.model === 'fable');
 check('swap removes the old build\'s data (backed up)', !existsSync(join(root, '.axf-console/plugins/hello-world/note.txt')) && !!sw.removed?.backup);
+// install-package (the Plugins installer's path for packages read from any archive): same checks
+const viaPkg = cat.getPackage('console', 'hello-world');
+let badHash = null; try { await cat.installConsolePackage(viaPkg, { noState: true, update: true, sha256: 'f'.repeat(64) }); } catch (x) { badHash = x; }
+check('install-package refuses a package that does not match its archive index', /does not match/.test(badHash?.message ?? ''));
+const again2 = await cat.installConsolePackage(viaPkg, { noState: true, update: true, sha256: viaPkg.sha256 });
+check('install-package installs a verified package in place', again2.updated === true && again2.version === '2.0.0');
+let pilotPkg = null; try { await cat.installConsolePackage({ ...viaPkg, kind: 'pilot' }, { noState: true }); } catch (x) { pilotPkg = x; }
+check('install-package refuses other kinds', !!pilotPkg);
 const inst = await import('../cli/plugin-instances.mjs');
 check('folder stem drops model suffixes', inst.folderStem('theme-manager-fable') === 'theme-manager' && inst.folderStem('a-plugin-opus') === 'a');
 check('instanceClashes finds two builds of one plugin', inst.instanceClashes([{ folder: 'x', manifest: { id: 'a.b.x', name: 'X', builtWith: { model: 'opus' } } }, { folder: 'x-fable', manifest: { id: 'a.b.x2', name: 'X two', builtWith: { model: 'fable' } } }]).length === 1);

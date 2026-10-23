@@ -38,6 +38,9 @@
  *        replace the installed console plugin with another build of it (another model): remove the old build (its
  *        hook + data, backed up, unless --keep-data), install the new one in the same folder. An update whose model
  *        differs from the installed build is refused unless it goes through swap (one instance per plugin)
+ *   node framework/cli/plugin-catalog.mjs install-package <file|-> [--update] [--replace [--keep-data]] [--publish] [--sha256 h]
+ *        install a console plugin package read from any archive (the Plugins installer: folder, https, another console);
+ *        same checks as install (verified, one instance per plugin, other-model builds only with --replace = swap)
  *   node framework/cli/plugin-catalog.mjs remove <kind> <folder>                   take it out of the catalog (packages kept)
  *   add --json for one JSON result on stdout
  */
@@ -408,9 +411,20 @@ export function unpack(pkg, pluginsDir, { update = false, replaceModel = false }
 }
 
 /** Console plugin from the catalog: unpack, run its lifecycle install, optionally commit it to the repo on GitHub. */
-export async function installConsole(folder, { update = false, publish = false, version, noState = false, replaceModel = false } = {}, log = () => {}) {
+export async function installConsole(folder, opts = {}, log = () => {}) {
+  return installConsolePackage(getPackage('console', folder, opts.version), opts, log);
+}
+
+/**
+ * A console plugin package from anywhere (the catalog on axHub, another archive the Plugins installer reads): verified
+ * (and checked against `sha256` when the archive's index gives one), unpacked with every install rule (one instance,
+ * model swap only with replaceModel, build defaults), lifecycle install, optionally committed to GitHub.
+ */
+export async function installConsolePackage(raw, { update = false, publish = false, noState = false, replaceModel = false, sha256 } = {}, log = () => {}) {
   const lc = await import(pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), 'plugin-lifecycle.mjs')).href);
-  const pkg = getPackage('console', folder, version);
+  const pkg = verifyPackage(raw, sha256 ? { sha256 } : {});
+  if (pkg.kind !== 'console') throw new Error(`this is a ${pkg?.kind ?? 'unknown'} plugin, not a console plugin`);
+  const folder = pkg.folder;
   const r = unpack(pkg, lc.PLUGINS_DIR, { update, replaceModel });
   log(`${r.updated ? 'updated' : 'installed'} ${r.name} ${r.version} in apps/console-web/plugins/${folder}`);
   const life = await lc.install(folder, { noState }, log);
@@ -428,8 +442,15 @@ export async function installConsole(folder, { update = false, publish = false, 
  * swap never happened) and its backed-up data can be restored from the lifecycle panel.
  */
 export async function swapConsole(folder, { version, keepData = false, publish = false, noState = false } = {}, log = () => {}) {
+  return swapConsolePackage(getPackage('console', folder, version), { keepData, publish, noState }, log);
+}
+
+/** swapConsole with a package from any archive. */
+export async function swapConsolePackage(raw, { keepData = false, publish = false, noState = false, sha256 } = {}, log = () => {}) {
   const lc = await import(pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), 'plugin-lifecycle.mjs')).href);
-  const pkg = getPackage('console', folder, version);
+  const pkg = verifyPackage(raw, sha256 ? { sha256 } : {});
+  if (pkg.kind !== 'console') throw new Error(`this is a ${pkg.kind} plugin, not a console plugin`);
+  const folder = pkg.folder;
   const cur = manifestIn(join(lc.PLUGINS_DIR, folder));
   if (!cur) throw new Error(`${folder} is not installed: install it instead`);
   if (cur.id !== pkg.id) throw new Error(`${folder} holds another plugin (${cur.id}); not replacing it`);
@@ -439,7 +460,7 @@ export async function swapConsole(folder, { version, keepData = false, publish =
   let removed = null;
   if (!keepData) { removed = await lc.uninstall(folder, { data: true, noState: true }, log); log('removed the old build\'s data (backed up)'); }
   else log('keeping its data folder');
-  const r = await installConsole(folder, { update: true, replaceModel: true, publish, version, noState }, log);
+  const r = await installConsolePackage(pkg, { update: true, replaceModel: true, publish, noState }, log);
   return { ...r, swapped: true, from, to, removed: removed ? { data: removed.data, backup: removed.backup } : null };
 }
 
@@ -463,7 +484,7 @@ export async function main(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) { args.push(a); continue; }
     const k = a.slice(2);
-    if (['kind', 'out', 'from', 'console', 'version', 'into'].includes(k)) flags[k] = argv[++i]; else flags[k] = true;
+    if (['kind', 'out', 'from', 'console', 'version', 'into', 'sha256'].includes(k)) flags[k] = argv[++i]; else flags[k] = true;
   }
   const [cmd, a1, a2] = args;
   const lines = [];
@@ -498,6 +519,13 @@ export async function main(argv) {
     if (cmd === 'swap') {
       checkFolder(a1);
       return out(await swapConsole(a1, { version: flags.version, keepData: !!flags['keep-data'], publish: !!flags.publish, noState: !!flags['no-state'] }, log));
+    }
+    if (cmd === 'install-package') {
+      const text = !a1 || a1 === '-' ? readFileSync(0, 'utf8') : readFileSync(a1, 'utf8');
+      const pkg = JSON.parse(text);
+      const o = { publish: !!flags.publish, noState: !!flags['no-state'], ...(flags.sha256 ? { sha256: flags.sha256 } : {}) };
+      if (flags.replace) return out(await swapConsolePackage(pkg, { ...o, keepData: !!flags['keep-data'] }, log));
+      return out(await installConsolePackage(pkg, { ...o, update: !!flags.update }, log));
     }
     if (cmd === 'remove') return out(removeEntry(a1, a2));
     throw new Error('usage: plugin-catalog.mjs where | list | show | pack | publish | publish-package | package | install | remove (see the header)');

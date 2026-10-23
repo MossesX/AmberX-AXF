@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T14:55:49.072Z",
+ "updatedAt": "2026-10-23T15:09:52.146Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2512,6 +2512,75 @@
    "builtAt": "2026-10-23T14:55:49.000Z",
    "updatedAt": "2026-10-23T14:55:49.072Z",
    "estimate": "4.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "plugins-menu",
+   "title": "Plugins context menu + settings browser + plugin installer with archives",
+   "detail": "Right-click → Plugins ▸ Install, Settings, Manage, Enable ▸, Disable ▸. Settings browser (dialog by default, floating window switch; plugin column + the selected plugin's settings; own parameters + placeholders for every parameter type). Install dialog: plugin browser over configurable archive locations with credentials (axHub permanent, needs credentials), download + install, own settings. New plugin apps/console-web/plugins/plugins-menu.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #43, branch claude/project-thread-24jq9j",
+     "at": "2026-10-23T15:09:52.146Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Server: archive store (credentials server-side only), axHub permanent archive, test",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.640Z"
+    },
+    {
+     "text": "Server: browse + install from folder / https / console / axHub archives",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.710Z"
+    },
+    {
+     "text": "CLI: install-package from any archive with the same checks",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.771Z"
+    },
+    {
+     "text": "Context menu Plugins submenu with live Enable/Disable lists",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.832Z"
+    },
+    {
+     "text": "Settings browser dialog/window + own parameters + placeholders",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.896Z"
+    },
+    {
+     "text": "Install dialog: browser, archives tab, its settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:51.952Z"
+    },
+    {
+     "text": "Self-tests, checks, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:09:52.016Z"
+    }
+   ],
+   "createdAt": "2026-10-23T14:57:50.296Z",
+   "builtAt": "2026-10-23T15:09:52.083Z",
+   "updatedAt": "2026-10-23T15:09:52.146Z",
+   "estimate": "4 h",
    "source": "chat"
   }
  ]
