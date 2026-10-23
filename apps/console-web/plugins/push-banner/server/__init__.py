@@ -9,6 +9,10 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     POST /merge  {repo, number, confirm: "<repo>#<number>"}
                                     merges an open PR (merge commit) only when GitHub says it can and every check on
                                     its head commit passed; the head commit is pinned so nothing newer slips in
+    POST /merge-branch {repo, branch, confirm: "<repo>:<branch>"}
+                                    a branch without a PR that merges cleanly (ahead, not behind, CI passed on its
+                                    newest commit; all re-checked): opens its PR (or takes the open one) and merges it
+                                    with that commit pinned
     POST /update {repo, number | branch, confirm: "<repo>#<number>" | "<repo>:<branch>"}
                                     pulls the default branch into a branch that's behind it: a PR through GitHub's
                                     "update branch" (its head pinned), a branch without one as a merge commit on it
@@ -225,6 +229,14 @@ class Pushes:
                 except (github.GitHubError, ValueError):
                     pr["ci"] = "unknown"
                 item["pr"] = pr
+            elif item["behind"] == 0 and item["sha"]:
+                # No PR, nothing on the default branch it lacks: it merges cleanly (fast-forward). Its CI decides Merge.
+                try:
+                    item["ci"] = ci_state(self._checks(gh, repo, item["sha"]))
+                except (github.GitHubError, ValueError):
+                    item["ci"] = "unknown"
+                item["clean"] = True
+                item["canMerge"] = item["ci"] == "success"
             return item
 
         with ThreadPoolExecutor(max_workers=8) as pool:
@@ -443,6 +455,57 @@ class Pushes:
         return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
 
 
+    def merge_branch(self, body: Any) -> dict[str, Any]:
+        """Merge a branch without a PR that merges cleanly: re-checked here (ahead, not behind, CI passed on its newest
+        commit), then through a pull request (opened, or the open one) merged with that commit pinned. Never a push to the
+        default branch."""
+        if not isinstance(body, dict) or set(body) - {"repo", "branch", "confirm"}:
+            raise HTTPException(400, "send {repo, branch, confirm}")
+        repo, branch = body.get("repo"), body.get("branch")
+        if repo not in self.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+        if not valid_branch(branch):
+            raise HTTPException(400, "that isn't a branch name")
+        if body.get("confirm") != f"{repo}:{branch}":
+            raise HTTPException(400, f'confirm with "{repo}:{branch}"')
+        gh = self.gh()
+        try:
+            info = gh.repo(repo)
+            base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+            if branch == base:
+                raise HTTPException(400, "that is the default branch")
+            cmp = gh.get(compare_path(repo, base, branch))
+            if not isinstance(cmp, dict) or not isinstance(cmp.get("ahead_by"), int) or cmp["ahead_by"] <= 0:
+                raise HTTPException(409, f"it has nothing {base} doesn't have")
+            if cmp.get("behind_by") != 0:
+                raise HTTPException(409, f"it's behind {base} now: pull {base} in first")
+            sha = _text(self._head(gh, repo, branch).get("sha"), 40)
+            ci = ci_state(self._checks(gh, repo, sha)) if sha else "none"
+            if ci != "success":
+                raise HTTPException(409, {"running": "its CI is still running", "none": "it has no CI result yet", "failure": "its CI failed"}.get(ci, "its CI isn't green"))
+            owner = repo.split("/")[0]
+            open_ = gh.get(github.repo_path(repo, "pulls", query={"state": "open", "head": f"{owner}:{branch}", "base": base}))
+            p = open_[0] if isinstance(open_, list) and open_ and isinstance(open_[0], dict) else None
+            if p is None:
+                last = self._head(gh, repo, branch).get("commit") or {}
+                p = gh.json("POST", github.repo_path(repo, "pulls"), {
+                    "title": _text(str(last.get("message") or "").split("\n")[0], 120) or branch, "head": branch, "base": base,
+                    "body": f"Opened and merged from the Dev Console's Push banner: `{branch}` merged cleanly into `{base}` ({cmp['ahead_by']} commit(s), CI passed)."})
+            number = p.get("number") if isinstance(p, dict) else None
+            if not isinstance(number, int):
+                raise HTTPException(502, "GitHub didn't open the pull request")
+            r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
+        except github.GitHubError as e:
+            self._forget()
+            raise HTTPException(502, _text(str(e)) + (" (the pull request is open: merge it from Ready to merge)" if "number" in locals() and number else "")) from None
+        self._forget()
+        merged = bool(isinstance(r, dict) and r.get("merged"))
+        url = _safe_url(p.get("html_url"))
+        if merged:
+            self._remember({"key": f"{repo}:{branch}", "kind": "merged", "repo": repo, "base": base, "branch": branch, "number": number,
+                            "title": _text(p.get("title")) or branch, "url": url, "text": f"Merged {branch} into {base} (#{number})."})
+        return {"merged": merged, "number": number, "url": url}
+
     def update(self, body: Any) -> dict[str, Any]:
         """Pull the default branch into a branch behind it (never touches the default branch itself)."""
         if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm"}:
@@ -569,6 +632,11 @@ def open_pr(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.merge(body)
+
+
+@router.post("/merge-branch")
+def merge_branch(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.merge_branch(body)
 
 
 @router.post("/update")

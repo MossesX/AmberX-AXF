@@ -80,7 +80,7 @@ class Fake(BaseHTTPRequestHandler):
             return self._send(200, {**x, "state": "open", "mergeable": STATE["mergeable"]} if x else {"message": "Not Found"})
         if p.startswith(R + "/compare/"):
             head = p.split("...", 1)[1]
-            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": 2, "commits": [{"sha": "x"}], "files": []})
+            return self._send(200, {"ahead_by": STATE["ahead"].get(head, 0), "behind_by": STATE.get("behind", {}).get(head, 2), "commits": [{"sha": "x"}], "files": []})
         if p == R + "/commits":
             b = q["sha"][0]
             return self._send(200, [{"sha": f"{b}-head", "commit": {"message": f"Last on {b}\n\nbody", "committer": {"date": "2026-10-22T06:00:00Z" if b == "feat/b" else "2026-10-21T06:00:00Z"}}}])
@@ -334,6 +334,35 @@ clock["t"] += 8 * 24 * 3600
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 clock["t"] += 8 * 24 * 3600
 check(c.get("/p/branches").json()["done"] == [], "finished entries expire after 7 days")
+
+# ---- branches without a PR that merge cleanly (not behind main)
+STATE["branches"] += ["cleanx", "waitx"]
+STATE["ahead"].update({"cleanx": 2, "waitx": 1})
+STATE["behind"] = {"cleanx": 0, "waitx": 0}
+STATE["checks"]["cleanx-head"] = [{"status": "completed", "conclusion": "success", "name": "CI"}]
+STATE["checks"]["waitx-head"] = [{"status": "in_progress", "conclusion": None, "name": "CI"}]
+clock["t"] += 999
+bs = {b["name"]: b for b in c.get("/p/branches").json()["repos"][0]["branches"]}
+check(bs["cleanx"].get("clean") is True and bs["cleanx"]["canMerge"] is True and bs["cleanx"]["ci"] == "success", "clean: a PR-less branch not behind main with CI passed can merge")
+check(bs["waitx"].get("clean") is True and bs["waitx"]["canMerge"] is False and bs["waitx"]["ci"] == "running", "clean: CI still running = listed, Merge waits")
+check(not bs["feat/b"].get("clean"), "clean: a branch behind main isn't listed as clean")
+M = "/p/merge-branch"
+check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx"}).status_code == 400, "merge-branch: needs the typed confirm")
+check(c.post(M, json={"repo": "x/y", "branch": "cleanx", "confirm": "x/y:cleanx"}).status_code == 400, "merge-branch: only watched repos")
+check(c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "merge-branch: never the default branch")
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "waitx", "confirm": "MossesX/AmberX-AXF:waitx"})
+check(r.status_code == 409 and "running" in r.json()["detail"], "merge-branch: refused while CI runs")
+STATE["behind"]["cleanx"] = 1
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
+check(r.status_code == 409 and "behind" in r.json()["detail"], "merge-branch: re-checked: behind main now = refused")
+STATE["behind"]["cleanx"] = 0
+n_created, n_merged = len(STATE["created"]), len(STATE["merged"])
+r = c.post(M, json={"repo": "MossesX/AmberX-AXF", "branch": "cleanx", "confirm": "MossesX/AmberX-AXF:cleanx"})
+check(r.status_code == 200 and r.json()["merged"] is True and r.json()["number"] == 19, "merge-branch: merged through its new PR")
+check(len(STATE["created"]) == n_created + 1 and STATE["created"][-1]["head"] == "cleanx" and STATE["created"][-1]["base"] == "main", "merge-branch: opened a PR cleanx → main")
+check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "cleanx-head"}, "merge-branch: merged with the head commit pinned")
+check(not any(s["method"] in ("PUT", "POST") and s["path"].endswith("/git/refs/heads/main") for s in SEEN), "merge-branch: never writes main directly")
+check("MossesX/AmberX-AXF:cleanx" in [d["key"] for d in c.get("/p/branches").json()["done"]], "merge-branch: shows in Done")
 
 os.environ["GITHUB_TOKEN"] = ""
 clock["t"] += 999
