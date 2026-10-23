@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T12:30:10.679Z",
+ "updatedAt": "2026-10-23T12:30:55.345Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2308,8 +2308,13 @@
    "title": "lib-hubstore (settings + app data on axHub, pick tables) + Voice notes console plugin (settings only)",
    "detail": "Brett Oct 23 2026: one library, two classes (HubSettings, HubData); in Pilot pick settings only, all data or some tables. Voice notes plugin: settings interface for a voice-activated notes pusher (start/stop triggers, beep, lists with numbers, per-list questions on a number or recorded trigger, subcategories), all stored on axHub. Branch claude/project-thread-l3b0qo.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: PR #41 (branch claude/project-thread-l3b0qo).",
+     "at": "2026-10-23T12:30:55.337Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "lib-hubstore: core rules + HubSettings + HubData + library.json + catalog",
@@ -2341,8 +2346,8 @@
     }
    ],
    "createdAt": "2026-10-23T12:18:42.098Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T12:30:10.679Z",
+   "builtAt": "2026-10-23T12:30:55.345Z",
+   "updatedAt": "2026-10-23T12:30:55.345Z",
    "estimate": "2 h",
    "source": "chat"
   },
