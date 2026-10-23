@@ -21,6 +21,7 @@ import { bundledPlugins, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, 
 import { post } from './api';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
+import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
@@ -30,6 +31,13 @@ import { BannerStrip, isBannerStrip, useBannerRelay, useBannersInConsole } from 
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
 const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
+// AshesUI (live element inspector): every bundled plugin is known by its axp-<folder> class prefix, with the model that built it
+const ashesLibrary = createAshesLibrary({
+  owners: (rt) => ownersFrom(
+    bundledPlugins.map((p) => ({ folder: p.folder, name: p.manifest.name, id: p.manifest.id, version: p.manifest.version, ...(p.manifest.builtWith?.model ? { model: p.manifest.builtWith.model } : {}) })),
+    rt.libraries.map((l) => ({ id: l.id, label: l.label, version: l.version, ...(l.builtWith?.model ? { model: l.builtWith.model } : {}) })),
+  ),
+});
 
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
@@ -110,7 +118,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ...enabled.map(underPlugins)]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }
