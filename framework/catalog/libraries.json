@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-23T13:27:42.375Z",
+  "generatedAt": "2026-10-23T15:43:41.527Z",
   "items": [
     {
       "$axf": "library@1",
@@ -686,6 +686,108 @@
         {
           "capability": "axf.docstore.delete",
           "note": "Removing a document's files on the hub (the data API has no delete for app documents yet; it leaves the index)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.hubstore",
+      "module": "lib-hubstore",
+      "name": "axHub storage (settings and app data on axHub instead of this device)",
+      "description": "Keeps an app's settings and, if you choose, its data on axHub's data server instead of the device every other app uses. Two classes: HubSettings (one settings document, per-key changes, last save wins, can mirror the app's own Settings screen) and HubData (tables of rows; all tables on axHub, or only the ones you pick, the rest stay on the device). The browser's own hub session, If-Match versions, tables over the hub's 64 KB limit split into chunks. The hub down = an error and a state to show, never a silent local copy. Built Oct 23 2026 for the Voice notes plugin.",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.hubstore",
+      "params": [
+        {
+          "key": "hub",
+          "label": "axHub address",
+          "type": "text",
+          "default": "https://axhub.amberxai.com",
+          "help": "https only (http only for localhost while developing)."
+        },
+        {
+          "key": "project",
+          "label": "Hub project",
+          "type": "text",
+          "default": "",
+          "help": "The project folder on the hub (/projects/<name>); blank = the app's project name."
+        }
+      ],
+      "parts": [
+        {
+          "id": "settings",
+          "label": "Settings on axHub",
+          "description": "The app's settings live in one document on axHub (HubSettings).",
+          "params": [
+            {
+              "key": "file",
+              "label": "Settings file",
+              "type": "text",
+              "default": "settings/app.json",
+              "help": "Path inside the hub project, ends in .json."
+            },
+            {
+              "key": "mirror",
+              "label": "Keep the Settings screen's values on axHub",
+              "type": "bool",
+              "default": true,
+              "help": "Every value the app's own Settings screen saves goes to axHub too, and axHub's copy wins when the app starts."
+            }
+          ]
+        },
+        {
+          "id": "data",
+          "label": "App data on axHub",
+          "description": "The app's tables (sections of storage) on axHub (HubData): all of them, or only the ones picked here; the rest stay on this device.",
+          "default": false,
+          "params": [
+            {
+              "key": "mode",
+              "label": "Which tables",
+              "type": "choice",
+              "choices": [
+                "all",
+                "some"
+              ],
+              "default": "all",
+              "help": "all = every table on axHub; some = only the tables listed below."
+            },
+            {
+              "key": "tables",
+              "label": "Tables on axHub",
+              "type": "list",
+              "default": [],
+              "help": "Only with 'some': table names, comma separated."
+            },
+            {
+              "key": "folder",
+              "label": "Data folder",
+              "type": "text",
+              "default": "data",
+              "help": "Folder inside the hub project that holds the tables."
+            }
+          ]
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/hubstore"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.hubstore.android",
+          "note": "Android port (lib-hub data client + the kernel settings store) — Android on hold."
+        },
+        {
+          "capability": "axf.hubstore.live",
+          "note": "Follow other devices' saves live through /data-events — not built (re-read on focus instead)."
+        },
+        {
+          "capability": "axf.hubstore.offline",
+          "note": "An explicit offline copy for apps that ask for one — not built (the hub down is an error by design)."
         }
       ]
     },

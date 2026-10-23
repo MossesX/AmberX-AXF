@@ -1,0 +1,9 @@
+/* Voice notes settings: layout only (controls come from the framework and follow the app's style theme). */
+.axp-voice-notes-phrase { gap: calc(var(--fx-space) * 0.25); align-items: center; }
+.axp-voice-notes-add, .axp-voice-notes-sub, .axp-voice-notes-q { align-items: flex-end; }
+.axp-voice-notes-add > .fx-field, .axp-voice-notes-q > .fx-field { flex: 1 1 14em; }
+.axp-voice-notes-set { padding-left: var(--fx-space); border-left: var(--fx-border-w) solid var(--fx-border); }
+.axp-voice-notes-listrow { gap: var(--fx-space); align-items: center; width: 100%; text-align: left; }
+.axp-voice-notes-editor { padding: var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-voice-notes-script { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); }
+.axp-voice-notes-line.is-you { font-weight: 600; }
