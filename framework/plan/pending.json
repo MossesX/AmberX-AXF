@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T15:12:02.179Z",
+ "updatedAt": "2026-10-23T15:25:41.808Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2588,43 +2588,55 @@
    "title": "AshesUI: live UI inspector for any app (hover tooltip + inspector window)",
    "detail": "Framework library framework/libs/ashes (ai.amberx.axf.ashes) any web app installs. Context-menu toggle AshesUI with a check mark; while on, a small headless tooltip follows the pointer with live info about the element under it (component, asset, plugin it belongs to, size, colours, contrast, tokens). Double-click / double-tap expands into a draggable, resizable floating inspector window: tree of every rendered element on screen (selection in focus and expanded), and a tab group (Grid / Tree) with every parameter of the picked element; live style edits with revert; search, filters, copy, stats. Installed in the console with a plugin resolver (which plugin an element belongs to).",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [
     {
      "text": "Pure core: component/asset map, owner resolution, contrast, parameter rows, tree search",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.419Z"
     },
     {
      "text": "DOM snapshot + live listener + tooltip + highlight overlay",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.493Z"
     },
     {
      "text": "Inspector window: element tree with focus + expand, Grid/Tree tabs",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.570Z"
     },
     {
      "text": "Live edits, copy, stats, filters, keyboard navigation, settings",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.636Z"
     },
     {
      "text": "Context-menu check marks in MenuList; console install with plugin resolver",
      "at": "",
-     "estimate": "20 min"
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.693Z"
     },
     {
      "text": "Tests, checks, catalog entry, docs, PR",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T15:25:41.750Z"
     }
    ],
    "createdAt": "2026-10-23T15:12:02.179Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T15:12:02.179Z",
+   "builtAt": "2026-10-23T15:25:41.808Z",
+   "updatedAt": "2026-10-23T15:25:41.808Z",
    "estimate": "4 h",
    "source": "chat"
   }
