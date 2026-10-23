@@ -247,12 +247,38 @@ class Feed:
             return None
         return self.report({**prev, "state": state if state in FINISHED else "done", **({"detail": detail} if detail else {}), "finishedAt": None}, prev.get("origin", "api"))
 
+    # Items taken off the banner on purpose (the trash can on a stuck item): every device, for a day.
+    DISMISS_KEEP_MS = 24 * 3600 * 1000
+    MAX_DISMISSED = 500
+
+    def _dismissed(self, now: int) -> dict[str, int]:
+        try:
+            raw = json.loads((self.dir / "dismissed.json").read_text("utf-8"))
+        except (OSError, ValueError):
+            return {}
+        if not isinstance(raw, dict):
+            return {}
+        return {k: v for k, v in raw.items() if isinstance(k, str) and len(k) <= 200 and isinstance(v, int) and now - v < self.DISMISS_KEEP_MS}
+
     def dismiss(self, iid: str) -> bool:
+        """Take an item off the banner everywhere: a reported one is deleted; any other (a GitHub run, a reply, a
+        service's item) is remembered as dismissed for a day so it doesn't come back from its source."""
+        if not isinstance(iid, str) or not iid or len(iid) > 200:
+            return False
         p = self._report_path(iid)
-        if p.is_file() and not p.is_symlink():
-            p.unlink()
+        if p.is_symlink():
+            return False  # never touched through a link
+        if p.is_file():
+            p.unlink()  # a reporter that reports again later shows again: it's alive
             return True
-        return False
+        now = int(self.now() * 1000)
+        with self._lock:
+            d = self._dismissed(now)
+            d[iid] = now
+            if len(d) > self.MAX_DISMISSED:
+                d = dict(sorted(d.items(), key=lambda kv: kv[1])[-self.MAX_DISMISSED:])
+            storage.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
+        return True
 
     @staticmethod
     def _read_report(p: Path) -> dict[str, Any] | None:
@@ -446,7 +472,7 @@ class Feed:
         if cfg["sources"]["reports"]:
             run("Reports", lambda: self._reports(cfg, now))
 
-        seen: set[str] = set()
+        seen: set[str] = set(self._dismissed(now))
         uniq = []
         for it in items:
             if it["id"] not in seen:

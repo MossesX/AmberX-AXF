@@ -25,6 +25,10 @@ from credentials import CREDENTIALS, CredStore  # noqa: E402,F401 — core modul
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, http as axf_http
 
+# Coolify's own container on the VPS's shared Docker network (`coolify`, port 8080 inside): plain http stays on the
+# server, so it may carry the token. Any other http address is refused (Brett, Oct 21 2026).
+COOLIFY_INTERNAL_HOSTS = ("coolify",)
+
 DOCS = {
     "github_pat": "https://github.com/settings/personal-access-tokens/new",
     "github_pat_docs": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
@@ -87,6 +91,7 @@ class SysCheck:
             "github-token": self.c_github_token,
             "github-repo": self.c_github_repo,
             "anthropic-key": self.c_anthropic_key,
+            "claude-credits": self.c_claude_credits,
             "hostinger-token": self.c_hostinger,
             "coolify": self.c_coolify,
             "axhub": self.c_axhub,
@@ -188,6 +193,35 @@ class SysCheck:
             return self.item("anthropic-key", "claude", "Anthropic API key", "error", f"Rejected by the Anthropic API ({code}).", **base)
         return self.item("anthropic-key", "claude", "Anthropic API key", "unknown", f"Couldn't reach the Anthropic API ({code or 'network'}).", **base)
 
+    def c_claude_credits(self) -> Check:
+        """Claude has credits: one tiny request through the AI assistant (axf.llm@1). When the default Claude provider is
+        out of credits, the assistant switches to the first other Claude provider that answers (Brett, Oct 23 2026)."""
+        import plugin_services  # core module; imported here so the check file loads without the console
+        llm = plugin_services.get("axf.llm@1")
+        tab = getattr(llm, "settings_tab", "") or "plugins"
+        base = dict(fix={"type": "settings", "tab": tab, "label": "Pick a key"},
+                    instructions=["Settings → Plugins → AI assistant → Providers: add another Claude key or top up this one."],
+                    links=[{"label": "Anthropic Console → Billing", "url": "https://console.anthropic.com/settings/billing"}], order=21)
+        if llm is None or not hasattr(llm, "credits"):
+            return self.item("claude-credits", "claude", "Claude credits", "info", "The AI assistant isn't installed, so nothing uses Claude here.", order=21)
+        r = llm.credits(auto_switch=True)
+        details = [f"{p['label']}: {'has credit' if p['state'] == 'ok' else 'out of credits' if p['state'] == 'no-credit' else 'error: ' + p['error'][:120]}" for p in r.get("profiles", [])]
+        sw = r.get("switched")
+        if r.get("open"):
+            base["fix"] = {"type": "settings", "tab": tab, "label": "Pick a key", "action": r["open"]}
+        if r.get("state") == "none":
+            return self.item("claude-credits", "claude", "Claude credits", "warn", "No Claude provider is set up in the AI assistant.", **base)
+        if sw:
+            where = "the saved key" if sw.get("via") == "keys" else "the assistant to"
+            c = self.item("claude-credits", "claude", "Claude credits", "warn", f"Out of credits: switched {where} {sw['label']}.", details=details, **base)
+            c["switched"] = sw
+            return c
+        if r.get("state") == "ok":
+            return self.item("claude-credits", "claude", "Claude credits", "ok", "Claude answered: credits are available.", details=details, order=21)
+        if r.get("state") == "no-credit":
+            return self.item("claude-credits", "claude", "Claude credits", "error", "Out of credits, and no other Claude key has any.", details=details, **base)
+        return self.item("claude-credits", "claude", "Claude credits", "unknown", "Couldn't test Claude (not a credits problem).", details=details, **base)
+
     # -------------------------------------------------------- Hostinger / Coolify / axHub
 
     def c_hostinger(self) -> Check:
@@ -204,11 +238,11 @@ class SysCheck:
         url = os.environ.get("COOLIFY_URL", "").rstrip("/")
         tok = os.environ.get("COOLIFY_TOKEN", "")
         base = dict(fix=self.secret_fix("COOLIFY_URL", "COOLIFY_TOKEN"), links=[{"label": "Coolify API: authorization", "url": DOCS["coolify_api"]}],
-                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Enter your Coolify address and the token."], order=50)
+                    instructions=["Coolify → Keys & Tokens → API tokens → Create (root or read+write).", "Coolify URL: http://coolify:8080 (private, inside the VPS) or your dashboard's https address; then the token."], order=50)
         if not url or not tok:
             return self.item("coolify", "coolify", "Coolify API", "warn", "Not set: deploys and app status from the console won't work.", **base)
-        if not axf_http.target_ok(url):  # the token is never sent over plain http to another machine (axf_server.http)
-            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https: use the https address of your Coolify dashboard so the token isn't sent in the clear.", **base)
+        if not axf_http.target_ok(url, COOLIFY_INTERNAL_HOSTS):  # never plain http to another machine (axf_server.http)
+            return self.item("coolify", "coolify", "Coolify API", "error", f"{url} isn't https, so the token would cross the internet in the clear. Use http://coolify:8080 (Coolify's container on the VPS's own Docker network: the token never leaves the server) or your Coolify dashboard's https address.", **base)
         code, _, body = _http(f"{url}/api/v1/version", {"authorization": f"Bearer {tok}"})
         st = "ok" if code == 200 else "error" if code in (401, 403) else "unknown"
         return self.item("coolify", "coolify", "Coolify API", st, {"ok": f"Connected (Coolify {body.strip()[:20]}).", "error": f"Coolify refused the token ({code})."}.get(st, f"Couldn't reach {url} ({code or 'network'})."), **base)
@@ -299,8 +333,9 @@ class SysCheck:
             return self.item("moshi-key", "vps", "Moshi key", "ok", str(r.get("summary", ""))[:300], **base)
         if not r:
             return self.item("moshi-key", "vps", "Moshi key", "unknown", "The VPS hasn't reported its sign-in keys yet.", **base)
-        if saved:
-            return self.item("moshi-key", "vps", "Moshi key", "warn", f"Saved here, not on the VPS yet. Run on the VPS: {cmd}", **base)
+        if saved:  # saved: Auto fix adds it on the VPS through Mosses + axHub (the approval page shows the key line)
+            return self.item("moshi-key", "vps", "Moshi key", "warn", "Saved here, not on the VPS yet: Auto fix adds it (you approve it on axHub).",
+                             **{**base, "fix": {"type": "host", "command": cmd}})
         return self.item("moshi-key", "vps", "Moshi key", "error", "No Moshi key can sign in to the VPS: paste Moshi's public key.", **base)
 
     def c_host(self, hid: str) -> Check:

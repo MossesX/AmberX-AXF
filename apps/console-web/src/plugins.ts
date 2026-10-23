@@ -7,6 +7,7 @@
  * Folders starting with "_" are templates and never load.
  */
 import type { AxfWebLibrary } from './axf/react/library';
+import type { EmbedPlugin, EmbedPluginTab } from './axf/core';
 import { authHeaders, createApiClient, STANDARD_MESSAGES, type ApiClient } from './axf/libs/apiclient';
 import { consoleTokens } from './api';
 
@@ -23,6 +24,8 @@ export interface PluginManifest {
   scopes?: string[];
   targets?: string[];
   enabledByDefault?: boolean;
+  /** can a host app (Patches) add this plugin to its tab group? false (default) | true (its first page) | {view, label?, icon?} */
+  tabable?: boolean | { view: string; label?: string; icon?: string };
 }
 
 export interface BundledPlugin {
@@ -71,6 +74,50 @@ export function enabledPlugins(status: PluginStatus[] | null): BundledPlugin[] {
     const s = status?.find((x) => x.folder === p.folder);
     return s ? s.enabled : p.manifest.enabledByDefault !== false;
   });
+}
+
+/**
+ * Inside a host that manages plugins (embed@1 take `plugins`, Patches; Brett Oct 22 2026: "disable all plugins from the
+ * apps and only enable them in Patches"): the plugins to run are the ones the host enabled for the console, whatever
+ * the console's own switches say. null = the host hasn't answered yet: run none.
+ */
+export function hostEnabledPlugins(hostIds: readonly string[] | null): BundledPlugin[] {
+  if (!hostIds) return [];
+  return bundledPlugins.filter((p) => p.library && hostIds.includes(p.manifest.id));
+}
+
+/**
+ * The tab a plugin offers a host app (plugin.json → `tabable`; Brett, Oct 22 2026: "tabable means it can be added to a tab
+ * group"): its page `{view, label, icon}`, or null. `true` = its first page; an object names the page, which must be one
+ * of the web part's views. Same rules as `checkTabable` in framework/cli/plugins.mjs and `_plugin_tab` in server/main.py.
+ */
+export function pluginTab(p: BundledPlugin): EmbedPluginTab | null {
+  const t = p.manifest.tabable;
+  const views = Object.keys(p.library?.views ?? {});
+  if (!t || !views.length) return null;
+  const view = t === true ? views[0]! : t.view;
+  if (!views.includes(view)) return null;
+  const label = (t !== true && t.label) || p.manifest.name;
+  const icon = (t !== true && t.icon) || p.library?.views?.[view]?.icon;
+  return { view, label, ...(icon ? { icon } : {}) };
+}
+
+/** What the console tells the host it has: every plugin that can run, whether the console itself had it on, and its tab. */
+export function pluginReport(status: PluginStatus[] | null): EmbedPlugin[] {
+  const on = new Set(enabledPlugins(status));
+  return bundledPlugins.filter((p) => p.library).map((p) => {
+    const tab = pluginTab(p);
+    return { id: p.manifest.id, name: p.manifest.name, ...(p.manifest.version ? { version: p.manifest.version } : {}), on: on.has(p), ...(tab ? { tab } : {}) };
+  });
+}
+
+/**
+ * Plugins the host enabled whose server part is off here: their web part runs inside the host, so their routes must
+ * answer too. Only switches parts on (never off: the console on its own keeps every other choice).
+ */
+export function serverPartsToSwitchOn(status: PluginStatus[] | null, hostIds: readonly string[] | null): string[] {
+  if (!status || !hostIds) return [];
+  return hostEnabledPlugins(hostIds).map((p) => status.find((s) => s.folder === p.folder)).filter((s): s is PluginStatus => !!s && !s.enabled && s.server !== 'none').map((s) => s.folder);
 }
 
 export async function fetchPluginStatus(): Promise<PluginStatus[] | null> {

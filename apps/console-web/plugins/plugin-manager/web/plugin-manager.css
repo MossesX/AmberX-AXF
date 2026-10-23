@@ -14,12 +14,6 @@
 .axp-plugin-manager-dot.is-error, .axp-plugin-manager-dot.is-blocked { background: var(--fx-danger) } .axp-plugin-manager-dot.is-off { background: var(--fx-border) }
 .axp-plugin-manager-empty { padding: calc(var(--fx-space) * 3); text-align: center; color: var(--fx-muted) }
 .axp-plugin-manager-offline { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); margin: 0 0 var(--fx-space); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); font-size: calc(var(--fx-font-size) * 13 / 14) }
-.axp-plugin-manager-link { all: unset; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.35); color: var(--fx-accent); cursor: pointer; font-weight: 600 }
-.axp-plugin-manager-link:hover { text-decoration: underline }
-.axp-plugin-manager-link:focus-visible, .axp-plugin-manager-iconbtn:focus-visible, .axp-plugin-manager-seg__opt:focus-visible, .axp-plugin-manager-card__hit:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
-.axp-plugin-manager-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: calc(var(--fx-row-h) * 0.8); height: calc(var(--fx-row-h) * 0.8); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); color: var(--fx-text); cursor: pointer }
-.axp-plugin-manager-iconbtn:hover:not(:disabled) { background: var(--fx-surface2) }
-.axp-plugin-manager-iconbtn:disabled { opacity: var(--fx-opacity-disabled); cursor: default }
 .axp-plugin-manager-iconbtns { display: inline-flex; gap: calc(var(--fx-space) * 0.35) }
 .fx-input.axp-plugin-manager-select { width: auto; min-width: 0; flex: none }
 .axp-plugin-manager-meta { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
@@ -29,10 +23,6 @@
 .axp-plugin-manager-tag.is-error, .axp-plugin-manager-tag.is-blocked { color: var(--fx-danger) } .axp-plugin-manager-tag.is-partial { color: var(--fx-warning) }
 
 /* ---------- controls: segmented, search ---------- */
-.axp-plugin-manager-seg { display: inline-flex; padding: calc(var(--fx-space) * 0.2); gap: calc(var(--fx-space) * 0.2); border-radius: var(--fx-radius-md); background: var(--fx-surface2); max-width: 100%; overflow-x: auto }
-.axp-plugin-manager-seg__opt { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.4) calc(var(--fx-space) * 0.75); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-muted); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer; white-space: nowrap }
-.axp-plugin-manager-seg__opt:hover { color: var(--fx-text) }
-.axp-plugin-manager-seg__opt.is-active { background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-sm) }
 .axp-plugin-manager-search { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex: 1 1 calc(var(--fx-space) * 16); min-width: 0; padding: 0 calc(var(--fx-space) * 0.75); height: var(--fx-row-h); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-muted) }
 .axp-plugin-manager-search:focus-within { border-color: var(--fx-accent) }
 .axp-plugin-manager-search__input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fx-text); font: inherit }
@@ -51,7 +41,7 @@
 .axp-plugin-manager-card:hover { border-color: var(--fx-accent); box-shadow: var(--fx-shadow-md) }
 .axp-plugin-manager-card.is-selected { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
 .axp-plugin-manager-card.is-disabled .axp-plugin-manager-card__body { opacity: var(--fx-opacity-muted) }
-.axp-plugin-manager-card__hit { position: absolute; inset: 0; border: 0; background: transparent; border-radius: inherit; cursor: pointer }
+.axp-plugin-manager-card__hit[data-fx-row] { position: absolute; inset: 0; border: 0; background: transparent; border-radius: inherit; cursor: pointer }
 .axp-plugin-manager-card__cover { display: flex; align-items: center; gap: var(--fx-space); pointer-events: none }
 .axp-plugin-manager-card__body { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); min-width: 0; pointer-events: none }
 .axp-plugin-manager-card__title { display: flex; align-items: baseline; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
@@ -66,7 +56,7 @@
 .axp-plugin-manager-table th, .axp-plugin-manager-table td { padding: calc(var(--fx-space) * 0.55) calc(var(--fx-space) * 0.75); text-align: left; border-bottom: var(--fx-border-w) solid var(--fx-border); white-space: nowrap }
 .axp-plugin-manager-table th { position: sticky; top: 0; background: var(--fx-surface2); z-index: 1 }
 .axp-plugin-manager-table .is-num { text-align: right; font-variant-numeric: tabular-nums }
-.axp-plugin-manager-th { all: unset; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); cursor: pointer; font-weight: 600; color: var(--fx-muted) }
+.axp-plugin-manager-th[data-fx-row] { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25); cursor: pointer; font-weight: 600; color: var(--fx-muted) }
 .axp-plugin-manager-tr { cursor: pointer }
 .axp-plugin-manager-tr:hover { background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-hover) * 100%), transparent) }
 .axp-plugin-manager-tr.is-selected { background: var(--fx-accent-soft) }
@@ -75,7 +65,7 @@
 /* ---------- master-detail view ---------- */
 .axp-plugin-manager-md { display: grid; grid-template-columns: minmax(calc(var(--fx-space) * 14), calc(var(--fx-space) * 18)) minmax(0, 1fr); gap: var(--axp-plugin-manager-gap); min-height: calc(var(--fx-row-h) * 12) }
 .axp-plugin-manager-md__list { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.4); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); align-self: start; max-height: 75vh; overflow: auto }
-.axp-plugin-manager-md__item { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.5); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
+.axp-plugin-manager-md__item[data-fx-row] { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.6); padding: calc(var(--fx-space) * 0.5); border: 0; border-radius: var(--fx-radius-sm); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
 .axp-plugin-manager-md__item:hover { background: var(--fx-surface2) }
 .axp-plugin-manager-md__item.is-selected { background: var(--fx-accent-soft) }
 .axp-plugin-manager-md__name { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
@@ -91,8 +81,6 @@
 .axp-plugin-manager-detail__head > .axp-plugin-manager-actions { flex-basis: 100% }
 .axp-plugin-manager-studio__phonebar { display: none }
 .axp-plugin-manager-tabs { display: flex; gap: calc(var(--fx-space) * 0.25); overflow-x: auto; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axp-plugin-manager-tabs__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.8); border: 0; border-bottom: calc(var(--fx-border-w) * 2) solid transparent; background: transparent; color: var(--fx-muted); font: inherit; font-size: calc(var(--fx-font-size) * 13 / 14); cursor: pointer; white-space: nowrap }
-.axp-plugin-manager-tabs__tab.is-active { color: var(--fx-text); border-bottom-color: var(--fx-accent) }
 .axp-plugin-manager-desc { margin: 0; line-height: 1.5 }
 .axp-plugin-manager-error { margin: 0; padding: calc(var(--fx-space) * 0.6); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger) }
 .axp-plugin-manager-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: calc(var(--fx-space) * 0.4) var(--fx-space); margin: 0 }
@@ -155,11 +143,11 @@
 .axp-plugin-manager-studio__rail { position: sticky; top: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.6) }
 .axp-plugin-manager-studio__title { margin: 0 0 calc(var(--fx-space) * 0.5); font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); letter-spacing: var(--fx-tracking); font-size: calc(var(--fx-font-size) * 24 / 14) }
 .axp-plugin-manager-studio__filters, .axp-plugin-manager-studio__layouts { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.2); margin-bottom: var(--fx-space) }
-.axp-plugin-manager-studio__filter, .axp-plugin-manager-studio__layout { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.7); border: 0; border-radius: var(--fx-radius-md); background: transparent; color: var(--fx-text); font: inherit; text-align: left; cursor: pointer }
-.axp-plugin-manager-studio__layout { justify-content: flex-start; align-items: flex-start }
+.fx-chip.axp-plugin-manager-studio__filter { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--fx-space) * 0.5) }
+.axp-plugin-manager-studio__layout[data-fx-row] { display: flex; justify-content: flex-start; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.7); border-radius: var(--fx-radius-md); color: var(--fx-text) }
 .axp-plugin-manager-studio__layout > span { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.1); min-width: 0 }
-.axp-plugin-manager-studio__filter:hover, .axp-plugin-manager-studio__layout:hover { background: var(--fx-surface2) }
-.axp-plugin-manager-studio__filter.is-active, .axp-plugin-manager-studio__layout.is-active { background: var(--fx-accent-soft); color: var(--fx-accent) }
+.axp-plugin-manager-studio__layout:hover { background: var(--fx-surface2) }
+.axp-plugin-manager-studio__layout.is-active { background: var(--fx-accent-soft); color: var(--fx-accent) }
 .axp-plugin-manager-studio__main { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
 .axp-plugin-manager-studio__bar { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); flex-wrap: wrap }
 .axp-plugin-manager-studio__drawer { position: sticky; top: 0; max-height: calc(100vh - var(--fx-space) * 8); overflow: auto; padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface); box-shadow: var(--fx-shadow-md) }
@@ -173,7 +161,7 @@
 .axp-plugin-manager-mission__title { margin: 0; font-family: var(--fx-font-display); font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: calc(var(--fx-font-size) * 26 / 14); line-height: 1 }
 .axp-plugin-manager-mission__controls { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap }
 .axp-plugin-manager-mission__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 8), 1fr)); gap: calc(var(--fx-space) * 0.5) }
-.axp-plugin-manager-tile { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer; text-align: left }
+.axp-plugin-manager-tile, .axp-plugin-manager-tile[data-fx-row] { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--fx-space) * 0.2); padding: calc(var(--fx-space) * 0.75); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); color: var(--fx-text); font: inherit; cursor: pointer; text-align: left }
 .axp-plugin-manager-tile:hover { border-color: var(--fx-text) }
 .axp-plugin-manager-tile.is-active { background: var(--fx-text); color: var(--fx-bg); border-color: var(--fx-text) }
 .axp-plugin-manager-tile.is-active .axp-plugin-manager-tile__label { color: var(--fx-bg) }
@@ -190,7 +178,7 @@
 .axp-plugin-manager-mission__boardbar .axp-plugin-manager-search { text-transform: none; letter-spacing: 0; flex: 0 1 calc(var(--fx-space) * 16) }
 .axp-plugin-manager-mission__focus { padding: var(--axp-plugin-manager-pad); border: var(--fx-border-w) solid var(--fx-text); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-plugin-manager-mission__signals { position: sticky; top: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4); padding: calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); max-height: calc(100vh - var(--fx-space) * 8); overflow: auto }
-.axp-plugin-manager-signal { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: 0; border-left: calc(var(--fx-border-w) * 3) solid var(--fx-muted); border-radius: 0 var(--fx-radius-sm) var(--fx-radius-sm) 0; background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere }
+.axp-plugin-manager-signal, .axp-plugin-manager-signal[data-fx-row] { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); margin: 0; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 0.6); border: 0; border-left: calc(var(--fx-border-w) * 3) solid var(--fx-muted); border-radius: 0 var(--fx-radius-sm) var(--fx-radius-sm) 0; background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere }
 .axp-plugin-manager-signal.is-danger { border-left-color: var(--fx-danger) } .axp-plugin-manager-signal.is-warning { border-left-color: var(--fx-warning) }
 .axp-plugin-manager-signal.is-accent { border-left-color: var(--fx-accent) }
 .axp-plugin-manager-signal.is-ok { flex-direction: row; align-items: center; gap: calc(var(--fx-space) * 0.4); border-left-color: var(--fx-success); cursor: default }
@@ -221,9 +209,6 @@
 .axp-plugin-manager-term__ps1 { color: var(--fx-success); white-space: nowrap }
 .axp-plugin-manager-term__input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fx-text); font: inherit; caret-color: var(--fx-accent) }
 .axp-plugin-manager-term__detail { padding-top: var(--fx-space); border-top: var(--fx-border-w) dashed var(--fx-border) }
-.axp-plugin-manager--terminal .axp-plugin-manager-seg { border-radius: 0; background: transparent }
-.axp-plugin-manager--terminal .axp-plugin-manager-seg__opt { border-radius: 0 }
-.axp-plugin-manager--terminal .axp-plugin-manager-seg__opt.is-active { background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: none }
 .axp-plugin-manager--terminal .axp-plugin-manager-cards { grid-template-columns: 1fr; border-top: var(--fx-border-w) dashed var(--fx-border) }
 .axp-plugin-manager--terminal .axp-plugin-manager-card { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.4) 0; border: 0; border-bottom: var(--fx-border-w) dashed var(--fx-border); border-radius: 0; background: transparent; box-shadow: none }
 .axp-plugin-manager--terminal .axp-plugin-manager-card:hover, .axp-plugin-manager--terminal .axp-plugin-manager-card.is-selected { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); box-shadow: none }
@@ -237,8 +222,6 @@
 .axp-plugin-manager--terminal .axp-plugin-manager-graph__scroll, .axp-plugin-manager--terminal .axp-plugin-manager-dep, .axp-plugin-manager--terminal .axp-plugin-manager-log { border-radius: 0; background: transparent }
 .axp-plugin-manager--terminal .axp-plugin-manager-table th { background: var(--fx-surface3); color: var(--fx-accent) }
 .axp-plugin-manager--terminal .axp-plugin-manager-table th, .axp-plugin-manager--terminal .axp-plugin-manager-table td { border-bottom-style: dashed }
-.axp-plugin-manager--terminal .fx-btn, .axp-plugin-manager--terminal .fx-chip, .axp-plugin-manager--terminal .axp-plugin-manager-iconbtn, .axp-plugin-manager--terminal .fx-input { border-radius: 0 }
-.axp-plugin-manager--terminal .fx-chip::before { content: '<' } .axp-plugin-manager--terminal .fx-chip::after { content: '>' }
 .axp-plugin-manager--terminal .axp-plugin-manager-node__box { rx: 0 }
 .axp-plugin-manager--terminal .axp-plugin-manager-detail__title h2 { font-size: calc(var(--fx-font-size) * 16 / 14) }
 .axp-plugin-manager--terminal .axp-plugin-manager-detail__title h2::before { content: '# '; color: var(--fx-muted) }
@@ -255,8 +238,7 @@
 .axp-plugin-manager-hero__text h2 { margin: 0; font-family: var(--fx-font-display); font-weight: 800; letter-spacing: var(--fx-tracking); font-size: calc(var(--fx-font-size) * 30 / 14); line-height: 1.1 }
 .axp-plugin-manager-hero__text p { margin: 0; line-height: 1.5 }
 .axp-plugin-manager-cat__pills { display: flex; gap: calc(var(--fx-space) * 0.5); overflow-x: auto; padding-bottom: calc(var(--fx-space) * 0.25) }
-.axp-plugin-manager-pill { flex: none; padding: calc(var(--fx-space) * 0.5) calc(var(--fx-space) * 1.1); border: var(--fx-border-w) solid var(--fx-border); border-radius: 999px; background: var(--fx-surface); color: var(--fx-text); font: inherit; font-weight: 600; cursor: pointer }
-.axp-plugin-manager-pill.is-active { background: var(--fx-text); color: var(--fx-bg); border-color: var(--fx-text) }
+.fx-chip.axp-plugin-manager-pill { flex: none }
 .axp-plugin-manager-shelf { display: flex; flex-direction: column; gap: var(--fx-space) }
 .axp-plugin-manager-shelf__title { margin: 0; font-family: var(--fx-font-display); font-weight: var(--fx-heading-weight); font-size: calc(var(--fx-font-size) * 18 / 14) }
 .axp-plugin-manager--catalog .axp-plugin-manager-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 15)), 1fr)) }
@@ -268,8 +250,7 @@
 .axp-plugin-manager--catalog .axp-plugin-manager-card__title strong { font-family: var(--fx-font-display); font-size: calc(var(--fx-font-size) * 16 / 14) }
 .axp-plugin-manager-cat--product { gap: var(--fx-space) }
 .axp-plugin-manager-cat--product .axp-plugin-manager-detail__head { padding: calc(var(--fx-space) * 1.5); border-radius: var(--fx-radius-lg); background: linear-gradient(135deg, var(--fx-accent-soft), var(--fx-surface2)) }
-.axp-plugin-manager--catalog .axp-plugin-manager-tabs__tab { border-radius: 999px; border-bottom: 0 } .axp-plugin-manager--catalog .axp-plugin-manager-tabs { border-bottom: 0; gap: calc(var(--fx-space) * 0.4) }
-.axp-plugin-manager--catalog .axp-plugin-manager-tabs__tab.is-active { background: var(--fx-text); color: var(--fx-bg) }
+.axp-plugin-manager--catalog .axp-plugin-manager-tabs { border-bottom: 0; gap: calc(var(--fx-space) * 0.4) }
 
 /* ---------- narrow desktop: studio drawer takes the rail's room ---------- */
 /* Install view: the plugin catalog */
@@ -300,13 +281,13 @@
   .axp-plugin-manager-studio__rail .axp-plugin-manager-eyebrow, .axp-plugin-manager-studio__layouts { display: none }
   .axp-plugin-manager-studio__title { margin: 0 var(--fx-space) 0 0; font-size: calc(var(--fx-font-size) * 18 / 14) }
   .axp-plugin-manager-studio__filters { flex-direction: row; margin: 0 }
-  .axp-plugin-manager-studio__filter { white-space: nowrap }
+  .fx-chip.axp-plugin-manager-studio__filter { white-space: nowrap }
   .axp-plugin-manager-studio__drawer { position: static; max-height: none; order: -1 }
   .axp-plugin-manager-mission__grid { grid-template-columns: minmax(0, 1fr) }
   .axp-plugin-manager-mission__signals { position: static; max-height: none; order: -1 }
   .axp-plugin-manager-md { grid-template-columns: minmax(0, 1fr) }
   .axp-plugin-manager-md__list { flex-direction: row; overflow-x: auto; max-height: none }
-  .axp-plugin-manager-md__item { flex: none }
+  .axp-plugin-manager-md__item[data-fx-row] { flex: none }
   .axp-plugin-manager-hero { padding: calc(var(--fx-space) * 1.25); gap: var(--fx-space) }
   .axp-plugin-manager-hero .axp-plugin-manager-mono--lg { width: calc(var(--fx-space) * 4.5); height: calc(var(--fx-space) * 4.5); font-size: calc(var(--fx-font-size) * 20 / 14) }
   .axp-plugin-manager-hero__text h2 { font-size: calc(var(--fx-font-size) * 22 / 14) }

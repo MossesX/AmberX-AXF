@@ -11,8 +11,8 @@ public object SpokenText {
     /** "Gmail dot com" → "gmail.com", "www.Netflix.com" → "netflix.com", "Bank of America" → "bank of america". */
     public fun site(heard: String): String = heard.trim().replace(dot, ".").replace(spaces, " ").lowercase().removePrefix("www.").trim(' ', '.')
 
-    /** Spoken passwords are kept as heard (trimmed); the user edits them before saving. */
-    public fun password(heard: String): String = heard.trim()
+    /** Spoken passwords have every space removed ("hunter two 99" → "huntertwo99"); the user edits them before saving. */
+    public fun password(heard: String): String = heard.replace(spaces, "")
 
     /**
      * Spoken codes (unlock phrases) compare as normalized words, so punctuation and case never matter:

@@ -1026,7 +1026,39 @@ def _read_plugin_manifest(folder: Path) -> dict[str, Any]:
         raise ValueError("plugin id must be namespaced, e.g. ai.amberx.axf.console.hub")
     if "axf-console" not in (raw.get("targets") or []):
         raise ValueError('plugin.json targets must include "axf-console"')
+    _plugin_tab(raw)  # a wrong "tabable" is the plugin's own problem, reported like any other
     return raw
+
+
+_VIEW_ID = _re.compile(r"[a-z0-9][a-z0-9._-]{0,63}\Z")
+_ICON_ID = _re.compile(r"[a-z0-9][a-z0-9-]{0,39}\Z")
+
+
+def _plugin_tab(m: dict[str, Any]) -> dict[str, str] | None:
+    """plugin@1 `tabable` (Oct 22 2026; = framework/cli/plugins.mjs checkTabable): the tab a host app may add for this
+    plugin ({view, label, icon?}), None when it isn't tabable. Raises ValueError on a wrong declaration."""
+    t = m.get("tabable", False)
+    views = [p[5:] for p in (m.get("provides") or []) if isinstance(p, str) and p.startswith("view:")]
+    if t is False:
+        return None
+    if t is True:
+        if not views:
+            raise ValueError('"tabable": true needs a page (a "view:<id>" in provides)')
+        return {"view": views[0], "label": str(m.get("name", ""))}
+    if not isinstance(t, dict) or set(t) - {"view", "label", "icon"}:
+        raise ValueError('"tabable" is false, true or {view, label?, icon?}')
+    view = t.get("view")
+    if not isinstance(view, str) or not _VIEW_ID.match(view) or view not in views:
+        raise ValueError('"tabable".view must be a page the plugin provides ("view:<id>")')
+    label = t.get("label", m.get("name", ""))
+    if not isinstance(label, str) or not label.strip() or len(label) > 80:
+        raise ValueError('"tabable".label is short text')
+    out = {"view": view, "label": label.strip()}
+    if "icon" in t:
+        if not isinstance(t["icon"], str) or not _ICON_ID.match(t["icon"]):
+            raise ValueError('"tabable".icon is an icon name')
+        out["icon"] = t["icon"]
+    return out
 
 
 def load_plugins() -> None:
@@ -1053,6 +1085,7 @@ def load_plugins() -> None:
                 "author": m.get("author", ""), "provides": m.get("provides", []), "scopes": m.get("scopes", []),
                 "enabledByDefault": m.get("enabledByDefault", True) is not False,
                 "wallUsers": m.get("wallUsers") is True, "userGrantable": m.get("userGrantable") is True,
+                "tabable": _plugin_tab(m),
             })
             entry = folder / "server" / "__init__.py"
             if entry.exists():
@@ -1118,7 +1151,7 @@ import credentials  # noqa: E402
 
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
-                            log=log, plugin_enabled=plugin_enabled, terminal_lines=lambda: list(_state.get("terminal", [])))
+                            log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
 load_plugins()
 _prune_plugin_state()
@@ -1449,6 +1482,7 @@ def _pending_file() -> Path:
 ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],
                              systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
+console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve)
 
 
 async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:

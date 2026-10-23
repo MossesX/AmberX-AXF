@@ -52,8 +52,16 @@ axf_stop_container() {
 axf_https_redirect_labels() {
   local -n _axf_out="$1"
   local _axf_r="$2" _axf_domain="$3"
-  _axf_out+=(-l "traefik.http.routers.$_axf_r-http.rule=Host(\`$_axf_domain\`)" -l "traefik.http.routers.$_axf_r-http.entrypoints=http"
+  _axf_out+=(-l "traefik.http.routers.$_axf_r-http.rule=$(axf_router_rule "$_axf_domain")" -l "traefik.http.routers.$_axf_r-http.entrypoints=http"
     -l "traefik.http.routers.$_axf_r-http.middlewares=$_axf_r-https" -l "traefik.http.middlewares.$_axf_r-https.redirectscheme.scheme=https")
+  [ -z "${AXF_ROUTER_PRIORITY:-}" ] || _axf_out+=(-l "traefik.http.routers.$_axf_r-http.priority=$AXF_ROUTER_PRIORITY")
+}
+
+# axf_router_rule DOMAIN → the Traefik rule: Host(`DOMAIN`), or, with AXF_ROUTER_PATHS set (a Traefik matcher such as
+# "Path(`/`) || PathPrefix(`/assets/`)"), only those paths on that host. With AXF_ROUTER_PRIORITY the routers get that
+# priority, so an app can take some paths of a host another container serves (the rest stays with it).
+axf_router_rule() {
+  if [ -n "${AXF_ROUTER_PATHS:-}" ]; then printf '%s\n' "Host(\`$1\`) && ($AXF_ROUTER_PATHS)"; else printf '%s\n' "Host(\`$1\`)"; fi
 }
 
 # axf_router_labels ARRAY ROUTER DOMAIN PORT NETWORK → appends Traefik's labels for https://DOMAIN → container PORT:
@@ -63,7 +71,8 @@ axf_router_labels() {
   local _axf_r="$2" _axf_domain="$3" _axf_port="$4" _axf_net="$5"
   _axf_rl+=(-l traefik.enable=true -l "traefik.docker.network=$_axf_net")
   axf_https_redirect_labels "$1" "$_axf_r" "$_axf_domain"
-  _axf_rl+=(-l "traefik.http.routers.$_axf_r.rule=Host(\`$_axf_domain\`)" -l "traefik.http.routers.$_axf_r.entrypoints=https"
+  [ -z "${AXF_ROUTER_PRIORITY:-}" ] || _axf_rl+=(-l "traefik.http.routers.$_axf_r.priority=$AXF_ROUTER_PRIORITY")
+  _axf_rl+=(-l "traefik.http.routers.$_axf_r.rule=$(axf_router_rule "$_axf_domain")" -l "traefik.http.routers.$_axf_r.entrypoints=https"
     -l "traefik.http.routers.$_axf_r.tls=true" -l "traefik.http.routers.$_axf_r.tls.certresolver=letsencrypt"
     -l "traefik.http.services.$_axf_r.loadbalancer.server.port=$_axf_port")
 }

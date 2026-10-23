@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261019-b31f3ef434",
+  "createdAt": "2026-10-18T23:37:26.000Z",
+  "updatedAt": "2026-10-19T01:37:26.000Z",
+  "kind": "build",
+  "title": "Console behind axHub's sign-in wall",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`deploy/install-console.sh` step 6 adds Traefik labels to the console container: a headers middleware that strips client-sent `X-Auth-User/Role/Via`, then forwardAuth to `https://axhub.amberxai.com/auth/verify` (`AXF_WALL_HUB` overrides). Only signed-in **admins** of the hub get in; browsers without",
+    "commits": [
+      {
+        "sha": "c5ecef0",
+        "message": "Hub users can use the AI assistant: per-user permissions on the hub, wall identity in the console"
+      },
+      {
+        "sha": "8edb8ee",
+        "message": "Hub users: fixes from the independent security review"
+      },
+      {
+        "sha": "ba87ce4",
+        "message": "Hub users in the console: default-deny for users, themes and plugins granted per user (in review)"
+      },
+      {
+        "sha": "2dd1822",
+        "message": "Merge hub users in the console (default-deny, per-user theme and plugin grants) with signed wall answers"
+      },
+      {
+        "sha": "68a6ab0",
+        "message": "Fix console installer stopping after removing the container (wall on)"
+      },
+      {
+        "sha": "49c287d",
+        "message": "Fix console start: empty docker run arg from container-access host.sh"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-19T01:37:26.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "console-behind-axhub-s-sign-in-wall"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-18T23:37:26.000Z",
+  "finishedAt": "2026-10-19T01:37:26.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "deploy/install-console.sh"
+  ]
+}

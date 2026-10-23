@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-21T10:20:04.160Z",
+ "updatedAt": "2026-10-23T05:43:56.671Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -650,7 +650,12 @@
    "detail": "Brett, Oct 18 2026 (parked as unsafe: AI patching and cascading uninstalls need design and review before anyone builds it):\n\n1. When a plugin could potentially conflict with another plugin, raise a developer alarm (alerts library, source conflicts) shown as an expandable row grid like the Systems check grid: same kinds of details per row, fix instructions and external links.\n2. Each conflict row has 3 badges/actions: (a) uninstall a plugin - choose which one; (b) ignore; (c) use AI to patch the conflict. The patch must NOT alter any plugin source.\n3. Patches are tracked and listed in an Installed add-ons list that covers plugins, add-ons, modules, libraries and patches. Installing a patch is tracked and the patch can be removed.\n4. Removing a patch uninstalls every conflicting plugin it patched; those plugins must then be reinstalled.\n\nBuilds on: alerts library (conflicts source, diagnostics: same asset id / setting key / settings tab from two named modules; plugins:dup ids on the server), plugin-lifecycle@1 (install/uninstall scripts, backups), plugin-manager (Fable, pending), agent manager add-ons (agent-addon@1 install/uninstall tracking), axf.llm@1 for the AI patch.\nOpen questions for Brett at build time: what counts as a potential conflict beyond the runtime diagnostics (routes, capability services, settings keys, assets, nav ids, CSS prefixes, data dirs?); where patches live (an overlay layer the console applies at load, never the plugin folder); whether removing a patch should back up the plugins first and offer one-tap reinstall.",
    "model": "Fable",
    "status": "unsafe",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 22 2026: patches-plugins (Opus) adds Patches-owned plugin lists per hosted app and an auto install of missing plugins; check for overlap when this is designed.",
+     "at": "2026-10-22T18:37:50.877Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Design note, part 1 (no code): `_claude/memory/docs/plugin-conflicts.md` — what counts as a potential conflict beyond runtime diagnostics: routes (`/api/plugins/<f>/`), capability services (two providers of one `axf.x@1`), settings keys, asset ids, nav ids, CSS prefixes (`axp-*`), data dirs, Python module names. For each: how it is detected from `plugin.json` + the bundle + `plugin-inventory@1` facts, severity, false-positive risk.",
@@ -720,7 +725,7 @@
    ],
    "createdAt": "2026-10-18T20:15:46.216Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "updatedAt": "2026-10-22T18:37:50.877Z",
    "estimate": "6.5 h",
    "source": "chat"
   },
@@ -1069,8 +1074,8 @@
    "createdAt": "2026-10-21T03:58:03.794Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.159Z",
-   "source": "chat",
-   "estimate": "1 d"
+   "estimate": "1 d",
+   "source": "chat"
   },
   {
    "id": "console-android-native-tabs",
@@ -1284,8 +1289,1019 @@
    "createdAt": "2026-10-21T03:58:03.806Z",
    "builtAt": "",
    "updatedAt": "2026-10-21T10:20:04.160Z",
-   "source": "chat",
-   "estimate": "2.5 d"
+   "estimate": "2.5 d",
+   "source": "chat"
+  },
+  {
+   "id": "patches-wrapper",
+   "title": "Patches: Android wrapper app (Console + Pilot + axHub tabs) + embed@1",
+   "detail": "Brett, Oct 21 2026 (voice): take the Console / Pilot / axHub tab group out of the Dev Console so Console, Build Pilot and axHub are each their own app again, and make a new app, Patches, that is just one banner + a tab group showing the three apps in tabs; when an app runs inside Patches its own banner is hidden and Patches shows the one banner. Android first (Android hold lifted for Patches, Oct 21; web Patches later). Design Brett chose: native Android shell, web tabs — the Dev Console (console.amberxai.com), Build Pilot (pilot.amberxai.com) and axHub each load in an origin-locked WebView kept alive across tab switches; Build Pilot has no Android app yet, so its tab is the web app. The framework gains embed@1 (cross-port): a host marks the pages it embeds and the embedded app hides the chrome the host shows (its banner by default) over the user's own choice, which stays saved for standalone runs. Model: Fable (changes how GUIs work across apps). Built on Opus-free Fable session Oct 21 2026 in branch fable/patches-wrapper.",
+   "model": "Fable",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Hub copy of this list (axhub.memory_* project amberx-axf, data area) held only 10 items on Oct 21 2026 while the repo snapshot held 20 — check `claude-sync status` on the VPS before trusting either; this item was added to the repo snapshot by the Fable build session.",
+     "at": ""
+    },
+    {
+     "text": "Built Oct 21 2026 on Fable: branch fable/patches-wrapper, PR #5; Android CI green (kernel tests incl. EmbedConformanceTest, lib-hub, patches-debug.apk 20.6 MB). Report _claude/memory/docs/rebuilds/patches-wrapper.md.",
+     "at": "2026-10-21T16:56:48.036Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "1a. Framework embed@1 (web reference): `core/engines/embed.ts` — the marker a host app puts on the pages it embeds (query `?axf-embed=<host>[&axf-embed-hide=…]`, user agent `AXF-Embed/<host>[/<types>]`), host id rules, hidden-chrome cleaning (hideable types only, default banner, `none`), host helpers `userAgentSuffix` / `embedUrl`; fixture `spec/fixtures/embed.json`.",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.835Z"
+    },
+    {
+     "text": "1b. Hide engine forced layer + runtime (web): `hiddenSlots(overrides, defaults, forced)`; `AxfRuntime.embedded` (detected from the page or passed), `embedHiddenSlots`, `slotHiddenByHost`, `setSlotHidden` refuses host-shown chrome with a toast and never writes an override; `AppShell` marks `.fx-frame[data-axf-embed]`; lib-settings greys the slot picker out (\"Shown by <host>\"); `spec/check-embed.mts` in CI.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.894Z"
+    },
+    {
+     "text": "1c. Kotlin twins: `EmbedEngine` (same fixture), `HideEngine.hiddenSlots(…, forced)`, `AxfRuntime(embedded = …)` + `slotHiddenByHost`, Compose settings chips greyed; `EmbedConformanceTest` + the hide fixture's forced cases in `ConformanceTest`.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.942Z"
+    },
+    {
+     "text": "2. Dev Console: remove the App tabs plugin cleanly (`uninstall.mjs --all`, lifecycle check clean), strip its doc lines, keep the `app.frame.top` / `app.frame.cover` slots for other plugins; the console stands alone with its own banner.",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:26:19.992Z"
+    },
+    {
+     "text": "3a. Patches app scaffold: `axf init apps/patches` (android-compose, developer app: look + settings from axHub, hub library), app id `patches`, package `ai.amberx.axf.patches`, project manifest (repo `MossesX/patches` reserved), own layout asset `patches-tabs` (top tabs, no menubar/toolbar/status, full width), nav asset `patches-tabs` with the three tabs, manifest hides toolbar/app-menu.",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.831Z"
+    },
+    {
+     "text": "3b. lib-hub `WebAppView`: a full web-app WebView (JavaScript + DOM storage on, cache allowed, origin allowlist with the hub origin for the sign-in wall, no file/content access, no mixed content, downloads to the hub app catalog handler), user agent suffix from `EmbedEngine.userAgentSuffix(\"patches\")`, `WebAppHolder` that keeps one WebView per tab alive across tab switches (reparented, never destroyed until the activity goes), back button = page history.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.885Z"
+    },
+    {
+     "text": "3c. Patches views: three routes (console / pilot / axhub) each rendering the holder's WebView for that tab; the Patches banner (logo, day/night switch, clock, settings button) is the one banner; hub sign-in via the developer-app waiting screen (shared cookie store = one session for every tab); Settings → Patches group: hub address, each tab's URL, reload tab, open in the phone's browser.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.942Z"
+    },
+    {
+     "text": "4. Wiring: CI (`android.yml` builds every app `app-bundle.mjs list --android` finds → `patches-debug.apk` + app catalog entry), `project.manifest.json` validated (`axf project validate --all`), `framework/catalog` + tracker, CLAUDE.md status, rules note (Android hold exception for Patches), PORTING.md, decisions.md.",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:47.990Z"
+    },
+    {
+     "text": "5. Proof: web checks (`check-embed`, `check-widgets`, `check-appearance`, `check-app-menu`, `check-hub`, `axf validate --framework`, console typecheck), before/after web screenshots (console with and without the tab group; console embedded = no banner), push `fable/patches-wrapper` (Android shots by `rebuild-shots.yml`), differences report `_claude/memory/docs/rebuilds/patches-wrapper.md`, LOG.md line, change-log result.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:56:55.399Z"
+    }
+   ],
+   "createdAt": "2026-10-21T16:26:16.023Z",
+   "builtAt": "2026-10-21T16:56:48.038Z",
+   "updatedAt": "2026-10-21T16:56:55.399Z",
+   "planId": "x.app.patches",
+   "source": "chat"
+  },
+  {
+   "id": "build-manager-history",
+   "title": "Build manager: global live tracking, Built history, search, Start build now",
+   "detail": "Brett, Oct 21 2026: every session on every machine reports builds to axHub (change-log@1 with build stats: ref, model, estimate, actual tokens/cost, status, heartbeat, surface, host, areas); Build manager shows them live, adds a Built history (cost + time by model/week), a search bar, and a context-menu Start build now (dependency closure, overlap guard, axHub vps.run headless Claude Code, verification). Backfill of everything already built. Branch feat/build-manager-history.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Reporting contract: build stats fields in change-log@1 (Node + Python validators + schema)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.830Z"
+    },
+    {
+     "text": "Shared pricing file + cost from Claude Code transcript usage",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.910Z"
+    },
+    {
+     "text": "changes.mjs: open/result/beat flags, PreToolUse progress, heartbeat, subagents, global hooks",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:00.978Z"
+    },
+    {
+     "text": "claude.ai reporting via axhub.memory_write: doc + rules (shared + project) + one-line setup",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:24:01.047Z"
+    },
+    {
+     "text": "Backfill script (idempotent, dry-run) from pending, queue, rebuild log, harvests, Status, git",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.177Z"
+    },
+    {
+     "text": "Run the backfill + live entries for this build and the Fable build (through axHub)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.541Z"
+    },
+    {
+     "text": "Build manager server: change-log feed, live/built index, hub events + polling",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.274Z"
+    },
+    {
+     "text": "Built history view: totals by model / week, filters, cost badges",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.438Z"
+    },
+    {
+     "text": "Search bar + Live shows change entries (elapsed vs estimate, cost, model) + banner",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.546Z"
+    },
+    {
+     "text": "Orchestrator core: dependency closure, overlap check, reorder, brief",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.625Z"
+    },
+    {
+     "text": "Orchestrator server: start route, vps.run approval + retries, verification",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.792Z"
+    },
+    {
+     "text": "Start build now: context menu + row button + approval link/alert",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.877Z"
+    },
+    {
+     "text": "Tests: build-manager + codebase-changes (fake axHub, dry run)",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:13.954Z"
+    },
+    {
+     "text": "Checks: check-theme, console tsc + vite, menu-reach, plugin self-tests",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-21T16:43:14.029Z"
+    },
+    {
+     "text": "Docs, CLAUDE.md Status, PR, CI",
+     "at": "2026-10-21T16:02:06.419Z",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-21T17:11:28.623Z"
+    }
+   ],
+   "createdAt": "2026-10-21T16:02:06.336Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-21T17:11:28.623Z",
+   "estimate": "6.5 h",
+   "source": "claude-code"
+  },
+  {
+   "id": "axhub-web-hub-rules",
+   "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
+   "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Opus build Oct 21 2026: apps/axhub-web (approvals, apps, hub status, planned areas), hub-side cross-site reads for /apps.json (axHub decision #90). Report: _claude/memory/docs/axhub-web.md. Android is on hold, so the Kotlin twin waits for the hold to lift — record it in spec/PORTING.md meanwhile.",
+     "at": "2026-10-22T01:57:53.687Z"
+    },
+    {
+     "text": "Oct 23 2026: branch claude/axhub-web-on-hub (Opus) changed apps/axhub-web (manifest hidden: [], deploy/install.sh now targets axhub.amberxai.com page paths). Rebase on it; no clash with the lib-hub harvest itself.",
+     "at": "2026-10-23T02:09:40.262Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Move interpretApps + the build/link rules out of apps/axhub-web/src/hub/feed.ts into framework/libs/hub/hub.ts (appsFeedUrl, fetchHubApps, interpretApps, APPS caps); keep the app importing them. Web self-test still green.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Add an `apps` section to spec/fixtures/hub-approvals.json (good reply, 401, 403, bad file names, foreign link, caps, dedupe, sorting) and replay it from framework/spec/check-hub.mts; move the 52 app checks onto the fixture.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin twin in framework/android/lib-hub (HubRules.interpretApps + HubClient.apps) replaying the same fixture — only when the Android hold has lifted; otherwise record the gap in framework/spec/PORTING.md and tick this step.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Point the Android AXHub app’s Apps tab at the shared rules (it reads /apps.json itself today), and the web app at the library; both show the same sizes, times and short hashes.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Report _claude/memory/docs/rebuilds/axhub-web-hub-rules.md (what moved, what the fixture pins, what the Android side still owes), LOG.md line, CLAUDE.md Status, pending complete.",
+     "at": "2026-10-22T01:57:53.687Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T01:57:53.687Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T02:09:40.262Z",
+   "estimate": "2 h",
+   "source": "session"
+  },
+  {
+   "id": "patches-plugins",
+   "title": "Patches manages the plugins of the apps it hosts (Opus)",
+   "detail": "Brett, Oct 22 2026: when Patches loads developer apps in tabs, Patches owns all plugins. New embed@1 take `plugins`: inside such a host an app loads only the plugins Patches has installed and enabled for it (its own on/off switches don't apply), and its plugin hooks (Settings → Plugins, Plugin Manager, plugin switches, plugin menu entries) are greyed out with \"Plugins are managed in Patches\". The app reports the plugins it has (`plugins` message); Patches compares with its own list, tries to install the missing ones by itself, and shows a Systems check entry with Auto fix while any are missing. Web first (patches-web + console); Patches Android and Kotlin twin deferred.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built Oct 22 2026 on Opus, branch claude/project-thread-eew3jm. Not screenshot-verified (the apps wait for axHub in the build sandbox).",
+     "at": "2026-10-22T18:47:18.545Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Framework: embed@1 take `plugins` (lock mode: hooks greyed with a note, not dropped) + messages `plugins` (guest → host report) and `plugins-enabled` (host → guest); fixture cases + check-embed.mts.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.600Z"
+    },
+    {
+     "text": "Runtime + React: rt.hostPlugins state, locked takes in the app menu / dispatch, Settings → Plugins note and greyed switches.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.658Z"
+    },
+    {
+     "text": "Console: inside a host that takes plugins, load only the plugins the host enabled; report its plugins; plugin-manager + plugin-switches show the note.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.732Z"
+    },
+    {
+     "text": "Patches web server: plugin store per app (/data/plugins.json), routes GET /api/plugins, POST install/enable; tests.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.794Z"
+    },
+    {
+     "text": "Patches web UI: compare reports, auto install, Systems check banner entry with Auto fix, Settings → Patches → Plugins switches; tabs take `plugins`.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.850Z"
+    },
+    {
+     "text": "Docs, PORTING.md deferral, CLAUDE.md status, decisions, tests green.",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T18:47:18.905Z"
+    }
+   ],
+   "createdAt": "2026-10-22T18:37:44.249Z",
+   "builtAt": "2026-10-22T18:47:18.490Z",
+   "updatedAt": "2026-10-22T18:47:18.905Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-plugins-fable",
+   "title": "Patches manages hosted apps' plugins (Fable rebuild)",
+   "detail": "Fable rebuild of the Opus build `patches-plugins` (Brett, Oct 22 2026: Fable was suggested, Opus chosen, so a Fable rebuild is parked). Revisit the embed@1 `plugins` take as a cross-port contract: the lock mode for taken hooks, the `plugins` / `plugins-enabled` messages, where plugins really run inside a host, and the Kotlin twin once the Android hold lifts. Start by reading the Opus build's report and replacing it in place.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Read the Opus build (branch claude/project-thread-eew3jm, its PR and report) and write a design note: what stays, what changes in the contract.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Rework the embed@1 `plugins` take + messages in framework/core/engines/embed.ts; regenerate fixtures; check-embed.mts.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Runtime + React layer: locked takes, host plugin list, greyed plugin hooks everywhere (menus, settings, toolbar, context menu).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Console + Patches web on the reworked contract; Patches Android when the hold allows (Kotlin EmbedTakes twin).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Systems check entry + auto install path reviewed (server store, failure handling, retries).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Differences report _claude/memory/docs/rebuilds/patches-plugins-fable.md + LOG.md + shots.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T18:37:44.308Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T18:37:44.308Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "todo-manager-tabs",
+   "title": "Todo manager plugin (from xGallery) + tabable plugins + Patches plugin tabs",
+   "detail": "Port xGallery tasks/todo manager to a console plugin; plugin@1 `tabable` field (default false); Patches web settings lists apps + tabable plugins, Add tab dialog.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch ccr-6621bec6-i0xrz6 (draft PR). Web only; Kotlin twins deferred in PORTING.md.",
+     "at": "2026-10-22T23:25:53.960Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "tabable field: plugin@1 schema, validator, template, README, every existing plugin",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.002Z"
+    },
+    {
+     "text": "todo-manager server (FastAPI router, JSON store, lists/entries CRUD)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.041Z"
+    },
+    {
+     "text": "todo-manager web: lists, tree/grid views, entry editor, settings",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.080Z"
+    },
+    {
+     "text": "console: page mode for a single view",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.120Z"
+    },
+    {
+     "text": "Patches web: tab list setting, Add tab dialog (apps + tabable plugins), plugin tabs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.161Z"
+    },
+    {
+     "text": "tests, docs, status, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:25:54.201Z"
+    }
+   ],
+   "createdAt": "2026-10-22T23:08:37.968Z",
+   "builtAt": "2026-10-22T23:25:53.915Z",
+   "updatedAt": "2026-10-22T23:25:54.201Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "session-close-race",
+   "title": "Fix: a closed assistant session log can be written back (save/close race)",
+   "detail": "LocalHost._save checks closed outside the lock; close() can unlink in between and the save writes the file back. Flakes ai-assistant test.py.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Fixed on branch ccr-6621bec6-i0xrz6 (PR #32): _save writes under the host lock, forget unlinks under it; race test in assistant_host/test.py (58).",
+     "at": "2026-10-23T00:08:41.756Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:07:55.175Z",
+   "builtAt": "2026-10-23T00:08:41.711Z",
+   "updatedAt": "2026-10-23T00:08:41.756Z",
+   "estimate": "15 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-autofix-jobs",
+   "title": "Fix systems check Auto fix (VPS fixes over 25 s marked failed; Fix all skipped VPS Auto fix)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": ""
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-22T20:20:34.515Z",
+   "builtAt": "2026-10-22T20:20:34.515Z",
+   "updatedAt": "2026-10-22T20:20:34.515Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-claude-on-fail",
+   "title": "Systems check: launch headless Claude Code on the VPS when a fix fails, shown in the building banner",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29 (commit 2a52f09)",
+     "at": "2026-10-22T20:44:42.519Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Setting + server launcher (brief, command, axHub approval, change-log entry)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Triggers: failed VPS Auto fix, failed server fix, Fix all failures; settings UI",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, docs, push",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:34:25.869Z",
+   "builtAt": "2026-10-22T20:44:42.448Z",
+   "updatedAt": "2026-10-22T20:44:42.519Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-auto-approve-all",
+   "title": "AXHub app: Approve everything except vps.run; waiting → approved notifications with alarm sound",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Approve-everything setting + vps.run exclusion in AutoApprove rules + tests",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Waiting notification first, then approved notification on an alarm-sound channel",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-22T20:47:38.691Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T20:47:38.691Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "push-banner-pull-all",
+   "title": "Push banner: Pull all button on the Needs main pulled in group",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T21:07:43.754Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-22T21:06:39.317Z",
+   "builtAt": "2026-10-22T21:07:43.682Z",
+   "updatedAt": "2026-10-22T21:07:43.754Z",
+   "estimate": "20 min",
+   "source": "chat"
+  },
+  {
+   "id": "push-banner-claude-fix",
+   "title": "Push banner: hand conflicted pulls and failed merges to headless Claude Code on the VPS (setting)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T22:37:36.833Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Server launcher: brief, command (clone per repo, worktree on the branch, git-only tools), axHub approval, change-log entry",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Triggers on update/merge failures + Fix with Claude button, settings, tests",
+     "at": "",
+     "estimate": "25 min"
+    }
+   ],
+   "createdAt": "2026-10-22T22:31:30.552Z",
+   "builtAt": "2026-10-22T22:37:36.773Z",
+   "updatedAt": "2026-10-22T22:37:36.833Z",
+   "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "autofix-through-mosses",
+   "title": "Route every Auto fix through Mosses: axhub_call tool for Mosses; systems check + push banner send vps.run through him",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-22T22:55:27.752Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "axhub_call tool in agent-manager (hub call, job follow, approval), coder add-on 2.1 + migration",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.428Z"
+    },
+    {
+     "text": "Systems check: VPS Auto fix + Claude on failure through Mosses",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.491Z"
+    },
+    {
+     "text": "Push banner: Fix with Claude through Mosses",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.553Z"
+    },
+    {
+     "text": "Tests, docs, push",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:55:27.612Z"
+    }
+   ],
+   "createdAt": "2026-10-22T22:49:40.096Z",
+   "builtAt": "2026-10-22T22:55:27.670Z",
+   "updatedAt": "2026-10-22T22:55:27.752Z",
+   "estimate": "2 h",
+   "source": "chat"
+  },
+  {
+   "id": "vps-run-terminal-output",
+   "title": "Approved VPS/shell commands: open the terminal plugin with the command and its output once it has run",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn, PR #29",
+     "at": "2026-10-23T00:09:00.474Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Run log of axhub_call shell runs (agent-manager service) + terminal server route",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T00:09:00.279Z"
+    },
+    {
+     "text": "Terminal: read-only Output tab opened by itself on a new run, setting, tests, docs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-23T00:09:00.348Z"
+    }
+   ],
+   "createdAt": "2026-10-23T00:04:16.316Z",
+   "builtAt": "2026-10-23T00:09:00.415Z",
+   "updatedAt": "2026-10-23T00:09:00.474Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "push-banner-branches-that-can-merge-cleanly",
+   "title": "Push banner: branches that can merge cleanly",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch ccr-60c22f01-swyyzn (PR #29).",
+     "at": "2026-10-23T04:06:51.531Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T04:06:48.309Z",
+   "builtAt": "2026-10-23T04:06:51.471Z",
+   "updatedAt": "2026-10-23T04:06:51.531Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "ai-keys",
+   "title": "AI keys plugin: several Anthropic keys, pick the active one for the assistant",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:40:17.479Z",
+   "builtAt": "2026-10-23T00:40:17.479Z",
+   "updatedAt": "2026-10-23T00:40:17.479Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-live-keys-credits",
+   "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T00:49:33.693Z",
+   "builtAt": "2026-10-23T00:51:52.239Z",
+   "updatedAt": "2026-10-23T00:51:52.239Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "credits-switch-ai-keys",
+   "title": "Credits check switches among AI keys saved keys and opens the AI keys dialog",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T01:13:32.733Z",
+   "builtAt": "2026-10-23T01:13:32.733Z",
+   "updatedAt": "2026-10-23T01:13:32.733Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio",
+   "title": "Walkthrough Studio: narrated framework walkthrough video assembly suite",
+   "detail": "apps/walkthrough-studio (react-ts on AXF). Projects column, categorized index tree (filters, search, drag-and-drop), status grid (built/partial/failed/skipped/needs review, progress, clip lengths, drag to trash, hideable columns), IDE layouts with show/hide panes, unlimited dockable/floating toolbars with a command picker, file browser, live browser with mouse recorder, narration script per piece, compiler plan (narrate + assemble, swap + recompile). Branch claude/framework-walkthrough-video-builder-qocfr1.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/framework-walkthrough-video-builder-qocfr1 (draft PR). Fable rebuild parked as walkthrough-studio-fable.",
+     "at": "2026-10-22T22:32:32.272Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Scaffold app (axf init), manifest, data model + store (projects, sections, pieces, toolbars)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.809Z"
+    },
+    {
+     "text": "Walkthrough content: categorized outline of every framework area, plugin, setting, flow (seed project)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.871Z"
+    },
+    {
+     "text": "Shell: app menu, banner, nav, IDE layouts, pane manager",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.928Z"
+    },
+    {
+     "text": "Index tree with filters/search/drag + status grid with columns, drag-to-trash",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:27.980Z"
+    },
+    {
+     "text": "Toolbars: unlimited, dock/float, command picker dialog",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.030Z"
+    },
+    {
+     "text": "Live browser + recorder, file browser, script/narration editor",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.094Z"
+    },
+    {
+     "text": "Compiler plan + export, project settings (lengths)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:28.152Z"
+    },
+    {
+     "text": "Tests, build, screenshots, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T22:32:40.585Z"
+    }
+   ],
+   "createdAt": "2026-10-22T22:00:29.631Z",
+   "builtAt": "2026-10-22T22:32:32.202Z",
+   "updatedAt": "2026-10-22T22:32:40.585Z",
+   "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio-fable",
+   "title": "Walkthrough Studio: workspace engine (panes, layouts, dockable + floating toolbars) as a framework contract (Fable rebuild)",
+   "detail": "Fable rebuild of the Opus build `walkthrough-studio` (branch claude/framework-walkthrough-video-builder-qocfr1; Brett Oct 22 2026: Fable was offered for new cross-app engines, Opus chosen). Lift the studio-local workspace (ui.ts: pane areas, layouts, floats; toolbars docked on any edge or floating, the command catalog + customizer; pointer DnD with the pop-up trash can) into framework/core + framework/react as an engine every app can use (asset types for workspace layouts and user toolbars?), with fixtures; then switch the studio onto it and remove its private copy. Android twin deferred (PORTING.md).",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [
+    {
+     "text": "Oct 22 2026: Opus harvested the studio into lib-dnd, lib-workspace, lib-datagrid, lib-tree, lib-recorder, lib-docstore + library@1 parts (pending walkthrough-harvest). This Fable rebuild now covers reviewing those libraries and the parts contract (Fable suggested, Opus chosen), plus the Kotlin twins once the Android hold lifts.",
+     "at": "2026-10-22T22:57:58.594Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Read the Opus build (apps/walkthrough-studio/src/studio: ui.ts, Workspace.tsx, dnd.tsx, commands.ts) and write a design note: what becomes framework contract, asset types or not.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Pure engine in framework/core/engines (workspace + toolbars: places, docking, catalog) with fixtures + check script.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React layer: WorkspaceHost, ToolbarDock, floating toolbar, pane tabs + splitters, DnD + trash can, customizer dialog.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Runtime + settings: saved per app, last save wins, search/app-menu hooks (panes, layouts, toolbars).",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Switch Walkthrough Studio onto it, delete its private copy; tests + screenshots; differences report.",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "PORTING.md deferred Kotlin twin; docs; CLAUDE.md.",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-22T22:32:28.215Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-22T22:57:58.594Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-harvest",
+   "title": "Harvest Walkthrough Studio into framework libraries with configurable features (dnd, workspace, datagrid, tree, recorder, docstore) + Build Pilot feature config",
+   "detail": "Branch claude/framework-walkthrough-video-builder-qocfr1. library@1 gains `parts` (features inside a library, each included by default or not, with its own params); installer + core helpers + fixture. Six web libraries harvested from apps/walkthrough-studio; the studio switches to them. Build Pilot lists each library part as a feature you can include and configure.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: AXF branch claude/framework-walkthrough-video-builder-qocfr1 (PR #31) + Build-Pilot branch claude/framework-walkthrough-video-builder-qocfr1. Fable review parked in walkthrough-studio-fable.",
+     "at": "2026-10-22T23:20:51.984Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "library@1 parts contract: core/library.ts + libraries.mjs + fixture + check",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.557Z"
+    },
+    {
+     "text": "lib-dnd + lib-tree",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.610Z"
+    },
+    {
+     "text": "lib-datagrid",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.673Z"
+    },
+    {
+     "text": "lib-workspace (panes, layouts, toolbars, customizer)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.727Z"
+    },
+    {
+     "text": "lib-recorder + lib-docstore",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.780Z"
+    },
+    {
+     "text": "Switch Walkthrough Studio onto the libraries; build, test, screenshots",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.828Z"
+    },
+    {
+     "text": "Build Pilot: library parts as configurable features",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.879Z"
+    },
+    {
+     "text": "Docs, PORTING.md, catalog, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-22T23:20:51.930Z"
+    }
+   ],
+   "createdAt": "2026-10-22T22:57:58.529Z",
+   "builtAt": "2026-10-22T23:20:51.501Z",
+   "updatedAt": "2026-10-22T23:20:51.984Z",
+   "estimate": "4 h",
+   "source": "chat"
+  },
+  {
+   "id": "axhub-web-app-live-at-axhub-amberxai-com-banner-",
+   "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
+   "detail": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T02:09:40.159Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T02:09:40.159Z",
+   "estimate": "30 min",
+   "source": "mcp"
+  },
+  {
+   "id": "axhub-web-rebuild",
+   "title": "Rebuild axHub web on the current framework so the hub look matches the other Patches apps",
+   "detail": "Branch ccr-46e5de6c-d9d9wh: re-bake + all console themes/assets shipped.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-23T05:32:20.790Z",
+   "builtAt": "2026-10-23T05:33:18.963Z",
+   "updatedAt": "2026-10-23T05:33:18.970Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "syscheck-rebake",
+   "title": "Systems check: one entry per app whose baked framework is out of date, Auto fix re-bakes it",
+   "detail": "Branch ccr-46e5de6c-d9d9wh (PR to follow): framework/cli/rebake.mjs + systems-check rebake rows with Auto fix.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Detect stale baked apps (lock vs framework) + derive checks",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.657Z"
+    },
+    {
+     "text": "Auto fix: re-bake + commit/push to a branch",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.664Z"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-23T05:40:04.669Z"
+    }
+   ],
+   "createdAt": "2026-10-23T05:37:28.383Z",
+   "builtAt": "2026-10-23T05:40:04.677Z",
+   "updatedAt": "2026-10-23T05:40:04.677Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "walkthrough-studio-deploy",
+   "title": "Deploy Walkthrough Studio at walkthrough.amberxai.com behind the axHub wall",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Dockerfile + nginx + installer (axf-deploy helpers, wall, auto-update)",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Merge, run the installer on the VPS through axHub",
+     "at": "",
+     "estimate": "15 min"
+    },
+    {
+     "text": "DNS + verify",
+     "at": "",
+     "estimate": "10 min"
+    }
+   ],
+   "createdAt": "2026-10-23T05:43:56.671Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-23T05:43:56.671Z",
+   "estimate": "45 min",
+   "source": "chat"
   }
  ]
 }

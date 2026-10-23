@@ -34,7 +34,7 @@ function Changes({ s }: { s: Snapshot }) {
   if (!d) return <p className="fx-muted fx-small">Comparing with the container now…</p>;
   const files = (label: string, tone: string, xs: string[] | undefined) => !!xs?.length && (
     <div><span className="fx-small fx-muted">{label}</span>
-      <ul className={`${P}__files`}>{xs.map((f) => <li key={f}><button type="button" className={`is-${tone}`} onClick={() => setFile(f)}>{f}</button></li>)}</ul>
+      <ul className={`${P}__files`}>{xs.map((f) => <li key={f}><button type="button" data-fx-row className={`is-${tone}`} onClick={() => setFile(f)}>{f}</button></li>)}</ul>
     </div>
   );
   return (
@@ -145,7 +145,7 @@ export function SnapshotsPanel() {
               <ul className={`${P}__list`}>
                 {list.map((s) => (
                   <li key={s.id} className={openId === s.id ? 'is-open' : undefined}>
-                    <button type="button" className={`${P}__item`} aria-expanded={openId === s.id} onClick={() => setOpenId(openId === s.id ? '' : s.id)}>
+                    <button type="button" data-fx-row className={`${P}__item`} aria-expanded={openId === s.id} onClick={() => setOpenId(openId === s.id ? '' : s.id)}>
                       <Icon name={s.meta?.restoreOf ? 'undo' : s.batch ? 'shield' : 'save'} size={14} />
                       <span className="fx-grow">{new Date(s.createdAt).toLocaleTimeString(undefined, { timeStyle: 'short' })} · {s.reason || 'snapshot'}</span>
                       <span className="fx-small fx-muted">{s.actor.name}</span>

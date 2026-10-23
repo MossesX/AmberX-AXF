@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-21T11:41:04.685Z",
+  "generatedAt": "2026-10-22T19:33:34.797Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -12,11 +12,11 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 80,
+      "built": 81,
       "partial": 11,
       "placeholder": 91,
       "planned": 0,
-      "total": 182,
+      "total": 183,
       "coverage": 44
     },
     "console": {
@@ -36,12 +36,12 @@
       "coverage": 47
     },
     "demos": {
-      "built": 11,
+      "built": 12,
       "partial": 5,
       "placeholder": 4,
       "planned": 63,
-      "total": 83,
-      "coverage": 13
+      "total": 84,
+      "coverage": 14
     }
   },
   "items": [
@@ -1144,6 +1144,17 @@
       "wave": 2,
       "module": "axf-kernel",
       "notes": ""
+    },
+    {
+      "id": "k.embed",
+      "tab": "kernel",
+      "group": "kernel-architecture-extension-safety",
+      "title": "Embed engine (embed@1): a host app marks the pages it embeds (query / user-agent marker); the embedded app hides the chrome the host shows (its banner by default) over the user's choice",
+      "tag": "lib",
+      "status": "built",
+      "wave": 2,
+      "module": "axf-kernel",
+      "notes": "embed@1 on web + Android: engine, hide forced layer, runtime, settings greying; Patches is the first host"
     },
     {
       "id": "k.appmenu",
@@ -2601,7 +2612,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": null,
-      "notes": ""
+      "notes": "lib-hub WebAppView hosts web-port AXF apps in Patches (embed@1 marker, no JS bridge yet); the bridged engine itself is still a placeholder"
     },
     {
       "id": "w.ai",
@@ -4599,6 +4610,17 @@
       "wave": 3,
       "module": null,
       "notes": ""
+    },
+    {
+      "id": "c.patches",
+      "tab": "demos",
+      "group": "dev-server-and-ai",
+      "title": "Patches: one banner, three tabs — the Dev Console, Build Pilot and axHub as web apps in origin-locked web views kept alive across tabs (embed@1 host)",
+      "tag": "app",
+      "status": "built",
+      "wave": 3,
+      "module": "apps/patches",
+      "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)"
     },
     {
       "id": "c.mcp",

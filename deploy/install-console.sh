@@ -223,5 +223,6 @@ DNS_IP="$(getent hosts "$DOMAIN" | awk '{print $1}' | tail -n1 || true)"
 say "Dev Console:   $URL"
 say "Server panel:  $URL/panel"
 say "Setup check:   bash $DIR/deploy/console-doctor.sh   (fixes host issues the console banner lists)"
-say "AXF_TOKEN:     $AXF_TOKEN   (paste it into the panel's Connection → Token; saved in $ENVF)"
+# Never print the token itself: this runs every 5 minutes into /var/log/axf-console-update.log (Oct 21 2026).
+say "AXF_TOKEN:     ${AXF_TOKEN:0:4}…   (saved in $ENVF; view it with: cat $ENVF; a signed-in hub admin doesn't need it)"
 [ -n "$GITHUB_TOKEN" ] || say "Tip: re-run with GITHUB_TOKEN=ghp_… for one-click APK / Maven downloads from CI (with Contents: write it also lets Settings → Session check-in install for every clone)."

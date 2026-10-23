@@ -2,6 +2,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { createMcpLibrary, type McpCallResult, type McpConnected, type McpHost, type McpLogRow, type McpPromptResult, type McpResourceContents, type McpServerInput, type McpServerRecord, type McpSession } from '@console/axf/libs/mcp';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { appMenu } from './menu';
 
 /*
  * MCP client plugin (Fable rebuild, Oct 20 2026): the console's host for the framework's MCP client library
@@ -65,6 +66,7 @@ export const plugin: AxfWebLibrary = {
   id: ID, // the plugin's id (plugin.json); the library id stays the module name for its views/settings
   label: 'MCP client',
   version: '0.2.0',
+  appMenu,
   settingsTabs: lib.settingsTabs?.map((t) => ({ ...t, parent: 'plugins' })),
   settingsPanels: [
     ...(lib.settingsPanels ?? []),

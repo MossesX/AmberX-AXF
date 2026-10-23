@@ -40,6 +40,8 @@ jobs:
       - run: node framework/cli/axf.mjs libraries
       - name: Libraries and plugins conform to the theme engines
         run: node framework/cli/check-theme.mjs
+      - name: Plugin and library controls are framework controls (they inherit the app's style)
+        run: node framework/cli/check-controls.mjs
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
@@ -86,6 +88,16 @@ jobs:
           # Build with the plugin template installed, so the template and the plugin loader stay valid.
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           npm ci && npm run build
+      - name: axhub-web — re-bake the framework into it and build it
+        working-directory: apps/axhub-web
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
+          npm install --no-audit --no-fund --silent && npm run build
+      - name: walkthrough-studio — re-bake the framework into it and build it
+        working-directory: apps/walkthrough-studio
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
+          npm install --no-audit --no-fund --silent && npm run build
       - name: Theme swap — every colour and transparency follows the active colour and style themes
         working-directory: apps/console-web
         run: |
@@ -100,11 +112,16 @@ jobs:
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
+            npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
+            npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-hub.mts                    # lib-hub: hub-approvals.json replay (same file as Kotlin) + feed client + watcher
+            npx -y tsx framework/spec/check-embed.mts                  # embed@1: embed.json + hide.json forced cases (same files as Kotlin) + runtime forced layer
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
+            npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
+            npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
             python framework/python/axf/assistant_host/test.py        # live-session@1 host, providers, safety (shared assistant host runtime)
@@ -113,6 +130,7 @@ jobs:
             python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
             npx -y tsx framework/spec/check-plugin-inventory.mts
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
+            npx -y tsx framework/spec/check-library-parts.mts          # library@1 parts (features inside a library): core/library.ts = CLI installer (Kotlin twin deferred)
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py
@@ -253,6 +271,10 @@ jobs:
         with:
           name: axhub-debug.apk
           path: apps/axhub-android/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: patches-debug.apk
+          path: apps/patches/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: app-apks

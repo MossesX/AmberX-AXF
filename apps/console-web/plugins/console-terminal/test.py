@@ -232,6 +232,20 @@ before = len(c.get("/p/sessions").json()["items"])
 cx.set_context(current_token=lambda: "u" * 32)
 time.sleep(6)
 check(before > 0 and not c.get("/p/sessions").json()["items"], "a console token reset closes every terminal")
+# Approved VPS commands open here once they've run (axf.hub-runs@1 from the agent manager)
+r = c.get("/p/hub-runs").json()
+check(r["available"] is False and r["items"] == [], "no agent manager: no runs, nothing breaks")
+class FakeRuns:
+    def runs(self, since=0):
+        return [x for x in [{"id": "r1", "at": 1000, "tool": "vps.run", "command": "uptime", "output": "$ uptime\nexit 0 · 3 ms\nup 3 days", "exit": 0, "reason": "", "agent": "Mosses"},
+                            {"id": "r2", "at": 2000, "tool": "vps.run", "command": "df -h", "output": "exit 0", "exit": 0, "reason": "", "agent": "Mosses"}] if x["at"] > since]
+plugin_services.provide("axf.hub-runs@1", FakeRuns(), "fake-agent-manager")
+r = c.get("/p/hub-runs?since=1500").json()
+check(r["available"] and r["on"] and [x["id"] for x in r["items"]] == ["r2"], "only runs newer than since come back")
+c.put("/p/settings", json={"showHubRuns": False})
+check(c.get("/p/hub-runs").json()["items"] == [] and c.get("/p/settings").json()["showHubRuns"] is False, "switched off in Settings: nothing opens")
+c.put("/p/settings", json={"showHubRuns": True})
+plugin_services.withdraw("fake-agent-manager")
 root = os.environ["AXF_TERMINAL_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file() and p.suffix != ".pub" and p.name != "known_hosts")
       and all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_dir()), "data files and folders private (public key and known_hosts inside a private folder)")

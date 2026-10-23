@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "counter",
+  "id": "ws-review",
+  "name": "Needs review",
+  "version": "1.0.0",
+  "description": "Pieces waiting for review (counter `ws.review`).",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "counter": "ws.review",
+    "tone": "warning",
+    "hideAtZero": true,
+    "icon": "eye",
+    "link": "ws.pane:review",
+    "max": 99
+  }
+}

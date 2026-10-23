@@ -26,7 +26,8 @@ def _read(p: Path, default: Any) -> Any:
     return storage.read_json(p, default)
 
 
-DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True}
+DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True,
+                           "claudeOnFail": False, "claudeShell": False}
 
 
 def settings() -> dict[str, Any]:
@@ -41,8 +42,9 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
             for k in ("systems", "whatsnew"):
                 if k in patch["ai"]:
                     s["ai"][k] = bool(patch["ai"][k])
-        if "whatsNewBanner" in patch:
-            s["whatsNewBanner"] = bool(patch["whatsNewBanner"])
+        for k in ("whatsNewBanner", "claudeOnFail", "claudeShell"):
+            if k in patch:
+                s[k] = bool(patch[k])
         _write(data_dir() / "settings.json", s)
         return s
 

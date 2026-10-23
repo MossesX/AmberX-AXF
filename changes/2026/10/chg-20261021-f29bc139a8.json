@@ -1,0 +1,71 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261021-f29bc139a8",
+  "createdAt": "2026-10-21T02:48:58.000Z",
+  "updatedAt": "2026-10-21T04:48:58.000Z",
+  "kind": "build",
+  "title": "AXHub Android app",
+  "asked": "Backfilled from CLAUDE.md Status (built before builds reported themselves).",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "backfill",
+    "host": "backfill"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "`apps/axhub-android` (`axhub-android`, package `ai.amberx.axf.axhubandroid`, repo name reserved). Puts axHub approvals on Brett's phone: sign in once in an in-app web view locked to the hub's address (no JS, no off-hub navigation, session never backed up); a foreground service (`specialUse`) polls `",
+    "commits": [
+      {
+        "sha": "fa818e3",
+        "message": "AXHub: rename activity property that hid AxfActivity.app (CI compile fix)"
+      },
+      {
+        "sha": "4249824",
+        "message": "App catalog on axHub (app-catalog@1), axHub console tab, AXHub app fixes + Apps tab"
+      },
+      {
+        "sha": "84bea6a",
+        "message": "Fix frozen Android apps; light theme + no toolbar by default; collapsible toolbar; designed assets at init"
+      },
+      {
+        "sha": "6949cc2",
+        "message": "Widget kinds: eleven attachable widget types for banners and toolbars"
+      },
+      {
+        "sha": "4eb8b48",
+        "message": "Settings + look of developer apps from the axHub data server (appearance@1), waiting screen when the hub is down"
+      },
+      {
+        "sha": "33b90cb",
+        "message": "Switch AXHub and the approvals banner to lib-hub + lib-notifications; register the libraries"
+      }
+    ],
+    "tests": {},
+    "links": {}
+  },
+  "closed": {
+    "at": "2026-10-21T04:48:58.000Z",
+    "by": "backfill"
+  },
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "other",
+    "id": "axhub-android-app"
+  },
+  "surface": "backfill",
+  "startedAt": "2026-10-21T02:48:58.000Z",
+  "finishedAt": "2026-10-21T04:48:58.000Z",
+  "estimate": {
+    "minutes": 120,
+    "costUsd": 16.8
+  },
+  "costEstimated": true,
+  "areas": [
+    "apps/axhub-android"
+  ]
+}

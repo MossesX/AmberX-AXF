@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID, getData, refresh, setFocus, park } from './api';
 import { FableChip, FableView, ReportDialog } from './ui';
 import './fable-rebuilds.css';
+import { appMenu } from './menu';
 
 /*
  * Fable rebuilds: every build parked for Fable, in one view, with hooks wherever a rebuild comes up:
@@ -19,6 +20,7 @@ export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Fable rebuilds',
   version: '0.1.0',
+  appMenu,
   provides: ['axf.fable-rebuilds'],
   register(rt) {
     void refresh();

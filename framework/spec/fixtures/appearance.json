@@ -12,6 +12,8 @@
     "button",
     "slider",
     "container",
+    "gauge",
+    "meter",
     "banner",
     "clock",
     "search-bar",
@@ -216,6 +218,39 @@
       "ok": "#1a8f5a",
       "scheme": "light"
     },
+    "coral-studio": {
+      "bg": "#f7f4f3",
+      "fg": "#261b1a",
+      "muted": "#73625f",
+      "card": "#ffffff",
+      "line": "#e5dbd8",
+      "accent": "#d9533a",
+      "danger": "#c22d47",
+      "ok": "#2b8a5e",
+      "scheme": "light"
+    },
+    "graphite-lime": {
+      "bg": "#141516",
+      "fg": "#ecefe9",
+      "muted": "#9aa19a",
+      "card": "#1b1d1f",
+      "line": "#33373b",
+      "accent": "#b6e34b",
+      "danger": "#ff6b6b",
+      "ok": "#5fd38a",
+      "scheme": "dark"
+    },
+    "midnight-ink": {
+      "bg": "#0b1220",
+      "fg": "#e4ebf7",
+      "muted": "#8d9bb3",
+      "card": "#111a2b",
+      "line": "#24324f",
+      "accent": "#38c3e8",
+      "danger": "#f2667a",
+      "ok": "#3fcf8e",
+      "scheme": "dark"
+    },
     "neon-tide": {
       "bg": "#0c0a18",
       "fg": "#ece9ff",
@@ -226,6 +261,17 @@
       "danger": "#ff4d8d",
       "ok": "#3ee6a0",
       "scheme": "dark"
+    },
+    "sage-paper": {
+      "bg": "#f3f4ef",
+      "fg": "#1d2a22",
+      "muted": "#5f6e64",
+      "card": "#ffffff",
+      "line": "#d8ddd2",
+      "accent": "#2f7d5b",
+      "danger": "#c2413b",
+      "ok": "#2f8a4f",
+      "scheme": "light"
     }
   },
   "retryMs": {

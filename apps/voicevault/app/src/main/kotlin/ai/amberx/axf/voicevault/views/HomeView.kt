@@ -55,6 +55,10 @@ import ai.amberx.axf.voicevault.vault.isUnlocked
 import ai.amberx.axf.voicevault.vault.Stage
 import ai.amberx.axf.voicevault.vault.VaultSession
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
+import ai.amberx.axf.voicevault.background.WakeDelivery
+import ai.amberx.axf.voicevault.background.WakeListener
+import ai.amberx.axf.voicevault.background.WakeState
 
 /** The Voice screen: banner on top when a password is ready to copy, the mic, and the current step. */
 @Composable
@@ -72,7 +76,9 @@ fun HomeView() {
         Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two), horizontalAlignment = Alignment.CenterHorizontally) {
             MicHeader(session, voice, stage)
             NoteLine(note)
+            ListeningFor(session, stage)
             StageBody(session, voice, stage)
+            HowItWorks(session)
         }
     }
 }
@@ -124,6 +130,19 @@ private fun MicHeader(session: VaultSession, voice: AxfVoice?, stage: Stage) {
     ) { AxfIcon(if (stage.isUnlocked()) "unlock" else if (listening) "mic" else "lock", size = Axf.space.touchTarget, tint = if (listening) c.accent else c.muted) }
     AxfHeading(title(stage), level = 2)
     AxfText(subtitle(stage, listening, hearing), muted = true, style = Axf.type.bodyMedium.copy(textAlign = TextAlign.Center))
+    LiveTranscript(session)
+}
+
+/** What's being said, live, in plain text (Settings → Show what you say; on by default). */
+@Composable
+private fun LiveTranscript(session: VaultSession) {
+    val heard by session.heard.collectAsState()
+    if (heard.isEmpty()) return
+    val shown = if (session.showSpeech) heard else "•".repeat(heard.length)
+    AxfCard(Modifier.fillMaxWidth()) {
+        AxfText("Hearing", muted = true, style = Axf.type.labelMedium)
+        AxfText(shown, style = Axf.type.code.copy(textAlign = TextAlign.Center), modifier = Modifier.fillMaxWidth())
+    }
 }
 
 private fun title(stage: Stage): String = when (stage) {
@@ -164,11 +183,6 @@ private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
         is Stage.PinEntry -> PinPrompt("Enter your PIN", stage.previous, onSubmit = { session.submitPin(it) }, onCancel = { session.submitPin(null) })
         Stage.Ready -> {
             if (voice == null) AxfText("Voice isn't available; use the buttons.", muted = true)
-            voice?.let { v ->
-                val store = v.commands.phrases(Cmd.STORE)?.active.orEmpty().take(2)
-                val retrieve = v.commands.phrases(Cmd.RETRIEVE)?.active.orEmpty().take(2)
-                AxfText("Say " + (store + retrieve).joinToString(" · ") { "“$it”" }, muted = true, style = Axf.type.bodySmall.copy(textAlign = TextAlign.Center))
-            }
             Row(horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
                 AxfButton("Store", { session.startStore() }, tone = ButtonTone.PRIMARY, icon = "plus")
                 AxfButton("Retrieve", { session.startRetrieve() }, icon = "search")
@@ -196,7 +210,7 @@ private fun StageBody(session: VaultSession, voice: AxfVoice?, stage: Stage) {
 private fun EditForm(session: VaultSession, stage: Stage.Editing) {
     var site by remember(stage) { mutableStateOf(stage.site) }
     var password by remember(stage) { mutableStateOf(stage.password) }
-    var show by remember(stage) { mutableStateOf(false) }
+    var show by remember(stage) { mutableStateOf(session.showSpeech) }
     var error by remember(stage) { mutableStateOf<String?>(null) }
     AxfCard(Modifier.fillMaxWidth(), title = if (stage.replacing != null) "Update saved password" else "New password", icon = "lock") {
         AxfTextField(site, { site = it; error = null }, Modifier.fillMaxWidth(), label = "Site", leadingIcon = "link")
@@ -257,5 +271,72 @@ private fun ForgotCode(session: VaultSession) {
                 AxfButton("Cancel", { step = 0 }, tone = ButtonTone.GHOST, icon = "x")
             }
         }
+    }
+}
+
+
+/** Exactly what Voice Vault is listening for right now: each thing you can say, with every phrase that works. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ListeningFor(session: VaultSession, stage: Stage) {
+    val items = session.listeningFor(stage)
+    if (items.isEmpty()) return
+    AxfCard(Modifier.fillMaxWidth(), title = "You can say", icon = "mic") {
+        items.forEach { item ->
+            Column(verticalArrangement = Arrangement.spacedBy(Axf.space.half)) {
+                AxfText(item.label, style = Axf.type.labelLarge)
+                if (item.phrases.isNotEmpty()) FlowRow(horizontalArrangement = Arrangement.spacedBy(Axf.space.one), verticalArrangement = Arrangement.spacedBy(Axf.space.half)) {
+                    item.phrases.forEach { AxfChip("“$it”") }
+                }
+                item.note?.let { AxfText(it, muted = true, style = Axf.type.bodySmall) }
+            }
+        }
+        AxfText("Change any of these in Settings → Global trigger and commands.", muted = true, style = Axf.type.bodySmall)
+    }
+}
+
+/** How it's working: the background listener, what happens when it hears the trigger, and anything Android is blocking. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun HowItWorks(session: VaultSession) {
+    val ctx = LocalContext.current
+    val wake by WakeListener.state.collectAsState()
+    val runtime = LocalAxfRuntime.current
+    val phrases = session.wakePhrases()
+    AxfCard(Modifier.fillMaxWidth(), title = "In the background", icon = "bell") {
+        val (line, tone) = when (val w = wake) {
+            is WakeState.Listening -> "Listening for your global trigger." to null
+            WakeState.PausedInApp -> "Paused while the app is open. Close it or turn off the screen and it listens for your global trigger." to null
+            is WakeState.Heard -> "Heard your trigger and opened the app." to null
+            is WakeState.Off -> w.why to Axf.colors.warning
+        }
+        AxfText(line, color = tone ?: androidx.compose.ui.graphics.Color.Unspecified)
+        if (phrases.isNotEmpty()) {
+            AxfText("Global trigger", style = Axf.type.labelLarge)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(Axf.space.one), verticalArrangement = Arrangement.spacedBy(Axf.space.half)) { phrases.forEach { AxfChip("“$it”", icon = "mic") } }
+        }
+        AxfText("In the background it only listens for these words. Nothing else it hears is kept or acted on, and it never goes online.", muted = true, style = Axf.type.bodySmall)
+        when (WakeListener.delivery(ctx)) {
+            WakeDelivery.POPS_OPEN -> AxfText("When it hears one, Voice Vault pops open at the unlock step.", muted = true, style = Axf.type.bodySmall)
+            WakeDelivery.FULL_SCREEN -> {
+                AxfText("When it hears one, it opens full screen if the phone is locked, otherwise it shows an alert. Allow it to pop open over other apps:", muted = true, style = Axf.type.bodySmall)
+                AxfButton("Let it pop open", { WakeListener.openPopupSettings(ctx) }, icon = "external")
+            }
+            WakeDelivery.TAP_ALERT -> {
+                AxfText("Right now Android only lets it show an alert you tap. Allow either of these so it opens by itself:", muted = true, style = Axf.type.bodySmall)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(Axf.space.one), verticalArrangement = Arrangement.spacedBy(Axf.space.half)) {
+                    AxfButton("Let it pop open", { WakeListener.openPopupSettings(ctx) }, icon = "external")
+                    AxfButton("Full-screen alerts", { WakeListener.openFullScreenSettings(ctx) }, icon = "bell")
+                }
+            }
+            WakeDelivery.BLOCKED -> {
+                AxfText("Notifications are off, so a heard trigger can't reach you. Allow notifications, or let it pop open:", color = Axf.colors.warning, style = Axf.type.bodySmall)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(Axf.space.one), verticalArrangement = Arrangement.spacedBy(Axf.space.half)) {
+                    AxfButton("Allow notifications", { WakeListener.openNotificationSettings(ctx) }, icon = "bell")
+                    AxfButton("Let it pop open", { WakeListener.openPopupSettings(ctx) }, icon = "external")
+                }
+            }
+        }
+        AxfButton("Background settings", { runtime.dispatch("settings.open:voicevault") }, tone = ButtonTone.GHOST, icon = "settings")
     }
 }

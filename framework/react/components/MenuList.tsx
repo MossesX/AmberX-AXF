@@ -12,18 +12,30 @@ interface MenuListProps {
   showShortcuts?: boolean;
 }
 
+/** Items without the hooks a host app took over (embed@1), nested lists included. */
+function dropTaken(items: MenuItem[], rt: ReturnType<typeof useRuntime>): MenuItem[] {
+  if (!rt.embedded?.takes?.length) return items;
+  return items
+    .filter((i) => i.separator || !(i.action && rt.takenByHost({ action: i.action })))
+    .map((i) => (i.items ? { ...i, items: dropTaken(i.items, rt) } : i))
+    .filter((i) => i.separator || !i.items || i.items.length > 0 || !!i.action);
+}
+
 /** Shared renderer for dropdown menus and context menus (UAC-aware, nested). */
 export function MenuList({ items, onDone, payload, showIcons = true, showShortcuts = true }: MenuListProps) {
   const rt = useRuntime();
   useAxfState();
   const [openSub, setOpenSub] = useState<string | null>(null);
-  const visible = filterMenu(items, (r) => rt.gate(r));
+  // Hooks the host app took over (embed@1 takes, e.g. Settings inside Patches) are dropped like hidden items.
+  const visible = filterMenu(dropTaken(items, rt), (r) => rt.gate(r));
 
   return (
     <ul className="fx-menu" role="menu">
       {visible.map((item) => {
         if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
-        const locked = rt.gate(item.requires) === 'disable';
+        // a hook of a function the host locks (plugins inside Patches) stays, greyed out with its note
+        const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
+        const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
         const hasSub = !!item.items?.length;
         return (
           <li
@@ -36,7 +48,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               role="menuitem"
               className="fx-menu__item"
               disabled={locked}
-              title={locked ? `Requires ${item.requires}` : undefined}
+              title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
               onClick={(e) => {
                 if (hasSub) {
                   e.stopPropagation();

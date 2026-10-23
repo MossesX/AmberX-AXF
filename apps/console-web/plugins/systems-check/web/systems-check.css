@@ -19,8 +19,6 @@
 .axp-systems-check__progress { height: calc(var(--fx-space) * 0.5); border-radius: 999px; background: var(--fx-surface2); overflow: hidden }
 .axp-systems-check__progress > span { display: block; height: 100%; background: var(--fx-accent); transition: width .3s ease }
 .axp-systems-check__tabs { display: flex; gap: calc(var(--fx-space) * 0.5); flex-wrap: wrap; border-bottom: var(--fx-border-w) solid var(--fx-border) }
-.axp-systems-check__tab { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.75) var(--fx-space); border: 0; background: transparent; color: var(--fx-muted); font: inherit; cursor: pointer; border-bottom: calc(var(--fx-border-w) * 2) solid transparent }
-.axp-systems-check__tab[aria-selected='true'] { color: var(--fx-text); border-bottom-color: var(--fx-accent) }
 .axp-systems-check__grid { display: flex; flex-direction: column; gap: var(--fx-space); overflow-x: auto }
 .axp-systems-check-table td { vertical-align: top }
 .axp-systems-check-row { cursor: pointer } .axp-systems-check-row:hover { background: var(--fx-surface2) } .axp-systems-check-row.is-open { background: var(--fx-accent-soft) }
@@ -96,8 +94,4 @@
 .axp-systems-check-banner__fixall { display: flex; justify-content: flex-end; padding-bottom: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-keyfix { gap: calc(var(--fx-space) * 0.5) }
 .axp-systems-check-keyfix__steps { margin: 0; padding-left: calc(var(--fx-space) * 1.5) }
-.axp-systems-check-act { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.3); flex: none; padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6); border-radius: 999px; font-size: calc(var(--fx-font-size) * 11 / 14); font-weight: 600; line-height: 1.4; white-space: nowrap; cursor: pointer; color: var(--fx-accent); background: var(--fx-accent-soft); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-muted) * 100%), transparent) }
-.axp-systems-check-act:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent) }
-.axp-systems-check-act:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-accent); outline-offset: var(--fx-border-w) }
-.axp-systems-check-act:disabled { cursor: default; opacity: var(--fx-opacity-disabled) }
 .axp-systems-check-banner__li .axp-systems-check-run { font-size: calc(var(--fx-font-size) * 11 / 14); padding: calc(var(--fx-space) * 0.125) calc(var(--fx-space) * 0.6) }

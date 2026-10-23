@@ -1,6 +1,6 @@
 /* Settings → Plugins → Systems check: AI switches (with what's missing + install links), the saved AI routine, banners. */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Switch, useRuntime } from '@console/axf/react';
 import * as api from '@console/api';
 import { loadSystemCheck, refreshRoutine } from './SystemCheck';
 import { loadWhatsNew } from './WhatsNew';
@@ -145,6 +145,49 @@ export function RoutinePanel() {
         {msg && <span className="fx-small">{msg}</span>}
       </div>
       <p className="fx-small fx-muted">The routine is data, never code: only env, file, json, service, plugin and https checks exist, and each is validated before it’s saved.</p>
+    </div>
+  );
+}
+
+interface ClaudeJob { id: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; changeId?: string; branch?: string; startedAt?: number }
+interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; mosses?: boolean; mossesWhy?: string; changes: boolean; jobs: Record<string, ClaudeJob> }
+
+/** Claude on failure: hand a failed fix to headless Claude Code on the VPS (through axHub, approved per launch). */
+export function ClaudePanel() {
+  const rt = useRuntime();
+  const [s, setS] = useState<ClaudeState | null>(null);
+  const [err, setErr] = useState('');
+  const load = () => call<ClaudeState>('claude').then((x) => { setS(x); setErr(''); }, (e: Error) => setErr(e.message));
+  useEffect(() => { void load(); const t = setInterval(() => void load(), 10_000); return () => clearInterval(t); }, []);
+  if (err) return <p className="axp-systems-check-bad">{err}</p>;
+  if (!s) return <p className="fx-muted">Loading…</p>;
+  const save = async (patch: Partial<Record<'claudeOnFail' | 'claudeShell', boolean>>) => {
+    try { await call('settings', { method: 'PUT', body: JSON.stringify(patch) }); await load(); } catch (e) { setErr((e as Error).message); }
+  };
+  const jobs = Object.values(s.jobs).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
+  return (
+    <div className="fx-stack">
+      <Switch label="Hand failed fixes to Mosses (Claude Code on the VPS)" checked={s.on} onChange={(v) => void save({ claudeOnFail: v })}
+        hint="When an Auto fix, a console fix or a Fix all item fails, it's handed to Mosses (every Auto fix goes through him), who asks axHub to start headless Claude Code (Opus) on the VPS with the check's details, on its own branch fix/syscheck-<check>. Nothing starts until you approve it on axHub. It shows in the building banner while it works." />
+      <Switch label="Let it run shell commands on the VPS" checked={s.shell} disabled={!s.on} onChange={(v) => void save({ claudeShell: v })}
+        hint="Off: it can read and edit files only, and ends with the commands for you to run. On: it may run commands on the VPS as root (each launch still needs your approval). Never pushes to main or merges." />
+      {s.mosses === false && <p className="fx-small axp-systems-check-bad"><Icon name="alert" size={12} /> {s.mossesWhy} Every Auto fix goes through Mosses.</p>}
+      {s.on && !s.hubToken && <p className="fx-small axp-systems-check-bad"><Icon name="alert" size={12} /> Needs the axHub token (Keys needed → axHub connection) to start anything.</p>}
+      {s.on && !s.changes && <p className="fx-small fx-muted"><Icon name="info" size={12} /> The Codebase changes plugin is off, so the session won’t show in the building banner (Activity still shows the launch).</p>}
+      {jobs.length > 0 && (
+        <ul className="axp-systems-check-routine">
+          {jobs.map((j) => (
+            <li key={j.id}>
+              <Chip tone={j.state === 'launched' ? 'success' : j.state === 'failed' ? 'danger' : 'warning'}>{j.state}</Chip> <strong>{j.title ?? j.id}</strong>
+              <span className="fx-muted"> · {j.message}</span>
+              {j.branch && <span className="fx-mono fx-small"> · {j.branch}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="fx-row fx-row--wrap">
+        <Button icon="hammer" onClick={() => rt.dispatch('build-manager.open')}>Open the Build manager</Button>
+      </div>
     </div>
   );
 }

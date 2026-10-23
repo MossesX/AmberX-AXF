@@ -12,11 +12,12 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon } from '@console/axf/react';
+import { Button, Chip, Icon, useBannerLaunchOpen } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './activity.css';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
@@ -31,10 +32,11 @@ interface Item { id: string; source: string; kind: string; title: string; detail
 interface Feed { items: Item[]; active: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }> }
 interface Job { name: string; state: State; startedAt?: number; finishedAt?: number; url?: string; steps: Step[] }
 interface Detail { id: string; jobs?: Job[]; progress?: number | null }
-interface Store { feed: Feed | null; error: string; hiddenFor: string; open: boolean }
+/** `open` = the banner is expanded (it launches expanded; "_" folds it to one line); `pinned` = shown on request (action) even when idle. */
+interface Store { feed: Feed | null; error: string; hiddenFor: string; open: boolean; pinned: boolean }
 
 let runtime: AxfRuntime | null = null;
-let st: Store = { feed: null, error: '', hiddenFor: '', open: false };
+let st: Store = { feed: null, error: '', hiddenFor: '', open: true, pinned: false };
 const subs = new Set<() => void>();
 const set = (p: Partial<Store>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 const useStore = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -172,23 +174,45 @@ function ItemDetail({ it, now }: { it: Item; now: number }) {
   );
 }
 
+/** Stuck = "No word" (the source went quiet), or still active 30 min after it started (Brett, Oct 22 2026). */
+const STUCK_MS = 30 * 60_000;
+export const isStuck = (it: Pick<Item, 'state' | 'startedAt'>, now: number) => it.state === 'stale' || (ACTIVE.has(it.state) && now - it.startedAt >= STUCK_MS);
+
+/** Takes a stuck item off the banner on every device (the feed deletes a report, or remembers it as dismissed). */
+function Trash({ it }: { it: Item }) {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button type="button" className="fx-iconbtn axp-activity__trash" disabled={busy} aria-label={`Remove "${it.title}"`} title="Stuck: remove it from the banners on every device"
+      onClick={() => { setBusy(true); void call(`item?id=${encodeURIComponent(it.id)}`, { method: 'DELETE' }).then(refresh, () => setBusy(false)); }}>
+      <Icon name="trash" size={14} />
+    </button>
+  );
+}
+
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
   const icon = SOURCE_ICON[it.source] ?? 'zap';
-  const time = ACTIVE.has(it.state) ? dur(now - it.startedAt) : ago(it.finishedAt ?? it.updatedAt, now);
+  const stuck = isStuck(it, now);
+  // a running timer on every active or stuck item: how long since it started (and, when stuck, how long it's been quiet)
+  const time = ACTIVE.has(it.state) || it.state === 'stale'
+    ? `${dur(now - it.startedAt)}${stuck ? ` · quiet ${dur(now - it.updatedAt)}` : ''}`
+    : ago(it.finishedAt ?? it.updatedAt, now);
   const last = it.steps?.filter((s) => s.state === 'running').pop()?.name;
   return (
     <li className={`axp-activity__item axp-activity__item--${it.state}`}>
-      <button type="button" className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <div className="axp-activity__headrow">
+      <button type="button" data-fx-row className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <StateIcon state={it.state} />
         <Icon name={icon} size={14} />
         <span className="axp-activity__title">
           <span>{it.title}</span>
           {!open && (last || it.detail) && <span className="axp-activity__sub">{last ?? it.detail.split('\n')[0]}</span>}
         </span>
-        <span className="axp-activity__time">{time}</span>
+        <span className={`axp-activity__time${stuck ? ' is-stuck' : ''}`}><Icon name={stuck ? 'alert' : 'clock'} size={12} />{time}</span>
         <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
       </button>
+      {stuck && <Trash it={it} />}
+      </div>
       {it.progress != null && ACTIVE.has(it.state) && <Progress value={it.progress} />}
       {open && <ItemDetail it={it} now={now} />}
     </li>
@@ -200,33 +224,36 @@ function Row({ it, now }: { it: Item; now: number }) {
 function ActivityBanner() {
   const s = useStore();
   const [showDone, setShowDone] = useState(false);
-  useEffect(() => { start(); }, []);
+  const [launchOpen] = useBannerLaunchOpen();
+  // Banner settings → "When it appears: minimized" folds it once at launch.
+  useEffect(() => { start(); if (!launchOpen) set({ open: false }); }, []);
   const items = s.feed?.items ?? [];
   const active = items.filter((i) => ACTIVE.has(i.state));
   const finished = items.filter((i) => !ACTIVE.has(i.state));
   const visible = useOnScreen();
   const waiting = finished.some((i) => !seenAt.has(i.id) || Date.now() - (seenAt.get(i.id) ?? 0) < DONE_FLASH_MS);
-  const now = useNow(active.length > 0 || s.open || (visible && waiting));
+  const now = useNow(active.length > 0 || items.some((i) => i.state === 'stale') || s.pinned || (visible && waiting));
   // Everything the feed still lists as finished (it keeps them 10 min) counts until you've had it on screen for 20 s.
   if (visible) markSeen(finished, now);
   const justDone = finished.filter((i) => { const t = seenAt.get(i.id); return t === undefined || now - t < DONE_FLASH_MS; });
   const key = active.map((i) => i.id).join(',');
-  if (!active.length && !justDone.length && !s.open) return null;
+  if (!active.length && !justDone.length && !s.pinned) return null;
   if (key && key === s.hiddenFor) return null;
-  if (!active.length && !justDone.length && s.open && !finished.length) return null;
+  if (!active.length && !justDone.length && s.pinned && !finished.length) return null;
 
   const failed = (active.length ? [] : justDone).some((i) => i.state === 'failed' || i.state === 'stale');
   const first = active[0];
+  const stuckN = items.filter((i) => isStuck(i, now)).length;
   const summary = active.length
-    ? `${active.length} in progress`
+    ? `${active.length} in progress${stuckN ? ` · ${stuckN} stuck` : ''}`
     : failed ? `Finished, with ${justDone.filter((i) => i.state === 'failed' || i.state === 'stale').length} failed` : 'All done';
   const oldest = active.reduce((m, i) => Math.min(m, i.startedAt), Infinity);
 
   return (
     <div className={`axp-activity${failed ? ' axp-activity--failed' : ''}${active.length ? '' : ' axp-activity--idle'}`} role="status" aria-live="polite">
       <div className="axp-activity__row">
-        <span className={active.length ? 'axp-activity__spin' : ''}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
-        <button type="button" className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
+        <span className={`fx-banner-icon${active.length ? ' axp-activity__spin' : ''}`}><Icon name={active.length ? 'refresh' : failed ? 'alert' : 'check-circle'} size={18} /></span>
+        <button type="button" data-fx-row className="axp-activity__summary" aria-expanded={s.open} onClick={() => set({ open: !s.open })}>
           <span className="axp-activity__top">
             <strong>{summary}</strong>
             {active.length > 0 && Number.isFinite(oldest) && <span className="axp-activity__time">{dur(now - oldest)}</span>}
@@ -234,7 +261,8 @@ function ActivityBanner() {
           </span>
           {first && <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>}
         </button>
-        <button type="button" className="fx-iconbtn" aria-label="Hide until something new starts" title="Hide until something new starts" onClick={() => { if (!key) for (const i of finished) seenAt.set(i.id, 0); set({ hiddenFor: key || 'idle', open: false }); }}><Icon name="x" size={16} /></button>
+        {/* "_" minimizes (folds the banner to its one-line summary; tap the summary to expand it again). It never hides the banner (Brett, Oct 21 2026). */}
+        {s.open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => set({ open: false })}><Icon name="minimize" size={16} /></button>}
       </div>
       {s.open && (
         <div className="axp-activity__body">
@@ -242,7 +270,7 @@ function ActivityBanner() {
             : <p className="fx-small fx-muted" style={{ margin: 0 }}>Nothing is running right now.</p>}
           {finished.length > 0 && (
             <>
-              <button type="button" className="axp-activity__more" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>
+              <button type="button" data-fx-row className="axp-activity__more" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>
                 Just finished ({finished.length}) <Icon name={showDone ? 'chevron-up' : 'chevron-down'} size={14} />
               </button>
               {showDone && <ul className="axp-activity__list">{finished.map((i) => <Row key={i.id} it={i} now={now} />)}</ul>}
@@ -304,13 +332,14 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Activity',
   version: VERSION,
+  appMenu,
   register(rt) {
     runtime = rt;
     start();
-    rt.actions.register('activity.open', () => { set({ open: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
+    rt.actions.register('activity.open', () => { set({ open: true, pinned: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
     rt.actions.register('activity.check', () => void refresh(), { label: 'Check activity now' });
   },
-  banners: [{ id: 'activity', order: 4, render: () => <ActivityBanner /> }],
+  banners: [{ id: 'activity', label: 'Activity', icon: 'refresh', settingsTab: 'activity', order: 4, render: () => <ActivityBanner /> }],
   settingsTabs: [{ id: 'activity', label: 'Activity', icon: 'refresh', order: 7, parent: 'plugins' }],
   settingsPanels: [
     { id: 'activity.settings', tab: 'activity', title: 'Activity banner', icon: 'refresh', order: 5, render: () => <SettingsPanel /> },

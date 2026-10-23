@@ -10,5 +10,6 @@
   "targets": ["axf-console"],
   "provides": ["view:project-wizard", "settings-tab:project-wizard"],
   "scopes": ["ROUTES", "FILES", "NETWORK"],
-  "enabledByDefault": true
+  "enabledByDefault": true,
+  "tabable": false
 }

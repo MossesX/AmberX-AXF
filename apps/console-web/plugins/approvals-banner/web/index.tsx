@@ -21,11 +21,12 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, fetchHubFeed, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './approvals-banner.css';
+import { appMenu, WAITING, WAITING_LIST } from './menu';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -59,7 +60,7 @@ interface State { status: Status; hub: string; count: number; pending: Pending[]
 
 let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
+const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count : 0); subs.forEach((f) => f()); };
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */
@@ -116,7 +117,7 @@ const shortSummary = (p: Pending) => {
 
 function ApprovalsBanner() {
   const s = useApprovals();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useBannerLaunchOpen(); // launches expanded unless its Banner settings say minimized
   useEffect(() => { start(); }, []);
   if (s.status !== 'ok' || s.count === 0) return null;
   const ids = s.pending.map((p) => p.id).join(',');
@@ -127,7 +128,7 @@ function ApprovalsBanner() {
     <div className="axp-approvals-banner" role="alert">
       <div className="axp-approvals-banner__row">
         <Icon name="shield" />
-        <button type="button" className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button type="button" data-fx-row className="axp-approvals-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           {s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub
           {first && s.count === 1 ? <span className="axp-approvals-banner__sum">{first.tool}: {shortSummary(first)}</span> : null}
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
@@ -140,7 +141,7 @@ function ApprovalsBanner() {
         <ul className="axp-approvals-banner__list">
           {s.pending.map((p) => (
             <li key={p.id}>
-              <button type="button" className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
+              <button type="button" data-fx-row className="axp-approvals-banner__item" onClick={() => openReview(p.id)}>
                 <span className="axp-approvals-banner__tool">{p.tool}</span>
                 <span className="axp-approvals-banner__cmd">{shortSummary(p)}</span>
                 <span className="axp-approvals-banner__when">{ago(p.createdAt)}</span>
@@ -220,13 +221,26 @@ export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
   version: '0.2.1',
+  appMenu,
+  appMenuProviders: {
+    [WAITING_LIST]: {
+      max: 10, moreAction: 'approvals.open', moreLabel: 'All approvals on axHub…',
+      items: async () => {
+        await checkNow();
+        if (st.status !== 'ok') return [{ id: 'status', label: st.status === 'signed-out' ? 'Sign in to axHub to see approvals' : st.status === 'not-admin' ? 'Approvals are for hub admins' : 'axHub not reachable', icon: 'info', action: 'approvals.open' }];
+        return st.pending.map((x) => ({ id: `approval:${x.id}`, label: `${x.tool}: ${shortSummary(x)}`, icon: 'shield', action: `approvals.review:${x.id}` }));
+      },
+    },
+  },
   register(rt) {
     runtime = rt;
     start();
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
+    // approvals.review:<id> — that request on the hub's own page, in the review dialog (menu live list)
+    rt.actions.register('approvals.review', ([id]) => { if (id && st.pending.some((x) => x.id === id)) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
   },
-  banners: [{ id: 'approvals', order: 5, render: () => <ApprovalsBanner /> }],
+  banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
   },

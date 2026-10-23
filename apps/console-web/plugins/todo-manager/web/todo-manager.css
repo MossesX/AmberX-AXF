@@ -1,0 +1,72 @@
+/* Todo manager: lists column + the open list. Layout only; every control is a framework control. Theme tokens only. Phone first. */
+
+.axp-todo { display: flex; flex-direction: column; gap: var(--fx-space); min-width: 0 }
+.axp-todo__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-space); min-width: 0 }
+.axp-todo__main { min-width: 0 }
+@media (min-width: 760px) {
+  .axp-todo__body { grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr) }
+}
+
+/* lists column (a drop-down on phones) */
+.axp-todo__lists { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-todo__tree, .axp-todo__tree ul { list-style: none; margin: 0; padding: 0; display: none; flex-direction: column; gap: calc(var(--fx-space) * 0.125) }
+.axp-todo__tree ul { display: flex }
+.axp-todo__addlist { display: none; flex-direction: column; align-items: stretch; gap: calc(var(--fx-space) * 0.5) }
+@media (min-width: 760px) {
+  .axp-todo__listpick { display: none }
+  .axp-todo__tree { display: flex }
+  .axp-todo__addlist { display: flex }
+  .axp-todo__addlist > .fx-btn { align-self: flex-start }
+}
+button.axp-todo__listrow { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); width: 100%; min-height: var(--fx-row-h); padding: 0 calc(var(--fx-space) * 0.5); padding-left: calc(var(--fx-space) * (0.5 + var(--axp-todo-depth, 0))); border-radius: var(--fx-radius-sm); cursor: pointer; color: var(--fx-text) }
+button.axp-todo__listrow:hover { background: var(--fx-surface2) }
+button.axp-todo__listrow.is-on { background: var(--fx-accent-soft); color: var(--fx-accent) }
+button.axp-todo__listrow:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -1) }
+.axp-todo__listname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-todo__count, .axp-todo__progress { color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14); font-variant-numeric: tabular-nums }
+
+/* open list */
+.axp-todo__head, .axp-todo__title, .axp-todo__rename, .axp-todo__bar, .axp-todo__filters, .axp-todo__selbar, .axp-todo__groupacts { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5) }
+.axp-todo__head { justify-content: space-between }
+.axp-todo__title h2 { margin: 0; font-size: calc(var(--fx-font-size) * 18 / 14) }
+.axp-todo__rename > :first-child { flex: 1; min-width: calc(var(--fx-space) * 10) }
+select.fx-input.axp-todo__tone { width: auto; min-width: 0 }
+.axp-todo__filters { align-items: flex-end }
+.axp-todo__filters > .fx-field:first-child { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
+.axp-todo__selbar { position: sticky; top: 0; z-index: 1; padding: calc(var(--fx-space) * 0.5); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-surface) }
+.axp-todo__selbar select.fx-input { width: auto }
+
+.axp-todo__entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25) }
+.axp-todo__entries--sub { margin-left: calc(var(--fx-space) * 1.75); padding-left: calc(var(--fx-space) * 0.5); border-left: var(--fx-border-w) solid var(--fx-border) }
+.axp-todo__entryline { display: flex; align-items: flex-start; gap: calc(var(--fx-space) * 0.5); min-width: 0 }
+.axp-todo__pick { margin-top: calc(var(--fx-space) * 0.5); flex: none }
+.axp-todo__kindicon { display: inline-flex; padding: calc(var(--fx-space) * 0.4); color: var(--fx-muted); flex: none }
+button.axp-todo__entrymain { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); padding: calc(var(--fx-space) * 0.25) 0; cursor: pointer }
+button.axp-todo__entrymain:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus) }
+.axp-todo__entrytitle { overflow-wrap: anywhere }
+.axp-todo__entry.is-done > .axp-todo__entryline .axp-todo__entrytitle { text-decoration: line-through; color: var(--fx-muted) }
+.axp-todo__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); color: var(--fx-muted); font-size: calc(var(--fx-font-size) * 12 / 14) }
+.axp-todo__meta .is-late { color: var(--fx-danger) }
+.axp-todo__tag { color: var(--fx-accent) }
+.axp-todo__checks { list-style: none; margin: 0 0 0 calc(var(--fx-space) * 4); padding: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.15); font-size: calc(var(--fx-font-size) * 13 / 14) }
+.axp-todo__checks .is-done { text-decoration: line-through; color: var(--fx-muted) }
+
+.axp-todo__gridwrap { overflow-x: auto; max-width: 100% }
+.axp-todo__grid { width: 100% }
+.axp-todo__grid tr.is-done td { color: var(--fx-muted) }
+button.axp-todo__cellbtn { all: unset; cursor: pointer; color: var(--fx-text) }
+button.axp-todo__cellbtn:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus) }
+
+.axp-todo__empty { display: flex; flex-direction: column; align-items: center; gap: calc(var(--fx-space) * 0.75); padding: calc(var(--fx-space) * 3) var(--fx-space); color: var(--fx-muted) }
+
+/* editor + types */
+.axp-todo__editrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 10), 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.axp-todo__rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 9), 1fr)); gap: calc(var(--fx-space) * 0.5) }
+.axp-todo__checkedit { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); align-items: flex-start }
+.axp-todo__checkline { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.5); width: 100% }
+.axp-todo__checkline .fx-input { flex: 1; min-width: 0 }
+.axp-todo__fielddef { display: flex; flex-wrap: wrap; align-items: flex-end; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.axp-todo__editacts { flex-wrap: wrap }
+
+/* shown alone as a host's tab (Patches): no page heading, full height */
+.axp-todo.is-embedded { padding-top: calc(var(--fx-space) * 0.25) }

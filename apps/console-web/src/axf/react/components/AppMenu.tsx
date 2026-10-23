@@ -103,7 +103,7 @@ export function AppMenuList({ items, depth, onDone, onEnter, autoFocus }: ListPr
               disabled={item.locked}
               data-axf-menu-item={item.id}
               data-axf-origin={item.origin}
-              title={item.locked ? (item.requires ? `Requires ${item.requires}` : 'Not available') : undefined}
+              title={item.locked ? (rt.lockedByHost({ action: item.action, provider: item.provider }) ?? (item.requires ? `Requires ${item.requires}` : 'Not available')) : undefined}
               onClick={(e) => {
                 if (hasSub) { e.stopPropagation(); if (onEnter) onEnter(item); else setOpenSub(item.id); return; }
                 onDone();

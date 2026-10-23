@@ -1,5 +1,6 @@
 # Console plugins
 
+Page-level slots (React shell), top to bottom: the banner asset, `app.frame.head` (the app-tabs plugin's tab bar, above the application menu; empty when the console runs inside a host app such as Patches), the application menu bar, `app.frame.banners` (every `AxfWebLibrary.banners` entry lands here in the console, so banners sit above the app tabs and stay visible while another app is open), `app.frame.top` (a page-wide bar under the banners), the layout, then `app.frame.cover` after the shell (the app frames, starting where the page starts, under the menu bar and banners: `--axp-app-tabs-bottom`). <!-- axf-plugin:app-tabs -->
 A plugin adds tabs (views, a nav section, dialogs, actions) and, optionally, server routes to the AXF Dev
 Console. Each plugin is one folder here. Folders starting with `_` are templates and never load.
 
@@ -26,8 +27,16 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `feature-assist` — plain-English features in the Plan view (AXF expert drafts entries, you approve; plan + pending list) and Build with Mosses on unbuilt features (plan, new build order, model choice incl. Opus now + Fable later, then Mosses builds in the assistant chat); settings tab "Feature assistant". <!-- axf-plugin:feature-assist -->
 - `theme-manager` — roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets), live preview, undo/redo, pins, hand edits; save rolls as asset@1 themes and manage them; settings tab "Themes". <!-- axf-plugin:theme-manager -->
 - `claude-badge` — tests the AI connection on every load and attaches a Claude badge asset to the banner (green "Powered by <model>" pop-out, or grey "AI unavailable"); settings tab "Claude badge". <!-- axf-plugin:claude-badge -->
+- `ai-keys` — dialog keeping several Anthropic API keys and Claude subscription tokens (each tested before it's saved, stored 0600, never sent to a browser) and picking the active one of each kind; the AI assistant uses the active key through `axf.ai-keys@1`; settings tab "AI keys". <!-- axf-plugin:ai-keys -->
+- `main-build-status` — a `status` widget on the banner (right, next to the clock) with the last CI result of a branch (default AmberX-AXF · main · android.yml): green “main ✓ 2m ago”, red ✗, accent ⟳ while it runs, grey ? when unknown; tap for the run (title, commit, time, failed jobs, Open on GitHub); repo/branch/workflow are an open list in its settings tab "Main build status"; server `GET /status` (30 s cache, lib-github, token never leaves the server); self-test `test.py`. <!-- axf-plugin:main-build-status -->
+- **Inside a host (Patches):** a plugin whose job the host does, or that only draws on chrome the host hides, declares it in its web library (`embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }`); it then isn't loaded on that page and is logged at launch (Settings → Plugins lists it). Standalone it loads as usual.
+- `push-banner` — a banner (order 4.8) listing every branch not on main in AmberX-AXF, axHub and Build-Pilot (ahead/behind, age, last commit, its open PR + CI) with **Open PR**, **Merge** (tap twice; only when CI passed, re-checked on the server, head commit pinned, merge commit) and ✕ hide (every device); main is never pushed to directly; shown in Patches through the banner strip; server `GET /branches` (2 min cache), `POST /pr`, `POST /merge`, `GET/PUT /config` (repos, hidden), lib-github; self-test `test.py`. <!-- axf-plugin:push-banner -->
+- `alerts-bell` — the developer alerts bell on the banner instead of the toolbar: an `action-button` (bell → `alerts.open`) + a `counter` on `alerts.unread` (hidden at zero, 99+); show/hide and side in its settings tab "Alerts bell"; the alerts library stays in the framework; web-only; self-test `test.py`. <!-- axf-plugin:alerts-bell -->
 - `plugin-manager` — the Plugin Manager (Fable rebuild Oct 20 2026): every plugin's health, enable/disable, its UI and settings (opened or shown inline), logs, files, install & uninstall, and dependencies in detail (needs, providers, dependents, clashes) from the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = `server/engine.py` = Kotlin); views cards/table/detail/dependency graph/install in layouts Studio/Mission control/Terminal/Catalog; link in the default context menu; settings tab "Plugin Manager"; self-test `test.py`. <!-- axf-plugin:plugin-manager -->
-- `build-manager` — nav → Builds → Build manager: everything still to build (pending, build queue, plan; one row per build), time left, steps, needs split, totals per model, a live tracker (activity feed `axf.activity@1` + builds in progress) and a banner while a listed build runs; settings tab "Build manager"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:build-manager -->
+- `build-manager` — nav → Builds → Build manager: one search bar over three tabs. Remaining: everything still to build (pending, build queue, plan; one row per build), time left, steps, needs split, totals per model, **Start build now** (dependencies first, never on top of a running build, headless Claude Code on the VPS through axHub `vps.run` after approval, then checks). Live: every build any session on any machine reported to axHub (`axf.changes@1`) in real time + the activity feed (`axf.activity@1`). Built: finished builds with time and cost (actual or estimated), totals by model / week. Banner while something builds; settings tab "Build manager"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:build-manager -->
+- `codebase-changes` — every request to build, edit, remove or fix something as an entry (change-log@1: what was asked, steps, result) opened by a Claude Code hook (`changes.mjs hooks install`) and filled in by Claude; a banner on every load until each entry is closed (closed everywhere), the permanent log under Builds → Codebase changes, stored on axHub (`/projects/amberx-axf/_data/changes`, never deleted by uninstall); entries carry build stats (estimate, actual tokens + cost, status, heartbeat, surface, host, areas) and are written from any machine straight to axHub; `backfill.mjs` records what was built before; provides `axf.changes@1`; settings tab "Codebase changes"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:codebase-changes -->
+- `claude-handoff` — Tools → Claude handoff: builds and keeps current `_claude/handoff/` (everything a new Claude account needs: reading order, claude.ai Project instructions + knowledge, each machine's `~/.claude` copies, claude.ai-only items, secret names) and assembles the one prompt that moves the project to a new account; publishes the kit to GitHub; reminds every 6 h with one banner + one alert (fixed key, overwritten); `handoff.mjs collect` / `hooks install` on each machine; opens the console's **Tools** menu; Tools → Installer preview (runs with example data) and Installer look… (layouts, gauge/meter styles, light/dark themes, roll with a token tree; saved on axHub); settings tab "Claude handoff"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:claude-handoff -->
+- `todo-manager` — Todos (ported from xGallery's developer task manager): lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), a tree (by lists, kind, status, priority, tag or due date) or a grid, group actions (done, status, move, duplicate, delete), Markdown export; what each kind must / may hold is set in its settings tab "Todo manager"; data `.axf-console/plugins/todo-manager/store.json` (todo-store@1); **tabable** (Patches can give it a tab); self-test `test.py`. <!-- axf-plugin:todo-manager -->
 - `plugin-switches` — a pop-up dialog listing every plugin with an on/off switch; its own switch is greyed out; asks before switching off a plugin a running plugin needs; opened from the default context menu, action `plugin-switches.open`, search, or its settings tab "Plugin switches". <!-- axf-plugin:plugin-switches -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
@@ -35,6 +44,16 @@ WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"pat
 Start a plugin: `cp -r plugins/_template plugins/<folder>`, then edit `plugin.json` (id, name, description,
 `lifecycle.dataDir`), the `id`, `FOLDER` and views in `web/index.tsx`, the routes in `server/__init__.py`, and the
 folder name in `install.mjs` / `uninstall.mjs`.
+
+## Tabable plugins (plugin@1 `tabable`, Oct 22 2026)
+
+Every plugin.json says whether a host app (Patches) may add the plugin to its tab group: `"tabable": false` (the
+default, and what every plugin with a page starts as), `true` (its first page) or `{"view": "<id>", "label": "…",
+"icon": "…"}` (that page, which must be a `view:<id>` it provides). A plugin without a page (settings only) can't be
+tabable. The console reports each plugin's tab to its host with its plugin list; the host shows it as the console's
+view page (`?axf-embed-page=view:<id>`: only that page, no chrome, settings still taken by the host). Patches lists the
+tabable ones in Settings → Patches → Tabs → **Add tab…**. Checked by `node framework/cli/plugins.mjs --check` (CI) and
+the console's plugin loader (a wrong `tabable` is reported as the plugin's error).
 
 ## Sharing and installing (plugin-catalog@1)
 
@@ -46,7 +65,6 @@ the console rebuilds with it). From a terminal: `node framework/cli/plugin-catal
 version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
-Page-level slots (React shell): `app.frame.top` renders above everything, `app.frame.cover` after the shell (e.g. the app-tabs plugin's tab bar and app frames). <!-- axf-plugin:app-tabs -->
 
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 
@@ -84,6 +102,7 @@ The console exposes the same through `GET/POST /api/plugin-lifecycle/<folder>[/i
 
 - **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.
 - **Application-menu hooks (Oct 21 2026, `core/engines/appmenu.ts`):** `appMenu: [{ id, menu, menuLabel?, menuOrder?, path?, order?, before?, after?, items }]` adds items or whole submenus into a top-level menu (created when missing) or under an item path (`path: ['builds', 'manager']`, missing steps are created). Items are plain menu items plus `badge: '<counter>'` (a `rt.setBadge` counter), `checked: 'setting:<key>' | 'counter:<name>' | 'slot:<type>' | 'hidden:<type>'` (a check mark), `provider: '<id>'` (a live list filled when the submenu opens) and `requires` (UAC). `appMenuProviders: { '<id>': () => items | Promise<items> }` or `{ items, max, moreAction, moreLabel }` registers live lists (built-in ones every app has: `views`, `nav`, `toolbar`, `settings`, `windows`, `dialogs`, `chrome`). The runtime equivalents are `rt.addAppMenuItems`, `rt.removeAppMenuItems(module | id)`, `rt.registerAppMenuProvider`, `rt.appMenu()`; contributed items with an action are found by the global search (kind `menu`). Same id from two plugins = the later wins + a diagnostic. Everything leaves with the plugin.
+- **Console menu entries live in `web/menu.ts` (Oct 21 2026):** the console hides its toolbar and side navigation by default, so its app menu (asset `console`: Console, Builds, Framework, Plugins, Apps, View, Help) must reach everything. Every plugin with a page, dialog or settings tab exports `appMenu` from a pure `web/menu.ts` (no React/CSS imports) and installs it in `index.tsx` (`appMenu,`); one entry in **Plugins** (order 50) plus, where it fits, one in another menu (Builds, Apps, View, Console, Help). Live lists are exported string constants registered under `appMenuProviders: { [CONST]: … }`. Use `nav:<view>` for pages, so the check can see them. `npx -y tsx apps/console-web/scripts/menu-reach.mts` (CI) fails when a nav entry, toolbar item or page isn't in the menu, a live list isn't registered, or a plugin with UI has no entry. The template ships an example.
 - **UI-editing plugins** declare `"uiEditor": ["theme" | "style" | "layout" | "manager" | "builder"]` in `plugin.json`. Saves are per key and the last save wins; call `useEditorSync({ onRefresh })` (from `@console/axf/react`) in every editing view so it reloads current token values whenever it opens, loads or comes back into focus.
 
 ## How it runs
@@ -126,6 +145,11 @@ A plugin's UI must conform to the theme engines: theme tokens only (no colour li
 parts named for what they are, shared `is-*` states, never define `--fx-*`). The future plugin designer
 lays plugins out from these parts. Full rules: `framework/spec/THEMING.md`. CI runs
 `node framework/cli/check-theme.mjs` over every plugin.
+
+**A plugin inherits the app's style** (Oct 22 2026): every button, tab, chip and toggle is a framework control
+(`<Button tone size icon>`, `<IconButton>`, `<Segmented>`, `fx-chip`, `fx-tab`, `fx-menu__item`), so changing the
+app's button asset, style theme or spacing restyles the plugin too; a whole row or card you tap is marked
+`data-fx-row`. Your own class on a control only lays it out. CI runs `node framework/cli/check-controls.mjs`.
 
 ## Security rules
 

@@ -18,7 +18,7 @@
     "color-theme": "arctic-daylight",
     "style-theme": "glass-orbit",
     "layout": "focus-top",
-    "app-menu": "developer",
+    "app-menu": "console",
     "toolbar": "standard-icons",
     "nav-menu": "console-nav",
     "context-menu": "compact-classic",
@@ -27,6 +27,8 @@
     "button": "pill-gradient",
     "slider": "precision-bar",
     "container": "frosted-glass",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
     "banner": "amberx-thin",
     "clock": "digital-12h",
     "search-bar": "everything",
@@ -44,6 +46,10 @@
     "badge": "new",
     "uac-policy": "standard"
   },
+  "hidden": [
+    "toolbar",
+    "nav-menu"
+  ],
   "structure": [
     {
       "path": "axf.manifest.json",

@@ -2,7 +2,7 @@
   "$axf": "agent-addon@1",
   "id": "coder",
   "name": "Mosses — street-smart coder (React · TS · Python · containers)",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "icon": "code",
   "author": "AmberX AXF",
   "description": "Mosses (M-O-S-S-E-S): a senior full-stack engineer who talks like he grew up on the block. React 18/19 + strict TypeScript, Python 3.12 (FastAPI, pytest), and write access to the VPS containers through Container access: every change is proposed on an approval card, snapshotted first and undoable. Reads the AXF repo, reviews, debugs, writes tests, remembers your conventions.",
@@ -217,6 +217,22 @@
           "coder.container-restart",
           "coder.container-redeploy"
         ]
+      },
+      {
+        "id": "coder.vps",
+        "name": "Fix the VPS through axHub",
+        "description": "Run commands on Brett's VPS as root through axHub, each approved by Brett on the hub. Every console Auto fix comes through here.",
+        "instructions": "1. You reach the VPS only through axhub_call (tool vps.run, arguments {command, timeout_seconds}); axHub shows Brett the whole command and he approves it on the hub. The call waits for his decision.\n2. When an Auto fix hands you a command, run exactly that command: don't change it.\n3. When you're asked to fix something yourself, read first (vps.check, vps.logs, read-only commands), then run the smallest change that fixes it, one clear command at a time, and say what each does in `reason`.\n4. Never put secrets in a command, never print key or env files, never delete data, volumes or containers, never push to main.\n5. After a fix, re-run the check (bash /opt/axf/deploy/console-doctor.sh --report for host checks) and say plainly whether it passes.",
+        "triggers": [
+          "fix the vps",
+          "auto fix",
+          "run on the server",
+          "vps",
+          "axhub"
+        ],
+        "toolIds": [
+          "coder.axhub-call"
+        ]
       }
     ],
     "tools": [
@@ -341,6 +357,16 @@
           "builtin": "container_redeploy"
         },
         "dangerous": true
+      },
+      {
+        "id": "coder.axhub-call",
+        "name": "axhub_call",
+        "kind": "builtin",
+        "config": {
+          "builtin": "axhub_call"
+        },
+        "dangerous": true,
+        "description": "Run a tool on axHub (vps.run as root on the VPS, vps.check, vps.logs, github.*); waits for Brett's approval on the hub."
       }
     ],
     "agents": [
@@ -360,7 +386,8 @@
           "coder.review",
           "coder.debug",
           "coder.testing",
-          "coder.containers"
+          "coder.containers",
+          "coder.vps"
         ],
         "toolIds": [
           "coder.repo-list",

@@ -5,6 +5,7 @@
  */
 import type { AppMenuProvider, AxfRuntime, InstalledLibrary, NavItem, SettingsGroup, SettingsPanel, SettingsTab } from '../core';
 import type { AppMenuContribution } from '../core/engines/appmenu';
+import { embedSkipReason } from '../core/engines/embed';
 import type { MenuEntry } from '../core/engines/windows';
 import type { ReactNode } from 'react';
 import type { ViewMap } from './AppShell';
@@ -47,8 +48,14 @@ export interface AxfWebLibrary {
   appMenu?: Omit<AppMenuContribution, 'module'>[];
   /** Live lists for the application menu (`rt.registerAppMenuProvider`), keyed by provider id; removed with the library. */
   appMenuProviders?: Record<string, AppMenuProvider | AppMenuProvider['items']>;
-  /** Banners the app shows at the top of every view (e.g. a systems check or "what's new"); each renders nothing when idle. */
+  /** Banners the app shows at the top of the page, above app tabs (slot `app.frame.banners`; e.g. a systems check or "what's new"); each renders nothing when idle. */
   banners?: BannerDef[];
+  /**
+   * Inside a host app (embed@1, e.g. Patches): when this library isn't needed there, because the host already does its
+   * job or hides what it draws (`skipWhen`: `embedded` | `take:<fn>` | `hidden:<type>`; see engines/embed.ts
+   * embedSkipReason). It is then not installed on that page and is listed in `rt.skippedLibraries`; standalone it loads.
+   */
+  embed?: { skipWhen: string[] };
   /** Content for named extension points (slots) that views offer, e.g. `plan.top`; see components/Slots.tsx. */
   slots?: Record<string, SlotDef[]>;
 }
@@ -57,7 +64,16 @@ export interface AxfWebLibrary {
 export interface SlotDef { id: string; order?: number; render: (props: Record<string, unknown>) => ReactNode }
 
 /** A banner contributed by a library or plugin; lower `order` shows first. */
-export interface BannerDef { id: string; order?: number; render: () => ReactNode }
+export interface BannerDef {
+  id: string;
+  order?: number;
+  render: () => ReactNode;
+  /** name and icon in Banner settings (right-click a banner → Banner settings; components/BannerSettings.tsx) */
+  label?: string;
+  icon?: string;
+  /** its plugin's settings tab, opened from its Banner settings tab */
+  settingsTab?: string;
+}
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */
 export function orderLibraries(libs: AxfWebLibrary[]): { ordered: AxfWebLibrary[]; missing: string[] } {
@@ -106,7 +122,10 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   const tabs: TabRenderers = {};
   const banners: BannerDef[] = [];
   const slots: Record<string, SlotDef[]> = {};
+  const skipped: { id: string; label: string; version: string; reason: string }[] = [];
   for (const l of ordered) {
+    const why = embedSkipReason(rt.embedded, l.embed?.skipWhen);
+    if (why) { skipped.push({ id: l.id, label: l.label, version: l.version, reason: why }); continue; }
     l.register?.(rt);
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
@@ -124,6 +143,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
     rt.terminal.log('libraries', `${l.label} ${l.version} registered`);
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
+  rt.noteSkippedLibraries(skipped);
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };

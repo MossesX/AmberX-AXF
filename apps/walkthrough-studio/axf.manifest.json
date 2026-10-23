@@ -1,0 +1,207 @@
+{
+  "$axf": "manifest@1",
+  "app": {
+    "id": "walkthrough-studio",
+    "name": "Walkthrough Studio",
+    "version": "0.1.0"
+  },
+  "framework": {
+    "version": "0.2.0",
+    "template": "react-ts"
+  },
+  "initializedAt": "2026-10-22T22:00:40.623Z",
+  "targets": [
+    "web"
+  ],
+  "startView": "home",
+  "defaults": {
+    "color-theme": "arctic-daylight",
+    "style-theme": "glass-orbit",
+    "layout": "walkthrough-studio",
+    "app-menu": "walkthrough-studio",
+    "toolbar": "standard-icons",
+    "nav-menu": "walkthrough-studio",
+    "context-menu": "compact-classic",
+    "dialog": "centered-modal",
+    "popup": "corner-solid",
+    "button": "rounded-solid",
+    "slider": "classic-round",
+    "container": "soft-card",
+    "gauge": "classic-arc",
+    "meter": "striped-pill",
+    "banner": "walkthrough-studio",
+    "clock": "digital-12h",
+    "search-bar": "everything",
+    "logo": "wordmark",
+    "action-button": "ws-compile",
+    "label": "ws-length",
+    "status": "ws-recording",
+    "counter": "ws-review",
+    "progress": "ws-built",
+    "avatar": "account",
+    "link": "docs",
+    "theme-switch": "day-night",
+    "spacer": "gap",
+    "divider": "rule",
+    "badge": "new",
+    "uac-policy": "standard"
+  },
+  "hidden": [
+    "toolbar"
+  ],
+  "developer": {
+    "hub": "https://axhub.amberxai.com"
+  },
+  "options": {
+    "wrap-groups": false
+  },
+  "structure": [
+    {
+      "path": "project.manifest.json",
+      "purpose": "Project manifest (project-manifest@1): name (= hub folder /projects/<name>), repo, relation to AXF, shared data. Nothing is loaded or compiled without a valid one."
+    },
+    {
+      "path": "axf.manifest.json",
+      "purpose": "App identity, framework version and the default asset for every slot."
+    },
+    {
+      "path": "axf.lock.json",
+      "purpose": "Hashes of the baked framework files, used for conformance checks."
+    },
+    {
+      "path": "src/axf",
+      "purpose": "Baked framework runtime: engines, React layer and base CSS. Managed by the build engine."
+    },
+    {
+      "path": "src/views",
+      "purpose": "App views registered with the shell (Studio = the IDE workspace)."
+    },
+    {
+      "path": "src/assets",
+      "purpose": "Hot-swappable assets, one folder per asset type."
+    },
+    {
+      "path": "public",
+      "purpose": "Static files served as-is."
+    },
+    {
+      "path": "src/studio",
+      "purpose": "The studio: walkthrough-project@1 model, compiler (walkthrough-timeline@1), store + persistence (device / axHub data server), workspace (panes, layouts, dockable + floating toolbars), commands, drag-and-drop, panes, dialogs."
+    },
+    {
+      "path": "src/actions.ts",
+      "purpose": "Registers every studio command as an AXF action."
+    },
+    {
+      "path": "src/dialogs.tsx",
+      "purpose": "App dialogs (the studio's plus the developer console)."
+    },
+    {
+      "path": "test.mts",
+      "purpose": "Self-test of the model and the compiler (npx -y tsx test.mts)."
+    }
+  ],
+  "libraries": {
+    "dnd": {
+      "parts": {
+        "zones": {},
+        "touch": {},
+        "ghost": {
+          "offset": 12
+        },
+        "trash": {
+          "label": "Drop here to delete",
+          "overLabel": "Let go to delete",
+          "side": "bottom"
+        }
+      }
+    },
+    "$installed": [
+      "ai.amberx.axf.dnd",
+      "ai.amberx.axf.tree",
+      "ai.amberx.axf.datagrid",
+      "ai.amberx.axf.workspace",
+      "ai.amberx.axf.recorder",
+      "ai.amberx.axf.docstore"
+    ],
+    "tree": {
+      "parts": {
+        "search": {
+          "placeholder": "Search"
+        },
+        "chips": {},
+        "meters": {},
+        "drag": {
+          "trash": true
+        }
+      }
+    },
+    "datagrid": {
+      "parts": {
+        "groups": {},
+        "column-menu": {
+          "hidden": [
+            "url",
+            "notes",
+            "updated",
+            "tags"
+          ]
+        },
+        "sort": {},
+        "expand": {},
+        "drag": {
+          "trash": true
+        },
+        "compact": {}
+      }
+    },
+    "workspace": {
+      "parts": {
+        "areas": {},
+        "splitters": {},
+        "layouts": {
+          "default": "ide"
+        },
+        "floating-panes": {},
+        "maximise": {},
+        "toolbars": {
+          "max": 0,
+          "labels": false
+        },
+        "floating-toolbars": {},
+        "customizer": {},
+        "phone": {
+          "breakpoint": 760
+        }
+      }
+    },
+    "recorder": {
+      "parts": {
+        "capture-layer": {},
+        "same-site": {},
+        "keys": {},
+        "screen-video": {},
+        "replay": {
+          "cursor": "arrow",
+          "ripples": true
+        },
+        "cues": {
+          "waitAfter": 1.5
+        }
+      }
+    },
+    "docstore": {
+      "folder": "projects",
+      "parts": {
+        "device": {},
+        "hub": {
+          "project": "walkthrough-studio",
+          "chunk": 48000
+        },
+        "blobs": {
+          "db": "walkthrough-studio"
+        }
+      }
+    }
+  }
+}
