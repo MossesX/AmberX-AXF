@@ -44,9 +44,7 @@
     "badge": "new",
     "uac-policy": "standard"
   },
-  "hidden": [
-    "toolbar"
-  ],
+  "hidden": [],
   "developer": {
     "hub": "https://axhub.amberxai.com"
   },

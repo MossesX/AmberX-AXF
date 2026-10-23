@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "ws-compile",
+  "name": "Compile",
+  "version": "1.0.0",
+  "description": "Compiles the open project.",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "icon": "package",
+    "label": "Compile",
+    "action": "ws.compile",
+    "show": "both"
+  }
+}

@@ -785,6 +785,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-note { display: flex; gap: calc(var(--fx-space) * 0.5); align-items: flex-start; padding: calc(var(--fx-space) * 0.6) calc(var(--fx-space) * 0.75); border-radius: var(--fx-radius-sm); font-size: calc(var(--fx-font-size) * 13 / 14); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note > .fx-icon { margin-top: calc(var(--fx-space) * 0.15); }
 .fx-note.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
+/* a part of the page the host app manages (embed@1 lock takes, e.g. plugins inside Patches): shown, greyed, not usable */
+.fx-locked { opacity: max(var(--fx-opacity-disabled), 0.5); pointer-events: none; user-select: none; }
 .fx-note.is-danger { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note.is-success { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note__body { min-width: 0; flex: 1; }

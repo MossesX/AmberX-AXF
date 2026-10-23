@@ -32,6 +32,7 @@
     "model": "fable",
     "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)"
   },
+  "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/plugin-manager",

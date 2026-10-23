@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { SystemBanner, SystemCheckDialog, loadSystemCheck } from './SystemCheck';
+import { SystemBanner, SystemCheckDialog, loadSystemCheck, setSystemCheckRuntime } from './SystemCheck';
 import { KeysBanner, KeysDialog } from './KeysBanner';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
 import { AiPanel, BannersPanel, RoutinePanel } from './panels';
@@ -34,6 +34,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   provides: ['axf.systems-check'],
   register(rt) {
+    setSystemCheckRuntime(rt);
     startOnce();
     rt.actions.register('system-check.open', () => rt.openDialog('system-check', {}), { label: 'Open the systems check' });
     rt.actions.register('keys-needed.open', () => rt.openDialog('keys-needed', {}), { label: 'Add the keys the console needs' });

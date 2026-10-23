@@ -19,7 +19,7 @@ DIST = Path(tempfile.mkdtemp())
 (DIST / "index.html").write_text("<!doctype html><div id=root></div>")
 (DIST / "app.js").write_text("console.log(1)")
 SECRET = "s" * 40
-os.environ.update({"APP_TOKEN": "tok-123", "APP_TRUST_WALL": "1", "APP_WALL_SECRET": SECRET, "APP_DIST": str(DIST), "APP_THEMES_PERM": "demo.themes"})
+os.environ.update({"APP_DATA_DIR": tempfile.mkdtemp(), "APP_TOKEN": "tok-123", "APP_TRUST_WALL": "1", "APP_WALL_SECRET": SECRET, "APP_DIST": str(DIST), "APP_THEMES_PERM": "demo.themes"})
 
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -98,5 +98,50 @@ check(c.get("/app.js").text == "console.log(1)", "static file served")
 check("id=root" in c.get("/some/view").text, "SPA fallback")
 check("id=root" in c.get("/../server/main.py").text, "no escape from dist")
 check(c.get("/api/nope", headers=TOKEN).status_code == 404, "unknown api route 404, not index")
+
+# plugins Patches manages for the apps in its tabs
+r = c.get("/api/plugins", headers=TOKEN).json()
+check(r["$axf"] == "patches-plugins@1" and r["apps"]["console"]["plugins"] == {}, "plugins: empty to start")
+check(c.get("/api/plugins").status_code == 401, "plugins: needs a caller")
+check(c.get("/api/plugins", headers=session("conrad", "user")).status_code == 403, "plugins: users can't read")
+rep = [{"id": "ai.amberx.axf.example.alpha", "name": " Activity\n", "version": "0.1.0", "on": True}, {"id": "ai.amberx.axf.example.beta", "name": "Terminal", "on": False}, {"id": "bad id!", "name": "x"}, "nope"]
+r = c.post("/api/plugins/install", headers=TOKEN, json={"app": "console", "plugins": rep}).json()
+mine = r["apps"]["console"]["plugins"]
+check(r["added"] == ["ai.amberx.axf.example.alpha", "ai.amberx.axf.example.beta"], "install: valid ids added")
+check(mine["ai.amberx.axf.example.alpha"]["enabled"] and not mine["ai.amberx.axf.example.beta"]["enabled"], "install: starts as the app had it")
+check(mine["ai.amberx.axf.example.alpha"]["name"] == "Activity", "install: name cleaned")
+check(oct((main.PLUGINS_FILE.stat().st_mode) & 0o777) == "0o600", "store is 0600")
+c.post("/api/plugins/enabled", headers=TOKEN, json={"app": "console", "id": "ai.amberx.axf.example.beta", "enabled": True})
+r = c.post("/api/plugins/install", headers=TOKEN, json={"app": "console", "plugins": [{"id": "ai.amberx.axf.example.beta", "on": False}]}).json()
+check(r["added"] == [] and r["apps"]["console"]["plugins"]["ai.amberx.axf.example.beta"]["enabled"], "install again keeps the switch")
+check(c.post("/api/plugins/install", headers=TOKEN, json={"app": "other", "plugins": []}).status_code == 400, "install: unknown app refused")
+check(c.post("/api/plugins/install", headers=TOKEN, json={"app": "console", "plugins": "x"}).status_code == 400, "install: bad list refused")
+check(c.post("/api/plugins/enabled", headers=TOKEN, json={"app": "console", "id": "nope", "enabled": True}).status_code == 404, "switch: not installed 404")
+check(c.post("/api/plugins/install", headers={**session("brett", "admin"), "origin": "https://other.example"}, json={"app": "console", "plugins": []}).status_code == 403, "install: cross-site refused")
+check(c.post("/api/plugins/install", headers={**session("brett", "admin"), "origin": "http://testserver"}, json={"app": "pilot", "plugins": [{"id": "pilot.x", "on": True}]}).status_code == 200, "install: signed-in admin, same origin")
+r = c.post("/api/plugins/remove", headers=TOKEN, json={"app": "console", "id": "ai.amberx.axf.example.alpha"}).json()
+check("ai.amberx.axf.example.alpha" not in r["apps"]["console"]["plugins"], "remove")
+main.PLUGINS_FILE.write_text("{broken")
+check(c.get("/api/plugins", headers=TOKEN).json()["apps"]["console"]["plugins"] == {}, "damaged store reads as empty")
+
+# Patches' tab group (patches-tabs@1): the apps by default; plugin tabs for tabable plugins
+r = c.get("/api/tabs", headers=TOKEN).json()
+check(r["$axf"] == "patches-tabs@1" and [t["app"] for t in r["tabs"]] == ["console", "pilot", "axhub"], "tabs: the three apps to start")
+check(c.get("/api/tabs").status_code == 401, "tabs: needs a caller")
+check(c.get("/api/tabs", headers=session("conrad", "user")).status_code == 403, "tabs: users can't read")
+todo = {"kind": "plugin", "app": "console", "plugin": "ai.amberx.axf.example.todos", "view": "todos", "label": " Todos\n", "icon": "list"}
+r = c.put("/api/tabs", headers=TOKEN, json={"tabs": [{"kind": "app", "app": "console"}, todo, {"kind": "app", "app": "axhub"}]}).json()
+check([t.get("view", t["app"]) for t in r["tabs"]] == ["console", "todos", "axhub"] and r["tabs"][1]["label"] == "Todos", "tabs: saved in order, label cleaned")
+check(c.get("/api/tabs", headers=TOKEN).json() == r, "tabs: read back")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [todo, todo]}).status_code == 400, "tabs: a tab twice refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [{**todo, "view": "bad view"}]}).status_code == 400, "tabs: bad view refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": [{"kind": "app", "app": "elsewhere"}]}).status_code == 400, "tabs: unknown app refused")
+check(c.put("/api/tabs", headers=TOKEN, json={"tabs": "x"}).status_code == 400, "tabs: not a list refused")
+check(c.put("/api/tabs", headers={**session("brett", "admin"), "origin": "https://other.example"}, json={"tabs": []}).status_code == 403, "tabs: cross-site refused")
+r = c.put("/api/tabs", headers=TOKEN, json={"tabs": [{**todo, "icon": "Bad Icon"}]}).json()
+check("icon" not in r["tabs"][0], "tabs: bad icon dropped")
+check(oct(main.TABS_FILE.stat().st_mode & 0o777) == "0o600", "tabs: file 0600")
+main.TABS_FILE.write_text("{broken")
+check([t["app"] for t in c.get("/api/tabs", headers=TOKEN).json()["tabs"]] == ["console", "pilot", "axhub"], "tabs: damaged file reads as the defaults")
 
 print(f"server self-test: {passed} checks passed")

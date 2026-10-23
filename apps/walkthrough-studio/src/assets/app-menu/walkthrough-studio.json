@@ -1,0 +1,1260 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "walkthrough-studio",
+  "name": "Walkthrough Studio",
+  "version": "1.0.0",
+  "description": "Project, Edit, View (panes, layouts, grid columns, toolbars), Index, Grid, Record, Video and Help.",
+  "author": "Walkthrough Studio",
+  "tags": [
+    "walkthrough"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "project",
+        "label": "Project",
+        "items": [
+          {
+            "id": "new",
+            "label": "New project…",
+            "icon": "plus",
+            "action": "ws.project.new",
+            "shortcut": "Alt+N"
+          },
+          {
+            "id": "seed",
+            "label": "New from the framework walkthrough",
+            "icon": "sparkles",
+            "action": "ws.project.seed"
+          },
+          {
+            "id": "open",
+            "label": "Open project",
+            "icon": "folder",
+            "provider": "ws.projects"
+          },
+          {
+            "id": "dup",
+            "label": "Duplicate project",
+            "icon": "copy",
+            "action": "ws.project.duplicate"
+          },
+          {
+            "id": "rename",
+            "label": "Rename…",
+            "icon": "edit",
+            "action": "ws.project.rename"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "save",
+            "label": "Save now",
+            "icon": "save",
+            "action": "ws.project.save",
+            "shortcut": "Ctrl+S"
+          },
+          {
+            "id": "hub",
+            "label": "Keep projects on axHub",
+            "icon": "cloud",
+            "action": "ws.hub.toggle",
+            "checked": "counter:ws.hub"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "import",
+            "label": "Import…",
+            "icon": "upload",
+            "action": "ws.project.import"
+          },
+          {
+            "id": "export",
+            "label": "Export",
+            "icon": "download",
+            "items": [
+              {
+                "id": "x-project",
+                "label": "Project JSON",
+                "icon": "download",
+                "action": "ws.export:project"
+              },
+              {
+                "id": "x-timeline",
+                "label": "Timeline JSON",
+                "icon": "download",
+                "action": "ws.export:timeline"
+              },
+              {
+                "id": "x-srt",
+                "label": "Captions SRT",
+                "icon": "download",
+                "action": "ws.export:srt"
+              },
+              {
+                "id": "x-vtt",
+                "label": "Captions WebVTT",
+                "icon": "download",
+                "action": "ws.export:vtt"
+              },
+              {
+                "id": "x-script",
+                "label": "Narration script",
+                "icon": "download",
+                "action": "ws.export:script"
+              },
+              {
+                "id": "x-shots",
+                "label": "Shot list CSV",
+                "icon": "download",
+                "action": "ws.export:shots"
+              },
+              {
+                "id": "x-edl",
+                "label": "Edit decision list",
+                "icon": "download",
+                "action": "ws.export:edl"
+              },
+              {
+                "id": "x-brief",
+                "label": "Claude production brief",
+                "icon": "download",
+                "action": "ws.export:brief"
+              }
+            ]
+          },
+          {
+            "id": "settings",
+            "label": "Project settings",
+            "icon": "settings",
+            "action": "ws.project.settings"
+          },
+          {
+            "id": "s3",
+            "separator": true
+          },
+          {
+            "id": "delete",
+            "label": "Delete project…",
+            "icon": "trash",
+            "action": "ws.project.delete"
+          }
+        ]
+      },
+      {
+        "id": "edit",
+        "label": "Edit",
+        "items": [
+          {
+            "id": "undo",
+            "label": "Undo",
+            "icon": "undo",
+            "action": "ws.undo",
+            "shortcut": "Ctrl+Z"
+          },
+          {
+            "id": "redo",
+            "label": "Redo",
+            "icon": "redo",
+            "action": "ws.redo",
+            "shortcut": "Ctrl+Y"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "addp",
+            "label": "Add piece",
+            "icon": "plus",
+            "action": "ws.piece.add",
+            "shortcut": "Alt+P"
+          },
+          {
+            "id": "adds",
+            "label": "Add section",
+            "icon": "folder",
+            "action": "ws.section.add"
+          },
+          {
+            "id": "addss",
+            "label": "Add sub-section",
+            "icon": "layers",
+            "action": "ws.subsection.add"
+          },
+          {
+            "id": "dup",
+            "label": "Duplicate",
+            "icon": "copy",
+            "action": "ws.piece.duplicate",
+            "shortcut": "Ctrl+D"
+          },
+          {
+            "id": "del",
+            "label": "Delete to trash",
+            "icon": "trash",
+            "action": "ws.item.delete",
+            "shortcut": "Delete"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "status",
+            "label": "Set status",
+            "icon": "check",
+            "items": [
+              {
+                "id": "st-built",
+                "label": "Built",
+                "icon": "check-circle",
+                "action": "ws.status:built"
+              },
+              {
+                "id": "st-partial",
+                "label": "Partial",
+                "icon": "minus",
+                "action": "ws.status:partial"
+              },
+              {
+                "id": "st-failed",
+                "label": "Failed",
+                "icon": "x-circle",
+                "action": "ws.status:failed"
+              },
+              {
+                "id": "st-skipped",
+                "label": "Skipped",
+                "icon": "arrow-right",
+                "action": "ws.status:skipped"
+              },
+              {
+                "id": "st-review",
+                "label": "Needs review",
+                "icon": "eye",
+                "action": "ws.status:review"
+              },
+              {
+                "id": "st-planned",
+                "label": "Planned",
+                "icon": "clock",
+                "action": "ws.status:planned"
+              }
+            ]
+          },
+          {
+            "id": "up",
+            "label": "Move up",
+            "icon": "chevron-up",
+            "action": "ws.item.up"
+          },
+          {
+            "id": "down",
+            "label": "Move down",
+            "icon": "chevron-down",
+            "action": "ws.item.down"
+          },
+          {
+            "id": "prev",
+            "label": "Previous piece",
+            "icon": "chevron-up",
+            "action": "ws.piece.prev",
+            "shortcut": "Alt+Up"
+          },
+          {
+            "id": "next",
+            "label": "Next piece",
+            "icon": "chevron-down",
+            "action": "ws.piece.next",
+            "shortcut": "Alt+Down"
+          }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          {
+            "id": "panes",
+            "label": "Panes",
+            "icon": "layout",
+            "items": [
+              {
+                "id": "p-projects",
+                "label": "Projects",
+                "icon": "folder",
+                "action": "ws.pane:projects",
+                "checked": "counter:ws.pane.projects"
+              },
+              {
+                "id": "p-index",
+                "label": "Index",
+                "icon": "list",
+                "action": "ws.pane:index",
+                "checked": "counter:ws.pane.index"
+              },
+              {
+                "id": "p-grid",
+                "label": "Status grid",
+                "icon": "grid",
+                "action": "ws.pane:grid",
+                "checked": "counter:ws.pane.grid"
+              },
+              {
+                "id": "p-inspector",
+                "label": "Inspector",
+                "icon": "sliders",
+                "action": "ws.pane:inspector",
+                "checked": "counter:ws.pane.inspector"
+              },
+              {
+                "id": "p-script",
+                "label": "Script",
+                "icon": "type",
+                "action": "ws.pane:script",
+                "checked": "counter:ws.pane.script"
+              },
+              {
+                "id": "p-review",
+                "label": "Review queue",
+                "icon": "eye",
+                "action": "ws.pane:review",
+                "checked": "counter:ws.pane.review"
+              },
+              {
+                "id": "p-browser",
+                "label": "Live browser",
+                "icon": "monitor",
+                "action": "ws.pane:browser",
+                "checked": "counter:ws.pane.browser"
+              },
+              {
+                "id": "p-recordings",
+                "label": "Recordings",
+                "icon": "play",
+                "action": "ws.pane:recordings",
+                "checked": "counter:ws.pane.recordings"
+              },
+              {
+                "id": "p-events",
+                "label": "Event track",
+                "icon": "chart",
+                "action": "ws.pane:events",
+                "checked": "counter:ws.pane.events"
+              },
+              {
+                "id": "p-files",
+                "label": "Files",
+                "icon": "file",
+                "action": "ws.pane:files",
+                "checked": "counter:ws.pane.files"
+              },
+              {
+                "id": "p-preview",
+                "label": "Preview",
+                "icon": "eye",
+                "action": "ws.pane:preview",
+                "checked": "counter:ws.pane.preview"
+              },
+              {
+                "id": "p-timeline",
+                "label": "Timeline",
+                "icon": "layout",
+                "action": "ws.pane:timeline",
+                "checked": "counter:ws.pane.timeline"
+              },
+              {
+                "id": "p-captions",
+                "label": "Captions",
+                "icon": "type",
+                "action": "ws.pane:captions",
+                "checked": "counter:ws.pane.captions"
+              },
+              {
+                "id": "p-export",
+                "label": "Export",
+                "icon": "download",
+                "action": "ws.pane:export",
+                "checked": "counter:ws.pane.export"
+              },
+              {
+                "id": "p-dashboard",
+                "label": "Dashboard",
+                "icon": "chart",
+                "action": "ws.pane:dashboard",
+                "checked": "counter:ws.pane.dashboard"
+              },
+              {
+                "id": "p-settings",
+                "label": "Project settings",
+                "icon": "settings",
+                "action": "ws.pane:settings",
+                "checked": "counter:ws.pane.settings"
+              },
+              {
+                "id": "p-trash",
+                "label": "Trash",
+                "icon": "trash",
+                "action": "ws.pane:trash",
+                "checked": "counter:ws.pane.trash"
+              },
+              {
+                "id": "p-log",
+                "label": "Log",
+                "icon": "terminal",
+                "action": "ws.pane:log",
+                "checked": "counter:ws.pane.log"
+              }
+            ]
+          },
+          {
+            "id": "float",
+            "label": "Float a pane",
+            "icon": "layers",
+            "items": [
+              {
+                "id": "f-projects",
+                "label": "Projects",
+                "icon": "folder",
+                "action": "ws.pane.move:projects:float"
+              },
+              {
+                "id": "f-index",
+                "label": "Index",
+                "icon": "list",
+                "action": "ws.pane.move:index:float"
+              },
+              {
+                "id": "f-grid",
+                "label": "Status grid",
+                "icon": "grid",
+                "action": "ws.pane.move:grid:float"
+              },
+              {
+                "id": "f-inspector",
+                "label": "Inspector",
+                "icon": "sliders",
+                "action": "ws.pane.move:inspector:float"
+              },
+              {
+                "id": "f-script",
+                "label": "Script",
+                "icon": "type",
+                "action": "ws.pane.move:script:float"
+              },
+              {
+                "id": "f-review",
+                "label": "Review queue",
+                "icon": "eye",
+                "action": "ws.pane.move:review:float"
+              },
+              {
+                "id": "f-browser",
+                "label": "Live browser",
+                "icon": "monitor",
+                "action": "ws.pane.move:browser:float"
+              },
+              {
+                "id": "f-recordings",
+                "label": "Recordings",
+                "icon": "play",
+                "action": "ws.pane.move:recordings:float"
+              },
+              {
+                "id": "f-events",
+                "label": "Event track",
+                "icon": "chart",
+                "action": "ws.pane.move:events:float"
+              },
+              {
+                "id": "f-files",
+                "label": "Files",
+                "icon": "file",
+                "action": "ws.pane.move:files:float"
+              },
+              {
+                "id": "f-preview",
+                "label": "Preview",
+                "icon": "eye",
+                "action": "ws.pane.move:preview:float"
+              },
+              {
+                "id": "f-timeline",
+                "label": "Timeline",
+                "icon": "layout",
+                "action": "ws.pane.move:timeline:float"
+              },
+              {
+                "id": "f-captions",
+                "label": "Captions",
+                "icon": "type",
+                "action": "ws.pane.move:captions:float"
+              },
+              {
+                "id": "f-export",
+                "label": "Export",
+                "icon": "download",
+                "action": "ws.pane.move:export:float"
+              },
+              {
+                "id": "f-dashboard",
+                "label": "Dashboard",
+                "icon": "chart",
+                "action": "ws.pane.move:dashboard:float"
+              },
+              {
+                "id": "f-settings",
+                "label": "Project settings",
+                "icon": "settings",
+                "action": "ws.pane.move:settings:float"
+              },
+              {
+                "id": "f-trash",
+                "label": "Trash",
+                "icon": "trash",
+                "action": "ws.pane.move:trash:float"
+              },
+              {
+                "id": "f-log",
+                "label": "Log",
+                "icon": "terminal",
+                "action": "ws.pane.move:log:float"
+              }
+            ]
+          },
+          {
+            "id": "layouts",
+            "label": "Workspace layout",
+            "icon": "layout",
+            "items": [
+              {
+                "id": "l-ide",
+                "label": "IDE",
+                "icon": "layout",
+                "action": "ws.layout:ide",
+                "checked": "counter:ws.layout.ide"
+              },
+              {
+                "id": "l-grid",
+                "label": "Grid",
+                "icon": "grid",
+                "action": "ws.layout:grid",
+                "checked": "counter:ws.layout.grid"
+              },
+              {
+                "id": "l-record",
+                "label": "Record",
+                "icon": "monitor",
+                "action": "ws.layout:record",
+                "checked": "counter:ws.layout.record"
+              },
+              {
+                "id": "l-write",
+                "label": "Write",
+                "icon": "type",
+                "action": "ws.layout:write",
+                "checked": "counter:ws.layout.write"
+              },
+              {
+                "id": "l-review",
+                "label": "Review",
+                "icon": "eye",
+                "action": "ws.layout:review",
+                "checked": "counter:ws.layout.review"
+              },
+              {
+                "id": "l-compile",
+                "label": "Compile",
+                "icon": "package",
+                "action": "ws.layout:compile",
+                "checked": "counter:ws.layout.compile"
+              },
+              {
+                "id": "l-focus",
+                "label": "Focus",
+                "icon": "minimize",
+                "action": "ws.layout:focus",
+                "checked": "counter:ws.layout.focus"
+              },
+              {
+                "id": "ls",
+                "separator": true
+              },
+              {
+                "id": "lreset",
+                "label": "Reset this layout",
+                "icon": "refresh",
+                "action": "ws.layout.reset"
+              }
+            ]
+          },
+          {
+            "id": "grid",
+            "label": "Grid columns",
+            "icon": "list",
+            "items": [
+              {
+                "id": "c-status",
+                "label": "Status",
+                "icon": "list",
+                "action": "ws.grid.col:status",
+                "checked": "counter:ws.col.status"
+              },
+              {
+                "id": "c-kind",
+                "label": "Kind",
+                "icon": "list",
+                "action": "ws.grid.col:kind",
+                "checked": "counter:ws.col.kind"
+              },
+              {
+                "id": "c-progress",
+                "label": "Progress",
+                "icon": "list",
+                "action": "ws.grid.col:progress",
+                "checked": "counter:ws.col.progress"
+              },
+              {
+                "id": "c-clip",
+                "label": "Clip",
+                "icon": "list",
+                "action": "ws.grid.col:clip",
+                "checked": "counter:ws.col.clip"
+              },
+              {
+                "id": "c-est",
+                "label": "Estimate",
+                "icon": "list",
+                "action": "ws.grid.col:est",
+                "checked": "counter:ws.col.est"
+              },
+              {
+                "id": "c-target",
+                "label": "Target",
+                "icon": "list",
+                "action": "ws.grid.col:target",
+                "checked": "counter:ws.col.target"
+              },
+              {
+                "id": "c-delta",
+                "label": "± target",
+                "icon": "list",
+                "action": "ws.grid.col:delta",
+                "checked": "counter:ws.col.delta"
+              },
+              {
+                "id": "c-cues",
+                "label": "Cues",
+                "icon": "list",
+                "action": "ws.grid.col:cues",
+                "checked": "counter:ws.col.cues"
+              },
+              {
+                "id": "c-words",
+                "label": "Words",
+                "icon": "list",
+                "action": "ws.grid.col:words",
+                "checked": "counter:ws.col.words"
+              },
+              {
+                "id": "c-recording",
+                "label": "Rec",
+                "icon": "list",
+                "action": "ws.grid.col:recording",
+                "checked": "counter:ws.col.recording"
+              },
+              {
+                "id": "c-tags",
+                "label": "Tags",
+                "icon": "list",
+                "action": "ws.grid.col:tags",
+                "checked": "counter:ws.col.tags"
+              },
+              {
+                "id": "c-url",
+                "label": "Page",
+                "icon": "list",
+                "action": "ws.grid.col:url",
+                "checked": "counter:ws.col.url"
+              },
+              {
+                "id": "c-notes",
+                "label": "Notes",
+                "icon": "list",
+                "action": "ws.grid.col:notes",
+                "checked": "counter:ws.col.notes"
+              },
+              {
+                "id": "c-updated",
+                "label": "Updated",
+                "icon": "list",
+                "action": "ws.grid.col:updated",
+                "checked": "counter:ws.col.updated"
+              },
+              {
+                "id": "cs",
+                "separator": true
+              },
+              {
+                "id": "call",
+                "label": "Show every column",
+                "icon": "eye",
+                "action": "ws.grid.allColumns"
+              },
+              {
+                "id": "cchoose",
+                "label": "Choose columns…",
+                "icon": "sliders",
+                "action": "ws.grid.columns"
+              }
+            ]
+          },
+          {
+            "id": "toolbars",
+            "label": "Toolbars",
+            "icon": "sliders",
+            "provider": "ws.toolbars"
+          },
+          {
+            "id": "zoom",
+            "label": "Maximise area",
+            "icon": "monitor",
+            "items": [
+              {
+                "id": "z-left",
+                "label": "Left",
+                "icon": "monitor",
+                "action": "ws.zoom:left"
+              },
+              {
+                "id": "z-center",
+                "label": "Center",
+                "icon": "monitor",
+                "action": "ws.zoom:center"
+              },
+              {
+                "id": "z-right",
+                "label": "Right",
+                "icon": "monitor",
+                "action": "ws.zoom:right"
+              },
+              {
+                "id": "z-bottom",
+                "label": "Bottom",
+                "icon": "monitor",
+                "action": "ws.zoom:bottom"
+              }
+            ]
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "look",
+            "label": "Appearance settings",
+            "icon": "palette",
+            "action": "settings.open:appearance"
+          },
+          {
+            "id": "theme",
+            "label": "Next colour theme",
+            "icon": "palette",
+            "action": "swap:color-theme:next"
+          }
+        ]
+      },
+      {
+        "id": "index",
+        "label": "Index",
+        "items": [
+          {
+            "id": "search",
+            "label": "Search the index",
+            "icon": "search",
+            "action": "ws.index.search",
+            "shortcut": "Alt+F"
+          },
+          {
+            "id": "clear",
+            "label": "Clear filters",
+            "icon": "x",
+            "action": "ws.index.clear"
+          },
+          {
+            "id": "filter",
+            "label": "Show only",
+            "icon": "eye",
+            "items": [
+              {
+                "id": "fi-built",
+                "label": "Built",
+                "icon": "check-circle",
+                "action": "ws.filter.status:built",
+                "checked": "counter:ws.filter.built"
+              },
+              {
+                "id": "fi-partial",
+                "label": "Partial",
+                "icon": "minus",
+                "action": "ws.filter.status:partial",
+                "checked": "counter:ws.filter.partial"
+              },
+              {
+                "id": "fi-failed",
+                "label": "Failed",
+                "icon": "x-circle",
+                "action": "ws.filter.status:failed",
+                "checked": "counter:ws.filter.failed"
+              },
+              {
+                "id": "fi-skipped",
+                "label": "Skipped",
+                "icon": "arrow-right",
+                "action": "ws.filter.status:skipped",
+                "checked": "counter:ws.filter.skipped"
+              },
+              {
+                "id": "fi-review",
+                "label": "Needs review",
+                "icon": "eye",
+                "action": "ws.filter.status:review",
+                "checked": "counter:ws.filter.review"
+              },
+              {
+                "id": "fi-planned",
+                "label": "Planned",
+                "icon": "clock",
+                "action": "ws.filter.status:planned",
+                "checked": "counter:ws.filter.planned"
+              }
+            ]
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "expand",
+            "label": "Expand all",
+            "icon": "chevron-down",
+            "action": "ws.index.expand"
+          },
+          {
+            "id": "collapse",
+            "label": "Collapse all",
+            "icon": "chevron-right",
+            "action": "ws.index.collapse"
+          }
+        ]
+      },
+      {
+        "id": "grid",
+        "label": "Grid",
+        "items": [
+          {
+            "id": "cols",
+            "label": "Columns",
+            "icon": "list",
+            "items": [
+              {
+                "id": "gc-status",
+                "label": "Status",
+                "icon": "list",
+                "action": "ws.grid.col:status",
+                "checked": "counter:ws.col.status"
+              },
+              {
+                "id": "gc-kind",
+                "label": "Kind",
+                "icon": "list",
+                "action": "ws.grid.col:kind",
+                "checked": "counter:ws.col.kind"
+              },
+              {
+                "id": "gc-progress",
+                "label": "Progress",
+                "icon": "list",
+                "action": "ws.grid.col:progress",
+                "checked": "counter:ws.col.progress"
+              },
+              {
+                "id": "gc-clip",
+                "label": "Clip",
+                "icon": "list",
+                "action": "ws.grid.col:clip",
+                "checked": "counter:ws.col.clip"
+              },
+              {
+                "id": "gc-est",
+                "label": "Estimate",
+                "icon": "list",
+                "action": "ws.grid.col:est",
+                "checked": "counter:ws.col.est"
+              },
+              {
+                "id": "gc-target",
+                "label": "Target",
+                "icon": "list",
+                "action": "ws.grid.col:target",
+                "checked": "counter:ws.col.target"
+              },
+              {
+                "id": "gc-delta",
+                "label": "± target",
+                "icon": "list",
+                "action": "ws.grid.col:delta",
+                "checked": "counter:ws.col.delta"
+              },
+              {
+                "id": "gc-cues",
+                "label": "Cues",
+                "icon": "list",
+                "action": "ws.grid.col:cues",
+                "checked": "counter:ws.col.cues"
+              },
+              {
+                "id": "gc-words",
+                "label": "Words",
+                "icon": "list",
+                "action": "ws.grid.col:words",
+                "checked": "counter:ws.col.words"
+              },
+              {
+                "id": "gc-recording",
+                "label": "Rec",
+                "icon": "list",
+                "action": "ws.grid.col:recording",
+                "checked": "counter:ws.col.recording"
+              },
+              {
+                "id": "gc-tags",
+                "label": "Tags",
+                "icon": "list",
+                "action": "ws.grid.col:tags",
+                "checked": "counter:ws.col.tags"
+              },
+              {
+                "id": "gc-url",
+                "label": "Page",
+                "icon": "list",
+                "action": "ws.grid.col:url",
+                "checked": "counter:ws.col.url"
+              },
+              {
+                "id": "gc-notes",
+                "label": "Notes",
+                "icon": "list",
+                "action": "ws.grid.col:notes",
+                "checked": "counter:ws.col.notes"
+              },
+              {
+                "id": "gc-updated",
+                "label": "Updated",
+                "icon": "list",
+                "action": "ws.grid.col:updated",
+                "checked": "counter:ws.col.updated"
+              }
+            ]
+          },
+          {
+            "id": "sort",
+            "label": "Sort by",
+            "icon": "list",
+            "items": [
+              {
+                "id": "so-none",
+                "label": "Outline order",
+                "icon": "list",
+                "action": "ws.grid.sort"
+              },
+              {
+                "id": "so-title",
+                "label": "Piece",
+                "icon": "list",
+                "action": "ws.grid.sort:title"
+              },
+              {
+                "id": "so-status",
+                "label": "Status",
+                "icon": "list",
+                "action": "ws.grid.sort:status"
+              },
+              {
+                "id": "so-kind",
+                "label": "Kind",
+                "icon": "list",
+                "action": "ws.grid.sort:kind"
+              },
+              {
+                "id": "so-progress",
+                "label": "Progress",
+                "icon": "list",
+                "action": "ws.grid.sort:progress"
+              },
+              {
+                "id": "so-clip",
+                "label": "Clip",
+                "icon": "list",
+                "action": "ws.grid.sort:clip"
+              },
+              {
+                "id": "so-est",
+                "label": "Estimate",
+                "icon": "list",
+                "action": "ws.grid.sort:est"
+              },
+              {
+                "id": "so-target",
+                "label": "Target",
+                "icon": "list",
+                "action": "ws.grid.sort:target"
+              },
+              {
+                "id": "so-delta",
+                "label": "± target",
+                "icon": "list",
+                "action": "ws.grid.sort:delta"
+              },
+              {
+                "id": "so-cues",
+                "label": "Cues",
+                "icon": "list",
+                "action": "ws.grid.sort:cues"
+              },
+              {
+                "id": "so-words",
+                "label": "Words",
+                "icon": "list",
+                "action": "ws.grid.sort:words"
+              },
+              {
+                "id": "so-updated",
+                "label": "Updated",
+                "icon": "list",
+                "action": "ws.grid.sort:updated"
+              }
+            ]
+          },
+          {
+            "id": "choose",
+            "label": "Choose columns…",
+            "icon": "sliders",
+            "action": "ws.grid.columns"
+          },
+          {
+            "id": "compact",
+            "label": "Compact rows",
+            "icon": "minimize",
+            "action": "ws.grid.compact",
+            "checked": "counter:ws.grid.compact"
+          },
+          {
+            "id": "xall",
+            "label": "Expand every row",
+            "icon": "chevron-down",
+            "action": "ws.grid.expandRows"
+          },
+          {
+            "id": "call",
+            "label": "Collapse every row",
+            "icon": "chevron-right",
+            "action": "ws.grid.collapseRows"
+          },
+          {
+            "id": "show",
+            "label": "Show the grid",
+            "icon": "grid",
+            "action": "ws.pane:grid",
+            "checked": "counter:ws.pane.grid"
+          }
+        ]
+      },
+      {
+        "id": "record",
+        "label": "Record",
+        "items": [
+          {
+            "id": "browser",
+            "label": "Live browser",
+            "icon": "monitor",
+            "action": "ws.browser.open"
+          },
+          {
+            "id": "rec",
+            "label": "Record / stop",
+            "icon": "play",
+            "action": "ws.record.toggle",
+            "shortcut": "Alt+R",
+            "checked": "counter:ws.recording"
+          },
+          {
+            "id": "mark",
+            "label": "Drop a marker",
+            "icon": "star",
+            "action": "ws.record.mark",
+            "shortcut": "Alt+M"
+          },
+          {
+            "id": "process",
+            "label": "Process with Claude…",
+            "icon": "sparkles",
+            "action": "ws.recording.process"
+          },
+          {
+            "id": "recs",
+            "label": "Recordings",
+            "icon": "play",
+            "action": "ws.pane:recordings",
+            "checked": "counter:ws.pane.recordings"
+          },
+          {
+            "id": "events",
+            "label": "Event track",
+            "icon": "chart",
+            "action": "ws.pane:events",
+            "checked": "counter:ws.pane.events"
+          }
+        ]
+      },
+      {
+        "id": "video",
+        "label": "Video",
+        "items": [
+          {
+            "id": "compile",
+            "label": "Compile",
+            "icon": "package",
+            "action": "ws.compile",
+            "shortcut": "Alt+B"
+          },
+          {
+            "id": "full",
+            "label": "Recompile everything",
+            "icon": "refresh",
+            "action": "ws.compile.full"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "play",
+            "label": "Play preview",
+            "icon": "play",
+            "action": "ws.preview.play"
+          },
+          {
+            "id": "stop",
+            "label": "Stop preview",
+            "icon": "pause",
+            "action": "ws.preview.stop"
+          },
+          {
+            "id": "timeline",
+            "label": "Timeline",
+            "icon": "layout",
+            "action": "ws.pane:timeline",
+            "checked": "counter:ws.pane.timeline"
+          },
+          {
+            "id": "s2",
+            "separator": true
+          },
+          {
+            "id": "exportd",
+            "label": "Export…",
+            "icon": "download",
+            "action": "ws.export.dialog"
+          },
+          {
+            "id": "exp",
+            "label": "Export as",
+            "icon": "download",
+            "items": [
+              {
+                "id": "e-project",
+                "label": "Project JSON",
+                "icon": "download",
+                "action": "ws.export:project"
+              },
+              {
+                "id": "e-timeline",
+                "label": "Timeline JSON",
+                "icon": "download",
+                "action": "ws.export:timeline"
+              },
+              {
+                "id": "e-srt",
+                "label": "Captions SRT",
+                "icon": "download",
+                "action": "ws.export:srt"
+              },
+              {
+                "id": "e-vtt",
+                "label": "Captions WebVTT",
+                "icon": "download",
+                "action": "ws.export:vtt"
+              },
+              {
+                "id": "e-script",
+                "label": "Narration script",
+                "icon": "download",
+                "action": "ws.export:script"
+              },
+              {
+                "id": "e-shots",
+                "label": "Shot list CSV",
+                "icon": "download",
+                "action": "ws.export:shots"
+              },
+              {
+                "id": "e-edl",
+                "label": "Edit decision list",
+                "icon": "download",
+                "action": "ws.export:edl"
+              },
+              {
+                "id": "e-brief",
+                "label": "Claude production brief",
+                "icon": "download",
+                "action": "ws.export:brief"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "help",
+        "label": "Help",
+        "items": [
+          {
+            "id": "guide",
+            "label": "How the studio works",
+            "icon": "help",
+            "action": "ws.help.guide"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "about",
+            "label": "About",
+            "icon": "info",
+            "action": "ws.help.about"
+          }
+        ]
+      }
+    ]
+  }
+}

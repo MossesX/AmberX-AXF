@@ -1,0 +1,22 @@
+/* lib-datagrid — theme tokens only */
+.axf-grid { --axf-grid-pad: calc(var(--fx-space) * 0.5); min-width: 0; }
+.axf-grid.is-compact { --axf-grid-pad: 0; }
+.axf-grid-head, .axf-grid-row { display: grid; grid-template-columns: var(--axf-grid-cols); align-items: center; gap: calc(var(--fx-space) * 0.5); padding: var(--axf-grid-pad) var(--fx-space); min-width: max-content; position: relative; }
+.axf-grid-head { position: sticky; top: 0; z-index: 3; background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axf-grid-hcell { justify-content: flex-start; min-width: 0; }
+.axf-grid-hcell.is-end, .axf-grid-cell.is-end { justify-content: flex-end; text-align: end; }
+.axf-grid-row { border-bottom: var(--fx-border-w) solid var(--fx-border); user-select: none; -webkit-user-select: none; }
+.axf-grid-row:hover { background: var(--fx-surface2); }
+.axf-grid-row.is-active { background: var(--fx-accent-soft); }
+.axf-grid-row.is-multi { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axf-grid-cell { display: flex; align-items: center; min-width: 0; overflow: hidden; }
+.axf-grid-group { display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 0.5) var(--fx-space); background: var(--fx-surface3); border-bottom: var(--fx-border-w) solid var(--fx-border); min-width: max-content; position: relative; user-select: none; -webkit-user-select: none; }
+.axf-grid-group--d0 { font-weight: 700; } .axf-grid-group--d1 { background: var(--fx-surface2); font-weight: 600; } .axf-grid-group--d2, .axf-grid-group--d3 { background: var(--fx-surface); }
+.axf-grid-gtitle { font-weight: inherit; }
+.axf-grid-gsummary { font-size: calc(var(--fx-font-size) * 0.85); color: var(--fx-muted); font-weight: normal; }
+.axf-grid-gmeter { flex: 1 1 auto; min-width: calc(var(--fx-space) * 10); max-width: calc(var(--fx-space) * 24); }
+.axf-grid-detail { padding: var(--fx-space) calc(var(--fx-space) * 4); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axf-grid-empty { padding: var(--fx-space); color: var(--fx-muted); }
+[class*='axf-grid-edge--'] { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--axf-grid-edge); }
+.axf-grid-edge--muted { --axf-grid-edge: var(--fx-border); } .axf-grid-edge--success { --axf-grid-edge: var(--fx-success); } .axf-grid-edge--accent { --axf-grid-edge: var(--fx-accent); }
+.axf-grid-edge--danger { --axf-grid-edge: var(--fx-danger); } .axf-grid-edge--warning { --axf-grid-edge: var(--fx-warning); } .axf-grid-edge--info { --axf-grid-edge: var(--fx-info); }

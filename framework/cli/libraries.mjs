@@ -74,6 +74,32 @@ export function coerceParam(p, value) {
 export function resolveParams(lib, answers = {}) {
   const out = {};
   for (const p of lib.params ?? []) out[p.key] = coerceParam(p, answers[p.key]);
+  // library@1 parts (features inside the library, each configurable): same rules as core/library.ts resolvePartConfig.
+  if (lib.parts?.length) out.parts = resolveParts(lib.parts, answers.parts);
+  return out;
+}
+
+/** Parts chosen + what they require, in the library's order (= core/library.ts withRequired). */
+export function partsWithRequired(parts, chosen) {
+  const on = new Set();
+  const add = (id) => { const p = parts.find((x) => x.id === id); if (!p || on.has(id)) return; on.add(id); for (const r of p.requires ?? []) add(r); };
+  chosen.forEach(add);
+  return parts.filter((p) => on.has(p.id)).map((p) => p.id);
+}
+
+/** answers undefined → default parts; else true / {params} includes a part (= includedParts + resolvePartConfig). Throws on an unknown part or a bad value. */
+export function resolveParts(parts, answers) {
+  if (answers != null && (typeof answers !== 'object' || Array.isArray(answers))) throw new Error('parts must be an object of part id → true | { params }');
+  for (const id of Object.keys(answers ?? {})) if (!parts.some((p) => p.id === id)) throw new Error(`Unknown part "${id}". Parts: ${parts.map((p) => p.id).join(', ')}`);
+  const chosen = answers ? Object.entries(answers).filter(([, v]) => v === true || (typeof v === 'object' && v !== null)).map(([k]) => k) : parts.filter((p) => p.default !== false).map((p) => p.id);
+  const out = {};
+  for (const id of partsWithRequired(parts, chosen)) {
+    const p = parts.find((x) => x.id === id);
+    const given = answers && typeof answers[id] === 'object' ? answers[id] : {};
+    const cfg = {};
+    for (const q of p.params ?? []) { const v = coerceParam(q, given[q.key]); cfg[q.key] = v === undefined ? null : v; }
+    out[id] = cfg;
+  }
   return out;
 }
 

@@ -9,11 +9,11 @@ import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage } from './engines/embed';
+import { detectEmbedFull, embedHostLabel, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -447,6 +447,7 @@ export class AxfRuntime {
       hidden: (t) => this.slotHidden(t as AssetType),
       providers: this.appMenuProviderIds(),
       taken: (it) => this.takenByHost(it),
+      locked: (it) => this.lockedByHost(it) !== null,
     };
   }
 
@@ -590,7 +591,7 @@ export class AxfRuntime {
   /* ---------------- assets ---------------- */
 
   asset<K extends AssetType>(type: K): Asset<K> {
-    return this.registry.get(type, this.state.active[type])!;
+    return this.registry.get(type, this.state.active[type] ?? '')!;
   }
 
   /** The active asset of an optional type (banner, clock, badge), or null when the app has none. */
@@ -893,7 +894,7 @@ export class AxfRuntime {
   reset() {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
     const active = { ...this.manifest.defaults };
-    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t])) active[t] = this.registry.list(t)[0]?.id ?? '';
+    for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t] ?? '')) active[t] = this.registry.list(t)[0]?.id ?? '';
     if (this.principal) {
       // signed in: the account keeps deciding the policy and role
       active['uac-policy'] = this.principal.policy;
@@ -959,6 +960,9 @@ export class AxfRuntime {
   navigate(view: string) {
     // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
+    // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
+    const lock = this.lockedByHost({ view });
+    if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return; }
     this.set({ view, context: null });
   }
 
@@ -995,6 +999,9 @@ export class AxfRuntime {
   dispatch(spec: string, ctx: Omit<ActionContext, 'runtime'> = {}): boolean {
     // A hook of a function the host took over (embed@1): the host does it (e.g. Patches' combined settings).
     if (embedTakenBy(this.embedded, spec)) return this.askHost(spec);
+    // A hook of a function the host locks (plugins inside Patches): shown greyed out; running it only says who manages it.
+    const lock = this.lockedByHost({ action: spec });
+    if (lock) { this.toast(lock, 'info', `Managed in ${embedHostLabel(this.embedded)}`); return false; }
     return this.actions.dispatch(spec, { runtime: this, ...ctx });
   }
 
@@ -1009,6 +1016,48 @@ export class AxfRuntime {
    */
   takenByHost(what: { action?: string; view?: string; provider?: string }): boolean {
     return !!(embedTakenBy(this.embedded, what.action) || embedTakenView(this.embedded, what.view) || embedTakenProvider(this.embedded, what.provider));
+  }
+
+  /**
+   * Is this action / view / live list a hook of a function the host locks (embed@1 take with `lock`, e.g. plugins
+   * inside Patches)? Returns the note to show (`Plugins are managed in Patches`), or null. Chrome keeps such hooks on
+   * screen greyed out with the note as their tooltip.
+   */
+  lockedByHost(what: { action?: string; view?: string; provider?: string }): string | null {
+    const e = this.embedded;
+    if (!e?.takes?.length) return null;
+    const fn = embedLockedBy(e, what.action) ?? embedTakenView(e, what.view, true) ?? embedTakenProvider(e, what.provider, true);
+    return embedLockNote(e, fn);
+  }
+
+  /** The note for a whole function the host locks (`plugins` → `Plugins are managed in Patches`), or null. */
+  hostLockNote(fn: string): string | null { return embedLockNote(this.embedded, fn); }
+
+  /* ---------------- embed@1: the host manages this app's plugins (take `plugins`) ---------------- */
+
+  /**
+   * The plugins the host enabled for this app (`plugins-enabled` message), or null while the host hasn't said (or
+   * doesn't take plugins). An app loads only these while the host takes plugins; its own on/off switches don't apply.
+   */
+  hostPlugins: string[] | null = null;
+  private hostPluginSubs = new Set<(ids: string[]) => void>();
+  private reportedPlugins: EmbedPlugin[] | null = null;
+
+  /** Called whenever the host sends its list for this app. Returns the unsubscribe. */
+  onHostPlugins(fn: (ids: string[]) => void): () => void { this.hostPluginSubs.add(fn); return () => { this.hostPluginSubs.delete(fn); }; }
+
+  /** Tell the host which plugins this app has (and which it had on by itself). Kept, and sent again when the host asks. */
+  reportPluginsToHost(plugins: EmbedPlugin[]): boolean {
+    if (!this.hostTakes('plugins')) return false;
+    this.reportedPlugins = plugins.map((p) => ({ ...p }));
+    return this.postToHost({ $axf: EMBED_MESSAGE, type: 'plugins', plugins: this.reportedPlugins });
+  }
+
+  /** The host's list arrived (also used by tests and Android hosts through AxfEmbedGuest). */
+  receiveHostPlugins(ids: string[]): void {
+    this.hostPlugins = [...ids];
+    for (const f of this.hostPluginSubs) try { f(this.hostPlugins); } catch { /* a listener's own problem */ }
+    this.set({});
   }
 
   /** Send a message to the host (Android: its `AxfEmbedHost` bridge; web: the parent frame). False when there's no host. */
@@ -1048,6 +1097,8 @@ export class AxfRuntime {
       if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
+      if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
+      if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
     };
     // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
     if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
@@ -1164,6 +1215,9 @@ export class AxfRuntime {
       toolbarStyle(this.asset('toolbar').data),
       navMenuStyle(this.asset('nav-menu').data),
       appMenuStyle(this.asset('app-menu').data),
+      // optional control types (older apps without them get the defaults)
+      gaugeStyle(this.assetOrNull('gauge')?.data),
+      meterStyle(this.assetOrNull('meter')?.data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

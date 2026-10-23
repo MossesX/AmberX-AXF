@@ -220,10 +220,16 @@ try {
       break;
     }
     case 'install': {
-      if (!args[0]) throw new Error('Usage: axf install <library> [appDir] [--param key=value …] [--yes]');
+      if (!args[0]) throw new Error('Usage: axf install <library> [appDir] [--param key=value …] [--parts a,b] [--part a.key=value …] [--yes]');
       const lib = libraryInfo(args[0]);
       const preset = {};
       for (const kv of [].concat(flags.param ?? [])) { const [k, ...v] = String(kv).split('='); preset[k] = v.join('='); }
+      // library@1 parts: --parts lists the parts to include (default: the library's defaults), --part sets one part's parameter
+      if (flags.parts !== undefined || flags.part !== undefined) {
+        const chosen = flags.parts !== undefined && flags.parts !== true ? String(flags.parts).split(',').map((x) => x.trim()).filter(Boolean) : (lib.parts ?? []).filter((x) => x.default !== false).map((x) => x.id);
+        preset.parts = Object.fromEntries(chosen.map((id) => [id, {}]));
+        for (const kv of [].concat(flags.part ?? [])) { const [k, ...v] = String(kv).split('='); const [pid, key] = k.split('.'); (preset.parts[pid] ??= {})[key] = v.join('='); }
+      }
       const answers = flags.yes || !process.stdin.isTTY ? preset : await wizard(lib, preset);
       const r = installLibrary({ dir: args[1] ?? '.', library: lib.id, params: answers, log: (m) => console.log(c.dim(m)) });
       console.log(c.ok(`✓ installed ${lib.name} into ${relative(process.cwd(), r.dir) || '.'} (${r.changed.length} files)`));

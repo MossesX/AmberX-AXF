@@ -44,6 +44,13 @@ want=(-d --name app -l traefik.enable=true -l traefik.docker.network=coolify
   -l traefik.http.services.rr.loadbalancer.server.port=7000)
 eq "$(printf '%s\n' "${A[@]}")" "$(printf '%s\n' "${want[@]}")" "router labels"
 
+# ---- router labels for some paths of a host (AXF_ROUTER_PATHS + AXF_ROUTER_PRIORITY)
+A=()
+AXF_ROUTER_PATHS='Path(`/`) || PathPrefix(`/assets/`)' AXF_ROUTER_PRIORITY=1000 axf_router_labels A rr hub.example 8080 coolify
+eq "$(printf '%s\n' "${A[@]}" | grep -c 'priority=1000')" 2 "paths: both routers get the priority"
+eq "$(printf '%s\n' "${A[@]}" | grep -F 'routers.rr.rule=')" 'traefik.http.routers.rr.rule=Host(`hub.example`) && (Path(`/`) || PathPrefix(`/assets/`))' "paths: https rule"
+eq "$(printf '%s\n' "${A[@]}" | grep -F 'routers.rr-http.rule=')" 'traefik.http.routers.rr-http.rule=Host(`hub.example`) && (Path(`/`) || PathPrefix(`/assets/`))' "paths: http rule"
+
 # ---- wall labels: strip all five headers first, then forwardAuth, chain strip → wall
 W=(-e X=1)
 axf_wall_labels W rr "$(axf_wall_verify_url https://hub.example "$(axf_wall_join_paths /api/plugins/a/ /api/plugins/b/)")"
