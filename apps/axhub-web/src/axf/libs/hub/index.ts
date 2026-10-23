@@ -7,12 +7,16 @@
  *
  * - `./hub.ts`: hub address rules, hub URLs, the approvals feed (decision #85) read with the browser's own hub session,
  *   status mapping, seen-id tracking. Same rules as the Kotlin lib-hub; both replay `spec/fixtures/hub-approvals.json`.
+ * - `./apps.ts`: the app catalog `GET /apps.json` (decision #90, harvested from apps/axhub-web Oct 23 2026) and the words
+ *   apps use for hub data (sizes, times, approval expiry, why a list is empty). Catalog rules pinned by the fixture's `apps`.
+ * - `./react.tsx`: React hooks + views (useHubApprovals, useHubApps, useHubBannerCount, HubApprovalList, HubStatusNote).
  * - {@link HubWatcher}: polls the feed while the page is visible (and on focus), keeps the last state, tells subscribers.
  *   Framework-agnostic (React hosts use `useSyncExternalStore(w.subscribe, () => w.state)`).
  */
 import { HUB_DEFAULT, fetchHubFeed, normalizeHub, approvalsUrl, type HubFeed, type HubFetch } from './hub';
 
 export * from './hub';
+export * from './apps';
 
 export interface HubWatchState extends HubFeed {
   /** 'idle' until the first answer. */
