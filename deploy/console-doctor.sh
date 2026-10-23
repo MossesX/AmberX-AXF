@@ -61,6 +61,12 @@ check_all() {
   local mk; mk=$(grep -hiE '^[^#].* [^ ]*moshi[^ ]*$' /root/.ssh/authorized_keys 2>/dev/null | head -1)
   if [ -n "$mk" ]; then put host-moshi-key ok "Moshi's key can sign in as root ($(printf '%s\n' "$mk" | ssh-keygen -lf - 2>/dev/null | awk '{print $2}'))"
   else put host-moshi-key error "no key named moshi in root's authorized_keys: Moshi can't sign in with a key"; fi
+  # Walkthrough Studio (apps/walkthrough-studio/deploy/install.sh), once that installer is on this checkout
+  if [ -f "$DIR/apps/walkthrough-studio/deploy/install.sh" ]; then
+    if have docker && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx walkthrough-studio; then put host-walkthrough ok "Walkthrough Studio is running (https://walkthrough.amberxai.com)"
+    elif getent hosts walkthrough.amberxai.com >/dev/null 2>&1; then put host-walkthrough warn "Walkthrough Studio isn't deployed yet (walkthrough.amberxai.com)"
+    else put host-walkthrough warn "Walkthrough Studio isn't deployed yet, and walkthrough.amberxai.com has no DNS record (an A record to this VPS)"; fi
+  fi
   # axHub projects volume
   if have docker && docker volume ls -q 2>/dev/null | grep -Eq '(^|[-_])axhub-projects$'; then put host-axhub-volume ok "axhub-projects volume exists"
   else put host-axhub-volume warn "no axhub-projects volume: shared data stays in the legacy folder"; fi
@@ -97,6 +103,7 @@ fix() {
         install -d -m 700 /root/.ssh; touch /root/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys
         case "$k" in *" "*" "*) printf '%s\n' "$k" ;; *) printf '%s moshi\n' "$k" ;; esac >> /root/.ssh/authorized_keys && echo "  Added."
       fi ;;
+    host-walkthrough) ask "Deploy Walkthrough Studio (bash $DIR/apps/walkthrough-studio/deploy/install.sh)?" && bash "$DIR/apps/walkthrough-studio/deploy/install.sh" ;;
     host-axhub-volume) echo "  Coolify → axHub → Persistent Storage: add volume axhub-projects at /projects, redeploy axHub, then: bash $DIR/deploy/install-console.sh" ;;
     *) echo "  unknown check id $id" ;;
   esac

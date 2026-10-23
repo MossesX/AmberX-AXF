@@ -32,6 +32,7 @@ FIX_COMMANDS: dict[str, str] = {
     "host-claude-cli": "curl -fsSL https://claude.ai/install.sh | bash",
     "host-docker": "bash /opt/axf/deploy/install-console.sh",
     "host-update-cron": "bash /opt/axf/deploy/install-console.sh",
+    "host-walkthrough": "bash /opt/axf/apps/walkthrough-studio/deploy/install.sh",
 }
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 

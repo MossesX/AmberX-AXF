@@ -98,6 +98,7 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
           npm install --no-audit --no-fund --silent && npm run build
+          bash -n deploy/install.sh
       - name: patches-web — re-bake the framework into it, build it, server self-test
         working-directory: apps/patches-web
         run: |
