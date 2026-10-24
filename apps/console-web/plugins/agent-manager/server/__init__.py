@@ -35,6 +35,7 @@ from axf.contracts import agents as contract  # noqa: E402
 
 from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
 from . import hubtools  # noqa: E402,F401 — registers Mosses's axhub_call builtin before add-ons are checked
+from . import vinny  # noqa: E402 — Vinny's command book (vinny-commands@1), provides axf.vinny@1
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
@@ -95,7 +96,14 @@ class AgentsService:
     def run_task(self, agent_id: str, task: str, on_event: Any = None) -> dict[str, Any]:
         """One headless turn with the agent's tools and memory (Oct 23 2026: the systems check hands a check to Mosses to
         fix; his axhub_call waits for Brett's approval on the hub for every command). Returns {text, tools, ms}; the turn is
-        recorded in his memory like a chat turn. Raises when the agent is missing or can't reach a model."""
+        recorded in his memory like a chat turn. Raises when the agent is missing or can't reach a model.
+        Vinny (Oct 24 2026): triggers in the task run his mapped commands first, with no model; only a task with no
+        trigger goes to the model."""
+        if agent_id == vinny.VINNY:
+            runs = vinny.handle(task, "task", wait=True)
+            if runs:
+                return {"text": vinny.summary(runs), "tools": [{"name": hubtools.TOOL, "command": r.get("command", ""), "ok": r.get("state") == "done"} for r in runs],
+                        "ms": 0, "offline": True}
         r = engine.run_agent(agent_id, task, on_event=on_event)
         try:
             memory.record(store.get("agents", agent_id), task[:4000], str(r.get("text", ""))[:8000], {"source": "task"})
@@ -138,6 +146,9 @@ def _offer_vinny() -> None:
     """Vinny (Oct 24 2026): installed once on start and allowed dangerous tools (his axhub_call runs as root through
     axHub approvals). An uninstall or a Safety change afterwards is respected: this never runs twice."""
     try:
+        rec = store.addon_records().get("vinny")
+        if rec and str(rec.get("version", "")).startswith("1.0") and "vinny" in addons.bundles():
+            addons.install("vinny", run_training=False)  # 1.0 → 1.1: his command-book skill (memory kept)
         s = store.load_settings()
         if s.get("vinnyOffered") or "vinny" not in addons.bundles():
             return
@@ -649,3 +660,90 @@ def addon_forget(aid: str) -> dict[str, Any]:
         return {"removed": aid}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
+
+
+# ---------------------------------------------------------------- Vinny's command book (vinny-commands@1, Oct 24 2026)
+# Triggers → VPS / git / GitHub commands Vinny runs with no model, through axHub (each vps.run approved there).
+
+def _vinny_err(e: Exception) -> HTTPException:
+    return HTTPException(400, str(e)) if isinstance(e, (vinny.VinnyError, ValueError)) else _err(e)
+
+
+@router.get("/vinny")
+def vinny_book() -> dict[str, Any]:
+    ok, why = vinny.ready()
+    book = vinny.load()
+    return {**book, "ready": ok, "why": why, "kinds": list(vinny.KINDS), "where": str(vinny.data_dir()), "runs": vinny.runner().all()[-30:]}
+
+
+@router.post("/vinny/commands")
+def vinny_save(body: dict[str, Any]) -> dict[str, Any]:
+    try:
+        return {"command": vinny.upsert(body)}
+    except Exception as e:  # noqa: BLE001
+        raise _vinny_err(e) from None
+
+
+@router.delete("/vinny/commands/{cid}")
+def vinny_delete(cid: str) -> dict[str, Any]:
+    if not vinny.remove(cid):
+        raise HTTPException(404, f"no command {cid}")
+    return {"removed": cid}
+
+
+@router.post("/vinny/defaults")
+def vinny_defaults() -> dict[str, Any]:
+    return vinny.reset_defaults()
+
+
+@router.put("/vinny/settings")
+def vinny_settings(body: dict[str, Any]) -> dict[str, Any]:
+    try:
+        return {"settings": vinny.save_settings(body or {})}
+    except Exception as e:  # noqa: BLE001
+        raise _vinny_err(e) from None
+
+
+@router.post("/vinny/test")
+def vinny_test(body: dict[str, Any]) -> dict[str, Any]:
+    """Which commands a message would run, and the exact axHub call for each; nothing is sent."""
+    book = vinny.load()
+    out = []
+    for c in vinny.matches(book["commands"], str((body or {}).get("text") or ""), int(book["settings"].get("maxPerMessage") or 5)):
+        try:
+            tool, args = vinny.build(c, (body or {}).get("context") or {})
+            out.append({"id": c["id"], "name": c["name"], "tool": tool, "arguments": args})
+        except vinny.VinnyError as e:
+            out.append({"id": c["id"], "name": c["name"], "error": str(e)})
+    return {"matches": out, "listening": bool(book["settings"].get("listen", True))}
+
+
+@router.post("/vinny/message")
+def vinny_message(body: dict[str, Any]) -> dict[str, Any]:
+    """A message to Vinny from code (or the dialog's Send box): every trigger in it runs its command, no model."""
+    text = str((body or {}).get("text") or "")
+    if not text.strip():
+        raise HTTPException(400, "text is required")
+    ok, why = vinny.ready()
+    if not ok:
+        raise HTTPException(409, why)
+    return {"runs": vinny.handle(text, str((body or {}).get("source") or "api")[:60], (body or {}).get("context") or {})}
+
+
+@router.post("/vinny/commands/{cid}/run")
+def vinny_run(cid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    ok, why = vinny.ready()
+    if not ok:
+        raise HTTPException(409, why)
+    c = next((x for x in vinny.load()["commands"] if x["id"] == cid), None)
+    if not c:
+        raise HTTPException(404, f"no command {cid}")
+    try:
+        return vinny.runner().start(c, "dialog", (body or {}).get("context") or {})
+    except Exception as e:  # noqa: BLE001
+        raise _vinny_err(e) from None
+
+
+@router.get("/vinny/runs")
+def vinny_runs(since: int = 0) -> dict[str, Any]:
+    return {"runs": vinny.runner().all(since)}

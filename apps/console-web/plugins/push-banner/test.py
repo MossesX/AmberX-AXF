@@ -229,6 +229,35 @@ m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confir
 STATE["mergeable"] = True
 check(m.status_code == 409 and "conflicts" in m.json()["detail"] and "Handed to Claude Code" in m.json()["detail"], "a Merge GitHub refuses for conflicts is handed over")
 check(settle("MossesX/AmberX-AXF:#18")["branch"] == "feat/a", "…on the PR's own branch")
+# Vinny first (Oct 24 2026): his mapped command for the failure runs before Claude; the hub call goes through his tool first
+class FakeVinny:
+    def __init__(self, state="done"): self.state, self.started, self.calls = state, [], []
+    def ready(self): return True, ""
+    def auto_fix_first(self): return True
+    def start_fix(self, key, text="", ctx=None, source=""): self.started.append((key, text, ctx)); return {"id": "v1", "name": "Re-pull", "state": "running"}
+    def get_run(self, rid): return {"id": rid, "name": "Re-pull", "state": self.state, "message": "x"}
+    def call(self, tool, a, conf=None, timeout=0, reason=""): self.calls.append(tool); return {"ok": "exit 0"}
+fv = FakeVinny()
+fch2 = FakeChanges()
+L = cf.Launches(lambda: {"claudeOnFail": True}, call=fake_hub, delays=lambda: [0.01] * 5, changes=lambda: fch2, vinny_svc=lambda: fv, sleep=lambda s: None)
+n0 = len(hub_calls)
+L.maybe_launch({"repo": "MossesX/AmberX-AXF", "branch": "feat/v", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "conflict"})
+for _ in range(300):
+    if (L.get("MossesX/AmberX-AXF:feat/v") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+jv = L.get("MossesX/AmberX-AXF:feat/v")
+check(jv["state"] == "launched" and "Vinny" in jv["message"] and len(hub_calls) == n0 and fv.started[0][2]["branch"] == "feat/v"
+      and any(p.get("status") == "done" for p in fch2.updates), "Vinny's mapped command fixes it first: no Claude launch, the entry is done")
+fv.state = "failed"
+L.maybe_launch({"repo": "MossesX/AmberX-AXF", "branch": "feat/w", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "conflict"})
+for _ in range(300):
+    if (L.get("MossesX/AmberX-AXF:feat/w") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+check(L.get("MossesX/AmberX-AXF:feat/w")["state"] == "launched" and len(hub_calls) > n0, "Vinny's command fails → Claude Code is launched")
+plugin_services.provide("axf.vinny@1", fv, "fake-vinny")
+fv.calls.clear()
+check(cf.call_hub("vps.run", {"command": "echo"}) == {"ok": "exit 0"} and fv.calls == ["vps.run"], "the hub call goes through Vinny's tool first")
+plugin_services.withdraw("fake-vinny")
 c.put("/p/config", json={"claudeShell": True})
 try:
     cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "x; rm -rf /", "base": "main", "kind": "conflict", "action": "x", "failure": ""}, "")
