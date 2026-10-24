@@ -314,6 +314,25 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   return <>{frame}<QuickHideNote id={id} until={hideEndsAt(hide, id) ?? until} /></>;
 }
 
+/**
+ * Banners hidden with Hide / Hide all (no end time) leave one line under the banners: how many, and Show them. Without it
+ * a Hide all leaves nothing on screen to right-click, so the banners look broken (Oct 24 2026).
+ */
+export function HiddenBannersNote() {
+  const rt = useRuntime();
+  const hide = useBannerHideTick();
+  const ids = useKnownBanners().map((b) => b.id).filter((id) => hideEndsAt(hide, id) === Infinity);
+  if (!ids.length) return null;
+  const show = () => { for (const id of ids) setBannerHide(rt, id, false); };
+  return (
+    <div className="fx-banner-snoozed fx-row" data-fx-banners-hidden="">
+      <Icon name="eye" />
+      <span className="fx-muted">{ids.length === 1 ? '1 banner is hidden' : `${ids.length} banners are hidden`}</span>
+      <Button size="sm" tone="quiet" onClick={show}>Show {ids.length === 1 ? 'it' : 'them'}</Button>
+    </div>
+  );
+}
+
 /** What a banner hidden from its right-click menu leaves in its place: its name, when it's back, Unhide (same menu). */
 function QuickHideNote({ id, until }: { id: string; until: number }) {
   const rt = useRuntime();
