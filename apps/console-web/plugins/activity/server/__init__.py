@@ -6,7 +6,11 @@
   POST   finish                 {id, state?: done|failed|cancelled, detail?}
   DELETE item?id=<id>           take an item off the banner everywhere (a reported one is deleted; any other
                                 is remembered as dismissed for a day): the trash can on a stuck item
-  GET    config | PUT config    {sources: {github, update, assistant, services, reports}, repos, lingerS, reportTtlS}
+  POST   close                  {id} ✕ on a finished item: moved to the Codebase changes banner, or deleted (onClose)
+  POST   notify/test            sends a test push through axHub (the hub inbox + a console alert)
+  GET    config | PUT config    {sources: {github, update, assistant, services, reports}, repos, lingerS, reportTtlS,
+                                 autoRemove, keepFailed, onClose, onAutoRemove, push, pushLevel, pushMinS, sound, toast,
+                                 expandOnDone, openResult} (complete.py says what each does)
 
 Provides ``axf.activity@1``: report(item), finish(id, state, detail), items(), register_source(name, label, fn).
 Other plugins don't need it to show up here: a capability service with an ``activity()`` method is read by itself.
@@ -22,6 +26,7 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
+from . import complete
 from .feed import SOURCES, Feed
 
 router = APIRouter()
@@ -46,6 +51,12 @@ def _services() -> list[tuple[str, Any]]:
 
 FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot") if r],
             services=_services, live_sessions=lambda: plugin_services.get("axf.live-sessions@1"))
+
+COMPLETE = complete.Completer(data_dir(), FEED.snapshot, FEED.config, FEED.dismiss,
+                              changes=lambda: plugin_services.get(complete.CHANGES),
+                              raise_alert=lambda a: cx.raise_alert(a))
+if os.environ.get("AXF_ACTIVITY_WATCH") != "off":
+    complete.start_watcher(COMPLETE)
 
 
 class Service:
@@ -113,12 +124,34 @@ async def finish(request: Request) -> dict[str, Any]:
 
 @router.delete("/item")
 def dismiss(id: str) -> dict[str, Any]:  # noqa: A002
+    COMPLETE.forget(id)
     return {"removed": FEED.dismiss(id)}
+
+
+@router.post("/close")
+async def close(request: Request) -> dict[str, Any]:
+    body = await request.json()
+    if not isinstance(body, dict) or not isinstance(body.get("id"), str):
+        raise HTTPException(400, "send {id}")
+    try:
+        return COMPLETE.close(body["id"])
+    except KeyError:
+        raise HTTPException(404, "not in the feed any more") from None
+    except ValueError as e:
+        raise HTTPException(409, str(e)) from None
+
+
+@router.post("/notify/test")
+def notify_test() -> dict[str, Any]:
+    now = int(COMPLETE.now() * 1000)
+    return COMPLETE.push({"id": "activity-test", "kind": "task", "title": "Test notification from the Activity banner", "detail": "If this reached your phone, finished work will too.",
+                          "state": "done", "startedAt": now, "updatedAt": now, "finishedAt": now})
 
 
 @router.get("/config")
 def get_config() -> dict[str, Any]:
-    return {**FEED.config(), "sourceLabels": SOURCES}
+    return {**FEED.config(), "sourceLabels": SOURCES, "lastPush": COMPLETE.last_push, "hubInbox": str(complete.inbox_dir() or "") or None,
+            "changesOn": plugin_services.get(complete.CHANGES) is not None}
 
 
 @router.put("/config")
