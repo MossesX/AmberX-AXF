@@ -44,7 +44,8 @@
     "spacer": "gap",
     "divider": "rule",
     "badge": "new",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "settings": "patches"
   },
   "hidden": [
     "toolbar"

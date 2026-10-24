@@ -1,11 +1,9 @@
 /**
- * Patches (web): the Dev Console, Build Pilot and axHub in one page — one banner, three tabs kept alive, one settings.
+ * Patches (web): the Dev Console, Build Pilot and axHub in one page — one banner, the tabs kept alive.
  *
  * The web twin of apps/patches (Android). The apps load in frames marked with embed@1 (`?axf-embed=patches`): each hides
- * its own banner, and because Patches **takes their settings** (`axf-embed-take=settings`) each also drops its own
- * settings hooks (menu items, buttons, nav entries) and asks Patches instead. Patches answers with its combined
- * Settings: one tab per app (Patches, Console, Pilot, axHub), each app's tab showing that app's own settings page
- * (`axf-embed-page=settings`).
+ * its own banner. Settings are never combined (Brett, Oct 24 2026): every app keeps its own settings interface (its own
+ * settings asset, holding only its own settings), and Patches' Settings holds only Patches'.
  *
  * Pure helpers here; the UI is in patchesLibrary.tsx and views/.
  */
@@ -15,12 +13,11 @@ import manifest from '../axf.manifest.json';
 export const HOST_ID = 'patches';
 
 /**
- * What Patches takes over from the apps in its tabs: their settings, and their banners' settings (every banner's look,
- * behaviour and own settings in Patches' Banners settings tab; Brett, Oct 22 2026), and their plugins (Brett, Oct 22
- * 2026: every page of an app runs only the plugins Patches has installed and switched on for it; the app's own plugin
- * hooks are greyed out with "Plugins are managed in Patches"). Android also takes notifications.
+ * What Patches takes over from the apps in its tabs: their plugins (Brett, Oct 22 2026: every page of an app runs only the
+ * plugins Patches has installed and switched on for it; the app's own plugin hooks are greyed out with "Plugins are
+ * managed in Patches"). Not their settings or banner settings any more (Brett, Oct 24 2026: each app keeps its own).
  */
-export const TAKES = ['settings', 'banners', 'plugins'] as const;
+export const TAKES = ['plugins'] as const;
 /**
  * …and, from the app in a tab (not its settings page or the banner strip), its application menu (Brett, Oct 22 2026:
  * "all app menus are inherited by Patches' menu and the apps in tabs hide theirs").
@@ -57,46 +54,7 @@ export const TABS: PatchTab[] = [
  * above the tabs), then one for every tab in Patches' tab group that has a settings interface: each app (its own
  * settings page) and each plugin tab whose plugin has settings (its app's settings page opened on that plugin's tab).
  */
-export interface SettingsTabSpec {
-  /** `patches`, `banners`, an app id, or a plugin tab's view id (`tab.<app>.<view>`) */
-  id: string;
-  label: string;
-  icon: string;
-  kind: 'own' | 'banners' | 'app' | 'plugin';
-  app?: PatchTab['id'];
-  /** the settings tab to open inside the app's settings page (a plugin's own tab) */
-  sub?: string;
-}
-export const OWN_SETTINGS: SettingsTabSpec[] = [{ id: 'patches', label: 'Patches', icon: 'layers', kind: 'own' }, { id: 'banners', label: 'Banners', icon: 'bell', kind: 'banners' }];
-/** @deprecated the fixed list before Oct 23 2026; use settingsTabs(tabs, reports) */
-export const SETTINGS_APPS = [...OWN_SETTINGS, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon, kind: 'app' as const, app: t.id }))];
-
-/** The combined settings' tabs for this tab group, in its order (Patches and Banners first). */
-export function settingsTabs(tabs: readonly TabEntry[], reports: Partial<Record<PatchTab['id'], EmbedPlugin[]>> = {}): SettingsTabSpec[] {
-  const out = [...OWN_SETTINGS];
-  const seen = new Set(out.map((x) => x.id));
-  for (const e of tabs) {
-    let spec: SettingsTabSpec | null = null;
-    if (e.kind === 'app') { const t = appOf(e.app); if (t) spec = { id: t.id, label: t.label, icon: t.icon, kind: 'app', app: t.id }; }
-    else {
-      const sub = reports[e.app]?.find((p) => p.id === e.plugin)?.tab?.settings;
-      if (sub) spec = { id: tabViewId(e), label: e.label, icon: e.icon ?? 'box', kind: 'plugin', app: e.app, sub };
-    }
-    if (spec && !seen.has(spec.id)) { seen.add(spec.id); out.push(spec); }
-  }
-  return out;
-}
-
-/** The settings tab for the tab in front (an app tab, or a plugin tab with settings), else Patches' own. */
-export function settingsTabFor(view: string | null | undefined, list: readonly SettingsTabSpec[]): string {
-  return (view && list.some((x) => x.id === view && x.kind !== 'own' && x.kind !== 'banners') ? view : 'patches');
-}
-
-export type SettingsApp = string;
-export const isSettingsApp = (v: unknown): v is SettingsApp => typeof v === 'string' && (/^(patches|banners|console|pilot|axhub)$/.test(v) || /^tab\.[a-z]+\.[a-z0-9][a-z0-9._-]{0,63}$/.test(v));
-
 export const BANNERS_KEY = 'patches.banners';
-export const SETTINGS_APP_KEY = 'patches.settings.app';
 
 /** An https origin (scheme + host + port, no path, no credentials), or null. */
 export function normalizeOrigin(raw: unknown): string | null {
@@ -114,25 +72,9 @@ export function tabOrigin(t: PatchTab, saved: unknown): string {
   return normalizeOrigin(saved) ?? normalizeOrigin(t.fallback)!;
 }
 
-/** The page a tab shows: its app, marked as embedded in Patches, with Patches taking its settings. */
+/** The page a tab shows: its app, marked as embedded in Patches (its plugins + app menu taken; its settings its own). */
 export function tabUrl(t: PatchTab, origin: string): string {
   return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAB_TAKES] });
-}
-
-/** An app's settings page for the combined settings (page mode; all its chrome hidden). */
-export function settingsUrl(t: PatchTab, origin: string): string {
-  return embedUrlFull(`${origin}${t.settingsPath}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
-}
-
-/** The Banners settings page: the console's every-banner settings on its own (its banners are the ones above the tabs). */
-export function bannersUrl(consoleOrigin: string): string {
-  return embedUrlFull(`${consoleOrigin}/`, HOST_ID, { takes: [...TAKES], page: 'banners' });
-}
-
-/** An app asks for banner settings with `open-settings` tab `banners` or `banners:<banner id>`: the banner id, or null. */
-export function bannerAsk(tab: string | undefined): string | null {
-  if (!tab || (tab !== 'banners' && !tab.startsWith('banners:'))) return null;
-  return tab.slice('banners:'.length);
 }
 
 /** The banner strip: the Dev Console's plugin banners on their own page, above every tab. */
