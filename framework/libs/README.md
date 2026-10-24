@@ -135,3 +135,13 @@ installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifes
 - **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
 - Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
 - Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).
+
+## hubstatus (`ai.amberx.axf.hubstatus`)
+
+The axHub badge for any AXF app, no dependencies. A status widget on the banner (asset `status/axhub`, counter
+`hub.live`): **red** from the start and whenever the app isn't reading its settings live from axHub, **green** only
+while it is (Brett's rule, Oct 24 2026). Each check reads `shared/settings/appearance.json` from the hub with the
+browser's own hub session (no token, no redirects, no cache); a developer app's own hub source must be ready too, and a
+read older than two check periods doesn't count. Tap → connection details with an expandable More row and Check now;
+a pop-up note when it changes. Settings → Plugins → axHub status. Install with `installLibraries(rt, [hubStatusLibrary])`.
+Self-test: `npx -y tsx framework/spec/check-hubstatus.mts`.

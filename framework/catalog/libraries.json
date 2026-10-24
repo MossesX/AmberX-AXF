@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-24T15:04:25.216Z",
+  "generatedAt": "2026-10-24T16:34:31.601Z",
   "items": [
     {
       "$axf": "library@1",
@@ -783,6 +783,41 @@
         {
           "capability": "axf.docstore.delete",
           "note": "Removing a document's files on the hub (the data API has no delete for app documents yet; it leaves the index)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.hubstatus",
+      "module": "lib-hubstatus",
+      "name": "axHub status badge (green only while settings come live from axHub)",
+      "description": "A small badge on the banner of any AXF app: red from the start and whenever the app isn't reading its settings live from axHub, green only while it is. Each check reads the settings document from the hub with the browser's own hub session (no token, no redirects, no cache); a developer app's own hub settings source must be ready too, and an answer older than two check periods no longer counts. Tap for the connection details (state, why, last live read, an expandable More row with the answer, time taken, settings version and address, Check now). A pop-up note when it changes (next to the badge, as a toast, or off, for a set number of seconds). Settings: show, side, dot, the words in each state, pop-up, check period, hub address. It is the framework's status widget (asset status/axhub, counter hub.live), so no new asset type. No dependencies. Built Oct 24 2026 (Opus).",
+      "features": [],
+      "dependsOn": [],
+      "manifestKey": "libraries.hubstatus",
+      "params": [
+        {
+          "key": "hub",
+          "label": "axHub address",
+          "type": "text",
+          "default": "https://axhub.amberxai.com",
+          "help": "Used when the app has no hub settings source of its own. https only (http only for localhost)."
+        }
+      ],
+      "ports": {
+        "web": {
+          "status": "compiled",
+          "dir": "libs/hubstatus"
+        }
+      },
+      "placeholders": [
+        {
+          "capability": "axf.hubstatus.android",
+          "note": "Compose port (lib-hub + the status widget) — Android on hold."
+        },
+        {
+          "capability": "axf.hubstatus.styles",
+          "note": "Icon / image / link looks for the badge and more pop-up styles — not built (the status widget's dot + words for now)."
         }
       ]
     },
