@@ -9,10 +9,15 @@
  *
  * Polls GET /api/plugins/activity/items every 4 s while the page is visible (and on focus). Hiding it with ✕ lasts
  * until something new starts.
+ *
+ * Oct 24 2026 (Brett): every kind of work shows with what it is (building, editing, deleting, pushing, pulling,
+ * merging, thinking); ✕ on a finished item moves it to the Codebase changes banner (or deletes it); when something
+ * finishes it can push to the phone through axHub (server, server/complete.py), chime, pop up, open the banner or the
+ * result (this browser), and leave by itself N minutes later. All settings sit in one collapsible card.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Section, SelectField, Switch, TextField, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -21,7 +26,7 @@ import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 const POLL_MS = 4_000;
 const DONE_FLASH_MS = 20_000;
 const ACTIVE = new Set(['queued', 'running', 'waiting']);
@@ -29,7 +34,9 @@ const ACTIVE = new Set(['queued', 'running', 'waiting']);
 type State = 'queued' | 'running' | 'waiting' | 'done' | 'failed' | 'cancelled' | 'stale';
 interface Step { name: string; state: State }
 interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean }
-interface Feed { items: Item[]; active: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }> }
+/** What the browser does when something finishes (stored with the feed's settings, same on every device). */
+interface OnDone { sound: 'off' | 'all' | 'failed'; toast: boolean; expandOnDone: boolean; openResult: boolean; onClose: 'changes' | 'delete' }
+interface Feed { items: Item[]; active: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }>; complete?: OnDone }
 interface Job { name: string; state: State; startedAt?: number; finishedAt?: number; url?: string; steps: Step[] }
 interface Detail { id: string; jobs?: Job[]; progress?: number | null }
 /** `open` = the banner is expanded (it launches expanded; "_" folds it to one line); `pinned` = shown on request (action) even when idle. */
@@ -52,7 +59,51 @@ let inflight = false;
 export async function refresh(): Promise<void> {
   if (inflight) return;
   inflight = true;
-  try { set({ feed: await call<Feed>('items'), error: '' }); } catch (e) { set({ error: (e as Error).message }); } finally { inflight = false; }
+  try { const feed = await call<Feed>('items'); finished(feed); set({ feed, error: '' }); } catch (e) { set({ error: (e as Error).message }); } finally { inflight = false; }
+}
+
+/* ---------------- when something finishes (Brett, Oct 24 2026) ---------------- */
+
+/** Last state seen per id in this tab: an item seen active and now finished is "just completed". */
+const lastState = new Map<string, State>();
+let primed = false;
+function finished(feed: Feed) {
+  const now: Item[] = [];
+  for (const it of feed.items) {
+    const was = lastState.get(it.id);
+    if (primed && was && ACTIVE.has(was) && !ACTIVE.has(it.state)) now.push(it);
+    lastState.set(it.id, it.state);
+  }
+  primed = true;
+  const c = feed.complete;
+  if (!now.length || !c) return;
+  const failed = now.filter((i) => i.state === 'failed' || i.state === 'stale');
+  if (c.sound === 'all' || (c.sound === 'failed' && failed.length)) chime(failed.length > 0);
+  if (c.expandOnDone) set({ open: true, hiddenFor: '' });
+  if (c.toast && runtime) {
+    for (const i of now.slice(0, 3)) runtime.toast(i.detail.split('\n')[0] || STATE_LABEL[i.state], i.state === 'done' ? 'success' : i.state === 'cancelled' ? 'info' : 'danger', `${STATE_LABEL[i.state]}: ${i.title}`);
+    if (now.length > 3) runtime.toast(`${now.length - 3} more finished`, 'info', 'Activity');
+  }
+  if (c.openResult) for (const i of now) if (i.url) globalThis.open(i.url, '_blank', 'noopener,noreferrer');
+}
+
+/** A short chime: two rising notes when done, one low note when something failed (Web Audio; silent when blocked). */
+export function chime(failed: boolean) {
+  try {
+    const Ctx = (globalThis as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext }).AudioContext
+      ?? (globalThis as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const notes = failed ? [220, 196] : [660, 880];
+    notes.forEach((f, n) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.frequency.value = f; o.type = 'sine';
+      const t = ctx.currentTime + n * 0.18;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.2, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.32);
+    });
+    setTimeout(() => void ctx.close(), 1_000);
+  } catch { /* no sound here */ }
 }
 
 let started = false;
@@ -111,7 +162,10 @@ const ago = (ms: number, now: number) => `${dur(now - ms).split(' ')[0]} ago`;
 
 const STATE_LABEL: Record<State, string> = { queued: 'Queued', running: 'Running', waiting: 'Waiting', done: 'Done', failed: 'Failed', cancelled: 'Cancelled', stale: 'No word' };
 const STATE_ICON: Record<State, string> = { queued: 'clock', running: 'refresh', waiting: 'pause', done: 'check-circle', failed: 'x-circle', cancelled: 'minus', stale: 'alert' };
-const SOURCE_ICON: Record<string, string> = { github: 'github', update: 'rocket', assistant: 'sparkles', 'claude-code': 'terminal', reports: 'list', 'axf.syscheck@1': 'shield' };
+const SOURCE_ICON: Record<string, string> = { github: 'github', update: 'rocket', assistant: 'sparkles', 'claude-code': 'terminal', reports: 'list', 'axf.syscheck@1': 'shield', changes: 'branch', 'push-banner': 'branch' };
+/** What kind of work an item is: building, editing, deleting, pushing, pulling, merging, thinking … (open set: anything else shows its source's icon). */
+export const KIND_LABEL: Record<string, string> = { build: 'Building', edit: 'Editing', delete: 'Deleting', push: 'Pushing', pull: 'Pulling', merge: 'Merging', thinking: 'Thinking', fix: 'Fixing', ci: 'CI', deploy: 'Deploying', ai: 'Thinking', claude: 'Working' };
+const KIND_ICON: Record<string, string> = { build: 'hammer', edit: 'edit', delete: 'trash', push: 'upload', pull: 'download', merge: 'branch', thinking: 'sparkles', fix: 'zap', ci: 'github', deploy: 'rocket', ai: 'sparkles', claude: 'terminal' };
 
 function StateIcon({ state, size = 16 }: { state: State; size?: number }) {
   return <span className={`axp-activity__state axp-activity__state--${state}`} title={STATE_LABEL[state]} aria-label={STATE_LABEL[state]}><Icon name={STATE_ICON[state]} size={size} /></span>;
@@ -167,8 +221,7 @@ function ItemDetail({ it, now }: { it: Item; now: number }) {
       ) : <p className="fx-small fx-muted">{err ? `Couldn't load the steps: ${err}` : 'Loading jobs and steps…'}</p>)}
       <div className="fx-row fx-row--wrap">
         {it.url && <a className="fx-btn fx-btn--neutral axp-activity__link" href={it.url} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> {gh ? 'Open on GitHub' : 'Open'}</a>}
-        {it.reported && !ACTIVE.has(it.state)
-          ? <Button tone="neutral" icon="trash" onClick={() => void call(`item?id=${encodeURIComponent(it.id)}`, { method: 'DELETE' }).then(refresh)}>Clear</Button> : null}
+        {!ACTIVE.has(it.state) && <CloseButton it={it} label />}
       </div>
     </div>
   );
@@ -189,9 +242,31 @@ function Trash({ it }: { it: Item }) {
   );
 }
 
+/**
+ * ✕ on a finished item: closes it on every device and moves it to the Codebase changes banner, or deletes it,
+ * per Settings → Plugins → Activity → "Closing an item" (Brett, Oct 24 2026).
+ */
+function CloseButton({ it, label }: { it: Item; label?: boolean }) {
+  const [busy, setBusy] = useState(false);
+  const toChanges = (st.feed?.complete?.onClose ?? 'changes') === 'changes' && it.source !== 'changes';
+  const title = toChanges ? 'Close: move it to the Codebase changes banner' : it.source === 'changes' ? 'Close here (it stays in Codebase changes)' : 'Close: delete it';
+  const go = () => {
+    setBusy(true);
+    void call<{ movedTo?: string | null; note?: string }>('close', { method: 'POST', body: JSON.stringify({ id: it.id }) }).then((r) => {
+      if (r.movedTo) runtime?.toast(`"${it.title}" is in the Codebase changes banner now.`, 'info', 'Moved');
+      else if (r.note) runtime?.toast(r.note, 'info', 'Removed');
+      void refresh();
+    }, (e: Error) => { setBusy(false); runtime?.toast(e.message, 'danger', 'Couldn\'t close it'); });
+  };
+  return label
+    ? <Button tone="neutral" icon={toChanges ? 'branch' : 'x'} disabled={busy} onClick={go}>{toChanges ? 'Close and move to Changes' : 'Close'}</Button>
+    : <button type="button" className="fx-iconbtn" disabled={busy} aria-label={`Close "${it.title}"`} title={title} onClick={go}><Icon name="x" size={14} /></button>;
+}
+
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
-  const icon = SOURCE_ICON[it.source] ?? 'zap';
+  const icon = KIND_ICON[it.kind] ?? SOURCE_ICON[it.source] ?? 'zap';
+  const kind = KIND_LABEL[it.kind];
   const stuck = isStuck(it, now);
   // a running timer on every active or stuck item: how long since it started (and, when stuck, how long it's been quiet)
   const time = ACTIVE.has(it.state) || it.state === 'stale'
@@ -203,15 +278,16 @@ function Row({ it, now }: { it: Item; now: number }) {
       <div className="axp-activity__headrow">
       <button type="button" data-fx-row className="axp-activity__head" aria-expanded={open} onClick={() => setOpen(!open)}>
         <StateIcon state={it.state} />
-        <Icon name={icon} size={14} />
+        <span title={kind ?? it.kind}><Icon name={icon} size={14} /></span>
         <span className="axp-activity__title">
-          <span>{it.title}</span>
+          <span>{kind && ACTIVE.has(it.state) && !it.title.startsWith(kind) ? <span className="axp-activity__kind">{kind} · </span> : null}{it.title}</span>
           {!open && (last || it.detail) && <span className="axp-activity__sub">{last ?? it.detail.split('\n')[0]}</span>}
         </span>
         <span className={`axp-activity__time${stuck ? ' is-stuck' : ''}`}><Icon name={stuck ? 'alert' : 'clock'} size={12} />{time}</span>
         <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
       </button>
       {stuck && <Trash it={it} />}
+      {!ACTIVE.has(it.state) && it.state !== 'stale' && <CloseButton it={it} />}
       </div>
       {it.progress != null && ACTIVE.has(it.state) && <Progress value={it.progress} />}
       {open && <ItemDetail it={it} now={now} />}
@@ -285,46 +361,127 @@ function ActivityBanner() {
 
 /* ---------------- settings ---------------- */
 
-interface Config { sources: Record<string, boolean>; repos: string[]; lingerS: number; reportTtlS: number; sourceLabels: Record<string, string> }
+interface PushResult { at: number; title: string; hub: string | null; alert: string | null }
+interface Config extends OnDone {
+  sources: Record<string, boolean>; repos: string[]; lingerS: number; reportTtlS: number; sourceLabels: Record<string, string>;
+  autoRemove: boolean; keepFailed: boolean; onAutoRemove: 'changes' | 'delete';
+  push: 'off' | 'all' | 'done' | 'failed'; pushLevel: 'info' | 'warning' | 'error'; pushMinS: number;
+  lastPush?: PushResult | null; hubInbox?: string | null; changesOn?: boolean;
+}
+
+const pushText = (p: PushResult) => `${clock(p.at)} · axHub: ${p.hub ?? '?'} · alert: ${p.alert ?? '?'}`;
+
+/** Whole numbers only; empty while typing. */
+function NumberField({ label, value, hint, onSave }: { label: string; value: number; hint?: string; onSave: (n: number) => void }) {
+  const [v, setV] = useState(String(value));
+  useEffect(() => setV(String(value)), [value]);
+  const n = Number(v);
+  const bad = v === '' || !Number.isFinite(n) || n < 0;
+  return (
+    <div className="fx-row fx-row--wrap" style={{ alignItems: 'flex-end' }}>
+      <TextField label={label} value={v} onChange={(x) => setV(x.replace(/[^0-9]/g, ''))} hint={hint} error={v !== '' && bad ? 'A whole number' : undefined} />
+      {!bad && n !== value && <Button tone="primary" icon="save" onClick={() => onSave(n)}>Save</Button>}
+    </div>
+  );
+}
 
 function SettingsPanel() {
   const s = useStore();
   const [cfg, setCfg] = useState<Config | null>(null);
   const [repos, setRepos] = useState('');
   const [msg, setMsg] = useState('');
-  useEffect(() => { start(); void call<Config>('config').then((c) => { setCfg(c); setRepos(c.repos.join('\n')); }, (e: Error) => setMsg(e.message)); }, []);
+  const load = () => call<Config>('config').then((c) => { setCfg(c); setRepos(c.repos.join('\n')); }, (e: Error) => setMsg(e.message));
+  useEffect(() => { start(); void load(); }, []);
   const save = async (patch: Partial<Config>) => {
     try { const c = await call<Config>('config', { method: 'PUT', body: JSON.stringify(patch) }); setCfg((p) => ({ ...(p as Config), ...c })); setMsg('Saved.'); void refresh(); } catch (e) { setMsg((e as Error).message); }
   };
+  const testPush = async () => {
+    try { const r = await call<PushResult>('notify/test', { method: 'POST' }); setCfg((p) => (p ? { ...p, lastPush: r } : p)); setMsg('Test sent.'); } catch (e) { setMsg((e as Error).message); }
+  };
   const script = '/opt/axf/apps/console-web/plugins/activity/activity.mjs';
+  const status = s.feed ? `${s.feed.active} in progress now.` : s.error ? `Couldn't check: ${s.error}` : 'Checking…';
+  // Every setting in one collapsible card (Brett, Oct 24 2026).
   return (
-    <div className="fx-stack">
-      <p style={{ margin: 0 }}>A banner at the top of the console whenever something is in progress. Tap it to see everything; tap an item for its details.</p>
-      <p className="fx-small" style={{ margin: 0 }}><strong>{s.feed ? `${s.feed.active} in progress now.` : s.error ? `Couldn't check: ${s.error}` : 'Checking…'}</strong></p>
-      {cfg && (
-        <>
-          <h4 style={{ margin: 0 }}>Show</h4>
-          {Object.entries(cfg.sourceLabels).map(([k, label]) => (
-            <label key={k} className="fx-row"><input type="checkbox" checked={cfg.sources[k] ?? true} onChange={(e) => void save({ sources: { ...cfg.sources, [k]: e.target.checked } })} /> {label}</label>
-          ))}
-          <label className="fx-stack">
-            <span><strong>GitHub repos to watch</strong> <span className="fx-small fx-muted">(one owner/name per line)</span></span>
-            <textarea className="fx-input" rows={3} value={repos} onChange={(e) => setRepos(e.target.value)} />
-          </label>
-          <div className="fx-row fx-row--wrap">
-            <Button tone="primary" icon="save" onClick={() => void save({ repos: repos.split(/\s+/).filter(Boolean) })}>Save repos</Button>
-            <Button tone="neutral" icon="refresh" onClick={() => void refresh()}>Check now</Button>
-            {msg && <Chip>{msg}</Chip>}
+    <Container title="Activity banner settings" icon="sliders" collapsible className="axp-activity__settings"
+      actions={<Chip>{status}</Chip>}>
+      <div className="fx-stack">
+        <p style={{ margin: 0 }}>A banner at the top of the console whenever something is built, edited, deleted, pushed, pulled, merged or thought about, queued or running. Tap it to see everything; tap an item for its details.</p>
+        {cfg ? (
+          <>
+            <Section title="Show">
+              <div className="fx-stack">
+                {Object.entries(cfg.sourceLabels).map(([k, label]) => (
+                  <Switch key={k} label={label} checked={cfg.sources[k] ?? true} onChange={(on) => void save({ sources: { ...cfg.sources, [k]: on } })} />
+                ))}
+                <TextField label="GitHub repos to watch" hint="One owner/name per line." rows={3} value={repos} onChange={setRepos} />
+                <div className="fx-row fx-row--wrap">
+                  <Button tone="primary" icon="save" onClick={() => void save({ repos: repos.split(/\s+/).filter(Boolean) })}>Save repos</Button>
+                  <Button tone="neutral" icon="refresh" onClick={() => void refresh()}>Check now</Button>
+                </div>
+                <NumberField label="Mark a reported item “No word” after (minutes)" value={Math.round(cfg.reportTtlS / 60)} onSave={(n) => void save({ reportTtlS: Math.max(1, n) * 60 })} />
+              </div>
+            </Section>
+
+            <Section title="When something finishes">
+              <div className="fx-stack">
+                <SelectField label="Push a notification to the phone through axHub" value={cfg.push}
+                  options={[{ value: 'off', label: 'Off' }, { value: 'all', label: 'Everything that finishes' }, { value: 'done', label: 'Only what finished well' }, { value: 'failed', label: 'Only failures' }]}
+                  hint={cfg.hubInbox ? `Written to axHub's notifications inbox and raised as a console alert (Patches, ntfy and web push deliver it to the phone).` : 'axHub\'s shared folder isn\'t mounted here: only the console alert goes out.'}
+                  onChange={(v) => void save({ push: v as Config['push'] })} />
+                {cfg.push !== 'off' && (
+                  <>
+                    <SelectField label="Alert level for work that finished well" value={cfg.pushLevel}
+                      options={[{ value: 'error', label: 'High (reaches the phone by default)' }, { value: 'warning', label: 'Normal' }, { value: 'info', label: 'Low (bell only by default)' }]}
+                      hint="Failures are always high. Which levels reach the phone is set in Settings → Alerts."
+                      onChange={(v) => void save({ pushLevel: v as Config['pushLevel'] })} />
+                    <NumberField label="Only for work that ran at least (seconds)" value={cfg.pushMinS} hint="0 = everything." onSave={(n) => void save({ pushMinS: n })} />
+                  </>
+                )}
+                <div className="fx-row fx-row--wrap">
+                  <Button tone="neutral" icon="bell" onClick={() => void testPush()}>Send a test push</Button>
+                  {cfg.lastPush && <span className="fx-small fx-muted">Last: {pushText(cfg.lastPush)}</span>}
+                </div>
+                <Switch label="Remove it from the banner by itself" checked={cfg.autoRemove} onChange={(on) => void save({ autoRemove: on })}
+                  hint={cfg.autoRemove ? undefined : 'It stays until you close it (a day at most).'} />
+                {cfg.autoRemove && (
+                  <>
+                    <NumberField label="Remove it this many minutes after it finished" value={Math.round(cfg.lingerS / 60)} onSave={(n) => void save({ lingerS: n * 60 })} />
+                    <Switch label="Keep failures until I close them" checked={cfg.keepFailed} onChange={(on) => void save({ keepFailed: on })} />
+                    <SelectField label="When it removes itself" value={cfg.onAutoRemove}
+                      options={[{ value: 'delete', label: 'Delete it' }, { value: 'changes', label: 'Move it to the Codebase changes banner' }]}
+                      onChange={(v) => void save({ onAutoRemove: v as Config['onAutoRemove'] })} />
+                  </>
+                )}
+                <SelectField label="Play a sound" value={cfg.sound}
+                  options={[{ value: 'off', label: 'Off' }, { value: 'all', label: 'When anything finishes' }, { value: 'failed', label: 'Only when something fails' }]}
+                  onChange={(v) => void save({ sound: v as Config['sound'] })} />
+                {cfg.sound !== 'off' && <div><Button tone="neutral" icon="play" onClick={() => chime(false)}>Hear it</Button></div>}
+                <Switch label="Show a pop-up message" checked={cfg.toast} onChange={(on) => void save({ toast: on })} />
+                <Switch label="Open the banner" hint="Expands it (even when minimized or hidden) so you see what finished." checked={cfg.expandOnDone} onChange={(on) => void save({ expandOnDone: on })} />
+                <Switch label="Open the result" hint="Opens its link (a GitHub run, a pull request …) in a new tab. Your browser may ask to allow pop-ups." checked={cfg.openResult} onChange={(on) => void save({ openResult: on })} />
+              </div>
+            </Section>
+
+            <Section title="Closing an item">
+              <SelectField label="When I close a finished item (✕)" value={cfg.onClose}
+                options={[{ value: 'changes', label: 'Move it to the Codebase changes banner' }, { value: 'delete', label: 'Delete it' }]}
+                hint={cfg.changesOn === false ? 'The Codebase changes plugin is off, so closed items are deleted for now.' : 'Items that came from the Codebase changes log stay there either way.'}
+                onChange={(v) => void save({ onClose: v as Config['onClose'] })} />
+            </Section>
+            {msg && <div><Chip>{msg}</Chip></div>}
+          </>
+        ) : <p className="fx-small fx-muted">{msg || 'Loading…'}</p>}
+
+        <Section title="Claude Code on the VPS">
+          <div className="fx-stack">
+            <p className="fx-small" style={{ margin: 0 }}>Run this once on the VPS so every Claude Code session shows here while it works: thinking, editing, building, deleting, pushing, pulling and merging (each push, pull, merge, delete or build gets its own line), and when it's waiting for you:</p>
+            <pre className="axp-activity__cmd">node {script} hooks install</pre>
+            <p className="fx-small fx-muted" style={{ margin: 0 }}>Already installed? Run it again to add the new hook. Remove with <code>hooks remove</code>. Scripts can report too: <code>node {script} start my-job "Backing up" --steps "copy,upload"</code>, then <code>update my-job --step "upload=running"</code> and <code>done my-job</code>.</p>
+            <p className="fx-small fx-muted" style={{ margin: 0 }}>Plugins show their work here by giving their capability service an <code>activity()</code> method (the systems check and the Codebase changes log do; the push banner reports its pushes, pulls and merges).</p>
           </div>
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>Finished items stay under "Just finished" for {Math.round(cfg.lingerS / 60)} min. A reported item with no news for {Math.round(cfg.reportTtlS / 60)} min is marked "No word".</p>
-        </>
-      )}
-      <h4 style={{ margin: 0 }}>Claude Code on the VPS</h4>
-      <p className="fx-small" style={{ margin: 0 }}>Run this once on the VPS so every Claude Code session shows here while it works (what you asked, each step, when it's waiting for you):</p>
-      <pre className="axp-activity__cmd">node {script} hooks install</pre>
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>Remove with <code>hooks remove</code>. Scripts can report too: <code>node {script} start my-job "Backing up" --steps "copy,upload"</code>, then <code>update my-job --step "upload=running"</code> and <code>done my-job</code>.</p>
-      <p className="fx-small fx-muted" style={{ margin: 0 }}>Plugins show their work here by giving their capability service an <code>activity()</code> method (the systems check does, for VPS Auto fix).</p>
-    </div>
+        </Section>
+      </div>
+    </Container>
   );
 }
 

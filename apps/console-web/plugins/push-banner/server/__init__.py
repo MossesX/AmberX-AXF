@@ -681,24 +681,52 @@ def branches(refresh: bool = False) -> dict[str, Any]:
     return PUSHES.branches(force=refresh)
 
 
+def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]]) -> dict[str, Any]:
+    """Runs one push / pull / merge and shows it in the Activity banner while it runs (axf.activity@1, optional:
+    without the Activity plugin it just runs)."""
+    act = claudefix.plugin_services.get("axf.activity@1")
+    b = body if isinstance(body, dict) else {}
+    what = str(b.get("repo") or "")[:140] + (f" #{b['number']}" if b.get("number") else f" · {str(b.get('branch'))[:120]}" if b.get("branch") else "")
+    iid = f"push-banner:{kind}:{int(time.time() * 1000)}"
+    if act:
+        try:
+            act.report({"id": iid, "kind": kind, "source": "push-banner", "title": f"{verb} {what}".strip(), "state": "running",
+                        "url": f"https://github.com/{b['repo']}" if github.valid_repo(str(b.get("repo") or "")) else None}, "push-banner")
+        except Exception:  # noqa: BLE001 — the banner never blocks the work
+            act = None
+    try:
+        out = fn(body)
+    except HTTPException as e:
+        if act:
+            act.finish(iid, "failed", str(e.detail)[:300])
+        raise
+    except Exception as e:
+        if act:
+            act.finish(iid, "failed", str(e)[:300])
+        raise
+    if act:
+        act.finish(iid, "done", None)
+    return out
+
+
 @router.post("/pr")
 def open_pr(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.open_pr(body)
+    return _tracked("push", "Open pull request", body, PUSHES.open_pr)
 
 
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.merge(body)
+    return _tracked("merge", "Merge", body, PUSHES.merge)
 
 
 @router.post("/merge-branch")
 def merge_branch(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.merge_branch(body)
+    return _tracked("merge", "Merge", body, PUSHES.merge_branch)
 
 
 @router.post("/update")
 def update(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.update(body)
+    return _tracked("pull", "Pull main into", body, PUSHES.update)
 
 
 @router.get("/detail")

@@ -34,6 +34,8 @@ from typing import Any, Callable
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
 
+from . import complete
+
 ACTIVE = ("queued", "running", "waiting")
 FINISHED = ("done", "failed", "cancelled", "stale")
 STATES = ACTIVE + FINISHED
@@ -117,6 +119,8 @@ def norm(raw: Any, source: str, now_ms: int) -> dict[str, Any] | None:
             it["progress"] = max(0.0, min(1.0, float(p)))
     except (TypeError, ValueError):
         pass
+    if isinstance(raw.get("changeId"), str) and re.match(r"^chg-\d{8}-[0-9a-f]{6,16}$", raw["changeId"]):
+        it["changeId"] = raw["changeId"]
     url = _https(raw.get("url")) if raw.get("url") else None
     if url:
         it["url"] = url
@@ -179,6 +183,7 @@ class Feed:
             "repos": [r for r in c.get("repos", self.default_repos) if isinstance(r, str) and github.valid_repo(r)][:20],
             "lingerS": int(c.get("lingerS", 600)) if str(c.get("lingerS", "")).isdigit() else 600,
             "reportTtlS": int(c.get("reportTtlS", 1800)) if str(c.get("reportTtlS", "")).isdigit() else 1800,
+            **complete.clean(c),
         }
 
     def set_config(self, patch: dict[str, Any]) -> dict[str, Any]:
@@ -192,6 +197,7 @@ class Feed:
             if bad:
                 raise ValueError(f"repos must look like owner/name: {bad[:3]}")
             c["repos"] = list(dict.fromkeys(patch["repos"]))[:20]
+        c = complete.patch(c, patch)
         for k, lo, hi in (("lingerS", 0, 86400), ("reportTtlS", 60, 86400)):
             if k in patch:
                 try:
@@ -202,6 +208,21 @@ class Feed:
         storage.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         self._gh_cache = None
         return c
+
+    # Without auto-remove a finished item still leaves after a day (sources like GitHub would otherwise pile up).
+    KEEP_MAX_MS = 24 * 3600 * 1000
+
+    def expired(self, state: str, finished: int | None, cfg: dict[str, Any], now: int) -> bool:
+        """A finished item past its time: lingerS after it finished (Settings: auto-remove after N minutes), a day
+        when auto-remove is off, never for a failure while "keep failures until closed" is on (a day at most)."""
+        if state in ACTIVE:
+            return False
+        age = now - (finished or now)
+        if age > self.KEEP_MAX_MS:
+            return True
+        if not cfg["autoRemove"] or (cfg["keepFailed"] and state in ("failed", "stale")):
+            return False
+        return age > cfg["lingerS"] * 1000
 
     # ---------------- open source registry (other code in this process)
 
@@ -303,7 +324,7 @@ class Feed:
                 it["state"] = "stale"
                 it["finishedAt"] = it["updatedAt"] + cfg["reportTtlS"] * 1000  # it went quiet then; linger from there
                 it["detail"] = (it["detail"] + "\n" if it["detail"] else "") + "No word from it for a while: it may have stopped without saying so."
-            if it["state"] in FINISHED and now - it.get("finishedAt", it["updatedAt"]) > cfg["lingerS"] * 1000:
+            if self.expired(it["state"], it.get("finishedAt", it["updatedAt"]), cfg, now):
                 try:
                     p.unlink()
                 except OSError:
@@ -347,7 +368,7 @@ class Feed:
                 state = _gh_state(str(r.get("status") or ""), r.get("conclusion"))
                 started = _ms(r.get("run_started_at")) or _ms(r.get("created_at")) or now
                 updated = _ms(r.get("updated_at")) or started
-                if state not in ACTIVE and now - updated > cfg["lingerS"] * 1000:
+                if self.expired(state, updated, cfg, now):
                     continue
                 commit = (r.get("head_commit") or {}).get("message") or r.get("display_title") or ""
                 it = norm({
@@ -407,7 +428,7 @@ class Feed:
         fin = _ms(d.get("finishedAt"))
         if state == "running" and now - started > 45 * 60 * 1000:
             state, fin = "stale", started + 45 * 60 * 1000  # the update script died without saying so
-        if state not in ACTIVE and now - (fin or started) > cfg["lingerS"] * 1000:
+        if self.expired(state, fin or started, cfg, now):
             return []
         frm, to = str(d.get("from") or "")[:7], str(d.get("to") or "")[:7]
         it = norm({"id": "console-update", "kind": "deploy", "state": state, "title": "Console update",
@@ -475,13 +496,16 @@ class Feed:
         seen: set[str] = set(self._dismissed(now))
         uniq = []
         for it in items:
+            if it["state"] in FINISHED and self.expired(it["state"], it.get("finishedAt") or it["updatedAt"], cfg, now):
+                continue
             if it["id"] not in seen:
                 seen.add(it["id"])
                 uniq.append(it)
         uniq.sort(key=lambda i: (i["state"] not in ACTIVE, -(i.get("finishedAt") or i["startedAt"]) if i["state"] not in ACTIVE else i["startedAt"]))
         active = [i for i in uniq if i["state"] in ACTIVE]
         return {"items": uniq, "active": len(active), "errors": errors[:10], "checkedAt": now,
-                "sources": {k: {"label": v, "on": cfg["sources"][k]} for k, v in SOURCES.items()}}
+                "sources": {k: {"label": v, "on": cfg["sources"][k]} for k, v in SOURCES.items()},
+                "complete": {k: cfg[k] for k in ("sound", "toast", "expandOnDone", "openResult", "onClose")}}
 
     def detail(self, iid: str) -> dict[str, Any]:
         if iid.startswith("gh:"):
