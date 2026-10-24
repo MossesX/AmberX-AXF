@@ -46,7 +46,7 @@ export const HUB = normalizeOrigin((manifest as { developer?: { hub?: string } }
 export const TABS: PatchTab[] = [
   { id: 'console', label: 'Console', icon: 'terminal', key: 'patches.console', fallback: 'https://console.amberxai.com', path: '/', settingsPath: '/', axf: true },
   { id: 'pilot', label: 'Pilot', icon: 'rocket', key: 'patches.pilot', fallback: 'https://pilot.amberxai.com', path: '/', settingsPath: '/', axf: true },
-  { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
+  { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/', settingsPath: '/auth/account', axf: false },
 ];
 
 /**
