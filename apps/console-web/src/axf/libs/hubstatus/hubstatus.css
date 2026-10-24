@@ -1,0 +1,7 @@
+/* axHub status badge: details card. Tokens only (framework/spec/THEMING.md); the badge itself is the framework status widget. */
+.axf-hubstatus__dot { width: 0.7em; height: 0.7em; border-radius: 999px; background: var(--fx-danger); }
+.axf-hubstatus__dot[data-on='1'] { background: var(--fx-success); }
+.axf-hubstatus__row { display: flex; gap: var(--fx-space); justify-content: space-between; flex-wrap: wrap; }
+.axf-hubstatus__row > :last-child { text-align: end; overflow-wrap: anywhere; }
+.axf-hubstatus__more { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axf-hubstatus__details { padding-inline-start: var(--fx-space); border-inline-start: var(--fx-border-w) solid var(--fx-border); }

@@ -28,10 +28,8 @@
     "SETTINGS"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "fable",
-    "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)"
-  },
+  "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "opus build of Oct 18 2026 (pending item plugin-manager)" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -43,5 +41,6 @@
       "_claude/memory/decisions.md",
       "_claude/memory/docs/rebuilds/plugin-manager.md"
     ]
-  }
+  },
+  "opens": "main"
 }

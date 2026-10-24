@@ -1,11 +1,9 @@
 /**
- * Patches (web): the Dev Console, Build Pilot and axHub in one page — one banner, three tabs kept alive, one settings.
+ * Patches (web): the Dev Console, Build Pilot and axHub in one page — one banner, the tabs kept alive.
  *
  * The web twin of apps/patches (Android). The apps load in frames marked with embed@1 (`?axf-embed=patches`): each hides
- * its own banner, and because Patches **takes their settings** (`axf-embed-take=settings`) each also drops its own
- * settings hooks (menu items, buttons, nav entries) and asks Patches instead. Patches answers with its combined
- * Settings: one tab per app (Patches, Console, Pilot, axHub), each app's tab showing that app's own settings page
- * (`axf-embed-page=settings`).
+ * its own banner. Settings are never combined (Brett, Oct 24 2026): every app keeps its own settings interface (its own
+ * settings asset, holding only its own settings), and Patches' Settings holds only Patches'.
  *
  * Pure helpers here; the UI is in patchesLibrary.tsx and views/.
  */
@@ -15,12 +13,11 @@ import manifest from '../axf.manifest.json';
 export const HOST_ID = 'patches';
 
 /**
- * What Patches takes over from the apps in its tabs: their settings, and their banners' settings (every banner's look,
- * behaviour and own settings in Patches' Banners settings tab; Brett, Oct 22 2026), and their plugins (Brett, Oct 22
- * 2026: every page of an app runs only the plugins Patches has installed and switched on for it; the app's own plugin
- * hooks are greyed out with "Plugins are managed in Patches"). Android also takes notifications.
+ * What Patches takes over from the apps in its tabs: their plugins (Brett, Oct 22 2026: every page of an app runs only the
+ * plugins Patches has installed and switched on for it; the app's own plugin hooks are greyed out with "Plugins are
+ * managed in Patches"). Not their settings or banner settings any more (Brett, Oct 24 2026: each app keeps its own).
  */
-export const TAKES = ['settings', 'banners', 'plugins'] as const;
+export const TAKES = ['plugins'] as const;
 /**
  * …and, from the app in a tab (not its settings page or the banner strip), its application menu (Brett, Oct 22 2026:
  * "all app menus are inherited by Patches' menu and the apps in tabs hide theirs").
@@ -52,13 +49,12 @@ export const TABS: PatchTab[] = [
   { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
 ];
 
-/** The settings tabs of Patches' combined settings, in order: Patches itself, Banners (every banner shown above the tabs), then one per app. */
-export const SETTINGS_APPS = [{ id: 'patches', label: 'Patches', icon: 'layers' }, { id: 'banners', label: 'Banners', icon: 'bell' }, ...TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))] as const;
-export type SettingsApp = (typeof SETTINGS_APPS)[number]['id'];
-export const isSettingsApp = (v: unknown): v is SettingsApp => SETTINGS_APPS.some((a) => a.id === v);
-
+/**
+ * Patches' combined Settings is a tab group (Brett, Oct 23 2026): a tab for Patches itself, Banners (every banner shown
+ * above the tabs), then one for every tab in Patches' tab group that has a settings interface: each app (its own
+ * settings page) and each plugin tab whose plugin has settings (its app's settings page opened on that plugin's tab).
+ */
 export const BANNERS_KEY = 'patches.banners';
-export const SETTINGS_APP_KEY = 'patches.settings.app';
 
 /** An https origin (scheme + host + port, no path, no credentials), or null. */
 export function normalizeOrigin(raw: unknown): string | null {
@@ -76,25 +72,9 @@ export function tabOrigin(t: PatchTab, saved: unknown): string {
   return normalizeOrigin(saved) ?? normalizeOrigin(t.fallback)!;
 }
 
-/** The page a tab shows: its app, marked as embedded in Patches, with Patches taking its settings. */
+/** The page a tab shows: its app, marked as embedded in Patches (its plugins + app menu taken; its settings its own). */
 export function tabUrl(t: PatchTab, origin: string): string {
   return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAB_TAKES] });
-}
-
-/** An app's settings page for the combined settings (page mode; all its chrome hidden). */
-export function settingsUrl(t: PatchTab, origin: string): string {
-  return embedUrlFull(`${origin}${t.settingsPath}`, HOST_ID, { takes: [...TAKES], page: 'settings' });
-}
-
-/** The Banners settings page: the console's every-banner settings on its own (its banners are the ones above the tabs). */
-export function bannersUrl(consoleOrigin: string): string {
-  return embedUrlFull(`${consoleOrigin}/`, HOST_ID, { takes: [...TAKES], page: 'banners' });
-}
-
-/** An app asks for banner settings with `open-settings` tab `banners` or `banners:<banner id>`: the banner id, or null. */
-export function bannerAsk(tab: string | undefined): string | null {
-  if (!tab || (tab !== 'banners' && !tab.startsWith('banners:'))) return null;
-  return tab.slice('banners:'.length);
 }
 
 /** The banner strip: the Dev Console's plugin banners on their own page, above every tab. */
@@ -164,7 +144,7 @@ export function openTabMessage(tab: string): EmbedMessage { return { $axf: EMBED
 /* ---------------- plugins Patches manages for the apps in its tabs (embed@1 take `plugins`) ---------------- */
 
 /** One plugin installed in Patches for an app (server/main.py → patches-plugins@1). */
-export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string }
+export interface InstalledPlugin { name: string; version: string; enabled: boolean; installedAt: string; /** the model that built it, as its app reported (plugin@1 builtWith.model) */ model?: string }
 export interface PluginsState { $axf: 'patches-plugins@1'; apps: Record<string, { plugins: Record<string, InstalledPlugin> }> }
 
 /** Setting: try to install an app's missing plugins into Patches by itself (on by default). */

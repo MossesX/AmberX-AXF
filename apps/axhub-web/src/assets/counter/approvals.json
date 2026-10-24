@@ -15,6 +15,6 @@
     "hideAtZero": true,
     "icon": "shield",
     "label": "waiting",
-    "link": "approvals.open"
+    "link": "nav:home"
   }
 }

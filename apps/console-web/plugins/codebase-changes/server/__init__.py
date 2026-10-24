@@ -26,6 +26,7 @@ import os
 import re
 import secrets
 import shutil
+import time
 from pathlib import Path
 from typing import Any
 
@@ -211,6 +212,50 @@ def abandon(cid: str, by: str) -> dict[str, Any]:
     return set_closed(cid, by)
 
 
+ACTIVITY_KIND = {"build": "build", "edit": "edit", "remove": "delete", "fix": "fix"}
+ACTIVITY_STATE = {"done": "done", "partial": "done", "failed": "failed", "cancelled": "cancelled"}
+QUIET_S = 30 * 60
+
+
+def activity_items(rows: list[dict[str, Any]], now: float | None = None) -> list[dict[str, Any]]:
+    """Change-log entries as activity@1 items: open ones running (queued / "stale" after 30 quiet minutes), finished
+    ones with their result; only the last day's (newest 60)."""
+    from datetime import datetime
+    t = time.time() if now is None else now
+
+    def secs(v: Any) -> float | None:
+        try:
+            return datetime.fromisoformat(str(v).replace("Z", "+00:00")).timestamp()
+        except (TypeError, ValueError):
+            return None
+    out = []
+    for r in rows:
+        last = secs(r.get("lastSeenAt")) or secs(r.get("updatedAt")) or secs(r.get("createdAt"))
+        if last is None or t - last > 86400:
+            continue
+        res = r.get("result")
+        if res:
+            state = ACTIVITY_STATE.get(res.get("state"), "done")
+        else:
+            state = "queued" if r.get("status") == "queued" else "running"
+            if t - last > QUIET_S:
+                state = "stale"
+        steps = r.get("steps") or {}
+        it = {"id": f"changes:{r['id']}", "kind": ACTIVITY_KIND.get(r.get("kind"), "task"), "source": "changes",
+              "title": r.get("title") or "Change", "state": state,
+              "detail": (res or {}).get("summary") or r.get("doing") or steps.get("running") or r.get("asked") or "",
+              "startedAt": r.get("startedAt") or r.get("createdAt"), "updatedAt": r.get("lastSeenAt") or r.get("updatedAt"),
+              "by": r.get("model") or r.get("where") or None, "changeId": r["id"]}
+        if state not in ("queued", "running", "waiting"):
+            it["finishedAt"] = r.get("finishedAt") or r.get("updatedAt")
+        if steps.get("total"):
+            it["progress"] = steps.get("done", 0) / steps["total"]
+        out.append(it)
+        if len(out) >= 60:
+            break
+    return out
+
+
 class Service:
     """axf.changes@1 — other plugins record or read changes through this, never by folder name."""
     version = 1
@@ -244,6 +289,11 @@ class Service:
     def stamp(self) -> str:
         """Changes whenever any entry changes (for cheap live polling)."""
         return store().stamp()
+
+    def activity(self) -> list[dict[str, Any]]:
+        """activity@1 items (read by the Activity banner by itself): every build, edit, remove or fix of the last day,
+        running or just finished. Closing one there leaves it here (it's already in this log)."""
+        return activity_items(store().summaries())
 
     def cli(self) -> str:
         """The recording CLI, relative to the repo (so other plugins can tell sessions how to report without naming it)."""

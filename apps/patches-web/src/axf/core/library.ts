@@ -85,3 +85,90 @@ export function paramError(p: LibraryParam, text: string): string | null {
 export function paramDefaults(params: readonly LibraryParam[]): Record<string, string> {
   return Object.fromEntries(params.map((p) => [p.key, paramDefaultText(p)]));
 }
+
+/* ---------- library@1 parts: features inside a library, each configurable (Oct 22 2026) ----------
+ * A library may offer `parts`: features an app includes or leaves out when it installs the library, each with its own
+ * parameters (Build Pilot lists them as features under the library and lets a person configure each one). The
+ * installed config keeps the library's own params at the top level and `parts: { <part id>: { ...its params } }` for
+ * every included part; a part that isn't there is left out. Kotlin twin deferred (Android on hold, PORTING.md). */
+
+export interface LibraryPart {
+  id: string;
+  label: string;
+  description?: string;
+  /** included when nobody chose (default true) */
+  default?: boolean;
+  /** other part ids this one needs (included with it) */
+  requires?: string[];
+  params?: LibraryParam[];
+}
+export type PartAnswers = Record<string, boolean | Record<string, unknown>>;
+
+/** The parts included by default (and what they require). */
+export function partDefaults(parts: readonly LibraryPart[]): string[] {
+  return withRequired(parts, parts.filter((p) => p.default !== false).map((p) => p.id));
+}
+
+/** A set of chosen part ids plus everything they require, in the library's order. Unknown ids are dropped. */
+export function withRequired(parts: readonly LibraryPart[], chosen: readonly string[]): string[] {
+  const on = new Set<string>();
+  const add = (id: string) => { const p = parts.find((x) => x.id === id); if (!p || on.has(id)) return; on.add(id); for (const r of p.requires ?? []) add(r); };
+  chosen.forEach(add);
+  return parts.filter((p) => on.has(p.id)).map((p) => p.id);
+}
+
+/** Which parts the answers include: `answers` undefined → the defaults; else a part is in when its answer is true or an object. */
+export function includedParts(parts: readonly LibraryPart[], answers?: PartAnswers | null): string[] {
+  if (!answers) return partDefaults(parts);
+  return withRequired(parts, Object.entries(answers).filter(([, v]) => v === true || (typeof v === 'object' && v !== null)).map(([k]) => k));
+}
+
+/** Parts that need this one (so it can't be left out while they're in). */
+export function partNeededBy(parts: readonly LibraryPart[], included: readonly string[], id: string): string[] {
+  return parts.filter((p) => included.includes(p.id) && p.id !== id && (p.requires ?? []).includes(id)).map((p) => p.id);
+}
+
+/** Every problem with the answers (unknown part, bad parameter), as readable lines; [] when fine. Values may be text or typed. */
+export function partErrors(parts: readonly LibraryPart[], answers?: PartAnswers | null): string[] {
+  const out: string[] = [];
+  for (const [id, v] of Object.entries(answers ?? {})) {
+    const p = parts.find((x) => x.id === id);
+    if (!p) { out.push(`Unknown part "${id}"`); continue; }
+    if (typeof v !== 'object' || v === null) continue;
+    for (const q of p.params ?? []) {
+      const raw = (v as Record<string, unknown>)[q.key];
+      const e = paramError(q, raw === undefined || raw === null ? '' : paramText(raw));
+      if (e) out.push(`${p.label} › ${q.label}: ${e}`);
+    }
+  }
+  return out;
+}
+
+/** The installed config's part map: every included part with its params (blank → default). */
+export function resolvePartConfig(parts: readonly LibraryPart[], answers?: PartAnswers | null): Record<string, Record<string, unknown>> {
+  const out: Record<string, Record<string, unknown>> = {};
+  for (const id of includedParts(parts, answers)) {
+    const p = parts.find((x) => x.id === id)!;
+    const given = answers && typeof answers[id] === 'object' ? (answers[id] as Record<string, unknown>) : {};
+    const cfg: Record<string, unknown> = {};
+    for (const q of p.params ?? []) {
+      const raw = given[q.key];
+      const v = raw === undefined || raw === null || raw === '' ? undefined : typeof raw === 'string' ? paramToJson(q, raw) : raw;
+      cfg[q.key] = v === undefined ? q.default ?? null : v;
+    }
+    out[id] = cfg;
+  }
+  return out;
+}
+
+/** Read an installed library config at run time: is a part on, and its params (defaults filled). No `parts` key = defaults. */
+export function partOn(config: { parts?: Record<string, unknown> } | null | undefined, id: string, parts?: readonly LibraryPart[]): boolean {
+  if (!config?.parts) return parts ? partDefaults(parts).includes(id) : true;
+  return Object.hasOwn(config.parts, id);
+}
+export function partParams<T extends Record<string, unknown> = Record<string, unknown>>(config: { parts?: Record<string, unknown> } | null | undefined, id: string, part?: LibraryPart): T {
+  const given = (config?.parts?.[id] ?? {}) as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const q of part?.params ?? []) out[q.key] = given[q.key] ?? q.default ?? null;
+  return { ...out, ...given } as T;
+}

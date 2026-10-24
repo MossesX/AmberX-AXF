@@ -56,7 +56,8 @@ def _plugins() -> list[dict[str, Any]]:
             m = json.loads(f.read_text())
         except (OSError, ValueError):
             continue
-        out.append({"folder": folder, "id": m.get("id", ""), "name": m.get("name", folder), "replacedBy": str((m.get("builtWith") or {}).get("replacedBy") or "")})
+        out.append({"folder": folder, "id": m.get("id", ""), "name": m.get("name", folder), "replacedBy": str((m.get("builtWith") or {}).get("replacedBy") or ""),
+                    "model": str((m.get("builtWith") or {}).get("model") or "")})
     return out
 
 
@@ -67,7 +68,7 @@ def _replaces(item: dict[str, Any], plugins: list[dict[str, Any]]) -> dict[str, 
     for p in plugins:
         names = {p["folder"], p["folder"] + "-plugin", p["folder"] + "-fable"}
         if iid in names or re.search(rf"\b{re.escape(iid)}\b", p["replacedBy"]) or re.search(rf"`{re.escape(p['folder'])}`|\b{re.escape(p['folder'])} plugin\b", notes):
-            return {"folder": p["folder"], "name": p["name"], "uninstall": f"node apps/console-web/plugins/{p['folder']}/uninstall.mjs --all"}
+            return {"folder": p["folder"], "name": p["name"], "model": p.get("model", ""), "uninstall": f"node apps/console-web/plugins/{p['folder']}/uninstall.mjs --all"}
     return None
 
 

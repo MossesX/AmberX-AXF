@@ -10,6 +10,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dataPath } from './persist.mjs';
+import { applyDefaults } from './build-defaults.mjs';
+import { instanceClashes } from './plugin-instances.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const INDEX = 'framework/catalog/plugins.json';
@@ -27,7 +29,7 @@ export function builtPlugins(root = ROOT) {
       try {
         const m = readJson(f);
         if (m.$axf !== 'plugin@1') continue;
-        out.push({ id: m.id, name: m.name, version: m.version, target: (m.targets ?? [])[0] ?? '', description: m.description ?? '', folder: `apps/${app}/plugins/${folder}`, status: 'built', tabable: pluginTab(m), manifest: m });
+        out.push({ id: m.id, name: m.name, version: m.version, target: (m.targets ?? [])[0] ?? '', description: m.description ?? '', folder: `apps/${app}/plugins/${folder}`, status: 'built', tabable: pluginTab(m), banner: pluginBanners(m), builtWith: m.builtWith?.model ? { model: m.builtWith.model, builtAt: m.builtWith.builtAt ?? '' } : null, opens: m.opens ?? false, manifest: m });
       } catch { /* a broken manifest is the plugin's own problem; the console reports it */ }
     }
   }
@@ -57,6 +59,65 @@ export function checkTabable(m) {
   if (t.icon !== undefined && (typeof t.icon !== 'string' || !ICON_ID.test(t.icon))) problems.push('"tabable".icon is an icon name');
   return problems;
 }
+
+/**
+ * `banner` (plugin@1, Oct 23 2026): does this plugin include a banner (`AxfWebLibrary.banners`, the live banners above
+ * every page)? Every plugin declares it: `false`, or the ids of the banners it contributes. Every banner a plugin
+ * declares gets the shared banner settings (Hide, Hide all banners, the hide timer; react/components/BannerSettings.tsx).
+ * Checked against the plugin's web code: the ids it declares are exactly the ids in its `banners: [...]`.
+ */
+const BANNER_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+
+/** The banner ids a plugin's web code contributes (`banners: [{ id: '…', … }]`), read from the source text. */
+export function bannerIdsInSource(text) {
+  const out = [];
+  const re = /\bbanners\s*:\s*\[/g;
+  let m;
+  while ((m = re.exec(text))) {
+    let depth = 1, i = re.lastIndex, objDepth = 0;
+    for (; i < text.length && depth > 0; i++) {
+      const c = text[i];
+      if (c === '[') depth++;
+      else if (c === ']') depth--;
+      else if (c === '{') { objDepth++; if (objDepth === 1) { const id = /^\{\s*id\s*:\s*['"]([^'"]+)['"]/.exec(text.slice(i)); if (id) out.push(id[1]); } }
+      else if (c === '}') objDepth--;
+    }
+  }
+  return [...new Set(out)];
+}
+
+export function checkBanner(m, sourceIds = null) {
+  const b = m?.banner;
+  if (b === undefined) return ['"banner" is missing (false, or the ids of the banners it includes)'];
+  if (b !== false && !(Array.isArray(b) && b.length && b.every((x) => typeof x === 'string' && BANNER_ID.test(x)) && new Set(b).size === b.length)) return ['"banner" is false or a list of banner ids'];
+  if (sourceIds) {
+    const declared = b === false ? [] : b;
+    const missing = sourceIds.filter((id) => !declared.includes(id));
+    const extra = declared.filter((id) => !sourceIds.includes(id));
+    const out = [];
+    if (missing.length) out.push(`"banner" doesn't list ${missing.map((x) => `"${x}"`).join(', ')}, which its web code contributes`);
+    if (extra.length) out.push(`"banner" lists ${extra.map((x) => `"${x}"`).join(', ')}, which its web code doesn't contribute`);
+    return out;
+  }
+  return [];
+}
+
+/** The banner ids every .ts/.tsx file under a plugin's web/ folder contributes (vendor/ skipped). */
+export function webBannerIds(folder) {
+  const out = new Set();
+  const walk = (d) => {
+    if (!existsSync(d)) return;
+    for (const f of readdirSync(d, { withFileTypes: true })) {
+      if (f.isDirectory()) { if (f.name !== 'vendor' && f.name !== 'node_modules') walk(join(d, f.name)); }
+      else if (/\.(tsx?|mjs)$/.test(f.name)) for (const id of bannerIdsInSource(readFileSync(join(d, f.name), 'utf8'))) out.add(id);
+    }
+  };
+  walk(join(folder, 'web'));
+  return [...out];
+}
+
+/** The banner ids a plugin declares ([] = none). */
+export function pluginBanners(m) { return Array.isArray(m?.banner) && !checkBanner(m).length ? [...m.banner] : []; }
 
 /** The tab a plugin offers ({view, label, icon}) or null when it isn't tabable (or its declaration is wrong). */
 export function pluginTab(m) {
@@ -98,9 +159,22 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const done = allPlugins().filter((p) => p.status === 'built').map((p) => p.id);
     for (const it of readJson(join(ROOT, INDEX)).items ?? []) if (done.includes(it.id)) console.log(`note: ${it.id} is built now; its planned entry can go`);
     for (const p of builtPlugins()) for (const x of checkTabable(p.manifest)) problems.push(`${p.folder}/plugin.json: ${x}`);
+    for (const p of builtPlugins()) for (const x of checkBanner(p.manifest, webBannerIds(join(ROOT, p.folder)))) problems.push(`${p.folder}/plugin.json: ${x}`);
+    // build-defaults@1 (Oct 23 2026): every rule for plugins holds (a missing default = run build-defaults.mjs apply --write)
+    for (const p of builtPlugins()) {
+      const r = applyDefaults('plugin', p.manifest);
+      for (const x of r.problems) problems.push(`${p.folder}/plugin.json: ${x.message} (${x.rule})`);
+      for (const f of r.filled) problems.push(`${p.folder}/plugin.json: "${f.field}" is missing; the build engine's default is ${JSON.stringify(f.value)} (${f.rule}; node framework/cli/build-defaults.mjs apply --write)`);
+    }
+    // one instance per plugin (Brett, Oct 23 2026): never two folders with one plugin, whatever model built them
+    for (const c of instanceClashes(builtPlugins().map((p) => ({ folder: p.folder, manifest: p.manifest })))) problems.push(c.message);
     if (problems.length) { for (const p of problems) console.error(`✗ ${p}`); process.exit(1); }
     const tabs = builtPlugins().filter((p) => p.tabable);
-    console.log(`✓ ${INDEX} ok; every plugin declares tabable (${tabs.length} tabable: ${tabs.map((p) => p.name).join(', ') || 'none'})`);
+    const withBanner = builtPlugins().filter((p) => p.banner.length);
+    const byModel = {};
+    for (const p of builtPlugins()) byModel[p.builtWith?.model ?? '?'] = (byModel[p.builtWith?.model ?? '?'] ?? 0) + 1;
+    console.log(`✓ built with: ${Object.entries(byModel).map(([k, n]) => `${k} ${n}`).join(', ')}; one instance of every plugin`);
+    console.log(`✓ ${INDEX} ok; every plugin declares tabable (${tabs.length} tabable: ${tabs.map((p) => p.name).join(', ') || 'none'}) and banner (${withBanner.length} with banners: ${withBanner.map((p) => p.name).join(', ') || 'none'})`);
   } else if (args.includes('--json')) {
     console.log(JSON.stringify({ items: allPlugins().map(({ manifest, ...p }) => p) }, null, 2));
   } else {

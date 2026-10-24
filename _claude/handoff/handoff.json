@@ -1,18 +1,18 @@
 {
   "$axf": "claude-handoff@1",
-  "generatedAt": "2026-10-23T00:18:30.582Z",
+  "generatedAt": "2026-10-24T12:35:28.844Z",
   "project": "amberx-axf",
   "displayName": "AmberX AXF",
   "repo": "MossesX/AmberX-AXF",
   "branch": "main",
-  "commit": "5fd0b2831f2109c0cadac59239ab46aa9453a077",
-  "fingerprint": "dcaf8e6443602ac2",
+  "commit": "2e487e348581c1347cc6a0925e9339248829befe",
+  "fingerprint": "bc4f268c7e40c92a",
   "sources": [
     {
       "path": "CLAUDE.md",
       "role": "instructions",
-      "sha": "387a509e48426dd5",
-      "bytes": 174217
+      "sha": "90b5951b883e85f2",
+      "bytes": 204354
     },
     {
       "path": "project.manifest.json",
@@ -59,8 +59,8 @@
     {
       "path": "_claude/memory/decisions.md",
       "role": "memory",
-      "sha": "04585a1bc2ea500b",
-      "bytes": 32213
+      "sha": "92fbc7522891e81c",
+      "bytes": 35928
     },
     {
       "path": "_claude/memory/docs/Building-baseline.md",
@@ -89,8 +89,8 @@
     {
       "path": "_claude/memory/docs/axhub-web.md",
       "role": "memory",
-      "sha": "0b5945652d0d49a8",
-      "bytes": 5042
+      "sha": "49872c823ba25f70",
+      "bytes": 6750
     },
     {
       "path": "_claude/memory/docs/banner-status-bell.md",
@@ -197,8 +197,8 @@
     {
       "path": "_claude/memory/docs/rebuilds/LOG.md",
       "role": "memory",
-      "sha": "0277745764c17103",
-      "bytes": 5841
+      "sha": "6b57fe9198fae428",
+      "bytes": 6395
     },
     {
       "path": "_claude/memory/docs/rebuilds/agent-manager-plugin.md",
@@ -217,6 +217,12 @@
       "role": "memory",
       "sha": "2408245e61ed7d36",
       "bytes": 7841
+    },
+    {
+      "path": "_claude/memory/docs/rebuilds/axhub-web-console-look.md",
+      "role": "memory",
+      "sha": "77d31b78e58406af",
+      "bytes": 5596
     },
     {
       "path": "_claude/memory/docs/rebuilds/banner-assets/android.md",
@@ -297,6 +303,12 @@
       "bytes": 13521
     },
     {
+      "path": "_claude/memory/docs/walkthrough-studio.md",
+      "role": "memory",
+      "sha": "14df513101e83a05",
+      "bytes": 7104
+    },
+    {
       "path": "_claude/rules/README.md",
       "role": "rules",
       "sha": "e3d1dafdb9aea688",
@@ -305,8 +317,8 @@
     {
       "path": "_claude/rules/RULES.md",
       "role": "rules",
-      "sha": "8ec1e58ff15b0533",
-      "bytes": 14888
+      "sha": "d714b9873009de9c",
+      "bytes": 16376
     },
     {
       "path": "_claude/shared/instructions/README.md",
@@ -365,8 +377,8 @@
     {
       "path": "_claude/shared/rules/RULES.md",
       "role": "rules",
-      "sha": "0bde4e776dec0fd0",
-      "bytes": 10668
+      "sha": "6ea7550e61532bdf",
+      "bytes": 10980
     },
     {
       "path": "_claude/shared/rules/preferences.md",
@@ -401,8 +413,8 @@
     {
       "path": "framework/spec/PORTING.md",
       "role": "spec",
-      "sha": "c3958f41a13e9a16",
-      "bytes": 10549
+      "sha": "a880142849611430",
+      "bytes": 15126
     },
     {
       "path": "framework/spec/THEMING.md",
@@ -413,8 +425,8 @@
     {
       "path": "apps/console-web/plugins/README.md",
       "role": "spec",
-      "sha": "f2f06154e3cd7549",
-      "bytes": 23392
+      "sha": "0149c89c7e488487",
+      "bytes": 26841
     },
     {
       "path": "framework/boilerplates/README.md",
@@ -541,12 +553,18 @@
       "role": "manifest",
       "sha": "c8ba0f5101275cd2",
       "bytes": 681
+    },
+    {
+      "path": "apps/walkthrough-studio/project.manifest.json",
+      "role": "manifest",
+      "sha": "2a3be0b6c2401a14",
+      "bytes": 750
     }
   ],
   "machines": [
     {
       "host": "console",
-      "collectedAt": "2026-10-23T00:15:10.264Z",
+      "collectedAt": "2026-10-24T12:32:08.001Z",
       "files": 0
     }
   ],
@@ -558,7 +576,7 @@
   "files": [
     {
       "path": "context/CLAUDE.md",
-      "sha": "387a509e48426dd5"
+      "sha": "90b5951b883e85f2"
     },
     {
       "path": "context/claude__README.md",
@@ -566,11 +584,11 @@
     },
     {
       "path": "context/claude__shared__rules__RULES.md",
-      "sha": "0bde4e776dec0fd0"
+      "sha": "6ea7550e61532bdf"
     },
     {
       "path": "context/claude__rules__RULES.md",
-      "sha": "8ec1e58ff15b0533"
+      "sha": "d714b9873009de9c"
     },
     {
       "path": "context/claude__instructions__README.md",
@@ -586,7 +604,7 @@
     },
     {
       "path": "context/claude__memory__decisions.md",
-      "sha": "04585a1bc2ea500b"
+      "sha": "92fbc7522891e81c"
     },
     {
       "path": "context/claude__memory__docs__build-reporting.md",
@@ -606,7 +624,7 @@
     },
     {
       "path": "context/framework__spec__PORTING.md",
-      "sha": "c3958f41a13e9a16"
+      "sha": "a880142849611430"
     },
     {
       "path": "context/framework__spec__THEMING.md",
@@ -618,7 +636,7 @@
     },
     {
       "path": "context/apps__console-web__plugins__README.md",
-      "sha": "f2f06154e3cd7549"
+      "sha": "0149c89c7e488487"
     },
     {
       "path": "user/console/settings-summary.json",
@@ -630,43 +648,43 @@
     },
     {
       "path": "README.md",
-      "sha": "5b9f52ad227a82fd"
+      "sha": "33c22e5132b8fcbc"
     },
     {
       "path": "HANDOFF.md",
-      "sha": "38a785d9edc1fad0"
+      "sha": "b542a763c39a038c"
     },
     {
       "path": "PROJECT.md",
-      "sha": "7e1b5f87edd5f98a"
+      "sha": "2f995a8d2e6d9027"
     },
     {
       "path": "INSTRUCTIONS.md",
-      "sha": "5f11c60b6c88b34c"
+      "sha": "4c9e66edf1d04cdc"
     },
     {
       "path": "FILES.md",
-      "sha": "bdf160f3e077afaf"
+      "sha": "e4f58a891a51ec77"
     },
     {
       "path": "USER-SCOPE.md",
-      "sha": "45ad88599eaf322c"
+      "sha": "2a549d70164524d5"
     },
     {
       "path": "CLAUDE-AI.md",
-      "sha": "6752e18ad3b722c2"
+      "sha": "67d5b58b3362fdc3"
     },
     {
       "path": "SECRETS.md",
-      "sha": "0f3b8eb71edbfdc4"
+      "sha": "456e4d5d22468cac"
     },
     {
       "path": "SETUP.md",
-      "sha": "a1205f8e860714f9"
+      "sha": "f9875f5240913ed2"
     },
     {
       "path": "PROMPT.md",
-      "sha": "03dfb43761aa5835"
+      "sha": "4458152bf43ba3fb"
     },
     {
       "path": "handoff.json",

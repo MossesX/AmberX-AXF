@@ -1,6 +1,6 @@
 /** The views (Install is in InstallView.tsx). Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
 import { useMemo, useState } from 'react';
-import { Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Chip, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi } from './actions';
 import { DetailPane, HealthChip, Monogram, QuickActions } from './Detail';
 import { fmtBytes, HEALTH_LABEL, HEALTH_RANK, type Inventory, type PluginRow } from './model';
@@ -34,6 +34,7 @@ export function CardsView({ rows, layout, selected, onSelect, onChanged }: ViewP
             <div className="axp-plugin-manager-card__title">
               <strong>{r.name}</strong>
               <span className="axp-plugin-manager-card__version">{r.version}</span>
+              <ModelBadge model={r.builtWith?.model} builtAt={r.builtWith?.builtAt} compact />
               {layout === 'terminal' && <span className={`axp-plugin-manager-tag ${r.enabled ? 'is-active' : ''}`}>{tag(layout, r.enabled)}</span>}
             </div>
             <p className="axp-plugin-manager-card__desc">{r.description || r.id}</p>
@@ -93,7 +94,7 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
           {sorted.map((r) => (
             <tr key={r.folder} className={`axp-plugin-manager-tr is-${r.health} ${selected === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
               <td><span className="axp-plugin-manager-namecell"><Monogram row={r} size="sm" /><span><strong>{r.name}</strong><span className="fx-mono fx-small fx-muted"> {r.folder}</span></span></span></td>
-              <td className="fx-mono">{r.version}</td>
+              <td className="fx-mono">{r.version} <ModelBadge model={r.builtWith?.model} builtAt={r.builtWith?.builtAt} compact /></td>
               <td>{layout === 'terminal' ? <span className={`axp-plugin-manager-tag is-${r.health}`}>{HEALTH_LABEL[r.health].toUpperCase()}</span> : <HealthChip row={r} />}</td>
               <td><span className={`axp-plugin-manager-tag ${r.enabled ? 'is-active' : ''}`}>{tag(layout, r.enabled)}</span></td>
               <td className="is-num">{needCount(r)}</td>
@@ -127,7 +128,7 @@ export function MasterDetailView(props: ViewProps) {
         {rows.map((r) => (
           <button key={r.folder} type="button" data-fx-row className={`axp-plugin-manager-md__item ${row?.folder === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
             <Monogram row={r} size="sm" />
-            <span className="axp-plugin-manager-md__name">{r.name}<span className="fx-muted fx-small">{r.version}</span></span>
+            <span className="axp-plugin-manager-md__name">{r.name}<span className="fx-muted fx-small">{r.version}</span> <ModelBadge model={r.builtWith?.model} compact /></span>
             <span className={`axp-plugin-manager-dot is-${r.health}`} title={HEALTH_LABEL[r.health]} />
           </button>
         ))}

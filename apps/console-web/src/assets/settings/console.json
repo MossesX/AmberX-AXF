@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "console",
+  "name": "Dev Console",
+  "version": "1.0.0",
+  "description": "The Dev Console's own settings interface: only the console's settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "console"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "full",
+    "search": false,
+    "descriptions": true
+  }
+}

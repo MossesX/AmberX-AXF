@@ -1,12 +1,12 @@
 /**
- * Self-test for the AXHub web app's hub rules (`src/hub/feed.ts`): what a reply from the hub means,
- * what is thrown away, and how times and sizes are shown.
+ * Self-test for the hub rules the AXHub web app uses (lib-hub `framework/libs/hub/apps.ts`, harvested from this app
+ * Oct 23 2026): what a reply from the hub means, what is thrown away, and how times and sizes are shown.
  *
  *   npx -y tsx apps/axhub-web/test.mjs
  *
  * Nothing here touches the network: every case is a hand-written reply.
  */
-import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from './src/hub/feed.ts';
+import { expiry, formatSize, formatWhen, interpretApps, shortSha, statusNote, APPS_MAX, VERSIONS_MAX } from '../../framework/libs/hub/apps.ts';
 
 let checks = 0;
 let failed = 0;
@@ -122,6 +122,25 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
     const mine = existsSync(`${here}src/assets/${type}`) ? readdirSync(`${here}src/assets/${type}`) : [];
     for (const f of readdirSync(`${here}../console-web/src/assets/${type}`)) ok(mine.includes(f), `ships the console's ${type} ${f}`);
   }
+}
+
+// Its own chrome: banner, toolbar, context menu, navigation menu and application menu are all picked in the manifest
+// and ship with the app. It runs inside Patches, so it installs only what it needs (no plugin shared with the
+// console or Pilot).
+{
+  const { readFileSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  const own = { banner: 'amberx-thin', toolbar: 'axhub-web', 'context-menu': 'axhub-web', 'nav-menu': 'axhub-web', 'app-menu': 'axhub-web' };
+  for (const [type, id] of Object.entries(own)) {
+    eq(man.defaults[type], id, `default ${type} is ${id}`);
+    ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
+    ok(!(man.hidden ?? []).includes(type), `${type} is not hidden`);
+  }
+  const app = readFileSync(`${here}src/App.tsx`, 'utf8');
+  const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
+  for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
+  ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

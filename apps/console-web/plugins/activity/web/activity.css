@@ -49,3 +49,5 @@ button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; a
 .axp-activity__trash { flex: none; margin-right: calc(var(--fx-space) * 0.25) }
 .axp-activity__time { display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.25) }
 .axp-activity__time.is-stuck { color: var(--fx-warning) }
+.axp-activity__kind { color: var(--fx-muted) }
+.axp-activity__settings .fx-section { margin: 0 }

@@ -4,16 +4,18 @@
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
-import { SettingsRegistry } from './settings';
+import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
+import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedHostLabel, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
+import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
@@ -139,6 +141,10 @@ export interface InstalledLibrary {
   contributes?: string[];
   /** The library's nav items / views / dialogs / settings tabs, for "Open" and "Settings" in the Plugin Manager. */
   ui?: { views: { id: string; title: string; icon?: string }[]; dialogs: { id: string; title: string }[]; settingsTabs: { id: string; label: string }[]; settingsCount: number; contextItems: number; /** app-menu items it contributes (engines/appmenu.ts) */ appMenuItems?: number };
+  /** The model that built it (plugin@1 `builtWith`, Oct 23 2026), shown as a badge wherever its info shows. */
+  builtWith?: { model: string; builtAt?: string };
+  /** Where its primary UI opens by default (engines/placement.ts); the setting `axf.placement.<id>` wins. */
+  opens?: Placement;
 }
 
 /** A nav section a library or plugin contributes; items point at views it registers. */
@@ -191,6 +197,14 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /** Primary UIs that move with their owner's placement (engines/placement.ts): `view:<id>` / `dialog:<id>` → owner + default. */
+  private readonly placements = new Map<string, { owner: string; ui: UiRef; fallback: Placement; title: string }>();
+  /** Props of dialogs placed in a page / window tab (they don't fit in a tab payload string), by dialog id. */
+  readonly placedProps = new Map<string, Record<string, unknown> | undefined>();
+  /** The view to go back to when a dialog placed in the main area closes. */
+  placedReturn: string | null = null;
+  /** The shared tab-group window `tab` placements open in (while it's open). */
+  private placementTabWindow: string | null = null;
   /** Libraries not installed on this page because the host app makes them unneeded (embed@1 `skipWhen`), with why. */
   readonly skippedLibraries: { id: string; label: string; version: string; reason: string }[] = [];
   /** Conflicts (two modules, same asset id / setting key / settings id) and crashes; see diagnostics.ts. */
@@ -205,6 +219,7 @@ export class AxfRuntime {
   private listeners = new Set<() => void>();
   private storageKey: string;
   private toastSeq = 0;
+  private settingsBump = false;
 
   constructor(opts: AxfRuntimeOptions) {
     this.manifest = opts.manifest;
@@ -219,7 +234,20 @@ export class AxfRuntime {
         : { kind: 'contribution-conflict', what: `settings ${c.what}`, id: c.id, was: c.was, now: c.now },
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
-    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); this.set({}); });
+    this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
+    // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
+    // pages) re-renders at once, wherever it was changed. Coalesced: several changes in one task = one render.
+    this.settings.subscribe(() => {
+      if (this.settingsBump) return;
+      this.settingsBump = true;
+      queueMicrotask(() => { this.settingsBump = false; this.set({}); });
+    });
+    // Another frame or tab of this app saved (a host's Settings tab, its banner strip, a second window): read it now.
+    globalThis.addEventListener?.('storage', (e: StorageEvent) => {
+      if (e.key !== null && e.key !== this.settings.savedUnder && e.key !== this.storageKey) return;
+      this.reloadSaved();
+    });
     for (const raw of opts.assets) {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
@@ -566,6 +594,11 @@ export class AxfRuntime {
    */
   refreshFromSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     this.appearanceSource?.refresh(); // developer apps: the saved values live on the hub
+    return this.reloadSaved();
+  }
+
+  /** refreshFromSaved without asking the appearance source (another frame of this app saved in this browser). */
+  private reloadSaved(): { slots: AssetType[]; settings: string[]; role: boolean } {
     const settings = this.settings.reload();
     const saved = safeStorage.get(this.storageKey);
     const slots: AssetType[] = [];
@@ -844,6 +877,28 @@ export class AxfRuntime {
     return this.embedHiddenSlots().includes(type);
   }
 
+  /**
+   * Chrome that belongs to the host while this app runs inside it (embed@1): what it hides for the whole app (its banner
+   * by default, plus what a taken function hides, e.g. the app menu). On a page the host shows alone (settings page
+   * mode) every bit of chrome is hidden for that page only, so only the whole-app part counts. Settings leave rows about
+   * this chrome out instead of greying them (Brett, Oct 23 2026: "if a program runs inside Patches don't grey out its
+   * settings").
+   */
+  slotOwnedByHost(type: AssetType): boolean {
+    const e = this.embedded;
+    if (!e) return false;
+    if (!e.page) return this.slotHiddenByHost(type);
+    return type === 'banner' || (e.takes ?? []).some((fn) => embedTakeSpec(fn)?.hides.includes(type));
+  }
+
+  /** Hidden by the user's own choice (or the app's default), leaving out the chrome a host forces off. Settings show this. */
+  slotHiddenOwn(type: AssetType): boolean {
+    if (!hideable(type)) return false;
+    const o: Record<string, boolean | undefined> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') o[t] = v; }
+    return (hiddenSlots(o, this.defaultHiddenSlots(), []) as AssetType[]).includes(type);
+  }
+
   /** Every hidden slot: the host's chrome (while embedded) over the user's overrides (`axf.hide.<type>` true/false) over the app's defaults. */
   hiddenSlots(): AssetType[] {
     const o: Record<string, boolean | undefined> = {};
@@ -853,8 +908,8 @@ export class AxfRuntime {
 
   /** Hide or show a slot's chrome. Ignored for types that aren't hideable. Back at the app's default, the override is dropped. */
   setSlotHidden(type: AssetType, hidden: boolean): void {
-    if (!hideable(type) || this.slotHidden(type) === hidden) return;
-    if (this.slotHiddenByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
+    if (!hideable(type) || this.slotHiddenOwn(type) === hidden) return;
+    if (this.slotOwnedByHost(type)) return this.toast(`${this.embedded!.host} shows the ${type} for this app while it runs inside it.`, 'info', 'Shown by the host app');
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the layout.', 'danger', 'Permission denied');
     if (hidden === this.defaultHiddenSlots().includes(type)) this.settings.clear(HIDE_KEY(type));
     else this.settings.set(HIDE_KEY(type), hidden);
@@ -957,7 +1012,71 @@ export class AxfRuntime {
 
   /* ---------------- views & overlays ---------------- */
 
+  /**
+   * Let `owner`'s primary UI open where its placement says (engines/placement.ts). `fallback` = the manifest default
+   * (`opens`); the person's pick (`axf.placement.<owner>`) wins and is read on every open, so a change applies at once.
+   */
+  setPlacement(owner: string, ui: UiRef, fallback: Placement, title = ui.id) {
+    this.placements.set(`${ui.kind}:${ui.id}`, { owner, ui, fallback, title });
+  }
+
+  /** Forget `owner`'s placement (its library was switched off). */
+  removePlacement(owner: string) {
+    for (const [k, v] of this.placements) if (v.owner === owner) this.placements.delete(k);
+  }
+
+  /** Where `owner`'s primary UI opens now: the person's pick, else its default (null = nothing placed for it). */
+  placementOf(owner: string): Placement | null {
+    const p = [...this.placements.values()].find((x) => x.owner === owner);
+    return p ? normalizePlacement(this.settings.get(placementKey(owner)), p.fallback) : null;
+  }
+
+  /** The placed primary UIs (for settings and the Plugin Manager). */
+  placedUis(): { owner: string; ui: UiRef; fallback: Placement; title: string }[] {
+    return [...this.placements.values()];
+  }
+
+  /** Open a placed UI where its placement says; false = open it the normal way. */
+  private openPlaced(ref: string, props?: Record<string, unknown>): boolean {
+    const p = this.placements.get(ref);
+    if (!p) return false;
+    const r = placementRoute(p.ui, normalizePlacement(this.settings.get(placementKey(p.owner)), p.fallback));
+    if (r.via === 'natural') return false;
+    if (p.ui.kind === 'dialog') this.placedProps.set(p.ui.id, props);
+    if (r.via === 'page') {
+      this.placedReturn = this.state.view;
+      this.set({ view: r.view, context: null, dialog: null });
+    } else if (r.via === 'dialog') {
+      this.set({ dialog: { id: r.dialog }, context: null });
+    } else {
+      const wm = this.windows;
+      // already open somewhere: bring it up instead of opening it twice
+      const open = Object.values(wm.state.groups).find((g) => g.tabs.some((t) => t.kind === r.tabKind && t.payload === r.payload));
+      if (open) {
+        wm.activate(open.id, open.tabs.findIndex((t) => t.kind === r.tabKind && t.payload === r.payload));
+        wm.focus(open.windowId);
+      } else {
+        const tab = { id: `placed-${p.ui.id}-${Date.now().toString(36)}`, title: p.title, kind: r.tabKind, payload: r.payload };
+        const shared = r.via === 'tab' && this.placementTabWindow ? wm.state.windows.find((w) => w.id === this.placementTabWindow) : undefined;
+        const group = shared && Object.values(wm.state.groups).find((g) => g.windowId === shared.id);
+        if (group) { wm.addTab(group.id, tab); wm.activate(group.id, group.tabs.length); wm.focus(shared!.id); }
+        else {
+          const wid = wm.openFloating([tab], r.via === 'tab' ? PLACEMENT_TAB_GROUP : p.title, 'floating', 640, 520);
+          if (r.via === 'tab') this.placementTabWindow = wid;
+        }
+      }
+      this.set({ context: null, ...(p.ui.kind === 'dialog' ? { dialog: null } : {}) });
+    }
+    return true;
+  }
+
+  /** Open a view the way it was declared (in the main area), past its placement: what a placed UI's "go to page" uses. */
+  navigateHere(view: string) {
+    this.set({ view, context: null });
+  }
+
   navigate(view: string) {
+    if (this.openPlaced(`view:${view}`)) return;
     // A view the host took over (embed@1 takes: the settings view inside Patches) opens in the host instead.
     if (embedTakenView(this.embedded, view)) { this.askHost(`nav:${view}`); return; }
     // A view of a function the host locks (plugins inside Patches): say who manages it instead of opening it.
@@ -967,6 +1086,7 @@ export class AxfRuntime {
   }
 
   openDialog(id: string, props?: Record<string, unknown>) {
+    if (this.openPlaced(`dialog:${id}`, props)) return;
     this.set({ dialog: { id, props }, context: null });
   }
 
@@ -1218,6 +1338,7 @@ export class AxfRuntime {
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
+      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -1231,6 +1352,28 @@ export class AxfRuntime {
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
+  customSlot(type: AssetType): CustomSlot {
+    return normalizeCustomSlot(this.settings.get(CUSTOM_KEY(type)), type);
+  }
+
+  /** Save a slot's extra tokens (needs assets.swap). */
+  setCustomSlot(type: AssetType, slot: CustomSlot): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    this.settings.set(CUSTOM_KEY(type), slot as unknown as SettingValue);
+    return true;
+  }
+
+  /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
+  customSheet(): string {
+    const per: Record<string, CustomValues> = {};
+    for (const t of customizableTypes()) {
+      const id = (this.getState().active as Record<string, string | undefined>)[t];
+      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+    }
+    return customizeSheet(per);
   }
 
   applyTo(el: HTMLElement) {

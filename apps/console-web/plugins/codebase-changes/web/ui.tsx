@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
@@ -58,7 +58,7 @@ export function ChangesBanner() {
   return (
     <div className={`axp-codebase-changes-banner${failed ? ' is-failed' : ''}`} role="status" aria-live="polite">
       <div className="axp-codebase-changes-banner__row">
-        <span className="axp-codebase-changes-banner__icon" aria-hidden><Icon name="branch" size={18} /></span>
+        <BannerIcon className="axp-codebase-changes-banner__icon" icon="branch" working={running > 0 || !!s.busy} />
         <button type="button" data-fx-row className="axp-codebase-changes-banner__main" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-codebase-changes-banner__top">
             <strong>{n} codebase change{n === 1 ? '' : 's'}</strong>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Markdown, Note, SelectField, Switch, TextField, useRuntime, BannerIcon } from '@console/axf/react';
 import { InstallerDialog } from './installer';
 import {
   type ClaudeAi, type ClaudeItem, type Config, ago, api, dismissReminder, publish, refresh, set, until, useStore,
@@ -22,7 +22,7 @@ export function HandoffBanner() {
   if (!r?.open || s.bannerHidden) return null;
   return (
     <div className="axp-claude-handoff-banner" role="status" aria-live="polite">
-      <span className="axp-claude-handoff-banner__icon" aria-hidden><Icon name="rocket" size={18} /></span>
+      <BannerIcon className="axp-claude-handoff-banner__icon" icon="rocket" working={!!s.busy} />
       <button type="button" data-fx-row className="axp-claude-handoff-banner__main" onClick={() => rt.navigate('claude-handoff')}>
         <strong>Refresh the Claude handoff kit</strong>
         <span className="axp-claude-handoff-banner__lead">{r.reason || `Due every ${r.everyHours} hours.`}</span>

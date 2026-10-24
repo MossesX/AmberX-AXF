@@ -11,7 +11,7 @@
  * plugin removes every trace of it.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Icon, Switch, useRuntime } from '@console/axf/react';
+import { Button, Icon, ModelBadge, Switch, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { post } from '@console/api';
 import { bundledPlugins, fetchPluginStatus, PLUGINS_CHANGED, type PluginStatus } from '@console/plugins';
@@ -24,13 +24,15 @@ const ID = 'ai.amberx.axf.console.plugin-switches';
 const FOLDER = 'plugin-switches';
 const DIALOG = 'plugin-switches';
 
-interface Row { folder: string; name: string; description: string; enabled: boolean; problem: string | null; provides: string[]; requires: string[] }
+interface Row { folder: string; name: string; description: string; enabled: boolean; problem: string | null; provides: string[]; requires: string[]; model?: string }
 
 /** What the manifests say a plugin provides and requires (capability services only, e.g. service:axf.llm@1). */
-function capabilities(folder: string): { provides: string[]; requires: string[] } {
+function capabilities(folder: string): { provides: string[]; requires: string[]; model?: string } {
   const m = bundledPlugins.find((p) => p.folder === folder)?.manifest as { provides?: string[]; requires?: string[] } | undefined;
   const svc = (xs?: string[]) => (xs ?? []).filter((x) => x.startsWith('service:'));
-  return { provides: svc(m?.provides), requires: svc(m?.requires) };
+  // the model that built it (plugin@1 builtWith): a badge on its row
+  const model = bundledPlugins.find((p) => p.folder === folder)?.manifest.builtWith?.model;
+  return { provides: svc(m?.provides), requires: svc(m?.requires), ...(model ? { model } : {}) };
 }
 
 function toRows(status: PluginStatus[] | null): Row[] {
@@ -129,7 +131,7 @@ function SwitchList() {
           return (
             <li key={r.folder} className={`axp-plugin-switches__row ${self ? 'is-self' : ''} ${r.enabled ? 'is-active' : ''}`}>
               <div className="axp-plugin-switches__text">
-                <span className="axp-plugin-switches__name">{r.name}</span>
+                <span className="axp-plugin-switches__name">{r.name} <ModelBadge model={r.model} compact /></span>
                 {self && <span className="axp-plugin-switches__note">This list — turn it off in the Plugin Manager</span>}
                 {!self && r.problem && <span className="axp-plugin-switches__note is-error">{r.problem}</span>}
                 {!self && missing.length > 0 && <span className="axp-plugin-switches__note is-warn">Needs {missing.map(serviceName).join(', ')}</span>}

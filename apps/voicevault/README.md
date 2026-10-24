@@ -22,6 +22,10 @@ Voice-driven password vault for Android, built on **AmberX AXF 0.2.0** (`android
 - Wrong unlock codes and PINs lock out with a doubling delay that survives restarts. "Right away" auto-lock locks the moment the app leaves the screen.
 - Known limits: anyone who hears the unlock code can say it (use the fingerprint or PIN step); the fingerprint gates the app, the data key itself doesn't require it yet (`axf.lock.keybound` placeholder); if the app is killed before the clipboard timer, the copied password stays until something else is copied (a system-scheduled clear isn't built yet); listening happens only while the app is open (no always-on wake word yet).
 
+## Voice notes
+
+Voice Vault is also the listener for the Dev Console's **Voice notes** setup (Settings → Plugins → Voice notes, kept on axHub). Sign in to axHub once (Settings → Voice notes → Sign in to axHub), then say a start trigger ("take a note"), wait for the beep, say the note and end it with the stop trigger ("stop note", cut from the text). It asks where to store it: say a list's number or name, or "give me the list of lists" to hear them. Lists can ask for a subcategory and their own questions (always, or opened by a number or a phrase). The note is saved to axHub (table `notes` in `voice-notes`) and read back. It works in the background (screen off too) next to the global trigger, with the vault locked; it never reads or sends anything from the vault, recognises speech on the phone and sends only the note's text and answers (no recording is kept). Screen: **Voice notes**. Code: `app/src/main/kotlin/.../notes/`, test `NotesRulesTest`.
+
 ## Build
 
 ```bash
