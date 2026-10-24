@@ -26,6 +26,12 @@ export interface PluginManifest {
   enabledByDefault?: boolean;
   /** can a host app (Patches) add this plugin to its tab group? false (default) | true (its first page) | {view, label?, icon?} */
   tabable?: boolean | { view: string; label?: string; icon?: string };
+  /** the model that built it (plugin@1 builtWith, Oct 23 2026) */
+  builtWith?: { model: string; builtAt?: string; rebuildOf?: string; replacedBy?: string; replaces?: string[] };
+  /** where its primary UI opens by default (main / window / dialog / tab), false = no UI to place */
+  opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
+  /** which UI moves (view:<id> / dialog:<id>) */
+  opensUi?: string;
 }
 
 export interface BundledPlugin {
@@ -106,8 +112,12 @@ export function pluginTab(p: BundledPlugin): EmbedPluginTab | null {
 export function pluginReport(status: PluginStatus[] | null): EmbedPlugin[] {
   const on = new Set(enabledPlugins(status));
   return bundledPlugins.filter((p) => p.library).map((p) => {
-    const tab = pluginTab(p);
-    return { id: p.manifest.id, name: p.manifest.name, ...(p.manifest.version ? { version: p.manifest.version } : {}), on: on.has(p), ...(tab ? { tab } : {}) };
+    const t = pluginTab(p);
+    // its own settings tab rides along, so a host (Patches) can give that plugin tab a settings tab of its own
+    const settings = p.library?.settingsTabs?.[0]?.id;
+    const tab = t && settings ? { ...t, settings } : t;
+    const model = p.manifest.builtWith?.model;
+    return { id: p.manifest.id, name: p.manifest.name, ...(p.manifest.version ? { version: p.manifest.version } : {}), on: on.has(p), ...(tab ? { tab } : {}), ...(model ? { model } : {}) };
   });
 }
 

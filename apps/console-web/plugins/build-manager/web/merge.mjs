@@ -9,7 +9,8 @@
  *   queueState build-queue@1 state: StepRecord.estimate? and StepRecord.steps?: [{text, estimate?, done?, doneAt?}].
  *   features   plan features (framework/plan/plan.json): unbuilt features no epic covers become "Plan" rows; epics
  *              are already queue steps. Optional `estimate` / `steps` on a feature are read the same way.
- *   helpers    { estimateMinutes, formatMinutes } from pending-core (one parser for every estimate string).
+ *   helpers    { estimateMinutes, formatMinutes } from pending-core (one parser for every estimate string), plus optional
+ *              cost(model, minutes) → USD | null (pending-core costForMinutes with the pricing file): rows get costLeft / costTotal.
  *
  * No double counting: one row per build. A pending item linked to a plan epic/feature (planId) wins over the queue
  * step or plan feature with that id (the row notes the queue position). Plan features linked to an epic belong to that
@@ -85,7 +86,9 @@ function readSteps(list, h) {
 export function timing(ownEstimate, steps, h) {
   const own = h.estimateMinutes(str(ownEstimate));
   const known = steps.map((s) => s.estimate).filter((n) => n != null);
-  const total = own ?? (known.length ? sum(known) : null);
+  // every step estimated → the steps added up win over the item's own figure (Oct 23 2026: the two disagreed)
+  const allSteps = steps.length > 0 && known.length === steps.length;
+  const total = allSteps ? sum(known) : own ?? (known.length ? sum(known) : null);
   const done = steps.filter((s) => s.done).length;
   let left = null;
   if (total != null) {
@@ -96,7 +99,7 @@ export function timing(ownEstimate, steps, h) {
   return {
     total, left, stepsDone: done, stepsTotal: steps.length,
     needsSplit: total != null && total > SPLIT_LIMIT_MIN && steps.length === 0,
-    estimateText: own != null ? str(ownEstimate).trim() : total != null ? h.formatMinutes(total) : '',
+    estimateText: own != null && !allSteps ? str(ownEstimate).trim() : total != null ? h.formatMinutes(total) : '',
   };
 }
 
@@ -213,17 +216,24 @@ export function buildRows({ pending = [], queue = null, queueState = null, featu
       ...goneOf(featuresBuilt((f.catalog ?? []).map((c) => byFeature.get(c)).filter(Boolean), 'everything it lists in the catalog is built') ?? completedBy(f.id)),
     });
   });
+  // Dollars, never tokens (Oct 23 2026): what the time left / the whole build costs on the row's model.
+  for (const r of rows) {
+    r.costLeft = h.cost && r.left != null ? h.cost(r.model, r.left) : null;
+    r.costTotal = h.cost && r.total != null ? h.cost(r.model, r.total) : null;
+  }
   return rows;
 }
 
 /** Time left per model (+ how many builds have no estimate), and the grand total. */
 export function totalsByModel(rows) {
-  const out = Object.fromEntries(MODELS.map((m) => [m, { left: 0, count: 0, noEstimate: 0, needsSplit: 0 }]));
-  const all = { left: 0, count: 0, noEstimate: 0, needsSplit: 0 };
+  const zero = () => ({ left: 0, cost: 0, count: 0, noEstimate: 0, needsSplit: 0 });
+  const out = Object.fromEntries(MODELS.map((m) => [m, zero()]));
+  const all = zero();
   for (const r of rows) {
-    for (const t of [out[r.model] ?? (out[r.model] = { left: 0, count: 0, noEstimate: 0, needsSplit: 0 }), all]) {
+    for (const t of [out[r.model] ?? (out[r.model] = zero()), all]) {
       t.count++;
       if (r.left == null) t.noEstimate++; else t.left += r.left;
+      if (r.costLeft != null) t.cost = Math.round((t.cost + r.costLeft) * 100) / 100;
       if (r.needsSplit) t.needsSplit++;
     }
   }

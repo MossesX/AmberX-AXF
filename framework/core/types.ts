@@ -3,6 +3,7 @@
  * Every UI component and schema-driven object is an *asset* wrapped in an
  * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
+import type { SettingsUi } from './engines/settingsui';
 
 // Same order as framework/schemas/asset-types.json (the Kotlin registry's order), so lists derived from it match across ports.
 export const ASSET_TYPES = [
@@ -13,6 +14,7 @@ export const ASSET_TYPES = [
   'toolbar',
   'nav-menu',
   'context-menu',
+  'tab-group',
   'dialog',
   'popup',
   'button',
@@ -35,11 +37,12 @@ export const ASSET_TYPES = [
   'spacer',
   'divider',
   'badge',
+  'settings',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -328,6 +331,17 @@ export interface GaugeData {
 }
 
 /** Progress meter control asset: how every progress bar looks (engines/components.ts meterStyle). */
+/** tab-group asset: how every tab row looks (page tabs + window tab bars). Engine tabGroupStyle (engines/components.ts). */
+export interface TabGroupData {
+  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain';
+  align: 'start' | 'center' | 'end' | 'stretch';
+  position?: 'top' | 'bottom';
+  density?: ChromeDensity;
+  overflow?: 'scroll' | 'wrap';
+  showIcons?: boolean;
+  divider?: boolean;
+}
+
 export interface MeterData {
   shape: 'bar' | 'segments' | 'steps' | 'line';
   /** bar height in px, 2–24 */
@@ -349,6 +363,9 @@ export interface ContainerData {
 }
 
 /* ---------- system ---------- */
+
+/** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
+export type SettingsData = Pick<SettingsUi, 'layout' | 'header' | 'search' | 'descriptions'> & Partial<Pick<SettingsUi, 'tabs' | 'hide' | 'groups'>>;
 
 export interface UACRole {
   id: string;
@@ -384,6 +401,7 @@ export interface AssetDataMap {
   slider: SliderData;
   gauge: GaugeData;
   meter: MeterData;
+  'tab-group': TabGroupData;
   container: ContainerData;
   banner: BannerData;
   clock: ClockData;
@@ -400,14 +418,15 @@ export interface AssetDataMap {
   spacer: SpacerData;
   divider: DividerData;
   badge: BadgeData;
+  settings: SettingsData;
   'uac-policy': UACPolicyData;
 }
 
 export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
-/** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter) may be absent from an app's manifest. */
+/** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'gauge' | 'meter';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

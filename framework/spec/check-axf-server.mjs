@@ -117,7 +117,7 @@ function wallFixture() {
 const b64 = (s) => Buffer.from(s, 'utf8').toString('base64');
 const file = (path, text) => ({ path, b64: b64(text) });
 const pilotManifest = { $axf: 'pilot-plugin@1', id: 'ai.amberx.pilot.extra-steps', name: 'Extra steps', version: '1.2.0' };
-const consoleManifest = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.hello-world', name: 'Hello world', version: '1.0.0' };
+const consoleManifest = { $axf: 'plugin@1', id: 'ai.amberx.axf.console.hello-world', name: 'Hello world', version: '1.0.0', builtWith: { model: 'opus', builtAt: '2026-10-23' } };
 
 function packageCases() {
   const pilot = (files, o = {}) => ({ $axf: 'plugin-package@1', kind: 'pilot', folder: 'extra-steps', files, ...o });
@@ -157,12 +157,12 @@ function packageCases() {
     ['plugin.json not an object', con([file('plugin.json', '[1,2]')])],
     ['wrong manifest tag for the kind', pilot([pf({ ...pilotManifest, $axf: 'plugin@1' }), file('web/x.ts', 'x')])],
     ['manifest tag missing', pilot([pf((({ $axf: _a, ...m }) => m)(pilotManifest)), file('web/x.ts', 'x')])],
-    ['bad id, empty name, bad version', con([cf({ $axf: 'plugin@1', id: 'Hello', name: '  ', version: '1.0' })])],
+    ['bad id, empty name, bad version', con([cf({ $axf: 'plugin@1', id: 'Hello', name: '  ', version: '1.0', builtWith: consoleManifest.builtWith })])],
     ['manifest folder differs', con([cf({ ...consoleManifest, folder: 'other' })])],
     ['package version differs from plugin.json', con([cf(), file('web/x.ts', 'x')], { version: '9.9.9' })],
     ['package id differs from plugin.json', con([cf(), file('web/x.ts', 'x')], { id: 'ai.amberx.other' })],
     ['malformed file entry (b64 with spaces)', con([cf(), { path: 'web/x.ts', b64: 'eA== ' }])],
-    ['several problems at once (all reported, in order)', con([cf({ $axf: 'plugin@1', id: 'x', name: 'n', version: 'v' }), file('../a', 'x'), file('.env', 'x')])],
+    ['several problems at once (all reported, in order)', con([cf({ $axf: 'plugin@1', id: 'x', name: 'n', version: 'v', builtWith: consoleManifest.builtWith }), file('../a', 'x'), file('.env', 'x')])],
     ['unknown kind', { $axf: 'plugin-package@1', kind: 'desktop', folder: 'hello-world', files: [cf()] }],
     ['kind missing', { $axf: 'plugin-package@1', folder: 'hello-world', files: [cf()] }],
     ['bad folder name', { $axf: 'plugin-package@1', kind: 'console', folder: 'Hello_World', files: [cf()] }],

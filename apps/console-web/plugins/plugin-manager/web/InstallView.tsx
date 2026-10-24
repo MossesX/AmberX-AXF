@@ -5,7 +5,7 @@
  * installed from those apps. Any console plugin in this clone can be published to the catalog.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, ModelBadge, Segmented, useRuntime } from '@console/axf/react';
 import { getToken, post } from '@console/api';
 import { PLUGINS_CHANGED } from '@console/plugins';
 import type { ViewProps } from './views';
@@ -13,7 +13,7 @@ import type { ViewProps } from './views';
 export interface CatalogItem {
   kind: string; folder: string; id: string; name: string; version: string; description?: string; author?: string;
   stacks?: string[]; requires?: string[]; provides?: string[]; bytes: number; files: number; publishedAt: string; publishedFrom?: string;
-  versions?: string[]; installed?: string | null; clash?: boolean; loaded?: boolean;
+  versions?: string[]; installed?: string | null; installedModel?: string | null; builtWith?: { model: string; builtAt?: string }; models?: Record<string, string>; clash?: boolean; loaded?: boolean;
 }
 interface CatalogList { reachable: boolean; updatedAt: string | null; kinds: Record<string, string>; items: CatalogItem[] }
 
@@ -115,6 +115,7 @@ export function InstallView({ inv, onChanged }: ViewProps) {
                 <div className="fx-row fx-row--wrap">
                   <strong>{it.name}</strong>
                   <span className="fx-muted fx-small">{it.version} · {it.folder}</span>
+                  <ModelBadge model={it.builtWith?.model} builtAt={it.builtWith?.builtAt} compact />
                   {kind === 'console' && (
                     state === 'current' ? <Chip tone="success">installed</Chip>
                       : state === 'update' ? <Chip tone="warning">{`installed ${it.installed}`}</Chip>

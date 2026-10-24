@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -14,14 +14,13 @@
     "banner:push-banner",
     "settings-tab:push-banner"
   ],
-  "optional": [],
+  "optional": ["service:axf.activity@1"],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
+  "banner": ["push-banner"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -33,5 +32,6 @@
       "CLAUDE.md",
       "apps/console-web/plugins/README.md"
     ]
-  }
+  },
+  "opens": false
 }

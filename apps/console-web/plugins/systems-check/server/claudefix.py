@@ -97,7 +97,7 @@ def launch_command(text: str, cid: str, change_id: str, shell: bool, model: str 
     ])
 
 
-MAX_COMMAND = 3400  # axHub's ssh run refuses commands over 3500 characters (approvals must stay readable)
+MAX_COMMAND = 6800  # axHub's ssh run refuses commands over 7000 characters (doubled Oct 23 2026; approvals must stay readable)
 
 
 def fitted_command(check: dict[str, Any], failure: str, cid: str, change_id: str, shell: bool) -> str:

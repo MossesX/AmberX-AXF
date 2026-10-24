@@ -20,6 +20,9 @@ import ai.amberx.axf.voice.VoiceTriggersScreen
 import ai.amberx.axf.voicevault.views.HomeView
 import ai.amberx.axf.voicevault.views.UnlockCodeView
 import ai.amberx.axf.voicevault.views.VaultListView
+import ai.amberx.axf.voicevault.views.VoiceNotesSignInView
+import ai.amberx.axf.voicevault.views.VoiceNotesView
+import ai.amberx.axf.voicevault.views.HubSyncView
 
 /**
  * The single activity. Screens are kept out of screenshots and the recents preview (`android.secureWindow` in
@@ -50,7 +53,7 @@ class MainActivity : AxfActivity() {
             val prefs = getSharedPreferences("voicevault.ui", MODE_PRIVATE)
             if (!prefs.getBoolean("askedNotifications", false)) { prefs.edit().putBoolean("askedNotifications", true).apply(); askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS) }
         }
-        WakeListener.ensureRunning(this, session.backgroundOn)
+        WakeListener.ensureRunning(this, session.backgroundOn || (application as App).appModule.notes.listenOn)
     }
 
     /** Opened by the global trigger: wake the screen, ask Android to unlock the phone (never shown over the lock screen), go to Voice. */
@@ -75,8 +78,12 @@ class MainActivity : AxfActivity() {
                 "vault" to { VaultListView() },
                 "voice-triggers" to { VoiceTriggersScreen() },
                 "unlock-code" to { UnlockCodeView() },
+                "voice-notes" to { VoiceNotesView() },
+                "voice-notes-hub" to { VoiceNotesSignInView() },
+                "hub-sync" to { HubSyncView() },
             ),
-            viewGuard = { id, content -> if (id == "home") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },
+            // Voice and voice notes work with the vault locked (notes never touch it); everything else needs it open.
+            viewGuard = { id, content -> if (id == "home" || id == "voice-notes" || id == "voice-notes-hub" || id == "hub-sync") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },
         )
     }
 }

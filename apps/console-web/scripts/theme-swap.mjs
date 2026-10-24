@@ -47,8 +47,17 @@ try {
   }
   await page.waitForTimeout(500);
 
-  const selects = page.locator('select');
-  const valuesOf = (i) => selects.nth(i).locator('option').evaluateAll((o) => o.map((x) => x.value));
+  // Settings → Appearance → Assets puts each slot's picker in its own collapsible card (Oct 24 2026): open the colour
+  // and style theme cards and use the picker inside each (the slot's first drop-down), not "the first select on the page".
+  const slotPicker = async (type) => {
+    const card = page.locator(`[data-axf-anchor="settings-slot:${type}"]`);
+    if (!(await card.count())) return page.locator('select').filter({ has: page.locator(`option[value="${type === 'color-theme' ? 'arctic-daylight' : 'glass-orbit'}"]`) }).first();
+    const toggle = card.locator('.fx-card__toggle').first();
+    if ((await toggle.count()) && (await toggle.getAttribute('aria-expanded')) === 'false') { await toggle.click(); await page.waitForTimeout(300); }
+    return card.locator('select').first();
+  };
+  const pickers = [await slotPicker('color-theme'), await slotPicker('style-theme')];
+  const valuesOf = (i) => pickers[i].locator('option').evaluateAll((o) => o.map((x) => x.value));
   const snapshot = () => page.evaluate(() => {
     const out = {};
     [...document.querySelectorAll('body *')].forEach((e, i) => {
@@ -66,7 +75,7 @@ try {
   const colourThemes = await valuesOf(0);
   const snaps = [];
   for (const t of colourThemes) {
-    await selects.first().selectOption(t);
+    await pickers[0].selectOption(t);
     await page.waitForTimeout(400);
     snaps.push(await snapshot());
   }
@@ -82,15 +91,14 @@ try {
   for (const s of stuck.slice(0, 40)) log(`  ✗ ${s}`);
   if (stuck.length) failed = true;
 
-  let styleSelect = -1;
-  for (let i = 0; i < (await selects.count()); i += 1) if ((await valuesOf(i)).includes('glass-orbit')) styleSelect = i;
+  const styleSelect = (await pickers[1].count()) && (await valuesOf(1)).includes('glass-orbit') ? 1 : -1;
   if (styleSelect < 0) {
     log('✗ no style-theme picker found');
     failed = true;
   } else {
     const seen = new Set();
     for (const st of await valuesOf(styleSelect)) {
-      await selects.nth(styleSelect).selectOption(st);
+      await pickers[styleSelect].selectOption(st);
       await page.waitForTimeout(300);
       const vals = await page.evaluate(() => ['disabled', 'muted', 'hover', 'tint', 'scrim', 'glass'].map((k) => getComputedStyle(document.documentElement).getPropertyValue(`--fx-opacity-${k}`).trim()));
       log(`style theme ${st}: opacity ${vals.join(' / ')}`);

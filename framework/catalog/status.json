@@ -801,7 +801,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-ui",
-    "notes": "Schema \u2192 form for settings kinds; conditional fields and wizards are wave 2."
+    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
   },
   "ui.dyn": {
     "status": "placeholder",
@@ -2107,7 +2107,7 @@
     "status": "built",
     "wave": 1,
     "module": "lib-mcp",
-    "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) \u2014 Oct 20 2026, Fable"
+    "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
   },
   "k.roll": {
     "status": "built",
@@ -2160,6 +2160,18 @@
     "wave": 3,
     "module": "lib-hub",
     "notes": "Capability placeholder axf.hub.push"
+  },
+  "lib.hubstore": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-hubstore",
+    "notes": "Oct 23 2026 (Opus): web framework/libs/hubstore (HubSettings + HubData, parts settings/data with table picking), check-hubstore.mts; Voice notes console plugin is the first user. Android twin deferred (Android on hold)."
+  },
+  "lib.hubstore.live": {
+    "status": "placeholder",
+    "wave": 3,
+    "module": "lib-hubstore",
+    "notes": "Capability placeholder axf.hubstore.live"
   },
   "lib.notifications": {
     "status": "built",
@@ -2250,5 +2262,11 @@
     "wave": 3,
     "module": "apps/patches",
     "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)"
+  },
+  "lib.hubsync": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-hubsync",
+    "notes": "Oct 24 2026 (Opus): web framework/libs/hubsync on lib-hubstore + HubAppearanceSource; console plugin hub-sync; Voice Vault twin in app code (sync/HubSync.kt). Framework Android module deferred (Android on hold)."
   }
 }

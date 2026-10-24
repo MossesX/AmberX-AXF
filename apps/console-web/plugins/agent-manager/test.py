@@ -111,7 +111,12 @@ check(len(fixture["validation"]) >= 30 and all(k in fixture for k in ("bm25", "c
 ci = c.get("/am/contract").json()
 check(ci["$axf"] == "agent-definition@1" and "container_write" in ci["builtins"] and ci["limits"]["delegationDepth"] == 3, "GET /contract describes the format for other apps")
 st = c.get("/am/status").json()
-check(st["llm"]["source"] == "assistant" and st["addons"]["available"] == 3, "status: uses axf.llm@1 and sees 3 bundled add-ons")
+check(st["llm"]["source"] == "assistant" and st["addons"]["available"] == 4, "status: uses axf.llm@1 and sees 4 bundled add-ons")
+vin = svc.get_agent("vinny") if (svc := plugin_services.get("axf.agents@1")) else None
+check(vin and any(t["name"] == "axhub_call" for t in vin["tools"]) and "vinny" in am.store.dangerous_agents() and "oauthAccount.emailAddress" in vin["system_prompt"], "Vinny is installed once on start, allowed axhub_call (root through axHub), with the retrieve-email skill")
+post("addons/vinny/uninstall")
+am._offer_vinny()
+check("vinny" not in am.store.addon_records(), "…and an uninstall is respected on the next start")
 check(st["contract"] == "agent-definition@1" and st["version"] == "0.2.0" and "container_write" in st["dangerousBuiltins"] and st["services"] == {"containers": False, "snapshots": False}, "status: contract, dangerous builtins, services")
 v = c.post("/am/validate/agents", json={"name": "Dry", "lingoIds": ["nope"], "memory": {"type": "graph"}}).json()
 check(not v["ok"] and v["errors"] == ["memory type must be one of none, buffer, summary, keyword, vector, hybrid"] and v["warnings"] == ["dropped unknown lingo pack nope"] and not c.get("/am/c/agents").json()["items"], "POST /validate dry-runs the contract and saves nothing")
@@ -454,7 +459,8 @@ def rpc(sid, method, params, t):
 check(ht.follow_job(rpc, "s0", JID, 60, reinit=lambda: "s9", poll_s=0) == "exit 0", "the job is followed (new session on 404) to its output")
 # Approved shell runs are kept for the terminal (axf.hub-runs@1): only after an approval, only shell tools
 hr = ht.HubRuns()  # the service object itself (an earlier check withdraws the plugin's services on purpose)
-t0 = int(time.time() * 1000) - 1
+# after every run earlier checks logged (one may share this millisecond, so "now - 1" alone was flaky in CI)
+t0 = max([int(r.get("at") or 0) for r in hr.runs(0)] + [int(time.time() * 1000) - 1])
 ht.run({"tool": "vps.run", "arguments": {"command": "uptime"}, "wait": False}, {}, call=hub(["ok"]))
 check(hr.runs(t0) == [], "a command that ran without an approval isn't logged")
 ht.run({"tool": "vps.check", "arguments": {"name": "disk"}, "confirmation_id": "11111111-2222-3333-4444-555555555555", "wait": False}, {}, call=hub(["ok"]))

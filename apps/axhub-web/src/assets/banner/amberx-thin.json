@@ -4,7 +4,7 @@
   "id": "amberx-thin",
   "name": "AmberX thin",
   "version": "1.0.0",
-  "description": "Thin permanent bar across the top: the AmberX logo on the left, a clock on the right, search in the middle. Plugins attach badges to it.",
+  "description": "Thin permanent bar across the top: the AmberX logo on the left, a day/night switch and a clock on the right, search in the middle. Plugins attach badges to it.",
   "author": "AmberX AXF",
   "tags": [
     "banner",
@@ -22,6 +22,11 @@
         "type": "search-bar",
         "id": "everything",
         "at": "center"
+      },
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "right"
       },
       {
         "type": "clock",

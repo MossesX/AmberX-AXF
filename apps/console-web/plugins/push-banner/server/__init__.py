@@ -23,8 +23,9 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     e.g. main was pulled in) hide it until it gets a new commit ("<key>@<sha>")
     GET  /config | PUT /config      {repos: [owner/name …], hidden: ["owner/name:branch" | "owner/name:#N", optionally
                                     "@<head sha>" = hidden only while that is its newest commit …], claudeOnFail, claudeShell}
+    POST /failed/remove {key}       take a failed Pull main in off the banner's "Pull failed" group
     GET  /claude                    the hand-overs to headless Claude Code on the VPS (state, approval, entry id)
-    POST /claude {repo, number | branch, confirm}
+    POST /claude {repo, number | branch, confirm, repair?}   (repair: true = the Repair badge, works with the setting off)
                                     Fix with Claude by hand (setting on; skips the 6 h cooldown, never a running one)
 
 Claude on failure (server/claudefix.py, setting claudeOnFail, off): a Pull main in that hits conflicts or a Merge that
@@ -73,6 +74,7 @@ TEXT_MAX = 200
 SHA_RE = re.compile(r"[0-9a-f]{6,40}\Z")
 MAX_DONE = 100
 DONE_KEEP_S = 7 * 24 * 3600
+MAX_FAILED = 100
 
 
 def is_hidden(hidden: set[str], key: str, sha: str = "") -> bool:
@@ -124,6 +126,15 @@ def ci_state(runs: list[dict[str, Any]]) -> str:
     if any(r.get("conclusion") in bad for r in runs):
         return "failure"
     return "success"
+
+
+def failed_key(body: Any) -> str:
+    """The banner key of a Pull main in request ("" when it doesn't name a PR or a branch properly)."""
+    if not isinstance(body, dict) or not github.valid_repo(str(body.get("repo", ""))):
+        return ""
+    n, b = body.get("number"), body.get("branch")
+    key = f"{body['repo']}:#{n}" if isinstance(n, int) and not isinstance(n, bool) and n > 0 else f"{body['repo']}:{b}" if valid_branch(b) else ""
+    return key if key and valid_hidden(key) else ""
 
 
 class Pushes:
@@ -286,7 +297,7 @@ class Pushes:
         with self._lock:
             cached = self._cache[2] if not force and self._cache and self._cache[1] == key and now - self._cache[0] < CACHE_S else None
         if cached is not None:
-            return {**cached, "done": self.done()}
+            return {**cached, "done": self.done(), "failed": self.failed()}
         if not (self.token() or "").strip():
             out = {"checkedAt": int(now * 1000), "repos": [], "error": "GITHUB_TOKEN isn't set on the console server"}  # done comes below
         else:
@@ -295,7 +306,7 @@ class Pushes:
             out = {"checkedAt": int(now * 1000), "cacheS": CACHE_S, "repos": [self._repo(gh, r, hidden) for r in cfg["repos"]], "error": ""}
         with self._lock:
             self._cache = (now, key, out)
-        return {**out, "done": self.done()}
+        return {**out, "done": self.done(), "failed": self.failed()}
 
     # ---- finished entries (a successful Merge / Pull main in), until their trash can is tapped
     def done(self) -> list[dict[str, Any]]:
@@ -313,6 +324,28 @@ class Pushes:
             items = [d for d in self.done() if d["key"] != entry["key"]]
             items.insert(0, {**entry, "at": int(self.clock() * 1000)})
             storage.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items[:MAX_DONE]})
+
+    # ---- failed pulls (any Pull main in / Pull all that GitHub refused), until a pull goes through or they're taken off
+    def failed(self) -> list[dict[str, Any]]:
+        raw = storage.read_json(data_dir() / "failed.json", {}) or {}
+        items = raw.get("items") if isinstance(raw, dict) else None
+        now = self.clock()
+        return [{k: d[k] for k in ("key", "at", "repo", "base", "number", "branch", "title", "error") if k in d}
+                for d in (items if isinstance(items, list) else [])
+                if isinstance(d, dict) and isinstance(d.get("key"), str) and isinstance(d.get("at"), (int, float)) and now - d["at"] / 1000 < DONE_KEEP_S][:MAX_FAILED]
+
+    def _set_failed(self, key: str, entry: dict[str, Any] | None) -> None:
+        with self._lock:
+            items = [d for d in self.failed() if d["key"] != key]
+            if entry is not None:
+                items.insert(0, {**entry, "key": key, "at": int(self.clock() * 1000)})
+            storage.write_json(data_dir() / "failed.json", {"$axf": "push-banner-failed@1", "items": items[:MAX_FAILED]})
+
+    def remove_failed(self, body: Any) -> dict[str, Any]:
+        if not isinstance(body, dict) or set(body) != {"key"} or not isinstance(body["key"], str) or not valid_hidden(body["key"]) or "@" in body["key"]:
+            raise HTTPException(400, "send {key: owner/name:branch | owner/name:#N}")
+        self._set_failed(body["key"], None)
+        return {"ok": True}
 
     def remove_done(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"key", "sha"} or not isinstance(body.get("key"), str) or not valid_hidden(body["key"]) or "@" in body["key"]:
@@ -507,6 +540,21 @@ class Pushes:
         return {"merged": merged, "number": number, "url": url}
 
     def update(self, body: Any) -> dict[str, Any]:
+        """Pull main in; a pull GitHub refuses (or can't be done) goes to the "Pull failed" group, one that works leaves it."""
+        try:
+            out = self._update(body)
+        except HTTPException as e:
+            if e.status_code in (409, 502) and isinstance(body, dict):
+                key = failed_key(body)
+                if key:
+                    self._set_failed(key, {"repo": body["repo"], "number": body.get("number"), "branch": body.get("branch") or "", "error": _text(e.detail, 300)})
+            raise
+        key = failed_key(body)
+        if key and any(d["key"] == key for d in self.failed()):
+            self._set_failed(key, None)
+        return out
+
+    def _update(self, body: Any) -> dict[str, Any]:
         """Pull the default branch into a branch behind it (never touches the default branch itself)."""
         if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm"}:
             raise HTTPException(400, "send {repo, number | branch, confirm}")
@@ -579,9 +627,13 @@ class Pushes:
 
     def claude_fix(self, body: Any) -> dict[str, Any]:
         """Fix with Claude by hand: any watched PR or branch (not a fork, never the default branch)."""
-        if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm"}:
-            raise HTTPException(400, "send {repo, number | branch, confirm}")
-        if not self.config()["claudeOnFail"]:
+        if not isinstance(body, dict) or set(body) - {"repo", "number", "branch", "confirm", "repair", "rest"}:
+            raise HTTPException(400, "send {repo, number | branch, confirm, repair?, rest?}")
+        repair = body.get("repair") is True
+        rest = body.get("rest", [])  # Pull all stopped here: the other branches of this repo the session pulls main into too
+        if not isinstance(rest, list) or len(rest) > 20 or not all(valid_branch(b) for b in rest) or (rest and not repair):
+            raise HTTPException(400, "rest is a list of up to 20 branch names (with repair: true)")  # the Repair badge on a failed pull: asked for by hand, so the setting isn't needed
+        if not repair and not self.config()["claudeOnFail"]:
             raise HTTPException(409, "Turn on “Hand failures to Claude Code” in Settings → Plugins → Push banner first")
         repo, number, branch = body.get("repo"), body.get("number"), body.get("branch")
         if repo not in self.config()["repos"]:
@@ -609,7 +661,12 @@ class Pushes:
             raise HTTPException(502, _text(str(e))) from None
         if not task.get("branch") or task["branch"] == task["base"]:
             raise HTTPException(400, "forks and the default branch can't be handed over")
-        job = CLAUDE.maybe_launch(task, force=True)
+        if repair:
+            task = {**task, "kind": "conflict", "action": "pull main in", "failure": "the banner's Pull main in failed; Brett tapped Repair",
+                    "rest": [b for b in dict.fromkeys(rest) if b not in (task["branch"], task["base"])]}
+            if rest:
+                task["failure"] = "the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session"
+        job = CLAUDE.maybe_launch(task, force=True, by_hand=repair)
         if not job:
             raise HTTPException(400, "that can't be handed over")
         return {"job": job}
@@ -624,24 +681,52 @@ def branches(refresh: bool = False) -> dict[str, Any]:
     return PUSHES.branches(force=refresh)
 
 
+def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]]) -> dict[str, Any]:
+    """Runs one push / pull / merge and shows it in the Activity banner while it runs (axf.activity@1, optional:
+    without the Activity plugin it just runs)."""
+    act = claudefix.plugin_services.get("axf.activity@1")
+    b = body if isinstance(body, dict) else {}
+    what = str(b.get("repo") or "")[:140] + (f" #{b['number']}" if b.get("number") else f" · {str(b.get('branch'))[:120]}" if b.get("branch") else "")
+    iid = f"push-banner:{kind}:{int(time.time() * 1000)}"
+    if act:
+        try:
+            act.report({"id": iid, "kind": kind, "source": "git", "title": f"{verb} {what}".strip(), "state": "running",
+                        "url": f"https://github.com/{b['repo']}" if github.valid_repo(str(b.get("repo") or "")) else None}, "push-banner")
+        except Exception:  # noqa: BLE001 — the banner never blocks the work
+            act = None
+    try:
+        out = fn(body)
+    except HTTPException as e:
+        if act:
+            act.finish(iid, "failed", str(e.detail)[:300])
+        raise
+    except Exception as e:
+        if act:
+            act.finish(iid, "failed", str(e)[:300])
+        raise
+    if act:
+        act.finish(iid, "done", None)
+    return out
+
+
 @router.post("/pr")
 def open_pr(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.open_pr(body)
+    return _tracked("push", "Open pull request", body, PUSHES.open_pr)
 
 
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.merge(body)
+    return _tracked("merge", "Merge", body, PUSHES.merge)
 
 
 @router.post("/merge-branch")
 def merge_branch(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.merge_branch(body)
+    return _tracked("merge", "Merge", body, PUSHES.merge_branch)
 
 
 @router.post("/update")
 def update(body: Any = Body(None)) -> dict[str, Any]:
-    return PUSHES.update(body)
+    return _tracked("pull", "Pull main into", body, PUSHES.update)
 
 
 @router.get("/detail")
@@ -652,6 +737,11 @@ def detail(repo: str, number: int | None = None, branch: str | None = None) -> d
 @router.post("/done/remove")
 def remove_done(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.remove_done(body)
+
+
+@router.post("/failed/remove")
+def remove_failed(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.remove_failed(body)
 
 
 @router.get("/claude")

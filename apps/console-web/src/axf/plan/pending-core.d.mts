@@ -41,6 +41,15 @@ export function estimateMinutes(text: unknown): number | null;
 export function formatMinutes(min: number | null | undefined): string;
 /** The item's own estimate, else its sub prompts' added up, else ''. */
 export function itemEstimate(it: PendingItem): string;
+/** Build time in minutes: every step estimated → the steps added up; else its own estimate; null when nothing gives one. */
+export function entryMinutes(entry: { estimate?: string; subPrompts?: { estimate?: string }[]; steps?: { estimate?: string }[] }): number | null;
+export interface PricingDoc { models?: Record<string, { input?: number; output?: number; cacheRead?: number; cacheWrite?: number }>; heuristic?: { tokensPerMinute?: { input?: number; output?: number; cacheRead?: number; cacheWrite?: number } } }
+/** USD of one working minute on a model (model-pricing.json heuristic), null without a price. */
+export function minuteCostUsd(model: string, pricing: PricingDoc | unknown): number | null;
+/** USD for `minutes` on a model, rounded to cents; null without a price or a time. */
+export function costForMinutes(model: string, minutes: number | null | undefined, pricing: PricingDoc | unknown): number | null;
+/** "$0.84", "$23", "$1,234"; '' for null. */
+export function formatUsd(v: number | null | undefined): string;
 
 /** Small steps for big builds (Oct 21 2026): builds over this many minutes are split into steps of at most this many. */
 export const SPLIT_LIMIT_MINUTES: number;

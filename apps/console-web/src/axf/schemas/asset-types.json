@@ -305,6 +305,53 @@
       },
       "hideable": true
     },
+    "tab-group": {
+      "label": "Tab group",
+      "group": "Navigation",
+      "icon": "layers",
+      "description": "How every tab row looks: page tabs (.fx-tabs) and the tab bars of floating-window tab groups. Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen.",
+      "required": [
+        "style",
+        "align"
+      ],
+      "enums": {
+        "style": [
+          "underline",
+          "pills",
+          "boxed",
+          "segmented",
+          "plain"
+        ],
+        "align": [
+          "start",
+          "center",
+          "end",
+          "stretch"
+        ],
+        "position": [
+          "top",
+          "bottom"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "overflow": [
+          "scroll",
+          "wrap"
+        ]
+      },
+      "optional_fields": {
+        "position": "top (default) | bottom — where a window tab group's bar sits",
+        "density": "compact | regular (default) | roomy — tab padding",
+        "overflow": "scroll (default) | wrap — what a row does when its tabs don't fit",
+        "showIcons": "boolean, default true",
+        "divider": "boolean, default true — the rule under the row"
+      },
+      "hideable": true,
+      "optional": true
+    },
     "dialog": {
       "label": "Dialog",
       "group": "Overlays",
@@ -1012,6 +1059,35 @@
         "tooltip": "string — shown on hover/long-press",
         "link": "string — action spec run on tap (e.g. settings.open:x)"
       }
+    },
+    "settings": {
+      "label": "Settings interface",
+      "group": "System",
+      "icon": "settings",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active. Engine core/engines/settingsui.ts.",
+      "required": [
+        "layout",
+        "header",
+        "search",
+        "descriptions"
+      ],
+      "enums": {
+        "layout": [
+          "tabs-top",
+          "tabs-side",
+          "list"
+        ],
+        "header": [
+          "full",
+          "compact",
+          "none"
+        ]
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
     },
     "uac-policy": {
       "label": "User account control",

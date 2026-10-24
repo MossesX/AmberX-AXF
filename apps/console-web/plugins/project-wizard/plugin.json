@@ -11,5 +11,8 @@
   "provides": ["view:project-wizard", "settings-tab:project-wizard"],
   "scopes": ["ROUTES", "FILES", "NETWORK"],
   "enabledByDefault": true,
-  "tabable": false
+  "banner": false,
+  "tabable": false,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "opens": "main"
 }

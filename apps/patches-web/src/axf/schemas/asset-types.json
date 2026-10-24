@@ -1013,6 +1013,35 @@
         "link": "string — action spec run on tap (e.g. settings.open:x)"
       }
     },
+    "settings": {
+      "label": "Settings interface",
+      "group": "System",
+      "icon": "settings",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active. Engine core/engines/settingsui.ts.",
+      "required": [
+        "layout",
+        "header",
+        "search",
+        "descriptions"
+      ],
+      "enums": {
+        "layout": [
+          "tabs-top",
+          "tabs-side",
+          "list"
+        ],
+        "header": [
+          "full",
+          "compact",
+          "none"
+        ]
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",
