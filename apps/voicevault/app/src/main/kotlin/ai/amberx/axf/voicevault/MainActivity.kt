@@ -22,6 +22,7 @@ import ai.amberx.axf.voicevault.views.UnlockCodeView
 import ai.amberx.axf.voicevault.views.VaultListView
 import ai.amberx.axf.voicevault.views.VoiceNotesSignInView
 import ai.amberx.axf.voicevault.views.VoiceNotesView
+import ai.amberx.axf.voicevault.views.HubSyncView
 
 /**
  * The single activity. Screens are kept out of screenshots and the recents preview (`android.secureWindow` in
@@ -79,9 +80,10 @@ class MainActivity : AxfActivity() {
                 "unlock-code" to { UnlockCodeView() },
                 "voice-notes" to { VoiceNotesView() },
                 "voice-notes-hub" to { VoiceNotesSignInView() },
+                "hub-sync" to { HubSyncView() },
             ),
             // Voice and voice notes work with the vault locked (notes never touch it); everything else needs it open.
-            viewGuard = { id, content -> if (id == "home" || id == "voice-notes" || id == "voice-notes-hub") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },
+            viewGuard = { id, content -> if (id == "home" || id == "voice-notes" || id == "voice-notes-hub" || id == "hub-sync") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },
         )
     }
 }

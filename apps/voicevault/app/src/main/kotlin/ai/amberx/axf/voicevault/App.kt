@@ -12,6 +12,7 @@ import ai.amberx.axf.data.DataModule
 import ai.amberx.axf.settings.SettingsModule
 import ai.amberx.axf.ui.windows.WindowsModule
 import ai.amberx.axf.voice.VoiceModule
+import ai.amberx.axf.voicevault.sync.HubSyncModule
 
 /**
  * Voice Vault — builds the kernel from app/src/main/assets/axf (manifest + assets) and these modules.
@@ -30,5 +31,7 @@ class App : AxfApplication() {
             pinNeeded = "Set a PIN first, then choose Voice code + PIN.",
         )),
         appModule,
+        // axHub sync: same look + settings as every other app and device (sync/HubSync.kt, twin of framework/libs/hubsync)
+        HubSyncModule(appScope),
     )
 }

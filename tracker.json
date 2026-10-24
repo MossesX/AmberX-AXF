@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-23T22:53:36.346Z",
+  "generatedAt": "2026-10-24T15:04:25.214Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -12,11 +12,11 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 82,
+      "built": 83,
       "partial": 11,
       "placeholder": 91,
       "planned": 0,
-      "total": 184,
+      "total": 185,
       "coverage": 45
     },
     "console": {
@@ -2313,6 +2313,17 @@
       "wave": 3,
       "module": "lib-hub",
       "notes": "Capability placeholder axf.hub.push"
+    },
+    {
+      "id": "lib.hubsync",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "axHub sync library: one look, settings and data for every app and device; look always/follow/off, Settings screen values and app tables on axHub, settings interface to connect and configure",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-hubsync",
+      "notes": "Oct 24 2026 (Opus): web framework/libs/hubsync on lib-hubstore + HubAppearanceSource; console plugin hub-sync; Voice Vault twin in app code (sync/HubSync.kt). Framework Android module deferred (Android on hold)."
     },
     {
       "id": "lib.hubstore",
