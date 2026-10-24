@@ -6,6 +6,7 @@
   "toolbar": "standard-icons",
   "nav-menu": "sidebar-list",
   "context-menu": "compact-classic",
+  "tab-group": "underline",
   "dialog": "centered-modal",
   "popup": "corner-solid",
   "button": "rounded-solid",
