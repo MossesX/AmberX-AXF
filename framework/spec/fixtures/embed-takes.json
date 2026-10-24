@@ -149,6 +149,7 @@
           "toolbar",
           "nav-menu",
           "context-menu",
+          "tab-group",
           "banner"
         ],
         "page": "settings"
@@ -163,6 +164,7 @@
           "toolbar",
           "nav-menu",
           "context-menu",
+          "tab-group",
           "banner"
         ],
         "takes": [
@@ -287,6 +289,7 @@
           "toolbar",
           "nav-menu",
           "context-menu",
+          "tab-group",
           "banner"
         ],
         "takes": [
@@ -358,6 +361,7 @@
           "toolbar",
           "nav-menu",
           "context-menu",
+          "tab-group",
           "banner"
         ],
         "takes": [
@@ -3766,6 +3770,7 @@
           "toolbar",
           "nav-menu",
           "context-menu",
+          "tab-group",
           "banner"
         ],
         "takes": [

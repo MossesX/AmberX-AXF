@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { FixPanel, StatusDot, call, guidedOrder, isKeyIssue, issues, loadSystemCheck, useSys, type Check } from './SystemCheck';
 
 /*
@@ -21,7 +21,7 @@ export function KeysBanner() {
     return (
       <div className="axp-systems-check-banner is-warn is-min" role="alert">
         <div className="axp-systems-check-banner__row">
-          <Icon name="key" />
+          <BannerIcon icon="key" working={s.loading} size={20} />
           <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={false} onClick={() => setOpen(true)}>
             {count}<Icon name="chevron-down" size={16} />
           </button>
@@ -32,7 +32,7 @@ export function KeysBanner() {
   return (
     <div className="axp-systems-check-banner is-warn" role="alert">
       <div className="axp-systems-check-banner__row">
-        <Icon name="key" />
+        <BannerIcon icon="key" working={s.loading} size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" onClick={() => rt.openDialog('keys-needed', {})}>
           {count}: {names}
         </button>

@@ -7,6 +7,7 @@
     "toolbar": true,
     "nav-menu": true,
     "context-menu": false,
+    "tab-group": true,
     "dialog": true,
     "popup": true,
     "button": true,
@@ -29,6 +30,7 @@
     "spacer": false,
     "divider": false,
     "badge": false,
+    "settings": false,
     "uac-policy": false
   },
   "cases": {
@@ -68,6 +70,13 @@
           "icon-rail",
           "pill-tabs",
           "sidebar-list"
+        ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
         ],
         "dialog": [
           "bottom-sheet",
@@ -154,6 +163,13 @@
           "icon-rail",
           "pill-tabs",
           "sidebar-list"
+        ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
         ],
         "dialog": [
           "bottom-sheet",
@@ -247,6 +263,13 @@
         "context-menu": [
           "compact-classic"
         ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
+        ],
         "dialog": [
           "bottom-sheet",
           "centered-modal",
@@ -333,6 +356,13 @@
           "pill-tabs",
           "sidebar-list"
         ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
+        ],
         "dialog": [
           "bottom-sheet",
           "centered-modal",
@@ -415,6 +445,13 @@
           "icon-rail",
           "pill-tabs",
           "sidebar-list"
+        ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
         ],
         "dialog": [
           "bottom-sheet",
@@ -501,6 +538,13 @@
           "icon-rail",
           "pill-tabs",
           "sidebar-list"
+        ],
+        "tab-group": [
+          "boxed",
+          "pills",
+          "plain-centered",
+          "segmented",
+          "underline"
         ],
         "dialog": [
           "bottom-sheet",

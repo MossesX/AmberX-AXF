@@ -3,6 +3,7 @@
  * Every UI component and schema-driven object is an *asset* wrapped in an
  * AssetEnvelope. Any app built on AmberX AXF can load any asset of a known type.
  */
+import type { SettingsUi } from './engines/settingsui';
 
 // Same order as framework/schemas/asset-types.json (the Kotlin registry's order), so lists derived from it match across ports.
 export const ASSET_TYPES = [
@@ -35,11 +36,12 @@ export const ASSET_TYPES = [
   'spacer',
   'divider',
   'badge',
+  'settings',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -350,6 +352,9 @@ export interface ContainerData {
 
 /* ---------- system ---------- */
 
+/** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
+export type SettingsData = Pick<SettingsUi, 'layout' | 'header' | 'search' | 'descriptions'> & Partial<Pick<SettingsUi, 'tabs' | 'hide' | 'groups'>>;
+
 export interface UACRole {
   id: string;
   label: string;
@@ -400,14 +405,15 @@ export interface AssetDataMap {
   spacer: SpacerData;
   divider: DividerData;
   badge: BadgeData;
+  settings: SettingsData;
   'uac-policy': UACPolicyData;
 }
 
 export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
-/** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter) may be absent from an app's manifest. */
+/** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'gauge' | 'meter';
+export type LateOptionalType = 'gauge' | 'meter' | 'settings';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

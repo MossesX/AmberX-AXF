@@ -30,10 +30,8 @@
     "NETWORK"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "fable",
-    "rebuiltFrom": "Opus build of Oct 18 2026 (pending item ai-assistant-plugin)"
-  },
+  "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "Opus build of Oct 18 2026 (pending item ai-assistant-plugin)" },
+  "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -66,5 +64,6 @@
       "framework/spec/ASSISTANT.md"
     ]
   },
-  "wallUsers": true
+  "wallUsers": true,
+  "opens": "main"
 }

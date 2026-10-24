@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Button, Chip, Container, Note } from '../axf/react';
 import { appsUrl, loginUrl } from '../axf/libs/hub';
 import { HUB, useApps } from '../hub/useHub';
-import { formatSize, formatWhen, shortSha, statusNote, type AppBuild } from '../hub/feed';
+import { formatSize, formatWhen, shortSha, statusNote, type AppBuild } from '../axf/libs/hub';
 
 function BuildRow({ b, latest }: { b: AppBuild; latest?: boolean }) {
   return (

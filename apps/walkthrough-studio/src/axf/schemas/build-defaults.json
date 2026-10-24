@@ -1,0 +1,82 @@
+{
+  "$axf": "build-defaults@1",
+  "description": "Default configurations the build engine applies by itself whenever it builds something (Brett, Oct 23 2026: \"make the build engine check for default configurations whenever something is built like an app, plugin, or a dialog; if rules exist for particular things apply them, so the rules don't rely on Claude\"). One rule = one field of one kind of thing. op `default` fills the field when it is missing; op `require` refuses the build when it is missing or not allowed. Applied by framework/cli/build-defaults.mjs (plugins.mjs --check in CI, plugin-lifecycle install, plugin-catalog pack/install, axf init, the console's plugin loader through its Python twin). Kinds and conditions are open registries: add a kind or a `when` here and in build-defaults.mjs (`CONDITIONS`), then in the Python twin (apps/console-web/server/build_defaults.py).",
+  "kinds": {
+    "plugin": { "label": "Plugin (plugin@1)", "file": "plugin.json" },
+    "app": { "label": "App (axf.manifest.json)", "file": "axf.manifest.json" },
+    "dialog": { "label": "Dialog (a plugin's or app's dialog declaration)", "file": null }
+  },
+  "models": ["fable", "opus", "sonnet", "haiku"],
+  "rules": [
+    {
+      "id": "plugin.opens.main",
+      "kind": "plugin",
+      "when": "hasUi",
+      "field": "opens",
+      "op": "default",
+      "value": "main",
+      "values": ["main", "window", "dialog", "tab"],
+      "description": "A plugin that renders a UI (a page or a dialog) opens it in the main application area by default. Its settings tab has the choice: main area, floating window, dialog or tab group.",
+      "by": "Brett",
+      "since": "2026-10-23",
+      "locked": true
+    },
+    {
+      "id": "plugin.opens.none",
+      "kind": "plugin",
+      "when": "noUi",
+      "field": "opens",
+      "op": "default",
+      "value": false,
+      "values": [false],
+      "description": "A plugin without a page or a dialog has nothing to place.",
+      "by": "Brett",
+      "since": "2026-10-23"
+    },
+    {
+      "id": "plugin.builtWith.model",
+      "kind": "plugin",
+      "when": "always",
+      "field": "builtWith.model",
+      "op": "require",
+      "valuesFrom": "models",
+      "description": "Every plugin records the model that built it (plugin@1 builtWith.model), shown as a badge wherever its info shows.",
+      "by": "Brett",
+      "since": "2026-10-23",
+      "locked": true
+    },
+    {
+      "id": "plugin.builtWith.builtAt",
+      "kind": "plugin",
+      "when": "always",
+      "field": "builtWith.builtAt",
+      "op": "require",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "Every plugin records the date it was built (YYYY-MM-DD).",
+      "by": "Brett",
+      "since": "2026-10-23"
+    },
+    {
+      "id": "plugin.tabable.false",
+      "kind": "plugin",
+      "when": "always",
+      "field": "tabable",
+      "op": "default",
+      "value": false,
+      "description": "A plugin isn't tabable unless it says so (plugin@1 tabable, Oct 22 2026).",
+      "by": "Brett",
+      "since": "2026-10-22"
+    },
+    {
+      "id": "plugin.banner.false",
+      "kind": "plugin",
+      "when": "always",
+      "field": "banner",
+      "op": "default",
+      "value": false,
+      "description": "A plugin includes no banner unless it lists its banner ids (plugin@1 banner, Oct 23 2026).",
+      "by": "Brett",
+      "since": "2026-10-23"
+    }
+  ]
+}

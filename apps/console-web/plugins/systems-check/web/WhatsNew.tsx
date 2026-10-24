@@ -5,7 +5,7 @@
  * admin) gets "Got it", which clears it for everyone. Everyone else sees the banner until an admin clears it.
  */
 import { useEffect, useSyncExternalStore } from 'react';
-import { Button, Icon, Markdown, useBannerLaunchOpen } from '@console/axf/react';
+import { Button, Icon, Markdown, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import * as api from '@console/api';
 import { SourceBadge } from './SystemCheck';
 
@@ -75,7 +75,7 @@ export function WhatsNewBanner() {
   return (
     <div className="axp-systems-check-banner axp-systems-check-new" role="status">
       <div className="axp-systems-check-banner__row">
-        <Icon name="sparkles" />
+        <BannerIcon icon="sparkles" size={20} />
         <button type="button" data-fx-row className="axp-systems-check-banner__text" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span className="axp-systems-check-banner__title">What’s new</span>
           {d.summary?.text

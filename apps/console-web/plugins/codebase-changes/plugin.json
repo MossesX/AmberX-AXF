@@ -22,9 +22,8 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": {
-    "model": "opus"
-  },
+  "builtWith": { "model": "opus", "builtAt": "2026-10-21" },
+  "banner": ["codebase-changes"],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -46,5 +45,6 @@
     "keeps": [
       "changes/ in the shared data folder (/projects/amberx-axf/_data/changes on axHub, and the repo's changes/ snapshot): Brett's permanent record, never deleted by uninstall"
     ]
-  }
+  },
+  "opens": "main"
 }

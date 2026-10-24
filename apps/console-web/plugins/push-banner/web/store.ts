@@ -4,7 +4,7 @@ import { pluginApi } from '@console/plugins';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 export const BANNER_KEY = 'push-banner.banner';
 const POLL_MS = 120_000;
 
@@ -17,12 +17,14 @@ export interface RepoBranches { repo: string; base: string; url: string; branche
 export interface PullRow extends Pull { repo: string; key: string; ahead: number | null; behind: number | null }
 /** A successful Merge or Pull main in, kept (every device, 7 days) until its trash can is tapped. */
 export interface Done { key: string; kind: 'merged' | 'pulled'; at: number; repo: string; base?: string; number?: number; branch?: string; title?: string; url?: string; text?: string }
-export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string; done?: Done[] }
+/** A Pull main in GitHub refused (from its own button or Pull all), kept (every device) until a pull goes through or it's removed. */
+export interface Failed { key: string; at: number; repo: string; number?: number | null; branch?: string; error: string }
+export interface Answer { checkedAt: number; repos: RepoBranches[]; error: string; done?: Done[]; failed?: Failed[] }
 /** One entry's details (GET detail): its commits, the checks on its head, GitHub's merge state. */
 export interface Detail { commits: { sha: string; subject: string; author: string; date: string; url: string }[]; checks: { name: string; status: string; conclusion: string; url: string }[]; mergeState: string; files: number | null; body?: string; sha?: string; error: string }
 export interface Row extends Branch { repo: string; base: string; key: string }
 
-export interface ClaudeJob { key: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; repo?: string; branch?: string; changeId?: string; startedAt?: number }
+export interface ClaudeJob { key: string; state: 'asking' | 'waiting' | 'launched' | 'failed'; message: string; title?: string; repo?: string; branch?: string; changeId?: string; startedAt?: number; /** launched: its change-log entry's status */ fixed?: 'running' | 'done' | 'failed' }
 export interface ClaudeState { on: boolean; shell: boolean; hubToken: boolean; mosses?: boolean; mossesWhy?: string; changes: boolean; jobs: ClaudeJob[] }
 interface State { claude: ClaudeState | null; answer: Answer | null; loading: boolean; error: string; busy: string; note: { key: string; text: string; tone: 'ok' | 'danger' } | null; details: Record<string, { loading: boolean; data?: Detail; error?: string }> }
 let state: State = { claude: null, answer: null, loading: false, error: '', busy: '', note: null, details: {} };
@@ -87,10 +89,55 @@ export const fixWithClaude = (r: { key: string; repo: string; number?: number; b
   return j.job.state === 'failed' ? `Claude Code couldn't be started: ${j.job.message}` : 'Handed to Claude Code on the VPS: approve it on axHub, then follow it in the building banner.';
 });
 
+/** Failed pulls, newest first; their keys leave the Needs main pulled in group. */
+export const failedRows = (a: Answer | null): Failed[] => [...(a?.failed ?? [])].sort((x, y) => y.at - x.at);
+export const failedKeys = (a: Answer | null) => new Set((a?.failed ?? []).map((f) => f.key));
+export const jobOf = (key: string) => state.claude?.jobs.find((j) => j.key === key);
+
+const claudeBody = (f: Failed) => f.number ? { repo: f.repo, number: f.number, confirm: `${f.repo}#${f.number}`, repair: true } : { repo: f.repo, branch: f.branch, confirm: `${f.repo}:${f.branch}`, repair: true };
+const pullBody = (f: Failed) => f.number ? { repo: f.repo, number: f.number, confirm: `${f.repo}#${f.number}` } : { repo: f.repo, branch: f.branch, confirm: `${f.repo}:${f.branch}` };
+
+/** The Repair badge: a headless Claude Code session on the VPS (approved on axHub) merges main in and fixes the branch;
+ *  once its change-log entry says done, the pull is tried again by itself (retryRepaired). */
+export const repair = (f: Failed) => act(f.key, async () => {
+  const j = await api.post<{ job: ClaudeJob }>('claude', claudeBody(f));
+  return j.job.state === 'failed' ? `Repair couldn't start: ${j.job.message}` : 'Repairing on the VPS: approve it on axHub. The pull runs again when it\'s done.';
+});
+
+export const REPAIR_ALL = 'repair-all';
+/** Repair all: every failed pull without a repair under way, one hand-over at a time. */
+export async function repairAll(list: Failed[]): Promise<void> {
+  if (state.busy || !list.length) return;
+  set({ busy: REPAIR_ALL, note: null });
+  const bad: string[] = [];
+  let n = 0;
+  for (const f of list) {
+    try { const j = await api.post<{ job: ClaudeJob }>('claude', claudeBody(f)); if (j.job.state === 'failed') bad.push(f.number ? `#${f.number}` : f.branch ?? f.key); else n++; }
+    catch (e) { bad.push(`${f.number ? `#${f.number}` : f.branch} (${e instanceof Error ? e.message : String(e)})`); }
+  }
+  await loadClaude();
+  set({ busy: '', note: { key: REPAIR_ALL, text: `Repairing ${n} of ${list.length} on the VPS: approve each on axHub.${bad.length ? ` Not started: ${bad.join('; ')}` : ''}`, tone: bad.length ? 'danger' : 'ok' } });
+}
+
+export const removeFailed = (f: Failed) => act(f.key, async () => { await api.post('failed/remove', { key: f.key }); return 'Removed from the banner.'; });
+
+const retried = new Set<string>();
+/** A failed pull whose repair session finished (after the failure): try the pull again, once per repair. */
+async function retryRepaired(): Promise<void> {
+  if (state.busy) return;
+  for (const f of state.answer?.failed ?? []) {
+    const j = jobOf(f.key);
+    const mark = `${f.key}@${j?.startedAt ?? 0}`;
+    if (!j || j.state !== 'launched' || j.fixed !== 'done' || (j.startedAt ?? 0) * 1000 < f.at || retried.has(mark)) continue;
+    retried.add(mark);
+    await act(f.key, async () => { await api.post('update', pullBody(f)); return 'Repaired, and main is pulled in now.'; });
+  }
+}
+
 export async function load(refresh = false): Promise<void> {
   if (state.loading) return;
   set({ loading: true });
-  void loadClaude();
+  void loadClaude().then(retryRepaired);
   try { set({ answer: await api.call<Answer>(`branches${refresh ? '?refresh=true' : ''}`), error: '' }); }
   catch (e) { set({ error: e instanceof Error ? e.message : String(e) }); }
   finally { set({ loading: false }); }
@@ -129,22 +176,55 @@ export const pullMain = (r: { key: string; repo: string; number?: number; branch
 
 export const PULL_ALL = 'pull-all';
 
-/** Pull main into every entry of "Needs main pulled in", one at a time (each the same server action as its own button);
- *  a failure (a conflict GitHub only finds now, a refused branch) is noted and the rest go on. One reload at the end. */
-export async function pullAll(list: { key: string; repo: string; number?: number; branch?: string; base: string }[]): Promise<void> {
+type PullEntry = { key: string; repo: string; number?: number; branch?: string; head?: string; base: string };
+
+/** Pull main into every entry of "Needs main pulled in", one at a time (each the same server action as its own button).
+ *  At the first failure it stops (Brett, Oct 23 2026): the failed entry moves to Pull failed (the server keeps it there)
+ *  and that one plus every entry not tried yet go to headless Claude Code on the VPS, one session per repo (each
+ *  approved on axHub), which repairs it and pulls main into the rest. */
+export async function pullAll(list: PullEntry[]): Promise<void> {
   if (state.busy || !list.length) return;
   set({ busy: PULL_ALL, note: null });
-  const failed: string[] = [];
   let done = 0;
-  for (const r of list) {
-    set({ note: { key: PULL_ALL, text: `Pulling main into ${done + failed.length + 1} of ${list.length}…`, tone: 'ok' } });
+  let text = '';
+  let bad = false;
+  for (const [i, r] of list.entries()) {
+    set({ note: { key: PULL_ALL, text: `Pulling main into ${i + 1} of ${list.length}…`, tone: 'ok' } });
     const body = r.number ? { repo: r.repo, number: r.number, confirm: `${r.repo}#${r.number}` } : { repo: r.repo, branch: r.branch, confirm: `${r.repo}:${r.branch}` };
-    try { await api.post('update', body); done++; }
-    catch (e) { failed.push(`${r.number ? `#${r.number}` : r.branch} (${e instanceof Error ? e.message : String(e)})`); }
+    try { await api.post('update', body); done++; continue; }
+    catch (e) {
+      bad = true;
+      const name = r.number ? `#${r.number}` : r.branch;
+      text = `Pulled main into ${done} of ${list.length}; ${name} failed (${e instanceof Error ? e.message : String(e)}) and moved to Pull failed. ${await handOver(r, list.slice(i + 1))}`;
+      break;
+    }
   }
-  const text = `Pulled main into ${done} of ${list.length}.${failed.length ? ` Not pulled: ${failed.join('; ')}` : ' CI runs again on each.'}`;
+  if (!bad) text = `Pulled main into ${done} of ${list.length}. CI runs again on each.`;
   set({ details: {} });
-  try { await load(true); } finally { set({ busy: '', note: { key: PULL_ALL, text, tone: failed.length ? 'danger' : 'ok' } }); }
+  try { await load(true); } finally { set({ busy: '', note: { key: PULL_ALL, text, tone: bad ? 'danger' : 'ok' } }); }
+}
+
+/** The failed entry and the ones not tried yet → one headless session per repo (the failed one leads its repo's). */
+async function handOver(failed: PullEntry, rest: PullEntry[]): Promise<string> {
+  const groups = new Map<string, PullEntry[]>([[failed.repo, [failed]]]);
+  for (const r of rest) groups.set(r.repo, [...(groups.get(r.repo) ?? []), r]);
+  let sessions = 0, handed = 0;
+  const notes: string[] = [];
+  for (const [repo, [lead, ...more]] of groups) {
+    if (!lead) continue;
+    const branches = more.map((r) => r.branch ?? r.head).filter((b): b is string => !!b);
+    const body = lead.number ? { repo, number: lead.number, confirm: `${repo}#${lead.number}` } : { repo, branch: lead.branch, confirm: `${repo}:${lead.branch}` };
+    try {
+      const j = await api.post<{ job: ClaudeJob & { rest?: string[] } }>('claude', { ...body, repair: true, ...(branches.length ? { rest: branches } : {}) });
+      if (j.job.state === 'failed') { notes.push(`${repo.split('/')[1]}: ${j.job.message}`); continue; }
+      sessions++;
+      handed += 1 + (j.job.rest?.length ?? 0);
+    } catch (e) { notes.push(`${repo.split('/')[1]}: ${e instanceof Error ? e.message : String(e)}`); }
+  }
+  const total = rest.length + 1;
+  const left = total - handed;
+  return (sessions ? `Handed ${handed} to Claude Code on the VPS (${sessions} session${sessions === 1 ? '' : 's'}: approve on axHub); it repairs it and pulls main into the rest.` : 'Couldn\'t hand it to Claude Code on the VPS.')
+    + (left > 0 ? ` ${left} left for later.` : '') + (notes.length ? ` ${notes.join('; ')}` : '');
 }
 
 /** Behind its base and nothing in the way of pulling it in (no conflicts GitHub knows of). */
@@ -164,6 +244,8 @@ export function start(): void {
   started = true;
   void load();
   setInterval(() => { if (document.visibilityState === 'visible') void load(); }, POLL_MS);
+  // while a repair is under way, check its session every 20 s so the pull is tried again soon after it finishes
+  setInterval(() => { if (document.visibilityState === 'visible' && state.answer?.failed?.some((f) => jobOf(f.key))) void loadClaude().then(retryRepaired); }, 20_000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void load(); });
 }
 

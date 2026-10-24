@@ -72,8 +72,6 @@ class MainActivity : AxfActivity() {
         module.sendToTab = { tab, json -> holder.send(tab, json) }
         val views = mutableMapOf<String, @Composable () -> Unit>("plugin-manager" to { PluginManagerScreen() })
         for (t in AppModule.TABS) views[t.id] = { TabView(holder, module, t.id) }
-        // The combined settings (Patches · Console · Pilot · axHub) replaces the settings screen lib-settings registers.
-        views["settings"] = { ai.amberx.axf.patches.views.CombinedSettings(holder, module) }
         // The column takes the status bar, so AppShell's own status-bar padding (same insets, now consumed) adds nothing.
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
             BannerStrip(holder, module)

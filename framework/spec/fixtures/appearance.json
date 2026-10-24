@@ -7,6 +7,7 @@
     "toolbar",
     "nav-menu",
     "context-menu",
+    "tab-group",
     "dialog",
     "popup",
     "button",
@@ -28,7 +29,8 @@
     "theme-switch",
     "spacer",
     "divider",
-    "badge"
+    "badge",
+    "settings"
   ],
   "parsed": {
     "full": {

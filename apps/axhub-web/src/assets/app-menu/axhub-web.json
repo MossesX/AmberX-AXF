@@ -3,10 +3,13 @@
   "type": "app-menu",
   "id": "axhub-web",
   "name": "AXHub menu",
-  "version": "0.1.0",
-  "description": "AXHub: its views, the hub's own pages, the look and help.",
+  "version": "1.0.0",
+  "description": "AXHub, laid out like the Dev Console's application menu: the hub and its pages, approvals and apps as live lists, the planned admin areas, the look, help.",
   "author": "AmberX AXF",
-  "tags": [],
+  "tags": [
+    "axhub",
+    "console"
+  ],
   "data": {
     "menus": [
       {
@@ -17,7 +20,8 @@
             "id": "go-home",
             "label": "Approvals",
             "icon": "shield",
-            "action": "nav:home"
+            "action": "nav:home",
+            "badge": "approvals.waiting"
           },
           {
             "id": "go-hub",
@@ -26,13 +30,36 @@
             "action": "nav:hub"
           },
           {
-            "id": "go-apps",
-            "label": "Apps",
-            "icon": "download",
-            "action": "nav:apps"
+            "id": "search",
+            "label": "Search everything…",
+            "icon": "search",
+            "action": "axhub.search",
+            "shortcut": "Ctrl+K"
           },
           {
             "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "settings-pages",
+            "label": "Settings pages",
+            "icon": "settings",
+            "provider": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "action": "nav:account"
+          },
+          {
+            "id": "s2",
             "separator": true
           },
           {
@@ -42,32 +69,102 @@
             "action": "axhub.check"
           },
           {
-            "id": "open-approvals",
-            "label": "Approvals on the hub",
+            "id": "hub-pages",
+            "label": "Hub pages",
             "icon": "external",
-            "action": "axhub.open:approvals"
+            "items": [
+              {
+                "id": "open-approvals",
+                "label": "Approvals",
+                "icon": "shield",
+                "action": "hub.open:approvals"
+              },
+              {
+                "id": "open-apps",
+                "label": "App catalog",
+                "icon": "download",
+                "action": "hub.open:apps"
+              },
+              {
+                "id": "open-users",
+                "label": "Users",
+                "icon": "user",
+                "action": "hub.open:users"
+              },
+              {
+                "id": "open-account",
+                "label": "Your hub account",
+                "icon": "key",
+                "action": "hub.open:account"
+              }
+            ]
           },
           {
-            "id": "open-apps",
-            "label": "Apps on the hub",
-            "icon": "external",
-            "action": "axhub.open:apps"
-          },
-          {
-            "id": "open-account",
-            "label": "Your hub account",
-            "icon": "key",
-            "action": "axhub.open:account"
-          },
-          {
-            "id": "s2",
+            "id": "s3",
             "separator": true
           },
           {
-            "id": "settings",
-            "label": "Settings",
-            "icon": "settings",
-            "action": "app.settings"
+            "id": "about",
+            "label": "About AXHub",
+            "icon": "info",
+            "action": "help.about"
+          }
+        ]
+      },
+      {
+        "id": "approvals",
+        "label": "Approvals",
+        "items": [
+          {
+            "id": "approvals-view",
+            "label": "All approvals",
+            "icon": "shield",
+            "action": "nav:home",
+            "badge": "approvals.waiting"
+          },
+          {
+            "id": "waiting",
+            "label": "Waiting for approval",
+            "icon": "clock",
+            "provider": "hub.approvals"
+          },
+          {
+            "id": "a1",
+            "separator": true
+          },
+          {
+            "id": "approvals-hub",
+            "label": "Approvals on the hub",
+            "icon": "external",
+            "action": "hub.open:approvals"
+          }
+        ]
+      },
+      {
+        "id": "apps",
+        "label": "Apps",
+        "items": [
+          {
+            "id": "apps-view",
+            "label": "App catalog",
+            "icon": "download",
+            "action": "nav:apps"
+          },
+          {
+            "id": "downloads",
+            "label": "Download the latest",
+            "icon": "download",
+            "provider": "hub.apps"
+          },
+          {
+            "id": "p1",
+            "separator": true
+          },
+          {
+            "id": "apps-hub",
+            "label": "Apps on the hub",
+            "icon": "external",
+            "action": "hub.open:apps"
           }
         ]
       },
@@ -124,27 +221,11 @@
         "label": "View",
         "items": [
           {
-            "id": "go-assets",
-            "label": "Assets",
-            "icon": "layers",
-            "action": "nav:assets"
-          },
-          {
-            "id": "appearance",
-            "label": "Appearance settings",
-            "icon": "palette",
-            "action": "settings.open:appearance"
-          },
-          {
-            "id": "s3",
-            "separator": true
-          },
-          {
-            "id": "banner",
-            "label": "Banner",
-            "icon": "layout",
-            "action": "slot.hide:banner:toggle",
-            "checked": "slot:banner"
+            "id": "toolbar",
+            "label": "Toolbar",
+            "icon": "sliders",
+            "action": "slot.hide:toolbar:toggle",
+            "checked": "slot:toolbar"
           },
           {
             "id": "nav",
@@ -154,11 +235,134 @@
             "checked": "slot:nav-menu"
           },
           {
-            "id": "toolbar",
-            "label": "Toolbar",
+            "id": "banner",
+            "label": "Banner",
+            "icon": "layout",
+            "action": "slot.hide:banner:toggle",
+            "checked": "slot:banner"
+          },
+          {
+            "id": "bars",
+            "label": "All bars and menus",
+            "icon": "layout",
+            "provider": "chrome"
+          },
+          {
+            "id": "v1",
+            "separator": true
+          },
+          {
+            "id": "look",
+            "label": "Look",
+            "icon": "palette",
+            "items": [
+              {
+                "id": "next-color",
+                "label": "Next color theme",
+                "icon": "palette",
+                "action": "swap:color-theme:next",
+                "shortcut": "Alt+C"
+              },
+              {
+                "id": "next-style",
+                "label": "Next style theme",
+                "icon": "sparkles",
+                "action": "swap:style-theme:next",
+                "shortcut": "Alt+S"
+              },
+              {
+                "id": "next-layout",
+                "label": "Next layout",
+                "icon": "layout",
+                "action": "swap:layout:next"
+              },
+              {
+                "id": "l1",
+                "separator": true
+              },
+              {
+                "id": "random",
+                "label": "Randomize",
+                "icon": "shuffle",
+                "action": "assets.random",
+                "shortcut": "Alt+R",
+                "requires": "assets.swap"
+              },
+              {
+                "id": "reset",
+                "label": "Reset to defaults",
+                "icon": "undo",
+                "action": "assets.reset"
+              }
+            ]
+          },
+          {
+            "id": "spacing",
+            "label": "Spacing",
             "icon": "sliders",
-            "action": "slot.hide:toolbar:toggle",
-            "checked": "slot:toolbar"
+            "items": [
+              {
+                "id": "tight",
+                "label": "Super tight",
+                "action": "spacing:tight"
+              },
+              {
+                "id": "compact",
+                "label": "Compact",
+                "action": "spacing:compact"
+              },
+              {
+                "id": "regular",
+                "label": "Regular",
+                "action": "spacing:regular"
+              }
+            ]
+          },
+          {
+            "id": "appearance",
+            "label": "Appearance settings",
+            "icon": "palette",
+            "action": "settings.open:appearance"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "action": "nav:assets"
+          },
+          {
+            "id": "v2",
+            "separator": true
+          },
+          {
+            "id": "pages",
+            "label": "Every page",
+            "icon": "layout",
+            "provider": "views"
+          },
+          {
+            "id": "nav-items",
+            "label": "Navigation items",
+            "icon": "menu",
+            "provider": "nav"
+          },
+          {
+            "id": "toolbar-items",
+            "label": "Toolbar items",
+            "icon": "sliders",
+            "provider": "toolbar"
+          },
+          {
+            "id": "windows",
+            "label": "Windows",
+            "icon": "layers",
+            "provider": "windows"
+          },
+          {
+            "id": "dialogs",
+            "label": "Dialogs",
+            "icon": "layers",
+            "provider": "dialogs"
           }
         ]
       },
@@ -168,13 +372,17 @@
         "items": [
           {
             "id": "shortcuts",
-            "label": "Shortcuts",
+            "label": "Keyboard shortcuts",
             "icon": "keyboard",
             "action": "view.shortcuts",
             "shortcut": "Alt+K"
           },
           {
-            "id": "about",
+            "id": "h1",
+            "separator": true
+          },
+          {
+            "id": "about-help",
             "label": "About",
             "icon": "info",
             "action": "help.about"
