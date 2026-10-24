@@ -6,6 +6,10 @@ whether it answered, how it signs in, and the active account's email: the Claude
 `oauthAccount.emailAddress` in ~/.claude.json (same field the host doctor reads with jq), else the host doctor's
 "signed in as …" line, else (API key) the AI keys plugin's label for the active key. Never returns keys or reply text.
 Results are cached 30 s so several pages loading at once make one request. Patches' server reads this route.
+
+GET/PUT /config: the badge's icon (`icon`, a name or an icon pick `name@anim[:still]`, empty = the Claude mark), picked
+in Settings → Plugins → Claude connection; /status returns it so Patches paints its badge with it. Stored in the
+plugin's data folder (config.json, 0600).
 """
 from __future__ import annotations
 
@@ -17,7 +21,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 
 import console_context as cx
 import plugin_services
@@ -29,6 +33,31 @@ TTL = 30.0
 PROMPT = "Connection check from the AmberX console. Reply with one word: OK."
 MODES = {"claude-code": "subscription", "anthropic": "api-key"}
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+ICON_RE = re.compile(r"[a-z0-9-]{1,40}(@[a-z]{1,12}(:still)?)?")
+FOLDER = Path(__file__).resolve().parents[1].name
+
+
+def data_dir() -> Path:
+    return Path(cx.ROOT) / ".axf-console" / "plugins" / FOLDER
+
+
+def read_config() -> dict[str, Any]:
+    try:
+        raw = json.loads((data_dir() / "config.json").read_text("utf-8"))
+    except (OSError, ValueError):
+        raw = {}
+    icon = raw.get("icon") if isinstance(raw, dict) else ""
+    return {"icon": icon if isinstance(icon, str) and ICON_RE.fullmatch(icon) else ""}
+
+
+def write_config(cfg: dict[str, Any]) -> None:
+    d = data_dir()
+    d.mkdir(parents=True, exist_ok=True, mode=0o700)
+    tmp = d / "config.json.tmp"
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        json.dump(cfg, fh)
+    os.replace(tmp, d / "config.json")
 
 
 def claude_json() -> Path:
@@ -103,7 +132,25 @@ def run_check() -> dict[str, Any]:
 def status(refresh: bool = False) -> dict[str, Any]:
     with _lock:
         if not refresh and _cache["res"] and time.time() - _cache["at"] < TTL:
-            return _cache["res"]
+            return {**_cache["res"], "icon": read_config()["icon"]}
         res = run_check()
         _cache.update(at=time.time(), res=res)
-        return res
+    return {**res, "icon": read_config()["icon"]}
+
+
+@router.get("/config")
+def get_config() -> dict[str, Any]:
+    return read_config()
+
+
+@router.put("/config")
+async def put_config(request: Request) -> dict[str, Any]:
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(400, "send JSON")
+    icon = body.get("icon", "") if isinstance(body, dict) else None
+    if not isinstance(icon, str) or (icon and not ICON_RE.fullmatch(icon)):
+        raise HTTPException(400, "icon must be an icon name or pick (name@anim, name@anim:still)")
+    write_config({"icon": icon})
+    return read_config()

@@ -74,6 +74,7 @@ export function StatusWidget({ data }: WidgetRenderProps<StatusData>) {
   return (
     <Tap action={data.link} className={`fx-widget-status${on ? ' is-on' : ''}`} title={text}>
       {data.dot !== false && <span className="fx-widget-status__dot" data-tone={widgetTone(on ? data.onTone : data.offTone)} />}
+      {data.icon && <span data-tone={widgetTone(on ? data.onTone : data.offTone)}><Icon name={data.icon} size={13} /></span>}
       <span data-tone={widgetTone(on ? data.onTone : data.offTone)}>{text}</span>
     </Tap>
   );

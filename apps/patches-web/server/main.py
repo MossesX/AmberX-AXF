@@ -119,7 +119,7 @@ def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
 
 CONSOLE_URL = os.environ.get("APP_CONSOLE_URL", "https://console.amberxai.com").rstrip("/")
 CLAUDE_PLUGIN = "claude-connection"  # the console plugin folder (route /api/plugins/<folder>/status); off = 404
-CLAUDE_FIELDS = ("at", "ok", "mode", "email", "account", "model", "ms", "error")
+CLAUDE_FIELDS = ("at", "ok", "mode", "email", "account", "model", "ms", "error", "icon")
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -164,6 +164,7 @@ def claude_status(refresh: bool = False) -> dict[str, Any]:
     out["ok"] = out["ok"] is True
     for k in ("mode", "email", "account", "model", "error"):
         out[k] = _clip(out[k] or "", 300)
+    out["icon"] = _clip(out["icon"], 60) if isinstance(out["icon"], str) else ""
     return out
 
 

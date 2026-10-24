@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T15:07:33.295Z",
+ "updatedAt": "2026-10-24T16:40:53.711Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3110,6 +3110,47 @@
    "builtAt": "2026-10-24T12:46:13.128Z",
    "updatedAt": "2026-10-24T12:46:13.418Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "icon-picker-dialog",
+   "title": "Icon picker dialog for the axHub and Claude connection status plugins: Static tab + 50 animated icons with Static switches",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-4s5igq (includes PR #53 and #57).",
+     "at": ""
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Pure engine iconpick.ts + Icon reads picks + CSS animations",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "IconPicker dialog + IconPickerField, settings library registers it",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Wire hubstatus + claude-connection (+ Patches badge), tests, PR",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-24T16:40:53.711Z",
+   "builtAt": "2026-10-24T16:40:53.711Z",
+   "updatedAt": "2026-10-24T16:40:53.711Z",
+   "estimate": "45 min",
    "source": "chat"
   }
  ]

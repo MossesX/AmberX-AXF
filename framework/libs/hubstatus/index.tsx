@@ -16,7 +16,7 @@
  */
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import './hubstatus.css';
-import { Button, Chip, Icon, IconButton } from '../../react';
+import { Button, Chip, Icon, IconButton, IconPickerField, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import {
@@ -30,7 +30,7 @@ export const DEFAULT_HUB = 'https://axhub.amberxai.com';
 const K = {
   show: 'hubstatus.show', side: 'hubstatus.side', hub: 'hubstatus.hub', every: 'hubstatus.every',
   liveLabel: 'hubstatus.liveLabel', notLiveLabel: 'hubstatus.notLiveLabel', dot: 'hubstatus.dot',
-  popup: 'hubstatus.popup', popupSeconds: 'hubstatus.popupSeconds',
+  popup: 'hubstatus.popup', popupSeconds: 'hubstatus.popupSeconds', icon: 'hubstatus.icon',
 } as const;
 
 /* ---------------- store ---------------- */
@@ -52,6 +52,7 @@ const look = (rt: AxfRuntime): BadgeLook => ({
   notLiveLabel: str(rt, K.notLiveLabel, DEFAULT_LOOK.notLiveLabel),
   checkingLabel: DEFAULT_LOOK.checkingLabel,
   dot: rt.settings.get(K.dot) !== false,
+  icon: str(rt, K.icon, ''),
 });
 
 /** The hub to check: the one this app reads its look from, else the setting. */
@@ -199,6 +200,14 @@ function StatusCard() {
   );
 }
 
+/** The badge's icon: the picker dialog (Static / Animated tabs, each animated icon can be switched to static). */
+function IconRow() {
+  const rt = useRuntime();
+  useAxfState();
+  const v = rt.settings.get(K.icon);
+  return <IconPickerField label="Badge icon" value={typeof v === 'string' ? v : ''} onChange={(p) => rt.settings.set(K.icon, p)} hint="Drawn before the words on the banner badge." />;
+}
+
 /* ---------------- the library ---------------- */
 
 export const hubStatusLibrary: AxfWebLibrary = {
@@ -235,6 +244,7 @@ export const hubStatusLibrary: AxfWebLibrary = {
   ],
   settingsPanels: [
     { id: 'hubstatus.now', tab: 'hubstatus', title: 'Now', icon: 'cloud', order: 5, render: () => <StatusCard /> },
+    { id: 'hubstatus.icon', tab: 'hubstatus', title: 'Icon', icon: 'palette', order: 12, render: () => <IconRow /> },
   ],
 };
 

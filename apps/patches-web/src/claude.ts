@@ -8,18 +8,20 @@ import type { AxfRuntime } from './axf/core';
 import { api } from './api';
 import base from './assets/badge/claude-connection.json';
 
-export interface ClaudeStatus { at?: number; ok: boolean; mode?: string; email?: string; account?: string; model?: string; error?: string }
+export interface ClaudeStatus { at?: number; ok: boolean; mode?: string; email?: string; account?: string; model?: string; error?: string; icon?: string }
 
 export const NO_CONNECTION = 'No Claude connection · check keys';
 
 /** The badge's data for a check result (null = still checking). Pure. */
 export function claudeBadgeData(s: ClaudeStatus | null) {
   if (!s) return { ...base.data };
+  // the icon picked in the console (Settings → Plugins → Claude connection): a name or an animated pick
+  const icon = s.icon || base.data.icon;
   if (s.ok) {
     const how = s.mode === 'subscription' ? 'Claude subscription' : s.mode === 'api-key' ? 'API key' : 'Claude';
-    return { ...base.data, label: s.email || s.account || how, tone: 'success', tooltip: `Claude Code connected · ${how}${s.model ? ` · ${s.model}` : ''}`, link: 'patches.claude.check' };
+    return { ...base.data, icon, label: s.email || s.account || how, tone: 'success', tooltip: `Claude Code connected · ${how}${s.model ? ` · ${s.model}` : ''}`, link: 'patches.claude.check' };
   }
-  return { ...base.data, label: NO_CONNECTION, tone: 'danger', tooltip: `No Claude connection${s.error ? `: ${s.error}` : ''}. Tap to check the keys.`, link: 'patches.claude.keys' };
+  return { ...base.data, icon, label: NO_CONNECTION, tone: 'danger', tooltip: `No Claude connection${s.error ? `: ${s.error}` : ''}. Tap to check the keys.`, link: 'patches.claude.keys' };
 }
 
 export function paintClaude(rt: AxfRuntime, s: ClaudeStatus | null) {

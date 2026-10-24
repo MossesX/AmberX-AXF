@@ -280,7 +280,7 @@ export type WidgetTone = 'neutral' | 'success' | 'warning' | 'danger' | 'accent'
 export interface LogoData { kind: 'text' | 'image' | 'icon'; text: string; size: 'small' | 'regular' | 'large'; image?: string; icon?: string; link?: string; bold?: boolean; tooltip?: string }
 export interface ActionButtonData { icon: string; label: string; action: string; show: 'icon' | 'label' | 'both'; tone?: 'neutral' | 'accent' | 'danger'; tooltip?: string }
 export interface LabelData { text: string; tone: WidgetTone; bold?: boolean; mono?: boolean; tooltip?: string }
-export interface StatusData { counter: string; onLabel: string; offLabel: string; onTone: WidgetTone; offTone: WidgetTone; link?: string; dot?: boolean }
+export interface StatusData { counter: string; onLabel: string; offLabel: string; onTone: WidgetTone; offTone: WidgetTone; link?: string; dot?: boolean; icon?: string }
 export interface CounterData { counter: string; tone: WidgetTone; hideAtZero: boolean; icon?: string; label?: string; link?: string; max?: number }
 export interface ProgressData { counter: string; max: number; width: 'compact' | 'regular' | 'wide'; label?: string; tone?: WidgetTone; showValue?: boolean }
 export interface AvatarData { source: 'account' | 'text' | 'image'; size: 'small' | 'regular' | 'large'; shape: 'circle' | 'rounded'; text?: string; image?: string; link?: string; tooltip?: string }

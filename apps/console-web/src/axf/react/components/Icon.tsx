@@ -1,4 +1,6 @@
-/** Built-in icon set (24px grid, stroke-based). Assets reference icons by name. */
+/** Built-in icon set (24px grid, stroke-based). Assets reference icons by name, or by an icon pick (core/engines/iconpick.ts):
+ *  `name@anim` animates it, `name@anim:still` is that animated icon marked static. */
+import { parseIconPick } from '../../core/engines/iconpick';
 const PATHS: Record<string, string> = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   grid: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
@@ -80,8 +82,9 @@ export const ICON_NAMES = Object.keys(PATHS);
 
 export function Icon({ name, size = 16, className }: { name?: string; size?: number; className?: string }) {
   if (!name) return null;
-  const d = PATHS[name] ?? PATHS.box;
-  return (
+  const pick = parseIconPick(name);
+  const d = PATHS[pick.icon] ?? PATHS.box;
+  const svg = (
     <svg
       className={`fx-icon ${className ?? ''}`}
       width={size}
@@ -97,4 +100,6 @@ export function Icon({ name, size = 16, className }: { name?: string; size?: num
       <path d={d} />
     </svg>
   );
+  if (!pick.anim) return svg;
+  return <span className="fx-icon-anim" data-fx-anim={pick.anim} data-fx-still={pick.still ? '1' : undefined}>{svg}</span>;
 }

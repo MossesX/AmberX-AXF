@@ -79,6 +79,8 @@ export interface BadgeLook {
   checkingLabel: string;
   /** Show the dot. */
   dot: boolean;
+  /** Icon before the words: a name or an icon pick (`name@anim`, `name@anim:still`); empty = none. */
+  icon?: string;
 }
 export const DEFAULT_LOOK: BadgeLook = { liveLabel: 'axHub', notLiveLabel: 'axHub off', checkingLabel: 'axHub …', dot: true };
 
@@ -88,7 +90,7 @@ export function statusAsset(s: HubStatus, look: BadgeLook = DEFAULT_LOOK) {
   return {
     $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'axHub', version: '0.1.0', author: 'axHub status library',
     description: 'Green only while this app reads its settings live from axHub; red otherwise (also while checking).', tags: ['axhub', 'status'],
-    data: { counter: COUNTER, onLabel: look.liveLabel || DEFAULT_LOOK.liveLabel, offLabel: off || DEFAULT_LOOK.notLiveLabel, onTone: 'success', offTone: 'danger', dot: look.dot, link: 'hubstatus.open' },
+    data: { counter: COUNTER, onLabel: look.liveLabel || DEFAULT_LOOK.liveLabel, offLabel: off || DEFAULT_LOOK.notLiveLabel, onTone: 'success', offTone: 'danger', dot: look.dot, ...(look.icon ? { icon: look.icon } : {}), link: 'hubstatus.open' },
   };
 }
 

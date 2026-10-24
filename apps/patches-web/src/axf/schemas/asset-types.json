@@ -765,7 +765,8 @@
       },
       "optional_fields": {
         "link": "string — action spec run on tap",
-        "dot": "boolean — show the dot (default true)"
+        "dot": "boolean — show the dot (default true)",
+        "icon": "string — icon name or pick (name@anim, name@anim:still) drawn before the text"
       }
     },
     "counter": {
