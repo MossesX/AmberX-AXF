@@ -144,4 +144,125 @@ check(oct(main.TABS_FILE.stat().st_mode & 0o777) == "0o600", "tabs: file 0600")
 main.TABS_FILE.write_text("{broken")
 check([t["app"] for t in c.get("/api/tabs", headers=TOKEN).json()["tabs"]] == ["console", "pilot", "axhub"], "tabs: damaged file reads as the defaults")
 
+# Plugins per app (patches-app-plugins@1): a fake Dev Console on loopback answers the console adapter
+import http.server  # noqa: E402
+import json as _json  # noqa: E402
+import threading as _threading  # noqa: E402
+
+import app_plugins  # noqa: E402
+
+FAKE = {"installed": {"alpha": "ai.amberx.axf.console.alpha"}, "calls": [], "fail": set()}
+CATALOG = {"alpha": "ai.amberx.axf.console.alpha", "beta": "ai.amberx.axf.console.beta"}
+
+
+class FakeConsole(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *_a):  # quiet
+        pass
+
+    def _send(self, code, body):
+        raw = _json.dumps(body).encode()
+        self.send_response(code)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(raw)))
+        self.end_headers()
+        self.wfile.write(raw)
+
+    def _auth(self):
+        if self.headers.get("authorization") != "Bearer console-tok":
+            self._send(401, {"detail": "unauthorized"})
+            return False
+        return True
+
+    def do_GET(self):
+        if not self._auth():
+            return
+        if self.path == "/api/plugins":
+            items = [{"folder": f, "id": i, "name": f.title(), "version": "0.1.0", "enabled": True, "builtWith": {"model": "opus"}} for f, i in FAKE["installed"].items()]
+            items.append({"folder": "gone", "id": "ai.amberx.axf.console.gone", "name": "Gone", "version": "1", "removed": True})
+            return self._send(200, {"items": items})
+        if self.path.startswith("/api/plugin-catalog"):
+            return self._send(200, {"items": [{"kind": "console", "folder": f, "id": i, "name": f.title(), "version": "0.2.0", "builtWith": {"model": "fable"}} for f, i in CATALOG.items()]})
+        if self.path == "/redirect":
+            self.send_response(302)
+            self.send_header("location", "https://elsewhere.example/")
+            self.end_headers()
+            return
+        self._send(404, {"detail": "no"})
+
+    def do_POST(self):
+        if not self._auth():
+            return
+        body = _json.loads(self.rfile.read(int(self.headers.get("content-length") or 0)) or b"{}")
+        FAKE["calls"].append((self.path, body))
+        if self.path == "/api/plugin-catalog/install":
+            f = body.get("folder")
+            if f in FAKE["fail"] or body.get("confirm") != f:
+                return self._send(400, {"detail": f"cannot install {f}"})
+            FAKE["installed"][f] = CATALOG[f]
+            return self._send(200, {"ok": True, "note": "Committed to GitHub"})
+        if self.path.endswith("/uninstall"):
+            f = self.path.split("/")[3]
+            if body.get("confirm") != f or not body.get("code") or not body.get("publish"):
+                return self._send(400, {"detail": "confirm + code + publish needed"})
+            FAKE["installed"].pop(f, None)
+            return self._send(200, {"code": True, "published": {"pushed": True}})
+        self._send(404, {"detail": "no"})
+
+
+srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FakeConsole)
+_threading.Thread(target=srv.serve_forever, daemon=True).start()
+BASE = f"http://127.0.0.1:{srv.server_address[1]}"
+
+check(app_plugins.safe_base("https://console.amberxai.com") == "https://console.amberxai.com", "base: https ok")
+check(app_plugins.safe_base("http://console.amberxai.com") == "", "base: plain http refused off loopback")
+check(app_plugins.safe_base("https://u:p@console.amberxai.com") == "" and app_plugins.safe_base("https://x.example/path") == "", "base: no credentials or path")
+check(app_plugins.safe_base(BASE) == BASE, "base: loopback http ok")
+try:
+    app_plugins.call(BASE, "console-tok", "GET", "/redirect")
+    check(False, "redirect refused")
+except app_plugins.AppError as e:
+    check("redirect" in str(e), "call: a redirect is refused, token never follows")
+
+main.TABS_FILE.unlink()
+main.PLUGINS_FILE.write_text(_json.dumps({"apps": {"pilot": {"plugins": {"pilot.x": {"name": "Pilot X", "enabled": True}}}}}))
+os.environ.pop("APP_CONSOLE_TOKEN", None)
+os.environ["APP_CONSOLE_URL"] = BASE
+g = c.get("/api/app-plugins", headers=TOKEN).json()
+check([a["app"] for a in g["apps"]] == ["console", "pilot", "axhub"], "grid: one column per app in the tabs, in order")
+check(not g["apps"][0]["reachable"] and "APP_CONSOLE_TOKEN" in g["apps"][0]["reason"], "grid: no console token says why")
+check(c.get("/api/app-plugins").status_code == 401 and c.get("/api/app-plugins", headers=session("conrad", "user")).status_code == 403, "grid: callers + users refused")
+
+os.environ["APP_CONSOLE_TOKEN"] = "console-tok"
+g = c.get("/api/app-plugins", headers=TOKEN).json()
+rows = {r["id"]: r for r in g["plugins"]}
+A, B = "ai.amberx.axf.console.alpha", "ai.amberx.axf.console.beta"
+check(set(rows) == {A, B, "pilot.x"}, "grid: rows = Patches' list + installed + catalog, removed plugins left out")
+check(rows[A]["cells"]["console"] == {"installed": True, "canChange": True, "why": ""}, "grid: installed + changeable")
+check(rows[B]["cells"]["console"]["installed"] is False and rows[B]["cells"]["console"]["canChange"], "grid: in the catalog = installable")
+check(rows["pilot.x"]["cells"]["console"]["canChange"] is False and "catalog" in rows["pilot.x"]["cells"]["console"]["why"], "grid: not in the catalog = locked")
+check(rows[A]["cells"]["pilot"]["canChange"] is False and rows[A]["cells"]["axhub"]["installed"] is None, "grid: placeholder apps are read-only")
+check(rows[A]["model"] == "opus" and "_snaps" not in g, "grid: model kept, internals not sent")
+
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"changes": [{"app": "console", "id": B, "install": True}]}).status_code == 400, "apply: needs confirm")
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": A, "install": True}]}).status_code == 400, "apply: a locked cell is refused")
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": "nope", "install": True}]}).status_code == 400, "apply: unknown plugin refused")
+check(c.post("/api/app-plugins/apply", headers={**session("brett", "admin"), "origin": "https://other.example"}, json={"confirm": "apply", "changes": []}).status_code == 403, "apply: cross-site refused")
+r = c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": A, "install": True}]}).json()
+check("nothing to change" in r.get("note", ""), "apply: a box that already matches changes nothing")
+
+r = c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": B, "install": True}, {"app": "console", "id": A, "install": False}]})
+check(r.status_code == 200 and r.json()["job"]["state"] == "running", "apply: starts in the background")
+j = app_plugins.wait()
+check(j["state"] == "done" and [x["state"] for x in j["items"]] == ["done", "done"], "apply: both changes done")
+check(set(FAKE["installed"]) == {"beta"}, "apply: beta installed, alpha uninstalled in the Console")
+check(("/api/plugin-lifecycle/alpha/uninstall", {"confirm": "alpha", "code": True, "publish": True}) in FAKE["calls"], "apply: uninstall removes the code and publishes")
+lst = c.get("/api/plugins", headers=TOKEN).json()["apps"]["console"]["plugins"]
+check(B in lst and A not in lst, "apply: Patches' own list follows")
+check(c.get("/api/app-plugins/apply", headers=TOKEN).json()["job"]["state"] == "done", "apply: progress readable")
+
+FAKE["fail"].add("alpha")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": A, "install": True}, {"app": "console", "id": B, "install": False}]})
+j = app_plugins.wait()
+check(j["state"] == "partial" and j["items"][0]["state"] == "failed" and "cannot install" in j["items"][0]["note"] and j["items"][1]["state"] == "done", "apply: a failure is noted, the rest still run")
+
 print(f"server self-test: {passed} checks passed")
