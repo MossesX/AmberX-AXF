@@ -1,7 +1,8 @@
 """Claude badge — server part. Mounted at /api/plugins/claude-badge/ (console token, 404 when disabled).
 
 POST /test runs one tiny request through the AI assistant's model service (axf.llm@1) and says whether AI answers and
-which model did; GET /status returns the last result (kept in the plugin's data folder, no reply text, no keys).
+which model did, and which of three states it is in: `ok` (answers), `no-credit` (the account or key works but is out
+of credits / over its usage limit) or `error` (can't connect: bad token, invalid account, no assistant); GET /status returns the last result (kept in the plugin's data folder, no reply text, no keys).
 Nothing here names another plugin: no service = "AI unavailable".
 """
 from __future__ import annotations
@@ -23,6 +24,9 @@ from axf_server import storage
 
 router = APIRouter()
 _lock = threading.Lock()
+# Same wording the AI assistant's credit check matches (ai-assistant `_NO_CREDIT`); kept here so no plugin is named.
+NO_CREDIT = re.compile(r"credit balance|out of credits?|insufficient[ _-]?(credit|funds|balance)|billing|usage limit|limit reached|quota|payment required|\b402\b", re.I)
+STATES = ("ok", "no-credit", "error")
 PROMPT = "Connection check from the AmberX console. Reply with one word: OK."
 
 
@@ -41,6 +45,13 @@ def pretty_model(model: str) -> str:
         major, minor, fam = m.groups()
         return f"Claude {fam.capitalize()} {major}{'.' + minor if minor else ''}"
     return (model or "").strip()[:60]
+
+
+def classify(ok: bool, error: str) -> str:
+    """ok → `ok`; an error saying the account is out of credits / over its limit → `no-credit`; anything else → `error`."""
+    if ok:
+        return "ok"
+    return "no-credit" if NO_CREDIT.search(error or "") else "error"
 
 
 def _save(res: dict[str, Any]) -> None:
@@ -65,8 +76,10 @@ def run_test() -> dict[str, Any]:
     res["ms"] = int((time.time() - started) * 1000)
     res["name"] = pretty_model(res["model"]) if res["ok"] else ""
     res["claude"] = res["name"].startswith("Claude")
+    res["state"] = classify(res["ok"], res["error"])
     _save(res)
-    cx.log("system", f"AI connection: {'ok, ' + (res['name'] or 'model unknown') if res['ok'] else 'unavailable (' + res['error'][:120] + ')'}", "ok" if res["ok"] else "warn")
+    said = {"ok": "ok, " + (res["name"] or "model unknown"), "no-credit": "out of credits (" + res["error"][:120] + ")", "error": "unavailable (" + res["error"][:120] + ")"}
+    cx.log("system", f"AI connection: {said[res['state']]}", "ok" if res["ok"] else "warn")
     return res
 
 
@@ -78,6 +91,10 @@ def test() -> dict[str, Any]:
 @router.get("/status")
 def status() -> dict[str, Any]:
     try:
-        return {"last": json.loads((data_dir() / "status.json").read_text("utf-8"))}
+        last = json.loads((data_dir() / "status.json").read_text("utf-8"))
     except (OSError, ValueError):
         return {"last": None}
+    if isinstance(last, dict) and last.get("state") not in STATES:  # saved before the out-of-credits state existed
+        last["state"] = classify(bool(last.get("ok")), str(last.get("error") or ""))
+    return {"last": last}
+
