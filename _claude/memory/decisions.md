@@ -129,3 +129,4 @@ anywhere in a message he receives (even inside a paragraph, in any state), he ru
 through axHub, with no model involved. The same for GitHub: mapped git/GitHub commands he can run without Claude.
 A settings dialog adds, removes, edits and manages the commands and triggers. **Every live banner's Auto fix tries
 Vinny first; if Vinny fails, it falls back to Mosses, then to Claude.**
+- **Oct 24 2026 — Offline agents' engines are on axHub (Brett).** "Yes Vinny's commands go through after because his engine is on axhub … All offline agents engines are on axhub." Every agent that works without a Claude connection (Vinny first) runs its engine on axHub: its commands go through axHub (each `vps.run` approved there) and its data (command book, runs) is kept on axHub, not only in the console.
