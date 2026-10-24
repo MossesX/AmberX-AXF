@@ -196,7 +196,7 @@ export function BannerStrip() {
   const t = TABS[0]!;
   const origin = useOrigin(t);
   const [px, setPx] = useState(0);
-  const on = rt.settings.get(BANNERS_KEY) !== false;
+  const on = rt.settings.get(BANNERS_KEY) === true;
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const f = e.source ? frames.get(e.source as Window) : undefined;
@@ -267,7 +267,7 @@ function loadPlugins(force = false): Promise<PluginsState | null> {
   if (loading && !force) return loading;
   loading = api<PluginsState>('/plugins').then((r) => {
     if (r.ok && r.data) setPlugins({ state: r.data, error: '' });
-    else setPlugins({ error: r.error || 'Patches’ plugin list could not be read' });
+    else { setPlugins({ error: r.error || 'Patches’ plugin list could not be read' }); loading = null; } // failed: try again next time
     return r.ok ? r.data : plugins.state;
   });
   return loading;
@@ -275,7 +275,7 @@ function loadPlugins(force = false): Promise<PluginsState | null> {
 
 /** Tell every page of an app which plugins it may run (only what is installed in Patches and switched on). */
 function announce(t: PatchTab, origin?: string) {
-  const ids = enabledPluginIds(plugins.state, t.id);
+  const ids = enabledFor(t);
   const o = origin ?? tabOriginOf(t);
   for (const [w, f] of frames) if (f.tab.id === t.id) try { w.postMessage(pluginsEnabledMessage(ids), o); } catch { /* frame gone */ }
 }
@@ -302,7 +302,13 @@ async function onPluginReport(rt: AxfRuntime, t: PatchTab, w: Window, origin: st
   setPlugins({ reports: { ...plugins.reports, [t.id]: list } });
   await loadPlugins();
   if (rt.settings.get(AUTO_INSTALL_KEY) !== false && missingPlugins(list, plugins.state, t.id).length && !plugins.busy) await installMissing(t);
-  try { w.postMessage(pluginsEnabledMessage(enabledPluginIds(plugins.state, t.id)), origin); } catch { /* frame gone */ }
+  try { w.postMessage(pluginsEnabledMessage(enabledFor(t)), origin); } catch { /* frame gone */ }
+}
+
+/** What an app may run: Patches' list when it can be read, else the app's own switches (never nothing, so a list
+ *  Patches can't read doesn't switch off every plugin and banner in its tabs). */
+function enabledFor(t: PatchTab): string[] {
+  return plugins.state ? enabledPluginIds(plugins.state, t.id) : (plugins.reports[t.id] ?? []).filter((p) => p.on).map((p) => p.id).sort();
 }
 
 /** Switch a plugin installed in Patches on or off for an app, then tell its pages. */
@@ -323,12 +329,12 @@ function PluginsCheck() {
   const v = usePluginsView();
   const [open, setOpen] = useState(false);
   const rows = missingByApp(v);
-  // Patches' own list unreadable: the apps run no plugins inside Patches until it is back, so say so.
+  // Patches' own list unreadable: the apps run their own plugin switches until it is back, so say so.
   if (!v.state && v.error && Object.keys(v.reports).length) return (
     <div className="pt-check" role="status" data-fx-ctx-ignore="">
       <Note tone="danger" icon="alert">
         <div className="pt-check__line">
-          <span className="pt-check__title"><strong>Systems check</strong> · Patches can’t read its plugin list, so the apps run no plugins here ({v.error})</span>
+          <span className="pt-check__title"><strong>Systems check</strong> · Patches can’t read its plugin list, so the apps run their own plugin choices here ({v.error})</span>
           <Button size="sm" icon="refresh" onClick={() => void loadPlugins(true).then(() => { for (const t of TABS) announce(t); })}>Try again</Button>
         </div>
       </Note>
@@ -485,14 +491,14 @@ export const patchesLibrary: AxfWebLibrary = {
     rt.actions.register('patches.menu', ([tab, id]) => runGuestItem(rt, tab ?? '', id ?? ''), { label: 'Run an item of a tab app\'s menu', params: true, searchable: false });
     rt.actions.register('patches.plugins.fix', () => { for (const t of TABS) void installMissing(t); }, { label: 'Install the apps’ missing plugins in Patches' });
     rt.actions.register('patches.plugins', () => openSettings(rt, 'connections'), { label: 'Plugins in Patches' });
-    rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
+    rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) !== true), { label: 'Console banners above every tab' });
   },
   settings: [{
     id: 'patches', label: 'Patches', icon: 'layers', tab: 'connections', order: 5,
     description: 'The apps in the tabs. Addresses are https, host only; axHub is the hub this app runs with.',
     settings: [
       ...TABS.filter((t) => t.key).map((t) => ({ key: t.key, label: `${t.label} address`, kind: 'text' as const, default: t.fallback, description: 'https only, no path' })),
-      { key: BANNERS_KEY, label: 'Console banners above every tab', kind: 'toggle' as const, default: true, description: 'The Dev Console’s banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new), on screen whichever tab is open.' },
+      { key: BANNERS_KEY, label: 'Console banners above every tab', kind: 'toggle' as const, default: false, description: 'Off by default: the apps show their own banners. The Dev Console’s banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new), on screen whichever tab is open.' },
     ],
   }],
   settingsPanels: [
