@@ -47,7 +47,10 @@ check_all() {
   if [ -f /etc/cron.d/axf-console ]; then put host-update-cron ok "console auto-update every 5 minutes"; else put host-update-cron warn "no /etc/cron.d/axf-console: the console won't update itself"; fi
   # Claude Code
   if have claude; then put host-claude-cli ok "Claude Code $(claude --version 2>/dev/null | head -1)"; else put host-claude-cli error "Claude Code (claude) is not installed"; fi
-  if [ -s "$USER_HOME/.claude/.credentials.json" ] || [ -s "$USER_HOME/.anthropic-key" ]; then put host-claude-login ok "signed in (plan credentials or API key file present)"
+  # Account email of the Claude plan sign-in (empty when signed in with an API key only, or jq is missing).
+  CLAUDE_EMAIL=""; have jq && CLAUDE_EMAIL="$(jq -r '.oauthAccount.emailAddress // empty' "$USER_HOME/.claude.json" 2>/dev/null)"
+  if [ -n "$CLAUDE_EMAIL" ]; then put host-claude-login ok "signed in as $CLAUDE_EMAIL"
+  elif [ -s "$USER_HOME/.claude/.credentials.json" ] || [ -s "$USER_HOME/.anthropic-key" ]; then put host-claude-login ok "signed in (plan credentials or API key file present)"
   else put host-claude-login warn "no Claude sign-in found for $(basename "$USER_HOME"): run claude and /login"; fi
   # claude-pick --install puts the launcher in ~/.local/bin and an alias in ~/.bashrc / ~/.zshrc. Cron and vps.run are
   # non-interactive shells that never load aliases, so `command -v claude` alone always finds the real binary here.
