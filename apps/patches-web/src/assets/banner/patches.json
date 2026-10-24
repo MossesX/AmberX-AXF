@@ -3,8 +3,8 @@
   "type": "banner",
   "id": "patches",
   "name": "Patches",
-  "version": "1.0.0",
-  "description": "The one banner on screen in Patches (web): the Patches mark on the left; day/night switch, clock and the Settings button (Patches' combined settings) on the right. The apps in the tabs hide their own (embed@1).",
+  "version": "1.1.0",
+  "description": "The one banner on screen in Patches (web): the Patches mark and the Claude connection badge on the left; day/night switch, clock and the Settings button (Patches' combined settings) on the right. The apps in the tabs hide their own (embed@1).",
   "author": "AmberX AXF build engine",
   "tags": [
     "banner",
@@ -18,6 +18,12 @@
       "text": "Patches"
     },
     "attach": [
+      {
+        "type": "badge",
+        "id": "claude-connection",
+        "at": "left",
+        "order": 0
+      },
       {
         "type": "theme-switch",
         "id": "day-night",

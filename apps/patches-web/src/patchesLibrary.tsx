@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Button, Icon, IconButton, ModelBadge, modelLabel, Note, Switch, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import type { EmbedPlugin } from './axf/core';
 import { api } from './api';
+import { checkClaude } from './claude';
 
 /** "built with Opus" for a plugin's row (Switch hints are text), or nothing when its model isn't known. */
 const builtWithText = (model?: string) => (model ? `built with ${modelLabel(model)}` : '');
@@ -597,6 +598,10 @@ export const patchesLibrary: AxfWebLibrary = {
     rt.actions.register('patches.menu', ([tab, id]) => runGuestItem(rt, tab ?? '', id ?? ''), { label: 'Run an item of a tab app\'s menu', params: true, searchable: false });
     rt.actions.register('patches.plugins.fix', () => { for (const t of TABS) void installMissing(t); }, { label: 'Install the apps’ missing plugins in Patches' });
     rt.actions.register('patches.plugins', () => openSettings(rt, 'patches', 'connections'), { label: 'Plugins in Patches' });
+    // Claude connection badge (top left of the banner): checked on every load; tap re-checks, or opens the keys when red.
+    rt.actions.register('patches.claude.check', () => { void checkClaude(rt, true); }, { label: 'Check the Claude connection' });
+    rt.actions.register('patches.claude.keys', () => openSettings(rt, 'console', 'ai-keys'), { label: 'Claude keys (Console settings → AI keys)' });
+    void checkClaude(rt);
     rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
   },
   settings: [{

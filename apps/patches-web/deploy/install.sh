@@ -64,6 +64,9 @@ say "Building the image (first time takes a few minutes)"
 docker build -q -t "$NAME:latest" "$APP" >/dev/null
 axf_stop_container "$NAME"
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT")
+# The Claude connection badge asks the Dev Console (its claude-connection plugin) with the console token, server side only.
+CONSOLE_TOKEN="${APP_CONSOLE_TOKEN:-$(sed -n 's/^AXF_TOKEN=//p' "$AXF_DIR/.axf-console/env" 2>/dev/null | head -n1)}"
+[ -n "$CONSOLE_TOKEN" ] && COMMON+=(-e APP_CONSOLE_TOKEN="$CONSOLE_TOKEN" -e APP_CONSOLE_URL="${APP_CONSOLE_URL:-https://console.amberxai.com}") || say "No console token found: the Claude badge will say \"No Claude connection\" (APP_CONSOLE_TOKEN=… bash deploy/install.sh)"
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"

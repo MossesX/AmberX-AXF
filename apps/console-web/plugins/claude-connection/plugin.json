@@ -1,0 +1,39 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.claude-connection",
+  "name": "Claude connection",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Checks the Claude Code connection (Claude subscription or API key) through the AI assistant's model service and returns the active account's email. Patches reads it on every page load and paints its attachable badge `claude-connection` at the top left of its banner: green Claude logo + the account email, or red + “No Claude connection · check keys”. Never returns keys or reply text.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:claude-connection"
+  ],
+  "optional": [
+    "service:axf.llm@1",
+    "service:axf.ai-keys@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-24" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/claude-connection",
+    "env": [
+      "AXF_CLAUDE_JSON"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": false
+}
