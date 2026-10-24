@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T11:08:03.374Z",
+ "updatedAt": "2026-10-24T11:26:29.022Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3062,6 +3062,46 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "estimate": "2.2 h",
+   "source": "chat"
+  },
+  {
+   "id": "voice-notes-tab",
+   "title": "Voice notes: tabbable page that fetches saved notes",
+   "detail": "Voice notes plugin gets a page (view voice-notes) listing the notes Voice Vault saved on axHub, and plugin.json tabable so Patches can add it as a tab.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-24T11:26:29.018Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Notes core + store: read the notes table, filter/search/group",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.001Z"
+    },
+    {
+     "text": "Notes page view + nav/menu, tabable in plugin.json",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.008Z"
+    },
+    {
+     "text": "Tests, typecheck, build, docs",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.013Z"
+    }
+   ],
+   "createdAt": "2026-10-24T11:22:35.523Z",
+   "builtAt": "2026-10-24T11:26:29.022Z",
+   "updatedAt": "2026-10-24T11:26:29.022Z",
    "source": "chat"
   }
  ]

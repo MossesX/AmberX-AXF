@@ -298,3 +298,64 @@ export function conversationPreview(s: VoiceNotesSettings, lists: NoteList[], sa
   if (s.confirm) out.push({ who: 'app', text: s.confirmText.replace('{list}', l.name).replace('{sub}', sub) });
   return out;
 }
+
+/* ---------- saved notes (table `notes`, written by the listener) ---------- */
+
+/** One note the listener saved: hub-table@1 row `{list, subcategory, text, answers, at, by, device}`. */
+export interface SavedNote { id: string; list: string; subcategory: string; text: string; answers: Record<string, string>; at: string; by: string; device: string }
+
+const str = (v: unknown, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
+
+/** A row from table `notes` → a note; null when it has no text. Unknown fields are dropped, long ones cut. */
+export function normalizeNote(raw: unknown, id: string): SavedNote | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  const text = str(r.text).trim();
+  if (!text) return null;
+  const answers: Record<string, string> = {};
+  if (r.answers && typeof r.answers === 'object' && !Array.isArray(r.answers)) {
+    for (const [k, v] of Object.entries(r.answers as Record<string, unknown>).slice(0, 40)) if (typeof v === 'string' && k) answers[k.slice(0, 60)] = v.slice(0, 1000);
+  }
+  return { id: str(r.id, 120) || id, list: str(r.list, 120), subcategory: str(r.subcategory, 120), text, answers, at: str(r.at, 40), by: str(r.by, 120), device: str(r.device, 120) };
+}
+
+/** Where a note went, in words: "Groceries › Vegetables", or the raw id when the list is gone. */
+export function noteWhere(n: SavedNote, lists: NoteList[]): string {
+  const l = lists.find((x) => x.id === n.list);
+  if (!l) return n.list ? `${n.list} (list removed)` : 'No list';
+  const sub = n.subcategory ? l.subcategories.find((s) => s.id === n.subcategory)?.name ?? n.subcategory : '';
+  return sub ? `${l.name} › ${sub}` : l.name;
+}
+
+export interface NoteFilter { q?: string; list?: string; sub?: string }
+
+/** Notes newest first, filtered by list (`''` = all, `'none'` = list gone or unset), subcategory and words (text, answers, where). */
+export function filterNotes(notes: SavedNote[], lists: NoteList[], f: NoteFilter = {}): SavedNote[] {
+  const words = normPhrase(f.q ?? '').split(' ').filter(Boolean);
+  const known = new Set(lists.map((l) => l.id));
+  return notes
+    .filter((n) => !f.list || (f.list === 'none' ? !known.has(n.list) : n.list === f.list))
+    .filter((n) => !f.sub || n.subcategory === f.sub)
+    .filter((n) => {
+      if (!words.length) return true;
+      const hay = normPhrase([n.text, noteWhere(n, lists), ...Object.entries(n.answers).flat(), n.device].join(' '));
+      return words.every((w) => hay.includes(w));
+    })
+    .sort((a, b) => (b.at || '').localeCompare(a.at || '') || b.id.localeCompare(a.id));
+}
+
+/** How many notes each list has (key `none` = list gone or unset). */
+export function noteCounts(notes: SavedNote[], lists: NoteList[]): Record<string, number> {
+  const known = new Set(lists.map((l) => l.id));
+  const out: Record<string, number> = {};
+  for (const n of notes) { const k = known.has(n.list) ? n.list : 'none'; out[k] = (out[k] ?? 0) + 1; }
+  return out;
+}
+
+/** The notes as Markdown (for Copy). */
+export function notesMarkdown(notes: SavedNote[], lists: NoteList[]): string {
+  return notes.map((n) => {
+    const ans = Object.entries(n.answers).map(([k, v]) => `  - ${k}: ${v}`).join('\n');
+    return `- **${noteWhere(n, lists)}** (${n.at || 'no date'}): ${n.text}${ans ? `\n${ans}` : ''}`;
+  }).join('\n');
+}

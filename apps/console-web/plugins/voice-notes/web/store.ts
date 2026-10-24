@@ -1,17 +1,21 @@
 /**
  * Voice notes — where its data lives: everything on axHub through lib-hubstore (no copy on this device).
- * Settings: HubSettings `settings/voice-notes.json`; lists: HubData table `lists` (folder `voice-notes`).
+ * Settings: HubSettings `settings/voice-notes.json`; lists: HubData table `lists`; saved notes: table `notes` (folder `voice-notes`,
+ * written by the listener, Voice Vault). Notes are read only when the notes page asks (`loadNotes`).
  */
 import { HubData, HubSettings, type HubState, type HubValue, type Row } from '@console/axf/libs/hubstore';
 import { hubOrigin } from '@console/hubAppearance';
-import { DATA_FOLDER, HUB_PROJECT, ID, LISTS_TABLE, SETTINGS_FILE, normalizeList, normalizeSettings, sortLists, type NoteList, type VoiceNotesSettings } from './core';
+import { DATA_FOLDER, HUB_PROJECT, ID, LISTS_TABLE, NOTES_TABLE, SETTINGS_FILE, normalizeList, normalizeNote, normalizeSettings, sortLists, type NoteList, type SavedNote, type VoiceNotesSettings } from './core';
 
-export interface Snapshot { hub: string; state: HubState; settings: VoiceNotesSettings; lists: NoteList[]; error: string | null; loaded: boolean }
+export interface Snapshot {
+  hub: string; state: HubState; settings: VoiceNotesSettings; lists: NoteList[]; error: string | null; loaded: boolean;
+  notes: SavedNote[]; notesLoaded: boolean; notesAt: number; notesBusy: boolean;
+}
 
 let settingsDoc: HubSettings | null = null;
 let data: HubData | null = null;
 let hub = '';
-let snap: Snapshot = { hub: '', state: { status: 'idle' }, settings: normalizeSettings({}), lists: [], error: null, loaded: false };
+let snap: Snapshot = { hub: '', state: { status: 'idle' }, settings: normalizeSettings({}), lists: [], error: null, loaded: false, notes: [], notesLoaded: false, notesAt: 0, notesBusy: false };
 const subs = new Set<() => void>();
 const emit = (p: Partial<Snapshot>) => { snap = { ...snap, ...p }; subs.forEach((f) => f()); };
 
@@ -64,4 +68,23 @@ export async function removeList(id: string): Promise<void> {
   catch (e) { emit({ error: (e as Error).message }); }
 }
 
-export const where = () => ({ settings: settingsDoc?.url ?? '', lists: hub && hub !== 'off' ? `${hub}/data/${HUB_PROJECT}/${DATA_FOLDER}/${LISTS_TABLE}/head.json` : '' });
+/** Fetch the saved notes (and the lists, so each note can say where it went). */
+export async function loadNotes(): Promise<void> {
+  if (!connect() || snap.notesBusy) return;
+  emit({ notesBusy: true });
+  try {
+    if (!snap.loaded) await load();
+    const rows = await data!.table(NOTES_TABLE).rows();
+    const notes = Object.entries(rows).map(([id, r]) => normalizeNote(r, id)).filter((x): x is SavedNote => !!x);
+    emit({ notes, notesLoaded: true, notesAt: Date.now(), notesBusy: false, error: null });
+  } catch (e) { emit({ error: (e as Error).message, notesBusy: false }); }
+}
+
+export async function removeNote(id: string): Promise<void> {
+  if (!data) return;
+  try { await data.table(NOTES_TABLE).remove(id); emit({ notes: snap.notes.filter((n) => n.id !== id), error: null }); }
+  catch (e) { emit({ error: (e as Error).message }); }
+}
+
+const tableUrl = (t: string) => (hub && hub !== 'off' ? `${hub}/data/${HUB_PROJECT}/${DATA_FOLDER}/${t}/head.json` : '');
+export const where = () => ({ settings: settingsDoc?.url ?? '', lists: tableUrl(LISTS_TABLE), notes: tableUrl(NOTES_TABLE) });
