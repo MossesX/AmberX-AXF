@@ -162,7 +162,7 @@ const ago = (ms: number, now: number) => `${dur(now - ms).split(' ')[0]} ago`;
 
 const STATE_LABEL: Record<State, string> = { queued: 'Queued', running: 'Running', waiting: 'Waiting', done: 'Done', failed: 'Failed', cancelled: 'Cancelled', stale: 'No word' };
 const STATE_ICON: Record<State, string> = { queued: 'clock', running: 'refresh', waiting: 'pause', done: 'check-circle', failed: 'x-circle', cancelled: 'minus', stale: 'alert' };
-const SOURCE_ICON: Record<string, string> = { github: 'github', update: 'rocket', assistant: 'sparkles', 'claude-code': 'terminal', reports: 'list', 'axf.syscheck@1': 'shield', changes: 'branch', 'push-banner': 'branch' };
+const SOURCE_ICON: Record<string, string> = { github: 'github', update: 'rocket', assistant: 'sparkles', 'claude-code': 'terminal', reports: 'list', 'axf.syscheck@1': 'shield', changes: 'branch', git: 'branch' };
 /** What kind of work an item is: building, editing, deleting, pushing, pulling, merging, thinking … (open set: anything else shows its source's icon). */
 export const KIND_LABEL: Record<string, string> = { build: 'Building', edit: 'Editing', delete: 'Deleting', push: 'Pushing', pull: 'Pulling', merge: 'Merging', thinking: 'Thinking', fix: 'Fixing', ci: 'CI', deploy: 'Deploying', ai: 'Thinking', claude: 'Working' };
 const KIND_ICON: Record<string, string> = { build: 'hammer', edit: 'edit', delete: 'trash', push: 'upload', pull: 'download', merge: 'branch', thinking: 'sparkles', fix: 'zap', ci: 'github', deploy: 'rocket', ai: 'sparkles', claude: 'terminal' };

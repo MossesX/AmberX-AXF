@@ -690,7 +690,7 @@ def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]
     iid = f"push-banner:{kind}:{int(time.time() * 1000)}"
     if act:
         try:
-            act.report({"id": iid, "kind": kind, "source": "push-banner", "title": f"{verb} {what}".strip(), "state": "running",
+            act.report({"id": iid, "kind": kind, "source": "git", "title": f"{verb} {what}".strip(), "state": "running",
                         "url": f"https://github.com/{b['repo']}" if github.valid_repo(str(b.get("repo") or "")) else None}, "push-banner")
         except Exception:  # noqa: BLE001 — the banner never blocks the work
             act = None
