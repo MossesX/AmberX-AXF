@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T18:22:53.000Z",
+ "updatedAt": "2026-10-24T11:26:29.022Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2887,43 +2887,60 @@
    "title": "Voice notes listener in Voice Vault (start/stop triggers, list of lists, questions, saved to axHub)",
    "detail": "Brett Oct 23 2026: bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Merged in PR #50 (45d7631). CI green: android.yml run 336, latest main run 343 ships voicevault-debug.apk + app-apks.",
+     "at": "2026-10-24T11:08:03.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Pure notes model (Kotlin port of voice-notes core rules) + unit test",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.315Z"
     },
     {
      "text": "axHub data client in app code (settings doc, lists table, notes table write with If-Match)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.335Z"
     },
     {
      "text": "Note conversation (beep, record to stop trigger, list of lists, subcategory, questions, confirm)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.345Z"
     },
     {
      "text": "Background service: start triggers heard alongside the global trigger",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.351Z"
     },
     {
      "text": "Notes screen: hub sign-in, status, take a note, last saved; settings + route",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.358Z"
     },
     {
      "text": "Docs, status, CI, PR",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.363Z"
     }
    ],
    "createdAt": "2026-10-23T15:47:07.297Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T15:47:07.297Z",
+   "builtAt": "2026-10-24T11:08:03.374Z",
+   "updatedAt": "2026-10-24T11:08:03.374Z",
    "estimate": "3 h",
    "source": "chat"
   },
@@ -3045,6 +3062,46 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "estimate": "2.2 h",
+   "source": "chat"
+  },
+  {
+   "id": "voice-notes-tab",
+   "title": "Voice notes: tabbable page that fetches saved notes",
+   "detail": "Voice notes plugin gets a page (view voice-notes) listing the notes Voice Vault saved on axHub, and plugin.json tabable so Patches can add it as a tab.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-24T11:26:29.018Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Notes core + store: read the notes table, filter/search/group",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.001Z"
+    },
+    {
+     "text": "Notes page view + nav/menu, tabable in plugin.json",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.008Z"
+    },
+    {
+     "text": "Tests, typecheck, build, docs",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.013Z"
+    }
+   ],
+   "createdAt": "2026-10-24T11:22:35.523Z",
+   "builtAt": "2026-10-24T11:26:29.022Z",
+   "updatedAt": "2026-10-24T11:26:29.022Z",
    "source": "chat"
   }
  ]

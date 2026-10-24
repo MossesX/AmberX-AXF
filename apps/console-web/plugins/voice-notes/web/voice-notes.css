@@ -7,3 +7,12 @@
 .axp-voice-notes-editor { padding: var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
 .axp-voice-notes-script { margin: 0; padding-left: calc(var(--fx-space) * 1.5); display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); }
 .axp-voice-notes-line.is-you { font-weight: 600; }
+/* the notes page */
+.axp-voice-notes-filters { align-items: flex-end; }
+.axp-voice-notes-filters > .fx-field { flex: 1 1 12em; }
+.axp-voice-notes-note { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.5); }
+.axp-voice-notes-notehead { gap: calc(var(--fx-space) * 0.5); align-items: center; }
+.axp-voice-notes-grow { flex: 1 1 auto; }
+.axp-voice-notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.axp-voice-notes-answers { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(10em, 1fr)); gap: calc(var(--fx-space) * 0.25) var(--fx-space); }
+.axp-voice-notes-answers dd { margin: 0; overflow-wrap: anywhere; }
