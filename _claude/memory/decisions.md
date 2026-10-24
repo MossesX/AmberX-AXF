@@ -116,3 +116,7 @@ The live axHub site gets its UI from the AXF app `apps/axhub-web` (rebuilt with 
 and layout). The hub server in `MossesX/axHub` keeps its API, sign-in wall and data; AXF stays out of the axHub
 repo's code, so "axHub never depends on AXF" still holds for the server. Reusable parts of the hub's pages
 (approvals, app catalog, session handling, admin lists) are harvested into AXF web libraries along the way.
+
+## axHub badge: red until live (Oct 24 2026)
+
+Brett: the axHub badge must be red whenever the app isn't retrieving its settings live from axHub, and green only when it is (first red, then green). Built as the framework web library `framework/libs/hubstatus` (status widget `status/axhub`, counter `hub.live`, no new asset type), installed in the Dev Console. Rule in `_claude/rules/RULES.md`.

@@ -136,6 +136,7 @@ jobs:
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
             npx -y tsx framework/spec/check-library-parts.mts          # library@1 parts (features inside a library): core/library.ts = CLI installer (Kotlin twin deferred)
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
+            npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             python apps/console-web/server/test_alerts.py
