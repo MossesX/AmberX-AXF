@@ -21,7 +21,7 @@
     "app-menu": "axhub-web",
     "toolbar": "axhub-web",
     "nav-menu": "axhub-web",
-    "context-menu": "compact-classic",
+    "context-menu": "axhub-web",
     "dialog": "centered-modal",
     "popup": "corner-solid",
     "button": "rounded-solid",
