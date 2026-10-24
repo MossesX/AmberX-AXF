@@ -9,6 +9,8 @@
  * One state for every interface (Settings → Plugins → Banners, the right-click Banner settings, a host's Banners tab):
  *   banners  { <banner id>: { on, at } }   hidden or not, and when that was last switched (ms)
  *   timer    { on, minutes }                one timer for every hide: a hide lasts `minutes` after it was switched
+ * A hide may carry its own end (`until`, ms): the banner's right-click menu hides it for 1, 5 or 10 minutes (Brett,
+ * Oct 23 2026); such a hide ignores the shared timer. Any other switch clears it.
  * Hide all is not stored on its own: it is on while every banner is hidden, and switching it switches every banner, so
  * whichever switch was touched last wins. Pure (no DOM, no storage); BannerSettings.tsx keeps it in one setting.
  * Android twin deferred (spec/PORTING.md).
@@ -19,7 +21,7 @@ export const TIMER_MIN = 1;
 export const TIMER_MAX = 99;
 export const TIMER_DEFAULT = 15;
 
-export interface BannerHideEntry { on: boolean; at: number }
+export interface BannerHideEntry { on: boolean; at: number; until?: number }
 export interface BannerHideState { banners: Record<string, BannerHideEntry>; timer: { on: boolean; minutes: number } }
 
 const ID = /^[a-z0-9][a-z0-9._-]{0,63}$/;
@@ -38,7 +40,9 @@ export function parseBannerHide(raw: unknown): BannerHideState {
     for (const [id, v] of Object.entries(b as Record<string, unknown>)) {
       if (!ID.test(id) || !v || typeof v !== 'object') continue;
       const e = v as Record<string, unknown>;
-      banners[id] = { on: e.on === true, at: typeof e.at === 'number' && Number.isFinite(e.at) && e.at >= 0 ? e.at : 0 };
+      const entry: BannerHideEntry = { on: e.on === true, at: typeof e.at === 'number' && Number.isFinite(e.at) && e.at >= 0 ? e.at : 0 };
+      if (typeof e.until === 'number' && Number.isFinite(e.until) && e.until >= 0) entry.until = e.until;
+      banners[id] = entry;
     }
   }
   const t = o.timer && typeof o.timer === 'object' && !Array.isArray(o.timer) ? (o.timer as Record<string, unknown>) : {};
@@ -49,6 +53,7 @@ export function parseBannerHide(raw: unknown): BannerHideState {
 export function hideEndsAt(s: BannerHideState, id: string): number | null {
   const e = s.banners[id];
   if (!e?.on) return null;
+  if (e.until !== undefined) return e.until;
   return s.timer.on ? e.at + s.timer.minutes * 60_000 : Infinity;
 }
 
@@ -79,6 +84,15 @@ export function setBannerHidden(s: BannerHideState, id: string, on: boolean, now
   return { ...s, banners: { ...s.banners, [id]: { on, at: now } } };
 }
 
+/** The quick hides on a banner's right-click menu (minutes). */
+export const QUICK_HIDE_MINUTES = [1, 5, 10] as const;
+
+/** Hide one banner for this many minutes (1–99), whatever the shared timer says. */
+export function hideBannerFor(s: BannerHideState, id: string, minutes: number, now: number): BannerHideState {
+  if (!ID.test(id)) return s;
+  return { ...s, banners: { ...s.banners, [id]: { on: true, at: now, until: now + clampMinutes(minutes) * 60_000 } } };
+}
+
 /** Hide all / show all: every one of these banners, at once. */
 export function setAllBannersHidden(s: BannerHideState, ids: readonly string[], on: boolean, now: number): BannerHideState {
   const banners = { ...s.banners };
@@ -95,7 +109,7 @@ export function setBannerTimer(s: BannerHideState, patch: { on?: boolean; minute
   const banners: Record<string, BannerHideEntry> = {};
   for (const [id, e] of Object.entries(s.banners)) {
     const hiddenNow = bannerHidden(s, id, now);
-    banners[id] = hiddenNow && timer.on ? { on: true, at: now } : hiddenNow ? e : { on: false, at: e.at };
+    banners[id] = hiddenNow && e.until !== undefined ? e : hiddenNow && timer.on ? { on: true, at: now } : hiddenNow ? e : { on: false, at: e.at };
   }
   return { banners, timer };
 }
