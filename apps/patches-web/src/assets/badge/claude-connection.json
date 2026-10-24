@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "badge",
+  "id": "claude-connection",
+  "name": "Claude connection",
+  "version": "1.0.0",
+  "description": "Attachable badge at the top left of Patches' banner: the Claude logo, green with the active account's email when Claude Code connects (subscription or API key), red with “No Claude connection · check keys” when it doesn't. Patches repaints it on every load from the Dev Console's claude-connection plugin.",
+  "author": "AmberX AXF",
+  "tags": ["badge", "ai", "status"],
+  "data": { "icon": "claude", "label": "Checking Claude…", "tone": "muted", "shape": "pill", "tooltip": "Checking the Claude Code connection…", "link": "patches.claude.check" }
+}

@@ -7,7 +7,8 @@ Signed-in hub *users* (not admins) reach only `/api/health` and `/api/me` until 
 
 Env: APP_TOKEN (required in production; empty = open, local dev only), APP_TRUST_WALL=1 + APP_WALL_SECRET (the
 installer sets both), APP_WALL_HUB (hub address for sign-out links), APP_THEMES_PERM (hub permission that lets a
-user change themes; default "patches-web.themes"), APP_DATA_DIR (default ./data), PORT.
+user change themes; default "patches-web.themes"), APP_DATA_DIR (default ./data), PORT; APP_CONSOLE_URL + APP_CONSOLE_TOKEN (the Dev Console, for the
+Claude connection badge: GET /api/claude).
 
 Run: APP_TOKEN=dev uvicorn main:app --app-dir server --port 7290   (npm run dev proxies /api here)
 """
@@ -20,6 +21,9 @@ import re
 import tempfile
 import threading
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -105,6 +109,67 @@ def me(request: Request) -> dict[str, Any]:
 @app.get("/api/hello")
 def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
     return {"message": f"Hello {c.name} from {APP_ID}"}
+
+
+# ---------------------------------------------------------------- Claude connection (banner badge)
+#
+# Brett, Oct 24 2026: on every load Patches shows whether Claude Code connects (subscription or API key) and the active
+# account's email. The Dev Console's claude-connection plugin does the check; this server asks it with the console token
+# (server to server: the token never reaches a browser) and passes on only the plain fields.
+
+CONSOLE_URL = os.environ.get("APP_CONSOLE_URL", "https://console.amberxai.com").rstrip("/")
+CLAUDE_PLUGIN = "claude-connection"  # the console plugin folder (route /api/plugins/<folder>/status); off = 404
+CLAUDE_FIELDS = ("at", "ok", "mode", "email", "account", "model", "ms", "error")
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *a: Any, **k: Any) -> None:  # a token never follows a redirect
+        return None
+
+
+def _console_token() -> str:
+    f = os.environ.get("APP_CONSOLE_TOKEN_FILE", "")
+    if f:
+        try:
+            for line in Path(f).read_text("utf-8").splitlines():
+                if line.startswith("AXF_TOKEN="):
+                    return line.split("=", 1)[1].strip()
+        except OSError:
+            pass
+    return os.environ.get("APP_CONSOLE_TOKEN", "").strip()
+
+
+def claude_status(refresh: bool = False) -> dict[str, Any]:
+    """The console's claude-connection check, or ok: False with why (never raises, never returns the token)."""
+    down = {"at": int(time.time() * 1000), "ok": False, "mode": "", "email": "", "account": "", "model": "", "ms": 0}
+    u = urllib.parse.urlsplit(CONSOLE_URL)
+    if u.scheme != "https" and u.hostname not in ("localhost", "127.0.0.1"):
+        return {**down, "error": "APP_CONSOLE_URL must be https"}
+    tok = _console_token()
+    if not tok:
+        return {**down, "error": "Patches has no console token (APP_CONSOLE_TOKEN)"}
+    req = urllib.request.Request(f"{CONSOLE_URL}/api/plugins/{CLAUDE_PLUGIN}/status{'?refresh=true' if refresh else ''}",
+                                 headers={"Authorization": f"Bearer {tok}", "Accept": "application/json"})
+    try:
+        with urllib.request.build_opener(_NoRedirect).open(req, timeout=60) as r:
+            body = json.loads(r.read(65536).decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        why = "the Claude connection plugin is off in the console" if e.code == 404 else "the console refused the token" if e.code in (401, 403) else f"the console answered {e.code}"
+        return {**down, "error": why}
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        return {**down, "error": f"the console can't be reached ({str(getattr(e, 'reason', e))[:120]})"}
+    if not isinstance(body, dict):
+        return {**down, "error": "the console answered something unexpected"}
+    out = {k: body.get(k) for k in CLAUDE_FIELDS}
+    out["ok"] = out["ok"] is True
+    for k in ("mode", "email", "account", "model", "error"):
+        out[k] = _clip(out[k] or "", 300)
+    return out
+
+
+@app.get("/api/claude")
+def claude(refresh: bool = False, _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    return claude_status(refresh)
 
 
 # ---------------------------------------------------------------- plugins Patches manages for the apps in its tabs

@@ -144,4 +144,53 @@ check(oct(main.TABS_FILE.stat().st_mode & 0o777) == "0o600", "tabs: file 0600")
 main.TABS_FILE.write_text("{broken")
 check([t["app"] for t in c.get("/api/tabs", headers=TOKEN).json()["tabs"]] == ["console", "pilot", "axhub"], "tabs: damaged file reads as the defaults")
 
+# ---- Claude connection badge: GET /api/claude asks the console (fake console on loopback)
+import http.server  # noqa: E402
+import json as _json  # noqa: E402
+import threading as _th  # noqa: E402
+
+SEEN: list[dict] = []
+REPLY = {"code": 200, "body": {"at": 1, "ok": True, "mode": "subscription", "email": "brett@example.com", "account": "brett@example.com", "model": "claude-opus-5-5", "ms": 5, "error": "", "secret": "never"}}
+
+
+class FakeConsole(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):  # noqa: N802
+        SEEN.append({"path": self.path, "auth": self.headers.get("authorization")})
+        if REPLY["code"] == 302:
+            self.send_response(302); self.send_header("location", "https://evil.example/"); self.end_headers(); return
+        b = _json.dumps(REPLY["body"]).encode()
+        self.send_response(REPLY["code"]); self.send_header("content-type", "application/json"); self.end_headers(); self.wfile.write(b)
+
+    def log_message(self, *a):
+        pass
+
+
+srv = http.server.HTTPServer(("127.0.0.1", 0), FakeConsole)
+_th.Thread(target=srv.serve_forever, daemon=True).start()
+main.CONSOLE_URL = f"http://127.0.0.1:{srv.server_port}"
+os.environ.pop("APP_CONSOLE_TOKEN", None)
+r = c.get("/api/claude", headers=TOKEN).json()
+check(r["ok"] is False and "console token" in r["error"] and not SEEN, "claude: no console token = no connection, console not asked")
+check(c.get("/api/claude").status_code == 401, "claude: needs the app token or a hub admin")
+os.environ["APP_CONSOLE_TOKEN"] = "console-tok"
+r = c.get("/api/claude", headers=TOKEN).json()
+check(r["ok"] is True and r["email"] == "brett@example.com" and r["mode"] == "subscription", "claude: connected, email passed on")
+check("secret" not in r and "console-tok" not in _json.dumps(r), "claude: only the plain fields, never the token")
+check(SEEN[-1] == {"path": f"/api/plugins/{main.CLAUDE_PLUGIN}/status", "auth": "Bearer console-tok"}, "claude: asks the plugin route with the console token")
+c.get("/api/claude?refresh=true", headers=TOKEN)
+check(SEEN[-1]["path"].endswith("?refresh=true"), "claude: refresh passed on")
+REPLY["code"] = 404
+check("off in the console" in c.get("/api/claude", headers=TOKEN).json()["error"], "claude: plugin off = says so")
+REPLY["code"] = 401
+check("refused the token" in c.get("/api/claude", headers=TOKEN).json()["error"], "claude: token refused = says so")
+REPLY["code"] = 302
+n = len(SEEN)
+check(c.get("/api/claude", headers=TOKEN).json()["ok"] is False and len(SEEN) == n + 1, "claude: a redirect is never followed")
+REPLY.update(code=200, body={"ok": "yes", "email": "x\n\x00y"})
+r = c.get("/api/claude", headers=TOKEN).json()
+check(r["ok"] is False and r["email"] == "x y", "claude: ok must be true, text cleaned")
+main.CONSOLE_URL = "http://console.example"
+check("https" in c.get("/api/claude", headers=TOKEN).json()["error"], "claude: plain http refused (except loopback)")
+srv.shutdown()
+
 print(f"server self-test: {passed} checks passed")
