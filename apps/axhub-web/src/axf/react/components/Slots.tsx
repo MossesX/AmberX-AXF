@@ -6,6 +6,7 @@
 import { createContext, Fragment, useContext, type ReactNode } from 'react';
 import type { SlotDef } from '../library';
 import { BannerGroup } from './BannerGroup';
+import { HiddenBannersNote } from './BannerSettings';
 
 const SlotsCtx = createContext<Record<string, SlotDef[]>>({});
 
@@ -27,5 +28,5 @@ export const FRAME_BANNERS_SLOT = 'app.frame.banners';
 export function FrameBanners() {
   if (!useSlotFilled(FRAME_BANNERS_SLOT)) return null;
   // One wrapper for every banner, whichever plugins drew them: the banner group (title bar, fold, undock) once 2+ show.
-  return <div className="fx-frame-banners" data-fx-ctx-ignore=""><BannerGroup><Slot name={FRAME_BANNERS_SLOT} /></BannerGroup></div>;
+  return <div className="fx-frame-banners" data-fx-ctx-ignore=""><BannerGroup><Slot name={FRAME_BANNERS_SLOT} /></BannerGroup><HiddenBannersNote /></div>;
 }

@@ -41,7 +41,7 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
     private var runtime: AxfRuntime? = null
     /** Reload ticks per tab (a view reloads when its tick changes). */
     val reloads = kotlinx.coroutines.flow.MutableStateFlow<Map<String, Long>>(emptyMap())
-    /** Settings → Patches → "Banners above every tab" (default on): the Dev Console's plugin banners in [views.BannerStrip]. */
+    /** Settings → Patches → "Banners above every tab" (default off: the apps show their own banners): the Dev Console's plugin banners in [views.BannerStrip]. */
     val bannersShown = kotlinx.coroutines.flow.MutableStateFlow(true)
     /** Sends JSON into a tab's web view (`AxfEmbedGuest.receive`); set by the activity, which holds the web views. */
     var sendToTab: ((tab: String, json: String) -> Unit)? = null
@@ -57,10 +57,10 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         runtime = ctx.service(AxfRuntime::class)
         settings = ctx.service(SettingsEngine::class)
         settings?.let { s ->
-            bannersShown.value = s.bool(BANNERS_KEY, true)
+            bannersShown.value = s.bool(BANNERS_KEY, false)
             notify.value = s.bool(NOTIFY_KEY, true)
             s.onChange { key, _ ->
-                if (key == BANNERS_KEY) bannersShown.value = s.bool(BANNERS_KEY, true)
+                if (key == BANNERS_KEY) bannersShown.value = s.bool(BANNERS_KEY, false)
                 if (key == NOTIFY_KEY) { notify.value = s.bool(NOTIFY_KEY, true); syncWatch() }
                 if (key == "patches.console") syncWatch()
             }
@@ -95,7 +95,7 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
         ctx.extensions.contribute(ExtensionPoints.SETTINGS, id, SettingsContribution(SettingsGroup("patches", "Patches", "layers", id, order = 20, description = "The apps in the tabs. Addresses are https, host only; the hub's address comes from the app itself.", settings =
             TABS.filter { it.settingKey.isNotEmpty() }.map { t -> SettingSpec(t.settingKey, "${t.label} address", SettingKind.TEXT, "https only, no path", JsonPrimitive(t.defaultUrl), icon = t.icon) } + listOf(
                 SettingSpec(NOTIFY_KEY, "Serve all notifications", SettingKind.TOGGLE, "Patches shows the phone's notifications for the Console, Pilot and axHub: approvals waiting on the hub, the console's alerts (builds, CI, deploys, systems check) and what the apps send while open. The AXHub app stays quiet while Patches is installed.", JsonPrimitive(true), icon = "bell"),
-                SettingSpec(BANNERS_KEY, "Banners above every tab", SettingKind.TOGGLE, "The Dev Console's banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What's new), on screen whichever tab is open", JsonPrimitive(true), icon = "bell"),
+                SettingSpec(BANNERS_KEY, "Banners above every tab", SettingKind.TOGGLE, "The Dev Console's banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What's new), on screen whichever tab is open", JsonPrimitive(false), icon = "bell"),
                 SettingSpec("patches.reloadAction", "Reload the tab in front", SettingKind.ACTION, target = "patches.reload", icon = "refresh"),
                 SettingSpec("patches.openAction", "Open the tab in front in the browser", SettingKind.ACTION, target = "patches.open", icon = "external"),
             ))))
@@ -176,7 +176,7 @@ class AppModule(private val context: Context, private val hubAddress: () -> Stri
     fun origins(tab: String): List<String> = listOfNotNull(url(tab)?.let { HubRules.origin(it) }, hub).distinct()
 
     companion object {
-        const val BANNERS_KEY: String = "patches.banners"
+        const val BANNERS_KEY: String = "patches.strip"
         const val NOTIFY_KEY: String = "patches.notify"
 
         /** What Patches takes over from the apps in its tabs (embed@1): their notifications and app menu (never their settings). */
