@@ -4,7 +4,7 @@
  * document root. axf.css keys off these, so every Button, Slider, etc. in
  * every AmberX AXF app restyles the instant an asset is swapped.
  */
-import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, ToolbarData } from '../types';
+import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, TabGroupData, ToolbarData } from '../types';
 import type { VarMap } from './theme';
 
 export interface StyleOutput {
@@ -149,6 +149,42 @@ export function popupStyle(p: PopupData): StyleOutput {
 
 export function contextMenuStyle(c: ContextMenuData): StyleOutput {
   return { vars: {}, attrs: { 'data-fx-ctx': c.variant } };
+}
+
+/* ---------- tab-group: every tab row (page tabs + window tab bars) ---------- */
+
+export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', showIcons: true, divider: true };
+const TAB_PAD: Record<ChromeDensity, [number, number]> = { compact: [0.4, 0.75], regular: [0.65, 1], roomy: [0.9, 1.4] };
+
+export function normalizeTabGroup(t: Partial<TabGroupData> | null | undefined): Required<TabGroupData> {
+  const d = TAB_GROUP_DEFAULT;
+  return {
+    style: pick(t?.style, ['underline', 'pills', 'boxed', 'segmented', 'plain'] as const, d.style),
+    align: pick(t?.align, ['start', 'center', 'end', 'stretch'] as const, d.align),
+    position: pick(t?.position, ['top', 'bottom'] as const, d.position),
+    density: pick(t?.density, ['compact', 'regular', 'roomy'] as const, d.density),
+    overflow: pick(t?.overflow, ['scroll', 'wrap'] as const, d.overflow),
+    showIcons: typeof t?.showIcons === 'boolean' ? t.showIcons : d.showIcons,
+    divider: typeof t?.divider === 'boolean' ? t.divider : d.divider,
+  };
+}
+
+/** Missing asset = the original underline look; `hidden` (hideable slot) leaves only each row's active tab. */
+export function tabGroupStyle(t: Partial<TabGroupData> | null | undefined, hidden = false): StyleOutput {
+  const n = normalizeTabGroup(t);
+  const [py, px] = TAB_PAD[n.density];
+  return {
+    vars: { '--fx-tab-py': `calc(var(--fx-space) * ${py})`, '--fx-tab-px': `calc(var(--fx-space) * ${px})` },
+    attrs: {
+      'data-fx-tabs': n.style,
+      'data-fx-tabs-align': n.align,
+      'data-fx-tabs-position': n.position,
+      'data-fx-tabs-overflow': n.overflow,
+      'data-fx-tabs-icons': n.showIcons ? 'on' : 'off',
+      'data-fx-tabs-divider': n.divider ? 'on' : 'off',
+      'data-fx-tabs-hidden': hidden ? 'on' : 'off',
+    },
+  };
 }
 
 /* ---------- chrome: toolbar, nav-menu, app-menu ----------
