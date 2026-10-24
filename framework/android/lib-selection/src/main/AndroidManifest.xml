@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- lib-selection declares nothing itself: each plugin declares its own ProcessTextActivity (one per menu entry,
+         or activity-aliases of one) with an ACTION_PROCESS_TEXT text/plain intent filter. -->
+</manifest>

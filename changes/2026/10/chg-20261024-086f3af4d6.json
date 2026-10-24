@@ -1,0 +1,40 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261024-086f3af4d6",
+  "createdAt": "2026-10-24T12:34:48.269Z",
+  "updatedAt": "2026-10-24T12:34:55.875Z",
+  "kind": "build",
+  "title": "X Select: read-aloud plugin + framework libraries",
+  "asked": "",
+  "repos": [
+    "mossesx/amberx-axf"
+  ],
+  "model": "opus",
+  "who": {
+    "where": "cloud",
+    "host": "vm"
+  },
+  "steps": [],
+  "result": null,
+  "closed": null,
+  "state": "running",
+  "status": "running",
+  "buildRef": {
+    "kind": "pending",
+    "id": "xselect-read-aloud"
+  },
+  "surface": "claude-code-cloud",
+  "startedAt": "2026-10-24T12:34:48.269Z",
+  "lastSeenAt": "2026-10-24T12:34:55.875Z",
+  "estimate": {
+    "minutes": 150,
+    "costUsd": 21
+  },
+  "costEstimated": true,
+  "branch": "claude/project-thread-8u1t0l",
+  "areas": [
+    "framework/android/lib-readaloud",
+    "framework/android/lib-selection",
+    "framework/android/plugins/xselect"
+  ]
+}

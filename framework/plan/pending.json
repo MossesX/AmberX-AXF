@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T18:22:53.000Z",
+ "updatedAt": "2026-10-24T12:35:31.891Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3045,6 +3045,50 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "estimate": "2.2 h",
+   "source": "chat"
+  },
+  {
+   "id": "xselect-read-aloud",
+   "title": "X Select: Read aloud in Android's text selection menu (plugin + lib-readaloud + lib-selection)",
+   "detail": "Gizmo, Oct 24 2026 (thread Build X Select read-aloud plugin): an Android plugin (not an app; goes into an app later) that adds Read aloud next to Select all in every app, a settings-only screen with toolbar, banner and axHub status badge, a big settings set with wide ranges; reusable parts harvested into framework libraries. Building now on Opus, branch claude/project-thread-8u1t0l. Android hold lifted for this build by his ask.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "lib-selection: PROCESS_TEXT base activity + pure text rules + tests",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "lib-readaloud pure part: prefs + ranges, text prep, chunker, tests",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "lib-readaloud Android: TTS engine, foreground service with controls, settings groups",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "plugin-xselect: module, menu aliases, reader activity, banner badge",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "plugin-xselect settings screen (toolbar, banner, sections, search)",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Catalog, CI, docs, PR",
+     "at": "",
+     "estimate": "10 min"
+    }
+   ],
+   "createdAt": "2026-10-24T12:35:31.891Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-24T12:35:31.891Z",
    "source": "chat"
   }
  ]

@@ -1,0 +1,21 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.selection",
+  "module": "lib-selection",
+  "name": "Text selection menu (entries in every app)",
+  "description": "Add your own entries to Android's text selection menu (next to Copy and Select all) in every app: ProcessTextActivity base (cleaned text, read-only flag, which entry was tapped, hand replacement text back to editable fields, finishes by itself), SelectionMenuEntries to switch entries on and off at run time from settings (component enable state, no restart), and pure SelectionRules (invisible/control characters dropped, length cap cut on a word, preview, word count). Harvested from the X Select plugin (Oct 24 2026).",
+  "features": ["lib.selection"],
+  "dependsOn": [],
+  "manifestKey": "libraries.selection",
+  "params": [],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-selection:$axf\")",
+    "module": "SelectionModule()",
+    "import": "ai.amberx.axf.selection.SelectionModule",
+    "routes": []
+  },
+  "placeholders": [
+    { "capability": "axf.selection.web", "note": "Selected-text hook for the web port (context menu on a selection); not built." },
+    { "capability": "axf.selection.accessibility", "note": "Reading the selection without the menu (accessibility service); not built." }
+  ]
+}
