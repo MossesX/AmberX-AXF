@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261024-086f3af4d6",
   "createdAt": "2026-10-24T12:34:48.269Z",
-  "updatedAt": "2026-10-24T12:57:04.963Z",
+  "updatedAt": "2026-10-24T13:05:03.519Z",
   "kind": "build",
   "title": "X Select: read-aloud plugin + framework libraries",
   "asked": "",
@@ -47,21 +47,36 @@
     },
     {
       "text": "CI green on PR #52",
-      "state": "running",
-      "startedAt": "2026-10-24T12:57:04.963Z"
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.963Z",
+      "finishedAt": "2026-10-24T13:05:03.461Z"
     }
   ],
-  "result": null,
+  "result": {
+    "state": "done",
+    "summary": "X Select plugin + lib-readaloud + lib-selection built; CI green on PR #52 (Gradle, web console, build engine).",
+    "branch": "claude/project-thread-8u1t0l",
+    "commits": [
+      {
+        "sha": "de22a34"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "pr": "https://github.com/MossesX/AmberX-AXF/pull/52"
+    }
+  },
   "closed": null,
-  "state": "running",
-  "status": "running",
+  "state": "done",
+  "status": "done",
   "buildRef": {
     "kind": "pending",
     "id": "xselect-read-aloud"
   },
   "surface": "claude-code-cloud",
   "startedAt": "2026-10-24T12:34:48.269Z",
-  "lastSeenAt": "2026-10-24T12:57:04.963Z",
+  "finishedAt": "2026-10-24T13:05:03.519Z",
+  "lastSeenAt": "2026-10-24T13:05:03.461Z",
   "estimate": {
     "minutes": 150,
     "costUsd": 21
@@ -73,6 +88,5 @@
     "framework/android/lib-selection",
     "framework/android/plugins/xselect"
   ],
-  "doing": "CI green on PR #52",
-  "progress": 0.833
+  "progress": 1
 }
