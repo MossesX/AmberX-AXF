@@ -91,5 +91,13 @@
       "path": "public",
       "purpose": "Static files served as-is."
     }
-  ]
+  ],
+  "libraries": {
+    "hubsync": {
+      "hub": "https://axhub.amberxai.com",
+      "look": "required",
+      "settings": true,
+      "data": "off"
+    }
+  }
 }
