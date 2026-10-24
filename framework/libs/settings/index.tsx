@@ -13,8 +13,8 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -179,7 +179,137 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   );
 }
 
+/* ---------------- Assets: one collapsible card per slot, one per asset, extra tokens (core/engines/customize.ts) ---------------- */
+
+const humanize = (v: string) => (v === 'theme' ? 'Theme default' : v.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()));
+
+function TokenControl({ token, value, onChange }: { token: CustomTokenSpec; value: CustomValue; onChange: (v: CustomValue | null) => void }) {
+  switch (token.kind) {
+    case 'scale':
+      return <Slider label={token.label} value={Number(value)} min={token.min} max={token.max} step={token.step} unit={token.unit} onChange={(v) => onChange(v)} />;
+    case 'toggle':
+      return <Switch label={token.label} checked={value === true} onChange={(v) => onChange(v)} />;
+    case 'iconset': {
+      const set = iconSet(value) ?? ICON_SETS[0]!;
+      const cls = `axf-iconprev--${set.id}`;
+      return (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label">
+            <span>{token.label}</span>
+            <span className={`axf-settings__iconprev ${cls}`} aria-hidden="true">
+              <style>{`.${cls} .fx-icon{${iconSetDecls(set).join(';')}}`}</style>
+              {['home', 'search', 'bell', 'settings', 'star', 'folder'].map((n) => <Icon key={n} name={n} size={16} />)}
+            </span>
+          </div>
+          <div className="axf-settings__control">
+            <select className="axf-settings__field" aria-label={token.label} value={set.id} onChange={(e) => onChange(e.target.value)}>
+              {ICON_SETS.map((i, n) => <option key={i.id} value={i.id}>{n + 1}. {i.label}</option>)}
+            </select>
+          </div>
+        </div>
+      );
+    }
+    default:
+      return (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label"><span>{token.label}</span></div>
+          <div className="axf-settings__control">
+            <select className="axf-settings__field" aria-label={token.label} value={String(value)} onChange={(e) => onChange(e.target.value)}>
+              {(token.options ?? []).map((o) => <option key={o} value={o}>{humanize(o)}</option>)}
+            </select>
+          </div>
+        </div>
+      );
+  }
+}
+
+function TokenEditor({ type, values, onChange }: { type: AssetType; values: CustomValues; onChange: (key: string, v: CustomValue | null) => void }) {
+  const tokens = customTokensFor(type);
+  return (
+    <div className="axf-settings__rows">
+      {CUSTOM_GROUPS.map((g) => {
+        const list = tokens.filter((t) => t.group === g);
+        if (!list.length) return null;
+        return (
+          <Fragment key={g}>
+            <h4 className="axf-settings__section">{g}</h4>
+            {list.map((t) => <TokenControl key={t.key} token={t} value={values[t.key] ?? t.default} onChange={(v) => onChange(t.key, v === t.default ? null : v)} />)}
+          </Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Every asset of a slot in its own collapsible card. With more than one, "Apply settings to all" (on by default) leaves only the first editable. */
+function AssetInstances({ type }: { type: AssetType }) {
+  const rt = useRuntime();
+  const state = useAxfState();
+  useSettingsRevision(rt);
+  const assets = rt.registry.list(type);
+  const ids = assets.map((a) => a.id);
+  const slot = rt.customSlot(type);
+  const locked = rt.gate('assets.swap') !== 'allow';
+  const active = (state.active as Record<string, string | undefined>)[type];
+  const first = assets[0];
+  if (!first) return null;
+  return (
+    <div className="axf-settings__rows">
+      {assets.length > 1 && (
+        <Checkbox label="Apply settings to all" checked={slot.all} disabled={locked}
+          title={slot.all ? `Every ${assetTypeSpecs[type].label.toLowerCase()} uses the settings of ${first.name}. Untick to edit each one.` : 'Each one keeps its own settings. Tick to use the first one\'s for all.'}
+          onChange={(v) => rt.setCustomSlot(type, setApplyAll(slot, ids, v))} />
+      )}
+      {assets.map((a, i) => {
+        const editable = !locked && customEditable(slot, ids, a.id);
+        const values = effectiveCustom(slot, a.id);
+        const changed = Object.keys(values).length;
+        const own = slot.all ? (i === 0) : true;
+        return (
+          <div key={a.id} className={editable ? '' : 'axf-settings__off'} aria-disabled={!editable || undefined} data-axf-anchor={`custom-asset:${type}:${a.id}`}>
+            <Container collapsible defaultOpen={false} title={a.name} icon={assetTypeSpecs[type].icon}
+              actions={<>{a.id === active && <Chip tone="accent">active</Chip>}{own && changed > 0 && <Chip>{changed} changed</Chip>}</>}>
+              {!editable && !locked && <p className="fx-muted axf-settings__hint">Uses the settings of {first.name} (Apply settings to all). Untick it to edit this one.</p>}
+              {a.id !== active && <p className="fx-muted axf-settings__hint">Applies while {a.name} is the active {assetTypeSpecs[type].label.toLowerCase()}.</p>}
+              <fieldset className="axf-settings__fieldset" disabled={!editable}>
+                <TokenEditor type={type} values={values} onChange={(k, v) => rt.setCustomSlot(type, setCustomToken(slot, a.id, k, v, type))} />
+                {own && changed > 0 && <Button tone="ghost" icon="refresh" onClick={() => rt.setCustomSlot(type, slot.all ? { ...slot, shared: {} } : { ...slot, byId: { ...slot.byId, [a.id]: {} } })}>Back to the theme</Button>}
+              </fieldset>
+            </Container>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AssetSlotCard({ spec }: { spec: SettingSpec }) {
+  const rt = useRuntime();
+  const type = spec.target as AssetType;
+  if (rt.slotOwnedByHost(type)) return null;
+  return (
+    <div data-axf-anchor={`settings-slot:${type}`}>
+      <Container collapsible defaultOpen={false} title={assetTypeSpecs[type].label} icon={assetTypeSpecs[type].icon}>
+        <div className="axf-settings__rows">
+          <SettingRow spec={spec} />
+          {customizable(type) && <AssetInstances type={type} />}
+        </div>
+      </Container>
+    </div>
+  );
+}
+
 function GroupCard({ group }: { group: SettingsGroup }) {
+  if (group.id === 'axf.appearance') {
+    return (
+      <div data-axf-anchor={`settings-group:${group.id}`}>
+        <Container title={group.label} icon={group.icon ?? 'settings'}>
+          {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
+          <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
+        </Container>
+      </div>
+    );
+  }
   return (
     <div data-axf-anchor={`settings-group:${group.id}`}>
       <Container title={group.label} icon={group.icon ?? 'settings'}>
@@ -541,6 +671,8 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{gap:var(--fx-space)}
+.axf-settings__fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
+.axf-settings__iconprev{display:inline-flex;gap:calc(var(--fx-space)*.75);color:var(--fx-text)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
@@ -577,7 +709,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
     icon: 'palette',
     tab: 'appearance',
     order: 10,
-    description: 'Pick the active asset for each slot.',
+    description: 'Pick the active asset for each slot, then open any asset to change its text, colours, layout, shape, icons (100 icon sets), motion, hover and click behaviour. Every value follows the theme.',
     settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
       key: `axf.slot.${t}`,
       label: assetTypeSpecs[t].label,

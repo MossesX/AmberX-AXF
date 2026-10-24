@@ -22,6 +22,7 @@
     "toolbar": "standard-icons",
     "nav-menu": "console-nav",
     "context-menu": "compact-classic",
+    "tab-group": "underline",
     "dialog": "centered-modal",
     "popup": "corner-solid",
     "button": "pill-gradient",

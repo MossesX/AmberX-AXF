@@ -119,13 +119,17 @@ export interface ContainerProps {
   /** context-menu target name for right-click / long-press */
   ctx?: string;
   ctxPayload?: string;
+  /** Always collapsible (whatever the container asset / wrapGroups say). */
+  collapsible?: boolean;
+  /** Starts folded when false (collapsible containers only). */
+  defaultOpen?: boolean;
 }
 
-export function Container({ title, icon, actions, children, className, ctx, ctxPayload }: ContainerProps) {
+export function Container({ title, icon, actions, children, className, ctx, ctxPayload, collapsible: force, defaultOpen = true }: ContainerProps) {
   const c = useAsset('container').data;
   // style-theme `wrapGroups` (build option --wrap-groups) makes every titled group collapsible.
-  const collapsible = containerCollapsible(c, useAsset('style-theme').data);
-  const [open, setOpen] = useState(true);
+  const collapsible = force === true || containerCollapsible(c, useAsset('style-theme').data);
+  const [open, setOpen] = useState(defaultOpen || !collapsible);
   const bodyId = useId();
   const shown = open || !collapsible;
   return (
