@@ -37,3 +37,12 @@
 .pt-addtab__list { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--fx-space) * 0.4); }
 .pt-addtab__row { display: flex; align-items: center; gap: calc(var(--fx-space) * 0.75); min-width: 0; }
 .pt-addtab__name { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* Plugins per app (appPlugins.tsx): layout only, the controls are the framework's */
+.axp-ap__bar { flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5); }
+.axp-ap__search { flex: 1 1 12em; min-width: 0; }
+.axp-ap__wrap { overflow-x: auto; max-width: 100%; }
+.axp-ap__grid { width: 100%; }
+.axp-ap__grid th[scope="col"]:not(:first-child), .axp-ap__cell { text-align: center; white-space: nowrap; }
+.axp-ap__name { display: flex; flex-direction: column; text-align: left; font-weight: normal; min-width: 12em; }
+.axp-ap__cell.is-changed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.axp-ap__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

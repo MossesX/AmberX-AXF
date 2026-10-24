@@ -63,7 +63,12 @@ APP_TOKEN="${ARG_APP_TOKEN:-${APP_TOKEN:-$(head -c 24 /dev/urandom | base64 | tr
 say "Building the image (first time takes a few minutes)"
 docker build -q -t "$NAME:latest" "$APP" >/dev/null
 axf_stop_container "$NAME"
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT")
+# The Dev Console's token (its env file), so Plugins per app can install / uninstall there; kept in a 0600 env file.
+CONSOLE_ENVF="$STATE/console.env"
+CONSOLE_TOKEN="${APP_CONSOLE_TOKEN:-$(sed -n 's/^AXF_TOKEN=//p' "$AXF_DIR/.axf-console/env" 2>/dev/null | head -n1)}"
+(umask 077; printf 'APP_CONSOLE_TOKEN=%s\nAPP_CONSOLE_URL=%s\n' "$CONSOLE_TOKEN" "${APP_CONSOLE_URL:-https://console.amberxai.com}" > "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+[ -n "$CONSOLE_TOKEN" ] || say "No console token found: Plugins per app shows the Console read-only (APP_CONSOLE_TOKEN=… bash deploy/install.sh)"
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT" --env-file "$CONSOLE_ENVF")
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"
