@@ -4,7 +4,7 @@
  * Run: npx -y tsx framework/spec/check-banner-hide.mts
  */
 import {
-  allBannersHidden, bannerHidden, hideEndsAt, minutesFrom, minutesInput, nextHideEnd, parseBannerHide, setAllBannersHidden,
+  allBannersHidden, bannerHidden, hideEndsAt, minutesFrom, minutesInput, nextHideEnd, parseBannerHide, setAllBannersHidden, showAllBanners, anyBannerHide,
   hideBannerFor, QUICK_HIDE_MINUTES, setBannerHidden, setBannerTimer, TIMER_DEFAULT,
 } from '../core/engines/bannerhide';
 import { parsePluginTab } from '../core/engines/embed';
@@ -51,6 +51,20 @@ eq('shown after the time', bannerHidden(s, 'activity', t0 + 5 * MIN), false);
 eq('next end', nextHideEnd(s, ids, t0), t0 + 5 * MIN);
 eq('no next end after it', nextHideEnd(s, ids, t0 + 6 * MIN), null);
 eq('hide all reads off once run out', allBannersHidden(setAllBannersHidden(s, ids, true, t0), ids, t0 + 6 * MIN), false);
+
+// show all + reset timers: every hide (incl. a quick hide) ends now, the timer goes off, its minutes kept
+{
+  let r = setBannerTimer(parseBannerHide(null), { on: true, minutes: 7 }, t0);
+  r = setAllBannersHidden(r, ids, true, t0);
+  r = hideBannerFor(r, 'activity', 10, t0);
+  eq('something to show', anyBannerHide(r, t0 + 1), true);
+  r = showAllBanners(r, ids, t0 + 2);
+  eq('show all: none hidden', ids.map((id) => bannerHidden(r, id, t0 + 3)), [false, false, false]);
+  eq('show all: timer off', r.timer, { on: false, minutes: 7 });
+  eq('show all: no quick-hide end left', r.banners.activity, { on: false, at: t0 + 2 });
+  eq('show all: nothing left to show', anyBannerHide(r, t0 + 3), false);
+  eq('nothing hidden = nothing to show', anyBannerHide(parseBannerHide(null), t0), false);
+}
 
 // quick hide from the right-click menu: its own end, ignores the shared timer, any switch clears it
 eq('quick hide minutes', [...QUICK_HIDE_MINUTES], [1, 5, 10]);

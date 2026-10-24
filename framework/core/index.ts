@@ -6,6 +6,7 @@ export * from './settings';
 export * from './engines/theme';
 export * from './engines/layout';
 export * from './engines/components';
+export * from './engines/customize';
 export * from './engines/uac';
 export * from './engines/actions';
 export * from './engines/windows';

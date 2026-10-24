@@ -66,6 +66,14 @@ focus, one check at a time). Mirrored by the Kotlin `lib-hub` (`HubRules`); both
 Self-test: `npx -y tsx framework/spec/check-hub.mts`. The console's approvals banner plugin runs on it. The hub protocol
 contract (AXPP) is a named placeholder (`HUB_PLACEHOLDERS`), parked for Fable.
 
+**App catalog + hub views (Oct 23 2026, Opus, harvested from the AXHub web app):** `libs/hub/apps.ts` reads `/apps.json`
+(decision #90: `fetchHubApps`, `interpretApps`, `appDownloadUrl` rebuilds every download link from hub + project + file;
+caps 100 apps / 5 builds / 512 KB) and the words for hub data (`formatSize`, `formatWhen`, `expiry`, `statusNote`); pinned by
+the fixture's `apps` section (web only for now). `libs/hub/react.tsx`: `useHubApprovals`, `useHubApps`, `useHubBannerCount`
+(counter `approvals.waiting` + an optional banner counter), `HubApprovalList`, `HubStatusNote`, `checkHubNow`.
+`libs/hub/menu.ts`: `installHubMenu(rt, { hub })` = app-menu live lists `hub.approvals` / `hub.apps` and actions
+`hub.open:<page>`, `hub.review:<id>`, `hub.download:<project>:<file>`.
+
 ## apiclient (`ai.amberx.axf.apiclient`)
 
 The token + call layer every AXF web app had its own copy of (harvested Oct 2026 from the Dev Console, nine console plugins
@@ -110,3 +118,30 @@ Install it with `installLibraries` (it reads `libraries.hubstore` and, with the 
 app's Settings screen) or construct the classes with explicit `hub` / `project` (the console's Voice notes plugin does).
 Picking parts in Build Pilot: settings only, all data (`mode: all`), or some tables (`mode: some`, `tables: lists, notes`).
 The app's origin must be in the hub's `AXHUB_DATA_ORIGINS`.
+
+## hubstatus (`ai.amberx.axf.hubstatus`)
+
+The axHub badge for any AXF app, no dependencies. A status widget on the banner (asset `status/axhub`, counter
+`hub.live`): **red** from the start and whenever the app isn't reading its settings live from axHub, **green** only
+while it is (Brett's rule, Oct 24 2026). Each check reads `shared/settings/appearance.json` from the hub with the
+browser's own hub session (no token, no redirects, no cache); a developer app's own hub source must be ready too, and a
+read older than two check periods doesn't count. Tap → connection details with an expandable More row and Check now;
+a pop-up note when it changes. Settings → Plugins → axHub status. Install with `installLibraries(rt, [hubStatusLibrary])`.
+Self-test: `npx -y tsx framework/spec/check-hubstatus.mts`.
+
+## axHub sync (Oct 24 2026): hubsync
+
+One look, settings and data for every app and device, on top of `hubstore` and the appearance source.
+
+```ts
+import { hubSyncLibrary, startHubSync } from '<axf>/libs/hubsync';
+installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifest libraries.hubsync + the saved connection
+// or: const sync = startHubSync(rt, { hub, project, look: 'follow', settings: true, data: ['notes'] });
+// sync.state(), sync.subscribe(fn), sync.refresh(), sync.test(), sync.settings (HubSettings), sync.data (HubData), sync.stop()
+```
+
+- **look** `required` (waits for axHub, like `developer.hub`), `follow` (same shared document, never blocks: `FollowSource`), `off`. An app that already attached a source keeps it (`look.status = 'own'`).
+- **settings**: the Settings screen values in `shared/settings/apps/<app id>.json` (secrets never).
+- **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
+- Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
+- Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).
