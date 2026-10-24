@@ -1,0 +1,24 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.readaloud",
+  "module": "lib-readaloud",
+  "name": "Read aloud (text to speech for any text)",
+  "description": "Read any text aloud from anywhere in an app: ReadAloud.read(context, text) starts foreground playback (ReadAloudService, media playback) that keeps going after the caller closes, with notification controls (back, pause/resume, next, slower, faster, stop), audio focus (duck / pause others, pause / stop / keep on interruption, carry on afterwards), headphones-unplugged pause, screen-off stop, sleep timer, retries and a live state flow (queue, current piece, word being spoken, voices, engines). Pure-Kotlin rules other ports mirror: ReadAloudPrefs (54 preferences, every number clamped into ReadAloudRanges), TextPrep (links, emails, emoji, markdown, brackets, hashtags, abbreviations, ALL-CAPS spelling, digits, punctuation, spell-out, user pronunciations, length limit), TextChunker (sentence / clause / line / paragraph / fixed pieces with offsets and pauses, long pieces split on spaces, paragraph skips, time estimate, word at offset), ReadQueue (replace / append / play next, size cap, history, repeat). ReadAloudSettings.groups(prefix, tab, module) = nine generated settings groups any plugin reuses under its own key prefix. Harvested from the X Select plugin (Oct 24 2026).",
+  "features": ["lib.readaloud"],
+  "dependsOn": [],
+  "manifestKey": "libraries.readaloud",
+  "params": [
+    { "key": "settingsPrefix", "label": "Settings key prefix", "type": "string", "default": "axf.readaloud.", "help": "Each app or plugin keeps its own copy of the read-aloud settings under its prefix." }
+  ],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:lib-readaloud:$axf\")",
+    "module": "ReadAloudModule(this)",
+    "import": "ai.amberx.axf.readaloud.ReadAloudModule",
+    "routes": []
+  },
+  "placeholders": [
+    { "capability": "axf.readaloud.media-session", "note": "MediaSession so headset buttons, Bluetooth controls and the lock-screen player drive playback (not built)." },
+    { "capability": "axf.readaloud.save-audio", "note": "Save what's read as an audio file (synthesizeToFile) (not built)." },
+    { "capability": "axf.readaloud.web", "note": "Web port on speechSynthesis with the same prefs and rules (not built)." }
+  ]
+}

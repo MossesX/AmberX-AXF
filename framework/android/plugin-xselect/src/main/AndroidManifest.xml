@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- X Select: entries in every app's text selection menu (ACTION_PROCESS_TEXT). One activity, one alias per entry;
+         the plugin switches aliases on and off from its settings (only the chosen label shows). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <application>
+        <activity
+            android:name="ai.amberx.axf.xselect.ReadAloudActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.ReadAloud" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Read aloud" android:exported="true" android:enabled="true">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.ReadOutLoud" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Read out loud" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.Speak" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Speak" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.Listen" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Listen" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.ReadSlowly" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Read slowly" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.ReadNext" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Read next" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ai.amberx.axf.xselect.menu.SpellOut" android:targetActivity="ai.amberx.axf.xselect.ReadAloudActivity" android:label="Spell it out" android:exported="true" android:enabled="false">
+            <intent-filter><action android:name="android.intent.action.PROCESS_TEXT" /><category android:name="android.intent.category.DEFAULT" /><data android:mimeType="text/plain" /></intent-filter>
+        </activity-alias>
+    </application>
+</manifest>

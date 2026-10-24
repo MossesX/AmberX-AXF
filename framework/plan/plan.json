@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-23T22:53:36.363Z",
+ "generatedAt": "2026-10-24T12:56:26.024Z",
  "statuses": [
   "built",
   "partial",
@@ -11978,6 +11978,231 @@
    ],
    "model": "fable",
    "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.readaloud",
+   "title": "Read-aloud library: read any text aloud with foreground playback and notification controls, audio focus, sleep timer, queue with history and repeat, text cleanup (links, emoji, markdown, abbreviations, pronunciations), sentence/clause/paragraph chunking with pauses and word highlighting, 54 wide-range settings any plugin reuses under its own prefix",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-readaloud + library.json; harvested from the X Select plugin (Oct 24 2026, Android parts written without the Android compiler; pure rules compiled + tested with kotlinc)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-readaloud"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.readaloud"
+   ],
+   "modules": [
+    "lib-readaloud"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [
+    "Bundle with: MediaSession: headset buttons, Bluetooth and the lock-screen player (lib.readaloud.mediasession)",
+    "Bundle with: Web port on speechSynthesis with the same prefs and rules (lib.readaloud.web)"
+   ],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; Oct 24 2026, Android parts written without the Android compiler (CI compiles); pure rules tested with kotlinc",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.readaloud.mediasession",
+   "title": "MediaSession: headset buttons, Bluetooth and the lock-screen player",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.readaloud",
+   "status": "placeholder",
+   "priority": "P3",
+   "wave": 2,
+   "effort": "",
+   "summary": "Suggested together with Read-aloud library: read any text aloud with foreground playback and notification controls, audio focus, sleep timer, queue with history and repeat, text cleanup (links, emoji, markdown, abbreviations, pronunciations), sentence/clause/paragraph chunking with pauses and word highlighting, 54 wide-range settings any plugin reuses under its own prefix.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.readaloud"
+   ],
+   "catalog": [
+    "lib.readaloud.mediasession"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.readaloud.web",
+   "title": "Web port on speechSynthesis with the same prefs and rules",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "task",
+   "parent": "lib.readaloud",
+   "status": "planned",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "Suggested together with Read-aloud library: read any text aloud with foreground playback and notification controls, audio focus, sleep timer, queue with history and repeat, text cleanup (links, emoji, markdown, abbreviations, pronunciations), sentence/clause/paragraph chunking with pauses and word highlighting, 54 wide-range settings any plugin reuses under its own prefix.",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [
+    "lib.readaloud"
+   ],
+   "catalog": [
+    "lib.readaloud.web"
+   ],
+   "modules": [],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "suggested"
+   ],
+   "notes": "",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "fable",
+   "modelReason": "Hard reasoning: kernel internals, porting, migrations or architecture"
+  },
+  {
+   "id": "lib.selection",
+   "title": "Text selection menu library: add entries next to Copy / Select all in every app (ACTION_PROCESS_TEXT), switch them on and off at run time, cleaned selected text with a length cap",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/android/lib-selection + library.json; harvested from the X Select plugin (Oct 24 2026)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-selection"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.selection"
+   ],
+   "modules": [
+    "lib-selection"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "library.json; Oct 24 2026",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "plugin.xselect",
+   "title": "X Select plugin: Read aloud (+ Read slowly, Read next, Spell it out) in every app's text selection menu, settings-only screen with toolbar, live banner and axHub status badge, 80+ settings",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 3,
+   "effort": "",
+   "summary": "framework/android/plugin-xselect (plugin@1 module plugin, built on Opus Oct 24 2026); goes into an app later",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "plugin.xselect"
+   ],
+   "modules": [
+    "plugin-xselect"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "plugin"
+   ],
+   "notes": "plugin@1 module plugin, not in an app yet; Oct 24 2026 on Opus",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
   },
   {
    "id": "lib.lock",

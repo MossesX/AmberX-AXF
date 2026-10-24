@@ -1,0 +1,26 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.plugin.xselect",
+  "name": "X Select",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "AmberX AXF",
+  "description": "Adds Read aloud (and optionally Read slowly, Read next, Spell it out) to the text selection menu next to Select all in every app on the phone. Settings-only screen with a toolbar, a live banner and an axHub status badge on the app's banner; 80+ settings with wide ranges (voice, engine, language, speed 0.1–4×, pitch, volume, left/right, pauses, link/emoji/number/markdown cleanup, pronunciations, chunking, queue, repeat, audio focus, notification controls, sleep timer, feedback).",
+  "entry": "ai.amberx.axf.xselect.XSelectModule",
+  "provides": ["axf.xselect"],
+  "requires": ["axf.settings"],
+  "scopes": ["SETTINGS", "ROUTES", "ACTIONS", "DEVICE", "NOTIFICATIONS", "NETWORK"],
+  "targets": ["*"],
+  "minFrameworkVersion": "0.2.0",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-24" },
+  "opens": "main",
+  "tabable": false,
+  "uses": ["ai.amberx.axf.readaloud", "ai.amberx.axf.selection", "ai.amberx.axf.hub"],
+  "install": {
+    "gradle": "implementation(\"ai.amberx.axf:plugin-xselect:$axf\")",
+    "modules": ["ReadAloudModule(this, settingsPrefix = null)", "SelectionModule()", "XSelectModule(this)"],
+    "imports": ["ai.amberx.axf.readaloud.ReadAloudModule", "ai.amberx.axf.selection.SelectionModule", "ai.amberx.axf.xselect.XSelectModule"],
+    "routes": ["xselect"]
+  }
+}

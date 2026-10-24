@@ -801,7 +801,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-ui",
-    "notes": "Schema \u2192 form for settings kinds; conditional fields and wizards are wave 2."
+    "notes": "Schema → form for settings kinds; conditional fields and wizards are wave 2."
   },
   "ui.dyn": {
     "status": "placeholder",
@@ -2107,7 +2107,7 @@
     "status": "built",
     "wave": 1,
     "module": "lib-mcp",
-    "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) \u2014 Oct 20 2026, Fable"
+    "notes": "contract in axf-kernel; lib-mcp registers the first RemoteServices provider (MCP servers as remote services, tools as actions) — Oct 20 2026, Fable"
   },
   "k.roll": {
     "status": "built",
@@ -2262,5 +2262,33 @@
     "wave": 3,
     "module": "apps/patches",
     "notes": "Android first; web tabs. Native tabs, a web Patches and a tab bridge are placeholders (patches.native-tabs, patches.web, patches.bridge)"
+  },
+  "lib.readaloud": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-readaloud",
+    "notes": "library.json; Oct 24 2026, Android parts written without the Android compiler (CI compiles); pure rules tested with kotlinc"
+  },
+  "lib.selection": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-selection",
+    "notes": "library.json; Oct 24 2026"
+  },
+  "plugin.xselect": {
+    "status": "built",
+    "wave": 3,
+    "module": "plugin-xselect",
+    "notes": "plugin@1 module plugin, not in an app yet; Oct 24 2026 on Opus"
+  },
+  "lib.readaloud.mediasession": {
+    "status": "placeholder",
+    "wave": 2,
+    "module": "lib-readaloud"
+  },
+  "lib.readaloud.web": {
+    "status": "planned",
+    "wave": 3,
+    "module": null
   }
 }

@@ -1,6 +1,6 @@
 {
   "$axf": "libraries@1",
-  "generatedAt": "2026-10-23T22:53:36.348Z",
+  "generatedAt": "2026-10-24T12:56:26.001Z",
   "items": [
     {
       "$axf": "library@1",
@@ -304,6 +304,76 @@
         {
           "capability": "axf.notifications.schedule",
           "note": "Scheduled notifications (with the work scheduler, x.work)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.readaloud",
+      "module": "lib-readaloud",
+      "name": "Read aloud (text to speech for any text)",
+      "description": "Read any text aloud from anywhere in an app: ReadAloud.read(context, text) starts foreground playback (ReadAloudService, media playback) that keeps going after the caller closes, with notification controls (back, pause/resume, next, slower, faster, stop), audio focus (duck / pause others, pause / stop / keep on interruption, carry on afterwards), headphones-unplugged pause, screen-off stop, sleep timer, retries and a live state flow (queue, current piece, word being spoken, voices, engines). Pure-Kotlin rules other ports mirror: ReadAloudPrefs (54 preferences, every number clamped into ReadAloudRanges), TextPrep (links, emails, emoji, markdown, brackets, hashtags, abbreviations, ALL-CAPS spelling, digits, punctuation, spell-out, user pronunciations, length limit), TextChunker (sentence / clause / line / paragraph / fixed pieces with offsets and pauses, long pieces split on spaces, paragraph skips, time estimate, word at offset), ReadQueue (replace / append / play next, size cap, history, repeat). ReadAloudSettings.groups(prefix, tab, module) = nine generated settings groups any plugin reuses under its own key prefix. Harvested from the X Select plugin (Oct 24 2026).",
+      "features": [
+        "lib.readaloud"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.readaloud",
+      "params": [
+        {
+          "key": "settingsPrefix",
+          "label": "Settings key prefix",
+          "type": "string",
+          "default": "axf.readaloud.",
+          "help": "Each app or plugin keeps its own copy of the read-aloud settings under its prefix."
+        }
+      ],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-readaloud:$axf\")",
+        "module": "ReadAloudModule(this)",
+        "import": "ai.amberx.axf.readaloud.ReadAloudModule",
+        "routes": []
+      },
+      "placeholders": [
+        {
+          "capability": "axf.readaloud.media-session",
+          "note": "MediaSession so headset buttons, Bluetooth controls and the lock-screen player drive playback (not built)."
+        },
+        {
+          "capability": "axf.readaloud.save-audio",
+          "note": "Save what's read as an audio file (synthesizeToFile) (not built)."
+        },
+        {
+          "capability": "axf.readaloud.web",
+          "note": "Web port on speechSynthesis with the same prefs and rules (not built)."
+        }
+      ]
+    },
+    {
+      "$axf": "library@1",
+      "id": "ai.amberx.axf.selection",
+      "module": "lib-selection",
+      "name": "Text selection menu (entries in every app)",
+      "description": "Add your own entries to Android's text selection menu (next to Copy and Select all) in every app: ProcessTextActivity base (cleaned text, read-only flag, which entry was tapped, hand replacement text back to editable fields, finishes by itself), SelectionMenuEntries to switch entries on and off at run time from settings (component enable state, no restart), and pure SelectionRules (invisible/control characters dropped, length cap cut on a word, preview, word count). Harvested from the X Select plugin (Oct 24 2026).",
+      "features": [
+        "lib.selection"
+      ],
+      "dependsOn": [],
+      "manifestKey": "libraries.selection",
+      "params": [],
+      "install": {
+        "gradle": "implementation(\"ai.amberx.axf:lib-selection:$axf\")",
+        "module": "SelectionModule()",
+        "import": "ai.amberx.axf.selection.SelectionModule",
+        "routes": []
+      },
+      "placeholders": [
+        {
+          "capability": "axf.selection.web",
+          "note": "Selected-text hook for the web port (context menu on a selection); not built."
+        },
+        {
+          "capability": "axf.selection.accessibility",
+          "note": "Reading the selection without the menu (accessibility service); not built."
         }
       ]
     },

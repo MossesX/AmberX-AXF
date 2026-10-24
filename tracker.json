@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-10-23T22:53:36.346Z",
+  "generatedAt": "2026-10-24T12:56:25.999Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -12,11 +12,11 @@
       "coverage": 94
     },
     "kernel": {
-      "built": 82,
+      "built": 85,
       "partial": 11,
       "placeholder": 91,
       "planned": 0,
-      "total": 184,
+      "total": 187,
       "coverage": 45
     },
     "console": {
@@ -2255,6 +2255,63 @@
       "wave": 3,
       "module": null,
       "notes": ""
+    },
+    {
+      "id": "lib.readaloud",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Read-aloud library: read any text aloud with foreground playback and notification controls, audio focus, sleep timer, queue with history and repeat, text cleanup (links, emoji, markdown, abbreviations, pronunciations), sentence/clause/paragraph chunking with pauses and word highlighting, 54 wide-range settings any plugin reuses under its own prefix",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-readaloud",
+      "notes": "library.json; Oct 24 2026, Android parts written without the Android compiler (CI compiles); pure rules tested with kotlinc"
+    },
+    {
+      "id": "lib.readaloud.mediasession",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.readaloud",
+      "title": "MediaSession: headset buttons, Bluetooth and the lock-screen player",
+      "tag": "suggested",
+      "status": "placeholder",
+      "wave": 2,
+      "module": "lib-readaloud",
+      "notes": ""
+    },
+    {
+      "id": "lib.readaloud.web",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "parent": "lib.readaloud",
+      "title": "Web port on speechSynthesis with the same prefs and rules",
+      "tag": "suggested",
+      "status": "planned",
+      "wave": 3,
+      "module": null,
+      "notes": ""
+    },
+    {
+      "id": "lib.selection",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "Text selection menu library: add entries next to Copy / Select all in every app (ACTION_PROCESS_TEXT), switch them on and off at run time, cleaned selected text with a length cap",
+      "tag": "lib",
+      "status": "built",
+      "wave": 1,
+      "module": "lib-selection",
+      "notes": "library.json; Oct 24 2026"
+    },
+    {
+      "id": "plugin.xselect",
+      "tab": "kernel",
+      "group": "ui-library-every-customization-token",
+      "title": "X Select plugin: Read aloud (+ Read slowly, Read next, Spell it out) in every app's text selection menu, settings-only screen with toolbar, live banner and axHub status badge, 80+ settings",
+      "tag": "plugin",
+      "status": "built",
+      "wave": 3,
+      "module": "plugin-xselect",
+      "notes": "plugin@1 module plugin, not in an app yet; Oct 24 2026 on Opus"
     },
     {
       "id": "lib.lock",

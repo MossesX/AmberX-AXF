@@ -2,7 +2,7 @@
   "$axf": "change-log@1",
   "id": "chg-20261024-086f3af4d6",
   "createdAt": "2026-10-24T12:34:48.269Z",
-  "updatedAt": "2026-10-24T12:34:55.875Z",
+  "updatedAt": "2026-10-24T12:57:04.963Z",
   "kind": "build",
   "title": "X Select: read-aloud plugin + framework libraries",
   "asked": "",
@@ -14,7 +14,43 @@
     "where": "cloud",
     "host": "vm"
   },
-  "steps": [],
+  "steps": [
+    {
+      "text": "lib-selection: text-menu entries + rules",
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.678Z",
+      "finishedAt": "2026-10-24T12:57:04.678Z"
+    },
+    {
+      "text": "lib-readaloud: engine, service, rules, settings",
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.732Z",
+      "finishedAt": "2026-10-24T12:57:04.732Z"
+    },
+    {
+      "text": "plugin-xselect: module, menu entries, activity, badges",
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.783Z",
+      "finishedAt": "2026-10-24T12:57:04.783Z"
+    },
+    {
+      "text": "plugin-xselect: settings-only screen",
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.839Z",
+      "finishedAt": "2026-10-24T12:57:04.839Z"
+    },
+    {
+      "text": "catalog, CI, docs",
+      "state": "done",
+      "startedAt": "2026-10-24T12:57:04.902Z",
+      "finishedAt": "2026-10-24T12:57:04.902Z"
+    },
+    {
+      "text": "CI green on PR #52",
+      "state": "running",
+      "startedAt": "2026-10-24T12:57:04.963Z"
+    }
+  ],
   "result": null,
   "closed": null,
   "state": "running",
@@ -25,7 +61,7 @@
   },
   "surface": "claude-code-cloud",
   "startedAt": "2026-10-24T12:34:48.269Z",
-  "lastSeenAt": "2026-10-24T12:34:55.875Z",
+  "lastSeenAt": "2026-10-24T12:57:04.963Z",
   "estimate": {
     "minutes": 150,
     "costUsd": 21
@@ -36,5 +72,7 @@
     "framework/android/lib-readaloud",
     "framework/android/lib-selection",
     "framework/android/plugins/xselect"
-  ]
+  ],
+  "doing": "CI green on PR #52",
+  "progress": 0.833
 }
