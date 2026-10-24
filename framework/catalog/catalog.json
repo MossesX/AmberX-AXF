@@ -1661,6 +1661,13 @@
               ]
             },
             {
+              "id": "lib.hubsync",
+              "title": "axHub sync library: one look, settings and data for every app and device; look always/follow/off, Settings screen values and app tables on axHub, settings interface to connect and configure",
+              "note": "framework/libs/hubsync (core.ts rules, sync.ts HubSync/FollowSource/startHubSync, index.tsx hubSyncLibrary + Settings → Plugins → axHub sync); check spec/check-hubsync.mts; console plugin hub-sync; Voice Vault Kotlin twin in app code (Oct 24 2026, Opus)",
+              "tag": "lib",
+              "recommended": false
+            },
+            {
               "id": "lib.hubstore",
               "title": "axHub storage library: an app's settings and data on axHub's data server instead of the device; two classes (HubSettings, HubData); when installed (Build Pilot, axf install) pick settings only, all data, or some tables",
               "note": "framework/libs/hubstore + library.json (parts settings {file, mirror}, data {mode all|some, tables, folder}); check spec/check-hubstore.mts; first used by the console's Voice notes plugin (Oct 23 2026, Opus; Android twin deferred)",

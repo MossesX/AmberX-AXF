@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-23T18:22:53.000Z",
+ "updatedAt": "2026-10-24T15:07:33.295Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2387,7 +2387,12 @@
    "detail": "Fable was offered for the voice notes / hub storage build and Opus was chosen (Oct 23 2026, branch claude/project-thread-l3b0qo). Start by reviewing/replacing the Opus lib-hubstore: hub-settings@1 + hub-table@1 frames as a fixture, a SettingsRegistry storage seam instead of mirroring, live follow via /data-events, Kotlin twin recorded (Android on hold).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 24 2026: lib-hubsync (framework/libs/hubsync) builds on lib-hubstore; Voice Vault carries a Kotlin twin in app code (sync/HubSync.kt). Fold both into the cross-port contract.",
+     "at": "2026-10-24T15:07:33.295Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Review the Opus lib-hubstore + voice-notes store; list what changes",
@@ -2417,7 +2422,7 @@
    ],
    "createdAt": "2026-10-23T12:30:10.672Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T12:30:10.672Z",
+   "updatedAt": "2026-10-24T15:07:33.295Z",
    "estimate": "2 h",
    "source": "chat"
   },
@@ -3045,6 +3050,25 @@
    "builtAt": "",
    "updatedAt": "2026-10-23T18:22:53.000Z",
    "estimate": "2.2 h",
+   "source": "chat"
+  },
+  {
+   "id": "hubsync",
+   "title": "axHub sync: plugin + library so every app and device shares look, settings and data (Voice Vault installed)",
+   "detail": "framework/libs/hubsync (look required/follow/off, settings mirror, data tables, settings interface), console plugin hub-sync, Voice Vault Kotlin twin in app code. Branch claude/project-thread-u0oyjm.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-u0oyjm (draft PR). hubstore-fable should fold lib-hubsync in.",
+     "at": "2026-10-24T15:07:33.283Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-24T15:07:33.262Z",
+   "builtAt": "2026-10-24T15:07:33.289Z",
+   "updatedAt": "2026-10-24T15:07:33.289Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]
