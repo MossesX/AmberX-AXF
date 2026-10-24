@@ -8,6 +8,7 @@ import { Button, Icon, IconButton, ModelBadge, modelLabel, Note, Switch, useAsse
 import type { EmbedPlugin } from './axf/core';
 import { api } from './api';
 import { checkClaude } from './claude';
+import { checkHub } from './hub';
 
 /** "built with Opus" for a plugin's row (Switch hints are text), or nothing when its model isn't known. */
 const builtWithText = (model?: string) => (model ? `built with ${modelLabel(model)}` : '');
@@ -490,6 +491,10 @@ export const patchesLibrary: AxfWebLibrary = {
     rt.actions.register('patches.claude.check', () => { void checkClaude(rt, true); }, { label: 'Check the Claude connection' });
     rt.actions.register('patches.claude.keys', () => { rt.navigate('console'); rt.toast('Open Settings → Plugins → AI keys in the Console to check the keys.', 'info', 'Claude'); }, { label: 'Claude keys (Console settings → AI keys)' });
     void checkClaude(rt);
+    // axHub connection badge, next to it: same pattern for the console's hub token.
+    rt.actions.register('patches.hub.check', () => { void checkHub(rt, true); }, { label: 'Check the axHub connection' });
+    rt.actions.register('patches.hub.keys', () => { rt.navigate('console'); rt.toast('Open Settings → Plugins → axHub connection in the Console to check the hub token.', 'info', 'axHub'); }, { label: 'axHub keys (Console settings → axHub connection)' });
+    void checkHub(rt);
     rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
   },
   settings: [{

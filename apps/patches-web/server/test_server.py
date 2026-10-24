@@ -144,7 +144,7 @@ check(oct(main.TABS_FILE.stat().st_mode & 0o777) == "0o600", "tabs: file 0600")
 main.TABS_FILE.write_text("{broken")
 check([t["app"] for t in c.get("/api/tabs", headers=TOKEN).json()["tabs"]] == ["console", "pilot", "axhub"], "tabs: damaged file reads as the defaults")
 
-# ---- Claude connection badge: GET /api/claude asks the console (fake console on loopback)
+# ---- connection badges: GET /api/claude and /api/hub ask the console (fake console on loopback)
 import http.server  # noqa: E402
 import json as _json  # noqa: E402
 import threading as _th  # noqa: E402
@@ -189,6 +189,17 @@ check(c.get("/api/claude", headers=TOKEN).json()["ok"] is False and len(SEEN) ==
 REPLY.update(code=200, body={"ok": "yes", "email": "x\n\x00y"})
 r = c.get("/api/claude", headers=TOKEN).json()
 check(r["ok"] is False and r["email"] == "x y", "claude: ok must be true, text cleaned")
+REPLY.update(code=200, body={"ok": True, "look": {"mode": "icons", "on": "wifi", "off": "wifi-off@blink:still", "onTone": "accent", "offTone": "<b>", "x": 1}})
+r = c.get("/api/claude", headers=TOKEN).json()
+check(r["look"] == {"mode": "icons", "on": "wifi", "off": "wifi-off@blink:still", "onTone": "accent"}, "look: passed on cleaned (bad colour, unknown key dropped)")
+REPLY.update(body={"ok": True, "icon": "cloud@pulse"})
+check(c.get("/api/claude", headers=TOKEN).json()["look"] == {"icon": "cloud@pulse"}, "look: an older console's icon reads as the look's icon")
+REPLY.update(body={"ok": True, "account": "brett", "hub": "https://axhub.example", "look": {"icon": "hub"}})
+r = c.get("/api/hub", headers=TOKEN).json()
+check(r["ok"] and r["account"] == "brett" and r["hub"] == "https://axhub.example" and SEEN[-1]["path"] == f"/api/plugins/{main.HUB_PLUGIN}/status", "hub: asks the hub-connection plugin, account + hub passed on")
+REPLY["code"] = 404
+check("axHub connection plugin is off" in c.get("/api/hub", headers=TOKEN).json()["error"], "hub: plugin off = says so")
+check(c.get("/api/hub").status_code == 401, "hub: needs the app token or a hub admin")
 main.CONSOLE_URL = "http://console.example"
 check("https" in c.get("/api/claude", headers=TOKEN).json()["error"], "claude: plain http refused (except loopback)")
 srv.shutdown()

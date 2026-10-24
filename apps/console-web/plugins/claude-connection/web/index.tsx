@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { Button, Chip, IconPickerField } from '@console/axf/react';
+import { Button, Chip, StateLookField } from '@console/axf/react';
+import type { StateLook } from '@console/axf/core';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
@@ -41,20 +42,22 @@ function StatusPanel() {
   );
 }
 
-/** The badge's icon in Patches: the icon picker (Static / Animated tabs; any animated icon can be switched to static). */
+/** The badge's look in Patches: two icons (one per state) or one icon in two colours; icons from the picker (Static / Animated). */
 function IconPanel() {
-  const [icon, setIcon] = useState('');
+  const [look, setLook] = useState<unknown>(null);
   const [err, setErr] = useState('');
-  useEffect(() => { pluginFetch(FOLDER, 'config').then((r) => r.json()).then((j: { icon?: string }) => setIcon(j.icon || ''), () => setErr('Couldn’t read the icon.')); }, []);
-  const save = (v: string) => {
+  useEffect(() => { pluginFetch(FOLDER, 'config').then((r) => r.json()).then((j: { look?: unknown }) => setLook(j.look ?? {}), () => setErr('Couldn’t read the icons.')); }, []);
+  const save = (v: StateLook) => {
     setErr('');
-    pluginFetch(FOLDER, 'config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ icon: v }) })
-      .then(async (r) => { const j = (await r.json().catch(() => ({}))) as { icon?: string; detail?: string }; if (!r.ok) throw new Error(j.detail || `save failed (${r.status})`); setIcon(j.icon || ''); })
+    setLook(v);
+    pluginFetch(FOLDER, 'config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ look: v }) })
+      .then(async (r) => { const j = (await r.json().catch(() => ({}))) as { look?: unknown; detail?: string }; if (!r.ok) throw new Error(j.detail || `save failed (${r.status})`); setLook(j.look ?? v); })
       .catch((e: Error) => setErr(e.message));
   };
   return (
     <div className="fx-stack">
-      <IconPickerField label="Badge icon" value={icon || 'claude'} onChange={(v) => save(v === 'claude' ? '' : v)} hint="Patches draws it on its banner badge from its next check." />
+      {look !== null && <StateLookField icon="claude" value={look} onChange={save} />}
+      <span className="fx-small fx-muted">Patches draws it on its banner badge from its next check.</span>
       {err && <span className="fx-small fx-muted">{err}</span>}
     </div>
   );
@@ -68,7 +71,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'claude-connection', label: 'Claude connection', icon: 'claude', parent: 'plugins', order: 47, description: 'The Claude Code connection Patches shows on its banner.' }],
   settingsPanels: [
     { id: 'claude-connection.status', tab: 'claude-connection', title: 'Claude Code connection', icon: 'claude', order: 10, render: () => <StatusPanel /> },
-    { id: 'claude-connection.icon', tab: 'claude-connection', title: 'Badge icon', icon: 'palette', order: 20, render: () => <IconPanel /> },
+    { id: 'claude-connection.icon', tab: 'claude-connection', title: 'Badge icons', icon: 'palette', order: 20, render: () => <IconPanel /> },
     { id: 'claude-connection.lifecycle', tab: 'claude-connection', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

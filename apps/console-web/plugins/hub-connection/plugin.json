@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.hub-connection",
+  "name": "axHub connection",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Checks the Dev Console's axHub connection (its hub token against the hub's MCP endpoint) and returns the hub. Patches reads it on every page load and paints its attachable badge `hub-connection` at the top left of its banner, next to the Claude badge: the hub icon + the signed-in hub account when it connects, or “No axHub connection · check keys” when it doesn't. Icons and colours per state are picked in its settings (two icons, or one icon in two colours). Never returns the token.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:hub-connection"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-24"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/hub-connection",
+    "env": [
+      "AXHUB_URL",
+      "AXHUB_TOKEN"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": false
+}

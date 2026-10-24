@@ -5,7 +5,7 @@ export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
 export { Switch, Checkbox, Field, TextField, SelectField, ChoiceGrid, Note, Section, LibraryParamField, type SwitchProps, type CheckboxProps, type FieldProps, type TextFieldProps, type SelectFieldProps, type SelectOption, type ChoiceGridProps, type Choice, type NoteProps, type NoteTone, type SectionProps, type LibraryParamFieldProps } from './components/Forms';
 export { Markdown, safeHref, type MarkdownProps } from './components/Markdown';
 export { Icon, ICON_NAMES } from './components/Icon';
-export { ICON_PICKER_DIALOG, IconPickerField, iconPickerDialog, pickIcon, type IconPickerProps } from './components/IconPicker';
+export { ICON_PICKER_DIALOG, IconPickerField, StateLookField, iconPickerDialog, pickIcon, type IconPickerProps } from './components/IconPicker';
 export { MenuList } from './components/MenuList';
 export { MenuBar, Toolbar, NavMenu, StatusBar } from './components/Chrome';
 export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from './components/AppMenu';

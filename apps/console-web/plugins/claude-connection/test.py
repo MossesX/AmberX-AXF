@@ -100,9 +100,16 @@ r = fresh()
 check(not r["ok"] and "invalid x-api-key" in r["error"] and r["email"] == "", "provider error: no connection with the reason")
 llm.mode = "empty"
 check(not fresh()["ok"], "an empty answer counts as no connection")
-check(c.get("/p/config").json() == {"icon": ""}, "icon: none picked = the Claude mark")
-check(c.put("/p/config", json={"icon": "cloud@pulse:still"}).json() == {"icon": "cloud@pulse:still"}, "icon: an animated pick marked static saves")
-check(c.get("/p/status").json()["icon"] == "cloud@pulse:still", "status carries the icon for Patches")
-check(c.put("/p/config", json={"icon": "<script>"}).status_code == 400, "icon: anything but a pick is refused")
-check(c.get("/p/config").json()["icon"] == "cloud@pulse:still", "a refused icon keeps the saved one")
+D = {"mode": "colors", "icon": "claude", "on": "claude", "off": "claude", "onTone": "success", "offTone": "danger"}
+check(c.get("/p/config").json() == {"look": D}, "look: none saved = the Claude mark, green / red")
+two = {"mode": "icons", "on": "wifi", "off": "wifi-off@blink:still", "onTone": "accent", "offTone": "warning"}
+r = c.put("/p/config", json={"look": two}).json()["look"]
+check(r["mode"] == "icons" and r["on"] == "wifi" and r["off"] == "wifi-off@blink:still" and r["offTone"] == "warning", "look: two icons + colours save")
+check(c.get("/p/status").json()["look"]["on"] == "wifi", "status carries the look for Patches")
+check(c.put("/p/config", json={"look": {"mode": "icons", "on": "<script>"}}).status_code == 400, "look: a bad icon is refused")
+check(c.get("/p/config").json()["look"]["on"] == "wifi", "a refused look keeps the saved one")
+check(c.put("/p/config", json={"look": {"mode": "colors", "icon": "plug", "onTone": "nope"}}).json()["look"]["onTone"] == "success", "look: an unknown colour falls back")
+(TMP / ".axf-console" / "plugins" / "claude-connection").mkdir(parents=True, exist_ok=True)
+(TMP / ".axf-console" / "plugins" / "claude-connection" / "config.json").write_text(json.dumps({"icon": "cloud@pulse:still"}))
+check(c.get("/p/config").json()["look"] == {**D, "icon": "cloud@pulse:still", "on": "cloud@pulse:still", "off": "cloud@pulse:still"}, "an icon saved before reads as one icon in two colours")
 print(f"claude-connection self-test: {ok} checks passed")

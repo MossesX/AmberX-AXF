@@ -3,7 +3,7 @@
  *
  *   npx -y tsx framework/spec/check-hubstatus.mts
  */
-import { changeNote, clampEvery, clampSeconds, hubLive, probeFrom, settingsUrl, statusAsset } from '../libs/hubstatus/core';
+import { DEFAULT_LOOK, changeNote, clampEvery, clampSeconds, hubLive, probeFrom, settingsUrl, statusAsset } from '../libs/hubstatus/core';
 
 let ok = 0, fail = 0;
 const check = (cond: unknown, msg: string) => { if (cond) ok++; else { fail++; console.log(`✗ ${msg}`); } };
@@ -44,6 +44,10 @@ check(changeNote('live', 'live') === null, 'no change, no pop-up');
 check(clampEvery(1) === 10 && clampEvery(9999) === 600 && clampEvery('x') === 30, 'check period 10 s – 10 min');
 check(clampSeconds(0) === 1 && clampSeconds(99) === 60, 'pop-up 1 – 60 s');
 check(settingsUrl(HUB + '/x') === `${HUB}/data/shared/settings/appearance.json`, 'reads the shared settings document');
+const st2 = { mode: 'icons' as const, icon: 'hub', on: 'wifi', off: 'wifi-off@blink', onTone: 'accent' as const, offTone: 'warning' as const };
+check(statusAsset({ live: 'live', why: '' }, { ...DEFAULT_LOOK, state: st2 }).data.icon === 'wifi', 'state look: live icon');
+const offA = statusAsset({ live: 'not-live', why: '' }, { ...DEFAULT_LOOK, state: st2 }).data;
+check(offA.icon === 'wifi-off@blink' && offA.offTone === 'warning' && offA.onTone === 'accent', 'state look: off icon + chosen colours');
 
 console.log(`hubstatus: ${ok} passed, ${fail} failed`);
 if (fail) process.exit(1);

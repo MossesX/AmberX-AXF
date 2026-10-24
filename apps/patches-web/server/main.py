@@ -111,15 +111,19 @@ def hello(c: wall.Caller = Depends(auth)) -> dict[str, Any]:
     return {"message": f"Hello {c.name} from {APP_ID}"}
 
 
-# ---------------------------------------------------------------- Claude connection (banner badge)
+# ---------------------------------------------------------------- connection badges (Claude, axHub)
 #
-# Brett, Oct 24 2026: on every load Patches shows whether Claude Code connects (subscription or API key) and the active
-# account's email. The Dev Console's claude-connection plugin does the check; this server asks it with the console token
-# (server to server: the token never reaches a browser) and passes on only the plain fields.
+# Brett, Oct 24 2026: on every load Patches shows whether Claude Code connects (subscription or API key) with the
+# active account's email, and whether axHub connects with the hub account. The Dev Console's claude-connection and
+# hub-connection plugins do the checks; this server asks them with the console token (server to server: the token never
+# reaches a browser) and passes on only the plain fields, plus each badge's look (icons + colours per state).
 
 CONSOLE_URL = os.environ.get("APP_CONSOLE_URL", "https://console.amberxai.com").rstrip("/")
-CLAUDE_PLUGIN = "claude-connection"  # the console plugin folder (route /api/plugins/<folder>/status); off = 404
-CLAUDE_FIELDS = ("at", "ok", "mode", "email", "account", "model", "ms", "error", "icon")
+CLAUDE_PLUGIN = "claude-connection"  # the console plugin folders (route /api/plugins/<folder>/status); off = 404
+HUB_PLUGIN = "hub-connection"
+STATUS_TEXT = ("mode", "email", "account", "model", "error", "hub")
+PICK_RE = re.compile(r"^[a-z0-9-]{1,40}(@[a-z]{1,12}(:still)?)?$")
+LOOK_TONES = ("success", "danger", "warning", "accent", "neutral", "muted")
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -139,38 +143,64 @@ def _console_token() -> str:
     return os.environ.get("APP_CONSOLE_TOKEN", "").strip()
 
 
-def claude_status(refresh: bool = False) -> dict[str, Any]:
-    """The console's claude-connection check, or ok: False with why (never raises, never returns the token)."""
-    down = {"at": int(time.time() * 1000), "ok": False, "mode": "", "email": "", "account": "", "model": "", "ms": 0}
+def _look(v: Any) -> dict[str, str]:
+    """A badge look from the console, cleaned: only known keys, icon picks and theme tones (the browser normalises the rest)."""
+    if isinstance(v, str):
+        v = {"icon": v}
+    if not isinstance(v, dict):
+        return {}
+    out: dict[str, str] = {}
+    if v.get("mode") in ("icons", "colors"):
+        out["mode"] = v["mode"]
+    for k in ("icon", "on", "off"):
+        if isinstance(v.get(k), str) and PICK_RE.match(v[k]):
+            out[k] = v[k]
+    for k in ("onTone", "offTone"):
+        if v.get(k) in LOOK_TONES:
+            out[k] = v[k]
+    return out
+
+
+def console_status(plugin: str, what: str, refresh: bool = False) -> dict[str, Any]:
+    """A console connection plugin's check, or ok: False with why (never raises, never returns the token)."""
+    down: dict[str, Any] = {"at": int(time.time() * 1000), "ok": False, "ms": 0, "look": {}, **{k: "" for k in STATUS_TEXT}}
     u = urllib.parse.urlsplit(CONSOLE_URL)
     if u.scheme != "https" and u.hostname not in ("localhost", "127.0.0.1"):
         return {**down, "error": "APP_CONSOLE_URL must be https"}
     tok = _console_token()
     if not tok:
         return {**down, "error": "Patches has no console token (APP_CONSOLE_TOKEN)"}
-    req = urllib.request.Request(f"{CONSOLE_URL}/api/plugins/{CLAUDE_PLUGIN}/status{'?refresh=true' if refresh else ''}",
+    req = urllib.request.Request(f"{CONSOLE_URL}/api/plugins/{plugin}/status{'?refresh=true' if refresh else ''}",
                                  headers={"Authorization": f"Bearer {tok}", "Accept": "application/json"})
     try:
         with urllib.request.build_opener(_NoRedirect).open(req, timeout=60) as r:
             body = json.loads(r.read(65536).decode("utf-8"))
     except urllib.error.HTTPError as e:
-        why = "the Claude connection plugin is off in the console" if e.code == 404 else "the console refused the token" if e.code in (401, 403) else f"the console answered {e.code}"
+        why = f"the {what} plugin is off in the console" if e.code == 404 else "the console refused the token" if e.code in (401, 403) else f"the console answered {e.code}"
         return {**down, "error": why}
     except (urllib.error.URLError, OSError, ValueError) as e:
         return {**down, "error": f"the console can't be reached ({str(getattr(e, 'reason', e))[:120]})"}
     if not isinstance(body, dict):
         return {**down, "error": "the console answered something unexpected"}
-    out = {k: body.get(k) for k in CLAUDE_FIELDS}
-    out["ok"] = out["ok"] is True
-    for k in ("mode", "email", "account", "model", "error"):
-        out[k] = _clip(out[k] or "", 300)
-    out["icon"] = _clip(out["icon"], 60) if isinstance(out["icon"], str) else ""
+    out: dict[str, Any] = {"at": body.get("at"), "ok": body.get("ok") is True, "ms": body.get("ms")}
+    for k in STATUS_TEXT:
+        out[k] = _clip(body.get(k) or "", 300)
+    out["look"] = _look(body.get("look", body.get("icon")))  # an older console sends only `icon`
     return out
+
+
+def claude_status(refresh: bool = False) -> dict[str, Any]:
+    return console_status(CLAUDE_PLUGIN, "Claude connection", refresh)
 
 
 @app.get("/api/claude")
 def claude(refresh: bool = False, _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
     return claude_status(refresh)
+
+
+@app.get("/api/hub")
+def hub(refresh: bool = False, _c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    return console_status(HUB_PLUGIN, "axHub connection", refresh)
 
 
 # ---------------------------------------------------------------- plugins Patches manages for the apps in its tabs

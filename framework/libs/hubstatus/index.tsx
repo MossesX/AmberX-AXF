@@ -16,7 +16,8 @@
  */
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import './hubstatus.css';
-import { Button, Chip, Icon, IconButton, IconPickerField, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Icon, IconButton, StateLookField, useAxfState, useRuntime } from '../../react';
+import { normalizeStateLook } from '../../core/engines/iconpick';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import {
@@ -30,7 +31,7 @@ export const DEFAULT_HUB = 'https://axhub.amberxai.com';
 const K = {
   show: 'hubstatus.show', side: 'hubstatus.side', hub: 'hubstatus.hub', every: 'hubstatus.every',
   liveLabel: 'hubstatus.liveLabel', notLiveLabel: 'hubstatus.notLiveLabel', dot: 'hubstatus.dot',
-  popup: 'hubstatus.popup', popupSeconds: 'hubstatus.popupSeconds', icon: 'hubstatus.icon',
+  popup: 'hubstatus.popup', popupSeconds: 'hubstatus.popupSeconds', icon: 'hubstatus.icon', state: 'hubstatus.look',
 } as const;
 
 /* ---------------- store ---------------- */
@@ -46,6 +47,8 @@ let painted = '';
 let lastLive: HubStatus['live'] | null = null;
 
 const str = (rt: AxfRuntime, k: string, d: string) => { const v = rt.settings.get(k); return typeof v === 'string' && v.trim() ? v.trim() : d; };
+/** The per-state look is saved as JSON text (settings hold plain values); a bare icon name still reads. */
+const savedLook = (rt: AxfRuntime): unknown => { const v = rt.settings.get(K.state); if (typeof v === 'string' && v.startsWith('{')) { try { return JSON.parse(v); } catch { return null; } } return v ?? null; };
 const everyMs = (rt: AxfRuntime) => clampEvery(rt.settings.get(K.every) ?? 30) * 1000;
 const look = (rt: AxfRuntime): BadgeLook => ({
   liveLabel: str(rt, K.liveLabel, DEFAULT_LOOK.liveLabel),
@@ -53,6 +56,8 @@ const look = (rt: AxfRuntime): BadgeLook => ({
   checkingLabel: DEFAULT_LOOK.checkingLabel,
   dot: rt.settings.get(K.dot) !== false,
   icon: str(rt, K.icon, ''),
+  // per-state look (Oct 24 2026); an icon picked before it reads as "one icon, two colours"
+  ...(rt.settings.get(K.state) ? { state: normalizeStateLook(savedLook(rt), str(rt, K.icon, 'hub')) } : {}),
 });
 
 /** The hub to check: the one this app reads its look from, else the setting. */
@@ -200,12 +205,17 @@ function StatusCard() {
   );
 }
 
-/** The badge's icon: the picker dialog (Static / Animated tabs, each animated icon can be switched to static). */
+/** The badge's icons: two icons (one per state) or one icon in two colours, each from the picker (Static / Animated). */
 function IconRow() {
   const rt = useRuntime();
   useAxfState();
-  const v = rt.settings.get(K.icon);
-  return <IconPickerField label="Badge icon" value={typeof v === 'string' ? v : ''} onChange={(p) => rt.settings.set(K.icon, p)} hint="Drawn before the words on the banner badge." />;
+  const v = savedLook(rt) ?? str(rt, K.icon, 'hub');
+  return (
+    <div className="fx-stack">
+      <StateLookField icon="hub" value={v} onChange={(l) => rt.settings.set(K.state, JSON.stringify(l))} onLabel="Live" offLabel="Not live" />
+      <span className="fx-small fx-muted">Drawn before the words on the banner badge.</span>
+    </div>
+  );
 }
 
 /* ---------------- the library ---------------- */
@@ -244,7 +254,7 @@ export const hubStatusLibrary: AxfWebLibrary = {
   ],
   settingsPanels: [
     { id: 'hubstatus.now', tab: 'hubstatus', title: 'Now', icon: 'cloud', order: 5, render: () => <StatusCard /> },
-    { id: 'hubstatus.icon', tab: 'hubstatus', title: 'Icon', icon: 'palette', order: 12, render: () => <IconRow /> },
+    { id: 'hubstatus.icon', tab: 'hubstatus', title: 'Icons', icon: 'palette', order: 12, render: () => <IconRow /> },
   ],
 };
 

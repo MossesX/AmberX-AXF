@@ -7,9 +7,10 @@ whether it answered, how it signs in, and the active account's email: the Claude
 "signed in as …" line, else (API key) the AI keys plugin's label for the active key. Never returns keys or reply text.
 Results are cached 30 s so several pages loading at once make one request. Patches' server reads this route.
 
-GET/PUT /config: the badge's icon (`icon`, a name or an icon pick `name@anim[:still]`, empty = the Claude mark), picked
-in Settings → Plugins → Claude connection; /status returns it so Patches paints its badge with it. Stored in the
-plugin's data folder (config.json, 0600).
+GET/PUT /config: the badge's look per state (`look`: two icons, or one icon in two colours; icons are picks
+`name[@anim[:still]]`, colours are theme tones; same shape as `normalizeStateLook` in core/engines/iconpick.ts), picked
+in Settings → Plugins → Claude connection; /status returns it so Patches paints its badge with it. A saved `icon` from
+before reads as one icon in two colours. Stored in the plugin's data folder (config.json, 0600).
 """
 from __future__ import annotations
 
@@ -41,13 +42,26 @@ def data_dir() -> Path:
     return Path(cx.ROOT) / ".axf-console" / "plugins" / FOLDER
 
 
+TONES = ("success", "danger", "warning", "accent", "neutral", "muted")
+DEFAULT_ICON = "claude"
+
+
+def normalize_look(raw: Any) -> dict[str, Any]:
+    """= normalizeStateLook (core/engines/iconpick.ts): bad values fall back, a bare pick = one icon in two colours."""
+    r = {"icon": raw} if isinstance(raw, str) else raw if isinstance(raw, dict) else {}
+    pick = lambda v, d: v if isinstance(v, str) and ICON_RE.fullmatch(v) else d  # noqa: E731
+    base = pick(r.get("icon"), DEFAULT_ICON)
+    return {"mode": "icons" if r.get("mode") == "icons" else "colors", "icon": base, "on": pick(r.get("on"), base), "off": pick(r.get("off"), base),
+            "onTone": r.get("onTone") if r.get("onTone") in TONES else "success", "offTone": r.get("offTone") if r.get("offTone") in TONES else "danger"}
+
+
 def read_config() -> dict[str, Any]:
     try:
         raw = json.loads((data_dir() / "config.json").read_text("utf-8"))
     except (OSError, ValueError):
         raw = {}
-    icon = raw.get("icon") if isinstance(raw, dict) else ""
-    return {"icon": icon if isinstance(icon, str) and ICON_RE.fullmatch(icon) else ""}
+    raw = raw if isinstance(raw, dict) else {}
+    return {"look": normalize_look(raw.get("look", raw.get("icon") or None))}
 
 
 def write_config(cfg: dict[str, Any]) -> None:
@@ -132,10 +146,10 @@ def run_check() -> dict[str, Any]:
 def status(refresh: bool = False) -> dict[str, Any]:
     with _lock:
         if not refresh and _cache["res"] and time.time() - _cache["at"] < TTL:
-            return {**_cache["res"], "icon": read_config()["icon"]}
+            return {**_cache["res"], **read_config()}
         res = run_check()
         _cache.update(at=time.time(), res=res)
-    return {**res, "icon": read_config()["icon"]}
+    return {**res, **read_config()}
 
 
 @router.get("/config")
@@ -149,8 +163,11 @@ async def put_config(request: Request) -> dict[str, Any]:
         body = await request.json()
     except ValueError:
         raise HTTPException(400, "send JSON")
-    icon = body.get("icon", "") if isinstance(body, dict) else None
-    if not isinstance(icon, str) or (icon and not ICON_RE.fullmatch(icon)):
-        raise HTTPException(400, "icon must be an icon name or pick (name@anim, name@anim:still)")
-    write_config({"icon": icon})
+    if not isinstance(body, dict) or not isinstance(body.get("look", body.get("icon")), (dict, str)):
+        raise HTTPException(400, "send {look: {mode, icon, on, off, onTone, offTone}}")
+    raw = body.get("look", body.get("icon"))
+    picks = [raw] if isinstance(raw, str) else [raw.get(k) for k in ("icon", "on", "off") if k in raw]
+    if any(not isinstance(v, str) or not ICON_RE.fullmatch(v) for v in picks if v != ""):
+        raise HTTPException(400, "icons must be icon names or picks (name@anim, name@anim:still)")
+    write_config({"look": normalize_look(raw)})
     return read_config()

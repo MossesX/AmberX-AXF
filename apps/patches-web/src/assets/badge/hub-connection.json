@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "badge",
+  "id": "hub-connection",
+  "name": "axHub connection",
+  "version": "1.0.0",
+  "description": "Attachable badge at the top left of Patches' banner, next to the Claude badge: the hub icon, green with the hub account when the console's axHub token connects, red with “No axHub connection · check keys” when it doesn't. Patches repaints it on every load from the Dev Console's hub-connection plugin.",
+  "author": "AmberX AXF",
+  "tags": ["badge", "hub", "status"],
+  "data": { "icon": "hub", "label": "Checking axHub…", "tone": "muted", "shape": "pill", "tooltip": "Checking the axHub connection…", "link": "patches.hub.check" }
+}

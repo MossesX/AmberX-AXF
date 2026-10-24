@@ -97,3 +97,54 @@ export function setStill(list: unknown, id: string, still: boolean): string[] {
 export function animatedPick(a: AnimatedIcon, still: boolean): string {
   return iconPickValue(a.icon, a.anim, still);
 }
+
+/**
+ * The 50 static icons of the picker's Static tab (Oct 24 2026): status-minded, stroke-drawn in `currentColor`, so every
+ * colour theme and tone paints them (themeable). Names of the built-in set (react/components/Icon.tsx).
+ */
+export const STATIC_ICONS: readonly string[] = [
+  'claude', 'hub', 'cloud', 'server', 'database', 'globe', 'link', 'plug', 'wifi', 'wifi-off',
+  'signal', 'activity', 'power', 'zap', 'check', 'check-circle', 'x', 'x-circle', 'alert', 'info',
+  'help', 'circle', 'heart', 'star', 'flag', 'bell', 'shield', 'lock', 'key', 'eye',
+  'sparkles', 'sun', 'moon', 'refresh', 'settings', 'home', 'user', 'terminal', 'code', 'monitor',
+  'smartphone', 'github', 'rocket', 'package', 'box', 'branch', 'clock', 'mic', 'chart', 'layers',
+];
+
+/* ---------------------------------------------------------------- per-state look (two states: on / off) */
+
+/** Colours a state can take: the badge tones, so they follow the colour theme. */
+export const STATE_TONES = ['success', 'danger', 'warning', 'accent', 'neutral', 'muted'] as const;
+export type StateTone = (typeof STATE_TONES)[number];
+export const STATE_TONE_LABEL: Record<StateTone, string> = {
+  success: 'Green (success)', danger: 'Red (danger)', warning: 'Amber (warning)', accent: 'Accent', neutral: 'Neutral', muted: 'Grey (muted)',
+};
+
+/**
+ * How a two-state badge (connected / not) looks. `icons`: a different icon per state (`on` / `off`); `colors`: one
+ * `icon` in two colours. Both keep `onTone` / `offTone` (green / red by default). Every icon is a pick (static,
+ * animated or animated-marked-static).
+ */
+export interface StateLook { mode: 'icons' | 'colors'; icon: string; on: string; off: string; onTone: StateTone; offTone: StateTone }
+
+const PICK_RE = /^[a-z0-9-]{1,40}(@[a-z]{1,12}(:still)?)?$/;
+const pickOr = (v: unknown, d: string) => (typeof v === 'string' && PICK_RE.test(v) ? v : d);
+const toneOr = (v: unknown, d: StateTone): StateTone => ((STATE_TONES as readonly string[]).includes(v as string) ? (v as StateTone) : d);
+
+/** Normalise a stored look; `icon` is the plugin's own icon (its default for every slot). A bare pick string = colours mode. */
+export function normalizeStateLook(raw: unknown, icon: string): StateLook {
+  const r = (typeof raw === 'string' ? { icon: raw } : raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const base = pickOr(r.icon, icon);
+  return {
+    mode: r.mode === 'icons' ? 'icons' : 'colors',
+    icon: base,
+    on: pickOr(r.on, base),
+    off: pickOr(r.off, base),
+    onTone: toneOr(r.onTone, 'success'),
+    offTone: toneOr(r.offTone, 'danger'),
+  };
+}
+
+/** The icon and tone to draw for one state. */
+export function stateLookFor(look: StateLook, on: boolean): { icon: string; tone: StateTone } {
+  return { icon: look.mode === 'icons' ? (on ? look.on : look.off) : look.icon, tone: on ? look.onTone : look.offTone };
+}

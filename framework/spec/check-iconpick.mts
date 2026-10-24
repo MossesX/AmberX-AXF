@@ -1,6 +1,6 @@
 /** Icon picks + the picker's animated catalog (core/engines/iconpick.ts). Run: npx -y tsx framework/spec/check-iconpick.mts */
 import { readFileSync } from 'node:fs';
-import { ANIMATED_ICONS, ICON_ANIMS, animatedIconOf, animatedPick, iconPickMotion, iconPickValue, parseIconPick, setStill, stillIcons } from '../core/engines/iconpick.ts';
+import { ANIMATED_ICONS, ICON_ANIMS, STATIC_ICONS, normalizeStateLook, stateLookFor, animatedIconOf, animatedPick, iconPickMotion, iconPickValue, parseIconPick, setStill, stillIcons } from '../core/engines/iconpick.ts';
 
 let pass = 0, fail = 0;
 const ok = (c: unknown, m: string) => { if (c) pass++; else { fail++; console.error('✗', m); } };
@@ -32,5 +32,17 @@ eq(setStill(['claude@spin'], 'cloud@float', true), ['claude@spin', 'cloud@float'
 eq(setStill(['claude@spin'], 'claude@spin', false), [], 'switch off');
 eq(setStill([], 'nope@spin', true), [], 'unknown id ignored');
 eq(animatedPick(ANIMATED_ICONS[0], true), 'claude@spin:still', 'pick honours switch');
+eq(STATIC_ICONS.length, 50, '50 static icons');
+eq(new Set(STATIC_ICONS).size, 50, 'static icons unique');
+for (const n of STATIC_ICONS) ok(names.has(n), `static ${n}: icon exists`);
+const d = normalizeStateLook(undefined, 'hub');
+eq(d, { mode: 'colors', icon: 'hub', on: 'hub', off: 'hub', onTone: 'success', offTone: 'danger' }, 'look: defaults = one icon, green / red');
+eq(normalizeStateLook('cloud@pulse:still', 'hub').icon, 'cloud@pulse:still', 'look: an old single pick reads as colours mode');
+const two = normalizeStateLook({ mode: 'icons', on: 'wifi', off: 'wifi-off@blink', onTone: 'accent', offTone: 'nope' }, 'hub');
+eq(stateLookFor(two, true), { icon: 'wifi', tone: 'accent' }, 'look: icons mode, on');
+eq(stateLookFor(two, false), { icon: 'wifi-off@blink', tone: 'danger' }, 'look: icons mode, off (bad tone falls back)');
+const col = normalizeStateLook({ mode: 'colors', icon: 'plug', on: 'x', onTone: 'neutral', offTone: 'warning' }, 'hub');
+eq([stateLookFor(col, true), stateLookFor(col, false)], [{ icon: 'plug', tone: 'neutral' }, { icon: 'plug', tone: 'warning' }], 'look: colours mode keeps one icon');
+eq(normalizeStateLook({ icon: '<script>' }, 'hub').icon, 'hub', 'look: a bad pick falls back');
 console.log(`iconpick: ${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

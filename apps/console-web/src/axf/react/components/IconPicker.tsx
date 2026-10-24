@@ -1,5 +1,5 @@
 /**
- * Icon picker: a dialog with two tabs, **Static** (every icon of the built-in set, with a filter) and **Animated** (the
+ * Icon picker: a dialog with two tabs, **Static** (the 50 themeable icons of STATIC_ICONS, with a filter) and **Animated** (the
  * 50 animated icons of core/engines/iconpick.ts). Each animated icon has a **Static** switch that draws it without its
  * animation; the switches are kept in the setting `axf.icons.still`, shared by every picker in the app. The pick is a
  * string (`name`, `name@anim`, `name@anim:still`) that any icon field takes, because Icon reads picks.
@@ -13,11 +13,12 @@ import { useMemo, useState } from 'react';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { AxfRuntime } from '../../core/runtime';
 import {
-  ANIMATED_ICONS, ICON_ANIM_LABEL, STILL_ICONS_KEY, animatedIconOf, animatedPick, parseIconPick, setStill, stillIcons,
+  ANIMATED_ICONS, ICON_ANIM_LABEL, STATE_TONES, STATE_TONE_LABEL, STATIC_ICONS, STILL_ICONS_KEY, animatedIconOf, animatedPick, normalizeStateLook,
+  parseIconPick, setStill, stillIcons, type StateLook, type StateTone,
 } from '../../core/engines/iconpick';
-import { Button, Segmented } from './Controls';
-import { Switch, TextField } from './Forms';
-import { Icon, ICON_NAMES } from './Icon';
+import { Button, Chip, Segmented } from './Controls';
+import { SelectField, Switch, TextField } from './Forms';
+import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 
 export const ICON_PICKER_DIALOG = 'axf.icon-picker';
@@ -36,7 +37,7 @@ function IconPicker({ value = '', onPick, close }: IconPickerProps & { close: ()
   const [tab, setTab] = useState<'static' | 'animated'>(cur.anim ? 'animated' : 'static');
   const [q, setQ] = useState('');
   const still = stillIcons(rt.settings.get(STILL_ICONS_KEY));
-  const names = useMemo(() => ICON_NAMES.filter((n) => !q.trim() || n.includes(q.trim().toLowerCase())), [q]);
+  const names = useMemo(() => STATIC_ICONS.filter((n) => !q.trim() || n.includes(q.trim().toLowerCase())), [q]);
   const pick = (v: string) => { onPick?.(v); close(); };
   const curAnim = animatedIconOf(value);
   const toggleStill = (id: string, on: boolean) => {
@@ -50,7 +51,7 @@ function IconPicker({ value = '', onPick, close }: IconPickerProps & { close: ()
         label="Icons"
         value={tab}
         onChange={setTab}
-        options={[{ value: 'static', label: `Static (${ICON_NAMES.length})` }, { value: 'animated', label: `Animated (${ANIMATED_ICONS.length})` }]}
+        options={[{ value: 'static', label: `Static (${STATIC_ICONS.length})` }, { value: 'animated', label: `Animated (${ANIMATED_ICONS.length})` }]}
       />
       {tab === 'static' ? (
         <>
@@ -113,6 +114,49 @@ export function IconPickerField({ label, value, onChange, hint }: { label: strin
         <Button size="sm" icon="palette" onClick={() => pickIcon(rt, { value, title: label, onPick: onChange })}>Choose…</Button>
       </div>
       {hint && <span className="fx-small fx-muted">{hint}</span>}
+    </div>
+  );
+}
+
+/**
+ * A two-state badge's look (connected / not): **Two icons** (one per state) or **One icon, two colours**. Every icon
+ * slot opens the picker (static, animated, or animated marked static); colours are theme tones.
+ *
+ *   <StateLookField icon="hub" value={look} onChange={setLook} onLabel="Connected" offLabel="Not connected" />
+ */
+export function StateLookField({ icon, value, onChange, onLabel = 'Connected', offLabel = 'Not connected' }: {
+  icon: string; value: unknown; onChange: (look: StateLook) => void; onLabel?: string; offLabel?: string;
+}) {
+  const look = normalizeStateLook(value, icon);
+  const set = (patch: Partial<StateLook>) => onChange({ ...look, ...patch });
+  const tones = STATE_TONES.map((t) => ({ value: t, label: STATE_TONE_LABEL[t] }));
+  return (
+    <div className="fx-stack">
+      <Segmented
+        label="States"
+        value={look.mode}
+        onChange={(m) => set({ mode: m })}
+        options={[{ value: 'icons', label: 'Two icons' }, { value: 'colors', label: 'One icon, two colours' }]}
+      />
+      {look.mode === 'icons' ? (
+        <>
+          <IconPickerField label={onLabel} value={look.on} onChange={(p) => set({ on: p || icon })} />
+          <IconPickerField label={offLabel} value={look.off} onChange={(p) => set({ off: p || icon })} />
+        </>
+      ) : (
+        <>
+          <IconPickerField label="Icon" value={look.icon} onChange={(p) => set({ icon: p || icon })} />
+          <SelectField label={`${onLabel} colour`} value={look.onTone} options={tones} onChange={(t) => set({ onTone: t as StateTone })} />
+          <SelectField label={`${offLabel} colour`} value={look.offTone} options={tones} onChange={(t) => set({ offTone: t as StateTone })} />
+        </>
+      )}
+      <div className="fx-row fx-row--wrap fx-small">
+        {([true, false] as const).map((on) => {
+          const ic = look.mode === 'icons' ? (on ? look.on : look.off) : look.icon;
+          const t = on ? look.onTone : look.offTone;
+          return <Chip key={String(on)} tone={t === 'neutral' || t === 'muted' ? undefined : t}><Icon name={ic} size={14} /> {on ? onLabel : offLabel}</Chip>;
+        })}
+      </div>
     </div>
   );
 }
