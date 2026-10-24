@@ -3072,6 +3072,47 @@
    "source": "chat"
   },
   {
+   "id": "hub-status-badge",
+   "title": "axHub status badge: red until settings come live from axHub, green only while they do (any app)",
+   "detail": "Framework web library framework/libs/hubstatus (ai.amberx.axf.hubstatus), no dependencies: a status widget asset status/axhub on the banner. Red from the start and whenever the app is not reading settings live from axHub (appearance source not ready, hub unreachable, signed out, last live read too old); green only while it is. Tap = details panel (state, why, hub, last live read, latency, Check now, open hub). Pop-up note on change (on/off, seconds). Settings group. Console installs it.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-1nc43b (PR to follow).",
+     "at": "2026-10-24T12:46:13.201Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Pure core: live/not-live rule + status asset + tests",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-24T12:46:13.270Z"
+    },
+    {
+     "text": "Library: probe, banner widget, details dialog, pop-up, settings",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-24T12:46:13.345Z"
+    },
+    {
+     "text": "Console install, catalog, rule in _claude, docs, PR",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-24T12:46:13.418Z"
+    }
+   ],
+   "createdAt": "2026-10-24T12:40:52.292Z",
+   "builtAt": "2026-10-24T12:46:13.128Z",
+   "updatedAt": "2026-10-24T12:46:13.418Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
    "id": "appearance-asset-tokens",
    "title": "Tab group asset + per-asset appearance tokens (apply to all, 100 icon sets)",
    "detail": "Built on Opus, branch claude/project-thread-g27t3y: tab-group asset type (5 starters), Settings → Appearance → Assets one collapsible card per slot and per asset with Apply settings to all (first editable, rest greyed), 35 extra tokens (customize.json) + 100 icon sets (icon-sets.json), engine core/engines/customize.ts, check-customize.mts. Web only; Android deferred.",
