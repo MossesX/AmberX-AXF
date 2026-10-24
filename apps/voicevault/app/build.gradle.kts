@@ -6,7 +6,7 @@ android {
         applicationId = "ai.amberx.axf.voicevault"
         // CI sets AXF_BUILD_NUMBER (the run number) so each catalog build installs over the last one.
         versionCode = System.getenv("AXF_BUILD_NUMBER")?.toIntOrNull() ?: 1
-        versionName = "0.1.0"
+        versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Deep-link scheme used by axf-nav: axf://voice-vault/<route>
         manifestPlaceholders["axfAppId"] = "voice-vault"

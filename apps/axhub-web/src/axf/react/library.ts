@@ -84,6 +84,10 @@ export interface BannerDef {
   icon?: string;
   /** its plugin's settings tab, opened from its Banner settings tab */
   settingsTab?: string;
+  /** icon its BannerIcon shows while working (default refresh); the person can pick another in Banner settings */
+  workIcon?: string;
+  /** how it moves while working (default spin) */
+  workAnim?: 'spin' | 'pulse' | 'bounce' | 'blink' | 'off';
 }
 
 /** Dependency order (dependencies first); unknown dependencies are reported, cycles keep listed order. */

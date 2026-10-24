@@ -138,6 +138,7 @@ jobs:
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
             npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
+            npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py

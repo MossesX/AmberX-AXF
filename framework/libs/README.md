@@ -128,3 +128,20 @@ browser's own hub session (no token, no redirects, no cache); a developer app's 
 read older than two check periods doesn't count. Tap → connection details with an expandable More row and Check now;
 a pop-up note when it changes. Settings → Plugins → axHub status. Install with `installLibraries(rt, [hubStatusLibrary])`.
 Self-test: `npx -y tsx framework/spec/check-hubstatus.mts`.
+
+## axHub sync (Oct 24 2026): hubsync
+
+One look, settings and data for every app and device, on top of `hubstore` and the appearance source.
+
+```ts
+import { hubSyncLibrary, startHubSync } from '<axf>/libs/hubsync';
+installLibraries(rt, [settingsLibrary, hubSyncLibrary, …]);   // reads manifest libraries.hubsync + the saved connection
+// or: const sync = startHubSync(rt, { hub, project, look: 'follow', settings: true, data: ['notes'] });
+// sync.state(), sync.subscribe(fn), sync.refresh(), sync.test(), sync.settings (HubSettings), sync.data (HubData), sync.stop()
+```
+
+- **look** `required` (waits for axHub, like `developer.hub`), `follow` (same shared document, never blocks: `FollowSource`), `off`. An app that already attached a source keeps it (`look.status = 'own'`).
+- **settings**: the Settings screen values in `shared/settings/apps/<app id>.json` (secrets never).
+- **data**: `off`, `all` or a table list, in `shared/data-<app id>/`.
+- Settings → Plugins → **axHub sync**: Now (status, Sync now), Connect to axHub (address, project, Save and reconnect, Test connection, Sign in), What syncs. The connection is saved on the device (`axf.hubsync.connection`), never on the hub.
+- Android: Voice Vault's `sync/HubSync.kt` is the twin (Android framework work on hold).

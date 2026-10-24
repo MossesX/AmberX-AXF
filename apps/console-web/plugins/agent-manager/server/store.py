@@ -43,7 +43,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "defaults": {"memoryType": "hybrid", "topK": 6, "window": 8, "maxItems": 2000},
     "scheduler": True,
     # Agents allowed to use dangerous tools (container access, writes, commands). Personas and skills can't change this.
-    "safety": {"dangerousAgents": ["coder"]},
+    "safety": {"dangerousAgents": ["coder", "vinny"]},
 }
 
 
