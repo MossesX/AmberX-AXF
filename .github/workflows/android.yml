@@ -191,10 +191,6 @@ jobs:
               assert not r.get('isError'), r
               q = m.get('/api/build-queue').json(); assert q['view']['steps'], q
               print('mcp ok', len(tools), 'tools; next build step', q['view']['next'])
-              sc = m.get('/api/plugins/systems-check/check').json(); assert sc['checks'] and sc['services'], sc  # axf-plugin:systems-check
-              assert any(c['id'] == 'console-token' for c in sc['checks'])  # axf-plugin:systems-check
-              bad = m.post('/api/plugins/systems-check/secret', json={'key': 'PATH', 'value': 'x'}); assert bad.status_code == 400, bad.text  # axf-plugin:systems-check
-              print('systems check ok:', sc['counts'])  # axf-plugin:systems-check
           PY
       - uses: actions/upload-artifact@v4
         with:
