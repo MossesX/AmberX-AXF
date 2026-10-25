@@ -157,3 +157,11 @@ button.axp-build-manager__tool { flex: 1 0 auto; min-width: calc(var(--fx-space)
 .axp-build-manager__subgrid { overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
 .axp-build-manager__subdetail { display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.4) }
 .axp-build-manager__subdetail p { margin: 0; overflow-wrap: anywhere }
+
+/* Expanded banner builds (tap expands in place; the page is one button away). */
+.axp-build-manager-banner:has(> .axp-build-manager-banner__open) { flex-wrap: wrap }
+.axp-build-manager-banner__open { flex: 1 0 100%; display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) }
+.axp-build-manager-banner__more li { flex-wrap: wrap }
+button.axp-build-manager-banner__more-head { all: unset; box-sizing: border-box; flex: 1; min-width: 0; display: flex; align-items: center; gap: calc(var(--fx-space) * 0.4); cursor: pointer }
+.axp-build-manager-banner__more-head:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-build-manager-banner__detail { flex: 1 0 100%; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--fx-space) * 0.25); padding-left: calc(var(--fx-space) * 1.2) }

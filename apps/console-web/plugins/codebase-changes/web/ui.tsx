@@ -55,6 +55,8 @@ export function ChangesBanner() {
   const running = s.open.filter((e) => e.state === 'running').length;
   const failed = s.open.filter((e) => e.state === 'failed').length;
   const go = (id: string) => rt.dispatch(`codebase-changes.open:${encodeURIComponent(id)}`);
+  // Tapping an entry expands its details in the banner (Brett, Oct 25 2026); "Open in the log" is inside it.
+  const [shown, setShown] = useState<string | null>(null);
   return (
     <div className={`axp-codebase-changes-banner${failed ? ' is-failed' : ''}`} role="status" aria-live="polite">
       <div className="axp-codebase-changes-banner__row">
@@ -74,10 +76,11 @@ export function ChangesBanner() {
           <ul className="axp-codebase-changes-banner__list">
             {s.open.map((e) => (
               <li key={e.id} className={`axp-codebase-changes-banner__item is-${e.state}`}>
-                <button type="button" data-fx-row className="axp-codebase-changes-banner__entry" onClick={() => go(e.id)} title="Open in the log">
+                <button type="button" data-fx-row className="axp-codebase-changes-banner__entry" aria-expanded={shown === e.id} onClick={() => setShown(shown === e.id ? null : e.id)} title={shown === e.id ? 'Hide the details' : 'Show the details'}>
                   <span className="axp-codebase-changes-banner__line">
                     <KindBadge kind={e.kind} />
                     <span className="axp-codebase-changes-banner__title">{e.title}</span>
+                    <Icon name={shown === e.id ? 'chevron-up' : 'chevron-down'} size={14} />
                   </span>
                   <span className="axp-codebase-changes-banner__line">
                     <StateBadge state={e.state} />
@@ -88,6 +91,12 @@ export function ChangesBanner() {
                 </button>
                 {stuckWhy(e, now) && <button type="button" className="fx-iconbtn axp-codebase-changes__trash" aria-label={`Remove stuck "${e.title}"`} title="Stuck: mark it failed (stalled) and take it off the banners on every device; it stays in the log" disabled={s.busy === e.id} onClick={() => void abandonEntry(e.id)}><Icon name="trash" size={16} /></button>}
                 <button type="button" className="fx-iconbtn" aria-label={`Close "${e.title}" everywhere`} title="Close (gone on every device; stays in the log)" disabled={s.busy === e.id} onClick={() => void closeEntry(e.id)}><Icon name="x" size={16} /></button>
+                {shown === e.id && (
+                  <div className="axp-codebase-changes-banner__detail">
+                    <EntryDetail id={e.id} onChanged={() => void loadOpen()} />
+                    <Button size="sm" tone="neutral" icon="list" onClick={() => go(e.id)}>Open in the log</Button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
