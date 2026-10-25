@@ -1,0 +1,40 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.context-menu-designer",
+  "name": "Context menu designer",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Design context menus: create, edit, name, rename and save them, and make 'chunks' (reusable pieces of a menu, saved from any menu with Save as chunk) that you insert into menus by name; chunks can hold items, separators and other chunks. Every menu and chunk carries its own style (font, size, weight, style, text / background colour, hover text / background colour); a chunk inherits the menu's style or uses its own. A floating live preview re-renders on every change. A saved menu becomes a standard context-menu asset (ctxd-<id>) you pick in Appearance or with Use as the context menu. Designs are kept on the console server (0600).",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:context-menu-designer",
+    "settings-tab:context-menu-designer"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/context-menu-designer",
+    "env": [
+      "AXF_CONTEXT_MENU_DESIGNER_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-25"
+  },
+  "opens": "main"
+}

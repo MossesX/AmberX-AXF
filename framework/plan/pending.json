@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T16:17:42.692Z",
+ "updatedAt": "2026-10-25T16:44:19.565Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3424,6 +3424,42 @@
    "builtAt": "2026-10-25T16:17:42.679Z",
    "updatedAt": "2026-10-25T16:17:42.692Z",
    "estimate": "9 h",
+   "source": "chat"
+  },
+  {
+   "id": "context-menu-designer",
+   "title": "Context menu designer plugin: menus, chunks (own or inherited styles), floating live preview",
+   "detail": "Console plugin apps/console-web/plugins/context-menu-designer: create, edit, name, rename, save context menus; chunks inserted by name (separators, nested chunks), own or inherited style; floating live preview. Built on branch claude/project-thread-jflo9d.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Model, chunk expansion and chunk styles (web/core.ts)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Server store, designer UI, floating preview",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-25T16:44:19.565Z",
+   "builtAt": "2026-10-25T16:44:19.565Z",
+   "updatedAt": "2026-10-25T16:44:19.565Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]
