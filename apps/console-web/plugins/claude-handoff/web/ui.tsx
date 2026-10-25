@@ -84,9 +84,10 @@ function HandoffSession() {
   const s = useStore();
   const rt = useRuntime();
   const [notes, setNotes] = useState<string | null>(null);
+  const [threads, setThreads] = useState('');
   const [last, setLast] = useState<{ markdown: string; savedAt: string } | null>(null);
   useEffect(() => {
-    api.call<{ notes: string | null; savedAt: string; markdown: string }>('session').then((r) => { setNotes(r.notes); setLast(r); }, () => undefined);
+    api.call<{ notes: string | null; threads?: string; savedAt: string; markdown: string }>('session').then((r) => { setNotes(r.notes); setThreads(r.threads ?? ''); setLast(r); }, () => undefined);
   }, []);
   const out = s.session;
   const counts = out?.counts;
@@ -94,18 +95,23 @@ function HandoffSession() {
     <Container title="Handoff Session" icon="list">
       <div className="fx-stack">
         <div className="axp-claude-handoff__row">
-          <Button tone="primary" icon="list" disabled={!!s.busy} onClick={() => void handoffSession(notes)}>{s.busy === 'session' ? 'Summarising…' : 'Handoff Session'}</Button>
+          <Button tone="primary" icon="list" disabled={!!s.busy} onClick={() => void handoffSession(notes, true, threads)}>{s.busy === 'session' ? 'Summarising…' : 'Handoff Session'}</Button>
           {out && <Button icon="copy" onClick={() => copy(rt, out.prompt, 'Session summary')}>Copy again</Button>}
         </div>
-        <p className="axp-claude-handoff__meta">When the Project already exists on the other account: summarises everything still open here (unfinished Codebase changes entries, pending builds, open pull requests) with the standing rules and the notes below, copies it to paste into that Project, and keeps it in the kit as <code>_claude/handoff/ACTIVE-THREADS.md</code> (published when this console can). claude.ai threads can't be read from here, so put anything only a thread knows in the notes.</p>
+        <p className="axp-claude-handoff__meta">When the Project already exists on the other account: summarises everything still open here (unfinished Codebase changes entries, pending builds, open pull requests) with the standing rules and the notes below, copies it to paste into that Project, and keeps it in the kit as <code>_claude/handoff/ACTIVE-THREADS.md</code> (published when this console can). The copied prompt also has a <b>Threads to recreate</b> part: one ready first message per open thread (each unfinished change, each open PR, and each line of the open-threads list below), and it tells the other account to start one thread per entry. claude.ai threads can't be read from here, so list the ones only a thread knows below.</p>
         {!out && last?.savedAt && <p className="axp-claude-handoff__meta">Last summary made {ago(last.savedAt)}.</p>}
         {counts && <div className="axp-claude-handoff__row">
           <Chip tone={counts.changes ? 'warning' : 'success'}>{counts.changes} in progress</Chip>
           <Chip>{counts.pending} pending builds</Chip>
           <Chip>{counts.prs === null ? 'PRs not read' : `${counts.prs} open PRs`}</Chip>
+          {counts.threads !== undefined && <Chip tone="accent">{counts.threads} threads to recreate</Chip>}
           {out?.published?.pushed && <Chip tone="success">kit published {out.published.sha}</Chip>}
         </div>}
         {out?.note && <Note tone="warning">{out.note}</Note>}
+        <details className="axp-claude-handoff__item" open={!threads}>
+          <summary>Open threads to recreate on the other account</summary>
+          <TextField label="Open threads" hint="One thread per line: Title: where it stood / what it waits on. Each becomes a thread to start, with its first message. Unfinished changes and open PRs are added by themselves." value={threads} placeholder="Voice notes: PR #51 ready, mic switch waits on a model pick" onChange={(v) => setThreads(v)} rows={6} />
+        </details>
         <details className="axp-claude-handoff__item">
           <summary>Notes for the other account (known gaps, what open threads were waiting on)</summary>
           <TextField label="Notes" hint="One per line; added under Known gaps and notes. Secrets are redacted, but don't put any here." value={notes ?? ''} placeholder="Empty = the default notes" onChange={(v) => setNotes(v)} rows={6} />

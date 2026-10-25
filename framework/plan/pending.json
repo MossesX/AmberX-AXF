@@ -3377,6 +3377,20 @@
    "source": "chat"
   },
   {
+   "id": "handoff-session-threads",
+   "title": "Claude handoff: Handoff Session prompt recreates the open threads",
+   "detail": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T14:46:55.696Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T14:46:55.696Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
    "id": "changes-grid",
    "title": "Changes & features grid plugin",
    "detail": "",

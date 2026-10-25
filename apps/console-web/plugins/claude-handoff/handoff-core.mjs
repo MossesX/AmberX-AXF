@@ -671,6 +671,42 @@ const steps = (list) => {
  * prs ([{number, title, draft, head, base, updatedAt, url, user}] or null when GitHub wasn't reachable), prsNote,
  * notes (free text), now }. Pure: everything is passed in. Secrets are redacted.
  */
+/**
+ * Threads the other account should recreate, one per piece of open work: every unfinished change-log entry (with the
+ * open PR on its branch), every open PR no entry covers, and every line of the hand-written threads list
+ * (`Title: what it waits on / how to resume`, one per line). Each gets a ready-to-paste first message.
+ */
+export function sessionThreads({ changes = [], prs = null, threads = '', now = new Date().toISOString() } = {}) {
+  const out = [];
+  const used = new Set();
+  const prOn = (branch) => (prs ?? []).find((p) => branch && p.head === branch);
+  for (const e of openChanges(changes).slice(0, SESSION_MAX.changes)) {
+    const pr = prOn(e.branch);
+    if (pr) used.add(pr.number);
+    const ref = e.buildRef && typeof e.buildRef === 'object' ? [e.buildRef.kind, e.buildRef.id].filter(Boolean).join(':') : String(e.buildRef ?? '');
+    const run = (e.steps ?? []).find((x) => x?.state === 'running');
+    const b = [`Pick up "${mdLine(redact(e.title || e.id))}" from the other account (Codebase changes entry \`${e.id}\`${e.status ? `, ${e.status}` : ''}${e.lastSeenAt ? `, last heard ${ago(e.lastSeenAt, now)}` : ''}).`];
+    if (e.asked) b.push(`What was asked: ${mdLine(redact(String(e.asked).slice(0, 300)))}`);
+    if (steps(e.steps)) b.push(`Steps done: ${steps(e.steps)}${run ? `; it was on: ${mdLine(redact(run.text))}` : ''}.`);
+    if (e.branch) b.push(`Branch \`${mdLine(e.branch)}\`${pr ? `, PR #${pr.number}${pr.draft ? ' (draft)' : ''}` : ''}.`);
+    if (ref) b.push(`It belongs to \`${mdLine(ref)}\`.`);
+    b.push(`First check what's already on ${e.branch ? 'that branch' : 'main'}, tell me where it stands, then finish it once I pick a model. Record the result with \`changes.mjs result ${e.id}\`.`);
+    out.push({ title: mdLine(redact(e.title || e.id)).slice(0, 80), source: 'change', brief: b.join(' ') });
+  }
+  for (const pr of (prs ?? []).filter((p) => !used.has(p.number)).slice(0, SESSION_MAX.prs)) {
+    out.push({ title: `PR #${pr.number}: ${mdLine(redact(pr.title))}`.slice(0, 80), source: 'pr',
+      brief: `Look after PR #${pr.number} "${mdLine(redact(pr.title))}"${pr.draft ? ' (draft)' : ''}, branch \`${mdLine(pr.head)}\` → \`${mdLine(pr.base)}\`${pr.url ? ` (${pr.url})` : ''}. Check its CI and conflicts and keep it green; merge only when I say.` });
+  }
+  for (const raw of redact(String(threads ?? '')).split(/\r?\n/)) {
+    const line = raw.replace(/^\s*(?:[-*]|\d+[.)])\s*/, '').trim();
+    if (!line) continue;
+    const m = line.match(/^(.{1,80}?)\s*(?::|—| - )\s*(.+)$/);
+    const title = mdLine(m ? m[1] : line.slice(0, 80));
+    out.push({ title, source: 'note', brief: `Pick up the thread "${title}" from the other account.${m ? ` Where it stood: ${mdLine(m[2])}.` : ''} Check the repo for its branch / PR first, tell me where it stands, and wait for my model pick before building.` });
+  }
+  return out;
+}
+
 export function sessionMd(info) {
   const { P, now = new Date().toISOString(), notes = DEFAULT_SESSION_NOTES, prsNote = '' } = info;
   const ch = openChanges(info.changes);
@@ -730,6 +766,14 @@ export function sessionMd(info) {
     L.push(cut(prs, SESSION_MAX.prs, 'pull requests'));
   }
 
+  const th = sessionThreads({ changes: info.changes, prs, threads: info.threads, now });
+  L.push('## Threads to recreate', '');
+  if (!th.length) L.push('No open threads to recreate.', '');
+  else {
+    L.push(`Start one thread for each entry below in this Project (thread title = the entry's title) and send the text under it as that thread's first message. Each thread works on its own item only, checks the repo before doing anything, and asks Brett for a model before building.`, '');
+    th.forEach((t, i) => { L.push(`### Thread ${i + 1}: ${t.title}`, '', '```text', t.brief, '```', ''); });
+  }
+
   L.push('## How to pick it up', '');
   L.push('1. Read the rules files above, then this list.');
   L.push('2. Ask Brett (tap-to-pick) which item to start with; for builds, recommend a model and wait.');
@@ -741,5 +785,6 @@ export function sessionMd(info) {
 
 /** What gets copied for the other account's existing Project: one lead line, then the summary itself. */
 export function sessionPrompt(md) {
-  return `I'm continuing this project from another Claude account. Below is everything that was still open there. Read the repo's rules first, then help me pick up this work (ask me with choices which item to start with; don't build anything until I say).\n\n${md}`;
+  const recreate = md.includes('### Thread 1:') ? ' Then recreate the open threads: start one thread per entry under "Threads to recreate", titled as listed, and give each its text as the first message.' : '';
+  return `I'm continuing this project from another Claude account. Below is everything that was still open there. Read the repo's rules first.${recreate} Then help me pick up this work (ask me with choices which item to start with; don't build anything until I say).\n\n${md}`;
 }
