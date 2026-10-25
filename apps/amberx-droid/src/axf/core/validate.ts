@@ -2,6 +2,7 @@ import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
+import { packageErrors } from './engines/appearancepackage';
 
 export interface ValidationResult {
   ok: boolean;
@@ -85,6 +86,7 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'context-menu' && isObj(data.targets)) {
     for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
+  if (raw.type === 'appearance-package') errors.push(...packageErrors(data));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));

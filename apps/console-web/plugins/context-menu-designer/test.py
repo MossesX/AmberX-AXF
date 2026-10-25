@@ -53,6 +53,9 @@ check(r.status_code == 200, "save a menu")
 d = r.json()["design"]
 check(d["style"]["size"] == 200 and d["style"]["color"] == "token:accent" and d["inherit"] is False, "style cleaned and clamped; menus never inherit")
 check(d["items"][0]["items"][0]["label"] == "Inner" and d["items"][2]["chunk"] == "Edit", "items, submenus and chunk refs kept")
+lv = c.put("/p/designs/lv", json={"name": "Loaded", "kind": "menu", "contributions": False, "items": [{"kind": "item", "id": "p", "label": "Plugins", "provider": "amber.plugins"}]}).json()["design"]
+check(lv["items"][0]["provider"] == "amber.plugins" and lv["contributions"] is False, "live lists + contributions: false kept (loaded app menus)")
+check(c.delete("/p/designs/lv").status_code == 200, "remove the loaded one")
 check(c.put("/p/designs/edit", json={"name": "Edit", "kind": "chunk", "items": []}).json()["design"]["inherit"] is True, "chunks inherit by default")
 check(c.put("/p/designs/edit2", json={"name": "edit", "kind": "chunk"}).status_code == 409, "duplicate chunk name refused")
 check(c.put("/p/designs/m2", json={"name": "Edit", "kind": "menu"}).status_code == 200, "a menu may share a chunk name")

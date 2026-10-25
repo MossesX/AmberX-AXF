@@ -4,22 +4,32 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Designer } from './Designer';
 import { FOLDER, ID, loadDesigns } from './store';
 import { appMenu } from './menu';
+import { ACTIONS_TAB_KIND, ActionsTab, FILTER_DIALOG, FilterDialog, openActionsWindow } from './ActionsWindow';
 import './context-menu-designer.css';
 
 /*
  * Context menu designer (web part): nav → Plugins → Context menu designer. Build context menus and "chunks" (reusable
  * pieces you insert into menus by name), style them, watch the floating live preview, save. On start every saved menu
  * is registered as a context-menu asset (`ctxd-<id>`, pick it in Appearance or with "Use as the context menu") and its
- * styles go into one stylesheet scoped to the real context menu. Actions: context-menu-designer.open.
+ * styles go into one stylesheet scoped to the real context menu. The Actions window (floating) lists every action
+ * the app can run with search + a Filter dialog (Plugins / Framework / Application); "This app's menus" loads the
+ * app's current context menus for editing. Actions: context-menu-designer.open | .actions | .filter.
  */
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Context menu designer',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   register(rt) {
     void loadDesigns(rt);
     rt.actions.register('context-menu-designer.open', () => rt.navigate('context-menu-designer'), { label: 'Open the context menu designer' });
+    rt.actions.register('context-menu-designer.actions', () => openActionsWindow(rt), { label: 'Open the Actions window (context menu designer)' });
+    rt.actions.register('context-menu-designer.filter', () => rt.openDialog(FILTER_DIALOG), { label: 'Filter the Actions window' });
+  },
+  // the Actions window (one floating window) and its Filter dialog
+  tabs: { [ACTIONS_TAB_KIND]: () => <ActionsTab /> },
+  dialogs: {
+    [FILTER_DIALOG]: { title: 'Filter actions', icon: 'sliders', render: (_p, close) => <FilterDialog close={close} /> },
   },
   views: {
     'context-menu-designer': {

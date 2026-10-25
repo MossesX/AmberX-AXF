@@ -25,6 +25,8 @@ sealed interface WakeState {
     data object TakingNote : WakeState
     /** Heard the trigger at [at] (epoch ms) and asked Android to open the app. */
     data class Heard(val at: Long) : WakeState
+    /** Quiet hours: not listening until [until] (a time of day, e.g. "7:00"). */
+    data class Quiet(val until: String) : WakeState
 }
 
 /** How a heard trigger reaches you: the app opens by itself, a full-screen alert, or an alert you tap. */
@@ -58,8 +60,15 @@ object WakeListener {
         else -> WakeDelivery.TAP_ALERT
     }
 
+    /** The master switch on the Voice screen (Voice Vault doesn't touch the microphone at all while it's off). */
+    fun micOff(c: Context): Boolean = runCatching { (c.applicationContext as ai.amberx.axf.voicevault.App).appModule.control.micOff.value }.getOrDefault(false)
+
+    /** The microphone was switched off: stop the background listener and say so. */
+    fun micTurnedOff(c: Context) { set(WakeState.Off(MIC_OFF)); stop(c) }
+
     /** Why it can't run right now, or null when it can. */
     fun blocker(c: Context, settingOn: Boolean): String? = when {
+        micOff(c) -> MIC_OFF
         !settingOn -> "Off in Settings → Voice Vault → Listen in the background (and Voice notes → Listen for voice notes)."
         !hasMic(c) -> "Needs the microphone permission. Tap the mic once to allow it."
         !onDevice(c) -> "This phone has no on-device speech recognition, so it won't listen in the background (it never sends an always-on mic to the cloud)."
@@ -92,4 +101,7 @@ object WakeListener {
     }
 
     const val EXTRA_WAKE = "ai.amberx.axf.voicevault.WAKE"
+    /** A voice action heard in the background that runs in the app (its id). */
+    const val EXTRA_RUN = "ai.amberx.axf.voicevault.RUN"
+    const val MIC_OFF = "The microphone is off. Turn it back on with the Microphone switch on the Voice screen."
 }

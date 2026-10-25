@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T20:32:46.280Z",
+ "updatedAt": "2026-10-25T20:59:28.940Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -2892,43 +2892,60 @@
    "title": "Voice notes listener in Voice Vault (start/stop triggers, list of lists, questions, saved to axHub)",
    "detail": "Brett Oct 23 2026: bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Merged in PR #50 (45d7631). CI green: android.yml run 336, latest main run 343 ships voicevault-debug.apk + app-apks.",
+     "at": "2026-10-24T11:08:03.369Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Pure notes model (Kotlin port of voice-notes core rules) + unit test",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.315Z"
     },
     {
      "text": "axHub data client in app code (settings doc, lists table, notes table write with If-Match)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.335Z"
     },
     {
      "text": "Note conversation (beep, record to stop trigger, list of lists, subcategory, questions, confirm)",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.345Z"
     },
     {
      "text": "Background service: start triggers heard alongside the global trigger",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.351Z"
     },
     {
      "text": "Notes screen: hub sign-in, status, take a note, last saved; settings + route",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.358Z"
     },
     {
      "text": "Docs, status, CI, PR",
      "at": "",
-     "estimate": "30 min"
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:08:03.363Z"
     }
    ],
    "createdAt": "2026-10-23T15:47:07.297Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-23T15:47:07.297Z",
+   "builtAt": "2026-10-24T11:08:03.374Z",
+   "updatedAt": "2026-10-24T11:08:03.374Z",
    "estimate": "3 h",
    "source": "chat"
   },
@@ -3018,7 +3035,12 @@
    "detail": "Fable was suggested for the settings asset type and Opus was chosen (Oct 23 2026, branch claude/project-thread-55oakl). Start by reviewing/replacing the Opus build: settings-ui@1 as a full cross-port contract, a validator check for groups/tabs in all three validators, Settings → Appearance preview of each settings asset, theme-manager / asset designer support, Kotlin twin recorded (Android on hold). Build together with patches-settings-banner-hide-fable (same settings code).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
+     "at": "2026-10-25T20:12:14.980Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Review the Opus settings-ui engine + library changes; list what changes",
@@ -3048,7 +3070,7 @@
    ],
    "createdAt": "2026-10-23T18:22:53.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-10-25T20:12:14.980Z",
    "estimate": "2.2 h",
    "source": "chat"
   },
@@ -3491,12 +3513,272 @@
    "source": "chat"
   },
   {
+   "id": "shared-settings-interface",
+   "title": "One settings interface for every app (settings/console asset + Appearance picker, synced through axHub)",
+   "detail": "Gizmo, Oct 25 2026: save the console's settings interface as an asset; every app using it looks the same; Appearance gets a Settings interface area; a change in one app shows in all. Built in thread \"Check if settings screens are assets\".",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR to follow).",
+     "at": "2026-10-25T20:14:56.174Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Framework asset settings/console + defaults",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.155Z"
+    },
+    {
+     "text": "Ship shared settings assets in every web app, drop per-app ones",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.161Z"
+    },
+    {
+     "text": "Appearance → Settings interface picker",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.165Z"
+    },
+    {
+     "text": "Tests, PR",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.170Z"
+    }
+   ],
+   "createdAt": "2026-10-25T20:12:14.972Z",
+   "builtAt": "2026-10-25T20:14:56.178Z",
+   "updatedAt": "2026-10-25T20:14:56.178Z",
+   "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "android-framework-update",
+   "title": "Update the Android framework: every deferred Android twin (PORTING.md)",
+   "detail": "Held in the Activity banner until Continue (Gizmo, Oct 25 2026). Brings the Kotlin kernel + Compose layer level with the web port: every gap PORTING.md records as deferred while Android was on hold. Continue starts it through the Build manager (axHub approval). Lifting the Android hold for this build is the person's Continue tap.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Read PORTING.md deferred list; plan module order; branch fable/android-framework-update",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "AppMenuEngine.kt + AxfRuntime contributions/providers + fixture replay",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Compose menubar on the compiled app menu (flyouts, drill-down, badges, checks)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AppShell frame order: app.frame.head / banners slots, menu above banners",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "embed@1 guest side: takes, page mode, skipWhen in the module loader",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Banner settings + BannerHideEngine + hot render on settings change",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Gauge / meter + tab-group styles in ComponentStyleEngine + Compose controls",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CustomizeEngine (35 tokens, icon sets) read by Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "SettingsUiEngine.kt + lib-settings SettingsScreen reading the settings asset (shared settings/console)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AppearancePackageEngine + runtime capture/apply/restore",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "placement@1 + model badges in Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "library@1 parts in LibraryParams + generated setup",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "lib-hub: apps rules, hubstore data client, hubsync module (move Voice Vault twin in)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "hubstatus badge + approval/menu hooks in Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Studio libraries Compose placeholders (dnd, tree, datagrid, workspace, recorder, docstore): scope + first slice",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixtures replay in ConformanceTest, CI green, PORTING.md gaps cleared, report",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T20:26:24.616Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T20:26:24.629Z",
+   "source": "chat"
+  },
+  {
+   "id": "activity-hold-continue",
+   "title": "Activity banner: on-hold item with Continue for the Android framework update",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR #90).",
+     "at": "2026-10-25T20:28:38.573Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T20:28:38.567Z",
+   "builtAt": "2026-10-25T20:28:38.567Z",
+   "updatedAt": "2026-10-25T20:28:38.573Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "banner-details-reveal",
+   "title": "Banner items: tapping opens their details in view again",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T19:51:25.195Z",
+   "builtAt": "2026-10-25T19:51:25.195Z",
+   "updatedAt": "2026-10-25T19:51:25.195Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "voice-notes-tab",
+   "title": "Voice notes: tabbable page that fetches saved notes",
+   "detail": "Voice notes plugin gets a page (view voice-notes) listing the notes Voice Vault saved on axHub, and plugin.json tabable so Patches can add it as a tab.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-24T11:26:29.018Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Notes core + store: read the notes table, filter/search/group",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.001Z"
+    },
+    {
+     "text": "Notes page view + nav/menu, tabable in plugin.json",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.008Z"
+    },
+    {
+     "text": "Tests, typecheck, build, docs",
+     "at": "2026-10-24T11:22:43.700Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-24T11:26:29.013Z"
+    }
+   ],
+   "createdAt": "2026-10-24T11:22:35.523Z",
+   "builtAt": "2026-10-24T11:26:29.022Z",
+   "updatedAt": "2026-10-24T11:26:29.022Z",
+   "source": "chat"
+  },
+  {
+   "id": "voicevault-mic-actions",
+   "title": "Voice Vault: microphone off switch, per-trigger switches, custom voice actions",
+   "detail": "Master mic-off switch (stops WakeService + hands-free), on/off per trigger, Custom voice actions screen (record/type a phrase, pick an action), quiet hours, heard log. Voice Vault app code only.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-25T19:47:51.720Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Master microphone off + per-trigger switches",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    },
+    {
+     "text": "Custom voice actions: model, screen, matcher",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    },
+    {
+     "text": "Quiet hours + heard log + tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    }
+   ],
+   "createdAt": "2026-10-25T19:00:48.146Z",
+   "builtAt": "2026-10-25T19:47:51.720Z",
+   "updatedAt": "2026-10-25T19:47:51.720Z",
+   "source": "chat"
+  },
+  {
    "id": "widget-arrange",
    "title": "Drag and snap banner and toolbar widgets (no overlaps)",
    "detail": "Widgets attached to banners and toolbars (clock, axHub badge, Claude badge, plugin widgets) overlap. Arrange mode: drag a widget, it snaps between the others on a side; arrangement saved per host as a look setting (axf.widgets.arrange.<host>), hot render. Web only.",
    "model": "Opus",
-   "status": "pending",
-   "notes": [],
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, PR #92 (branch claude/project-thread-c4xw4s).",
+     "at": "2026-10-25T20:59:28.929Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Engine: arrangement layer + snap/move helpers in widgets.ts, fixtures",
@@ -3524,16 +3806,16 @@
      "estimate": "30 min"
     }
    ],
-   "createdAt": "2026-10-25T20:32:46.267Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-25T20:32:46.267Z",
+   "createdAt": "2026-10-25T20:59:28.893Z",
+   "builtAt": "2026-10-25T20:59:28.920Z",
+   "updatedAt": "2026-10-25T20:59:28.929Z",
    "estimate": "2.5 h",
    "source": "chat"
   },
   {
    "id": "widget-arrange-fable",
    "title": "Drag and snap widgets (Fable rebuild, with Kotlin twin)",
-   "detail": "Fable rebuild of widget-arrange (Opus, branch claude/project-thread-c4xw4s). Start by replacing the Opus version; review the arrangement layer as a cross-port contract and record/port the Kotlin WidgetEngine twin when Android is unpaused.",
+   "detail": "Fable rebuild of widget-arrange (Opus, PR #92, branch claude/project-thread-c4xw4s). Start by replacing the Opus version; review the arrangement layer as a cross-port contract and record/port the Kotlin WidgetEngine twin when Android is unpaused.",
    "model": "Fable",
    "status": "pending",
    "notes": [],
@@ -3559,9 +3841,9 @@
      "estimate": "30 min"
     }
    ],
-   "createdAt": "2026-10-25T20:32:46.280Z",
+   "createdAt": "2026-10-25T20:59:28.940Z",
    "builtAt": "",
-   "updatedAt": "2026-10-25T20:32:46.280Z",
+   "updatedAt": "2026-10-25T20:59:28.940Z",
    "estimate": "2 h",
    "source": "chat"
   }

@@ -179,6 +179,50 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   );
 }
 
+/* ---------------- Settings interface: pick the settings page every app shares ---------------- */
+
+const SETTINGS_LAYOUT_LABEL: Record<string, string> = { 'tabs-top': 'tabs across the top', 'tabs-side': 'tabs at the side', list: 'a list you drill into' };
+
+/**
+ * Appearance → Settings interface: every `settings` asset the app ships, the active one marked, Use on the others.
+ * A pick is an ordinary swap, so a developer app that reads its look from axHub saves it to the hub's appearance
+ * document and every other app shipping the same asset id switches to it live.
+ */
+function SettingsInterfacePanel() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const options = rt.registry.list('settings');
+  const active = state.active['settings'];
+  const denied = rt.gate('assets.swap') !== 'allow';
+  const hub = rt.appearanceHub();
+  if (!options.length) return <p className="fx-muted axf-settings__hint">This app ships no settings interface asset.</p>;
+  return (
+    <div className="axf-settings__rows">
+      <p className="fx-muted axf-settings__hint">
+        {hub
+          ? `Shared through axHub (${hub.replace(/^https?:\/\//, '')}): picking one here changes the settings page in every app that reads its look from the hub and ships the same interface.`
+          : 'This app keeps the pick on this device. Apps that read their look from axHub share it.'}
+      </p>
+      {options.map((a) => {
+        const ui = normalizeSettingsUi(a.data);
+        const on = a.id === active;
+        const bits = [SETTINGS_LAYOUT_LABEL[ui.layout] ?? ui.layout, `${ui.header} header`, ui.search ? 'search' : '', ui.descriptions ? 'descriptions' : 'no descriptions'].filter(Boolean).join(' · ');
+        return (
+          <div key={a.id} className="axf-settings__row" data-axf-anchor={`settings-ui:${a.id}`}>
+            <div className="axf-settings__label">
+              <span>{a.name}{on ? ' (in use)' : ''}</span>
+              <span className="fx-muted axf-settings__hint">{a.description ? `${a.description} ` : ''}{bits}</span>
+            </div>
+            <div className="axf-settings__control">
+              <Button size="sm" tone={on ? 'quiet' : 'primary'} disabled={on || denied} onClick={() => rt.swap('settings', a.id)}>{on ? 'In use' : 'Use'}</Button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ---------------- Assets: one collapsible card per slot, one per asset, extra tokens (core/engines/customize.ts) ---------------- */
 
 const humanize = (v: string) => (v === 'theme' ? 'Theme default' : v.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()));
@@ -792,6 +836,7 @@ export const library: AxfWebLibrary = {
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
+    { id: 'axf.settings-ui', tab: 'appearance', title: 'Settings interface', icon: 'settings', order: 5, render: () => <SettingsInterfacePanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },

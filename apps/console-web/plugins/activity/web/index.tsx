@@ -26,17 +26,19 @@ import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 const POLL_MS = 4_000;
 const DONE_FLASH_MS = 20_000;
 const ACTIVE = new Set(['queued', 'running', 'waiting']);
 
-type State = 'queued' | 'running' | 'waiting' | 'done' | 'failed' | 'cancelled' | 'stale';
+type State = 'queued' | 'running' | 'waiting' | 'held' | 'done' | 'failed' | 'cancelled' | 'stale';
+/** A button an item carries (the feed checked it): the first one on a held item is its Continue. */
+interface ItemAction { label: string; action: string; icon?: string }
 interface Step { name: string; state: State }
-interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean }
+interface Item { id: string; source: string; kind: string; title: string; detail: string; state: State; progress?: number; startedAt: number; updatedAt: number; finishedAt?: number; url?: string; by?: string; steps?: Step[]; origin?: string; reported?: boolean; actions?: ItemAction[]; pending?: string }
 /** What the browser does when something finishes (stored with the feed's settings, same on every device). */
 interface OnDone { sound: 'off' | 'all' | 'failed'; toast: boolean; expandOnDone: boolean; openResult: boolean; onClose: 'changes' | 'delete' }
-interface Feed { items: Item[]; active: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }>; complete?: OnDone }
+interface Feed { items: Item[]; active: number; held?: number; errors: string[]; checkedAt: number; sources: Record<string, { label: string; on: boolean }>; complete?: OnDone }
 interface Job { name: string; state: State; startedAt?: number; finishedAt?: number; url?: string; steps: Step[] }
 interface Detail { id: string; jobs?: Job[]; progress?: number | null }
 /** `open` = the banner is expanded (it launches expanded; "_" folds it to one line); `pinned` = shown on request (action) even when idle. */
@@ -160,8 +162,8 @@ const ago = (ms: number, now: number) => `${dur(now - ms).split(' ')[0]} ago`;
 
 /* ---------------- pieces ---------------- */
 
-const STATE_LABEL: Record<State, string> = { queued: 'Queued', running: 'Running', waiting: 'Waiting', done: 'Done', failed: 'Failed', cancelled: 'Cancelled', stale: 'No word' };
-const STATE_ICON: Record<State, string> = { queued: 'clock', running: 'refresh', waiting: 'pause', done: 'check-circle', failed: 'x-circle', cancelled: 'minus', stale: 'alert' };
+const STATE_LABEL: Record<State, string> = { queued: 'Queued', running: 'Running', waiting: 'Waiting', held: 'On hold', done: 'Done', failed: 'Failed', cancelled: 'Cancelled', stale: 'No word' };
+const STATE_ICON: Record<State, string> = { queued: 'clock', running: 'refresh', waiting: 'pause', held: 'lock', done: 'check-circle', failed: 'x-circle', cancelled: 'minus', stale: 'alert' };
 const SOURCE_ICON: Record<string, string> = { github: 'github', update: 'rocket', assistant: 'sparkles', 'claude-code': 'terminal', reports: 'list', 'axf.syscheck@1': 'shield', changes: 'branch', git: 'branch' };
 /** What kind of work an item is: building, editing, deleting, pushing, pulling, merging, thinking … (open set: anything else shows its source's icon). */
 export const KIND_LABEL: Record<string, string> = { build: 'Building', edit: 'Editing', delete: 'Deleting', push: 'Pushing', pull: 'Pulling', merge: 'Merging', thinking: 'Thinking', fix: 'Fixing', ci: 'CI', deploy: 'Deploying', ai: 'Thinking', claude: 'Working' };
@@ -263,6 +265,33 @@ function CloseButton({ it, label }: { it: Item; label?: boolean }) {
     : <button type="button" className="fx-iconbtn" disabled={busy} aria-label={`Close "${it.title}"`} title={title} onClick={go}><Icon name="x" size={14} /></button>;
 }
 
+/**
+ * An item's buttons. On a held item the first one is Continue: the feed marks it continued (every device) and hands
+ * back its action, which runs here (e.g. Start build now in the Build manager). The others just run their action.
+ */
+function ItemActions({ it }: { it: Item }) {
+  const [busy, setBusy] = useState(false);
+  const acts = it.actions ?? [];
+  if (!acts.length) return null;
+  const run = (spec: string | null | undefined) => { if (spec) runtime?.dispatch(spec); };
+  const go = (a: ItemAction, i: number) => {
+    if (it.state !== 'held' || i > 0) { run(a.action); return; }
+    setBusy(true);
+    void call<{ action?: string | null }>('continue', { method: 'POST', body: JSON.stringify({ id: it.id }) }).then((r) => {
+      run(r.action ?? a.action);
+      runtime?.toast(`"${it.title}" is off hold.`, 'info', 'Continued');
+      void refresh();
+    }, (e: Error) => { setBusy(false); runtime?.toast(e.message, 'danger', 'Couldn\'t continue it'); });
+  };
+  return (
+    <div className="axp-activity__actions">
+      {acts.map((a, i) => (
+        <Button key={a.action} size="sm" tone={i === 0 && it.state === 'held' ? 'primary' : 'neutral'} icon={a.icon} disabled={busy} onClick={() => go(a, i)}>{a.label}</Button>
+      ))}
+    </div>
+  );
+}
+
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
   const icon = KIND_ICON[it.kind] ?? SOURCE_ICON[it.source] ?? 'zap';
@@ -271,7 +300,7 @@ function Row({ it, now }: { it: Item; now: number }) {
   // a running timer on every active or stuck item: how long since it started (and, when stuck, how long it's been quiet)
   const time = ACTIVE.has(it.state) || it.state === 'stale'
     ? `${dur(now - it.startedAt)}${stuck ? ` · quiet ${dur(now - it.updatedAt)}` : ''}`
-    : ago(it.finishedAt ?? it.updatedAt, now);
+    : it.state === 'held' ? `on hold ${dur(now - it.startedAt)}` : ago(it.finishedAt ?? it.updatedAt, now);
   const last = it.steps?.filter((s) => s.state === 'running').pop()?.name;
   return (
     <li className={`axp-activity__item axp-activity__item--${it.state}`}>
@@ -287,8 +316,9 @@ function Row({ it, now }: { it: Item; now: number }) {
         <Icon name={open ? 'chevron-up' : 'chevron-down'} size={14} />
       </button>
       {stuck && <Trash it={it} />}
-      {!ACTIVE.has(it.state) && it.state !== 'stale' && <CloseButton it={it} />}
+      {!ACTIVE.has(it.state) && it.state !== 'stale' && it.state !== 'held' && <CloseButton it={it} />}
       </div>
+      {it.state === 'held' && <ItemActions it={it} />}
       {it.progress != null && ACTIVE.has(it.state) && <Progress value={it.progress} />}
       {open && <ItemDetail it={it} now={now} />}
     </li>
@@ -305,7 +335,8 @@ function ActivityBanner() {
   useEffect(() => { start(); if (!launchOpen) set({ open: false }); }, []);
   const items = s.feed?.items ?? [];
   const active = items.filter((i) => ACTIVE.has(i.state));
-  const finished = items.filter((i) => !ACTIVE.has(i.state));
+  const held = items.filter((i) => i.state === 'held');
+  const finished = items.filter((i) => !ACTIVE.has(i.state) && i.state !== 'held');
   const visible = useOnScreen();
   const waiting = finished.some((i) => !seenAt.has(i.id) || Date.now() - (seenAt.get(i.id) ?? 0) < DONE_FLASH_MS);
   const now = useNow(active.length > 0 || items.some((i) => i.state === 'stale') || s.pinned || (visible && waiting));
@@ -313,15 +344,19 @@ function ActivityBanner() {
   if (visible) markSeen(finished, now);
   const justDone = finished.filter((i) => { const t = seenAt.get(i.id); return t === undefined || now - t < DONE_FLASH_MS; });
   const key = active.map((i) => i.id).join(',');
-  if (!active.length && !justDone.length && !s.pinned) return null;
-  if (key && key === s.hiddenFor) return null;
-  if (!active.length && !justDone.length && s.pinned && !finished.length) return null;
+  // held work keeps the banner up (it waits for you); ✕-hiding covers what's running and on hold together
+  const hideKey = [key, ...held.map((i) => i.id)].filter(Boolean).join(',');
+  if (!active.length && !held.length && !justDone.length && !s.pinned) return null;
+  if (hideKey && hideKey === s.hiddenFor) return null;
+  if (!active.length && !held.length && !justDone.length && s.pinned && !finished.length) return null;
 
   const failed = (active.length ? [] : justDone).some((i) => i.state === 'failed' || i.state === 'stale');
   const first = active[0];
   const stuckN = items.filter((i) => isStuck(i, now)).length;
+  const heldNote = held.length ? `${held.length} on hold` : '';
   const summary = active.length
-    ? `${active.length} in progress${stuckN ? ` · ${stuckN} stuck` : ''}`
+    ? `${active.length} in progress${stuckN ? ` · ${stuckN} stuck` : ''}${heldNote ? ` · ${heldNote}` : ''}`
+    : held.length && !justDone.length ? heldNote
     : failed ? `Finished, with ${justDone.filter((i) => i.state === 'failed' || i.state === 'stale').length} failed` : 'All done';
   const oldest = active.reduce((m, i) => Math.min(m, i.startedAt), Infinity);
 
@@ -335,7 +370,8 @@ function ActivityBanner() {
             {active.length > 0 && Number.isFinite(oldest) && <span className="axp-activity__time">{dur(now - oldest)}</span>}
             <Icon name={s.open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          {first && <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>}
+          {first ? <span className="axp-activity__lead">{first.title}{active.length > 1 ? ` +${active.length - 1} more` : ''}</span>
+            : held[0] ? <span className="axp-activity__lead">{held[0].title}{held.length > 1 ? ` +${held.length - 1} more` : ''} · waits for you</span> : null}
         </button>
         {/* "_" minimizes (folds the banner to its one-line summary; tap the summary to expand it again). It never hides the banner (Brett, Oct 21 2026). */}
         {s.open && <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => set({ open: false })}><Icon name="minimize" size={16} /></button>}
@@ -344,6 +380,12 @@ function ActivityBanner() {
         <div className="axp-activity__body">
           {active.length ? <ul className="axp-activity__list">{active.map((i) => <Row key={i.id} it={i} now={now} />)}</ul>
             : <p className="fx-small fx-muted" style={{ margin: 0 }}>Nothing is running right now.</p>}
+          {held.length > 0 && (
+            <>
+              <p className="fx-small fx-muted axp-activity__group">On hold ({held.length})</p>
+              <ul className="axp-activity__list">{held.map((i) => <Row key={i.id} it={i} now={now} />)}</ul>
+            </>
+          )}
           {finished.length > 0 && (
             <>
               <button type="button" data-fx-row className="axp-activity__more" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>

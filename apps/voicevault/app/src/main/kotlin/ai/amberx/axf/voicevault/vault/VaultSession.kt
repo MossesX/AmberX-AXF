@@ -22,6 +22,7 @@ import ai.amberx.axf.voice.Heard
 import ai.amberx.axf.voice.PhraseMatcher
 import ai.amberx.axf.voice.SpeechInput
 import ai.amberx.axf.voice.SpokenText
+import ai.amberx.axf.voicevault.voice.VoiceControl
 import java.lang.ref.WeakReference
 import java.util.UUID
 import kotlinx.coroutines.CompletableDeferred
@@ -163,6 +164,12 @@ class VaultSession(
     val voiceInput: AxfVoice? get() = voice
 
     val unlocked: Boolean get() = _stage.value.isUnlocked()
+
+    /** The microphone switch, trigger switches and your voice actions (set by AppModule right after it's made). */
+    var control: VoiceControl? = null
+    private val micOff: Boolean get() = control?.micOff?.value == true
+    /** A vault voice action heard before the unlock ("copy gmail" from the background): runs once you're in, within 2 minutes. */
+    private var afterUnlock: Pair<Long, () -> Unit>? = null
 
     private var activity: WeakReference<FragmentActivity>? = null
     private var visible = false
@@ -321,6 +328,7 @@ class VaultSession(
             _stage.value = Stage.Ready
             gate.unlock()
             show("Unlocked.", Tone.OK)
+            afterUnlock?.let { (at, fn) -> afterUnlock = null; if (System.currentTimeMillis() - at < AFTER_UNLOCK_MS) fn() }
             if (visible && handsFree) startListening()
         } catch (e: VaultUnreadable) {
             _entries.value = emptyList(); _stage.value = Stage.Broken(BrokenReason.VAULT_UNREADABLE)
@@ -366,7 +374,7 @@ class VaultSession(
 
     /* ---------------- actions (voice or taps) ---------------- */
 
-    fun startStore() { if (unlocked) { touch(); go(Stage.AskSite(forStore = true)) } }
+    fun startStore(site: String = "") { if (unlocked) { touch(); go(if (site.isBlank()) Stage.AskSite(forStore = true) else Stage.AskPassword(SpokenText.site(site))) } }
     fun startRetrieve() { if (unlocked) { touch(); if (_entries.value.isEmpty()) show("No passwords saved yet.", Tone.INFO) else go(Stage.AskSite(forStore = false)) } }
     fun cancel() { if (unlocked) { touch(); go(Stage.Ready) } }
 
@@ -443,6 +451,7 @@ class VaultSession(
 
     fun startListening() {
         if (voice == null || loop?.isActive == true || !visible) return
+        if (micOff) { show("The microphone is off. Turn it back on with the switch above.", Tone.INFO); return }
         loop = scope.launch {
             _listening.value = true
             try { runLoop() } finally { _listening.value = false }
@@ -450,6 +459,24 @@ class VaultSession(
     }
 
     fun stopListening() { loop?.cancel(); loop = null; voice?.speaker?.stop() }
+
+    /** The microphone switch went back on: hands-free starts again on the Voice screen. */
+    fun micBackOn() { if (_note.value?.text?.startsWith("The microphone is off") == true) _note.value = null; if (visible && handsFree && askFor(_stage.value) != null) startListening() }
+
+    /** Runs [fn] now when unlocked, else right after the next unlock (shows [note] meanwhile). */
+    fun whenUnlocked(note: String, fn: () -> Unit) {
+        if (unlocked) { afterUnlock = null; fn(); return }
+        afterUnlock = System.currentTimeMillis() to fn
+        show(note, Tone.INFO)
+    }
+
+    /** "Copy the password for <site>": straight to that site's confirm (or the pick list when several sound alike). */
+    fun retrieveSite(site: String) {
+        if (!unlocked) return
+        touch()
+        if (_entries.value.isEmpty()) { show("No passwords saved yet.", Tone.INFO); return }
+        findSite(listOf(site))
+    }
 
     private data class Ask(val prompt: String, val secret: Boolean = false)
 
@@ -498,11 +525,18 @@ class VaultSession(
         when (st) {
             // Run the unlock outside the loop's job, so a fingerprint sheet pausing the screen can't cancel it.
             Stage.Locked -> scope.launch { tryUnlock(heard) }.join()
-            Stage.Ready -> when (cmds?.match(heard, listOf(Cmd.STORE, Cmd.RETRIEVE, Cmd.LOCK))?.commandId) {
-                Cmd.STORE -> startStore()
-                Cmd.RETRIEVE -> startRetrieve()
-                Cmd.LOCK -> lock(clearClipboard = true)
-                else -> show("Heard “${heard.first()}”. Say a trigger from Settings → Voice triggers.", Tone.INFO)
+            Stage.Ready -> {
+                val c = control
+                val builtIn = listOf(Cmd.STORE, Cmd.RETRIEVE, Cmd.LOCK).filter { c?.isOn(it) ?: true }
+                val m = cmds?.match(heard, builtIn + c?.activeIds(background = false).orEmpty())
+                c?.byCommand(m?.commandId)?.let { a -> c.heard(a.label, m!!.phrase, background = false); c.runInApp(a); return }
+                m?.let { c?.heard(cmds?.get(it.commandId)?.label ?: it.commandId, it.phrase, background = false) }
+                when (m?.commandId) {
+                    Cmd.STORE -> startStore()
+                    Cmd.RETRIEVE -> startRetrieve()
+                    Cmd.LOCK -> lock(clearClipboard = true)
+                    else -> show("Heard “${heard.first()}”. Say a trigger from Settings → Voice triggers.", Tone.INFO)
+                }
             }
             is Stage.AskSite -> {
                 if (cmds?.match(heard, listOf(Cmd.CANCEL), 0.9) != null) { cancel(); return }
@@ -536,7 +570,8 @@ class VaultSession(
         fun cmd(id: String, note: String? = null): ListenItem? = c?.phrases(id)?.let { ListenItem(it.command.label, it.active, note) }
         return when (stage) {
             Stage.Locked -> listOf(ListenItem("Your unlock code", emptyList(), "The phrase you set in Settings → Unlock code. It's never shown."))
-            Stage.Ready -> listOfNotNull(cmd(Cmd.STORE), cmd(Cmd.RETRIEVE), cmd(Cmd.LOCK))
+            Stage.Ready -> listOf(Cmd.STORE, Cmd.RETRIEVE, Cmd.LOCK).filter { control?.isOn(it) ?: true }.mapNotNull { cmd(it) } +
+                control?.activeIds(background = false).orEmpty().mapNotNull { cmd(it, control?.byCommand(it)?.let { a -> ai.amberx.axf.voicevault.voice.VoiceActionRules.describe(a, control!!::routeLabel, control!!::actionLabel) }) }
             is Stage.AskSite -> listOfNotNull(ListenItem("The site", emptyList(), "Say it like “gmail dot com” or “bank of america”."), cmd(Cmd.CANCEL))
             is Stage.AskPassword -> listOfNotNull(ListenItem("The password for ${stage.site}", emptyList(), "Say or spell it out. Every space is removed, and you check it before saving."), cmd(Cmd.CANCEL, "Only on its own"))
             is Stage.Confirm -> listOfNotNull(cmd(Cmd.CONFIRM), cmd(Cmd.CANCEL))
@@ -546,7 +581,7 @@ class VaultSession(
     }
 
     /** The global trigger's phrases (Settings → Voice triggers → Global trigger). */
-    fun wakePhrases(): List<String> = voice?.commands?.phrases(Cmd.WAKE)?.active.orEmpty()
+    fun wakePhrases(): List<String> = if (control?.isOn(Cmd.WAKE) == false) emptyList() else voice?.commands?.phrases(Cmd.WAKE)?.active.orEmpty()
 
     private fun findSite(heard: List<String>) {
         val ranked = PhraseMatcher.ranked(heard, _entries.value, 0.72) { it.site }
@@ -573,6 +608,7 @@ class VaultSession(
     private companion object {
         const val MAX_SILENCES = 6
         const val MAX_FAILURES = 3
+        const val AFTER_UNLOCK_MS = 120_000L
         /** Clipboard tag key, unchanged from the app's own clipboard helper. */
         const val CLIP_TAG = "ai.amberx.axf.voicevault.copy"
     }

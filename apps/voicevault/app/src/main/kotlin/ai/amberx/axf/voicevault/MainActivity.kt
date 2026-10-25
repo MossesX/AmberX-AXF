@@ -23,6 +23,8 @@ import ai.amberx.axf.voicevault.views.VaultListView
 import ai.amberx.axf.voicevault.views.VoiceNotesSignInView
 import ai.amberx.axf.voicevault.views.VoiceNotesView
 import ai.amberx.axf.voicevault.views.HubSyncView
+import ai.amberx.axf.voicevault.views.VoiceActionsView
+import ai.amberx.axf.voicevault.voice.VoiceControl
 
 /**
  * The single activity. Screens are kept out of screenshots and the recents preview (`android.secureWindow` in
@@ -53,18 +55,26 @@ class MainActivity : AxfActivity() {
             val prefs = getSharedPreferences("voicevault.ui", MODE_PRIVATE)
             if (!prefs.getBoolean("askedNotifications", false)) { prefs.edit().putBoolean("askedNotifications", true).apply(); askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS) }
         }
-        WakeListener.ensureRunning(this, session.backgroundOn || (application as App).appModule.notes.listenOn)
+        val control = (application as App).appModule.control
+        control.refreshFromSettings()
+        // The microphone switch on the Voice screen: while it's off nothing listens, here or in the background.
+        if (control.micOff.value) WakeListener.micTurnedOff(this)
+        else WakeListener.ensureRunning(this, session.backgroundOn || (application as App).appModule.notes.listenOn)
     }
 
     /** Opened by the global trigger: wake the screen, ask Android to unlock the phone (never shown over the lock screen), go to Voice. */
     private fun handleWake(i: Intent?) {
         if (i?.getBooleanExtra(WakeListener.EXTRA_WAKE, false) != true) return
         i.removeExtra(WakeListener.EXTRA_WAKE)
+        val run = i.getStringExtra(WakeListener.EXTRA_RUN)
+        i.removeExtra(WakeListener.EXTRA_RUN)
         getSystemService(NotificationManager::class.java).cancel(WakeService.NOTE_WAKE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) setTurnScreenOn(true)
         getSystemService(KeyguardManager::class.java)?.requestDismissKeyguard(this, null)
         kernel.runtime.navigate("home")
         WakeListener.wokeApp()
+        // A voice action heard in the background that needs the app: runs now (vault ones once you unlock).
+        run?.let { (application as App).appModule.control.runById(it) }
     }
     override fun onStop() { session.onBackground(); super.onStop() }
     override fun onDestroy() { session.detach(this); super.onDestroy() }
@@ -81,6 +91,7 @@ class MainActivity : AxfActivity() {
                 "voice-notes" to { VoiceNotesView() },
                 "voice-notes-hub" to { VoiceNotesSignInView() },
                 "hub-sync" to { HubSyncView() },
+                VoiceControl.ROUTE to { VoiceActionsView() },
             ),
             // Voice and voice notes work with the vault locked (notes never touch it); everything else needs it open.
             viewGuard = { id, content -> if (id == "home" || id == "voice-notes" || id == "voice-notes-hub" || id == "hub-sync") content() else Gated(session.gate, locked, elsewhere = toVoice) { content() } },

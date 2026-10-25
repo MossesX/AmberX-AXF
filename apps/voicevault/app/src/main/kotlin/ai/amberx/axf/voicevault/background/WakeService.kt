@@ -18,6 +18,7 @@ import ai.amberx.axf.voice.SpeechInput
 import ai.amberx.axf.voicevault.App
 import ai.amberx.axf.voicevault.MainActivity
 import ai.amberx.axf.voicevault.vault.Cmd
+import ai.amberx.axf.voicevault.voice.ActionKind
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -50,6 +51,8 @@ class WakeService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP) { WakeListener.stoppedFromNotification(); stopSelf(); return START_NOT_STICKY }
+        if (intent?.action == ACTION_MIC_OFF) { control.setMicOff(true); stopSelf(); return START_NOT_STICKY }
+        if (WakeListener.micOff(this)) { WakeListener.set(WakeState.Off(WakeListener.MIC_OFF)); stopSelf(); return START_NOT_STICKY }
         val session = (application as App).appModule.session
         try {
             val n = listeningNotification(phrasesFor(session.backgroundOn))
@@ -84,34 +87,59 @@ class WakeService : Service() {
         // Voice notes: the setup lives on axHub (the console's Voice notes settings); read it now and every few minutes.
         runCatching { notes.hub.load() }
         var readAt = System.currentTimeMillis()
-        if (wakePhrases.isEmpty() && notes.ready() == null) {
+        if (wakePhrases.isEmpty() && notes.ready() == null && control.activeIds(background = true).isEmpty()) {
             WakeListener.set(WakeState.Off(if (notes.listenOn) "No global trigger set, and voice notes aren't ready (${notesWhy()})." else "No global trigger set. Add one in Settings → Global trigger and commands."))
             return null
         }
         var failures = 0
         while (currentCoroutineContext().isActive) {
             if (System.currentTimeMillis() - readAt > NOTES_REREAD_MS) { runCatching { notes.hub.load() }; readAt = System.currentTimeMillis() }
-            val phrases = wakePhrases + notes.ready()?.startTriggers.orEmpty()
+            // Quiet hours: the microphone stays closed until they end (checked at least every minute, so a change applies soon).
+            val quiet = control.quietLeftMs()
+            if (quiet > 0) {
+                val until = ai.amberx.axf.voicevault.voice.VoiceActionRules.clock(control.quietTo)
+                WakeListener.set(WakeState.Quiet(until))
+                updateNotification(emptyList(), quietUntil = until)
+                delay(quiet.coerceAtMost(QUIET_CHECK_MS))
+                continue
+            }
+            val custom = control.activeIds(background = true).mapNotNull { control.byCommand(it) }
+            val phrases = wakePhrases + notes.ready()?.startTriggers.orEmpty() + custom.flatMap { it.phrases }
             updateNotification(phrases)
             WakeListener.set(WakeState.Listening(phrases))
             var hit = false
             var noteHit = false
+            var actionHit: ai.amberx.axf.voice.CommandMatch? = null
             val heard: Heard? = coroutineScope {
                 lateinit var listen: Deferred<Heard>
                 // Partial results let it react mid-sentence instead of waiting for the end of what was said.
                 listen = async {
                     voice.input.listen(ListenOptions(language = voice.language, preferOffline = true, secret = true, allowOnlineSecret = false, maxResults = 5,
                         onPartial = { text ->
-                            if (!hit && !noteHit) {
+                            if (!hit && !noteHit && actionHit == null) {
                                 if (wakePhrases.isNotEmpty() && isTrigger(voice, listOf(text))) { hit = true; listen.cancel() }
                                 else if (notes.isStart(listOf(text))) { noteHit = true; listen.cancel() }
+                                else control.match(listOf(text), background = true)?.let { actionHit = it; listen.cancel() }
                             }
                         }))
                 }
-                try { listen.await() } catch (e: CancellationException) { if (hit || noteHit) null else throw e }
+                try { listen.await() } catch (e: CancellationException) { if (hit || noteHit || actionHit != null) null else throw e }
             }
-            if (hit || (wakePhrases.isNotEmpty() && heard is Heard.Text && isTrigger(voice, heard.alternatives))) { wake(); delay(WAKE_COOLDOWN_MS); continue }
+            if (hit || (wakePhrases.isNotEmpty() && heard is Heard.Text && isTrigger(voice, heard.alternatives))) {
+                control.heard("Global trigger", voice.commands.phrases(Cmd.WAKE)?.active?.firstOrNull().orEmpty(), background = true)
+                wake(); delay(WAKE_COOLDOWN_MS); continue
+            }
+            if (actionHit == null && heard is Heard.Text) actionHit = control.match(heard.alternatives, background = true)
+            val matched = actionHit
+            val action = matched?.let { control.byCommand(it.commandId) }
+            if (matched != null && action != null) {
+                control.heard(action.label, matched.phrase, background = true)
+                if (runAction(voice, action)) return null
+                failures = 0
+                continue
+            }
             if (noteHit || (heard is Heard.Text && notes.isStart(heard.alternatives))) {
+                control.heard("Voice note", notes.ready()?.startTriggers?.firstOrNull().orEmpty(), background = true)
                 WakeListener.set(WakeState.TakingNote)
                 notes.take()
                 failures = 0
@@ -129,14 +157,31 @@ class WakeService : Service() {
         return Unit
     }
 
+    /**
+     * Runs a voice action heard in the background. Notes, spoken replies, the lock and the microphone switch run here;
+     * anything that needs the app (a screen, the vault) opens it, and vault actions wait for the unlock there.
+     * Returns true when listening has to stop (the microphone was switched off).
+     */
+    private suspend fun runAction(voice: AxfVoice, a: ai.amberx.axf.voicevault.voice.CustomAction): Boolean {
+        when (a.kind) {
+            ActionKind.NOTE -> { WakeListener.set(WakeState.TakingNote); notes.take() }
+            ActionKind.SAY -> voice.speaker.say(a.arg, voice.language)
+            ActionKind.LOCK -> { (application as App).appModule.session.lock(clearClipboard = true); voice.speaker.say("Locked.", voice.language) }
+            ActionKind.MIC_OFF -> { control.setMicOff(true); return true }
+            else -> { wake(runAction = a.id); delay(WAKE_COOLDOWN_MS) }
+        }
+        return false
+    }
+
     private fun isTrigger(voice: AxfVoice, heard: List<String>): Boolean = voice.commands.match(heard, listOf(Cmd.WAKE), 0.8) != null
 
     /** Opens Voice Vault: by itself when "Display over other apps" is allowed, else a full-screen alert (an alert to tap when Android limits those). */
-    private fun wake() {
+    private fun wake(runAction: String? = null) {
         WakeListener.set(WakeState.Heard(System.currentTimeMillis()))
         val open = Intent(this, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             .putExtra(WakeListener.EXTRA_WAKE, true)
+        if (runAction != null) open.putExtra(WakeListener.EXTRA_RUN, runAction)
         if (Settings.canDrawOverlays(this) && runCatching { startActivity(open) }.isSuccess) return
         val pi = PendingIntent.getActivity(this, 1, open, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val nm = getSystemService(NotificationManager::class.java)
@@ -147,23 +192,27 @@ class WakeService : Service() {
             .setAutoCancel(true).setContentIntent(pi).setFullScreenIntent(pi, true).setTimeoutAfter(30_000).build())
     }
 
-    private fun listeningNotification(phrases: List<String>): Notification {
+    private fun listeningNotification(phrases: List<String>, quietUntil: String? = null): Notification {
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(CH_LISTEN, "Listening for your trigger", NotificationManager.IMPORTANCE_LOW).apply { description = "Shown while Voice Vault listens in the background"; setShowBadge(false) })
         val openApp = PendingIntent.getActivity(this, 2, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this, 3, Intent(this, WakeService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE)
+        val micOff = PendingIntent.getService(this, 4, Intent(this, WakeService::class.java).setAction(ACTION_MIC_OFF), PendingIntent.FLAG_IMMUTABLE)
         val words = phrases.take(4).joinToString(" or ") { "“$it”" }.ifEmpty { "your global trigger" }
         return Notification.Builder(this, CH_LISTEN)
-            .setSmallIcon(android.R.drawable.ic_btn_speak_now).setContentTitle("Voice Vault is listening")
-            .setContentText("Only for $words. Nothing else is kept.").setOngoing(true).setContentIntent(openApp)
-            .addAction(Notification.Action.Builder(null, "Stop listening", stop).build()).build()
+            .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+            .setContentTitle(if (quietUntil != null) "Voice Vault: quiet hours" else "Voice Vault is listening")
+            .setContentText(if (quietUntil != null) "Not listening until $quietUntil." else "Only for $words. Nothing else is kept.").setOngoing(true).setContentIntent(openApp)
+            .addAction(Notification.Action.Builder(null, "Stop listening", stop).build())
+            .addAction(Notification.Action.Builder(null, "Turn mic off", micOff).build()).build()
     }
 
-    private fun updateNotification(phrases: List<String>) {
-        getSystemService(NotificationManager::class.java).notify(NOTE_LISTENING, listeningNotification(phrases))
+    private fun updateNotification(phrases: List<String>, quietUntil: String? = null) {
+        getSystemService(NotificationManager::class.java).notify(NOTE_LISTENING, listeningNotification(phrases, quietUntil))
     }
 
     private val notes get() = (application as App).appModule.notes
+    private val control get() = (application as App).appModule.control
 
     private fun phrasesFor(backgroundOn: Boolean): List<String> =
         (if (backgroundOn) (application as App).appModule.session.wakePhrases() else emptyList()) + notes.ready()?.startTriggers.orEmpty()
@@ -178,6 +227,8 @@ class WakeService : Service() {
     companion object {
         private const val NOTES_REREAD_MS = 5 * 60_000L
         const val ACTION_STOP = "ai.amberx.axf.voicevault.STOP_LISTENING"
+        const val ACTION_MIC_OFF = "ai.amberx.axf.voicevault.MIC_OFF"
+        private const val QUIET_CHECK_MS = 60_000L
         private const val CH_LISTEN = "voicevault.listening"
         private const val CH_WAKE = "voicevault.wake"
         private const val NOTE_LISTENING = 41

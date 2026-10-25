@@ -6,7 +6,7 @@
  */
 import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
-import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
+import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -282,7 +282,7 @@ export class AxfRuntime {
       swaps: 0,
       appearance: null,
     };
-    this.registerBuiltinActions();
+    this.actions.withModule(FRAMEWORK_MODULE, () => this.registerBuiltinActions());
     this.registerBuiltinAppMenuProviders();
   }
 
@@ -581,6 +581,11 @@ export class AxfRuntime {
   /** Remove every contribution of a module (a plugin was disabled or removed). */
   removeContextItems(module: string): void {
     for (const [id, c] of this.contextContributions) if (c.module === module) this.contextContributions.delete(id);
+  }
+
+  /** Every target libraries and plugins add context-menu items to (designers list them next to the asset's own). */
+  contextTargets(): string[] {
+    return [...new Set([...this.contextContributions.values()].map((c) => c.target ?? 'default'))];
   }
 
   /** Contributed items for a target (`default` = the menu shown where no element names a target), by order. */
