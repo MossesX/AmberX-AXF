@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.changes-grid",
+  "name": "Changes & features grid",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "One grid of every change (the Codebase changes log, read through axf.changes@1) and every feature (the plan). Each row is titled with its thread / request name and its date and time, and expands to show the details: what was asked, steps, result, branch, commits and links for a change; status, summary, ports, files, acceptance and history for a feature. Filter changes / features / both, search, sort.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:changes-grid",
+    "settings-tab:changes-grid"
+  ],
+  "optional": [
+    "service:axf.changes@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-25" },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/changes-grid",
+    "env": [],
+    "mentions": [
+      "CLAUDE.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": "main"
+}
