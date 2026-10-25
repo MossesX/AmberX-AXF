@@ -37,15 +37,40 @@ from axf_server import github, storage
 from . import complete
 
 ACTIVE = ("queued", "running", "waiting")
+# On hold: parked work that waits for a person (never stuck, never stale, never expires); shown with its buttons,
+# e.g. Continue (Gizmo, Oct 25 2026).
+HELD = ("held",)
 FINISHED = ("done", "failed", "cancelled", "stale")
-STATES = ACTIVE + FINISHED
+STATES = ACTIVE + HELD + FINISHED
 SOURCES = {
     "github": "GitHub Actions",
     "update": "Console update",
     "assistant": "AI assistant replies",
     "services": "Plugins (VPS Auto fix and others)",
     "reports": "Reported work (Claude Code, scripts)",
+    "holds": "Work on hold (waits for you to continue)",
 }
+# Buttons an item may carry: a runtime action spec (`id` or `id:args`) run in the browser that shows the banner.
+ACTION_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,60}(:[A-Za-z0-9._~%:@/+-]{1,200})?$")
+ICON_RE = re.compile(r"^[a-z0-9-]{1,24}$")
+MAX_ACTIONS = 3
+
+
+def clean_actions(raw: Any) -> list[dict[str, str]]:
+    out: list[dict[str, str]] = []
+    if not isinstance(raw, list):
+        return out
+    for a in raw[:MAX_ACTIONS]:
+        if not isinstance(a, dict) or not isinstance(a.get("action"), str) or not ACTION_RE.match(a["action"]):
+            continue
+        label = redact(a.get("label"), 40).strip()
+        if not label:
+            continue
+        b = {"label": label, "action": a["action"]}
+        if isinstance(a.get("icon"), str) and ICON_RE.match(a["icon"]):
+            b["icon"] = a["icon"]
+        out.append(b)
+    return out
 ID_RE = re.compile(r"^[A-Za-z0-9_.:@/+-]{1,160}$")
 MAX_REPORTS = 200
 
@@ -126,6 +151,9 @@ def norm(raw: Any, source: str, now_ms: int) -> dict[str, Any] | None:
         it["url"] = url
     if raw.get("by"):
         it["by"] = redact(raw.get("by"), 60)
+    actions = clean_actions(raw.get("actions"))
+    if actions:
+        it["actions"] = actions
     steps = raw.get("steps")
     if isinstance(steps, list):
         clean = []
@@ -152,6 +180,9 @@ class Feed:
                  services: Callable[[], list[tuple[str, Any]]] = lambda: [],
                  live_sessions: Callable[[], Any] = lambda: None,
                  github_get: Callable[[str], Any] | None = None,
+                 holds_file: Path | None = None,
+                 # status of a pending build by id: its status, "missing" when not on the list, None when unreadable
+                 pending_status: Callable[[str], str | None] = lambda pid: None,
                  now: Callable[[], float] = time.time) -> None:
         self.dir = data_dir
         self.root = root
@@ -159,6 +190,8 @@ class Feed:
         self.github_token = github_token
         self.services = services
         self.live_sessions = live_sessions
+        self.holds_file = holds_file
+        self.pending_status = pending_status
         self.now = now
         self._gh_get = github_get or self._github_get
         self._lock = threading.Lock()
@@ -215,7 +248,7 @@ class Feed:
     def expired(self, state: str, finished: int | None, cfg: dict[str, Any], now: int) -> bool:
         """A finished item past its time: lingerS after it finished (Settings: auto-remove after N minutes), a day
         when auto-remove is off, never for a failure while "keep failures until closed" is on (a day at most)."""
-        if state in ACTIVE:
+        if state in ACTIVE or state in HELD:
             return False
         age = now - (finished or now)
         if age > self.KEEP_MAX_MS:
@@ -333,6 +366,85 @@ class Feed:
             it["reported"] = True
             out.append(it)
         return out
+
+    # ---------------- work on hold (holds.json in the plugin folder: code, so it ships with the repo)
+
+    CONTINUED_KEEP_MS = 30 * 24 * 3600 * 1000
+
+    def holds(self) -> list[dict[str, Any]]:
+        """The held items the plugin ships (`holds.json`, activity-holds@1): each {id, title, detail?, kind?,
+        pending?, actions: [{label, action, icon?}]}. Never more than 20."""
+        if not self.holds_file:
+            return []
+        try:
+            raw = json.loads(self.holds_file.read_text("utf-8"))
+        except (OSError, ValueError):
+            return []
+        items = raw.get("holds") if isinstance(raw, dict) else None
+        return [h for h in (items or [])[:20] if isinstance(h, dict) and isinstance(h.get("id"), str) and str(h["id"]).startswith("hold:")]
+
+    def _continued(self) -> dict[str, int]:
+        try:
+            raw = json.loads((self.dir / "continued.json").read_text("utf-8"))
+        except (OSError, ValueError):
+            return {}
+        return {k: v for k, v in raw.items() if isinstance(k, str) and len(k) <= 200 and isinstance(v, int)} if isinstance(raw, dict) else {}
+
+    def _holds(self, cfg: dict[str, Any], now: int) -> list[dict[str, Any]]:
+        """Held items: on hold until someone taps Continue (then Done for a while: the work shows up through its own
+        source) or until the pending build they stand for is no longer waiting (started, complete or removed)."""
+        out = []
+        cont = self._continued()
+        for h in self.holds():
+            pid = h.get("pending") if isinstance(h.get("pending"), str) else None
+            status = self.pending_status(pid) if pid else None
+            at = cont.get(h["id"])
+            if at:
+                if self.expired("done", at, cfg, now):
+                    continue
+                raw = {**h, "state": "done", "startedAt": at, "updatedAt": at, "finishedAt": at, "actions": None,
+                       "detail": "Continued: started in the Build manager (it asks for your axHub approval)."}
+            elif pid and status not in (None, "pending", "unsafe"):
+                continue  # the pending build moved on (complete, failed …) or was removed ("missing"): nothing to hold
+            else:
+                raw = {**h, "state": "held", "startedAt": h.get("since") or now, "updatedAt": h.get("since") or now}
+            it = norm(raw, "holds", now)
+            if it:
+                if pid:
+                    it["pending"] = redact(pid, 80)
+                out.append(it)
+        return out
+
+    def continue_item(self, iid: str, by: str = "") -> dict[str, Any]:
+        """Continue on a held item: a hold is marked continued (every device); a reported held item turns running.
+        Returns {item, action}: the action the browser runs next (the first button's)."""
+        now = int(self.now() * 1000)
+        for h in self.holds():
+            if h["id"] == iid:
+                acts = clean_actions(h.get("actions"))
+                with self._lock:
+                    c = self._continued()
+                    c[iid] = now
+                    c = {k: v for k, v in c.items() if now - v < self.CONTINUED_KEEP_MS}
+                    self.dir.mkdir(parents=True, exist_ok=True)
+                    storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+                return {"id": iid, "action": acts[0]["action"] if acts else None, "by": redact(by, 60)}
+        prev = self._read_report(self._report_path(iid))
+        if prev and prev.get("state") == "held":
+            acts = clean_actions(prev.get("actions"))
+            it = self.report({**prev, "state": "running", "detail": (str(prev.get("detail") or "") + "\nContinued" + (f" by {by}" if by else "")).strip()}, prev.get("origin", "api"))
+            return {"id": it["id"], "action": acts[0]["action"] if acts else None}
+        raise KeyError(iid)
+
+    def hold_back(self, iid: str) -> bool:
+        """Put a continued hold back on hold (when the build didn't start after all)."""
+        with self._lock:
+            c = self._continued()
+            if iid not in c:
+                return False
+            c.pop(iid)
+            storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+        return True
 
     # ---------------- GitHub Actions
 
@@ -492,6 +604,8 @@ class Feed:
                 run(label, lambda fn=fn, name=name: [x for x in (norm(r, name, now) for r in (fn() or [])[:50]) if x])
         if cfg["sources"]["reports"]:
             run("Reports", lambda: self._reports(cfg, now))
+        if cfg["sources"]["holds"]:
+            run("Holds", lambda: self._holds(cfg, now))
 
         seen: set[str] = set(self._dismissed(now))
         uniq = []
@@ -501,9 +615,11 @@ class Feed:
             if it["id"] not in seen:
                 seen.add(it["id"])
                 uniq.append(it)
-        uniq.sort(key=lambda i: (i["state"] not in ACTIVE, -(i.get("finishedAt") or i["startedAt"]) if i["state"] not in ACTIVE else i["startedAt"]))
+        rank = lambda i: 0 if i["state"] in ACTIVE else 1 if i["state"] in HELD else 2  # noqa: E731
+        uniq.sort(key=lambda i: (rank(i), -(i.get("finishedAt") or i["startedAt"]) if rank(i) == 2 else i["startedAt"]))
         active = [i for i in uniq if i["state"] in ACTIVE]
-        return {"items": uniq, "active": len(active), "errors": errors[:10], "checkedAt": now,
+        held = [i for i in uniq if i["state"] in HELD]
+        return {"items": uniq, "active": len(active), "held": len(held), "errors": errors[:10], "checkedAt": now,
                 "sources": {k: {"label": v, "on": cfg["sources"][k]} for k, v in SOURCES.items()},
                 "complete": {k: cfg[k] for k in ("sound", "toast", "expandOnDone", "openResult", "onClose")}}
 

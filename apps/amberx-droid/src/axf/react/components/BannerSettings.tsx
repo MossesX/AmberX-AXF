@@ -31,7 +31,7 @@ import { Button } from './Controls';
 import { Checkbox, Section, SelectField, Switch } from './Forms';
 import {
   BANNER_HIDE_KEY, QUICK_HIDE_MINUTES, TIMER_DEFAULT, allBannersHidden, hideBannerFor, hideEndsAt, bannerHidden, minutesFrom, minutesInput, nextHideEnd, parseBannerHide,
-  setAllBannersHidden, setBannerHidden, setBannerTimer, type BannerHideState,
+  setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -117,6 +117,8 @@ function saveHide(rt: AxfRuntime, next: BannerHideState): void { rt.settings.set
 export function setBannerHide(rt: AxfRuntime, id: string, on: boolean): void { saveHide(rt, setBannerHidden(bannerHideState(rt), id, on, Date.now())); }
 /** Hide or show every banner the app has. */
 export function setAllBannersHide(rt: AxfRuntime, on: boolean): void { saveHide(rt, setAllBannersHidden(bannerHideState(rt), knownBanners(rt).map((b) => b.id), on, Date.now())); }
+/** Show every banner and reset every hide timer (one tap, in every interface). */
+export function showAllBannersNow(rt: AxfRuntime): void { saveHide(rt, showAllBanners(bannerHideState(rt), knownBanners(rt).map((b) => b.id), Date.now())); }
 export function setBannerHideTimer(rt: AxfRuntime, patch: { on?: boolean; minutes?: number }): void { saveHide(rt, setBannerTimer(bannerHideState(rt), patch, Date.now())); }
 /** Hide one banner for N minutes (its right-click menu). */
 export function hideBannerForMinutes(rt: AxfRuntime, id: string, minutes: number): void { saveHide(rt, hideBannerFor(bannerHideState(rt), id, minutes, Date.now())); }
@@ -174,6 +176,7 @@ function install(rt: AxfRuntime): void {
     if (id && Number.isFinite(m) && m > 0) hideBannerForMinutes(rt, id, m);
   }, { label: 'Hide banner for a while' });
   rt.actions.register('banners.unhide', ([id]) => { if (id) setBannerHide(rt, id, false); }, { label: 'Unhide banner' });
+  rt.actions.register('banners.show-all', () => showAllBannersNow(rt), { label: 'Show all banners (reset hide timers)' });
   // One entry, named after the banner that was right-clicked (payload = its id), never the others.
   rt.contextExtras.set(BANNER_CTX_TARGET, (_t, id) => (id ? [bannerMenu(rt, id)] : []));
   rt.addContextItems({ id: 'axf.banners.ctx', module: 'axf', target: BANNER_CTX_TARGET, order: 1, items: [{ id: 'axf-banner-settings', label: 'Banner settings', icon: 'settings', action: 'banners.settings' }] });
@@ -183,7 +186,8 @@ function bannerMenu(rt: AxfRuntime, id: string): MenuEntry {
   const b = knownBanners(rt).find((x) => x.id === id);
   const hidden = isBannerHidden(rt, id);
   const hides: MenuEntry[] = QUICK_HIDE_MINUTES.map((m) => ({ id: `axf-banner-hide-${m}`, label: `Hide for ${m} minute${m === 1 ? '' : 's'}`, icon: 'clock', action: `banners.hide:${id}:${m}` }));
-  const items = hidden ? [{ id: 'axf-banner-unhide', label: 'Unhide', icon: 'eye', action: `banners.unhide:${id}` }, { id: 'axf-banner-hide-sep', separator: true }, ...hides] : hides;
+  const showAll: MenuEntry[] = anyBannerHide(bannerHideState(rt), Date.now()) ? [{ id: 'axf-banner-show-all', label: 'Show all banners', icon: 'eye', action: 'banners.show-all' }] : [];
+  const items = hidden ? [{ id: 'axf-banner-unhide', label: 'Unhide', icon: 'eye', action: `banners.unhide:${id}` }, ...showAll, { id: 'axf-banner-hide-sep', separator: true }, ...hides] : [...hides, ...(showAll.length ? [{ id: 'axf-banner-hide-sep', separator: true }, ...showAll] : [])];
   return { id: 'axf-banner-quick', label: b ? bannerLabel(b) : bannerLabel({ id }), icon: b?.icon ?? 'eye', items };
 }
 
@@ -474,6 +478,9 @@ function HideControls({ id, label, list, hide }: { id: string; label: string; li
           onChange={(e) => setText(minutesInput(e.target.value))} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); }}
         />
         <span>minutes, then show again</span>
+      </div>
+      <div className="fx-row fx-row--wrap">
+        <Button tone="ghost" icon="eye" disabled={!anyBannerHide(hide, now)} onClick={() => showAllBannersNow(rt)} title={`Shows: ${names}`}>Show all banners and reset timers</Button>
       </div>
     </>
   );

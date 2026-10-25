@@ -101,6 +101,22 @@ export function setAllBannersHidden(s: BannerHideState, ids: readonly string[], 
 }
 
 /**
+ * Show all banners and reset every timer (Brett, Oct 24 2026: "a button in banner settings to reset all timers and show
+ * all"): every hide ends now (Hide, Hide all, a quick hide's own end) and the shared timer is switched off; its minutes
+ * are kept for the next time it is ticked.
+ */
+export function showAllBanners(s: BannerHideState, ids: readonly string[], now: number): BannerHideState {
+  const banners: Record<string, BannerHideEntry> = {};
+  for (const id of [...Object.keys(s.banners), ...ids]) if (ID.test(id)) banners[id] = { on: false, at: now };
+  return { banners, timer: { on: false, minutes: s.timer.minutes } };
+}
+
+/** Is there anything for Show all to undo (a banner hidden now, a quick hide pending or the timer on)? */
+export function anyBannerHide(s: BannerHideState, now: number): boolean {
+  return s.timer.on || Object.keys(s.banners).some((id) => bannerHidden(s, id, now));
+}
+
+/**
  * The timer: on/off and its minutes. Switching it on (or changing the minutes) starts the time again for banners that
  * are hidden now, so an old hide doesn't end the moment the timer is set.
  */
