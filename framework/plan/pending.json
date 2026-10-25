@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T10:28:58.310Z",
+ "updatedAt": "2026-10-25T19:00:48.146Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3339,6 +3339,46 @@
    "createdAt": "2026-10-24T11:22:35.523Z",
    "builtAt": "2026-10-24T11:26:29.022Z",
    "updatedAt": "2026-10-24T11:26:29.022Z",
+   "source": "chat"
+  },
+  {
+   "id": "voicevault-mic-actions",
+   "title": "Voice Vault: microphone off switch, per-trigger switches, custom voice actions",
+   "detail": "Master mic-off switch (stops WakeService + hands-free), on/off per trigger, Custom voice actions screen (record/type a phrase, pick an action), quiet hours, heard log. Voice Vault app code only.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "at": "2026-10-25T19:47:51.720Z",
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51)."
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Master microphone off + per-trigger switches",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    },
+    {
+     "text": "Custom voice actions: model, screen, matcher",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    },
+    {
+     "text": "Quiet hours + heard log + tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:47:51.720Z"
+    }
+   ],
+   "createdAt": "2026-10-25T19:00:48.146Z",
+   "builtAt": "2026-10-25T19:47:51.720Z",
+   "updatedAt": "2026-10-25T19:47:51.720Z",
    "source": "chat"
   }
  ]
