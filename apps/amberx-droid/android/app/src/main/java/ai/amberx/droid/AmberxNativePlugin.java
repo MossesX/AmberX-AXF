@@ -94,6 +94,26 @@ public class AmberxNativePlugin extends Plugin {
     }
 
     @PluginMethod
+    public void hubPut(PluginCall call) {
+        String url = call.getString("url", "");
+        String body = call.getString("body", "");
+        String ifMatch = call.getString("ifMatch", "");
+        String hub = HubRules.HUB;
+        if (!HubRules.isDataPath(hub, url)) { call.reject("Only this app's hub data server."); return; }
+        io.execute(() -> {
+            try {
+                HubRules.Reply r = HubRules.put(hub, url, body, ifMatch, CookieManager.getInstance().getCookie(hub));
+                int status = r.status >= 300 && r.status < 400 ? 401 : r.status;
+                JSObject out = new JSObject().put("status", status).put("body", r.body);
+                if (r.etag != null) out.put("etag", r.etag);
+                call.resolve(out);
+            } catch (Exception e) {
+                call.resolve(new JSObject().put("status", 0).put("body", ""));
+            }
+        });
+    }
+
+    @PluginMethod
     public void hubOpen(PluginCall call) {
         String url = call.getString("url", "");
         if (!HubRules.isHub(HubRules.HUB, url)) { call.reject("Only this app's hub."); return; }

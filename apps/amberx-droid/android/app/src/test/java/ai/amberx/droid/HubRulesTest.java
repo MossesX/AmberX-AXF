@@ -21,6 +21,13 @@ public class HubRulesTest {
         assertFalse(HubRules.isHub(HUB, "https://axhub.amberxai.com.evil.example/"));
     }
 
+    @Test public void writesOnlyToTheDataServer() {
+        assertTrue(HubRules.isDataPath(HUB, HUB + "/data/shared/settings/appearance.json"));
+        assertFalse(HubRules.isDataPath(HUB, HUB + "/auth/admin/approvals"));
+        assertFalse(HubRules.isDataPath(HUB, HUB + "/data/../auth/x"));
+        assertFalse(HubRules.isDataPath(HUB, "https://evil.example/data/x"));
+    }
+
     @Test public void approvalPagesAreRebuilt() {
         assertEquals(HUB + "/auth/admin/approvals/" + ID, HubRules.approvalUrl(HUB, ID));
         assertNull(HubRules.approvalUrl(HUB, "../../etc"));

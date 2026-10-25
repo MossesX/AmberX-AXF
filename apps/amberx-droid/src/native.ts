@@ -2,7 +2,7 @@
  * The native side of AmberX, one seam for every plugin.
  *
  * Inside the Android shell (`android/`, Capacitor) these calls go to the `AmberxNative` plugin
- * (`android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.kt`): native speech recognition and text to speech, a
+ * (`android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java`): native speech recognition and text to speech, a
  * foreground service that watches axHub with the screen off (approval alerts, auto-approval, the wake phrase), and a
  * hub web view locked to the hub's address for signing in and deciding approvals. In a plain browser the same calls fall
  * back to the Web Speech API, `speechSynthesis`, an in-page timer and `window.open`, so the app runs anywhere.
@@ -34,6 +34,8 @@ export interface MonitorStatus {
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
   hubGet(opts: { url: string }): Promise<{ status: number; body: string; etag?: string }>;
+  /** PUT a JSON document to the hub's data server (`<hub>/data/…`) with the hub session. If-Match kept, no redirects. */
+  hubPut(opts: { url: string; body: string; ifMatch?: string }): Promise<{ status: number; body: string; etag?: string }>;
   /** Open a hub page (sign-in, an approval) in a web view locked to the hub. Resolves when it closes. */
   hubOpen(opts: { url: string }): Promise<{ closed: boolean }>;
   hubSignOut(opts: { hub: string }): Promise<void>;
@@ -72,6 +74,12 @@ let webMonitor: { timer: ReturnType<typeof setInterval> | null; status: MonitorS
 const web: NativeApi = {
   async hubGet({ url }) {
     const r = await fetch(url, { credentials: 'include', redirect: 'error', cache: 'no-store', headers: { Accept: 'application/json' } });
+    return { status: r.status, body: await r.text(), etag: r.headers.get('ETag') ?? undefined };
+  },
+  async hubPut({ url, body, ifMatch }) {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json' };
+    if (ifMatch) headers['If-Match'] = ifMatch;
+    const r = await fetch(url, { method: 'PUT', credentials: 'include', redirect: 'error', cache: 'no-store', headers, body });
     return { status: r.status, body: await r.text(), etag: r.headers.get('ETag') ?? undefined };
   },
   async hubOpen({ url }) {
@@ -139,7 +147,8 @@ export const native: NativeApi = isNative() ? registerPlugin<NativeApi>('AmberxN
  * Inside the shell the page runs at https://localhost, so a browser fetch to the hub would be cross-site (no session
  * cookie, CORS). lib-hub's feeds call `fetch` themselves; this routes GETs to the hub's origin through the native
  * `hubGet` (the hub session in Android's cookie store, redirects refused, replies capped) and leaves every other request
- * alone. Writes (PUT) to the hub aren't routed yet: in the shell, appearance changes stay on the phone (known gap).
+ * alone. PUTs to the hub's data server (`/data/…`, e.g. the appearance document) go through the native `hubPut`; any
+ * other write to the hub is refused rather than sent without the session.
  * Installed once from main.tsx; does nothing in a browser.
  */
 export function routeHubFetch(hub: string): void {
@@ -151,8 +160,16 @@ export function routeHubFetch(hub: string): void {
     const method = (init?.method ?? (input instanceof Request ? input.method : 'GET')).toUpperCase();
     let target: URL | null = null;
     try { target = new URL(url, location.href); } catch { /* not a URL */ }
-    if (!target || target.origin !== origin || method !== 'GET') return plain(input, init);
-    const { status, body, etag } = await native.hubGet({ url: target.href });
+    if (!target || target.origin !== origin) return plain(input, init);
+    let reply: { status: number; body: string; etag?: string };
+    if (method === 'GET') reply = await native.hubGet({ url: target.href });
+    else if (method === 'PUT' && target.pathname.startsWith('/data/')) {
+      const raw = init?.body ?? (input instanceof Request ? await input.text() : '');
+      if (typeof raw !== 'string') return new Response(null, { status: 400 });
+      const h = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+      reply = await native.hubPut({ url: target.href, body: raw, ifMatch: h.get('If-Match') ?? undefined });
+    } else return new Response(null, { status: 405 });
+    const { status, body, etag } = reply;
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (etag) headers.ETag = etag;
     return new Response(status === 204 || status === 304 ? null : body, { status: status || 502, headers });

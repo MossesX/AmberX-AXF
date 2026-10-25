@@ -91,6 +91,8 @@ try:
     r = c.post("/api/app-plugins/axhub/uninstall", headers=H, json={"folder": "zz-test-hello", "confirm": "zz-test-hello"})
     check("axhub uninstall removes it", r.status_code == 200 and not hdir.exists())
     check("axhub uninstall of a missing plugin refused", c.post("/api/app-plugins/axhub/uninstall", headers=H, json={"folder": "zz-test-hello", "confirm": "zz-test-hello"}).status_code == 400)
+    check("amberx list served", isinstance(c.get("/api/app-plugins/amberx", headers=H).json().get("items"), list))
+    check("unknown app kind 404", c.get("/api/app-plugins/nope", headers=H).status_code == 404)
     check("bad folder refused", c.post("/api/app-plugins/axhub/install", headers=H, json={"folder": "../x", "confirm": "../x"}).status_code == 400)
 finally:
     shutil.rmtree(hdir, ignore_errors=True)

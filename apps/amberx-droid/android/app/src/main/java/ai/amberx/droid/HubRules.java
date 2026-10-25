@@ -158,6 +158,38 @@ final class HubRules {
         }
     }
 
+    static final int PUT_MAX_BYTES = 64 * 1024;
+
+    /** Writes only to the hub's data server (`/data/...`): no other hub path takes a PUT from the app. */
+    static boolean isDataPath(String hub, String url) {
+        return isHub(hub, url) && url.startsWith(hub + "/data/") && !url.contains("..");
+    }
+
+    /** PUT a JSON document to the hub's data server with the hub session (hub as Origin, If-Match kept, no redirects). */
+    static Reply put(String hub, String url, String body, String ifMatch, String cookie) throws IOException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        if (!isDataPath(hub, url)) throw new IOException("not the hub's data server");
+        if (bytes.length > PUT_MAX_BYTES) throw new IOException("document too large");
+        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        try {
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(10_000); c.setReadTimeout(10_000); c.setUseCaches(false);
+            c.setRequestMethod("PUT"); c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Origin", hub);
+            if (ifMatch != null && !ifMatch.isEmpty()) c.setRequestProperty("If-Match", ifMatch);
+            if (cookie != null) c.setRequestProperty("Cookie", cookie);
+            c.getOutputStream().write(bytes);
+            int code = c.getResponseCode();
+            InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
+            String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+            return new Reply(code, reply, c.getHeaderField("Location"), c.getHeaderField("ETag"));
+        } finally {
+            c.disconnect();
+        }
+    }
+
     /** Approves [id] on the hub's own form (page CSRF, hub as Origin). True only on the hub's "approved" answer. */
     static boolean approve(String hub, String id, String cookie) {
         String url = approvalUrl(hub, id);

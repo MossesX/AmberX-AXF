@@ -242,6 +242,9 @@ jobs:
   android:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
+    # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
+    needs: amberx
+    if: ${{ !cancelled() }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
       AXF_BUILD_NUMBER: ${{ github.run_number }}
@@ -300,6 +303,12 @@ jobs:
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
             echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
+      - name: AmberX APK from its own job (Capacitor shell) for the catalog bundle
+        if: ${{ needs.amberx.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: amberx-debug.apk
+          path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
         run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
