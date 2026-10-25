@@ -12,7 +12,7 @@ import { mkdtempSync, readFileSync, writeFileSync, existsSync, readdirSync, stat
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { classify, DirStore, newId, normalize, relPath, titleFrom, upsertStep } from './changes-core.mjs';
+import { classify, DirStore, newId, normalize, relPath, titleFrom, upsertStep, resumePrompt } from './changes-core.mjs';
 import { parseTest, withOurHooks, withoutOurHooks } from './changes.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -94,6 +94,32 @@ run(['hook'], henv, ev('SessionEnd'));
 after = new DirStore(hookDir).get(hid);
 check(after.steps[1].state === 'skipped' && after.result?.state === 'partial', 'SessionEnd skips queued steps and marks a result-less entry partial');
 check(!existsSync(join(henv.HOME, '.axf-changes', 'sessions', 'sess-1234.json')), 'SessionEnd forgets the session');
+
+console.log('resume details');
+check(he.resume?.folder && he.resume.head && typeof he.resume.dirty === 'number' && Array.isArray(he.resume.files), 'the hook records the checkout: folder, last commit, uncommitted count, files');
+check(after.resume?.at && after.resume.head === he.resume.head, 'Stop / SessionEnd refresh the git part');
+r = run(['resume', hid, '--plan', 'Do it in two passes', '--next', 'Screenshots, then the PR', '--test', 'python3 test.py', '--read', 'CLAUDE.md', '--pr', 'https://github.com/MossesX/AmberX-AXF/pull/1', '--json'], henv);
+const rs = JSON.parse(r.stdout);
+check(r.status === 0 && rs.plan === 'Do it in two passes' && rs.tests[0] === 'python3 test.py' && rs.read[0] === 'CLAUDE.md' && rs.pr.endsWith('/pull/1') && rs.head === he.resume.head, 'resume adds plan / next / tests / read / pr and keeps the git part');
+r = run(['resume', hid, '--prompt'], henv);
+check(r.status === 0 && r.stdout.includes(hid) && r.stdout.includes('What is left:') && r.stdout.includes('Screenshots, then the PR') && r.stdout.includes('no new repo, no fork') && !r.stdout.includes('abcdefghijkl'), 'resume --prompt prints a prompt another account can carry on from (secrets hidden)');
+check(run(['resume', hid, '--read', '../etc/passwd'], henv).status === 1, 'a path outside the repo is refused');
+check(run(['resume', hid, '--pr', 'http://x'], henv).status === 1, 'a non-https PR link is refused');
+check(resumePrompt({ id: 'chg-20261025-abcdef1234', title: 't', kind: 'edit', steps: [], result: null, resume: { pushed: false, head: 'abcdef1' } }).includes('NOT pushed'), 'an unpushed head is called out');
+
+console.log('first edit opens an entry');
+const fDir = scratch('first');
+const fenv = baseEnv({ AXF_CHANGES_DIR: fDir });
+const fev = (name, extra = {}) => JSON.stringify({ hook_event_name: name, session_id: 'sess-first', cwd: HERE, ...extra });
+r = run(['hook'], fenv, fev('UserPromptSubmit', { prompt: 'The banner looks odd on my phone' }));
+check(r.stdout === '' && new DirStore(fDir).all().length === 0, 'a prompt not worded as a change opens nothing yet');
+run(['hook'], fenv, fev('PreToolUse', { tool_name: 'Read', tool_input: { file_path: '/x/a.ts' } }));
+check(new DirStore(fDir).all().length === 0, 'reading opens nothing');
+run(['hook'], fenv, fev('PreToolUse', { tool_name: 'Edit', tool_input: { file_path: '/x/web/banner.tsx' } }));
+const fl = new DirStore(fDir).all();
+check(fl.length === 1 && fl[0].kind === 'edit' && fl[0].asked.includes('banner looks odd') && fl[0].who.host && fl[0].who.session === 'sess-first' && fl[0].surface && fl[0].resume?.folder, 'the first edit opens one with the prompt, machine, session, session type and checkout');
+run(['hook'], fenv, fev('PreToolUse', { tool_name: 'Write', tool_input: { file_path: '/x/web/b.tsx' } }));
+check(new DirStore(fDir).all().length === 1, 'later edits for the same prompt open nothing new');
 
 console.log('queue fallback + flush');
 const qenv = baseEnv({});
