@@ -2,7 +2,7 @@
   "$axf": "agent-addon@1",
   "id": "vinny",
   "name": "Vinny — VPS root operator",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icon": "server",
   "author": "AmberX AXF",
   "description": "Vinny runs Brett's VPS as root through axHub (vps.run): health, Docker, services, logs, network, updates, the console doctor, and retrieving the Claude account email address. Every command is approved on the hub.",
@@ -182,6 +182,23 @@
         "toolIds": [
           "vinny.axhub-call"
         ]
+      },
+      {
+        "id": "vinny.tokens",
+        "name": "App tokens (never the value)",
+        "description": "Say where each app's token is saved on the VPS (Patches APP_TOKEN, Build Pilot BP_TOKEN, Dev Console AXF_TOKEN), whether it's there, its length and an 8-character fingerprint, and the command Brett runs himself to copy it.",
+        "instructions": "1. Your command book's \"App tokens\" command does this (triggers: app tokens, token status, patches token, pilot token, console token, /tokens). Run it through axhub_call (tool vps.run); Brett approves it on the hub.\n2. Never print, read out, copy, store or pass on a token's value, not even part of it beyond the fingerprint the command prints: your output goes through axHub, the run log and the chat. Never run cat, grep or sed on those env files without the command's own form.\n3. Answer per app: set or not found, length, fingerprint, file, and the line to copy it (sudo sed -n 's/^KEY=//p' FILE), which Brett runs himself in Moshi and pastes only into Project settings, never into chat.\n4. A token that's not found: say which installer writes it (apps/patches-web/deploy/install.sh, Build Pilot deploy/install.sh, deploy/install-console.sh).",
+        "triggers": [
+          "token",
+          "tokens",
+          "app token",
+          "app_token",
+          "bp_token",
+          "axf_token"
+        ],
+        "toolIds": [
+          "vinny.axhub-call"
+        ]
       }
     ],
     "tools": [
@@ -217,7 +234,7 @@
         "id": "vinny",
         "name": "Vinny",
         "icon": "server",
-        "description": "Runs the VPS with root access through axHub: health, Docker, services, logs, network, updates, doctor, and the Claude account email.",
+        "description": "Runs the VPS with root access through axHub: health, Docker, services, logs, network, updates, doctor, and the Claude account email, and where the app tokens are (never their values).",
         "personaId": "vinny.persona",
         "skillIds": [
           "vinny.email",
@@ -228,7 +245,8 @@
           "vinny.network",
           "vinny.updates",
           "vinny.doctor",
-          "vinny.commands"
+          "vinny.commands",
+          "vinny.tokens"
         ],
         "toolIds": [
           "vinny.calc",

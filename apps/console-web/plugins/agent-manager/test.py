@@ -113,7 +113,7 @@ check(ci["$axf"] == "agent-definition@1" and "container_write" in ci["builtins"]
 st = c.get("/am/status").json()
 check(st["llm"]["source"] == "assistant" and st["addons"]["available"] == 4, "status: uses axf.llm@1 and sees 4 bundled add-ons")
 vin = svc.get_agent("vinny") if (svc := plugin_services.get("axf.agents@1")) else None
-check(vin and any(t["name"] == "axhub_call" for t in vin["tools"]) and "vinny" in am.store.dangerous_agents() and "oauthAccount.emailAddress" in vin["system_prompt"], "Vinny is installed once on start, allowed axhub_call (root through axHub), with the retrieve-email skill")
+check(vin and any(t["name"] == "axhub_call" for t in vin["tools"]) and "vinny" in am.store.dangerous_agents() and "oauthAccount.emailAddress" in vin["system_prompt"] and "Never print, read out" in vin["system_prompt"], "Vinny is installed once on start, allowed axhub_call (root through axHub), with the retrieve-email skill")
 post("addons/vinny/uninstall")
 am._offer_vinny()
 check("vinny" not in am.store.addon_records(), "…and an uninstall is respected on the next start")
@@ -514,6 +514,22 @@ check([m["id"] for m in t_] == ["pull-console", "health"] and t_[0]["arguments"]
 check(c.put("/am/vinny/settings", json={"listen": False}).json()["settings"]["listen"] is False and vn.handle("server health") == [], "listening off: triggers don't run")
 c.put("/am/vinny/settings", json={"listen": True})
 check(c.delete("/am/vinny/commands/pull-console").status_code == 200 and c.delete("/am/vinny/commands/pull-console").status_code == 404, "remove a command")
+# App tokens (Oct 25 2026): where each app's token is, never its value; added once to books written before
+import subprocess, tempfile, hashlib
+with tempfile.TemporaryDirectory() as td:
+    os.makedirs(f"{td}/patches-web/.app"); open(f"{td}/patches-web/.app/env", "w").write("APP_TOKEN=s3cretPatchesValue0123456789abcd\n")
+    out = subprocess.run(["bash", "-c", vn.TOKENS_COMMAND.replace("/opt/", td + "/")], capture_output=True, text=True, timeout=30).stdout
+check("s3cret" not in out and "set, 32 characters, fingerprint " + hashlib.sha256(b"s3cretPatchesValue0123456789abcd").hexdigest()[:8] in out
+      and "BP_TOKEN: not found" in out and "to copy it yourself: sudo sed -n 's/^APP_TOKEN=//p'" in out,
+      "the app-tokens command says set / not found, length and a fingerprint, never the value")
+check("$" not in "".join(a + k + f for a, k, f in vn.APP_TOKENS) and "unset v" in vn.TOKENS_COMMAND, "token paths are fixed, nothing is filled in")
+old = vn.load()
+vn._write(vn.FILE, {"$axf": vn.TAG, "commands": [x for x in old["commands"] if x["id"] != "app-tokens"], "settings": {"listen": True}})
+check(any(x["id"] == "app-tokens" for x in vn.load()["commands"]), "a book written before gets the app-tokens command once")
+vn.remove("app-tokens")
+check(not any(x["id"] == "app-tokens" for x in vn.load()["commands"]), "…and removing it afterwards is respected")
+vn.reset_defaults()
+check(vn.fix_for(vn.load()["commands"], "x", "Vinny where are the app tokens")["id"] == "app-tokens", "'app tokens' in a message runs it")
 calls_ = []
 def vhub(answers):
     def f(tool, args, conf=None, timeout=0, reason=""):

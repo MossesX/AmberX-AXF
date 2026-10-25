@@ -3342,6 +3342,20 @@
    "updatedAt": "2026-10-24T18:05:35.279Z",
    "estimate": "3 h",
    "source": "chat"
+  },
+  {
+   "id": "vinny-app-tokens",
+   "title": "Vinny: app token command (where, never the value)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:22:26.878Z",
+   "builtAt": "2026-10-25T10:22:26.878Z",
+   "updatedAt": "2026-10-25T10:22:26.878Z",
+   "estimate": "25 min",
+   "source": "chat"
   }
  ]
 }
