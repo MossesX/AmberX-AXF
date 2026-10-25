@@ -115,6 +115,7 @@ jobs:
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
+            npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
@@ -136,7 +137,9 @@ jobs:
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
             npx -y tsx framework/spec/check-library-parts.mts          # library@1 parts (features inside a library): core/library.ts = CLI installer (Kotlin twin deferred)
             npx -y tsx framework/spec/check-ashes.mts                   # AshesUI: components, owners (plugin + model), contrast, rows, element tree
+            npx -y tsx framework/spec/check-hubstatus.mts               # axHub status badge: red unless settings come live from axHub
             npx -y tsx framework/spec/check-hubstore.mts               # lib-hubstore: settings + tables on a fake axHub data server, installer parts = runtime config
+            npx -y tsx framework/spec/check-hubsync.mts                # lib-hubsync: look/settings/data config, follow source, settings mirror on a fake hub
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py

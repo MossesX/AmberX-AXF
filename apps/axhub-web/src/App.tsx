@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { AccountView, AppShell, AssetStudio, installLibraries, useRuntime, type ViewMap } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { hubSyncLibrary } from './axf/libs/hubsync';
 import { dialogs } from './dialogs';
 import { Approvals } from './views/Approvals';
 import { Apps } from './views/Apps';
@@ -8,6 +9,7 @@ import { HubView } from './views/HubView';
 import { PLANNED, Planned } from './views/Planned';
 import { useHubBannerCount } from './axf/libs/hub/react';
 import { HUB } from './hub/useHub';
+import { loadPlugins } from './plugins';
 
 /**
  * Views the shell can show; the nav-menu asset `axhub-web` references these ids. Approvals is home,
@@ -27,9 +29,11 @@ const views: ViewMap = {
 
 /**
  * Libraries this app ships. lib-settings gives it the settings interface (Appearance — including
- * "Look from axHub" for a developer app —, Account & security, Connections, Plugins, About).
+ * "Look from axHub" for a developer app —, Account & security, Connections, Plugins, About). lib-hubsync keeps its
+ * settings on axHub (same on every device) and adds Settings → Plugins → axHub sync; the look stays the developer one.
+ * Installed axHub web plugins (src/plugins, catalog kind `axhub`) come after them.
  */
-const libraries = [settingsLibrary];
+const libraries = [settingsLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

@@ -1,12 +1,12 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.activity",
-  "name": "Activity",
-  "version": "0.1.0",
+  "name": "Activity banner",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner at the top of the console whenever anything is in progress: GitHub Actions runs on your repos, the console's own update, AI assistant replies, VPS Auto fix jobs, Claude Code sessions on the VPS (after one hook install) and anything else that reports itself. Tap it to see every item; tap an item for its details: what it's doing, its steps (GitHub jobs and steps included), how long it's taken, who started it and a link. When everything finishes it says so, then goes away.",
+  "description": "A banner at the top of the console whenever anything is built, edited, deleted, pushed, pulled, merged or thought about, queued or running: GitHub Actions runs, the console's own update, AI assistant replies, VPS Auto fix jobs, Codebase changes entries, the push banner's pushes, pulls and merges, Claude Code sessions (thinking, editing, and one line per push/pull/merge/delete/build, after one hook install) and anything else that reports itself. Tap it for every item and its details. When something finishes: a push to the phone through axHub, sound, pop-up, open the banner or the result, and auto-removal after N minutes; closing a finished item moves it to the Codebase changes banner (or deletes it). Every setting is in one collapsible card.",
   "targets": [
     "axf-console"
   ],
@@ -16,6 +16,7 @@
     "settings-tab:activity"
   ],
   "optional": [
+    "service:axf.changes@1",
     "service:axf.live-sessions@1",
     "service:axf.syscheck@1"
   ],
@@ -23,14 +24,21 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-20" },
-  "banner": ["activity"],
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-20"
+  },
+  "banner": [
+    "activity"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/activity",
     "env": [
-      "AXF_ACTIVITY_DIR"
+      "AXF_ACTIVITY_DIR",
+      "AXF_ACTIVITY_WATCH",
+      "AXF_NOTIFY_INBOX"
     ],
     "mentions": [
       "CLAUDE.md"

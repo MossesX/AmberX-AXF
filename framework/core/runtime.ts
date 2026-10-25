@@ -4,12 +4,13 @@
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
-import { SettingsRegistry } from './settings';
+import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
@@ -1337,6 +1338,7 @@ export class AxfRuntime {
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
+      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -1350,6 +1352,28 @@ export class AxfRuntime {
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
+  customSlot(type: AssetType): CustomSlot {
+    return normalizeCustomSlot(this.settings.get(CUSTOM_KEY(type)), type);
+  }
+
+  /** Save a slot's extra tokens (needs assets.swap). */
+  setCustomSlot(type: AssetType, slot: CustomSlot): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    this.settings.set(CUSTOM_KEY(type), slot as unknown as SettingValue);
+    return true;
+  }
+
+  /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
+  customSheet(): string {
+    const per: Record<string, CustomValues> = {};
+    for (const t of customizableTypes()) {
+      const id = (this.getState().active as Record<string, string | undefined>)[t];
+      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+    }
+    return customizeSheet(per);
   }
 
   applyTo(el: HTMLElement) {

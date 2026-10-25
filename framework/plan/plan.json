@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-10-23T22:53:36.363Z",
+ "generatedAt": "2026-10-25T09:53:27.775Z",
  "statuses": [
   "built",
   "partial",
@@ -12202,6 +12202,53 @@
     {
      "at": "2026-10-21",
      "text": "Imported from the feature catalog (suggestion)"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
+   "id": "lib.hubsync",
+   "title": "axHub sync library: one look, settings and data for every app and device; look always/follow/off, Settings screen values and app tables on axHub, settings interface to connect and configure",
+   "area": "Kernel",
+   "group": "UI library — every customization token",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "framework/libs/hubsync (core.ts rules, sync.ts HubSync/FollowSource/startHubSync, index.tsx hubSyncLibrary + Settings → Plugins → axHub sync); check spec/check-hubsync.mts; console plugin hub-sync; Voice Vault Kotlin twin in app code (Oct 24 2026, Opus)",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "lib-hubsync"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "lib.hubsync"
+   ],
+   "modules": [
+    "lib-hubsync"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "kernel",
+    "lib"
+   ],
+   "notes": "Oct 24 2026 (Opus): web framework/libs/hubsync on lib-hubstore + HubAppearanceSource; console plugin hub-sync; Voice Vault twin in app code (sync/HubSync.kt). Framework Android module deferred (Android on hold).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-10-24",
+     "text": "Imported from the feature catalog"
     }
    ],
    "model": "opus",

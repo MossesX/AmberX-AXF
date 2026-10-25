@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "axhub-web",
+  "name": "AXHub",
+  "version": "1.0.0",
+  "description": "The AXHub web app's own settings interface: only its own settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "axhub-web"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "full",
+    "search": false,
+    "descriptions": true
+  }
+}

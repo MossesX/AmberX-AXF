@@ -24,6 +24,7 @@
     "toolbar": "standard-icons",
     "nav-menu": "patches-tabs",
     "context-menu": "compact-classic",
+    "tab-group": "underline",
     "dialog": "centered-modal",
     "popup": "corner-solid",
     "button": "rounded-solid",
@@ -44,7 +45,8 @@
     "spacer": "gap",
     "divider": "rule",
     "badge": "new",
-    "uac-policy": "standard"
+    "uac-policy": "standard",
+    "settings": "patches"
   },
   "hidden": [
     "toolbar"

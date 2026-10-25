@@ -76,6 +76,19 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     runtime.applyTo(document.documentElement);
   }, [runtime, state.active, hidden, spacing]);
 
+  // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
+  const customSheet = runtime.customSheet();
+  useLayoutEffect(() => {
+    let el = document.getElementById('axf-custom') as HTMLStyleElement | null;
+    if (!customSheet) return void el?.remove();
+    if (!el) {
+      el = document.createElement('style');
+      el.id = 'axf-custom';
+      document.head.appendChild(el);
+    }
+    if (el.textContent !== customSheet) el.textContent = customSheet;
+  }, [customSheet]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

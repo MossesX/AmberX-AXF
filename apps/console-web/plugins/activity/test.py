@@ -20,6 +20,9 @@ DATA = Path(tempfile.mkdtemp(prefix="axf-activity-test-"))
 ROOT = Path(tempfile.mkdtemp(prefix="axf-activity-root-"))
 os.environ["AXF_ACTIVITY_DIR"] = str(DATA)
 os.environ["GITHUB_TOKEN"] = "test-token"
+os.environ["AXF_ACTIVITY_WATCH"] = "off"  # the test drives scan() itself
+INBOX = Path(tempfile.mkdtemp(prefix="axf-activity-inbox-"))
+os.environ["AXF_NOTIFY_INBOX"] = str(INBOX)
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import console_context as cx  # noqa: E402
 import plugin_services  # noqa: E402
@@ -209,6 +212,85 @@ ids = {i["id"] for i in c.get("/p/items").json()["items"]}
 check("assistant:c1" not in ids and "syscheck:autofix:host-mosh" not in ids, "sources can be switched off")
 c.put("/p/config", json={"sources": {"services": True, "assistant": True}})
 
+print("when something finishes")
+comp = mod.COMPLETE
+comp.now = lambda: NOW[0]
+comp.started_ms = int(NOW[0] * 1000)
+alerts: list[dict] = []
+comp.raise_alert = alerts.append
+opened: list[dict] = []
+
+
+class FakeChanges:
+    def open(self, entry, by="plugin"):
+        opened.append(entry)
+        return {"id": f"chg-20270115-{len(opened):06x}"}
+
+
+comp.changes = lambda: FakeChanges()
+c.put("/p/config", json={"sources": {"github": False, "services": False, "assistant": False}})
+check(c.put("/p/config", json={"push": "loud"}).status_code == 400 and c.put("/p/config", json={"keepFailed": "yes"}).status_code == 400, "bad completion settings are refused")
+cfg = c.put("/p/config", json={"push": "all", "pushLevel": "warning", "onClose": "changes"}).json()
+check(cfg["push"] == "all" and cfg["onClose"] == "changes" and cfg["sound"] == "off" and cfg["toast"] is True, "completion settings saved with their defaults")
+svc.report({"id": "job-a", "title": "Building the app", "kind": "build", "url": "https://github.com/x/y"})
+comp.scan()
+check(not alerts, "nothing pushed while it runs")
+NOW[0] += 5
+svc.finish("job-a", "done", "All green")
+done = comp.scan()
+check([i["id"] for i in done] == ["job-a"] and len(alerts) == 1 and alerts[0]["severity"] == "warning" and alerts[0]["key"] == "activity:job-a", "finishing pushes once (console alert at the chosen level)")
+files = list(INBOX.glob("inbox/*/*/*.json"))
+n = json.loads(files[0].read_text()) if files else {}
+check(len(files) == 1 and n.get("$axf") == "hub-notification@1" and n["title"] == "Done: Building the app" and oct(files[0].stat().st_mode & 0o777) == "0o664", "…and writes a hub-notification@1 into axHub's inbox")
+comp.scan()
+check(len(alerts) == 1, "never pushed twice")
+svc.report({"id": "job-b", "title": "Merging", "kind": "merge"})
+comp.scan()
+c.put("/p/config", json={"push": "failed", "pushMinS": 0})
+svc.finish("job-b", "done")
+comp.scan()
+check(len(alerts) == 1, "'only failures' skips what finished well")
+check(c.post("/p/close", json={"id": "job-a"}).json().get("movedTo") and opened[-1]["kind"] == "build" and opened[-1]["result"]["state"] == "done" and opened[-1]["surface"] == "activity", "closing a finished item moves it to the Codebase changes log")
+check(not any(i["id"] == "job-a" for i in c.get("/p/items").json()["items"]), "…and takes it off the Activity banner")
+svc.report({"id": "job-c", "title": "Still going"})
+check(c.post("/p/close", json={"id": "job-c"}).status_code == 409, "a running item can't be closed")
+c.put("/p/config", json={"onClose": "delete"})
+n_open = len(opened)
+check(c.post("/p/close", json={"id": "job-b"}).json().get("movedTo") is None and len(opened) == n_open, "with 'delete' closing just removes it")
+c.put("/p/config", json={"lingerS": 60, "onAutoRemove": "changes", "keepFailed": True})
+svc.report({"id": "job-d", "title": "Pulling main", "kind": "pull"})
+svc.report({"id": "job-e", "title": "Deleting old builds", "kind": "delete"})
+comp.scan()
+svc.finish("job-d", "done")
+svc.finish("job-e", "failed")
+comp.scan()
+NOW[0] += 120
+ids = {i["id"] for i in c.get("/p/items").json()["items"]}
+check("job-d" not in ids and "job-e" in ids, "auto-removed after N minutes; a failure stays while 'keep failures' is on")
+comp.scan()
+check(opened[-1]["title"] == "Pulling main" and opened[-1]["kind"] == "other", "…and the auto-removed one moved to Codebase changes")
+c.put("/p/config", json={"autoRemove": False})
+NOW[0] += 3600
+check("job-e" in {i["id"] for i in c.get("/p/items").json()["items"]}, "auto-remove off keeps it")
+r = c.post("/p/notify/test").json()
+check(r["hub"] == "sent" and r["alert"] == "raised" and c.get("/p/config").json()["lastPush"]["title"].startswith("Done: Test"), "test push goes through axHub and the alert")
+c.put("/p/config", json={"autoRemove": True, "keepFailed": False, "lingerS": 600, "push": "off", "onClose": "changes", "onAutoRemove": "delete",
+                         "sources": {"github": True, "services": True, "assistant": True}})
+
+print("codebase changes entries as activity")
+sys.path.insert(0, str(HERE.parent / "codebase-changes" / "server"))
+cc_spec = importlib.util.spec_from_file_location("axf_console_plugins.cc_for_activity", HERE.parent / "codebase-changes" / "server" / "__init__.py", submodule_search_locations=[str(HERE.parent / "codebase-changes" / "server")])
+cc = importlib.util.module_from_spec(cc_spec)
+sys.modules[cc_spec.name] = cc
+cc_spec.loader.exec_module(cc)
+t0 = 1_800_000_000.0
+rows = [{"id": "chg-20270115-aaaaaa", "kind": "remove", "title": "Remove old plugin", "status": "running", "createdAt": "2027-01-15T08:00:00.000Z", "updatedAt": "2027-01-15T08:00:00.000Z", "steps": {"total": 4, "done": 1, "running": "Deleting files"}, "result": None},
+        {"id": "chg-20270115-bbbbbb", "kind": "build", "title": "Build it", "status": "done", "createdAt": "2027-01-15T07:00:00.000Z", "updatedAt": "2027-01-15T07:30:00.000Z", "steps": {}, "result": {"state": "partial", "summary": "Mostly"}},
+        {"id": "chg-20200101-cccccc", "kind": "edit", "title": "Old", "createdAt": "2020-01-01T00:00:00.000Z", "steps": {}, "result": None}]
+acts = cc.activity_items(rows, now=t0)
+check([a["kind"] for a in acts] == ["delete", "build"] and acts[0]["state"] == "running" and acts[1]["state"] == "done" and acts[0]["progress"] == 0.25, "open entries run, finished ones show their result, old ones are left out")
+check(all(feed_mod.norm(a, "changes", 0) for a in acts) and feed_mod.norm(acts[0], "changes", 0)["changeId"] == "chg-20270115-aaaaaa", "they pass the feed's checks and keep their change id")
+
 print("systems check: VPS Auto fix jobs as activity")
 sys.path.insert(0, str(HERE.parent / "systems-check" / "server"))
 hspec = importlib.util.spec_from_file_location("hostfix_for_activity_test", HERE.parent / "systems-check" / "server" / "hostfix.py")
@@ -246,6 +328,19 @@ if node.returncode == 0:
     run_("hook", inp=ev(hook_event_name="PreToolUse", tool_name="Edit", tool_input={"file_path": "/x/y/App.tsx"}))
     j = json.loads((DATA / "reports" / "claude_abc-123.json").read_text())
     check([s["name"] for s in j["steps"]] == ["Running: npm test", "Editing App.tsx"] and j["steps"][0]["state"] == "done", "each tool is a step")
+    check(j["kind"] == "edit", "the session shows what it's doing (editing)")
+    run_("hook", inp=ev(hook_event_name="PreToolUse", tool_name="Bash", tool_use_id="toolu_01PUSH", tool_input={"command": "git push -u origin feat"}))
+    child = DATA / "reports" / "claude_abc-123_toolu_01PUSH.json"
+    k = json.loads(child.read_text())
+    check(k["kind"] == "push" and k["state"] == "running" and k["title"].startswith("Pushing"), "a git push gets its own running line")
+    run_("hook", inp=ev(hook_event_name="PostToolUse", tool_name="Bash", tool_use_id="toolu_01PUSH", tool_input={"command": "git push -u origin feat"}, tool_response={"stdout": "ok"}))
+    check(json.loads(child.read_text())["state"] == "done", "…done when the tool finishes")
+    run_("hook", inp=ev(hook_event_name="PreToolUse", tool_name="Bash", tool_use_id="toolu_01MERGE", tool_input={"command": "git merge main"}))
+    run_("hook", inp=ev(hook_event_name="PostToolUse", tool_name="Bash", tool_use_id="toolu_01MERGE", tool_input={"command": "git merge main"}, tool_response={"is_error": True}))
+    check(json.loads((DATA / "reports" / "claude_abc-123_toolu_01MERGE.json").read_text())["state"] == "failed", "a failed merge shows failed")
+    check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["kind"] == "thinking", "back to thinking after a tool")
+    kinds = subprocess.run(["node", "--input-type=module", "-e", f"import {{activityKind as k}} from {json.dumps(cli)}; console.log(JSON.stringify([k('Bash',{{command:'git pull'}}),k('Bash',{{command:'rm -rf dist'}}),k('Bash',{{command:'npm run build'}}),k('Bash',{{command:'git rebase main'}}),k('Write',{{}}),k('Bash',{{command:'ls'}})]))"], capture_output=True, text=True, env=env)
+    check(json.loads(kinds.stdout) == ["pull", "delete", "build", "merge", "edit", None], "pull, delete, build, merge and edit are told apart")
     run_("hook", inp=ev(hook_event_name="Notification", message="Claude needs your permission"))
     check(json.loads((DATA / "reports" / "claude_abc-123.json").read_text())["state"] == "waiting", "waiting for you")
     run_("hook", inp=ev(hook_event_name="Stop"))

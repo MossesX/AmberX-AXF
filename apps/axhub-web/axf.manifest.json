@@ -21,7 +21,8 @@
     "app-menu": "axhub-web",
     "toolbar": "axhub-web",
     "nav-menu": "axhub-web",
-    "context-menu": "compact-classic",
+    "context-menu": "axhub-web",
+    "tab-group": "underline",
     "dialog": "centered-modal",
     "popup": "corner-solid",
     "button": "rounded-solid",
@@ -44,7 +45,7 @@
     "badge": "new",
     "gauge": "classic-arc",
     "meter": "striped-pill",
-    "settings": "standard",
+    "settings": "axhub-web",
     "uac-policy": "standard"
   },
   "hidden": [],
@@ -91,5 +92,13 @@
       "path": "public",
       "purpose": "Static files served as-is."
     }
-  ]
+  ],
+  "libraries": {
+    "hubsync": {
+      "hub": "https://axhub.amberxai.com",
+      "look": "required",
+      "settings": true,
+      "data": "off"
+    }
+  }
 }

@@ -1,30 +1,22 @@
 /**
- * Patches' own library (web): the three app tabs (frames kept alive), the banner strip above them, the combined
- * Settings (one tab per app), the settings hook in the application menu + the context menu, and the actions behind them.
+ * Patches' own library (web): the app tabs (frames kept alive), the banner strip above them and the actions behind them.
+ * Settings are not combined (Brett, Oct 24 2026): every app in a tab keeps its own settings interface (its own settings
+ * asset, only its own settings); Patches' Settings holds only Patches' settings.
  */
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { Button, Icon, IconButton, ModelBadge, modelLabel, Note, Switch, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
 import type { EmbedPlugin } from './axf/core';
 import { api } from './api';
 
 /** "built with Opus" for a plugin's row (Switch hints are text), or nothing when its model isn't known. */
 const builtWithText = (model?: string) => (model ? `built with ${modelLabel(model)}` : '');
-import { library as settingsLibrary } from './axf/libs/settings';
 import type { AxfRuntime } from './axf/core';
 import {
   DEFAULT_TABS, MAX_TABS, moveTab, pluginTabUrl, readTabs, tabChoices, tabIcon, tabKey, tabLabel, tabViewId, type TabChoice, type TabEntry,
   AUTO_INSTALL_KEY, enabledPluginIds, missingPlugins, missingSummary, pluginsEnabledMessage, pluginsRequestMessage, type PluginsState,
-  BANNERS_KEY, bannerAsk, bannersUrl, settingsTabs, settingsTabFor, SETTINGS_APP_KEY, TABS, fromApp, guestMenuCounters, guestMenuItems, isSettingsApp, openTabMessage, parseStripMessage,
-  runMessage, settingsUrl, stripUrl, tabOrigin, tabUrl, type PatchTab, type SettingsApp, type SettingsTabSpec,
+  TABS, fromApp, guestMenuCounters, guestMenuItems,
+  runMessage, tabOrigin, tabUrl, type PatchTab,
 } from './patches';
-
-/* ---------------- shared state: which app's tab the combined settings shows, and a sub-tab to open ---------------- */
-
-type Want = { app: SettingsApp; tab?: string; at: number };
-let want: Want = { app: 'patches', at: 0 };
-const wantSubs = new Set<() => void>();
-function setWant(next: Want) { want = next; wantSubs.forEach((f) => f()); }
-function useWant(): Want { return useSyncExternalStore((f) => { wantSubs.add(f); return () => wantSubs.delete(f); }, () => want); }
 
 /** Reload ticks per tab (a frame reloads when its tick changes). */
 const reloads = new Map<string, number>();
@@ -33,7 +25,7 @@ function bump(id: string) { reloads.set(id, (reloads.get(id) ?? 0) + 1); reloadS
 function useReload(id: string): number { return useSyncExternalStore((f) => { reloadSubs.add(f); return () => reloadSubs.delete(f); }, () => reloads.get(id) ?? 0); }
 
 /** Every frame Patches shows, by window, so a message is believed only from the frame it claims to be. */
-const frames = new Map<Window, { tab: PatchTab; kind: 'app' | 'settings' | 'strip'; entry?: TabEntry }>();
+const frames = new Map<Window, { tab: PatchTab; kind: 'app' | 'strip'; entry?: TabEntry }>();
 
 function useOrigin(t: PatchTab): string {
   const rt = useRuntime();
@@ -41,16 +33,15 @@ function useOrigin(t: PatchTab): string {
   return tabOrigin(t, t.key ? rt.settings.get(t.key) : null);
 }
 
-/** Open the combined settings on an app's tab (and a tab inside that app's settings). */
-export function openSettings(rt: AxfRuntime, app: SettingsApp, tab?: string) {
-  setWant({ app, tab, at: Date.now() });
-  try { rt.settings.set(SETTINGS_APP_KEY, app); } catch { /* storage off */ }
-  rt.navigate('settings');
+/** Open Patches' own settings (on one of its tabs). Each app in a tab opens its own settings itself. */
+export function openSettings(rt: AxfRuntime, tab?: string) {
+  if (tab) void rt.dispatch(`settings.open:${tab}`);
+  else rt.navigate('settings');
 }
 
 /* ---------------- frames ---------------- */
 
-function Frame({ tab, src, kind, title, onHeight, entry }: { tab: PatchTab; src: string; kind: 'app' | 'settings' | 'strip'; title: string; onHeight?: (px: number) => void; entry?: TabEntry }) {
+function Frame({ tab, src, kind, title, onHeight, entry }: { tab: PatchTab; src: string; kind: 'app' | 'strip'; title: string; onHeight?: (px: number) => void; entry?: TabEntry }) {
   const ref = useRef<HTMLIFrameElement>(null);
   useEffect(() => {
     const w = ref.current?.contentWindow;
@@ -198,117 +189,6 @@ function TabsPanel() {
 
 export const ADD_TAB_DIALOG = 'patches.tabs.add';
 
-/** The Dev Console's plugin banners above every tab (`?axf-strip=banners`), sized to them. */
-export function BannerStrip() {
-  const rt = useRuntime();
-  useAxfState();
-  const t = TABS[0]!;
-  const origin = useOrigin(t);
-  const [px, setPx] = useState(0);
-  const on = rt.settings.get(BANNERS_KEY) !== false;
-  useEffect(() => {
-    const onMsg = (e: MessageEvent) => {
-      const f = e.source ? frames.get(e.source as Window) : undefined;
-      if (!f || f.kind !== 'strip' || e.origin !== origin) return;
-      const m = parseStripMessage(e.data);
-      if (m?.type === 'height') setPx(m.px);
-      else if (m?.type === 'open') rt.navigate('console');
-    };
-    window.addEventListener('message', onMsg);
-    return () => window.removeEventListener('message', onMsg);
-  }, [rt, origin]);
-  if (!on) return null;
-  return (
-    <div className="pt-strip" style={{ height: px }} aria-hidden={px === 0}>
-      <Frame tab={t} src={stripUrl(origin)} kind="strip" title="Console banners" />
-    </div>
-  );
-}
-
-/* ---------------- combined settings ---------------- */
-
-/**
- * One tab of the combined settings: an app's own settings page (page mode), or for a plugin tab that app's settings page
- * opened on the plugin's own settings tab; kept alive once opened.
- */
-function AppSettings({ spec, active, tab, at }: { spec: SettingsTabSpec; active: boolean; tab?: string; at: number }) {
-  const t = TABS.find((x) => x.id === spec.app) ?? TABS[0]!;
-  const origin = useOrigin(t);
-  const ref = useRef<HTMLDivElement>(null);
-  const banners = spec.kind === 'banners';
-  // The sub-tab to show: one asked for (e.g. the console's Appearance), else a plugin tab's own settings tab. Sent once
-  // the page is there, again after a short wait (and on every visit, so a plugin tab always lands on its plugin).
-  const sub = tab ?? spec.sub;
-  useEffect(() => {
-    if (!active || !sub || !t.axf) return;
-    const send = () => {
-      const w = ref.current?.querySelector('iframe')?.contentWindow;
-      if (w) try { w.postMessage(openTabMessage(sub), origin); } catch { /* not loaded */ }
-    };
-    send();
-    const a = setTimeout(send, 800);
-    const b = setTimeout(send, 2500);
-    return () => { clearTimeout(a); clearTimeout(b); };
-  }, [active, sub, at, origin, t.axf]);
-  return (
-    <div ref={ref} className="pt-settings__page" hidden={!active}>
-      {banners
-        ? <Frame tab={t} src={bannersUrl(origin)} kind="settings" title="Banner settings" />
-        : <Frame tab={t} src={settingsUrl(t, origin)} kind="settings" title={`${spec.label} settings`} />}
-    </div>
-  );
-}
-
-/** The combined settings' tabs right now (the tab group + what the apps reported about their plugins). */
-function currentSettingsTabs(): SettingsTabSpec[] { return settingsTabs(tabsView.tabs, plugins.reports); }
-function useSettingsTabs(): SettingsTabSpec[] { const tv = useTabs(); const pv = usePluginsView(); return settingsTabs(tv.tabs, pv.reports); }
-
-/**
- * Patches' combined Settings, a tab group: Patches · Banners · then every tab in Patches' tab group that has a settings
- * interface (each app's own settings page; a plugin tab's plugin settings), in the tab group's order.
- */
-export function CombinedSettings() {
-  const rt = useRuntime();
-  const w = useWant();
-  const list = useSettingsTabs();
-  const saved = rt.settings.get(SETTINGS_APP_KEY);
-  const pickId = w.at ? w.app : typeof saved === 'string' ? saved : 'patches';
-  const app: SettingsApp = list.some((x) => x.id === pickId) ? pickId : 'patches';
-  const [opened, setOpened] = useState<string[]>([app]);
-  useEffect(() => { setOpened((o) => (o.includes(app) ? o : [...o, app])); }, [app]);
-  const pick = (id: SettingsApp) => { setWant({ app: id, at: Date.now() }); try { rt.settings.set(SETTINGS_APP_KEY, id); } catch { /* storage off */ } };
-  const Own = settingsLibrary.views?.settings?.render ?? (() => null);
-  return (
-    <div className="pt-settings">
-      <div className="pt-settings__tabs" role="tablist" aria-label="Settings for">
-        {list.map((a) => (
-          <button key={a.id} type="button" role="tab" aria-selected={a.id === app} className={`pt-settings__tab ${a.id === app ? 'is-active' : ''}`} onClick={() => pick(a.id)}>
-            <Icon name={a.icon} size={15} /><span>{a.label}</span>
-          </button>
-        ))}
-      </div>
-      <div className="pt-settings__body">
-        <div className="pt-settings__page pt-settings__page--own" hidden={app !== 'patches'}>{Own()}</div>
-        {/* Banners: every banner above the tabs (they come from the Dev Console), the console's Banners page on its own */}
-        {list.filter((x) => x.kind !== 'own' && opened.includes(x.id)).map((x) => (
-          <AppSettings key={x.id} spec={x} active={app === x.id} tab={app === x.id ? w.tab : undefined} at={w.at} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** The context menu's Settings submenu: one entry per tab of the combined settings (kept current with the tab group). */
-function settingsSubmenu() {
-  return { id: 'patches.settings.menu', label: 'Settings', icon: 'settings', items: currentSettingsTabs().map((x) => ({ id: `patches.settings.${x.id}`, label: x.label, icon: x.icon, action: `patches.settings:${x.id}` })) };
-}
-function contributeSettingsMenu(rt: AxfRuntime): void {
-  const menu = settingsSubmenu();
-  for (const target of ['default', 'canvas', 'nav-item', 'patches-plugin-tab']) {
-    rt.addContextItems({ id: `patches.ctx.settings.${target}`, module: 'ai.amberx.axf.patches', target, order: 0, items: [menu] });
-  }
-}
-
 /* ---------------- messages from the apps ---------------- */
 
 /** The apps ask Patches for their settings (their own hooks are gone inside Patches); anything else is ignored. */
@@ -323,20 +203,11 @@ export function useAppMessages() {
       if (e.origin !== origin) return;
       const m = fromApp(e.data);
       if (!m) return;
-      // Banner settings (from a banner's right-click, in the strip or an app) open Patches' Banners tab on that banner;
-      // anything else the strip sends is ignored (it only relays banner taps to the Console tab).
+      // Patches no longer takes the apps' settings, so it never answers open-settings; the strip only relays banner taps.
       // Every page of an app (tab, settings page, banner strip) reports its plugins and runs only what Patches enabled.
       if (m.type === 'plugins') { void onPluginReport(rt, f.tab, e.source as Window, origin, m.plugins); return; }
-      const banner = m.type === 'open-settings' ? bannerAsk(m.tab) : null;
-      if (banner !== null) openSettings(rt, 'banners', banner || undefined);
-      else if (f.kind === 'strip') return;
-      // the settings hook of the tab it came from: a plugin tab with settings opens its own settings tab, else its app's
-      else if (m.type === 'open-settings') {
-        const own = f.entry?.kind === 'plugin' ? tabViewId(f.entry) : '';
-        const list = currentSettingsTabs();
-        openSettings(rt, own && list.some((x) => x.id === own) && !m.tab ? own : f.tab.id, m.tab);
-      }
-      else if (m.type === 'menu' && f.kind === 'app') showGuestMenu(rt, f.tab, m.menus);
+      if (f.kind === 'strip') return;
+      if (m.type === 'menu' && f.kind === 'app') showGuestMenu(rt, f.tab, m.menus);
       else if (m.type === 'notify') rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level === 'warning' ? 'warning' : m.level === 'success' ? 'success' : 'info', `${f.tab.label}: ${m.title}`);
     };
     window.addEventListener('message', onMsg);
@@ -369,7 +240,7 @@ function loadPlugins(force = false): Promise<PluginsState | null> {
   if (loading && !force) return loading;
   loading = api<PluginsState>('/plugins').then((r) => {
     if (r.ok && r.data) setPlugins({ state: r.data, error: '' });
-    else setPlugins({ error: r.error || 'Patches’ plugin list could not be read' });
+    else { setPlugins({ error: r.error || 'Patches’ plugin list could not be read' }); loading = null; } // failed: try again next time
     return r.ok ? r.data : plugins.state;
   });
   return loading;
@@ -377,7 +248,7 @@ function loadPlugins(force = false): Promise<PluginsState | null> {
 
 /** Tell every page of an app which plugins it may run (only what is installed in Patches and switched on). */
 function announce(t: PatchTab, origin?: string) {
-  const ids = enabledPluginIds(plugins.state, t.id);
+  const ids = enabledFor(t);
   const o = origin ?? tabOriginOf(t);
   for (const [w, f] of frames) if (f.tab.id === t.id) try { w.postMessage(pluginsEnabledMessage(ids), o); } catch { /* frame gone */ }
 }
@@ -404,7 +275,13 @@ async function onPluginReport(rt: AxfRuntime, t: PatchTab, w: Window, origin: st
   setPlugins({ reports: { ...plugins.reports, [t.id]: list } });
   await loadPlugins();
   if (rt.settings.get(AUTO_INSTALL_KEY) !== false && missingPlugins(list, plugins.state, t.id).length && !plugins.busy) await installMissing(t);
-  try { w.postMessage(pluginsEnabledMessage(enabledPluginIds(plugins.state, t.id)), origin); } catch { /* frame gone */ }
+  try { w.postMessage(pluginsEnabledMessage(enabledFor(t)), origin); } catch { /* frame gone */ }
+}
+
+/** What an app may run: Patches' list when it can be read, else the app's own switches (never nothing, so a list
+ *  Patches can't read doesn't switch off every plugin and banner in its tabs). */
+function enabledFor(t: PatchTab): string[] {
+  return plugins.state ? enabledPluginIds(plugins.state, t.id) : (plugins.reports[t.id] ?? []).filter((p) => p.on).map((p) => p.id).sort();
 }
 
 /** Switch a plugin installed in Patches on or off for an app, then tell its pages. */
@@ -414,57 +291,6 @@ async function switchPlugin(t: PatchTab, id: string, on: boolean) {
   announce(t);
 }
 
-/** Every app with plugins it has but Patches doesn't (what the Systems check entry lists). */
-function missingByApp(v: PluginsView): { t: PatchTab; missing: EmbedPlugin[] }[] {
-  return TABS.map((t) => ({ t, missing: missingPlugins(v.reports[t.id], v.state, t.id) })).filter((x) => x.missing.length > 0);
-}
-
-/** The Systems check entry above the tabs: shown while an app has plugins Patches hasn't installed. */
-function PluginsCheck() {
-  const rt = useRuntime();
-  const v = usePluginsView();
-  const [open, setOpen] = useState(false);
-  const rows = missingByApp(v);
-  // Patches' own list unreadable: the apps run no plugins inside Patches until it is back, so say so.
-  if (!v.state && v.error && Object.keys(v.reports).length) return (
-    <div className="pt-check" role="status" data-fx-ctx-ignore="">
-      <Note tone="danger" icon="alert">
-        <div className="pt-check__line">
-          <span className="pt-check__title"><strong>Systems check</strong> · Patches can’t read its plugin list, so the apps run no plugins here ({v.error})</span>
-          <Button size="sm" icon="refresh" onClick={() => void loadPlugins(true).then(() => { for (const t of TABS) announce(t); })}>Try again</Button>
-        </div>
-      </Note>
-    </div>
-  );
-  if (!rows.length || !v.state) return null;
-  const count = rows.reduce((n, r) => n + r.missing.length, 0);
-  const fixAll = async () => { for (const r of rows) await installMissing(r.t); };
-  return (
-    <div className="pt-check" role="status" data-fx-ctx-ignore="">
-      <Note tone="warning" icon="alert">
-        <div className="pt-check__line">
-          <span className="pt-check__title"><strong>Systems check</strong> · Patches is missing {count} plugin{count === 1 ? '' : 's'} the apps use</span>
-          <span className="fx-row">
-            <Button size="sm" icon="zap" tone="primary" disabled={v.busy} onClick={() => void fixAll()}>{v.busy ? 'Installing…' : 'Auto fix'}</Button>
-            <Button size="sm" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen((x) => !x)}>{open ? 'Less' : 'Details'}</Button>
-            <Button size="sm" icon="settings" onClick={() => openSettings(rt, 'patches', 'connections')}>Plugins</Button>
-          </span>
-        </div>
-        {v.failed && <div className="pt-check__err">Couldn’t install them: {v.failed}</div>}
-        {open && (
-          <ul className="pt-check__list">
-            {rows.map((r) => (
-              <li key={r.t.id}>
-                <span>{missingSummary(r.t.label, r.missing, 8)}</span>
-                <Button size="sm" disabled={v.busy} onClick={() => void installMissing(r.t)}>Install in Patches</Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Note>
-    </div>
-  );
-}
 
 /** Settings → Patches → Plugins: every app's plugins installed in Patches, a switch each; what's missing; auto install. */
 function PluginsPanel() {
@@ -570,19 +396,9 @@ export const patchesLibrary: AxfWebLibrary = {
   version: '0.1.0',
   dependsOn: ['ai.amberx.axf.settings'],
   register(rt) {
-    // The settings hook: app.settings opens the combined settings (Patches' tab unless one is named).
-    // From Patches' own hooks: the settings of the tab in front (an app, or a plugin tab with settings), else Patches'.
-    rt.actions.register('app.settings', () => openSettings(rt, settingsTabFor(rt.getState().view, currentSettingsTabs())), { label: 'Settings' });
-    rt.actions.register('patches.settings', ([app, tab]) => openSettings(rt, isSettingsApp(app) ? app : 'patches', tab || undefined), { label: 'Settings for an app', params: true });
-    // The context menu's Settings submenu follows the tab group and the plugins the apps report.
-    contributeSettingsMenu(rt);
-    tabsSubs.add(() => contributeSettingsMenu(rt));
-    pluginSubs.add(() => contributeSettingsMenu(rt));
-    // From a tab's context menu: the payload is the tab (view) id.
-    rt.actions.register('patches.settings.here', (_a, ctx) => openSettings(rt, settingsTabFor(typeof ctx?.payload === 'string' ? ctx.payload : '', currentSettingsTabs())), { label: 'Settings for this tab' });
     rt.actions.register('patches.reload', () => { const v = rt.getState().view; if (tabsView.tabs.some((e) => tabViewId(e) === v)) bump(v); else rt.toast('Pick a tab first.', 'info', 'Reload'); }, { label: 'Reload the tab in front' });
     rt.actions.register('patches.tabs.add', () => rt.openDialog(ADD_TAB_DIALOG), { label: 'Add a tab…' });
-    rt.actions.register('patches.tabs', () => openSettings(rt, 'patches', 'connections'), { label: 'Tabs in Patches' });
+    rt.actions.register('patches.tabs', () => openSettings(rt, 'connections'), { label: 'Tabs in Patches' });
     rt.actions.register('patches.tabs.remove', (_a, ctx) => {
       const e = tabsView.tabs.find((x) => tabViewId(x) === ctx?.payload);
       if (e) void removeTab(rt, tabKey(e));
@@ -596,15 +412,13 @@ export const patchesLibrary: AxfWebLibrary = {
     }, { label: 'Open the tab in front in a new tab' });
     rt.actions.register('patches.menu', ([tab, id]) => runGuestItem(rt, tab ?? '', id ?? ''), { label: 'Run an item of a tab app\'s menu', params: true, searchable: false });
     rt.actions.register('patches.plugins.fix', () => { for (const t of TABS) void installMissing(t); }, { label: 'Install the apps’ missing plugins in Patches' });
-    rt.actions.register('patches.plugins', () => openSettings(rt, 'patches', 'connections'), { label: 'Plugins in Patches' });
-    rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
+    rt.actions.register('patches.plugins', () => openSettings(rt, 'connections'), { label: 'Plugins in Patches' });
   },
   settings: [{
     id: 'patches', label: 'Patches', icon: 'layers', tab: 'connections', order: 5,
     description: 'The apps in the tabs. Addresses are https, host only; axHub is the hub this app runs with.',
     settings: [
       ...TABS.filter((t) => t.key).map((t) => ({ key: t.key, label: `${t.label} address`, kind: 'text' as const, default: t.fallback, description: 'https only, no path' })),
-      { key: BANNERS_KEY, label: 'Console banners above every tab', kind: 'toggle' as const, default: true, description: 'The Dev Console’s banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new), on screen whichever tab is open.' },
     ],
   }],
   settingsPanels: [
@@ -615,13 +429,12 @@ export const patchesLibrary: AxfWebLibrary = {
   // The settings hook in the context menu, on every target Patches draws (banner, tabs, the settings page).
   contextMenu: [
     { id: 'patches.ctx', target: 'default', order: 1, items: [{ id: 'patches.reload', label: 'Reload the tab in front', icon: 'refresh', action: 'patches.reload' }] },
-    { id: 'patches.ctx.tab', target: 'nav-item', order: 1, items: [{ id: 'patches.settings.tab', label: 'Settings for this tab', icon: 'settings', action: 'patches.settings.here' }, { id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }] },
-    { id: 'patches.ctx.plugintab', target: 'patches-plugin-tab', order: 1, items: [{ id: 'patches.settings.tab', label: 'Settings for this tab', icon: 'settings', action: 'patches.settings.here' }, { id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }, { id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs', label: 'Tabs settings', icon: 'settings', action: 'patches.tabs' }] },
+    { id: 'patches.ctx.tab', target: 'nav-item', order: 1, items: [{ id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }] },
+    { id: 'patches.ctx.plugintab', target: 'patches-plugin-tab', order: 1, items: [{ id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }, { id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs', label: 'Tabs settings', icon: 'settings', action: 'patches.tabs' }] },
   ],
   slots: {
     'app.frame.head': [{ id: 'patches.tabs', order: 10, render: () => <AppTabs /> }],
-    'app.frame.top': [{ id: 'patches.strip', order: 10, render: () => <BannerStrip /> }],
-    // Patches' own Systems check entry (missing plugins), above the console's banners in the strip.
-    'app.frame.banners': [{ id: 'patches.plugins-check', order: 5, render: () => <PluginsCheck /> }],
+    // Gizmo, Oct 25 2026: "I want all banners installed in console and nowhere else." Patches draws no banners: no
+    // Console banner strip above the tabs and no Systems check banner (missing plugins show in Settings → Patches → Plugins).
   },
 };

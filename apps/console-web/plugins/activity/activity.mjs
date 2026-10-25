@@ -95,26 +95,67 @@ function toolLine(name, input = {}) {
   return `Using ${name}`;
 }
 
+/**
+ * What kind of work a tool call is (Brett, Oct 24 2026: building, editing, deleting, pushing, pulling, merging and
+ * thinking all show in the banner): null = nothing worth its own line.
+ */
+export function activityKind(name, input = {}) {
+  const i = input && typeof input === 'object' ? input : {};
+  if (['Edit', 'Write', 'MultiEdit', 'NotebookEdit'].includes(name)) return 'edit';
+  if (name !== 'Bash') return null;
+  const c = String(i.command ?? '');
+  if (/\bgit\s+push\b/.test(c)) return 'push';
+  if (/\bgit\s+(merge|rebase|cherry-pick)\b/.test(c)) return 'merge';
+  if (/\bgit\s+(pull|fetch)\b/.test(c)) return 'pull';
+  if (/(^|[;&|]\s*|\s)(rm|rmdir|unlink)\s|\bgit\s+(rm|branch\s+-[dD])\b/.test(c)) return 'delete';
+  if (/\b(npm|pnpm|yarn)\s+(run\s+)?build\b|\bvite\s+build\b|\bgradle\b|\bdocker\s+(build|compose\s+build)\b|\bmake\b|\btsc\b|\bcargo\s+build\b/.test(c)) return 'build';
+  return null;
+}
+/** Kinds that get their own line in the banner (edits stay steps of the session: there are too many). */
+const OWN_LINE = new Set(['push', 'pull', 'merge', 'delete', 'build']);
+const VERB = { push: 'Pushing', pull: 'Pulling', merge: 'Merging', delete: 'Deleting', build: 'Building' };
+
+/** A push / pull / merge / delete / build by Claude Code as its own item: running on PreToolUse, done or failed on PostToolUse. */
+export function hookChild(ev) {
+  const sid = String(ev.session_id ?? '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 12);
+  const tid = String(ev.tool_use_id ?? '').replace(/[^A-Za-z0-9_-]/g, '').slice(-16);
+  if (!sid || !tid) return null;
+  const kind = activityKind(ev.tool_name, ev.tool_input);
+  if (!OWN_LINE.has(kind)) return null;
+  const where = tail(ev.cwd) || 'Claude Code';
+  const cmd = redact(String(ev.tool_input?.command ?? '').split('\n')[0], 140);
+  const base = { id: `claude:${sid}:${tid}`, kind, source: 'claude-code', title: `${VERB[kind]} · ${where}`, by: 'Claude Code', detail: cmd };
+  if (ev.hook_event_name === 'PreToolUse') return { ...base, state: 'running', startedAt: Date.now(), finishedAt: undefined };
+  if (ev.hook_event_name === 'PostToolUse') {
+    const r = ev.tool_response && typeof ev.tool_response === 'object' ? ev.tool_response : {};
+    const failed = r.is_error === true || r.interrupted === true || (typeof r.exit_code === 'number' && r.exit_code !== 0) || (typeof r.exitCode === 'number' && r.exitCode !== 0);
+    return { ...base, state: failed ? 'failed' : 'done', finishedAt: undefined };
+  }
+  return null;
+}
+
 export function hookPatch(ev, prev) {
   const sid = String(ev.session_id ?? '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 12);
   if (!sid) return null;
   const id = `claude:${sid}`;
   const where = tail(ev.cwd) || 'Claude Code';
-  const base = { id, kind: 'claude', source: 'claude-code', title: `Claude Code · ${where}`, by: 'Claude Code' };
+  const base = { id, kind: 'thinking', source: 'claude-code', title: `Claude Code · ${where}`, by: 'Claude Code' };
   const steps = Array.isArray(prev?.steps) ? prev.steps.map((s) => ({ ...s, state: s.state === 'running' ? 'done' : s.state })) : [];
   switch (ev.hook_event_name) {
     case 'UserPromptSubmit':
       return { ...base, state: 'running', startedAt: Date.now(), finishedAt: undefined, steps: [], detail: `Asked: ${redact(String(ev.prompt ?? '').replace(/\s+/g, ' ').trim(), 160)}` };
     case 'PreToolUse': {
       const line = toolLine(ev.tool_name, ev.tool_input);
-      return { ...base, state: 'running', steps: [...steps, { name: line, state: 'running' }].slice(-15), ...(prev?.title ? {} : { startedAt: Date.now() }) };
+      return { ...base, kind: activityKind(ev.tool_name, ev.tool_input) ?? 'claude', state: 'running', steps: [...steps, { name: line, state: 'running' }].slice(-15), ...(prev?.title ? {} : { startedAt: Date.now() }) };
     }
+    case 'PostToolUse':
+      return { ...base, state: 'running', steps: prev?.steps ?? [] }; // back to thinking
     case 'Notification':
       return { ...base, state: 'waiting', steps, detail: `${prev?.detail ? `${prev.detail}\n` : ''}Waiting for you: ${redact(ev.message ?? 'needs your input', 160)}`.slice(-2000) };
     case 'Stop':
-      return { ...base, state: 'done', steps, finishedAt: undefined };
+      return { ...base, kind: 'claude', state: 'done', steps, finishedAt: undefined };
     case 'SessionEnd':
-      return { ...base, state: 'done', steps, finishedAt: undefined };
+      return { ...base, kind: 'claude', state: 'done', steps, finishedAt: undefined };
     default:
       return null;
   }
@@ -134,12 +175,14 @@ async function hook() {
     if (ev.hook_event_name !== 'UserPromptSubmit' && !prev) return; // only sessions that asked something show up
     const patch = hookPatch(ev, prev);
     if (patch) write(patch);
+    const child = hookChild(ev);
+    if (child) write(child);
   } catch { /* never get in Claude Code's way */ }
 }
 
 /* ---------------- installing the hook ---------------- */
 
-const HOOK_EVENTS = ['UserPromptSubmit', 'PreToolUse', 'Notification', 'Stop', 'SessionEnd'];
+const HOOK_EVENTS = ['UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'Notification', 'Stop', 'SessionEnd'];
 const settingsFile = (args) => args.settings || join(homedir(), '.claude', 'settings.json');
 const isOurs = (e) => (e?.hooks ?? []).some((h) => typeof h?.command === 'string' && MARK.test(h.command));
 function readJson(p) { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } }
@@ -159,7 +202,7 @@ export function withOurHooks(s, script) {
   const out = withoutOurHooks(s);
   out.hooks ??= {};
   const command = `node "${script}" hook`;
-  for (const ev of HOOK_EVENTS) out.hooks[ev] = [...(out.hooks[ev] ?? []), { ...(ev === 'PreToolUse' ? { matcher: '*' } : {}), hooks: [{ type: 'command', command, timeout: 5 }] }];
+  for (const ev of HOOK_EVENTS) out.hooks[ev] = [...(out.hooks[ev] ?? []), { ...(ev === 'PreToolUse' || ev === 'PostToolUse' ? { matcher: '*' } : {}), hooks: [{ type: 'command', command, timeout: 5 }] }];
   return out;
 }
 export function hooksInstalled(file) { const s = readJson(file); return !!s?.hooks && Object.values(s.hooks).some((l) => Array.isArray(l) && l.some(isOurs)); }

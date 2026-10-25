@@ -124,5 +124,24 @@ eq(statusNote('ok', ''), '', 'nothing to say when it worked');
   }
 }
 
+// Its own chrome: banner, toolbar, context menu, navigation menu and application menu are all picked in the manifest
+// and ship with the app. It runs inside Patches, so it installs only what it needs (no plugin shared with the
+// console or Pilot).
+{
+  const { readFileSync, existsSync } = await import('node:fs');
+  const here = new URL('.', import.meta.url).pathname;
+  const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
+  const own = { banner: 'amberx-thin', toolbar: 'axhub-web', 'context-menu': 'axhub-web', 'nav-menu': 'axhub-web', 'app-menu': 'axhub-web' };
+  for (const [type, id] of Object.entries(own)) {
+    eq(man.defaults[type], id, `default ${type} is ${id}`);
+    ok(existsSync(`${here}src/assets/${type}/${id}.json`), `ships ${type}/${id}`);
+    ok(!(man.hidden ?? []).includes(type), `${type} is not hidden`);
+  }
+  const app = readFileSync(`${here}src/App.tsx`, 'utf8');
+  const libs = [...app.matchAll(/from '\.\/axf\/libs\/([a-z-]+)/g)].map((m) => m[1]).sort();
+  for (const l of libs) ok(['hub', 'hubsync', 'settings'].includes(l), `library ${l} is one it needs`);
+  ok(!/plugins\//.test(app), 'no console plugin is imported');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

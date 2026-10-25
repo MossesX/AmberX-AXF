@@ -3,25 +3,26 @@ import { AppShell, SlotsProvider, installLibraries, useRuntime, type ViewMap } f
 import { library as settingsLibrary } from './axf/libs/settings';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
-import { AppTab, CombinedSettings, patchesLibrary, useAppMessages, useTabs } from './patchesLibrary';
+import { AppTab, patchesLibrary, useAppMessages, useTabs } from './patchesLibrary';
+import { appPluginsLibrary } from './appPlugins';
 import { DEFAULT_TABS, tabIcon, tabKey, tabLabel, tabViewId, type TabEntry } from './patches';
 
 /** The access policy a signed-in hub account is bound to (framework starter uac-policy/hub-accounts). */
 export const POLICY = 'hub-accounts';
 
 /**
- * Patches' views: one per tab (frames, kept alive: switching tabs never reloads an app) and the combined Settings
- * (Patches · Banners · Console · Pilot · axHub). The tabs are the tab group (Settings → Patches → Tabs: apps and tabable
+ * Patches' views: one per tab (frames, kept alive: switching tabs never reloads an app) and Patches' own Settings (only
+ * Patches' settings; every app in a tab keeps its own settings interface, Brett Oct 24 2026). The tabs are the tab group (Settings → Patches → Tabs: apps and tabable
  * plugins, kept on Patches' server); every app keeps a view even when it isn't a tab, so links to it still work.
  */
-const settingsView = { title: 'Settings', icon: 'settings', keywords: ['patches', 'console', 'pilot', 'axhub', 'preferences', 'tabs'], render: () => <CombinedSettings /> };
+const settingsView = { title: 'Settings', icon: 'settings', keywords: ['patches', 'preferences', 'tabs'], render: () => settingsLibrary.views?.settings?.render?.() ?? null };
 function tabViews(tabs: readonly TabEntry[]): ViewMap {
   const entries: TabEntry[] = [...tabs, ...DEFAULT_TABS.filter((d) => !tabs.some((e) => tabKey(e) === tabKey(d)))];
   return { ...Object.fromEntries(entries.map((e) => [tabViewId(e), { title: tabLabel(e), icon: tabIcon(e), render: () => <AppTab entry={e} /> }])), settings: settingsView };
 }
 
-/** lib-settings (its view is Patches' tab of the combined settings) + Patches itself (installed last: its hooks win). */
-const libraries = [settingsLibrary, patchesLibrary];
+/** lib-settings (Patches' own settings), Plugins per app, then Patches itself (installed last: its hooks win). */
+const libraries = [settingsLibrary, appPluginsLibrary, patchesLibrary];
 
 export function App() {
   const rt = useRuntime();

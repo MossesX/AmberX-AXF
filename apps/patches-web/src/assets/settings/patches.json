@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "patches",
+  "name": "Patches",
+  "version": "1.0.0",
+  "description": "Patches' own settings interface: only Patches' settings (the apps in its tabs keep their own).",
+  "author": "AmberX AXF",
+  "tags": [
+    "patches"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "full",
+    "search": false,
+    "descriptions": true
+  }
+}

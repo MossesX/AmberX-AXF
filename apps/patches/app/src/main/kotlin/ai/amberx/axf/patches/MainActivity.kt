@@ -29,7 +29,7 @@ class MainActivity : AxfActivity() {
      * settings and notifications over (`AXF-Embed-Take/settings+notifications`): their own settings hooks disappear, and
      * what they ask for arrives here (the combined settings, the phone's notifications).
      */
-    private val holder: WebAppHolder by lazy { WebAppHolder("patches", takes = AppModule.TAKES) }
+    private val holder: WebAppHolder by lazy { WebAppHolder("patches", takes = AppModule.TAKES, marker = false) }
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +72,6 @@ class MainActivity : AxfActivity() {
         module.sendToTab = { tab, json -> holder.send(tab, json) }
         val views = mutableMapOf<String, @Composable () -> Unit>("plugin-manager" to { PluginManagerScreen() })
         for (t in AppModule.TABS) views[t.id] = { TabView(holder, module, t.id) }
-        // The combined settings (Patches · Console · Pilot · axHub) replaces the settings screen lib-settings registers.
-        views["settings"] = { ai.amberx.axf.patches.views.CombinedSettings(holder, module) }
         // The column takes the status bar, so AppShell's own status-bar padding (same insets, now consumed) adds nothing.
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars)) {
             BannerStrip(holder, module)

@@ -27,6 +27,7 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `feature-assist` — plain-English features in the Plan view (AXF expert drafts entries, you approve; plan + pending list) and Build with Mosses on unbuilt features (plan, new build order, model choice incl. Opus now + Fable later, then Mosses builds in the assistant chat); settings tab "Feature assistant". <!-- axf-plugin:feature-assist -->
 - `theme-manager` — roll colour/style/layout themes with a token tree (tri-state ticks, locks, presets), live preview, undo/redo, pins, hand edits; save rolls as asset@1 themes and manage them; settings tab "Themes". <!-- axf-plugin:theme-manager -->
 - `claude-badge` — tests the AI connection on every load and attaches a Claude badge asset to the banner (green "Powered by <model>" pop-out, or grey "AI unavailable"); settings tab "Claude badge". <!-- axf-plugin:claude-badge -->
+- `ai-keys` — dialog keeping several Anthropic API keys and Claude subscription tokens (each tested before it's saved, stored 0600, never sent to a browser) and picking the active one of each kind; the AI assistant uses the active key through `axf.ai-keys@1`; settings tab "AI keys". <!-- axf-plugin:ai-keys -->
 - `main-build-status` — a `status` widget on the banner (right, next to the clock) with the last CI result of a branch (default AmberX-AXF · main · android.yml): green “main ✓ 2m ago”, red ✗, accent ⟳ while it runs, grey ? when unknown; tap for the run (title, commit, time, failed jobs, Open on GitHub); repo/branch/workflow are an open list in its settings tab "Main build status"; server `GET /status` (30 s cache, lib-github, token never leaves the server); self-test `test.py`. <!-- axf-plugin:main-build-status -->
 - **Inside a host (Patches):** a plugin whose job the host does, or that only draws on chrome the host hides, declares it in its web library (`embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }`); it then isn't loaded on that page and is logged at launch (Settings → Plugins lists it). Standalone it loads as usual.
 - `push-banner` — a banner (order 4.8) listing every branch not on main in AmberX-AXF, axHub and Build-Pilot (ahead/behind, age, last commit, its open PR + CI) with **Open PR**, **Merge** (tap twice; only when CI passed, re-checked on the server, head commit pinned, merge commit) and ✕ hide (every device); main is never pushed to directly; shown in Patches through the banner strip; server `GET /branches` (2 min cache), `POST /pr`, `POST /merge`, `GET/PUT /config` (repos, hidden), lib-github; self-test `test.py`. <!-- axf-plugin:push-banner -->
@@ -36,6 +37,8 @@ Claude project with its homes on GitHub / the VPS / a local git folder and a Cla
 - `codebase-changes` — every request to build, edit, remove or fix something as an entry (change-log@1: what was asked, steps, result) opened by a Claude Code hook (`changes.mjs hooks install`) and filled in by Claude; a banner on every load until each entry is closed (closed everywhere), the permanent log under Builds → Codebase changes, stored on axHub (`/projects/amberx-axf/_data/changes`, never deleted by uninstall); entries carry build stats (estimate, actual tokens + cost, status, heartbeat, surface, host, areas) and are written from any machine straight to axHub; `backfill.mjs` records what was built before; provides `axf.changes@1`; settings tab "Codebase changes"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:codebase-changes -->
 - `claude-handoff` — Tools → Claude handoff: builds and keeps current `_claude/handoff/` (everything a new Claude account needs: reading order, claude.ai Project instructions + knowledge, each machine's `~/.claude` copies, claude.ai-only items, secret names) and assembles the one prompt that moves the project to a new account; publishes the kit to GitHub; reminds every 6 h with one banner + one alert (fixed key, overwritten); `handoff.mjs collect` / `hooks install` on each machine; opens the console's **Tools** menu; Tools → Installer preview (runs with example data) and Installer look… (layouts, gauge/meter styles, light/dark themes, roll with a token tree; saved on axHub); settings tab "Claude handoff"; self-test `test.py` + `test.mjs`. <!-- axf-plugin:claude-handoff -->
 - `todo-manager` — Todos (ported from xGallery's developer task manager): lists with nested groups holding notes, to-dos and tasks (subtasks, checklists, tags, due dates, custom fields per kind), a tree (by lists, kind, status, priority, tag or due date) or a grid, group actions (done, status, move, duplicate, delete), Markdown export; what each kind must / may hold is set in its settings tab "Todo manager"; data `.axf-console/plugins/todo-manager/store.json` (todo-store@1); **tabable** (Patches can give it a tab); self-test `test.py`. <!-- axf-plugin:todo-manager -->
+- `voice-notes` — only a settings interface (Settings → Plugins → Voice notes) for a voice-activated notes pusher: start / stop / list-of-lists / cancel triggers (typed or recorded), beep, recording limits, the "where should I store it" prompt, numbered lists with subcategories and question sets opened by a number or a recorded trigger, and a conversation preview. Settings and lists live on axHub through lib-hubstore (`settings/voice-notes.json`, table `voice-notes/lists` in the amberx-axf hub project), nothing on the console server or in the browser; the listener is a placeholder; self-test `test.py`. <!-- axf-plugin:voice-notes -->
+- `hub-sync` — Settings → Plugins → axHub sync: the framework's lib-hubsync with the lifecycle panel. Connect to axHub (address, project, test, sign in), choose what syncs (look always / follow / off, settings, data all or some tables), status. The console already takes its look from axHub, so here it adds its settings (`shared/settings/apps/<app>.json`) and data. Web-only, no server part; self-test `test.py`. <!-- axf-plugin:hub-sync -->
 - `plugin-switches` — a pop-up dialog listing every plugin with an on/off switch; its own switch is greyed out; asks before switching off a plugin a running plugin needs; opened from the default context menu, action `plugin-switches.open`, search, or its settings tab "Plugin switches". <!-- axf-plugin:plugin-switches -->
 
 WebSockets in a plugin: get a one-time ticket from `POST /api/ws-ticket` (`{"path": "/api/plugins/<folder>/…"}`, 30 s, single use) and connect with `?ticket=` (the console token never goes in a URL). Banners: `AxfWebLibrary.banners`. Items on every context menu: `rt.contextExtras.set('*:<owner>', (target, payload) => [...])`. Boxes inside a view: `AxfWebLibrary.slots` (`<Slot name=… />`, e.g. the Plan view's `plan.top` / `plan.feature`). Start an assistant chat from anywhere: action `ai.chat.start:<uri-encoded JSON {agentId, message, title, profileId?, model?}>`.
@@ -54,6 +57,17 @@ view page (`?axf-embed-page=view:<id>`: only that page, no chrome, settings stil
 tabable ones in Settings → Patches → Tabs → **Add tab…**. Checked by `node framework/cli/plugins.mjs --check` (CI) and
 the console's plugin loader (a wrong `tabable` is reported as the plugin's error).
 
+## Plugins with a banner (plugin@1 `banner`, Oct 23 2026)
+
+Every plugin.json says whether the plugin includes a banner (the live banners above every page): `"banner": false`, or
+the ids of the banners its web library contributes (`"banner": ["my-banner"]`). `node framework/cli/plugins.mjs --check`
+(CI) checks the list against the plugin's `banners: [...]` in `web/`, and the console loader refuses a wrong value.
+Every declared banner gets the shared banner settings in its tab of Settings → Plugins → Banners (and Banner settings,
+and Patches' Banners tab): **Hide** (the banner is hidden but stays mounted, so the plugin keeps working and its
+activity is still logged to the terminal), **Hide all banners** under it (tooltip lists every banner it hides) and
+**Hide for … minutes** (a hide lasts that long, then the banner shows again). One state for every interface; the last
+change wins.
+
 ## Sharing and installing (plugin-catalog@1)
 
 The plugin catalog on axHub (`/projects/_shared/_data/plugin-catalog`) holds plugins other consoles and apps can install.
@@ -64,6 +78,21 @@ the console rebuilds with it). From a terminal: `node framework/cli/plugin-catal
 version never changes: raise `version` in plugin.json to publish new code. Keep everything a plugin needs inside its
 folder, as the lifecycle rules already require, and it installs cleanly anywhere.
 
+
+## Who built it, where it opens, one instance (plugin@1 `builtWith`, `opens`; Oct 23 2026)
+
+Every plugin.json says which model built it: `"builtWith": { "model": "opus", "builtAt": "2026-10-23" }` (fable, opus,
+sonnet, haiku; optional `rebuildOf`, `replaces`, `branch`). The build engine requires it (build-defaults@1 rules in
+`framework/schemas/build-defaults.json`, applied by `framework/cli/build-defaults.mjs` at install, catalog pack/install,
+`plugins.mjs --check` and the console loader) and fills `opens` (`"main"` for a plugin with a view or dialog, `false`
+without one). Users pick where a plugin opens in its settings (**Opens in**: main area, floating window, dialog, tab
+group). A model badge shows wherever plugin info appears. Only **one instance** of a plugin is ever installed: the same
+id, a `builtWith.replaces` link, the same folder once `-fable`/`-opus`/`-plugin` is taken off, or the same name is the
+same plugin, and a second one is refused (`framework/cli/plugin-instances.mjs`). A build by another model replaces the
+installed one in place: **Plugin Update** → Replace (`plugin-catalog.mjs swap <folder>`). New plugins from `_template`
+fill in `builtWith` before they install.
+
+**Plugins menu** (right-click → Plugins): Install… browses every archive location (axHub is permanent and needs its token; add folders, https servers or other consoles with their credentials, kept on the console server only) and installs through `plugin-catalog.mjs install-package`; Settings… is one browser over every plugin's settings tab. <!-- axf-plugin:plugins-menu -->
 
 ## Lifecycle (plugin-lifecycle@1) — every new plugin follows this
 

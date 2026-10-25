@@ -117,7 +117,7 @@ public fun WebAppView(
                         setGeolocationEnabled(false)
                         cacheMode = WebSettings.LOAD_DEFAULT
                         mediaPlaybackRequiresUserGesture = true
-                        userAgentString = userAgentString + " " + holder.userAgentSuffix
+                        if (holder.userAgentSuffix.isNotEmpty()) userAgentString = userAgentString + " " + holder.userAgentSuffix
                     }
                     CookieManager.getInstance().setAcceptCookie(true)
                     CookieManager.getInstance().setAcceptThirdPartyCookies(v, false)
@@ -235,9 +235,11 @@ public class WebAppHolder(
     types: AssetTypeRegistry = AssetTypeRegistry.builtin(),
     /** app functions the host takes over from the apps (embed@1 `takes`: `settings`, `notifications`) */
     takes: List<String> = emptyList(),
+    /** false = no embed marker at all: the apps render whole, exactly as on their own (Patches, Brett Oct 24 2026) */
+    marker: Boolean = true,
 ) {
-    /** `AXF-Embed/<host>[/<types>]` (+ ` AXF-Embed-Take/<fn>+<fn>`), appended to each view's user agent. */
-    public val userAgentSuffix: String = EmbedTakes.userAgentSuffix(types, host, hide, takes)
+    /** `AXF-Embed/<host>[/<types>]` (+ ` AXF-Embed-Take/<fn>+<fn>`), appended to each view's user agent; empty without [marker]. */
+    public val userAgentSuffix: String = if (marker) EmbedTakes.userAgentSuffix(types, host, hide, takes) else ""
     private val entries = LinkedHashMap<String, WebAppEntry>()
     private val _tabs = MutableStateFlow<List<String>>(emptyList())
     /** Tabs that have a live web view (in the order they were first shown). */

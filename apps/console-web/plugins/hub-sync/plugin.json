@@ -1,0 +1,25 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.hub-sync",
+  "name": "axHub sync",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Keeps the console's look, settings and (if picked) data on axHub, so every app and device matches: same colour theme, layout and settings on web, Android and everywhere else. Built on the framework library lib-hubsync (framework/libs/hubsync). Settings → Plugins → axHub sync: connect to axHub (address, project, test, sign in), choose what syncs (look always / follow / off, settings, data all or some tables), status. The console already takes its look from axHub, so here it adds the settings and data.",
+  "targets": ["axf-console"],
+  "provides": ["settings-tab:hubsync"],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "builtWith": { "model": "opus", "builtAt": "2026-10-24" },
+  "tabable": false,
+  "banner": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/hub-sync",
+    "env": [],
+    "mentions": ["CLAUDE.md", "apps/console-web/plugins/README.md"]
+  },
+  "opens": false
+}

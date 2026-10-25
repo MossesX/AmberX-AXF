@@ -126,5 +126,38 @@ throws('symlinked plugin folder not touched', () => cat.unpack(pkg, linkPlugins,
 // the console route copies (bundled) is checked in server tests; the server must skip dot folders while installing
 check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(readFileSync(join(REPO, 'apps/console-web/server/main.py'), 'utf8')));
 
+
+// axhub kind (axHub web plugins): web files only, installed into the app folder in this repo (app-install/app-uninstall)
+{
+  const asrc = join(tmp, 'src', 'hub-hello');
+  mkdirSync(join(asrc, 'web'), { recursive: true });
+  const am = { $axf: 'axhub-plugin@1', id: 'ai.amberx.axhub.hub-hello', name: 'Hub hello', version: '0.1.0', builtWith: { model: 'opus' } };
+  writeFileSync(join(asrc, 'plugin.json'), JSON.stringify(am));
+  writeFileSync(join(asrc, 'web/index.tsx'), 'export const library = { id: "ai.amberx.axhub.hub-hello" };');
+  writeFileSync(join(asrc, 'server.py'), 'print(1)');
+  const ap = cat.pack(asrc, 'axhub');
+  check('axhub pack keeps only web files', ap.files.map((f) => f.path).sort().join(',') === 'plugin.json,web/index.tsx');
+  throws('axhub package with a server file refused', () => cat.verifyPackage({ ...ap, files: [...ap.files, { path: 'server.py', b64: '' }] }), /may only carry/);
+  throws('axhub package needs axhub-plugin@1', () => cat.pack(src, 'axhub'), /axhub-plugin@1/);
+  check('axhub published', cat.publishPackage(ap).published === true);
+  throws('app folder missing in the clone', () => cat.listAppPlugins('axhub'), /missing/);
+  throws('console kind has no app folder', () => cat.appPluginsDir('console'), /don't install into an app/);
+  mkdirSync(join(root, 'apps/axhub-web/src/plugins/_template'), { recursive: true });
+  writeFileSync(join(root, 'apps/axhub-web/src/plugins/_template/plugin.json'), JSON.stringify({ ...am, id: 'ai.amberx.axhub.example' }));
+  check('nothing installed yet (template skipped)', cat.listAppPlugins('axhub').items.length === 0);
+  const r = await cat.installAppPlugin('axhub', 'hub-hello');
+  check('app-install unpacks into the app folder', r.dir === 'apps/axhub-web/src/plugins/hub-hello' && existsSync(join(root, r.dir, 'web/index.tsx')));
+  const li = cat.listAppPlugins('axhub').items;
+  check('app-list lists it with its model', li.length === 1 && li[0].id === am.id && li[0].builtWith?.model === 'opus');
+  let again = null; try { await cat.installAppPlugin('axhub', 'hub-hello'); } catch (e) { again = e; }
+  check('second install refused without update', /already installed/.test(again?.message ?? ''));
+  mkdirSync(join(root, 'apps/axhub-web/src/plugins/not-a-plugin'));
+  let nap = null; try { await cat.uninstallAppPlugin('axhub', 'not-a-plugin'); } catch (e) { nap = e; }
+  check('uninstall refuses a folder without an axhub plugin', /doesn't hold/.test(nap?.message ?? '') && existsSync(join(root, 'apps/axhub-web/src/plugins/not-a-plugin')));
+  const u = await cat.uninstallAppPlugin('axhub', 'hub-hello');
+  check('app-uninstall removes it', u.removed === 'hub-hello' && !existsSync(join(root, 'apps/axhub-web/src/plugins/hub-hello')));
+  check('the repo kind registry has axhub', cat.KINDS.axhub?.into === 'apps/axhub-web/src/plugins');
+}
+
 console.log(`plugin catalog: ${ok} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
