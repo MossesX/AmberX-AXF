@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.voice",
+  "name": "Voice control",
+  "version": "0.1.0",
+  "description": "Talk to AmberX: a wake phrase, a command list that maps what you say to app actions, spoken replies.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
+}

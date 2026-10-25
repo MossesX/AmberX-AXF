@@ -1,0 +1,101 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "amberx-droid",
+  "name": "AmberX",
+  "version": "1.0.0",
+  "description": "The hub's shortcuts with the live search box (finds any page, action, setting or word as you type), the same shape as the Dev Console's toolbar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "search",
+    "axhub",
+    "live"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search AmberX…  (Ctrl K)",
+      "maxResults": 14
+    },
+    "groups": [
+      {
+        "id": "go",
+        "items": [
+          {
+            "id": "voice",
+            "icon": "mic",
+            "label": "Speak a command",
+            "action": "voice.listen"
+          },
+          {
+            "id": "home",
+            "icon": "shield",
+            "label": "Approvals",
+            "action": "nav:home",
+            "badge": "approvals.waiting"
+          },
+          {
+            "id": "hub",
+            "icon": "external",
+            "label": "Hub",
+            "action": "nav:hub"
+          },
+          {
+            "id": "apps",
+            "icon": "download",
+            "label": "Apps",
+            "action": "nav:apps"
+          }
+        ]
+      },
+      {
+        "id": "hub",
+        "items": [
+          {
+            "id": "check",
+            "icon": "refresh",
+            "label": "Check the hub now",
+            "action": "axhub.check"
+          },
+          {
+            "id": "open",
+            "icon": "external",
+            "label": "Approvals on the hub",
+            "action": "hub.open:approvals"
+          }
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          {
+            "id": "color",
+            "icon": "palette",
+            "label": "Next color theme",
+            "action": "swap:color-theme:next"
+          },
+          {
+            "id": "layout",
+            "icon": "layout",
+            "label": "Next layout",
+            "action": "swap:layout:next"
+          }
+        ]
+      },
+      {
+        "id": "tools",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ]
+  }
+}

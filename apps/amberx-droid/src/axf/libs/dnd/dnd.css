@@ -1,0 +1,19 @@
+/* lib-dnd — theme tokens only (framework/spec/THEMING.md) */
+.axf-dnd-grip { display: inline-flex; align-items: center; touch-action: none; cursor: grab; color: var(--fx-muted); }
+body.axf-dnd-dragging, body.axf-dnd-dragging * { cursor: grabbing !important; user-select: none; }
+[data-axf-over] { position: relative; }
+[data-axf-over='before']::before, [data-axf-over='after']::after { content: ''; position: absolute; left: 0; right: 0; height: calc(var(--fx-border-w) * 2); background: var(--fx-accent); pointer-events: none; z-index: 2; }
+[data-axf-over='before']::before { top: 0; }
+[data-axf-over='after']::after { bottom: 0; }
+[data-axf-over='inside'] { box-shadow: inset 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-accent); }
+.axf-dnd-ghost { position: fixed; z-index: 90; pointer-events: none; display: inline-flex; align-items: center; gap: calc(var(--fx-space) * 0.5); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); border: var(--fx-border-w) solid var(--fx-accent); box-shadow: var(--fx-shadow-md); max-width: calc(var(--fx-space) * 40); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.axf-dnd-trash {
+  position: fixed; left: 50%; z-index: 89; transform: translateX(-50%);
+  display: flex; align-items: center; gap: var(--fx-space); padding: calc(var(--fx-space) * 1.5) calc(var(--fx-space) * 3);
+  border-radius: 999px; background: var(--fx-surface); color: var(--fx-danger); border: calc(var(--fx-border-w) * 2) dashed var(--fx-danger);
+  box-shadow: var(--fx-shadow-lg); animation: axf-dnd-pop calc(var(--fx-motion) * 1.5) cubic-bezier(.2, 1.6, .4, 1) both;
+}
+.axf-dnd-trash--bottom { bottom: calc(var(--fx-space) * 3); }
+.axf-dnd-trash--top { top: calc(var(--fx-space) * 3); }
+.axf-dnd-trash.is-over { background: var(--fx-danger); color: var(--fx-accent-text); border-style: solid; transform: translateX(-50%) scale(1.12); }
+@keyframes axf-dnd-pop { from { transform: translateX(-50%) translateY(140%) scale(0.6); opacity: 0; } }

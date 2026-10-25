@@ -1,6 +1,5 @@
 # Console plugins
 
-Page-level slots (React shell), top to bottom: the banner asset, `app.frame.head` (the app-tabs plugin's tab bar, above the application menu; empty when the console runs inside a host app such as Patches), the application menu bar, `app.frame.banners` (every `AxfWebLibrary.banners` entry lands here in the console, so banners sit above the app tabs and stay visible while another app is open), `app.frame.top` (a page-wide bar under the banners), the layout, then `app.frame.cover` after the shell (the app frames, starting where the page starts, under the menu bar and banners: `--axp-app-tabs-bottom`). <!-- axf-plugin:app-tabs -->
 A plugin adds tabs (views, a nav section, dialogs, actions) and, optionally, server routes to the AXF Dev
 Console. Each plugin is one folder here. Folders starting with `_` are templates and never load.
 

@@ -3377,6 +3377,56 @@
    "source": "chat"
   },
   {
+   "id": "amberx-droid",
+   "title": "AmberX: voice + background monitoring Android app (replaces AXHub app)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
+     "at": "2026-10-25T16:17:42.692Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "App base on the console look (banner, nav, toolbar, menus)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Plugin host, catalog kind amberx",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub app functions through lib-hub + native hub view",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Voice control plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Background monitoring plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Capacitor Android shell: watch service, native speech, auto-approve",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T16:17:42.679Z",
+   "builtAt": "2026-10-25T16:17:42.679Z",
+   "updatedAt": "2026-10-25T16:17:42.692Z",
+   "estimate": "9 h",
+   "source": "chat"
+  },
+  {
    "id": "context-menu-designer",
    "title": "Context menu designer plugin: menus, chunks (own or inherited styles), floating live preview",
    "detail": "Console plugin apps/console-web/plugins/context-menu-designer: create, edit, name, rename, save context menus; chunks inserted by name (separators, nested chunks), own or inherited style; floating live preview. Built on branch claude/project-thread-jflo9d.",

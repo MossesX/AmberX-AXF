@@ -1446,7 +1446,10 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
 # ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
 # rebuilds with it. Patches' Plugins per app calls these server to server. Console token; never on MCP.
-_APP_PLUGIN_KINDS = {"axhub"}
+_APP_PLUGIN_KINDS = {"axhub", "amberx"}
+# What happens once the change is on GitHub. AmberX is an APK: CI builds it and the app catalog offers the new build.
+_APP_PLUGIN_AFTER = {"amberx": ("CI builds a new AmberX APK with it; the app catalog offers it after that run.",
+                                "CI builds a new AmberX APK without it; the app catalog offers it after that run.")}
 
 
 def _app_kind(kind: str) -> None:
@@ -1479,7 +1482,8 @@ def _app_plugin_change(kind: str, body: dict[str, Any], install: bool) -> dict[s
         out = _catalog(args, timeout=600)
         log("plugins", f"{kind}/{folder} {'installed' if install else 'removed'} for its app ({out.get('dir')})")
         pushed = bool((out.get("published") or {}).get("pushed"))
-        out["note"] = (("Committed to GitHub: the app rebuilds with it within about 5 minutes." if install else "Removed on GitHub: the app rebuilds without it within about 5 minutes.") if pushed
+        after = _APP_PLUGIN_AFTER.get(kind, ("the app rebuilds with it within about 5 minutes.", "the app rebuilds without it within about 5 minutes."))
+        out["note"] = ((f"Committed to GitHub: {after[0]}" if install else f"Removed on GitHub: {after[1]}") if pushed
                        else "GitHub already had it that way." if publish
                        else "Changed in this clone only (no GITHUB_TOKEN): the app on the server won't change until it reaches GitHub.")
         return out
