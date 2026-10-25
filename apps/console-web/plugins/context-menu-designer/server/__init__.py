@@ -103,7 +103,7 @@ def clean_entries(raw: Any, depth: int = 1) -> list[dict[str, Any]]:
             out.append({"kind": "chunk", "id": eid, "chunk": ref})
         else:
             it: dict[str, Any] = {"kind": "item", "id": eid, "label": _s(e.get("label"), 80)}
-            for k, n in (("icon", 40), ("action", 200), ("shortcut", 40)):
+            for k, n in (("icon", 40), ("action", 200), ("shortcut", 40), ("provider", 80)):
                 if _s(e.get(k), n):
                     it[k] = _s(e.get(k), n)
             if isinstance(e.get("items"), list) and e["items"]:
@@ -133,6 +133,7 @@ def clean(raw: Any, did: str) -> dict[str, Any]:
         "variant": raw.get("variant") if raw.get("variant") in VARIANTS else "compact",
         "showIcons": raw.get("showIcons") is not False,
         "showShortcuts": raw.get("showShortcuts") is not False,
+        "contributions": raw.get("contributions") is not False,
         "base": _s(raw.get("base"), 80),
         "updatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
