@@ -1,0 +1,8 @@
+{
+  "$axf": "amberx-plugin@1",
+  "id": "ai.amberx.amberx.example",
+  "name": "Example",
+  "version": "0.1.0",
+  "description": "Starting point for an AmberX plugin.",
+  "builtWith": { "model": "opus", "builtAt": "2026-10-25" }
+}

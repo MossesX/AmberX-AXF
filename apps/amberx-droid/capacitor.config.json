@@ -1,0 +1,12 @@
+{
+  "appId": "ai.amberx.droid",
+  "appName": "AmberX",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

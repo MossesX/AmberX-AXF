@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AmberX</string>
+    <string name="title_activity_main">AmberX</string>
+    <string name="package_name">ai.amberx.droid</string>
+    <string name="custom_url_scheme">ai.amberx.droid</string>
+</resources>
