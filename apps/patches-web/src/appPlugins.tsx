@@ -1,8 +1,9 @@
 /**
  * Plugins per app (patches-app-plugins@1): one grid, a row per plugin Patches knows and a column per app in its tabs,
  * a tick box in each cell = installed in that app or not. **Apply** installs or uninstalls each changed box in the app
- * itself (server/app_plugins.py: the Console through its plugin catalog + lifecycle routes; apps Patches can't install
- * into yet show their column read-only, with why). Gizmo, Oct 24 2026.
+ * itself (server/app_plugins.py: the Console through its plugin catalog + lifecycle routes, Pilot through its own
+ * plugin-catalog routes, axHub's web plugins through the Console, which commits them for axhub-web; an app Patches can't
+ * reach shows its column read-only, and a locked box says why, e.g. a plugin bundled with Pilot). Gizmo, Oct 24–25 2026.
  */
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Checkbox, Icon, ModelBadge, Note, useRuntime, type AxfWebLibrary } from './axf/react';

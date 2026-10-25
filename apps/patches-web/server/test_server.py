@@ -153,6 +153,7 @@ import app_plugins  # noqa: E402
 
 FAKE = {"installed": {"alpha": "ai.amberx.axf.console.alpha"}, "calls": [], "fail": set()}
 CATALOG = {"alpha": "ai.amberx.axf.console.alpha", "beta": "ai.amberx.axf.console.beta"}
+HUBP = {"installed": {}, "catalog": {"hub-hi": "ai.amberx.axhub.hub-hi"}}
 
 
 class FakeConsole(http.server.BaseHTTPRequestHandler):
@@ -180,6 +181,10 @@ class FakeConsole(http.server.BaseHTTPRequestHandler):
             items = [{"folder": f, "id": i, "name": f.title(), "version": "0.1.0", "enabled": True, "builtWith": {"model": "opus"}} for f, i in FAKE["installed"].items()]
             items.append({"folder": "gone", "id": "ai.amberx.axf.console.gone", "name": "Gone", "version": "1", "removed": True})
             return self._send(200, {"items": items})
+        if self.path == "/api/app-plugins/axhub":
+            return self._send(200, {"kind": "axhub", "items": [{"folder": f, "id": i, "name": "Hub hi", "version": "0.1.0", "builtWith": {"model": "opus"}} for f, i in HUBP["installed"].items()]})
+        if self.path == "/api/plugin-catalog?kind=axhub":
+            return self._send(200, {"items": [{"kind": "axhub", "folder": f, "id": i, "name": "Hub hi", "version": "0.1.0"} for f, i in HUBP["catalog"].items()]})
         if self.path.startswith("/api/plugin-catalog"):
             return self._send(200, {"items": [{"kind": "console", "folder": f, "id": i, "name": f.title(), "version": "0.2.0", "builtWith": {"model": "fable"}} for f, i in CATALOG.items()]})
         if self.path == "/redirect":
@@ -200,6 +205,15 @@ class FakeConsole(http.server.BaseHTTPRequestHandler):
                 return self._send(400, {"detail": f"cannot install {f}"})
             FAKE["installed"][f] = CATALOG[f]
             return self._send(200, {"ok": True, "note": "Committed to GitHub"})
+        if self.path.startswith("/api/app-plugins/axhub/"):
+            f = body.get("folder")
+            if body.get("confirm") != f or f not in HUBP["catalog"]:
+                return self._send(400, {"detail": "bad axhub change"})
+            if self.path.endswith("/install"):
+                HUBP["installed"][f] = HUBP["catalog"][f]
+            else:
+                HUBP["installed"].pop(f, None)
+            return self._send(200, {"note": "Committed to GitHub: the app rebuilds"})
         if self.path.endswith("/uninstall"):
             f = self.path.split("/")[3]
             if body.get("confirm") != f or not body.get("code") or not body.get("publish"):
@@ -208,6 +222,47 @@ class FakeConsole(http.server.BaseHTTPRequestHandler):
             return self._send(200, {"code": True, "published": {"pushed": True}})
         self._send(404, {"detail": "no"})
 
+
+PIL = {"installed": {"pil-extra": {"id": "ai.amberx.pilot.extra", "name": "Extra", "version": "1.0.0"}}, "bundled": {"look": "ai.amberx.pilot.look"},
+       "catalog": {"pil-extra": "ai.amberx.pilot.extra", "pil-new": "ai.amberx.pilot.new"}, "calls": []}
+
+
+class FakePilot(FakeConsole):
+    def _auth(self):
+        if self.headers.get("authorization") != "Bearer pilot-tok":
+            self._send(401, {"detail": "unauthorized"})
+            return False
+        return True
+
+    def do_GET(self):
+        if not self._auth():
+            return
+        if self.path == "/api/plugin-catalog":
+            return self._send(200, {"items": [{"kind": "pilot", "folder": f, "id": i, "name": f, "version": "1.0.0"} for f, i in PIL["catalog"].items()],
+                                    "installed": PIL["installed"], "bundled": PIL["bundled"], "reachable": True, "error": ""})
+        self._send(404, {"detail": "no"})
+
+    def do_POST(self):
+        if not self._auth():
+            return
+        body = _json.loads(self.rfile.read(int(self.headers.get("content-length") or 0)) or b"{}")
+        PIL["calls"].append((self.path, body))
+        f = body.get("folder")
+        if body.get("confirm") != f:
+            return self._send(400, {"detail": "confirm"})
+        if self.path == "/api/plugin-catalog/install":
+            PIL["installed"][f] = {"id": PIL["catalog"][f], "name": f, "version": "1.0.0"}
+            return self._send(200, {"installed": f, "rebuild": True})
+        if self.path == "/api/plugin-catalog/uninstall":
+            PIL["installed"].pop(f, None)
+            return self._send(200, {"removed": f, "rebuild": True})
+        self._send(404, {"detail": "no"})
+
+
+psrv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FakePilot)
+_threading.Thread(target=psrv.serve_forever, daemon=True).start()
+os.environ["APP_PILOT_URL"] = f"http://127.0.0.1:{psrv.server_address[1]}"
+os.environ.pop("APP_PILOT_TOKEN", None)
 
 srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FakeConsole)
 _threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -236,11 +291,13 @@ os.environ["APP_CONSOLE_TOKEN"] = "console-tok"
 g = c.get("/api/app-plugins", headers=TOKEN).json()
 rows = {r["id"]: r for r in g["plugins"]}
 A, B = "ai.amberx.axf.console.alpha", "ai.amberx.axf.console.beta"
-check(set(rows) == {A, B, "pilot.x"}, "grid: rows = Patches' list + installed + catalog, removed plugins left out")
+check({A, B, "pilot.x", "ai.amberx.axhub.hub-hi"} <= set(rows), "grid: rows = Patches' list + installed + catalog, removed plugins left out")
 check(rows[A]["cells"]["console"] == {"installed": True, "canChange": True, "why": ""}, "grid: installed + changeable")
 check(rows[B]["cells"]["console"]["installed"] is False and rows[B]["cells"]["console"]["canChange"], "grid: in the catalog = installable")
 check(rows["pilot.x"]["cells"]["console"]["canChange"] is False and "catalog" in rows["pilot.x"]["cells"]["console"]["why"], "grid: not in the catalog = locked")
-check(rows[A]["cells"]["pilot"]["canChange"] is False and rows[A]["cells"]["axhub"]["installed"] is None, "grid: placeholder apps are read-only")
+check(rows[A]["cells"]["pilot"]["installed"] is None and "APP_PILOT_TOKEN" in rows[A]["cells"]["pilot"]["why"], "grid: no Pilot token = Pilot column read-only, says why")
+check(rows["ai.amberx.axhub.hub-hi"]["cells"]["axhub"] == {"installed": False, "canChange": True, "why": ""}, "grid: axHub column installable through the console")
+check(rows[A]["cells"]["axhub"]["canChange"] is False and "catalog" in rows[A]["cells"]["axhub"]["why"], "grid: a console plugin isn't an axHub plugin")
 check(rows[A]["model"] == "opus" and "_snaps" not in g, "grid: model kept, internals not sent")
 
 check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"changes": [{"app": "console", "id": B, "install": True}]}).status_code == 400, "apply: needs confirm")
@@ -264,5 +321,31 @@ FAKE["fail"].add("alpha")
 c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": A, "install": True}, {"app": "console", "id": B, "install": False}]})
 j = app_plugins.wait()
 check(j["state"] == "partial" and j["items"][0]["state"] == "failed" and "cannot install" in j["items"][0]["note"] and j["items"][1]["state"] == "done", "apply: a failure is noted, the rest still run")
+
+FAKE["fail"].discard("alpha")
+
+# Pilot: real adapter with its token; bundled plugins are locked
+os.environ["APP_PILOT_TOKEN"] = "pilot-tok"
+g = c.get("/api/app-plugins", headers=TOKEN).json()
+rows = {r["id"]: r for r in g["plugins"]}
+pcol = next(a for a in g["apps"] if a["app"] == "pilot")
+check(pcol["reachable"] and pcol["canInstall"], "pilot: reachable and installable with its token")
+check(rows["ai.amberx.pilot.extra"]["cells"]["pilot"] == {"installed": True, "canChange": True, "why": ""}, "pilot: catalog-installed plugin can be removed")
+check(rows["ai.amberx.pilot.look"]["cells"]["pilot"]["installed"] is True and rows["ai.amberx.pilot.look"]["cells"]["pilot"]["canChange"] is False and "bundled" in rows["ai.amberx.pilot.look"]["cells"]["pilot"]["why"], "pilot: bundled plugin locked, says why")
+check(rows["ai.amberx.pilot.new"]["cells"]["pilot"]["installed"] is False and rows["ai.amberx.pilot.new"]["cells"]["pilot"]["canChange"], "pilot: catalog plugin installable")
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False}]}).status_code == 400, "pilot: bundled plugin can't be uninstalled")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [
+    {"app": "pilot", "id": "ai.amberx.pilot.new", "install": True}, {"app": "pilot", "id": "ai.amberx.pilot.extra", "install": False},
+    {"app": "axhub", "id": "ai.amberx.axhub.hub-hi", "install": True}]})
+j = app_plugins.wait()
+check(j["state"] == "done", "apply: pilot + axhub changes done")
+check(set(PIL["installed"]) == {"pil-new"} and ("/api/plugin-catalog/install", {"folder": "pil-new", "confirm": "pil-new"}) in PIL["calls"], "pilot: installed + uninstalled through Pilot's routes")
+check(HUBP["installed"] == {"hub-hi": "ai.amberx.axhub.hub-hi"} and "rebuilds" in j["items"][2]["note"], "axhub: installed through the console, its note kept")
+g = c.get("/api/app-plugins", headers=TOKEN).json()
+rows = {r["id"]: r for r in g["plugins"]}
+check(rows["ai.amberx.axhub.hub-hi"]["cells"]["axhub"]["installed"] is True, "axhub: grid shows it installed")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "axhub", "id": "ai.amberx.axhub.hub-hi", "install": False}]})
+check(app_plugins.wait()["state"] == "done" and not HUBP["installed"], "axhub: uninstalled through the console")
+check(not any("pilot-tok" in str(v) for v in c.get("/api/app-plugins", headers=TOKEN).json().values()), "pilot: token never in the grid")
 
 print(f"server self-test: {passed} checks passed")
