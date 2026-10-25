@@ -56,6 +56,7 @@ KINDS: dict[str, Kind] = {
     "console": Kind("Dev Console plugin", "plugin@1", None),
     "pilot": Kind("Build Pilot plugin", "pilot-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
     "axhub": Kind("axHub web plugin", "axhub-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
+    "amberx": Kind("AmberX plugin", "amberx-plugin@1", re.compile(r"^(plugin\.json|README\.md|web\/.+)\Z"), r"^(plugin\.json|README\.md|web\/.+)$"),
 }
 
 
