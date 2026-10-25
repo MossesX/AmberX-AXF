@@ -26,6 +26,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, us
 import type { AxfRuntime } from '../../core';
 import type { BannerDef, SlotDef } from '../library';
 import type { MenuEntry } from '../../core/engines/windows';
+import { FRAMEWORK_MODULE } from '../../core/engines/actions';
 import type { DialogMap } from './Overlays';
 import { Button } from './Controls';
 import { Checkbox, Section, SelectField, Switch } from './Forms';
@@ -163,6 +164,10 @@ export const bannerLabel = (b: Pick<BannerDef, 'id' | 'label'>) => b.label ?? b.
 function install(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
+  rt.actions.withModule(FRAMEWORK_MODULE, () => installActions(rt));
+}
+
+function installActions(rt: AxfRuntime): void {
   rt.actions.register('banners.settings', ([id], ctx) => {
     const pick = id || (typeof ctx?.payload === 'string' ? ctx.payload : '');
     // Shown as a page on its own (a host's Banners settings tab, embed@1 page `banners`): switch the page's tab instead.

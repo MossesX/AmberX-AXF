@@ -14,7 +14,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -206,7 +206,7 @@ function SettingsInterfacePanel() {
       {options.map((a) => {
         const ui = normalizeSettingsUi(a.data);
         const on = a.id === active;
-        const bits = [SETTINGS_LAYOUT_LABEL[ui.layout] ?? ui.layout, `${ui.header} header`, ui.search ? 'search' : '', ui.descriptions ? 'descriptions' : 'no descriptions'].filter(Boolean).join(' · ');
+        const bits = [SETTINGS_LAYOUT_LABEL[ui.layout] ?? ui.layout, `${ui.header} header`, ui.search ? 'search' : '', ui.descriptions ? 'descriptions' : 'no descriptions', ui.toolbar ? `toolbar: ${rt.registry.list('toolbar').find((x) => x.id === ui.toolbar)?.name ?? `${ui.toolbar} (missing)`}` : ''].filter(Boolean).join(' · ');
         return (
           <div key={a.id} className="axf-settings__row" data-axf-anchor={`settings-ui:${a.id}`}>
             <div className="axf-settings__label">
@@ -361,9 +361,32 @@ function AssetSlotCard({ spec }: { spec: SettingSpec }) {
       <Container collapsible defaultOpen={false} title={assetTypeSpecs[type].label} icon={assetTypeSpecs[type].icon}>
         <div className="axf-settings__rows">
           <SettingRow spec={spec} />
-          {customizable(type) && <AssetInstances type={type} />}
         </div>
       </Container>
+    </div>
+  );
+}
+
+/**
+ * Appearance → Asset appearance: laid out like the Assets section (one collapsible card per slot), holding each
+ * slot's per-asset appearance editors (text, colours, layout, shape, icons, motion, hover, click; core/engines/customize.ts).
+ * Only slots with editable tokens that the app actually shows; a slot the host owns or that is hidden is left out.
+ */
+function AssetAppearancePanel() {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsRevision(rt);
+  const types = ASSET_TYPES.filter((t) => customizable(t) && rt.registry.list(t).length > 0 && !rt.slotOwnedByHost(t) && !rt.slotHiddenOwn(t));
+  if (!types.length) return <p className="fx-muted axf-settings__hint">No asset in this app has appearance settings.</p>;
+  return (
+    <div className="axf-settings__rows">
+      {types.map((t) => (
+        <div key={t} data-axf-anchor={`settings-appearance:${t}`}>
+          <Container collapsible defaultOpen={false} title={assetTypeSpecs[t].label} icon={assetTypeSpecs[t].icon}>
+            <AssetInstances type={t} />
+          </Container>
+        </div>
+      ))}
     </div>
   );
 }
@@ -591,7 +614,11 @@ export function SettingsView() {
   const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
-  const searching = ui.search && query.trim().length > 0;
+  // The page's own toolbar (settings asset `toolbar` = a toolbar asset id); its search spot holds the settings search.
+  const toolbarAsset = ui.toolbar ? rt.registry.list('toolbar').find((a) => a.id === ui.toolbar) : undefined;
+  const toolbarSearch = !!toolbarAsset && (toolbarAsset.data as { showSearch?: boolean }).showSearch === true;
+  const searchOn = ui.search || toolbarSearch;
+  const searching = searchOn && query.trim().length > 0;
   const cls = ['fx-stack', 'fx-stack--lg', 'axf-settings', `axf-settings--${ui.layout}`, ui.descriptions ? '' : 'axf-settings--nodesc'].filter(Boolean).join(' ');
 
   const tabBar = ui.layout === 'list' ? null : (
@@ -637,7 +664,15 @@ export function SettingsView() {
     <div className={cls}>
       {ui.header === 'full' && <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>}
       {ui.header === 'compact' && <h2 className="axf-settings__title">Settings</h2>}
-      {ui.search && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
+      {toolbarAsset && (
+        <AssetToolbar id={toolbarAsset.id} label="Settings toolbar" search={
+          <form className="fx-search" role="search" onSubmit={(e) => e.preventDefault()}>
+            <Icon name="search" size={14} />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search every setting" aria-label="Search settings" />
+          </form>
+        } />
+      )}
+      {ui.search && !toolbarSearch && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
       {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
   );
@@ -778,7 +813,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
     icon: 'palette',
     tab: 'appearance',
     order: 10,
-    description: 'Pick the active asset for each slot, then open any asset to change its text, colours, layout, shape, icons (100 icon sets), motion, hover and click behaviour. Every value follows the theme.',
+    description: 'Pick the active asset for each slot. Change how each one looks in Asset appearance below.',
     settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
       key: `axf.slot.${t}`,
       label: assetTypeSpecs[t].label,
@@ -837,6 +872,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: 'axf.settings-ui', tab: 'appearance', title: 'Settings interface', icon: 'settings', order: 5, render: () => <SettingsInterfacePanel /> },
+    { id: 'axf.asset-appearance', tab: 'appearance', title: 'Asset appearance', icon: 'sliders', order: 11, render: () => <AssetAppearancePanel /> },
     { id: 'axf.roll.assets', tab: 'appearance', title: 'Assets in rolls', icon: 'shuffle', order: 16, render: () => <RollAssetsPanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },

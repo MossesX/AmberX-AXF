@@ -73,6 +73,41 @@
       }
     },
     {
+      "name": "toolbar: a toolbar asset id is kept",
+      "fn": "normalize",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "toolbar": "settings-page"
+      },
+      "expected": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "tabs": [],
+        "hide": [],
+        "groups": [],
+        "toolbar": "settings-page"
+      }
+    },
+    {
+      "name": "toolbar: bad id",
+      "fn": "errors",
+      "input": {
+        "layout": "tabs-top",
+        "header": "full",
+        "search": false,
+        "descriptions": true,
+        "toolbar": "bad id"
+      },
+      "expected": [
+        "data.toolbar must be a toolbar asset id"
+      ]
+    },
+    {
       "name": "bad enums fall back",
       "fn": "normalize",
       "input": {

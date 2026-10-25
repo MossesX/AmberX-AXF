@@ -31,6 +31,9 @@ export interface SettingsUi {
   hide: string[];
   /** data-only option groups the asset brings */
   groups: SettingsUiGroup[];
+  /** id of a toolbar asset drawn at the top of the settings page (its items, and the search field when it has
+   *  `showSearch`); left out = no toolbar */
+  toolbar?: string;
 }
 
 export const SETTINGS_LAYOUTS: readonly SettingsLayout[] = ['tabs-top', 'tabs-side', 'list'];
@@ -132,6 +135,7 @@ export function normalizeSettingsUi(raw: unknown): SettingsUi {
     tabs: uniqueBy((Array.isArray(d.tabs) ? d.tabs : []).map(tabOf).filter((t): t is SettingsUiTab => !!t), (t) => t.id).slice(0, SETTINGS_UI_LIMITS.tabs),
     hide: uniqueBy((Array.isArray(d.hide) ? d.hide : []).map(id).filter((x): x is string => !!x), (x) => x).slice(0, SETTINGS_UI_LIMITS.hide),
     groups: uniqueBy((Array.isArray(d.groups) ? d.groups : []).map(groupOf).filter((g): g is SettingsUiGroup => !!g), (g) => g.id).slice(0, SETTINGS_UI_LIMITS.groups),
+    ...(id(d.toolbar) ? { toolbar: id(d.toolbar)! } : {}),
   };
 }
 
@@ -144,6 +148,7 @@ export function settingsUiErrors(raw: unknown): string[] {
   if ('tabs' in raw && !Array.isArray(raw.tabs)) errors.push('data.tabs must be a list');
   if ('hide' in raw && !Array.isArray(raw.hide)) errors.push('data.hide must be a list');
   if ('groups' in raw && !Array.isArray(raw.groups)) errors.push('data.groups must be a list');
+  if ('toolbar' in raw && !n.toolbar) errors.push('data.toolbar must be a toolbar asset id');
   if (count('tabs') !== n.tabs.length) errors.push(`data.tabs: ${count('tabs') - n.tabs.length} entr${count('tabs') - n.tabs.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.tabs})`);
   if (count('hide') !== n.hide.length) errors.push(`data.hide: ${count('hide') - n.hide.length} entr${count('hide') - n.hide.length === 1 ? 'y' : 'ies'} dropped (bad id, duplicate or over ${SETTINGS_UI_LIMITS.hide})`);
   if (count('groups') !== n.groups.length) errors.push(`data.groups: ${count('groups') - n.groups.length} group(s) dropped (needs id, label, tab and at least one valid setting)`);

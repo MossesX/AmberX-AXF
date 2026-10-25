@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
 import type { BadgeData, ClockData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import { Icon } from './Icon';
 import { WidgetView } from './Widgets';
 
@@ -59,10 +60,10 @@ function Attached({ a }: { a: PlacedAttachment }) {
   if (!asset) return null;
   const pop = state.bannerPopup && state.bannerPopup.key === a.key ? state.bannerPopup : null;
   return (
-    <span className="fx-banner__item" data-axf-banner-item={a.key} data-axf-origin={a.origin}>
+    <>
       {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}
       {pop && <span className="fx-banner__pop" role="status" onClick={() => rt.dismissBannerPopup()}>{pop.text}</span>}
-    </span>
+    </>
   );
 }
 
@@ -70,17 +71,19 @@ export function Banner() {
   const rt = useRuntime();
   useAxfState();
   const { data, placed } = rt.banner();
+  const arrange = useArrange('banner', placed);
   if (!data) return null;
   return (
-    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}`} role="banner" data-fx-ctx-target="banner" data-axf-search="off">
+    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''}`} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner">
       {BANNER_SIDES.map((side) => (
-        <div key={side} className={`fx-banner__side is-${side}`}>
+        <div key={side} className={`fx-banner__side is-${side}`} {...arrange.sideProps(side)}>
           {side === 'left' && data.logo?.show !== false && (
             <span className="fx-banner__logo"><span className="fx-brand__mark" aria-hidden="true" />{data.logo?.text && <span className="fx-banner__name">{data.logo.text}</span>}</span>
           )}
-          {placed[side].map((a) => <Attached key={a.key} a={a} />)}
+          {arrangedSide(arrange, side, placed[side], (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin }, <Attached a={a} />))}
         </div>
       ))}
+      <ArrangeBar host="banner" label="banner" />
     </div>
   );
 }

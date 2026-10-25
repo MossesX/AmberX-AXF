@@ -64,9 +64,62 @@ export interface PlacedAttachment { key: string; type: string; id: string; at: s
 export const attachmentKey = (type: string, id: string) => `${type}:${id}`;
 export const isWidgetType = (t: string) => WIDGET_TYPES.includes(t);
 
+/**
+ * A person's arrangement of one host: for each attachment key (`type:id`) the side it sits on and its order there.
+ * It is the top layer over the host's own list and what modules attach, so a widget dragged somewhere stays there
+ * whoever attached it. Saved as a look setting (`axf.widgets.arrange.<host>`); keys that aren't attached are ignored.
+ */
+export type HostArrangement = Record<string, { at: string; order: number }>;
+
+/** Most entries an arrangement keeps (a host never needs more; a damaged setting can't grow without bound). */
+export const ARRANGEMENT_MAX = 200;
+
+/** A saved arrangement with only valid entries (known side, finite order, sane key). Anything else is dropped. */
+export function normalizeArrangement(raw: unknown, sides: readonly string[]): HostArrangement {
+  const out: HostArrangement = {};
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  let n = 0;
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (n >= ARRANGEMENT_MAX) break;
+    if (!/^[a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,80}$/.test(k) || !v || typeof v !== 'object') continue;
+    const e = v as { at?: unknown; order?: unknown };
+    if (typeof e.at !== 'string' || !sides.includes(e.at) || typeof e.order !== 'number' || !Number.isFinite(e.order)) continue;
+    out[k] = { at: e.at, order: e.order };
+    n++;
+  }
+  return out;
+}
+
+/**
+ * Move one placed attachment to `side` at position `index` (0 = first; past the end = last) and return the whole host's
+ * new arrangement: every placed attachment gets its side and order (index × 10), so the result reads the same on every
+ * device whatever attaches later. Entries for keys not placed now are kept (a plugin switched off keeps its spot).
+ */
+export function moveOnHost(placed: Record<string, PlacedAttachment[]>, prev: HostArrangement, key: string, side: string, index: number, sides: readonly string[]): HostArrangement {
+  if (!sides.includes(side)) return { ...prev };
+  const lists: Record<string, string[]> = Object.fromEntries(sides.map((s) => [s, (placed[s] ?? []).map((p) => p.key)]));
+  if (!sides.some((s) => lists[s]!.includes(key))) return { ...prev };
+  for (const s of sides) lists[s] = lists[s]!.filter((k) => k !== key);
+  const at = Math.max(0, Math.min(lists[side]!.length, Math.floor(Number.isFinite(index) ? index : lists[side]!.length)));
+  lists[side]!.splice(at, 0, key);
+  const out: HostArrangement = { ...prev };
+  for (const s of sides) lists[s]!.forEach((k, i) => { out[k] = { at: s, order: i * 10 }; });
+  return out;
+}
+
+/**
+ * Where a dragged item snaps among the items already on a side: the index of the first item whose middle is past the
+ * pointer (`pos` and `mids` in one axis, the dragged item itself left out of `mids`). Same rule on every port.
+ */
+export function snapIndex(mids: readonly number[], pos: number): number {
+  let i = 0;
+  while (i < mids.length && mids[i]! <= pos) i++;
+  return i;
+}
+
 /** Where every attachment of a host goes, side by side (each side sorted by order, then key). */
 export function placeOnHost(own: HostAttachment[] | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean,
-  types: readonly string[], sides: readonly string[]): Record<string, PlacedAttachment[]> {
+  types: readonly string[], sides: readonly string[], arrange?: HostArrangement | null): Record<string, PlacedAttachment[]> {
   const byKey = new Map<string, PlacedAttachment>();
   const add = (a: HostAttachment, fallbackOrder: number, origin: string) => {
     if (!a || typeof a.type !== 'string' || typeof a.id !== 'string') return;
@@ -77,6 +130,12 @@ export function placeOnHost(own: HostAttachment[] | null | undefined, extra: Hos
   };
   (Array.isArray(own) ? own : []).forEach((a, i) => add(a, i * 10, 'asset'));
   (Array.isArray(extra) ? extra : []).forEach((a, i) => add(a, 1000 + i * 10, 'runtime'));
+  if (arrange) {
+    for (const [key, p] of byKey) {
+      const a = arrange[key];
+      if (a && sides.includes(a.at) && Number.isFinite(a.order)) byKey.set(key, { ...p, at: a.at, order: a.order });
+    }
+  }
   const out: Record<string, PlacedAttachment[]> = Object.fromEntries(sides.map((s) => [s, []]));
   for (const p of byKey.values()) out[p.at]!.push(p);
   for (const s of sides) out[s]!.sort((x, y) => x.order - y.order || (x.key < y.key ? -1 : x.key > y.key ? 1 : 0));
@@ -89,16 +148,16 @@ export function placeOnHost(own: HostAttachment[] | null | undefined, extra: Hos
  * entries included; without it (the banner's rule, kept from the first version) run-time entries are still placed and
  * the runtime decides whether to draw them.
  */
-export function placeHost(host: string, data: Record<string, unknown> | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean, requireHost = true): Record<string, PlacedAttachment[]> {
+export function placeHost(host: string, data: Record<string, unknown> | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean, requireHost = true, arrange?: HostArrangement | null): Record<string, PlacedAttachment[]> {
   const h = hostSpec(host);
   if (!h) return {};
   const own = data ? (data[h.field] as HostAttachment[] | undefined) : null;
-  return placeOnHost(own, data || !requireHost ? extra : [], has, h.types, h.sides);
+  return placeOnHost(own, data || !requireHost ? extra : [], has, h.types, h.sides, arrange);
 }
 
 /** The toolbar as a widget host: widgets only, at its start or end. */
-export function placeToolbarWidgets(tb: { widgets?: HostAttachment[] } | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean) {
-  return placeHost('toolbar', tb as Record<string, unknown> | null, extra, has) as Record<'start' | 'end', PlacedAttachment[]>;
+export function placeToolbarWidgets(tb: { widgets?: HostAttachment[] } | null | undefined, extra: HostAttachment[], has: (type: string, id: string) => boolean, arrange?: HostArrangement | null) {
+  return placeHost('toolbar', tb as Record<string, unknown> | null, extra, has, true, arrange) as Record<'start' | 'end', PlacedAttachment[]>;
 }
 
 /**

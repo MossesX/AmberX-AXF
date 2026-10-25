@@ -143,7 +143,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   for (const l of ordered) {
     const why = embedSkipReason(rt.embedded, l.embed?.skipWhen);
     if (why) { skipped.push({ id: l.id, label: l.label, version: l.version, reason: why }); continue; }
-    l.register?.(rt);
+    rt.actions.withModule(l.id, () => l.register?.(rt));
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
@@ -174,6 +174,9 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
  */
 function placeLibrary(rt: AxfRuntime, l: AxfWebLibrary) {
   if (!isPlacement(l.opens)) return;
+  // Banner plugins never get it (Brett, Oct 25 2026: "remove that option from banners"): a tap on a banner item opens its
+  // details the way the banner always did, never in a floating window or a dialog picked for the plugin's page.
+  if (l.banners?.length) return;
   const provides = [...Object.keys(l.views ?? {}).map((v) => `view:${v}`), ...Object.keys(l.dialogs ?? {}).map((d) => `dialog:${d}`)];
   const ui = primaryUi(provides, l.opensUi);
   if (!ui || !provides.includes(`${ui.kind}:${ui.id}`)) return;

@@ -1067,7 +1067,10 @@
       "label": "Settings interface",
       "group": "System",
       "icon": "settings",
-      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active. Engine core/engines/settingsui.ts.",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
+      "optional_fields": {
+        "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)"
+      },
       "required": [
         "layout",
         "header",
