@@ -360,4 +360,72 @@ c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "chang
 check(app_plugins.wait()["state"] == "done" and not HUBP["installed"], "axhub: uninstalled through the console")
 check(not any("pilot-tok" in str(v) for v in c.get("/api/app-plugins", headers=TOKEN).json().values()), "pilot: token never in the grid")
 
+# full uninstall of a bundled Pilot plugin: its folder deleted from the Build-Pilot repo through GitHub's git data API
+GH = {"calls": [], "tree": [{"path": "plugins/look/plugin.json", "type": "blob"}, {"path": "plugins/look/web/index.tsx", "type": "blob"}, {"path": "plugins/lookalike/plugin.json", "type": "blob"}, {"path": "src/main.tsx", "type": "blob"}]}
+
+
+class FakeGitHub(FakeConsole):
+    def _auth(self):
+        if self.headers.get("authorization") != "Bearer gh-tok":
+            self._send(401, {"message": "Bad credentials"})
+            return False
+        return True
+
+    def do_GET(self):
+        if not self._auth():
+            return
+        GH["calls"].append(("GET", self.path, None))
+        if self.path == "/repos/MossesX/Build-Pilot/git/ref/heads/main":
+            return self._send(200, {"object": {"sha": "head1"}})
+        if self.path == "/repos/MossesX/Build-Pilot/git/commits/head1":
+            return self._send(200, {"tree": {"sha": "tree1"}})
+        if self.path.startswith("/repos/MossesX/Build-Pilot/git/trees/tree1"):
+            return self._send(200, {"tree": GH["tree"], "truncated": False})
+        self._send(404, {"message": "Not Found"})
+
+    def _body(self):
+        return _json.loads(self.rfile.read(int(self.headers.get("content-length") or 0)) or b"{}")
+
+    def do_POST(self):
+        if not self._auth():
+            return
+        b = self._body()
+        GH["calls"].append(("POST", self.path, b))
+        if self.path.endswith("/git/trees"):
+            return self._send(201, {"sha": "tree2"})
+        if self.path.endswith("/git/commits"):
+            return self._send(201, {"sha": "commit2abcdef"})
+        self._send(404, {"message": "Not Found"})
+
+    def do_PATCH(self):
+        if not self._auth():
+            return
+        GH["calls"].append(("PATCH", self.path, self._body()))
+        self._send(200, {"object": {"sha": "commit2abcdef"}})
+
+
+gsrv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), FakeGitHub)
+_threading.Thread(target=gsrv.serve_forever, daemon=True).start()
+app_plugins.GITHUB_API = f"http://127.0.0.1:{gsrv.server_address[1]}"
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.new", "install": False, "delete": True}]}).status_code == 400, "delete: only a bundled plugin")
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": B, "install": False, "delete": True}]}).status_code == 400, "delete: not for console plugins")
+os.environ.pop("APP_GITHUB_TOKEN", None)
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False, "delete": True}]})
+j = app_plugins.wait()
+check(j["state"] == "partial" and "APP_GITHUB_TOKEN" in j["items"][0]["note"] and not GH["calls"], "delete: without a GitHub token it fails and says why")
+os.environ["APP_GITHUB_TOKEN"] = "gh-tok"
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False, "delete": True}]})
+j = app_plugins.wait()
+check(j["state"] == "done" and j["items"][0]["delete"] and "commit2" in j["items"][0]["note"], "delete: done, commit named")
+tree_call = next(b for m, pth, b in GH["calls"] if m == "POST" and pth.endswith("/git/trees"))
+check(sorted(e["path"] for e in tree_call["tree"]) == ["plugins/look/plugin.json", "plugins/look/web/index.tsx"] and all(e["sha"] is None for e in tree_call["tree"]) and tree_call["base_tree"] == "tree1", "delete: only that plugin's files (not a lookalike folder)")
+patch = next(b for m, pth, b in GH["calls"] if m == "PATCH")
+check(patch == {"sha": "commit2abcdef", "force": False}, "delete: branch moved forward, never forced")
+check(not PIL["calls"][-1][0].endswith("/uninstall") or PIL["calls"][-1][1].get("folder") != "look", "delete: Pilot's own uninstall route never used for a bundled plugin")
+GH["calls"].clear()
+GH["tree"] = [{"path": "src/main.tsx", "type": "blob"}]
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False, "delete": True}]})
+j = app_plugins.wait()
+check(j["state"] == "partial" and "isn't in" in j["items"][0]["note"] and not any(m == "PATCH" for m, _p, _b in GH["calls"]), "delete: a folder that isn't in the repo changes nothing")
+
 print(f"server self-test: {passed} checks passed")

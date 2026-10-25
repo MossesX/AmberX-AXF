@@ -71,6 +71,8 @@ CONSOLE_TOKEN="${APP_CONSOLE_TOKEN:-$(sed -n 's/^AXF_TOKEN=//p' "$AXF_DIR/.axf-c
 # Build Pilot's own token (its deploy saves BP_TOKEN in /opt/build-pilot/.build-pilot/env): the Pilot column of Plugins per app
 PILOT_TOKEN="${APP_PILOT_TOKEN:-$(sed -n 's/^BP_TOKEN=//p' "${PILOT_ENV:-/opt/build-pilot/.build-pilot/env}" 2>/dev/null | head -n1)}"
 (umask 077; printf 'APP_PILOT_TOKEN=%s\nAPP_PILOT_URL=%s\n' "$PILOT_TOKEN" "${APP_PILOT_URL:-https://pilot.amberxai.com}" >> "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+# GitHub token for deleting a bundled Pilot plugin's code (Contents: write on MossesX/Build-Pilot); default: the console's
+(umask 077; printf 'APP_GITHUB_TOKEN=%s\n' "${APP_GITHUB_TOKEN:-${GITHUB_TOKEN:-}}" >> "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
 [ -n "$PILOT_TOKEN" ] || say "No Build Pilot token found: Plugins per app shows Pilot read-only (APP_PILOT_TOKEN=… bash deploy/install.sh)"
 COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT" --env-file "$CONSOLE_ENVF")
 

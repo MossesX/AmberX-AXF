@@ -16,7 +16,8 @@ installs from the plugin catalog itself. Gizmo, Oct 25 2026: both columns editab
 Env: APP_CONSOLE_URL (default https://console.amberxai.com; https only, http only on loopback), APP_CONSOLE_TOKEN (the
 console token; without it the Console and axHub columns are read-only and say why), APP_CONSOLE_TIMEOUT (seconds,
 default 20 for reads; installs get 660), APP_PILOT_URL (default https://pilot.amberxai.com), APP_PILOT_TOKEN (Build
-Pilot's BP_TOKEN; without it the Pilot column is read-only).
+Pilot's BP_TOKEN; without it the Pilot column is read-only), APP_GITHUB_TOKEN (Contents: write on Build-Pilot; only for
+deleting a bundled Pilot plugin's code), APP_PILOT_REPO (default MossesX/Build-Pilot), APP_PILOT_BRANCH (default main).
 """
 from __future__ import annotations
 
@@ -311,6 +312,74 @@ class PilotAdapter(Adapter):
         return "removed; Build Pilot rebuilds without it within about a minute"
 
 
+    def delete(self, plugin: dict[str, Any]) -> str:
+        """Full uninstall of a bundled plugin (Gizmo, Oct 25 2026): its folder is deleted from the Build-Pilot repo in one
+        commit; Pilot's 5-minute update rebuilds without it. Only a bundled folder Pilot itself listed."""
+        tok = self.env("APP_GITHUB_TOKEN", "").strip()
+        if not tok:
+            raise AppError("Patches has no GitHub token (APP_GITHUB_TOKEN with Contents: write on Build-Pilot)")
+        folder = plugin["folder"]
+        if not FOLDER.match(folder) or folder.startswith("_"):
+            raise AppError("bad plugin folder")
+        repo = self.env("APP_PILOT_REPO", "MossesX/Build-Pilot")
+        sha = delete_repo_folder(tok, repo, self.env("APP_PILOT_BRANCH", "main"), f"plugins/{folder}",
+                                 f"Uninstall bundled plugin {plugin['name']} ({folder}) from Patches → Plugins per app")
+        return f"deleted from {repo} ({sha[:7]}); Build Pilot rebuilds without it within about 5 minutes"
+
+
+# ---------------------------------------------------------------- deleting a bundled Pilot plugin's code (GitHub)
+
+GITHUB_API = "https://api.github.com"
+_REPO = re.compile(r"^[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}$")
+_BRANCH = re.compile(r"^[A-Za-z0-9._/-]{1,100}$")
+
+
+def _gh(token: str, method: str, path: str, body: Any = None) -> Any:
+    """One GitHub REST call: the token only ever goes to api.github.com, never follows a redirect."""
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(GITHUB_API + path, data=data, method=method)
+    req.add_header("authorization", f"Bearer {token}")
+    req.add_header("accept", "application/vnd.github+json")
+    req.add_header("x-github-api-version", "2022-11-28")
+    req.add_header("user-agent", "patches-web")
+    if data is not None:
+        req.add_header("content-type", "application/json")
+    try:
+        with _OPENER.open(req, timeout=30) as r:
+            raw = r.read(MAX_BODY + 1)
+    except urllib.error.HTTPError as e:
+        try:
+            msg = json.loads(e.read(65536) or b"{}").get("message")
+        except (ValueError, AttributeError):
+            msg = None
+        raise AppError(f"GitHub refused ({e.code}{': ' + _clip(msg, 200) if isinstance(msg, str) else ''})") from None
+    except (urllib.error.URLError, OSError, TimeoutError) as e:
+        raise AppError(f"can't reach GitHub ({_clip(str(getattr(e, 'reason', e)), 160)})") from None
+    if len(raw) > MAX_BODY:
+        raise AppError("GitHub's answer is too big")
+    return json.loads(raw or b"null")
+
+
+def delete_repo_folder(token: str, repo: str, branch: str, folder_path: str, message: str) -> str:
+    """Delete every file under `folder_path/` on `branch` in one commit (git data API, no force push). Returns the sha."""
+    if not _REPO.match(repo) or not _BRANCH.match(branch) or ".." in branch:
+        raise AppError("bad repo or branch")
+    ref = _gh(token, "GET", f"/repos/{repo}/git/ref/heads/{branch}")
+    head = ref["object"]["sha"]
+    commit = _gh(token, "GET", f"/repos/{repo}/git/commits/{head}")
+    tree = _gh(token, "GET", f"/repos/{repo}/git/trees/{commit['tree']['sha']}?recursive=1")
+    if tree.get("truncated"):
+        raise AppError("the repo's file list is too big to read in one go; delete the folder by hand")
+    pre = folder_path.rstrip("/") + "/"
+    gone = [e["path"] for e in tree.get("tree", []) if e.get("type") == "blob" and str(e.get("path", "")).startswith(pre)]
+    if not gone:
+        raise AppError(f"{folder_path} isn't in {repo} {branch}")
+    new_tree = _gh(token, "POST", f"/repos/{repo}/git/trees", {"base_tree": commit["tree"]["sha"], "tree": [{"path": p, "mode": "100644", "type": "blob", "sha": None} for p in gone]})
+    c = _gh(token, "POST", f"/repos/{repo}/git/commits", {"message": message, "tree": new_tree["sha"], "parents": [head]})
+    _gh(token, "PATCH", f"/repos/{repo}/git/refs/heads/{branch}", {"sha": c["sha"], "force": False})
+    return c["sha"]
+
+
 class AxhubAdapter(Adapter):
     """axHub's web app (apps/axhub-web): its plugins are catalog kind `axhub`. The Dev Console holds the repo, so it does
     the work: `GET /api/app-plugins/axhub` (what is in apps/axhub-web/src/plugins), `POST /api/app-plugins/axhub/install|
@@ -470,21 +539,24 @@ def plan(changes: Any, g: dict[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(c, dict):
             raise ValueError("each change is {app, id, install}")
         a, pid, inst = c.get("app"), c.get("id"), c.get("install")
+        delete = c.get("delete") is True
         if not isinstance(inst, bool) or not isinstance(pid, str) or pid not in rows or a not in rows[pid]["cells"]:
             raise ValueError(f"{pid!r} in {a!r} isn't a cell of the grid")
         if (a, pid) in seen:
             raise ValueError(f"{pid} in {a} is listed twice")
         seen.add((a, pid))
         cell = rows[pid]["cells"][a]
+        if delete and (inst is not False or not cell.get("switch")):
+            raise ValueError(f"only a plugin bundled with an app can be deleted from its code ({rows[pid]['name']} in {a})")
         if not cell["canChange"]:
             raise ValueError(f"{rows[pid]['name']} in {a} can't be changed: {cell['why']}")
-        if cell["installed"] is inst:
+        if cell["installed"] is inst and not delete:
             continue  # already that way
         snap = g["_snaps"][a]
         p = snap["installed"].get(pid) or snap["available"].get(pid)
         if not p:
             raise ValueError(f"{pid} isn't known to {a}")
-        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "switch": bool(cell.get("switch")), "state": "queued", "note": ""})
+        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "switch": bool(cell.get("switch")) and not delete, "delete": delete, "state": "queued", "note": ""})
     return out
 
 
@@ -504,7 +576,13 @@ def start(items: list[str] | list[dict[str, Any]], by: str, on_done: Callable[[d
                 _job["items"][i]["state"] = "running"  # type: ignore[index]
             ad = ADAPTERS.get(it["app"])
             try:
-                note = (ad.install if it["install"] else ad.uninstall)(it) if ad else "no adapter"
+                if it.get("delete"):
+                    fn = getattr(ad, "delete", None)
+                    if not fn:
+                        raise AppError(f"{ad.label if ad else it['app']} can't delete a plugin's code")
+                    note = fn(it)
+                else:
+                    note = (ad.install if it["install"] else ad.uninstall)(it) if ad else "no adapter"
                 state = "done"
             except AppError as e:
                 note, state = str(e), "failed"
