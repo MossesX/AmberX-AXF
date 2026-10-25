@@ -63,7 +63,18 @@ APP_TOKEN="${ARG_APP_TOKEN:-${APP_TOKEN:-$(head -c 24 /dev/urandom | base64 | tr
 say "Building the image (first time takes a few minutes)"
 docker build -q -t "$NAME:latest" "$APP" >/dev/null
 axf_stop_container "$NAME"
-COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT")
+# The Dev Console's token (its env file), so Plugins per app can install / uninstall there; kept in a 0600 env file.
+CONSOLE_ENVF="$STATE/console.env"
+CONSOLE_TOKEN="${APP_CONSOLE_TOKEN:-$(sed -n 's/^AXF_TOKEN=//p' "$AXF_DIR/.axf-console/env" 2>/dev/null | head -n1)}"
+(umask 077; printf 'APP_CONSOLE_TOKEN=%s\nAPP_CONSOLE_URL=%s\n' "$CONSOLE_TOKEN" "${APP_CONSOLE_URL:-https://console.amberxai.com}" > "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+[ -n "$CONSOLE_TOKEN" ] || say "No console token found: Plugins per app shows the Console and axHub read-only (APP_CONSOLE_TOKEN=… bash deploy/install.sh)"
+# Build Pilot's own token (its deploy saves BP_TOKEN in /opt/build-pilot/.build-pilot/env): the Pilot column of Plugins per app
+PILOT_TOKEN="${APP_PILOT_TOKEN:-$(sed -n 's/^BP_TOKEN=//p' "${PILOT_ENV:-/opt/build-pilot/.build-pilot/env}" 2>/dev/null | head -n1)}"
+(umask 077; printf 'APP_PILOT_TOKEN=%s\nAPP_PILOT_URL=%s\n' "$PILOT_TOKEN" "${APP_PILOT_URL:-https://pilot.amberxai.com}" >> "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+# GitHub token for deleting a bundled Pilot plugin's code (Contents: write on MossesX/Build-Pilot); default: the console's
+(umask 077; printf 'APP_GITHUB_TOKEN=%s\n' "${APP_GITHUB_TOKEN:-${GITHUB_TOKEN:-}}" >> "$CONSOLE_ENVF"); chmod 600 "$CONSOLE_ENVF"
+[ -n "$PILOT_TOKEN" ] || say "No Build Pilot token found: Plugins per app shows Pilot read-only (APP_PILOT_TOKEN=… bash deploy/install.sh)"
+COMMON=(-d --name "$NAME" --restart unless-stopped -v "$STATE/data":/data -e APP_TOKEN="$APP_TOKEN" -e PORT="$PORT" --env-file "$CONSOLE_ENVF")
 
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"

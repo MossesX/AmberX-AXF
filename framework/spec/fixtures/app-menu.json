@@ -4104,6 +4104,7 @@
       "toolbar",
       "nav-menu",
       "context-menu",
+      "tab-group",
       "banner"
     ],
     "all": [
@@ -4111,6 +4112,7 @@
       "toolbar",
       "nav-menu",
       "context-menu",
+      "tab-group",
       "banner"
     ],
     "items": [
@@ -4136,6 +4138,14 @@
         "icon": "chevron-right",
         "action": "slot.hide:context-menu:toggle",
         "checked": "slot:context-menu",
+        "requires": "assets.swap"
+      },
+      {
+        "id": "chrome.tab-group",
+        "label": "Tab group",
+        "icon": "layers",
+        "action": "slot.hide:tab-group:toggle",
+        "checked": "slot:tab-group",
         "requires": "assets.swap"
       },
       {

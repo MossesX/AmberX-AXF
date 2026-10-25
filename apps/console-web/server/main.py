@@ -1443,6 +1443,60 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+# ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
+# repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
+# rebuilds with it. Patches' Plugins per app calls these server to server. Console token; never on MCP.
+_APP_PLUGIN_KINDS = {"axhub"}
+
+
+def _app_kind(kind: str) -> None:
+    if kind not in _APP_PLUGIN_KINDS:
+        raise HTTPException(404, f"no app takes {kind!r} plugins here")
+
+
+@app.get("/api/app-plugins/{kind}", dependencies=[Depends(auth_always)])
+def app_plugins_list(kind: str) -> dict[str, Any]:
+    _app_kind(kind)
+    return _catalog(["app-list", kind])
+
+
+def _app_plugin_change(kind: str, body: dict[str, Any], install: bool) -> dict[str, Any]:
+    _app_kind(kind)
+    folder = str(body.get("folder", ""))
+    _catalog_args(kind, folder)
+    version = str(body.get("version", "") or "")
+    if version and not _CATALOG_VERSION.match(version):
+        raise HTTPException(400, "bad version")
+    if body.get("confirm") != folder:
+        raise HTTPException(400, f'confirm with the folder name ("{folder}")')
+    if not _catalog_lock.acquire(blocking=False):
+        raise HTTPException(409, "another catalog install is running")
+    try:
+        args = (["app-install", kind, folder] + (["--update"] if body.get("update") else []) + (["--version", version] if version else [])) if install else ["app-uninstall", kind, folder]
+        publish = body.get("publish", True) is not False and bool(os.environ.get("GITHUB_TOKEN"))
+        if publish:
+            args.append("--publish")
+        out = _catalog(args, timeout=600)
+        log("plugins", f"{kind}/{folder} {'installed' if install else 'removed'} for its app ({out.get('dir')})")
+        pushed = bool((out.get("published") or {}).get("pushed"))
+        out["note"] = (("Committed to GitHub: the app rebuilds with it within about 5 minutes." if install else "Removed on GitHub: the app rebuilds without it within about 5 minutes.") if pushed
+                       else "GitHub already had it that way." if publish
+                       else "Changed in this clone only (no GITHUB_TOKEN): the app on the server won't change until it reaches GitHub.")
+        return out
+    finally:
+        _catalog_lock.release()
+
+
+@app.post("/api/app-plugins/{kind}/install", dependencies=[Depends(auth_always)])
+def app_plugins_install(kind: str, body: dict[str, Any]) -> dict[str, Any]:
+    return _app_plugin_change(kind, body, True)
+
+
+@app.post("/api/app-plugins/{kind}/uninstall", dependencies=[Depends(auth_always)])
+def app_plugins_uninstall(kind: str, body: dict[str, Any]) -> dict[str, Any]:
+    return _app_plugin_change(kind, body, False)
+
+
 @app.get("/api/plugin-services", dependencies=[Depends(auth_always)])
 def list_plugin_services() -> dict[str, Any]:
     return {"items": plugin_services.available()}

@@ -22,6 +22,7 @@
     "toolbar": "axhub-web",
     "nav-menu": "axhub-web",
     "context-menu": "axhub-web",
+    "tab-group": "underline",
     "dialog": "centered-modal",
     "popup": "corner-solid",
     "button": "rounded-solid",

@@ -17,6 +17,11 @@
       "label": "Build Pilot plugin",
       "manifest": "pilot-plugin@1",
       "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
+    },
+    "axhub": {
+      "label": "axHub web plugin",
+      "manifest": "axhub-plugin@1",
+      "allow": "^(plugin\\.json|README\\.md|web\\/.+)$"
     }
   },
   "pathProblems": [
@@ -969,7 +974,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"desktop\" (known: console, pilot)"
+        "error": "unknown plugin kind \"desktop\" (known: console, pilot, axhub)"
       }
     },
     {
@@ -986,7 +991,7 @@
       },
       "expect": {
         "ok": false,
-        "error": "unknown plugin kind \"undefined\" (known: console, pilot)"
+        "error": "unknown plugin kind \"undefined\" (known: console, pilot, axhub)"
       }
     },
     {

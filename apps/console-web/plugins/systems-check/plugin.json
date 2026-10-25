@@ -1,7 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.systems-check",
-  "name": "Systems check",
+  "name": "Systems check banner",
   "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
