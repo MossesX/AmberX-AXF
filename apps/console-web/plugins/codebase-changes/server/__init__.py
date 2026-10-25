@@ -35,14 +35,14 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
-from .store import ID_RE, Store, normalize, now_iso, redact, upsert_step
+from .store import ID_RE, Store, normalize, now_iso, redact, resume_prompt, upsert_step
 
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 SELF = "axf.changes@1"
 MAX_BODY = 128 * 1024
 BUILD_KEYS = {"status", "buildRef", "surface", "startedAt", "finishedAt", "lastSeenAt", "estimate", "actual", "costEstimated", "branch", "areas", "doing",
-              "parent", "progress", "verify"}
+              "parent", "progress", "verify", "resume"}
 ENTRY_KEYS = {"$axf", "id", "createdAt", "updatedAt", "kind", "title", "asked", "repos", "model", "who", "steps", "result", "closed", "state"} | BUILD_KEYS
 PATCH_KEYS = {"title", "kind", "asked", "repos", "model", "who", "steps", "step", "result", "beat"} | BUILD_KEYS
 _DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -339,6 +339,13 @@ def list_entries_all(request: Request) -> dict[str, Any]:
 @router.get("/entries/{cid}")
 def get_entry(cid: str) -> dict[str, Any]:
     return _load(cid)
+
+
+@router.get("/entries/{cid}/resume")
+def get_resume(cid: str) -> dict[str, Any]:
+    """The prompt another machine or Claude account pastes to carry this work on (same text as `changes.mjs resume --prompt`)."""
+    e = _load(cid)
+    return {"id": e["id"], "resume": e.get("resume") or {}, "prompt": resume_prompt(e)}
 
 
 @router.post("/entries")

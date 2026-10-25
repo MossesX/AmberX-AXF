@@ -26,7 +26,7 @@ KINDS = ("build", "edit", "remove", "fix", "other")
 STEP_STATES = ("queued", "running", "done", "failed", "skipped")
 RESULT_STATES = ("done", "failed", "partial", "cancelled")
 ID_RE = re.compile(r"^chg-(\d{8})-[0-9a-f]{6,16}$")
-LIMITS = {"title": 160, "asked": 600, "model": 40, "repos": 10, "steps": 100, "stepText": 300, "note": 1000, "summary": 4000,
+LIMITS = {"title": 160, "asked": 4000, "model": 40, "repos": 10, "steps": 100, "stepText": 300, "note": 1000, "summary": 4000,
           "commits": 50, "commitMsg": 200, "tests": 50, "testName": 120, "testValue": 60, "links": 20, "link": 500, "who": 80,
           "areas": 40, "doing": 160, "bytes": 64 * 1024}
 
@@ -249,6 +249,7 @@ def normalize(raw: Any, now: str | None = None) -> tuple[dict[str, Any] | None, 
             e["closed"] = {"at": _iso_or(c.get("at"), now), "by": redact(c.get("by") if c.get("by") is not None else "unknown", LIMITS["who"]) or "unknown"}
     e["state"] = e["result"]["state"] if e["result"] else "running"
     _norm_build(raw, e, errors)
+    _norm_resume(raw, e, errors)
     if len(json.dumps(e, separators=(",", ":"), ensure_ascii=False).encode()) > LIMITS["bytes"]:
         errors.append(f"an entry is at most {LIMITS['bytes'] // 1024} KB")
     return (None if errors else e), errors
@@ -426,6 +427,141 @@ def _norm_build(raw: dict[str, Any], e: dict[str, Any], errors: list[str]) -> No
                         if key:
                             o["checks"][key] = sv
             e["verify"] = o
+
+
+# ---------------------------------------------------------------- resume details (= normResume / resumePrompt in changes-core.mjs)
+
+RESUME_LIMITS = {"folder": 300, "plan": 3000, "next": 1500, "notes": 3000, "files": 300, "file": 300, "tests": 30, "test": 300, "read": 30}
+_RPATH = re.compile(r"^[A-Za-z0-9_.@+-][A-Za-z0-9_.@+ /-]{0,299}$")
+
+
+def _rel_ok(v: str) -> bool:
+    return bool(_RPATH.match(v)) and ".." not in v.split("/") and "//" not in v
+
+
+def _norm_resume(raw: dict[str, Any], e: dict[str, Any], errors: list[str]) -> None:
+    r = raw.get("resume")
+    if r is None:
+        return
+    if not _is_obj(r):
+        errors.append("resume is an object")
+        return
+    o: dict[str, Any] = {}
+    if r.get("repo") is not None and _js_str(r["repo"]) != "":
+        if _REPO.match(_js_str(r["repo"])):
+            o["repo"] = _js_str(r["repo"])
+        else:
+            errors.append("resume.repo is owner/name")
+    if r.get("folder") is not None and _js_str(r["folder"]).strip():
+        o["folder"] = redact(r["folder"], RESUME_LIMITS["folder"])
+    if r.get("branch") is not None and _js_str(r["branch"]) != "":
+        b = _js_str(r["branch"])
+        if _BRANCH.match(b) and ".." not in b:
+            o["branch"] = b
+        else:
+            errors.append("resume.branch is not a branch name")
+    for k in ("base", "head"):
+        if r.get(k) is not None and _js_str(r[k]) != "":
+            v = _js_str(r[k]).lower()
+            if _SHA.match(v):
+                o[k] = v
+            else:
+                errors.append(f"resume.{k} is a commit sha")
+    if r.get("pushed") is not None:
+        if isinstance(r["pushed"], bool):
+            o["pushed"] = r["pushed"]
+        else:
+            errors.append("resume.pushed is true or false")
+    if r.get("dirty") is not None:
+        n = _int_in(r["dirty"], 0, 1_000_000)
+        if n is None:
+            errors.append("resume.dirty is a whole number")
+        else:
+            o["dirty"] = n
+    if r.get("pr") is not None and _js_str(r["pr"]) != "":
+        v = _link(r["pr"])
+        if v and v.startswith("https://"):
+            o["pr"] = v
+        else:
+            errors.append("resume.pr is an https URL")
+    for k in ("plan", "next", "notes"):
+        if r.get(k) is not None and _js_str(r[k]).strip():
+            o[k] = redact(r[k], RESUME_LIMITS[k], True)
+
+    def lst(k: str, mx: int, ok: Any, what: str, clean: Any = None) -> None:
+        if r.get(k) is None:
+            return
+        if not isinstance(r[k], list):
+            errors.append(f"resume.{k} is a list")
+            return
+        out: list[str] = []
+        for x in r[k][:mx]:
+            v = clean(x) if clean else ("" if x is None else _js_str(x)).strip()
+            if not v:
+                continue
+            if not ok(v):
+                errors.append(f'resume.{k}: "{redact(v, 60)}" {what}')
+                continue
+            if v not in out:
+                out.append(v)
+        o[k] = out
+
+    lst("files", RESUME_LIMITS["files"], _rel_ok, "is not a relative repo path")
+    lst("read", RESUME_LIMITS["read"], _rel_ok, "is not a relative repo path")
+    lst("tests", RESUME_LIMITS["tests"], lambda v: True, "", lambda x: redact(x, RESUME_LIMITS["test"]))
+    if _iso_or(r.get("at"), None):
+        o["at"] = r["at"]
+    e["resume"] = o
+
+
+def resume_prompt(e: dict[str, Any]) -> str:
+    """The prompt a new session on any Claude account pastes to carry on (= resumePrompt in changes-core.mjs)."""
+    r = e.get("resume") or {}
+    res = e.get("result") or None
+    repo = r.get("repo") or (e.get("repos") or [""])[0] or ""
+    branch = r.get("branch") or (res or {}).get("branch") or e.get("branch") or ""
+    L = [f"Resume a piece of work that another Claude session started (Codebase changes entry {e['id']}).", ""]
+    L.append(f"Title: {e.get('title', '')}")
+    L.append(f"Kind: {e.get('kind', '')} · state: {res['state'] if res else 'running'}" + (f" · built so far with {e['model']}" if e.get("model") else ""))
+    if repo:
+        L.append(f"Repo: {repo}" + (f" · branch {branch}" if branch else ""))
+    if r.get("base") or r.get("head"):
+        pushed = r.get("pushed")
+        L.append(f"Commits: started from {r.get('base') or '?'}, last {r.get('head') or '?'}"
+                 + (" (NOT pushed: it may only exist on the old machine)" if pushed is False else " (pushed)" if pushed else ""))
+    if r.get("dirty"):
+        L.append(f"Uncommitted files on the old machine: {r['dirty']} (they are not in the repo; redo them if needed)")
+    if r.get("pr"):
+        L.append(f"Pull request: {r['pr']}")
+    if e.get("asked"):
+        L += ["", "What was asked:", e["asked"]]
+    if r.get("plan"):
+        L += ["", "Plan:", r["plan"]]
+    steps = e.get("steps") or []
+    if steps:
+        L += ["", "Steps:"]
+        L += [f"  {i + 1}. [{s['state']}] {s['text']}" + (f" ({s['note']})" if s.get("note") else "") for i, s in enumerate(steps)]
+    if res and res.get("summary"):
+        L += ["", f"Result so far: {res['summary']}"]
+    if r.get("next"):
+        L += ["", "What is left:", r["next"]]
+    if r.get("notes"):
+        L += ["", "Notes:", r["notes"]]
+    files = r.get("files") or []
+    if files:
+        L += ["", f"Files changed ({len(files)}):", *[f"  {f}" for f in files[:60]], *([f"  … and {len(files) - 60} more"] if len(files) > 60 else [])]
+    if r.get("read"):
+        L += ["", "Read first:", *[f"  {f}" for f in r["read"]]]
+    if r.get("tests"):
+        L += ["", "Check it with:", *[f"  {t}" for t in r["tests"]]]
+    cid = e["id"]
+    L += ["", "How to carry on:",
+          f"  1. Work in {repo or 'the same repo'}" + (f" on branch {branch}" if branch else "") + ": fetch it and check it out (no new repo, no fork).",
+          "  2. Read the repo's CLAUDE.md and rules first; check the Build manager's Live list so you don't clash with a running session.",
+          f"  3. Report on this same entry as you go: node apps/console-web/plugins/codebase-changes/changes.mjs step {cid} \"<step>\" --state running",
+          f"     and keep its resume details current: changes.mjs resume {cid} --next \"<what's left>\"",
+          f"  4. Finish with: changes.mjs result {cid} --state done --summary \"<what changed>\" --branch <branch> --commit <sha>"]
+    return "\n".join(L)
 
 
 def is_stale(e: dict[str, Any], now_ms: float | None = None) -> bool:

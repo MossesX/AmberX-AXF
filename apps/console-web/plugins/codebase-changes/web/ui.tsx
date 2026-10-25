@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import {
-  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen,
+  CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
 } from './store';
 
@@ -123,6 +123,32 @@ function StepsTimeline({ steps }: { steps: Step[] }) {
   );
 }
 
+/** Where the work stands, for picking it up on another machine or Claude account. */
+function ResumeDetails({ e }: { e: Entry }) {
+  const r = e.resume;
+  if (!r || !Object.keys(r).length) return null;
+  const repo = r.repo || e.repos[0] || '';
+  const sha = (x?: string) => (x ? (repo ? <a href={`https://github.com/${repo}/commit/${x}`} target="_blank" rel="noopener noreferrer"><code>{x.slice(0, 7)}</code></a> : <code>{x.slice(0, 7)}</code>) : '?');
+  return (
+    <>
+      <h4 className="axp-codebase-changes__h">To carry on</h4>
+      <dl className="axp-codebase-changes__facts">
+        {r.branch && <><dt>Branch</dt><dd><Icon name="branch" size={11} /> {r.branch}</dd></>}
+        {(r.base || r.head) && <><dt>Commits</dt><dd>from {sha(r.base)} to {sha(r.head)}{r.pushed === false ? ' · not pushed' : r.pushed ? ' · pushed' : ''}</dd></>}
+        {r.dirty ? <><dt>Uncommitted</dt><dd>{r.dirty} file{r.dirty === 1 ? '' : 's'} on {e.who.host || 'the old machine'}</dd></> : null}
+        {r.pr && <><dt>Pull request</dt><dd><a href={r.pr} target="_blank" rel="noopener noreferrer">{r.pr.replace(/^https:\/\/github\.com\//, '')}</a></dd></>}
+        {r.folder && <><dt>Folder</dt><dd><code>{r.folder}</code></dd></>}
+        {r.at && <><dt>Recorded</dt><dd>{when(r.at)}</dd></>}
+      </dl>
+      {r.plan && <><p className="fx-small fx-muted">Plan</p><p className="axp-codebase-changes__text">{r.plan}</p></>}
+      {r.next && <><p className="fx-small fx-muted">What is left</p><p className="axp-codebase-changes__text">{r.next}</p></>}
+      {r.notes && <><p className="fx-small fx-muted">Notes</p><p className="axp-codebase-changes__text">{r.notes}</p></>}
+      {r.files?.length ? <details><summary className="fx-small">{r.files.length} file{r.files.length === 1 ? '' : 's'} changed</summary><ul className="axp-codebase-changes__commits">{r.files.map((f) => <li key={f}><code>{f}</code></li>)}</ul></details> : null}
+      {r.tests?.length ? <><p className="fx-small fx-muted">Check it with</p><ul className="axp-codebase-changes__commits">{r.tests.map((t) => <li key={t}><code>{t}</code></li>)}</ul></> : null}
+    </>
+  );
+}
+
 function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
   const rt = useRuntime();
   const [e, setE] = useState<Entry | null>(null);
@@ -148,6 +174,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
       </dl>
       <h4 className="axp-codebase-changes__h">Steps</h4>
       <StepsTimeline steps={e.steps} />
+      <ResumeDetails e={e} />
       <h4 className="axp-codebase-changes__h">Result</h4>
       {!r ? <p className="fx-small fx-muted axp-codebase-changes__none">No result yet{e.state === 'running' ? ': still in progress.' : '.'}</p> : (
         <div className="axp-codebase-changes__result">
@@ -175,6 +202,7 @@ function EntryDetail({ id, onChanged }: { id: string; onChanged: () => void }) {
         {e.closed
           ? <Button tone="neutral" icon="undo" disabled={busy} onClick={() => void act(() => reopenEntry(e.id))}>Show in the banner again</Button>
           : <Button tone="neutral" icon="x" disabled={busy} onClick={() => void act(() => closeEntry(e.id))}>Close (everywhere)</Button>}
+        <Button tone="neutral" icon="copy" onClick={() => { void loadResume(e.id).then((x) => navigator.clipboard?.writeText(x.prompt)).then(() => rt.toast('Resume prompt copied: paste it into a new Claude session', 'info'), (x: Error) => rt.toast(x.message, 'warning')); }}>Copy resume prompt</Button>
         <Button tone="neutral" icon="copy" onClick={() => { void navigator.clipboard?.writeText(e.id).then(() => rt.toast('Id copied', 'info'), () => undefined); }}>Copy id</Button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T10:28:58.310Z",
+ "updatedAt": "2026-10-25T10:46:22.879Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3281,6 +3281,20 @@
    "createdAt": "2026-10-25T10:28:58.310Z",
    "builtAt": "2026-10-25T10:28:58.310Z",
    "updatedAt": "2026-10-25T10:28:58.310Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "codebase-changes-resume",
+   "title": "Codebase changes: resume details (carry on from another Claude account) + log the first edit",
+   "detail": "change-log@1 gains `resume` (repo, folder, branch, base, head, pushed, dirty, files, plan, next, notes, tests, read, pr); the hook records the git part by itself; the first edit after a prompt not worded as a change opens an entry with machine, session and session type; `changes.mjs resume <id> --prompt` + console Copy resume prompt (GET entries/{id}/resume). Still open from the log-every-change rule: a project-level hook so cloud and headless sessions log without a per-machine install.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:46:22.879Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T10:46:22.879Z",
    "estimate": "30 min",
    "source": "chat"
   }

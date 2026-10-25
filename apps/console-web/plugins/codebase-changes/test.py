@@ -127,7 +127,7 @@ for name, raw in bad_cases.items():
     e2, errs2 = store_mod.normalize(raw)
     check(e2 is None and errs2, f"refused: {name}")
 long, _ = store_mod.normalize({**good, "title": "t" * 500, "asked": "a" * 5000})
-check(len(long["title"]) == 160 and len(long["asked"]) == 600, "long text is cut, not refused")
+check(len(long["title"]) == 160 and len(long["asked"]) == 4000, "long text is cut, not refused (asked keeps 4000 characters)")
 huge, errs3 = store_mod.normalize({**good, "steps": [{"text": "s" * 300, "note": "n" * 1000}] * 100})
 check(huge is None and any("KB" in x for x in errs3), "an entry over 64 KB is refused")
 
@@ -164,6 +164,28 @@ for name, raw in build_bad.items():
     check(e2 is None and errs2, f"refused: {name}")
 bad_cases.update(build_bad)
 
+print("resume details (another account carries on)")
+resume_good = {**build_good, "resume": {"repo": "MossesX/AmberX-AXF", "folder": "/home/user/amberx-axf", "branch": "claude/x", "base": "A" * 40, "head": "b" * 40,
+               "pushed": False, "dirty": 3, "pr": "https://github.com/MossesX/AmberX-AXF/pull/9", "plan": "Two passes. password=hunter22secret",
+               "next": "Screenshots", "notes": "n", "files": ["a/b.ts", "a/b.ts", "c d/e.md"], "tests": ["python3 test.py"], "read": ["CLAUDE.md"], "at": "2026-10-25T10:00:00.000Z"}}
+re_, rerrs = store_mod.normalize(resume_good)
+check(re_ is not None and not rerrs, "an entry with resume details passes")
+check(re_["resume"]["base"] == "a" * 40 and re_["resume"]["files"] == ["a/b.ts", "c d/e.md"] and "[hidden]" in re_["resume"]["plan"], "shas lowercased, files unique, plan redacted")
+resume_bad = {
+    "resume not object": {**build_good, "resume": "x"},
+    "resume bad repo": {**build_good, "resume": {"repo": "not a repo"}},
+    "resume bad sha": {**build_good, "resume": {"head": "zzz"}},
+    "resume http pr": {**build_good, "resume": {"pr": "http://example.com"}},
+    "resume traversal file": {**build_good, "resume": {"files": ["../etc/passwd"]}},
+    "resume abs read": {**build_good, "resume": {"read": ["/etc/passwd"]}},
+    "resume pushed string": {**build_good, "resume": {"pushed": "yes"}},
+    "resume bad branch": {**build_good, "resume": {"branch": "a..b"}},
+}
+for name, raw in resume_bad.items():
+    e2, errs2 = store_mod.normalize(raw)
+    check(e2 is None and errs2, f"refused: {name}")
+bad_cases.update(resume_bad)
+
 print("Python and Node validators agree")
 cases = [good, {**good, "title": "t" * 500}, build_good, {**build_good, "result": {"state": "cancelled", "summary": ""}, "status": "queued"},
          {**build_good, "actual": {"costUsd": 0.12345}, "costEstimated": None}, *bad_cases.values()]
@@ -173,6 +195,15 @@ for i, raw in enumerate(cases):
     py, _ = store_mod.normalize(raw)
     same = (js["ok"] == (py is not None)) and (py is None or {k: v for k, v in js["entry"].items() if k not in ("createdAt", "updatedAt")} == {k: v for k, v in py.items() if k not in ("createdAt", "updatedAt")})
     check(same, f"case {i + 1}: same verdict{' and same entry' if py else ''}")
+
+print("resume prompt: Python and Node give the same text")
+for i, raw in enumerate([resume_good, good, {**build_good, "resume": {"pushed": True, "head": "c" * 40}}]):
+    py, _ = store_mod.normalize(raw)
+    js = subprocess.run(["node", "--input-type=module", "-e",
+                         f"import {{ normalize, resumePrompt }} from {json.dumps(str(HERE / 'changes-core.mjs'))}; let s=''; for await (const c of process.stdin) s+=c; process.stdout.write(resumePrompt(normalize(JSON.parse(s)).entry));"],
+                        input=json.dumps(raw), capture_output=True, text=True, timeout=20)
+    check(js.returncode == 0 and js.stdout == store_mod.resume_prompt(py), f"prompt {i + 1}: same text{'' if js.stdout == store_mod.resume_prompt(py) else ': ' + js.stderr[-300:]}")
+check("NOT pushed" in store_mod.resume_prompt(re_) and "hunter22" not in store_mod.resume_prompt(re_) and "no new repo, no fork" in store_mod.resume_prompt(re_), "the prompt calls out unpushed work, hides secrets and keeps the same repo")
 
 print("routes")
 w = c.get("/p/where").json()
@@ -193,6 +224,13 @@ check(c.post("/p/entries", json={"title": "x", "id": "../../etc"}).status_code =
 check(c.post("/p/entries", content=b"[1,2]", headers={"content-type": "application/json"}).status_code == 400, "a non-object body is refused")
 check(c.post("/p/entries", content=b"{" + b" " * (130 * 1024) + b"}", headers={"content-type": "application/json"}).status_code == 413, "a body over 128 KB is refused")
 check(c.get("/p/entries/chg-20991231-0000000000").status_code == 404, "an unknown id is 404")
+rp = c.post("/p/entries", json={"title": "Resumable", "kind": "build", "resume": {"branch": "claude/y", "next": "finish it"}}).json()
+r = c.get(f"/p/entries/{rp['id']}/resume")
+check(r.status_code == 200 and r.json()["resume"]["branch"] == "claude/y" and "finish it" in r.json()["prompt"], "GET entries/{id}/resume gives the details and the prompt")
+r = c.patch(f"/p/entries/{rp['id']}", json={"resume": {"branch": "claude/y", "next": "almost"}})
+check(r.status_code == 200 and r.json()["resume"]["next"] == "almost", "PATCH updates the resume details")
+check(c.get("/p/entries/chg-20991231-0000000000/resume").status_code == 404, "resume of an unknown entry is 404")
+(DATA / "changes" / rp["createdAt"][:4] / rp["createdAt"][5:7] / f"{rp['id']}.json").unlink()  # keep the counts below as they were
 check(c.get("/p/entries/nope").status_code == 400, "a malformed id is 400")
 
 r = c.patch(f"/p/entries/{a['id']}", json={"step": {"text": "plan", "state": "running"}})
