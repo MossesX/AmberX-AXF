@@ -111,7 +111,7 @@ menu:<tab>:<id>|w:<tab>:<key>|find:<tab>:<eN>|banners.toggle`. Keys: Ctrl/Cmd+K 
 
 `npx -y tsx framework/spec/check-suite.mts` (93: marker, message caps, guest runtime end to end, page mode, scoped
 look for three apps), `npx -y tsx apps/patches-web/test.mts` (71), `check-embed.mts` 423, `check-appearance.mts` 80,
-Patches server `test_server.py` 57. CI (console job) re-bakes and builds patches-web and runs both new checks. Shared
+Patches server `test_server.py` 83 (with the Plugins per app grid). CI (console job) re-bakes and builds patches-web and runs both new checks. Shared
 fixtures unchanged: the new takes are web-only, so `embed-takes.json` `ids` lists only the takes the Kotlin twin knows.
 
 ## Not done / known gaps
