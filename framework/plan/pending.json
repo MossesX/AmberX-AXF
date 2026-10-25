@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T20:59:28.940Z",
+ "updatedAt": "2026-10-25T22:58:28.715Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3893,6 +3893,41 @@
    "builtAt": "2026-10-25T19:43:10.874Z",
    "updatedAt": "2026-10-25T19:43:11.171Z",
    "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "appearance-hidden-per-app-fable",
+   "title": "Fable rebuild: hidden bars per app in the appearance document",
+   "detail": "Rebuild the Opus build (branch claude/project-thread-k6ckjv) of appearance@1 hiddenBy on Fable as a fixture-pinned cross-port contract: start by reviewing or replacing the Opus version.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus hiddenBy change in core/engines/appearance.ts and runtime; decide keep or redo",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Pin hiddenBy (parse, resolve with app, perApp merge, serialize) in spec/fixtures/appearance.json via gen-fixtures",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Kotlin AppearanceEngine + AxfRuntime/HubAppearanceSource twin (when Android work resumes) and ConformanceTest",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Re-bake developer apps, differences report + LOG entry",
+     "at": "",
+     "estimate": "15 min"
+    }
+   ],
+   "createdAt": "2026-10-25T22:58:28.715Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T22:58:28.715Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]

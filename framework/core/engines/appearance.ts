@@ -24,6 +24,16 @@ export const APPEARANCE_MAX_BYTES = 16 * 1024;
 export const APPEARANCE_NEVER: readonly string[] = ['uac-policy'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const APP_ID = /^[a-z0-9][a-z0-9.-]{0,79}$/;
+/** Most apps one document keeps hidden slots for. */
+export const APPEARANCE_MAX_APPS = 40;
+
+function hiddenMap(raw: unknown): Record<string, boolean> | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const hidden: Record<string, boolean> = {};
+  for (const [t, v] of Object.entries(raw as Record<string, unknown>)) if (typeof v === 'boolean' && ID.test(t)) hidden[t] = v;
+  return Object.keys(hidden).length ? hidden : null;
+}
 const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(,\s*[\d.]+\s*)?\))$/i;
 const PALETTE_KEYS = ['bg', 'fg', 'muted', 'card', 'line', 'accent', 'danger', 'ok'] as const;
 
@@ -33,8 +43,11 @@ export interface AppearanceDocument {
   /** asset type → asset id (appearance slots only) */
   slots?: Record<string, string>;
   spacing?: Spacing;
-  /** chrome slots (hideable types) → hidden; absent = the app's default */
+  /** chrome slots (hideable types) → hidden; absent = the app's default. Legacy, shared by every app: apps that
+   *  pass their id to `resolveAppearance` ignore it and read `hiddenBy` instead (Brett, Oct 25 2026). */
   hidden?: Record<string, boolean>;
+  /** app id → its own hidden chrome slots: hiding a bar in one app never hides it in another (Console vs Patches). */
+  hiddenBy?: Record<string, Record<string, boolean>>;
   /** a few colours for apps that don't run the theme engine (axHub's own pages); derived from the colour theme */
   palette?: Partial<Record<(typeof PALETTE_KEYS)[number], string>> & { scheme?: 'light' | 'dark' };
   /** who saved it last (app id), when; informational */
@@ -82,10 +95,16 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
     if (Object.keys(slots).length) doc.slots = slots;
   }
   if (typeof o.spacing === 'string' && spacingOf(o.spacing) === o.spacing) doc.spacing = o.spacing as Spacing;
-  if (o.hidden && typeof o.hidden === 'object' && !Array.isArray(o.hidden)) {
-    const hidden: Record<string, boolean> = {};
-    for (const [t, v] of Object.entries(o.hidden as Record<string, unknown>)) if (typeof v === 'boolean' && ID.test(t)) hidden[t] = v;
-    if (Object.keys(hidden).length) doc.hidden = hidden;
+  const flat = hiddenMap(o.hidden);
+  if (flat) doc.hidden = flat;
+  if (o.hiddenBy && typeof o.hiddenBy === 'object' && !Array.isArray(o.hiddenBy)) {
+    const by: Record<string, Record<string, boolean>> = {};
+    for (const [app, m] of Object.entries(o.hiddenBy as Record<string, unknown>)) {
+      if (Object.keys(by).length >= APPEARANCE_MAX_APPS) break;
+      const h = APP_ID.test(app) ? hiddenMap(m) : null;
+      if (h) by[app] = h;
+    }
+    if (Object.keys(by).length) doc.hiddenBy = by;
   }
   if (o.palette && typeof o.palette === 'object' && !Array.isArray(o.palette)) {
     const p = o.palette as Record<string, unknown>;
@@ -102,9 +121,10 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
 /**
  * Check a document against what this app actually has. `has(type, id)` is the app's registry; `types` its asset
  * types. An unknown slot id is skipped (the slot keeps the app's default); a hidden flag on a non-hideable type is
- * skipped; spacing must be a known choice. Nothing here can crash on any input.
+ * skipped; spacing must be a known choice. Nothing here can crash on any input. With `app`, hidden slots come only
+ * from that app's own entry in `hiddenBy` (the shared legacy `hidden` is ignored), so apps never hide each other's bars.
  */
-export function resolveAppearance(doc: AppearanceDocument | null, has: (type: string, id: string) => boolean, types: readonly string[] = ASSET_TYPES): ResolvedAppearance {
+export function resolveAppearance(doc: AppearanceDocument | null, has: (type: string, id: string) => boolean, types: readonly string[] = ASSET_TYPES, app?: string): ResolvedAppearance {
   const out: ResolvedAppearance = { slots: {}, spacing: null, hidden: {}, skipped: [] };
   if (!doc) return out;
   const slotTypes = appearanceSlotTypes(types);
@@ -114,7 +134,7 @@ export function resolveAppearance(doc: AppearanceDocument | null, has: (type: st
     out.slots[t] = id;
   }
   if (doc.spacing) out.spacing = spacingOf(doc.spacing);
-  for (const [t, v] of Object.entries(doc.hidden ?? {})) {
+  for (const [t, v] of Object.entries((app ? doc.hiddenBy?.[app] : doc.hidden) ?? {})) {
     if (!types.includes(t) || !hideable(t)) { out.skipped.push(`hidden ${t} (not hideable)`); continue; }
     out.hidden[t] = v;
   }
@@ -136,16 +156,22 @@ export function paletteFromColorTheme(data: { scheme?: string; tokens?: Record<s
 /**
  * Merge one app's change into the document (a save from Settings → Appearance, the theme manager or Build Pilot's
  * Look). Per key, last write wins (the framework's UI-editor rule): keys the change doesn't name are kept from `base`
- * — slots of types this app doesn't have included, so one app never erases another app's choices.
+ * — slots of types this app doesn't have included, so one app never erases another app's choices. With `perApp`,
+ * hidden changes go into `hiddenBy[by]` (this app's own bars) instead of the shared legacy `hidden`.
  */
-export function mergeAppearance(base: AppearanceDocument | null, change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }, by: string, now: string): AppearanceDocument {
+export function mergeAppearance(base: AppearanceDocument | null, change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }, by: string, now: string, perApp = false): AppearanceDocument {
   const doc: AppearanceDocument = normalizeAppearance({ ...(base ?? { $axf: APPEARANCE_FRAME }), $axf: APPEARANCE_FRAME }) ?? { $axf: APPEARANCE_FRAME };
   if (change.slots) doc.slots = { ...(doc.slots ?? {}), ...change.slots };
   if (change.spacing) doc.spacing = change.spacing;
   if (change.hidden) {
-    const hidden = { ...(doc.hidden ?? {}) };
+    const app = by.slice(0, 80);
+    const hidden = { ...((perApp ? doc.hiddenBy?.[app] : doc.hidden) ?? {}) };
     for (const [t, v] of Object.entries(change.hidden)) { if (v === null) delete hidden[t]; else hidden[t] = v; }
-    doc.hidden = hidden;
+    if (!perApp) doc.hidden = hidden;
+    else if (APP_ID.test(app)) {
+      const rest = Object.fromEntries(Object.entries(doc.hiddenBy ?? {}).filter(([a]) => a !== app));
+      doc.hiddenBy = Object.keys(hidden).length ? { ...rest, [app]: hidden } : rest;
+    }
   }
   if (change.palette) doc.palette = change.palette;
   doc.updatedBy = by.slice(0, 80);
@@ -159,6 +185,7 @@ export function serializeAppearance(doc: AppearanceDocument): string {
   if (doc.slots) ordered.slots = Object.fromEntries(Object.entries(doc.slots).sort(([a], [b]) => a.localeCompare(b)));
   if (doc.spacing) ordered.spacing = doc.spacing;
   if (doc.hidden) ordered.hidden = Object.fromEntries(Object.entries(doc.hidden).sort(([a], [b]) => a.localeCompare(b)));
+  if (doc.hiddenBy) ordered.hiddenBy = Object.fromEntries(Object.entries(doc.hiddenBy).sort(([a], [b]) => a.localeCompare(b)).map(([a, h]) => [a, Object.fromEntries(Object.entries(h).sort(([x], [y]) => x.localeCompare(y)))]));
   if (doc.palette) ordered.palette = doc.palette;
   if (doc.updatedBy) ordered.updatedBy = doc.updatedBy;
   if (doc.updatedAt) ordered.updatedAt = doc.updatedAt;
