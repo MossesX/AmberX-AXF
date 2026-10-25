@@ -120,3 +120,13 @@ repo's code, so "axHub never depends on AXF" still holds for the server. Reusabl
 ## axHub badge: red until live (Oct 24 2026)
 
 Brett: the axHub badge must be red whenever the app isn't retrieving its settings live from axHub, and green only when it is (first red, then green). Built as the framework web library `framework/libs/hubstatus` (status widget `status/axhub`, counter `hub.live`, no new asset type), installed in the Dev Console. Rule in `_claude/rules/RULES.md`.
+
+## Oct 24 2026 — Vinny works without Claude; Auto fix tries Vinny first (Gizmo/Brett)
+
+Brett: "Make the agent Vinny able to work without an active Claude connection." Vinny gets a skill holding a managed
+list of VPS commands, each mapped to triggers (keywords or commands sent to him through code); when a trigger appears
+anywhere in a message he receives (even inside a paragraph, in any state), he runs the mapped command on the VPS
+through axHub, with no model involved. The same for GitHub: mapped git/GitHub commands he can run without Claude.
+A settings dialog adds, removes, edits and manages the commands and triggers. **Every live banner's Auto fix tries
+Vinny first; if Vinny fails, it falls back to Mosses, then to Claude.**
+- **Oct 24 2026 — Offline agents' engines are on axHub (Brett).** "Yes Vinny's commands go through after because his engine is on axhub … All offline agents engines are on axhub." Every agent that works without a Claude connection (Vinny first) runs its engine on axHub: its commands go through axHub (each `vps.run` approved there) and its data (command book, runs) is kept on axHub, not only in the console.

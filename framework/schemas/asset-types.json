@@ -303,7 +303,10 @@
         "slot": false,
         "asset": false
       },
-      "hideable": true
+      "hideable": true,
+      "optional_fields": {
+        "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+      }
     },
     "tab-group": {
       "label": "Tab group",
@@ -1089,6 +1092,25 @@
       },
       "optional": true
     },
+    "appearance-package": {
+      "label": "Appearance package",
+      "group": "System",
+      "icon": "palette",
+      "description": "Every appearance setting saved as one asset (appearance-package@1, engine core/engines/appearancepackage.ts): the active asset of every appearance slot (never the access policy), the Spacing choice, chrome shown / hidden, and every other appearance setting by key (customize tokens, roll switches, banner looks and hides, toolbar fold, where plugin UIs open). Picking one applies all of it at once; Restore default appearance goes back to the app's defaults.",
+      "required": [
+        "slots"
+      ],
+      "optional_fields": {
+        "spacing": "tight | compact | regular",
+        "hidden": "asset type → true (hidden) / false (shown)",
+        "settings": "appearance settings key → value (keys under axf.custom., axf.roll., axf.banners., axf.toolbar.collapsed, axf.placement., axf.appearance.)"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true
+    },
     "uac-policy": {
       "label": "User account control",
       "group": "System",
@@ -1129,7 +1151,8 @@
       "checked": "string — setting:<key> | counter:<name> | slot:<type> | hidden:<type>",
       "order": "number — placement among siblings (default 100)",
       "before": "string — sibling id to go before",
-      "after": "string — sibling id to go after"
+      "after": "string — sibling id to go after",
+      "spacer": "boolean — with separator: true, an empty gap instead of a rule"
     },
     "checkedKinds": [
       "setting",

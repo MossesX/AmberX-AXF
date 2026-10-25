@@ -223,9 +223,9 @@ export const autoFixLabel = (c: Check) => {
 };
 
 interface MossesJob { state: 'asking' | 'working' | 'done' | 'failed'; message: string; reply?: string }
-/** Hand a check to Mosses (server: POST mosses/{id}) and follow it until he's done; refusals say exactly what's missing. */
+/** Hand a check over (server: POST mosses/{id}: Vinny's mapped command first, then Mosses, then Claude) and follow it until he's done; refusals say exactly what's missing. */
 async function runMossesJob(c: Check): Promise<{ state: string; message: string }> {
-  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Handing it to Mosses…'; emit();
+  st.run[c.id] = 'working'; st.runMsg[c.id] = 'Asking Vinny, then Mosses…'; emit();
   let j = await call<MossesJob>(`mosses/${c.id}`, { method: 'POST' });
   const until = Date.now() + 90 * 60_000; // his commands each wait for an approval
   while ((j.state === 'asking' || j.state === 'working') && Date.now() < until) {
@@ -247,8 +247,9 @@ async function mossesFix(c: Check, rt: ReturnType<typeof useRuntime>): Promise<v
     await loadSystemCheck(true);
     const now = st.report?.checks.find((x) => x.id === c.id);
     const fixed = !!now && (now.status === 'ok' || now.status === 'info');
-    st.run[c.id] = fixed ? 'done' : 'failed'; st.runMsg[c.id] = fixed ? 'Fixed by Mosses.' : j.message; if (fixed) markFixed(c.id); emit();
-    rt.toast(`${c.title}: ${fixed ? 'fixed by Mosses' : j.message}`, fixed ? 'success' : 'warning');
+    const by = j.message.startsWith('Fixed by Vinny') ? j.message : 'Fixed by Mosses.';
+    st.run[c.id] = fixed ? 'done' : 'failed'; st.runMsg[c.id] = fixed ? by : j.message; if (fixed) markFixed(c.id); emit();
+    rt.toast(`${c.title}: ${fixed ? by.replace(/\.$/, '').toLowerCase() : j.message}`, fixed ? 'success' : 'warning');
   } catch (e) { st.run[c.id] = 'failed'; st.runMsg[c.id] = (e as Error).message; emit(); rt.toast(`${c.title}: ${(e as Error).message}`, 'danger'); }
 }
 

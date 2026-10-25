@@ -38,11 +38,12 @@ export const ASSET_TYPES = [
   'divider',
   'badge',
   'settings',
+  'appearance-package',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'appearance-package'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -73,6 +74,8 @@ export interface MenuItem {
   requires?: string;
   items?: MenuItem[];
   separator?: boolean;
+  /** with `separator`: an empty gap instead of a rule */
+  spacer?: boolean;
   /* ---- optional fields (asset-types.json → menuItems; engines/appmenu.ts) ---- */
   /** id of a live-list provider (`rt.registerAppMenuProvider`): the item becomes a submenu filled on open */
   provider?: string;
@@ -225,6 +228,8 @@ export interface ContextMenuData {
   variant: 'compact' | 'roomy' | 'glass';
   showIcons: boolean;
   showShortcuts: boolean;
+  /** false = the asset's own targets show only its own items (no plugin contributions or everywhere items); default true */
+  contributions?: boolean;
   /** target name -> items. "default" is required and used as fallback. */
   targets: Record<string, MenuItem[]>;
 }
@@ -365,6 +370,18 @@ export interface ContainerData {
 /* ---------- system ---------- */
 
 /** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
+/** appearance-package@1 (engines/appearancepackage.ts): every appearance setting saved as one asset. */
+export interface AppearancePackageData {
+  /** asset type → asset id for every appearance slot (themes, layout, chrome, controls); never the access policy */
+  slots: Record<string, string>;
+  /** spacing choice (tight | compact | regular) */
+  spacing?: string;
+  /** chrome slots hidden (true) or shown (false); absent = the app's default */
+  hidden?: Record<string, boolean>;
+  /** every other appearance setting by key (customize tokens, roll switches, banner looks, toolbar fold …) */
+  settings?: Record<string, unknown>;
+}
+
 export type SettingsData = Pick<SettingsUi, 'layout' | 'header' | 'search' | 'descriptions'> & Partial<Pick<SettingsUi, 'tabs' | 'hide' | 'groups'>>;
 
 export interface UACRole {
@@ -419,6 +436,7 @@ export interface AssetDataMap {
   divider: DividerData;
   badge: BadgeData;
   settings: SettingsData;
+  'appearance-package': AppearancePackageData;
   'uac-policy': UACPolicyData;
 }
 
@@ -426,7 +444,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'appearance-package';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

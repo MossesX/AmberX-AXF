@@ -126,6 +126,7 @@
           { "id": "s1", "separator": true, "order": 20 },
           { "id": "s2", "separator": true, "order": 85 },
           { "id": "all", "label": "All plugins", "icon": "package", "provider": "console.plugins", "order": 90 },
+          { "id": "open", "label": "Open a plugin", "icon": "external", "provider": "amber.plugins", "order": 91 },
           { "id": "settings", "label": "Plugin settings", "icon": "settings", "action": "settings.open:plugins", "order": 91 }
         ]
       },

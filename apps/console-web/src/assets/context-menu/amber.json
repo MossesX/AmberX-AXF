@@ -1,0 +1,145 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "amber",
+  "name": "Amber",
+  "version": "1.0.0",
+  "description": "The console's Amber right-click menu: every plugin under Plugins (each opens where it's set to open: main area, dialog or window), the everyday console tools, cut / copy / paste, colour theme next / previous / reset, and Settings at the bottom. Shows only its own items.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "contributions": false,
+    "targets": {
+      "default": [
+        {
+          "id": "plugins",
+          "label": "Plugins",
+          "icon": "package",
+          "provider": "amber.plugins"
+        },
+        {
+          "id": "s-plugins",
+          "separator": true
+        },
+        {
+          "id": "search",
+          "label": "Search everything",
+          "icon": "search",
+          "action": "console.search",
+          "shortcut": "Ctrl+K"
+        },
+        {
+          "id": "ashes",
+          "label": "AshesUI",
+          "icon": "eye",
+          "action": "ashes.toggle",
+          "checked": "setting:axf.ashes.on"
+        },
+        {
+          "id": "terminal",
+          "label": "Open terminal",
+          "icon": "terminal",
+          "action": "terminal.new"
+        },
+        {
+          "id": "handoff",
+          "label": "Account handoff",
+          "icon": "rocket",
+          "action": "claude-handoff.open"
+        },
+        {
+          "id": "plugin-switches",
+          "label": "Plugin switches",
+          "icon": "sliders",
+          "action": "plugin-switches.open"
+        },
+        {
+          "id": "ai",
+          "label": "Ask the assistant",
+          "icon": "sparkles",
+          "action": "ai-assistant.open"
+        },
+        {
+          "id": "alerts",
+          "label": "Alerts",
+          "icon": "bell",
+          "action": "alerts.open"
+        },
+        {
+          "id": "pending",
+          "label": "Pending builds",
+          "icon": "list",
+          "action": "nav:pending"
+        },
+        {
+          "id": "reload",
+          "label": "Reload data",
+          "icon": "refresh",
+          "action": "console.refresh"
+        },
+        {
+          "id": "s-edit",
+          "separator": true
+        },
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "cut",
+          "action": "edit.cut",
+          "shortcut": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "s-theme",
+          "separator": true
+        },
+        {
+          "id": "next-theme",
+          "label": "Next theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C"
+        },
+        {
+          "id": "prev-theme",
+          "label": "Previous theme",
+          "icon": "palette",
+          "action": "swap:color-theme:prev"
+        },
+        {
+          "id": "reset-theme",
+          "label": "Reset theme",
+          "icon": "undo",
+          "action": "swap:color-theme:default"
+        },
+        {
+          "id": "spacer",
+          "separator": true,
+          "spacer": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings"
+        }
+      ]
+    }
+  }
+}

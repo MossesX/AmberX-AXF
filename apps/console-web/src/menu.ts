@@ -28,6 +28,8 @@ export const CONSOLE_PROVIDERS = {
   modules: { id: 'console.modules', max: 14, moreAction: 'nav:modules', moreLabel: 'All modules…' },
   boilerplates: { id: 'console.boilerplates', max: 14, moreAction: 'nav:boilerplates', moreLabel: 'All boilerplates…' },
   plugins: { id: 'console.plugins', max: 30, moreAction: 'settings.open:plugins', moreLabel: 'Settings → Plugins…' },
+  // context-menu/amber → Plugins: every plugin, each opening where its placement says (main area, dialog, window, tab)
+  amberPlugins: { id: 'amber.plugins', max: 80, moreAction: 'settings.open:plugins', moreLabel: 'Settings → Plugins…' },
 } as const;
 
 /** Runtime counter: pending builds not complete (badge on Builds → Pending builds). */

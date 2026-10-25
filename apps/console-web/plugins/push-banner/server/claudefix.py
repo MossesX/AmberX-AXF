@@ -159,8 +159,30 @@ def mosses_ready() -> tuple[bool, str]:
     return True, ""
 
 
+VINNY_SVC = "axf.vinny@1"
+
+
+def vinny() -> Any:
+    """Vinny's command book when he takes Auto fixes now (Oct 24 2026: Vinny first, then Mosses, then Claude)."""
+    svc = plugin_services.get(VINNY_SVC)
+    try:
+        return svc if svc is not None and svc.ready()[0] and svc.auto_fix_first() else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 180) -> dict[str, Any]:
-    """axHub's `call`, through Mosses: {"ok": text} | {"confirm": id} (waiting for approval), else HubError."""
+    """axHub's `call`, through Vinny's axhub_call first, else Mosses's: {"ok": text} | {"confirm": id}, else HubError.
+    Never falls back once Brett rejected it or the approval expired."""
+    v = vinny()
+    if v is not None:
+        try:
+            return v.call(tool, {**arguments, "timeout_seconds": int(arguments.get("timeout_seconds") or timeout)}, confirmation_id, timeout,
+                          "Push banner: fix a failed pull or merge")
+        except Exception as e:  # noqa: BLE001
+            m = str(e).lower()
+            if "reject" in m or "expired" in m:
+                raise HubError(str(e)[:400]) from None
     ok, why = mosses_ready()
     if not ok:
         raise HubError(why)
@@ -188,7 +210,10 @@ class Launches:
     """One headless Claude Code session per failing entry: ask the hub, wait for the approval, report on the entry."""
 
     def __init__(self, settings: Callable[[], dict[str, Any]], call: Callable[..., dict[str, Any]] = call_hub,
-                 delays: Callable[[], list[float]] = retry_delays, changes: Callable[[], Any] = lambda: plugin_services.get(CHANGES)) -> None:
+                 delays: Callable[[], list[float]] = retry_delays, changes: Callable[[], Any] = lambda: plugin_services.get(CHANGES),
+                 vinny_svc: Callable[[], Any] = vinny, sleep: Callable[[float], None] = time.sleep) -> None:
+        self.vinny_svc = vinny_svc
+        self.sleep = sleep
         self.settings = settings
         self.call = call
         self.delays = delays
@@ -245,7 +270,7 @@ class Launches:
             self._fail(key, change_id, str(e))
             return self.get(key)
         self._set(key, changeId=change_id, command=cmd, rest=sent)
-        threading.Thread(target=self._run, args=(key, cmd, change_id), daemon=True).start()
+        threading.Thread(target=self._chain, args=(key, cmd, change_id, t), daemon=True).start()
         return self.get(key)
 
     def _open_entry(self, t: dict[str, Any]) -> str:
@@ -276,6 +301,41 @@ class Launches:
     def _fail(self, key: str, change_id: str, msg: str) -> None:
         self._set(key, state="failed", message=msg)
         self._update(change_id, {"status": "failed", "result": {"state": "failed", "summary": msg[:300]}})
+
+    def _chain(self, key: str, cmd: str, change_id: str, t: dict[str, Any]) -> None:
+        """Vinny's mapped command for this failure first (no model); if he has none or it fails, launch Claude."""
+        if self._vinny(key, change_id, t):
+            return
+        self._run(key, cmd, change_id)
+
+    def _vinny(self, key: str, change_id: str, t: dict[str, Any]) -> bool:
+        v = self.vinny_svc()
+        if v is None:
+            return False
+        text = f"{t.get('action', '')} failed {t.get('kind', '')} {t.get('failure', '')} {t['repo']} {t['branch']}"
+        ctx = {"repo": t["repo"], "branch": t["branch"], **({"number": str(t["number"])} if t.get("number") else {})}
+        try:
+            run = v.start_fix(key, text, ctx, "push-banner")
+        except Exception:  # noqa: BLE001
+            return False
+        if not run or not run.get("id"):
+            return False
+        self._set(key, state="waiting", message=f"Vinny is running “{run.get('name')}” first: approve it on axHub.")
+        self._update(change_id, {"doing": f"Vinny runs “{run.get('name')}” (no model) before Claude"})
+        end = time.time() + WAIT_S + 15 * 60
+        while run.get("state") in ("asking", "waiting", "running") and time.time() < end:
+            self.sleep(3)
+            run = v.get_run(run["id"]) or run
+        if run.get("rejected"):
+            self._fail(key, change_id, "Rejected on the hub.")
+            return True
+        if run.get("state") == "done":
+            self._set(key, state="launched", message=f"Fixed by Vinny ({run.get('name')}): pulling again.", agent="vinny")
+            self._update(change_id, {"status": "done", "doing": f"Vinny ran “{run.get('name')}”",
+                                     "result": {"state": "done", "summary": f"Vinny's mapped command “{run.get('name')}” ran (no model)."}})
+            return True
+        self._set(key, state="asking", message=f"Vinny's “{run.get('name')}” didn't work; handing it to Claude Code…")
+        return False
 
     def _run(self, key: str, cmd: str, change_id: str) -> None:
         args = {"command": cmd, "timeout_seconds": 300}

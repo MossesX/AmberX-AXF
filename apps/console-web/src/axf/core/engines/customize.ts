@@ -152,7 +152,7 @@ export function customEditable(slot: CustomSlot, ids: string[], id: string): boo
 /** Turning "apply to all" off copies the shared values to every asset (nothing visibly changes); on keeps the first asset's values for all. */
 export function setApplyAll(slot: CustomSlot, ids: string[], all: boolean): CustomSlot {
   if (all === slot.all) return slot;
-  if (!all) return { all: false, shared: slot.shared, byId: Object.fromEntries(ids.map((id) => [id, { ...slot.shared }])) };
+  if (!all) return { all: false, shared: slot.shared, byId: { ...slot.byId, ...Object.fromEntries(ids.map((id) => [id, { ...slot.shared }])) } };
   return { all: true, shared: { ...(ids[0] ? slot.byId[ids[0]] ?? {} : slot.shared) }, byId: slot.byId };
 }
 

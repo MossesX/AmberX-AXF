@@ -64,3 +64,5 @@
 .axp-agent-manager__uses li { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--fx-space) * 0.5); overflow-wrap: anywhere }
 .axp-agent-manager__diff .is-add { color: var(--fx-success) }
 .axp-agent-manager__diff .is-del { color: var(--fx-danger) }
+/* Vinny's commands dialog: run output (layout only) */
+.axp-agent-manager__out { max-height: 12em; overflow: auto; white-space: pre-wrap; word-break: break-word; margin: 0; }

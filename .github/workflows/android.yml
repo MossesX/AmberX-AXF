@@ -95,6 +95,11 @@ jobs:
         run: |
           rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
           npm install --no-audit --no-fund --silent && npm run build
+      - name: amberx-droid — re-bake the framework into it and build it
+        working-directory: apps/amberx-droid
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
+          npm install --no-audit --no-fund --silent && npm run build
       - name: walkthrough-studio — re-bake the framework into it and build it
         working-directory: apps/walkthrough-studio
         run: |
@@ -117,6 +122,7 @@ jobs:
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
+            npx -y tsx framework/spec/check-appearance-package.mts     # appearance-package@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
@@ -126,6 +132,7 @@ jobs:
             npx -y tsx framework/spec/check-banner-hide.mts            # banner Hide / Hide all / hide timer state + plugin@1 banner check
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
             npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
+            npx -y tsx apps/amberx-droid/test.mjs                      # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
@@ -201,9 +208,44 @@ jobs:
           name: console-web-dist
           path: apps/console-web/dist
 
+  amberx:
+    name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
+    runs-on: ubuntu-latest
+    env:
+      AXF_BUILD_NUMBER: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      # Capacitor 8 builds with JDK 21 and compileSdk 36.
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - name: Android SDK 36
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" "platform-tools" > /dev/null
+      - name: Stable debug signing key (secret ANDROID_DEBUG_KEYSTORE, base64)
+        env: { KS: '${{ secrets.ANDROID_DEBUG_KEYSTORE }}' }
+        run: if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore; fi
+      - name: Build the web app, copy it into the shell
+        working-directory: apps/amberx-droid
+        run: |
+          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done
+          npm ci --no-audit --no-fund && npm run build && npx cap sync android
+      - name: Native unit tests + debug APK
+        working-directory: apps/amberx-droid/android
+        run: chmod +x gradlew && ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: amberx-debug.apk
+          path: apps/amberx-droid/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-latest
+    # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
+    needs: amberx
+    if: ${{ !cancelled() }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
       AXF_BUILD_NUMBER: ${{ github.run_number }}
@@ -262,6 +304,12 @@ jobs:
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
             echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
+      - name: AmberX APK from its own job (Capacitor shell) for the catalog bundle
+        if: ${{ needs.amberx.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: amberx-debug.apk
+          path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
         run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)

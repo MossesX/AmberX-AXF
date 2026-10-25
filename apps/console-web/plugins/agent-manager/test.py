@@ -113,7 +113,7 @@ check(ci["$axf"] == "agent-definition@1" and "container_write" in ci["builtins"]
 st = c.get("/am/status").json()
 check(st["llm"]["source"] == "assistant" and st["addons"]["available"] == 4, "status: uses axf.llm@1 and sees 4 bundled add-ons")
 vin = svc.get_agent("vinny") if (svc := plugin_services.get("axf.agents@1")) else None
-check(vin and any(t["name"] == "axhub_call" for t in vin["tools"]) and "vinny" in am.store.dangerous_agents() and "oauthAccount.emailAddress" in vin["system_prompt"], "Vinny is installed once on start, allowed axhub_call (root through axHub), with the retrieve-email skill")
+check(vin and any(t["name"] == "axhub_call" for t in vin["tools"]) and "vinny" in am.store.dangerous_agents() and "oauthAccount.emailAddress" in vin["system_prompt"] and "Never print, read out" in vin["system_prompt"], "Vinny is installed once on start, allowed axhub_call (root through axHub), with the retrieve-email skill")
 post("addons/vinny/uninstall")
 am._offer_vinny()
 check("vinny" not in am.store.addon_records(), "…and an uninstall is respected on the next start")
@@ -222,8 +222,12 @@ check(post("tools/now/test", {})["output"].startswith('{"iso"'), "test a tool fr
 for aid in ("coder", "axf-expert", "ai-expert"):
     r = post(f"addons/{aid}/install")
     check(r["created"]["agents"] == [aid] and not r["skipped"], f"add-on {aid} installs ({sum(len(v) for v in r['created'].values())} entities)")
-time.sleep(2.5)
-job = c.get("/am/c/training/axf-expert.repo-docs").json()["item"]
+# the repo-docs training runs in the background; the repo keeps growing, so wait for it (up to 30 s) instead of a fixed sleep
+for _ in range(60):
+    job = c.get("/am/c/training/axf-expert.repo-docs").json()["item"]
+    if job.get("status") in ("completed", "partial", "failed"):
+        break
+    time.sleep(0.5)
 check(job.get("status") in ("completed", "partial") and job.get("lastAdded", 0) > 5, f"axf-expert auto-trained from the repo ({job.get('lastAdded')} chunks)")
 check(c.get("/am/c/training/ai-expert.docs").json()["item"].get("status") is None, "ai-expert's Firecrawl training waits for a key")
 ctx = svc.memory_context("axf-expert", "what is asset@1 plugin lifecycle")
@@ -473,6 +477,82 @@ check(len(got) == 1 and got[0]["command"] == "ufw allow 60000:61000/udp" and got
 check(hr.get(got[0]["id"])["id"] == got[0]["id"] and hr.runs(got[0]["at"]) == [], "runs are read back by id and by time")
 os.environ.pop("AXHUB_TOKEN", None)
 check("axHub token" in json.loads(ht.run({"tool": "vps.run", "arguments": {"command": "x"}}, {}))["message"], "without the axHub token it says to add it")
+# Vinny's command book (vinny-commands@1, Oct 24 2026): triggers → VPS / git / GitHub commands, no model, through axHub
+vn = sys.modules["axf_console_plugins.agent_manager.vinny"]
+check(vn.trigger_hits("run the doctor", "Hey Vinny,\nthe console is stuck. Could you  RUN THE   doctor please?") and not vn.trigger_hits("doctor", "a doctorate"),
+      "a trigger is found anywhere in a paragraph (whole words, case and spacing ignored)")
+cmds = [{"id": "a", "name": "A", "triggers": ["restart"], "kind": "vps", "command": "x"}, {"id": "b", "name": "B", "triggers": ["health"], "kind": "vps", "command": "y"},
+        {"id": "c", "name": "C", "triggers": ["logs"], "kind": "vps", "command": "z", "enabled": False}]
+check([c_["id"] for c_ in vn.matches(cmds, "check health then restart and show logs")] == ["b", "a"], "every enabled trigger runs, in the order it appears; a switched-off one never")
+check(vn.fix_for([{"id": "f", "fixes": ["host-*"], "triggers": []}, *cmds], "host-mosh")["id"] == "f" and vn.fix_for(cmds, "x", "please restart it")["id"] == "a"
+      and vn.fix_for(cmds, "x", "nothing here") is None, "Auto fix: a matching fix key wins, else a trigger in the check's text, else nothing (Mosses next)")
+def refused(c_):
+    try:
+        vn.build(c_, {"branch": "feat/a"}); return False
+    except vn.VinnyError:
+        return True
+g = {"id": "g", "name": "G", "kind": "git", "repo": "/opt/axf", "triggers": ["t"]}
+check(vn.build({**g, "command": "git pull --ff-only origin {branch}"}, {"branch": "feat/a"})[1]["command"] == "cd '/opt/axf' && git pull --ff-only origin 'feat/a'",
+      "a git command runs in its folder, placeholders shell-quoted")
+check(all(refused({**g, "command": c_}) for c_ in ["git push --force", "git push origin main", "git push origin HEAD:master", "git status; rm -rf /", "git log $(id)", "ls"])
+      and refused({**g, "command": "git status", "repo": "/opt/../etc"}),
+      "git: one command, never a force push or a push to main, no chaining; folders absolute without ..")
+check(refused({"id": "v", "kind": "vps", "command": "echo {branch}"}) is False and refused({**g, "command": "git checkout {branch}"}) is False,
+      "placeholders filled from the caller's context")
+try:
+    vn.fill("x {branch}", {"branch": "a; rm -rf /"}, True); bad_ph = False
+except vn.VinnyError:
+    bad_ph = True
+check(bad_ph, "a placeholder that isn't a plain name is refused")
+check(vn.build({"id": "h", "kind": "github", "tool": "github.create_issue", "arguments": {"title": "Fix {branch}"}}, {"branch": "feat/a"}) == ("github.create_issue", {"title": "Fix feat/a"}),
+      "GitHub commands are axHub github.* tools with fixed arguments")
+r = c.post("/am/vinny/commands", json={"name": "Pull console", "kind": "git", "repo": "/opt/axf", "command": "git pull --ff-only", "triggers": ["Pull Console", "/pull"]})
+check(r.status_code == 200 and r.json()["command"]["triggers"] == ["pull console", "/pull"], "the dialog adds a command (triggers normalised)")
+check(c.post("/am/vinny/commands", json={"name": "Bad", "kind": "git", "repo": "/opt/axf", "command": "git push -f", "triggers": ["x"]}).status_code == 400
+      and c.post("/am/vinny/commands", json={"name": "No trigger", "kind": "vps", "command": "uptime"}).status_code == 400, "unsafe or trigger-less commands are refused with why")
+book = c.get("/am/vinny").json()
+check(any(x["id"] == "health" for x in book["commands"]) and book["settings"]["listen"] is True and book["settings"]["autoFixFirst"] is True,
+      "starter commands ship; listening and Auto fix first are on")
+t_ = c.post("/am/vinny/test", json={"text": "Vinny, pull console and tell me the server health"}).json()["matches"]
+check([m["id"] for m in t_] == ["pull-console", "health"] and t_[0]["arguments"]["command"] == "cd '/opt/axf' && git pull --ff-only", "Try a message shows exactly what would run")
+check(c.put("/am/vinny/settings", json={"listen": False}).json()["settings"]["listen"] is False and vn.handle("server health") == [], "listening off: triggers don't run")
+c.put("/am/vinny/settings", json={"listen": True})
+check(c.delete("/am/vinny/commands/pull-console").status_code == 200 and c.delete("/am/vinny/commands/pull-console").status_code == 404, "remove a command")
+# App tokens (Oct 25 2026): where each app's token is, never its value; added once to books written before
+import subprocess, tempfile, hashlib
+with tempfile.TemporaryDirectory() as td:
+    os.makedirs(f"{td}/patches-web/.app"); open(f"{td}/patches-web/.app/env", "w").write("APP_TOKEN=s3cretPatchesValue0123456789abcd\n")
+    out = subprocess.run(["bash", "-c", vn.TOKENS_COMMAND.replace("/opt/", td + "/")], capture_output=True, text=True, timeout=30).stdout
+check("s3cret" not in out and "set, 32 characters, fingerprint " + hashlib.sha256(b"s3cretPatchesValue0123456789abcd").hexdigest()[:8] in out
+      and "BP_TOKEN: not found" in out and "to copy it yourself: sudo sed -n 's/^APP_TOKEN=//p'" in out,
+      "the app-tokens command says set / not found, length and a fingerprint, never the value")
+check("$" not in "".join(a + k + f for a, k, f in vn.APP_TOKENS) and "unset v" in vn.TOKENS_COMMAND, "token paths are fixed, nothing is filled in")
+old = vn.load()
+vn._write(vn.FILE, {"$axf": vn.TAG, "commands": [x for x in old["commands"] if x["id"] != "app-tokens"], "settings": {"listen": True}})
+check(any(x["id"] == "app-tokens" for x in vn.load()["commands"]), "a book written before gets the app-tokens command once")
+vn.remove("app-tokens")
+check(not any(x["id"] == "app-tokens" for x in vn.load()["commands"]), "…and removing it afterwards is respected")
+vn.reset_defaults()
+check(vn.fix_for(vn.load()["commands"], "x", "Vinny where are the app tokens")["id"] == "app-tokens", "'app tokens' in a message runs it")
+calls_ = []
+def vhub(answers):
+    def f(tool, args, conf=None, timeout=0, reason=""):
+        calls_.append((tool, args, conf)); a = answers.pop(0)
+        if a == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
+        if a == "reject": raise ht.HubError("The user rejected this call.")
+        return {"ok": a}
+    return f
+R = vn.Runner(call=vhub(["confirm", "$ uptime\nexit 0 · 3 ms"]), delays=lambda: [0], sleep=lambda s: None, persist=False)
+run_ = R.start({"id": "health", "name": "Health", "kind": "vps", "command": "uptime"}, "test", wait=True)
+check(run_["state"] == "done" and run_["exit"] == 0 and calls_[1][2] == "11111111-2222-3333-4444-555555555555", "a run asks axHub, waits for the approval, retries with its id, done")
+R2 = vn.Runner(call=vhub(["confirm", "reject"]), delays=lambda: [0], sleep=lambda s: None, persist=False)
+check(R2.start({"id": "x", "name": "X", "kind": "vps", "command": "x"}, wait=True)["rejected"] is True, "rejected on the hub: failed and marked rejected")
+R3 = vn.Runner(call=vhub(["$ x\nexit 2"]), persist=False)
+check(R3.start({"id": "x", "name": "X", "kind": "vps", "command": "x"}, wait=True)["state"] == "failed", "a non-zero exit is a failed run")
+plugin_services.provide("axf.agents@1", svc, "agent-manager")
+ok_v, why_v = vn.ready()
+check(ok_v or "Vinny" in why_v, "ready() says what Vinny is missing")
+check("✓ Health" in vn.summary([run_]), "his plain reply (no model) lists what ran")
 rt_ = svc.run_task("coder", "Say hi in one line.")
 check(isinstance(rt_["text"], str) and isinstance(rt_["tools"], list), "run_task: one headless turn as Mosses (the systems check hands him checks to fix)")
 print(f"all {ok} checks passed")

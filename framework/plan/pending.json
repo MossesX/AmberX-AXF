@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T19:00:48.146Z",
+ "updatedAt": "2026-10-25T16:44:19.565Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3299,6 +3299,212 @@
    "builtAt": "2026-10-25T10:28:58.310Z",
    "updatedAt": "2026-10-25T10:28:58.310Z",
    "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "codebase-changes-resume",
+   "title": "Codebase changes: resume details (carry on from another Claude account) + log the first edit",
+   "detail": "change-log@1 gains `resume` (repo, folder, branch, base, head, pushed, dirty, files, plan, next, notes, tests, read, pr); the hook records the git part by itself; the first edit after a prompt not worded as a change opens an entry with machine, session and session type; `changes.mjs resume <id> --prompt` + console Copy resume prompt (GET entries/{id}/resume). Still open from the log-every-change rule: a project-level hook so cloud and headless sessions log without a per-machine install.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:46:22.879Z",
+   "builtAt": "2026-10-25T14:47:07.826Z",
+   "updatedAt": "2026-10-25T14:47:07.826Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "vinny-offline-commands",
+   "title": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Command book engine + matcher + runs (agent manager)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Routes + axf.vinny@1 capability",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Settings dialog to manage commands and triggers",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Systems check Auto fix: Vinny → Mosses → Claude",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Push banner: Vinny first",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-24T17:53:56.154Z",
+   "builtAt": "2026-10-25T14:46:42.221Z",
+   "updatedAt": "2026-10-25T14:46:42.221Z",
+   "estimate": "3 h",
+   "source": "chat"
+  },
+  {
+   "id": "vinny-app-tokens",
+   "title": "Vinny: app token command (where, never the value)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:22:26.878Z",
+   "builtAt": "2026-10-25T10:22:26.878Z",
+   "updatedAt": "2026-10-25T10:22:26.878Z",
+   "estimate": "25 min",
+   "source": "chat"
+  },
+  {
+   "id": "handoff-session-button",
+   "title": "Claude handoff: Handoff Session button",
+   "detail": "Button under Assemble prompt: paste-ready summary of everything still open (change log, pending list, open PRs) plus rules and known gaps, for an existing project on another account; copied and kept in the kit as ACTIVE-THREADS.md. Branch claude/project-thread-tpor29 (PR #65).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
+     "at": "2026-10-25T10:39:16.195Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:39:16.114Z",
+   "builtAt": "2026-10-25T10:39:16.155Z",
+   "updatedAt": "2026-10-25T10:39:16.195Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "handoff-session-threads",
+   "title": "Claude handoff: Handoff Session prompt recreates the open threads",
+   "detail": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T14:46:55.696Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T14:46:55.696Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "changes-grid",
+   "title": "Changes & features grid plugin",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T16:38:09.847Z",
+   "builtAt": "2026-10-25T16:38:09.847Z",
+   "updatedAt": "2026-10-25T16:38:09.847Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-droid",
+   "title": "AmberX: voice + background monitoring Android app (replaces AXHub app)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
+     "at": "2026-10-25T16:17:42.692Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "App base on the console look (banner, nav, toolbar, menus)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Plugin host, catalog kind amberx",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub app functions through lib-hub + native hub view",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Voice control plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Background monitoring plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Capacitor Android shell: watch service, native speech, auto-approve",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T16:17:42.679Z",
+   "builtAt": "2026-10-25T16:17:42.679Z",
+   "updatedAt": "2026-10-25T16:17:42.692Z",
+   "estimate": "9 h",
+   "source": "chat"
+  },
+  {
+   "id": "context-menu-designer",
+   "title": "Context menu designer plugin: menus, chunks (own or inherited styles), floating live preview",
+   "detail": "Console plugin apps/console-web/plugins/context-menu-designer: create, edit, name, rename, save context menus; chunks inserted by name (separators, nested chunks), own or inherited style; floating live preview. Built on branch claude/project-thread-jflo9d.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Model, chunk expansion and chunk styles (web/core.ts)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Server store, designer UI, floating preview",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": ""
+    }
+   ],
+   "createdAt": "2026-10-25T16:44:19.565Z",
+   "builtAt": "2026-10-25T16:44:19.565Z",
+   "updatedAt": "2026-10-25T16:44:19.565Z",
+   "estimate": "1.5 h",
    "source": "chat"
   },
   {

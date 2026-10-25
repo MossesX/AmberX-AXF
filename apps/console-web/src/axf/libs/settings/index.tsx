@@ -13,7 +13,7 @@
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type HostAttachment, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -241,45 +241,70 @@ function TokenEditor({ type, values, onChange }: { type: AssetType; values: Cust
   );
 }
 
-/** Every asset of a slot in its own collapsible card. With more than one, "Apply settings to all" (on by default) leaves only the first editable. */
+/** The assets of `type` this app actually uses: the active one plus any attached to a banner or toolbar. */
+function usedAssetIds(rt: AxfRuntime, type: AssetType, active: string | undefined): string[] {
+  const ids: string[] = [];
+  const add = (id: unknown) => { if (typeof id === 'string' && !ids.includes(id)) ids.push(id); };
+  add(active);
+  const attached = (list: unknown) => {
+    if (Array.isArray(list)) for (const a of list) if (a && (a as HostAttachment).type === type) add((a as HostAttachment).id);
+  };
+  attached((rt.assetOrNull('banner')?.data as { attach?: unknown } | undefined)?.attach);
+  attached((rt.assetOrNull('toolbar')?.data as { widgets?: unknown } | undefined)?.widgets);
+  attached(rt.hostAttachments('banner'));
+  attached(rt.hostAttachments('toolbar'));
+  return ids.filter((id) => rt.registry.list(type).some((a) => a.id === id));
+}
+
+/**
+ * The assets of a slot this app uses, each in its own collapsible card, inside one collapsible group.
+ * "Apply settings to all" shows only when the app uses two or more of the type (two toolbars, two clocks);
+ * with one, it's edited on its own.
+ */
 function AssetInstances({ type }: { type: AssetType }) {
   const rt = useRuntime();
   const state = useAxfState();
   useSettingsRevision(rt);
-  const assets = rt.registry.list(type);
-  const ids = assets.map((a) => a.id);
-  const slot = rt.customSlot(type);
-  const locked = rt.gate('assets.swap') !== 'allow';
   const active = (state.active as Record<string, string | undefined>)[type];
+  const ids = usedAssetIds(rt, type, active);
+  const all = rt.registry.list(type);
+  const assets = ids.map((id) => all.find((a) => a.id === id)!).filter(Boolean);
+  const stored = rt.customSlot(type);
+  const many = assets.length > 1;
+  // One asset: never shared. A saved "apply to all" is read as that asset's own values.
+  const slot = many || !stored.all || !ids[0] ? stored : { all: false, shared: stored.shared, byId: { ...stored.byId, [ids[0]]: { ...stored.shared, ...(stored.byId[ids[0]] ?? {}) } } };
+  const locked = rt.gate('assets.swap') !== 'allow';
   const first = assets[0];
   if (!first) return null;
+  const label = assetTypeSpecs[type].label.toLowerCase();
+  const cards = assets.map((a, i) => {
+    const editable = !locked && customEditable(slot, ids, a.id);
+    const values = effectiveCustom(slot, a.id);
+    const changed = Object.keys(values).length;
+    const own = slot.all ? (i === 0) : true;
+    return (
+      <div key={a.id} className={editable ? '' : 'axf-settings__off'} aria-disabled={!editable || undefined} data-axf-anchor={`custom-asset:${type}:${a.id}`}>
+        <Container collapsible defaultOpen={!many} title={a.name} icon={assetTypeSpecs[type].icon}
+          actions={<>{a.id === active && <Chip tone="accent">active</Chip>}{own && changed > 0 && <Chip>{changed} changed</Chip>}</>}>
+          {!editable && !locked && <p className="fx-muted axf-settings__hint">Uses the settings of {first.name} (Apply settings to all). Untick it to edit this one.</p>}
+          <fieldset className="axf-settings__fieldset" disabled={!editable}>
+            <TokenEditor type={type} values={values} onChange={(k, v) => rt.setCustomSlot(type, setCustomToken(slot, a.id, k, v, type))} />
+            {own && changed > 0 && <Button tone="ghost" icon="refresh" onClick={() => rt.setCustomSlot(type, slot.all ? { ...slot, shared: {} } : { ...slot, byId: { ...slot.byId, [a.id]: {} } })}>Back to the theme</Button>}
+          </fieldset>
+        </Container>
+      </div>
+    );
+  });
+  if (!many) return <div className="axf-settings__rows">{cards}</div>;
   return (
-    <div className="axf-settings__rows">
-      {assets.length > 1 && (
+    <Container collapsible defaultOpen title={`${assets.length} ${assetTypeSpecs[type].label.toLowerCase()} assets in this app`} icon={assetTypeSpecs[type].icon}>
+      <div className="axf-settings__rows">
         <Checkbox label="Apply settings to all" checked={slot.all} disabled={locked}
-          title={slot.all ? `Every ${assetTypeSpecs[type].label.toLowerCase()} uses the settings of ${first.name}. Untick to edit each one.` : 'Each one keeps its own settings. Tick to use the first one\'s for all.'}
+          title={slot.all ? `Every ${label} uses the settings of ${first.name}. Untick to edit each one.` : 'Each one keeps its own settings. Tick to use the first one\'s for all.'}
           onChange={(v) => rt.setCustomSlot(type, setApplyAll(slot, ids, v))} />
-      )}
-      {assets.map((a, i) => {
-        const editable = !locked && customEditable(slot, ids, a.id);
-        const values = effectiveCustom(slot, a.id);
-        const changed = Object.keys(values).length;
-        const own = slot.all ? (i === 0) : true;
-        return (
-          <div key={a.id} className={editable ? '' : 'axf-settings__off'} aria-disabled={!editable || undefined} data-axf-anchor={`custom-asset:${type}:${a.id}`}>
-            <Container collapsible defaultOpen={false} title={a.name} icon={assetTypeSpecs[type].icon}
-              actions={<>{a.id === active && <Chip tone="accent">active</Chip>}{own && changed > 0 && <Chip>{changed} changed</Chip>}</>}>
-              {!editable && !locked && <p className="fx-muted axf-settings__hint">Uses the settings of {first.name} (Apply settings to all). Untick it to edit this one.</p>}
-              {a.id !== active && <p className="fx-muted axf-settings__hint">Applies while {a.name} is the active {assetTypeSpecs[type].label.toLowerCase()}.</p>}
-              <fieldset className="axf-settings__fieldset" disabled={!editable}>
-                <TokenEditor type={type} values={values} onChange={(k, v) => rt.setCustomSlot(type, setCustomToken(slot, a.id, k, v, type))} />
-                {own && changed > 0 && <Button tone="ghost" icon="refresh" onClick={() => rt.setCustomSlot(type, slot.all ? { ...slot, shared: {} } : { ...slot, byId: { ...slot.byId, [a.id]: {} } })}>Back to the theme</Button>}
-              </fieldset>
-            </Container>
-          </div>
-        );
-      })}
-    </div>
+        {cards}
+      </div>
+    </Container>
   );
 }
 

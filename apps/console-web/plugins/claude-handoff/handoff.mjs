@@ -7,13 +7,16 @@
  *   node handoff.mjs build [--out <dir>] [--json]    write the kit (default _claude/handoff in this checkout)
  *   node handoff.mjs prompt                          print the handoff prompt
  *   node handoff.mjs plan                            what the kit is made of, by category (JSON, sizes only)
+ *   node handoff.mjs session [--save] [--json]       what's still open (change log, pending builds, open PRs, notes) as a
+ *                                                    summary for an existing Project on another account; --save keeps it
+ *                                                    for the kit (_claude/handoff/ACTIVE-THREADS.md)
  *   node handoff.mjs publish [--json]                build on GitHub's current branch and push _claude/handoff (GITHUB_TOKEN)
  *   node handoff.mjs collect [--host <name>] [--out <file>] [--quiet] [--throttle <s>]
  *                                                    this machine's ~/.claude → the console (data folder, or the
  *                                                    console API with AXF_TOKEN, else ~/.axf-handoff/ to send later)
  *   node handoff.mjs hooks install|remove|status [--settings <file>]   SessionStart hook: collect once an hour
  *
- * Data (machines/<host>.json, claude-ai.json, config.json): AXF_HANDOFF_DATA, else <repo>/.axf-console/plugins/claude-handoff.
+ * Data (machines/<host>.json, claude-ai.json, config.json, session.json + session.md): AXF_HANDOFF_DATA, else <repo>/.axf-console/plugins/claude-handoff.
  */
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -21,7 +24,7 @@ import { homedir, hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  DEFAULT_CONTEXT, HOST_RE, KIT_DIR, buildKit, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
+  DEFAULT_CONTEXT, DEFAULT_SESSION_NOTES, HOST_RE, KIT_DIR, SESSION_FILE, buildKit, openChanges, openPending, projectFacts, sessionMd, sessionPrompt, sessionThreads, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
 } from './handoff-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -71,8 +74,17 @@ export function loadConfig(dir = DATA) {
   return { context: [...DEFAULT_CONTEXT, ...extra.filter((p) => !DEFAULT_CONTEXT.includes(p))], extraContext: extra };
 }
 
+/** The saved Handoff Session summary: this console's, else the one the last published kit carried, else none. */
+export function loadSession(root = ROOT, dir = DATA) {
+  for (const p of [join(dir, 'session.md'), join(root, KIT_DIR, SESSION_FILE)]) {
+    try { const t = readFileSync(p, 'utf8'); if (t.trim()) return t; } catch { /* next */ }
+  }
+  return '';
+}
+
 export function inputs(root = ROOT, dir = DATA) {
   return {
+    session: loadSession(root, dir),
     root,
     manifest: readJson(join(root, 'project.manifest.json')) ?? {},
     repo: repoSources(root),
@@ -148,6 +160,71 @@ export async function publish(dir = DATA, log = () => {}) {
   // keep this checkout's copy the same as GitHub's, so status reads "current" until a source changes
   if (built && r.pushed) writeKit(built, join(ROOT, KIT_DIR));
   return { ...r, fingerprint: built?.fingerprint, files: built?.files.length ?? 0, prompt: built?.prompt ?? '' };
+}
+
+/* ---------------- Handoff Session ---------------- */
+
+/** Change-log entries (change-log@1) from the shared data folder: one JSON file per entry under changes/<YYYY>/<MM>/. */
+export async function loadChanges(maxFiles = 3000) {
+  const { dataPath } = await import('../../../../framework/cli/persist.mjs');
+  const base = dataPath('changes');
+  const out = [];
+  const walk = (d, depth) => {
+    let names = [];
+    try { names = readdirSync(d).sort().reverse(); } catch { return; }
+    for (const n of names) {
+      if (out.length >= maxFiles) return;
+      const p = join(d, n);
+      if (depth < 2 && /^\d{2,4}$/.test(n)) walk(p, depth + 1);
+      else if (depth === 2 && n.endsWith('.json')) { const e = readJson(p); if (e?.id) out.push(e); }
+    }
+  };
+  walk(base, 0);
+  return out;
+}
+
+export async function loadPending() {
+  const { dataPath } = await import('../../../../framework/cli/persist.mjs');
+  return readJson(dataPath('framework/plan/pending.json'))?.items ?? [];
+}
+
+/** Open pull requests on the project's repo, or null + why when GitHub can't be read. */
+export async function loadPrs(slug) {
+  const gh = await import('../../../../framework/cli/github.mjs');
+  if (!gh.githubToken()) return { prs: null, note: 'Not read: this console has no GITHUB_TOKEN. List them with the GitHub connector.' };
+  try {
+    const repo = gh.parseRepo(slug);
+    const client = gh.createGitHub({ userAgent: 'axf-claude-handoff', timeoutMs: 15_000 });
+    const list = await client.paginate(gh.repoPath(repo, ['pulls'], { state: 'open', per_page: 50 }), { maxPages: 2, maxItems: 100 });
+    return { prs: list.map((p) => ({ number: p.number, title: String(p.title ?? ''), draft: !!p.draft, head: p.head?.ref ?? '', base: p.base?.ref ?? '', updatedAt: p.updated_at ?? '', url: `https://github.com/${slug}/pull/${Number(p.number)}` })), note: '' };
+  } catch (e) { return { prs: null, note: `Not read: GitHub answered "${gh.scrub(String(e?.message ?? e)).slice(0, 160)}".` }; }
+}
+
+export function sessionNotes(dir = DATA) {
+  const n = readJson(join(dir, 'session.json'))?.notes;
+  return typeof n === 'string' ? n : DEFAULT_SESSION_NOTES;
+}
+
+/** Build the summary (and keep it for the kit with save). */
+/** The hand-written open-threads list (one per line: `Title: where it stood`), recreated on the other account. */
+export function sessionThreadNotes(dir = DATA) {
+  const t = readJson(join(dir, 'session.json'))?.threads;
+  return typeof t === 'string' ? t : '';
+}
+
+export async function session({ root = ROOT, dir = DATA, save = false, now = new Date().toISOString() } = {}) {
+  const manifest = readJson(join(root, 'project.manifest.json')) ?? {};
+  const P = projectFacts(manifest, git(['rev-parse', 'HEAD'], root), manifest.repo?.defaultBranch || 'main', now);
+  const [changes, pending, pr] = await Promise.all([loadChanges(), loadPending(), loadPrs(P.repo)]);
+  const markdown = sessionMd({ P, now, changes, pending, prs: pr.prs, prsNote: pr.note, notes: sessionNotes(dir), threads: sessionThreadNotes(dir) });
+  if (save) {
+    mkdirSync(dir, { recursive: true, mode: 0o700 });
+    writeFileSync(join(dir, 'session.md'), markdown, { mode: 0o600 });
+  }
+  return {
+    markdown, prompt: sessionPrompt(markdown), savedAt: save ? now : '',
+    counts: { changes: openChanges(changes).length, pending: openPending(pending).length, prs: pr.prs ? pr.prs.length : null, threads: sessionThreads({ changes, prs: pr.prs, threads: sessionThreadNotes(dir), now }).length },
+  };
 }
 
 /* ---------------- collect (any machine) ---------------- */
@@ -248,6 +325,10 @@ async function main(argv) {
     }
     case 'prompt': return console.log(build().prompt);
     case 'plan': return console.log(JSON.stringify(plan()));
+    case 'session': {
+      const r = await session({ save: !!flags.save });
+      return out(r, r.markdown);
+    }
     case 'publish': {
       const r = await publish(DATA, (l) => { if (!flags.json) console.error(l); });
       return out(r, r.pushed ? `pushed ${r.sha}` : 'GitHub already has this kit');
@@ -260,7 +341,7 @@ async function main(argv) {
       return;
     }
     case 'hooks': return console.log(hooks(sub ?? 'status', flags.settings ? resolve(flags.settings) : claudeSettings()));
-    default: throw new Error(`unknown command ${cmd} (status | build | prompt | publish | collect | hooks)`);
+    default: throw new Error(`unknown command ${cmd} (status | build | prompt | session | publish | collect | hooks)`);
   }
 }
 

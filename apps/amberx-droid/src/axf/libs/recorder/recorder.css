@@ -1,0 +1,9 @@
+/* lib-recorder — theme tokens only */
+.axf-rec-capture { position: absolute; inset: 0; cursor: crosshair; background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 25%), transparent); touch-action: none; }
+.axf-rec-layer { position: absolute; inset: 0; pointer-events: none; }
+.axf-rec-cursor { position: absolute; transition: left 60ms linear, top 60ms linear; }
+.axf-rec-cursor--arrow svg { fill: var(--fx-text); stroke: var(--fx-surface); stroke-width: 1.4; }
+.axf-rec-cursor--dot { width: calc(var(--fx-space) * 2); height: calc(var(--fx-space) * 2); margin: calc(var(--fx-space) * -1); border-radius: 999px; background: var(--fx-accent); box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft); }
+.axf-rec-cursor--ring { width: calc(var(--fx-space) * 3.5); height: calc(var(--fx-space) * 3.5); margin: calc(var(--fx-space) * -1.75); border-radius: 999px; border: calc(var(--fx-border-w) * 3) solid var(--fx-accent); }
+.axf-rec-ripple { position: absolute; width: calc(var(--fx-space) * 5); height: calc(var(--fx-space) * 5); border-radius: 999px; border: calc(var(--fx-border-w) * 3) solid var(--fx-accent); }
+.axf-rec-caption { position: absolute; top: var(--fx-space); right: var(--fx-space); padding: calc(var(--fx-space) * 0.5) var(--fx-space); border-radius: var(--fx-radius-sm); background: var(--fx-text); color: var(--fx-bg); font-family: var(--fx-font-mono); font-size: calc(var(--fx-font-size) * 0.85); }
