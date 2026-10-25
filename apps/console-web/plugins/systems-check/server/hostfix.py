@@ -71,8 +71,9 @@ def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None =
 
 
 def ready() -> tuple[bool, str]:
+    """Vinny first, then Mosses (Oct 24 2026)."""
     from . import mosses
-    return mosses.ready()
+    return mosses.any_ready()
 
 
 class Jobs:

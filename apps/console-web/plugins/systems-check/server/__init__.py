@@ -477,7 +477,15 @@ def whats_new_seen(body: SeenBody, request: Request) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- Auto fix for VPS host checks (through axHub)
 
-TASKS = mosses.Tasks(lambda cid: SVC.invalidate())
+def _status_of(cid: str) -> str | None:
+    try:
+        return str(SVC.run_one(cid).get("status") or "")
+    except KeyError:  # a codebase check that no longer shows up = nothing left to fix
+        return "ok"
+
+
+# Vinny (no model) → Mosses → Claude (Oct 24 2026): a Mosses task that fails or leaves the check failing goes to Claude.
+TASKS = mosses.Tasks(lambda cid: SVC.invalidate(), status=_status_of, on_fail=lambda cid, why: _hand_to_claude(cid, why))
 
 
 @router.get("/mosses")
@@ -504,7 +512,19 @@ def mosses_start(cid: str) -> dict[str, Any]:
     return job
 
 
-HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate(), on_fail=lambda cid, why: _hand_to_claude(cid, why))
+def _after_fixed_command(cid: str, why: str) -> None:
+    """A fixed VPS command (sent by Vinny, else Mosses) failed: Mosses works it out next when he has a model, else Claude."""
+    if mosses.task_ready()[0]:
+        try:
+            TASKS.start(SVC.run_one(cid), skip_vinny=True, why=why)
+            cx.log("system", f"{cid}: the fixed command failed, handed to Mosses", "info")
+            return
+        except Exception:  # noqa: BLE001
+            pass
+    _hand_to_claude(cid, why)
+
+
+HOSTFIX = hostfix.Jobs(lambda cid: SVC.invalidate(), on_fail=_after_fixed_command)
 
 
 @router.get("/autofix")

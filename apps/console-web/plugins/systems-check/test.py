@@ -273,6 +273,60 @@ for _ in range(200):
     if (bad.get("y") or {}).get("state") in ("done", "failed"): break
     time.sleep(0.01)
 check(bad.get("y")["state"] == "failed" and "no provider" in bad.get("y")["message"], "when Mosses can't finish it says why")
+# Vinny first, then Mosses, then Claude (Oct 24 2026)
+class FakeVinny:
+    def __init__(self, call_answers=None, run_state="done", has=True):
+        self.calls, self.call_answers, self.run_state, self.has, self.started = [], list(call_answers or []), run_state, has, []
+    def ready(self): return True, ""
+    def auto_fix_first(self): return True
+    def call(self, tool, arguments, conf=None, timeout=600, reason=""):
+        self.calls.append((tool, arguments, conf))
+        a = self.call_answers.pop(0) if self.call_answers else {"ok": "$ x\nexit 0"}
+        if isinstance(a, Exception): raise a
+        return a
+    def find_fix(self, key, text=""): return {"id": "doc", "name": "Doctor", "kind": "vps"} if self.has else None
+    def start_fix(self, key, text="", ctx=None, source=""):
+        self.started.append((key, ctx)); return {"id": "r1", "name": "Doctor", "state": "running"} if self.has else None
+    def get_run(self, rid): return {"id": rid, "name": "Doctor", "state": self.run_state, "message": "Done." if self.run_state == "done" else "exit 1", "output": "ok"}
+fv = FakeVinny()
+plugin_services.provide("axf.vinny@1", fv, "fake-vinny")
+before = len(fm.runs) if hasattr(fm, "runs") else 0
+r = ms_.call("vps.run", {"command": "ufw allow 60000:61000/udp"})
+check(r == {"ok": "$ x\nexit 0"} and fv.calls and fv.calls[0][1]["command"] == "ufw allow 60000:61000/udp", "a fixed command goes to Vinny first")
+fv.call_answers = [hf.HubError("Vinny couldn't take it: off")]
+fm2 = FakeMosses(); plugin_services.withdraw("fake-mosses"); plugin_services.provide("axf.agents@1", fm2, "fake-mosses")
+r = ms_.call("vps.run", {"command": "y"})
+check(r["ok"].startswith("$ x") and len(fm2.runs) == 1, "…and to Mosses when Vinny can't take it")
+fv.call_answers = [hf.HubError("Rejected on the hub.")]
+try:
+    ms_.call("vps.run", {"command": "y"}); rej2 = ""
+except hf.HubError as e:
+    rej2 = str(e)
+check(rej2 == "Rejected on the hub." and len(fm2.runs) == 1, "…but never after Brett rejected it")
+def _wait(tk_, cid):
+    for _ in range(300):
+        if (tk_.get(cid) or {}).get("state") in ("done", "failed"): return tk_.get(cid)
+        time.sleep(0.01)
+    return tk_.get(cid)
+mos, claude_ = [], []
+tk2 = ms_.Tasks(lambda cid: None, run=lambda aid, p: mos.append(p) or {"text": "ok", "tools": []}, status=lambda cid: "ok",
+                on_fail=lambda cid, why: claude_.append(why), vinny_svc=lambda: fv, sleep=lambda s: None)
+fv.run_state = "done"
+tk2.start({"id": "host-report", "title": "Report"})
+j = _wait(tk2, "host-report")
+check(j["state"] == "done" and j["message"].startswith("Fixed by Vinny") and not mos and not claude_, "a check Vinny has a command for is fixed by Vinny, no model")
+fv.run_state = "failed"; st_ = {"v": "warn"}
+tk3 = ms_.Tasks(lambda cid: None, run=lambda aid, p: mos.append(p) or {"text": "tried", "tools": []}, status=lambda cid: st_["v"],
+                on_fail=lambda cid, why: claude_.append(why), vinny_svc=lambda: fv, sleep=lambda s: None)
+tk3.start({"id": "host-report", "title": "Report"})
+j = _wait(tk3, "host-report"); time.sleep(0.05)
+check(mos and "Already tried: Vinny" in mos[-1] and claude_, "Vinny fails → Mosses gets it (told what was tried) → still failing → Claude")
+fv.has = False; mos.clear(); claude_.clear()
+tk4 = ms_.Tasks(lambda cid: None, run=lambda aid, p: mos.append(p) or {"text": "fixed", "tools": []}, status=lambda cid: "ok",
+                on_fail=lambda cid, why: claude_.append(why), vinny_svc=lambda: fv, sleep=lambda s: None)
+tk4.start({"id": "z", "title": "Z"}); _wait(tk4, "z"); time.sleep(0.05)
+check(len(mos) == 1 and "Already tried" not in mos[0] and not claude_, "no command for it in Vinny's book → straight to Mosses")
+plugin_services.withdraw("fake-vinny")
 plugin_services.withdraw("fake-mosses")
 r = c.post("/p/mosses/host-claude-sync")
 check(r.status_code == 409 and "Mosses" in r.json()["detail"] and c.get("/p/mosses").json()["ready"] is False, "without Mosses the badge says exactly what's missing")
