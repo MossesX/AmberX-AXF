@@ -19,7 +19,7 @@
  * still picks another app menu; picking another one afterwards sticks.
  */
 import { useEffect, useRef } from 'react';
-import type { AxfRuntime, MenuItem } from './axf/core';
+import type { AssetType, AxfRuntime, MenuItem } from './axf/core';
 import { Button, LiveSearch, Note, flashWhenReady, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { HUB_DEFAULT, accountUrl, approvalsUrl, appsUrl, normalizeHub } from './axf/libs/hub/hub';
@@ -32,6 +32,7 @@ import { CONSOLE_MENU_ID, CONSOLE_PROVIDERS as P, PENDING_BADGE, consoleMenuCont
 const REFRESH_MS = 3 * 60_000;
 const SEARCH_DIALOG = 'console-search';
 const MIGRATED_KEY = 'axf-console:menu-console-v1';
+const MOVES: [AssetType, string, string][] = [['app-menu', 'console', MIGRATED_KEY], ['context-menu', 'amber', 'axf-console:context-amber-v1']];
 const store = () => (globalThis as unknown as { __axfConsole?: ConsoleStore }).__axfConsole;
 
 /* ---------------- where console.open goes (a fixed list: nothing else can be opened through it) ---------------- */
@@ -198,8 +199,46 @@ const providers: AxfWebLibrary['appMenuProviders'] = (() => {
         });
       },
     },
+    [P.amberPlugins.id]: {
+      ...P.amberPlugins,
+      items: async (): Promise<MenuItem[]> => {
+        const status = await fetchPluginStatus();
+        return bundledPlugins
+          .filter((p) => p.library)
+          .map((p) => {
+            const st = status?.find((s) => s.folder === p.folder);
+            const on = st ? st.enabled : p.manifest.enabledByDefault !== false;
+            const where = on ? runtime?.placementOf(p.library!.id) ?? null : null;
+            const icon = !on ? 'minus' : where === 'dialog' ? 'box' : where === 'window' || where === 'tab' ? 'external' : 'package';
+            return { id: `amber:${p.folder}`, label: `${p.manifest.name ?? p.folder}${on ? '' : ' · off'}`, icon, action: `amber.plugin:${p.folder}` };
+          })
+          .sort((a, b) => a.label.localeCompare(b.label));
+      },
+    },
   };
 })();
+
+/**
+ * Open a plugin the way it's set to open (context-menu/amber → Plugins): its placed primary UI through navigate /
+ * openDialog (which honour the placement: main area, dialog, window, tab group), else its first page or dialog, else
+ * its settings, else its Plugin Manager entry. A switched-off plugin opens in the Plugin Manager.
+ */
+function openPlugin(rt: AxfRuntime, folder: string) {
+  const p = bundledPlugins.find((b) => b.folder === folder);
+  const lib = p?.library;
+  if (!p || !lib) return rt.toast(`No plugin "${folder}".`, 'warning');
+  const manager = rt.actions.get('plugin-manager.open') ? `plugin-manager.open:${folder}` : 'settings.open:plugins';
+  if (!rt.libraries.some((l) => l.id === lib.id)) return rt.dispatch(manager);
+  const placed = rt.placedUis().find((u) => u.owner === lib.id)?.ui;
+  if (placed?.kind === 'view') return rt.navigate(placed.id);
+  if (placed?.kind === 'dialog') return rt.openDialog(placed.id);
+  const view = Object.keys(lib.views ?? {})[0];
+  if (view) return rt.navigate(view);
+  const dialog = Object.keys(lib.dialogs ?? {})[0];
+  if (dialog) return rt.openDialog(dialog);
+  const tab = lib.settingsTabs?.[0]?.id;
+  rt.dispatch(tab ? `settings.open:${tab}` : manager);
+}
 
 /* ---------------- start-up (once per page, whatever re-installs the library) ---------------- */
 
@@ -219,17 +258,19 @@ function start(rt: AxfRuntime) {
     e.preventDefault();
     rt.openDialog(SEARCH_DIALOG);
   });
-  // One-time move to the console menu when a saved look still names another app menu.
-  let done = (() => { try { return globalThis.localStorage?.getItem(MIGRATED_KEY) === '1'; } catch { return true; } })();
-  const migrate = () => {
-    if (done || !rt.appearanceReady()) return;
-    done = true;
-    try { globalThis.localStorage?.setItem(MIGRATED_KEY, '1'); } catch { /* fine */ }
-    if (rt.getState().active['app-menu'] !== 'console' && rt.gate('assets.swap') === 'allow') rt.swap('app-menu', 'console');
-    off();
-  };
-  const off = rt.subscribe(migrate);
-  migrate();
+  // One-time moves (per browser) when a saved look still names another asset: the console app menu, the Amber context menu.
+  for (const [type, id, key] of MOVES) {
+    let done = (() => { try { return globalThis.localStorage?.getItem(key) === '1'; } catch { return true; } })();
+    const migrate = () => {
+      if (done || !rt.appearanceReady()) return;
+      done = true;
+      try { globalThis.localStorage?.setItem(key, '1'); } catch { /* fine */ }
+      if (rt.getState().active[type] !== id && rt.gate('assets.swap') === 'allow') rt.swap(type, id);
+      off();
+    };
+    const off = rt.subscribe(migrate);
+    migrate();
+  }
 }
 
 export const menuLibrary: AxfWebLibrary = {
@@ -240,6 +281,7 @@ export const menuLibrary: AxfWebLibrary = {
     runtime = rt;
     start(rt);
     rt.actions.register('console.search', () => search(rt), { label: 'Search everything' });
+    rt.actions.register('amber.plugin', ([folder]) => { if (folder) openPlugin(rt, folder); }, { label: 'Open a plugin where it opens', params: true, searchable: false });
     rt.actions.register('console.open', ([key]) => { const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning'); }, { label: 'Open an app or page in a new tab', params: true, searchable: false });
     rt.actions.register('console.reveal', ([view, text, how]) => { if (view) reveal(rt, view, decodeURIComponent(text ?? ''), how === 'pick'); }, { label: 'Show a row in a view', params: true, searchable: false });
     rt.actions.register('console.pending.open', ([id]) => {

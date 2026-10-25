@@ -21,7 +21,7 @@
     "app-menu": "console",
     "toolbar": "standard-icons",
     "nav-menu": "console-nav",
-    "context-menu": "compact-classic",
+    "context-menu": "amber",
     "tab-group": "underline",
     "dialog": "centered-modal",
     "popup": "corner-solid",

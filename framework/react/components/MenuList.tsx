@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -32,11 +32,12 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
   return (
     <ul className="fx-menu" role="menu">
       {visible.map((item) => {
-        if (item.separator) return <li key={item.id} className="fx-menu__sep" role="separator" />;
+        if (item.separator) return <li key={item.id} className={item.spacer ? 'fx-menu__spacer' : 'fx-menu__sep'} role="separator" />;
         // a hook of a function the host locks (plugins inside Patches) stays, greyed out with its note
         const hostLock = item.action ? rt.lockedByHost({ action: item.action }) : null;
         const locked = rt.gate(item.requires) === 'disable' || !!hostLock;
-        const hasSub = !!item.items?.length;
+        // a live list (`provider`, rt.registerAppMenuProvider) is a submenu filled when it opens
+        const hasSub = !!item.items?.length || (!!item.provider && !item.action);
         // a check mark bound to a setting / counter / slot (context-menu toggles such as AshesUI)
         const check = resolveChecked(item.checked, { counter: (n) => rt.badge(n), setting: (k) => rt.settings.get(k), hidden: (t) => rt.slotHidden(t as AssetType) });
         return (
@@ -73,7 +74,8 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
             </button>
             {hasSub && openSub === item.id && (
               <div className="fx-menu__sub fx-popover">
-                <MenuList items={item.items!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
+                {item.items?.length ? <MenuList items={item.items} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />
+                  : <ProviderList id={item.provider!} onDone={onDone} payload={payload} showIcons={showIcons} showShortcuts={showShortcuts} />}
               </div>
             )}
           </li>
@@ -81,4 +83,20 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
       })}
     </ul>
   );
+}
+
+/** A live list's items (loaded when its submenu opens), with loading / error / empty rows. */
+function ProviderList({ id, ...rest }: { id: string } & Omit<MenuListProps, 'items'>) {
+  const rt = useRuntime();
+  const [items, setItems] = useState<MenuItem[] | null>(null);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    let live = true;
+    rt.loadAppMenuProvider(id).then((list) => { if (live) setItems(list.map((i) => ({ ...i, requires: i.locked ? i.requires : undefined })) as MenuItem[]); }, (e: Error) => { if (live) setError(e.message || 'could not load'); });
+    return () => { live = false; };
+  }, [rt, id]);
+  if (error) return <ul className="fx-menu" role="menu"><li className="fx-menu__li"><span className="fx-menu__row fx-muted">{error}</span></li></ul>;
+  if (!items) return <ul className="fx-menu" role="menu"><li className="fx-menu__li"><span className="fx-menu__row fx-muted">Loading…</span></li></ul>;
+  if (!items.length) return <ul className="fx-menu" role="menu"><li className="fx-menu__li"><span className="fx-menu__row fx-muted">Nothing here</span></li></ul>;
+  return <MenuList items={items} {...rest} />;
 }

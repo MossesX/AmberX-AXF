@@ -222,8 +222,12 @@ check(post("tools/now/test", {})["output"].startswith('{"iso"'), "test a tool fr
 for aid in ("coder", "axf-expert", "ai-expert"):
     r = post(f"addons/{aid}/install")
     check(r["created"]["agents"] == [aid] and not r["skipped"], f"add-on {aid} installs ({sum(len(v) for v in r['created'].values())} entities)")
-time.sleep(2.5)
-job = c.get("/am/c/training/axf-expert.repo-docs").json()["item"]
+# the repo-docs training runs in the background; the repo keeps growing, so wait for it (up to 30 s) instead of a fixed sleep
+for _ in range(60):
+    job = c.get("/am/c/training/axf-expert.repo-docs").json()["item"]
+    if job.get("status") in ("completed", "partial", "failed"):
+        break
+    time.sleep(0.5)
 check(job.get("status") in ("completed", "partial") and job.get("lastAdded", 0) > 5, f"axf-expert auto-trained from the repo ({job.get('lastAdded')} chunks)")
 check(c.get("/am/c/training/ai-expert.docs").json()["item"].get("status") is None, "ai-expert's Firecrawl training waits for a key")
 ctx = svc.memory_context("axf-expert", "what is asset@1 plugin lifecycle")

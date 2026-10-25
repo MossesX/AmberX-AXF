@@ -15,6 +15,7 @@ export * from './engines/hide';
 export * from './engines/embed';
 export * from './engines/spacing';
 export * from './engines/settingsui';
+export * from './engines/appearancepackage';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerhide';
