@@ -2,25 +2,30 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.voice-notes",
   "name": "Voice notes",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Only a settings interface: sets up a voice-activated notes pusher. A start trigger, a beep, the note, a stop trigger (cut from the text and the recording), then it asks where to store it: say a list, or \"give me the list of lists\" and it reads them with their numbers, and you say a number. Each list can ask its own questions, opened by a number or a recorded trigger, and file notes into subcategories. Settings and lists live on axHub's data server through the framework's lib-hubstore, never on this device. The listener is Voice Vault on Android (it saves notes to the notes table on axHub).",
+  "description": "Sets up a voice-activated notes pusher and shows the notes it saved. A start trigger, a beep, the note, a stop trigger (cut from the text and the recording), then it asks where to store it: say a list, or \"give me the list of lists\" and it reads them with their numbers, and you say a number. Each list can ask its own questions, opened by a number or a recorded trigger, and file notes into subcategories. Settings, lists and notes live on axHub's data server through the framework's lib-hubstore, never on this device. The listener is Voice Vault on Android (it saves notes to the notes table on axHub); the Voice notes page fetches them (newest first, by list, search, copy, delete) and can be added as a tab in Patches.",
   "targets": [
     "axf-console"
   ],
   "provides": [
-    "settings-tab:voice-notes"
+    "settings-tab:voice-notes",
+    "view:voice-notes"
   ],
   "optional": [],
   "scopes": [],
   "enabledByDefault": true,
   "builtWith": {
     "model": "opus",
-    "builtAt": "2026-10-23"
+    "builtAt": "2026-10-24"
   },
-  "tabable": false,
+  "tabable": {
+    "view": "voice-notes",
+    "label": "Voice notes",
+    "icon": "mic"
+  },
   "banner": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
@@ -31,5 +36,5 @@
       "apps/console-web/plugins/README.md"
     ]
   },
-  "opens": false
+  "opens": "main"
 }

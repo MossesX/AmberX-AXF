@@ -7,6 +7,9 @@
   DELETE item?id=<id>           take an item off the banner everywhere (a reported one is deleted; any other
                                 is remembered as dismissed for a day): the trash can on a stuck item
   POST   close                  {id} ✕ on a finished item: moved to the Codebase changes banner, or deleted (onClose)
+  POST   continue               {id} Continue on a held item: returns {action} the browser runs next (a hold is
+                                marked continued on every device; a held report turns running)
+  POST   hold-back              {id} put a continued hold back on hold (the build didn't start after all)
   POST   notify/test            sends a test push through axHub (the hub inbox + a console alert)
   GET    config | PUT config    {sources: {github, update, assistant, services, reports}, repos, lingerS, reportTtlS,
                                  autoRemove, keepFailed, onClose, onAutoRemove, push, pushLevel, pushMinS, sound, toast,
@@ -17,6 +20,7 @@ Other plugins don't need it to show up here: a capability service with an ``acti
 """
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 from typing import Any
@@ -49,8 +53,25 @@ def _services() -> list[tuple[str, Any]]:
     return out
 
 
+def _pending_status(pid: str) -> str | None:
+    """A pending build's status (framework/plan/pending.json in the shared data folder, else the repo copy)."""
+    for base in (cx.persist_root(), cx.ROOT):
+        if base is None:
+            continue
+        try:
+            data = json.loads((Path(base) / "framework" / "plan" / "pending.json").read_text("utf-8"))
+        except (OSError, ValueError):
+            continue
+        for it in data.get("items", []) if isinstance(data, dict) else []:
+            if isinstance(it, dict) and it.get("id") == pid:
+                return str(it.get("status") or "pending")
+        return "missing"
+    return None
+
+
 FEED = Feed(data_dir(), cx.ROOT, default_repos=[r for r in (cx.GITHUB_REPO or "MossesX/AmberX-AXF", "MossesX/axHub", "MossesX/Build-Pilot") if r],
-            services=_services, live_sessions=lambda: plugin_services.get("axf.live-sessions@1"))
+            services=_services, live_sessions=lambda: plugin_services.get("axf.live-sessions@1"),
+            holds_file=Path(__file__).resolve().parents[1] / "holds.json", pending_status=_pending_status)
 
 COMPLETE = complete.Completer(data_dir(), FEED.snapshot, FEED.config, FEED.dismiss,
                               changes=lambda: plugin_services.get(complete.CHANGES),
@@ -120,6 +141,25 @@ async def finish(request: Request) -> dict[str, Any]:
     if not it:
         raise HTTPException(404, "no reported item with that id")
     return it
+
+
+@router.post("/continue")
+async def continue_(request: Request) -> dict[str, Any]:
+    body = await request.json()
+    if not isinstance(body, dict) or not isinstance(body.get("id"), str):
+        raise HTTPException(400, "send {id}")
+    try:
+        return FEED.continue_item(body["id"], _who(request))
+    except KeyError:
+        raise HTTPException(404, "no held item with that id") from None
+
+
+@router.post("/hold-back")
+async def hold_back(request: Request) -> dict[str, Any]:
+    body = await request.json()
+    if not isinstance(body, dict) or not isinstance(body.get("id"), str):
+        raise HTTPException(400, "send {id}")
+    return {"held": FEED.hold_back(body["id"])}
 
 
 @router.delete("/item")

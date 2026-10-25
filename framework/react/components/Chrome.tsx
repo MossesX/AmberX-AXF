@@ -7,6 +7,8 @@ import { AppMenuDropdown } from './AppMenu';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
+import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
+import type { PlacedAttachment } from '../../core/engines/widgets';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -80,6 +82,9 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
+  // Arrange mode (right-click the toolbar → Arrange widgets): drag a widget, it snaps between the others (Arrange.tsx).
+  const arrange = useArrange('toolbar', widgets);
+  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();
@@ -115,8 +120,9 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}`} data-align={tb.data.align} role="toolbar">
-      {widgets.start.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''}`} data-align={tb.data.align} role="toolbar" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar">
+      <ArrangeBar host="toolbar" label="toolbar" />
+      {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
       {tb.data.groups.map((g) => (
         <div key={g.id} className="fx-toolbar__group">
           {g.items.map((it) => {
@@ -145,7 +151,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           })}
         </div>
       ))}
-      {widgets.end.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
+      {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">

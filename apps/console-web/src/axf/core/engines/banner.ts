@@ -13,7 +13,7 @@
  */
 import type { BadgeData, BannerData, BannerSide, ClockData } from '../types';
 import type { VarMap } from './theme';
-import { attachmentKey, hostSpec, placeHost, type HostAttachment, type PlacedAttachment } from './widgets';
+import { attachmentKey, hostSpec, placeHost, type HostArrangement, type HostAttachment, type PlacedAttachment } from './widgets';
 
 const BANNER_HOST = hostSpec('banner');
 /** Types a banner can hold (asset-types.json → banner.attach.types): badges and every widget. */
@@ -44,8 +44,8 @@ export function bannerSurface(b: Pick<BannerData, 'surface'> | null | undefined)
 }
 
 /** Where every attachment goes (the banner as a host: badges and widgets, left / center / right). */
-export function placeAttachments(b: BannerData | null | undefined, extra: BannerAttachment[], has: (type: string, id: string) => boolean): PlacedBanner {
-  const placed = placeHost('banner', b as Record<string, unknown> | null, extra, has, false);
+export function placeAttachments(b: BannerData | null | undefined, extra: BannerAttachment[], has: (type: string, id: string) => boolean, arrange?: HostArrangement | null): PlacedBanner {
+  const placed = placeHost('banner', b as Record<string, unknown> | null, extra, has, false, arrange);
   // A banner always answers for its three sides, even when the host registry was replaced by a library.
   return Object.fromEntries(BANNER_SIDES.map((s) => [s, placed[s] ?? []])) as PlacedBanner;
 }

@@ -3,11 +3,12 @@
   "type": "settings",
   "id": "console",
   "name": "Dev Console",
-  "version": "1.0.0",
-  "description": "The Dev Console's own settings interface: only the console's settings.",
+  "version": "1.1.0",
+  "description": "The Dev Console's settings interface, shared: every app that ships it shows its settings page the same way, and a pick in one app follows to the others through axHub.",
   "author": "AmberX AXF",
   "tags": [
-    "console"
+    "console",
+    "shared"
   ],
   "data": {
     "layout": "tabs-top",

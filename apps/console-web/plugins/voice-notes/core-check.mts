@@ -34,5 +34,28 @@ const out = {
   roundTrip: JSON.stringify(c.normalizeList(JSON.parse(JSON.stringify(lists[0])), 'g')) === JSON.stringify(lists[0]),
   badRow: c.normalizeList('nope'),
   preview: c.conversationPreview(s, lists).map((x) => x.text),
+  notes: (() => {
+    const rows: Record<string, unknown> = {
+      n1: { list: 'g', subcategory: 'veg', text: 'buy carrots', answers: { store: 'Aldi', bad: 3 }, at: '2026-10-23T10:00:00Z', device: 'Pixel' },
+      n2: { list: 'w', subcategory: '', text: 'ship the tab page', answers: {}, at: '2026-10-24T09:00:00Z' },
+      n3: { list: 'gone', text: 'old one', at: '2026-10-01T00:00:00Z' },
+      n4: { list: 'g', text: '   ' },
+      n5: 'junk',
+    };
+    const notes = Object.entries(rows).map(([id, r]) => c.normalizeNote(r, id)).filter((x): x is c.SavedNote => !!x);
+    return {
+      ids: notes.map((n) => n.id),
+      answers: notes[0]!.answers,
+      order: c.filterNotes(notes, lists).map((n) => n.id),
+      byList: c.filterNotes(notes, lists, { list: 'g' }).map((n) => n.id),
+      bySub: c.filterNotes(notes, lists, { list: 'g', sub: 'dairy' }).length,
+      none: c.filterNotes(notes, lists, { list: 'none' }).map((n) => n.id),
+      search: c.filterNotes(notes, lists, { q: 'Aldi carrots' }).map((n) => n.id),
+      searchWhere: c.filterNotes(notes, lists, { q: 'work' }).map((n) => n.id),
+      where: notes.map((n) => c.noteWhere(n, lists)),
+      counts: c.noteCounts(notes, lists),
+      md: c.notesMarkdown([notes[0]!], lists),
+    };
+  })(),
 };
 console.log(JSON.stringify(out));

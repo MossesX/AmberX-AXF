@@ -86,7 +86,7 @@ NOW[0] = feed_mod._ms(T) / 1000 + 120  # two minutes after the runs started
 print("config")
 r = c.get("/p/config")
 check(r.status_code == 200 and r.json()["repos"][0] == "MossesX/AmberX-AXF" and "MossesX/axHub" in r.json()["repos"], "default repos: the console repo, axHub, Build Pilot")
-check(set(r.json()["sourceLabels"]) == {"github", "update", "assistant", "services", "reports"}, "five built-in sources")
+check(set(r.json()["sourceLabels"]) == {"github", "update", "assistant", "services", "reports", "holds"}, "six built-in sources (work on hold included)")
 check(c.put("/p/config", json={"repos": ["not a repo"]}).status_code == 400, "a bad repo name is refused")
 check(c.put("/p/config", json={"lingerS": "x"}).status_code == 400, "a bad number is refused")
 check(c.put("/p/config", json={"repos": ["MossesX/AmberX-AXF"]}).json()["repos"] == ["MossesX/AmberX-AXF"], "repos saved")
@@ -303,6 +303,47 @@ import time as _t  # noqa: E402
 _t.sleep(0.1)
 alljobs = jobs.all()
 check(len(alljobs) == 1 and alljobs[0]["state"] == "waiting" and alljobs[0].get("updatedAt"), "hostfix jobs list with their state and update time")
+
+print("on hold")
+hdir = Path(tempfile.mkdtemp(prefix="axf-activity-holds-"))
+hfile = hdir / "holds.json"
+hfile.write_text(json.dumps({"holds": [
+    {"id": "hold:x", "title": "Update the Android framework", "pending": "android-x", "since": T,
+     "actions": [{"label": "Continue", "icon": "play", "action": "build-manager.start:pending%3Aandroid-x"},
+                 {"label": "Bad", "action": "javascript:alert(1) x"}, {"label": "Details", "action": "build-manager.open:pending%3Aandroid-x"}]},
+    {"id": "not-a-hold", "title": "ignored"}]}))
+status = {"android-x": "pending"}
+hf = feed_mod.Feed(hdir / "data", ROOT, holds_file=hfile, pending_status=lambda pid: status.get(pid, "missing"), now=lambda: NOW[0])
+hs = hf.snapshot()
+held = [i for i in hs["items"] if i["state"] == "held"]
+check(len(held) == 1 and held[0]["id"] == "hold:x" and hs["held"] == 1 and hs["active"] == 0, "a hold shows as On hold, apart from what's running")
+check([a["label"] for a in held[0]["actions"]] == ["Continue", "Details"], "only well-formed buttons are kept (a bad action is dropped)")
+NOW[0] += 7 * 86400
+check(any(i["id"] == "hold:x" and i["state"] == "held" for i in hf.snapshot()["items"]), "a hold never goes stale or expires")
+status["android-x"] = "unsafe"
+check(any(i["id"] == "hold:x" for i in hf.snapshot()["items"]), "still held while its pending build is unsafe")
+r = hf.continue_item("hold:x", "console")
+check(r["action"] == "build-manager.start:pending%3Aandroid-x", "Continue hands back the first button's action")
+c2 = [i for i in hf.snapshot()["items"] if i["id"] == "hold:x"]
+check(c2 and c2[0]["state"] == "done" and "actions" not in c2[0], "after Continue it reads Done (no buttons), on every device")
+check(oct(os.stat(hdir / "data" / "continued.json").st_mode)[-3:] == "600", "continued list is 0600")
+check(hf.hold_back("hold:x") and any(i["id"] == "hold:x" and i["state"] == "held" for i in hf.snapshot()["items"]), "Put back on hold")
+status["android-x"] = "complete"
+check(not any(i["id"] == "hold:x" for i in hf.snapshot()["items"]), "a hold leaves once its pending build is complete")
+status.pop("android-x")
+check(not any(i["id"] == "hold:x" for i in hf.snapshot()["items"]), "…or once it's removed from the list")
+try:
+    hf.continue_item("hold:nope")
+    check(False, "an unknown hold is refused")
+except KeyError:
+    check(True, "an unknown hold is refused")
+rep = hf.report({"id": "rep-held", "title": "Parked script", "state": "held", "actions": [{"label": "Continue", "action": "app.settings"}]})
+check(rep["state"] == "held" and rep["actions"][0]["action"] == "app.settings", "a reported item can be held with its own buttons")
+check(hf.continue_item("rep-held")["action"] == "app.settings" and json.loads((hdir / "data" / "reports" / "rep-held.json").read_text())["state"] == "running", "Continue on a held report turns it running")
+shipped = json.loads((HERE / "holds.json").read_text())
+check(any(h["id"] == "hold:android-framework-update" and h["actions"][0]["label"] == "Continue" for h in shipped["holds"]), "the plugin ships the Android framework hold with Continue")
+check(all(feed_mod.clean_actions(h["actions"]) == h["actions"] for h in shipped["holds"]), "every shipped button passes the checks")
+check(c.post("/p/continue", json={"id": "hold:nope"}).status_code == 404, "POST continue: unknown id → 404")
 
 print("activity.mjs (node)")
 node = subprocess.run(["node", "--version"], capture_output=True, text=True)

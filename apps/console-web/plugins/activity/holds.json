@@ -1,0 +1,18 @@
+{
+  "$axf": "activity-holds@1",
+  "note": "Work parked on purpose. Each hold shows in the Activity banner as On hold until someone taps its first button (Continue), or until the pending build it stands for is no longer waiting. Ids start with hold:.",
+  "holds": [
+    {
+      "id": "hold:android-framework-update",
+      "kind": "build",
+      "title": "Update the Android framework",
+      "detail": "Android work is on hold. Continue starts the Fable build that brings the Kotlin kernel and Compose layer level with the web port (every deferred twin in framework/spec/PORTING.md, including the shared settings interface). It opens in the Build manager and asks for your axHub approval.",
+      "since": "2026-10-25T20:30:00Z",
+      "pending": "android-framework-update",
+      "actions": [
+        { "label": "Continue", "icon": "play", "action": "build-manager.start:pending%3Aandroid-framework-update" },
+        { "label": "Details", "icon": "list", "action": "build-manager.open:pending%3Aandroid-framework-update" }
+      ]
+    }
+  ]
+}

@@ -46,7 +46,7 @@
     "divider": "rule",
     "badge": "new",
     "uac-policy": "standard",
-    "settings": "patches"
+    "settings": "console"
   },
   "hidden": [
     "toolbar"

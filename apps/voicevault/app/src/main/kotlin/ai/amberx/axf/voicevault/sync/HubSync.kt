@@ -65,6 +65,8 @@ object HubSyncRules {
     const val KEY_LOOK = "voicevault.hubsync.look"
     const val KEY_SETTINGS = "voicevault.hubsync.settings"
     const val ROUTE = "hub-sync"
+    /** Settings that belong to this phone alone (its microphone switch), never mirrored to axHub. */
+    const val DEVICE_ONLY = "voicevault.device."
     val LOOKS = listOf("required", "follow", "off")
     private val NAME = Regex("^[a-z0-9][a-z0-9._-]{0,63}$", RegexOption.IGNORE_CASE)
 
@@ -76,7 +78,7 @@ object HubSyncRules {
 
     /** Which settings go to the hub: every declared one except secrets, links, actions and the device-only switches. */
     fun mirrored(spec: SettingSpec): Boolean = spec.kind != SettingKind.SECRET && spec.kind != SettingKind.LINK && spec.kind != SettingKind.ACTION &&
-        !spec.key.startsWith("voicevault.hubsync.") && spec.key != VoiceNotes.KEY_HUB
+        !spec.key.startsWith("voicevault.hubsync.") && !spec.key.startsWith(DEVICE_ONLY) && spec.key != VoiceNotes.KEY_HUB
 
     /** A stored value as the hub keeps it (typed like the web): toggles → boolean, numbers → number, else text. */
     fun toHub(spec: SettingSpec?, value: JsonElement): JsonElement {

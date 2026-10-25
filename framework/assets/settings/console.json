@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "console",
+  "name": "Dev Console",
+  "version": "1.1.0",
+  "description": "The Dev Console's settings interface, shared: every app that ships it shows its settings page the same way, and a pick in one app follows to the others through axHub.",
+  "author": "AmberX AXF",
+  "tags": [
+    "console",
+    "shared"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "full",
+    "search": false,
+    "descriptions": true
+  }
+}

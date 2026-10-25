@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.context-menu-designer",
   "name": "Context menu designer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",

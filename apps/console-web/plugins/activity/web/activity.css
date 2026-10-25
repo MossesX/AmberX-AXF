@@ -51,3 +51,8 @@ button.axp-activity__more { all: unset; cursor: pointer; display: inline-flex; a
 .axp-activity__time.is-stuck { color: var(--fx-warning) }
 .axp-activity__kind { color: var(--fx-muted) }
 .axp-activity__settings .fx-section { margin: 0 }
+
+/* On hold: the item's buttons (Continue first) under its row, and the group heading. Layout only: the buttons are framework controls. */
+.axp-activity__actions { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) / 2); padding: calc(var(--fx-space) / 2) 0 0 calc(var(--fx-space) * 3); }
+.axp-activity__group { margin: var(--fx-space) 0 calc(var(--fx-space) / 2); font-weight: 600; }
+.axp-activity__item--held .axp-activity__time { color: var(--fx-muted); }

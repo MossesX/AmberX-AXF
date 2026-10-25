@@ -288,6 +288,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__icon { width: 16px; display: inline-flex; color: var(--fx-muted); }
 .fx-menu__label { flex: 1; white-space: nowrap; }
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: 4px 6px; }
+.fx-menu__spacer { height: calc(var(--fx-space) * 2); list-style: none; }
 .fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: 4px; }
 /* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
 .fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }
@@ -873,6 +874,25 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* window tabs (inside a tab group's bar; page tabs are .fx-tab above) */
 .fx-tabgroup__bar .fx-tab { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: var(--fx-radius-sm); font-size: 12px; cursor: grab; user-select: none; color: var(--fx-muted); white-space: nowrap; touch-action: none; box-shadow: none; }
 .fx-tabgroup__bar .fx-tab.is-active { background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-sm); }
+/* tab-group asset (engines/components.ts tabGroupStyle). Underline = the rules above, unchanged. */
+[data-fx-tabs-align='center'] :is(.fx-tabs, .fx-tabgroup__bar) { justify-content: center; }
+[data-fx-tabs-align='end'] :is(.fx-tabs, .fx-tabgroup__bar) { justify-content: flex-end; }
+[data-fx-tabs-align='stretch'] :is(.fx-tabs, .fx-tabgroup__bar) > .fx-tab { flex: 1 1 0; justify-content: center; }
+[data-fx-tabs-overflow='wrap'] :is(.fx-tabs, .fx-tabgroup__bar) { flex-wrap: wrap; overflow-x: visible; }
+[data-fx-tabs-icons='off'] .fx-tab > .fx-icon { display: none; }
+[data-fx-tabs-divider='off'] .fx-tabs, [data-fx-tabs-divider='off'] .fx-tabgroup__bar { border-bottom-color: transparent; }
+[data-fx-tabs-position='bottom'] .fx-tabgroup__bar { order: 2; border-bottom: 0; border-top: var(--fx-border-w) solid var(--fx-border); }
+[data-fx-tabs-hidden='on'] :is(.fx-tabs, .fx-tabgroup__bar) > .fx-tab:not(.is-active):not([aria-selected='true']) { display: none; }
+:is([data-fx-tabs='pills'], [data-fx-tabs='boxed'], [data-fx-tabs='segmented'], [data-fx-tabs='plain']) .fx-tabs .fx-tab { padding: var(--fx-tab-py) var(--fx-tab-px); box-shadow: none; }
+[data-fx-tabs='pills'] .fx-tab { border-radius: 999px; }
+[data-fx-tabs='pills'] .fx-tab.is-active, [data-fx-tabs='pills'] .fx-tab[aria-selected='true'], [data-fx-tabs='pills'] .fx-tabgroup__bar .fx-tab.is-active { background: var(--fx-accent); color: var(--fx-accent-text); box-shadow: none; }
+[data-fx-tabs='boxed'] .fx-tabs { gap: 0; }
+[data-fx-tabs='boxed'] .fx-tab { border: var(--fx-border-w) solid transparent; border-bottom: 0; border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; margin-bottom: calc(var(--fx-border-w) * -1); }
+[data-fx-tabs='boxed'] .fx-tab.is-active, [data-fx-tabs='boxed'] .fx-tab[aria-selected='true'] { background: var(--fx-surface); border-color: var(--fx-border); color: var(--fx-text); box-shadow: none; }
+[data-fx-tabs='segmented'] :is(.fx-tabs, .fx-tabgroup__bar) { gap: 0; padding: calc(var(--fx-space) * 0.25); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+[data-fx-tabs='segmented'] .fx-tab { border-radius: var(--fx-radius-sm); }
+[data-fx-tabs='segmented'] .fx-tab.is-active, [data-fx-tabs='segmented'] .fx-tab[aria-selected='true'] { background: var(--fx-surface); color: var(--fx-text); box-shadow: var(--fx-shadow-sm); }
+[data-fx-tabs='plain'] .fx-tab.is-active, [data-fx-tabs='plain'] .fx-tab[aria-selected='true'] { color: var(--fx-accent); font-weight: 600; box-shadow: none; background: transparent; }
 .fx-tab__close { all: unset; display: inline-flex; cursor: pointer; opacity: var(--fx-opacity-muted); } .fx-tab__close:hover { opacity: 1; color: var(--fx-danger); }
 .fx-iconbtn { all: unset; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: var(--fx-radius-sm); cursor: pointer; color: var(--fx-muted); }
 .fx-iconbtn:hover { background: var(--fx-surface3); color: var(--fx-text); }
