@@ -5,8 +5,9 @@
  */
 import {
   asChunk, chunkStyle, colorCss, colorOk, compile, designErrors, findChunk, freeId, insertAt, moveAt, normalizeDesign,
-  removeAt, styleSheet, toAsset, updateAt, usedBy, type Design,
+  removeAt, styleSheet, toAsset, updateAt, usedBy, designFromMenu, entriesFromMenu, countItems, type Design,
 } from './web/core.ts';
+import { buildCatalog, defaultFilter, filterChanges, filterRows, groupRows, normalizeFilter, owners, sourceOf } from './web/actions.ts';
 
 let ok = 0;
 function check(cond: unknown, msg: string) {
@@ -83,4 +84,56 @@ check(items[1].kind === 'item' && !(items[1].items?.length), 'remove nested');
 
 const n = normalizeDesign({ id: 'BAD ID', name: 'Bad <x>', kind: 'menu', style: { color: 'javascript:1', size: 999 }, items: [{ id: 'a' }, { id: 'a' }] });
 check(n.id === 'bad-x' && n.style.color === '' && n.style.size === 200 && n.items[1].id !== 'a', 'normalize cleans ids, colours, sizes and duplicate entry ids');
+
+// ---- the action catalog (Actions window + Filter dialog)
+const plugins = new Set(['ai.amberx.axf.console.todo-manager']);
+check(sourceOf('axf.framework', plugins) === 'framework' && sourceOf('ai.amberx.axf.settings', plugins) === 'framework', 'framework actions + framework libraries are Framework');
+check(sourceOf('ai.amberx.axf.console.todo-manager', plugins) === 'plugins', 'a console plugin is Plugins');
+check(sourceOf(undefined, plugins) === 'application' && sourceOf('ai.amberx.axf.console.menu', plugins) === 'application', 'app code + the app’s own libraries are Application');
+const cat = buildCatalog({
+  actions: [
+    { id: 'nav', meta: { label: 'Navigate', params: true, module: 'axf.framework' } },
+    { id: 'dialog', meta: { label: 'Open dialog', params: true, module: 'axf.framework' } },
+    { id: 'swap', meta: { label: 'Swap asset', params: true, module: 'axf.framework' } },
+    { id: 'settings.open', meta: { label: 'Open settings', params: true, module: 'ai.amberx.axf.settings' } },
+    { id: 'edit.copy', meta: { label: 'Copy', stub: true, module: 'axf.framework' } },
+    { id: 'todo.open', meta: { label: 'Open todos', module: 'ai.amberx.axf.console.todo-manager', requires: 'todo.use' } },
+    { id: 'console.search', meta: { label: 'Search everything' } },
+  ],
+  libraries: [{ id: 'ai.amberx.axf.console.todo-manager', label: 'Todo manager', views: ['todo'], dialogs: ['todo.new'] }, { id: 'ai.amberx.axf.settings', label: 'Settings', settingsTabs: ['appearance'] }],
+  pluginIds: [...plugins],
+  views: [{ id: 'todo', label: 'Todos' }, { id: 'home', label: 'Home' }],
+  dialogs: [{ id: 'todo.new', label: 'New todo' }],
+  settingsTabs: [{ id: 'appearance', label: 'Appearance' }],
+  swapTypes: ['color-theme'],
+});
+const spec = (s: string) => cat.find((r) => r.spec === s);
+check(spec('nav:')?.params && spec('nav:todo')?.source === 'plugins' && spec('nav:home')?.source === 'application', 'nav expands per page, owned by the page’s library');
+check(spec('dialog:todo.new')?.ownerLabel === 'Todo manager' && spec('settings.open:appearance')?.source === 'framework', 'dialogs + settings tabs expand');
+check(spec('swap:color-theme:next') && spec('swap:color-theme:previous'), 'swap next / previous per type');
+const def = defaultFilter();
+check(!filterRows(cat, def, '').some((r) => r.stub), 'stand-ins hidden by default');
+check(filterRows(cat, { ...def, stubs: true }, '').some((r) => r.spec === 'edit.copy'), 'stand-ins shown when asked');
+check(filterRows(cat, { ...def, sources: ['plugins'] }, '').every((r) => r.source === 'plugins'), 'source filter');
+check(filterRows(cat, { ...def, owners: [''] }, '').every((r) => r.owner === ''), 'owner filter');
+check(filterRows(cat, { ...def, expanded: false, params: false }, '').every((r) => !r.expanded && !r.params), 'expanded + params filters');
+check(filterRows(cat, def, 'open todos').map((r) => r.spec).join() === 'todo.open', 'search matches every word');
+check(!filterRows(cat, { ...def, allowedOnly: true }, '', () => false).some((r) => r.spec === 'todo.open'), 'only what my role can run');
+check(groupRows(filterRows(cat, def, ''))[0]?.source === 'plugins', 'grouped by source, plugins first');
+check(owners(cat).some((o) => o.owner === '' && o.label === 'This app'), 'owners list names the app');
+check(normalizeFilter('{"sources":["plugins","nope"],"sort":"zzz","stubs":true}').sources.join() === 'plugins' && normalizeFilter('bad').sort === 'source', 'stored filter normalized');
+check(filterChanges(def) === 0 && filterChanges({ ...def, stubs: true, owners: ['x'] }) === 2, 'filter changes counted');
+
+// ---- loading the app's menus
+const src = { asset: 'amber', name: 'Amber', target: 'default', variant: 'glass', contributions: true,
+  items: [{ id: 'plugins', label: 'Plugins', icon: 'package', provider: 'amber.plugins' }, { id: 's', separator: true }, { id: 'copy', label: 'Copy', action: 'edit.copy', items: [{ id: 'x', label: 'Inner' }] }],
+  contributed: [{ id: 'term', label: 'Open terminal', action: 'terminal.open' }] };
+const loaded = designFromMenu(src, all, true);
+check(loaded.kind === 'menu' && loaded.name === 'Amber' && loaded.base === 'amber' && loaded.variant === 'glass', 'load an app menu as a new design');
+check(loaded.items.length === 5 && loaded.items[4].kind === 'item' && (loaded.items[4] as { action?: string }).action === 'terminal.open' && !loaded.contributions, 'with plugin items: copied in, contributions off');
+check((loaded.items[0] as { provider?: string }).provider === 'amber.plugins' && compile(loaded, [loaded]).items[0].provider === 'amber.plugins', 'live lists survive load + compile');
+check(designFromMenu(src, all, false).items.length === 3 && designFromMenu(src, all, false).contributions, 'without plugin items');
+check(designFromMenu(src, [...all, loaded], true).name === 'Amber 2', 'loaded name kept free');
+check(countItems(src.items) === 3 && entriesFromMenu([{ id: 'a' }, { id: 'a' }]).map((e) => e.id).join() !== 'a,a', 'count + unique ids');
+check(toAsset(loaded, [loaded]).data.contributions === false, 'asset carries contributions: false');
 console.log(`\n${ok} checks passed`);

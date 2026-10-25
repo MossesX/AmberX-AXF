@@ -2,11 +2,14 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'reac
 import { Button, Container, IconButton, ICON_NAMES, MenuList, Note, Segmented, SelectField, Slider, Switch, TextField, useRuntime } from '@console/axf/react';
 import type { MenuItem } from '@console/axf/core';
 import {
-  ASSET_PREFIX, COLOR_KEYS, COLOR_TOKENS, FONTS, FONT_STYLES, VARIANTS, WEIGHTS, asChunk, compile, designErrors, findChunk, freeId, getAt,
-  insertAt, moveAt, newDesign, nextEntryId, normalizeDesign, removeAt, styleSheet, updateAt, usedBy,
-  type CompiledItem, type Design, type Entry, type MenuStyle, type Path,
+  ASSET_PREFIX, COLOR_KEYS, COLOR_TOKENS, FONTS, FONT_STYLES, VARIANTS, WEIGHTS, asChunk, compile, countItems, designErrors, designFromMenu, findChunk,
+  freeId, getAt, insertAt, moveAt, newDesign, nextEntryId, normalizeDesign, removeAt, styleSheet, updateAt, usedBy,
+  type AppMenuSource, type CompiledItem, type Design, type Entry, type MenuStyle, type Path,
 } from './core';
 import { deleteDesign, getDesigns, isLoaded, loadDesigns, loadError, saveDesign, subscribe } from './store';
+import { openActionsWindow, setPickTarget } from './ActionsWindow';
+import type { ActionRow } from './actions';
+import type { AxfRuntime } from '@console/axf/core';
 
 const COLOR_LABEL: Record<(typeof COLOR_KEYS)[number], string> = { color: 'Text colour', background: 'Background', hoverColor: 'Hover text colour', hoverBackground: 'Hover background' };
 const FONT_LABEL: Record<string, string> = { '': 'Theme font', display: 'Theme display font', mono: 'Theme mono font' };
@@ -98,7 +101,7 @@ function Preview({ draft, all, onClose }: { draft: Design; all: Design[]; onClos
   );
 }
 
-function EntryEditor({ entry, onChange, all }: { entry: Entry; onChange: (patch: Partial<Entry>) => void; all: Design[] }) {
+function EntryEditor({ entry, onChange, all, onPick }: { entry: Entry; onChange: (patch: Partial<Entry>) => void; all: Design[]; onPick: () => void }) {
   if (entry.kind === 'separator') return <p className="axp-ctxd-muted">A separator line. Move it or remove it.</p>;
   if (entry.kind === 'chunk') {
     const chunks = all.filter((d) => d.kind === 'chunk');
@@ -108,9 +111,64 @@ function EntryEditor({ entry, onChange, all }: { entry: Entry; onChange: (patch:
     <div className="axp-ctxd-grid">
       <TextField label="Label" value={entry.label} onChange={(v) => onChange({ label: v })} />
       <SelectField label="Icon" value={entry.icon ?? ''} empty="No icon" options={ICON_NAMES.map((n) => ({ value: n, label: n }))} onChange={(v) => onChange({ icon: v || undefined })} />
-      <TextField label="Action" mono value={entry.action ?? ''} placeholder="e.g. edit.copy or nav:settings" onChange={(v) => onChange({ action: v || undefined })} />
+      <div className="axp-ctxd-actionpick">
+        <TextField label="Action" mono value={entry.action ?? ''} placeholder="e.g. edit.copy or nav:settings" onChange={(v) => onChange({ action: v || undefined })} />
+        <Button icon="zap" onClick={onPick}>Pick…</Button>
+      </div>
       <TextField label="Shortcut" value={entry.shortcut ?? ''} placeholder="e.g. Ctrl+C" onChange={(v) => onChange({ shortcut: v || undefined })} />
+      <TextField label="Live list" mono value={entry.provider ?? ''} placeholder="e.g. amber.plugins" hint="A live list fills this item’s submenu when it opens." onChange={(v) => onChange({ provider: v || undefined })} />
     </div>
+  );
+}
+
+/** The app's context menus right now: every context-menu asset (each of its targets) and what plugins add per target. */
+function appMenus(rt: AxfRuntime): AppMenuSource[] {
+  const out: AppMenuSource[] = [];
+  const seen = new Set<string>();
+  for (const a of rt.registry.list('context-menu' as never)) {
+    if (a.id.startsWith(ASSET_PREFIX)) continue; // the designer's own menus are listed under Menus
+    const data = (a.data ?? {}) as { variant?: string; showIcons?: boolean; showShortcuts?: boolean; contributions?: boolean; targets?: Record<string, unknown[]> };
+    for (const [target, items] of Object.entries(data.targets ?? {})) {
+      seen.add(target);
+      out.push({ asset: a.id, name: a.name, target, variant: data.variant, showIcons: data.showIcons, showShortcuts: data.showShortcuts, contributions: data.contributions, items: Array.isArray(items) ? items : [], contributed: rt.contributedContext(target) });
+    }
+  }
+  for (const target of rt.contextTargets()) {
+    if (seen.has(target)) continue;
+    out.push({ asset: '', name: 'Added by plugins', target, items: [], contributed: rt.contributedContext(target) });
+  }
+  return out;
+}
+
+function AppMenus({ active, all, onLoad }: { active: string; all: Design[]; onLoad: (d: Design) => void }) {
+  const rt = useRuntime();
+  const [open, setOpen] = useState('');
+  const [withAdded, setWithAdded] = useState(true);
+  const list = appMenus(rt);
+  const key = (m: AppMenuSource) => `${m.asset}|${m.target}`;
+  return (
+    <ul className="axp-ctxd-list">
+      {list.map((m) => {
+        const k = key(m);
+        const added = m.contributions === false ? 0 : countItems(m.contributed);
+        return (
+          <li key={k}>
+            <button type="button" data-fx-row className={`axp-ctxd-row${open === k ? ' is-on' : ''}`} aria-expanded={open === k} onClick={() => setOpen(open === k ? '' : k)}>
+              <span>{m.name}{m.target !== 'default' ? <small className="axp-ctxd-muted"> · {m.target}</small> : null}</span>
+              <small className="axp-ctxd-muted"> · {countItems(m.items)} items{added ? ` + ${added} added` : ''}{m.asset && m.asset === active && m.target === 'default' ? ' · in use' : ''}</small>
+            </button>
+            {open === k && (
+              <div className="axp-ctxd-load fx-stack">
+                {m.asset && m.contributions === false && <p className="axp-ctxd-muted">Shows only its own items.</p>}
+                {added > 0 && m.asset && <Switch label={`Include what plugins add (${added})`} checked={withAdded} onChange={setWithAdded} hint="They become ordinary items, and the copy then shows only its own items so nothing appears twice." />}
+                <Button size="sm" icon="download" onClick={() => onLoad(designFromMenu(m, all, !m.asset || withAdded))}>Load into the designer</Button>
+              </div>
+            )}
+          </li>
+        );
+      })}
+      {!list.length && <li className="axp-ctxd-muted">This app has no context menus registered.</li>}
+    </ul>
   );
 }
 
@@ -169,6 +227,37 @@ export function Designer() {
   const use = () => { rt.swap('context-menu' as never, assetId); rt.toast(`${draft?.name} is now the context menu`, 'success'); };
 
   const selEntry = draft && sel ? getAt(draft.items, sel) : undefined;
+
+  // The Actions window hands a tapped action here: the selected item gets it, else it becomes a new item.
+  const live = useRef({ draft, sel, selEntry });
+  live.current = { draft, sel, selEntry };
+  useEffect(() => {
+    if (!draft) { setPickTarget(null); return; }
+    const e = selEntry?.kind === 'item' ? selEntry : undefined;
+    setPickTarget({
+      label: e ? `“${e.label || 'Untitled'}” in ${draft.name}` : `a new item in ${draft.name}`,
+      pick: (row: ActionRow) => {
+        const { draft: d, sel: p, selEntry: cur } = live.current;
+        if (!d) return;
+        const spec = row.spec;
+        if (p && cur?.kind === 'item') {
+          const label = !cur.label || /^New item( \d+)?$/.test(cur.label) ? row.label : cur.label;
+          setItems(updateAt(d.items, p, { action: spec, label, ...(cur.icon || !row.icon ? {} : { icon: row.icon }) } as Partial<Entry>));
+        } else {
+          const entry = { kind: 'item', id: nextEntryId(d.items), label: row.label, action: spec, ...(row.icon ? { icon: row.icon } : {}) } as Entry;
+          const parent = p ? p.slice(0, -1) : [];
+          const idx = p ? (p.at(-1) ?? 0) + 1 : undefined;
+          const items = insertAt(d.items, parent, entry, idx);
+          setItems(items);
+          const l = parent.length ? (getAt(items, parent) as Extract<Entry, { kind: 'item' }>).items ?? [] : items;
+          setSel([...parent, idx ?? l.length - 1]);
+        }
+        rt.toast(row.params ? `${spec} added: type its arguments after the colon.` : `${spec} added`, row.params ? 'info' : 'success');
+      },
+    });
+  }, [draft?.id, draft?.name, sel?.join('.'), selEntry?.kind === 'item' ? selEntry.label : '']);
+  useEffect(() => () => setPickTarget(null), []);
+  const loadMenu = (d: Design) => { setDraft(d); setDirty(true); setSel(null); setConfirmDel(false); setSaveAsName(''); rt.toast(`Loaded ${d.name}: save it to keep it`, 'success'); };
   const parentPath = (): Path => (sel ? sel.slice(0, -1) : []);
   const insertIndex = (): number | undefined => (sel ? (sel.at(-1) ?? 0) + 1 : undefined);
   const add = (e: { kind: 'item'; label: string } | { kind: 'separator' } | { kind: 'chunk'; chunk: string }, inside = false) => {
@@ -214,6 +303,10 @@ export function Designer() {
         <Container title="Chunks" icon="layers" actions={<Button size="sm" icon="plus" onClick={() => create('chunk')}>New</Button>}>
           <p className="axp-ctxd-muted">Pieces you insert into menus by name. A chunk can hold items, separators and other chunks.</p>
           <ListRows list={chunks} />
+        </Container>
+        <Container title="This app’s menus" icon="menu" collapsible>
+          <p className="axp-ctxd-muted">The context menus the app has now. Load one to edit a copy here.</p>
+          <AppMenus active={active ?? ''} all={all} onLoad={loadMenu} />
         </Container>
       </aside>
 
@@ -263,6 +356,7 @@ export function Designer() {
                 {sel && <IconButton icon="chevron-up" label="Move up" onClick={() => { setItems(moveAt(draft.items, sel, -1)); setSel([...sel.slice(0, -1), Math.max(0, (sel.at(-1) ?? 0) - 1)]); }} />}
                 {sel && <IconButton icon="chevron-down" label="Move down" onClick={() => { const n = (sel.length > 1 ? (getAt(draft.items, sel.slice(0, -1)) as Extract<Entry, { kind: 'item' }>).items?.length ?? 0 : draft.items.length); setItems(moveAt(draft.items, sel, 1)); setSel([...sel.slice(0, -1), Math.min(n - 1, (sel.at(-1) ?? 0) + 1)]); }} />}
                 {sel && <IconButton icon="trash" label="Remove" onClick={() => { setItems(removeAt(draft.items, sel)); setSel(null); }} />}
+                <Button size="sm" icon="zap" onClick={() => openActionsWindow(rt)}>Actions…</Button>
               </div>
               <div className="fx-row fx-row--wrap axp-ctxd-opts">
                 <label className="axp-ctxd-chunkpick">
@@ -273,7 +367,7 @@ export function Designer() {
                 <Button size="sm" icon="layers" disabled={!chunkName.trim()} onClick={insertChunk}>Insert chunk</Button>
               </div>
               {draft.items.length ? <EntryRows entries={draft.items} path={[]} selected={sel} onSelect={setSel} all={peers} /> : <p className="axp-ctxd-muted">Empty. Add an item, a separator or a chunk.</p>}
-              {selEntry && <div className="axp-ctxd-edit"><EntryEditor entry={selEntry} all={peers} onChange={(patch) => sel && setItems(updateAt(draft.items, sel, patch))} /></div>}
+              {selEntry && <div className="axp-ctxd-edit"><EntryEditor entry={selEntry} all={peers} onPick={() => openActionsWindow(rt)} onChange={(patch) => sel && setItems(updateAt(draft.items, sel, patch))} /></div>}
               {compiled && compiled.errors.length > 0 && <Note tone="warning">{compiled.errors.join(' ')}</Note>}
             </Container>
             {preview && <Preview draft={draft} all={all} onClose={() => setPreview(false)} />}

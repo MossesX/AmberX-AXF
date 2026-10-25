@@ -30,7 +30,7 @@ export interface MenuStyle {
 }
 
 export type Entry =
-  | { kind: 'item'; id: string; label: string; icon?: string; action?: string; shortcut?: string; items?: Entry[] }
+  | { kind: 'item'; id: string; label: string; icon?: string; action?: string; shortcut?: string; /** live list (`rt.registerAppMenuProvider` id): a submenu filled when it opens */ provider?: string; items?: Entry[] }
   | { kind: 'separator'; id: string }
   | { kind: 'chunk'; id: string; chunk: string };
 
@@ -46,13 +46,15 @@ export interface Design {
   variant: 'compact' | 'roomy' | 'glass';
   showIcons: boolean;
   showShortcuts: boolean;
+  /** menu only: false = the menu shows only its own items, never what plugins add at run time */
+  contributions: boolean;
   /** menu only: context-menu asset whose other targets (not `default`) the compiled asset keeps */
   base: string;
   updatedAt: string;
 }
 
 /** The runtime's menu item shape (framework core MenuItem), kept local so this file stays import-free. */
-export interface CompiledItem { id: string; label?: string; icon?: string; action?: string; shortcut?: string; separator?: boolean; items?: CompiledItem[] }
+export interface CompiledItem { id: string; label?: string; icon?: string; action?: string; shortcut?: string; provider?: string; separator?: boolean; spacer?: boolean; items?: CompiledItem[] }
 
 export const COLOR_TOKENS = ['text', 'muted', 'accent', 'accent-text', 'accent-soft', 'surface', 'surface2', 'surface3', 'bg', 'border', 'info', 'success', 'warning', 'danger'] as const;
 export const FONTS = ['', 'display', 'mono', 'sans-serif', 'serif', 'system-ui', 'monospace', 'cursive'] as const;
@@ -130,6 +132,7 @@ function normalizeEntries(raw: unknown, depth: number, ids: Set<string>): Entry[
       if (str(e.icon, 40)) it.icon = str(e.icon, 40);
       if (str(e.action, 200)) it.action = str(e.action, 200);
       if (str(e.shortcut, 40)) it.shortcut = str(e.shortcut, 40);
+      if (str(e.provider, 80)) it.provider = str(e.provider, 80);
       if (depth < LIMITS.depth && Array.isArray(e.items) && e.items.length) it.items = normalizeEntries(e.items, depth + 1, ids);
       out.push(it);
     }
@@ -151,6 +154,7 @@ export function normalizeDesign(raw: unknown): Design {
     variant: (VARIANTS as readonly unknown[]).includes(d.variant) ? (d.variant as Design['variant']) : 'compact',
     showIcons: d.showIcons !== false,
     showShortcuts: d.showShortcuts !== false,
+    contributions: d.contributions !== false,
     base: typeof d.base === 'string' ? d.base.slice(0, 80) : '',
     updatedAt: typeof d.updatedAt === 'string' ? d.updatedAt.slice(0, 40) : '',
   };
@@ -224,6 +228,7 @@ export function compile(design: Design, all: Design[]): Compiled {
       if (e.icon) it.icon = e.icon;
       if (e.action) it.action = e.action;
       if (e.shortcut) it.shortcut = e.shortcut;
+      if (e.provider) it.provider = e.provider;
       if (e.items?.length) {
         if (depth >= LIMITS.depth) errors.push(`"${it.label}": submenus nest deeper than ${LIMITS.depth}.`);
         else it.items = walk(e.items, style, stack, depth + 1);
@@ -294,7 +299,7 @@ export function toAsset(d: Design, all: Design[], baseTargets: Record<string, un
     description: 'Made in the context menu designer.',
     author: 'Context menu designer',
     tags: ['designer'],
-    data: { variant: d.variant, showIcons: d.showIcons, showShortcuts: d.showShortcuts, targets },
+    data: { variant: d.variant, showIcons: d.showIcons, showShortcuts: d.showShortcuts, ...(d.contributions ? {} : { contributions: false }), targets },
   };
 }
 
@@ -366,4 +371,70 @@ export function nextEntryId(entries: Entry[]): string {
   let n = ids.size + 1;
   while (ids.has(`e${n}`)) n++;
   return `e${n}`;
+}
+
+/* ---- loading the app's own context menus ---- */
+
+/** A context menu the app has: a context-menu asset (its `default` target, or another) or what plugins add to a target. */
+export interface AppMenuSource {
+  /** context-menu asset id ('' for contributions only) */
+  asset: string;
+  name: string;
+  target: string;
+  variant?: string;
+  showIcons?: boolean;
+  showShortcuts?: boolean;
+  /** false: the asset shows only its own items */
+  contributions?: boolean;
+  items: unknown[];
+  /** items plugins and libraries add to this target at run time */
+  contributed: unknown[];
+}
+
+/** Menu items (asset@1 context-menu items / runtime MenuEntry) → designer entries. Unknown fields are dropped. */
+export function entriesFromMenu(raw: unknown, depth = 1, ids: Set<string> = new Set()): Entry[] {
+  if (!Array.isArray(raw)) return [];
+  const out: Entry[] = [];
+  const fresh = (base: string) => { let id = (base || `e${ids.size + 1}`).replace(/[^A-Za-z0-9_.:-]/g, '-').slice(0, 48) || `e${ids.size + 1}`; while (ids.has(id)) id = `${id.slice(0, 44)}-${ids.size}`; ids.add(id); return id; };
+  for (const r of raw) {
+    if (out.length >= LIMITS.items) break;
+    if (!r || typeof r !== 'object') continue;
+    const m = r as Record<string, unknown>;
+    if (m.separator) { out.push({ kind: 'separator', id: fresh(str(m.id, 48)) }); continue; }
+    const it: Entry = { kind: 'item', id: fresh(str(m.id, 48)), label: str(m.label, LIMITS.label) };
+    if (str(m.icon, 40)) it.icon = str(m.icon, 40);
+    if (str(m.action, 200)) it.action = str(m.action, 200);
+    if (str(m.shortcut, 40)) it.shortcut = str(m.shortcut, 40);
+    if (str(m.provider, 80)) it.provider = str(m.provider, 80);
+    if (depth < LIMITS.depth && Array.isArray(m.items) && m.items.length) it.items = entriesFromMenu(m.items, depth + 1, ids);
+    out.push(it);
+  }
+  return out;
+}
+
+/**
+ * A new menu design from one of the app's menus, for editing in the designer. `withContributed` also copies what
+ * plugins add to it; the design then shows only its own items (contributions off), so nothing appears twice.
+ */
+export function designFromMenu(src: AppMenuSource, all: Design[], withContributed: boolean): Design {
+  const names = new Set(all.filter((d) => d.kind === 'menu').map((d) => d.name.trim().toLowerCase()));
+  const base = `${src.name}${src.target !== 'default' ? ` (${src.target})` : ''}`.slice(0, LIMITS.name - 8);
+  let name = base;
+  for (let n = 2; names.has(name.toLowerCase()); n++) name = `${base} ${n}`;
+  const ids = new Set<string>();
+  const own = entriesFromMenu(src.items, 1, ids);
+  const extra = withContributed && src.contributions !== false ? entriesFromMenu(src.contributed, 1, ids) : [];
+  const items = extra.length && own.length ? [...own, { kind: 'separator', id: `sep-added-${ids.size}` } as Entry, ...extra] : [...own, ...extra];
+  return normalizeDesign({
+    kind: 'menu', id: freeId(name, all.map((d) => d.id)), name, items,
+    variant: src.variant, showIcons: src.showIcons, showShortcuts: src.showShortcuts,
+    contributions: withContributed ? false : src.contributions !== false,
+    base: src.asset && !src.asset.startsWith(ASSET_PREFIX) ? src.asset : '',
+  });
+}
+
+/** Count the items (not separators) in a menu tree. */
+export function countItems(raw: unknown): number {
+  if (!Array.isArray(raw)) return 0;
+  return raw.reduce((n: number, r) => n + (r && typeof r === 'object' && !(r as { separator?: boolean }).separator ? 1 + countItems((r as { items?: unknown }).items) : 0), 0);
 }
