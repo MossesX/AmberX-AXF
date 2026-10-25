@@ -30,7 +30,8 @@
     "spacer",
     "divider",
     "badge",
-    "settings"
+    "settings",
+    "appearance-package"
   ],
   "parsed": {
     "full": {

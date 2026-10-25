@@ -288,6 +288,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu__icon { width: 16px; display: inline-flex; color: var(--fx-muted); }
 .fx-menu__label { flex: 1; white-space: nowrap; }
 .fx-menu__sep { height: var(--fx-border-w); background: var(--fx-border); margin: 4px 6px; }
+.fx-menu__spacer { height: calc(var(--fx-space) * 2); list-style: none; }
 .fx-menu__sub { position: absolute; left: calc(100% + 2px); top: -4px; min-width: 200px; padding: 4px; }
 /* application menu (components/AppMenu.tsx): check marks, badges, live-list rows, phone drill-down */
 .fx-menu__check { width: 16px; display: inline-flex; justify-content: center; color: var(--fx-accent); }

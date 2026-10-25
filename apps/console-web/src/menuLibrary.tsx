@@ -198,8 +198,46 @@ const providers: AxfWebLibrary['appMenuProviders'] = (() => {
         });
       },
     },
+    [P.amberPlugins.id]: {
+      ...P.amberPlugins,
+      items: async (): Promise<MenuItem[]> => {
+        const status = await fetchPluginStatus();
+        return bundledPlugins
+          .filter((p) => p.library)
+          .map((p) => {
+            const st = status?.find((s) => s.folder === p.folder);
+            const on = st ? st.enabled : p.manifest.enabledByDefault !== false;
+            const where = on ? runtime?.placementOf(p.library!.id) ?? null : null;
+            const icon = !on ? 'minus' : where === 'dialog' ? 'box' : where === 'window' || where === 'tab' ? 'external' : 'package';
+            return { id: `amber:${p.folder}`, label: `${p.manifest.name ?? p.folder}${on ? '' : ' · off'}`, icon, action: `amber.plugin:${p.folder}` };
+          })
+          .sort((a, b) => a.label.localeCompare(b.label));
+      },
+    },
   };
 })();
+
+/**
+ * Open a plugin the way it's set to open (context-menu/amber → Plugins): its placed primary UI through navigate /
+ * openDialog (which honour the placement: main area, dialog, window, tab group), else its first page or dialog, else
+ * its settings, else its Plugin Manager entry. A switched-off plugin opens in the Plugin Manager.
+ */
+function openPlugin(rt: AxfRuntime, folder: string) {
+  const p = bundledPlugins.find((b) => b.folder === folder);
+  const lib = p?.library;
+  if (!p || !lib) return rt.toast(`No plugin "${folder}".`, 'warning');
+  const manager = rt.actions.get('plugin-manager.open') ? `plugin-manager.open:${folder}` : 'settings.open:plugins';
+  if (!rt.libraries.some((l) => l.id === lib.id)) return rt.dispatch(manager);
+  const placed = rt.placedUis().find((u) => u.owner === lib.id)?.ui;
+  if (placed?.kind === 'view') return rt.navigate(placed.id);
+  if (placed?.kind === 'dialog') return rt.openDialog(placed.id);
+  const view = Object.keys(lib.views ?? {})[0];
+  if (view) return rt.navigate(view);
+  const dialog = Object.keys(lib.dialogs ?? {})[0];
+  if (dialog) return rt.openDialog(dialog);
+  const tab = lib.settingsTabs?.[0]?.id;
+  rt.dispatch(tab ? `settings.open:${tab}` : manager);
+}
 
 /* ---------------- start-up (once per page, whatever re-installs the library) ---------------- */
 
@@ -240,6 +278,7 @@ export const menuLibrary: AxfWebLibrary = {
     runtime = rt;
     start(rt);
     rt.actions.register('console.search', () => search(rt), { label: 'Search everything' });
+    rt.actions.register('amber.plugin', ([folder]) => { if (folder) openPlugin(rt, folder); }, { label: 'Open a plugin where it opens', params: true, searchable: false });
     rt.actions.register('console.open', ([key]) => { const to = key ? OPEN[key] : undefined; if (to) openTab(to()); else rt.toast(`Nothing to open for "${key ?? ''}".`, 'warning'); }, { label: 'Open an app or page in a new tab', params: true, searchable: false });
     rt.actions.register('console.reveal', ([view, text, how]) => { if (view) reveal(rt, view, decodeURIComponent(text ?? ''), how === 'pick'); }, { label: 'Show a row in a view', params: true, searchable: false });
     rt.actions.register('console.pending.open', ([id]) => {

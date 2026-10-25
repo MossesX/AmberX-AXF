@@ -94,6 +94,15 @@ export function validateAsset(raw) {
   if (raw.type === 'context-menu' && isObj(raw.data.targets)) {
     for (const [t, items] of Object.entries(raw.data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
+  // appearance-package@1 — mirrors packageErrors in core/engines/appearancepackage.ts (slot rules; the settings-key rules live there)
+  if (raw.type === 'appearance-package') {
+    if (!isObj(raw.data.slots)) errors.push('data.slots must be an object (asset type → asset id)');
+    else for (const [t, id] of Object.entries(raw.data.slots)) {
+      if (t === 'uac-policy' || t === 'appearance-package') errors.push(`data.slots.${t}: a package never sets ${t}`);
+      else if (typeof id !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(id)) errors.push(`data.slots.${t} must be an asset id`);
+    }
+    if ('spacing' in raw.data && !['tight', 'compact', 'regular'].includes(raw.data.spacing)) errors.push('data.spacing must be tight, compact or regular');
+  }
   const host = hostSpec(raw.type);
   if (host && host.field in raw.data) errors.push(...validateHostAttachments(raw.type, raw.data[host.field]));
   if (raw.type === 'uac-policy' && Array.isArray(raw.data.roles) && !raw.data.roles.some((r) => r.id === raw.data.defaultRole)) {

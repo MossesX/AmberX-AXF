@@ -15,7 +15,8 @@
       "checked",
       "order",
       "before",
-      "after"
+      "after",
+      "spacer"
     ],
     "defaultMenu": "more",
     "assetOrigin": "asset"
