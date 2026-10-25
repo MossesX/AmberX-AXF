@@ -178,6 +178,16 @@ const TAKES = new Map<string, EmbedTakeSpec>([
   // it has (`plugins`), and its plugin-management hooks (Plugin Manager, plugin switches, the plugin catalog, Settings →
   // Plugins) stay on screen greyed out with "Plugins are managed in <host>".
   ['plugins', { actions: ['plugin-switches.open', 'plugin-manager.open', 'plugin-manager.install', 'plugin-manager.window'], prefixes: ['plugin-manager.', 'plugin-switches.', 'plugin-catalog.', 'plugins-menu.', 'plugin-update.'], views: ['plugin-manager', 'plugins'], providers: ['console.plugins'], page: false, hides: [], lock: true }],
+  // One app (Brett, Oct 24 2026: "make it all function like 1 professional high level app when Patches runs things"):
+  // The host's banner carries this app's banner items: the app hides its banner and sends what is on it as data
+  // (`banner` message: widget data + counter values); a tap in the host comes back as `run` `w:<key>`.
+  ['banner', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: ['banner'], lock: false }],
+  // The host's search finds this app's things too: the app sends its search entries as data (`search-catalog`), hands
+  // Ctrl/Cmd+K to the host (`focus-search`) and focuses a picked entry when the host sends `run` `s:<id>`.
+  ['search', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
+  // Links to the host's other apps open in their tab: the host names its apps (`apps`), the app hands a link to one of
+  // them to the host (`open-url`) instead of opening a new browser tab.
+  ['links', { actions: [], prefixes: [], views: [], providers: [], page: false, hides: [], lock: false }],
 ]);
 
 /** Add (or replace) a function hosts can take over. Same id on every port (the Kotlin twin keeps the same registry). */
@@ -351,8 +361,8 @@ export type EmbedMessage =
   | { $axf: typeof EMBED_MESSAGE; type: 'open-settings'; tab?: string }
   /** guest → host: show a notification for this app (the host takes notifications) */
   | { $axf: typeof EMBED_MESSAGE; type: 'notify'; title: string; body?: string; tag?: string; level?: 'info' | 'success' | 'warning' | 'error'; link?: string }
-  /** guest → host: the app is up (and what it takes no longer matters to the host) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'ready'; app?: string }
+  /** guest → host: the app is up (its first frame is drawn) and which of the host's takes it applied */
+  | { $axf: typeof EMBED_MESSAGE; type: 'ready'; app?: string; takes?: string[] }
   /** host → settings page: open this settings tab */
   | { $axf: typeof EMBED_MESSAGE; type: 'open-tab'; tab: string }
   /** guest → host (the host takes `app-menu`): the app's application menu, as the host should show it */
@@ -366,7 +376,30 @@ export type EmbedMessage =
   /** host → guest (the host takes `plugins`): the plugins the host has installed and enabled for this app; load only these */
   | { $axf: typeof EMBED_MESSAGE; type: 'plugins-enabled'; plugins: string[] }
   /** host → guest: send your plugin list again (after the host's own list changed or it just loaded) */
-  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' };
+  | { $axf: typeof EMBED_MESSAGE; type: 'plugins-request' }
+  /** guest → host (the host takes `banner`): what is on this app's banner, as the host should draw it */
+  | { $axf: typeof EMBED_MESSAGE; type: 'banner'; items: EmbedBannerItem[] }
+  /** guest → host (the host takes `search`): what this app's search can find (data only; ids are this message's own) */
+  | { $axf: typeof EMBED_MESSAGE; type: 'search-catalog'; entries: EmbedSearchEntry[] }
+  /** guest → host (the host takes `search`): Ctrl/Cmd+K was pressed in the app: open the host's search */
+  | { $axf: typeof EMBED_MESSAGE; type: 'focus-search' }
+  /** app → host (take `links`): a tab key pressed inside the app (`Alt+1` … `Alt+9`), so the host's tab keys work everywhere */
+  | { $axf: typeof EMBED_MESSAGE; type: 'hotkey'; key: string }
+  /** guest → host (the host takes `links`): open this link of one of the host's apps in its tab */
+  | { $axf: typeof EMBED_MESSAGE; type: 'open-url'; url: string }
+  /** host → guest (the host takes `links`): the host's apps, so the app knows which links are theirs */
+  | { $axf: typeof EMBED_MESSAGE; type: 'apps'; apps: EmbedSiblingApp[] };
+
+/**
+ * One item of an app's banner, as the app sends it to a host that takes `banner`: the widget's asset data (checked by
+ * the host's asset validator before it is drawn, its tap replaced by the host's own action) and, for a widget bound to
+ * a counter (status, counter, progress), the counter's value now. `key` is the app's attachment key (`type:id`).
+ */
+export interface EmbedBannerItem { key: string; type: string; at: 'left' | 'center' | 'right'; order: number; data: Record<string, unknown>; value?: number; popup?: string }
+/** One thing an app's search can find (`id` is the message's own, `e<n>`; the app keeps id → entry). */
+export interface EmbedSearchEntry { id: string; kind: string; label: string; detail?: string; icon?: string; keywords?: string[]; locked?: boolean }
+/** One of the host's apps (`links`): id, name, https origin. */
+export interface EmbedSiblingApp { id: string; label: string; origin: string }
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -414,7 +447,7 @@ export interface EmbedMenuItem {
 }
 export interface EmbedMenu { id: string; label: string; items: EmbedMenuItem[] }
 
-export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40 } as const;
+export const EMBED_MESSAGE_LIMITS = { title: 120, body: 500, tag: 64, tab: 64, app: 32, link: 300, raw: 4000, menuRaw: 131072, menus: 16, menuItems: 600, menuDepth: 4, label: 80, itemId: 160, icon: 40, plugins: 200, pluginId: 120, version: 40, bannerItems: 32, bannerData: 4000, bannerRaw: 65536, searchEntries: 1500, searchRaw: 262144, detail: 120, keywords: 8, keyword: 40, url: 1000, apps: 20 } as const;
 const MENU_ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._:\/-]{0,159}$/;
 const ICON_ID = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
@@ -493,16 +526,88 @@ export function embedLinkOk(link: unknown): link is string {
   try { const u = new URL(link); return u.protocol === 'https:' && !u.username && !u.password; } catch { return false; }
 }
 
+/** An https URL (no credentials, ≤ 1000 characters), or null. */
+export function embedHttpsUrl(raw: unknown): string | null {
+  if (typeof raw !== 'string' || !raw || raw.length > EMBED_MESSAGE_LIMITS.url) return null;
+  try { const u = new URL(raw); return u.protocol === 'https:' && !u.username && !u.password && u.hostname ? u.href : null; } catch { return null; }
+}
+
+/** An https origin (`https://host[:port]`, nothing else), or null. */
+export function embedOrigin(raw: unknown): string | null {
+  if (typeof raw !== 'string' || raw.length > 200) return null;
+  try { const u = new URL(raw); return u.protocol === 'https:' && !u.username && !u.password && u.hostname && u.origin === raw.replace(/\/$/, '') ? u.origin : null; } catch { return null; }
+}
+
+/** The sibling app a URL belongs to (its origin is that app's), or null. */
+export function embedSiblingOf(url: string, apps: readonly EmbedSiblingApp[]): EmbedSiblingApp | null {
+  try { const o = new URL(url).origin; return apps.find((a) => a.origin === o) ?? null; } catch { return null; }
+}
+
+const ASSET_TYPE_ID = /^[a-z][a-z0-9-]{0,31}$/;
+const SIDES = ['left', 'center', 'right'] as const;
+/** Banner items an app sent, checked and cut to size (bad entries dropped, repeats dropped, data ≤ 4000 characters). */
+function parseBannerItems(raw: unknown): EmbedBannerItem[] | null {
+  if (!Array.isArray(raw)) return null;
+  const L = EMBED_MESSAGE_LIMITS;
+  const out: EmbedBannerItem[] = [];
+  for (const v of raw) {
+    if (out.length >= L.bannerItems) break;
+    if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
+    const o = v as Record<string, unknown>;
+    if (typeof o.key !== 'string' || !MENU_ITEM_ID.test(o.key) || out.some((x) => x.key === o.key)) continue;
+    if (typeof o.type !== 'string' || !ASSET_TYPE_ID.test(o.type)) continue;
+    const at = (SIDES as readonly unknown[]).includes(o.at) ? (o.at as EmbedBannerItem['at']) : null;
+    if (!at || !o.data || typeof o.data !== 'object' || Array.isArray(o.data)) continue;
+    let text = '';
+    try { text = JSON.stringify(o.data); } catch { continue; }
+    if (text.length > L.bannerData) continue;
+    const item: EmbedBannerItem = { key: o.key, type: o.type, at, order: typeof o.order === 'number' && Number.isFinite(o.order) ? Math.max(-9999, Math.min(9999, o.order)) : out.length, data: JSON.parse(text) as Record<string, unknown> };
+    if (typeof o.value === 'number' && Number.isFinite(o.value)) item.value = Math.max(0, Math.min(1e9, Math.floor(o.value)));
+    if (typeof o.popup === 'string' && o.popup.trim()) item.popup = o.popup.trim().slice(0, 160);
+    out.push(item);
+  }
+  return out;
+}
+
+/** The keys an app hands its host (take `links`): the tab keys only, never typing. */
+export const EMBED_HOTKEY = /^Alt\+[1-9]$/;
+
+const SEARCH_ID = /^e[0-9]{1,5}$/;
+const KIND_ID = /^[a-z0-9][a-z0-9-]{0,23}$/;
+/** A search catalog an app sent, checked and cut to size (≤ 1500 entries, short texts, ids `e<n>` only). */
+function parseSearchEntries(raw: unknown): EmbedSearchEntry[] | null {
+  if (!Array.isArray(raw)) return null;
+  const L = EMBED_MESSAGE_LIMITS;
+  const seen = new Set<string>();
+  const out: EmbedSearchEntry[] = [];
+  for (const v of raw) {
+    if (out.length >= L.searchEntries) break;
+    if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
+    const o = v as Record<string, unknown>;
+    if (typeof o.id !== 'string' || !SEARCH_ID.test(o.id) || seen.has(o.id)) continue;
+    const label = clip(o.label, L.label);
+    if (!label || typeof o.kind !== 'string' || !KIND_ID.test(o.kind)) continue;
+    seen.add(o.id);
+    const e: EmbedSearchEntry = { id: o.id, kind: o.kind, label };
+    const detail = clip(o.detail, L.detail); if (detail) e.detail = detail;
+    if (typeof o.icon === 'string' && ICON_ID.test(o.icon)) e.icon = o.icon;
+    if (Array.isArray(o.keywords)) { const k = o.keywords.map((x) => clip(x, L.keyword)).filter((x): x is string => !!x).slice(0, L.keywords); if (k.length) e.keywords = k; }
+    if (o.locked === true) e.locked = true;
+    out.push(e);
+  }
+  return out;
+}
+
 /** A message as it arrived (object or JSON text), checked and cut to size; null when it isn't one. */
 export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
   let m: unknown = raw;
   if (typeof raw === 'string') {
-    // a menu may be long; every other message stays small
-    if (raw.length > EMBED_MESSAGE_LIMITS.menuRaw) return null;
+    // a search catalog, a menu, a banner and a plugin list may be long (each capped by its own limit); the rest stays small
+    if (raw.length > EMBED_MESSAGE_LIMITS.searchRaw) return null;
     try { m = JSON.parse(raw); } catch { return null; }
-    // a menu and a plugin list may be long (both capped by their own limits); every other message stays small
     const t = (m as { type?: unknown } | null)?.type;
-    if (raw.length > EMBED_MESSAGE_LIMITS.raw && t !== 'menu' && t !== 'plugins' && t !== 'plugins-enabled') return null;
+    const cap = t === 'search-catalog' ? EMBED_MESSAGE_LIMITS.searchRaw : t === 'menu' || t === 'plugins' || t === 'plugins-enabled' ? EMBED_MESSAGE_LIMITS.menuRaw : t === 'banner' ? EMBED_MESSAGE_LIMITS.bannerRaw : EMBED_MESSAGE_LIMITS.raw;
+    if (raw.length > cap) return null;
   }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const o = m as Record<string, unknown>;
@@ -524,7 +629,9 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
     }
     case 'ready': {
       const app = embedHost(o.app);
-      return app ? { $axf: EMBED_MESSAGE, type: 'ready', app } : { $axf: EMBED_MESSAGE, type: 'ready' };
+      const out: EmbedMessage = app ? { $axf: EMBED_MESSAGE, type: 'ready', app } : { $axf: EMBED_MESSAGE, type: 'ready' };
+      if (Array.isArray(o.takes)) out.takes = embedTakes(o.takes.filter((x): x is string => typeof x === 'string'));
+      return out;
     }
     case 'open-tab': {
       return typeof o.tab === 'string' && TAB_ID.test(o.tab) ? { $axf: EMBED_MESSAGE, type: 'open-tab', tab: o.tab } : null;
@@ -547,6 +654,31 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       return { $axf: EMBED_MESSAGE, type: 'plugins-enabled', plugins: ids };
     }
     case 'plugins-request': return { $axf: EMBED_MESSAGE, type: 'plugins-request' };
+    case 'banner': {
+      const items = parseBannerItems(o.items);
+      return items ? { $axf: EMBED_MESSAGE, type: 'banner', items } : null;
+    }
+    case 'search-catalog': {
+      const entries = parseSearchEntries(o.entries);
+      return entries ? { $axf: EMBED_MESSAGE, type: 'search-catalog', entries } : null;
+    }
+    case 'focus-search': return { $axf: EMBED_MESSAGE, type: 'focus-search' };
+    case 'hotkey': return typeof o.key === 'string' && EMBED_HOTKEY.test(o.key) ? { $axf: EMBED_MESSAGE, type: 'hotkey', key: o.key } : null;
+    case 'open-url': {
+      const url = embedHttpsUrl(o.url);
+      return url ? { $axf: EMBED_MESSAGE, type: 'open-url', url } : null;
+    }
+    case 'apps': {
+      if (!Array.isArray(o.apps)) return null;
+      const apps: EmbedSiblingApp[] = [];
+      for (const v of o.apps.slice(0, EMBED_MESSAGE_LIMITS.apps)) {
+        if (!v || typeof v !== 'object' || Array.isArray(v)) continue;
+        const a = v as Record<string, unknown>;
+        const id = embedHost(a.id), label = clip(a.label, 40), origin = embedOrigin(a.origin);
+        if (id && label && origin && !apps.some((x) => x.id === id)) apps.push({ id, label, origin });
+      }
+      return { $axf: EMBED_MESSAGE, type: 'apps', apps };
+    }
     default: return null;
   }
 }
@@ -572,9 +704,16 @@ export function embedSkipReason(e: Embed | null | undefined, skipWhen: readonly 
     const w = raw.trim().toLowerCase();
     if (w === 'embedded') return `${e.host} does this itself`;
     if (w.startsWith('take:') && embedTakesFn(e, w.slice(5))) return `${e.host} takes ${w.slice(5)} over`;
-    if (w.startsWith('hidden:') && e.hidden.includes(w.slice(7))) return `${e.host} hides the ${w.slice(7)}`;
+    // hidden because the host carries it (a take's `hides`: `banner` draws the app's banner items in the host's banner,
+    // `app-menu` its menus) is not hidden for a plugin that draws there: it still loads, so its items reach the host
+    if (w.startsWith('hidden:') && e.hidden.includes(w.slice(7)) && !carried(e, w.slice(7))) return `${e.host} hides the ${w.slice(7)}`;
   }
   return null;
+}
+
+/** Chrome the host hides because it draws what is on it itself (a taken function's `hides`). */
+function carried(e: Embed, type: string): boolean {
+  return (e.takes ?? []).some((fn) => TAKES.get(fn)?.hides.includes(type));
 }
 
 /** The settings tab an action names (`settings.open:<tab>` → tab), else undefined. */

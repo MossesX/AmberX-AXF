@@ -45,7 +45,7 @@
     "badge": "new",
     "gauge": "classic-arc",
     "meter": "striped-pill",
-    "settings": "axhub-web",
+    "settings": "suite",
     "uac-policy": "standard"
   },
   "hidden": [],

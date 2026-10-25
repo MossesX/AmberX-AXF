@@ -27,11 +27,25 @@ const sha = (file) => createHash('sha256').update(readFileSync(file)).digest('he
 const walk = (d) => (existsSync(d) ? readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; }) : []);
 const posix = (p) => p.split(sep).join('/');
 
-/** rel path under src/axf → hash, for the framework (what a bake would write) or an app's copy. */
-function tree(base) {
+/**
+ * rel path under src/axf → hash, for the framework (what a bake would write) or an app's copy: the baked folders plus the
+ * libraries the app has (`libs/<name>`, put there by `axf install`), so a re-bake never leaves an app's libraries behind.
+ */
+function tree(base, libs = []) {
   const out = {};
   for (const d of BAKED) for (const f of walk(join(base, d))) out[posix(relative(base, f))] = sha(f);
+  for (const n of libs) {
+    const p = join(base, 'libs', n);
+    if (!existsSync(p)) continue;
+    for (const f of statSync(p).isDirectory() ? walk(p) : [p]) out[posix(relative(base, f))] = sha(f);
+  }
   return out;
+}
+
+/** The libraries (and libs/ files) an app has baked in that the framework still ships. */
+function appLibs(appDir, root) {
+  const d = join(appDir, BAKE_DIR, 'libs');
+  return existsSync(d) ? readdirSync(d).filter((n) => existsSync(join(root, 'framework', 'libs', n))).sort() : [];
 }
 
 /** Every app dir (relative to root) with a lock naming baked files. */
@@ -50,8 +64,9 @@ export function appStatus(dir, root = ROOT) {
   const name = posix(relative(root, appDir));
   let lock;
   try { lock = JSON.parse(readFileSync(join(appDir, 'axf.lock.json'), 'utf8')); } catch (e) { return { dir: name, state: 'error', error: `axf.lock.json unreadable: ${e.message}` }; }
-  const want = tree(join(root, 'framework'));
-  const have = tree(join(appDir, BAKE_DIR));
+  const libs = appLibs(appDir, root);
+  const want = tree(join(root, 'framework'), libs);
+  const have = tree(join(appDir, BAKE_DIR), libs);
   const changed = [], missing = [], extra = [], edited = [];
   for (const [rel, h] of Object.entries(want)) { if (!(rel in have)) missing.push(rel); else if (have[rel] !== h) changed.push(rel); }
   for (const rel of Object.keys(have)) if (!(rel in want)) extra.push(rel);
@@ -75,11 +90,14 @@ export function apply(dir, root = ROOT, { force = false } = {}) {
   if (s.state === 'edited' && !force) throw new Error(`${s.dir} has edited baked files (${s.edited.slice(0, 3).join(', ')}): move the edits into the framework first`);
   if (s.state === 'current') return { ...s, rebaked: false };
   const appDir = resolve(root, dir);
+  const libs = appLibs(appDir, root);
   for (const d of BAKED) { rmSync(join(appDir, BAKE_DIR, d), { recursive: true, force: true }); cpSync(join(root, 'framework', d), join(appDir, BAKE_DIR, d), { recursive: true }); }
+  for (const n of libs) { rmSync(join(appDir, BAKE_DIR, 'libs', n), { recursive: true, force: true }); cpSync(join(root, 'framework', 'libs', n), join(appDir, BAKE_DIR, 'libs', n), { recursive: true }); }
   const lockPath = join(appDir, 'axf.lock.json');
   const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
-  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !BAKED.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`))));
-  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR)))) files[`${BAKE_DIR}/${rel}`] = h;
+  const ours = (k) => BAKED.some((d) => k.startsWith(`${BAKE_DIR}/${d}/`)) || libs.some((n) => k === `${BAKE_DIR}/libs/${n}` || k.startsWith(`${BAKE_DIR}/libs/${n}/`));
+  const files = Object.fromEntries(Object.entries(lock.files ?? {}).filter(([k]) => !ours(k)));
+  for (const [rel, h] of Object.entries(tree(join(appDir, BAKE_DIR), libs))) files[`${BAKE_DIR}/${rel}`] = h;
   lock.files = Object.fromEntries(Object.entries(files).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
   writeFileSync(lockPath, JSON.stringify(lock, null, 2) + '\n');
   return { ...s, rebaked: true };

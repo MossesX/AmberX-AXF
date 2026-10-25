@@ -1,5 +1,12 @@
 # Patches
 
+Brett's suite app: the Dev Console, Build Pilot, axHub and plugin tabs (Todos …) in one window that works like **one
+app** (suite mode, Oct 25 2026): one banner (the front app's badges and counters ride on it), one application menu
+(Patches, Tabs, then one menu per app), one search over every app (Ctrl/Cmd+K or `/`), Alt+1…9 for tabs from anywhere,
+one shared look, and every app tab loaded in the background. The apps hand over only their banner, menu bar, search and
+cross-app links (embed@1 takes `banner`, `app-menu`, `search`, `links`); everything else stays theirs. Write-up:
+`_claude/memory/docs/patches-one-app.md`; test `npx -y tsx test.mts`.
+
 Initialized by the **AmberX AXF 0.2.0** build engine (`web-fastapi-wall` template): a React/TS web app
 and its FastAPI server in one container, behind Coolify's Traefik and **axHub's sign-in wall**.
 

@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "suite",
+  "name": "Suite settings",
+  "version": "1.0.0",
+  "description": "The settings interface every developer app shares (Console, axHub web, Patches, and Pilot on its next re-bake): tabs on top, a compact header and a search box over every setting, so Settings looks and works the same in every tab of Patches.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "settings",
+    "suite"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true
+  }
+}

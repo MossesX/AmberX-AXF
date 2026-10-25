@@ -11,7 +11,7 @@
  * a developer app does not run without the hub (Brett's decision, Oct 20 2026). Off by default: only an app that
  * calls `rt.attachAppearanceSource(new HubAppearanceSource({ hub }))` is a developer app.
  */
-import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState, type Spacing } from '../core';
+import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, mergeAppearanceFor, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState, type Spacing } from '../core';
 
 export interface HubAppearanceOptions {
   /** The hub's origin, https (http only for localhost while developing). */
@@ -192,7 +192,8 @@ export class HubAppearanceSource implements AppearanceSource {
     this.pending = null;
     this.saving = true;
     try {
-      const next = mergeAppearance(this.doc, change, this.opts.appId, new Date().toISOString());
+      // scoped: the look goes to the top level for every app, this app's frame (layout, banner, menus, bars) to its own keys
+      const next = mergeAppearanceFor(this.doc, change, this.opts.appId, this.opts.appId, new Date().toISOString());
       const headers: Record<string, string> = { 'Content-Type': 'application/json', 'If-Match': this.version ? `"${this.version}"` : 'new' };
       let r: Response;
       try {

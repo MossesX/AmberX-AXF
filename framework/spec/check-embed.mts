@@ -84,7 +84,10 @@ if (navDesc) Object.defineProperty(globalThis, 'navigator', navDesc); else delet
 /* ---------- 4. embed-takes.json: what a host takes over, page mode, messages ---------- */
 const t = JSON.parse(readFileSync(new URL('./fixtures/embed-takes.json', import.meta.url), 'utf8'));
 eq(EMBED_TAKE_UA_TOKEN, t.uaToken, 'take token');
-eq(embedTakeIds(), t.ids, 'take ids');
+// the fixture's ids (shared with Kotlin) come first; the one-app takes (banner, search, links: Oct 24 2026) are web-only
+// until the Kotlin twin lands (PORTING.md) and are checked in check-suite.mts
+eq(embedTakeIds().slice(0, t.ids.length), t.ids, 'take ids');
+eq(embedTakeIds().slice(t.ids.length), ['banner', 'search', 'links'], 'web-only one-app takes after the shared ones');
 for (const c of t.takes) eq(embedTakes(c.input), c.takes, `takes ${JSON.stringify(c.input)}`);
 for (const c of t.pages) eq(embedPage(c.input), c.page, `page ${JSON.stringify(c.input)}`);
 for (const c of t.queries) eq(embedFromQueryFull(c.input), c.embed, `full query ${c.input}`);

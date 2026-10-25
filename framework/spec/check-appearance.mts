@@ -84,13 +84,17 @@ class FakeSource implements AppearanceSource {
   ok(!rt.appearanceReady(), 'hub down: not ready (no fallback)');
   eq(rt.getState().active['color-theme'], defaults['color-theme'], 'default assets still compile the waiting screen');
   src.setState({ status: 'ready', version: 'v' });
-  src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide', layout: 'no-such-layout', 'nav-menu': 'top-tabs' }, spacing: 'regular', hidden: { toolbar: false, 'nav-menu': true } })));
+  // Scoped (Oct 24 2026): the look is shared (top level); layout, menus, nav and hidden bars are each app's own
+  // (`app--<app id>--<type>` keys). Top-level ids of per-app types and top-level hidden flags are ignored.
+  src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide', layout: 'no-such-layout', 'nav-menu': 'top-tabs', 'app--check-appearance--app-menu': 'no-such-menu' }, spacing: 'regular', hidden: { toolbar: true, 'app--check-appearance--toolbar': false, 'app--check-appearance--nav-menu': true, 'app--another-app--banner': true } })));
   ok(rt.appearanceReady(), 'ready');
   eq(rt.getState().active['color-theme'], 'neon-tide', 'slot applied');
-  eq(rt.getState().active.layout, defaults.layout, 'unknown layout id → the app default, no crash');
+  eq(rt.getState().active.layout, defaults.layout, 'top-level layout (another app\'s pick) → this app\'s default, no crash');
   ok(rt.appearanceSkipped().some((s) => s.startsWith('layout:no-such-layout')), 'skipped is reported');
+  ok(rt.appearanceSkipped().some((s) => s.startsWith('app-menu:no-such-menu')), 'own unknown id skipped too');
   eq(rt.spacing(), 'regular', 'spacing applied');
-  ok(!rt.slotHidden('toolbar') && rt.slotHidden('nav-menu'), 'hidden applied over the app default');
+  ok(!rt.slotHidden('toolbar') && rt.slotHidden('nav-menu'), 'own hidden keys applied over the app default (top-level hidden ignored)');
+  ok(!rt.slotHidden('banner'), 'another app\'s hidden bar is not this app\'s');
   eq(src.saved, [], 'a pushed document is not echoed back');
   // local changes push (admin role has assets.swap)
   rt.swap('style-theme', 'soft-studio');

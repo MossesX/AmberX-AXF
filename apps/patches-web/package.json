@@ -1,7 +1,7 @@
 {
   "name": "patches-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "axf": { "framework": "0.2.0", "template": "web-fastapi-wall" },
   "scripts": {

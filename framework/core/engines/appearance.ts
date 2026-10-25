@@ -13,6 +13,7 @@
 import { hideable } from './hide';
 import { spacingOf, type Spacing } from './spacing';
 import { ASSET_TYPES } from '../types';
+import spec from '../../schemas/asset-types.json';
 
 export const APPEARANCE_FRAME = 'appearance@1';
 /** Where the document lives on the data server: project `shared`, path inside `_data`. */
@@ -145,6 +146,132 @@ export function mergeAppearance(base: AppearanceDocument | null, change: { slots
   if (change.hidden) {
     const hidden = { ...(doc.hidden ?? {}) };
     for (const [t, v] of Object.entries(change.hidden)) { if (v === null) delete hidden[t]; else hidden[t] = v; }
+    doc.hidden = hidden;
+  }
+  if (change.palette) doc.palette = change.palette;
+  doc.updatedBy = by.slice(0, 80);
+  doc.updatedAt = now;
+  return normalizeAppearance(doc) ?? { $axf: APPEARANCE_FRAME };
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * One look, each app its own frame (scoped appearance, Brett Oct 24 2026: "make it all function like 1 professional
+ * app when Patches runs things").
+ *
+ * The document used to hold one id per slot for every app at once, so a layout, banner, menu, toolbar or hidden bar
+ * picked in the Dev Console was applied in Patches, axHub and Pilot too (Patches lost its tab layout, its banner and
+ * its menu whenever the Console saved its own). Now:
+ *
+ *   shared look      types marked `"shared": true` in asset-types.json (colour + style theme, buttons, sliders,
+ *                    containers, dialogs, popups, tab groups, gauges, meters) and the spacing: top-level `slots` /
+ *                    `spacing`, one value for every app, so every app looks the same.
+ *   each app's own   every other type (layout, app menu, toolbar, nav menu, context menu, banner, widgets, settings
+ *                    interface) and the hidden bars: per app, under `slots` / `hidden` keys `app--<app id>--<type>`.
+ *
+ * The per-app keys live inside the same two maps on purpose: apps on an older framework (and the Kotlin kernel until
+ * its twin lands) keep those keys when they save (they keep every slot key) and skip them when they read (not a slot
+ * type there), so nothing they do erases another app's frame. Top-level ids of per-app types (written before this
+ * change, or by an older app) are ignored by `resolveAppearanceFor`: the app's own pick or its manifest default wins.
+ * `resolveAppearance` / `mergeAppearance` above stay as they were (fixture-pinned on both ports).
+ * --------------------------------------------------------------------------------------------------------------- */
+
+const typeSpec = spec.types as Record<string, { shared?: boolean }>;
+/** Prefix of a per-app key (`app--patches-web--layout`). */
+export const APP_KEY_PREFIX = 'app--';
+const APP_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** Is this type's pick shared by every app (the look), or each app's own (its frame)? */
+export function appearanceShared(type: string): boolean { return typeSpec[type]?.shared === true; }
+
+/** The shared look types, in schema order. */
+export function appearanceSharedTypes(types: readonly string[] = ASSET_TYPES): string[] { return types.filter((t) => appearanceShared(t)); }
+
+/** The key an app's own pick of `type` is kept under, or null when the app id or the key can't be one. */
+export function appSlotKey(appId: string, type: string): string | null {
+  if (typeof appId !== 'string' || !APP_ID.test(appId) || typeof type !== 'string' || !ID.test(type) || type.includes('--')) return null;
+  const key = `${APP_KEY_PREFIX}${appId}--${type}`;
+  return ID.test(key) ? key : null;
+}
+
+/** `app--<app>--<type>` → { app, type }, else null (a shared key, or not one at all). */
+export function parseAppSlotKey(key: string): { app: string; type: string } | null {
+  if (typeof key !== 'string' || !key.startsWith(APP_KEY_PREFIX)) return null;
+  const rest = key.slice(APP_KEY_PREFIX.length);
+  const at = rest.indexOf('--');
+  if (at <= 0) return null;
+  const app = rest.slice(0, at), type = rest.slice(at + 2);
+  return APP_ID.test(app) && ID.test(type) && !type.includes('--') ? { app, type } : null;
+}
+
+/** The apps that keep a frame of their own in the document (sorted). */
+export function appearanceApps(doc: AppearanceDocument | null): string[] {
+  const out = new Set<string>();
+  for (const k of [...Object.keys(doc?.slots ?? {}), ...Object.keys(doc?.hidden ?? {})]) { const p = parseAppSlotKey(k); if (p) out.add(p.app); }
+  return [...out].sort();
+}
+
+/**
+ * What the document means for one app: the shared look from the top level, the app's own frame from its keys. Ids the
+ * app doesn't ship are skipped (that slot keeps the app's default), like `resolveAppearance`; a top-level id of a
+ * per-app type is skipped too ("each app keeps its own"), and other apps' keys are left alone without a word.
+ */
+export function resolveAppearanceFor(doc: AppearanceDocument | null, appId: string, has: (type: string, id: string) => boolean, types: readonly string[] = ASSET_TYPES): ResolvedAppearance {
+  const out: ResolvedAppearance = { slots: {}, spacing: null, hidden: {}, skipped: [] };
+  if (!doc) return out;
+  const slotTypes = appearanceSlotTypes(types);
+  const take = (t: string, id: string) => {
+    if (!slotTypes.includes(t)) { out.skipped.push(`${t}:${id} (not a slot here)`); return; }
+    if (!has(t, id)) { out.skipped.push(`${t}:${id} (not in this app)`); return; }
+    out.slots[t] = id;
+  };
+  for (const [k, id] of Object.entries(doc.slots ?? {})) {
+    const own = parseAppSlotKey(k);
+    if (own) {
+      if (own.app !== appId) continue;
+      if (appearanceShared(own.type)) { out.skipped.push(`${own.type}:${id} (one look for every app: kept at the top level)`); continue; }
+      take(own.type, id);
+    } else if (appearanceShared(k)) take(k, id);
+    else out.skipped.push(`${k}:${id} (each app keeps its own ${k})`);
+  }
+  if (doc.spacing) out.spacing = spacingOf(doc.spacing);
+  for (const [k, v] of Object.entries(doc.hidden ?? {})) {
+    const own = parseAppSlotKey(k);
+    if (!own) { out.skipped.push(`hidden ${k} (each app keeps its own bars)`); continue; }
+    if (own.app !== appId) continue;
+    if (!types.includes(own.type) || !hideable(own.type)) { out.skipped.push(`hidden ${own.type} (not hideable)`); continue; }
+    out.hidden[own.type] = v;
+  }
+  return out;
+}
+
+/** A change as an app pushes it: ids by type (null = back to the app's default), hidden bars, spacing, palette. */
+export interface AppearanceChange { slots?: Record<string, string | null>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }
+
+/**
+ * Merge one app's change into the document, scoped: a shared type goes to the top level (every app follows it), any
+ * other type and every hidden bar to this app's own keys. Null removes the key (the app's default again). Everything
+ * else is kept: other apps' keys, top-level keys older apps still read. Last write wins per key, as before.
+ */
+export function mergeAppearanceFor(base: AppearanceDocument | null, change: AppearanceChange, appId: string, by: string, now: string): AppearanceDocument {
+  const doc: AppearanceDocument = normalizeAppearance({ ...(base ?? { $axf: APPEARANCE_FRAME }), $axf: APPEARANCE_FRAME }) ?? { $axf: APPEARANCE_FRAME };
+  if (change.slots) {
+    const slots = { ...(doc.slots ?? {}) };
+    for (const [t, id] of Object.entries(change.slots)) {
+      if (APPEARANCE_NEVER.includes(t)) continue;
+      const key = appearanceShared(t) ? t : appSlotKey(appId, t);
+      if (!key) continue;
+      if (id === null) delete slots[key]; else if (typeof id === 'string') slots[key] = id;
+    }
+    doc.slots = slots;
+  }
+  if (change.spacing) doc.spacing = change.spacing;
+  if (change.hidden) {
+    const hidden = { ...(doc.hidden ?? {}) };
+    for (const [t, v] of Object.entries(change.hidden)) {
+      const key = appSlotKey(appId, t);
+      if (!key) continue;
+      if (v === null) delete hidden[key]; else hidden[key] = v;
+    }
     doc.hidden = hidden;
   }
   if (change.palette) doc.palette = change.palette;

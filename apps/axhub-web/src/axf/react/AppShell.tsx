@@ -37,13 +37,21 @@ export interface AppShellProps {
    * for views holding a live page (Patches' app tabs are frames; moving or remounting a frame reloads it).
    */
   keep?: readonly string[];
+  /**
+   * Kept views mounted in the background (hidden) shortly after the app has drawn, before they are first shown: a host
+   * (Patches) loads every app tab at once, so their banners, menus and search entries are there from the start.
+   */
+  warm?: readonly string[];
 }
+
+/** How long after the first real frame the `warm` views start loading (the front view gets the network first). */
+const WARM_MS = 1500;
 
 /**
  * The application shell. Regions are placed by the layout engine
  * (CSS grid vars compiled from the active `layout` asset).
  */
-export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [] }: AppShellProps) {
+export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [], warm = [] }: AppShellProps) {
   const layout = useAsset('layout').data;
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
@@ -71,9 +79,20 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
+  // embed@1: tell the host (Patches) this app is up once its first real frame is drawn (not the waiting screen).
+  const waiting = !!state.appearance && state.appearance.status !== 'ready';
+  useEffect(() => { if (!waiting) rt.announceReady(); }, [rt, waiting]);
+  const warmKey = warm.join('|');
+  useEffect(() => {
+    const ids = warm.filter((id) => keep.includes(id));
+    if (waiting || !ids.length) return;
+    const t = setTimeout(() => setKept((k) => [...k, ...ids.filter((id) => !k.includes(id))]), WARM_MS);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [warmKey, keepKey, waiting]);
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered.
-  if (state.appearance && state.appearance.status !== 'ready') {
+  if (waiting && state.appearance) {
     return (
       <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
         <div className="fx-shell fx-shell--waiting"><main className="fx-region fx-main" style={{ gridArea: 'main' }}><div className="fx-main__inner"><WaitingForHub state={state.appearance} hub={rt.appearanceHub?.()} /></div></main></div>

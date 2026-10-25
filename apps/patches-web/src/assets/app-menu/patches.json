@@ -3,12 +3,13 @@
   "type": "app-menu",
   "id": "patches",
   "name": "Patches",
-  "version": "1.0.0",
-  "description": "Patches' application menu: the combined settings (one tab per app), the apps, the tab in front, the look.",
+  "version": "2.0.0",
+  "description": "Patches' menu bar in suite mode: the Patches menu, then the menus of the app in front (each app hands its menu over, embed@1 take app-menu; they change with the tab), then Tabs.",
   "author": "AmberX AXF build engine",
   "tags": [
     "patches",
-    "app-menu"
+    "app-menu",
+    "suite"
   ],
   "data": {
     "menus": [
@@ -19,41 +20,41 @@
         "items": [
           {
             "id": "settings",
-            "label": "Settings",
+            "label": "Patches settings",
             "icon": "settings",
             "action": "app.settings",
-            "shortcut": "Ctrl+,",
             "order": 10
           },
           {
-            "id": "settings-apps",
-            "label": "Settings for",
+            "id": "front-settings",
+            "label": "Settings of the app in front",
             "icon": "sliders",
-            "order": 11,
+            "action": "patches.front.settings",
+            "order": 11
+          },
+          {
+            "id": "apps-settings",
+            "label": "Settings for",
+            "icon": "grid",
+            "order": 12,
             "items": [
-              {
-                "id": "settings-patches",
-                "label": "Patches",
-                "icon": "layers",
-                "action": "patches.settings:patches"
-              },
               {
                 "id": "settings-console",
                 "label": "Console",
                 "icon": "terminal",
-                "action": "patches.settings:console"
+                "action": "patches.app.settings:console"
               },
               {
                 "id": "settings-pilot",
                 "label": "Pilot",
                 "icon": "rocket",
-                "action": "patches.settings:pilot"
+                "action": "patches.app.settings:pilot"
               },
               {
                 "id": "settings-axhub",
                 "label": "axHub",
-                "icon": "shield",
-                "action": "patches.settings:axhub"
+                "icon": "layers",
+                "action": "patches.app.settings:axhub"
               }
             ]
           },
@@ -63,23 +64,31 @@
             "order": 20
           },
           {
-            "id": "reload",
-            "label": "Reload the tab in front",
-            "icon": "refresh",
-            "action": "patches.reload",
-            "order": 30
+            "id": "search",
+            "label": "Search every app",
+            "icon": "search",
+            "action": "patches.search",
+            "shortcut": "Ctrl+K",
+            "order": 21
           },
           {
-            "id": "open",
-            "label": "Open the tab in front in a new tab",
-            "icon": "external",
-            "action": "patches.open",
-            "order": 31
+            "id": "look",
+            "label": "Bars and menus",
+            "icon": "layout",
+            "provider": "chrome",
+            "order": 22
           },
           {
             "id": "sep2",
             "separator": true,
             "order": 40
+          },
+          {
+            "id": "shortcuts",
+            "label": "Keyboard shortcuts",
+            "icon": "keyboard",
+            "action": "view.shortcuts",
+            "order": 41
           },
           {
             "id": "about",
@@ -91,47 +100,76 @@
         ]
       },
       {
-        "id": "apps",
-        "label": "Apps",
-        "order": 20,
+        "id": "tabs",
+        "label": "Tabs",
+        "order": 80,
         "items": [
           {
-            "id": "console",
-            "label": "Console",
-            "icon": "terminal",
-            "action": "nav:console"
-          },
-          {
-            "id": "pilot",
-            "label": "Pilot",
-            "icon": "rocket",
-            "action": "nav:pilot"
-          },
-          {
-            "id": "axhub",
-            "label": "axHub",
-            "icon": "layers",
-            "action": "nav:axhub"
-          }
-        ]
-      },
-      {
-        "id": "view",
-        "label": "View",
-        "order": 30,
-        "items": [
-          {
-            "id": "chrome",
-            "label": "Bars and menus",
+            "id": "list",
+            "label": "Tabs",
             "icon": "layout",
-            "provider": "chrome"
+            "provider": "patches.tabs",
+            "order": 10
+          },
+          {
+            "id": "sep1",
+            "separator": true,
+            "order": 20
+          },
+          {
+            "id": "next",
+            "label": "Next tab",
+            "icon": "chevron-right",
+            "action": "patches.next",
+            "order": 21
+          },
+          {
+            "id": "prev",
+            "label": "Previous tab",
+            "icon": "chevron-left",
+            "action": "patches.prev",
+            "order": 22
+          },
+          {
+            "id": "reload",
+            "label": "Reload the tab in front",
+            "icon": "refresh",
+            "action": "patches.reload",
+            "order": 23
+          },
+          {
+            "id": "open",
+            "label": "Open the tab in front in a browser tab",
+            "icon": "external",
+            "action": "patches.open",
+            "order": 24
+          },
+          {
+            "id": "sep2",
+            "separator": true,
+            "order": 30
+          },
+          {
+            "id": "add",
+            "label": "Add a tab…",
+            "icon": "plus",
+            "action": "patches.tabs.add",
+            "order": 31
+          },
+          {
+            "id": "manage",
+            "label": "Tabs settings",
+            "icon": "settings",
+            "action": "patches.tabs",
+            "order": 32
           },
           {
             "id": "banners",
             "label": "Console banners above every tab",
             "icon": "bell",
-            "checked": "setting:patches.banners",
-            "action": "patches.banners.toggle"
+            "checked": "setting:patches.strip",
+            "action": "patches.banners.toggle",
+            "order": 33
           }
         ]
       }

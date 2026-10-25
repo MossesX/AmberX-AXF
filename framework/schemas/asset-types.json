@@ -53,7 +53,8 @@
           "focus",
           "shadow"
         ]
-      }
+      },
+      "shared": true
     },
     "style-theme": {
       "label": "Style theme",
@@ -95,7 +96,8 @@
       },
       "optional_fields": {
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
-      }
+      },
+      "shared": true
     },
     "layout": {
       "label": "Layout",
@@ -350,7 +352,8 @@
         "divider": "boolean, default true — the rule under the row"
       },
       "hideable": true,
-      "optional": true
+      "optional": true,
+      "shared": true
     },
     "dialog": {
       "label": "Dialog",
@@ -385,7 +388,8 @@
           "accent-bar",
           "filled"
         ]
-      }
+      },
+      "shared": true
     },
     "popup": {
       "label": "Popup / toast",
@@ -410,7 +414,8 @@
           "outline",
           "minimal"
         ]
-      }
+      },
+      "shared": true
     },
     "button": {
       "label": "Button",
@@ -441,7 +446,8 @@
           "md",
           "lg"
         ]
-      }
+      },
+      "shared": true
     },
     "slider": {
       "label": "Slider",
@@ -471,7 +477,8 @@
           "hover",
           "never"
         ]
-      }
+      },
+      "shared": true
     },
     "container": {
       "label": "Container",
@@ -501,7 +508,8 @@
           "md",
           "lg"
         ]
-      }
+      },
+      "shared": true
     },
     "gauge": {
       "label": "Gauge",
@@ -533,7 +541,8 @@
           "none"
         ]
       },
-      "optional": true
+      "optional": true,
+      "shared": true
     },
     "meter": {
       "label": "Progress meter",
@@ -566,7 +575,8 @@
           "soft"
         ]
       },
-      "optional": true
+      "optional": true,
+      "shared": true
     },
     "banner": {
       "label": "Banner",

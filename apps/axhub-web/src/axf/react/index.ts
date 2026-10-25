@@ -11,7 +11,7 @@ export { AppMenuDropdown, AppMenuList, useIsPhone, APP_MENU_PHONE_QUERY } from '
 export { Banner, BannerBadge, BannerClock } from './components/Banner';
 export { Gauge, Meter, type GaugeProps, type MeterProps } from './components/Meters';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
-export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
+export { LiveSearch, useSearchHost, scanPage, flashWhenReady, FOCUS_SEARCH_EVENT } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';
 export { AccountView } from './studio/AccountView';

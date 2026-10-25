@@ -7,10 +7,14 @@
  * `settingsTabs`), or a new tab of its own. Values persist per app (secrets never do).
  *
  * Open it with the standard `app.settings` action, or `settings.open:<tab>` for a tab.
+ *
+ * The page itself follows the active `settings` asset (settings-ui@1, core/engines/settingsui.ts): layout, header,
+ * search, descriptions, tab order/labels, what is left out and extra option groups, so apps loading the same
+ * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { ASSET_TYPES, assetTypeSpecs, attachable, hideable, SPACING_DEFAULT, SPACING_KEY, SPACING_LABEL, SPACINGS, rollNever, rollSlotDefault, ROLL_ASSET_KEY, ROLL_SLOT_KEY, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, CUSTOM_GROUPS, customEditable, customizable, customTokensFor, effectiveCustom, iconSet, iconSetDecls, ICON_SETS, setApplyAll, setCustomToken, type CustomTokenSpec, type CustomValue, type CustomValues, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 
@@ -33,6 +37,17 @@ export const SETTINGS_TABS = {
 
 function useSettingsRevision(rt: AxfRuntime): number {
   return useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
+}
+
+/** The active settings interface (the `settings` asset), normalized; defaults when the app has none. */
+function settingsUi(rt: AxfRuntime): SettingsUi {
+  return normalizeSettingsUi(rt.assetOrNull('settings')?.data);
+}
+function useSettingsUi(): SettingsUi {
+  const rt = useRuntime();
+  useAxfState();
+  const a = rt.assetOrNull('settings');
+  return useMemo(() => normalizeSettingsUi(a?.data), [a]);
 }
 
 /* ---------------- controls ---------------- */
@@ -164,11 +179,141 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
   );
 }
 
+/* ---------------- Assets: one collapsible card per slot, one per asset, extra tokens (core/engines/customize.ts) ---------------- */
+
+const humanize = (v: string) => (v === 'theme' ? 'Theme default' : v.replace(/([A-Z])/g, ' $1').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()));
+
+function TokenControl({ token, value, onChange }: { token: CustomTokenSpec; value: CustomValue; onChange: (v: CustomValue | null) => void }) {
+  switch (token.kind) {
+    case 'scale':
+      return <Slider label={token.label} value={Number(value)} min={token.min} max={token.max} step={token.step} unit={token.unit} onChange={(v) => onChange(v)} />;
+    case 'toggle':
+      return <Switch label={token.label} checked={value === true} onChange={(v) => onChange(v)} />;
+    case 'iconset': {
+      const set = iconSet(value) ?? ICON_SETS[0]!;
+      const cls = `axf-iconprev--${set.id}`;
+      return (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label">
+            <span>{token.label}</span>
+            <span className={`axf-settings__iconprev ${cls}`} aria-hidden="true">
+              <style>{`.${cls} .fx-icon{${iconSetDecls(set).join(';')}}`}</style>
+              {['home', 'search', 'bell', 'settings', 'star', 'folder'].map((n) => <Icon key={n} name={n} size={16} />)}
+            </span>
+          </div>
+          <div className="axf-settings__control">
+            <select className="axf-settings__field" aria-label={token.label} value={set.id} onChange={(e) => onChange(e.target.value)}>
+              {ICON_SETS.map((i, n) => <option key={i.id} value={i.id}>{n + 1}. {i.label}</option>)}
+            </select>
+          </div>
+        </div>
+      );
+    }
+    default:
+      return (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label"><span>{token.label}</span></div>
+          <div className="axf-settings__control">
+            <select className="axf-settings__field" aria-label={token.label} value={String(value)} onChange={(e) => onChange(e.target.value)}>
+              {(token.options ?? []).map((o) => <option key={o} value={o}>{humanize(o)}</option>)}
+            </select>
+          </div>
+        </div>
+      );
+  }
+}
+
+function TokenEditor({ type, values, onChange }: { type: AssetType; values: CustomValues; onChange: (key: string, v: CustomValue | null) => void }) {
+  const tokens = customTokensFor(type);
+  return (
+    <div className="axf-settings__rows">
+      {CUSTOM_GROUPS.map((g) => {
+        const list = tokens.filter((t) => t.group === g);
+        if (!list.length) return null;
+        return (
+          <Fragment key={g}>
+            <h4 className="axf-settings__section">{g}</h4>
+            {list.map((t) => <TokenControl key={t.key} token={t} value={values[t.key] ?? t.default} onChange={(v) => onChange(t.key, v === t.default ? null : v)} />)}
+          </Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Every asset of a slot in its own collapsible card. With more than one, "Apply settings to all" (on by default) leaves only the first editable. */
+function AssetInstances({ type }: { type: AssetType }) {
+  const rt = useRuntime();
+  const state = useAxfState();
+  useSettingsRevision(rt);
+  const assets = rt.registry.list(type);
+  const ids = assets.map((a) => a.id);
+  const slot = rt.customSlot(type);
+  const locked = rt.gate('assets.swap') !== 'allow';
+  const active = (state.active as Record<string, string | undefined>)[type];
+  const first = assets[0];
+  if (!first) return null;
+  return (
+    <div className="axf-settings__rows">
+      {assets.length > 1 && (
+        <Checkbox label="Apply settings to all" checked={slot.all} disabled={locked}
+          title={slot.all ? `Every ${assetTypeSpecs[type].label.toLowerCase()} uses the settings of ${first.name}. Untick to edit each one.` : 'Each one keeps its own settings. Tick to use the first one\'s for all.'}
+          onChange={(v) => rt.setCustomSlot(type, setApplyAll(slot, ids, v))} />
+      )}
+      {assets.map((a, i) => {
+        const editable = !locked && customEditable(slot, ids, a.id);
+        const values = effectiveCustom(slot, a.id);
+        const changed = Object.keys(values).length;
+        const own = slot.all ? (i === 0) : true;
+        return (
+          <div key={a.id} className={editable ? '' : 'axf-settings__off'} aria-disabled={!editable || undefined} data-axf-anchor={`custom-asset:${type}:${a.id}`}>
+            <Container collapsible defaultOpen={false} title={a.name} icon={assetTypeSpecs[type].icon}
+              actions={<>{a.id === active && <Chip tone="accent">active</Chip>}{own && changed > 0 && <Chip>{changed} changed</Chip>}</>}>
+              {!editable && !locked && <p className="fx-muted axf-settings__hint">Uses the settings of {first.name} (Apply settings to all). Untick it to edit this one.</p>}
+              {a.id !== active && <p className="fx-muted axf-settings__hint">Applies while {a.name} is the active {assetTypeSpecs[type].label.toLowerCase()}.</p>}
+              <fieldset className="axf-settings__fieldset" disabled={!editable}>
+                <TokenEditor type={type} values={values} onChange={(k, v) => rt.setCustomSlot(type, setCustomToken(slot, a.id, k, v, type))} />
+                {own && changed > 0 && <Button tone="ghost" icon="refresh" onClick={() => rt.setCustomSlot(type, slot.all ? { ...slot, shared: {} } : { ...slot, byId: { ...slot.byId, [a.id]: {} } })}>Back to the theme</Button>}
+              </fieldset>
+            </Container>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AssetSlotCard({ spec }: { spec: SettingSpec }) {
+  const rt = useRuntime();
+  const type = spec.target as AssetType;
+  if (rt.slotOwnedByHost(type)) return null;
+  return (
+    <div data-axf-anchor={`settings-slot:${type}`}>
+      <Container collapsible defaultOpen={false} title={assetTypeSpecs[type].label} icon={assetTypeSpecs[type].icon}>
+        <div className="axf-settings__rows">
+          <SettingRow spec={spec} />
+          {customizable(type) && <AssetInstances type={type} />}
+        </div>
+      </Container>
+    </div>
+  );
+}
+
 function GroupCard({ group }: { group: SettingsGroup }) {
+  if (group.id === 'axf.appearance') {
+    return (
+      <div data-axf-anchor={`settings-group:${group.id}`}>
+        <Container title={group.label} icon={group.icon ?? 'settings'}>
+          {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
+          <div className="axf-settings__rows">{group.settings.map((s) => s.kind === 'asset_slot' ? <AssetSlotCard key={s.key} spec={s} /> : <SettingRow key={s.key} spec={s} />)}</div>
+        </Container>
+      </div>
+    );
+  }
   return (
     <div data-axf-anchor={`settings-group:${group.id}`}>
       <Container title={group.label} icon={group.icon ?? 'settings'}>
-        {group.description && <p className="fx-muted" style={{ marginTop: 0 }}>{group.description}</p>}
+        {group.description && <p className="fx-muted axf-settings__desc" style={{ marginTop: 0 }}>{group.description}</p>}
         <div className="axf-settings__rows">{group.settings.map((s) => <SettingRow key={s.key} spec={s} />)}</div>
       </Container>
     </div>
@@ -294,6 +439,8 @@ function LibrariesPanel() {
           return (
             <li key={l.id} className="fx-row fx-row--wrap">
               <span className="fx-grow"><strong>{l.name}</strong> <span className="fx-muted">{l.version}</span><br /><span className="fx-mono axf-settings__hint">{l.id}</span></span>
+              <ModelBadge model={lib?.builtWith?.model} builtAt={lib?.builtWith?.builtAt} compact />
+              {lib?.opens && <Chip>opens in {PLACEMENT_LABELS[rt.placementOf(l.id) ?? lib.opens].toLowerCase()}</Chip>}
               <Chip tone={tone(l.health)}>{l.health === 'ok' ? 'healthy' : l.health}</Chip>
               {l.dependents.length > 0 && <Chip>used by {l.dependents.length}</Chip>}
               {tab && <Button tone="ghost" icon="settings" onClick={() => rt.dispatch(`settings.open:${tab.id}`)}>Settings</Button>}
@@ -342,42 +489,63 @@ function AboutPanel() {
 export function SettingsView() {
   const rt = useRuntime();
   useSettingsRevision(rt);
+  const ui = useSettingsUi();
   // Inside a host that manages plugins (embed@1 take `plugins`, Patches) the plugin list (Settings → Plugins itself) isn't
   // shown: the host installs and switches them. Each plugin's own settings stay, as usual (never greyed out).
   const pluginLock = rt.hostLockNote('plugins');
-  const tabs = rt.settings.topTabs().filter((t) => !(pluginLock && t.id === 'plugins' && !rt.settings.subTabs('plugins').length));
+  // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
+  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui);
+  const byId = new Map(all.map((t) => [t.id, t]));
+  const childrenOf = (id: string) => all.filter((t) => t.parent === id);
+  const tabs = all.filter((t) => !t.parent || !byId.has(t.parent)).filter((t) => !(pluginLock && t.id === 'plugins' && !childrenOf('plugins').length));
   // A remembered or requested id may be a sub-tab: resolve it to [top tab, sub-tab].
   // A banner plugin's own settings live inside Banners (one interface for every banner): its tab opens Banners on it.
   const banners = useKnownBanners();
   const folded = banners.length ? bannerSettingsTabs(rt) : new Set<string>();
   const resolve = (id: unknown): [string, string] => {
     if (typeof id === 'string' && folded.has(id)) { askBannerTab(rt, id); return ['plugins', 'banners']; }
-    const t = typeof id === 'string' ? rt.settings.getTab(id) : undefined;
-    if (t?.parent && rt.settings.getTab(t.parent)) return [t.parent, t.id];
+    const t = typeof id === 'string' ? byId.get(id) : undefined;
+    if (t?.parent && byId.has(t.parent)) return [t.parent, t.id];
     if (t) return [t.id, ''];
-    return [tabs[0]?.id ?? 'appearance', ''];
+    return [ui.layout === 'list' ? '' : tabs[0]?.id ?? 'appearance', ''];
   };
   const [[tab, sub], setSel] = useState<[string, string]>(() => resolve(rt.settings.get(TAB_KEY)));
+  const [query, setQuery] = useState('');
   useEffect(() => {
-    const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) setSel(resolve(id)); };
+    const onOpen = (e: Event) => { const id = (e as CustomEvent<string>).detail; if (id) { setQuery(''); setSel(resolve(id)); } };
     globalThis.addEventListener?.('axf:settings-tab', onOpen);
     return () => globalThis.removeEventListener?.('axf:settings-tab', onOpen);
   }, []);
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
-  const current = tabs.find((t) => t.id === tab) ?? tabs[0];
-  const subs = current ? rt.settings.subTabs(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
+  // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
+  const current = tabs.find((t) => t.id === tab) ?? (ui.layout === 'list' ? undefined : tabs[0]);
+  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
+  const searching = ui.search && query.trim().length > 0;
+  const cls = ['fx-stack', 'fx-stack--lg', 'axf-settings', `axf-settings--${ui.layout}`, ui.descriptions ? '' : 'axf-settings--nodesc'].filter(Boolean).join(' ');
 
-  return (
-    <div className="fx-stack fx-stack--lg axf-settings">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>
-      <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections">
-        {tabs.map((t) => (
-          <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => choose(t.id)}>{t.label}</Button>
-        ))}
-      </nav>
-      {subs.length > 0 && current && (
+  const tabBar = ui.layout === 'list' ? null : (
+    <nav className="axf-settings__tabs" role="tablist" aria-label="Settings sections" aria-orientation={ui.layout === 'tabs-side' ? 'vertical' : 'horizontal'}>
+      {tabs.map((t) => (
+        <Button key={t.id} role="tab" aria-selected={t.id === current?.id} tone={t.id === current?.id ? 'primary' : 'neutral'} icon={t.icon} onClick={() => { setQuery(''); choose(t.id); }}>{t.label}</Button>
+      ))}
+    </nav>
+  );
+  const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? (
+    <div className="axf-settings__tablist" role="list">
+      {tabs.map((t) => (
+        <Button key={t.id} role="listitem" icon={t.icon} className="axf-settings__listitem" onClick={() => choose(t.id)}>
+          <span className="axf-settings__listlabel">{t.label}</span>
+          {t.description && <span className="fx-muted axf-settings__hint axf-settings__desc">{t.description}</span>}
+        </Button>
+      ))}
+    </div>
+  ) : (
+    <div className="fx-stack axf-settings__body">
+      {ui.layout === 'list' && <div><Button size="sm" tone="quiet" icon="chevron-left" onClick={() => choose('')}>All settings</Button></div>}
+      {ui.layout === 'list' && <h2 className="axf-settings__tabtitle">{current.label}</h2>}
+      {subs.length > 0 && (
         <nav className="axf-settings__subtabs" role="tablist" aria-label={`${current.label} sections`}>
           {!noOverview && (
             <button type="button" role="tab" aria-selected={shown?.id === current.id} className={`fx-tab ${shown?.id === current.id ? 'is-active' : ''}`} onClick={() => choose(current.id)}>
@@ -391,19 +559,48 @@ export function SettingsView() {
           ))}
         </nav>
       )}
-      {shown?.description && <p className="fx-muted" style={{ margin: 0 }}>{shown.description}</p>}
+      {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {shown && <TabContent id={shown.id} />}
+    </div>
+  );
+
+  return (
+    <div className={cls}>
+      {ui.header === 'full' && <header className="fx-pagehead"><div><p className="fx-eyebrow">{rt.manifest.app.name}</p><h1>Settings</h1></div></header>}
+      {ui.header === 'compact' && <h2 className="axf-settings__title">Settings</h2>}
+      {ui.search && <TextField label="Search settings" value={query} onChange={setQuery} placeholder="Search every setting" className="axf-settings__search" />}
+      {ui.layout === 'tabs-side' && !searching ? <div className="axf-settings__split">{tabBar}{body}</div> : <>{!searching && tabBar}{body}</>}
     </div>
   );
 }
 
-/** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings. */
+/** Search across every tab the interface shows: matching settings, grouped by tab and group (panels are custom UI and aren't searched). */
+function SearchResults({ query, tabs, ui }: { query: string; tabs: SettingsTabLike[]; ui: SettingsUi }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const hits = tabs.flatMap((t) => rt.settings.groupsIn(t.id)
+    .map((g) => filterSettingsGroup(g, ui))
+    .filter((g): g is SettingsGroup => !!g)
+    .map((g) => ({ tab: t, group: { ...g, settings: g.settings.filter((s) => s.kind !== 'section' && settingMatches(s, query)) } }))
+    .filter((x) => x.group.settings.length > 0));
+  if (!hits.length) return <p className="fx-muted">No setting matches “{query.trim()}”.</p>;
+  return (
+    <div className="fx-stack">
+      {hits.map(({ tab, group }) => <GroupCard key={`${tab.id}:${group.id}`} group={{ ...group, label: `${tab.label} · ${group.label}` }} />)}
+    </div>
+  );
+}
+type SettingsTabLike = { id: string; label: string };
+
+/** One settings tab's panels and groups, interleaved by `order` (panels first on a tie). Also used inside Banner settings.
+ *  What the active settings asset leaves out (group, panel or setting ids) isn't shown. */
 export function TabContent({ id }: { id: string }) {
   const rt = useRuntime();
   useSettingsRevision(rt);
+  const ui = useSettingsUi();
   const tab = rt.settings.getTab(id);
-  const groups = rt.settings.groupsIn(id);
-  const panels = rt.settings.panelsIn(id);
+  const groups = rt.settings.groupsIn(id).map((g) => filterSettingsGroup(g, ui)).filter((g): g is SettingsGroup => !!g);
+  const panels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
   return (
     <>
       {[...panels.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: <div data-axf-anchor={`settings-panel:${p.id}`}><Container title={p.title} icon={p.icon ?? tab?.icon ?? 'settings'}>{p.render() as ReactNode}</Container></div> })),
@@ -415,6 +612,33 @@ export function TabContent({ id }: { id: string }) {
       )}
     </>
   );
+}
+
+/** Registers the active settings asset's own tabs and option groups (module `asset:settings/<id>`), and swaps them
+ *  when another settings asset becomes active. Values persist under the same keys in every app, so one shared
+ *  asset gives every app the same options. */
+function syncSettingsAsset(rt: AxfRuntime): () => void {
+  let owned = '';
+  let tabs: string[] = [];
+  const sync = () => {
+    const a = rt.assetOrNull('settings');
+    const key = a ? `${a.id}@${a.version}:${JSON.stringify(a.data).length}` : '';
+    if (key === owned) return;
+    if (owned) { rt.settings.removeModule(`asset:settings/${owned.split('@')[0]}`); tabs.forEach((t) => rt.settings.removeTab(t)); }
+    owned = key;
+    tabs = [];
+    if (!a) return;
+    const ui = settingsUi(rt);
+    const known = new Set(rt.settings.listTabs().map((t) => t.id));
+    ui.tabs.forEach((t, i) => {
+      if (known.has(t.id) || !t.label) return;
+      rt.settings.addTab({ id: t.id, label: t.label, icon: t.icon ?? 'settings', order: t.order ?? 100 + i, ...(t.description ? { description: t.description } : {}), ...(t.parent ? { parent: t.parent } : {}), module: `asset:settings/${a.id}` });
+      tabs.push(t.id);
+    });
+    settingsUiGroups(ui, a.id).forEach((g) => rt.settings.addGroup(g));
+  };
+  sync();
+  return rt.subscribe(sync);
 }
 
 /* ---------------- display effects ---------------- */
@@ -447,9 +671,22 @@ const CSS = `
 .axf-settings input[type=checkbox]{accent-color:var(--fx-accent)}
 .axf-settings__hint{font-size:.85em;color:var(--fx-muted)}
 .axf-settings__switch{gap:var(--fx-space)}
+.axf-settings__fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:calc(var(--fx-space)*1.5)}
+.axf-settings__iconprev{display:inline-flex;gap:calc(var(--fx-space)*.75);color:var(--fx-text)}
 .axf-settings__multi{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
 .axf-settings__section{margin:var(--fx-space) 0 0;font-size:.95em}
 .axf-settings__list{margin:0;padding-left:calc(var(--fx-space)*2.25);display:flex;flex-direction:column;gap:var(--fx-space)}
+.axf-settings__tablist{display:flex;flex-direction:column;gap:calc(var(--fx-space)/2)}
+.axf-settings__listitem{justify-content:flex-start;text-align:left;width:100%}
+.axf-settings__listlabel{font-weight:600}
+.axf-settings__listitem .axf-settings__hint{margin-left:var(--fx-space)}
+.axf-settings__title,.axf-settings__tabtitle{margin:0}
+.axf-settings__search{max-width:420px}
+.axf-settings__split{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:calc(var(--fx-space)*2);align-items:start}
+.axf-settings--tabs-side .axf-settings__tabs{display:flex;flex-direction:column;align-items:stretch;gap:calc(var(--fx-space)/2)}
+.axf-settings--tabs-side .axf-settings__tabs>*{justify-content:flex-start}
+.axf-settings--nodesc .axf-settings__hint,.axf-settings--nodesc .axf-settings__desc{display:none}
+@media (max-width:640px){.axf-settings__split{grid-template-columns:1fr}.axf-settings--tabs-side .axf-settings__tabs{flex-direction:row;flex-wrap:wrap}}
 [data-reduced-motion] *{transition:none!important;animation:none!important}
 `;
 
@@ -472,7 +709,7 @@ function appearanceGroup(rt: AxfRuntime): SettingsGroup {
     icon: 'palette',
     tab: 'appearance',
     order: 10,
-    description: 'Pick the active asset for each slot.',
+    description: 'Pick the active asset for each slot, then open any asset to change its text, colours, layout, shape, icons (100 icon sets), motion, hover and click behaviour. Every value follows the theme.',
     settings: ASSET_TYPES.filter((t) => rt.registry.list(t).length > 0 && !attachable(t)).map((t) => ({
       key: `axf.slot.${t}`,
       label: assetTypeSpecs[t].label,
@@ -494,6 +731,7 @@ export const library: AxfWebLibrary = {
     setBannerOwnSettingsRenderer((tab) => <TabContent id={tab} />);
     rt.settings.addGroup(appearanceGroup(rt));
     rt.settings.addGroup(rollGroup());
+    syncSettingsAsset(rt);
     applyDisplay(rt);
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
     rt.settings.onChange('axf.display.animations', () => applyDisplay(rt));

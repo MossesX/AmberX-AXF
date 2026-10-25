@@ -3,8 +3,8 @@
   "app": {
     "id": "patches-web",
     "name": "Patches",
-    "version": "0.1.0",
-    "about": "The Dev Console, Build Pilot and axHub in one page: one banner, three tabs, one settings with a tab per app."
+    "version": "0.2.0",
+    "about": "The Dev Console, Build Pilot and axHub working as one app: one banner, one menu bar, one search over every app, one look; each app keeps its own pages, settings and plugins."
   },
   "framework": {
     "version": "0.2.0",
@@ -32,7 +32,7 @@
     "container": "soft-card",
     "banner": "patches",
     "clock": "digital-12h",
-    "search-bar": "everything",
+    "search-bar": "suite",
     "logo": "wordmark",
     "action-button": "settings",
     "label": "version",
@@ -46,7 +46,7 @@
     "divider": "rule",
     "badge": "new",
     "uac-policy": "standard",
-    "settings": "patches"
+    "settings": "suite"
   },
   "hidden": [
     "toolbar"
@@ -84,7 +84,15 @@
     },
     {
       "path": "src/views",
-      "purpose": "The app's views; nav assets reference them by id."
+      "purpose": "Patches' views: one per tab (kept alive) and Settings (views/tabs.tsx)."
+    },
+    {
+      "path": "src/patches.ts",
+      "purpose": "Suite mode, pure: the tabs and their addresses, what Patches takes from each app (banner, menu, search, links), mirrored banner items, one search, links between apps, deep links, tab keys, the tab group."
+    },
+    {
+      "path": "src/patchesLibrary.tsx",
+      "purpose": "Patches' library: the app tabs (frames kept alive, loading covers), the banner strip, the front app's banner items and menus, Settings → Patches (Apps, Tabs), the Add tab dialog."
     },
     {
       "path": "src/actions.ts",
@@ -92,7 +100,7 @@
     },
     {
       "path": "src/dialogs.tsx",
-      "purpose": "The app's dialogs (id \u2192 component)."
+      "purpose": "The app's dialogs (id → component)."
     },
     {
       "path": "src/api.ts",
@@ -117,10 +125,6 @@
     {
       "path": "deploy/install.sh",
       "purpose": "VPS installer (root): clone/update, token, image, Coolify + Traefik + the wall, 5-minute auto-update. Sources src/axf/deploy/axf-deploy.sh."
-    },
-    {
-      "path": "public",
-      "purpose": "Static files."
     }
   ]
 }

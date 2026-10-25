@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T16:25:12.368Z",
+ "updatedAt": "2026-10-25T01:48:37.694Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -1640,6 +1640,10 @@
     {
      "text": "Oct 23 2026 (patches-settings-banner-hide): inside a host, settings are no longer greyed out; the Settings → Plugins overview is dropped instead and plugin sub-tabs render normally. Keep that when reworking the lock mode.",
      "at": "2026-10-23T12:52:32.760Z"
+    },
+    {
+     "text": "Oct 24 2026: patches-one-app (Opus, branch claude/project-thread-vcxt2b) retires Patches-managed plugins: apps in Patches tabs run their own plugins (the plugins take gated the console banners away). Rethink or drop this rebuild before building it.",
+     "at": "2026-10-24T22:41:54.052Z"
     }
    ],
    "subPrompts": [
@@ -1676,7 +1680,7 @@
    ],
    "createdAt": "2026-10-22T18:37:44.308Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T12:52:32.760Z",
+   "updatedAt": "2026-10-24T22:41:54.052Z",
    "estimate": "3 h",
    "source": "chat"
   },
@@ -2512,6 +2516,10 @@
     {
      "text": "Overlaps settings-asset (new `settings` asset type, branch claude/project-thread-55oakl); build with settings-asset-fable.",
      "at": "2026-10-23T18:22:53.000Z"
+    },
+    {
+     "text": "Oct 24 2026: the combined settings tab group was removed (each app keeps its own settings); patches-one-app adds an Apps panel in Patches settings instead. Only the banner hide part of this rebuild still applies.",
+     "at": "2026-10-24T22:41:54.060Z"
     }
    ],
    "subPrompts": [
@@ -2543,7 +2551,7 @@
    ],
    "createdAt": "2026-10-23T12:52:32.722Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-10-24T22:41:54.060Z",
    "source": "chat"
   },
   {
@@ -3198,6 +3206,192 @@
    "builtAt": "",
    "updatedAt": "2026-10-24T16:25:12.368Z",
    "estimate": "2.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-one-app",
+   "title": "Patches works as one app (suite mode): one banner, one menu, one search, one look",
+   "detail": "Brett (Oct 24 2026): make Patches and every app in its tabs (Console, Pilot, axHub, Todos) function like one professional app; new assets for all the apps; detailed + interactive docs. Supersedes the \"apps render whole\" rule.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Oct 25 2026: built on Opus, branch claude/project-thread-vcxt2b (AmberX-AXF). Docs _claude/memory/docs/patches-one-app.md + interactive guide artifact. Pilot joins on its next re-bake; Android twins deferred (PORTING.md), Fable rebuild parked as patches-one-app-fable.",
+     "at": "2026-10-25T01:48:24.270Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Scoped appearance engine: shared look vs per-app structure (+ fixture, checks)",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.282Z"
+    },
+    {
+     "text": "Runtime + HubAppearanceSource use the scoped appearance",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.351Z"
+    },
+    {
+     "text": "embed@1 suite takes (banner, search, links) + messages, parsed and capped",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.424Z"
+    },
+    {
+     "text": "Guest runtime: share banner items, search catalog, link bridge, ready",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.489Z"
+    },
+    {
+     "text": "Patches web: re-bake, every theme/control asset, hub status badge",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.553Z"
+    },
+    {
+     "text": "Patches web: one banner (front app items) + search across every app",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.621Z"
+    },
+    {
+     "text": "Patches web: front app menu inline, tab states, shortcuts, deep links",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.689Z"
+    },
+    {
+     "text": "Patches web: retire plugin gating; Add tab from reports; Apps settings panel",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.774Z"
+    },
+    {
+     "text": "Console: banner strip heartbeat fallback, plugin reports when embedded",
+     "at": "",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.851Z"
+    },
+    {
+     "text": "axHub web re-bake; shared settings-interface look for every app",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:23.936Z"
+    },
+    {
+     "text": "Tests (check-suite.mts), builds, CI step for patches-web",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:24.010Z"
+    },
+    {
+     "text": "Detailed docs + interactive documentation page",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:24.074Z"
+    },
+    {
+     "text": "Rules, decisions, status, PORTING gaps, Fable rebuild parked",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:24.137Z"
+    },
+    {
+     "text": "Load every app tab in the background (AppShell warm, setting Load every app at start) so search, menus and banners cover every app at once",
+     "at": "2026-10-25T01:48:23.203Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:48:24.203Z"
+    }
+   ],
+   "createdAt": "2026-10-24T22:41:46.759Z",
+   "builtAt": "2026-10-25T01:48:24.340Z",
+   "updatedAt": "2026-10-25T01:48:24.340Z",
+   "source": "chat"
+  },
+  {
+   "id": "patches-one-app-fable",
+   "title": "Fable rebuild: Patches suite mode on every port (Kotlin twins + Patches Android as a suite host)",
+   "detail": "Fable rebuild of patches-one-app (built on Opus, branch claude/project-thread-vcxt2b). Brett (Oct 24 2026): Fable was suggested, Opus chosen; park it and build it only once Android work resumes. Starts by reviewing the Opus build and replacing what it redoes. Covers the deferred Kotlin twins (PORTING.md): scoped appearance@1 (shared look types at the top level, app--<appId>--<type> keys), embed@1 takes banner/search/links with their messages (ready takes, banner, search-catalog, focus-search, hotkey, open-url, apps, run w:/s:), and Patches Android as a suite host (banner mirror, one search, one menu, background load). Docs: _claude/memory/docs/patches-one-app.md.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus build (branch claude/project-thread-vcxt2b): what to keep, what to redo",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Kotlin AppearanceEngine: shared look types + app-- keys (resolveFor / mergeFor) + fixture cases",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin EmbedTakes: banner, search, links takes and hides; new messages parsed and capped",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixture: move banner/search/links into embed-takes.json ids; conformance tests on both ports",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Kotlin guest runtime: ready, banner + search sharing, run w:/s:, apps → link routing",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "lib-hub WebAppHolder: suite marker with takes; bridge for the new messages",
+     "at": "",
+     "estimate": "25 min"
+    },
+    {
+     "text": "Patches Android: front app's banner items on AxfBanner (mirror, counters, taps)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Patches Android: one search over every app's catalog",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Patches Android: one app menu from every app's menus + background load of app tabs",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Web clean-up from the review + re-bakes (console, axhub-web, patches-web, Pilot)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests + CI, differences report, rebuild log, before/after screenshots",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T01:48:37.694Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T01:48:37.694Z",
    "source": "chat"
   }
  ]

@@ -1,50 +1,19 @@
-import { useState } from 'react';
-import { Button, Slider, useAxfState, useRuntime, type DialogMap } from './axf/react';
+import { useAxfState, useRuntime, type DialogMap } from './axf/react';
 
-function NewFile({ close }: { close: () => void }) {
-  const rt = useRuntime();
-  const [name, setName] = useState('untitled.ts');
-  const [indent, setIndent] = useState(2);
-  return (
-    <form
-      className="fx-stack"
-      onSubmit={(e) => {
-        e.preventDefault();
-        close();
-        rt.toast(`${name} created with ${indent}-space indent.`, 'success', 'File created');
-      }}
-    >
-      <label className="fx-field">
-        File name
-        <input className="fx-input" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-      </label>
-      <Slider label="Indent size" value={indent} min={1} max={8} onChange={setIndent} unit=" sp" />
-      <div className="fx-row fx-row--end">
-        <Button onClick={close}>Cancel</Button>
-        <Button tone="primary" icon="plus" type="submit" disabled={!name.trim()}>Create</Button>
-      </div>
-    </form>
-  );
-}
+/** Patches' keys: they work in Patches and inside every app in its tabs (the apps hand them over, suite mode). */
+const KEYS: [string, string][] = [
+  ['Ctrl/Cmd + K', 'Search every app (also /)'],
+  ['Alt + 1 … 9', 'Bring tab 1 … 9 up'],
+  ['Esc', 'Close the search, a menu or a dialog'],
+];
 
-function ConfirmDelete({ close }: { close: () => void }) {
-  const rt = useRuntime();
+function Shortcuts() {
   return (
     <div className="fx-stack">
-      <p style={{ margin: 0 }}>Delete the selected item? This is a demo, so nothing is actually removed.</p>
-      <div className="fx-row fx-row--end">
-        <Button onClick={close}>Keep it</Button>
-        <Button
-          tone="danger"
-          icon="trash"
-          onClick={() => {
-            close();
-            rt.toast('Item deleted.', 'danger', 'Deleted');
-          }}
-        >
-          Delete
-        </Button>
-      </div>
+      <table className="pt-keys">
+        <tbody>{KEYS.map(([k, what]) => <tr key={k}><td><kbd className="fx-kbd">{k}</kbd></td><td>{what}</td></tr>)}</tbody>
+      </table>
+      <p className="fx-muted" style={{ margin: 0 }}>Each app’s own shortcuts keep working in its tab.</p>
     </div>
   );
 }
@@ -72,7 +41,6 @@ function DevConsole() {
 }
 
 export const dialogs: DialogMap = {
-  'new-file': { title: 'New file', icon: 'plus', render: (_p, close) => <NewFile close={close} /> },
-  'confirm-delete': { title: 'Delete item', icon: 'trash', render: (_p, close) => <ConfirmDelete close={close} /> },
+  'patches.shortcuts': { title: 'Keyboard shortcuts', icon: 'keyboard', render: () => <Shortcuts /> },
   'dev-console': { title: 'Developer console', icon: 'terminal', render: () => <DevConsole /> },
 };

@@ -41,10 +41,49 @@ export const isBannerStrip = (() => {
   try { return new URLSearchParams(globalThis.location?.search ?? '').get(STRIP_QUERY) === 'banners'; } catch { return false; }
 })();
 
-/** Whether the console page shows the plugin banners: yes on its own, no as a tab in Patches (Patches' strip shows them). */
+/** The strip says it is up (same-origin channel) every few seconds; the Console tab listens for it. */
+const ALIVE_CHANNEL = 'axf-console-banner-strip';
+const ALIVE_EVERY = 4000;
+/** No word from a strip for this long = no strip (Patches has it switched off, or it failed to load). */
+const ALIVE_TTL = 10_000;
+/** How long the Console tab waits for a strip before it shows the banners itself. */
+const ALIVE_GRACE = 4000;
+
+/**
+ * Whether the console page shows the plugin banners: yes on its own; as a tab in Patches only while no banner strip is
+ * up (Oct 24 2026): Patches' strip shows them above every tab, and when it is off or fails to load the Console tab shows
+ * them itself, so they are never lost.
+ */
 export function useBannersInConsole(): boolean {
   const rt = useRuntime();
-  return rt.embedded?.host !== PATCHES;
+  const inPatches = rt.embedded?.host === PATCHES && !isBannerStrip;
+  const [alive, setAlive] = useState(0);
+  const [grace, setGrace] = useState(inPatches);
+  const [, tick] = useState(0);
+  useEffect(() => {
+    if (!inPatches) return;
+    let ch: BroadcastChannel | null = null;
+    try { ch = new BroadcastChannel(ALIVE_CHANNEL); ch.onmessage = (e) => { if ((e.data as { kind?: unknown } | null)?.kind === 'alive') setAlive(Date.now()); }; } catch { ch = null; }
+    const g = setTimeout(() => setGrace(false), ALIVE_GRACE);
+    const t = setInterval(() => tick((n) => n + 1), ALIVE_EVERY);
+    return () => { ch?.close(); clearTimeout(g); clearInterval(t); };
+  }, [inPatches]);
+  if (!inPatches) return true;
+  if (typeof BroadcastChannel !== 'function') return true;
+  return !(grace || Date.now() - alive < ALIVE_TTL);
+}
+
+/** The strip page tells every Console tab of this browser it is up (see useBannersInConsole). */
+function useStripAlive(): void {
+  useEffect(() => {
+    if (typeof BroadcastChannel !== 'function') return;
+    let ch: BroadcastChannel | null = null;
+    try { ch = new BroadcastChannel(ALIVE_CHANNEL); } catch { return; }
+    const say = () => { try { ch?.postMessage({ kind: 'alive', at: Date.now() }); } catch { /* closed */ } };
+    say();
+    const t = setInterval(say, ALIVE_EVERY);
+    return () => { clearInterval(t); ch?.close(); };
+  }, []);
 }
 
 /** What the strip hands to the Console tab: an action a tap dispatched, a dialog, or a view. */
@@ -115,6 +154,7 @@ export function BannerStrip() {
   const waiting = Boolean(state.appearance && state.appearance.status !== 'ready');
   // Before any banner renders (their effects run before this component's), so nothing they open lands in the strip.
   useState(() => { patchStrip(rt); return true; });
+  useStripAlive();
   useLayoutEffect(() => {
     const el = box.current;
     if (!el) return;

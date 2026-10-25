@@ -1,27 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AppShell, SlotsProvider, installLibraries, useRuntime, type ViewMap } from './axf/react';
+import { AppShell, SlotsProvider, installLibraries, useAxfState, useRuntime } from './axf/react';
 import { library as settingsLibrary } from './axf/libs/settings';
+import { hubStatusLibrary } from './axf/libs/hubstatus';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
-import { AppTab, patchesLibrary, useAppMessages, useTabs } from './patchesLibrary';
-import { DEFAULT_TABS, tabIcon, tabKey, tabLabel, tabViewId, type TabEntry } from './patches';
+import { patchesLibrary, useAppMessages, useSuiteSync, useTabs } from './patchesLibrary';
+import { tabViews } from './views/tabs';
+import { WARM_KEY } from './patches';
 
 /** The access policy a signed-in hub account is bound to (framework starter uac-policy/hub-accounts). */
 export const POLICY = 'hub-accounts';
 
-/**
- * Patches' views: one per tab (frames, kept alive: switching tabs never reloads an app) and Patches' own Settings (only
- * Patches' settings; every app in a tab keeps its own settings interface, Brett Oct 24 2026). The tabs are the tab group (Settings → Patches → Tabs: apps and tabable
- * plugins, kept on Patches' server); every app keeps a view even when it isn't a tab, so links to it still work.
- */
-const settingsView = { title: 'Settings', icon: 'settings', keywords: ['patches', 'preferences', 'tabs'], render: () => settingsLibrary.views?.settings?.render?.() ?? null };
-function tabViews(tabs: readonly TabEntry[]): ViewMap {
-  const entries: TabEntry[] = [...tabs, ...DEFAULT_TABS.filter((d) => !tabs.some((e) => tabKey(e) === tabKey(d)))];
-  return { ...Object.fromEntries(entries.map((e) => [tabViewId(e), { title: tabLabel(e), icon: tabIcon(e), render: () => <AppTab entry={e} /> }])), settings: settingsView };
-}
-
-/** lib-settings (Patches' own settings) + Patches itself (installed last: its hooks win). */
-const libraries = [settingsLibrary, patchesLibrary];
+/** lib-settings (Patches' own settings), the axHub badge (red unless the look comes live from the hub) + Patches itself (installed last: its hooks win). */
+const libraries = [settingsLibrary, hubStatusLibrary, patchesLibrary];
 
 export function App() {
   const rt = useRuntime();
@@ -34,14 +25,19 @@ export function App() {
     else rt.unbindPrincipal();
   }, [rt, me]);
   useAppMessages();
+  useSuiteSync();
   const { tabs } = useTabs();
   const views = useMemo(() => tabViews(tabs), [tabs]);
   const keep = useMemo(() => [...Object.keys(views)], [views]);
+  // Every app tab loads in the background once Patches has drawn (plugin tabs wait until they're opened), unless switched off.
+  useAxfState();
+  const warmOn = rt.settings.get(WARM_KEY) !== false;
+  const warm = useMemo(() => (warmOn ? keep.filter((id) => !id.startsWith('tab.')) : []), [keep, warmOn]);
   // Page order: Patches' banner, the app tabs (app.frame.head), the menu bar, then the banner strip (the Console's plugin
   // banners, app.frame.top) and the app in the tab.
   return (
     <SlotsProvider slots={contributed.slots}>
-      <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} keep={keep} />
+      <AppShell views={{ ...contributed.views, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} keep={keep} warm={warm} />
     </SlotsProvider>
   );
 }

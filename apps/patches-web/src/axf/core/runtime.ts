@@ -4,24 +4,25 @@
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
-import { SettingsRegistry } from './settings';
+import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
+import { detectEmbedFull, embedHost, embedHostLabel, embedSiblingOf, type EmbedBannerItem, type EmbedSearchEntry, type EmbedSiblingApp, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
+import { APPEARANCE_FRAME, appearanceShared, mergeAppearanceFor, paletteFromColorTheme, resolveAppearanceFor, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
 import {
@@ -173,7 +174,7 @@ export interface AppearanceSource {
   /** Re-read now (the UI-editor rule: fresh on focus). */
   refresh(): void;
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
-  save(change: { slots?: Record<string, string>; spacing?: Spacing; hidden?: Record<string, boolean | null>; palette?: AppearanceDocument['palette'] }): void;
+  save(change: AppearanceChange): void;
 }
 
 export class AxfRuntime {
@@ -326,7 +327,7 @@ export class AxfRuntime {
   appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
-  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+  appearanceSkipped(): string[] { return resolveAppearanceFor(this.lastAppearance, this.manifest.app.id, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
 
   /**
    * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
@@ -336,7 +337,9 @@ export class AxfRuntime {
    */
   private applyAppearance(doc: AppearanceDocument | null): void {
     this.lastAppearance = doc;
-    const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
+    // Scoped (engines/appearance.ts): the shared look from the top level, this app's own frame (layout, banner, menus,
+    // hidden bars …) from its own keys; another app's layout or banner never lands here.
+    const r = resolveAppearanceFor(doc, this.manifest.app.id, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
     try {
       const active = { ...this.state.active };
@@ -370,6 +373,14 @@ export class AxfRuntime {
     this.appearanceSource.save(change);
   }
 
+  /**
+   * What a pick is pushed as: the id, except a per-app type (layout, banner, menus …) back at this app's manifest
+   * default, which clears this app's key (null) so the document only holds what the app changed.
+   */
+  private appearanceValue(type: string, id: string): string | null {
+    return !appearanceShared(type) && this.manifest.defaults[type as AssetType] === id ? null : id;
+  }
+
   /** The palette the hub's own pages use, from this app's active colour theme. */
   private appearancePalette(): AppearanceDocument['palette'] | undefined {
     return paletteFromColorTheme(this.asset('color-theme').data as { scheme?: string; tokens?: Record<string, string> });
@@ -377,11 +388,11 @@ export class AxfRuntime {
 
   /** The document this app would write for its whole current look (Reset, or a first save). */
   currentAppearance(): AppearanceDocument {
-    const slots: Record<string, string> = {};
-    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
+    const slots: Record<string, string | null> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.appearanceValue(t, this.state.active[t]);
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
+    return mergeAppearanceFor({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, this.manifest.app.id, new Date().toISOString());
   }
 
   /* ---------------- store ---------------- */
@@ -786,15 +797,15 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
-    if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
+    if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: this.appearanceValue(type, next) }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
   }
 
   swapAll(targets: Partial<ActiveAssets>) {
     const active = { ...this.state.active };
-    const pushed: Record<string, string> = {};
+    const pushed: Record<string, string | null> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
-      if (t !== 'uac-policy' && this.registry.has(t, id)) { active[t] = id; pushed[t] = id; }
+      if (t !== 'uac-policy' && this.registry.has(t, id)) { active[t] = id; pushed[t] = this.appearanceValue(t, id); }
     }
     this.set({ active, swaps: this.state.swaps + 1 }, true);
     if (Object.keys(pushed).length) this.pushAppearance({ slots: pushed, ...(pushed['color-theme'] ? { palette: this.appearancePalette() } : {}) });
@@ -959,8 +970,8 @@ export class AxfRuntime {
     }
     const hidden: Record<string, null> = {};
     for (const t of ASSET_TYPES) if (hideable(t)) hidden[t] = null;
-    const slots: Record<string, string> = {};
-    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && active[t]) slots[t] = active[t];
+    const slots: Record<string, string | null> = {};
+    for (const t of ASSET_TYPES) if (t !== 'uac-policy' && active[t]) slots[t] = this.appearanceValue(t, active[t]);
     this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
@@ -1167,7 +1178,8 @@ export class AxfRuntime {
 
   /** Tell the host which plugins this app has (and which it had on by itself). Kept, and sent again when the host asks. */
   reportPluginsToHost(plugins: EmbedPlugin[]): boolean {
-    if (!this.hostTakes('plugins')) return false;
+    // any host may list what the app has (Patches offers their tabs); only a host that takes `plugins` switches them
+    if (!this.embedded || this.embedded.page) return false;
     this.reportedPlugins = plugins.map((p) => ({ ...p }));
     return this.postToHost({ $axf: EMBED_MESSAGE, type: 'plugins', plugins: this.reportedPlugins });
   }
@@ -1215,12 +1227,16 @@ export class AxfRuntime {
       if (m?.type === 'open-tab' && this.embedded?.page === 'settings') this.actions.dispatch(`settings.open:${m.tab}`, { runtime: this });
       if (m?.type === 'open-tab' && this.embedded?.page === 'banners') this.actions.dispatch(`banners.settings:${m.tab}`, { runtime: this });
       if (m?.type === 'menu-request') void this.shareAppMenu({ force: true, refresh: true });
-      if (m?.type === 'run') this.runSharedMenuItem(m.id);
+      if (m?.type === 'run') this.runSharedItem(m.id);
+      if (m?.type === 'apps' && this.hostTakes('links')) { this.hostApps = m.apps; this.installLinkBridge(); }
+      // the host's Settings → Apps opens this app's own settings (each app keeps its own settings interface)
+      if (m?.type === 'open-settings' && !this.embedded?.page && !this.hostTakes('settings')) { if (!(m.tab ? this.dispatch(`settings.open:${m.tab}`) : this.dispatch('app.settings'))) this.navigate('settings'); }
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
     };
     // the app itself in a tab shares its menu; a page the host shows alone (its settings page) doesn't
     if (this.hostTakes('app-menu') && !this.embedded?.page) this.startMenuShare();
+    if (!this.embedded?.page) this.startSuiteShare();
     // Android hosts can't post into the page; they call this instead (evaluateJavascript).
     (globalThis as unknown as { AxfEmbedGuest?: { receive: (json: string) => void } }).AxfEmbedGuest = { receive: (json: string) => handle(json) };
     const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: { data: unknown; source: unknown }) => void) => void; parent?: unknown };
@@ -1228,6 +1244,9 @@ export class AxfRuntime {
     g.addEventListener('message', (e) => {
       // Only the frame this app runs in may ask; anything else (other frames, the page itself) is ignored.
       if (!e || e.source !== g.parent || g.parent === (globalThis as unknown)) return;
+      // …and only a page on this app's own site (where the browser says who the parent is): a page elsewhere that frames
+      // this app can't run its items.
+      if (!parentOnSameSite()) return;
       handle(e.data);
     });
   }
@@ -1312,11 +1331,189 @@ export class AxfRuntime {
     return this.postToHost(msg);
   }
 
+  /**
+   * The host picked something this app sent (`run`): a banner item (`w:<key>`), a search entry (`s:<id>`) or a menu item.
+   * Only what this app offered runs; anything else is logged and dropped.
+   */
+  runSharedItem(id: string): boolean {
+    if (id.startsWith('w:')) {
+      const action = this.sharedBannerRun.get(id);
+      if (!action) { this.terminal.warn('banner', `the host asked to run banner item "${id.slice(2)}", which this app didn't send`); return false; }
+      return this.dispatch(action);
+    }
+    if (id.startsWith('s:')) {
+      const entryId = this.sharedSearchIds.get(id.slice(2));
+      const entry = entryId ? this.search.entries().find((e) => e.id === entryId) : undefined;
+      if (!entry) { this.terminal.warn('search', `the host picked search entry "${id.slice(2)}", which this app no longer has`); return false; }
+      return this.search.focus(entry);
+    }
+    return this.runSharedMenuItem(id);
+  }
+
   /** The host's menu picked one of this app's items (`run` message): run it here, if this app offered it. */
   runSharedMenuItem(id: string): boolean {
     const action = this.sharedMenuRun.get(id);
     if (!action) { this.terminal.warn('menus', `the host asked to run menu item "${id}", which this app didn't offer`); return false; }
     return this.dispatch(action);
+  }
+
+  /* ---------------- embed@1 one app (Oct 24 2026): banner items, search, links, ready ----------------
+   *
+   * Inside a host that takes `banner`, this app's banner is hidden and what is on it (badges, status, counters, buttons …)
+   * goes to the host as data, so the host's one banner shows it; a tap there comes back as `run` `w:<key>`. With `search`
+   * this app's search entries go to the host (one search box for every app; a pick comes back as `s:<id>`) and Ctrl/Cmd+K
+   * opens the host's search. With `links` a link to one of the host's other apps opens in that app's tab. Data only, both
+   * ways: the host never sends an action, this app runs only what it sent.
+   */
+
+  private sharedBannerRun = new Map<string, string>();
+  private sharedBannerText = '';
+  private sharedSearchIds = new Map<string, string>();
+  private sharedSearchText = '';
+  private hostApps: EmbedSiblingApp[] = [];
+  private linkBridge = false;
+  private readyPosted = false;
+
+  /** Tell the host this app is up (its first frame is drawn); AppShell calls it once. */
+  announceReady(): void {
+    if (!this.embedded || this.readyPosted) return;
+    this.readyPosted = true;
+    const app = embedHost(this.manifest.app.id);
+    this.postToHost({ $axf: EMBED_MESSAGE, type: 'ready', ...(app ? { app } : {}), takes: [...(this.embedded.takes ?? [])] });
+  }
+
+  /** Start sending what the host takes: banner items soon and on every change, the search catalog a little later. */
+  private startSuiteShare(): void {
+    const unref = (t: unknown) => (t as { unref?: () => void } | null)?.unref?.();
+    const debounce = (fn: () => void) => {
+      let timer: ReturnType<typeof setTimeout> | null = null;
+      return (ms: number) => { if (timer) clearTimeout(timer); timer = setTimeout(() => { timer = null; fn(); }, ms); unref(timer); };
+    };
+    if (this.hostTakes('banner')) {
+      const later = debounce(() => this.shareBanner());
+      unref(setTimeout(() => { later(0); this.subscribe(() => later(400)); }, 300));
+      unref(setInterval(() => this.shareBanner(true), 30_000));
+    }
+    if (this.hostTakes('search')) {
+      const later = debounce(() => this.shareSearch());
+      unref(setTimeout(() => { later(0); this.subscribe(() => later(5000)); }, 1500));
+      unref(setInterval(() => this.shareSearch(), 120_000));
+      // Ctrl/Cmd+K anywhere in this app opens the host's search (one search box for every app)
+      const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: KeyboardEvent) => void, capture?: boolean) => void };
+      g.addEventListener?.('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && (e.key === 'k' || e.key === 'K')) {
+          if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'focus-search' })) { e.preventDefault(); e.stopImmediatePropagation(); }
+        }
+      }, true);
+    }
+    if (this.hostTakes('links')) {
+      // Alt+1 … Alt+9 (the host's tab keys) work inside the app too; never while typing (Option+digit types on a Mac)
+      const g = globalThis as unknown as { addEventListener?: (t: string, f: (e: KeyboardEvent) => void, capture?: boolean) => void };
+      g.addEventListener?.('keydown', (e) => {
+        if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        const m = /^Digit([1-9])$/.exec(e.code ?? '');
+        if (!m) return;
+        const t = e.target as { closest?: (s: string) => unknown } | null;
+        if (t?.closest?.('input, textarea, select, [contenteditable="true"], [contenteditable=""]')) return;
+        if (this.postToHost({ $axf: EMBED_MESSAGE, type: 'hotkey', key: `Alt+${m[1]}` })) { e.preventDefault(); e.stopImmediatePropagation(); }
+      }, true);
+    }
+  }
+
+  /** What is on this app's banner, placed as the banner would draw it, even while it is hidden (the host draws it). */
+  bannerItems(): { items: EmbedBannerItem[]; run: Map<string, string> } {
+    const b = this.assetOrNull('banner')?.data ?? null;
+    const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id));
+    const run = new Map<string, string>();
+    const items: EmbedBannerItem[] = [];
+    const pop = this.state.bannerPopup;
+    for (const side of ['left', 'center', 'right'] as const) {
+      for (const [i, a] of placed[side].entries()) {
+        const asset = this.registry.get(a.type as AssetType, a.id) as { data?: unknown } | undefined;
+        if (!asset?.data || typeof asset.data !== 'object') continue;
+        const data = { ...(asset.data as Record<string, unknown>) };
+        const tap = a.type === 'action-button' ? data.action : a.type === 'link' ? undefined : data.link;
+        if (typeof tap === 'string' && tap) run.set(`w:${a.key}`, tap);
+        const counter = typeof data.counter === 'string' ? data.counter : null;
+        const item: EmbedBannerItem = { key: a.key, type: a.type, at: side, order: i, data };
+        if (counter) item.value = this.badge(counter);
+        if (pop && pop.key === a.key) item.popup = pop.text.slice(0, 160);
+        items.push(item);
+      }
+    }
+    return { items, run };
+  }
+
+  /** Send the banner items to a host that takes `banner` (unchanged items aren't sent again unless `force`). */
+  shareBanner(force = false): boolean {
+    if (!this.hostTakes('banner') || this.embedded?.page) return false;
+    const { items, run } = this.bannerItems();
+    this.sharedBannerRun = run;
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'banner', items };
+    const text = JSON.stringify(msg);
+    if (!force && text === this.sharedBannerText) return false;
+    this.sharedBannerText = text;
+    return this.postToHost(msg);
+  }
+
+  /** Send this app's search entries (page words left out) to a host that takes `search`. */
+  shareSearch(): boolean {
+    if (!this.hostTakes('search') || this.embedded?.page) return false;
+    const ids = new Map<string, string>();
+    const entries: EmbedSearchEntry[] = [];
+    for (const e of this.search.entries()) {
+      if (entries.length >= 1500) break;
+      if (e.kind === 'text') continue;
+      const gate = this.gate(e.requires);
+      if (gate === 'hide') continue;
+      const id = `e${entries.length}`;
+      ids.set(id, e.id);
+      const kind = String(e.kind).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+/, '').slice(0, 24) || 'item';
+      const out: EmbedSearchEntry = { id, kind, label: e.label.slice(0, 80) };
+      if (e.detail) out.detail = e.detail.slice(0, 120);
+      if (e.icon) out.icon = e.icon;
+      if (e.keywords?.length) out.keywords = e.keywords.slice(0, 8).map((k) => k.slice(0, 40));
+      if (gate === 'disable') out.locked = true;
+      entries.push(out);
+    }
+    this.sharedSearchIds = ids;
+    const msg: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'search-catalog', entries };
+    const text = JSON.stringify(msg);
+    if (text === this.sharedSearchText) return false;
+    this.sharedSearchText = text;
+    return this.postToHost(msg);
+  }
+
+  /** The host's other apps (take `links`), as it named them. */
+  siblingApps(): EmbedSiblingApp[] { return [...this.hostApps]; }
+
+  /**
+   * Open a link: one to another of the host's apps goes to the host (it brings that app's tab up and shows the page
+   * there); anything else returns false and the caller opens it as before. This app's own pages never go to the host.
+   */
+  openLink(url: string): boolean {
+    if (!this.hostTakes('links')) return false;
+    const sib = embedSiblingOf(url, this.hostApps);
+    const own = (globalThis as { location?: { origin?: string } }).location?.origin;
+    if (!sib || sib.origin === own) return false;
+    return this.postToHost({ $axf: EMBED_MESSAGE, type: 'open-url', url });
+  }
+
+  /** Links to the host's other apps (window.open and plain link clicks) open in their tab instead of a browser tab. */
+  private installLinkBridge(): void {
+    if (this.linkBridge) return;
+    this.linkBridge = true;
+    const g = globalThis as unknown as { open?: (u?: string | URL, t?: string, f?: string) => unknown; location?: { href?: string }; document?: { addEventListener?: (t: string, f: (e: MouseEvent) => void, c?: boolean) => void } };
+    const abs = (u: string | URL) => { try { return new URL(String(u), g.location?.href).href; } catch { return ''; } };
+    if (typeof g.open === 'function') {
+      const orig = g.open.bind(globalThis);
+      g.open = (u?: string | URL, t?: string, f?: string) => { const href = u ? abs(u) : ''; if (href && this.openLink(href)) return null; return orig(u, t, f); };
+    }
+    g.document?.addEventListener?.('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as { closest?: (sel: string) => { href?: string } | null } | null)?.closest?.('a[href]');
+      if (a?.href && this.openLink(a.href)) e.preventDefault();
+    }, true);
   }
 
   /* ---------------- rendering ---------------- */
@@ -1337,6 +1534,7 @@ export class AxfRuntime {
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
+      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -1350,6 +1548,28 @@ export class AxfRuntime {
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
+  customSlot(type: AssetType): CustomSlot {
+    return normalizeCustomSlot(this.settings.get(CUSTOM_KEY(type)), type);
+  }
+
+  /** Save a slot's extra tokens (needs assets.swap). */
+  setCustomSlot(type: AssetType, slot: CustomSlot): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    this.settings.set(CUSTOM_KEY(type), slot as unknown as SettingValue);
+    return true;
+  }
+
+  /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
+  customSheet(): string {
+    const per: Record<string, CustomValues> = {};
+    for (const t of customizableTypes()) {
+      const id = (this.getState().active as Record<string, string | undefined>)[t];
+      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+    }
+    return customizeSheet(per);
   }
 
   applyTo(el: HTMLElement) {
@@ -1430,4 +1650,18 @@ export function createAxf(opts: AxfRuntimeOptions): AxfRuntime {
   // Expose the runtime as a cross-application API (devtools, MCP bridges, other AmberX AXF apps in the page).
   (globalThis as unknown as { AXF?: AxfRuntime }).AXF = rt;
   return rt;
+}
+
+/**
+ * Is the page this app is framed by on the same site (same last two host labels, e.g. *.amberxai.com, or localhost)?
+ * Read from `location.ancestorOrigins` where the browser has it; elsewhere (Firefox) the frame check is all there is.
+ */
+function parentOnSameSite(): boolean {
+  const loc = (globalThis as { location?: { hostname?: string; ancestorOrigins?: ArrayLike<string> } }).location;
+  const anc = loc?.ancestorOrigins;
+  if (!anc || !anc.length) return true;
+  try {
+    const site = (h: string) => h.split('.').slice(-2).join('.');
+    return site(new URL(anc[0]!).hostname) === site(loc?.hostname ?? '');
+  } catch { return false; }
 }

@@ -120,3 +120,7 @@ repo's code, so "axHub never depends on AXF" still holds for the server. Reusabl
 ## axHub badge: red until live (Oct 24 2026)
 
 Brett: the axHub badge must be red whenever the app isn't retrieving its settings live from axHub, and green only when it is (first red, then green). Built as the framework web library `framework/libs/hubstatus` (status widget `status/axhub`, counter `hub.live`, no new asset type), installed in the Dev Console. Rule in `_claude/rules/RULES.md`.
+
+## Patches works as one app — suite mode (Oct 24–25 2026)
+
+Brett: "Fix patches rendering … make it all function like 1 professional high level app when patches runs things", with detailed and interactive documentation. Replaces the same day's "Apps render whole in Patches" rule. Built on Opus (Fable suggested; Fable rebuild `patches-one-app-fable` parked, to be built only once Android work resumes, Brett's pick). Chosen shape: unify through shared assets and a shared look rather than silently hiding; the apps hand Patches only their banner, menu bar, search and cross-app links (embed@1 takes `banner`, `app-menu`, `search`, `links`) and keep their toolbars, navigation, settings, plugins and notifications; the hub's appearance document is scoped (look shared, each app's frame its own). Every app tab loads in the background so search and menus cover all apps at once. Pilot joins on its next re-bake. Write-up `_claude/memory/docs/patches-one-app.md`.

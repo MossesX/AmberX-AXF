@@ -11,6 +11,9 @@ import type { ViewMap } from '../AppShell';
 import type { DialogMap } from './Overlays';
 import { Icon } from './Icon';
 
+/** Window event that focuses the live search box (Ctrl/Cmd+K without the keys). */
+export const FOCUS_SEARCH_EVENT = 'axf:focus-search';
+
 /* ---------------- words on pages ---------------- */
 
 /** Elements whose text is worth finding. Mark a subtree `data-axf-search="off"` to keep it out. */
@@ -212,9 +215,12 @@ export function LiveSearch({ config }: { config: ToolbarSearch }) {
         setOpen(true);
       }
     };
+    // `axf:focus-search` (window event): anything may ask for the box, e.g. a host app when an app in its tab hears Ctrl/Cmd+K.
+    const ask = () => { if (config.shortcut === false) return; input.current?.focus(); input.current?.select(); setOpen(true); };
     window.addEventListener('pointerdown', down);
     window.addEventListener('keydown', key);
-    return () => { window.removeEventListener('pointerdown', down); window.removeEventListener('keydown', key); };
+    window.addEventListener(FOCUS_SEARCH_EVENT, ask);
+    return () => { window.removeEventListener('pointerdown', down); window.removeEventListener('keydown', key); window.removeEventListener(FOCUS_SEARCH_EVENT, ask); };
   }, [config.shortcut]);
 
   const pick = (h: SearchHit | undefined) => {

@@ -136,7 +136,9 @@ write('hide.json', {
   const takenActions = ['app.settings', 'settings.open', 'settings.open:appearance', 'nav:settings', 'nav:home', 'settings.reset', 'alerts.open', 'plugin-manager.open', 'nav:plugin-manager', '', null];
   write('embed-takes.json', {
     uaToken: EMBED_TAKE_UA_TOKEN,
-    ids: embedTakeIds(),
+    // The Kotlin twin knows the shared takes only; the one-app takes (banner, search, links) are web-only for now
+    // (PORTING.md), so they stay out of this list and check-embed.mts checks them after it.
+    ids: embedTakeIds().filter((id) => !['banner', 'search', 'links'].includes(id)),
     takes: takeInputs.map((t) => ({ input: t, takes: embedTakes(t) })),
     pages: pageInputs.map((p) => ({ input: p, page: embedPage(p) })),
     queries: queries.map((q) => ({ input: q, embed: embedFromQueryFull(q) })),

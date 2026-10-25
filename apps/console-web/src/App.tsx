@@ -105,7 +105,7 @@ function usePlugins() {
   const managed = rt.hostTakes('plugins');
   const [hostIds, setHostIds] = useState<string[] | null>(rt.hostPlugins);
   useEffect(() => (managed ? rt.onHostPlugins(setHostIds) : undefined), [rt, managed]);
-  useEffect(() => { if (managed && loaded) rt.reportPluginsToHost(pluginReport(status)); }, [rt, managed, loaded, status]);
+  useEffect(() => { if (rt.embedded && loaded) rt.reportPluginsToHost(pluginReport(status)); }, [rt, loaded, status]);
   // A plugin the host enabled whose server part is off here gets it switched on (admins only; the route checks).
   const tried = useRef(new Set<string>());
   useEffect(() => {

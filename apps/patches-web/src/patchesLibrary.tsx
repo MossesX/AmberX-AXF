@@ -1,21 +1,18 @@
 /**
- * Patches' own library (web): the app tabs (frames kept alive), the banner strip above them and the actions behind them.
- * Settings are not combined (Brett, Oct 24 2026): every app in a tab keeps its own settings interface (its own settings
- * asset, only its own settings); Patches' Settings holds only Patches' settings.
+ * Patches' own library (web): the app tabs (frames kept alive), the banner strip above them, and suite mode — the parts
+ * of the apps Patches carries for them so the whole page works as one app (Brett, Oct 24 2026): the front app's banner
+ * items on Patches' banner, its menus in Patches' menu bar, one search over every app, links between the apps opening
+ * in their tabs, tab keys, loading covers, deep links. Every app still keeps its own pages, settings and plugins.
  */
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, IconButton, ModelBadge, modelLabel, Note, Switch, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
-import type { EmbedPlugin } from './axf/core';
+import { Button, FOCUS_SEARCH_EVENT, Icon, IconButton, ModelBadge, Note, useAsset, useAxfState, useRuntime, type AxfWebLibrary } from './axf/react';
+import type { AxfRuntime, EmbedBannerItem, EmbedMenu, EmbedMessage, EmbedPlugin, EmbedSearchEntry } from './axf/core';
 import { api } from './api';
-
-/** "built with Opus" for a plugin's row (Switch hints are text), or nothing when its model isn't known. */
-const builtWithText = (model?: string) => (model ? `built with ${modelLabel(model)}` : '');
-import type { AxfRuntime } from './axf/core';
 import {
   DEFAULT_TABS, MAX_TABS, moveTab, pluginTabUrl, readTabs, tabChoices, tabIcon, tabKey, tabLabel, tabViewId, type TabChoice, type TabEntry,
-  AUTO_INSTALL_KEY, enabledPluginIds, missingPlugins, missingSummary, pluginsEnabledMessage, pluginsRequestMessage, type PluginsState,
-  BANNERS_KEY, TABS, fromApp, guestMenuCounters, guestMenuItems, parseStripMessage,
-  runMessage, stripUrl, tabOrigin, tabUrl, type PatchTab,
+  BANNERS_KEY, ERROR_MS, FRONT_STORE, READY_WAIT_MS, REMEMBER_KEY, SLOW_MS, WARM_KEY, TABS, appOf, appsMessage, fromApp, guestMenuCounters, guestMenuId,
+  guestMenuItems, guestSearchEntries, hashForView, mirrorBanner, openSettingsMessage, parseStripMessage, runMessage, shareSummary, stripUrl,
+  tabForUrl, tabOrigin, tabShortcut, tabUrl, viewFromHash, type PatchTab, type TabState,
 } from './patches';
 
 /** Reload ticks per tab (a frame reloads when its tick changes). */
@@ -25,12 +22,16 @@ function bump(id: string) { reloads.set(id, (reloads.get(id) ?? 0) + 1); reloadS
 function useReload(id: string): number { return useSyncExternalStore((f) => { reloadSubs.add(f); return () => reloadSubs.delete(f); }, () => reloads.get(id) ?? 0); }
 
 /** Every frame Patches shows, by window, so a message is believed only from the frame it claims to be. */
-const frames = new Map<Window, { tab: PatchTab; kind: 'app' | 'strip'; entry?: TabEntry }>();
+type FrameKind = 'app' | 'plugin' | 'strip';
+const frames = new Map<Window, { tab: PatchTab; kind: FrameKind; viewId: string }>();
+
+const originFor = (rt: AxfRuntime, t: PatchTab) => tabOrigin(t, t.key ? rt.settings.get(t.key) : null);
+const origins = (rt: AxfRuntime): Record<string, string> => Object.fromEntries(TABS.map((t) => [t.id, originFor(rt, t)]));
 
 function useOrigin(t: PatchTab): string {
   const rt = useRuntime();
   useAxfState();
-  return tabOrigin(t, t.key ? rt.settings.get(t.key) : null);
+  return originFor(rt, t);
 }
 
 /** Open Patches' own settings (on one of its tabs). Each app in a tab opens its own settings itself. */
@@ -39,23 +40,102 @@ export function openSettings(rt: AxfRuntime, tab?: string) {
   else rt.navigate('settings');
 }
 
+/* ---------------- suite state: tab states + what each app shares ---------------- */
+
+interface AppShare { banner: EmbedBannerItem[]; search: EmbedSearchEntry[]; menus: EmbedMenu[] | null; plugins: EmbedPlugin[] | null }
+interface SuiteView {
+  /** by tab view id */
+  tabs: Record<string, TabState>;
+  /** by app */
+  apps: Partial<Record<PatchTab['id'], AppShare>>;
+  /** a page another app linked to, shown in that app's tab (by view id) */
+  deep: Record<string, string>;
+}
+let suite: SuiteView = { tabs: {}, apps: {}, deep: {} };
+const suiteSubs = new Set<() => void>();
+function setSuite(fn: (s: SuiteView) => SuiteView) { suite = fn(suite); suiteSubs.forEach((f) => f()); }
+export function useSuite(): SuiteView { return useSyncExternalStore((f) => { suiteSubs.add(f); return () => suiteSubs.delete(f); }, () => suite); }
+const NO_SHARE: AppShare = { banner: [], search: [], menus: null, plugins: null };
+const shareOf = (id: string): AppShare => suite.apps[id as PatchTab['id']] ?? NO_SHARE;
+function setShare(id: PatchTab['id'], patch: Partial<AppShare>) { setSuite((s) => ({ ...s, apps: { ...s.apps, [id]: { ...(s.apps[id] ?? NO_SHARE), ...patch } } })); }
+
+function setTab(viewId: string, next: Partial<TabState>) {
+  setSuite((s) => ({ ...s, tabs: { ...s.tabs, [viewId]: { ...(s.tabs[viewId] ?? { status: 'loading', takes: [], suite: false, since: Date.now() }), ...next } } }));
+}
+
+const timers = new Map<string, ReturnType<typeof setTimeout>[]>();
+const loadedFrames = new Set<string>();
+/** Messages for an app that wasn't up yet (its settings, asked from Patches): sent once it is. */
+const pending = new Map<string, EmbedMessage[]>();
+function clearTimers(viewId: string) { for (const t of timers.get(viewId) ?? []) clearTimeout(t); timers.delete(viewId); }
+function addTimer(viewId: string, t: ReturnType<typeof setTimeout>) { timers.set(viewId, [...(timers.get(viewId) ?? []), t]); }
+
+/** A tab's frame (re)starts loading: covered until it is up; slow after a while; failed if it never loads. */
+function startLoading(viewId: string) {
+  clearTimers(viewId);
+  loadedFrames.delete(viewId);
+  setTab(viewId, { status: 'loading', takes: [], suite: false, since: Date.now() });
+  addTimer(viewId, setTimeout(() => { if (suite.tabs[viewId]?.status === 'loading') setTab(viewId, { status: 'slow', since: Date.now() }); }, SLOW_MS));
+  addTimer(viewId, setTimeout(() => { if (!loadedFrames.has(viewId) && suite.tabs[viewId]?.status !== 'ready') setTab(viewId, { status: 'error', since: Date.now() }); }, ERROR_MS));
+}
+
+/** The page loaded. An app that says `ready` soon is in suite mode; one that doesn't is an older build, shown as it is. */
+function frameLoaded(rt: AxfRuntime, viewId: string) {
+  loadedFrames.add(viewId);
+  addTimer(viewId, setTimeout(() => {
+    const st = suite.tabs[viewId];
+    if (st && st.status !== 'ready') { setTab(viewId, { status: 'ready', since: Date.now() }); flushPending(rt, viewId); }
+  }, READY_WAIT_MS));
+}
+
+function frameReady(rt: AxfRuntime, viewId: string, takes: string[]) {
+  clearTimers(viewId);
+  loadedFrames.add(viewId);
+  setTab(viewId, { status: 'ready', takes, suite: true, since: Date.now() });
+  flushPending(rt, viewId);
+}
+
+function flushPending(rt: AxfRuntime, viewId: string) {
+  const list = pending.get(viewId);
+  if (!list?.length) return;
+  pending.delete(viewId);
+  for (const m of list) postTo(rt, viewId, m);
+}
+
+/** Send a message to the app in a tab (its own frame, at its own origin). False when that frame isn't there. */
+function postTo(rt: AxfRuntime, viewId: string, msg: EmbedMessage): boolean {
+  let sent = false;
+  for (const [w, f] of frames) {
+    if (f.viewId !== viewId || f.kind === 'strip') continue;
+    try { w.postMessage(msg, originFor(rt, f.tab)); sent = true; } catch { /* frame gone */ }
+  }
+  return sent;
+}
+
+/** Send now when the app is up, else as soon as it is. */
+function postWhenUp(rt: AxfRuntime, viewId: string, msg: EmbedMessage) {
+  if (suite.tabs[viewId]?.status === 'ready' && postTo(rt, viewId, msg)) return;
+  pending.set(viewId, [...(pending.get(viewId) ?? []), msg].slice(-5));
+}
+
 /* ---------------- frames ---------------- */
 
-function Frame({ tab, src, kind, title, onHeight, entry }: { tab: PatchTab; src: string; kind: 'app' | 'strip'; title: string; onHeight?: (px: number) => void; entry?: TabEntry }) {
+function Frame({ tab, src, kind, title, viewId }: { tab: PatchTab; src: string; kind: FrameKind; title: string; viewId: string }) {
+  const rt = useRuntime();
   const ref = useRef<HTMLIFrameElement>(null);
   useEffect(() => {
     const w = ref.current?.contentWindow;
     if (!w) return;
-    frames.set(w, { tab, kind, entry });
+    frames.set(w, { tab, kind, viewId });
     return () => { frames.delete(w); };
-  }, [tab, kind, src, entry]);
-  void onHeight;
+  }, [tab, kind, viewId]);
   return (
     <iframe
       ref={ref}
       className={`pt-frame pt-frame--${kind}`}
       src={src}
       title={title}
+      onLoad={kind === 'strip' ? undefined : () => frameLoaded(rt, viewId)}
       // The apps are Brett's own sites behind axHub's wall. Scripts + same-origin let them run; the sandbox still stops
       // them from navigating Patches itself. Popups (open in a new tab, downloads) are allowed out of the sandbox.
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals"
@@ -65,18 +145,57 @@ function Frame({ tab, src, kind, title, onHeight, entry }: { tab: PatchTab; src:
   );
 }
 
+/** The app's address outside Patches (a browser tab), for Open in a browser tab. */
+function outsideUrl(rt: AxfRuntime, entry: TabEntry | undefined): string | null {
+  const t = entry ? appOf(entry.app) : undefined;
+  return t ? `${originFor(rt, t)}${t.path}` : null;
+}
+
+/** Over a tab while its app is opening: a spinner; then "taking a while" or "didn't load", with Reload. */
+function TabCover({ entry }: { entry: TabEntry }) {
+  const rt = useRuntime();
+  const s = useSuite();
+  const id = tabViewId(entry);
+  const st = s.tabs[id];
+  if (!st || st.status === 'ready') return null;
+  const label = tabLabel(entry);
+  const url = outsideUrl(rt, entry);
+  return (
+    <div className="pt-cover" role="status" aria-live="polite" data-status={st.status}>
+      <div className="pt-cover__box">
+        {st.status === 'error' ? <Icon name="alert" size={24} /> : <span className="pt-cover__spin"><Icon name="refresh" size={24} /></span>}
+        <strong>{st.status === 'error' ? `${label} didn’t load` : `Opening ${label}…`}</strong>
+        {st.status === 'slow' && <span className="fx-muted">It’s taking longer than usual.</span>}
+        {st.status === 'error' && <span className="fx-muted">Check its address in Settings → Patches, and that you’re signed in to axHub.</span>}
+        {st.status !== 'loading' && (
+          <div className="fx-row">
+            <Button size="sm" icon="refresh" tone="primary" onClick={() => bump(id)}>Reload</Button>
+            {url && <Button size="sm" icon="external" onClick={() => window.open(url, '_blank', 'noopener')}>Open in a browser tab</Button>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /**
- * One tab, kept alive across tab switches (AppShell `keep`): an app in a frame, or a tabable plugin of an app (that app
- * showing only the plugin's page, embed@1 page `view:<id>`). A plugin tab's frame belongs to its app: its messages,
- * plugin list and settings asks count as that app's.
+ * One tab, kept alive across tab switches (AppShell `keep`): an app in a frame (suite mode), or a tabable plugin of an
+ * app (that app showing only the plugin's page, embed@1 page `view:<id>`, sharing nothing).
  */
 export function AppTab({ entry }: { entry: TabEntry }) {
-  const t = TABS.find((x) => x.id === entry.app) ?? TABS[0]!;
+  const t = appOf(entry.app) ?? TABS[0]!;
   const origin = useOrigin(t);
   const id = tabViewId(entry);
   const tick = useReload(id);
-  const src = entry.kind === 'plugin' ? pluginTabUrl(t, origin, entry.view) : tabUrl(t, origin);
-  return <div className="pt-tab" data-patches-tab={id}><Frame key={`${origin}#${tick}`} tab={t} src={src} kind="app" title={tabLabel(entry)} entry={entry} /></div>;
+  const s = useSuite();
+  const src = entry.kind === 'plugin' ? pluginTabUrl(t, origin, entry.view) : tabUrl(t, origin, s.deep[id]);
+  useEffect(() => { startLoading(id); }, [id, src, tick]);
+  return (
+    <div className="pt-tab" data-patches-tab={id}>
+      <Frame key={`${src}#${tick}`} tab={t} src={src} kind={entry.kind === 'plugin' ? 'plugin' : 'app'} title={tabLabel(entry)} viewId={id} />
+      <TabCover entry={entry} />
+    </div>
+  );
 }
 
 /* ---------------- the tab group (patches-tabs@1, kept on Patches' server) ---------------- */
@@ -86,6 +205,9 @@ let tabsView: TabsView = { tabs: DEFAULT_TABS, loaded: false, error: '' };
 const tabsSubs = new Set<() => void>();
 function setTabsView(next: Partial<TabsView>) { tabsView = { ...tabsView, ...next }; tabsSubs.forEach((f) => f()); }
 export function useTabs(): TabsView { return useSyncExternalStore((f) => { tabsSubs.add(f); return () => tabsSubs.delete(f); }, () => tabsView); }
+
+/** Every view Patches has: the tabs, every app (links to an app work even when it isn't a tab) and Settings. */
+function knownViews(): string[] { return [...new Set([...tabsView.tabs.map(tabViewId), ...TABS.map((t) => t.id), 'settings'])]; }
 
 /** Read the tab group (once at start; the default three apps until it answers or when it can't be read). */
 export async function loadTabs(): Promise<void> {
@@ -107,34 +229,35 @@ async function saveTabs(rt: AxfRuntime, next: TabEntry[]): Promise<boolean> {
   return true;
 }
 
-/** Add a tab. A plugin tab also makes sure its plugin is installed in Patches for that app and switched on (it runs only then). */
 async function addTab(rt: AxfRuntime, c: TabChoice): Promise<void> {
   if (c.added || tabsView.tabs.length >= MAX_TABS) return;
-  const e = c.entry;
-  if (e.kind === 'plugin') {
-    const t = TABS.find((x) => x.id === e.app)!;
-    if (!c.installed) await installMissing(t, [{ id: e.plugin, name: e.label, on: true }]);
-    else if (!c.enabled) await switchPlugin(t, e.plugin, true);
-  }
-  if (await saveTabs(rt, [...tabsView.tabs, e])) { rt.navigate(tabViewId(e)); rt.closeDialog(); }
+  if (await saveTabs(rt, [...tabsView.tabs, c.entry])) { rt.navigate(tabViewId(c.entry)); rt.closeDialog(); }
 }
 
 async function removeTab(rt: AxfRuntime, key: string): Promise<void> {
   await saveTabs(rt, tabsView.tabs.filter((e) => tabKey(e) !== key));
 }
 
+/** The plugins every app last reported (whenever it runs in Patches), for the Add tab dialog. */
+function reports(s: SuiteView): Partial<Record<PatchTab['id'], EmbedPlugin[]>> {
+  return Object.fromEntries(TABS.map((t) => [t.id, s.apps[t.id]?.plugins ?? []]));
+}
+
 /** The Add tab dialog: every app and every tabable plugin the apps reported, each with Add (or "Already a tab"). */
 export function AddTabDialog() {
   const rt = useRuntime();
   const tv = useTabs();
-  const pv = usePluginsView();
-  const { apps, plugins: groups } = tabChoices(tv.tabs, pv.reports, pv.state);
+  const s = useSuite();
+  const { apps, plugins: groups } = tabChoices(tv.tabs, reports(s));
   const full = tv.tabs.length >= MAX_TABS;
-  const row = (c: TabChoice, hint?: string) => (
+  const row = (c: TabChoice, app?: PatchTab) => (
     <li key={tabKey(c.entry)} className="pt-addtab__row">
       <Icon name={tabIcon(c.entry)} size={16} />
-      <span className="pt-addtab__name"><strong>{tabLabel(c.entry)}</strong> {c.entry.kind === 'plugin' && <ModelBadge compact model={pv.reports[c.entry.app]?.find((r) => r.id === (c.entry as { plugin: string }).plugin)?.model ?? pv.state?.apps[c.entry.app]?.plugins[c.entry.plugin]?.model} />}{hint && <span className="fx-muted">{hint}</span>}</span>
-      {c.added ? <span className="fx-muted">Already a tab</span> : <Button size="sm" icon="plus" tone="primary" disabled={full || pv.busy} onClick={() => void addTab(rt, c)}>Add</Button>}
+      <span className="pt-addtab__name">
+        <strong>{tabLabel(c.entry)} {c.entry.kind === 'plugin' && <ModelBadge compact model={c.model} />}</strong>
+        {app && !c.added && c.on === false && <span className="fx-muted">Switched off in {app.label}: switch it on in its Plugins settings first.</span>}
+      </span>
+      {c.added ? <span className="fx-muted">Already a tab</span> : <Button size="sm" icon="plus" tone="primary" disabled={full || c.on === false} onClick={() => void addTab(rt, c)}>Add</Button>}
     </li>
   );
   return (
@@ -142,16 +265,16 @@ export function AddTabDialog() {
       <p className="fx-muted" style={{ margin: 0 }}>Pick an app or a plugin to give it its own tab. Only plugins marked tabable are listed.</p>
       {full && <Note tone="warning">Patches has {MAX_TABS} tabs, the most it holds. Remove one first.</Note>}
       <section>
-        <h3 className="pt-plugins__head">Apps</h3>
+        <h3 className="pt-head">Apps</h3>
         <ul className="pt-addtab__list">{apps.map((c) => row(c))}</ul>
       </section>
       {groups.map((g) => (
         <section key={g.app.id}>
-          <h3 className="pt-plugins__head"><Icon name={g.app.icon} size={14} /> {g.app.label} plugins</h3>
-          <ul className="pt-addtab__list">{g.choices.map((c) => row(c, c.added ? undefined : !c.installed ? `Installs it in Patches for ${g.app.label}` : !c.enabled ? `Switches it on in Patches for ${g.app.label}` : undefined))}</ul>
+          <h3 className="pt-head"><Icon name={g.app.icon} size={14} /> {g.app.label} plugins</h3>
+          <ul className="pt-addtab__list">{g.choices.map((c) => row(c, g.app))}</ul>
         </section>
       ))}
-      {!groups.length && <Note tone="info">No tabable plugins yet. Apps list theirs once their tab (or the banner strip) has loaded; open an app’s tab, then come back.</Note>}
+      {!groups.length && <Note tone="info">No tabable plugins yet. Apps list theirs once their tab has loaded; open an app’s tab, then come back.</Note>}
     </div>
   );
 }
@@ -163,13 +286,13 @@ function TabsPanel() {
   useEffect(() => { if (!tv.loaded) void loadTabs(); }, [tv.loaded]);
   return (
     <div className="fx-stack">
-      <p className="fx-muted" style={{ margin: 0 }}>The tabs above the menu, on every device. Apps show the whole app; a plugin tab shows just that plugin’s page.</p>
+      <p className="fx-muted" style={{ margin: 0 }}>The tabs above the menu, on every device. Alt+1 … Alt+9 bring them up. Apps show the whole app; a plugin tab shows just that plugin’s page.</p>
       {tv.error && <Note tone="danger">{tv.error}</Note>}
       <ul className="pt-addtab__list">
         {tv.tabs.map((e, i) => (
           <li key={tabKey(e)} className="pt-addtab__row">
             <Icon name={tabIcon(e)} size={16} />
-            <span className="pt-addtab__name"><strong>{tabLabel(e)}</strong><span className="fx-muted">{e.kind === 'app' ? 'App' : `Plugin · ${TABS.find((t) => t.id === e.app)?.label ?? e.app}`}</span></span>
+            <span className="pt-addtab__name"><strong>{tabLabel(e)}</strong><span className="fx-muted">{e.kind === 'app' ? 'App' : `Plugin · ${appOf(e.app)?.label ?? e.app}`}{i < 9 ? ` · Alt+${i + 1}` : ''}</span></span>
             <span className="fx-row">
               <IconButton icon="chevron-up" label="Move up" disabled={i === 0} onClick={() => void saveTabs(rt, moveTab(tv.tabs, tabKey(e), -1))} />
               <IconButton icon="chevron-down" label="Move down" disabled={i === tv.tabs.length - 1} onClick={() => void saveTabs(rt, moveTab(tv.tabs, tabKey(e), 1))} />
@@ -187,6 +310,44 @@ function TabsPanel() {
   );
 }
 
+/** "Shares its banner, menu, search and links with Patches", or why not. */
+function appStatus(st: TabState | undefined): string {
+  if (!st) return 'Not opened yet: its tab opens it.';
+  if (st.status === 'loading') return 'Opening…';
+  if (st.status === 'slow') return 'Taking longer than usual to open.';
+  if (st.status === 'error') return 'Didn’t load: check its address.';
+  return st.suite ? `Shares its ${shareSummary(st.takes)} with Patches.` : 'An older build: it shows its own banner and menu here until it is updated.';
+}
+
+/** Settings → Patches → Apps: each app, how it runs in Patches, its own settings, reload, open outside. */
+function AppsPanel() {
+  const rt = useRuntime();
+  const s = useSuite();
+  useAxfState();
+  return (
+    <div className="fx-stack">
+      <p className="fx-muted" style={{ margin: 0 }}>Inside Patches the apps share one banner, one menu bar, one search box and one look (colours, style and controls). Each keeps its own pages, settings and plugins: open them here or from its own menu.</p>
+      <ul className="pt-addtab__list">
+        {TABS.map((t) => (
+          <li key={t.id} className="pt-addtab__row">
+            <Icon name={t.icon} size={16} />
+            <span className="pt-addtab__name">
+              <strong>{t.label}</strong>
+              <span className="fx-muted">{t.blurb} {originFor(rt, t).replace(/^https:\/\//, '')}</span>
+              <span className="fx-muted" data-patches-status={s.tabs[t.id]?.status ?? 'none'}>{appStatus(s.tabs[t.id])}</span>
+            </span>
+            <span className="fx-row">
+              <Button size="sm" icon="settings" onClick={() => openAppSettings(rt, t.id)}>Its settings</Button>
+              <IconButton icon="refresh" label={`Reload ${t.label}`} onClick={() => bump(t.id)} />
+              <IconButton icon="external" label={`Open ${t.label} in a browser tab`} onClick={() => window.open(`${originFor(rt, t)}${t.path}`, '_blank', 'noopener')} />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export const ADD_TAB_DIALOG = 'patches.tabs.add';
 
 /** The Dev Console's plugin banners above every tab (`?axf-strip=banners`), sized to them. */
@@ -196,7 +357,7 @@ export function BannerStrip() {
   const t = TABS[0]!;
   const origin = useOrigin(t);
   const [px, setPx] = useState(0);
-  const on = rt.settings.get(BANNERS_KEY) === true;
+  const on = rt.settings.get(BANNERS_KEY) !== false;
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const f = e.source ? frames.get(e.source as Window) : undefined;
@@ -211,251 +372,238 @@ export function BannerStrip() {
   if (!on) return null;
   return (
     <div className="pt-strip" style={{ height: px }} aria-hidden={px === 0}>
-      <Frame tab={t} src={stripUrl(origin)} kind="strip" title="Console banners" />
+      <Frame tab={t} src={stripUrl(origin)} kind="strip" title="Console banners" viewId="strip" />
     </div>
   );
 }
 
-/* ---------------- messages from the apps ---------------- */
+/* ---------------- what the apps send ---------------- */
 
-/** The apps ask Patches for their settings (their own hooks are gone inside Patches); anything else is ignored. */
+/** An app's messages: believed only from its own frame, at its own origin. */
 export function useAppMessages() {
   const rt = useRuntime();
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const f = e.source ? frames.get(e.source as Window) : undefined;
-      if (!f) return;
-      // Believed only from the frame it came from, at that frame's own origin.
-      const origin = tabOrigin(f.tab, f.tab.key ? rt.settings.get(f.tab.key) : null);
-      if (e.origin !== origin) return;
+      if (!f || e.origin !== originFor(rt, f.tab)) return;
       const m = fromApp(e.data);
       if (!m) return;
-      // Patches no longer takes the apps' settings, so it never answers open-settings; the strip only relays banner taps.
-      // Every page of an app (tab, settings page, banner strip) reports its plugins and runs only what Patches enabled.
-      if (m.type === 'plugins') { void onPluginReport(rt, f.tab, e.source as Window, origin, m.plugins); return; }
+      // Any page of an app (its tab, a plugin tab, the banner strip) lists its plugins: the Add tab dialog offers its tabable ones.
+      if (m.type === 'plugins') { setShare(f.tab.id, { plugins: m.plugins }); return; }
+      if (m.type === 'notify') { rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level === 'warning' ? 'warning' : m.level === 'success' ? 'success' : 'info', `${f.tab.label}: ${m.title}`); return; }
       if (f.kind === 'strip') return;
-      if (m.type === 'menu' && f.kind === 'app') showGuestMenu(rt, f.tab, m.menus);
-      else if (m.type === 'notify') rt.toast(m.body ?? m.title, m.level === 'error' ? 'danger' : m.level === 'warning' ? 'warning' : m.level === 'success' ? 'success' : 'info', `${f.tab.label}: ${m.title}`);
+      if (m.type === 'ready') {
+        frameReady(rt, f.viewId, m.takes ?? []);
+        if (f.kind === 'app') try { (e.source as Window).postMessage(appsMessage(origins(rt)), e.origin); } catch { /* frame gone */ }
+        return;
+      }
+      if (f.kind !== 'app') return;
+      switch (m.type) {
+        case 'menu': setShare(f.tab.id, { menus: m.menus }); break;
+        case 'banner': setShare(f.tab.id, { banner: m.items }); break;
+        case 'search-catalog': setShare(f.tab.id, { search: m.entries }); break;
+        case 'focus-search': focusSearch(); break;
+        case 'hotkey': { const n = /^Alt\+([1-9])$/.exec(m.key); if (n) goTab(rt, Number(n[1]) - 1); break; }
+        case 'open-url': openUrl(rt, m.url); break;
+        default: break;
+      }
     };
     window.addEventListener('message', onMsg);
     return () => window.removeEventListener('message', onMsg);
   }, [rt]);
 }
 
-/* ---------------- plugins Patches manages for the apps in its tabs (embed@1 take `plugins`) ----------------
- *
- * Brett, Oct 22 2026: "when Patches loads developer apps in tabs and Patches doesn't have all the plugins installed that
- * the apps have, put an entry in the systems check banner to fix it by installing the missing plugins in Patches, and
- * try to install them automatically. Disable all plugins from the apps and only enable them in Patches."
- *
- * Each page of an app reports the plugins it has (`plugins`). Patches keeps, per app, which are installed here and
- * switched on (server/main.py, patches-plugins@1), installs the missing ones by itself (Settings → Patches → Plugins →
- * Install missing plugins by themselves, on by default), and answers every page with the ones switched on
- * (`plugins-enabled`): that's all the app runs inside Patches. While any are missing (auto install off or failed), the
- * Systems check banner above the tabs says so, with Auto fix.
- */
-
-type PluginsView = { state: PluginsState | null; error: string; reports: Partial<Record<PatchTab['id'], EmbedPlugin[]>>; busy: boolean; failed: string };
-let plugins: PluginsView = { state: null, error: '', reports: {}, busy: false, failed: '' };
-const pluginSubs = new Set<() => void>();
-function setPlugins(next: Partial<PluginsView>) { plugins = { ...plugins, ...next }; pluginSubs.forEach((f) => f()); }
-export function usePluginsView(): PluginsView { return useSyncExternalStore((f) => { pluginSubs.add(f); return () => pluginSubs.delete(f); }, () => plugins); }
-
-let loading: Promise<PluginsState | null> | null = null;
-/** Patches' plugin list (once; again after a change). */
-function loadPlugins(force = false): Promise<PluginsState | null> {
-  if (loading && !force) return loading;
-  loading = api<PluginsState>('/plugins').then((r) => {
-    if (r.ok && r.data) setPlugins({ state: r.data, error: '' });
-    else { setPlugins({ error: r.error || 'Patches’ plugin list could not be read' }); loading = null; } // failed: try again next time
-    return r.ok ? r.data : plugins.state;
-  });
-  return loading;
+/** Patches' search box (Ctrl/Cmd+K in any app lands here). */
+function focusSearch() {
+  window.focus();
+  window.dispatchEvent(new Event(FOCUS_SEARCH_EVENT));
 }
 
-/** Tell every page of an app which plugins it may run (only what is installed in Patches and switched on). */
-function announce(t: PatchTab, origin?: string) {
-  const ids = enabledFor(t);
-  const o = origin ?? tabOriginOf(t);
-  for (const [w, f] of frames) if (f.tab.id === t.id) try { w.postMessage(pluginsEnabledMessage(ids), o); } catch { /* frame gone */ }
-}
-let originOf: ((t: PatchTab) => string) | null = null;
-const tabOriginOf = (t: PatchTab) => originOf?.(t) ?? normalizeFallback(t);
-const normalizeFallback = (t: PatchTab) => tabOrigin(t, null);
-
-/** Install plugins into Patches for an app (all of its missing ones unless named), then tell its pages. */
-export async function installMissing(t: PatchTab, only?: EmbedPlugin[]): Promise<boolean> {
-  const list = only ?? missingPlugins(plugins.reports[t.id], plugins.state, t.id);
-  if (!list.length) return true;
-  setPlugins({ busy: true, failed: '' });
-  const r = await api<PluginsState & { added: string[] }>('/plugins/install', { method: 'POST', body: JSON.stringify({ app: t.id, plugins: list }) });
-  if (r.ok && r.data) setPlugins({ state: r.data, busy: false, error: '' });
-  else setPlugins({ busy: false, failed: r.error || 'install failed' });
-  announce(t);
-  return r.ok;
+/** Bring the n-th tab up (Alt+1 … Alt+9, in Patches or in any app). */
+function goTab(rt: AxfRuntime, i: number) {
+  const e = tabsView.tabs[i];
+  if (e) rt.navigate(tabViewId(e));
 }
 
-/** An app page reported its plugins: keep the report, install what's missing (when allowed), answer that page. */
-async function onPluginReport(rt: AxfRuntime, t: PatchTab, w: Window, origin: string, list: EmbedPlugin[]) {
-  originOf = (x) => tabOrigin(x, x.key ? rt.settings.get(x.key) : null);
-  // the tab's own report wins over its settings page / the strip (same app, same list)
-  setPlugins({ reports: { ...plugins.reports, [t.id]: list } });
-  await loadPlugins();
-  if (rt.settings.get(AUTO_INSTALL_KEY) !== false && missingPlugins(list, plugins.state, t.id).length && !plugins.busy) await installMissing(t);
-  try { w.postMessage(pluginsEnabledMessage(enabledFor(t)), origin); } catch { /* frame gone */ }
+function stepTab(rt: AxfRuntime, by: 1 | -1) {
+  const list = tabsView.tabs;
+  if (!list.length) return;
+  const i = list.findIndex((e) => tabViewId(e) === rt.getState().view);
+  const j = i < 0 ? 0 : (i + by + list.length) % list.length;
+  rt.navigate(tabViewId(list[j]!));
 }
 
-/** What an app may run: Patches' list when it can be read, else the app's own switches (never nothing, so a list
- *  Patches can't read doesn't switch off every plugin and banner in its tabs). */
-function enabledFor(t: PatchTab): string[] {
-  return plugins.state ? enabledPluginIds(plugins.state, t.id) : (plugins.reports[t.id] ?? []).filter((p) => p.on).map((p) => p.id).sort();
+/** A link from one app to another: that app's tab comes up (on that page); anything else opens in a browser tab. */
+function openUrl(rt: AxfRuntime, url: string) {
+  const hit = tabForUrl(url, origins(rt));
+  if (!hit) { window.open(url, '_blank', 'noopener'); return; }
+  const id = hit.tab.id;
+  const u = new URL(hit.url);
+  // its start page: just bring the tab up (no reload); any other page: show that page in the tab
+  if (!(u.pathname === hit.tab.path && !u.search && !u.hash)) {
+    if (suite.deep[id] === hit.url) bump(id);
+    else setSuite((s) => ({ ...s, deep: { ...s.deep, [id]: hit.url } }));
+  }
+  rt.navigate(id);
 }
 
-/** Switch a plugin installed in Patches on or off for an app, then tell its pages. */
-async function switchPlugin(t: PatchTab, id: string, on: boolean) {
-  const r = await api<PluginsState>('/plugins/enabled', { method: 'POST', body: JSON.stringify({ app: t.id, id, enabled: on }) });
-  if (r.ok && r.data) setPlugins({ state: r.data, failed: '' }); else setPlugins({ failed: r.error || 'could not switch it' });
-  announce(t);
-}
-
-/** Every app with plugins it has but Patches doesn't (what the Systems check entry lists). */
-function missingByApp(v: PluginsView): { t: PatchTab; missing: EmbedPlugin[] }[] {
-  return TABS.map((t) => ({ t, missing: missingPlugins(v.reports[t.id], v.state, t.id) })).filter((x) => x.missing.length > 0);
-}
-
-/** The Systems check entry above the tabs: shown while an app has plugins Patches hasn't installed. */
-function PluginsCheck() {
-  const rt = useRuntime();
-  const v = usePluginsView();
-  const [open, setOpen] = useState(false);
-  const rows = missingByApp(v);
-  // Patches' own list unreadable: the apps run their own plugin switches until it is back, so say so.
-  if (!v.state && v.error && Object.keys(v.reports).length) return (
-    <div className="pt-check" role="status" data-fx-ctx-ignore="">
-      <Note tone="danger" icon="alert">
-        <div className="pt-check__line">
-          <span className="pt-check__title"><strong>Systems check</strong> · Patches can’t read its plugin list, so the apps run their own plugin choices here ({v.error})</span>
-          <Button size="sm" icon="refresh" onClick={() => void loadPlugins(true).then(() => { for (const t of TABS) announce(t); })}>Try again</Button>
-        </div>
-      </Note>
-    </div>
-  );
-  if (!rows.length || !v.state) return null;
-  const count = rows.reduce((n, r) => n + r.missing.length, 0);
-  const fixAll = async () => { for (const r of rows) await installMissing(r.t); };
-  return (
-    <div className="pt-check" role="status" data-fx-ctx-ignore="">
-      <Note tone="warning" icon="alert">
-        <div className="pt-check__line">
-          <span className="pt-check__title"><strong>Systems check</strong> · Patches is missing {count} plugin{count === 1 ? '' : 's'} the apps use</span>
-          <span className="fx-row">
-            <Button size="sm" icon="zap" tone="primary" disabled={v.busy} onClick={() => void fixAll()}>{v.busy ? 'Installing…' : 'Auto fix'}</Button>
-            <Button size="sm" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen((x) => !x)}>{open ? 'Less' : 'Details'}</Button>
-            <Button size="sm" icon="settings" onClick={() => openSettings(rt, 'connections')}>Plugins</Button>
-          </span>
-        </div>
-        {v.failed && <div className="pt-check__err">Couldn’t install them: {v.failed}</div>}
-        {open && (
-          <ul className="pt-check__list">
-            {rows.map((r) => (
-              <li key={r.t.id}>
-                <span>{missingSummary(r.t.label, r.missing, 8)}</span>
-                <Button size="sm" disabled={v.busy} onClick={() => void installMissing(r.t)}>Install in Patches</Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Note>
-    </div>
-  );
-}
-
-/** Settings → Patches → Plugins: every app's plugins installed in Patches, a switch each; what's missing; auto install. */
-function PluginsPanel() {
-  const rt = useRuntime();
-  useAxfState();
-  const v = usePluginsView();
-  useEffect(() => { void loadPlugins(true); }, []);
-  const auto = rt.settings.get(AUTO_INSTALL_KEY) !== false;
-  return (
-    <div className="fx-stack">
-      <p className="fx-muted" style={{ margin: 0 }}>Inside Patches the apps run only the plugins installed and switched on here; their plugin list moves here (each plugin's own settings stay in its app's Settings tab). On its own, each app keeps its own plugins.</p>
-      <Switch checked={auto} onChange={(on) => rt.settings.set(AUTO_INSTALL_KEY, on)} label="Install missing plugins by themselves" hint="When an app has a plugin Patches doesn’t, install it here straight away (it starts on or off the way the app had it)." />
-      {v.error && <Note tone="danger">{v.error}</Note>}
-      {v.failed && <Note tone="danger">{v.failed}</Note>}
-      {TABS.filter((t) => t.axf).map((t) => {
-        const installed = Object.entries(v.state?.apps[t.id]?.plugins ?? {}).sort(([, a], [, b]) => a.name.localeCompare(b.name));
-        const missing = missingPlugins(v.reports[t.id], v.state, t.id);
-        return (
-          <section key={t.id} className="pt-plugins">
-            <h3 className="pt-plugins__head"><Icon name={t.icon} size={14} /> {t.label}</h3>
-            {!installed.length && !missing.length && <p className="fx-muted" style={{ margin: 0 }}>{v.reports[t.id] ? 'No plugins.' : 'Open its tab once: it reports its plugins.'}</p>}
-            {installed.map(([id, p]) => (
-              <Switch key={id} checked={p.enabled} onChange={(on) => void switchPlugin(t, id, on)} label={p.name} hint={[id, p.version, builtWithText(v.reports[t.id]?.find((r) => r.id === id)?.model ?? p.model)].filter(Boolean).join(' · ')} />
-            ))}
-            {missing.length > 0 && (
-              <Note tone="warning">
-                {missingSummary('Not in Patches yet', missing, 8)}{' '}
-                <Button size="sm" disabled={v.busy} onClick={() => void installMissing(t)}>Install in Patches</Button>
-              </Note>
-            )}
-          </section>
-        );
-      })}
-      <div className="fx-row"><Button size="sm" icon="refresh" onClick={() => { void loadPlugins(true); for (const [w, f] of frames) try { w.postMessage(pluginsRequestMessage(), tabOriginOf(f.tab)); } catch { /* gone */ } }}>Check the apps again</Button></div>
-    </div>
-  );
-}
-
-/* ---------------- the apps' menus in Patches' application menu (embed@1 take `app-menu`) ---------------- */
-
-/** Put an app's menu into Patches' application menu as one top-level menu (replacing what it sent before). */
-function showGuestMenu(rt: AxfRuntime, t: PatchTab, menus: Parameters<typeof guestMenuItems>[1]) {
-  const module = `patches.guest.${t.id}`;
-  for (const [name, n] of Object.entries(guestMenuCounters(t.id, menus))) rt.setBadge(name, n);
-  rt.removeAppMenuItems(module);
-  const items = guestMenuItems(t.id, menus);
-  if (!items.length) return;
-  rt.addAppMenuItems({ id: module, module, menu: `app-${t.id}`, menuLabel: t.label, menuOrder: 20 + TABS.indexOf(t), items });
-}
-
-/** A picked item of an app's menu: bring its tab up, then ask the app to run it (it runs only what it offered). */
-function runGuestItem(rt: AxfRuntime, tabId: string, id: string) {
-  const t = TABS.find((x) => x.id === tabId);
-  if (!t || !id) return;
+/** An app's own settings, from Patches: bring its tab up and ask it (each app keeps its own settings). */
+function openAppSettings(rt: AxfRuntime, tabId: string | undefined, settingsTab?: string) {
+  const t = tabId ? appOf(tabId) : undefined;
+  if (!t) { rt.toast('Pick an app’s tab first.', 'info', 'Settings'); return; }
   rt.navigate(t.id);
-  const origin = tabOrigin(t, t.key ? rt.settings.get(t.key) : null);
-  for (const [w, f] of frames) if (f.kind === 'app' && f.tab.id === t.id) try { w.postMessage(runMessage(id), origin); } catch { /* frame gone */ }
+  postWhenUp(rt, t.id, openSettingsMessage(settingsTab));
 }
 
-/* ---------------- the library ---------------- */
+/** The app in front (app tabs only; a plugin tab or Patches' Settings has none). */
+const frontApp = (rt: AxfRuntime): PatchTab | undefined => appOf(rt.getState().view);
+
+/* ---------------- the front app on Patches' banner and in its menu bar ---------------- */
+
+const GUEST_BANNER = 'patches.guest';
+const GUEST_MENU = 'patches.guest-menu';
+const FRONT_LABEL = 'patches-front';
+let bannerShape = '';
+let menuShape = '';
+let frontPainted = '';
+const popups = new Map<string, string>();
+
+/** The front app's banner items on Patches' banner (registered as Patches' own assets; taps go back to the app). */
+function paintBanner(rt: AxfRuntime, front: PatchTab | undefined) {
+  const items = front ? mirrorBanner(front.id, shareOf(front.id).banner) : [];
+  // counters change often: only the numbers are set again when nothing else changed
+  for (const m of items) if (m.counter) rt.setBadge(m.counter.name, m.counter.value);
+  const shape = JSON.stringify([front?.id ?? '', items.map((m) => [m.type, m.id, m.at, m.order, m.data])]);
+  if (shape !== bannerShape) {
+    bannerShape = shape;
+    rt.detachFromBanner(GUEST_BANNER);
+    for (const m of items) {
+      const res = rt.registry.register({ $axf: 'asset@1', type: m.type, id: m.id, name: `${front!.label}: ${m.key}`, version: '1.0.0', data: m.data }, 'app', GUEST_BANNER);
+      if (!res.ok) { rt.terminal.warn('patches', `${front!.label}'s banner item ${m.key} isn't shown: ${res.errors.join('; ')}`); continue; }
+      rt.attachToBanner({ type: m.type, id: m.id, at: m.at, order: m.order, origin: GUEST_BANNER });
+    }
+  }
+  for (const m of items) {
+    if (!m.popup || popups.get(m.id) === m.popup) continue;
+    popups.set(m.id, m.popup);
+    rt.showBannerPopup(`${m.type}:${m.id}`, m.popup, 5000);
+  }
+}
+
+/** The front app's menus in Patches' menu bar, after Patches' own menu (like a desktop menu bar following the front window). */
+function paintMenus(rt: AxfRuntime, front: PatchTab | undefined) {
+  const menus = front ? shareOf(front.id).menus : null;
+  if (front && menus) for (const [n, v] of Object.entries(guestMenuCounters(front.id, menus))) rt.setBadge(n, v);
+  const shape = JSON.stringify([front?.id ?? '', menus]);
+  if (shape === menuShape) return;
+  menuShape = shape;
+  rt.removeAppMenuItems(GUEST_MENU);
+  if (!front || !menus) return;
+  guestMenuItems(front.id, menus).forEach((m, i) => {
+    if (!m.items?.length) return;
+    rt.addAppMenuItems({ id: `${GUEST_MENU}.${front.id}.${i}`, module: GUEST_MENU, menu: guestMenuId(front.id, m.id), menuLabel: m.label, menuOrder: 20 + i, items: m.items });
+  });
+}
+
+/** "Console" next to Patches' mark: which app is in front (a label widget Patches repaints). */
+function paintFront(rt: AxfRuntime, view: string) {
+  const e = tabsView.tabs.find((x) => tabViewId(x) === view) ?? DEFAULT_TABS.find((x) => tabViewId(x) === view);
+  const text = view === 'settings' ? 'Settings' : e ? tabLabel(e) : '';
+  if (text === frontPainted) return;
+  frontPainted = text;
+  if (!text) { rt.detachFromBanner(`label:${FRONT_LABEL}`); return; }
+  rt.registry.register({ $axf: 'asset@1', type: 'label', id: FRONT_LABEL, name: 'Tab in front', version: '1.0.0', data: { text, tone: 'accent', mono: false } }, 'app', 'patches.front');
+  rt.attachToBanner({ type: 'label', id: FRONT_LABEL, at: 'left', order: 5, origin: 'patches.front' });
+}
+
+const readFront = () => { try { return localStorage.getItem(FRONT_STORE); } catch { return null; } };
+const saveFront = (v: string) => { try { localStorage.setItem(FRONT_STORE, v); } catch { /* storage off */ } };
+
+/** The address Patches was opened with (read once, before Patches writes the tab in front into it). */
+const START_HASH = typeof location === 'undefined' ? '' : location.hash;
+/** Patches has opened on the tab it was asked for (or found it doesn't have it): from then on the address follows the tabs. */
+let started = false;
+
+/**
+ * Open on the tab asked for: the address's `#/<tab>`, else the one in front last time on this device (setting), else
+ * the start view. A plugin tab is known only once the tab group has loaded, so this runs again then.
+ */
+function openStartView(rt: AxfRuntime, final: boolean) {
+  if (started) return;
+  const known = knownViews();
+  const asked = START_HASH.replace(/^#\/?/, '') ? START_HASH : '';
+  const last = rt.settings.get(REMEMBER_KEY) === false ? null : readFront();
+  const v = viewFromHash(asked, known) ?? (last && known.includes(last) ? last : null);
+  if (v) { started = true; if (v !== rt.getState().view) rt.navigate(v); return; }
+  // not known yet: maybe a plugin tab the tab group brings; give up once it has loaded
+  if (final || (!asked && !last)) started = true;
+}
+
+/** Keeps Patches' banner, menu bar, address and tab keys in step with the tab in front. Called once (App). */
+export function useSuiteSync() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const s = useSuite();
+  const tv = useTabs();
+  const front = appOf(state.view);
+  // open on the tab asked for first (at start, and again once the tab group has loaded: plugin tabs come with it)
+  useEffect(() => { openStartView(rt, tv.loaded); }, [rt, tv.loaded]);
+  useEffect(() => {
+    paintBanner(rt, front);
+    paintMenus(rt, front);
+    paintFront(rt, state.view);
+  }, [rt, front, s, state.view, tv.tabs]);
+  // the address says which tab is in front (#/pilot), so a reload, a bookmark or a shared link opens on it
+  useEffect(() => {
+    if (!started || !knownViews().includes(state.view)) return;
+    const h = hashForView(state.view);
+    if (location.hash !== h) history.replaceState(null, '', `${location.pathname}${location.search}${h}`);
+    if (rt.settings.get(REMEMBER_KEY) !== false) saveFront(state.view);
+  }, [rt, state.view, tv.tabs, tv.loaded]);
+  useEffect(() => {
+    const onHash = () => { const v = viewFromHash(location.hash, knownViews()); if (v && v !== rt.getState().view) rt.navigate(v); };
+    const onKey = (e: KeyboardEvent) => {
+      const i = tabShortcut(e);
+      if (i == null) return;
+      if ((e.target as HTMLElement | null)?.closest?.('input, textarea, select, [contenteditable="true"], [contenteditable=""]')) return;
+      e.preventDefault();
+      goTab(rt, i);
+    };
+    window.addEventListener('hashchange', onHash);
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('hashchange', onHash); window.removeEventListener('keydown', onKey); };
+  }, [rt]);
+}
 
 /**
  * The app tabs, above the application menu (Brett, Oct 22 2026: "tabs for the apps above the application menu"): the
  * `patches-tabs` nav-menu asset drawn as one row in the page slot `app.frame.head`. The layout's nav region accepts
- * nothing (`slots.nav: []`), so the tabs aren't drawn a second time under the menu.
+ * nothing (`slots.nav: []`), so the tabs aren't drawn a second time under the menu. Each tab shows whether its app is
+ * still opening or failed.
  */
 function AppTabs() {
   const rt = useRuntime();
   const state = useAxfState();
   const nav = useAsset('nav-menu');
   const tv = useTabs();
+  const s = useSuite();
   // The tab group (Settings → Patches → Tabs) decides which tabs show and in what order; an app tab keeps the label and
   // icon the nav-menu asset gives it (and its access rule), a plugin tab carries its own.
   const navItems = nav.data.sections.flatMap((sec) => sec.items);
-  const items = tv.tabs.map((e) => {
+  const items = tv.tabs.map((e, i) => {
     const it = e.kind === 'app' ? navItems.find((x) => x.view === e.app) : undefined;
-    return { id: tabViewId(e), view: tabViewId(e), label: it?.label ?? tabLabel(e), icon: it?.icon ?? tabIcon(e), requires: it?.requires, plugin: e.kind === 'plugin' };
+    return { id: tabViewId(e), view: tabViewId(e), label: it?.label ?? tabLabel(e), icon: it?.icon ?? tabIcon(e), requires: it?.requires, plugin: e.kind === 'plugin', key: i < 9 ? `Alt+${i + 1}` : '' };
   }).filter((it) => rt.gate(it.requires) !== 'hide');
   return (
     <nav className={`fx-nav fx-nav--${nav.data.style} patches-tabs`} data-orient="horizontal" aria-label="Tabs">
       <div className="fx-nav__section" role="tablist">
         {items.map((it) => {
           const on = state.view === it.view;
+          const st = s.tabs[it.view]?.status;
           return (
-            <button key={it.id} type="button" role="tab" aria-selected={on} className={`fx-nav__item ${on ? 'is-active' : ''}`} title={it.label}
-              data-fx-ctx-target={it.plugin ? 'patches-plugin-tab' : 'nav-item'} data-fx-ctx-payload={it.view} onClick={() => rt.navigate(it.view)}>
-              <Icon name={it.icon} size={17} />
+            <button key={it.id} type="button" role="tab" aria-selected={on} className={`fx-nav__item ${on ? 'is-active' : ''}`} title={it.key ? `${it.label} (${it.key})` : it.label}
+              data-fx-ctx-target={it.plugin ? 'patches-plugin-tab' : 'nav-item'} data-fx-ctx-payload={it.view} data-patches-state={st ?? 'idle'} onClick={() => rt.navigate(it.view)}>
+              <span className="patches-tabs__icon"><Icon name={st === 'error' ? 'alert' : it.icon} size={17} /></span>
               <span className="fx-nav__text">{it.label}</span>
             </button>
           );
@@ -468,54 +616,80 @@ function AppTabs() {
   );
 }
 
+/** Run something an app put on Patches' banner, in its menu or in the search: its tab comes up, the app runs it. */
+function runInApp(rt: AxfRuntime, tabId: string, id: string) {
+  const t = appOf(tabId);
+  if (!t || !id) return;
+  rt.navigate(t.id);
+  postWhenUp(rt, t.id, runMessage(id));
+}
+
 export const patchesLibrary: AxfWebLibrary = {
   id: 'ai.amberx.axf.patches',
   label: 'Patches',
-  version: '0.1.0',
+  version: '0.2.0',
   dependsOn: ['ai.amberx.axf.settings'],
   register(rt) {
-    rt.actions.register('patches.reload', () => { const v = rt.getState().view; if (tabsView.tabs.some((e) => tabViewId(e) === v)) bump(v); else rt.toast('Pick a tab first.', 'info', 'Reload'); }, { label: 'Reload the tab in front' });
+    const front = () => tabsView.tabs.find((e) => tabViewId(e) === rt.getState().view);
+    rt.actions.register('patches.reload', () => { const v = rt.getState().view; if (knownViews().includes(v) && v !== 'settings') bump(v); else rt.toast('Pick a tab first.', 'info', 'Reload'); }, { label: 'Reload the tab in front' });
+    rt.actions.register('patches.open', () => {
+      const url = outsideUrl(rt, front() ?? DEFAULT_TABS.find((e) => tabViewId(e) === rt.getState().view));
+      if (!url) return rt.toast('Pick a tab first.', 'info', 'Open');
+      window.open(url, '_blank', 'noopener');
+    }, { label: 'Open the tab in front in a browser tab' });
+    rt.actions.register('patches.go', ([v]) => { if (v && knownViews().includes(v)) rt.navigate(v); }, { label: 'Bring a tab up', params: true, searchable: false });
+    rt.actions.register('patches.search', () => focusSearch(), { label: 'Search every app' });
+    rt.actions.register('patches.next', () => stepTab(rt, 1), { label: 'Next tab' });
+    rt.actions.register('patches.prev', () => stepTab(rt, -1), { label: 'Previous tab' });
     rt.actions.register('patches.tabs.add', () => rt.openDialog(ADD_TAB_DIALOG), { label: 'Add a tab…' });
     rt.actions.register('patches.tabs', () => openSettings(rt, 'connections'), { label: 'Tabs in Patches' });
     rt.actions.register('patches.tabs.remove', (_a, ctx) => {
       const e = tabsView.tabs.find((x) => tabViewId(x) === ctx?.payload);
       if (e) void removeTab(rt, tabKey(e));
     }, { label: 'Remove this tab', searchable: false });
+    rt.actions.register('patches.front.settings', (_a, ctx) => openAppSettings(rt, typeof ctx?.payload === 'string' && appOf(ctx.payload) ? ctx.payload : frontApp(rt)?.id), { label: 'Settings of the app in front' });
+    rt.actions.register('patches.app.settings', ([tab, ...rest]) => openAppSettings(rt, tab, rest.join(':') || undefined), { label: 'An app’s own settings', params: true, searchable: false });
+    // what the apps sent: their menus, banner taps and search picks, run by the app itself
+    rt.actions.register('patches.menu', ([tab, ...id]) => runInApp(rt, tab ?? '', id.join(':')), { label: 'Run an item of a tab app’s menu', params: true, searchable: false });
+    rt.actions.register('patches.w', ([tab, ...key]) => runInApp(rt, tab ?? '', `w:${key.join(':')}`), { label: 'Tap an app’s banner item', params: true, searchable: false });
+    rt.actions.register('patches.find', ([tab, id]) => runInApp(rt, tab ?? '', `s:${id ?? ''}`), { label: 'Open a search result in its app', params: true, searchable: false });
+    rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) === false), { label: 'Console banners above every tab' });
+    // one search over every app
+    rt.search.add('patches.apps', () => TABS.flatMap((t) => guestSearchEntries(t, shareOf(t.id).search)));
+    // the Tabs menu's live list
+    rt.registerAppMenuProvider('patches.tabs', () => tabsView.tabs.map((e, i) => ({ id: `tab.${tabKey(e)}`, label: tabLabel(e), icon: tabIcon(e), action: `patches.go:${tabViewId(e)}`, ...(i < 9 ? { shortcut: `Alt+${i + 1}` } : {}) })));
     void loadTabs();
-    rt.actions.register('patches.open', () => {
-      const front = tabsView.tabs.find((e) => tabViewId(e) === rt.getState().view);
-      const t = TABS.find((x) => x.id === front?.app);
-      if (!t) return rt.toast('Pick a tab first.', 'info', 'Open');
-      window.open(`${tabOrigin(t, t.key ? rt.settings.get(t.key) : null)}${t.path}`, '_blank', 'noopener');
-    }, { label: 'Open the tab in front in a new tab' });
-    rt.actions.register('patches.menu', ([tab, id]) => runGuestItem(rt, tab ?? '', id ?? ''), { label: 'Run an item of a tab app\'s menu', params: true, searchable: false });
-    rt.actions.register('patches.plugins.fix', () => { for (const t of TABS) void installMissing(t); }, { label: 'Install the apps’ missing plugins in Patches' });
-    rt.actions.register('patches.plugins', () => openSettings(rt, 'connections'), { label: 'Plugins in Patches' });
-    rt.actions.register('patches.banners.toggle', () => rt.settings.set(BANNERS_KEY, rt.settings.get(BANNERS_KEY) !== true), { label: 'Console banners above every tab' });
   },
   settings: [{
     id: 'patches', label: 'Patches', icon: 'layers', tab: 'connections', order: 5,
     description: 'The apps in the tabs. Addresses are https, host only; axHub is the hub this app runs with.',
     settings: [
       ...TABS.filter((t) => t.key).map((t) => ({ key: t.key, label: `${t.label} address`, kind: 'text' as const, default: t.fallback, description: 'https only, no path' })),
-      { key: BANNERS_KEY, label: 'Console banners above every tab', kind: 'toggle' as const, default: false, description: 'Off by default: the apps show their own banners. The Dev Console’s banners (codebase changes, builds, GitHub activity, approvals, systems check, keys, What’s new), on screen whichever tab is open.' },
+      { key: BANNERS_KEY, label: 'Console banners above every tab', kind: 'toggle' as const, default: true, description: 'The Dev Console’s banners (codebase changes, builds, activity, approvals, systems check, keys, What’s new) on screen whichever tab is open. Off: the Console tab shows them itself.' },
+      { key: REMEMBER_KEY, label: 'Open on the last tab', kind: 'toggle' as const, default: true, description: 'Patches opens on the tab that was in front last time on this device. A link with #/<tab> always wins.' },
+      { key: WARM_KEY, label: 'Load every app at start', kind: 'toggle' as const, default: true, description: 'Console, Pilot and axHub load in the background as Patches opens, so search, menus and banners cover every app at once. Off: an app loads the first time its tab is opened (next time Patches opens).' },
     ],
   }],
   settingsPanels: [
+    { id: 'patches.apps', tab: 'connections', title: 'Apps', icon: 'grid', order: 5.2, render: () => <AppsPanel /> },
     { id: 'patches.tabs', tab: 'connections', title: 'Tabs', icon: 'layout', order: 5.5, render: () => <TabsPanel /> },
-    { id: 'patches.plugins', tab: 'connections', title: 'Plugins', icon: 'package', order: 6, render: () => <PluginsPanel /> },
   ],
   dialogs: { [ADD_TAB_DIALOG]: { title: 'Add a tab', icon: 'plus', render: () => <AddTabDialog /> } },
-  // The settings hook in the context menu, on every target Patches draws (banner, tabs, the settings page).
   contextMenu: [
-    { id: 'patches.ctx', target: 'default', order: 1, items: [{ id: 'patches.reload', label: 'Reload the tab in front', icon: 'refresh', action: 'patches.reload' }] },
-    { id: 'patches.ctx.tab', target: 'nav-item', order: 1, items: [{ id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }] },
+    { id: 'patches.ctx', target: 'default', order: 1, items: [
+      { id: 'patches.reload', label: 'Reload the tab in front', icon: 'refresh', action: 'patches.reload' },
+      { id: 'patches.front.settings', label: 'Settings of the app in front', icon: 'sliders', action: 'patches.front.settings' },
+      { id: 'patches.open', label: 'Open in a browser tab', icon: 'external', action: 'patches.open' },
+    ] },
+    { id: 'patches.ctx.tab', target: 'nav-item', order: 1, items: [
+      { id: 'patches.front.settings', label: 'Its settings', icon: 'sliders', action: 'patches.front.settings' },
+      { id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' },
+      { id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' },
+    ] },
     { id: 'patches.ctx.plugintab', target: 'patches-plugin-tab', order: 1, items: [{ id: 'patches.tabs.remove', label: 'Remove this tab', icon: 'trash', action: 'patches.tabs.remove' }, { id: 'patches.tabs.add', label: 'Add a tab…', icon: 'plus', action: 'patches.tabs.add' }, { id: 'patches.tabs', label: 'Tabs settings', icon: 'settings', action: 'patches.tabs' }] },
   ],
   slots: {
     'app.frame.head': [{ id: 'patches.tabs', order: 10, render: () => <AppTabs /> }],
     'app.frame.top': [{ id: 'patches.strip', order: 10, render: () => <BannerStrip /> }],
-    // Patches' own Systems check entry (missing plugins), above the console's banners in the strip.
-    'app.frame.banners': [{ id: 'patches.plugins-check', order: 5, render: () => <PluginsCheck /> }],
   },
 };

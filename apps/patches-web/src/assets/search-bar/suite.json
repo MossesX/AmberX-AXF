@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "search-bar",
+  "id": "suite",
+  "name": "Every app",
+  "version": "1.0.0",
+  "description": "Patches' search box: finds pages, settings, actions and menu items in Patches and in every app in its tabs (each app sends its search entries, embed@1 take search). Ctrl/Cmd+K or / in Patches or inside any app.",
+  "author": "AmberX AXF build engine",
+  "tags": [
+    "search",
+    "patches",
+    "suite"
+  ],
+  "data": {
+    "placeholder": "Search Console, Pilot, axHub…",
+    "maxResults": 24,
+    "width": "wide",
+    "shortcut": true
+  }
+}
