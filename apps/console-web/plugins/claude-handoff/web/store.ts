@@ -5,7 +5,7 @@ import { pluginApi } from '@console/plugins';
 
 export const FOLDER = 'claude-handoff';
 export const ID = 'ai.amberx.axf.console.claude-handoff';
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
 export const VIEW = 'claude-handoff';
 export const api = pluginApi(FOLDER, 'The Claude handoff plugin');
 
@@ -31,7 +31,7 @@ export interface LastAssembly { at: number; result: Assembled & { kit?: Status['
 /** Handoff Session: what's still open, summarised for a Project that already exists on the other account. */
 export interface Session {
   markdown: string; prompt: string; savedAt: string;
-  counts: { changes: number; pending: number; prs: number | null };
+  counts: { changes: number; pending: number; prs: number | null; threads?: number };
   published: { pushed?: boolean; sha?: string } | null; note: string;
 }
 
@@ -76,12 +76,12 @@ export async function assemble(copy = true): Promise<void> {
 }
 
 /** The Handoff Session button: build the summary, keep it for the kit (and publish it when it can), copy it. */
-export async function handoffSession(notes?: string | null, copy = true): Promise<void> {
+export async function handoffSession(notes?: string | null, copy = true, threads?: string): Promise<void> {
   set({ busy: 'session' });
   try {
-    const r = await api.post<Session>('session', { publish: true, ...(notes === undefined ? {} : { notes }) });
+    const r = await api.post<Session>('session', { publish: true, ...(notes === undefined ? {} : { notes }), ...(threads === undefined ? {} : { threads }) });
     set({ session: r });
-    if (copy) await navigator.clipboard?.writeText(r.prompt).then(() => toast('Session summary copied: paste it into the Project on the other account', 'success'), () => undefined);
+    if (copy) await navigator.clipboard?.writeText(r.prompt).then(() => toast('Session summary copied: paste it into the Project on the other account; it recreates the open threads there', 'success'), () => undefined);
     if (r.note) toast(r.note, 'warning');
   } catch (e) { toast((e as Error).message, 'danger'); }
   finally { set({ busy: '' }); await refresh(); }

@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T10:46:22.879Z",
+ "updatedAt": "2026-10-25T14:46:55.696Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3374,6 +3374,20 @@
    "builtAt": "2026-10-25T10:39:16.155Z",
    "updatedAt": "2026-10-25T10:39:16.195Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "handoff-session-threads",
+   "title": "Claude handoff: Handoff Session prompt recreates the open threads",
+   "detail": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T14:46:55.696Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T14:46:55.696Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]

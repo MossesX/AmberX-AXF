@@ -24,7 +24,7 @@ import { homedir, hostname } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  DEFAULT_CONTEXT, DEFAULT_SESSION_NOTES, HOST_RE, KIT_DIR, SESSION_FILE, buildKit, openChanges, openPending, projectFacts, sessionMd, sessionPrompt, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
+  DEFAULT_CONTEXT, DEFAULT_SESSION_NOTES, HOST_RE, KIT_DIR, SESSION_FILE, buildKit, openChanges, openPending, projectFacts, sessionMd, sessionPrompt, sessionThreads, secretNames, collectUserScope, defaultClaudeAi, diffSources, fingerprint, machineError, repoSources,
 } from './handoff-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -206,18 +206,24 @@ export function sessionNotes(dir = DATA) {
 }
 
 /** Build the summary (and keep it for the kit with save). */
+/** The hand-written open-threads list (one per line: `Title: where it stood`), recreated on the other account. */
+export function sessionThreadNotes(dir = DATA) {
+  const t = readJson(join(dir, 'session.json'))?.threads;
+  return typeof t === 'string' ? t : '';
+}
+
 export async function session({ root = ROOT, dir = DATA, save = false, now = new Date().toISOString() } = {}) {
   const manifest = readJson(join(root, 'project.manifest.json')) ?? {};
   const P = projectFacts(manifest, git(['rev-parse', 'HEAD'], root), manifest.repo?.defaultBranch || 'main', now);
   const [changes, pending, pr] = await Promise.all([loadChanges(), loadPending(), loadPrs(P.repo)]);
-  const markdown = sessionMd({ P, now, changes, pending, prs: pr.prs, prsNote: pr.note, notes: sessionNotes(dir) });
+  const markdown = sessionMd({ P, now, changes, pending, prs: pr.prs, prsNote: pr.note, notes: sessionNotes(dir), threads: sessionThreadNotes(dir) });
   if (save) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     writeFileSync(join(dir, 'session.md'), markdown, { mode: 0o600 });
   }
   return {
     markdown, prompt: sessionPrompt(markdown), savedAt: save ? now : '',
-    counts: { changes: openChanges(changes).length, pending: openPending(pending).length, prs: pr.prs ? pr.prs.length : null },
+    counts: { changes: openChanges(changes).length, pending: openPending(pending).length, prs: pr.prs ? pr.prs.length : null, threads: sessionThreads({ changes, prs: pr.prs, threads: sessionThreadNotes(dir), now }).length },
   };
 }
 
