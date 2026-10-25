@@ -14,6 +14,10 @@
  *                         [--files N] [--test "name=before→after" | "name=pass"]… [--link report=path|https://…]…
  *                         [--minutes N] [--cost USD] [--input-tokens N] [--output-tokens N] [--cache-read-tokens N]
  *                         (actual numbers; the Stop/SessionEnd hooks fill them from the Claude Code transcript)
+ *   node changes.mjs resume <id|last> [--plan "…"] [--next "what's left"] [--notes "…"] [--test "check command"]…
+ *                         [--read path]… [--file path]… [--pr https://…] [--git (re-read branch/commits/files here)] [--prompt]
+ *                         resume details: enough for another machine or Claude account to carry on; --prompt prints the
+ *                         prompt to paste into that new session (the console's "Copy resume prompt" gives the same text)
  *   node changes.mjs close <id|last> | reopen <id|last>        (close = gone from the banner on every device)
  *   node changes.mjs list [--open] [--kind k] [--q text] [--limit n] [--json]     show <id|last> [--json]
  *   node changes.mjs where | flush | validate (entry JSON on stdin)
@@ -42,7 +46,7 @@ import { homedir, hostname } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { classify, DirStore, ID_RE, newId, normalize, nowIso, redact, relPath, summary, titleFrom, upsertStep, RESULT_STATES, STEP_STATES, BUILD_STATUSES } from './changes-core.mjs';
+import { classify, DirStore, ID_RE, newId, normalize, nowIso, redact, relPath, summary, titleFrom, upsertStep, resumePrompt, resumePathOk, RESULT_STATES, STEP_STATES, BUILD_STATUSES } from './changes-core.mjs';
 
 const SCRIPT = fileURLToPath(import.meta.url);
 const HERE = dirname(SCRIPT);
@@ -82,7 +86,7 @@ function dirBackend(root, label) {
     async list() { return s.all(); },
   };
 }
-const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing'];
+const BUILD_PATCH = ['buildRef', 'surface', 'startedAt', 'finishedAt', 'lastSeenAt', 'estimate', 'actual', 'costEstimated', 'branch', 'areas', 'parent', 'progress', 'verify', 'doing', 'resume'];
 function apiBackend(base, token) {
   const u0 = new URL(base);
   if (u0.protocol !== 'https:' && !['localhost', '127.0.0.1', '[::1]'].includes(u0.hostname)) throw new Error('the console address must be https');
@@ -231,8 +235,8 @@ const sid12 = (s) => String(s ?? '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 36);
 const sessionFile = (sid) => join(homeDir(), 'sessions', `${sid}.json`);
 function sessionIds(sid) { try { const j = JSON.parse(readFileSync(sessionFile(sid), 'utf8')); return Array.isArray(j.ids) ? j.ids.filter((x) => ID_RE.test(x)) : []; } catch { return []; } }
 function addSessionId(sid, id) {
-  let beat = 0; try { beat = Number(JSON.parse(readFileSync(sessionFile(sid), 'utf8')).beat) || 0; } catch { /* new */ }
-  const ids = [...new Set([...sessionIds(sid), id])].slice(-50); writePrivate(sessionFile(sid), JSON.stringify({ ids, beat }));
+  let j = {}; try { j = JSON.parse(readFileSync(sessionFile(sid), 'utf8')) ?? {}; } catch { /* new */ }
+  const ids = [...new Set([...sessionIds(sid), id])].slice(-50); writePrivate(sessionFile(sid), JSON.stringify({ ids, beat: Number(j.beat) || 0, ...(typeof j.pending === 'string' ? { pending: j.pending } : {}) }));
 }
 
 /* ---------------- context ---------------- */
@@ -244,6 +248,36 @@ export function detectRepo(cwd) {
     return m ? `${m[1]}/${m[2]}` : null;
   } catch { return null; }
 }
+/**
+ * The git part of an entry's resume details (repo, folder, branch, base, head, pushed, dirty, files), read from the
+ * checkout the session works in, so another machine / Claude account can pick the work up. null outside a git checkout.
+ */
+export function gitResume(cwd) {
+  const g = (...a) => { try { const r = spawnSync('git', ['-C', cwd || '.', ...a], { encoding: 'utf8', timeout: 2000 }); return r.status === 0 ? String(r.stdout).replace(/\s+$/, '') : ''; } catch { return ''; } };
+  const top = g('rev-parse', '--show-toplevel');
+  if (!top) return null;
+  const o = { folder: top };
+  const repo = detectRepo(top); if (repo) o.repo = repo;
+  const br = g('rev-parse', '--abbrev-ref', 'HEAD'); if (br && br !== 'HEAD' && /^[A-Za-z0-9._/-]{1,120}$/.test(br) && !br.includes('..')) o.branch = br;
+  const head = g('rev-parse', 'HEAD');
+  if (/^[0-9a-f]{40}$/.test(head)) {
+    o.head = head;
+    const def = g('symbolic-ref', '--short', 'refs/remotes/origin/HEAD') || 'origin/main';
+    const base = g('merge-base', 'HEAD', def); if (/^[0-9a-f]{40}$/.test(base)) o.base = base;
+    const up = g('rev-parse', '--abbrev-ref', '@{upstream}');
+    o.pushed = up ? g('rev-list', '--count', `${up}..HEAD`) === '0' : !!g('branch', '-r', '--contains', 'HEAD');
+  }
+  const st = g('status', '--porcelain');
+  const dirty = st ? st.split('\n').filter(Boolean).map((l) => l.slice(3).split(' -> ').pop()) : [];
+  o.dirty = dirty.length;
+  const changed = o.base && o.head && o.base !== o.head ? g('diff', '--name-only', o.base, 'HEAD').split('\n') : [];
+  o.files = [...new Set([...changed, ...dirty].map((f) => f.trim()).filter((f) => f && resumePathOk(f)))].slice(0, 300);
+  o.at = nowIso();
+  return o;
+}
+/** Merge fresh git details into an entry's resume, keeping what a person or session wrote (plan, next, notes, tests, read, pr). */
+export const withGit = (e, git) => (git ? { ...(e.resume ?? {}), ...git, files: [...new Set([...(git.files ?? []), ...((e.resume?.files) ?? [])])].slice(0, 300) } : e.resume);
+
 export function detectWhere(env = process.env) {
   if (env.AXF_WHERE) return redact(env.AXF_WHERE, 40);
   if (env.CLAUDE_CODE_REMOTE === 'true' || env.CLAUDE_CODE_REMOTE === '1') return 'cloud';
@@ -295,13 +329,15 @@ export function hookContext(id, kind) {
     'Break the work into steps and record them as you go (every update is shown live), then record the result when you finish:',
     `  ${cmd(`step ${id} "<what this step does>" --state running`)}   (then --state done | failed | skipped)`,
     `  ${cmd(`result ${id} --state done|failed|partial|cancelled --summary "<what changed>" [--branch b] [--commit sha]… [--files N] [--test "name=before→after"]… [--link report=<path or https URL>]`)}`,
+    'Keep its resume details current so another machine or Claude account can carry on (the hook records the branch, commits and files by itself):',
+    `  ${cmd(`resume ${id} --plan "<the approach>" --next "<what is left>" [--notes "…"] [--test "<check command>"]… [--read <path>]… [--pr <https URL>]`)}`,
     'Tokens and cost are filled in from this session by the hook when the turn ends. If this request is not actually a change (only a question), run: ' + cmd(`result ${id} --state cancelled --summary "no change: question only"`),
   ].join('\n');
 }
 
 /* per-session hook state (this machine): entry ids, last heartbeat, open subagent steps */
-function sessionState(sid) { try { const j = JSON.parse(readFileSync(sessionFile(sid), 'utf8')); return { ids: Array.isArray(j.ids) ? j.ids.filter((x) => ID_RE.test(x)) : [], beat: Number(j.beat) || 0 }; } catch { return { ids: [], beat: 0 }; } }
-function saveSessionState(sid, s) { writePrivate(sessionFile(sid), JSON.stringify({ ids: s.ids.slice(-50), beat: s.beat })); }
+function sessionState(sid) { try { const j = JSON.parse(readFileSync(sessionFile(sid), 'utf8')); return { ids: Array.isArray(j.ids) ? j.ids.filter((x) => ID_RE.test(x)) : [], beat: Number(j.beat) || 0, pending: typeof j.pending === 'string' ? j.pending : null }; } catch { return { ids: [], beat: 0, pending: null }; } }
+function saveSessionState(sid, s) { writePrivate(sessionFile(sid), JSON.stringify({ ids: s.ids.slice(-50), beat: s.beat, ...(s.pending ? { pending: s.pending } : {}) })); }
 export const BEAT_MS = 30_000;
 
 /** What a tool call is doing, in a few words (never the command's arguments: they can hold secrets). */
@@ -324,6 +360,30 @@ async function readStdin() {
   return Buffer.concat(chunks).toString('utf8');
 }
 
+/** Open (or find) the entry for one prompt; `doing` says what started it. Returns the text for Claude's context. */
+async function openFromPrompt(b, ev, sid, now, kind, prompt, doing = 'Starting') {
+  const id = newId(`${sid}\n${prompt}`);
+  let e = await load(b, id);
+  if (!e) {
+    const repo = detectRepo(ev.cwd);
+    const git = gitResume(ev.cwd);
+    const u = await usageFrom(ev.transcript_path, now);
+    const model = process.env.AXF_MODEL || process.env.ANTHROPIC_MODEL || process.env.CLAUDE_MODEL || (await usageFrom(ev.transcript_path, 0))?.model || u?.model || '';
+    ({ entry: e } = await save(b, {
+      id, createdAt: now, updatedAt: now, kind, title: titleFrom(prompt), asked: redact(String(prompt ?? '').replace(/\s+/g, ' '), 4000),
+      repos: repo ? [repo] : [], model: redact(model, 40),
+      who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname() }, steps: [], result: null, closed: null,
+      status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: redact(doing, 160),
+      ...(git ? { resume: git } : {}),
+      ...(process.env.AXF_PARENT_CHANGE && ID_RE.test(process.env.AXF_PARENT_CHANGE) ? { parent: process.env.AXF_PARENT_CHANGE } : {}),
+    }, { create: true }));
+  }
+  setLast(id);
+  if (sid) addSessionId(sid, id);
+  return hookContext(id, e.kind);
+}
+const EDIT_TOOLS = /^(Edit|Write|MultiEdit|NotebookEdit)$/;
+
 /** Handle one hook event. Returns the text for Claude's context (UserPromptSubmit only) or ''. */
 export async function onHook(ev, b) {
   const sid = sid12(ev.session_id);
@@ -342,27 +402,23 @@ export async function onHook(ev, b) {
       }
     }
     const c = classify(ev.prompt);
-    if (!c.change) return '';
-    const id = newId(`${sid}\n${ev.prompt}`);
-    let e = await load(b, id);
-    if (!e) {
-      const repo = detectRepo(ev.cwd);
-      const u = await usageFrom(ev.transcript_path, now);
-      const model = process.env.AXF_MODEL || process.env.ANTHROPIC_MODEL || process.env.CLAUDE_MODEL || (await usageFrom(ev.transcript_path, 0))?.model || u?.model || '';
-      ({ entry: e } = await save(b, {
-        id, createdAt: now, updatedAt: now, kind: c.kind, title: titleFrom(ev.prompt), asked: redact(String(ev.prompt ?? '').replace(/\s+/g, ' '), 600),
-        repos: repo ? [repo] : [], model: redact(model, 40),
-        who: { session: sid.slice(0, 12), where: detectWhere(), user: process.env.USER || '', host: hostname() }, steps: [], result: null, closed: null,
-        status: 'running', surface: detectSurface(), startedAt: now, lastSeenAt: now, doing: 'Starting',
-        ...(process.env.AXF_PARENT_CHANGE && ID_RE.test(process.env.AXF_PARENT_CHANGE) ? { parent: process.env.AXF_PARENT_CHANGE } : {}),
-      }, { create: true }));
+    if (!c.change) {
+      // Not worded as a change: remember the prompt, so the first edit it leads to still opens an entry (PreToolUse).
+      if (sid) { const ss = sessionState(sid); saveSessionState(sid, { ...ss, pending: redact(String(ev.prompt ?? '').replace(/\s+/g, ' '), 4000) || null }); }
+      return '';
     }
-    setLast(id);
-    if (sid) addSessionId(sid, id);
-    return hookContext(id, e.kind);
+    if (sid) { const ss = sessionState(sid); if (ss.pending) saveSessionState(sid, { ...ss, pending: null }); }
+    return openFromPrompt(b, ev, sid, now, c.kind, ev.prompt);
   }
   if (!sid) return '';
   const ss = sessionState(sid);
+  // First edit / create / remove after a prompt that wasn't worded as a change: log it now, with the machine and session.
+  if (ev.hook_event_name === 'PreToolUse' && ss.pending && EDIT_TOOLS.test(String(ev.tool_name ?? ''))) {
+    const prompt = ss.pending;
+    saveSessionState(sid, { ...ss, pending: null });
+    await openFromPrompt(b, ev, sid, now, 'edit', prompt, toolActivity(ev));
+    ss.ids = sessionState(sid).ids;
+  }
   // Live progress: each tool call (throttled to one write per BEAT_MS) and every subagent start / stop.
   if (ev.hook_event_name === 'PreToolUse' || ev.hook_event_name === 'SubagentStop' || ev.hook_event_name === 'Notification') {
     const sub = ev.hook_event_name === 'PreToolUse' && /^(Task|Agent)$/.test(String(ev.tool_name ?? ''));
@@ -382,6 +438,7 @@ export async function onHook(ev, b) {
   }
   if (ev.hook_event_name !== 'Stop' && ev.hook_event_name !== 'SessionEnd') return '';
   const end = ev.hook_event_name === 'SessionEnd';
+  const git = ss.ids.length ? gitResume(ev.cwd) : null;
   for (const id of ss.ids) {
     const e = await load(b, id);
     if (!e || (e.result && e.finishedAt && e.actual?.source === 'transcript' && !end && Date.now() - Date.parse(e.finishedAt) > 6 * 3600_000)) continue;
@@ -394,6 +451,8 @@ export async function onHook(ev, b) {
     let result = e.result;
     if (end && !result) { result = { state: 'partial', summary: 'The session ended before a result was recorded.' }; changed = true; }
     const next = { ...e, steps, result, updatedAt: now };
+    // Fresh git details (branch, last commit, pushed, uncommitted, files) so another account can carry on from here.
+    if (git && (!e.result || !e.finishedAt || end)) { next.resume = withGit(e, git); changed = true; }
     // Actual tokens and cost of this session since the entry opened (Claude Code reports usage in its transcript).
     const u = await usageFrom(ev.transcript_path, e.startedAt || e.createdAt, e.model);
     if (u && (e.actual?.source == null || e.actual.source === 'transcript')) {
@@ -458,7 +517,7 @@ export const claudeSettings = () => join(homedir(), '.claude', 'settings.json');
 
 /* ---------------- CLI ---------------- */
 
-const MULTI = new Set(['repo', 'step', 'commit', 'test', 'link']);
+const MULTI = new Set(['repo', 'step', 'commit', 'test', 'link', 'read', 'file']);
 export function parse(argv) {
   const pos = []; const flags = {};
   for (let i = 0; i < argv.length; i++) {
@@ -641,6 +700,22 @@ async function main() {
         const steps = (e.steps ?? []).map((s) => (s.state === 'running' ? { ...s, state: state === 'done' ? 'done' : state === 'failed' ? 'failed' : 'skipped', finishedAt: now } : s));
         return { ...e, steps, result: r };
       }));
+    }
+    case 'resume': { // what another machine / Claude account needs to carry on; --prompt prints the prompt to paste there
+      const id = resolveId(pos[0]);
+      const sets = ['plan', 'next', 'notes', 'pr'].filter((k) => str(flags[k]) !== undefined);
+      const lists = { tests: flags.test, read: flags.read, files: flags.file };
+      const touch = sets.length || Object.values(lists).some(Boolean) || flags.git;
+      let e = touch ? await change(id, (e0) => {
+        const r = { ...(flags.git ? withGit(e0, gitResume(process.cwd())) : (e0.resume ?? {})) };
+        for (const k of sets) r[k] = flags[k];
+        for (const [k, v] of Object.entries(lists)) if (v) r[k] = [...new Set([...(r[k] ?? []), ...v.filter((x) => typeof x === 'string')])];
+        r.at = now;
+        return { ...e0, resume: r, ...(e0.result ? {} : { lastSeenAt: now }) };
+      }) : await load(b, id);
+      if (!e) throw new Error(`no entry ${id} (${b.label})`);
+      if (flags.prompt) return console.log(resumePrompt(e));
+      return flags.json ? out(e.resume ?? {}) : console.log(JSON.stringify(e.resume ?? {}, null, 2));
     }
     case 'close': return out(await change(resolveId(pos[0]), (e) => ({ ...e, closed: { at: now, by: str(flags.by) || `cli:${process.env.USER || 'unknown'}` } })));
     case 'reopen': return out(await change(resolveId(pos[0]), (e) => ({ ...e, closed: null })));

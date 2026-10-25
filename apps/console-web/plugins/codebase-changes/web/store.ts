@@ -19,7 +19,9 @@ export type StepState = 'queued' | 'running' | 'done' | 'failed' | 'skipped';
 export type EntryState = 'running' | 'done' | 'failed' | 'partial' | 'cancelled';
 export interface Step { text: string; state: StepState; startedAt?: string; finishedAt?: string; note?: string }
 export interface Result { state: Exclude<EntryState, 'running'>; summary: string; branch?: string; commits?: { sha: string; message?: string }[]; filesChanged?: number; tests?: Record<string, { before?: string; after?: string; state?: 'pass' | 'fail' | 'skip' }>; links?: Record<string, string> }
-export interface Entry { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; repos: string[]; model: string; who: { session?: string; where?: string; user?: string; host?: string }; state: EntryState; steps: Step[]; result: Result | null; closed: { at: string; by: string } | null }
+export interface Entry { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; repos: string[]; model: string; who: { session?: string; where?: string; user?: string; host?: string }; state: EntryState; steps: Step[]; result: Result | null; closed: { at: string; by: string } | null; resume?: Resume }
+/** What another machine or Claude account needs to carry the work on (change-log@1 `resume`). */
+export interface Resume { repo?: string; folder?: string; branch?: string; base?: string; head?: string; pushed?: boolean; dirty?: number; pr?: string; plan?: string; next?: string; notes?: string; files?: string[]; tests?: string[]; read?: string[]; at?: string }
 export interface Summary { id: string; createdAt: string; updatedAt: string; kind: string; title: string; asked: string; state: EntryState; repos: string[]; model: string; where: string; steps: { total: number; done: number; failed: number; running: string }; result: { state: string; summary: string } | null; closed: string | null; status?: string; startedAt?: string; lastSeenAt?: string }
 export interface Counts { total: number; open: number; byKind: Record<string, number>; byState: Record<string, number> }
 export interface Page { items: Summary[]; total: number; nextCursor: string | null; counts: Counts; where: string }
@@ -80,6 +82,7 @@ export async function loadPage(f: Filters, cursor = '', limit = 30): Promise<Pag
   return page;
 }
 export const loadEntry = (id: string) => api.call<Entry>(`entries/${encodeURIComponent(id)}`);
+export const loadResume = (id: string) => api.call<{ id: string; resume: Resume; prompt: string }>(`entries/${encodeURIComponent(id)}/resume`);
 
 /** Fired after any close/reopen so every view reloads. */
 export const CHANGED = 'axf:codebase-changes-changed';

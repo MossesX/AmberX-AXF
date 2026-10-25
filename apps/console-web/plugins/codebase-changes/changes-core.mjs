@@ -24,7 +24,7 @@ export const KINDS = ['build', 'edit', 'remove', 'fix', 'other'];
 export const STEP_STATES = ['queued', 'running', 'done', 'failed', 'skipped'];
 export const RESULT_STATES = ['done', 'failed', 'partial', 'cancelled'];
 export const ID_RE = /^chg-(\d{8})-[0-9a-f]{6,16}$/;
-export const LIMITS = { title: 160, asked: 600, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, areas: 40, doing: 160, bytes: 64 * 1024 };
+export const LIMITS = { title: 160, asked: 4000, model: 40, repos: 10, repo: 100, steps: 100, stepText: 300, note: 1000, summary: 4000, commits: 50, commitMsg: 200, tests: 50, testName: 120, testValue: 60, links: 20, link: 500, branch: 120, who: 80, areas: 40, doing: 160, bytes: 64 * 1024 };
 
 const SECRET = /(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|xox[abpr]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{5,}|[Bb]earer\s+[A-Za-z0-9._~+/=-]{12,}|(?:token|secret|password|passwd|api[_-]?key|key)\s*[=:]\s*\S{6,})/gi;
 /** Hide anything that looks like a token or password, drop control characters, cut to `limit` (same rule as activity@1). */
@@ -170,6 +170,7 @@ export function normalize(raw, { now = nowIso() } = {}) {
   }
   e.state = e.result ? e.result.state : 'running';
   normBuild(raw, e, errors);
+  normResume(raw, e, errors);
   if (Buffer.byteLength(JSON.stringify(e)) > LIMITS.bytes) errors.push(`an entry is at most ${LIMITS.bytes / 1024} KB`);
   return { entry: errors.length ? null : e, errors, draft: e };
 }
@@ -281,6 +282,84 @@ function normBuild(raw, e, errors) {
       e.verify = o;
     }
   }
+}
+
+/* ---------------- resume details (Oct 25 2026, Gizmo: "store enough details … so they can resume from a different Claude account") ---------------- */
+
+/**
+ * Optional `resume`: what a new session (any machine, any Claude account) needs to pick the work up where it stopped.
+ *   repo owner/name · folder (where it ran) · branch · base (sha it started from) · head (last commit) · pushed (head on
+ *   the remote) · dirty (uncommitted files) · pr (https URL) · files [repo paths changed] · plan (the approach) ·
+ *   next (what's left) · notes · tests [commands that check it] · read [repo paths to read first] · at (when recorded)
+ * The hook fills the git part by itself; plan / next / notes / tests / read come from `changes.mjs resume`.
+ */
+export const RESUME_LIMITS = { folder: 300, plan: 3000, next: 1500, notes: 3000, files: 300, file: 300, tests: 30, test: 300, read: 30 };
+const RPATH_RE = /^[A-Za-z0-9_.@+-][A-Za-z0-9_.@+ /-]{0,299}$/;
+export const resumePathOk = (s) => RPATH_RE.test(s) && !s.split('/').includes('..') && !s.includes('//');
+function normResume(raw, e, errors) {
+  const r = raw.resume;
+  if (r == null) return;
+  if (!isObj(r)) { errors.push('resume is an object'); return; }
+  const o = {};
+  if (r.repo != null && String(r.repo) !== '') { if (REPO_RE.test(String(r.repo))) o.repo = String(r.repo); else errors.push('resume.repo is owner/name'); }
+  if (r.folder != null && String(r.folder).trim()) o.folder = redact(r.folder, RESUME_LIMITS.folder);
+  if (r.branch != null && String(r.branch) !== '') { if (BRANCH_RE.test(String(r.branch)) && !String(r.branch).includes('..')) o.branch = String(r.branch); else errors.push('resume.branch is not a branch name'); }
+  for (const k of ['base', 'head']) if (r[k] != null && String(r[k]) !== '') { const v = String(r[k]).toLowerCase(); if (SHA_RE.test(v)) o[k] = v; else errors.push(`resume.${k} is a commit sha`); }
+  if (r.pushed != null) { if (typeof r.pushed === 'boolean') o.pushed = r.pushed; else errors.push('resume.pushed is true or false'); }
+  if (r.dirty != null) { const n = numIn(r.dirty, 0, 1_000_000); if (n == null) errors.push('resume.dirty is a whole number'); else o.dirty = n; }
+  if (r.pr != null && String(r.pr) !== '') { const v = link(r.pr); if (v && v.startsWith('https://')) o.pr = v; else errors.push('resume.pr is an https URL'); }
+  for (const k of ['plan', 'next', 'notes']) if (r[k] != null && String(r[k]).trim()) o[k] = redact(r[k], RESUME_LIMITS[k], true);
+  const list = (k, max, check, what, clean = (x) => String(x ?? '').trim()) => {
+    if (r[k] == null) return;
+    if (!Array.isArray(r[k])) { errors.push(`resume.${k} is a list`); return; }
+    const out = [];
+    for (const x of r[k].slice(0, max)) {
+      const v = clean(x);
+      if (!v) continue;
+      if (!check(v)) { errors.push(`resume.${k}: "${redact(v, 60)}" ${what}`); continue; }
+      if (!out.includes(v)) out.push(v);
+    }
+    o[k] = out;
+  };
+  list('files', RESUME_LIMITS.files, resumePathOk, 'is not a relative repo path');
+  list('read', RESUME_LIMITS.read, resumePathOk, 'is not a relative repo path');
+  list('tests', RESUME_LIMITS.tests, () => true, '', (x) => redact(x, RESUME_LIMITS.test));
+  if (isoOr(r.at)) o.at = r.at;
+  e.resume = o;
+}
+
+/**
+ * The prompt a new session pastes to carry on (the console's "Copy resume prompt", `changes.mjs resume <id> --prompt`).
+ * Same text from server/store.py `resume_prompt` (test.py checks both). Never holds a secret: every part is redacted.
+ */
+export function resumePrompt(e) {
+  const r = e.resume ?? {};
+  const repo = r.repo || (e.repos ?? [])[0] || '';
+  const branch = r.branch || e.result?.branch || e.branch || '';
+  const L = [`Resume a piece of work that another Claude session started (Codebase changes entry ${e.id}).`, ''];
+  L.push(`Title: ${e.title}`);
+  L.push(`Kind: ${e.kind} · state: ${e.result ? e.result.state : 'running'}${e.model ? ` · built so far with ${e.model}` : ''}`);
+  if (repo) L.push(`Repo: ${repo}${branch ? ` · branch ${branch}` : ''}`);
+  if (r.base || r.head) L.push(`Commits: started from ${r.base || '?'}, last ${r.head || '?'}${r.pushed === false ? ' (NOT pushed: it may only exist on the old machine)' : r.pushed ? ' (pushed)' : ''}`);
+  if (r.dirty) L.push(`Uncommitted files on the old machine: ${r.dirty} (they are not in the repo; redo them if needed)`);
+  if (r.pr) L.push(`Pull request: ${r.pr}`);
+  if (e.asked) L.push('', 'What was asked:', e.asked);
+  if (r.plan) L.push('', 'Plan:', r.plan);
+  const steps = e.steps ?? [];
+  if (steps.length) { L.push('', 'Steps:'); steps.forEach((s, i) => L.push(`  ${i + 1}. [${s.state}] ${s.text}${s.note ? ` (${s.note})` : ''}`)); }
+  if (e.result?.summary) L.push('', `Result so far: ${e.result.summary}`);
+  if (r.next) L.push('', 'What is left:', r.next);
+  if (r.notes) L.push('', 'Notes:', r.notes);
+  if (r.files?.length) L.push('', `Files changed (${r.files.length}):`, ...r.files.slice(0, 60).map((f) => `  ${f}`), ...(r.files.length > 60 ? [`  … and ${r.files.length - 60} more`] : []));
+  if (r.read?.length) L.push('', 'Read first:', ...r.read.map((f) => `  ${f}`));
+  if (r.tests?.length) L.push('', 'Check it with:', ...r.tests.map((t) => `  ${t}`));
+  L.push('', 'How to carry on:');
+  L.push(`  1. Work in ${repo || 'the same repo'}${branch ? ` on branch ${branch}` : ''}: fetch it and check it out (no new repo, no fork).`);
+  L.push('  2. Read the repo\'s CLAUDE.md and rules first; check the Build manager\'s Live list so you don\'t clash with a running session.');
+  L.push(`  3. Report on this same entry as you go: node apps/console-web/plugins/codebase-changes/changes.mjs step ${e.id} "<step>" --state running`);
+  L.push(`     and keep its resume details current: changes.mjs resume ${e.id} --next "<what's left>"`);
+  L.push(`  4. Finish with: changes.mjs result ${e.id} --state done --summary "<what changed>" --branch <branch> --commit <sha>`);
+  return L.join('\n');
 }
 
 /** Running entries not heard from for STALE_MS (lastSeenAt, else updatedAt) show "no word". */
