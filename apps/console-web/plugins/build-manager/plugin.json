@@ -1,7 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-manager",
-  "name": "Build manager",
+  "name": "Build manager banner",
   "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,

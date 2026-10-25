@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T09:53:20.403Z",
+ "updatedAt": "2026-10-25T10:28:58.310Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3268,6 +3268,20 @@
    "builtAt": "2026-10-25T09:53:20.403Z",
    "updatedAt": "2026-10-25T09:53:20.403Z",
    "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-banners-console-only",
+   "title": "Banners only in the Console; Patches column in Plugins per app; banner plugin names",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:28:58.310Z",
+   "builtAt": "2026-10-25T10:28:58.310Z",
+   "updatedAt": "2026-10-25T10:28:58.310Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]
