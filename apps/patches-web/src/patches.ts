@@ -46,7 +46,7 @@ export const HUB = normalizeOrigin((manifest as { developer?: { hub?: string } }
 export const TABS: PatchTab[] = [
   { id: 'console', label: 'Console', icon: 'terminal', key: 'patches.console', fallback: 'https://console.amberxai.com', path: '/', settingsPath: '/', axf: true },
   { id: 'pilot', label: 'Pilot', icon: 'rocket', key: 'patches.pilot', fallback: 'https://pilot.amberxai.com', path: '/', settingsPath: '/', axf: true },
-  { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/apps', settingsPath: '/auth/account', axf: false },
+  { id: 'axhub', label: 'axHub', icon: 'layers', key: '', fallback: HUB, path: '/', settingsPath: '/auth/account', axf: false },
 ];
 
 /**
@@ -54,7 +54,7 @@ export const TABS: PatchTab[] = [
  * above the tabs), then one for every tab in Patches' tab group that has a settings interface: each app (its own
  * settings page) and each plugin tab whose plugin has settings (its app's settings page opened on that plugin's tab).
  */
-export const BANNERS_KEY = 'patches.banners';
+export const BANNERS_KEY = 'patches.strip';
 
 /** An https origin (scheme + host + port, no path, no credentials), or null. */
 export function normalizeOrigin(raw: unknown): string | null {
@@ -72,9 +72,10 @@ export function tabOrigin(t: PatchTab, saved: unknown): string {
   return normalizeOrigin(saved) ?? normalizeOrigin(t.fallback)!;
 }
 
-/** The page a tab shows: its app, marked as embedded in Patches (its plugins + app menu taken; its settings its own). */
+/** The page a tab shows: its app, unmarked. */
 export function tabUrl(t: PatchTab, origin: string): string {
-  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAB_TAKES] });
+  // No embed marker: the app renders whole, exactly as on its own: nothing hidden, disabled or merged (Brett, Oct 24 2026).
+  return `${origin}${t.path}`;
 }
 
 /** The banner strip: the Dev Console's plugin banners on their own page, above every tab. */
@@ -203,7 +204,7 @@ export function tabIcon(e: TabEntry): string { return e.kind === 'app' ? appOf(e
 
 /** A tabable plugin's page in a tab: the app, marked as embedded in Patches, showing only that view. */
 export function pluginTabUrl(t: PatchTab, origin: string, view: string): string {
-  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { takes: [...TAKES], page: `view:${view}` });
+  return embedUrlFull(`${origin}${t.path}`, HOST_ID, { page: `view:${view}` });
 }
 
 /** The tab list Patches' server answered, checked (unknown entries dropped, each tab once, ≤ 20). */

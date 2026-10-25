@@ -4,6 +4,7 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
 import { AppTab, patchesLibrary, useAppMessages, useTabs } from './patchesLibrary';
+import { appPluginsLibrary } from './appPlugins';
 import { DEFAULT_TABS, tabIcon, tabKey, tabLabel, tabViewId, type TabEntry } from './patches';
 
 /** The access policy a signed-in hub account is bound to (framework starter uac-policy/hub-accounts). */
@@ -20,8 +21,8 @@ function tabViews(tabs: readonly TabEntry[]): ViewMap {
   return { ...Object.fromEntries(entries.map((e) => [tabViewId(e), { title: tabLabel(e), icon: tabIcon(e), render: () => <AppTab entry={e} /> }])), settings: settingsView };
 }
 
-/** lib-settings (Patches' own settings) + Patches itself (installed last: its hooks win). */
-const libraries = [settingsLibrary, patchesLibrary];
+/** lib-settings (Patches' own settings), Plugins per app, then Patches itself (installed last: its hooks win). */
+const libraries = [settingsLibrary, appPluginsLibrary, patchesLibrary];
 
 export function App() {
   const rt = useRuntime();

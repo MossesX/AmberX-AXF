@@ -74,6 +74,26 @@ check("bad folder refused", c.get("/api/plugin-catalog/package?kind=pilot&folder
 check("install needs confirm", c.post("/api/plugin-catalog/install", headers=H, json={"folder": "plugin-switches"}).status_code == 400)
 r = c.post("/api/plugin-catalog/install", headers=H, json={"folder": "plugin-switches", "confirm": "plugin-switches"})
 check("install over an installed plugin without update refused", r.status_code == 400 and "already installed" in r.json().get("detail", ""))
+# axHub web plugins (kind axhub): the console installs them into apps/axhub-web/src/plugins (this clone; no GITHUB_TOKEN here)
+import shutil  # noqa: E402
+hman = {"$axf": "axhub-plugin@1", "id": "ai.amberx.axhub.zz-test-hello", "name": "Test hello", "version": "0.1.0", "builtWith": {"model": "opus"}}
+hpkg = {"$axf": "plugin-package@1", "kind": "axhub", "folder": "zz-test-hello", "files": [{"path": "plugin.json", "b64": b64(json.dumps(hman))}, {"path": "web/index.tsx", "b64": b64("export const library = {};")}]}
+hdir = main.ROOT / "apps" / "axhub-web" / "src" / "plugins" / "zz-test-hello"
+try:
+    check("publish an axhub package", c.post("/api/plugin-catalog/publish", headers=H, json={"package": hpkg}).json().get("published") is True)
+    check("app plugins need the token", c.get("/api/app-plugins/axhub").status_code == 401)
+    check("unknown app kind = 404", c.get("/api/app-plugins/console", headers=H).status_code == 404)
+    check("axhub list has no test plugin yet", all(i["folder"] != "zz-test-hello" for i in c.get("/api/app-plugins/axhub", headers=H).json()["items"]))
+    check("axhub install needs confirm", c.post("/api/app-plugins/axhub/install", headers=H, json={"folder": "zz-test-hello"}).status_code == 400)
+    r = c.post("/api/app-plugins/axhub/install", headers=H, json={"folder": "zz-test-hello", "confirm": "zz-test-hello"})
+    check("axhub install unpacks into axhub-web", r.status_code == 200 and (hdir / "web" / "index.tsx").is_file() and "this clone only" in r.json().get("note", ""))
+    check("axhub list shows it", any(i["id"] == hman["id"] for i in c.get("/api/app-plugins/axhub", headers=H).json()["items"]))
+    r = c.post("/api/app-plugins/axhub/uninstall", headers=H, json={"folder": "zz-test-hello", "confirm": "zz-test-hello"})
+    check("axhub uninstall removes it", r.status_code == 200 and not hdir.exists())
+    check("axhub uninstall of a missing plugin refused", c.post("/api/app-plugins/axhub/uninstall", headers=H, json={"folder": "zz-test-hello", "confirm": "zz-test-hello"}).status_code == 400)
+    check("bad folder refused", c.post("/api/app-plugins/axhub/install", headers=H, json={"folder": "../x", "confirm": "../x"}).status_code == 400)
+finally:
+    shutil.rmtree(hdir, ignore_errors=True)
 check("remove needs confirm", c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "pilot", "folder": "extra-steps"}).status_code == 400)
 r = c.post("/api/plugin-catalog/remove", headers=H, json={"kind": "pilot", "folder": "extra-steps", "confirm": "extra-steps"})
 check("remove from the catalog", r.status_code == 200 and all(i["folder"] != "extra-steps" for i in c.get("/api/plugin-catalog", headers=H).json()["items"]))

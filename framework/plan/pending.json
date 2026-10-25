@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T10:38:13.457Z",
+ "updatedAt": "2026-10-25T10:39:16.195Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3201,6 +3201,90 @@
    "source": "chat"
   },
   {
+   "id": "patches-app-plugins-grid",
+   "title": "Patches: plugin grid per app tab with Apply (real install/uninstall)",
+   "detail": "A Patches grid: rows = every plugin Patches knows (its list, each app, the catalog), one column per app in the tabs, a checkbox each; Apply really installs or uninstalls in each app (Console via its plugin catalog / lifecycle API with the console token, server to server). Gizmo, Oct 24 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-2ijgui",
+     "at": "2026-10-24T23:31:30.313Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Patches server: app adapters (console real, pilot/axhub placeholders), GET /api/app-plugins, apply job",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T23:31:30.363Z"
+    },
+    {
+     "text": "Patches web: Plugins per app view with the grid, Apply, progress; menu + context hooks; tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T23:31:30.405Z"
+    }
+   ],
+   "createdAt": "2026-10-24T23:27:02.390Z",
+   "builtAt": "2026-10-24T23:31:30.264Z",
+   "updatedAt": "2026-10-24T23:31:30.405Z",
+   "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-app-plugins-pilot-axhub",
+   "title": "Patches Plugins per app: Pilot + axHub columns editable",
+   "detail": "Pilot adapter (Build Pilot plugin-catalog install/uninstall routes, bundled plugins locked) and axHub plugin support: catalog kind axhub, Dev Console install/uninstall into apps/axhub-web/src/plugins committed to GitHub, axhub-web plugin loader, Patches axhub adapter. Gizmo, Oct 25 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Patches Pilot adapter + lock per cell + deploy env",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.266Z"
+    },
+    {
+     "text": "axhub catalog kind + app-install/app-uninstall CLI + console routes",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.314Z"
+    },
+    {
+     "text": "axhub-web plugin loader + Patches axhub adapter + tests + docs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.355Z"
+    }
+   ],
+   "createdAt": "2026-10-25T09:48:50.977Z",
+   "builtAt": "2026-10-25T09:53:20.403Z",
+   "updatedAt": "2026-10-25T09:53:20.403Z",
+   "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-banners-console-only",
+   "title": "Banners only in the Console; Patches column in Plugins per app; banner plugin names",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:28:58.310Z",
+   "builtAt": "2026-10-25T10:28:58.310Z",
+   "updatedAt": "2026-10-25T10:28:58.310Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
    "id": "handoff-session-button",
    "title": "Claude handoff: Handoff Session button",
    "detail": "Button under Assemble prompt: paste-ready summary of everything still open (change log, pending list, open PRs) plus rules and known gaps, for an existing project on another account; copied and kept in the kit as ACTIVE-THREADS.md. Branch claude/project-thread-tpor29 (PR #65).",
@@ -3209,13 +3293,13 @@
    "notes": [
     {
      "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
-     "at": "2026-10-25T10:38:13.457Z"
+     "at": "2026-10-25T10:39:16.195Z"
     }
    ],
    "subPrompts": [],
-   "createdAt": "2026-10-25T10:32:33.775Z",
-   "builtAt": "2026-10-25T10:38:13.413Z",
-   "updatedAt": "2026-10-25T10:38:13.457Z",
+   "createdAt": "2026-10-25T10:39:16.114Z",
+   "builtAt": "2026-10-25T10:39:16.155Z",
+   "updatedAt": "2026-10-25T10:39:16.195Z",
    "estimate": "1 h",
    "source": "chat"
   }
