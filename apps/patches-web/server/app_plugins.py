@@ -7,12 +7,17 @@ Patches' tabs run whole, with no embed marker, so Patches' own switches no longe
 
 Each app is an adapter in an open registry (`ADAPTERS`): it lists what the app has, says which plugins it could take,
 and installs / uninstalls one. Built: `console` (the Dev Console's plugin catalog + lifecycle routes, server to server
-with its console token). Placeholders that never pretend to work: `pilot` (Build Pilot has no install route Patches can
-call yet), `axhub` (axHub has no AXF plugins). No plugin code passes through Patches: the app installs from its catalog.
+with its console token), `pilot` (Build Pilot's own plugin-catalog install / uninstall routes with its BP_TOKEN; plugins
+bundled with Build Pilot can't be uninstalled, so their box switches them on / off in Pilot instead) and `axhub` (axHub web plugins, catalog kind
+`axhub`: the Dev Console installs them into `apps/axhub-web/src/plugins/` and commits them, and axhub-web's 5-minute
+update rebuilds with them; the hub's server never runs plugin code). No plugin code passes through Patches: each app
+installs from the plugin catalog itself. Gizmo, Oct 25 2026: both columns editable.
 
 Env: APP_CONSOLE_URL (default https://console.amberxai.com; https only, http only on loopback), APP_CONSOLE_TOKEN (the
-console token; without it the Console column is read-only and says why), APP_CONSOLE_TIMEOUT (seconds, default 20 for
-reads; installs get 660).
+console token; without it the Console and axHub columns are read-only and say why), APP_CONSOLE_TIMEOUT (seconds,
+default 20 for reads; installs get 660), APP_PILOT_URL (default https://pilot.amberxai.com), APP_PILOT_TOKEN (Build
+Pilot's BP_TOKEN; without it the Pilot column is read-only), APP_GITHUB_TOKEN (Contents: write on Build-Pilot; only for
+deleting a bundled Pilot plugin's code), APP_PILOT_REPO (default MossesX/Build-Pilot), APP_PILOT_BRANCH (default main).
 """
 from __future__ import annotations
 
@@ -110,7 +115,9 @@ def call(base: str, token: str, method: str, path: str, body: Any = None, timeou
 # ---------------------------------------------------------------- adapters (open registry)
 
 class Adapter:
-    """One app Patches can host. `snapshot()` → {reachable, canInstall, reason, installed: {id: plugin}, available: {id: plugin}}."""
+    """One app Patches can host. `snapshot()` → {reachable, canInstall, reason, installed: {id: plugin}, available: {id: plugin},
+    locked?: {id: why}, switches?: {id: note}} (a locked plugin's box can't be changed; a switch plugin's box means on / off
+    in the app rather than installed, e.g. one bundled with the app: Apply switches it instead of uninstalling it)."""
 
     app = ""
     label = ""
@@ -133,6 +140,20 @@ def _plugin(p: dict[str, Any], *, model: Any = None) -> dict[str, Any] | None:
     return {"id": pid, "folder": folder, "name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(model if model is not None else bw.get("model"))}
 
 
+def _conn(env: Callable[[str, str], str], prefix: str, default_url: str) -> tuple[str, str, float]:
+    base = safe_base(env(f"{prefix}_URL", default_url))
+    tok = env(f"{prefix}_TOKEN", "").strip()
+    try:
+        t = max(2.0, min(120.0, float(env(f"{prefix}_TIMEOUT", "20"))))
+    except ValueError:
+        t = 20.0
+    return base, tok, t
+
+
+def _env(k: str, d: str) -> str:
+    return os.environ.get(k, d)
+
+
 class ConsoleAdapter(Adapter):
     """The Dev Console: lists `/api/plugins` + its plugin catalog (console kind), installs from the catalog
     (`/api/plugin-catalog/install`, committed to GitHub so the 5-minute update keeps it) and uninstalls the code
@@ -141,17 +162,11 @@ class ConsoleAdapter(Adapter):
     app = "console"
     label = "Console"
 
-    def __init__(self, env: Callable[[str, str], str] = lambda k, d: os.environ.get(k, d)) -> None:
+    def __init__(self, env: Callable[[str, str], str] = _env) -> None:
         self.env = env
 
     def _conn(self) -> tuple[str, str, float]:
-        base = safe_base(self.env("APP_CONSOLE_URL", "https://console.amberxai.com"))
-        tok = self.env("APP_CONSOLE_TOKEN", "").strip()
-        try:
-            t = max(2.0, min(120.0, float(self.env("APP_CONSOLE_TIMEOUT", "20"))))
-        except ValueError:
-            t = 20.0
-        return base, tok, t
+        return _conn(self.env, "APP_CONSOLE", "https://console.amberxai.com")
 
     def snapshot(self) -> dict[str, Any]:
         base, tok, t = self._conn()
@@ -204,6 +219,228 @@ class ConsoleAdapter(Adapter):
         return "removed; committed to GitHub, so the Console rebuilds without it within about 5 minutes" if pushed else "removed from the Console (its data is backed up)"
 
 
+class PilotAdapter(Adapter):
+    """Build Pilot: `GET /api/plugin-catalog` lists its installed catalog plugins, its bundled ones and the pilot-kind
+    catalog; `POST /api/plugin-catalog/install|uninstall {folder, confirm}` change it, and its host rebuilds within a
+    minute. Bundled plugins are part of Build Pilot's image and can't be uninstalled: their box is Pilot's own on / off
+    switch (`GET /api/plugin-state`, `POST /api/plugin-state/<id> {enabled}`; no entry = on, Pilot's default)."""
+
+    app = "pilot"
+    label = "Pilot"
+
+    def __init__(self, env: Callable[[str, str], str] = _env) -> None:
+        self.env = env
+
+    def _conn(self) -> tuple[str, str, float]:
+        return _conn(self.env, "APP_PILOT", "https://pilot.amberxai.com")
+
+    def snapshot(self) -> dict[str, Any]:
+        base, tok, t = self._conn()
+        out: dict[str, Any] = {"reachable": False, "canInstall": False, "reason": "", "installed": {}, "available": {}, "switches": {}, "off": set()}
+        if not base:
+            out["reason"] = "APP_PILOT_URL isn't an https address"
+            return out
+        if not tok:
+            out["reason"] = "Patches has no Build Pilot token (APP_PILOT_TOKEN), so it can't read or change Pilot's plugins"
+            return out
+        try:
+            got = call(base, tok, "GET", "/api/plugin-catalog", timeout=t)
+        except AppError as e:
+            out["reason"] = str(e)
+            return out
+        if not isinstance(got, dict):
+            out["reason"] = "Build Pilot's answer isn't a plugin list"
+            return out
+        out["reachable"] = True
+        for folder, p in (got.get("installed") or {}).items() if isinstance(got.get("installed"), dict) else []:
+            c = _plugin({**p, "folder": folder}) if isinstance(p, dict) else None
+            if c:
+                out["installed"][c["id"]] = c
+        try:
+            st = call(base, tok, "GET", "/api/plugin-state", timeout=t)
+            on = st.get("enabled") if isinstance(st, dict) and isinstance(st.get("enabled"), dict) else {}
+        except AppError:
+            on = None
+        for folder, pid in (got.get("bundled") or {}).items() if isinstance(got.get("bundled"), dict) else []:
+            c = _plugin({"id": pid, "folder": folder})
+            if c and c["id"] not in out["installed"]:
+                if on is None:
+                    out["installed"][c["id"]] = c
+                    out.setdefault("locked", {})[c["id"]] = "bundled with Build Pilot; its on / off state can't be read right now"
+                    continue
+                out["switches"][c["id"]] = "bundled with Build Pilot: this box switches it on or off there (it can't be uninstalled)"
+                if on.get(c["id"]) is False:
+                    out["off"].add(c["id"])
+                    out["available"][c["id"]] = c
+                else:
+                    out["installed"][c["id"]] = c
+        for it in got.get("items") or [] if isinstance(got.get("items"), list) else []:
+            if isinstance(it, dict):
+                c = _plugin(it)
+                if c:
+                    out["available"][c["id"]] = c
+        err = _clip(got.get("error"), 200)
+        if err or not got.get("reachable"):
+            out["reason"] = f"Build Pilot can't read the plugin catalog ({err or 'not reachable'}): installing is off, uninstalling still works"
+            return out
+        out["canInstall"] = True
+        return out
+
+    def _switch(self, plugin: dict[str, Any], on: bool) -> str:
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no Build Pilot address or token")
+        call(base, tok, "POST", f"/api/plugin-state/{urllib.parse.quote(plugin['id'], safe='')}", {"enabled": on}, timeout=30)
+        return "switched on in Build Pilot" if on else "switched off in Build Pilot (bundled, so it stays installed)"
+
+    def install(self, plugin: dict[str, Any]) -> str:
+        if plugin.get("switch"):
+            return self._switch(plugin, True)
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no Build Pilot address or token")
+        call(base, tok, "POST", "/api/plugin-catalog/install", {"folder": plugin["folder"], "confirm": plugin["folder"]}, timeout=120)
+        return "installed; Build Pilot rebuilds with it within about a minute"
+
+    def uninstall(self, plugin: dict[str, Any]) -> str:
+        if plugin.get("switch"):
+            return self._switch(plugin, False)
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no Build Pilot address or token")
+        call(base, tok, "POST", "/api/plugin-catalog/uninstall", {"folder": plugin["folder"], "confirm": plugin["folder"]}, timeout=120)
+        return "removed; Build Pilot rebuilds without it within about a minute"
+
+
+    def delete(self, plugin: dict[str, Any]) -> str:
+        """Full uninstall of a bundled plugin (Gizmo, Oct 25 2026): its folder is deleted from the Build-Pilot repo in one
+        commit; Pilot's 5-minute update rebuilds without it. Only a bundled folder Pilot itself listed."""
+        tok = self.env("APP_GITHUB_TOKEN", "").strip()
+        if not tok:
+            raise AppError("Patches has no GitHub token (APP_GITHUB_TOKEN with Contents: write on Build-Pilot)")
+        folder = plugin["folder"]
+        if not FOLDER.match(folder) or folder.startswith("_"):
+            raise AppError("bad plugin folder")
+        repo = self.env("APP_PILOT_REPO", "MossesX/Build-Pilot")
+        sha = delete_repo_folder(tok, repo, self.env("APP_PILOT_BRANCH", "main"), f"plugins/{folder}",
+                                 f"Uninstall bundled plugin {plugin['name']} ({folder}) from Patches → Plugins per app")
+        return f"deleted from {repo} ({sha[:7]}); Build Pilot rebuilds without it within about 5 minutes"
+
+
+# ---------------------------------------------------------------- deleting a bundled Pilot plugin's code (GitHub)
+
+GITHUB_API = "https://api.github.com"
+_REPO = re.compile(r"^[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}$")
+_BRANCH = re.compile(r"^[A-Za-z0-9._/-]{1,100}$")
+
+
+def _gh(token: str, method: str, path: str, body: Any = None) -> Any:
+    """One GitHub REST call: the token only ever goes to api.github.com, never follows a redirect."""
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(GITHUB_API + path, data=data, method=method)
+    req.add_header("authorization", f"Bearer {token}")
+    req.add_header("accept", "application/vnd.github+json")
+    req.add_header("x-github-api-version", "2022-11-28")
+    req.add_header("user-agent", "patches-web")
+    if data is not None:
+        req.add_header("content-type", "application/json")
+    try:
+        with _OPENER.open(req, timeout=30) as r:
+            raw = r.read(MAX_BODY + 1)
+    except urllib.error.HTTPError as e:
+        try:
+            msg = json.loads(e.read(65536) or b"{}").get("message")
+        except (ValueError, AttributeError):
+            msg = None
+        raise AppError(f"GitHub refused ({e.code}{': ' + _clip(msg, 200) if isinstance(msg, str) else ''})") from None
+    except (urllib.error.URLError, OSError, TimeoutError) as e:
+        raise AppError(f"can't reach GitHub ({_clip(str(getattr(e, 'reason', e)), 160)})") from None
+    if len(raw) > MAX_BODY:
+        raise AppError("GitHub's answer is too big")
+    return json.loads(raw or b"null")
+
+
+def delete_repo_folder(token: str, repo: str, branch: str, folder_path: str, message: str) -> str:
+    """Delete every file under `folder_path/` on `branch` in one commit (git data API, no force push). Returns the sha."""
+    if not _REPO.match(repo) or not _BRANCH.match(branch) or ".." in branch:
+        raise AppError("bad repo or branch")
+    ref = _gh(token, "GET", f"/repos/{repo}/git/ref/heads/{branch}")
+    head = ref["object"]["sha"]
+    commit = _gh(token, "GET", f"/repos/{repo}/git/commits/{head}")
+    tree = _gh(token, "GET", f"/repos/{repo}/git/trees/{commit['tree']['sha']}?recursive=1")
+    if tree.get("truncated"):
+        raise AppError("the repo's file list is too big to read in one go; delete the folder by hand")
+    pre = folder_path.rstrip("/") + "/"
+    gone = [e["path"] for e in tree.get("tree", []) if e.get("type") == "blob" and str(e.get("path", "")).startswith(pre)]
+    if not gone:
+        raise AppError(f"{folder_path} isn't in {repo} {branch}")
+    new_tree = _gh(token, "POST", f"/repos/{repo}/git/trees", {"base_tree": commit["tree"]["sha"], "tree": [{"path": p, "mode": "100644", "type": "blob", "sha": None} for p in gone]})
+    c = _gh(token, "POST", f"/repos/{repo}/git/commits", {"message": message, "tree": new_tree["sha"], "parents": [head]})
+    _gh(token, "PATCH", f"/repos/{repo}/git/refs/heads/{branch}", {"sha": c["sha"], "force": False})
+    return c["sha"]
+
+
+class AxhubAdapter(Adapter):
+    """axHub's web app (apps/axhub-web): its plugins are catalog kind `axhub`. The Dev Console holds the repo, so it does
+    the work: `GET /api/app-plugins/axhub` (what is in apps/axhub-web/src/plugins), `POST /api/app-plugins/axhub/install|
+    uninstall {folder, confirm}` (committed to GitHub; axhub-web's 5-minute update rebuilds). Same console token."""
+
+    app = "axhub"
+    label = "axHub"
+
+    def __init__(self, env: Callable[[str, str], str] = _env) -> None:
+        self.env = env
+
+    def _conn(self) -> tuple[str, str, float]:
+        return _conn(self.env, "APP_CONSOLE", "https://console.amberxai.com")
+
+    def snapshot(self) -> dict[str, Any]:
+        base, tok, t = self._conn()
+        out: dict[str, Any] = {"reachable": False, "canInstall": False, "reason": "", "installed": {}, "available": {}}
+        if not base:
+            out["reason"] = "APP_CONSOLE_URL isn't an https address (axHub's plugins are installed through the Dev Console)"
+            return out
+        if not tok:
+            out["reason"] = "Patches has no console token (APP_CONSOLE_TOKEN): axHub's plugins are installed through the Dev Console"
+            return out
+        try:
+            got = call(base, tok, "GET", "/api/app-plugins/axhub", timeout=t)
+        except AppError as e:
+            out["reason"] = f"the Dev Console can't list axHub's plugins ({e})"
+            return out
+        for p in (got or {}).get("items", []) if isinstance(got, dict) else []:
+            c = _plugin(p) if isinstance(p, dict) else None
+            if c:
+                out["installed"][c["id"]] = c
+        out["reachable"] = True
+        try:
+            cat = call(base, tok, "GET", "/api/plugin-catalog?kind=axhub", timeout=t)
+        except AppError as e:
+            out["reason"] = f"the plugin catalog can't be read ({e}): installing is off, uninstalling still works"
+            return out
+        for it in (cat or {}).get("items", []) if isinstance(cat, dict) else []:
+            if isinstance(it, dict) and it.get("kind") == "axhub":
+                c = _plugin(it)
+                if c:
+                    out["available"][c["id"]] = c
+        out["canInstall"] = True
+        return out
+
+    def install(self, plugin: dict[str, Any]) -> str:
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no console address or token")
+        r = call(base, tok, "POST", "/api/app-plugins/axhub/install", {"folder": plugin["folder"], "confirm": plugin["folder"]}, timeout=660)
+        return _clip((r or {}).get("note") if isinstance(r, dict) else "", 300) or "installed"
+
+    def uninstall(self, plugin: dict[str, Any]) -> str:
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no console address or token")
+        r = call(base, tok, "POST", "/api/app-plugins/axhub/uninstall", {"folder": plugin["folder"], "confirm": plugin["folder"]}, timeout=660)
+        return _clip((r or {}).get("note") if isinstance(r, dict) else "", 300) or "removed"
+
+
 class PlaceholderAdapter(Adapter):
     """An app Patches can't install into (yet). It says so; it never pretends to work."""
 
@@ -216,13 +453,13 @@ class PlaceholderAdapter(Adapter):
 
 ADAPTERS: dict[str, Adapter] = {
     "console": ConsoleAdapter(),
-    "pilot": PlaceholderAdapter("pilot", "Pilot", "Build Pilot has no install route Patches can call yet (placeholder patches.app-plugins.pilot)"),
-    "axhub": PlaceholderAdapter("axhub", "axHub", "axHub has no AXF plugins"),
+    "pilot": PilotAdapter(),
+    "axhub": AxhubAdapter(),
 }
 
 
 def register(adapter: Adapter) -> None:
-    """Add or replace an app's adapter (a later build gives Pilot a real one)."""
+    """Add or replace an app's adapter (PlaceholderAdapter for an app Patches can't install into yet)."""
     ADAPTERS[adapter.app] = adapter
 
 
@@ -267,6 +504,10 @@ def grid(apps: list[str], patches_list: dict[str, Any]) -> dict[str, Any]:
             have = r["id"] in s["installed"]
             if not s["reachable"]:
                 cells[a] = {"installed": None, "canChange": False, "why": s["reason"]}
+            elif r["id"] in (s.get("switches") or {}):
+                cells[a] = {"installed": have, "canChange": True, "why": s["switches"][r["id"]], "switch": True}
+            elif have and r["id"] in (s.get("locked") or {}):
+                cells[a] = {"installed": True, "canChange": False, "why": s["locked"][r["id"]]}
             elif have:
                 cells[a] = {"installed": True, "canChange": True, "why": ""}
             elif r["id"] in s["available"]:
@@ -298,21 +539,24 @@ def plan(changes: Any, g: dict[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(c, dict):
             raise ValueError("each change is {app, id, install}")
         a, pid, inst = c.get("app"), c.get("id"), c.get("install")
+        delete = c.get("delete") is True
         if not isinstance(inst, bool) or not isinstance(pid, str) or pid not in rows or a not in rows[pid]["cells"]:
             raise ValueError(f"{pid!r} in {a!r} isn't a cell of the grid")
         if (a, pid) in seen:
             raise ValueError(f"{pid} in {a} is listed twice")
         seen.add((a, pid))
         cell = rows[pid]["cells"][a]
+        if delete and (inst is not False or not cell.get("switch")):
+            raise ValueError(f"only a plugin bundled with an app can be deleted from its code ({rows[pid]['name']} in {a})")
         if not cell["canChange"]:
             raise ValueError(f"{rows[pid]['name']} in {a} can't be changed: {cell['why']}")
-        if cell["installed"] is inst:
+        if cell["installed"] is inst and not delete:
             continue  # already that way
         snap = g["_snaps"][a]
         p = snap["installed"].get(pid) or snap["available"].get(pid)
         if not p:
             raise ValueError(f"{pid} isn't known to {a}")
-        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "state": "queued", "note": ""})
+        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "switch": bool(cell.get("switch")) and not delete, "delete": delete, "state": "queued", "note": ""})
     return out
 
 
@@ -332,7 +576,13 @@ def start(items: list[str] | list[dict[str, Any]], by: str, on_done: Callable[[d
                 _job["items"][i]["state"] = "running"  # type: ignore[index]
             ad = ADAPTERS.get(it["app"])
             try:
-                note = (ad.install if it["install"] else ad.uninstall)(it) if ad else "no adapter"
+                if it.get("delete"):
+                    fn = getattr(ad, "delete", None)
+                    if not fn:
+                        raise AppError(f"{ad.label if ad else it['app']} can't delete a plugin's code")
+                    note = fn(it)
+                else:
+                    note = (ad.install if it["install"] else ad.uninstall)(it) if ad else "no adapter"
                 state = "done"
             except AppError as e:
                 note, state = str(e), "failed"

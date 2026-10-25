@@ -9,6 +9,7 @@ import { HubView } from './views/HubView';
 import { PLANNED, Planned } from './views/Planned';
 import { useHubBannerCount } from './axf/libs/hub/react';
 import { HUB } from './hub/useHub';
+import { loadPlugins } from './plugins';
 
 /**
  * Views the shell can show; the nav-menu asset `axhub-web` references these ids. Approvals is home,
@@ -30,8 +31,9 @@ const views: ViewMap = {
  * Libraries this app ships. lib-settings gives it the settings interface (Appearance — including
  * "Look from axHub" for a developer app —, Account & security, Connections, Plugins, About). lib-hubsync keeps its
  * settings on axHub (same on every device) and adds Settings → Plugins → axHub sync; the look stays the developer one.
+ * Installed axHub web plugins (src/plugins, catalog kind `axhub`) come after them.
  */
-const libraries = [settingsLibrary, hubSyncLibrary];
+const libraries = [settingsLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

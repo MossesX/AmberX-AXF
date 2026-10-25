@@ -1,19 +1,21 @@
 /**
  * Plugins per app (patches-app-plugins@1): one grid, a row per plugin Patches knows and a column per app in its tabs,
  * a tick box in each cell = installed in that app or not. **Apply** installs or uninstalls each changed box in the app
- * itself (server/app_plugins.py: the Console through its plugin catalog + lifecycle routes; apps Patches can't install
- * into yet show their column read-only, with why). Gizmo, Oct 24 2026.
+ * itself (server/app_plugins.py: the Console through its plugin catalog + lifecycle routes, Pilot through its own
+ * plugin-catalog routes, axHub's web plugins through the Console, which commits them for axhub-web; an app Patches can't
+ * reach shows its column read-only, and a locked box says why). A plugin bundled with Pilot can't be uninstalled, so its
+ * box is Pilot's on / off switch instead (Gizmo: "disable locked-in plugins from the matrix"). Gizmo, Oct 24–25 2026.
  */
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Checkbox, Icon, ModelBadge, Note, useRuntime, type AxfWebLibrary } from './axf/react';
+import { Button, Checkbox, Icon, IconButton, ModelBadge, Note, useRuntime, type AxfWebLibrary } from './axf/react';
 import { api } from './api';
 
 export const APP_PLUGINS_VIEW = 'app-plugins';
 
-type Cell = { installed: boolean | null; canChange: boolean; why: string };
+type Cell = { installed: boolean | null; canChange: boolean; why: string; switch?: boolean };
 type Row = { id: string; folder: string; name: string; version: string; model: string; sources: string[]; cells: Record<string, Cell> };
 type Col = { app: string; label: string; reachable: boolean; canInstall: boolean; reason: string };
-type JobItem = { app: string; id: string; name: string; install: boolean; state: 'queued' | 'running' | 'done' | 'failed'; note: string };
+type JobItem = { app: string; id: string; name: string; install: boolean; switch?: boolean; delete?: boolean; state: 'queued' | 'running' | 'done' | 'failed'; note: string };
 type Job = { id: string; state: 'running' | 'done' | 'partial'; startedAt: string; finishedAt: string; items: JobItem[] };
 type Grid = { apps: Col[]; plugins: Row[]; at: string; job: Job | null };
 
@@ -21,11 +23,16 @@ type Grid = { apps: Col[]; plugins: Row[]; at: string; job: Job | null };
 export type Wanted = Record<string, boolean>;
 export const cellKey = (app: string, id: string) => `${app}|${id}`;
 
-/** The changes Apply sends: every ticked/unticked box that differs from the app and may be changed. */
-export function changesOf(grid: Pick<Grid, 'plugins'>, wanted: Wanted): { app: string; id: string; install: boolean }[] {
-  const out: { app: string; id: string; install: boolean }[] = [];
+/** Cells marked for a full uninstall (a plugin bundled with its app: its code is deleted from the app's repo). */
+export type Deletes = Record<string, true>;
+
+/** The changes Apply sends: every ticked/unticked box that differs from the app and may be changed, and every delete. */
+export function changesOf(grid: Pick<Grid, 'plugins'>, wanted: Wanted, deletes: Deletes = {}): { app: string; id: string; install: boolean; delete?: true }[] {
+  const out: { app: string; id: string; install: boolean; delete?: true }[] = [];
   for (const r of grid.plugins) for (const [app, c] of Object.entries(r.cells)) {
-    const w = wanted[cellKey(app, r.id)];
+    const k = cellKey(app, r.id);
+    if (deletes[k] && c.switch) { out.push({ app, id: r.id, install: false, delete: true }); continue; }
+    const w = wanted[k];
     if (w !== undefined && c.canChange && c.installed !== w) out.push({ app, id: r.id, install: w });
   }
   return out;
@@ -65,12 +72,14 @@ export function AppPluginsView() {
   const rt = useRuntime();
   const v = useView();
   const [wanted, setWanted] = useState<Wanted>({});
+  const [deletes, setDeletes] = useState<Deletes>({});
+  const [delArmed, setDelArmed] = useState('');
   const [armed, setArmed] = useState(false);
   const [filter, setFilter] = useState('');
   useEffect(() => { void load().then(() => { if (view.grid?.job?.state === 'running') follow(); }); }, []);
   const g = v.grid;
   const running = g?.job?.state === 'running';
-  const changes = g ? changesOf(g, wanted) : [];
+  const changes = g ? changesOf(g, wanted, deletes) : [];
   const tick = useCallback((app: string, id: string, on: boolean) => { setArmed(false); setWanted((w) => ({ ...w, [cellKey(app, id)]: on })); }, []);
   const apply = async () => {
     if (!armed) { setArmed(true); return; }
@@ -78,6 +87,7 @@ export function AppPluginsView() {
     const r = await api<{ job: Job | null; note?: string }>('/app-plugins/apply', { method: 'POST', body: JSON.stringify({ confirm: 'apply', changes }) });
     if (!r.ok) { rt.toast(r.error || 'Apply failed.', 'danger', 'Plugins per app'); return; }
     setWanted({});
+    setDeletes({});
     if (r.data?.note) rt.toast(r.data.note, 'info', 'Plugins per app');
     if (g && r.data) set({ grid: { ...g, job: r.data.job } });
     if (r.data?.job?.state === 'running') follow();
@@ -85,15 +95,15 @@ export function AppPluginsView() {
   const rows = (g?.plugins ?? []).filter((r) => !filter || `${r.name} ${r.id}`.toLowerCase().includes(filter.toLowerCase()));
   return (
     <div className="fx-stack axp-ap">
-      <p className="fx-muted" style={{ margin: 0 }}>Every plugin Patches knows, one column per app in the tabs. Tick a box to install the plugin in that app, untick it to remove it, then Apply. Each app installs from its own plugin catalog; nothing runs through Patches.</p>
+      <p className="fx-muted" style={{ margin: 0 }}>Every plugin Patches knows, one column per app in the tabs. Tick a box to install the plugin in that app, untick it to remove it, then Apply. For a plugin built into the app (marked with the sliders icon) the box switches it on or off instead; its bin (tap twice) uninstalls it completely by deleting its code from the app's repo. Each app installs from its own plugin catalog; nothing runs through Patches.</p>
       {v.error && <Note tone="danger">{v.error}</Note>}
       {g?.apps.filter((a) => !a.reachable || !a.canInstall).map((a) => <Note key={a.app} tone={a.reachable ? 'warning' : 'info'}><strong>{a.label}:</strong> {a.reason}{a.reachable ? '' : ' (its column is read-only)'}</Note>)}
       <div className="fx-row axp-ap__bar">
         <input className="fx-input axp-ap__search" placeholder="Filter plugins" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Filter plugins" />
         <Button size="sm" icon="refresh" disabled={v.loading || running} onClick={() => void load()}>Reload</Button>
-        <Button size="sm" disabled={!changes.length || running} onClick={() => { setWanted({}); setArmed(false); }}>Undo ticks</Button>
+        <Button size="sm" disabled={!changes.length || running} onClick={() => { setWanted({}); setDeletes({}); setArmed(false); }}>Undo ticks</Button>
         <Button size="sm" icon="check" tone={armed ? 'danger' : 'primary'} disabled={!changes.length || running} onClick={() => void apply()}>
-          {running ? 'Applying…' : armed ? `Tap again: change ${changes.length}` : `Apply${changes.length ? ` (${changes.length})` : ''}`}
+          {running ? 'Applying…' : armed ? `Tap again: change ${changes.length}${changes.some((c) => c.delete) ? ' (deletes code)' : ''}` : `Apply${changes.length ? ` (${changes.length})` : ''}`}
         </Button>
       </div>
       {!g && !v.error && <p className="fx-muted">Loading…</p>}
@@ -116,14 +126,22 @@ export function AppPluginsView() {
                   {g.apps.map((a) => {
                     const c = r.cells[a.app];
                     if (!c) return <td key={a.app} />;
-                    const w = wanted[cellKey(a.app, r.id)];
+                    const k = cellKey(a.app, r.id);
+                    const w = wanted[k];
                     const on = w ?? c.installed === true;
-                    const changed = w !== undefined && w !== c.installed;
+                    const changed = (w !== undefined && w !== c.installed) || !!deletes[k];
                     return (
                       <td key={a.app} className={`axp-ap__cell ${changed ? 'is-changed' : ''}`}>
+                        {c.switch && <Icon name="sliders" size={12} />}
                         {c.installed === null
                           ? <span className="fx-muted" title={c.why}>?</span>
-                          : <Checkbox checked={on} disabled={!c.canChange || running} title={c.why || `${on ? 'Installed in' : 'Not in'} ${a.label}`} onChange={(x) => tick(a.app, r.id, x)} label={<span className="axp-ap__sr">{r.name} in {a.label}</span>} />}
+                          : deletes[k]
+                            ? <Button size="sm" tone="danger" icon="trash" disabled={running} title="Marked: Apply deletes this plugin's code from the app's repo. Tap to unmark." onClick={() => { setArmed(false); setDeletes(({ [k]: _, ...rest }) => rest); }}>Delete</Button>
+                            : <Checkbox checked={on} disabled={!c.canChange || running} title={c.why || `${on ? 'Installed in' : 'Not in'} ${a.label}`} onChange={(x) => tick(a.app, r.id, x)} label={<span className="axp-ap__sr">{r.name} in {a.label}</span>} />}
+                        {c.switch && !deletes[k] && (
+                          <IconButton icon="trash" label={delArmed === k ? `Tap again to mark ${r.name} for deletion` : `Uninstall completely: delete ${r.name}'s code from ${a.label}`} className={delArmed === k ? 'is-armed' : ''} disabled={running}
+                            onClick={() => { if (delArmed !== k) { setDelArmed(k); return; } setDelArmed(''); setArmed(false); setDeletes((d) => ({ ...d, [k]: true })); }} />
+                        )}
                       </td>
                     );
                   })}
@@ -141,7 +159,7 @@ export function AppPluginsView() {
             {g.job.items.map((it) => (
               <li key={`${it.app}|${it.id}`} className="pt-addtab__row">
                 <Icon name={stateIcon[it.state]} size={16} />
-                <span className="pt-addtab__name"><strong>{it.install ? 'Install' : 'Uninstall'} {it.name} · {g.apps.find((a) => a.app === it.app)?.label ?? it.app}</strong>{it.note && <span className="fx-muted">{it.note}</span>}</span>
+                <span className="pt-addtab__name"><strong>{it.delete ? 'Delete the code of' : it.switch ? (it.install ? 'Switch on' : 'Switch off') : it.install ? 'Install' : 'Uninstall'} {it.name} · {g.apps.find((a) => a.app === it.app)?.label ?? it.app}</strong>{it.note && <span className="fx-muted">{it.note}</span>}</span>
               </li>
             ))}
           </ul>

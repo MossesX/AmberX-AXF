@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T23:31:30.405Z",
+ "updatedAt": "2026-10-25T09:53:20.403Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3232,6 +3232,42 @@
    "builtAt": "2026-10-24T23:31:30.264Z",
    "updatedAt": "2026-10-24T23:31:30.405Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "patches-app-plugins-pilot-axhub",
+   "title": "Patches Plugins per app: Pilot + axHub columns editable",
+   "detail": "Pilot adapter (Build Pilot plugin-catalog install/uninstall routes, bundled plugins locked) and axHub plugin support: catalog kind axhub, Dev Console install/uninstall into apps/axhub-web/src/plugins committed to GitHub, axhub-web plugin loader, Patches axhub adapter. Gizmo, Oct 25 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Patches Pilot adapter + lock per cell + deploy env",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.266Z"
+    },
+    {
+     "text": "axhub catalog kind + app-install/app-uninstall CLI + console routes",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.314Z"
+    },
+    {
+     "text": "axhub-web plugin loader + Patches axhub adapter + tests + docs",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-25T09:53:20.355Z"
+    }
+   ],
+   "createdAt": "2026-10-25T09:48:50.977Z",
+   "builtAt": "2026-10-25T09:53:20.403Z",
+   "updatedAt": "2026-10-25T09:53:20.403Z",
+   "estimate": "1.5 h",
    "source": "chat"
   }
  ]

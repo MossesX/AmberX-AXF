@@ -12,7 +12,8 @@
  * when that projects folder exists, else no catalog (commands say so).
  *
  * Kinds are an open registry (KINDS below): `console` = Dev Console plugins (plugin@1, any files),
- * `pilot` = Build Pilot plugins (pilot-plugin@1, web only: plugin.json, README.md, web/**). Add a kind there.
+ * `pilot` = Build Pilot plugins (pilot-plugin@1, web only: plugin.json, README.md, web/**), `axhub` = axHub web app
+ * plugins (axhub-plugin@1, web only; `into` = the app folder in this repo they install into, see app-install). Add a kind there.
  *
  * Safety (the same checks run on pack, publish, read and install, and in Build Pilot's Python copy):
  *  - folder names ^[a-z0-9][a-z0-9-]{1,47}$; file paths relative, plain segments, no "..", no dot-files, no symlinks
@@ -42,10 +43,14 @@
  *        install a console plugin package read from any archive (the Plugins installer: folder, https, another console);
  *        same checks as install (verified, one instance per plugin, other-model builds only with --replace = swap)
  *   node framework/cli/plugin-catalog.mjs remove <kind> <folder>                   take it out of the catalog (packages kept)
+ *   node framework/cli/plugin-catalog.mjs app-list <kind>                          plugins of a kind with `into` (e.g. axhub) in this repo
+ *   node framework/cli/plugin-catalog.mjs app-install <kind> <folder> [--update] [--version v] [--publish]
+ *        unpack it into the kind's app folder (apps/axhub-web/src/plugins/<folder>) and commit just that folder to GitHub
+ *   node framework/cli/plugin-catalog.mjs app-uninstall <kind> <folder> [--publish]  remove it there (and on GitHub)
  *   add --json for one JSON result on stdout
  */
 import { createHash, randomBytes } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { applyDefaults, applyToPluginFile } from './build-defaults.mjs';
@@ -59,6 +64,8 @@ const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.m
 export const KINDS = {
   console: { label: 'Dev Console plugin', manifest: 'plugin@1', allow: null, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
   pilot: { label: 'Build Pilot plugin', manifest: 'pilot-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
+  // axHub's web app (apps/axhub-web, static files the hub only hosts: decision #93, the hub server never runs them).
+  axhub: { label: 'axHub web plugin', manifest: 'axhub-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/axhub-web/src/plugins' },
 };
 
 export const LIMITS = { files: 600, fileBytes: 2 * 1024 * 1024, totalBytes: 8 * 1024 * 1024, pathChars: 200 };
@@ -464,6 +471,80 @@ export async function swapConsolePackage(raw, { keepData = false, publish = fals
   return { ...r, swapped: true, from, to, removed: removed ? { data: removed.data, backup: removed.backup } : null };
 }
 
+/* ------------------------------------------------------------------ app plugins (kinds with `into`) */
+
+/** The app plugins folder of a kind that installs into an app in this repo (e.g. axhub → apps/axhub-web/src/plugins). */
+export function appPluginsDir(kind) {
+  const k = checkKind(kind);
+  if (!k.into) throw new Error(`${k.label}s don't install into an app in this repo`);
+  const dir = resolve(ROOT, k.into);
+  let st = null;
+  try { st = lstatSync(dir); } catch { throw new Error(`${k.into} is missing in this clone`); }
+  if (st.isSymbolicLink() || !st.isDirectory()) throw new Error(`${k.into} is not a folder`);
+  return { dir, rel: k.into };
+}
+
+/** Plugins of that kind in its app folder ("_" and dot folders are templates / half-installed, never listed). */
+export function listAppPlugins(kind) {
+  const { dir, rel } = appPluginsDir(kind);
+  const items = [];
+  for (const name of readdirSync(dir).sort()) {
+    if (name.startsWith('.') || name.startsWith('_') || !FOLDER_RE.test(name)) continue;
+    const d = join(dir, name);
+    try { if (lstatSync(d).isSymbolicLink() || !lstatSync(d).isDirectory()) continue; } catch { continue; }
+    const m = manifestIn(d);
+    if (!m || m.$axf !== KINDS[kind].manifest || typeof m.id !== 'string') continue;
+    items.push({ folder: name, id: m.id, name: typeof m.name === 'string' ? m.name : m.id, version: typeof m.version === 'string' ? m.version : '', builtWith: m.builtWith && typeof m.builtWith === 'object' ? m.builtWith : null });
+  }
+  return { kind, dir: rel, items };
+}
+
+async function lifecycle() {
+  return import(pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), 'plugin-lifecycle.mjs')).href);
+}
+
+/** Install (or update) a catalog plugin into its app folder; with `publish`, commit only that folder to GitHub. */
+export async function installAppPlugin(kind, folder, { update = false, publish = false, version } = {}, log = () => {}) {
+  checkFolder(folder);
+  const { dir, rel } = appPluginsDir(kind);
+  const r = unpack(getPackage(kind, folder, version), dir, { update });
+  log(`${r.updated ? 'updated' : 'installed'} ${r.name} ${r.version} in ${rel}/${folder}`);
+  let published = null;
+  if (publish) {
+    const lc = await lifecycle();
+    const dest = `${rel}/${folder}`;
+    published = lc.publishChange((wt, git) => {
+      rmSync(join(wt, dest), { recursive: true, force: true });
+      cpSync(join(dir, folder), join(wt, dest), { recursive: true });
+      git(['-C', wt, 'add', '-A', '--', dest]);
+    }, `${r.updated ? 'Update' : 'Install'} ${KINDS[kind].label} ${r.name} ${r.version} (${folder}) from the plugin catalog`, log, 'GitHub already has this plugin as installed');
+  }
+  return { ...r, dir: relative(ROOT, r.dir), published };
+}
+
+/** Remove a plugin from its app folder (only a folder holding a plugin of that kind); with `publish`, on GitHub too. */
+export async function uninstallAppPlugin(kind, folder, { publish = false } = {}, log = () => {}) {
+  checkFolder(folder);
+  const { dir, rel } = appPluginsDir(kind);
+  const d = join(dir, folder);
+  let st = null;
+  try { st = lstatSync(d); } catch { throw new Error(`${folder} is not installed in ${rel}`); }
+  if (st.isSymbolicLink() || !st.isDirectory()) throw new Error(`${rel}/${folder} is not a plugin folder`);
+  const m = manifestIn(d);
+  if (!m || m.$axf !== KINDS[kind].manifest) throw new Error(`${rel}/${folder} doesn't hold a ${KINDS[kind].label}; not removing it`);
+  rmSync(d, { recursive: true, force: true });
+  log(`removed ${m.name ?? folder} from ${rel}/${folder}`);
+  let published = null;
+  if (publish) {
+    const lc = await lifecycle();
+    const dest = `${rel}/${folder}`;
+    published = lc.publishChange((wt, git) => {
+      if (existsSync(join(wt, dest))) git(['-C', wt, 'rm', '-r', '-q', '--', dest]);
+    }, `Uninstall ${KINDS[kind].label} ${m.name ?? folder} (${folder})`, log, 'GitHub already has this removal');
+  }
+  return { removed: folder, id: m.id, name: m.name ?? folder, dir: `${rel}/${folder}`, published };
+}
+
 /* ------------------------------------------------------------------ CLI */
 
 async function sendToConsole(base, pkg, from) {
@@ -528,6 +609,9 @@ export async function main(argv) {
       return out(await installConsolePackage(pkg, { ...o, update: !!flags.update }, log));
     }
     if (cmd === 'remove') return out(removeEntry(a1, a2));
+    if (cmd === 'app-list') return out(listAppPlugins(a1));
+    if (cmd === 'app-install') return out(await installAppPlugin(a1, a2, { update: !!flags.update, publish: !!flags.publish, version: flags.version }, log));
+    if (cmd === 'app-uninstall') return out(await uninstallAppPlugin(a1, a2, { publish: !!flags.publish }, log));
     throw new Error('usage: plugin-catalog.mjs where | list | show | pack | publish | publish-package | package | install | remove (see the header)');
   } catch (e) {
     if (flags.json) console.log(JSON.stringify({ ok: false, error: e.message, log: lines }));
