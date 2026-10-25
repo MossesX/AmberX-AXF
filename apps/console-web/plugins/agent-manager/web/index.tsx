@@ -6,10 +6,12 @@ import { WIZARDS, WizardDialog } from './wizards';
 import { MemoryDefaultsPanel, ModelPanel, SafetyPanel, TrainingPanel, WizardsPanel } from './settings';
 import './agent-manager.css';
 import { appMenu } from './menu';
+import { VinnyCommandsDialog, VinnyPanel } from './vinny';
 
 /*
  * Agent manager plugin (web part) — see server/__init__.py for the model.
  *  - view "agent-manager" (nav → Plugins → Agent manager)
+ *  - dialog "agent-manager.vinny" — Vinny's commands and triggers (runs without Claude, through axHub)
  *  - dialog "agent-manager.wizard" { kind: builder | agent | skill | tool | training, agentId? } — open it from anywhere
  *  - Settings → Plugins → Agent manager: wizards, add-ons, model, training & Firecrawl, memory defaults, install & uninstall
  * The AI assistant chats as these agents through the server's axf.agents@1 service; nothing here names that plugin.
@@ -21,10 +23,13 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   provides: ['axf.agent-manager'],
   register(rt) {
+    rt.actions.register('agent-manager.vinny', () => rt.openDialog('agent-manager.vinny'), { label: "Vinny's commands and triggers" });
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });
   },
   views: { 'agent-manager': { title: 'Agent manager', icon: 'layers', render: () => <AgentManagerView /> } },
   dialogs: {
+    // Vinny's commands (vinny-commands@1): triggers → VPS / git / GitHub commands he runs with no model, through axHub
+    'agent-manager.vinny': { title: "Vinny's commands", icon: 'terminal', searchable: true, render: () => <VinnyCommandsDialog /> },
     'agent-manager.wizard': {
       title: 'Agent manager',
       icon: 'rocket',
@@ -38,6 +43,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'agent-manager.addons', tab: 'agent-manager', title: 'Add-on agents', icon: 'package', order: 20, render: () => <div className="axp-agent-manager"><AddonsTab /></div> },
     { id: 'agent-manager.model', tab: 'agent-manager', title: 'Model', icon: 'sparkles', order: 30, render: () => <ModelPanel /> },
     { id: 'agent-manager.training', tab: 'agent-manager', title: 'Training & Firecrawl', icon: 'download', order: 40, render: () => <TrainingPanel /> },
+    { id: 'agent-manager.vinny', tab: 'agent-manager', title: "Vinny's commands", icon: 'terminal', order: 44, render: () => <VinnyPanel /> },
     { id: 'agent-manager.safety', tab: 'agent-manager', title: 'Safety: dangerous tools', icon: 'shield', order: 45, render: () => <SafetyPanel /> },
     { id: 'agent-manager.memory', tab: 'agent-manager', title: 'Memory defaults', icon: 'layers', order: 50, render: () => <MemoryDefaultsPanel /> },
     { id: 'agent-manager.lifecycle', tab: 'agent-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

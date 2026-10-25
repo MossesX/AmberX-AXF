@@ -3297,6 +3297,51 @@
    "updatedAt": "2026-10-25T10:46:22.879Z",
    "estimate": "30 min",
    "source": "chat"
+  },
+  {
+   "id": "vinny-offline-commands",
+   "title": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
+   "detail": "",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Command book engine + matcher + runs (agent manager)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Routes + axf.vinny@1 capability",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Settings dialog to manage commands and triggers",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Systems check Auto fix: Vinny → Mosses → Claude",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Push banner: Vinny first",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Tests, docs, PR",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-24T17:53:56.154Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-24T18:05:35.279Z",
+   "estimate": "3 h",
+   "source": "chat"
   }
  ]
 }

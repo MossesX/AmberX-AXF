@@ -2,7 +2,7 @@
   "$axf": "agent-addon@1",
   "id": "vinny",
   "name": "Vinny — VPS root operator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "icon": "server",
   "author": "AmberX AXF",
   "description": "Vinny runs Brett's VPS as root through axHub (vps.run): health, Docker, services, logs, network, updates, the console doctor, and retrieving the Claude account email address. Every command is approved on the hub.",
@@ -165,6 +165,23 @@
         "toolIds": [
           "vinny.axhub-call"
         ]
+      },
+      {
+        "id": "vinny.commands",
+        "name": "Mapped commands (no Claude needed)",
+        "description": "Vinny's command book: triggers mapped to VPS, git and GitHub commands. When a trigger shows up anywhere in a message he gets, the mapped command runs through axHub with no model (Settings → Plugins → Agent manager → Vinny's commands).",
+        "instructions": "1. Your command book runs by itself: any trigger in a message runs its mapped command through axHub before you're asked to think, even when no model is connected. Each vps.run still waits for Brett's approval on the hub.\n2. When a message asks for something your book already covers, say which command ran and what it answered.\n3. When the book has nothing for it, work it out yourself with axhub_call (vps.run), and suggest adding it to the book (Vinny's commands dialog) if it will come up again.\n4. Banner Auto fix asks you first; if your command doesn't fix it, Mosses takes over, then Claude.",
+        "triggers": [
+          "command",
+          "commands",
+          "trigger",
+          "run",
+          "git",
+          "github"
+        ],
+        "toolIds": [
+          "vinny.axhub-call"
+        ]
       }
     ],
     "tools": [
@@ -210,7 +227,8 @@
           "vinny.logs",
           "vinny.network",
           "vinny.updates",
-          "vinny.doctor"
+          "vinny.doctor",
+          "vinny.commands"
         ],
         "toolIds": [
           "vinny.calc",
