@@ -33,17 +33,19 @@ export function listApps({ android = false } = {}) {
     try { project = readJson(pm); app = readJson(am); } catch { continue; }
     if (!PROJECT_RE.test(project.name ?? '')) continue;
     const template = app.framework?.template ?? '';
-    const isAndroid = template.startsWith('android') || (app.targets ?? []).includes('android') && existsSync(join(dir, 'app', 'build.gradle.kts'));
+    // A web app in a Capacitor shell keeps its Gradle project in android/ (built by its own CI job, not the Gradle loop).
+    const capacitor = (app.targets ?? []).includes('android') && existsSync(join(dir, 'android', 'app', 'build.gradle'));
+    const isAndroid = template.startsWith('android') || capacitor || (app.targets ?? []).includes('android') && existsSync(join(dir, 'app', 'build.gradle.kts'));
     if (android && !isAndroid) continue;
-    out.push({ dir: `apps/${d.name}`, project: project.name, name: app.app?.name ?? project.displayName ?? project.name, template, android: isAndroid });
+    out.push({ dir: `apps/${d.name}`, project: project.name, name: app.app?.name ?? project.displayName ?? project.name, template, android: isAndroid, ...(capacitor ? { shell: 'capacitor', gradleDir: `apps/${d.name}/android` } : {}) });
   }
   return out.sort((a, b) => a.project.localeCompare(b.project));
 }
 
 function gradleField(dir, field) {
-  const f = join(ROOT, dir, 'app', 'build.gradle.kts');
-  if (!existsSync(f)) return null;
-  const m = readFileSync(f, 'utf8').match(new RegExp(`${field}\\s*=\\s*"([^"]+)"`));
+  const f = [join(ROOT, dir, 'app', 'build.gradle.kts'), join(ROOT, dir, 'app', 'build.gradle')].find((x) => existsSync(x));
+  if (!f) return null;
+  const m = readFileSync(f, 'utf8').match(new RegExp(`${field}\\s*=?\\s*"([^"]+)"`));
   return m ? m[1] : null;
 }
 
@@ -54,15 +56,16 @@ export async function collect(outDir, { build = null, commit = null, runUrl = nu
   const apps = [];
   const missing = [];
   for (const a of listApps({ android: true })) {
-    const apkDir = join(ROOT, a.dir, 'app', 'build', 'outputs', 'apk', 'debug');
+    const gdir = a.gradleDir ?? a.dir;
+    const apkDir = join(ROOT, gdir, 'app', 'build', 'outputs', 'apk', 'debug');
     const apk = existsSync(apkDir) ? readdirSync(apkDir).find((f) => f.endsWith('.apk')) : null;
     if (!apk) { missing.push(a.dir); continue; }
     const file = `${a.project}.apk`;
     copyFileSync(join(apkDir, apk), join(outDir, file));
     const st = statSync(join(outDir, file));
     apps.push({
-      project: a.project, name: a.name, appId: gradleField(a.dir, 'applicationId'), platform: 'android',
-      version: gradleField(a.dir, 'versionName') ?? '0.0.0', versionCode: build ?? 1, build, file, size: st.size, sha256: await sha256(join(outDir, file)),
+      project: a.project, name: a.name, appId: gradleField(gdir, 'applicationId'), platform: 'android',
+      version: gradleField(gdir, 'versionName') ?? '0.0.0', versionCode: build ?? 1, build, file, size: st.size, sha256: await sha256(join(outDir, file)),
     });
   }
   const bundle = { $axf: 'app-bundle@1', builtAt: new Date().toISOString(), build, commit, runUrl, apps };
@@ -75,7 +78,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const flag = (n) => { const i = rest.indexOf(`--${n}`); return i >= 0 ? rest[i + 1] : null; };
   if (cmd === 'list') {
     const apps = listApps({ android: rest.includes('--android') });
-    if (rest.includes('--dirs')) console.log(apps.map((a) => a.dir).join('\n'));
+    // --dirs = what the Gradle loop builds: Capacitor shells have their own job.
+    if (rest.includes('--dirs')) console.log(apps.filter((a) => !a.shell).map((a) => a.dir).join('\n'));
     else console.log(JSON.stringify(apps, null, 2));
   } else if (cmd === 'collect' && rest[0] && !rest[0].startsWith('--')) {
     const b = flag('build');

@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "amberx-droid",
+  "name": "AmberX",
+  "version": "1.0.0",
+  "description": "AmberX's right-click / long-press menu: the hub's pages, approvals, apps and the look.",
+  "author": "AmberX AXF",
+  "tags": ["axhub"],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        { "id": "approvals", "label": "Approvals", "icon": "shield", "action": "nav:home" },
+        { "id": "apps", "label": "Apps", "icon": "download", "action": "nav:apps" },
+        { "id": "hub", "label": "Hub", "icon": "external", "action": "nav:hub" },
+        { "id": "s1", "separator": true },
+        { "id": "check", "label": "Check the hub now", "icon": "refresh", "action": "axhub.check" },
+        { "id": "search", "label": "Search everything", "icon": "search", "action": "axhub.search", "shortcut": "Ctrl+K" },
+        { "id": "open-approvals", "label": "Approvals on the hub", "icon": "external", "action": "hub.open:approvals" },
+        { "id": "s2", "separator": true },
+        { "id": "copy", "label": "Copy", "icon": "copy", "action": "edit.copy" },
+        { "id": "next-color", "label": "Next color theme", "icon": "palette", "action": "swap:color-theme:next", "requires": "assets.swap" },
+        { "id": "settings", "label": "Settings", "icon": "settings", "action": "app.settings" },
+        { "id": "about", "label": "About", "icon": "info", "action": "help.about" }
+      ],
+      "nav-item": [
+        { "id": "open", "label": "Open", "icon": "chevron-right", "action": "nav:{payload}" },
+        { "id": "s1", "separator": true },
+        { "id": "check", "label": "Check the hub now", "icon": "refresh", "action": "axhub.check" }
+      ],
+      "asset-card": [
+        { "id": "activate", "label": "Activate", "icon": "zap", "action": "swap:{payload}", "requires": "assets.swap" },
+        { "id": "json", "label": "View JSON", "icon": "code", "action": "asset.json:{payload}" }
+      ]
+    }
+  }
+}

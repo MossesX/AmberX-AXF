@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T10:46:22.879Z",
+ "updatedAt": "2026-10-25T16:17:42.692Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3374,6 +3374,56 @@
    "builtAt": "2026-10-25T10:39:16.155Z",
    "updatedAt": "2026-10-25T10:39:16.195Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "amberx-droid",
+   "title": "AmberX: voice + background monitoring Android app (replaces AXHub app)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-a21f46 (draft PR). Android shell = exception to the Android hold (Brett, Oct 25 2026).",
+     "at": "2026-10-25T16:17:42.692Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "App base on the console look (banner, nav, toolbar, menus)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Plugin host, catalog kind amberx",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "axHub app functions through lib-hub + native hub view",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Voice control plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Background monitoring plugin",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Capacitor Android shell: watch service, native speech, auto-approve",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T16:17:42.679Z",
+   "builtAt": "2026-10-25T16:17:42.679Z",
+   "updatedAt": "2026-10-25T16:17:42.692Z",
+   "estimate": "9 h",
    "source": "chat"
   }
  ]
