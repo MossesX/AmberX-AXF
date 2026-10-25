@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
+import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
 
@@ -124,6 +124,56 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   // every widget type has a starter asset of its own, and the banner takes all of them
   const banner = hostSpecs().find((h) => h.host === 'banner')!;
   for (const t of WIDGET_TYPES) { ok(readdirSync(join(root, 'assets', t)).length > 0, `starter for ${t}`); ok(banner.types.includes(t), `banner takes ${t}`); }
+}
+
+// arranging (drag + snap): the arrangement layer, moves, the snap rule, and the runtime's saved arrangement
+{
+  const sides = ['left', 'center', 'right'];
+  const has = () => true;
+  const own = [{ type: 'clock', id: 'c', at: 'right' }, { type: 'badge', id: 'b', at: 'right' }];
+  const extra = [{ type: 'status', id: 's', at: 'right', origin: 'p' }];
+  const types = ['clock', 'badge', 'status'];
+  const keys = (pl: Record<string, { key: string }[]>) => Object.fromEntries(sides.map((s) => [s, pl[s]!.map((p) => p.key)]));
+  const plain = placeOnHost(own, extra, has, types, sides);
+  eq(keys(plain), { left: [], center: [], right: ['clock:c', 'badge:b', 'status:s'] }, 'arrange: plain placement');
+  const arranged = placeOnHost(own, extra, has, types, sides, { 'status:s': { at: 'left', order: 0 }, 'badge:b': { at: 'right', order: -5 }, 'gone:x': { at: 'left', order: 1 } });
+  eq(keys(arranged), { left: ['status:s'], center: [], right: ['badge:b', 'clock:c'] }, 'arrange: layer moves and reorders, unknown keys ignored');
+  eq(normalizeArrangement({ 'a:b': { at: 'left', order: 3 }, 'bad key': { at: 'left', order: 1 }, 'c:d': { at: 'up', order: 1 }, 'e:f': { at: 'left', order: 'x' } }, sides), { 'a:b': { at: 'left', order: 3 } }, 'arrange: normalize drops bad entries');
+  eq(normalizeArrangement([1, 2], sides), {}, 'arrange: normalize non-object');
+  const moved = moveOnHost(plain, { 'old:x': { at: 'left', order: 0 } }, 'status:s', 'right', 0, sides);
+  eq(moved, { 'old:x': { at: 'left', order: 0 }, 'status:s': { at: 'right', order: 0 }, 'clock:c': { at: 'right', order: 10 }, 'badge:b': { at: 'right', order: 20 } }, 'arrange: move to front keeps other entries');
+  eq(keys(placeOnHost(own, extra, has, types, sides, moved)), { left: [], center: [], right: ['status:s', 'clock:c', 'badge:b'] }, 'arrange: move then place');
+  eq(keys(placeOnHost(own, extra, has, types, sides, moveOnHost(plain, {}, 'clock:c', 'center', 99, sides))), { left: [], center: ['clock:c'], right: ['badge:b', 'status:s'] }, 'arrange: move past the end clamps');
+  eq(moveOnHost(plain, {}, 'nope:x', 'left', 0, sides), {}, 'arrange: unknown key is a no-op');
+  eq(moveOnHost(plain, {}, 'clock:c', 'up', 0, sides), {}, 'arrange: unknown side is a no-op');
+  eq([snapIndex([10, 20, 30], 5), snapIndex([10, 20, 30], 15), snapIndex([10, 20, 30], 20), snapIndex([10, 20, 30], 99), snapIndex([], 3)], [0, 1, 2, 3, 0], 'arrange: snap index');
+
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:arrange' });
+  rt.attachToBanner({ type: 'badge', id: 'new', at: 'right', origin: 'p1' });
+  const rightBefore = rt.banner().placed.right.map((p) => p.key);
+  ok(rightBefore.length >= 2 && rightBefore.includes('badge:new'), 'arrange rt: badge on the right');
+  ok(rt.moveHostItem('banner', 'badge:new', 'left', 0), 'arrange rt: move ok');
+  eq(rt.banner().placed.left[0]?.key, 'badge:new', 'arrange rt: badge moved to the left, first');
+  ok(!rt.banner().placed.right.some((p) => p.key === 'badge:new'), 'arrange rt: gone from the right');
+  ok(typeof rt.settings.get('axf.widgets.arrange.banner') === 'string', 'arrange rt: saved as a setting');
+  // a plugin re-attaching keeps the person's spot
+  rt.attachToBanner({ type: 'badge', id: 'new', at: 'right', origin: 'p1' });
+  eq(rt.banner().placed.left[0]?.key, 'badge:new', 'arrange rt: re-attach keeps the spot');
+  ok(!rt.moveHostItem('banner', 'badge:new', 'nowhere', 0), 'arrange rt: bad side refused');
+  ok(!rt.moveHostItem('nohost', 'badge:new', 'left', 0), 'arrange rt: bad host refused');
+  rt.setArranging('banner'); ok(rt.arranging('banner') && rt.arranging(), 'arrange rt: arrange mode on');
+  rt.dispatch('widgets.arrange:banner'); ok(!rt.arranging(), 'arrange rt: action toggles off');
+  rt.setArranging('nohost'); ok(!rt.arranging(), 'arrange rt: unknown host never arranges');
+  const menu = rt.contextExtras.get('*:widgets')!('banner');
+  ok(menu.some((m) => m.action === 'widgets.arrange:banner') && menu.some((m) => m.action === 'widgets.reset:banner'), 'arrange rt: banner right-click offers Arrange + Put back');
+  eq(rt.contextExtras.get('*:widgets')!('default'), [], 'arrange rt: other targets get nothing');
+  rt.dispatch('widgets.reset:banner');
+  eq(rt.banner().placed.right.map((p) => p.key), rightBefore, 'arrange rt: reset puts it back');
+  eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: reset clears the setting');
+  rt.moveHostItem('banner', 'badge:new', 'left', 0); rt.reset();
+  eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: Reset to defaults clears arrangements');
 }
 
 console.log(`check-widgets: ${checks} checks ok`);

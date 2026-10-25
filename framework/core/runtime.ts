@@ -18,7 +18,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
-import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
@@ -75,6 +75,8 @@ export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${ty
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
+/** Where a person put the widgets of one host (banner, toolbar, …): JSON of a HostArrangement (core/engines/widgets.ts). */
+export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
 
@@ -694,7 +696,7 @@ export class AxfRuntime {
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
   banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
-    const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id));
+    const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
     return { data: b, placed };
   }
 
@@ -707,7 +709,67 @@ export class AxfRuntime {
   /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
   toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
     const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id));
+    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+  }
+
+  /* ---------------- arranging widgets on hosts (drag + snap; core/engines/widgets.ts) ---------------- */
+
+  /** The host being arranged right now (its widgets can be dragged), or null. Not saved: arranging ends on reload. */
+  private arrangingHost: string | null = null;
+
+  /** A person's saved arrangement of a host (setting `axf.widgets.arrange.<host>`); {} when none or damaged. */
+  hostArrangement(host: string): HostArrangement {
+    const h = hostSpec(host);
+    const raw = this.settings.get(ARRANGE_KEY(host));
+    if (!h || typeof raw !== 'string' || !raw) return {};
+    try { return normalizeArrangement(JSON.parse(raw), h.sides); } catch { return {}; }
+  }
+
+  /** Every attachment of a host where it is drawn now (banner and toolbar use their own rules; other hosts the generic one). */
+  hostPlaced(host: string): Record<string, PlacedAttachment[]> {
+    if (host === 'banner') return this.banner().placed;
+    if (host === 'toolbar') return this.toolbarWidgets();
+    const data = (this.registry.has(host as AssetType, this.state.active[host as AssetType] ?? '') ? this.assetOrNull(host as AssetType)?.data : null) as Record<string, unknown> | null;
+    return placeHost(host, data ?? null, this.hostExtra.get(host) ?? [], (t, id) => this.registry.has(t as AssetType, id), true, this.hostArrangement(host));
+  }
+
+  /** May this person rearrange widgets? Same grant as any other change to the look. */
+  canArrange(): boolean { return this.can('assets.swap'); }
+
+  /**
+   * Move one attachment (`type:id`) to a side of a host at a position (0 = first). Saved at once and drawn at once
+   * (hot render); the whole host's order is written so every device shows the same. False when it can't move.
+   */
+  moveHostItem(host: string, key: string, side: string, index: number): boolean {
+    const h = hostSpec(host);
+    if (!h || !h.sides.includes(side)) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Arrange'); return false; }
+    const placed = this.hostPlaced(host);
+    if (!h.sides.some((s) => (placed[s] ?? []).some((p) => p.key === key))) return false;
+    const next = moveOnHost(placed, this.hostArrangement(host), key, side, index, h.sides);
+    this.settings.set(ARRANGE_KEY(host), JSON.stringify(next));
+    this.terminal.ok('widgets', `${host}: ${key} → ${side} #${index + 1}`);
+    this.set({});
+    return true;
+  }
+
+  /** Back to where the host and its modules put everything. */
+  resetHostArrangement(host: string): void {
+    if (!this.canArrange()) return;
+    this.settings.clear(ARRANGE_KEY(host));
+    this.terminal.ok('widgets', `${host}: arrangement reset`);
+    this.set({});
+  }
+
+  /** Is a host in arrange mode? With no host: is any? */
+  arranging(host?: string): boolean { return host ? this.arrangingHost === host : this.arrangingHost !== null; }
+
+  /** Start (host) or stop (null) arrange mode. Only one host at a time. */
+  setArranging(host: string | null): void {
+    if (host && (!hostSpec(host) || !this.canArrange())) return;
+    if (this.arrangingHost === host) return;
+    this.arrangingHost = host;
+    this.set({});
   }
 
   /** Pop a short message out of a banner attachment for `ms` (default 5 s), e.g. a status badge on load. */
@@ -956,6 +1018,7 @@ export class AxfRuntime {
 
   reset() {
     for (const t of ASSET_TYPES) if (this.settings.get(HIDE_KEY(t)) !== undefined) this.settings.clear(HIDE_KEY(t));
+    for (const h of hostSpecs()) if (this.settings.get(ARRANGE_KEY(h.host)) !== null) this.settings.clear(ARRANGE_KEY(h.host));
     const active = { ...this.manifest.defaults };
     for (const t of ASSET_TYPES) if (!this.registry.has(t, active[t] ?? '')) active[t] = this.registry.list(t)[0]?.id ?? '';
     if (this.principal) {
@@ -1472,6 +1535,10 @@ export class AxfRuntime {
     }, { label: 'Hide or show a slot', requires: 'assets.swap', params: true });
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
     a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
+    // widgets.arrange[:<host>] toggles arrange mode (banner when no host) · widgets.arrange.done · widgets.reset[:<host>]
+    a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
+    a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
+    a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     a.register('appearance.package', ([id]) => { if (id) this.applyAppearancePackage(id); }, { label: 'Apply an appearance package', requires: 'assets.swap', params: true });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
@@ -1498,6 +1565,14 @@ export class AxfRuntime {
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
+    // Right-click a widget host (banner, toolbar): arrange its widgets (drag + snap) or put them back.
+    this.contextExtras.set('*:widgets', (target) => {
+      const host = target && hostSpec(target) ? target : null;
+      if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
+      const items: import('./engines/windows').MenuEntry[] = [{ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+      if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
+      return items;
+    });
     this.contextExtras.set('tab-group', () => wm.groupMenu());
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }

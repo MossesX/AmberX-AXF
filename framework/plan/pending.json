@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T20:28:38.573Z",
+ "updatedAt": "2026-10-25T20:59:28.940Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3735,8 +3735,8 @@
    "status": "complete",
    "notes": [
     {
-     "at": "2026-10-25T19:47:51.720Z",
-     "text": "Built on branch claude/project-thread-l3b0qo (PR #51)."
+     "text": "Built on branch claude/project-thread-l3b0qo (PR #51).",
+     "at": "2026-10-25T19:47:51.720Z"
     }
    ],
    "subPrompts": [
@@ -3765,6 +3765,86 @@
    "createdAt": "2026-10-25T19:00:48.146Z",
    "builtAt": "2026-10-25T19:47:51.720Z",
    "updatedAt": "2026-10-25T19:47:51.720Z",
+   "source": "chat"
+  },
+  {
+   "id": "widget-arrange",
+   "title": "Drag and snap banner and toolbar widgets (no overlaps)",
+   "detail": "Widgets attached to banners and toolbars (clock, axHub badge, Claude badge, plugin widgets) overlap. Arrange mode: drag a widget, it snaps between the others on a side; arrangement saved per host as a look setting (axf.widgets.arrange.<host>), hot render. Web only.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, PR #92 (branch claude/project-thread-c4xw4s).",
+     "at": "2026-10-25T20:59:28.929Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Engine: arrangement layer + snap/move helpers in widgets.ts, fixtures",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Runtime: arrangement setting, move/reset, arrange mode + actions",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "React: drag + snap on banner and toolbar, context menu",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CSS: no overlap on banner sides; drop marker",
+     "at": "",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Tests, PORTING note, docs, PR",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T20:59:28.893Z",
+   "builtAt": "2026-10-25T20:59:28.920Z",
+   "updatedAt": "2026-10-25T20:59:28.929Z",
+   "estimate": "2.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "widget-arrange-fable",
+   "title": "Drag and snap widgets (Fable rebuild, with Kotlin twin)",
+   "detail": "Fable rebuild of widget-arrange (Opus, PR #92, branch claude/project-thread-c4xw4s). Start by replacing the Opus version; review the arrangement layer as a cross-port contract and record/port the Kotlin WidgetEngine twin when Android is unpaused.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Review the Opus arrangement layer + fixture as a contract",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Replace/refine engine + runtime",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Refine drag UX (touch, keyboard moves)",
+     "at": "",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Kotlin WidgetEngine twin when Android unpauses + report",
+     "at": "",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T20:59:28.940Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T20:59:28.940Z",
+   "estimate": "2 h",
    "source": "chat"
   }
  ]
