@@ -143,7 +143,7 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   for (const l of ordered) {
     const why = embedSkipReason(rt.embedded, l.embed?.skipWhen);
     if (why) { skipped.push({ id: l.id, label: l.label, version: l.version, reason: why }); continue; }
-    l.register?.(rt);
+    rt.actions.withModule(l.id, () => l.register?.(rt));
     Object.assign(views, l.views ?? {});
     Object.assign(dialogs, l.dialogs ?? {});
     Object.assign(tabs, l.tabs ?? {});
