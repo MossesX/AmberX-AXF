@@ -8,7 +8,7 @@ Patches' tabs run whole, with no embed marker, so Patches' own switches no longe
 Each app is an adapter in an open registry (`ADAPTERS`): it lists what the app has, says which plugins it could take,
 and installs / uninstalls one. Built: `console` (the Dev Console's plugin catalog + lifecycle routes, server to server
 with its console token), `pilot` (Build Pilot's own plugin-catalog install / uninstall routes with its BP_TOKEN; plugins
-bundled with Build Pilot are locked: they can only be switched off there) and `axhub` (axHub web plugins, catalog kind
+bundled with Build Pilot can't be uninstalled, so their box switches them on / off in Pilot instead) and `axhub` (axHub web plugins, catalog kind
 `axhub`: the Dev Console installs them into `apps/axhub-web/src/plugins/` and commits them, and axhub-web's 5-minute
 update rebuilds with them; the hub's server never runs plugin code). No plugin code passes through Patches: each app
 installs from the plugin catalog itself. Gizmo, Oct 25 2026: both columns editable.
@@ -115,7 +115,8 @@ def call(base: str, token: str, method: str, path: str, body: Any = None, timeou
 
 class Adapter:
     """One app Patches can host. `snapshot()` → {reachable, canInstall, reason, installed: {id: plugin}, available: {id: plugin},
-    locked?: {id: why}} (a locked plugin's box can't be changed, e.g. one bundled with the app)."""
+    locked?: {id: why}, switches?: {id: note}} (a locked plugin's box can't be changed; a switch plugin's box means on / off
+    in the app rather than installed, e.g. one bundled with the app: Apply switches it instead of uninstalling it)."""
 
     app = ""
     label = ""
@@ -220,7 +221,8 @@ class ConsoleAdapter(Adapter):
 class PilotAdapter(Adapter):
     """Build Pilot: `GET /api/plugin-catalog` lists its installed catalog plugins, its bundled ones and the pilot-kind
     catalog; `POST /api/plugin-catalog/install|uninstall {folder, confirm}` change it, and its host rebuilds within a
-    minute. Bundled plugins are part of Build Pilot's image: locked here (switch them off in Pilot → Plugins)."""
+    minute. Bundled plugins are part of Build Pilot's image and can't be uninstalled: their box is Pilot's own on / off
+    switch (`GET /api/plugin-state`, `POST /api/plugin-state/<id> {enabled}`; no entry = on, Pilot's default)."""
 
     app = "pilot"
     label = "Pilot"
@@ -233,7 +235,7 @@ class PilotAdapter(Adapter):
 
     def snapshot(self) -> dict[str, Any]:
         base, tok, t = self._conn()
-        out: dict[str, Any] = {"reachable": False, "canInstall": False, "reason": "", "installed": {}, "available": {}, "locked": {}}
+        out: dict[str, Any] = {"reachable": False, "canInstall": False, "reason": "", "installed": {}, "available": {}, "switches": {}, "off": set()}
         if not base:
             out["reason"] = "APP_PILOT_URL isn't an https address"
             return out
@@ -253,11 +255,24 @@ class PilotAdapter(Adapter):
             c = _plugin({**p, "folder": folder}) if isinstance(p, dict) else None
             if c:
                 out["installed"][c["id"]] = c
+        try:
+            st = call(base, tok, "GET", "/api/plugin-state", timeout=t)
+            on = st.get("enabled") if isinstance(st, dict) and isinstance(st.get("enabled"), dict) else {}
+        except AppError:
+            on = None
         for folder, pid in (got.get("bundled") or {}).items() if isinstance(got.get("bundled"), dict) else []:
             c = _plugin({"id": pid, "folder": folder})
             if c and c["id"] not in out["installed"]:
-                out["installed"][c["id"]] = c
-                out["locked"][c["id"]] = "bundled with Build Pilot: it can only be switched off there (Pilot → Plugins)"
+                if on is None:
+                    out["installed"][c["id"]] = c
+                    out.setdefault("locked", {})[c["id"]] = "bundled with Build Pilot; its on / off state can't be read right now"
+                    continue
+                out["switches"][c["id"]] = "bundled with Build Pilot: this box switches it on or off there (it can't be uninstalled)"
+                if on.get(c["id"]) is False:
+                    out["off"].add(c["id"])
+                    out["available"][c["id"]] = c
+                else:
+                    out["installed"][c["id"]] = c
         for it in got.get("items") or [] if isinstance(got.get("items"), list) else []:
             if isinstance(it, dict):
                 c = _plugin(it)
@@ -270,7 +285,16 @@ class PilotAdapter(Adapter):
         out["canInstall"] = True
         return out
 
+    def _switch(self, plugin: dict[str, Any], on: bool) -> str:
+        base, tok, _t = self._conn()
+        if not base or not tok:
+            raise AppError("Patches has no Build Pilot address or token")
+        call(base, tok, "POST", f"/api/plugin-state/{urllib.parse.quote(plugin['id'], safe='')}", {"enabled": on}, timeout=30)
+        return "switched on in Build Pilot" if on else "switched off in Build Pilot (bundled, so it stays installed)"
+
     def install(self, plugin: dict[str, Any]) -> str:
+        if plugin.get("switch"):
+            return self._switch(plugin, True)
         base, tok, _t = self._conn()
         if not base or not tok:
             raise AppError("Patches has no Build Pilot address or token")
@@ -278,6 +302,8 @@ class PilotAdapter(Adapter):
         return "installed; Build Pilot rebuilds with it within about a minute"
 
     def uninstall(self, plugin: dict[str, Any]) -> str:
+        if plugin.get("switch"):
+            return self._switch(plugin, False)
         base, tok, _t = self._conn()
         if not base or not tok:
             raise AppError("Patches has no Build Pilot address or token")
@@ -409,6 +435,8 @@ def grid(apps: list[str], patches_list: dict[str, Any]) -> dict[str, Any]:
             have = r["id"] in s["installed"]
             if not s["reachable"]:
                 cells[a] = {"installed": None, "canChange": False, "why": s["reason"]}
+            elif r["id"] in (s.get("switches") or {}):
+                cells[a] = {"installed": have, "canChange": True, "why": s["switches"][r["id"]], "switch": True}
             elif have and r["id"] in (s.get("locked") or {}):
                 cells[a] = {"installed": True, "canChange": False, "why": s["locked"][r["id"]]}
             elif have:
@@ -456,7 +484,7 @@ def plan(changes: Any, g: dict[str, Any]) -> list[dict[str, Any]]:
         p = snap["installed"].get(pid) or snap["available"].get(pid)
         if not p:
             raise ValueError(f"{pid} isn't known to {a}")
-        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "state": "queued", "note": ""})
+        out.append({"app": a, "id": pid, "folder": p["folder"], "name": p["name"], "install": inst, "switch": bool(cell.get("switch")), "state": "queued", "note": ""})
     return out
 
 

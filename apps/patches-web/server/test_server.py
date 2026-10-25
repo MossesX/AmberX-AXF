@@ -224,7 +224,7 @@ class FakeConsole(http.server.BaseHTTPRequestHandler):
 
 
 PIL = {"installed": {"pil-extra": {"id": "ai.amberx.pilot.extra", "name": "Extra", "version": "1.0.0"}}, "bundled": {"look": "ai.amberx.pilot.look"},
-       "catalog": {"pil-extra": "ai.amberx.pilot.extra", "pil-new": "ai.amberx.pilot.new"}, "calls": []}
+       "catalog": {"pil-extra": "ai.amberx.pilot.extra", "pil-new": "ai.amberx.pilot.new"}, "calls": [], "state": {}}
 
 
 class FakePilot(FakeConsole):
@@ -240,6 +240,8 @@ class FakePilot(FakeConsole):
         if self.path == "/api/plugin-catalog":
             return self._send(200, {"items": [{"kind": "pilot", "folder": f, "id": i, "name": f, "version": "1.0.0"} for f, i in PIL["catalog"].items()],
                                     "installed": PIL["installed"], "bundled": PIL["bundled"], "reachable": True, "error": ""})
+        if self.path == "/api/plugin-state":
+            return self._send(200, {"enabled": PIL["state"]})
         self._send(404, {"detail": "no"})
 
     def do_POST(self):
@@ -247,6 +249,9 @@ class FakePilot(FakeConsole):
             return
         body = _json.loads(self.rfile.read(int(self.headers.get("content-length") or 0)) or b"{}")
         PIL["calls"].append((self.path, body))
+        if self.path.startswith("/api/plugin-state/"):
+            PIL["state"][self.path.rsplit("/", 1)[1]] = bool(body.get("enabled"))
+            return self._send(200, {"enabled": PIL["state"]})
         f = body.get("folder")
         if body.get("confirm") != f:
             return self._send(400, {"detail": "confirm"})
@@ -331,9 +336,16 @@ rows = {r["id"]: r for r in g["plugins"]}
 pcol = next(a for a in g["apps"] if a["app"] == "pilot")
 check(pcol["reachable"] and pcol["canInstall"], "pilot: reachable and installable with its token")
 check(rows["ai.amberx.pilot.extra"]["cells"]["pilot"] == {"installed": True, "canChange": True, "why": ""}, "pilot: catalog-installed plugin can be removed")
-check(rows["ai.amberx.pilot.look"]["cells"]["pilot"]["installed"] is True and rows["ai.amberx.pilot.look"]["cells"]["pilot"]["canChange"] is False and "bundled" in rows["ai.amberx.pilot.look"]["cells"]["pilot"]["why"], "pilot: bundled plugin locked, says why")
+lk = rows["ai.amberx.pilot.look"]["cells"]["pilot"]
+check(lk["installed"] is True and lk["canChange"] and lk.get("switch") and "bundled" in lk["why"], "pilot: bundled plugin = an on/off switch, says so")
 check(rows["ai.amberx.pilot.new"]["cells"]["pilot"]["installed"] is False and rows["ai.amberx.pilot.new"]["cells"]["pilot"]["canChange"], "pilot: catalog plugin installable")
-check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False}]}).status_code == 400, "pilot: bundled plugin can't be uninstalled")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": False}]})
+j = app_plugins.wait()
+check(j["state"] == "done" and j["items"][0]["switch"] and PIL["state"] == {"ai.amberx.pilot.look": False} and "look" in PIL["bundled"], "pilot: unticking a bundled plugin switches it off, never uninstalls it")
+lk = {r["id"]: r for r in c.get("/api/app-plugins", headers=TOKEN).json()["plugins"]}["ai.amberx.pilot.look"]["cells"]["pilot"]
+check(lk["installed"] is False and lk["canChange"] and lk.get("switch"), "pilot: switched-off bundled plugin shows unticked, still changeable")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "pilot", "id": "ai.amberx.pilot.look", "install": True}]})
+check(app_plugins.wait()["state"] == "done" and PIL["state"] == {"ai.amberx.pilot.look": True}, "pilot: ticking it switches it back on")
 c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [
     {"app": "pilot", "id": "ai.amberx.pilot.new", "install": True}, {"app": "pilot", "id": "ai.amberx.pilot.extra", "install": False},
     {"app": "axhub", "id": "ai.amberx.axhub.hub-hi", "install": True}]})
