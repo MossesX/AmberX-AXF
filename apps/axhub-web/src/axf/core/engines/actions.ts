@@ -23,14 +23,31 @@ export interface ActionMeta {
   params?: boolean;
   /** false keeps an argument-free action out of search */
   searchable?: boolean;
+  /**
+   * Who registered it: `axf.framework` (the runtime and the React layer), a library or plugin id (set by
+   * `installLibraries` while the library registers), or unset (the app's own code). Pickers group actions by it.
+   */
+  module?: string;
 }
+
+/** The `module` of actions the framework itself registers. */
+export const FRAMEWORK_MODULE = 'axf.framework';
 
 export class ActionBus {
   private handlers = new Map<string, { fn: ActionHandler; meta: ActionMeta }>();
+  private owner: string | undefined;
 
   register(id: string, fn: ActionHandler, meta: ActionMeta): () => void {
-    this.handlers.set(id, { fn, meta });
+    const m = meta.module || !this.owner ? meta : { ...meta, module: this.owner };
+    this.handlers.set(id, { fn, meta: m });
     return () => this.handlers.delete(id);
+  }
+
+  /** Run `fn` with `module` as the owner of every action it registers without one (libraries, the framework). */
+  withModule<T>(module: string, fn: () => T): T {
+    const before = this.owner;
+    this.owner = module;
+    try { return fn(); } finally { this.owner = before; }
   }
 
   static parse(spec: string): { id: string; args: string[] } {
