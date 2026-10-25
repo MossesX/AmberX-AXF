@@ -251,6 +251,38 @@ ok(hs.matches('feat/y', b3) && hs.matches('OPUS built', b3) && !hs.matches('fabl
 ok(hs.matches('p-steps', rows.find((r) => r.key === 'pending:p-steps')) && hs.matches('vps1', v0) && hs.matches('server routes', v0), 'search covers remaining rows (id) and live entries (host, step)');
 ok(hs.money(9.876) === '$9.88' && hs.money(0.12) === '$0.120' && hs.money(132.4) === '$132' && hs.money(null) === '—', 'money format');
 
+{
+  // Sessions: the log grouped by the session that asked
+  const ses = [
+    { ...sums[0], session: 'sessAAAA1111', user: 'root' },
+    { ...sums[2], session: 'sessAAAA1111' },
+    { ...sums[4], session: 'sessAAAA1111' },
+    { id: 'chg-20261021-aaaaaa0010', title: 'Subagent step', kind: 'build', model: 'opus', state: 'done', status: 'done', parent: sums[0].id, createdAt: iso(now - 30 * 60_000), updatedAt: iso(now - 20 * 60_000),
+      steps: { total: 0, done: 0, failed: 0, running: '' }, result: { state: 'done', summary: '' }, closed: null, repos: [], where: 'vps' },
+    { ...sums[1], session: 'sessBBBB2222' },
+    sums[3], { ...sums[3], id: 'chg-20261015-aaaaaa0011', title: 'Backfilled ui' },
+    { ...sums[5], host: 'laptop' },
+  ];
+  const sr = hs.sessionsFromChanges(ses, now);
+  ok(sr.length === 4, `Sessions: one row per session (recorded, backfill day, unrecorded machine+day) (${sr.length})`);
+  const a = sr.find((r) => r.session === 'sessAAAA1111');
+  ok(a && a.count === 4 && a.requests === 3 && a.questions === 1 && a.kind === 'recorded' && a.user === 'root' && a.host === 'vps1' && a.surfaceLabel === 'VPS', 'a session holds every request it was asked for, a subagent joins its parent, questions counted apart');
+  ok(a.items[0].at <= a.items[1].at && a.items.at(-1).title === 'Just a question' && a.items.find((i) => i.title === 'Just a question').status === 'question', 'its subgrid: oldest first, question-only marked');
+  ok(a.status === 'running' && a.running === 1 && a.done === 2 && a.models.join() === 'Opus' && a.model === 'Opus', 'session status + models');
+  ok(Math.abs(a.cost - (11.2 + 9.87)) < 0.001 && a.costEstimated && a.minutes === 80 + 120, 'session totals: time + cost (estimated part flagged)');
+  const b = sr.find((r) => r.session === 'sessBBBB2222');
+  ok(b.status === 'stalled' && b.items[0].status === 'stalled', 'a silent session shows "no word"');
+  const bf = sr.find((r) => r.kind === 'backfill');
+  ok(bf.count === 2 && /Recorded afterwards/.test(bf.label), 'backfilled entries group per day');
+  const u = sr.find((r) => r.kind === 'unrecorded');
+  ok(u.host === 'laptop' && u.status === 'failed' && /No session id · laptop/.test(u.label), 'entries without a session id group per machine and day');
+  ok(sr[0].lastAt >= sr[1].lastAt && sr[1].lastAt >= sr[2].lastAt, 'newest session first');
+  ok(hs.filterSessions(sr, { model: 'Fable' }).length === 2 && hs.filterSessions(sr, { status: 'running' }).length === 1 && hs.filterSessions(sr, { kind: 'backfill' }).length === 1
+    && hs.filterSessions(sr, { period: '7d' }, now + 2 * 86400_000).every((r) => r.kind !== 'backfill'), 'Sessions filters: model, status, kind, period');
+  ok(hs.matches('server routes', { ...a, steps: [] }) === false && hs.matches('feat/y', a) && hs.matches('Built with tokens', a) && hs.matches('sessAAAA', a), 'search finds a session by any request title, branch or session id');
+  ok(hs.sessionKeyOf({ id: 'x', createdAt: iso(now) }) .startsWith('u:unknown:') && hs.sessionsFromChanges([], now).length === 0, 'no host, no entries: still safe');
+}
+
 /* ---------- Start build now (orchestrate.mjs) ---------- */
 const o = await import('./web/orchestrate.mjs');
 const feats2 = [
