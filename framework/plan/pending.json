@@ -3655,6 +3655,20 @@
    "updatedAt": "2026-10-25T20:28:38.573Z",
    "estimate": "30 min",
    "source": "chat"
+  },
+  {
+   "id": "banner-details-reveal",
+   "title": "Banner items: tapping opens their details in view again",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T19:51:25.195Z",
+   "builtAt": "2026-10-25T19:51:25.195Z",
+   "updatedAt": "2026-10-25T19:51:25.195Z",
+   "estimate": "30 min",
+   "source": "chat"
   }
  ]
 }
