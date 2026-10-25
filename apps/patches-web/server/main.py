@@ -324,6 +324,94 @@ def tabs_save(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str
     return state
 
 
+# ---------------------------------------------------------------- plugins per app (patches-app-plugins@1, app_plugins.py)
+#
+# Gizmo, Oct 24 2026: a grid of every plugin Patches knows × every app in its tabs, a check box each; Apply installs or
+# uninstalls each plugin in the app itself (not only in Patches' list). Admins / the app token only (user_may).
+
+import app_plugins  # noqa: E402
+
+
+def _patches_add(app_id: str, it: dict[str, Any]) -> None:
+    if app_id not in PLUGIN_APPS:
+        raise app_plugins.AppError(f"{app_id} isn't an app Patches keeps a list for")
+    with _plugins_lock:
+        state = _read_plugins()
+        mine = state["apps"][app_id]["plugins"]
+        if it["id"] not in mine and len(mine) >= MAX_PLUGINS:
+            raise app_plugins.AppError(f"at most {MAX_PLUGINS} plugins per app")
+        mine.setdefault(it["id"], {"name": _clip(it.get("name"), 80) or it["id"], "version": _clip(it.get("version"), 40), "model": _model(it.get("model")),
+                                   "enabled": True, "installedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+        _write_plugins(state)
+
+
+def _patches_remove(pid: str) -> None:
+    with _plugins_lock:
+        state = _read_plugins()
+        if any(a["plugins"].pop(pid, None) is not None for a in state["apps"].values()):
+            _write_plugins(state)
+
+
+app_plugins.PATCHES.add, app_plugins.PATCHES.remove = _patches_add, _patches_remove
+
+
+def _tab_apps() -> list[str]:
+    with _tabs_lock:
+        tabs = _read_tabs()["tabs"]
+    return list(dict.fromkeys(t["app"] for t in tabs))
+
+
+def _grid() -> dict[str, Any]:
+    with _plugins_lock:
+        listed = _read_plugins()
+    return app_plugins.grid(_tab_apps(), listed)
+
+
+def _public(g: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in g.items() if not k.startswith("_")}
+
+
+def _applied(it: dict[str, Any]) -> None:
+    """A change that worked also updates Patches' own list for that app, so both say the same."""
+    if it["app"] not in PLUGIN_APPS:
+        return
+    with _plugins_lock:
+        state = _read_plugins()
+        mine = state["apps"][it["app"]]["plugins"]
+        if it["install"]:
+            mine.setdefault(it["id"], {"name": it["name"], "version": "", "model": "", "enabled": True, "installedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})["enabled"] = True
+        else:
+            mine.pop(it["id"], None)
+        _write_plugins(state)
+
+
+@app.get("/api/app-plugins")
+def app_plugins_grid(_c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    return {**_public(_grid()), "job": app_plugins.job()}
+
+
+@app.get("/api/app-plugins/apply")
+def app_plugins_job(_c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    return {"job": app_plugins.job()}
+
+
+@app.post("/api/app-plugins/apply")
+def app_plugins_apply(body: dict[str, Any], c: wall.Caller = Depends(auth)) -> dict[str, Any]:
+    """Install / uninstall plugins in the apps, one at a time in the background (GET this route for progress)."""
+    if body.get("confirm") != "apply":
+        raise HTTPException(400, 'installing runs plugin code in the app and uninstalling removes it: confirm with "apply"')
+    try:
+        items = app_plugins.plan(body.get("changes"), _grid())
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+    if not items:
+        return {"job": app_plugins.job(), "note": "nothing to change: every box already matches"}
+    try:
+        return {"job": app_plugins.start(items, c.name, _applied)}
+    except RuntimeError as e:
+        raise HTTPException(409, str(e)) from None
+
+
 # ---------------------------------------------------------------- the built web app (dist/), single-page fallback
 
 @app.get("/{path:path}", include_in_schema=False)

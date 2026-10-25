@@ -5,6 +5,7 @@
 #   claude-pick --set-key                     # save or replace the API key (pasted hidden) in ~/.anthropic-key (0600)
 #   claude-pick --remove-key                  # delete the saved key
 #   claude-pick --key-status                  # is a key saved? (shows only its last 4 characters)
+#   claude-pick --auth-check                  # where an API key is still set (values hidden) + `claude auth status` on the plan
 # Skips the menus when you pass --model, run non-interactively (-p/--print), or stdin isn't a terminal.
 # AXF_CLAUDE_AUTH=plan|api picks the sign-in without asking (also for -p runs). ANTHROPIC_KEY_FILE moves the key file.
 # The key never goes in a repo: it lives only in the key file and is exported for the one claude process it starts.
@@ -27,7 +28,27 @@ save_key() {
   echo "Key saved in $KEYF ($(key_tail))."
 }
 
-use_plan() { unset ANTHROPIC_API_KEY; }
+# Places that can still hand Claude Code an API key after the shell variable is gone. Prints file:line + the name
+# only, never the value. Claude Code applies ~/.claude/settings.json "env" itself, so unsetting in the shell can't
+# override it: those need removing by hand (we never edit them for you).
+KEY_NAMES='ANTHROPIC_API_KEY|ANTHROPIC_AUTH_TOKEN|apiKeyHelper'
+key_sources() {
+  local f files=("$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile" "$HOME/.zshrc" "$HOME/.zprofile" /etc/environment /etc/bash.bashrc /etc/profile)
+  for f in /etc/profile.d/*.sh; do files+=("$f"); done
+  files+=("$HOME/.claude/settings.json" "$HOME/.claude/settings.local.json")
+  for f in "${files[@]}"; do
+    [[ -r "$f" ]] || continue
+    grep -nEo "$KEY_NAMES" "$f" 2>/dev/null | sort -u | sed "s#^#$f:#"
+  done
+  [[ -r "$HOME/.claude.json" ]] && grep -q '"primaryApiKey"' "$HOME/.claude.json" && echo "$HOME/.claude.json: primaryApiKey (an API key saved by /login)"
+  return 0
+}
+settings_key() { grep -lEs "$KEY_NAMES" "$HOME/.claude/settings.json" "$HOME/.claude/settings.local.json" 2>/dev/null || true; }
+use_plan() {
+  unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
+  local f; f="$(settings_key)"
+  [[ -z "$f" ]] || echo "Warning: $f sets an API key for Claude Code itself, so it still bills the key. Remove it there (claude-pick --auth-check shows the line)." >&2
+}
 use_api() {
   key_saved || { echo "No API key saved yet."; save_key || exit 1; }
   ANTHROPIC_API_KEY="$(tr -d '[:space:]' < "$KEYF")"; export ANTHROPIC_API_KEY
@@ -43,6 +64,15 @@ case "${1:-}" in
   --set-key) save_key; exit $? ;;
   --remove-key)
     if key_saved || [[ -e "$KEYF" ]]; then rm -f "$KEYF"; echo "Removed $KEYF. Claude Code will use your Claude plan."; else echo "No saved key."; fi
+    exit 0 ;;
+  --auth-check)
+    echo "API key set in this shell: $([[ -n "${ANTHROPIC_API_KEY:-}" ]] && echo yes || echo no)"
+    echo "Where an API key is still set (names only):"
+    out="$(key_sources)"; [[ -n "$out" ]] && printf '%s\n' "$out" | sed 's/^/  /' || echo "  nowhere"
+    if command -v claude >/dev/null; then
+      echo "On the Claude plan (key unset):"
+      env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN claude auth status 2>&1 | sed 's/^/  /' || true
+    fi
     exit 0 ;;
   --key-status)
     if key_saved; then echo "API key saved in $KEYF ($(key_tail))."; else echo "No API key saved ($KEYF)."; fi

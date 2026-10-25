@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-badge",
   "name": "Claude badge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Tests the AI connection every time the console loads and attaches a Claude badge to the banner (framework badge asset, top left). Connected: green, and a tooltip pops out to its right for 5 seconds saying “Powered by” and the model (e.g. Claude Opus 5.5). Not connected: grey, and the tooltip says “AI unavailable”. Uses the AI assistant's model service (axf.llm@1). Removing the plugin removes only the Claude badge; the banner, badge and clock asset types stay in the framework.",
+  "description": "Tests the AI connection every time the console loads and attaches a Claude badge to the banner (framework badge asset, top left). Connected: green, and a tooltip pops out to its right for 5 seconds saying “Powered by” and the model (e.g. Claude Opus 5.5). Account works but out of credits: amber, “Out of credits”. Can't connect (bad token or invalid account): grey, “AI unavailable”. The icon for each of the three states is picked in its settings. Uses the AI assistant's model service (axf.llm@1). Removing the plugin removes only the Claude badge; the banner, badge and clock asset types stay in the framework.",
   "targets": [
     "axf-console"
   ],
@@ -22,7 +22,10 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-24"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {

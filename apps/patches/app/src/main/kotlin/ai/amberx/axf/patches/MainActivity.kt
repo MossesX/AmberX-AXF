@@ -29,7 +29,7 @@ class MainActivity : AxfActivity() {
      * settings and notifications over (`AXF-Embed-Take/settings+notifications`): their own settings hooks disappear, and
      * what they ask for arrives here (the combined settings, the phone's notifications).
      */
-    private val holder: WebAppHolder by lazy { WebAppHolder("patches", takes = AppModule.TAKES) }
+    private val holder: WebAppHolder by lazy { WebAppHolder("patches", takes = AppModule.TAKES, marker = false) }
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)

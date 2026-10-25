@@ -45,7 +45,7 @@
     },
     "asked": {
       "type": "string",
-      "maxLength": 600,
+      "maxLength": 4000,
       "description": "What was asked, cut short, secrets hidden."
     },
     "repos": {
@@ -420,6 +420,99 @@
               "skip"
             ]
           }
+        }
+      }
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "What another machine or Claude account needs to pick the work up (Oct 25 2026). The hook fills the git part; `changes.mjs resume` the rest.",
+      "properties": {
+        "repo": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "owner/name"
+        },
+        "folder": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "checkout folder where it ran"
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "branch the work is on"
+        },
+        "base": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$",
+          "description": "commit it started from"
+        },
+        "head": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$",
+          "description": "last commit"
+        },
+        "pushed": {
+          "type": "boolean",
+          "description": "head is on the remote"
+        },
+        "dirty": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "uncommitted files on the old machine"
+        },
+        "pr": {
+          "type": "string",
+          "maxLength": 500,
+          "pattern": "^https://",
+          "description": "pull request URL"
+        },
+        "plan": {
+          "type": "string",
+          "maxLength": 3000,
+          "description": "the approach"
+        },
+        "next": {
+          "type": "string",
+          "maxLength": 1500,
+          "description": "what is left"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 3000,
+          "description": "anything else the next session needs"
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 300,
+          "items": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "description": "repo paths changed"
+        },
+        "tests": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "description": "commands that check it"
+        },
+        "read": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "description": "repo paths to read first"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     }
