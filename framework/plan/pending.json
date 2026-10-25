@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T23:31:30.405Z",
+ "updatedAt": "2026-10-25T01:47:06.976Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -785,7 +785,12 @@
    "detail": "Rebuild the pilot-plugin@1 contract in MossesX/Build-Pilot (src/pilot/contract.ts + stacks.ts): stack-scoped plugins (one stack, several, or * for all), steps, build patches, compose/merge/conflict rules, checks, and the pilot-project@1 format, so it ports cleanly to the Android version of Build Pilot and to every future stack. The Opus version was built Oct 19 2026; keep its tests (tests/contract.test.ts) passing or replace them with stricter ones, and keep the five Android/all-stack plugins working.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 25 2026: Build-Pilot PR #4 removed Pilot own AI assistant + agent manager (the Console hosts both). AssemblyStatus lost modelReady; agent backends are console | off (auto/local read as console). Rebuild on top of that.",
+     "at": "2026-10-25T01:46:56.413Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Read first (Build-Pilot repo must be attached): `src/pilot/contract.ts`, `stacks.ts`, `tests/contract.test.ts`, the five Android/all-stack plugins, `server/assembly.py`. Write `_claude/memory/docs/rebuilds/build-pilot-contract.md` skeleton: what the Opus contract has, what the rebuild changes (stack scoping rules, step model, patch/compose/conflict rules, checks, pilot-project@1), what stays.",
@@ -835,7 +840,7 @@
    ],
    "createdAt": "2026-10-19T11:40:14.809Z",
    "builtAt": "",
-   "updatedAt": "2026-10-21T04:46:12.595Z",
+   "updatedAt": "2026-10-25T01:46:56.413Z",
    "estimate": "4.5 h",
    "source": "chat"
   },
@@ -863,7 +868,12 @@
    "detail": "Brett, Oct 20 2026: agents (Build Pilot's pilot-assembler, Mosses and every agent-definition@1 agent) and AI assistant live sessions should run on axHub, not inside each app. Build Pilot, the Dev Console and the phone apps become clients.\n\n- axHub gets an agent + session host: runs turns, owns live-session@1 event logs (sessions survive app restarts and browser closes), per-agent memory, provider keys in axHub's vault, hub permissions for who may use which agent.\n- Apps plug in through what the Fable rebuilds left open: the live-session host registry (`axf.live-host@1` / `register_host`, today a typed `axhub` placeholder in the console and Build Pilot), Build Pilot's assembly backend (BP_AGENT=local|console|off → add `axhub`), and the kernel placeholders `axf.agents`, `axhub.agent`.\n- axHub never depends on AXF (decision): the host speaks the contracts over its API (AXPP), with an AXF adapter on the AXF side (lib-hub).\n- The assembly gate (pilot-assembly@1) stays in Build Pilot: axHub only proposes ops; Build Pilot checks and builds. Manual mode unaffected.\n- Needs the axHub repo (MossesX/axHub) attached.\n\nUntil then: Build Pilot runs its agent locally (Fable rebuild Oct 20 2026), the console's assistant hosts its own sessions.",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 25 2026: Build Pilot no longer hosts its own assistant or agent manager (Build-Pilot PR #4, pending item pilot-remove-console-duplicates); its assembling agent runs on the Dev Console agent manager. When this lands, point Pilot assembly at the axHub host.",
+     "at": "2026-10-25T01:46:56.336Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "BRETT attaches MossesX/axHub. Read its session/worker layout, decisions #70–#87 and the AXPP protocol doc; write `_claude/memory/docs/axhub-agent-host.md` design: host API (sessions, turns, events, agents, memory, permissions), where provider keys live (vault, write-only), what the AXF adapter translates. No code.",
@@ -968,7 +978,7 @@
    ],
    "createdAt": "2026-10-21T03:33:11.548Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-10-25T01:46:56.336Z",
    "estimate": "10 h",
    "source": "chat"
   },
@@ -3232,6 +3242,40 @@
    "builtAt": "2026-10-24T23:31:30.264Z",
    "updatedAt": "2026-10-24T23:31:30.405Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "pilot-remove-console-duplicates",
+   "title": "Build Pilot: uninstall the plugins the Console also has (AI assistant + agent manager)",
+   "detail": "Brett: uninstall from Pilot every plugin that is installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (Console plugins ai-assistant + agent-manager); Pilot's 7 designer plugins are not in the Console. Removed from Build-Pilot (web UI, /api/assistant + /api/agents, server modules, contract bake); assembly runs on the Console's agent manager (BP_AGENT=console). Kept: settings interface, Plugins page + catalog installs, metering, the pilot-assembler add-on.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus: MossesX/Build-Pilot PR #4 (branch claude/project-thread-abvc9m), docs + this entry in AmberX-AXF on the same branch name. Pilot server self-test 282 -> 198 (assistant/agent checks gone, console-backend checks added), contract tests 17/17, typecheck + build pass. Old assistant/agent data on the Pilot server is left in place, unused.",
+     "at": "2026-10-25T01:47:06.976Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Remove Pilot's assistant + agent manager and rewire assembly to the Console's agent manager",
+     "at": "2026-10-25T01:46:49.283Z",
+     "estimate": "25 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:46:49.283Z"
+    },
+    {
+     "text": "Tests, docs, pending notes, draft PRs",
+     "at": "2026-10-25T01:46:49.283Z",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-25T01:46:49.283Z"
+    }
+   ],
+   "createdAt": "2026-10-25T01:46:49.283Z",
+   "builtAt": "2026-10-25T01:46:49.283Z",
+   "updatedAt": "2026-10-25T01:47:06.976Z",
+   "estimate": "45 min",
    "source": "chat"
   }
  ]

@@ -120,3 +120,7 @@ repo's code, so "axHub never depends on AXF" still holds for the server. Reusabl
 ## axHub badge: red until live (Oct 24 2026)
 
 Brett: the axHub badge must be red whenever the app isn't retrieving its settings live from axHub, and green only when it is (first red, then green). Built as the framework web library `framework/libs/hubstatus` (status widget `status/axhub`, counter `hub.live`, no new asset type), installed in the Dev Console. Rule in `_claude/rules/RULES.md`.
+
+## Build Pilot drops what the Console has (Oct 25 2026)
+
+Brett: uninstall from Pilot every plugin that is also installed in the Console. The only duplicates were Pilot's own AI assistant and agent manager (the Console's `ai-assistant` + `agent-manager` plugins); they were removed from Build-Pilot (PR #4) and Pilot's assembling agent runs on the Console's agent manager. Supersedes the Oct 20 2026 Fable rebuild that hosted them in Pilot. Pilot keeps what it can't run without: the settings interface, its Plugins page + pilot plugin catalog installs (its designer steps), metering and the `pilot-assembler` add-on.

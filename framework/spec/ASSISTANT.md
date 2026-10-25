@@ -45,7 +45,7 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
   `providers.extra_kinds`, `providers.stored_secret_names`, `providers.PRIVATE_DIRS` / `PRIVATE_ROOTS` /
   `ENV_PREFIXES_HIDDEN` (what the Claude Code CLI may never see), `providers.HOST_LABEL`, `providers.USER_AGENT`,
   `sessions.LocalHost(folder, label=…, note=…, restart_reason=…)`, `sessions.axhub_placeholder(runs_on=…)`. A host
-  never copies these modules; Build Pilot bakes them with `scripts/bake-contracts.mjs` from `framework/python`.
+  never copies these modules.
 - **Capabilities:** the engine provides `axf.llm@1` (`profiles()`, `complete()`, `embed()`) and `axf.live-sessions@1`;
   hosts come from `live-session@1` (`framework/spec/LIVE-SESSIONS.md`).
 
@@ -54,7 +54,7 @@ Build Pilot today, Android later) shares one contract; the chat engine lives in 
 | App | Engine | UI | Status |
 | --- | --- | --- | --- |
 | Dev Console (web) | `apps/console-web/plugins/ai-assistant/server` on `axf.assistant_host` | plugin web part on `HttpAssistantClient` | **built** (Fable rebuild Oct 20 2026; on the framework packages since the Oct 21 2026 harvest) | <!-- axf-plugin:ai-assistant -->
-| Build Pilot | its own server on baked copies of `axf.contracts` + `axf.assistant_host` (`scripts/bake-contracts.mjs`; `server/assistant.py`, routes `/api/assistant/*`) | its own, on `HttpAssistantClient` | **built** (Fable rebuild `build-pilot-agents`, Oct 20–21 2026); re-bake from `framework/python` pending |
+| Build Pilot | none: its own copy (Fable rebuild `build-pilot-agents`, Oct 20–21 2026) was removed Oct 25 2026 because the Dev Console hosts the assistant + agent manager; Pilot's assembling agent runs on the Console's agent manager | none | **removed** (Build-Pilot PR #4) |
 | Android | a module implementing `AssistantClient` (HTTP/AXPP/in-process) | Compose | planned (kernel contract only) |
 
 ## Not yet

@@ -100,6 +100,9 @@ in the Dockerfile touched, no `COPY` added).
 
 ### Build Pilot adoption steps (exact)
 
+**Obsolete (Oct 25 2026):** Build Pilot's own assistant + agent manager were removed (Build-Pilot PR #4; the Dev
+Console hosts both), so there is nothing left to adopt. Kept for history.
+
 1. `scripts/bake-contracts.mjs` → `FILES`: replace the two plugin lines with
    ```js
    'framework/python/axf/contracts/assistant.py': 'server/axf_contracts/assistant.py',
