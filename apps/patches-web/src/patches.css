@@ -38,3 +38,8 @@
 .axp-ap__name { display: flex; flex-direction: column; text-align: left; font-weight: normal; min-width: 12em; }
 .axp-ap__cell.is-changed { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .axp-ap__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.axp-ap__sort { flex: 0 1 auto; width: auto; }
+.axp-ap__count { margin: 0; }
+.axp-ap__divider td { text-align: left; font-size: 0.85em; border-top: calc(var(--fx-border-w) * 2) solid var(--fx-border); }
+.axp-ap__set { display: flex; flex-wrap: wrap; gap: calc(var(--fx-space) * 0.5) var(--fx-space); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: calc(var(--fx-space) * 0.75); margin: 0; }
+.axp-ap__set > legend { padding: 0 calc(var(--fx-space) * 0.25); }
