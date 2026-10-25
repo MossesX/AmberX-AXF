@@ -23,6 +23,7 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { createAlertsLibrary } from './axf/libs/alerts';
 import { createAshesLibrary, ownersFrom } from './axf/libs/ashes';
 import { hubStatusLibrary } from './axf/libs/hubstatus';
+import { library as dataGridLibrary } from './axf/libs/datagrid';
 import { consoleAlertsTransport } from './alertsTransport';
 import { consoleSettings } from './consoleSettings';
 import { accountLibrary, useBindAccount } from './account';
@@ -119,7 +120,7 @@ function usePlugins() {
     // The settings library and the console's own settings always run; plugins once the backend (or the host) has answered.
     const enabled = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
-    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, ...enabled.map(underPlugins)]);
+    return installLibraries(rt, [settingsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, ...enabled.map(underPlugins)]);
   }, [rt, status, loaded, managed, hostIds]);
   return { contributed };
 }

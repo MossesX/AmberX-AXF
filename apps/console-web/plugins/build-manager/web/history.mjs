@@ -125,6 +125,94 @@ export function filterBuilt(rows, { model = '', period = 'all', cost = '', surfa
     && (!surface || r.surface === surface) && (!status || r.status === status));
 }
 
+/* ---------------- Sessions: the build log grouped by the session that asked ---------------- */
+
+/** A question that never became a change (the hook opened it, the session marked it "no change"). */
+const isQuestion = (s) => s?.result?.state === 'cancelled' && /^no change/i.test(str(s.result.summary));
+export const ITEM_STATUS_LABEL = { running: 'Running', queued: 'Queued', done: 'Done', failed: 'Failed', question: 'Question only', stalled: 'No word' };
+
+/**
+ * Which session an entry belongs to. Recorded sessions (who.session, the Claude Code session id) group by that id; a
+ * subagent's entry without one joins its parent's session; entries recorded afterwards (backfill) group per day; anything
+ * else without a session id groups per machine and day, marked unrecorded.
+ */
+export function sessionKeyOf(s, byId = new Map()) {
+  if (str(s?.session)) return `s:${str(s.session)}`;
+  const parent = s?.parent ? byId.get(s.parent) : null;
+  if (parent && str(parent.session)) return `s:${str(parent.session)}`;
+  const day = new Date(ms(s?.createdAt) || 0).toISOString().slice(0, 10);
+  if (s?.surface === 'backfill' || s?.where === 'backfill') return `backfill:${day}`;
+  return `u:${str(s?.host || s?.where || 'unknown')}:${day}`;
+}
+
+/** One request inside a session's subgrid. */
+export function sessionItem(s, now = Date.now()) {
+  const f = figures(s);
+  const st = isQuestion(s) ? 'question' : statusOf(s);
+  return {
+    id: str(s.id), title: str(s.title), kind: str(s.kind) || 'build', asked: str(s.asked), status: st === 'running' && isStale(s, now) ? 'stalled' : st,
+    resultState: str(s.result?.state), summary: str(s.result?.summary), model: modelOf(s.model), modelRaw: str(s.model),
+    at: ms(s.startedAt) || ms(s.createdAt), finishedAt: ms(s.finishedAt), ...f, stepsDone: s.steps?.done ?? 0, stepsTotal: s.steps?.total ?? 0,
+    branch: str(s.branch), ref: s.buildRef ?? null, repos: s.repos ?? [], commits: s.commits ?? [], parent: str(s.parent), surface: str(s.surface),
+  };
+}
+
+/** Every session ever, newest first: one row each with its requests (oldest first) and totals. */
+export function sessionsFromChanges(summaries, now = Date.now()) {
+  const list = summaries ?? [];
+  const byId = new Map(list.map((s) => [s.id, s]));
+  const groups = new Map();
+  for (const s of list) {
+    const key = sessionKeyOf(s, byId);
+    let g = groups.get(key);
+    if (!g) {
+      const kind = key.startsWith('s:') ? 'recorded' : key.startsWith('backfill:') ? 'backfill' : 'unrecorded';
+      g = { key, kind, session: kind === 'recorded' ? key.slice(2) : '', host: '', surface: '', where: '', user: '', entries: [] };
+      groups.set(key, g);
+    }
+    g.entries.push(s);
+    g.host ||= str(s.host); g.surface ||= str(s.surface); g.where ||= str(s.where); g.user ||= str(s.user);
+  }
+  const out = [];
+  for (const g of groups.values()) {
+    const items = g.entries.map((s) => sessionItem(s, now)).sort((a, b) => a.at - b.at);
+    const models = [...new Set(items.map((i) => i.model))];
+    const count = (st) => items.filter((i) => i.status === st).length;
+    const t = { minutes: 0, cost: 0, minutesEstimated: false, costEstimated: false, tokens: 0 };
+    for (const i of items) {
+      if (i.minutes != null) { t.minutes += i.minutes; if (i.minutesEstimated) t.minutesEstimated = true; }
+      if (i.cost != null) { t.cost += i.cost; if (i.costEstimated) t.costEstimated = true; }
+      if (i.tokens != null) t.tokens += i.tokens;
+    }
+    const firstAt = Math.min(...items.map((i) => i.at || Infinity));
+    const lastAt = Math.max(...g.entries.map((s) => ms(s.lastSeenAt) || ms(s.finishedAt) || ms(s.updatedAt) || ms(s.createdAt)));
+    const running = count('running') + count('queued');
+    const day = Number.isFinite(firstAt) ? new Date(firstAt).toISOString().slice(0, 10) : '';
+    const surfaceLabel = SURFACE_LABEL[g.surface] ?? (g.surface || g.where || '');
+    const label = g.kind === 'recorded' ? `${g.session.slice(0, 8)}` : g.kind === 'backfill' ? `Recorded afterwards · ${day}` : `No session id · ${g.host || g.where || 'unknown'} · ${day}`;
+    out.push({
+      key: g.key, kind: g.kind, session: g.session, label, host: g.host, surface: g.surface, surfaceLabel, where: g.where, user: g.user,
+      models, model: models.length === 1 ? models[0] : models.length ? 'Mixed' : '', firstAt: Number.isFinite(firstAt) ? firstAt : 0, lastAt: Number.isFinite(lastAt) ? lastAt : 0, day,
+      count: items.length, requests: items.filter((i) => i.status !== 'question').length, questions: count('question'),
+      done: count('done'), failed: count('failed'), running, stalled: count('stalled'),
+      status: running ? 'running' : count('stalled') ? 'stalled' : count('failed') ? 'failed' : 'done',
+      minutes: t.minutes, minutesEstimated: t.minutesEstimated, cost: Math.round(t.cost * 1000) / 1000, costEstimated: t.costEstimated, tokens: t.tokens || null,
+      repos: [...new Set(items.flatMap((i) => i.repos))], items,
+      // for the search: every request's title, what was asked, branch and id
+      title: items.map((i) => i.title).join(' · '), detail: items.map((i) => `${i.asked} ${i.branch} ${i.id} ${i.summary}`).join(' '), id: g.session || g.key,
+    });
+  }
+  return out.sort((a, b) => b.lastAt - a.lastAt || b.firstAt - a.firstAt);
+}
+
+/** Sessions filters: model ('' any, or one of the session's models), period (by last activity), status, surface, kind. */
+export function filterSessions(rows, { model = '', period = 'all', status = '', surface = '', kind = '' } = {}, now = Date.now()) {
+  const since = period === '7d' ? now - 7 * 86400000 : period === '30d' ? now - 30 * 86400000 : 0;
+  const wk = period === 'week' ? isoWeek(now) : '';
+  return rows.filter((r) => (!model || r.models.includes(model)) && (!since || r.lastAt >= since) && (!wk || isoWeek(r.lastAt) === wk)
+    && (!status || r.status === status) && (!surface || r.surface === surface) && (!kind || r.kind === kind));
+}
+
 /* ---------------- search (Remaining + Live + Built) ---------------- */
 
 /** Lower-cased words; every word of the query must appear somewhere in the item's text. */

@@ -1,10 +1,11 @@
 /* Build manager — the view (live tracker + everything still to build), the banner and the settings panel. Theme tokens only. */
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, Switch, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { addedByLabel, addedByOf, filterRows, GONE_LABEL, goneRows, MODELS, ORIGIN_LABEL, ORIGINS, SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES, sortRows, statusesOf, totalsByModel, type GoneKind, type LiveEntry, type Origin, type Row, type SortKey, type Source } from './merge.mjs';
 import { abandonBuild, bannerOn, defaultSort, isStuckLive, enabledSources, fmt, loadChanges, loadList, loadLive, onStartRequest, planBuild, startBuild, takeFocus, helpers, takeOff, tickStep, useStore, onStore, usd, verifyBuild, type StartPlan, type Store } from './store';
-import { builtRows, builtTotals, filterBuilt, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, type ChangeLive, type Period } from './history.mjs';
+import { builtRows, builtTotals, filterBuilt, filterSessions, ITEM_STATUS_LABEL, liveFromChanges, matches, money, PERIOD_LABEL, PERIODS, sessionsFromChanges, type ChangeLive, type Period, type SessionItem, type SessionRow } from './history.mjs';
+import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 
 /* ---------------- time ---------------- */
 
@@ -350,6 +351,170 @@ function BuiltView({ query }: { query: string }) {
   );
 }
 
+/* ---------------- Sessions: every session ever, each expanding into what it was asked to build ---------------- */
+
+const SESSION_PREFS = 'axp-build-manager:sessions';
+type SessionPrefs = { byDay: boolean; hidden: string[]; itemHidden: string[]; sort: GridSort };
+const readSessionPrefs = (): SessionPrefs => {
+  const d: SessionPrefs = { byDay: true, hidden: [], itemHidden: [], sort: null };
+  try { const j = JSON.parse(localStorage.getItem(SESSION_PREFS) ?? '{}'); return { byDay: j.byDay !== false, hidden: Array.isArray(j.hidden) ? j.hidden : [], itemHidden: Array.isArray(j.itemHidden) ? j.itemHidden : [], sort: j.sort && typeof j.sort.col === 'string' ? { col: j.sort.col, dir: j.sort.dir === -1 ? -1 : 1 } : null }; } catch { return d; }
+};
+const when = (t: number) => (t ? new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—');
+const STATUS_TONE: Record<string, string> = { running: 'accent', queued: 'info', stalled: 'warning', failed: 'danger', done: 'success', question: 'muted' };
+const STATUS_BADGE: Record<string, 'ok' | 'danger' | 'warn' | 'muted' | undefined> = { done: 'ok', failed: 'danger', stalled: 'warn', question: 'muted' };
+const timeText = (min: number | null, est: boolean) => (min == null ? '—' : `${est ? '~' : ''}${fmt(min) || '0 min'}`);
+const costText = (v: number | null, est: boolean) => (v == null ? '—' : `${est ? '~' : ''}${money(v)}`);
+const toggleIn = (list: string[], v: string, show?: boolean) => (show ?? list.includes(v)) ? list.filter((x) => x !== v) : [...list, v];
+
+function sortFor(sort: GridSort, col: string | null): GridSort {
+  if (!col) return null;
+  return sort?.col === col ? (sort.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 };
+}
+
+/** The subgrid: every request the session was asked for, oldest first. */
+function SessionRequests({ row, hidden, setHidden }: { row: SessionRow; hidden: string[]; setHidden: (h: string[]) => void }) {
+  const rt = useRuntime();
+  const [sort, setSort] = useState<GridSort>(null);
+  const [open, setOpen] = useState<string[]>([]);
+  const canLog = !!rt.actions.get('codebase-changes.open');
+  const cols: GridColumn<SessionItem>[] = [
+    { id: 'n', label: '#', width: 'calc(var(--fx-space) * 3)', sortable: true, sortValue: (i) => row.items.indexOf(i), render: (i) => <span className="fx-small fx-muted">{row.items.indexOf(i) + 1}</span> },
+    { id: 'title', label: 'Asked to build', width: 'minmax(calc(var(--fx-space) * 22), 3fr)', fixed: true, sortable: true, sortValue: (i) => i.title.toLowerCase(),
+      render: (i) => <span className="axp-build-manager__cell-title" title={i.asked || i.title}><strong>{i.title}</strong>{i.asked && i.asked !== i.title && <span className="fx-small fx-muted">{i.asked}</span>}</span> },
+    { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 7)', sortable: true, sortValue: (i) => i.kind, render: (i) => <Badge tone="muted">{i.kind}</Badge> },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 8)', sortable: true, sortValue: (i) => i.model, render: (i) => <ModelChip model={i.model === 'Other' ? 'Opus' : i.model} /> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 10)', sortable: true, sortValue: (i) => i.status,
+      render: (i) => <Badge tone={STATUS_BADGE[i.status]} title={i.summary || undefined}>{ITEM_STATUS_LABEL[i.status] ?? i.status}{i.resultState && i.resultState !== i.status && i.status !== 'question' ? ` · ${i.resultState}` : ''}</Badge> },
+    { id: 'at', label: 'Started', width: 'calc(var(--fx-space) * 11)', sortable: true, sortValue: (i) => i.at, render: (i) => <span className="fx-small">{when(i.at)}</span> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 6)', align: 'end', sortable: true, sortValue: (i) => i.stepsTotal, render: (i) => <span className="fx-small">{i.stepsTotal ? `${i.stepsDone}/${i.stepsTotal}` : '—'}</span> },
+    { id: 'time', label: 'Time', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (i) => i.minutes ?? -1, render: (i) => <span className="fx-small" title={i.minutesEstimated ? 'Estimated' : 'Actual'}>{timeText(i.minutes, i.minutesEstimated)}</span> },
+    { id: 'cost', label: 'Cost', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (i) => i.cost ?? -1, render: (i) => <span className="fx-small" title={i.costEstimated ? 'Estimated' : 'Actual, from the session’s tokens'}>{costText(i.cost, i.costEstimated)}</span> },
+    { id: 'branch', label: 'Branch', width: 'minmax(calc(var(--fx-space) * 10), 1fr)', sortable: true, sortValue: (i) => i.branch, render: (i) => (i.branch ? <Badge icon="git-branch" tone="muted">{i.branch}</Badge> : <span className="fx-muted">—</span>) },
+  ];
+  return (
+    <div className="axp-build-manager__subgrid">
+      <DataGrid<SessionItem> id={`bm-session-${row.key.replace(/[^a-z0-9-]/gi, '-')}`} label={`What session ${row.label} was asked to build`} compact
+        groups={[{ id: 'all', title: `Asked to build (${row.requests}${row.questions ? ` + ${row.questions} question${row.questions > 1 ? 's' : ''}` : ''})`, icon: 'list', rows: row.items, groups: [], fixed: true,
+          summary: `${timeText(row.minutes, row.minutesEstimated)} · ${costText(row.cost, row.costEstimated)}` }]}
+        columns={cols} rowId={(i) => i.id} rowLabel={(i) => i.title} rowTone={(i) => STATUS_TONE[i.status] ?? 'muted'}
+        hidden={hidden} onToggleColumn={(c, show) => setHidden(toggleIn(hidden, c, show))} onShowAll={() => setHidden([])}
+        sort={sort} onSort={(c) => setSort(sortFor(sort, c))}
+        expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))}
+        rowCtx={(i) => ({ target: 'axf-change-entry', payload: i.id })}
+        renderDetail={(i) => (
+          <div className="axp-build-manager__subdetail">
+            {i.asked && <p className="fx-small"><strong>Asked:</strong> {i.asked}</p>}
+            {i.summary && <p className="fx-small"><strong>Result:</strong> {i.summary}</p>}
+            <span className="axp-build-manager__chips">
+              <Badge tone="muted" title="Codebase changes entry">{i.id}</Badge>
+              {i.ref && <Badge icon="link" tone="muted" title="What it belongs to">{i.ref.kind}:{i.ref.id}</Badge>}
+              {i.parent && <Badge icon="layers" tone="muted" title="Started by another entry (subagent)">sub of {i.parent}</Badge>}
+              {i.commits.slice(-3).map((c) => <a key={c} className="fx-btn fx-btn--neutral fx-btn--sm axp-build-manager__act" href={`https://github.com/${i.repos[0] ?? 'MossesX/AmberX-AXF'}/commit/${c}`} target="_blank" rel="noopener noreferrer"><Icon name="git-commit" size={11} />{c.slice(0, 7)}</a>)}
+              {canLog && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${i.id}`)}>Open in the log</Button>}
+            </span>
+          </div>
+        )} />
+    </div>
+  );
+}
+
+function SessionsView({ query }: { query: string }) {
+  const s = useStore();
+  const [prefs, setPrefs0] = useState<SessionPrefs>(readSessionPrefs);
+  const setPrefs = (p: Partial<SessionPrefs>) => setPrefs0((cur) => { const n = { ...cur, ...p }; try { localStorage.setItem(SESSION_PREFS, JSON.stringify(n)); } catch { /* private window */ } return n; });
+  const [model, setModel] = useState('');
+  const [period, setPeriod] = useState<Period>('all');
+  const [status, setStatus] = useState('');
+  const [kind, setKind] = useState('');
+  const [open, setOpen] = useState<string[]>([]);
+  const [collapsed, setCollapsed] = useState<string[]>([]);
+  const [limit, setLimit] = useState(100);
+  const all = useMemo(() => sessionsFromChanges(s.changes, s.now), [s.changes, s.now]);
+  const shown = useMemo(() => filterSessions(all, { model, period, status, kind }, s.now).filter((r) => matches(query, r)), [all, model, period, status, kind, query, s.now]);
+  const models = useMemo(() => [...new Set(all.flatMap((r) => r.models))].sort(), [all]);
+  const page = shown.slice(0, limit);
+  // A search opens the sessions it matched so the request that matched is in view.
+  useEffect(() => { if (query) setOpen(shown.slice(0, 5).map((r) => r.key)); }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
+  const total = shown.reduce((t, r) => ({ req: t.req + r.requests, min: t.min + r.minutes, cost: t.cost + r.cost }), { req: 0, min: 0, cost: 0 });
+
+  const groups: GridGroup<SessionRow>[] = useMemo(() => {
+    const sum = (rows: SessionRow[]) => `${rows.length} session${rows.length === 1 ? '' : 's'} · ${rows.reduce((n, r) => n + r.requests, 0)} asked · ${money(rows.reduce((n, r) => n + r.cost, 0))}`;
+    if (!prefs.byDay) return [{ id: 'all', title: 'Every session', icon: 'users', rows: page, groups: [], fixed: true, summary: sum(page) }];
+    const byDay = new Map<string, SessionRow[]>();
+    for (const r of page) { const d = new Date(r.lastAt || r.firstAt).toISOString().slice(0, 10); byDay.set(d, [...(byDay.get(d) ?? []), r]); }
+    return [...byDay.entries()].map(([d, rows]) => ({ id: d, title: d, icon: 'calendar', rows, groups: [], fixed: true, collapsed: collapsed.includes(d), summary: sum(rows) }));
+  }, [page, prefs.byDay, collapsed]);
+
+  const cols: GridColumn<SessionRow>[] = [
+    { id: 'session', label: 'Session', width: 'minmax(calc(var(--fx-space) * 18), 2fr)', fixed: true, sortable: true, sortValue: (r) => r.label.toLowerCase(),
+      render: (r) => (
+        <span className="axp-build-manager__cell-title" title={r.session ? `Session ${r.session}` : r.label}>
+          <strong>{r.kind === 'recorded' ? <><Icon name="terminal" size={11} /> {r.label}</> : r.label}</strong>
+          <span className="fx-small fx-muted">{r.items[r.items.length - 1]?.title ?? ''}</span>
+        </span>
+      ) },
+    { id: 'where', label: 'Where', width: 'calc(var(--fx-space) * 11)', sortable: true, sortValue: (r) => `${r.surfaceLabel} ${r.host}`,
+      render: (r) => <span className="axp-build-manager__cell-title"><span className="fx-small">{r.surfaceLabel || '—'}</span><span className="fx-small fx-muted">{[r.host, r.user].filter(Boolean).join(' · ')}</span></span> },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-space) * 8)', sortable: true, sortValue: (r) => r.model,
+      render: (r) => (r.models.length > 1 ? <span className="axp-build-manager__chips">{r.models.map((m) => <ModelChip key={m} model={m === 'Other' ? 'Opus' : m} />)}</span> : <ModelChip model={r.model === 'Other' || !r.model ? 'Opus' : r.model} />) },
+    { id: 'started', label: 'Started', width: 'calc(var(--fx-space) * 11)', sortable: true, sortValue: (r) => r.firstAt, render: (r) => <span className="fx-small">{when(r.firstAt)}</span> },
+    { id: 'last', label: 'Last seen', width: 'calc(var(--fx-space) * 11)', sortable: true, sortValue: (r) => r.lastAt, render: (r) => <span className="fx-small">{when(r.lastAt)}</span> },
+    { id: 'asked', label: 'Asked', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (r) => r.requests,
+      render: (r) => <span className="fx-small" title={`${r.requests} change${r.requests === 1 ? '' : 's'} asked for${r.questions ? `, ${r.questions} question${r.questions === 1 ? '' : 's'} only` : ''}`}><strong>{r.requests}</strong>{r.questions ? <span className="fx-muted"> +{r.questions}?</span> : null}</span> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-space) * 12)', sortable: true, sortValue: (r) => r.status,
+      render: (r) => <span className="axp-build-manager__chips">
+        {r.running > 0 && <Badge icon="refresh">{r.running} running</Badge>}
+        {r.stalled > 0 && <Badge tone="warn" icon="clock">{r.stalled} no word</Badge>}
+        {r.failed > 0 && <Badge tone="danger" icon="x">{r.failed} failed</Badge>}
+        {r.done > 0 && <Badge tone="ok" icon="check">{r.done} done</Badge>}
+      </span> },
+    { id: 'time', label: 'Time', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (r) => r.minutes, render: (r) => <span className="fx-small" title={r.minutesEstimated ? 'Partly estimated' : 'Actual'}>{timeText(r.minutes, r.minutesEstimated)}</span> },
+    { id: 'cost', label: 'Cost', width: 'calc(var(--fx-space) * 7)', align: 'end', sortable: true, sortValue: (r) => r.cost, render: (r) => <span className="fx-small" title={r.costEstimated ? 'Partly estimated' : 'Actual, from the session’s tokens'}>{costText(r.cost, r.costEstimated)}</span> },
+  ];
+
+  return (
+    <section className="axp-build-manager__built" aria-label="Sessions">
+      <div className="axp-build-manager__totals" role="list" aria-label="Totals">
+        <div role="listitem" className="axp-build-manager__total is-all">
+          <span className="axp-build-manager__total-label">Sessions</span>
+          <strong>{shown.length}</strong>
+          <span className="fx-small fx-muted">{total.req} asked · {fmt(total.min) || '0 min'} · {money(total.cost)}</span>
+        </div>
+      </div>
+      <div className="axp-build-manager__filters" role="group" aria-label="Filter the sessions">
+        <Switch label="Group by day" checked={prefs.byDay} onChange={(v) => setPrefs({ byDay: v })} />
+        <label className="axp-build-manager__field"><span>Model</span>
+          <select className="fx-input" value={model} onChange={(e) => setModel(e.target.value)}><option value="">All</option>{models.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+        </label>
+        <label className="axp-build-manager__field"><span>When</span>
+          <select className="fx-input" value={period} onChange={(e) => setPeriod(e.target.value as Period)}>{PERIODS.map((p) => <option key={p} value={p}>{PERIOD_LABEL[p]}</option>)}</select>
+        </label>
+        <label className="axp-build-manager__field"><span>Status</span>
+          <select className="fx-input" value={status} onChange={(e) => setStatus(e.target.value)}><option value="">All</option><option value="running">Running</option><option value="stalled">No word</option><option value="failed">Has a failure</option><option value="done">Done</option></select>
+        </label>
+        <label className="axp-build-manager__field"><span>Session id</span>
+          <select className="fx-input" value={kind} onChange={(e) => setKind(e.target.value)}><option value="">All</option><option value="recorded">Recorded</option><option value="unrecorded">Not recorded</option><option value="backfill">Recorded afterwards</option></select>
+        </label>
+        <Button size="sm" tone="neutral" icon={open.length ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(open.length ? [] : page.map((r) => r.key))}>{open.length ? 'Collapse all' : 'Expand all'}</Button>
+      </div>
+      {!s.changesLoaded ? <div className="fx-empty">Loading the sessions…</div>
+        : !shown.length ? <div className="fx-empty">{all.length ? 'No session matches.' : s.changesAvailable === false ? 'The build log isn’t available (Codebase changes plugin off?).' : 'No sessions recorded yet.'}</div>
+          : (
+            <div className="axp-build-manager__grid">
+              <DataGrid<SessionRow> id="bm-sessions" label="Every session" groups={groups} columns={cols} rowId={(r) => r.key} rowLabel={(r) => r.label}
+                rowTone={(r) => STATUS_TONE[r.status] ?? 'muted'}
+                hidden={prefs.hidden} onToggleColumn={(c, show) => setPrefs({ hidden: toggleIn(prefs.hidden, c, show) })} onShowAll={() => setPrefs({ hidden: [] })}
+                sort={prefs.sort} onSort={(c) => setPrefs({ sort: sortFor(prefs.sort, c) })}
+                expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(r) => setOpen((o) => toggleIn(o, r.key))}
+                onToggleGroup={(id) => setCollapsed((c) => toggleIn(c, id))}
+                renderDetail={(r) => <SessionRequests row={r} hidden={prefs.itemHidden} setHidden={(h) => setPrefs({ itemHidden: h })} />} />
+            </div>
+          )}
+      {shown.length > limit && <div className="axp-build-manager__actions"><Button onClick={() => setLimit(limit + 100)}>Show more ({shown.length - limit})</Button></div>}
+    </section>
+  );
+}
+
 /* ---------------- the list ---------------- */
 
 function StepsList({ row, canTick }: { row: Row; canTick: boolean }) {
@@ -541,9 +706,9 @@ function Totals({ rows }: { rows: Row[] }) {
   );
 }
 
-type Tab = 'remaining' | 'live' | 'built';
+type Tab = 'remaining' | 'live' | 'built' | 'sessions';
 const TAB_KEY = 'axp-build-manager:tab';
-const readTab = (): Tab => { try { const t = localStorage.getItem(TAB_KEY); return t === 'live' || t === 'built' ? t : 'remaining'; } catch { return 'remaining'; } };
+const readTab = (): Tab => { try { const t = localStorage.getItem(TAB_KEY); return t === 'live' || t === 'built' || t === 'sessions' ? t : 'remaining'; } catch { return 'remaining'; } };
 
 export function BuildManagerView() {
   const s = useStore();
@@ -553,6 +718,7 @@ export function BuildManagerView() {
   const { sessions, activity } = useLive();
   const liveCount = sessions.length + activity.length;
   const builtCount = useMemo(() => builtRows(s.changes).length, [s.changes]);
+  const sessionRows = useMemo(() => sessionsFromChanges(s.changes, s.now), [s.changes, s.now]);
   const [model, setModel] = useState('');
   const [sources, setSources] = useState<Source[]>(() => enabledSources());
   const [status, setStatus] = useState('');
@@ -573,7 +739,8 @@ export function BuildManagerView() {
     remaining: base.filter((r) => matches(query, r)).length,
     live: sessions.filter((e) => matches(query, e)).length + activity.filter((e) => matches(query, { ...e, ...(e.row ?? {}) })).length,
     built: builtRows(s.changes).filter((r) => matches(query, r)).length,
-  } : null, [query, base, sessions, activity, s.changes]);
+    sessions: sessionRows.filter((r) => matches(query, r)).length,
+  } : null, [query, base, sessions, activity, s.changes, sessionRows]);
   const statuses = useMemo(() => statusesOf(base), [base]);
   const adders = useMemo(() => addedByOf(base), [base]);
   const t = totalsByModel(base);
@@ -608,7 +775,7 @@ export function BuildManagerView() {
       </div>
 
       <div className="axp-build-manager__tabs" role="tablist" aria-label="Build manager views">
-        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle']] as const).map(([id, label, n, icon]) => (
+        {([['remaining', 'Remaining', base.length, 'list'], ['live', 'Live', liveCount, 'refresh'], ['built', 'Built', builtCount, 'check-circle'], ['sessions', 'Sessions', sessionRows.length, 'users']] as const).map(([id, label, n, icon]) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id} className={`fx-tab axp-build-manager__tab${id === 'live' && liveCount ? ' is-busy' : ''}`} onClick={() => setTab(id)}>
             <Icon name={icon} size={12} />{label} <span className="axp-build-manager__tab-n">{hits ? `${hits[id]}/${n}` : n}</span>
           </button>
@@ -617,6 +784,7 @@ export function BuildManagerView() {
 
       {tab === 'live' && <LiveTracker query={query} />}
       {tab === 'built' && <BuiltView query={query} />}
+      {tab === 'sessions' && <SessionsView query={query} />}
       {tab === 'remaining' && liveCount > 0 && !query && <LiveTracker compact />}
       {tab === 'remaining' && <>
       <Totals rows={base} />

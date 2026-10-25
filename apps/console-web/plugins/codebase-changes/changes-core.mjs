@@ -407,6 +407,8 @@ export function buildSummary(e) {
   if (e.result?.commits?.length) out.commits = e.result.commits.map((c) => c.sha).slice(0, 10);
   if (e.result?.links && Object.keys(e.result.links).length) out.links = e.result.links;
   if (e.who?.host) out.host = e.who.host;
+  if (e.who?.session) out.session = e.who.session;
+  if (e.who?.user) out.user = e.who.user;
   return out;
 }
 

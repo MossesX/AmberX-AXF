@@ -591,8 +591,10 @@ def build_summary(e: dict[str, Any]) -> dict[str, Any]:
         out["commits"] = [c["sha"] for c in r["commits"]][:10]
     if r.get("links"):
         out["links"] = r["links"]
-    if (e.get("who") or {}).get("host"):
-        out["host"] = e["who"]["host"]
+    who = e.get("who") or {}
+    for k in ("host", "session", "user"):
+        if who.get(k):
+            out[k] = who[k]
     return out
 
 

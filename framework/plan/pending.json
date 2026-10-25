@@ -3846,6 +3846,54 @@
    "updatedAt": "2026-10-25T20:59:28.940Z",
    "estimate": "2 h",
    "source": "chat"
+  },
+  {
+   "id": "build-manager-sessions",
+   "title": "Build manager: Sessions grid (every session, expandable to what it was asked to build)",
+   "detail": "Group switch in the Build manager showing every session ever (from the Codebase changes log) in a grid; each row expands into a subgrid of every build/edit/remove/fix that session was asked for.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-24jq9j.",
+     "at": "2026-10-25T19:43:10.936Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Session id + user in change-log summaries (JS + Python)",
+     "at": "",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:43:10.991Z"
+    },
+    {
+     "text": "sessionsFromChanges in history.mjs + tests",
+     "at": "",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:43:11.049Z"
+    },
+    {
+     "text": "Sessions tab: grid, expandable rows, subgrid",
+     "at": "",
+     "estimate": "20 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:43:11.114Z"
+    },
+    {
+     "text": "Docs, push, PR",
+     "at": "",
+     "estimate": "5 min",
+     "done": true,
+     "doneAt": "2026-10-25T19:43:11.171Z"
+    }
+   ],
+   "createdAt": "2026-10-25T19:03:13.866Z",
+   "builtAt": "2026-10-25T19:43:10.874Z",
+   "updatedAt": "2026-10-25T19:43:11.171Z",
+   "estimate": "50 min",
+   "source": "chat"
   }
  ]
 }

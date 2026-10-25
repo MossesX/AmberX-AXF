@@ -144,6 +144,10 @@ check("[hidden]" in be["doing"] and be["status"] == "running" and be["progress"]
 check(store_mod.normalize(good)[0]["status"] == "done" and "estimate" not in store_mod.normalize(good)[0], "an old entry only gains the derived status")
 check(store_mod.is_stale({"status": "running", "lastSeenAt": "2020-01-01T00:00:00.000Z"}) and not store_mod.is_stale({"status": "done", "lastSeenAt": "2020-01-01T00:00:00.000Z"}), "stale = running and not seen for 10 min")
 check(store_mod.summary(be)["buildRef"]["id"] == "lib-clone" and store_mod.summary(be)["verify"]["state"] == "broken", "summaries carry build stats")
+_sw, _ = store_mod.normalize({**good, "who": {"session": "abc123def456", "user": "root", "host": "vps1", "where": "vps"}})
+check(store_mod.summary(_sw).get("session") == "abc123def456" and store_mod.summary(_sw).get("user") == "root" and "session" not in store_mod.summary(be), "summaries carry the session id + user (Build manager Sessions grid)")
+_js = subprocess.run(["node", "--input-type=module", "-e", "import {normalize, summary} from './changes-core.mjs'; const r = normalize(JSON.parse(process.argv[1])); console.log(JSON.stringify(summary(r.entry)))", json.dumps({**good, "who": {"session": "abc123def456", "user": "root"}})], cwd=HERE, capture_output=True, text=True)
+check('"session":"abc123def456"' in _js.stdout and '"user":"root"' in _js.stdout, f"JS summary carries session + user too {_js.stderr[-200:]}")
 build_bad = {
     "bad status": {**build_good, "status": "flying"},
     "bad ref": {**build_good, "buildRef": {"kind": "Pending!", "id": "x"}},
