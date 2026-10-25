@@ -192,7 +192,7 @@ export class HubAppearanceSource implements AppearanceSource {
     this.pending = null;
     this.saving = true;
     try {
-      const next = mergeAppearance(this.doc, change, this.opts.appId, new Date().toISOString());
+      const next = mergeAppearance(this.doc, change, this.opts.appId, new Date().toISOString(), true);
       const headers: Record<string, string> = { 'Content-Type': 'application/json', 'If-Match': this.version ? `"${this.version}"` : 'new' };
       let r: Response;
       try {

@@ -52,6 +52,26 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(JSON.pars
   for (const [n, ms] of Object.entries(f.retryMs)) eq(appearanceRetryMs(Number(n)), ms, `retry ${n}`);
 }
 
+/* ---- hidden bars are per app (hiddenBy): Console hiding its toolbar never hides Patches' (Brett, Oct 25 2026) ---- */
+{
+  const has = () => true;
+  const legacy = parseAppearance(JSON.stringify({ $axf: 'appearance@1', hidden: { toolbar: true } }));
+  eq(resolveAppearance(legacy, has, undefined, 'patches-web').hidden, {}, 'per app: legacy shared hidden ignored');
+  eq(resolveAppearance(legacy, has).hidden, { toolbar: true }, 'no app: legacy hidden still read');
+  const c = mergeAppearance(legacy, { hidden: { toolbar: true, 'app-menu': true } }, 'axf-console', 'T', true);
+  eq(c.hidden, { toolbar: true }, 'per app merge leaves the legacy map alone');
+  eq(c.hiddenBy, { 'axf-console': { 'app-menu': true, toolbar: true } }, 'per app merge writes hiddenBy[app]');
+  eq(resolveAppearance(c, has, undefined, 'axf-console').hidden, { 'app-menu': true, toolbar: true }, 'console sees its own');
+  eq(resolveAppearance(c, has, undefined, 'patches-web').hidden, {}, 'patches unaffected');
+  const p = mergeAppearance(c, { hidden: { toolbar: false } }, 'patches-web', 'T', true);
+  eq(p.hiddenBy, { 'axf-console': { 'app-menu': true, toolbar: true }, 'patches-web': { toolbar: false } }, 'second app keeps the first app');
+  const cleared = mergeAppearance(p, { hidden: { toolbar: null } }, 'patches-web', 'T', true);
+  eq(cleared.hiddenBy, { 'axf-console': { 'app-menu': true, toolbar: true } }, 'clearing an app\'s last flag drops its entry');
+  eq(parseAppearance(serializeAppearance(p)), p, 'hiddenBy round-trips');
+  eq(parseAppearance(JSON.stringify({ $axf: 'appearance@1', hiddenBy: { 'Bad App!': { toolbar: true }, ok: { toolbar: 'yes', 'nav-menu': false }, x: [] } }))?.hiddenBy, { ok: { 'nav-menu': false } }, 'hiddenBy shape-checked');
+  eq(resolveAppearance(parseAppearance(JSON.stringify({ $axf: 'appearance@1', hiddenBy: { a: { 'color-theme': true } } })), has, undefined, 'a').hidden, {}, 'per app: non-hideable skipped');
+}
+
 /* ---- runtime with a fake source ---- */
 const assets = ['color-theme', 'style-theme', 'layout', 'app-menu', 'toolbar', 'nav-menu', 'context-menu', 'dialog', 'popup', 'button', 'slider', 'container', 'banner', 'clock', 'search-bar', 'badge', 'uac-policy']
   .flatMap((t) => readdirSync(join(root, 'assets', t)).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
@@ -84,13 +104,13 @@ class FakeSource implements AppearanceSource {
   ok(!rt.appearanceReady(), 'hub down: not ready (no fallback)');
   eq(rt.getState().active['color-theme'], defaults['color-theme'], 'default assets still compile the waiting screen');
   src.setState({ status: 'ready', version: 'v' });
-  src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide', layout: 'no-such-layout', 'nav-menu': 'top-tabs' }, spacing: 'regular', hidden: { toolbar: false, 'nav-menu': true } })));
+  src.push(parseAppearance(JSON.stringify({ $axf: 'appearance@1', slots: { 'color-theme': 'neon-tide', layout: 'no-such-layout', 'nav-menu': 'top-tabs' }, spacing: 'regular', hiddenBy: { 'check-appearance': { toolbar: false, 'nav-menu': true }, 'other-app': { 'nav-menu': false } }, hidden: { 'nav-menu': false } })));
   ok(rt.appearanceReady(), 'ready');
   eq(rt.getState().active['color-theme'], 'neon-tide', 'slot applied');
   eq(rt.getState().active.layout, defaults.layout, 'unknown layout id → the app default, no crash');
   ok(rt.appearanceSkipped().some((s) => s.startsWith('layout:no-such-layout')), 'skipped is reported');
   eq(rt.spacing(), 'regular', 'spacing applied');
-  ok(!rt.slotHidden('toolbar') && rt.slotHidden('nav-menu'), 'hidden applied over the app default');
+  ok(!rt.slotHidden('toolbar') && rt.slotHidden('nav-menu'), 'this app\'s own hidden applied over the app default (other apps\' and legacy flags ignored)');
   eq(src.saved, [], 'a pushed document is not echoed back');
   // local changes push (admin role has assets.swap)
   rt.swap('style-theme', 'soft-studio');

@@ -329,7 +329,7 @@ export class AxfRuntime {
   appearanceReady(): boolean { return !this.appearanceSource || this.state.appearance?.status === 'ready'; }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
-  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id), undefined, this.manifest.app.id).skipped; }
 
   /**
    * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
@@ -339,7 +339,8 @@ export class AxfRuntime {
    */
   private applyAppearance(doc: AppearanceDocument | null): void {
     this.lastAppearance = doc;
-    const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
+    // hidden bars are this app's own (hiddenBy[app id]), never another app's (Brett, Oct 25 2026)
+    const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id), undefined, this.manifest.app.id);
     this.applyingAppearance = true;
     try {
       const active = { ...this.state.active };
@@ -384,7 +385,7 @@ export class AxfRuntime {
     for (const t of ASSET_TYPES) if (t !== 'uac-policy' && this.state.active[t]) slots[t] = this.state.active[t];
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString());
+    return mergeAppearance({ $axf: APPEARANCE_FRAME }, { slots, spacing: this.spacing(), hidden, palette: this.appearancePalette() }, this.manifest.app.id, new Date().toISOString(), true);
   }
 
   /* ---------------- store ---------------- */
