@@ -147,8 +147,8 @@ def _offer_vinny() -> None:
     axHub approvals). An uninstall or a Safety change afterwards is respected: this never runs twice."""
     try:
         rec = store.addon_records().get("vinny")
-        if rec and str(rec.get("version", "")).startswith("1.0") and "vinny" in addons.bundles():
-            addons.install("vinny", run_training=False)  # 1.0 → 1.1: his command-book skill (memory kept)
+        if rec and str(rec.get("version", "")).startswith(("1.0", "1.1")) and "vinny" in addons.bundles():
+            addons.install("vinny", run_training=False)  # 1.0 → 1.1 command book, → 1.2 app tokens (memory kept)
         s = store.load_settings()
         if s.get("vinnyOffered") or "vinny" not in addons.bundles():
             return
