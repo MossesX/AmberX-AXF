@@ -4,12 +4,13 @@
  * overlays, and compiles everything into document-level CSS through the
  * engines. Framework-agnostic: the React layer only subscribes to it.
  */
-import { SettingsRegistry } from './settings';
+import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset } from './registry';
 import { ActionBus, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
 import { layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
@@ -21,6 +22,7 @@ import { hostSpec, hostSpecs, placeToolbarWidgets, type HostAttachment, type Pla
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
+import { PACKAGE_APPLIED_KEY, capturePackage, isAppearanceSetting, normalizePackage, packageSettingsPlan } from './engines/appearancepackage';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
@@ -28,6 +30,7 @@ import {
   ASSET_TYPES,
   OPTIONAL_TYPES,
   type ActiveAssets,
+  type AppearancePackageData,
   type Asset,
   type AssetType,
   type AxfManifest,
@@ -766,7 +769,8 @@ export class AxfRuntime {
     else if (target === 'random') {
       const others = list.filter((a) => a.id !== this.state.active[type]);
       next = others[Math.floor(Math.random() * others.length)]?.id ?? list[0]?.id;
-    } else next = target;
+    } else if (target === 'default') next = (this.manifest.defaults as Record<string, string | undefined>)[type] ?? list[0]?.id;
+    else next = target;
     if (!next || !this.registry.has(type, next)) {
       this.terminal.error('hot-swap', `${type} → "${target}": no such asset`);
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
@@ -962,6 +966,56 @@ export class AxfRuntime {
     const slots: Record<string, string> = {};
     for (const t of ASSET_TYPES) if (t !== 'uac-policy' && active[t]) slots[t] = active[t];
     this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
+  }
+
+  /* ---------------- appearance packages (engines/appearancepackage.ts) ---------------- */
+
+  /** The current look (every appearance slot and setting) as appearance-package data. */
+  captureAppearancePackage(): AppearancePackageData {
+    const hidden: Record<string, boolean> = {};
+    for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+    return capturePackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() });
+  }
+
+  /** The package last applied in this app, if any (Restore default appearance forgets it). */
+  appliedAppearancePackage(): string | undefined {
+    const v = this.settings.get(PACKAGE_APPLIED_KEY);
+    return typeof v === 'string' && this.registry.has('appearance-package', v) ? v : undefined;
+  }
+
+  /** Apply every setting of package `id`: slots, spacing, shown / hidden chrome and the other appearance settings. */
+  applyAppearancePackage(id: string): boolean {
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const a = this.registry.get('appearance-package', id);
+    if (!a) { this.toast(`No appearance package "${id}".`, 'warning', 'Appearance package'); return false; }
+    const pkg = normalizePackage(a.data);
+    const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
+    for (const k of plan.clear) this.settings.clear(k);
+    for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
+    const hidden: Record<string, boolean | null> = {};
+    for (const t of ASSET_TYPES) {
+      if (!hideable(t) || this.slotOwnedByHost(t)) continue;
+      const want = pkg.hidden?.[t];
+      if (typeof want !== 'boolean' || want === this.defaultHiddenSlots().includes(t)) { if (this.settings.get(HIDE_KEY(t)) !== null) this.settings.clear(HIDE_KEY(t)); hidden[t] = null; }
+      else { this.settings.set(HIDE_KEY(t), want); hidden[t] = want; }
+    }
+    if (pkg.spacing) this.setSpacing(pkg.spacing as Spacing);
+    this.swapAll({ ...(pkg.slots as Partial<ActiveAssets>), 'appearance-package': id });
+    this.pushAppearance({ hidden });
+    this.settings.set(PACKAGE_APPLIED_KEY, id);
+    this.terminal.ok('hot-swap', `appearance package ${id} applied (${Object.keys(pkg.slots).length} slots, ${Object.keys(plan.set).length} settings)`);
+    this.toast(`${a.name} applied.`, 'success', 'Appearance package');
+    return true;
+  }
+
+  /** Back to the app's default look: default assets, spacing, chrome and every other appearance setting cleared. */
+  restoreDefaultAppearance(): void {
+    if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
+    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY) this.settings.clear(k);
+    this.reset();
+    this.pushAppearance({ spacing: this.spacing() });
+    this.terminal.ok('hot-swap', 'default appearance restored');
+    this.toast('Default appearance restored.', 'success', 'Appearance');
   }
 
   importAsset(raw: unknown, activate = true, origin?: string): ValidationResult {
@@ -1337,6 +1391,7 @@ export class AxfRuntime {
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
+      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -1350,6 +1405,28 @@ export class AxfRuntime {
       Object.assign(attrs, p.attrs);
     }
     return { vars, attrs };
+  }
+
+  /** The saved extra tokens of a slot (Settings → Appearance → Assets; engines/customize.ts). */
+  customSlot(type: AssetType): CustomSlot {
+    return normalizeCustomSlot(this.settings.get(CUSTOM_KEY(type)), type);
+  }
+
+  /** Save a slot's extra tokens (needs assets.swap). */
+  setCustomSlot(type: AssetType, slot: CustomSlot): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    this.settings.set(CUSTOM_KEY(type), slot as unknown as SettingValue);
+    return true;
+  }
+
+  /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
+  customSheet(): string {
+    const per: Record<string, CustomValues> = {};
+    for (const t of customizableTypes()) {
+      const id = (this.getState().active as Record<string, string | undefined>)[t];
+      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+    }
+    return customizeSheet(per);
   }
 
   applyTo(el: HTMLElement) {
@@ -1391,6 +1468,8 @@ export class AxfRuntime {
     // spacing:tight|compact|regular (Settings → Appearance → Spacing)
     a.register('spacing', ([v]) => { if (v) this.setSpacing(spacingOf(v) === v ? (v as Spacing) : this.spacing()); }, { label: 'Change spacing (tight, compact, regular)', requires: 'assets.swap', params: true });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
+    a.register('appearance.package', ([id]) => { if (id) this.applyAppearancePackage(id); }, { label: 'Apply an appearance package', requires: 'assets.swap', params: true });
+    a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
       const json = type && id ? this.exportAsset(type as AssetType, id) : '';

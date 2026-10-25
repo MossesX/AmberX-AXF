@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T16:44:19.565Z",
+ "updatedAt": "2026-10-25T20:14:56.178Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3018,7 +3018,12 @@
    "detail": "Fable was suggested for the settings asset type and Opus was chosen (Oct 23 2026, branch claude/project-thread-55oakl). Start by reviewing/replacing the Opus build: settings-ui@1 as a full cross-port contract, a validator check for groups/tabs in all three validators, Settings → Appearance preview of each settings asset, theme-manager / asset designer support, Kotlin twin recorded (Android on hold). Build together with patches-settings-banner-hide-fable (same settings code).",
    "model": "Fable",
    "status": "pending",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
+     "at": "2026-10-25T20:12:14.980Z"
+    }
+   ],
    "subPrompts": [
     {
      "text": "Review the Opus settings-ui engine + library changes; list what changes",
@@ -3048,7 +3053,7 @@
    ],
    "createdAt": "2026-10-23T18:22:53.000Z",
    "builtAt": "",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-10-25T20:12:14.980Z",
    "estimate": "2.2 h",
    "source": "chat"
   },
@@ -3488,6 +3493,54 @@
    "builtAt": "2026-10-25T16:44:19.565Z",
    "updatedAt": "2026-10-25T16:44:19.565Z",
    "estimate": "1.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "shared-settings-interface",
+   "title": "One settings interface for every app (settings/console asset + Appearance picker, synced through axHub)",
+   "detail": "Gizmo, Oct 25 2026: save the console's settings interface as an asset; every app using it looks the same; Appearance gets a Settings interface area; a change in one app shows in all. Built in thread \"Check if settings screens are assets\".",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR to follow).",
+     "at": "2026-10-25T20:14:56.174Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Framework asset settings/console + defaults",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.155Z"
+    },
+    {
+     "text": "Ship shared settings assets in every web app, drop per-app ones",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.161Z"
+    },
+    {
+     "text": "Appearance → Settings interface picker",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "15 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.165Z"
+    },
+    {
+     "text": "Tests, PR",
+     "at": "2026-10-25T20:12:14.984Z",
+     "estimate": "10 min",
+     "done": true,
+     "doneAt": "2026-10-25T20:14:56.170Z"
+    }
+   ],
+   "createdAt": "2026-10-25T20:12:14.972Z",
+   "builtAt": "2026-10-25T20:14:56.178Z",
+   "updatedAt": "2026-10-25T20:14:56.178Z",
+   "estimate": "50 min",
    "source": "chat"
   }
  ]

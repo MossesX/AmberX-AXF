@@ -46,7 +46,7 @@
     "badge": "new",
     "gauge": "classic-arc",
     "meter": "striped-pill",
-    "settings": "amberx-droid",
+    "settings": "console",
     "uac-policy": "standard"
   },
   "hidden": [],

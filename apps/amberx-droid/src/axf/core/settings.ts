@@ -189,6 +189,11 @@ export class SettingsRegistry {
     return changed;
   }
 
+  /** Every saved (non-secret) value, as storage holds it now. */
+  savedValues(): Record<string, SettingValue> {
+    return { ...readValues(this.storageKey) };
+  }
+
   /** Forget a value (back to its default). */
   clear(key: string): void {
     const fresh = readValues(this.storageKey);

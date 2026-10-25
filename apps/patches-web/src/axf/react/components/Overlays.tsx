@@ -155,12 +155,14 @@ export function ContextMenuHost() {
 
   if (!state.context) return null;
   const ctx = state.context;
-  const contributed = rt.contributedContext(ctx.target);
-  const extra = [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
-  const everywhere = [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
+  // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
+  const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
+  const contributed = own ? [] : rt.contributedContext(ctx.target);
+  const extra = own ? [] : [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
+  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
   const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
   // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
-  const fallback = !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
+  const fallback = !own && !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
   const more = [...extra, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
