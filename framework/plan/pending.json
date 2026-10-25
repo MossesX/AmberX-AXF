@@ -3377,6 +3377,20 @@
    "source": "chat"
   },
   {
+   "id": "changes-grid",
+   "title": "Changes & features grid plugin",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T16:38:09.847Z",
+   "builtAt": "2026-10-25T16:38:09.847Z",
+   "updatedAt": "2026-10-25T16:38:09.847Z",
+   "estimate": "45 min",
+   "source": "chat"
+  },
+  {
    "id": "amberx-droid",
    "title": "AmberX: voice + background monitoring Android app (replaces AXHub app)",
    "detail": "",
