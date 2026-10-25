@@ -19,7 +19,7 @@ export * from './engines/appearancepackage';
 export * from './engines/appearance';
 export * from './engines/banner';
 export * from './engines/bannerhide';
-export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
+export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, SEARCH_BAR_MAX_RESULTS, isWidgetType, isHost, hostSpec, hostSpecs, registerHost, placeOnHost, placeHost, normalizeArrangement, moveOnHost, snapIndex, ARRANGEMENT_MAX, placeToolbarWidgets, validateHostAttachments, searchBarConfig, WIDGET_TONES, widgetTone, counterText, statusOn, progressPercent, avatarInitials, linkHref, imageSrc, spacerUnits, logoSize, avatarSize, progressWidth, themeSwitchNext, type HostAttachment, type HostArrangement, type HostSpec, type SearchBarConfig, type WidgetTone } from './engines/widgets';
 export * from './engines/search';
 export * from './engines/appmenu';
 export * from './engines/alerts';
