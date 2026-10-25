@@ -62,6 +62,17 @@ STATES_OPEN = ("asking", "waiting", "running")
 
 DEFAULT_SETTINGS = {"listen": True, "maxPerMessage": 5, "autoFixFirst": True}
 
+# App tokens on the VPS: (app, env key, file). Values are never printed.
+APP_TOKENS = (("Patches", "APP_TOKEN", "/opt/patches-web/.app/env"),
+              ("Build Pilot", "BP_TOKEN", "/opt/build-pilot/.build-pilot/env"),
+              ("Dev Console", "AXF_TOKEN", "/opt/axf/.axf-console/env"))
+TOKENS_COMMAND = "; ".join(
+    f"v=$(sed -n 's/^{k}=//p' {f} 2>/dev/null | head -n1); "
+    f"if [ -n \"$v\" ]; then echo \"{a} {k}: set, ${{#v}} characters, fingerprint $(printf %s \"$v\" | sha256sum | cut -c1-8), in {f}\"; "
+    f"else echo \"{a} {k}: not found in {f}\"; fi; "
+    f"echo \"  to copy it yourself: sudo sed -n 's/^{k}=//p' {f}\""
+    for a, k, f in APP_TOKENS) + "; unset v"
+
 DEFAULT_COMMANDS: list[dict[str, Any]] = [
     {"id": "health", "name": "Server health", "kind": "vps", "triggers": ["vps health", "server health", "/health"],
      "command": "uptime; free -h; df -h -x tmpfs -x overlay", "timeout": 60, "fixes": []},
@@ -73,7 +84,15 @@ DEFAULT_COMMANDS: list[dict[str, Any]] = [
      "command": "docker restart axf-console", "timeout": 120, "fixes": []},
     {"id": "console-git-status", "name": "Console checkout: git status", "kind": "git", "triggers": ["console git status", "/git-status"],
      "repo": "/opt/axf", "command": "git status --short --branch", "timeout": 60, "fixes": []},
+    # Oct 25 2026 (Gizmo: "add token commands to Vinny"): where each app's token is saved and whether it's there. Never
+    # the value: the output passes through axHub, the run log and the dialog, so only length + an 8-character
+    # fingerprint, plus the command Brett runs himself to copy it (into Project settings, never into chat).
+    {"id": "app-tokens", "name": "App tokens: where they are (never the value)", "kind": "vps",
+     "triggers": ["app tokens", "app token", "token status", "where are the tokens", "patches token", "pilot token", "console token", "/tokens"],
+     "command": TOKENS_COMMAND, "timeout": 60, "fixes": []},
 ]
+# Defaults added after a book was first written are added to it once (a removal afterwards is respected).
+FIRST_DEFAULTS = ("health", "containers", "console-doctor", "restart-console", "console-git-status")
 
 
 class VinnyError(ValueError):
@@ -265,6 +284,15 @@ def load() -> dict[str, Any]:
             raw = {"$axf": TAG, "commands": [dict(c, enabled=True, note="", updatedAt=0) for c in DEFAULT_COMMANDS], "settings": dict(DEFAULT_SETTINGS)}
             _write(FILE, raw)
         cmds = [c for c in raw.get("commands") or [] if isinstance(c, dict) and ID_RE.match(str(c.get("id", "")))]
+        st = raw.get("settings") if isinstance(raw.get("settings"), dict) else {}
+        seen = st.get("defaultsAdded") if isinstance(st.get("defaultsAdded"), list) else list(FIRST_DEFAULTS)
+        have = {c["id"] for c in cmds}
+        new = [c for c in DEFAULT_COMMANDS if c["id"] not in seen]
+        if new or "defaultsAdded" not in st:
+            cmds += [dict(c, enabled=True, note="", updatedAt=0) for c in new if c["id"] not in have]
+            st = {**st, "defaultsAdded": list(dict.fromkeys([*seen, *(c["id"] for c in DEFAULT_COMMANDS)]))}
+            raw = {**raw, "commands": cmds, "settings": st}
+            _write(FILE, raw)
         return {"$axf": TAG, "commands": cmds, "settings": {**DEFAULT_SETTINGS, **(raw.get("settings") or {})}}
 
 

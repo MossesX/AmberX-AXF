@@ -3344,6 +3344,20 @@
    "source": "chat"
   },
   {
+   "id": "vinny-app-tokens",
+   "title": "Vinny: app token command (where, never the value)",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:22:26.878Z",
+   "builtAt": "2026-10-25T10:22:26.878Z",
+   "updatedAt": "2026-10-25T10:22:26.878Z",
+   "estimate": "25 min",
+   "source": "chat"
+  },
+  {
    "id": "handoff-session-button",
    "title": "Claude handoff: Handoff Session button",
    "detail": "Button under Assemble prompt: paste-ready summary of everything still open (change log, pending list, open PRs) plus rules and known gaps, for an existing project on another account; copied and kept in the kit as ACTIVE-THREADS.md. Branch claude/project-thread-tpor29 (PR #65).",
