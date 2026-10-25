@@ -3,7 +3,7 @@
   "type": "app-menu",
   "id": "console",
   "name": "Console",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The Dev Console's application menu: reaches every page, build list, framework part, plugin, app and toolbar or navigation item, so the toolbar and side navigation can stay hidden. Plugins add their own entries; live lists fill when a submenu opens.",
   "author": "AmberX AXF",
   "tags": [
@@ -25,6 +25,8 @@
           { "id": "settings", "label": "Settings", "icon": "settings", "action": "app.settings", "order": 21 },
           { "id": "settings-pages", "label": "Settings pages", "icon": "sliders", "provider": "settings", "order": 22 },
           { "id": "account", "label": "Account", "icon": "shield", "action": "nav:account", "order": 23 },
+          { "id": "account-settings", "label": "Account settings", "icon": "shield", "action": "settings.open:account", "order": 23.5 },
+          { "id": "about-settings", "label": "About settings", "icon": "info", "action": "settings.open:about", "order": 23.6 },
           { "id": "s2", "separator": true, "order": 30 },
           { "id": "terminal", "label": "Output terminal", "icon": "terminal", "action": "terminal.open", "order": 31 },
           { "id": "refresh", "label": "Reload data", "icon": "refresh", "action": "console.refresh", "order": 33 },
@@ -186,6 +188,7 @@
             ]
           },
           { "id": "appearance", "label": "Appearance settings", "icon": "settings", "action": "settings.open:appearance", "order": 22 },
+          { "id": "restore-look", "label": "Restore default look", "icon": "refresh", "action": "appearance.restore", "order": 23 },
           { "id": "s2", "separator": true, "order": 30 },
           { "id": "pages", "label": "Every page", "icon": "layout", "provider": "views", "order": 31 },
           { "id": "nav", "label": "Navigation items", "icon": "menu", "provider": "nav", "order": 32 },
