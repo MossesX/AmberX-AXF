@@ -5,7 +5,7 @@ import { pluginApi } from '@console/plugins';
 
 export const FOLDER = 'claude-handoff';
 export const ID = 'ai.amberx.axf.console.claude-handoff';
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 export const VIEW = 'claude-handoff';
 export const api = pluginApi(FOLDER, 'The Claude handoff plugin');
 
@@ -28,8 +28,15 @@ export interface RunSummary { elapsed: number; read: number; written: number; fi
 /** The last assembly on this console (GET last-assembly): its result, the plan its installer walked and the run. */
 export interface LastAssembly { at: number; result: Assembled & { kit?: Status['kit'] }; plan: import('./installer-core').Plan | null; run: RunSummary | null }
 
-interface State { status: Status | null; error: string; busy: '' | 'publish' | 'assemble' | 'preview' | 'save'; assembled: Assembled | null; bannerHidden: boolean }
-let st: State = { status: null, error: '', busy: '', assembled: null, bannerHidden: false };
+/** Handoff Session: what's still open, summarised for a Project that already exists on the other account. */
+export interface Session {
+  markdown: string; prompt: string; savedAt: string;
+  counts: { changes: number; pending: number; prs: number | null };
+  published: { pushed?: boolean; sha?: string } | null; note: string;
+}
+
+interface State { status: Status | null; error: string; busy: '' | 'publish' | 'assemble' | 'preview' | 'save' | 'session'; assembled: Assembled | null; session: Session | null; bannerHidden: boolean }
+let st: State = { status: null, error: '', busy: '', assembled: null, session: null, bannerHidden: false };
 const subs = new Set<() => void>();
 export const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 export const getStore = () => st;
@@ -63,6 +70,18 @@ export async function assemble(copy = true): Promise<void> {
     const r = await api.post<Assembled>('assemble', { publish: true });
     set({ assembled: r });
     if (copy) await navigator.clipboard?.writeText(r.prompt).then(() => toast('Prompt copied: paste it into a new session on the new account', 'success'), () => undefined);
+    if (r.note) toast(r.note, 'warning');
+  } catch (e) { toast((e as Error).message, 'danger'); }
+  finally { set({ busy: '' }); await refresh(); }
+}
+
+/** The Handoff Session button: build the summary, keep it for the kit (and publish it when it can), copy it. */
+export async function handoffSession(notes?: string | null, copy = true): Promise<void> {
+  set({ busy: 'session' });
+  try {
+    const r = await api.post<Session>('session', { publish: true, ...(notes === undefined ? {} : { notes }) });
+    set({ session: r });
+    if (copy) await navigator.clipboard?.writeText(r.prompt).then(() => toast('Session summary copied: paste it into the Project on the other account', 'success'), () => undefined);
     if (r.note) toast(r.note, 'warning');
   } catch (e) { toast((e as Error).message, 'danger'); }
   finally { set({ busy: '' }); await refresh(); }

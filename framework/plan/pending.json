@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-24T16:25:12.368Z",
+ "updatedAt": "2026-10-25T10:38:13.457Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3198,6 +3198,25 @@
    "builtAt": "",
    "updatedAt": "2026-10-24T16:25:12.368Z",
    "estimate": "2.5 h",
+   "source": "chat"
+  },
+  {
+   "id": "handoff-session-button",
+   "title": "Claude handoff: Handoff Session button",
+   "detail": "Button under Assemble prompt: paste-ready summary of everything still open (change log, pending list, open PRs) plus rules and known gaps, for an existing project on another account; copied and kept in the kit as ACTIVE-THREADS.md. Branch claude/project-thread-tpor29 (PR #65).",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus in PR #65 (branch claude/project-thread-tpor29).",
+     "at": "2026-10-25T10:38:13.457Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T10:32:33.775Z",
+   "builtAt": "2026-10-25T10:38:13.413Z",
+   "updatedAt": "2026-10-25T10:38:13.457Z",
+   "estimate": "1 h",
    "source": "chat"
   }
  ]

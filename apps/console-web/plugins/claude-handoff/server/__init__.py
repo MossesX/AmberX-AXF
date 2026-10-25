@@ -346,6 +346,47 @@ async def post_last_run(request: Request) -> dict[str, Any]:
     return {"ok": True}
 
 
+class SessionReq(BaseModel):
+    notes: str | None = Field(default=None, max_length=8000)
+    publish: bool = True
+
+
+def _session_notes_path() -> Path:
+    return _data() / "session.json"
+
+
+@router.get("/session")
+def get_session() -> dict[str, Any]:
+    """The Handoff Session: its saved notes (None = the default gaps) and the last summary made on this console."""
+    saved = _read(_session_notes_path(), {})
+    md = _data() / "session.md"
+    return {"notes": saved.get("notes") if isinstance(saved, dict) else None,
+            "savedAt": (saved.get("savedAt") if isinstance(saved, dict) else "") or "",
+            "markdown": md.read_text("utf-8") if md.is_file() else ""}
+
+
+@router.post("/session")
+def post_session(req: SessionReq) -> dict[str, Any]:
+    """Handoff Session: what's still open (change log, pending builds, open PRs, notes) as one summary for a Project
+    that already exists on the other account. Kept for the kit (ACTIVE-THREADS.md) and published when it can be."""
+    with _lock:
+        if req.notes is not None:
+            _write(_session_notes_path(), {**(_read(_session_notes_path(), {}) or {}), "notes": req.notes})
+        r = _node("session", "--save", timeout=90)
+        _write(_session_notes_path(), {**(_read(_session_notes_path(), {}) or {}), "savedAt": r.get("savedAt", "")})
+    published: dict[str, Any] | None = None
+    note = ""
+    if req.publish:
+        if os.environ.get("GITHUB_TOKEN"):
+            try:
+                published = _publish()
+            except HTTPException as e:
+                note = f"Not published: {e.detail}"
+        else:
+            note = "Not published: this console has no GITHUB_TOKEN, so the kit on GitHub doesn't have this summary yet. Paste the copied text instead."
+    return {**r, "published": published, "note": note}
+
+
 @router.post("/preview")
 def post_preview() -> dict[str, Any]:
     with _lock:
