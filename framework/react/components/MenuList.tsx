@@ -43,6 +43,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
           <li
             key={item.id}
             className="fx-menu__li"
+            data-axf-item={item.id}
             onMouseEnter={() => setOpenSub(hasSub ? item.id : null)}
           >
             <button
