@@ -18,7 +18,7 @@ import { InstallerDialog, LastAssemblyDialog } from './installer';
 import { FILES_DIALOG, FILE_TAB_KIND, FileTab, FilesDialog } from './files';
 import { loadLook } from './look';
 import { LookDialog } from './lookDialog';
-import { FOLDER, ID, VERSION, VIEW, publish, start } from './store';
+import { FOLDER, ID, VERSION, VIEW, handoffSession, publish, start } from './store';
 import { HandoffBanner, HandoffSettings, HandoffView, PreviewView } from './ui';
 
 const INSTALLER = 'claude-handoff.installer';
@@ -39,6 +39,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-handoff.open', () => rt.navigate(VIEW), { label: 'Open Claude handoff' });
     rt.actions.register('claude-handoff.assemble', () => rt.openDialog(INSTALLER), { label: 'Assemble the Claude handoff prompt' });
     rt.actions.register('claude-handoff.last', () => rt.openDialog(LAST), { label: 'Open the results of the last Claude handoff assembly' });
+    rt.actions.register('claude-handoff.session', () => { rt.navigate(VIEW); void handoffSession(); }, { label: 'Handoff Session: summary of open work for the other account' });
     rt.actions.register('claude-handoff.publish', () => { void publish(); }, { label: 'Publish the Claude handoff kit' });
   },
   views: {

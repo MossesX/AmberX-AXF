@@ -116,4 +116,28 @@ execFileSync('node', [join(ROOT, 'apps/console-web/plugins/claude-handoff/handof
 const rec = JSON.parse(readFileSync(recFile, 'utf8'));
 check(rec.host === 'test-box' && rec.files.length >= 3, 'CLI collect --out writes a machine record');
 
+
+// Handoff Session
+const changes = [
+  { id: 'chg-a', title: 'Running build', status: 'running', createdAt: '2026-10-24T10:00:00Z', buildRef: { kind: 'pending', id: 'x' }, branch: 'b1' },
+  { id: 'chg-b', title: 'Closed one', status: 'running', closed: { at: '2026-10-24T11:00:00Z', by: 'me' } },
+  { id: 'chg-c', title: 'Finished', status: 'done', result: { state: 'done' } },
+  { id: 'chg-d', title: 'No result yet', createdAt: '2026-10-24T12:00:00Z' },
+];
+const oc = core.openChanges(changes);
+check(oc.length === 2 && oc[0].id === 'chg-d' && !oc.some((e) => e.id === 'chg-b' || e.id === 'chg-c'), 'openChanges: open, unclosed, newest first');
+const op = core.openPending([{ id: 'p1', status: 'complete' }, { id: 'p2', status: 'pending' }, { id: 'p3', status: 'broken' }]);
+check(op.length === 2 && op[0].id === 'p3', 'openPending: drops complete, broken first');
+const P = core.projectFacts(JSON.parse(readFileSync(join(ROOT, 'project.manifest.json'), 'utf8')), 'abc1234', 'main', '2026-10-25T09:00:00.000Z');
+const smd = core.sessionMd({ P, now: '2026-10-25T09:00:00.000Z', changes: [...changes, { id: 'chg-s', title: `leak ${fake.gh}`, status: 'running' }], pending: [{ id: 'p2', title: 'Two', status: 'pending', model: 'opus' }], prs: [{ number: 7, title: 'PR seven', draft: true, head: 'b1' }] });
+check(smd.includes('chg-a') && smd.includes('pending:x') && !smd.includes('[object Object]'), 'sessionMd lists running changes with their buildRef');
+check(smd.includes('p2') && smd.includes('#7') && smd.includes('## Standing rules'), 'sessionMd has pending, PRs, rules');
+check(!smd.includes(fake.gh), 'sessionMd hides secrets');
+check(core.sessionPrompt(smd).includes(smd), 'sessionPrompt carries the summary');
+check(core.fingerprint({ repo, machines: { vps: m }, claudeAi: reg }) === fp1, 'fingerprint unchanged without a session');
+check(core.fingerprint({ repo, machines: { vps: m }, claudeAi: reg, session: smd }) !== fp1, 'fingerprint changes with a session');
+const kitS = core.buildKit({ root: ROOT, manifest: JSON.parse(readFileSync(join(ROOT, 'project.manifest.json'), 'utf8')), repo, machines: {}, claudeAi: reg, session: smd, commit: 'abc1234def5678', now: '2026-10-22T12:00:00.000Z' });
+check(kitS.files.some((f) => f.path === core.SESSION_FILE && f.content === smd), 'kit includes ACTIVE-THREADS.md with a session');
+check(!kit.files.some((f) => f.path === core.SESSION_FILE), 'kit has no ACTIVE-THREADS.md without one');
+
 console.log(`claude-handoff test.mjs: ${ok} checks passed`);
