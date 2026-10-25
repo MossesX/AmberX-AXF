@@ -3393,6 +3393,40 @@
    "builtAt": "",
    "updatedAt": "2026-10-25T01:48:37.694Z",
    "source": "chat"
+  },
+  {
+   "id": "patches-app-plugins-grid",
+   "title": "Patches: plugin grid per app tab with Apply (real install/uninstall)",
+   "detail": "A Patches grid: rows = every plugin Patches knows (its list, each app, the catalog), one column per app in the tabs, a checkbox each; Apply really installs or uninstalls in each app (Console via its plugin catalog / lifecycle API with the console token, server to server). Gizmo, Oct 24 2026.",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on Opus, branch claude/project-thread-2ijgui",
+     "at": "2026-10-24T23:31:30.313Z"
+    }
+   ],
+   "subPrompts": [
+    {
+     "text": "Patches server: app adapters (console real, pilot/axhub placeholders), GET /api/app-plugins, apply job",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T23:31:30.363Z"
+    },
+    {
+     "text": "Patches web: Plugins per app view with the grid, Apply, progress; menu + context hooks; tests",
+     "at": "",
+     "estimate": "30 min",
+     "done": true,
+     "doneAt": "2026-10-24T23:31:30.405Z"
+    }
+   ],
+   "createdAt": "2026-10-24T23:27:02.390Z",
+   "builtAt": "2026-10-24T23:31:30.264Z",
+   "updatedAt": "2026-10-24T23:31:30.405Z",
+   "estimate": "1 h",
+   "source": "chat"
   }
  ]
 }

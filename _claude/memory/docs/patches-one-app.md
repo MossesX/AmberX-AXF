@@ -121,5 +121,5 @@ fixtures unchanged: the new takes are web-only, so `embed-takes.json` `ids` list
 - **Pilot** needs a re-bake (Build-Pilot repo) for the suite takes and `settings/suite`.
 - **Not screenshot-verified:** the apps wait for axHub in the build sandbox.
 - The console and Patches send no `frame-ancestors`; framing by other sites is limited by the hub's SameSite cookies.
-- Patches' server `/api/plugins` routes stay but nothing in the page uses them (the `plugins` take is gone: the
-  Console runs its own plugins again).
+- The `plugins` take is gone: each app runs its own plugins again, and Patches' **Plugins per app** grid (PR #69,
+  `appPlugins.tsx`, Patches menu → Plugins per app…) installs or removes them in each app.

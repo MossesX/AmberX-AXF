@@ -5,14 +5,15 @@ import { hubStatusLibrary } from './axf/libs/hubstatus';
 import { dialogs } from './dialogs';
 import { api, type Me } from './api';
 import { patchesLibrary, useAppMessages, useSuiteSync, useTabs } from './patchesLibrary';
+import { appPluginsLibrary } from './appPlugins';
 import { tabViews } from './views/tabs';
-import { WARM_KEY } from './patches';
+import { TABS, WARM_KEY } from './patches';
 
 /** The access policy a signed-in hub account is bound to (framework starter uac-policy/hub-accounts). */
 export const POLICY = 'hub-accounts';
 
-/** lib-settings (Patches' own settings), the axHub badge (red unless the look comes live from the hub) + Patches itself (installed last: its hooks win). */
-const libraries = [settingsLibrary, hubStatusLibrary, patchesLibrary];
+/** lib-settings (Patches' own settings), the axHub badge (red unless the look comes live from the hub), Plugins per app, then Patches itself (installed last: its hooks win). */
+const libraries = [settingsLibrary, hubStatusLibrary, appPluginsLibrary, patchesLibrary];
 
 export function App() {
   const rt = useRuntime();
@@ -29,10 +30,10 @@ export function App() {
   const { tabs } = useTabs();
   const views = useMemo(() => tabViews(tabs), [tabs]);
   const keep = useMemo(() => [...Object.keys(views)], [views]);
-  // Every app tab loads in the background once Patches has drawn (plugin tabs wait until they're opened), unless switched off.
+  // Every app tab loads in the background once Patches has drawn (plugin tabs and Settings wait until they're opened), unless switched off.
   useAxfState();
   const warmOn = rt.settings.get(WARM_KEY) !== false;
-  const warm = useMemo(() => (warmOn ? keep.filter((id) => !id.startsWith('tab.')) : []), [keep, warmOn]);
+  const warm = useMemo(() => (warmOn ? keep.filter((id) => TABS.some((t) => t.id === id)) : []), [keep, warmOn]);
   // Page order: Patches' banner, the app tabs (app.frame.head), the menu bar, then the banner strip (the Console's plugin
   // banners, app.frame.top) and the app in the tab.
   return (
