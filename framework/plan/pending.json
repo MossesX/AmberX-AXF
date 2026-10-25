@@ -1,6 +1,6 @@
 {
  "$axf": "pending@1",
- "updatedAt": "2026-10-25T20:14:56.178Z",
+ "updatedAt": "2026-10-25T20:28:38.573Z",
  "artifact": "https://claude.ai/artifact/HTwGSP7HcEt5yBd3MNz2Ye",
  "items": [
   {
@@ -3541,6 +3541,119 @@
    "builtAt": "2026-10-25T20:14:56.178Z",
    "updatedAt": "2026-10-25T20:14:56.178Z",
    "estimate": "50 min",
+   "source": "chat"
+  },
+  {
+   "id": "android-framework-update",
+   "title": "Update the Android framework: every deferred Android twin (PORTING.md)",
+   "detail": "Held in the Activity banner until Continue (Gizmo, Oct 25 2026). Brings the Kotlin kernel + Compose layer level with the web port: every gap PORTING.md records as deferred while Android was on hold. Continue starts it through the Build manager (axHub approval). Lifting the Android hold for this build is the person's Continue tap.",
+   "model": "Fable",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [
+    {
+     "text": "Read PORTING.md deferred list; plan module order; branch fable/android-framework-update",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "AppMenuEngine.kt + AxfRuntime contributions/providers + fixture replay",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Compose menubar on the compiled app menu (flyouts, drill-down, badges, checks)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AppShell frame order: app.frame.head / banners slots, menu above banners",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "embed@1 guest side: takes, page mode, skipWhen in the module loader",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Banner settings + BannerHideEngine + hot render on settings change",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Gauge / meter + tab-group styles in ComponentStyleEngine + Compose controls",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "CustomizeEngine (35 tokens, icon sets) read by Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "SettingsUiEngine.kt + lib-settings SettingsScreen reading the settings asset (shared settings/console)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "AppearancePackageEngine + runtime capture/apply/restore",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "placement@1 + model badges in Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "library@1 parts in LibraryParams + generated setup",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "25 min"
+    },
+    {
+     "text": "lib-hub: apps rules, hubstore data client, hubsync module (move Voice Vault twin in)",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "hubstatus badge + approval/menu hooks in Compose",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "20 min"
+    },
+    {
+     "text": "Studio libraries Compose placeholders (dnd, tree, datagrid, workspace, recorder, docstore): scope + first slice",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    },
+    {
+     "text": "Fixtures replay in ConformanceTest, CI green, PORTING.md gaps cleared, report",
+     "at": "2026-10-25T20:26:24.629Z",
+     "estimate": "30 min"
+    }
+   ],
+   "createdAt": "2026-10-25T20:26:24.616Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T20:26:24.629Z",
+   "source": "chat"
+  },
+  {
+   "id": "activity-hold-continue",
+   "title": "Activity banner: on-hold item with Continue for the Android framework update",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [
+    {
+     "text": "Built on branch claude/project-thread-lmyb8k (PR #90).",
+     "at": "2026-10-25T20:28:38.573Z"
+    }
+   ],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T20:28:38.567Z",
+   "builtAt": "2026-10-25T20:28:38.567Z",
+   "updatedAt": "2026-10-25T20:28:38.573Z",
+   "estimate": "30 min",
    "source": "chat"
   }
  ]
