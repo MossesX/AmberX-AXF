@@ -59,6 +59,7 @@ import androidx.compose.ui.platform.LocalContext
 import ai.amberx.axf.voicevault.background.WakeDelivery
 import ai.amberx.axf.voicevault.background.WakeListener
 import ai.amberx.axf.voicevault.background.WakeState
+import ai.amberx.axf.voicevault.voice.VoiceControl
 
 /** The Voice screen: banner on top when a password is ready to copy, the mic, and the current step. */
 @Composable
@@ -75,6 +76,7 @@ fun HomeView() {
         CopyBanner(session, stage)
         Column(Modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(Axf.space.two), verticalArrangement = Arrangement.spacedBy(Axf.space.two), horizontalAlignment = Alignment.CenterHorizontally) {
             MicHeader(session, voice, stage)
+            MicSwitch()
             NoteLine(note)
             ListeningFor(session, stage)
             StageBody(session, voice, stage)
@@ -131,6 +133,19 @@ private fun MicHeader(session: VaultSession, voice: AxfVoice?, stage: Stage) {
     AxfHeading(title(stage), level = 2)
     AxfText(subtitle(stage, listening, hearing), muted = true, style = Axf.type.bodyMedium.copy(textAlign = TextAlign.Center))
     LiveTranscript(session)
+}
+
+/** The master microphone switch (this phone only): off = Voice Vault doesn't listen at all, here or in the background. */
+@Composable
+private fun MicSwitch() {
+    val control = rememberService<VoiceControl>() ?: return
+    val off by control.micOff.collectAsState()
+    val runtime = LocalAxfRuntime.current
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Axf.space.one)) {
+        AxfSwitch(!off, { control.setMicOff(!it) }, Modifier.weight(1f), label = "Microphone",
+            description = if (off) "Off: nothing listens, not here and not in the background." else "On: listens here, and in the background for your triggers.")
+        AxfButton("Voice actions", { runtime.navigate(VoiceControl.ROUTE) }, tone = ButtonTone.GHOST, icon = "mic")
+    }
 }
 
 /** What's being said, live, in plain text (Settings → Show what you say; on by default). */
@@ -309,6 +324,7 @@ private fun HowItWorks(session: VaultSession) {
             WakeState.TakingNote -> "Taking a voice note." to null
             WakeState.PausedInApp -> "Paused while the app is open. Close it or turn off the screen and it listens for your global trigger." to null
             is WakeState.Heard -> "Heard your trigger and opened the app." to null
+            is WakeState.Quiet -> "Quiet hours: not listening until ${w.until}." to null
             is WakeState.Off -> w.why to Axf.colors.warning
         }
         AxfText(line, color = tone ?: androidx.compose.ui.graphics.Color.Unspecified)

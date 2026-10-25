@@ -1,5 +1,5 @@
 /**
- * Voice notes console plugin (ai.amberx.axf.console.voice-notes) — only a settings interface.
+ * Voice notes console plugin (ai.amberx.axf.console.voice-notes): its settings interface plus the Voice notes page.
  *
  * Configures a voice-activated notes pusher: a start trigger, a beep, the note, a stop trigger (cut from the text and
  * the recording), then "where should I store it?" — say a list, or "give me the list of lists" and it reads them with
@@ -7,15 +7,17 @@
  * file notes into subcategories. Everything (settings and lists) lives on axHub's data server through the framework's
  * lib-hubstore, never on this device. The listener that does the talking is Voice Vault on Android.
  *
- * Settings → Plugins → Voice notes.
+ * Settings → Plugins → Voice notes. The page (view `voice-notes`, tabable, so Patches can add it as a tab) fetches the
+ * notes the listener saved to table `notes` on axHub: newest first, by list and subcategory, search, copy, delete.
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, IconButton, Note, Section, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Chip, IconButton, Note, Section, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import {
   FOLDER, ID, MAX_LISTS, MAX_PHRASES, conversationPreview, newId, newList, pickList, problems, spokenNumber, stripStopTrigger, asksForLists,
-  type NoteList, type QuestionSet, type Subcategory, type VoiceNotesSettings,
+  filterNotes, noteCounts, noteWhere, notesMarkdown,
+  type NoteList, type QuestionSet, type SavedNote, type Subcategory, type VoiceNotesSettings,
 } from './core';
 import * as store from './store';
 import { appMenu } from './menu';
@@ -362,12 +364,117 @@ function PreviewPanel() {
   );
 }
 
+/* ---------- the notes page (view `voice-notes`) ---------- */
+
+/** How often the page fetches again while it's on screen. */
+const NOTES_EVERY_MS = 30_000;
+
+const when = (iso: string) => { const t = Date.parse(iso); return Number.isFinite(t) ? new Date(t).toLocaleString() : 'no date'; };
+
+/** Fetch the notes when the page shows, every 30 s while it's visible, and on focus. */
+function useNotes() {
+  useEffect(() => {
+    void store.loadNotes();
+    const visible = () => document.visibilityState === 'visible';
+    const again = () => { if (visible()) void store.loadNotes(); };
+    const timer = window.setInterval(again, NOTES_EVERY_MS);
+    window.addEventListener('focus', again);
+    document.addEventListener('visibilitychange', again);
+    return () => { window.clearInterval(timer); window.removeEventListener('focus', again); document.removeEventListener('visibilitychange', again); };
+  }, []);
+  return useSnap();
+}
+
+function NoteCard({ n, lists }: { n: SavedNote; lists: NoteList[] }) {
+  const [sure, setSure] = useState(false);
+  useEffect(() => { if (!sure) return; const t = window.setTimeout(() => setSure(false), 4000); return () => window.clearTimeout(t); }, [sure]);
+  const answers = Object.entries(n.answers);
+  return (
+    <article className="fx-card axp-voice-notes-note">
+      <div className="fx-row fx-row--wrap axp-voice-notes-notehead">
+        <Chip tone="accent">{noteWhere(n, lists)}</Chip>
+        <span className="fx-small fx-muted">{when(n.at)}{n.device ? ` · ${n.device}` : ''}</span>
+        <span className="axp-voice-notes-grow" />
+        <IconButton icon="copy" label="Copy the note" onClick={() => void navigator.clipboard?.writeText(n.text)} />
+        <Button size="sm" tone={sure ? 'danger' : 'quiet'} icon="trash" onClick={() => (sure ? void store.removeNote(n.id) : setSure(true))}>{sure ? 'Tap again to delete' : 'Delete'}</Button>
+      </div>
+      <p className="axp-voice-notes-text">{n.text}</p>
+      {answers.length > 0 && (
+        <dl className="axp-voice-notes-answers fx-small">
+          {answers.map(([k, v]) => <div key={k}><dt className="fx-muted">{k}</dt><dd>{v}</dd></div>)}
+        </dl>
+      )}
+    </article>
+  );
+}
+
+function NotesPage() {
+  const rt = useRuntime();
+  const snap = useNotes();
+  const [q, setQ] = useState('');
+  const [list, setList] = useState('');
+  const [sub, setSub] = useState('');
+  const counts = noteCounts(snap.notes, snap.lists);
+  const shown = filterNotes(snap.notes, snap.lists, { q, list, sub });
+  const picked = snap.lists.find((l) => l.id === list);
+  const listOptions = [
+    ...snap.lists.map((l) => ({ value: l.id, label: `${l.number}: ${l.name} (${counts[l.id] ?? 0})` })),
+    ...(counts.none ? [{ value: 'none', label: `No list / list removed (${counts.none})` }] : []),
+  ];
+  return (
+    <div className="fx-stack fx-stack--lg">
+      {!rt.embedded?.page && (
+        <header className="fx-pagehead">
+          <div>
+            <p className="fx-eyebrow">Voice notes · {snap.notes.length} saved{snap.notesAt ? ` · fetched ${new Date(snap.notesAt).toLocaleTimeString()}` : ''}</p>
+            <h1>Voice notes</h1>
+            <p className="fx-muted">The notes Voice Vault heard and saved to axHub, newest first. It fetches them again every 30 seconds while this page is open.</p>
+          </div>
+          <div className="fx-row fx-row--wrap">
+            <Button icon="refresh" disabled={snap.notesBusy} onClick={() => void store.loadNotes()}>{snap.notesBusy ? 'Fetching…' : 'Fetch now'}</Button>
+            <Button icon="settings" onClick={() => rt.dispatch('settings.open:voice-notes')}>Set up</Button>
+          </div>
+        </header>
+      )}
+      <HubGate>{() => (
+        <div className="fx-stack">
+          {rt.embedded?.page && (
+            <div className="fx-row fx-row--wrap">
+              <span className="fx-small fx-muted">{snap.notes.length} saved{snap.notesAt ? ` · fetched ${new Date(snap.notesAt).toLocaleTimeString()}` : ''}</span>
+              <Button size="sm" icon="refresh" disabled={snap.notesBusy} onClick={() => void store.loadNotes()}>{snap.notesBusy ? 'Fetching…' : 'Fetch now'}</Button>
+            </div>
+          )}
+          <div className="fx-row fx-row--wrap axp-voice-notes-filters">
+            <TextField label="Search" value={q} onChange={setQ} placeholder="Words in the note, its list or answers" />
+            <SelectField label="List" value={list} empty={`All lists (${snap.notes.length})`} options={listOptions} onChange={(v) => { setList(v); setSub(''); }} />
+            {picked && picked.subcategories.length > 0 && (
+              <SelectField label="Subcategory" value={sub} empty="All" options={picked.subcategories.map((x) => ({ value: x.id, label: `${x.number}: ${x.name}` }))} onChange={setSub} />
+            )}
+          </div>
+          {shown.length > 0 && (
+            <div className="fx-row fx-row--wrap">
+              <span className="fx-small fx-muted">{shown.length === snap.notes.length ? `${shown.length} notes` : `${shown.length} of ${snap.notes.length} notes`}</span>
+              <Button size="sm" icon="copy" onClick={() => void navigator.clipboard?.writeText(notesMarkdown(shown, snap.lists))}>Copy as Markdown</Button>
+            </div>
+          )}
+          {shown.map((n) => <NoteCard key={n.id} n={n} lists={snap.lists} />)}
+          {snap.notesLoaded && !snap.notes.length && <Note>No notes yet. Say your start trigger near Voice Vault, then the note and the stop trigger, and it shows up here.</Note>}
+          {snap.notesLoaded && snap.notes.length > 0 && !shown.length && <p className="fx-small fx-muted">No note matches.</p>}
+          {!snap.notesLoaded && snap.state.status === 'ready' && <p className="fx-small fx-muted">Fetching notes…</p>}
+        </div>
+      )}</HubGate>
+    </div>
+  );
+}
+
 export const plugin: AxfWebLibrary = {
   appMenu,
   id: ID,
   label: 'Voice notes',
-  version: '0.1.0',
-  provides: ['voice-notes.settings'],
+  version: '0.2.0',
+  provides: ['voice-notes.settings', 'voice-notes.page'],
+  views: { 'voice-notes': { title: 'Voice notes', icon: 'mic', keywords: ['voice', 'notes', 'dictation', 'voice vault', 'lists'], render: () => <NotesPage /> } },
+  nav: { label: 'Plugins', items: [{ id: 'voice-notes', label: 'Voice notes', icon: 'mic', view: 'voice-notes' }] },
   settingsTabs: [{ id: 'voice-notes', label: 'Voice notes', icon: 'mic', parent: 'plugins', order: 60, description: 'Set up the voice-activated notes pusher (kept on axHub).' }],
   settingsPanels: [
     { id: 'voice-notes.where', tab: 'voice-notes', title: 'Where it lives', icon: 'cloud', order: 5, render: () => <WherePanel /> },
