@@ -19,7 +19,7 @@
  * still picks another app menu; picking another one afterwards sticks.
  */
 import { useEffect, useRef } from 'react';
-import type { AxfRuntime, MenuItem } from './axf/core';
+import type { AssetType, AxfRuntime, MenuItem } from './axf/core';
 import { Button, LiveSearch, Note, flashWhenReady, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { HUB_DEFAULT, accountUrl, approvalsUrl, appsUrl, normalizeHub } from './axf/libs/hub/hub';
@@ -32,6 +32,7 @@ import { CONSOLE_MENU_ID, CONSOLE_PROVIDERS as P, PENDING_BADGE, consoleMenuCont
 const REFRESH_MS = 3 * 60_000;
 const SEARCH_DIALOG = 'console-search';
 const MIGRATED_KEY = 'axf-console:menu-console-v1';
+const MOVES: [AssetType, string, string][] = [['app-menu', 'console', MIGRATED_KEY], ['context-menu', 'amber', 'axf-console:context-amber-v1']];
 const store = () => (globalThis as unknown as { __axfConsole?: ConsoleStore }).__axfConsole;
 
 /* ---------------- where console.open goes (a fixed list: nothing else can be opened through it) ---------------- */
@@ -257,17 +258,19 @@ function start(rt: AxfRuntime) {
     e.preventDefault();
     rt.openDialog(SEARCH_DIALOG);
   });
-  // One-time move to the console menu when a saved look still names another app menu.
-  let done = (() => { try { return globalThis.localStorage?.getItem(MIGRATED_KEY) === '1'; } catch { return true; } })();
-  const migrate = () => {
-    if (done || !rt.appearanceReady()) return;
-    done = true;
-    try { globalThis.localStorage?.setItem(MIGRATED_KEY, '1'); } catch { /* fine */ }
-    if (rt.getState().active['app-menu'] !== 'console' && rt.gate('assets.swap') === 'allow') rt.swap('app-menu', 'console');
-    off();
-  };
-  const off = rt.subscribe(migrate);
-  migrate();
+  // One-time moves (per browser) when a saved look still names another asset: the console app menu, the Amber context menu.
+  for (const [type, id, key] of MOVES) {
+    let done = (() => { try { return globalThis.localStorage?.getItem(key) === '1'; } catch { return true; } })();
+    const migrate = () => {
+      if (done || !rt.appearanceReady()) return;
+      done = true;
+      try { globalThis.localStorage?.setItem(key, '1'); } catch { /* fine */ }
+      if (rt.getState().active[type] !== id && rt.gate('assets.swap') === 'allow') rt.swap(type, id);
+      off();
+    };
+    const off = rt.subscribe(migrate);
+    migrate();
+  }
 }
 
 export const menuLibrary: AxfWebLibrary = {
