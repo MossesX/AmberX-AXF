@@ -348,6 +348,7 @@ async def post_last_run(request: Request) -> dict[str, Any]:
 
 class SessionReq(BaseModel):
     notes: str | None = Field(default=None, max_length=8000)
+    threads: str | None = Field(default=None, max_length=8000)
     publish: bool = True
 
 
@@ -361,6 +362,7 @@ def get_session() -> dict[str, Any]:
     saved = _read(_session_notes_path(), {})
     md = _data() / "session.md"
     return {"notes": saved.get("notes") if isinstance(saved, dict) else None,
+            "threads": (saved.get("threads") if isinstance(saved, dict) else "") or "",
             "savedAt": (saved.get("savedAt") if isinstance(saved, dict) else "") or "",
             "markdown": md.read_text("utf-8") if md.is_file() else ""}
 
@@ -372,6 +374,8 @@ def post_session(req: SessionReq) -> dict[str, Any]:
     with _lock:
         if req.notes is not None:
             _write(_session_notes_path(), {**(_read(_session_notes_path(), {}) or {}), "notes": req.notes})
+        if req.threads is not None:
+            _write(_session_notes_path(), {**(_read(_session_notes_path(), {}) or {}), "threads": req.threads})
         r = _node("session", "--save", timeout=90)
         _write(_session_notes_path(), {**(_read(_session_notes_path(), {}) or {}), "savedAt": r.get("savedAt", "")})
     published: dict[str, Any] | None = None

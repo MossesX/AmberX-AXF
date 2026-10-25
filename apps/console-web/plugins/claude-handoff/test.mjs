@@ -140,4 +140,18 @@ const kitS = core.buildKit({ root: ROOT, manifest: JSON.parse(readFileSync(join(
 check(kitS.files.some((f) => f.path === core.SESSION_FILE && f.content === smd), 'kit includes ACTIVE-THREADS.md with a session');
 check(!kit.files.some((f) => f.path === core.SESSION_FILE), 'kit has no ACTIVE-THREADS.md without one');
 
+
+// Threads to recreate on the other account
+const th = core.sessionThreads({ changes, prs: [{ number: 7, title: 'PR seven', head: 'b1', base: 'main' }, { number: 8, title: 'PR eight', head: 'b8', base: 'main' }], threads: `- Voice notes: PR #51 ready, waits on a model pick\nBanVue ${fake.gh}\n\n` });
+check(th.length === 5, `sessionThreads: 2 changes + 1 uncovered PR + 2 hand-written (${th.length})`);
+check(th[0].source === 'change' && th.some((t) => t.source === 'change' && t.brief.includes('PR #7')), 'a change carries the PR on its branch');
+check(th.filter((t) => t.source === 'pr').length === 1 && th.find((t) => t.source === 'pr').title.includes('#8'), 'only PRs no change covers get their own thread');
+const vn = th.find((t) => t.title === 'Voice notes');
+check(vn && vn.brief.includes('waits on a model pick'), 'hand-written line: title before the colon, state after');
+check(!JSON.stringify(th).includes(fake.gh), 'thread briefs hide secrets');
+const smd2 = core.sessionMd({ P, now: '2026-10-25T09:00:00.000Z', changes, pending: [], prs: [], threads: 'Voice notes: waits' });
+check(smd2.includes('## Threads to recreate') && smd2.includes('### Thread 1:') && smd2.includes('```text'), 'sessionMd lists the threads with a first message each');
+check(core.sessionPrompt(smd2).includes('recreate the open threads'), 'the copied prompt asks for the threads to be recreated');
+check(!core.sessionPrompt(core.sessionMd({ P, now: '2026-10-25T09:00:00.000Z', changes: [], pending: [], prs: [] })).includes('recreate the open threads'), 'no threads, no recreate line');
+
 console.log(`claude-handoff test.mjs: ${ok} checks passed`);

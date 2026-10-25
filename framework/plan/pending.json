@@ -3289,12 +3289,12 @@
    "title": "Codebase changes: resume details (carry on from another Claude account) + log the first edit",
    "detail": "change-log@1 gains `resume` (repo, folder, branch, base, head, pushed, dirty, files, plan, next, notes, tests, read, pr); the hook records the git part by itself; the first edit after a prompt not worded as a change opens an entry with machine, session and session type; `changes.mjs resume <id> --prompt` + console Copy resume prompt (GET entries/{id}/resume). Still open from the log-every-change rule: a project-level hook so cloud and headless sessions log without a per-machine install.",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [],
    "createdAt": "2026-10-25T10:46:22.879Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-25T10:46:22.879Z",
+   "builtAt": "2026-10-25T14:47:07.826Z",
+   "updatedAt": "2026-10-25T14:47:07.826Z",
    "estimate": "30 min",
    "source": "chat"
   },
@@ -3303,7 +3303,7 @@
    "title": "Vinny runs mapped VPS + GitHub commands on triggers, no Claude needed; Auto fix tries Vinny → Mosses → Claude",
    "detail": "",
    "model": "Opus",
-   "status": "pending",
+   "status": "complete",
    "notes": [],
    "subPrompts": [
     {
@@ -3338,8 +3338,8 @@
     }
    ],
    "createdAt": "2026-10-24T17:53:56.154Z",
-   "builtAt": "",
-   "updatedAt": "2026-10-24T18:05:35.279Z",
+   "builtAt": "2026-10-25T14:46:42.221Z",
+   "updatedAt": "2026-10-25T14:46:42.221Z",
    "estimate": "3 h",
    "source": "chat"
   },
@@ -3374,6 +3374,34 @@
    "builtAt": "2026-10-25T10:39:16.155Z",
    "updatedAt": "2026-10-25T10:39:16.195Z",
    "estimate": "1 h",
+   "source": "chat"
+  },
+  {
+   "id": "handoff-session-threads",
+   "title": "Claude handoff: Handoff Session prompt recreates the open threads",
+   "detail": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
+   "model": "Opus",
+   "status": "pending",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T14:46:55.696Z",
+   "builtAt": "",
+   "updatedAt": "2026-10-25T14:46:55.696Z",
+   "estimate": "30 min",
+   "source": "chat"
+  },
+  {
+   "id": "changes-grid",
+   "title": "Changes & features grid plugin",
+   "detail": "",
+   "model": "Opus",
+   "status": "complete",
+   "notes": [],
+   "subPrompts": [],
+   "createdAt": "2026-10-25T16:38:09.847Z",
+   "builtAt": "2026-10-25T16:38:09.847Z",
+   "updatedAt": "2026-10-25T16:38:09.847Z",
+   "estimate": "45 min",
    "source": "chat"
   },
   {
