@@ -1,7 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-handoff",
-  "name": "Claude handoff",
+  "name": "Claude handoff banner",
   "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,

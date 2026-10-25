@@ -332,6 +332,29 @@ def tabs_save(body: dict[str, Any], _c: wall.Caller = Depends(auth)) -> dict[str
 import app_plugins  # noqa: E402
 
 
+def _patches_add(app_id: str, it: dict[str, Any]) -> None:
+    if app_id not in PLUGIN_APPS:
+        raise app_plugins.AppError(f"{app_id} isn't an app Patches keeps a list for")
+    with _plugins_lock:
+        state = _read_plugins()
+        mine = state["apps"][app_id]["plugins"]
+        if it["id"] not in mine and len(mine) >= MAX_PLUGINS:
+            raise app_plugins.AppError(f"at most {MAX_PLUGINS} plugins per app")
+        mine.setdefault(it["id"], {"name": _clip(it.get("name"), 80) or it["id"], "version": _clip(it.get("version"), 40), "model": _model(it.get("model")),
+                                   "enabled": True, "installedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+        _write_plugins(state)
+
+
+def _patches_remove(pid: str) -> None:
+    with _plugins_lock:
+        state = _read_plugins()
+        if any(a["plugins"].pop(pid, None) is not None for a in state["apps"].values()):
+            _write_plugins(state)
+
+
+app_plugins.PATCHES.add, app_plugins.PATCHES.remove = _patches_add, _patches_remove
+
+
 def _tab_apps() -> list[str]:
     with _tabs_lock:
         tabs = _read_tabs()["tabs"]

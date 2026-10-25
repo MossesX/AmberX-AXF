@@ -178,7 +178,7 @@ class FakeConsole(http.server.BaseHTTPRequestHandler):
         if not self._auth():
             return
         if self.path == "/api/plugins":
-            items = [{"folder": f, "id": i, "name": f.title(), "version": "0.1.0", "enabled": True, "builtWith": {"model": "opus"}} for f, i in FAKE["installed"].items()]
+            items = [{"folder": f, "id": i, "name": f.title(), "version": "0.1.0", "enabled": True, "builtWith": {"model": "opus"}, **({"banner": [f]} if f in FAKE.get("banners", ()) else {})} for f, i in FAKE["installed"].items()]
             items.append({"folder": "gone", "id": "ai.amberx.axf.console.gone", "name": "Gone", "version": "1", "removed": True})
             return self._send(200, {"items": items})
         if self.path == "/api/app-plugins/axhub":
@@ -288,8 +288,8 @@ main.PLUGINS_FILE.write_text(_json.dumps({"apps": {"pilot": {"plugins": {"pilot.
 os.environ.pop("APP_CONSOLE_TOKEN", None)
 os.environ["APP_CONSOLE_URL"] = BASE
 g = c.get("/api/app-plugins", headers=TOKEN).json()
-check([a["app"] for a in g["apps"]] == ["console", "pilot", "axhub"], "grid: one column per app in the tabs, in order")
-check(not g["apps"][0]["reachable"] and "APP_CONSOLE_TOKEN" in g["apps"][0]["reason"], "grid: no console token says why")
+check([a["app"] for a in g["apps"]] == ["patches", "console", "pilot", "axhub"], "grid: Patches first, then one column per app in the tabs, in order")
+check(not g["apps"][1]["reachable"] and "APP_CONSOLE_TOKEN" in g["apps"][1]["reason"], "grid: no console token says why")
 check(c.get("/api/app-plugins").status_code == 401 and c.get("/api/app-plugins", headers=session("conrad", "user")).status_code == 403, "grid: callers + users refused")
 
 os.environ["APP_CONSOLE_TOKEN"] = "console-tok"
@@ -328,6 +328,38 @@ j = app_plugins.wait()
 check(j["state"] == "partial" and j["items"][0]["state"] == "failed" and "cannot install" in j["items"][0]["note"] and j["items"][1]["state"] == "done", "apply: a failure is noted, the rest still run")
 
 FAKE["fail"].discard("alpha")
+
+# Banner plugins live in the Console only (Gizmo, Oct 25 2026)
+FAKE["banners"] = {"beta"}
+FAKE["installed"]["beta"] = B
+rows = {r["id"]: r for r in c.get("/api/app-plugins", headers=TOKEN).json()["plugins"]}
+check(rows[B]["banner"] and rows[B]["cells"]["console"] == {"installed": True, "canChange": False, "why": "banner plugins stay installed in the Console"},
+      "banners: can't be taken out of the Console")
+check(rows[B]["cells"]["axhub"]["canChange"] is False and "only go in the Console" in rows[B]["cells"]["axhub"]["why"], "banners: can't be put in another app")
+check(c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "console", "id": B, "install": False}]}).status_code == 400,
+      "banners: Apply refuses uninstalling one from the Console")
+check(not rows[A]["banner"], "banners: other plugins unchanged")
+FAKE["banners"] = set()
+
+# The Patches column (Gizmo, Oct 25 2026): Patches' own list; a box adds / removes it there, never in the app
+rows = {r["id"]: r for r in c.get("/api/app-plugins", headers=TOKEN).json()["plugins"]}
+check(rows["pilot.x"]["cells"]["patches"]["installed"] is True and rows["pilot.x"]["cells"]["patches"]["canChange"], "patches column: what's in Patches' list is ticked")
+check(rows[B]["cells"]["patches"]["installed"] is False and rows[B]["cells"]["patches"]["canChange"] and rows[B]["cells"]["patches"].get("home") == "console",
+      "patches column: a plugin an app has can be added")
+check(rows["ai.amberx.axhub.hub-hi"]["cells"]["patches"]["canChange"] is False, "patches column: one no app has installed can't be")
+n_calls = len(FAKE["calls"])
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "patches", "id": B, "install": True}, {"app": "patches", "id": "pilot.x", "install": False}]})
+j = app_plugins.wait()
+lst = c.get("/api/plugins", headers=TOKEN).json()["apps"]
+check(j["state"] == "done" and B in lst["console"]["plugins"] and "pilot.x" not in lst["pilot"]["plugins"] and len(FAKE["calls"]) == n_calls,
+      "patches column: Apply changes only Patches' list, no app is called")
+FAKE["banners"] = {"beta"}
+rows = {r["id"]: r for r in c.get("/api/app-plugins", headers=TOKEN).json()["plugins"]}
+check(rows[B]["cells"]["patches"]["canChange"] is True, "patches column: a banner already in Patches' list can be taken out")
+c.post("/api/app-plugins/apply", headers=TOKEN, json={"confirm": "apply", "changes": [{"app": "patches", "id": B, "install": False}]}); app_plugins.wait()
+rows = {r["id"]: r for r in c.get("/api/app-plugins", headers=TOKEN).json()["plugins"]}
+check(rows[B]["cells"]["patches"] == {"installed": False, "canChange": False, "why": "banner plugins only go in the Console"}, "patches column: and never added back")
+FAKE["banners"] = set()
 
 # Pilot: real adapter with its token; bundled plugins are locked
 os.environ["APP_PILOT_TOKEN"] = "pilot-tok"

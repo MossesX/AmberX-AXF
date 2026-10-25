@@ -137,7 +137,10 @@ def _plugin(p: dict[str, Any], *, model: Any = None) -> dict[str, Any] | None:
     if not isinstance(pid, str) or not PLUGIN_ID.match(pid) or not isinstance(folder, str) or not FOLDER.match(folder):
         return None
     bw = p.get("builtWith") if isinstance(p.get("builtWith"), dict) else {}
-    return {"id": pid, "folder": folder, "name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(model if model is not None else bw.get("model"))}
+    out = {"id": pid, "folder": folder, "name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(model if model is not None else bw.get("model"))}
+    if isinstance(p.get("banner"), list) and p["banner"]:
+        out["banner"] = True  # plugin@1 `banner`: it draws a live banner
+    return out
 
 
 def _conn(env: Callable[[str, str], str], prefix: str, default_url: str) -> tuple[str, str, float]:
@@ -451,7 +454,45 @@ class PlaceholderAdapter(Adapter):
         return {"reachable": False, "canInstall": False, "reason": self.reason, "installed": {}, "available": {}}
 
 
+class PatchesAdapter(Adapter):
+    """Patches itself (Gizmo, Oct 25 2026: "add Patches to the matrix"): its own list of the apps' plugins
+    (patches-plugins@1). A box adds the plugin to that list for the app that has it, or takes it out of every app's
+    list. Only Patches' record changes: nothing is installed in or removed from the apps. `main` hands it the store."""
+
+    app = "patches"
+    label = "Patches"
+
+    def __init__(self, add: Callable[[str, dict[str, Any]], None] | None = None, remove: Callable[[str], None] | None = None) -> None:
+        self.add, self.remove = add, remove
+
+    def snapshot_from(self, listed: dict[str, Any]) -> dict[str, Any]:
+        out: dict[str, Any] = {"reachable": True, "canInstall": self.add is not None, "reason": "" if self.add else "Patches' list isn't writable here", "installed": {}, "available": {}}
+        for a, got in ((listed or {}).get("apps") or {}).items():
+            for pid, p in ((got or {}).get("plugins") or {}).items():
+                if PLUGIN_ID.match(str(pid)) and isinstance(p, dict):
+                    out["installed"].setdefault(pid, {"id": pid, "folder": "", "name": _clip(p.get("name"), 80) or pid, "version": _clip(p.get("version"), 40), "model": _model(p.get("model")), "apps": []})["apps"].append(a)
+        return out
+
+    def snapshot(self) -> dict[str, Any]:
+        return self.snapshot_from({})
+
+    def install(self, plugin: dict[str, Any]) -> str:
+        if not self.add or not plugin.get("home"):
+            raise AppError("Patches' list can't take it: no app has it installed")
+        self.add(plugin["home"], plugin)
+        return f"added to Patches' list for {ADAPTERS[plugin['home']].label if plugin['home'] in ADAPTERS else plugin['home']}"
+
+    def uninstall(self, plugin: dict[str, Any]) -> str:
+        if not self.remove:
+            raise AppError("Patches' list isn't writable here")
+        self.remove(plugin["id"])
+        return "taken out of Patches' list (still installed in its app)"
+
+
+PATCHES = PatchesAdapter()
+
 ADAPTERS: dict[str, Adapter] = {
+    "patches": PATCHES,
     "console": ConsoleAdapter(),
     "pilot": PilotAdapter(),
     "axhub": AxhubAdapter(),
@@ -465,14 +506,24 @@ def register(adapter: Adapter) -> None:
 
 # ---------------------------------------------------------------- the grid
 
+BANNER_HOME = "console"
+
+
+def snaps_label(cols: list[dict[str, Any]], app: str) -> str:
+    return next((c["label"] for c in cols if c["app"] == app), app)
+
+
 def grid(apps: list[str], patches_list: dict[str, Any]) -> dict[str, Any]:
     """Columns = the apps in the tabs (in tab order); rows = every plugin Patches knows (its own list per app, each app's
     installed plugins, each app's catalog); a cell = installed or not, and whether Apply may change it."""
     cols: list[dict[str, Any]] = []
     snaps: dict[str, dict[str, Any]] = {}
+    ps = PATCHES.snapshot_from(patches_list)
+    snaps["patches"] = ps
+    cols.append({"app": "patches", "label": PATCHES.label, "reachable": True, "canInstall": ps["canInstall"], "reason": ps["reason"]})
     for a in apps:
         ad = ADAPTERS.get(a)
-        if not ad or a in snaps:
+        if not ad or a in snaps or a == "patches":
             continue
         s = ad.snapshot()
         snaps[a] = s
@@ -492,18 +543,38 @@ def grid(apps: list[str], patches_list: dict[str, Any]) -> dict[str, Any]:
             if PLUGIN_ID.match(str(pid)) and isinstance(p, dict):
                 add({"id": pid, "name": p.get("name"), "version": p.get("version"), "model": p.get("model")}, "patches")
     for a, s in snaps.items():
+        if a == "patches":
+            continue  # its rows came from Patches' list above
         for p in s["installed"].values():
             add(p, f"installed:{a}")
         for p in s["available"].values():
             add(p, "catalog")
+    # Gizmo, Oct 25 2026: "I want all banners installed in console and nowhere else." A banner plugin can't be taken
+    # out of the Console here, and can't be put in any other app (one already there can still be removed).
+    banners = {p["id"] for s in snaps.values() for p in (*s["installed"].values(), *s["available"].values()) if p.get("banner")}
     out_rows = []
     for r in sorted(rows.values(), key=lambda x: (x["name"].lower(), x["id"])):
         cells = {}
+        r["banner"] = r["id"] in banners
         for col in cols:
             a, s = col["app"], snaps[col["app"]]
             have = r["id"] in s["installed"]
-            if not s["reachable"]:
+            if a == "patches":
+                homes = [x["app"] for x in cols if x["app"] != "patches" and r["id"] in snaps[x["app"]]["installed"]]
+                if have:
+                    cells[a] = {"installed": True, "canChange": s["canInstall"], "why": "in Patches' list for " + ", ".join(s["installed"][r["id"]]["apps"])}
+                elif r["banner"]:
+                    cells[a] = {"installed": False, "canChange": False, "why": "banner plugins only go in the Console"}
+                elif homes and s["canInstall"]:
+                    cells[a] = {"installed": False, "canChange": True, "why": f"adds it to Patches' list for {snaps_label(cols, homes[0])}", "home": homes[0]}
+                else:
+                    cells[a] = {"installed": False, "canChange": False, "why": "no app in the tabs has it installed" if s["canInstall"] else s["reason"]}
+            elif not s["reachable"]:
                 cells[a] = {"installed": None, "canChange": False, "why": s["reason"]}
+            elif r["banner"] and a == BANNER_HOME and have:
+                cells[a] = {"installed": True, "canChange": False, "why": "banner plugins stay installed in the Console"}
+            elif r["banner"] and a != BANNER_HOME and not have:
+                cells[a] = {"installed": False, "canChange": False, "why": "banner plugins only go in the Console"}
             elif r["id"] in (s.get("switches") or {}):
                 cells[a] = {"installed": have, "canChange": True, "why": s["switches"][r["id"]], "switch": True}
             elif have and r["id"] in (s.get("locked") or {}):
@@ -552,6 +623,11 @@ def plan(changes: Any, g: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(f"{rows[pid]['name']} in {a} can't be changed: {cell['why']}")
         if cell["installed"] is inst and not delete:
             continue  # already that way
+        if a == "patches":
+            r = rows[pid]
+            out.append({"app": a, "id": pid, "folder": "", "name": r["name"], "version": r.get("version", ""), "model": r.get("model", ""), "home": cell.get("home", ""),
+                        "install": inst, "switch": False, "delete": False, "state": "queued", "note": ""})
+            continue
         snap = g["_snaps"][a]
         p = snap["installed"].get(pid) or snap["available"].get(pid)
         if not p:
