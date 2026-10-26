@@ -27,7 +27,7 @@ export function GeneralPanel() {
   const num = (k: 'fontSize' | 'idleMinutes' | 'moshKeepMinutes', label: string, min: number, max: number) => (
     <label className={`${P}__field`}><span>{label}</span><input className="fx-input" type="number" min={min} max={max} value={v[k]} onChange={(e) => setD({ ...d, [k]: Number(e.target.value) })} /></label>
   );
-  const tick = (k: 'copyOnSelect' | 'pasteWarn' | 'mouseDefault' | 'moshDefault' | 'showHubRuns', label: string) => (
+  const tick = (k: 'copyOnSelect' | 'pasteWarn' | 'mouseDefault' | 'moshDefault' | 'showHubRuns' | 'showHeadless', label: string) => (
     <label className={`${P}__opt`}><input type="checkbox" checked={v[k]} onChange={(e) => setD({ ...d, [k]: e.target.checked })} /> {label}</label>
   );
   return (
@@ -46,6 +46,7 @@ export function GeneralPanel() {
       {tick('pasteWarn', 'Ask before pasting several lines')}
       {tick('mouseDefault', 'New tabs start in mouse mode')}
       {tick('moshDefault', 'New tabs start in Mosh mode')}
+      {tick('showHeadless', 'Show headless Claude Code sessions here: whenever the console or axHub starts one on the VPS, it opens in a VPS tab attached to it and the terminal window comes to the front (needs the VPS host set up)')}
       {tick('showHubRuns', 'Open approved VPS commands here: once a command you approved on axHub has run, its command and output open in a read-only tab')}
       <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={!Object.keys(d).length} onClick={() => void save(d).then(() => setD({}))}>Save</Button><span className="fx-small">{msg}</span></div>
       <p className="fx-small fx-muted">Shortcuts: Ctrl+Shift+C / Ctrl+Shift+V copy and paste; Ctrl+C copies when text is selected, otherwise interrupts; Ctrl+Shift+F searches. The console’s tokens and keys are kept out of every shell’s environment.</p>

@@ -480,7 +480,7 @@ Paste everything below the line into the Project's custom instructions.
 
 You are working on **${P.displayName}** (GitHub ${P.repo}, ${P.visibility}). ${P.description}
 
-**The repo is the memory and the source of truth.** At the start of every conversation read, from the repo (GitHub connector or Claude Code working in the repo): \`CLAUDE.md\`, \`_claude/shared/rules/RULES.md\`, \`_claude/rules/RULES.md\`, \`_claude/memory/decisions.md\`, then what the task needs from \`_claude/memory/docs/\` and \`framework/spec/\`. The files in this Project's knowledge are copies from \`${P.kit}/context/\` (${P.date}); when they differ from the repo, the repo wins.
+**The repo is the memory and the source of truth.** At the start of every conversation read, from the repo (GitHub connector or Claude Code working in the repo): \`CLAUDE.md\`, \`_claude/shared/rules/RULES.md\`, \`_claude/rules/RULES.md\`, \`_claude/memory/decisions.md\`, \`_claude/THREADS.md\` (the threads and builds log: pick up from it), then what the task needs from \`_claude/memory/docs/\` and \`framework/spec/\`. The files in this Project's knowledge are copies from \`${P.kit}/context/\` (${P.date}); when they differ from the repo, the repo wins.
 
 Rules that always apply (full text in the rules files):
 - Before any build, recommend Fable, Opus or Sonnet with one line of why and wait for Brett's pick; check the pending list (\`framework/plan/pending.json\`, or the Dev Console MCP \`pending_list\`).
@@ -488,6 +488,10 @@ Rules that always apply (full text in the rules files):
 - Everything visible is an asset (asset@1); UIs read only engine-compiled tokens. Engine compatibility across ports is a hard constraint (Android work is on hold except where the rules say).
 - No secrets anywhere (repo, _claude, _data, chat). Ask Brett for values; never guess them.
 - Brett works from his phone: lead with the result, short paragraphs; ask with tap-to-pick choices.
+- Load the rules and \`_claude/THREADS.md\` from axHub before anything else. If axHub can't be reached, do nothing but tell Brett and ask for a go on axHub (Go pass); work only while \`GO-PASS.json\` on the repo's \`go-pass\` branch says go and hasn't expired.
+- Every axHub call that needs approval carries \`reason\`: what Brett is approving (one line) and what it does and why.
+- Keep \`_claude/THREADS.md\` current: update, commit and push it whenever a thread starts, changes state, opens or merges a PR, or queues an item.
+- One agent: never use sub-agents unless Brett asks for one by name. Don't build until he says go.
 - When he states a rule or decision, save it in \`_claude/\` (rules/, instructions/, memory/decisions.md) and commit.
 
 Services: axHub connector (https://axhub.amberxai.com/mcp) reaches his VPS, GitHub, Hostinger and the Dev Console MCP; approvals at https://axhub.amberxai.com/auth/admin/approvals.

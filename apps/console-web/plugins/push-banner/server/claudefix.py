@@ -32,6 +32,15 @@ CHANGES = "axf.changes@1"
 COOLDOWN_S = 6 * 3600
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
 WORK_ROOT = "/root/axf-fixes"
+HELPER = "/opt/axf/deploy/claude-headless.sh"  # the console's own checkout on the VPS
+
+
+def headless(name: str, log: str, args: str) -> str:
+    """Start headless Claude Code in a tmux session the console's Terminal opens and brings to the front (Oct 26 2026);
+    the old nohup launch when the console's checkout doesn't have the helper yet."""
+    n = re.sub(r"[^A-Za-z0-9._-]", "-", name)[:48]
+    return (f"set -- {args}; if [ -f {HELPER} ]; then bash {HELPER} --name {sq(n)} --brief .axf-brief.md --log {log} -- \"$@\"; "
+            f'else nohup claude -p "$@" "$(cat .axf-brief.md)" > {log} 2>&1 & echo "started pid $! in $(pwd)"; fi')
 MAX_COMMAND = 6800  # axHub's ssh run refuses commands over 7000 characters (doubled Oct 23 2026, axHub needs the matching change)
 REPO_RE = re.compile(r"[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}\Z")
 BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!-)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
@@ -113,8 +122,7 @@ def launch_command(t: dict[str, Any], change_id: str, packed: bool = False) -> s
         f"cd {sq(work)}",
         f"echo {sq(b64)} | base64 -d{' | gunzip' if packed else ''} > .axf-brief.md",
         f"export AXF_SURFACE=console-launch AXF_MODEL=opus{adopt} AXF_CLAUDE_AUTH=${{AXF_CLAUDE_AUTH:-plan}}",
-        f'nohup claude -p --model opus --permission-mode acceptEdits {tools} "$(cat .axf-brief.md)" > .axf-fix.log 2>&1 &',
-        'echo "started pid $! in $(pwd)"',
+        headless(f"pr-{branch}", ".axf-fix.log", f"--model opus --permission-mode acceptEdits {tools}"),
     ])
 
 

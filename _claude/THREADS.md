@@ -3,18 +3,31 @@
 Every Claude session reads this file when it loads the project and keeps it current, so work can be picked up from
 any session, account or machine. The repo is the source of truth; chat history is not.
 
-**How to update:** when a thread starts, changes state, opens or merges a PR, or queues an item, edit its row (add one
-for a new thread), set *Updated*, commit and push with your branch. Move rows to *Done* once their PR is merged or
-the work is dropped. Queued items stay queued until Brett says to run them (project rule). Open PRs: check GitHub,
-not this file, before acting on one.
+**Read it before doing anything.** Then update it (edit the thread's row, or add one), set *Updated*, commit and push
+with your branch, whenever:
 
-States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `review` (PR open), `on hold`, `done`.
+- a thread is made, or a session starts something (a build, edit, fix, test run, push, pull or merge);
+- a build completes, or anything fails;
+- tests start, pass, fail, or stop part way (say where);
+- a push or pull is needed, completes or fails;
+- a PR is opened, needs merging, is merged, or the merge fails;
+- a deploy is needed;
+- the session runs out of credits or hits a usage limit (state `stopped`, the step it was on, how to resume);
+- it needs Brett (state `blocked`, the exact question), or an item is queued.
+
+Move rows to *Done* once their PR is merged or the work is dropped. Queued items stay queued until Brett says to run
+them (project rule). Open PRs: check GitHub, not this file, before acting on one. If a session can't push, it says
+so in its reply and puts the row in its change-log entry so the next session can add it.
+
+States: `working`, `testing`, `review` (PR open / needs merge), `deploy` (merged, needs a deploy), `queued` (waiting
+for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of credits, usage limit, session ended),
+`on hold`, `done`.
 
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Fix systems check banner (re-bakes) | review | `claude/rebake-console` | #108 | Merge. Demo skipped (not needed). Other banner rows are VPS/key checks this chat cannot see | 2026-10-26 |
+| No login questions + headless sessions in the console Terminal | review | `claude/no-login-questions-terminal-launches` | #105 | Merge; the VPS picks it up on the 5-minute update. Install tmux there (systems check Auto fix) | 2026-10-26 |
 | Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
 | Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
 | Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
@@ -32,6 +45,11 @@ States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `
 
 | Thread | Result | Updated |
 |---|---|---|
+| axHub OAuth 2.1 sign-in (axHub #9, AXF #102) | merged; redeploy axHub on Coolify | 2026-10-26 |
+| Approval reasons + Go pass (axHub #10 as decision #99, AXF #103) | merged; redeploy axHub on Coolify | 2026-10-26 |
+| Fix systems check banner: console re-bake + one-chat-per-task rule (#108) | merged | 2026-10-26 |
+| Write install instructions and install steps | merged (#104) | 2026-10-26 |
+| axHub connector: OAuth client registration (decision #98) | merged (axHub #11); redeploy axHub, then re-add the connector | 2026-10-26 |
 | Add changes and features grid plugin | merged | 2026-10-25 |
 | Edit each Appearance asset individually | merged | 2026-10-25 |
 | Build context menu designer plugin | merged | 2026-10-25 |

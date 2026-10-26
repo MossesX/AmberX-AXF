@@ -16,6 +16,7 @@ import { relTime } from '../hub/core';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
+import { CodeSection, WhatItDoes } from './ApprovalParts';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
 
 export function Approvals() {
@@ -136,14 +137,18 @@ export function ApprovalRow({ item, onDone }: { item: ApprovalItem; onDone: () =
     finally { setBusy(false); }
   };
   const quick = item.actions.filter((a) => (a === 'approve' ? item.whole : true));
+  // Collapsed: what is being approved. Opened: what it does, then the code in its own collapsible section.
   return (
     <Container
-      title={item.tool}
+      title={item.title}
       icon={item.status === 'pending' ? 'shield' : item.status === 'postponed' ? 'clock' : 'check'}
       actions={<Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>}
+      collapsible
+      defaultOpen={false}
     >
       <div className="fx-stack">
-        <p className="fx-mono">{item.whole ? item.summary : `${item.summary.slice(0, 160)}…`}</p>
+        <WhatItDoes item={item} />
+        <CodeSection item={item} />
         <p className="fx-muted">
           Asked {relTime(item.createdAt)} by {item.callerId}
           {item.showExpires ? ` · expires ${relTime(item.expiresAt)}` : ''}

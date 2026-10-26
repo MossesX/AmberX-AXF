@@ -42,6 +42,8 @@ async function detect() {
   const input = parse(await readStdin(3000));
   const source = input.source ?? 'startup';
   if (!config.sources.includes(source) && !has('force')) return;
+  // No questions at login (Oct 26 2026, Brett): the hook stays silent unless its config says ask: true.
+  if (!config.ask && !has('force')) return;
   const cwd = input.cwd || process.env.CLAUDE_PROJECT_DIR || process.cwd();
   const location = L.detectLocation();
   const repo = config.questions.repo ? L.detectRepo(cwd, config.expected.repo, !has('no-fetch')) : { present: false };
