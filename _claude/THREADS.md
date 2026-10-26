@@ -27,7 +27,6 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Banner text on one line | review | `claude/banner-one-line` | #110 | Merge; console updates in 5 min. Built without a Go pass (Brett's override). Fable rebuild parked (`banner-one-line-fable`) | 2026-10-26 |
 | No login questions + headless sessions in the console Terminal | review | `claude/no-login-questions-terminal-launches` | #105 | Merge; the VPS picks it up on the 5-minute update. Install tmux there (systems check Auto fix) | 2026-10-26 |
 | Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
 | Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
@@ -46,6 +45,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | Result | Updated |
 |---|---|---|
+| Banner text on one line | merged (#110); console updates in 5 min. Fable rebuild parked (`banner-one-line-fable`) | 2026-10-26 |
 | axHub: bad OAuth setting never stops the hub (axHub #13, decision #100) | merged; redeploy axHub on Coolify | 2026-10-26 |
 | axHub OAuth 2.1 sign-in (axHub #9, AXF #102) | merged; redeploy axHub on Coolify | 2026-10-26 |
 | Approval reasons + Go pass (axHub #10 as decision #99, AXF #103) | merged; redeploy axHub on Coolify | 2026-10-26 |
