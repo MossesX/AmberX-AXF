@@ -27,6 +27,8 @@ const GROUP = { id: 'axf.display', label: 'Display', tab: 'appearance', settings
 ] };
 const CASES: { name: string; fn: string; input: unknown }[] = [
   { name: 'nothing = defaults', fn: 'normalize', input: null },
+  { name: 'toolbar: a toolbar asset id is kept', fn: 'normalize', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'settings-page' } },
+  { name: 'toolbar: bad id', fn: 'errors', input: { layout: 'tabs-top', header: 'full', search: false, descriptions: true, toolbar: 'bad id' } },
   { name: 'bad enums fall back', fn: 'normalize', input: { layout: 'grid', header: 7, search: 'yes', descriptions: false } },
   { name: 'tabs: bad ids + duplicates dropped', fn: 'normalize', input: { layout: 'list', header: 'none', search: true, descriptions: true, tabs: [{ id: 'about' }, { id: 'about', label: 'Again' }, { id: 'bad id' }, 7, { id: 'dev', label: 'Developer', icon: 'code', parent: 'dev', hidden: 'x' }] } },
   { name: 'groups: data-only kinds, options, defaults', fn: 'normalize', input: { layout: 'tabs-side', header: 'compact', search: false, descriptions: true, groups: [

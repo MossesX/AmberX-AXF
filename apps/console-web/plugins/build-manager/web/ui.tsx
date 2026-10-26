@@ -820,6 +820,16 @@ export function BuildManagerView() {
 
 /* ---------------- the banner ---------------- */
 
+/** The way to the full page from an expanded banner build (tapping the banner expands it in place, Brett Oct 25 2026). */
+function BannerOpen({ rt, e }: { rt: ReturnType<typeof useRuntime>; e: ChangeLive }) {
+  return (
+    <div className="axp-build-manager-banner__open">
+      <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(e.row ? `build-manager.open:${encodeURIComponent(e.row.key)}` : 'build-manager.live')}>Open in Build manager</Button>
+      {rt.actions.get('codebase-changes.open') && <Button size="sm" tone="neutral" icon="list" onClick={() => rt.dispatch(`codebase-changes.open:${e.changeId}`)}>Log</Button>}
+    </div>
+  );
+}
+
 export function BuildBanner() {
   const rt = useRuntime();
   const s = useStore();
@@ -828,6 +838,7 @@ export function BuildBanner() {
   // Launches expanded; "_" folds it to its title line, the chevron unfolds it (Brett, Oct 21 2026: building banners
   // minimize, they don't close).
   const [full, setFull] = useBannerLaunchOpen();
+  const [shown, setShown] = useState<string | null>(null);
   const fold = full
     ? <button type="button" className="fx-iconbtn" aria-label="Minimize" title="Minimize to one line" onClick={() => setFull(false)}><Icon name="minimize" size={16} /></button>
     : <button type="button" className="fx-iconbtn" aria-label="Expand" title="Show the details" aria-expanded={false} onClick={() => setFull(true)}><Icon name="chevron-down" size={16} /></button>;
@@ -845,7 +856,7 @@ export function BuildBanner() {
     const more = running.length - 1 + live.filter((e) => !running.some((r) => r.row && r.row.key === e.row?.key)).length;
     return (
       <div className={`axp-build-manager-banner${first.stale ? ' is-failed' : ''}`} role="status" aria-live="polite">
-        <button type="button" data-fx-row className="axp-build-manager-banner__main" onClick={() => rt.dispatch(first.row ? `build-manager.open:${encodeURIComponent(first.row.key)}` : 'build-manager.live')} title="Open the Build manager (Live)">
+        <button type="button" data-fx-row className="axp-build-manager-banner__main" aria-expanded={full} onClick={() => setFull(!full)} title={full ? 'Hide the details' : 'Show the details'}>
           <span className={first.stale ? '' : 'axp-build-manager__spin'} aria-hidden><Icon name={first.stale ? 'alert' : 'refresh'} size={16} /></span>
           <span className="axp-build-manager-banner__text">
             <strong>{first.stale ? 'No word from: ' : first.state === 'queued' ? 'Waiting to start: ' : 'Building: '}{first.title}</strong>
@@ -863,16 +874,34 @@ export function BuildBanner() {
         </button>
         {isStuckLive(first, now) && <TrashBuild e={first} />}
         {fold}
+        {full && <BannerOpen rt={rt} e={first} />}
         {full && running.length > 1 && (
           // Every other build, each with its own trash can when stuck (Oct 22 2026: trashing the first one used to bring
           // the next stuck build up in the same spot, so it looked like the trash did nothing).
           <ul className="axp-build-manager-banner__more">
             {running.slice(1).map((e) => (
               <li key={e.changeId}>
-                <Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={12} />
-                <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}{e.title}</span>
-                <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={isStuckLive(e, now) ? 'warn' : undefined}>{dur(e.startedAt ? now - e.startedAt : null)}</Badge>
+                <button type="button" data-fx-row className="axp-build-manager-banner__more-head" aria-expanded={shown === e.changeId} onClick={() => setShown(shown === e.changeId ? null : e.changeId)} title={shown === e.changeId ? 'Hide the details' : 'Show the details'}>
+                  <Icon name={e.stale ? 'alert' : e.state === 'queued' ? 'clock' : 'refresh'} size={12} />
+                  <span className="axp-build-manager-banner__more-title">{e.stale ? 'No word from: ' : e.state === 'queued' ? 'Waiting: ' : ''}{e.title}</span>
+                  <Badge icon={isStuckLive(e, now) ? 'alert' : 'clock'} tone={isStuckLive(e, now) ? 'warn' : undefined}>{dur(e.startedAt ? now - e.startedAt : null)}</Badge>
+                  <Icon name={shown === e.changeId ? 'chevron-up' : 'chevron-down'} size={12} />
+                </button>
                 {isStuckLive(e, now) && <TrashBuild e={e} />}
+                {shown === e.changeId && (
+                  <div className="axp-build-manager-banner__detail">
+                    <span className="axp-build-manager-banner__meta">
+                      <ModelChip model={e.model === 'Other' ? 'Opus' : e.model} />
+                      {e.estimate ? <Badge icon="clock">~{fmt(e.estimate)}</Badge> : null}
+                      {(e.costActual ?? e.costEstimate) != null && <Badge icon="zap">{e.costActual == null ? '~' : ''}{money((e.costActual ?? e.costEstimate)!)}</Badge>}
+                      {e.stepsTotal > 0 && <Badge icon="list">{e.stepsDone}/{e.stepsTotal}</Badge>}
+                      <Badge tone="muted">{e.source}{e.host && e.host !== e.source ? ` · ${e.host}` : ''}</Badge>
+                    </span>
+                    {e.currentStep && <span className="axp-build-manager-banner__step">{e.currentStep}</span>}
+                    {e.progress != null && <Bar value={e.progress} label="Build progress" />}
+                    <BannerOpen rt={rt} e={e} />
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -890,7 +919,7 @@ export function BuildBanner() {
   const summary = live.length ? `Building: ${first.row!.title}` : failed ? `Build failed: ${first.row!.title}` : `Built: ${first.row!.title}`;
   return (
     <div className={`axp-build-manager-banner${live.length ? '' : failed ? ' is-failed' : ' is-done'}`} role="status" aria-live="polite">
-      <button type="button" data-fx-row className="axp-build-manager-banner__main" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`)} title="Open the Build manager">
+      <button type="button" data-fx-row className="axp-build-manager-banner__main" aria-expanded={full} onClick={() => setFull(!full)} title={full ? 'Hide the details' : 'Show the details'}>
         <span className={live.length ? 'axp-build-manager__spin' : ''} aria-hidden><Icon name={live.length ? 'refresh' : failed ? 'x-circle' : 'check-circle'} size={16} /></span>
         <span className="axp-build-manager-banner__text">
           <strong>{summary}</strong>
@@ -904,6 +933,11 @@ export function BuildBanner() {
         </span>
       </button>
       {fold}
+      {full && (
+        <div className="axp-build-manager-banner__open">
+          <Button size="sm" tone="neutral" icon="arrow-right" onClick={() => rt.dispatch(`build-manager.open:${encodeURIComponent(first.row!.key)}`)}>Open in Build manager</Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ai-keys",
   "name": "AI keys",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -16,20 +16,29 @@
     "settings-tab:ai-keys"
   ],
   "optional": [
-    "service:axf.llm@1"
+    "service:axf.llm@1",
+    "service:axf.vinny@1"
   ],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "builtWith": { "model": "opus", "builtAt": "2026-10-23" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-23"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/ai-keys",
     "env": [
-      "AXF_AI_KEYS_DIR"
+      "AXF_AI_KEYS_DIR",
+      "AXF_CLAUDE_CREDENTIALS",
+      "AXF_CONSOLE_CONTAINER",
+      "AXF_VPS_CLAUDE_HOME",
+      "AXF_CLAUDE_OAUTH_URL",
+      "AXF_CLAUDE_OAUTH_CLIENT_ID"
     ],
     "mentions": [
       "CLAUDE.md",

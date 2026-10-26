@@ -31,6 +31,7 @@ const PREFIXES: string[] = [
   'axf.toolbar.collapsed',
   'axf.placement.',       // where each plugin's UI opens
   'axf.appearance.',      // the Appearance tab's own settings (spacing is written to its field too)
+  'axf.widgets.',         // where widgets sit on banners and toolbars (rt.moveHostItem, arrange mode)
 ];
 export const APPEARANCE_SETTING_PREFIXES: readonly string[] = PREFIXES;
 

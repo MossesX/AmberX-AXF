@@ -1,5 +1,5 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
@@ -7,6 +7,8 @@ import { AppMenuDropdown } from './AppMenu';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
+import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
+import type { PlacedAttachment } from '../../core/engines/widgets';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -80,6 +82,9 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
+  // Arrange mode (right-click the toolbar → Arrange widgets): drag a widget, it snaps between the others (Arrange.tsx).
+  const arrange = useArrange('toolbar', widgets);
+  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();
@@ -115,37 +120,15 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}`} data-align={tb.data.align} role="toolbar">
-      {widgets.start.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''}`} data-align={tb.data.align} role="toolbar" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar">
+      <ArrangeBar host="toolbar" label="toolbar" />
+      {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
       {tb.data.groups.map((g) => (
         <div key={g.id} className="fx-toolbar__group">
-          {g.items.map((it) => {
-            const gate = rt.gate(it.requires);
-            if (gate === 'hide') return null;
-            if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
-            const count = it.badge ? rt.badge(it.badge) : 0;
-            // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
-            const hostLock = rt.lockedByHost({ action: it.action });
-            const off = gate === 'disable' || !!hostLock;
-            return (
-              <button
-                key={it.id}
-                type="button"
-                className="fx-toolbtn"
-                disabled={off}
-                title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
-                aria-label={count ? `${it.label} (${count} new)` : it.label}
-                onClick={() => rt.dispatch(it.action)}
-              >
-                {tb.data.variant !== 'labels' && <Icon name={off ? 'lock' : it.icon} size={16} />}
-                {tb.data.variant !== 'icons' && <span>{it.label}</span>}
-                {count > 0 && <span className="fx-toolbtn__badge" aria-hidden="true">{count > 99 ? '99+' : count}</span>}
-              </button>
-            );
-          })}
+          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={tb.data.variant} />)}
         </div>
       ))}
-      {widgets.end.map((w) => <span key={w.key} className="fx-toolbar__widget" data-axf-toolbar-widget={w.key} data-axf-origin={w.origin}><WidgetView type={w.type} id={w.id} host="toolbar" /></span>)}
+      {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">
@@ -158,6 +141,57 @@ export function Toolbar({ views }: { views: ViewMap }) {
   );
 }
 
+
+type ToolbarItem = { id: string; icon: string; label: string; action: string; requires?: string; badge?: string };
+
+/** One toolbar item: gated by UAC, left out when the host app does it, greyed when the host locks it. */
+function ToolbarButton({ item: it, variant }: { item: ToolbarItem; variant: string }) {
+  const rt = useRuntime();
+  const gate = rt.gate(it.requires);
+  if (gate === 'hide') return null;
+  if (rt.takenByHost({ action: it.action })) return null; // the host app does this (embed@1 takes)
+  const count = it.badge ? rt.badge(it.badge) : 0;
+  // a hook of a function the host locks (plugins inside Patches): greyed out, its note as the tooltip
+  const hostLock = rt.lockedByHost({ action: it.action });
+  const off = gate === 'disable' || !!hostLock;
+  return (
+    <button
+      type="button"
+      className="fx-toolbtn"
+      disabled={off}
+      title={hostLock ? `${it.label} — ${hostLock}` : gate === 'disable' ? `${it.label} — requires ${it.requires}` : it.label}
+      aria-label={count ? `${it.label} (${count} new)` : it.label}
+      onClick={() => rt.dispatch(it.action)}
+    >
+      {variant !== 'labels' && <Icon name={off ? 'lock' : it.icon} size={16} />}
+      {variant !== 'icons' && <span>{it.label}</span>}
+      {count > 0 && <span className="fx-toolbtn__badge" aria-hidden="true">{count > 99 ? '99+' : count}</span>}
+    </button>
+  );
+}
+
+/**
+ * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
+ * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
+ * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
+ */
+export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  const tb = rt.registry.list('toolbar').find((a) => a.id === id);
+  if (!tb) return null;
+  const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: { id: string; items: ToolbarItem[] }[] };
+  return (
+    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
+      {data.groups.map((g) => (
+        <div key={g.id} className="fx-toolbar__group">
+          {g.items.map((it) => <ToolbarButton key={it.id} item={it} variant={data.variant} />)}
+        </div>
+      ))}
+      {data.showSearch && search}
+    </div>
+  );
+}
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
 
