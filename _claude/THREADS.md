@@ -14,6 +14,7 @@ States: `working`, `queued` (waiting for Brett's go), `blocked` (needs Brett), `
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
+| Fix systems check banner (re-bakes) | review | `claude/rebake-console` | #108 | Merge. Demo skipped (not needed). Other banner rows are VPS/key checks this chat cannot see | 2026-10-26 |
 | Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
 | Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
 | Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
