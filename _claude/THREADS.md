@@ -27,7 +27,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 |---|---|---|---|---|---|
-| Write install instructions and install steps | review | `claude/install-instructions` | (this PR) | Merge. axHub #9 (OAuth) merged; axHub Coolify redeploy still needed | 2026-10-26 |
+| Write install instructions and install steps | review | `claude/install-instructions` | #104 | Merge. axHub #9 (OAuth) merged; axHub Coolify redeploy still needed | 2026-10-26 |
 | Move axHub to console-style pages | merging | `claude/project-thread-139zmj` (+ axHub `claude/axhub-console-pages`) | AmberX-AXF #100, axHub #8  | Built (Opus). Merge AXF #100 first, then axHub #8 + Coolify redeploy | 2026-10-26 |
 | Fix AmberX app sign-in and hosting | review | `claude/project-thread-kxgzso` | #99 | Merge, then re-run the installer on main; new APK from CI | 2026-10-26 |
 | Track threads and builds in the repo | review | `claude/project-thread-usdp87` | (this PR) | Merge | 2026-10-25 |
