@@ -253,12 +253,17 @@ class Manager:
             key = store.ssh_key()
             if not vps.get("host") or not key.exists():
                 raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
-            remote = f"cd -- {shlex.quote(cwd)} 2>/dev/null; exec \"${{SHELL:-bash}}\" -l" if cwd else "exec \"${SHELL:-bash}\" -l"
-            argv = ["ssh", "-tt", "-i", str(key), "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=accept-new",
-                    "-o", f"UserKnownHostsFile={store.data_dir() / 'ssh' / 'known_hosts'}", "-o", "ServerAliveInterval=30", "-o", "BatchMode=yes",
-                    "-p", str(vps.get("port") or 22), f"{vps.get('user') or 'root'}@{vps['host']}", remote]
-            be = PtyBackend(argv, str(cx.ROOT), clean_env(), cols, rows)
-            title, target, badge = "VPS", vps["host"], "HOST ROOT"
+            attach = str(req.get("attach") or "")
+            if attach and not HEADLESS_RE.match(attach):
+                raise ValueError("attach is the name of an axf-… tmux session")
+            if attach:  # a headless Claude Code session claude-headless.sh started: watch it (and type into it) here
+                q = shlex.quote(attach)
+                remote = (f"tmux attach -t ={q} 2>/dev/null || {{ echo 'That session has ended; its log is in its folder (.axf-*.log).'; "
+                          "exec \"${SHELL:-bash}\" -l; }")
+            else:
+                remote = f"cd -- {shlex.quote(cwd)} 2>/dev/null; exec \"${{SHELL:-bash}}\" -l" if cwd else "exec \"${SHELL:-bash}\" -l"
+            be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
+            title, target, badge = (f"Claude: {attach[4:]}" if attach else "VPS"), vps["host"], "HOST ROOT"
         elif kind == "claude":
             exe = os.environ.get("CLAUDE_BIN", "claude")
             if not subprocess.run(["sh", "-c", f"command -v {shlex.quote(exe)}"], capture_output=True).stdout.strip():
@@ -327,3 +332,47 @@ class Manager:
 
 
 MANAGER = Manager()
+
+
+HEADLESS_RE = re.compile(r"^axf-[A-Za-z0-9._-]{1,64}$")
+
+
+def vps_argv(st: dict[str, Any], remote: str, tty: bool) -> list[str]:
+    """ssh to the VPS with the Terminal's own key (Settings → Plugins → Terminal → VPS host)."""
+    vps = st["vps"]
+    return ["ssh", *(["-tt"] if tty else ["-T"]), "-i", str(store.ssh_key()), "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=accept-new",
+            "-o", f"UserKnownHostsFile={store.data_dir() / 'ssh' / 'known_hosts'}", "-o", "ServerAliveInterval=30", "-o", "BatchMode=yes",
+            "-o", "ConnectTimeout=8", "-p", str(vps.get("port") or 22), f"{vps.get('user') or 'root'}@{vps['host']}", remote]
+
+
+_headless_cache: dict[str, Any] = {"at": 0.0, "value": None}
+HEADLESS_TTL = 8.0
+RUNNER: Any = subprocess.run  # replaced by the self-test
+
+
+def headless_sessions() -> dict[str, Any]:
+    """The headless Claude Code sessions running on the VPS: tmux sessions named axf-… (deploy/claude-headless.sh).
+    One ssh `tmux ls` at most every 8 s, whoever asks."""
+    st = store.settings()
+    vps = st["vps"]
+    if not vps.get("host") or not store.ssh_key().exists():
+        return {"ready": False, "items": [], "why": "the VPS tab isn't set up (Settings → Plugins → Terminal → VPS host)"}
+    now = time.time()
+    if _headless_cache["value"] is not None and now - _headless_cache["at"] < HEADLESS_TTL:
+        return _headless_cache["value"]
+    remote = "tmux ls -F '#{session_name} #{session_created}' 2>/dev/null || true"
+    try:
+        r = RUNNER(vps_argv(st, remote, tty=False), capture_output=True, text=True, timeout=15, env=clean_env(), stdin=subprocess.DEVNULL)
+        lines = (r.stdout or "").splitlines() if r.returncode == 0 else []
+        why = "" if r.returncode == 0 else ((r.stderr or "").strip().splitlines() or ["ssh failed"])[-1][:200]
+    except (OSError, subprocess.TimeoutExpired) as e:
+        lines, why = [], f"{type(e).__name__}: {e}"[:200]
+    items = []
+    for ln in lines:
+        parts = ln.split()
+        if len(parts) >= 1 and HEADLESS_RE.match(parts[0]):
+            created = int(parts[1]) * 1000 if len(parts) > 1 and parts[1].isdigit() else 0
+            items.append({"name": parts[0], "createdAt": created})
+    value = {"ready": not why, "items": items[:40], "why": why}
+    _headless_cache.update(at=now, value=value)
+    return value

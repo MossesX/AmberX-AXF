@@ -265,7 +265,7 @@ try:
 except cf.HubError:
     odd = True
 check(odd, "odd branch names never reach the shell")
-check("--allowedTools Bash " in cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "feat/a", "base": "main", "kind": "merge", "action": "merge it", "failure": "", "shell": True}, ""), "shell on: any command")
+check("--allowedTools Bash;" in cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "feat/a", "base": "main", "kind": "merge", "action": "merge it", "failure": "", "shell": True}, ""), "shell on: any command")
 check(c.get("/p/claude").json()["on"] is True and all("command" not in j for j in c.get("/p/claude").json()["jobs"]), "GET claude: the setting and the jobs (no commands)")
 c.put("/p/config", json={"claudeOnFail": False, "claudeShell": False})
 

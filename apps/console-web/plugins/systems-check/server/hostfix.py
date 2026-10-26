@@ -21,6 +21,7 @@ from typing import Any, Callable
 _REPORT = "bash /opt/axf/deploy/console-doctor.sh --report"
 FIX_COMMANDS: dict[str, str] = {
     "host-mosh": "DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mosh",
+    "host-tmux": "DEBIAN_FRONTEND=noninteractive apt-get install -y -qq tmux",
     "host-mosh-ports": "ufw allow 60000:61000/udp",
     "host-anthropic-keyfile": "chmod 600 /root/.anthropic-key",
     "host-claude-pick": "bash /opt/axf/deploy/claude-pick.sh --install",
@@ -32,7 +33,6 @@ FIX_COMMANDS: dict[str, str] = {
     # claude-sync lives in the axHub repo: clone it to ~/axHub when missing (the VPS's git credentials), else update it
     "host-claude-sync": "export PATH=/root/.local/bin:$PATH && if [ -f /root/axHub/clients/claude-code/claude-sync.mjs ]; then git -C /root/axHub pull -q --ff-only || true; "
                         "else git clone -q https://github.com/MossesX/axHub /root/axHub; fi && node /root/axHub/clients/claude-code/claude-sync.mjs install",
-    "host-session-checkin": "node /opt/axf/apps/console-web/plugins/session-checkin/install.mjs --json '{\"action\":\"install\",\"target\":\"user\",\"onDevice\":true}' | grep -q '\"ok\":true'",
 }
 # A Moshi public key saved in the console (MOSHI_SSH_PUBKEY, not secret) is added to root's authorized_keys; the approval
 # page shows the exact key line, so approving it on the hub is the "allow this key" step the doctor used to ask for.
